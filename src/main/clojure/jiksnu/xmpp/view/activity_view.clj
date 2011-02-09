@@ -6,8 +6,7 @@
         jiksnu.view
         ciste.core
         ciste.view)
-  (:require [jiksnu.abdera.entry :as abdera.entry]
-            [jiksnu.atom.view.activity-view :as atom.view.activity]
+  (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.model.activity :as activity.model])
   (:import jiksnu.model.Activity))
 

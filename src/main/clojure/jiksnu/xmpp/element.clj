@@ -1,7 +1,6 @@
 (ns jiksnu.xmpp.element
   (:use [clojure.string :only (trim)]
         jiksnu.namespace)
-  (:require [jiksnu.abdera.entry :as abdera.entry])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            tigase.xml.Element

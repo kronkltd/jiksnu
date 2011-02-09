@@ -3,7 +3,6 @@
         jiksnu.namespace
         jiksnu.xmpp
         jiksnu.xmpp.routes
-        jiksnu.xmpp.session
         jiksnu.xmpp.view
         ciste.core
         clojure.pprint
