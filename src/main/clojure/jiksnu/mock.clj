@@ -4,8 +4,7 @@
         jiksnu.xmpp
         jiksnu.xmpp.view)
   (:require [jiksnu.atom.view :as atom.view]
-            [jiksnu.model.subscription :as subscription]
-            [jiksnu.model.vcard :as vcard])
+            [jiksnu.model.subscription :as subscription])
   (:import org.apache.axiom.util.UIDGenerator
            #_tigase.db.AuthRepository
            tigase.db.UserRepository

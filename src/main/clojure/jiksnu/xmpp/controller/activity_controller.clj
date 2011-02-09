@@ -5,8 +5,7 @@
         [karras.entity :only (make)])
   (:require [jiksnu.atom.view :as atom.view]
             [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.abdera.entry :as abdera.entry])
+            [jiksnu.model.activity :as model.activity])
   (:import org.apache.abdera.model.Entry
            jiksnu.model.Activity))
 

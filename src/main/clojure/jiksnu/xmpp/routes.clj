@@ -6,7 +6,6 @@
              [activity-controller :as activity]
              [follower-controller :as follower]
              [following-controller :as following]
-             [inbox-controller :as inbox]
              [user-controller :as user])
             [jiksnu.xmpp.view :as view]
             compojure.core
@@ -35,7 +34,7 @@
     [{:method :get
       :pubsub true
       :node inbox-uri}
-     #'inbox/index]
+     #'user/inbox]
 
     [{:method :get
       :name "query"

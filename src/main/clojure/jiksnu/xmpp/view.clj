@@ -5,7 +5,6 @@
         jiksnu.xmpp
         jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [jiksnu.xmpp.session :as session]
             [clojure.stacktrace :as stacktrace])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
@@ -67,7 +66,7 @@
     (let [recipient-jid (.getStanzaTo packet)]
      (= recipient-jid (.copyWithoutResource recipient-jid)))))
 
-(defn from-authenticated?
+#_(defn from-authenticated?
   [^Packet packet]
   (if packet
     (let [sender-jid (.getStanzaFrom packet)]
