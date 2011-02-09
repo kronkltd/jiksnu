@@ -1,0 +1,10 @@
+<iq type="set"
+    to="daniel@renfer.name"
+    id="osw_159"
+    from="duck@mycyclopedia.net/1287624157761">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <subscribe xmlns="http://jabber.org/protocol/pubsub"
+               node="urn:xmpp:microblog:0"
+               jid="duck@mycyclopedia.net" />
+  </pubsub>
+</iq>

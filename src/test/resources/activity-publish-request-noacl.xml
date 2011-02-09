@@ -1,0 +1,21 @@
+<iq type='set'
+    from='daniel@renfer.name/dell'
+    to='daniel@renfer.name'
+    id='osw1'>
+ <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+   <publish node='urn:xmpp:microblog:0'>
+     <item>
+       <entry xmlns="http://www.w3.org/2005/Atom"
+              xmlns:activity="http://activitystrea.ms/spec/1.0/"
+              xmlns:osw="http://onesocialweb.org/spec/1.0/">
+         <title>to be or not to be ?</title>
+         <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+         <activity:object>
+           <activity:object-type>http://onesocialweb.org/spec/1.0/object/status</activity:object-type>
+           <content type="text/plain">to be or not to be ?</content>
+         </activity:object>
+       </entry>
+      </item>
+    </publish>
+  </pubsub>
+</iq>

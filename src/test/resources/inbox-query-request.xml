@@ -1,0 +1,5 @@
+<iq type="get" id="osw_1" from="daniel@renfer.name/dell">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <items xmlns="http://jabber.org/protocol/pubsub" node="http://onesocialweb.org/spec/1.0/inbox" />
+  </pubsub>
+</iq>

@@ -1,0 +1,181 @@
+body
+{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-color: black;
+    background-color: steelBlue;
+}
+
+a img {
+    border: none;
+}
+
+.content
+{
+    font-color: black;
+    background-color: steelBlue;
+    margin: 0 auto;
+    width: 80%;
+}
+
+/* #content */
+/* { */
+/*     width: 300px; */
+/*     height: 70px; */
+/* } */
+
+.activities article
+{
+    background-color: white;
+}
+
+nav ul li
+{
+    display: inline;
+    width: 100%;
+    margin-right: 5px;
+}
+
+.post-activity
+{
+    border: 1px solid black;
+    margin-bottom: 10px;
+}
+
+article
+{
+    display: block;
+    border-size: 1px;
+    border-style: solid;
+    /* border: 1px solid red; */
+    margin-bottom: 15px;
+    min-height: 60px;
+    -moz-box-shadow:5px 7px 7px rgba(194, 194, 194, 0.3);
+    -moz-border-radius: 0 7px 7px 7px;
+}
+
+article article
+{
+    border: none;
+}
+
+article header
+{
+    display: block;
+}
+
+article section
+{
+    display: block;
+    margin-left: 5px;
+}
+
+section
+{
+    display: block;
+}
+
+.actor
+{
+    display: inline;
+}
+
+/* .avatar */
+/* { */
+/*     float: left; */
+/*     width: 50px; */
+/* } */
+
+.entry-content
+{
+    margin-left: 50px;
+}
+
+body > header
+{
+    display: block;
+    margin-bottom: 10px;
+}
+
+.login
+{
+    /* float: right; */
+}
+
+nav
+{
+    /* float: left; */
+}
+
+section.content
+{
+    width: 70%;
+    margin: 0 auto;
+}
+
+.recipients
+{
+    display: inline;
+    margin-left: 10px;
+}
+
+.recipients ul
+{
+    display: inline;
+}
+
+.recipient
+{
+    display: inline;
+    margin-right: 10px;
+}
+
+.value
+{
+    margin: 0;
+}
+
+.comments
+{
+    clear: both;
+    margin-left: 15px;
+}
+
+.comments ul
+{
+    margin: 0;
+    padding: 0;
+}
+
+.comments ul li
+{
+    list-style-type: none;
+}
+
+.comment-form
+{
+    width: 100%;
+}
+
+article footer
+{
+    clear: both;
+    width: 100%;
+    display: block;
+}
+
+article footer .buttons li
+{
+    display: inline;
+    margin-right: 5px;
+}
+
+.publish-actions
+{
+    float: right;
+}
+
+.hidden
+{
+    display: none;
+}

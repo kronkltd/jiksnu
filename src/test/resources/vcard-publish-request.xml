@@ -1,0 +1,24 @@
+<iq type='set'
+    from='hamlet@denmark.lit/client'
+    to='denmark.lit'
+    id='id1'>
+  <publish xmlns="http://onesocialweb.org/spec/1.0/vcard4#publish">
+    <vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0">
+      <fn>
+        <text>Lord Hamlet</text>
+        <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+          <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">
+            http://onesocialweb.org/spec/1.0/acl/action/view
+          </acl-action>
+          <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+        </acl-rule>
+      </fn>
+      <photo>
+        <uri>http://denmark.lit/hamlet.jpg</uri>
+      </photo>
+      <note>
+        <text>Philosopher, dreamer, writer...</text>
+      </note>
+    </vcard>
+  </publish>
+</iq>

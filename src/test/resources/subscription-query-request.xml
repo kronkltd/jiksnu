@@ -1,0 +1,5 @@
+<iq type="get" to="daniel@renfer.name" id="osw_50" from="duck@mycyclopedia.net/dell">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <subscriptions xmlns="http://jabber.org/protocol/pubsub" node="urn:xmpp:microblog:0" />
+  </pubsub>
+</iq>

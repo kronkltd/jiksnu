@@ -1,0 +1,572 @@
+<iq type="result" id="osw_1" to="duck@mycyclopedia.net/1287945964718">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <items node="urn:xmpp:microblog:0">
+      <item id="urn:uuid:7fd570e6-d0d9-4650-8a7e-8cd2812e0b52">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:7fd570e6-d0d9-4650-8a7e-8cd2812e0b52</id>
+          <published>2010-10-21T18:22:26.000Z</published>
+          <updated>2010-10-21T18:22:26.000Z</updated>
+          <title>If the new comment/post notifications came from the server instead of the author, it could be set up so that replying to that resource id creates a comment. (allowing commenting from the chat window)</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:8f5984c8-156d-4cef-af04-01864ae438d5</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-21T14:22:26.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">If the new comment/post notifications came from the server instead of the author, it could be set up so that replying to that resource id creates a comment. (allowing commenting from the chat window)</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:09354d22-48b9-4e69-813f-a84d7950b623">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:09354d22-48b9-4e69-813f-a84d7950b623</id>
+          <published>2010-10-21T00:45:18.000Z</published>
+          <updated>2010-10-21T00:45:18.000Z</updated>
+          <title>Posts from my server (the one I'm writing) appear in Jappix, but no OSW thus far. :( I think I need to do vcard before I really get integrated.</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:0c2337ea-d12a-4df5-a83b-4e20e9768795</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-20T20:45:17.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">Posts from my server (the one I'm writing) appear in Jappix, but no OSW thus far. :( I think I need to do vcard before I really get integrated.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:bba569b5-9dd5-495c-a6a3-ec8e223644f6">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:bba569b5-9dd5-495c-a6a3-ec8e223644f6</id>
+          <published>2010-10-19T18:39:58.000Z</published>
+          <updated>2010-10-19T18:39:58.000Z</updated>
+          <title>I should mention, with my PEP followers proposal, it should be possible to still support the legacy query responses (albeit deprecated) I'm not sure the 0.8 client would be able to communicate with a 0.7 server</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:aa3497e0-bebc-47ef-8bbd-0736dc1a4292</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T14:39:58.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">I should mention, with my PEP followers proposal, it should be possible to still support the legacy query responses (albeit deprecated) I'm not sure the 0.8 client would be able to communicate with a 0.7 server</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:73a3a9b4-0765-4cf5-a516-4dd32bb65e39">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:73a3a9b4-0765-4cf5-a516-4dd32bb65e39</id>
+          <published>2010-10-19T15:51:42.000Z</published>
+          <updated>2010-10-19T15:51:42.000Z</updated>
+          <title>I sent my email, but it's not appearing on the group. Could it be caught in the moderation queue?</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:6f0a93f0-9c71-4cc2-84b1-4503e2642633</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T11:51:42.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">I sent my email, but it's not appearing on the group. Could it be caught in the moderation queue?</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:2adea76a-430d-4327-b324-adee4d045912">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:2adea76a-430d-4327-b324-adee4d045912</id>
+          <published>2010-10-19T16:32:05.000Z</published>
+          <title>In terms of validating that the requesting user is authenticated in order to proceed with a subscription, I think that should go in the IQSubscribeInterceptor. It's not there, so I will add it. Thanks.</title>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="duck@mycyclopedia.net"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:9c8150ef-0236-47ac-9be0-823d53092d61</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T17:31:25.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">In terms of validating that the requesting user is authenticated in order to proceed with a subscription, I think that should go in the IQSubscribeInterceptor. It's not there, so I will add it. Thanks.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:da49dea0-bbe4-4e19-83a1-4745649cd6ea">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:da49dea0-bbe4-4e19-83a1-4745649cd6ea</id>
+          <published>2010-10-19T15:23:02.000Z</published>
+          <updated>2010-10-19T15:23:02.000Z</updated>
+          <title>I'm putting together an email right now detailing my findings and my proposed solution. (really should be working though :) )</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:f53d98a2-505c-4e9f-a438-4f8787ddd5bc</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T11:23:02.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">I'm putting together an email right now detailing my findings and my proposed solution. (really should be working though :) )</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:41cb52f9-ab4a-4914-8bed-d9b2dead08e4">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:41cb52f9-ab4a-4914-8bed-d9b2dead08e4</id>
+          <published>2010-10-19T16:22:25.000Z</published>
+          <title>See your point, though we are using a slightly different namespace. We should at least document it anyways.  I's kind of a core part of the protocol by now...not sure we should change this. And the flow is clear and simple. No? :)</title>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:d85f3b9e-e747-4a3d-8aec-38dde642d56a</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T17:21:45.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">See your point, though we are using a slightly different namespace. We should at least document it anyways.  I's kind of a core part of the protocol by now...not sure we should change this. And the flow is clear and simple. No? :)</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:d19ff068-3451-4079-bb9d-4b1b8570132e">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:d19ff068-3451-4079-bb9d-4b1b8570132e</id>
+          <published>2010-10-19T16:07:26.000Z</published>
+          <title>ah, i found it...</title>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="duck@mycyclopedia.net"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:cfdddc3b-0a0d-4f0c-b821-3484bc197ec3</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T17:06:46.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">ah, i found it...</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:d523fe20-2ab1-4855-a654-9f1e330d52bf">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:d523fe20-2ab1-4855-a654-9f1e330d52bf</id>
+          <published>2010-10-19T16:02:17.000Z</published>
+          <title>I see your point, but now I wonder which class is then dealing with an IQ get of "subscribers". Checking...</title>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="duck@mycyclopedia.net"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:5bcdd1d0-dd0b-42af-b221-bd03fb7333b8</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T17:01:37.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">I see your point, but now I wonder which class is then dealing with an IQ get of "subscribers". Checking...</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:e3acdbd1-1949-4530-85cb-3724b80e4927">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:e3acdbd1-1949-4530-85cb-3724b80e4927</id>
+          <published>2010-10-19T14:57:02.000Z</published>
+          <updated>2010-10-19T14:57:02.000Z</updated>
+          <title>I haven't checked the source for this, but does the OSW plugin validate that a subscription was initiated by an authenticated user? I'm concerned that a spammy domain could send me a rogue iq result and cause me to be subscribed to their user.</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:bc242462-30e7-4136-9912-b21e07c725c7</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T10:57:02.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">I haven't checked the source for this, but does the OSW plugin validate that a subscription was initiated by an authenticated user? I'm concerned that a spammy domain could send me a rogue iq result and cause me to be subscribed to their user.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:d6a5568d-b0b0-40d0-bee4-900ad2fcf177">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:d6a5568d-b0b0-40d0-bee4-900ad2fcf177</id>
+          <published>2010-10-19T14:45:43.000Z</published>
+          <updated>2010-10-19T14:45:43.000Z</updated>
+          <title>If you can't tell, I'm at the "implementing subscriber CRUD" phase of developing my server. :)</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:e7a64d6a-af60-4e52-ae55-8d593d506a55</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T10:45:43.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">If you can't tell, I'm at the "implementing subscriber CRUD" phase of developing my server. :)</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:e5885840-8e0d-47f7-83df-85f1676a1425">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:e5885840-8e0d-47f7-83df-85f1676a1425</id>
+          <published>2010-10-19T14:43:35.000Z</published>
+          <updated>2010-10-19T14:43:35.000Z</updated>
+          <title>There's really nothing like the "following" in XMPP, IMO it should be modeled as a PEP node that way (assuming I allow you to) you can get notifications when I subscribe / get subscribed. This is very useful for some (stupid twitter apps)</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:e73f946c-413d-40b1-a5d3-0a04fb06d386</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T10:43:35.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">There's really nothing like the "following" in XMPP, IMO it should be modeled as a PEP node that way (assuming I allow you to) you can get notifications when I subscribe / get subscribed. This is very useful for some (stupid twitter apps)</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:242160fa-231b-4c58-b825-6f5b26326deb">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:242160fa-231b-4c58-b825-6f5b26326deb</id>
+          <published>2010-10-19T14:41:30.000Z</published>
+          <updated>2010-10-19T14:41:30.000Z</updated>
+          <title>Which is my point. "subscribers" is totally made up. There's a "subscriptions" which is supposed to return your followers (subscribers to the node) but returns following. and then "subscribers" returns following. They're backwards.</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:ad3471ff-76b4-45b7-9beb-4793404244bb</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T10:41:30.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">Which is my point. "subscribers" is totally made up. There's a "subscriptions" which is supposed to return your followers (subscribers to the node) but returns following. and then "subscribers" returns following. They're backwards.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:8b08325b-dc8a-4124-95e3-e02d22199cd8">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:8b08325b-dc8a-4124-95e3-e02d22199cd8</id>
+          <published>2010-10-19T15:39:57.000Z</published>
+          <title>&lt;iq type="get" id="osw_47" from="dcheng@vodafonernd.com/1287495906347"&gt;&lt;pubsub xmlns="http://jabber.org/protocol/pubsub"&gt;&lt;subscribers xmlns="http://jabber.org/protocol/pubsub" node="urn:xmpp:microblog:0" /&gt;&lt;/pubsub&gt;&lt;/iq&gt;</title>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="duck@mycyclopedia.net"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:920ccb74-b91c-4fe1-942c-b62eee887268</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T16:39:17.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">&lt;iq type="get" id="osw_47" from="dcheng@vodafonernd.com/1287495906347"&gt;&lt;pubsub xmlns="http://jabber.org/protocol/pubsub"&gt;&lt;subscribers xmlns="http://jabber.org/protocol/pubsub" node="urn:xmpp:microblog:0" /&gt;&lt;/pubsub&gt;&lt;/iq&gt;</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:90dc9ceb-b29c-4717-9399-398bd80308a8">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:90dc9ceb-b29c-4717-9399-398bd80308a8</id>
+          <published>2010-10-19T15:39:23.000Z</published>
+          <title>ah okay, sorry, I didn't get what you meant. Not sure where this is documented. But to retrieve followers (or subscribers) (like in the web console for example) we send just an iq get subscribers to the microbloggin node.</title>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="duck@mycyclopedia.net"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:83a7a73b-5d84-453b-a288-be2d0c8494c2</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T16:38:42.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">ah okay, sorry, I didn't get what you meant. Not sure where this is documented. But to retrieve followers (or subscribers) (like in the web console for example) we send just an iq get subscribers to the microbloggin node.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:92d3fdf9-0f61-43aa-a3a2-74ef35596376">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:92d3fdf9-0f61-43aa-a3a2-74ef35596376</id>
+          <published>2010-10-19T13:14:37.000Z</published>
+          <updated>2010-10-19T13:14:37.000Z</updated>
+          <title>This is precisely why you always need at least 2 independent implementations of a spec. :)</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:38728198-d657-40ec-8838-8c3568f316b9</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T09:14:37.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">This is precisely why you always need at least 2 independent implementations of a spec. :)</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:1d73be7f-64dd-45ca-ae7b-d7fa225c61f3">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:1d73be7f-64dd-45ca-ae7b-d7fa225c61f3</id>
+          <published>2010-10-19T13:12:24.000Z</published>
+          <updated>2010-10-19T13:12:24.000Z</updated>
+          <title>If you look at http://xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve-request you get the users subscribed to the node. a similar request to OSW will return the users I subscribe to.</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:921887e5-951f-4819-a699-04cf8d051eed</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T09:12:24.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">If you look at http://xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve-request you get the users subscribed to the node. a similar request to OSW will return the users I subscribe to.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:ca71fe59-6e92-4256-8187-64ee0339a80c">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:ca71fe59-6e92-4256-8187-64ee0339a80c</id>
+          <published>2010-10-19T13:09:50.000Z</published>
+          <updated>2010-10-19T13:09:50.000Z</updated>
+          <title>That section deals with pub/query of activities. I'm referring to query of subscribers, which now that I'm looking at it appears to be backwards. pubsub:subscriptions is showing the jids that I'm subscribed to, which is backwards from pubsub.</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:d38c4ec6-da26-4260-82ff-563ddda62bd2</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T09:09:49.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">That section deals with pub/query of activities. I'm referring to query of subscribers, which now that I'm looking at it appears to be backwards. pubsub:subscriptions is showing the jids that I'm subscribed to, which is backwards from pubsub.</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:85876fd9-b4d4-4fcc-8390-74065bd754f0">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:85876fd9-b4d4-4fcc-8390-74065bd754f0</id>
+          <published>2010-10-19T13:56:45.000Z</published>
+          <title>Do you mean this: http://onesocialweb.org/spec/1.0/osw-activities.html#subscriber ?</title>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="duck@mycyclopedia.net"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">diana.cheng@vodafone.com</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Diana Cheng</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">dcheng@vodafonernd.com</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:d00d8967-bb7c-4436-85f5-9dcd6ee9c1da</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T14:56:05.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">Do you mean this: http://onesocialweb.org/spec/1.0/osw-activities.html#subscriber ?</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:b10e273a-94f7-4fd8-aeaf-7f2287f6254d">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:b10e273a-94f7-4fd8-aeaf-7f2287f6254d</id>
+          <published>2010-10-19T12:41:19.000Z</published>
+          <updated>2010-10-19T12:41:19.000Z</updated>
+          <title>Is the protocol flow for pubsub:subscribers queries documented anywhere? It's in the pubsub namespace, but not actually part of XEP-0060. (I can figure it out from watching responses)</title>
+          <author>
+            <email>duck@mycyclopedia.net</email>
+            <name>Daniel E. Renfer</name>
+            <uri>xmpp:duck@mycyclopedia.net</uri>
+          </author>
+          <generator version="0.7" uri="http://github.com/onesocialweb/osw-web">osw-web</generator>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dan@vodafonernd.com"/>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:08b29fdc-d431-4ed6-a5e5-b07cd73be905</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2010-10-19T08:41:18.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">Is the protocol flow for pubsub:subscribers queries documented anywhere? It's in the pubsub namespace, but not actually part of XEP-0060. (I can figure it out from watching responses)</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+    </items>
+  </pubsub>
+</iq>
