@@ -55,6 +55,7 @@
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
                                :format :xmpp} request)]
+    (println "request: " merged-request)
     (let [route-fn (resolve-routes (filter identity (lazier @*routes*)))]
       (if-let [response (route-fn merged-request)]
         (do (println " ")
