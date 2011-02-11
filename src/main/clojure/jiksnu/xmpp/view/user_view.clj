@@ -31,10 +31,8 @@
    (make-element
     "iq" {"type" "result"}
     [(make-element
-      "pubsub" {}
-      [(make-element
-        "query" {"xmlns" query-uri}
-        [(show-section user)])])])
+      "query" {"xmlns" query-uri}
+      [(show-section user)])])
    :from (:to request)
    :to (:from request)})
 
