@@ -21,23 +21,6 @@
   [^Entry entry]
   (not (nil? (.getAuthor entry))))
 
-(defn set-actor
-  [^Entry entry]
-  (let [actor (.newAuthor *abdera-factory*)
-        author-uri ""
-        author-name ""
-        actor-element (.addExtension entry (QName. as-ns "actor"))]
-    (doto actor
-      (.setName author-name)
-      (.setEmail author-uri)
-      (.setUri author-uri))
-    (.addAuthor entry actor)
-    (doto actor-element
-      (.addSimpleExtension (QName. atom-ns "name") author-name)
-      (.addSimpleExtension (QName. atom-ns "email") author-uri)
-      (.addSimpleExtension (QName. atom-ns "uri") author-uri)))
-  entry)
-
 (defn parse-json-element
   "Takes a json object representing an Abdera element and converts it to
 an Element"
@@ -72,13 +55,21 @@ an Element"
     (.addExtension entry (parse-json-element extension))))
 
 (defn add-author
-  [^Entry entry
-   author-id]
+  [^Entry entry author-id]
   (if-let [user (model.user/show author-id)]
-    (.addAuthor entry
-                (:name user)
-                (view.user/get-uri user)
-                (full-uri user))))
+    (let [author (.newAuthor *abdera-factory*)
+          author-uri (full-uri user)
+          author-name (:name user)
+          actor-element (.addExtension entry (QName. as-ns "actor"))]
+      (doto author
+        (.setName author-name)
+        (.setEmail (view.user/get-uri user))
+        (.setUri author-uri))
+      (.addAuthor entry author)
+      (doto actor-element
+        (.addSimpleExtension (QName. atom-ns "name") author-name)
+        (.addSimpleExtension (QName. atom-ns "email") author-uri)
+        (.addSimpleExtension (QName. atom-ns "uri") author-uri)))))
 
 (defn add-authors
   [^Entry entry
