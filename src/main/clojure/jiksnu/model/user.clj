@@ -1,9 +1,7 @@
 (ns jiksnu.model.user
   (:use jiksnu.model)
-  (:require [jiksnu.session :as session]
-            [karras.entity :as entity])
+  (:require [karras.entity :as entity])
   (:import tigase.xmpp.BareJID
-           jiksnu.model.Subscription
            jiksnu.model.User))
 
 (defn drop!

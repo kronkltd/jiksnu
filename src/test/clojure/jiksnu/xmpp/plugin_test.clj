@@ -3,7 +3,6 @@
         jiksnu.model
         jiksnu.xmpp.routes
         jiksnu.xmpp.plugin
-        jiksnu.xmpp.session
         jiksnu.xmpp.view
         [lazytest.describe :only (describe it testing given do-it)]
         [lazytest.expect :only (expect)])
