@@ -1,19 +1,18 @@
 (ns jiksnu.xmpp.controller.subscription-controller
   (:use jiksnu.model
         jiksnu.xmpp.view)
-  (:require [jiksnu.model.follower :as follower.model]
-            [jiksnu.model.subscription :as subscription.model]))
+  (:require [jiksnu.model.subscription :as model.subscription]))
 
 (defn subscriptions
   [request]
   (let [recipient (.getLocalpart (:to request))
-        subscriptions (subscription.model/index :from recipient)]
+        subscriptions (model.subscription/index :from recipient)]
     subscriptions))
 
 (defn subscribers
   [request]
   (let [recipient (.getLocalpart (:to request))
-        subscriptions (subscription.model/index :to recipient)]
+        subscriptions (model.subscription/index :to recipient)]
     subscriptions))
 
 (defn subscribe
