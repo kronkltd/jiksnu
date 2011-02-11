@@ -102,7 +102,7 @@ entry and converts it to an entry"
   (let [entry (new-entry)]
     (doto entry
       (.setId (:_id activity))
-      (.setTitle (:title activity))
+      (.setTitle (or (:title activity) "Microblog post"))
       (.addLink (full-uri activity) "alternate")
       (.setPublished (:published activity))
       (.setUpdated (:updated activity))
