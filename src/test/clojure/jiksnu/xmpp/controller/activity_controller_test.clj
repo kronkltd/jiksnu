@@ -49,8 +49,9 @@
     (do-it "should return a sequence of activities"
       (with-database
         (let [packet (mock-activity-query-request-packet)
-              request (make-request packet)
               author (model.user/create (factory User))
+              request (assoc (make-request packet)
+                        :to (make-jid (:_id author) (:domain author)))
               activity (with-user (:_id author)
                          (model.activity/create (factory Activity)))
               response (index request)]
