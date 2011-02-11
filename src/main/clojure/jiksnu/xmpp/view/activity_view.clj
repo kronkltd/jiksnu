@@ -36,14 +36,16 @@
 (defmethod index-section Activity
   [activities]
   (make-element
-   "iq" {"type" "result"}
-   [(make-element
-     "pubsub" {}
-     [(index-block activities)])]))
+   "pubsub" {}
+   [(index-block activities)]))
 
 (defview #'index :xmpp
   [request activities]
-  {:body (index-section activities)
+  {:body
+   (make-element
+    "iq" {"type" "result"
+          "id" (:id request)}
+    [(index-section activities)])
    :to (:from request)
    :from (:to request)
    :type :response})
