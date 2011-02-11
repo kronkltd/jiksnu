@@ -21,9 +21,16 @@
   [^User user]
   (make-element
    "vcard" {"xmlns" vcard-uri}
-   [(make-element
-     "fn" {}
-     [(make-element "text" {} ["Daniel E. Renfer"])])]))
+   [(if (:name user)
+      (make-element
+       "fn" {}
+       [(make-element "text" {}
+                      [(:name user)])]))
+    (if (:avatar-url user)
+      (make-element
+       "photo" {}
+       [(make-element "uri" {}
+                      [(:avatar-url user)])]))]))
 
 (defview #'show :xmpp
   [request user]
