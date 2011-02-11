@@ -86,15 +86,17 @@
                    "http://jiksnu.com/"
                    "0.1.0-SNAPSHOT"
                    "Jiksnu")
-    (.setId feed "/api/statuses/user_timeline/duck.atom")
+    (.setId feed "http://beta.jiksnu.com/api/statuses/user_timeline/duck.atom")
     (.setUpdated feed updated)
     (dorun
      (map
       (fn [link]
-        (.addLink feed
-                  (:href link)
-                  (:rel link)
-                  (:type link) "" "" 0))
+        (let [link-element (.newLink *abdera-factory*)]
+          (doto link-element
+            (.setHref (:href link))
+            (.setRel (:rel link))
+            (.setMimeType (:type link)))
+          (.addLink feed link-element)))
       links))
     (dorun
      (map
@@ -110,8 +112,11 @@
           {:title "Public Activities"
            :subtitle "All activities posted"
            :links [{:href "/posts"
-                    :rel "aternate"
-                    :type "text/html"}]
+                    :rel "alternate"
+                    :type "text/html"}
+                   {:href "/posts.atom"
+                    :rel "self"
+                    :type "application/atom+xml"}]
            :updated (:updated (first activities))
            :entries activities})})
 
@@ -123,7 +128,7 @@
           {:title "User Timeline"
            :subtitle ""
            :links [{:href "/posts"
-                    :rel "aternate"
+                    :rel "alternate"
                     :type "text/html"}]
            :updated (:updated (first activities))
            :entries activities})})
