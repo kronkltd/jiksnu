@@ -7,7 +7,8 @@
         [jiksnu.xmpp.view :only (make-request)]
         [lazytest.describe :only (describe do-it it testing given)]
         [lazytest.expect :only (expect)])
-  (:require [jiksnu.model.subscription :as subscription.model])
+  (:require [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription))
 
 (describe subscribers
@@ -16,7 +17,7 @@
       (with-database
         (let [packet (mock-subscriber-query-request-packet)
               request (make-request packet)]
-          (subscription.model/create
+          (model.subscription/create
            (factory Subscription
                     {:from (.getLocalpart (:to request))}))
           (let [response (subscribers request)]
@@ -24,18 +25,16 @@
             (expect (seq response))))))))
 
 (describe subscriptions
-  (given [packet (mock-subscription-query-request-packet)
-          request (make-request packet)]
-    (testing "when there are subscriptions"
-      (it "should not be empty"
-        (with-database
-          (let [s (factory Subscription
-                           {:to (.getLocalpart (:to request))})]
-            (subscription.model/create s))
-          (let [results (subscriptions request)]
-            (do
-              (not (empty? results))))))
-      (it "should return a sequence of subscriptions"
-        (with-database
-          (let [results (subscriptions request)]
-            (every? (partial instance? Subscription) results)))))))
+  (testing "when there are subscriptions"
+    (do-it "should return a sequence of subscriptions"
+      (with-database
+        (let [packet (mock-subscription-query-request-packet)
+              user (model.user/create (factory User))
+              request (assoc (make-request packet)
+                        :to (:_id user))
+              s (model.subscription/create
+                 (factory Subscription
+                          {:to (:_id user)}))
+              results (subscriptions request)]
+          (expect (not (empty? results)))
+          (expect (every? (partial instance? Subscription) results)))))))
