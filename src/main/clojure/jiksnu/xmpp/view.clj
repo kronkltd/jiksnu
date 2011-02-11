@@ -206,7 +206,7 @@
 
 (defn ^Packet respond-with
   "given an item element, returns a packet"
-  [request #^Element item]
+  [request ^Element item]
   (.okResult (:packet request) item 0))
 
 (defn make-jid
