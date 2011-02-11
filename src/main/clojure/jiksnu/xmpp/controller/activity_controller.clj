@@ -5,7 +5,8 @@
         [karras.entity :only (make)])
   (:require [jiksnu.atom.view :as atom.view]
             [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [jiksnu.model.activity :as model.activity])
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
   (:import org.apache.abdera.model.Entry
            jiksnu.model.Activity))
 
@@ -16,8 +17,10 @@
     (model.activity/show id)))
 
 (defn index
-  [items-node]
-  (model.activity/index))
+  [request]
+  (let [to (model.user/get-id (:to request))
+        user (model.user/show to)]
+    (model.activity/find-by-user user)))
 
 (defn create-activity
   [item]

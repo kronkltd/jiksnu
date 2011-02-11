@@ -39,7 +39,7 @@
   (BareJID/bareJIDInstance local domain))
 
 (defn get-id
-  [^BareJID user]
+  [user]
   (.getLocalpart user))
 
 (defn get-domain
