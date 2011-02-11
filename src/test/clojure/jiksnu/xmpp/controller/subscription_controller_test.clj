@@ -9,7 +9,8 @@
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Subscription))
+  (:import jiksnu.model.Subscription
+           jiksnu.model.User))
 
 (describe subscribers
   (testing "when there are subscribers"
