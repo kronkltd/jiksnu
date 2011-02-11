@@ -1,6 +1,6 @@
 (ns jiksnu.config)
 
-(defonce #^:dynamic *current-environment* :development)
+(defonce #^:dynamic *current-environment* :test)
 
 (defonce #^:dynamic *debug* false)
 

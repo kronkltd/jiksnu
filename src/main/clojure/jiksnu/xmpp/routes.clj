@@ -4,8 +4,7 @@
         ciste.core)
   (:require (jiksnu.xmpp.controller
              [activity-controller :as activity]
-             [follower-controller :as follower]
-             [following-controller :as following]
+             [subscription-controller :as subscription]
              [user-controller :as user])
             [jiksnu.xmpp.view :as view]
             compojure.core
@@ -48,19 +47,19 @@
 
     [{:method :get
       :name "subscriptions"}
-     #'following/index]
+     #'subscription/subscriptions]
 
     [{:method :put
       :name "subscriptions"}
-     #'following/create]
+     #'subscription/subscribe]
 
     [{:method :get
       :name "subscribers"}
-     #'follower/index]
+     #'subscription/subscribers]
 
     [{:method :put
       :name "subscribers"}
-     #'follower/create]])))
+     #'subscription/subscribed]])))
 
 (defn node-matches?
   [request matcher]
@@ -116,4 +115,3 @@
 
 (def #^:dynamic *standard-middleware*
   [])
-
