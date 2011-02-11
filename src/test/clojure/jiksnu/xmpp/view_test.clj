@@ -107,7 +107,7 @@
   (do-it "should return a packet"
     (let [packet-map {:to "daniel@renfer.name"
                       :from "renfer.name"
-                      :items [(make-element "pubsub")]}
+                      :body (make-element "pubsub")}
           response (make-packet packet-map)]
       (expect (packet? response)))))
 
