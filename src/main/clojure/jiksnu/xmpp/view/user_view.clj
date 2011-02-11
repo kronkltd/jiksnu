@@ -29,7 +29,8 @@
   [request user]
   {:body
    (make-element
-    "iq" {"type" "result"}
+    "iq" {"type" "result"
+          "id" (:id request)}
     [(make-element
       "query" {"xmlns" query-uri}
       [(show-section user)])])

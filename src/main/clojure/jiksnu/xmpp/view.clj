@@ -93,6 +93,7 @@
      :from from
      :pubsub pubsub?
      :payload payload
+     :id (.getAttribute packet "id")
      :name name
      :node node
      :packet packet
