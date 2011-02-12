@@ -14,10 +14,15 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(defmethod uri User [user] (str "/" (:_id user)))
-(defmethod title User [user] (or (:display-name user)
-                                 (:first-name user)
-                                 (:_id user)))
+(defsection uri [User]
+  [user & options]
+  (str "/" (:_id user)))
+
+(defsection title [User]
+  [user & options]
+  (or (:display-name user)
+      (:first-name user)
+      (:_id user)))
 
 (defn avatar-img
   [user]
@@ -36,12 +41,12 @@
      [:span.nickname.fn
       name]]))
 
-(defmethod show-section-minimal User
+(defsection show-section-minimal [User :html]
   [user & options]
   (avatar-img user))
 
-(defmethod index-line User
-  [user]
+(defsection index-line [User :html]
+  [user & options]
   [:tr
    [:td (avatar-img user)]
    [:td (:_id user)]
@@ -51,7 +56,7 @@
    [:td (f/form-to [:delete (uri user)]
                    (f/submit-button "Delete"))]])
 
-(defmethod add-form User
+(defsection add-form [User]
   [record & options]
   [:div
    [:h3 "Create User"]
@@ -60,7 +65,7 @@
     (f/text-field :username)
     (f/submit-button "Add User"))])
 
-(defmethod edit-form User
+(defsection edit-form [User]
   [user & options]
   (let [{:keys [domain first-name last-name password
                 confirm-password avatar-url]} user]
@@ -112,8 +117,8 @@
           (unsubscribe-form user)
           (subscribe-form user))]])))
 
-(defmethod show-section User
-  [user]
+(defsection show-section [User :html]
+  [user & options]
   (let [actor (current-user-id)]
     (list
      (add-form (Activity.))
@@ -147,8 +152,8 @@
             (model.activity/find-by-user user))]
       (dump user)])))
 
-(defmethod index-section User
-  [users]
+(defsection index-section [User :html]
+  [users & options]
   [:div
    (add-form (User.))
    [:table

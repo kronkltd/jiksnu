@@ -4,7 +4,7 @@
                             mock-subscription-query-request-packet)]
         [jiksnu.model :only (with-database)]
         jiksnu.xmpp.controller.subscription-controller
-        [jiksnu.xmpp.view :only (make-request)]
+        [jiksnu.xmpp.view :only (make-request make-jid)]
         [lazytest.describe :only (describe do-it it testing given)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
@@ -17,13 +17,16 @@
     (do-it "should not be empty"
       (with-database
         (let [packet (mock-subscriber-query-request-packet)
-              request (make-request packet)]
-          (model.subscription/create
-           (factory Subscription
-                    {:from (.getLocalpart (:to request))}))
-          (let [response (subscribers request)]
-            (expect (every? (partial instance? Subscription) response))
-            (expect (seq response))))))))
+              user (model.user/create (factory User))
+              request (assoc (make-request packet)
+                        :to (make-jid (:_id user)
+                                      (:domain user)))
+               s (model.subscription/create
+                  (factory Subscription
+                           {:to (.getLocalpart (:to request))}))
+              response (subscribers request)]
+          (expect (every? (partial instance? Subscription) response))
+          (expect (seq response)))))))
 
 (describe subscriptions
   (testing "when there are subscriptions"
@@ -32,10 +35,11 @@
         (let [packet (mock-subscription-query-request-packet)
               user (model.user/create (factory User))
               request (assoc (make-request packet)
-                        :to (:_id user))
+                        :to (make-jid (:_id user)
+                                      (:domain user)))
               s (model.subscription/create
                  (factory Subscription
-                          {:to (:_id user)}))
+                          {:from (:_id user)}))
               results (subscriptions request)]
           (expect (not (empty? results)))
           (expect (every? (partial instance? Subscription) results)))))))

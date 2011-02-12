@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view-test
-  (:use clojure.contrib.pprint
+  (:use ciste.view
+        clojure.contrib.pprint
         jiksnu.factory
         jiksnu.mock
         jiksnu.model
@@ -82,10 +83,12 @@
 
 (describe abdera-to-tigase-element
   (do-it "should return a tigase element"
-    (let [activity (factory Activity)]
-      (let [abdera-element (atom.view.activity/to-entry activity)]
-        (let [response (abdera-to-tigase-element abdera-element)]
-          (expect  (element? response)))))))
+    (with-serialization :xmpp
+      (with-format :atom
+        (let [activity (factory Activity)]
+         (let [abdera-element (atom.view.activity/to-entry activity)]
+           (let [response (abdera-to-tigase-element abdera-element)]
+             (expect  (element? response)))))))))
 
 (describe make-element)
 

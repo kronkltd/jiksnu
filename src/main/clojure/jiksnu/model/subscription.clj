@@ -57,8 +57,8 @@
 
 (defn subscribers
   [user]
-  (index :to (:_id user)))
+  (index :to user))
 
 (defn subscriptions
   [user]
-  (index :from (:_id user)))
+  (index :from user))

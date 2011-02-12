@@ -10,15 +10,15 @@
   (:import jiksnu.model.User
            tigase.xml.Element))
 
-(defmethod show-section-minimal User
-  [property]
+(defsection show-section-minimal [User :xmpp :xmpp]
+  [property & options]
   (make-element
    (:key property) {}
    [(make-element (:type property) {}
                   [(:value property)])]))
 
-(defmethod show-section User
-  [^User user]
+(defsection show-section [User :xmpp :xmpp]
+  [^User user & options]
   (make-element
    "vcard" {"xmlns" vcard-uri}
    [(if (:name user)

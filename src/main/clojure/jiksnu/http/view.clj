@@ -134,7 +134,7 @@
    (if-not (= (:template response) false)
      (page-template-content response))))
 
-(defmethod link-to :default
+(defsection link-to :default
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a

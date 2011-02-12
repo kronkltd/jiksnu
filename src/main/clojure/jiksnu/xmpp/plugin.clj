@@ -35,7 +35,7 @@
    String
    '("jabber:client")))
 
-(defmethod default-format :xmpp
+(defmethod default-format :atom
   [request response])
 
 (defn offer-packet

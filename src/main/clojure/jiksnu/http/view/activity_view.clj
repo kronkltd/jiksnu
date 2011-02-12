@@ -13,10 +13,15 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(defmethod uri Activity [activity] (str "/posts/" (:_id activity)))
-(defmethod title Activity [activity] (:title activity))
+(defsection uri [Activity :html]
+  [activity & options]
+  (str "/posts/" (:_id activity)))
 
-(defmethod add-form Activity
+(defsection title [Activity]
+  [activity & options]
+  (:title activity))
+
+(defsection add-form [Activity :html]
   [activity & options]
   [:div
    (f/form-to
@@ -36,7 +41,7 @@
            {:href (str (uri activity) "/edit")}
            "Edit"])
 
-(defmethod show-section-minimal Activity
+(defsection show-section-minimal [Activity :html]
   [activity & options]
    (let [user (-> activity
                   :authors
@@ -59,16 +64,16 @@
         [:li (delete-link activity)]
         [:li (edit-link activity)]]]]))
 
-(defmethod edit-form Activity
+(defsection edit-form [Activity :html]
   [record & options]
   (apply add-form record options))
 
-(defmethod index-line-minimal Activity
-  [activity]
+(defsection index-line-minimal [Activity :html]
+  [activity & options]
   [:li (show-section-minimal activity)])
 
-(defmethod index-block-minimal Activity
-  [activities]
+(defsection index-block-minimal [Activity :html]
+  [activities & options]
   [:ul.activities
    (map index-line-minimal activities)])
 

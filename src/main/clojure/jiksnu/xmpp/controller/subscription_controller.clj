@@ -6,13 +6,13 @@
 (defn subscriptions
   [request]
   (let [recipient (.getLocalpart (:to request))
-        subscriptions (model.subscription/index :from recipient)]
+        subscriptions (model.subscription/subscriptions recipient)]
     subscriptions))
 
 (defn subscribers
   [request]
   (let [recipient (.getLocalpart (:to request))
-        subscriptions (model.subscription/index :to recipient)]
+        subscriptions (model.subscription/subscribers recipient)]
     subscriptions))
 
 (defn subscribe

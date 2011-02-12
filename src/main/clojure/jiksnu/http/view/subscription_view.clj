@@ -7,12 +7,12 @@
   (:require [hiccup.form-helpers :as f])
   (:import jiksnu.model.Subscription))
 
-(defmethod uri Subscription
-  [subscription]
+(defsection uri [Subscription]
+  [subscription & options]
   (str "/subscriptions/" (:_id subscription)))
 
-(defmethod title Subscription
-  [subscription]
+(defsection title [Subscription]
+  [subscription & options]
   (:to subscription))
 
 (defn delete-form
@@ -21,8 +21,8 @@
              (f/hidden-field :id (:_id subscription))
              (f/submit-button "Delete")))
 
-(defmethod index-line Subscription
-  [subscription]
+(defsection index-line [Subscription :html]
+  [subscription & options]
   [:tr
    [:td [:a {:href "#"} (:_id subscription)]]
    [:td (:from subscription)]
@@ -30,8 +30,8 @@
    [:td (:created subscription)]
    [:td (delete-form subscription)]])
 
-(defmethod index-block Subscription
-  [subscriptions]
+(defsection index-block [Subscription :html]
+  [subscriptions & options]
   [:table
     [:thead
      [:tr
@@ -42,8 +42,8 @@
     [:tbody
      (map index-line subscriptions)]])
 
-(defmethod index-section Subscription
-  [subscriptions]
+(defsection index-section [Subscription :html]
+  [subscriptions & options]
   [:div
    [:h2 "Subscriptions"]
    (index-block subscriptions)

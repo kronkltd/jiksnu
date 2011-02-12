@@ -1,5 +1,6 @@
 (ns jiksnu.atom.view.activity-view-test
-  (:use jiksnu.atom.view.activity-view
+  (:use ciste.view
+        jiksnu.atom.view.activity-view
         [lazytest.describe :only (describe it testing given do-it)]
         [lazytest.expect :only (expect)]
         jiksnu.factory
@@ -47,16 +48,14 @@
       (expect (map? response)))))
 
 (describe to-entry
-  (given [user (factory User)
-          actor (with-database (model.user/create user))
-          activity (factory Activity {:authors [(:_id actor)]})
-          response (with-database (to-entry activity))]
-    (it "should return an abdera entry"
-      (instance? Entry response))
-    #_(it "should have an id"
-      (.getId response))
-    #_(it "should have a title"
-      (.getTitle response))
-    #_(it "should have an update field"
-      (.getUpdated response))))
-
+  (do-it "should return an abdera entry"
+    (with-serialization :http
+      (with-format :atom
+        (let [user (factory User)
+              actor (with-database (model.user/create user))
+              activity (factory Activity {:authors [(:_id actor)]})
+              response (with-database (to-entry activity))]
+          (expect (instance? Entry response))
+          (expect (.getId response))
+          (expect (.getTitle response))
+          (expect (.getUpdated response)))))))

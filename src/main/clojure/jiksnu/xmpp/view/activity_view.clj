@@ -16,25 +16,25 @@
 ;;   [activities]
 ;;   (map make-minimal-item activities))
 
-(defmethod show-section Activity
-  [^Activity activity]
+(defsection show-section [Activity :xmpp :xmpp]
+  [^Activity activity & options]
   (abdera-to-tigase-element
    (atom.view.activity/to-entry activity)))
 
-(defmethod ^Element index-line Activity
-  [^Activity activity]
+(defsection index-line [Activity :xmpp :xmpp]
+  [^Activity activity & options]
   (make-element
    "item" {"id" (:_id activity)}
    [(show-section activity)]))
 
-(defmethod index-block Activity
-  [activities]
+(defsection index-block [Activity :xmpp :xmpp]
+  [activities & options]
   (make-element
    "items" {"node" "urn:xmpp:microblog:0"}
    (map index-line activities)))
 
-(defmethod index-section Activity
-  [activities]
+(defsection index-section [Activity :xmpp :xmpp]
+  [activities & options]
   (make-element
    "pubsub" {}
    [(index-block activities)]))

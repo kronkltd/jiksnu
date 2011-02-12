@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view.activity-view-test
-  (:use jiksnu.factory
+  (:use ciste.view
+        jiksnu.factory
         jiksnu.mock
         jiksnu.model
         jiksnu.view
@@ -29,10 +30,12 @@
 
 (describe notify
   (do-it "should return a packet"
-    (let [activity (factory Activity)
-          response (notify "daniel@renfer.name" activity)]
-      (expect (packet? response))
+    (with-serialization :xmpp
+      (with-format :atom
+        (let [activity (factory Activity)
+             response (notify "daniel@renfer.name" activity)]
+         (expect (packet? response))
 
-      )
+         )))
     )
   )
