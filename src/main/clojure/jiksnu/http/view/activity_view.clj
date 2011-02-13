@@ -57,7 +57,7 @@
        [:p.entry-content
         (:summary activity)]
        [:p [:a {:href (uri activity)}
-            [:time (:updated activity)]]]
+            [:time (:published activity)]]]
        (dump activity)]
       [:footer
        [:ul.buttons

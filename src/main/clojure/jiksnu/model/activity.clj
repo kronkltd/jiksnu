@@ -22,6 +22,12 @@
     activity
     (assoc activity :updated (sugar/date))))
 
+(defn set-published-time
+  [activity]
+  (if (:published activity)
+    activity
+    (assoc activity :published (sugar/date))))
+
 (defn set-actor
   [activity]
   (if-let [author (current-user-id)]
@@ -31,6 +37,7 @@
   [activity]
   (-> activity
       set-id
+      set-published-time
       set-updated-time
       set-actor))
 
