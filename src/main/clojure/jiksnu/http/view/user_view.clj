@@ -138,7 +138,7 @@
          (fn [subscription]
            [:li (show-section-minimal
                  (jiksnu.model.user/show (:to subscription)))])
-         (model.subscription/subscriptions user))]]
+         (model.subscription/subscriptions (:_id user)))]]
       [:div
        [:p "Subscribers"]
        [:ul
@@ -146,7 +146,7 @@
          (fn [subscriber]
            [:li (show-section-minimal
                  (jiksnu.model.user/show (:from subscriber)))])
-         (model.subscription/subscribers user))]]
+         (model.subscription/subscribers (:_id user)))]]
       [:div.activities
        (map show-section-minimal
             (model.activity/find-by-user user))]

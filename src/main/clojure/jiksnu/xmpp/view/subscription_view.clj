@@ -44,7 +44,11 @@
 
 (defview #'subscriptions :xmpp
   [request subscriptions]
-  {:body (minimal-subscription-response subscriptions)
+  {:body
+   (make-element
+    "iq" {"type" "result"
+          "id" (:id request)}
+    [(minimal-subscription-response subscriptions)])
    :from (:to request)
    :to (:from request)})
 
