@@ -1,6 +1,6 @@
 (ns jiksnu.xmpp.view.user-view-test
   (:use [jiksnu.mock :only (mock-vcard-query-request-packet)]
-        [jiksnu.model :only (with-database)]
+        jiksnu.model
         [jiksnu.xmpp.view :only (make-request element?)]
         jiksnu.xmpp.view.user-view
         jiksnu.view

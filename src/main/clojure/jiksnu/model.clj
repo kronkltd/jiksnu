@@ -34,7 +34,12 @@
   [:to :from :created])
 
 (defentity User
-  [:_id :domain :subnodes])
+  [:_id
+   :username
+   :created
+   :updated
+   :domain
+   :subnodes])
 
 (defmacro with-database
   [& body]

@@ -2,7 +2,7 @@
   (:use [jiksnu.factory :only (factory)]
         [jiksnu.mock :only (mock-subscriber-query-request-packet
                             mock-subscription-query-request-packet)]
-        [jiksnu.model :only (with-database)]
+        jiksnu.model
         jiksnu.xmpp.controller.subscription-controller
         [jiksnu.xmpp.view :only (make-request make-jid)]
         [lazytest.describe :only (describe do-it it testing given)]
