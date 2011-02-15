@@ -4,24 +4,6 @@
   (:import tigase.xmpp.BareJID
            jiksnu.model.User))
 
-(defn bare-jid
-  [local domain]
-  (BareJID/bareJIDInstance local domain))
-
-(defn get-id
-  [user]
-  (.getLocalpart user))
-
-(defn get-domain
-  [^BareJID user]
-  (.getDomain user))
-
-(defn subnodes
-  [^BareJID user subnode]
-  (let [id (get-id user)
-        domain (get-domain user)]
-    (:nodes (show id))))
-
 (defn drop!
   []
   (entity/delete-all User))
@@ -43,6 +25,24 @@
                   (if domain
                     {:domain domain}))]
        (entity/fetch-one User opt-map))))
+
+(defn bare-jid
+  [local domain]
+  (BareJID/bareJIDInstance local domain))
+
+(defn get-id
+  [user]
+  (.getLocalpart user))
+
+(defn get-domain
+  [^BareJID user]
+  (.getDomain user))
+
+(defn subnodes
+  [^BareJID user subnode]
+  (let [id (get-id user)
+        domain (get-domain user)]
+    (:nodes (show id))))
 
 (defn edit
   [id]
