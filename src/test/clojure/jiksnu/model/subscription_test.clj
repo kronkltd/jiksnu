@@ -17,7 +17,7 @@
 (describe drop!
   (testing "when there are subscriptions"
     (do-it "should delete them all"
-      (with-database
+      (with-environment :test
         (let [actor (model.user/create (factory User))
               user (model.user/create (factory User))]
           (with-user (:_id actor)
@@ -31,11 +31,11 @@
   (testing "when there are no subscriptions"
       (it "should be empty"
         (given [results [] #_(index)]
-          (with-database
+          (with-environment :test
             (empty? results))))
       (it "should return a seq"
         (given [results [] #_(index)]
-          (with-database
+          (with-environment :test
             (seq? results))))))
 
 (describe show)
@@ -48,7 +48,7 @@
     )
   (testing "when the user is logged in"
     (do-it "should return a Subscription"
-      (with-database
+      (with-environment :test
         (let [actor (model.user/create (factory User))
               user (model.user/create (factory User))]
           (with-user (:_id actor)

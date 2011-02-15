@@ -21,7 +21,7 @@
 (describe show
   (testing "when the user exists"
     (do-it "should return that user"
-      (with-database
+      (with-environment :test
         (let [user (model.user/create (factory User))
               packet (mock-vcard-query-request-packet)
               mock-request (make-request packet)
@@ -35,7 +35,7 @@
   (given [packet (mock-vcard-publish-request-packet)
           request (make-request packet)]
     (it "should not be nil" :pending
-      (with-database
+      (with-environment :test
         (let [response (create request)]
           (not (nil? response)))))))
 
@@ -45,13 +45,13 @@
   (given [request (make-request (mock-inbox-query-request-packet))]
     (testing "when there are no activities"
       (do-it "should be empty"
-        (with-database
+        (with-environment :test
           (model.activity/drop!)
           (let [response (inbox request)]
             (expect (empty? response))))))
     (testing "when there are activities"
       (do-it "should return a seq of activities"
-        (with-database
+        (with-environment :test
           (model.activity/drop!)
           (let [author (model.user/create (factory User))]
             (with-user (:_id author)

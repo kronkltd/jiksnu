@@ -12,18 +12,18 @@
 (describe index
   (testing "when there are no users"
     (it "should be empty"
-      (with-database
+      (with-environment :test
         (drop!)
         (let [response (index)]
           (empty? response)))))
   (testing "when there are users"
     (it "should not be empty"
-      (with-database
+      (with-environment :test
         (create (factory User))
         (let [response (index)]
           (seq response))))
     (it "should return a seq of users"
-      (with-database
+      (with-environment :test
         (create (factory User))
         (let [response (index)]
           (every? (partial instance? User) response))))))
@@ -32,13 +32,13 @@
   (given [id (fseq :word)]
     (testing "when the user is found"
       (it "should return a user"
-        (with-database
+        (with-environment :test
           (create (factory User {:_id id}))
           (let [response (show id)]
             (instance? User response)))))
     (testing "when the user is not found"
       (it "should return nil"
-        (with-database
+        (with-environment :test
           (drop!)
           (let [response (show id)]
             (nil? response)))))))

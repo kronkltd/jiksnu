@@ -13,7 +13,7 @@
 
 #_(describe minimal-response
   (do-it "should return a sequence of elements"
-    (with-database
+    (with-environment :test
       (let [packet (mock-activity-query-request-packet)
             activities (activity/index)
             response (minimal-response activities)]
@@ -21,7 +21,7 @@
 
 #_(describe full-response
   (do-it "should return a sequence of elements"
-    (with-database
+    (with-environment :test
       (given [packet (mock-activity-query-request-packet)
               entries (activity/index)
               response (full-response entries)]

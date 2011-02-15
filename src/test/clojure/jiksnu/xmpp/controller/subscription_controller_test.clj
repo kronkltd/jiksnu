@@ -15,7 +15,7 @@
 (describe subscribers
   (testing "when there are subscribers"
     (do-it "should not be empty"
-      (with-database
+      (with-environment :test
         (let [packet (mock-subscriber-query-request-packet)
               user (model.user/create (factory User))
               request (assoc (make-request packet)
@@ -31,7 +31,7 @@
 (describe subscriptions
   (testing "when there are subscriptions"
     (do-it "should return a sequence of subscriptions"
-      (with-database
+      (with-environment :test
         (let [packet (mock-subscription-query-request-packet)
               user (model.user/create (factory User))
               request (assoc (make-request packet)

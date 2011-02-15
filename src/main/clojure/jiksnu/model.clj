@@ -41,5 +41,11 @@
   `(karras/with-mongo-request *mongo-database*
      ~@body))
 
+(defmacro with-environment
+  [environment & body]
+  `(binding [#'*current-environment* ~environment]
+     (with-database
+       ~@body)))
+
 (def activity? (partial instance? Activity))
 (def subscription? (partial instance? Subscription))

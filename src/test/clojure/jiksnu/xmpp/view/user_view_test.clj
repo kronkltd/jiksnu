@@ -14,7 +14,7 @@
 
 #_(describe "#'index :xmpp"
   (do-it "should contain a vcard query response element"
-    (with-database
+    (with-environment :test
       (let [packet (mock-vcard-query-request-packet)
             request (make-request packet)
             response (full-vcard-response request)]

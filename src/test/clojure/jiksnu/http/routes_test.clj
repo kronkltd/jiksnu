@@ -8,7 +8,7 @@
 
 #_(describe resolve-routes
   (do-it "should return for each of the routes"
-    (with-database
+    (with-environment :test
       (let [requests
             [{:request-method :get
               :uri "/"}

@@ -25,7 +25,7 @@
 (describe show
   #_(testing "when the activity exists"
     (do-it "should return that activity"
-      (with-database
+      (with-environment :test
         (let [author (model.user/create (factory User))
               activity (with-user (:_id author)
                          (model.activity/create (factory Activity)))
@@ -38,7 +38,7 @@
 (describe index
   (testing "when there are no activities"
     (do-it "should return an empty sequence"
-      (with-database
+      (with-environment :test
         (let [packet (mock-activity-query-request-packet)
               request (make-request packet)]
           (model.activity/drop!)
@@ -47,7 +47,7 @@
             (expect (empty? response)))))))
   (testing "when there are activities"
     (do-it "should return a sequence of activities"
-      (with-database
+      (with-environment :test
         (let [packet (mock-activity-query-request-packet)
               author (model.user/create (factory User))
               request (assoc (make-request packet)
@@ -62,7 +62,7 @@
   (testing "when the user is logged in"
     (testing "and it is a valid activity"
      (do-it "should return that activity"
-       (with-database
+       (with-environment :test
          (let [user (model.user/create (factory User))]
            (with-user (:_id user)
              (let [packet (mock-activity-publish-request-packet)
