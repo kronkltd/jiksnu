@@ -48,7 +48,7 @@
 
 (defmacro with-environment
   [environment & body]
-  `(binding [#'*current-environment* ~environment]
+  `(binding [jiksnu.config/*current-environment* ~environment]
      (with-database
        ~@body)))
 

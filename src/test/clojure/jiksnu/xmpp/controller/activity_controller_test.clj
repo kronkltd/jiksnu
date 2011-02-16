@@ -23,15 +23,15 @@
      :items [item]}))
 
 (describe show
-  #_(testing "when the activity exists"
+  (testing "when the activity exists"
     (do-it "should return that activity"
       (with-environment :test
-        (let [author (model.user/create (factory User))
-              activity (with-user (:_id author)
-                         (model.activity/create (factory Activity)))
-              request (activity-request-packet "" activity)
-              response (show request)]
-          (expect (activity? response))))))
+        (let [author (model.user/create (factory User))]
+          (with-user author
+            (let [activity (model.activity/create (factory Activity))
+                  request (activity-request-packet "" activity)
+                  response (show request)]
+              (expect (activity? response))))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))
 
@@ -51,12 +51,12 @@
         (let [packet (mock-activity-query-request-packet)
               author (model.user/create (factory User))
               request (assoc (make-request packet)
-                        :to (make-jid (:_id author) (:domain author)))
-              activity (with-user (:_id author)
-                         (model.activity/create (factory Activity)))
-              response (index request)]
-          (expect (seq response))
-          (expect (every? activity? response)))))))
+                        :to (make-jid (:username author) (:domain author)))]
+          (with-user author
+            (let [activity (model.activity/create (factory Activity))
+                  response (index request)]
+              (expect (seq response))
+              (expect (every? activity? response)))))))))
 
 (describe create
   (testing "when the user is logged in"
@@ -64,7 +64,7 @@
      (do-it "should return that activity"
        (with-environment :test
          (let [user (model.user/create (factory User))]
-           (with-user (:_id user)
+           (with-user user
              (let [packet (mock-activity-publish-request-packet)
                    request (make-request packet)
                    response (create request)]
