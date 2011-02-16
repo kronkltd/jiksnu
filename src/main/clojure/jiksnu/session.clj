@@ -22,8 +22,13 @@
      (or *admin-mode* (:admin user))))
 
 (defmacro with-user
-  [username & body]
-  `(binding [jiksnu.session/*current-user* ~username]
+  [user & body]
+  `(binding [jiksnu.session/*current-user* (:_id ~user)]
+     ~@body))
+
+(defmacro with-user-id
+  [id & body]
+  `(binding [jiksnu.session/*current-user* ~id]
      ~@body))
 
 (defmacro with-admin

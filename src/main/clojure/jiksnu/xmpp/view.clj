@@ -219,13 +219,13 @@
 
 (defn make-packet
   [packet-map]
-  (println "packet-map: " packet-map)
+  ;; (println "packet-map: " packet-map)
   (let [packet
         (Packet/packetInstance
          (:body packet-map)
          (make-jid (:from packet-map))
          (make-jid (:to packet-map)))]
-    (println "packet: " packet)
+    (println "making packet: " packet)
     packet))
 
 (defn deliver-packet!

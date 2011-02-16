@@ -50,6 +50,10 @@
        (let [~let-form [(next-counter type#)]]
          ~result))))
 
+(defseq :id
+  [n]
+  n)
+
 (defseq :word
   [n]
   (str "word" n))
@@ -64,7 +68,7 @@
 
 (deffactory User
   (let [password (fseq :word)]
-    {:_id (fseq :word)
+    {:username (fseq :word)
      :domain (-> (config) :domain)
      :name (fseq :word)
      :first-name (fseq :word)

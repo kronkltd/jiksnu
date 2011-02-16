@@ -1,11 +1,14 @@
 (ns jiksnu.mock
-  (:use jiksnu.file
+  (:use jiksnu.factory
+        jiksnu.file
         jiksnu.model
+        jiksnu.namespace
         jiksnu.xmpp
         jiksnu.xmpp.view)
   (:require [jiksnu.atom.view :as atom.view]
             [jiksnu.model.subscription :as subscription])
-  (:import org.apache.axiom.util.UIDGenerator
+  (:import jiksnu.model.User
+           org.apache.axiom.util.UIDGenerator
            #_tigase.db.AuthRepository
            tigase.db.UserRepository
            tigase.server.Packet
@@ -13,9 +16,6 @@
            tigase.xmpp.XMPPResourceConnection
            tigase.xmpp.JID
            tigase.xmpp.BareJID))
-
-(def #^:dynamic *recipient* "daniel@renfer.name")
-(def #^:dynamic *sender* "renfer.name")
 
 (defn mock-user-repository
   []
@@ -26,26 +26,19 @@
   ;; TODO: implement
   (proxy [SessionManagerHandler] []))
 
-(defn mock-resource-connection
-  "Returns a mocked session for an authorized session"
-  [& {jid :jid
-      authorized :authorized
-      :as opts
-      :or {jid (make-jid *sender*)
-           authorized true}}]
-  (proxy [XMPPResourceConnection] [nil nil nil nil]
-    (getjid [] jid)
-    (isAuthorized [] authorized)
-    (isUserId [^BareJID other-jid]
-      (= other-jid (.getBareJID jid)))))
-
 (defn mock-activity-publish-request-element
   []
   (to-tigase-element (read-xml "activity-publish-request.xml")))
 
 (defn mock-activity-query-request-element
   []
-  (to-tigase-element (read-xml "activity-query-request.xml")))
+  (make-element
+   "iq" {"type" "get"
+         "id" (str (fseq :id))}
+   [(make-element
+     "pubsub" {"xmlns" pubsub-uri}
+     [(make-element
+       "items" {"node" microblog-uri} [])])]))
 
 (defn mock-activity-query-request-with-id-element
   []
@@ -85,72 +78,75 @@
 
 (defn mock-activity-publish-request-packet
   []
-  (make-packet
-   {:to *recipient*
-    :from *sender*
-    :body (mock-activity-publish-request-element)}))
+  (let [element (mock-activity-publish-request-element)]
+    (make-packet
+     {:to (make-jid (factory User))
+      :from (make-jid (factory User))
+      :body element})))
 
 (defn mock-activity-query-request-packet
   []
-  (make-packet
-   {:to *recipient*
-    :from *sender*
-    :body (mock-activity-query-request-element)}))
+  (let [element (mock-activity-query-request-element)]
+    (make-packet
+     {:to (make-jid (factory User))
+      :from (make-jid (factory User))
+      :body element})))
 
 (defn mock-activity-query-request-with-id-packet
   []
-  (make-packet
-   {:to *recipient*
-    :from *sender*
-    :body (mock-activity-query-request-with-id-element)}))
+  (let [element (mock-activity-query-request-with-id-element)]
+    (make-packet
+     {:to (make-jid (factory User))
+      :from (make-jid (factory User))
+      :body element})))
 
 (defn mock-inbox-query-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-inbox-query-request-element)}))
 
 (defn mock-subscriber-publish-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-subscriber-publish-request-element)}))
 
 (defn mock-subscriber-query-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-subscriber-query-request-element)}))
 
 (defn mock-subscription-query-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-subscription-query-request-element)}))
 
 (defn mock-subscription-publish-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-subscription-publish-request-element)}))
 
 (defn mock-vcard-publish-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-vcard-publish-request-element)}))
 
 (defn mock-vcard-query-request-packet
   []
   (make-packet
-   {:to *recipient*
-    :from *sender*
+   {:to (make-jid (factory User))
+    :from (make-jid (factory User))
     :body (mock-vcard-query-request-element)}))
 
 (defn mock-activity-entry

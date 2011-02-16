@@ -1,6 +1,6 @@
 <iq type='set'
-    from='daniel@renfer.name/dell'
-    to='daniel@renfer.name'
+    from='duck@beta.jiksnu.com/dell'
+    to='duck@beta.jiksnu.com'
     id='osw1'>
  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
     <publish node='urn:xmpp:microblog:0'>

@@ -22,14 +22,14 @@
      :pubsub true
      :items [item]}))
 
-(describe show
+(describe show {:focus true}
   (testing "when the activity exists"
     (do-it "should return that activity"
       (with-environment :test
         (let [author (model.user/create (factory User))]
           (with-user author
             (let [activity (model.activity/create (factory Activity))
-                  request (activity-request-packet "" activity)
+                  request (mock-activity-query-request-packet)
                   response (show request)]
               (expect (activity? response))))))))
   (testing "when the activity does not exist"

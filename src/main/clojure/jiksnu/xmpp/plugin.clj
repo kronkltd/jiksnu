@@ -40,7 +40,7 @@
 
 (defn offer-packet
   [^Queue queue ^Packet packet]
-  (println "packet: " packet)
+  (debug (str "offering packet: " packet))
   (.offer queue packet))
 
 (defmethod format-as :xmpp
@@ -55,23 +55,22 @@
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
                                :format :xmpp} request)]
-    (println "request: " merged-request)
+    #_(println "request: " merged-request)
     (let [route-fn (resolve-routes (filter identity (lazier @*routes*)))]
       (if-let [response (route-fn merged-request)]
-        (do (println " ")
+        (do #_(println " ")
             response)))))
 
 (defn -process
   [this packet session
    repo queue settings]
-  (println " ")
+  #_(println " ")
   (if-let [to (.getStanzaTo packet)]
     (if-let [bare-to (.getBareJID to)]
       (with-database
         (let [request (make-request packet)]
           (if-let [response (main-handler queue request)]
             (do
-              (println "from: " (.getStanzaFrom packet))
               (.setPacketTo response (.getPacketFrom packet))
               #_(let [connection-id (.getConnectionId session (:to request))]
                   (.setPacketTo response connection-id))
