@@ -210,8 +210,9 @@
   (.okResult (:packet request) item 0))
 
 (defn make-jid
-  ([id]
-     (JID/jidInstance (str id)))
+  ([user]
+     (println "user: " user)
+     (make-jid (:username user) (:domain user)))
   ([user domain]
      (make-jid user domain ""))
   ([user domain resource]

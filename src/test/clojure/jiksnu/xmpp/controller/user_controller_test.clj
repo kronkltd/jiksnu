@@ -22,16 +22,18 @@
   (testing "when the user exists"
     (do-it "should return that user"
       (with-environment :test
+        (model.user/drop!)
         (let [user (model.user/create (factory User))
-              packet (mock-vcard-query-request-packet)
-              mock-request (make-request packet)
-              request (assoc mock-request
-                        :to (make-jid (:_id user) (:domain user)))
+              packet (make-packet
+                      {:from user
+                       :to user
+                       :body (mock-vcard-query-request-element)})
+              request (make-request packet)
               response (show request)]
           (expect (instance? User response))
           (expect (= response user)))))))
 
-(describe create
+#_(describe create
   (given [packet (mock-vcard-publish-request-packet)
           request (make-request packet)]
     (it "should not be nil" :pending
@@ -54,7 +56,7 @@
         (with-environment :test
           (model.activity/drop!)
           (let [author (model.user/create (factory User))]
-            (with-user (:_id author)
+            (with-user author
               (model.activity/create (factory Activity))))
           (let [response (inbox request)]
             (expect (seq response))

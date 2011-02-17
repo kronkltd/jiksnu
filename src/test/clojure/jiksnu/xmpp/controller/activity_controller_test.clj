@@ -2,6 +2,7 @@
   (:use jiksnu.factory
         jiksnu.mock
         jiksnu.model
+        jiksnu.namespace
         jiksnu.session
         jiksnu.xmpp.controller.activity-controller
         jiksnu.xmpp.view
@@ -22,14 +23,26 @@
      :pubsub true
      :items [item]}))
 
-(describe show {:focus true}
+(describe show
   (testing "when the activity exists"
     (do-it "should return that activity"
       (with-environment :test
         (let [author (model.user/create (factory User))]
           (with-user author
             (let [activity (model.activity/create (factory Activity))
-                  request (mock-activity-query-request-packet)
+                  packet
+                  (make-packet
+                   {:from author
+                    :to author
+                    :body (make-element
+                           "iq" {"type" "get"}
+                           [(make-element
+                             "pubsub" {"xmlns" pubsub-uri}
+                             [(make-element
+                               "items" {"node" microblog-uri}
+                               [(make-element
+                                 "item" {"id" (:_id activity)})])])])})
+                  request (make-request packet)
                   response (show request)]
               (expect (activity? response))))))))
   (testing "when the activity does not exist"

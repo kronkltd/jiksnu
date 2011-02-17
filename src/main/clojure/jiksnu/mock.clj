@@ -80,73 +80,73 @@
   []
   (let [element (mock-activity-publish-request-element)]
     (make-packet
-     {:to (make-jid (factory User))
-      :from (make-jid (factory User))
+     {:to (factory User)
+      :from (factory User)
       :body element})))
 
 (defn mock-activity-query-request-packet
   []
   (let [element (mock-activity-query-request-element)]
     (make-packet
-     {:to (make-jid (factory User))
-      :from (make-jid (factory User))
+     {:to (factory User)
+      :from (factory User)
       :body element})))
 
 (defn mock-activity-query-request-with-id-packet
   []
   (let [element (mock-activity-query-request-with-id-element)]
     (make-packet
-     {:to (make-jid (factory User))
-      :from (make-jid (factory User))
+     {:to (factory User)
+      :from (factory User)
       :body element})))
 
 (defn mock-inbox-query-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-inbox-query-request-element)}))
 
 (defn mock-subscriber-publish-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-subscriber-publish-request-element)}))
 
 (defn mock-subscriber-query-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-subscriber-query-request-element)}))
 
 (defn mock-subscription-query-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-subscription-query-request-element)}))
 
 (defn mock-subscription-publish-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-subscription-publish-request-element)}))
 
 (defn mock-vcard-publish-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-vcard-publish-request-element)}))
 
 (defn mock-vcard-query-request-packet
   []
   (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
+   {:to (factory User)
+    :from (factory User)
     :body (mock-vcard-query-request-element)}))
 
 (defn mock-activity-entry
