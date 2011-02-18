@@ -22,7 +22,7 @@
     (do-it "should return a seq of activities"
       (with-environment :test
         (let [author (model.user/create (factory User))]
-          (with-user (:_id author)
+          (with-user author
             (model.activity/create (factory Activity))))
         (let [request {}
               response (index request)]

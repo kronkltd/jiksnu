@@ -2,7 +2,8 @@
   (:use jiksnu.factory
         jiksnu.model
         jiksnu.model.user
-        [lazytest.describe :only (describe it testing given)])
+        [lazytest.describe :only (describe do-it it testing given)]
+        [lazytest.expect :only (expect)])
   (:import jiksnu.model.User))
 
 (describe drop!)
@@ -29,19 +30,20 @@
           (every? (partial instance? User) response))))))
 
 (describe show
-  (given [id (fseq :word)]
-    (testing "when the user is found"
-      (it "should return a user"
-        (with-environment :test
-          (create (factory User {:_id id}))
-          (let [response (show id)]
-            (instance? User response)))))
-    (testing "when the user is not found"
-      (it "should return nil"
-        (with-environment :test
-          (drop!)
-          (let [response (show id)]
-            (nil? response)))))))
+  (testing "when the user is found"
+    (do-it "should return a user"
+      (with-environment :test
+        (let [username (fseq :id)]
+          (create (factory User {:username username}))
+          (let [response (show username)]
+            (expect (instance? User response)))))))
+  (testing "when the user is not found"
+    (it "should return nil"
+      (with-environment :test
+        (drop!)
+        (let [username (fseq :id)]
+          (let [response (show username)]
+            (expect (nil? response))))))))
 
 (describe edit
   (testing "when the user is found"
