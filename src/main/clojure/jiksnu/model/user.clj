@@ -34,6 +34,10 @@
   [id]
   (entity/fetch-by-id User id))
 
+(defn fetch-by-jid
+  [jid]
+  (show (.getLocalpart jid) (.getDomain jid)))
+
 (defn get-id
   [user]
   (.getLocalpart user))
