@@ -17,6 +17,7 @@
     (do-it "should not be empty"
       (with-environment :test
         (let [user (model.user/create (factory User))
+              subscriber (model.user/create (factory User))
               packet (make-packet
                       {:to user
                        :from user
@@ -24,10 +25,11 @@
               request (make-request packet)
               s (model.subscription/create
                  (factory Subscription
-                          {:to (.getLocalpart (:to request))}))
+                          {:from (:_id subscriber)
+                           :to (:_id user)}))
               response (subscribers request)]
-          (expect (every? (partial instance? Subscription) response))
-          (expect (seq response)))))))
+          (expect (seq response))
+          (expect (every? (partial instance? Subscription) response)))))))
 
 (describe subscriptions
   (testing "when there are subscriptions"
