@@ -48,7 +48,7 @@
     (do-it "should return an activity"
       (with-environment :test
         (let [user (model.user/create (factory User))]
-          (with-user (:_id user)
+          (with-user user
             (let [activity (factory Activity)
                   response (create activity)]
               (expect (activity? response))))))))
