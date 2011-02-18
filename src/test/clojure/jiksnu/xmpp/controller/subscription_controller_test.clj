@@ -1,10 +1,10 @@
 (ns jiksnu.xmpp.controller.subscription-controller-test
   (:use [jiksnu.factory :only (factory)]
-        [jiksnu.mock :only (mock-subscriber-query-request-packet
-                            mock-subscription-query-request-packet)]
+        [jiksnu.mock :only (mock-subscriber-query-request-element
+                            mock-subscription-query-request-element)]
         jiksnu.model
         jiksnu.xmpp.controller.subscription-controller
-        [jiksnu.xmpp.view :only (make-request make-jid)]
+        [jiksnu.xmpp.view :only (make-request make-jid make-packet)]
         [lazytest.describe :only (describe do-it it testing given)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
@@ -16,14 +16,15 @@
   (testing "when there are subscribers"
     (do-it "should not be empty"
       (with-environment :test
-        (let [packet (mock-subscriber-query-request-packet)
-              user (model.user/create (factory User))
-              request (assoc (make-request packet)
-                        :to (make-jid (:_id user)
-                                      (:domain user)))
-               s (model.subscription/create
-                  (factory Subscription
-                           {:to (.getLocalpart (:to request))}))
+        (let [user (model.user/create (factory User))
+              packet (make-packet
+                      {:to user
+                       :from user
+                       :body (mock-subscriber-query-request-element)})
+              request (make-request packet)
+              s (model.subscription/create
+                 (factory Subscription
+                          {:to (.getLocalpart (:to request))}))
               response (subscribers request)]
           (expect (every? (partial instance? Subscription) response))
           (expect (seq response)))))))
@@ -32,11 +33,12 @@
   (testing "when there are subscriptions"
     (do-it "should return a sequence of subscriptions"
       (with-environment :test
-        (let [packet (mock-subscription-query-request-packet)
-              user (model.user/create (factory User))
-              request (assoc (make-request packet)
-                        :to (make-jid (:_id user)
-                                      (:domain user)))
+        (let [user (model.user/create (factory User))
+              packet (make-packet
+                      {:to user
+                       :from user
+                       :body (mock-subscription-query-request-element)})
+              request (make-request packet)
               s (model.subscription/create
                  (factory Subscription
                           {:from (:_id user)}))

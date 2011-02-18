@@ -10,8 +10,10 @@
         [lazytest.expect :only (expect)])
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.file :as file]
-            [jiksnu.model.activity :as activity])
-  (:import jiksnu.model.Activity))
+            [jiksnu.model.activity :as activity]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 (describe node-value)
 
@@ -108,10 +110,12 @@
 
 (describe make-packet
   (do-it "should return a packet"
-    (let [packet-map {:to "daniel@renfer.name"
-                      :from "renfer.name"
-                      :body (make-element "pubsub")}
-          response (make-packet packet-map)]
-      (expect (packet? response)))))
+    (with-environment :test
+      (let [user (model.user/create (factory User))
+            packet-map {:to user
+                        :from user
+                        :body (make-element "pubsub")}
+            response (make-packet packet-map)]
+        (expect (packet? response))))))
 
 (describe deliver-packet!)
