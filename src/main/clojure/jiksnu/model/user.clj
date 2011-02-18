@@ -30,6 +30,10 @@
   [local domain]
   (BareJID/bareJIDInstance local domain))
 
+(defn fetch-by-id
+  [id]
+  (entity/fetch-by-id User id))
+
 (defn get-id
   [user]
   (.getLocalpart user))

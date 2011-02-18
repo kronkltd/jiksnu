@@ -71,7 +71,7 @@
       (with-environment :test
         (let [actor (model.user/create (factory User))]
           (drop!)
-          (with-user (:_id actor)
+          (with-user actor
             (let [activity (create (factory Activity))
                   response (index)]
              (expect (seq response))
@@ -84,7 +84,7 @@
         (do-it "should return the activity"
           (with-environment :test
             (let [author (model.user/create (factory User))
-                  activity (with-user (:_id author)
+                  activity (with-user author
                              (create (factory Activity)))
                   response (show (:_id activity))]
               (expect (activity? response))))))
@@ -92,7 +92,7 @@
         (do-it "should return nil"
           (with-environment :test
             (let [author (model.user/create (factory User))
-                  activity (with-user (:_id author)
+                  activity (with-user author
                              (create (factory Activity {:public false})))
                   response (show (:_id activity))]
               (expect (nil? response)))))))
@@ -101,7 +101,7 @@
         (do-it "should return the activity"
           (with-environment :test
             (let [user (model.user/create (factory User))]
-              (with-user (:_id user)
+              (with-user user
                 (let [activity (create (factory Activity))
                       response (show (:_id activity))]
                   (expect (activity? response))))))))
@@ -114,10 +114,9 @@
               (with-environment :test
                 (let [user (model.user/create (factory User {:admin true}))
                       author (model.user/create (factory User))]
-                  (let [activity
-                        (with-user {:_id author}
-                          (create (factory Activity {:public false})))]
-                    (with-user (:_id user)
+                  (let [activity (with-user author
+                                   (create (factory Activity {:public false})))]
+                    (with-user user
                       (let [response (show (:_id activity))]
                         (expect (activity? response)))))))))
           (testing "and is not an admin"
@@ -126,7 +125,7 @@
                 (let [user (model.user/create (factory User))
                       author (model.user/create (factory User))]
                   (let [activity
-                        (with-user {:-id author}
+                        (with-user author
                           (create (factory Activity {:public false})))]
                     (with-user (:_id user)
                       (let [response (show (:_id activity))]
@@ -158,7 +157,7 @@
       (do-it "should delete the activity"
         (with-environment :test
           (let [actor (model.user/create (factory User))]
-            (with-user (:_id actor)
+            (with-user actor
               (let [activity (create (factory Activity))]
                 (delete (:_id activity))
                 (expect (nil? (show (:_id activity))))))))))))

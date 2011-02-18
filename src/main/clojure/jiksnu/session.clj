@@ -11,7 +11,7 @@
 (defn current-user
   []
   (if-let [id (current-user-id)]
-    (model.user/show id)))
+    (model.user/fetch-by-id id)))
 
 (defn is-admin?
   ([]
