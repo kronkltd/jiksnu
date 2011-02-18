@@ -3,19 +3,22 @@
         jiksnu.factory
         jiksnu.mock
         jiksnu.model
+        jiksnu.session
         jiksnu.view
         jiksnu.xmpp.view
         jiksnu.xmpp.view.activity-view
         [lazytest.describe :only (describe it testing do-it given for-any)]
         [lazytest.expect :only (expect)])
-  (:require [jiksnu.model.activity :as activity])
-  (:import jiksnu.model.Activity))
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 #_(describe minimal-response
   (do-it "should return a sequence of elements"
     (with-environment :test
       (let [packet (mock-activity-query-request-packet)
-            activities (activity/index)
+            activities (model.activity/index)
             response (minimal-response activities)]
         (expect (every? element? response))))))
 
@@ -23,19 +26,18 @@
   (do-it "should return a sequence of elements"
     (with-environment :test
       (given [packet (mock-activity-query-request-packet)
-              entries (activity/index)
+              entries (model.activity/index)
               response (full-response entries)]
         (expect (not (nil? response)))
         (expect (every? element? response))))))
 
 (describe notify
   (do-it "should return a packet"
-    (with-serialization :xmpp
-      (with-format :atom
-        (let [activity (factory Activity)
-             response (notify "daniel@renfer.name" activity)]
-         (expect (packet? response))
-
-         )))
-    )
-  )
+    (with-environment :test
+      (with-serialization :xmpp
+        (with-format :atom
+          (let [user (model.user/create (factory User))]
+            (with-user user
+              (let [activity (model.activity/create (factory Activity))
+                    response (notify user activity)]
+                (expect (packet? response))))))))))

@@ -55,7 +55,7 @@
   (let [message
         (make-packet
          {:to recipient
-          :from (-> (config) :domain)
+          :from recipient
           :type :chat
           :body (make-element
                  "message" {}
