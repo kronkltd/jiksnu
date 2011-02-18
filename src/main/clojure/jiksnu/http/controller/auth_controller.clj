@@ -8,12 +8,12 @@
            jiksnu.model.User))
 
 (defn login
-  [{{id "username"
+  [{{username "username"
      password "password"} :params :as request}]
-  (if-let [user (model.user/show id)]
+  (if-let [user (model.user/show username)]
     ;; TODO: encrypt
     (if (= password (:password user))
-      id
+      username
       (error "passwords do not match"))
     (error "user not found")))
 

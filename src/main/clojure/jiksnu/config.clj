@@ -1,6 +1,6 @@
 (ns jiksnu.config)
 
-(defonce #^:dynamic *current-environment* :test)
+(defonce #^:dynamic *current-environment* :development)
 
 (defonce #^:dynamic *debug* false)
 
@@ -13,11 +13,6 @@
         :test {:domain "test.jiksnu.com"
                :database {:host "localhost"
                           :name :jiksnu_test}}}))
-
-(defmacro with-environment
-  [environment & body]
-  `(binding [jiksnu.config/*current-environment* environment]
-     ~@body))
 
 (defn config
   []

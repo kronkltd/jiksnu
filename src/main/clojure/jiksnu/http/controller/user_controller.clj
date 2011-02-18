@@ -1,5 +1,6 @@
 (ns jiksnu.http.controller.user-controller
-  (:use jiksnu.model
+  (:use jiksnu.config
+        jiksnu.model
         [jiksnu.session :only (current-user)]
         clojure.contrib.logging)
   (:require [jiksnu.model.user :as model.user]))
@@ -26,7 +27,8 @@
   (if (and username password confirm-password)
     (if (= password confirm-password)
       (do
-        (model.user/create {:_id username
+        (model.user/create {:username username
+                            :domain (:domain (config))
                             :password password
                             :confirm_password password})))))
 

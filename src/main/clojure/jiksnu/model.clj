@@ -41,6 +41,9 @@
    :domain
    :subnodes])
 
+(defentity Item
+  [:user :activity :created])
+
 (defmacro with-database
   [& body]
   `(karras/with-mongo-request *mongo-database*
