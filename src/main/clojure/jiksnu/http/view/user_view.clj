@@ -98,13 +98,13 @@
 (defn subscribe-form
   [user]
   (f/form-to [:post "/main/subscribe"]
-             (f/hidden-field :subscribeto (:_id user))
+             (f/hidden-field :subscribeto (:username user))
              (f/submit-button "Subscribe")))
 
 (defn unsubscribe-form
   [user]
   (f/form-to [:post "/main/unsubscribe"]
-             (f/hidden-field :unsubscribeto (:_id user))
+             (f/hidden-field :unsubscribeto (:username user))
              (f/submit-button "Unsubscribe")))
 
 (defn user-actions
@@ -138,7 +138,7 @@
         (map
          (fn [subscription]
            [:li (show-section-minimal
-                 (jiksnu.model.user/show (:to subscription)))])
+                 (jiksnu.model.user/fetch-by-id (:to subscription)))])
          (model.subscription/subscriptions user))]]
       [:div
        [:p "Subscribers"]
@@ -146,7 +146,7 @@
         (map
          (fn [subscriber]
            [:li (show-section-minimal
-                 (jiksnu.model.user/show (:from subscriber)))])
+                 (jiksnu.model.user/fetch-by-id (:from subscriber)))])
          (model.subscription/subscribers user))]]
       [:div.activities
        (map show-section-minimal

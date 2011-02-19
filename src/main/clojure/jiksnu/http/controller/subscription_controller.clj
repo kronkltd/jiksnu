@@ -1,6 +1,7 @@
 (ns jiksnu.http.controller.subscription-controller
   (:use [jiksnu.session :only (current-user-id)])
-  (:require  [jiksnu.model.subscription :as model.subscription])
+  (:require [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription))
 
 (defn index
@@ -10,8 +11,9 @@
 (defn subscribe
   [request]
   (if-let [actor (current-user-id)]
-    (if-let [{{user "subscribeto"} :params} request]
-      (model.subscription/subscribe actor user))))
+    (if-let [{{user-id "subscribeto"} :params} request]
+      (if-let [user (model.user/show username domain)]
+        (model.subscription/subscribe actor (:_id user))))))
 
 (defn unsubscribe
   [request]
