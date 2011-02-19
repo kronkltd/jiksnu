@@ -24,7 +24,6 @@
            (merge {:username username}
                   (if domain
                     {:domain domain}))]
-       (println "opt-map: " opt-map)
        (entity/fetch-one User opt-map))))
 
 (defn bare-jid

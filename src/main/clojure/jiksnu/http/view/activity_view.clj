@@ -24,7 +24,6 @@
 (defsection add-form [Activity :html]
   [activity & options]
   [:div
-   (println (current-user-id))
    (if (current-user-id)
      (f/form-to
       [:post "/notice/new"]

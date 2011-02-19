@@ -24,7 +24,6 @@
 (defmacro with-user
   [user & body]
   `(binding [jiksnu.session/*current-user* (:_id ~user)]
-     ;; (println "setting user: " ~user)
      ~@body))
 
 (defmacro with-user-id

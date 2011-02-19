@@ -64,7 +64,7 @@
 
 (defsection edit-form [User]
   [user & options]
-  (let [{:keys [domain first-name last-name password
+  (let [{:keys [domain first-name url email bio location last-name password
                 confirm-password avatar-url]} user]
     [:div
      (f/form-to
@@ -73,23 +73,31 @@
        [:legend "Edit User"]
        [:ul
         [:li (:username user)]
-        [:li (f/label :domain "Domain")
+        [:li (f/label :domain "Domain: ")
          (f/text-field :domain domain)]
-        [:li (f/label :name "Display Name:")
+        [:li (f/label :name "Display Name: ")
          (f/text-field :name (:name user))]
-        [:li (f/label :first-name "First Name:")
+        [:li (f/label :first-name "First Name: ")
          (f/text-field :first-name first-name)]
-        [:li (f/label :last-name "Last Name:")
+        [:li (f/label :last-name "Last Name: ")
          (f/text-field :last-name last-name)]
-        [:li (f/label :password "Password")
+        [:li (f/label :email "Email: ")
+         (f/text-field :email email)]
+        [:li (f/label :bio "Bio: ")
+         (f/text-field :bio bio)]
+        [:li (f/label :location "Location: ")
+         (f/text-field :location location)]
+        [:li (f/label :url "Url: ")
+         (f/text-field :url url)]
+        [:li (f/label :password "Password: ")
          (f/text-field :password password)]
-        [:li (f/label :confirm-password "Confirm Password")
+        [:li (f/label :confirm-password "Confirm Password: ")
          (f/text-field :confirm-password confirm-password)]
-        [:li (f/label :admin "Admin?")
+        [:li (f/label :admin "Admin?: ")
          (f/check-box :admin (:admin user))]
-        [:li (f/label :debug "Debug?")
+        [:li (f/label :debug "Debug?: ")
          (f/check-box :debug (:debug user))]
-        [:li (f/label :avatar-url "Avatar Url:")
+        [:li (f/label :avatar-url "Avatar Url: ")
          (f/text-field :avatar-url avatar-url)]]
        (f/submit-button "Submit")])
      (dump user)]))
@@ -125,7 +133,10 @@
      [:div
       ;; [:p "Id:" (:_id user)]
       [:p (avatar-img user)]
-      [:p (:first-name user) " " (:last-name user)]
+      [:p (:username user) " (" (:name user) ")"]
+      [:p (:location user)]
+      [:p (:bio user)]
+      [:p (:url user)]
       (if actor
         (list
          (if (model.subscription/subscribed? actor (:_id user))
@@ -158,7 +169,8 @@
          (fn [subscription]
            [:li (show-section-minimal
                  (jiksnu.model.user/fetch-by-id (:to subscription)))])
-         (model.subscription/subscriptions user))]]
+         (model.subscription/subscriptions user))]
+       [:p [:a {:href "#"} "Add Remote"]]]
       [:div
        [:h3 [:a {:href (str (uri user) "/subscribers")}
              "Subscribers"]]

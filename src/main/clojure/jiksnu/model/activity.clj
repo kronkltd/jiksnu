@@ -63,8 +63,6 @@
              {:$or [{:public true}
                     {:authors (:_id user)}]})
            {:public true}))]
-    (println "user: " user)
-    (println "Options: " options)
     (entity/fetch-one Activity options)))
 
 (defn drop!
