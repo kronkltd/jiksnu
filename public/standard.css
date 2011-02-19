@@ -32,9 +32,17 @@ a img {
 /*     height: 70px; */
 /* } */
 
+.activities {
+    padding-left: 0px;
+}
+
 .activities article
 {
     background-color: white;
+}
+
+.activities li {
+    list-style-type: none;
 }
 
 nav ul li
@@ -55,6 +63,7 @@ article
     display: block;
     border-size: 1px;
     border-style: solid;
+    position: relative;
     /* border: 1px solid red; */
     margin-bottom: 15px;
     min-height: 60px;
@@ -62,30 +71,37 @@ article
     -moz-border-radius: 0 7px 7px 7px;
 }
 
-article article
-{
-    border: none;
-}
-
 article header
 {
-    display: block;
+    display: inline;
+    margin-left: 50px;
+/* width: 30%; */
+/* float: left; */
 }
 
 article section
 {
-    display: block;
-    margin-left: 5px;
+    display: inline;
+    margin-left: 50px;
+    /* width: 70%; */
+    /* float: left; */
 }
 
 section
 {
     display: block;
+    margin-left: 50px;
 }
 
 .actor
 {
     display: inline;
+}
+
+.activities .avatar {
+    top: 1px;
+    left: 1px;
+    position: absolute;
 }
 
 /* .avatar */

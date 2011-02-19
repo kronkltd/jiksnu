@@ -30,15 +30,13 @@
     (let [jid (str (:username user) "@" domain)]
       [:a.url {:href (uri user)
               :title title}
-      [:img.avatar.photo
-       {:width "48"
-        :height "48"
-        :alt (or name jid)
-        :src (or avatar-url
-                 (and email (gravatar-image email))
-                 (gravatar-image jid))}]
-      [:span.nickname.fn
-       (or name jid)]])))
+       [:img.avatar.photo
+        {:width "48"
+         :height "48"
+         :alt (or name jid)
+         :src (or avatar-url
+                  (and email (gravatar-image email))
+                  (gravatar-image jid))}]])))
 
 (defsection show-section-minimal [User :html]
   [user & options]

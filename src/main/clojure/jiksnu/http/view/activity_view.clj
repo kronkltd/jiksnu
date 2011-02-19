@@ -54,7 +54,9 @@
     (map
      (fn [user-id]
        (let [user (model.user/fetch-by-id user-id)]
-         (view.user/avatar-img user)))
+         (list (view.user/avatar-img user)
+               (link-to user))
+         ))
      (:authors activity))
     (if-let [t (:title activity)]
       [:h3.entry-title t])]

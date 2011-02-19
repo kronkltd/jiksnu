@@ -42,6 +42,7 @@
     [:get "/api/statuses/public_timeline.:format"]   #'activity/index
     [:get "/admin/subscriptions"]                    #'subscription/index
     [:get "/admin/users"]                            #'user/index
+    [:get "/main/login"]                             #'auth/login-page
     [:post "/main/login"]                            #'auth/login
     [:post "/main/logout"]                           #'auth/logout
     [:get  "/main/ostatus"]                          #'subscription/ostatus
