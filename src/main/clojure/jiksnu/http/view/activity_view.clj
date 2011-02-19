@@ -24,14 +24,16 @@
 (defsection add-form [Activity :html]
   [activity & options]
   [:div
-   (f/form-to
-    [:post "/posts"]
-    [:fieldset
-     [:legend "Post an activity"]
-     [:ul
-      [:li (f/label :summary "Summary")
-       (f/text-area :summary (:summary activity))]]
-     (f/submit-button "Post")])])
+   (println (current-user-id))
+   (if (current-user-id)
+     (f/form-to
+      [:post "/posts"]
+      [:fieldset
+       [:legend "Post an activity"]
+       [:ul
+        [:li (f/label :summary "Summary")
+         (f/text-area :summary (:summary activity))]]
+       (f/submit-button "Post")]))])
 
 (defn delete-link
   [activity]
@@ -62,7 +64,7 @@
     [:p [:a {:href (uri activity)}
          [:time (:published activity)]]]
     (dump activity)]
-   [:footer
+   #_[:footer
     [:ul.buttons
      [:li (delete-link activity)]
      [:li (edit-link activity)]]]])
@@ -79,6 +81,13 @@
   [activities & options]
   [:ul.activities
    (map index-line-minimal activities)])
+
+(defsection index-block [Activity :html]
+  [activities & options]
+  [:div#notices_primary
+   [:h2 "Notices"]
+   [:ol.activities
+    (map index-line-minimal activities)]])
 
 (defn add-entry
   [feed activity]
@@ -148,7 +157,7 @@
    (list
     (add-form (Activity.))
     (if (seq activities)
-      (index-block-minimal activities)
+      (index-block activities)
       [:p "nothing here"]))})
 
 (defview #'show :html

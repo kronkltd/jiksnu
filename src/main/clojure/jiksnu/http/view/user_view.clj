@@ -101,13 +101,13 @@
 (defn subscribe-form
   [user]
   (f/form-to [:post "/main/subscribe"]
-             (f/hidden-field :subscribeto (:username user))
+             (f/hidden-field :subscribeto (:_id user))
              (f/submit-button "Subscribe")))
 
 (defn unsubscribe-form
   [user]
   (f/form-to [:post "/main/unsubscribe"]
-             (f/hidden-field :unsubscribeto (:username user))
+             (f/hidden-field :unsubscribeto (:_id user))
              (f/submit-button "Unsubscribe")))
 
 (defn user-actions
@@ -155,7 +155,8 @@
              (f/text-field :profile)]]
            (f/submit-button "Submit")])))
       [:div
-       [:p "Subscriptions"]
+       [:h3 [:a {:href (str (uri user) "/subscriptions") }
+            "Subscriptions"]]
        [:ul
         (map
          (fn [subscription]
@@ -163,7 +164,8 @@
                  (jiksnu.model.user/fetch-by-id (:to subscription)))])
          (model.subscription/subscriptions user))]]
       [:div
-       [:p "Subscribers"]
+       [:h3 [:a {:href (str (uri user) "/subscribers")}
+             "Subscribers"]]
        [:ul
         (map
          (fn [subscriber]

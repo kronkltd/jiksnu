@@ -121,17 +121,21 @@
                   :href link
                   :rel "alternate"}])
         (:links response))
-       #_(link-to-stylesheet "/public/css/smoothness/jquery-ui-1.8.4.custom.css")
-       (link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
-       #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
-       (link-to-script "/public/standard.js")
+       #_(link-to-stylesheet
+          "/public/css/smoothness/jquery-ui-1.8.4.custom.css")
        (link-to-stylesheet "/public/standard.css")]
       [:body
-       [:header
-        (navigation-section)
-        (login-section)]
-       [:div#content
-        (:body response)]]]))})
+       [:div#wrap
+        [:header
+         (navigation-section)
+         (login-section)]
+        [:div#content
+         (:body response)]
+        [:footer
+         [:p "Copyright © 2011 KRONK Ltd."]]]
+       (link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
+       #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
+       (link-to-script "/public/standard.js")]]))})
 
 (defmethod apply-template :html
   [request response]

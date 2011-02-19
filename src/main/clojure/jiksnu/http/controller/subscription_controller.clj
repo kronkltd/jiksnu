@@ -12,7 +12,7 @@
   [request]
   (if-let [actor (current-user-id)]
     (if-let [{{user-id "subscribeto"} :params} request]
-      (if-let [user (model.user/show username domain)]
+      (if-let [user (model.user/fetch-by-id user-id)]
         (model.subscription/subscribe actor (:_id user))))))
 
 (defn unsubscribe
