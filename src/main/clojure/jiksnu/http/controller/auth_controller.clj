@@ -7,6 +7,10 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
+(defn login-page
+  [request]
+  true)
+
 (defn login
   [{{username "username"
      password "password"} :params :as request}]

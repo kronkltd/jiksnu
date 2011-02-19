@@ -52,22 +52,6 @@
   []
   "/main/logout")
 
-(defn login-form
-  []
-  [:div
-   (f/form-to
-    [:post (login-uri)]
-    [:fieldset
-     [:legend "Login"]
-     [:ul
-      [:li
-       (f/label :username "Username")
-       (f/text-field :username)]
-      [:li
-       (f/label :password "Password")
-       (f/password-field  :password)]]
-     (f/submit-button "Login")])])
-
 (defn logout-form
   []
   [:div
@@ -82,7 +66,7 @@
   [:div
    (if-let [user (current-user)]
      (logout-form)
-     (login-form))])
+     [:a {:href "/main/login"} "Log in"])])
 
 (defn link-to-script
   [href]
