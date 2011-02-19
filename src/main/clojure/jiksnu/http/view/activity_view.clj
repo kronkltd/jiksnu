@@ -26,8 +26,11 @@
   [:div
    (f/form-to
     [:post "/posts"]
-    [:p
-     (f/text-area :summary (:summary activity))
+    [:fieldset
+     [:legend "Post an activity"]
+     [:ul
+      [:li (f/label :summary "Summary")
+       (f/text-area :summary (:summary activity))]]
      (f/submit-button "Post")])])
 
 (defn delete-link
