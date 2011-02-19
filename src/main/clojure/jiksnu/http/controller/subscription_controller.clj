@@ -29,3 +29,7 @@ In most cases, use the user-specific versions. (unsubscribe)"
   [{{id "id"} :params
     :as request}]
   (model.subscription/delete id))
+
+(defn ostatus
+  [request]
+  true)

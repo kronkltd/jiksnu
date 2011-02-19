@@ -44,6 +44,7 @@
     [:get "/admin/users"]                             #'user/index
     [:post "/login"]                                  #'auth/login
     [:post "/logout"]                                 #'auth/logout
+    [:get  "/main/ostatus"]                           #'subscription/ostatus
     [:post "/main/subscribe"]                         #'subscription/subscribe
     [:post "/main/unsubscribe"]                       #'subscription/unsubscribe
     [:delete "/subscriptions/:id"]                    #'subscription/delete

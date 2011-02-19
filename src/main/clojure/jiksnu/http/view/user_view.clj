@@ -127,11 +127,30 @@
       ;; [:p "Id:" (:_id user)]
       [:p (avatar-img user)]
       [:p (:first-name user) " " (:last-name user)]
-      (if (model.subscription/subscribed? actor (:_id user))
-        [:p "This user follows you."])
-      (if (model.subscription/subscribing? actor (:_id user))
-        [:p "You follow this user."])
-      (user-actions user)
+      (if actor
+        (list
+         (if (model.subscription/subscribed? actor (:_id user))
+           [:p "This user follows you."])
+         (if (model.subscription/subscribing? actor (:_id user))
+           [:p "You follow this user."])
+         (user-actions user))
+        (list
+         [:a.entity_remote_subscribe
+          {:href (str "/main/ostatus?nickname="
+                      (:username user))}
+          "Subscribe"]
+         (f/form-to
+          [:post "/main/ostatus"]
+          [:fieldset
+           [:legend "Subscribe to " (:username user)]
+           [:ul.form_data
+            [:li.ostatus_nickname
+             (f/label :nickname "User nickname")
+             (f/hidden-field :nickname (:username user))]
+            [:li.ostatus_profile
+             (f/label :profile "Profile Account")
+             (f/text-field :profile)]]
+           (f/submit-button "Submit")])))
       [:div
        [:p "Subscriptions"]
        [:ul
