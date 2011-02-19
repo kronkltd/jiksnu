@@ -15,7 +15,7 @@
 
 (defsection uri [Activity :html]
   [activity & options]
-  (str "/posts/" (:_id activity)))
+  (str "/notice/" (:_id activity)))
 
 (defsection title [Activity]
   [activity & options]
@@ -27,7 +27,7 @@
    (println (current-user-id))
    (if (current-user-id)
      (f/form-to
-      [:post "/posts"]
+      [:post "/notice/new"]
       [:fieldset
        [:legend "Post an activity"]
        [:ul
@@ -138,13 +138,13 @@
            :entries activities})})
 
 (defview #'user-timeline :atom
-  [request activities]
+  [request [user activities]]
   {:headers {"Content-Type" "application/xml"}
    :template false
    :body (make-feed
           {:title "User Timeline"
            :subtitle ""
-           :links [{:href "/posts"
+           :links [{:href (uri user)
                     :rel "alternate"
                     :type "text/html"}]
            :updated (:updated (first activities))
@@ -152,7 +152,7 @@
 
 (defview #'index :html
   [request activities]
-  {:links ["/posts.atom"]
+  {:links ["/api/statuses/public_timeline.atom"]
    :body
    (list
     (add-form (Activity.))
@@ -179,4 +179,4 @@
   [request activity]
   {:status 303
    :template false
-   :headers {"Location" "/posts"}})
+   :headers {"Location" (str (uri (current-user)) "/all")}})

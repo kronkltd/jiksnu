@@ -9,7 +9,7 @@
 
 (defsection uri [Subscription]
   [subscription & options]
-  (str "/subscriptions/" (:_id subscription)))
+  (str "/admin/subscriptions/" (:_id subscription)))
 
 (defsection title [Subscription]
   [subscription & options]

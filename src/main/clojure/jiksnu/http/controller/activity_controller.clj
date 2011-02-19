@@ -45,3 +45,7 @@
   [{{id "id"} :params
     :as request}]
   (model.activity/index :authors id))
+
+(defn inbox
+  [request]
+  [])

@@ -27,9 +27,7 @@
 (defn avatar-img
   [user]
   (let [{:keys [avatar-url title email domain name]} user]
-    (let [jid (str (:username user)
-                                      "@"
-                                      domain)]
+    (let [jid (str (:username user) "@" domain)]
       [:a.url {:href (uri user)
               :title title}
       [:img.avatar.photo
@@ -62,7 +60,7 @@
   [:div
    [:h3 "Create User"]
    (f/form-to
-    [:post "/users"]
+    [:post "/main/register"]
     (f/text-field :username)
     (f/submit-button "Add User"))])
 

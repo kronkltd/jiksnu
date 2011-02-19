@@ -60,3 +60,13 @@
   (if-let [user (current-user)]
     user #_(model.user/show (:_id user))
     (error "no user")))
+
+(defn subscriptions
+  [request]
+  []
+  )
+
+(defn subscribers
+  [request]
+  []
+  )

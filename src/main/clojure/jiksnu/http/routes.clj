@@ -30,33 +30,35 @@
  (ref-set
   *routes*
   (make-matchers
-   [[:get "/"]                                        #'activity/index
-    [:get "/register"]                                #'user/register
-    [:get "/settings/profile"]                        #'user/profile
-    [:get "/posts.:format"]                           #'activity/index
-    [:get "/posts/new"]                               #'activity/new
-    [:get "/posts/:id"]                               #'activity/show
-    [:get "/posts/:id.:format"]                       #'activity/show
-    [:get "/posts/:id/edit"]                          #'activity/edit
-    [:get "/api/statuses/user_timeline/:id.:format"]  #'activity/user-timeline
-    [:get "/api/statuses/public_timeline.:format"]    #'activity/index
-    [:get "/admin/subscriptions"]                     #'subscription/index
-    [:get "/admin/users"]                             #'user/index
-    [:post "/login"]                                  #'auth/login
-    [:post "/logout"]                                 #'auth/logout
-    [:get  "/main/ostatus"]                           #'subscription/ostatus
-    [:post "/main/subscribe"]                         #'subscription/subscribe
-    [:post "/main/unsubscribe"]                       #'subscription/unsubscribe
-    [:delete "/subscriptions/:id"]                    #'subscription/delete
-    [:post "/posts"]                                  #'activity/create
-    [:post "/posts/:id"]                              #'activity/update
-    [:delete "/posts/:id"]                            #'activity/delete
-    [:post "/users"]                                  #'user/create
-    [:delete "/:id"]                                  #'user/delete
-    [:post "/:username"]                              #'user/update
-    [:get "/:id/all"]                                 #'activity/friends-timeline
-    [:get "/:id"]                                     #'user/show
-    [:get "/:id/edit"]                                #'user/edit])))
+   [[:get "/"]                                       #'activity/index
+    [:get "/main/register"]                          #'user/register
+    [:get "/settings/profile"]                       #'user/profile
+    [:get "/posts.:format"]                          #'activity/index
+    [:get "/posts/new"]                              #'activity/new
+    [:get "/notice/:id"]                             #'activity/show
+    [:get "/notice/:id.:format"]                     #'activity/show
+    [:get "/notice/:id/edit"]                        #'activity/edit
+    [:get "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline
+    [:get "/api/statuses/public_timeline.:format"]   #'activity/index
+    [:get "/admin/subscriptions"]                    #'subscription/index
+    [:get "/admin/users"]                            #'user/index
+    [:post "/main/login"]                            #'auth/login
+    [:post "/main/logout"]                           #'auth/logout
+    [:get  "/main/ostatus"]                          #'subscription/ostatus
+    [:post "/main/subscribe"]                        #'subscription/subscribe
+    [:post "/main/unsubscribe"]                      #'subscription/unsubscribe
+    [:delete "/subscriptions/:id"]                   #'subscription/delete
+    [:post "/notice/new"]                            #'activity/create
+    [:post "/notice/:id"]                            #'activity/update
+    [:delete "/notice/:id"]                          #'activity/delete
+    [:post "/main/register"]                         #'user/create
+    [:delete "/:id"]                                 #'user/delete
+    [:post "/:username"]                             #'user/update
+    [:get "/:id/all"]                                #'activity/inbox
+    [:get "/:id"]                                    #'user/show
+    [:get "/:id/subscriptions"]                      #'user/subscriptions
+    [:get "/:id/subscribers"]                        #'user/subscribers
+    #_[:get "/settings/profile"]                     #'user/edit])))
 
 (defn method-matches?
   [request matcher]

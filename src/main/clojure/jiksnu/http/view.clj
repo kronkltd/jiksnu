@@ -32,24 +32,25 @@
   (let [user (current-user)]
     [:nav
     [:ul
-     [:li [:a {:href "/"} "Home"]]
+     [:li [:a {:href "/"} "Public"]]
      (if user
        (list
+        [:li [:a {:href (str (uri user) "/all")} "Home"]]
         [:li [:a {:href "/settings/profile"} "Profile"]]
         (if (is-admin? user)
           (list
            [:li [:a {:href "/admin/users"} "Users"]]
            [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]])))
        (list
-        [:li [:a {:href "/register"} "Register"]]))]]))
+        [:li [:a {:href "/main/register"} "Register"]]))]]))
 
 (defn login-uri
   []
-  "/login")
+  "/main/login")
 
 (defn logout-uri
   []
-  "/logout")
+  "/main/logout")
 
 (defn login-form
   []
