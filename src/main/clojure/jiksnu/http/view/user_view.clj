@@ -71,29 +71,32 @@
   (let [{:keys [domain first-name last-name password
                 confirm-password avatar-url]} user]
     [:div
-    (f/form-to
-     [:post (uri user)]
-     [:p (:username user)]
-     [:p (f/label :domain "Domain")
-      (f/text-field :domain domain)]
-     [:p (f/label :name "Display Name:")
-      (f/text-field :name (:name user))]
-     [:p (f/label :first-name "First Name:")
-      (f/text-field :first-name first-name)]
-     [:p (f/label :last-name "Last Name:")
-      (f/text-field :last-name last-name)]
-     [:p (f/label :password "Password")
-      (f/text-field :password password)]
-     [:p (f/label :confirm-password "Confirm Password")
-      (f/text-field :confirm-password confirm-password)]
-     [:p (f/label :admin "Admin?")
-      (f/check-box :admin (:admin user))]
-     [:p (f/label :debug "Debug?")
-      (f/check-box :debug (:debug user))]
-     [:p (f/label :avatar-url "Avatar Url:")
-      (f/text-field :avatar-url avatar-url)]
-     [:p (f/submit-button "Submit")])
-    (dump user)]))
+     (f/form-to
+      [:post (uri user)]
+      [:fieldset
+       [:legend "Edit User"]
+       [:ul
+        [:li (:username user)]
+        [:li (f/label :domain "Domain")
+         (f/text-field :domain domain)]
+        [:li (f/label :name "Display Name:")
+         (f/text-field :name (:name user))]
+        [:li (f/label :first-name "First Name:")
+         (f/text-field :first-name first-name)]
+        [:li (f/label :last-name "Last Name:")
+         (f/text-field :last-name last-name)]
+        [:li (f/label :password "Password")
+         (f/text-field :password password)]
+        [:li (f/label :confirm-password "Confirm Password")
+         (f/text-field :confirm-password confirm-password)]
+        [:li (f/label :admin "Admin?")
+         (f/check-box :admin (:admin user))]
+        [:li (f/label :debug "Debug?")
+         (f/check-box :debug (:debug user))]
+        [:li (f/label :avatar-url "Avatar Url:")
+         (f/text-field :avatar-url avatar-url)]]
+       (f/submit-button "Submit")])
+     (dump user)]))
 
 (defn subscribe-form
   [user]

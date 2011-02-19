@@ -54,12 +54,18 @@
 (defn login-form
   []
   [:div
-   (f/form-to [:post (login-uri)]
-              (f/label :username "Username")
-              (f/text-field :username)
-              (f/label :password "Password")
-              (f/password-field  :password)
-              (f/submit-button "Login"))])
+   (f/form-to
+    [:post (login-uri)]
+    [:fieldset
+     [:legend "Login"]
+     [:ul
+      [:li
+       (f/label :username "Username")
+       (f/text-field :username)]
+      [:li
+       (f/label :password "Password")
+       (f/password-field  :password)]]
+     (f/submit-button "Login")])])
 
 (defn logout-form
   []
