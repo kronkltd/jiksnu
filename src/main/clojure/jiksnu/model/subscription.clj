@@ -25,6 +25,7 @@
 (defn index
   [& args]
   (let [option-map (apply hash-map args)]
+    (println "options-map: " option-map)
     (entity/fetch Subscription option-map)))
 
 (defn show
@@ -57,8 +58,10 @@
 
 (defn subscribers
   [user]
+  (println "subscribers user: " user)
   (index :to (:_id user)))
 
 (defn subscriptions
   [user]
+  (println "subscriptions user: " user)
   (index :from (:_id user)))

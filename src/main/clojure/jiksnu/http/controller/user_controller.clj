@@ -33,8 +33,8 @@
                             :confirm_password password})))))
 
 (defn update
-  [{{id "id" :as params} :params :as request}]
-  (let [user (show request)]
+  [{{username "username" :as params} :params :as request}]
+  (let [user (model.user/show username (:domain (config)))]
     (let [new-params
           (-> (into {}
                     (map
@@ -43,7 +43,7 @@
                          [(keyword k) v]))
                      params))
               (dissoc :id)
-              (assoc :_id id))]
+              #_(assoc :_id id))]
       (model.user/update new-params))))
 
 (defn edit
@@ -58,5 +58,5 @@
 (defn profile
   [request]
   (if-let [user (current-user)]
-    (model.user/show (:_id user))
+    user #_(model.user/show (:_id user))
     (error "no user")))

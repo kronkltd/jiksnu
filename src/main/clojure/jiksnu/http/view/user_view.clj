@@ -16,30 +16,31 @@
 
 (defsection uri [User]
   [user & options]
-  (str "/" (:_id user)))
+  (str "/" (:username user)))
 
 (defsection title [User]
   [user & options]
   (or (:display-name user)
       (:first-name user)
-      (:_id user)))
+      (:username user)))
 
 (defn avatar-img
   [user]
   (let [{:keys [avatar-url title email domain name]} user]
-    [:a.url {:href (uri user)
-             :title title}
-     [:img.avatar.photo
-      {:width "48"
-       :height "48"
-       :alt name
-       :src (or avatar-url
-                (gravatar-image email)
-                (gravatar-image (str (:_id user)
-                                     "@"
-                                     domain)))}]
-     [:span.nickname.fn
-      name]]))
+    (let [jid (str (:username user)
+                                      "@"
+                                      domain)]
+      [:a.url {:href (uri user)
+              :title title}
+      [:img.avatar.photo
+       {:width "48"
+        :height "48"
+        :alt (or name jid)
+        :src (or avatar-url
+                 (and email (gravatar-image email))
+                 (gravatar-image jid))}]
+      [:span.nickname.fn
+       (or name jid)]])))
 
 (defsection show-section-minimal [User :html]
   [user & options]
@@ -49,7 +50,7 @@
   [user & options]
   [:tr
    [:td (avatar-img user)]
-   [:td (:_id user)]
+   [:td (:username user)]
    [:td (:domain user)]
    [:td [:a {:href (uri user)} "Show"]]
    [:td [:a {:href (str (uri user) "/edit")} "Edit"]]
@@ -72,7 +73,7 @@
     [:div
     (f/form-to
      [:post (uri user)]
-     [:p (:_id user)]
+     [:p (:username user)]
      [:p (f/label :domain "Domain")
       (f/text-field :domain domain)]
      [:p (f/label :name "Display Name:")
@@ -138,7 +139,7 @@
          (fn [subscription]
            [:li (show-section-minimal
                  (jiksnu.model.user/show (:to subscription)))])
-         (model.subscription/subscriptions (:_id user)))]]
+         (model.subscription/subscriptions user))]]
       [:div
        [:p "Subscribers"]
        [:ul
@@ -146,7 +147,7 @@
          (fn [subscriber]
            [:li (show-section-minimal
                  (jiksnu.model.user/show (:from subscriber)))])
-         (model.subscription/subscribers (:_id user)))]]
+         (model.subscription/subscribers user))]]
       [:div.activities
        (map show-section-minimal
             (model.activity/find-by-user user))]

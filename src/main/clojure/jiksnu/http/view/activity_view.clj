@@ -43,26 +43,26 @@
 
 (defsection show-section-minimal [Activity :html]
   [activity & options]
-   (let [user (-> activity
-                  :authors
-                  first
-                  model.user/show)]
-     [:article.hentry.notice
-      {"id" (:_id activity)}
-      [:header
-       (view.user/avatar-img user)
-       (if-let [t (:title activity)]
-         [:h3.entry-title t])]
-      [:section
-       [:p.entry-content
-        (:summary activity)]
-       [:p [:a {:href (uri activity)}
-            [:time (:published activity)]]]
-       (dump activity)]
-      [:footer
-       [:ul.buttons
-        [:li (delete-link activity)]
-        [:li (edit-link activity)]]]]))
+  [:article.hentry.notice
+   {"id" (:_id activity)}
+   [:header
+    (map
+     (fn [user-id]
+       (let [user (model.user/fetch-by-id user-id)]
+         (view.user/avatar-img user)))
+     (:authors activity))
+    (if-let [t (:title activity)]
+      [:h3.entry-title t])]
+   [:section
+    [:p.entry-content
+     (:summary activity)]
+    [:p [:a {:href (uri activity)}
+         [:time (:published activity)]]]
+    (dump activity)]
+   [:footer
+    [:ul.buttons
+     [:li (delete-link activity)]
+     [:li (edit-link activity)]]]])
 
 (defsection edit-form [Activity :html]
   [record & options]

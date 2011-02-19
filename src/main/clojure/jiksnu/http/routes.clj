@@ -52,7 +52,7 @@
     [:delete "/posts/:id"]                            #'activity/delete
     [:post "/users"]                                  #'user/create
     [:delete "/:id"]                                  #'user/delete
-    [:post "/:id"]                                    #'user/update
+    [:post "/:username"]                              #'user/update
     [:get "/:id/all"]                                 #'activity/friends-timeline
     [:get "/:id"]                                     #'user/show
     [:get "/:id/edit"]                                #'user/edit])))

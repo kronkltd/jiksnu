@@ -13,7 +13,7 @@
   (if-let [user (model.user/show username)]
     ;; TODO: encrypt
     (if (= password (:password user))
-      username
+      user
       (error "passwords do not match"))
     (error "user not found")))
 
