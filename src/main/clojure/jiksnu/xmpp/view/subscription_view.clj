@@ -7,15 +7,22 @@
         jiksnu.view
         jiksnu.xmpp.controller.subscription-controller
         jiksnu.xmpp.view)
-  (:require [jiksnu.model.subscription :as model.subscription])
-  (:import tigase.xml.Element))
+  (:require [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
+  (:import tigase.xml.Element
+           java.text.SimpleDateFormat))
+
+(defonce xsd-formatter
+  (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss'Z'"))
 
 (defn subscriber-response-element
-  [subscriber]
-  (make-element
-   "subscriber" {"node" microblog-uri
-                 "created" (str (:created subscriber))
-                 "jid" (str (:from subscriber))}))
+  [subscription]
+  (let [subscriber (model.user/fetch-by-id (:from subscription))]
+    (make-element
+     "subscriber" {"node" microblog-uri
+                   "created" (.format xsd-formatter (:created subscription))
+                   "jid" (str (:username subscriber) "@"
+                              (:domain subscriber))})))
 
 (defn minimal-subscriber-response
   [subscribers]
@@ -27,11 +34,14 @@
 
 (defn subscription-response-element
   [subscription]
-  (make-element
-   "subscription" {"node" microblog-uri
-                   "subscription" "subscribed"
-                   "created" (str (:created subscription))
-                   "jid" (:to subscription)}))
+  (let [subscribee (model.user/fetch-by-id (:to subscription))
+        created (:created subscription)]
+    (make-element
+     "subscription" {"node" microblog-uri
+                     "subscription" "subscribed"
+                     "created" (.format xsd-formatter created)
+                     "jid" (str (:username subscribee) "@"
+                                (:domain subscribee))})))
 
 (defn minimal-subscription-response
   "Returns a response iq packet containing the ids in entries"
@@ -55,7 +65,11 @@
 (defview #'subscribers :xmpp
   [request subscribers]
   (println "subscribers: " subscribers)
-  {:body (minimal-subscriber-response nil)
+  {:body
+   (make-element
+    "iq" {"type" "result"
+          "id" (:id request)}
+    [(minimal-subscriber-response subscribers)])
    :from (:to request)
    :to (:from request)})
 

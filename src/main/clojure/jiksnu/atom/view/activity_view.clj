@@ -56,19 +56,19 @@ an Element"
 
 (defn add-author
   [^Entry entry author-id]
-  (if-let [user (model.user/show author-id)]
+  (if-let [user (model.user/fetch-by-id author-id)]
     (let [author (.newAuthor *abdera-factory*)
           author-uri (full-uri user)
           author-name (:name user)
           actor-element (.addExtension entry (QName. as-ns "actor"))]
       (doto author
         (.setName author-name)
-        (.setEmail (view.user/get-uri user))
+        (.setEmail (:email user))
         (.setUri author-uri))
       (.addAuthor entry author)
       (doto actor-element
         (.addSimpleExtension (QName. atom-ns "name") author-name)
-        (.addSimpleExtension (QName. atom-ns "email") author-uri)
+        (.addSimpleExtension (QName. atom-ns "email") (:email user))
         (.addSimpleExtension (QName. atom-ns "uri") author-uri)))))
 
 (defn add-authors

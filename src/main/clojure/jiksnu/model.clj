@@ -19,16 +19,8 @@
 
 (defentity Activity
   [:id
-   :streamFaviconUrl
-   :postedTime
    :actor
-   :verb
-   :object
-   :target
-   :generator
-   :title
-   :body
-   :privacy])
+   :title])
 
 (defentity Subscription
   [:to :from :created])

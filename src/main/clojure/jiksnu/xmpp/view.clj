@@ -96,6 +96,7 @@
      :id (.getAttribute packet "id")
      :name name
      :node node
+     :ns (.getXMLNS payload)
      :packet packet
      :request-method type
      :method type
@@ -224,8 +225,8 @@
   (let [packet
         (Packet/packetInstance
          (:body packet-map)
-         (make-jid (:from packet-map))
-         (make-jid (:to packet-map)))]
+         (:from packet-map)
+         (:to packet-map))]
     (println "making packet: " packet)
     packet))
 

@@ -33,10 +33,17 @@
   (if-let [author (current-user-id)]
     (assoc activity :authors [author])))
 
+(defn set-public
+  [activity]
+  (if (:public activity)
+    activity
+    (assoc activity :public true)))
+
 (defn prepare-activity
   [activity]
   (-> activity
       set-id
+      set-public
       set-published-time
       set-updated-time
       set-actor))
@@ -51,6 +58,10 @@
   [& opts]
   (let [option-map (apply hash-map opts)]
     (entity/fetch Activity option-map :sort [(sugar/desc :updated)])))
+
+(defn fetch-by-id
+  [id]
+  (entity/fetch-one Activity {:_id id}))
 
 (defn show
   [id]

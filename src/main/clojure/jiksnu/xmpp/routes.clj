@@ -37,7 +37,7 @@
 
     [{:method :get
       :name "query"
-      :ns vcard-uri}
+      :ns query-uri}
      #'user/show]
 
     [{:method :put
@@ -82,6 +82,13 @@
       request)
     request))
 
+(defn ns-matches?
+  [request matcher]
+  (if (:ns matcher)
+        (if (= (:ns matcher) (:ns request))
+      request)
+    request))
+
 (defn http-serialization?
   [request matcher]
   (if (= (:serialization request) :http)
@@ -108,7 +115,8 @@
           [[#'xmpp-serialization?
             [#'type-matches?
              #'node-matches?
-             #'name-matches?]]
+             #'name-matches?
+             #'ns-matches?]]
            [#'http-serialization?
             [#'request-method-matches?
              #'path-matches?]]]))

@@ -7,7 +7,8 @@
         ciste.core
         ciste.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [jiksnu.model.activity :as activity.model])
+            [jiksnu.model.activity :as activity.model]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity))
 
 ;; TODO: This should be a special case of full response
