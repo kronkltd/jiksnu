@@ -24,11 +24,19 @@
 
 (defn create-activity
   [item]
+  #_(println "item: " item)
   (let [entry-string (str (first (children item)))
-        entry (atom.view/parse-xml-string entry-string)
-        activity (atom.view.activity/to-activity entry)]
-    (model.activity/create (make Activity activity))))
+        ]
+    #_(println "entry string: " entry-string)
+    (let [entry (atom.view/parse-xml-string entry-string)
+          ]
+      #_(println "entry: " entry)
+      (let [activity (atom.view.activity/to-activity entry)]
+        (println "activity: " activity)
+        (model.activity/create (make Activity activity))))))
 
 (defn create
   [{:keys [items] :as  request}]
+  #_(println "creating from: " request)
+
   (first (map create-activity items)))

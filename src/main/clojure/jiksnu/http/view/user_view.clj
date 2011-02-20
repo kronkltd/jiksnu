@@ -33,7 +33,7 @@
        [:img.avatar.photo
         {:width "48"
          :height "48"
-         :alt (or name jid)
+         ;; :alt (or name jid)
          :src (or avatar-url
                   (and email (gravatar-image email))
                   (gravatar-image jid))}]])))

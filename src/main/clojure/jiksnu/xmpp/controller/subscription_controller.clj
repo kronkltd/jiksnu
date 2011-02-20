@@ -18,8 +18,30 @@
 
 (defn subscribe
   [request]
-  `())
+  (let [to (:to request)
+        from (:from request)]
+    (println "from: " from)
+    (println "to: " to)
+    (let [user (model.user/fetch-by-jid to)
+          subscriber (model.user/fetch-by-jid from)
+          ]
+      (println "user: " user)
+      (println "subscriber: " subscriber)
+      true
+      )
+
+    ))
 
 (defn subscribed
   [request]
   '())
+
+(defn unsubscribe
+  [request]
+  (let [to (:to request)
+        from (:from request)
+        
+        ]
+    true
+    )
+  )

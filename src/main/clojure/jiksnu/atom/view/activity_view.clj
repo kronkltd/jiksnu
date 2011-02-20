@@ -91,9 +91,18 @@ an Element"
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
   [^Entry entry]
+  (println "entry: " entry)
   (let [json-map {}
-        id (.getId entry)]
-    (make Activity {:_id id})))
+        id (.getId entry)
+        title (.getTitle entry)
+        published (.getPublished entry)
+        ;; summary (.getContentAsHtml (.getSummary entry))
+                ]
+    (make Activity {:_id id
+                    :title title
+                    :published published
+                    ;; :summary summary
+                    })))
 
 (defn ^Entry to-entry
   "Takes a json object that matches the results of serializing an Abdera

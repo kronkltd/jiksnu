@@ -1,7 +1,11 @@
 (ns jiksnu.http.controller.activity-controller
   (:use jiksnu.model
+        jiksnu.session
         [karras.entity :only (make)])
-  (:require [jiksnu.model.activity :as model.activity])
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.item :as model.item]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity))
 
 (defn index
@@ -11,7 +15,15 @@
 (defn create
   [{{id "id" :as params} :params}]
   (let [a (make Activity params)]
-    (model.activity/create a)))
+    (let [created-activity (model.activity/create a)
+          user (current-user)
+          subscribers (model.subscription/subscribers user)]
+      (doseq [subscription subscribers]
+        (let [u (model.user/fetch-by-id (:from subscription))]
+          (println "u: " u)
+          (model.item/push u created-activity)))
+      (model.item/push user created-activity)
+      created-activity)))
 
 (defn new
   [request]

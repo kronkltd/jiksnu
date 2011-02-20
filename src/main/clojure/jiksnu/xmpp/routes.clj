@@ -24,9 +24,9 @@
       :node microblog-uri}
      #'activity/index]
 
-    [{:method :put
+    [{:method :set
       :pubsub true
-      :name "items"
+      :name "publish"
       :node microblog-uri}
      #'activity/create]
 
@@ -40,7 +40,7 @@
       :ns query-uri}
      #'user/show]
 
-    [{:method :put
+    [{:method :set
       :name "publish"
       :ns vcard-uri}
      #'user/create]
@@ -49,15 +49,21 @@
       :name "subscriptions"}
      #'subscription/subscriptions]
 
-    [{:method :put
-      :name "subscriptions"}
+    [{:method :set
+      :name "subscribe"
+      :ns pubsub-uri}
      #'subscription/subscribe]
+
+    [{:method :set
+      :name "unsubscribe"
+      :ns pubsub-uri}
+     #'subscription/unsubscribe]
 
     [{:method :get
       :name "subscribers"}
      #'subscription/subscribers]
 
-    [{:method :put
+    [{:method :set
       :name "subscribers"}
      #'subscription/subscribed]])))
 
