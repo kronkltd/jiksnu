@@ -9,6 +9,7 @@
             (jiksnu.http.controller
              [activity-controller :as activity]
              [auth-controller :as auth]
+             [inbox-controller :as inbox]
              [subscription-controller :as subscription]
              [user-controller :as user])
             (jiksnu.http.view
@@ -55,7 +56,7 @@
     [:post "/main/register"]                         #'user/create
     [:delete "/:id"]                                 #'user/delete
     [:post "/:username"]                             #'user/update
-    [:get "/:id/all"]                                #'activity/inbox
+    [:get "/:username/all"]                                #'inbox/index
     [:get "/:id"]                                    #'user/show
     [:get "/:id/subscriptions"]                      #'user/subscriptions
     [:get "/:id/subscribers"]                        #'user/subscribers

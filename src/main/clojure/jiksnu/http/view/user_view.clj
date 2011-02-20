@@ -137,6 +137,7 @@
       [:p (:location user)]
       [:p (:bio user)]
       [:p (:url user)]
+      [:p "Id: " (:_id user)]
       (if actor
         (list
          (if (model.subscription/subscribed? actor (:_id user))
