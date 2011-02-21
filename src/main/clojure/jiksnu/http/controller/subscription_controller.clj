@@ -19,7 +19,10 @@
   [request]
   (if-let [actor (current-user-id)]
     (if-let [{{user "unsubscribeto"} :params} request]
-      (model.subscription/unsubscribe actor user))))
+      (do
+        (model.subscription/unsubscribe actor
+                                        (model.subscription/make-id user))
+        true))))
 
 (defn delete
   "Deletes a subscription.
