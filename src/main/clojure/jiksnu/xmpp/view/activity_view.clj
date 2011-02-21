@@ -53,16 +53,20 @@
 
 (defn notify
   [recipient ^Activity activity]
-  (let [message
+  (let [recipient-jid (make-jid (:username recipient) (:domain recipient))
+        author (model.user/fetch-by-id (first (:authors activity)))
+        message
         (make-packet
-         {:to recipient
-          :from recipient
+         {:to recipient-jid
+          :from (make-jid "update" (:domain (config)))
           :type :chat
           :body (make-element
-                 "message" {}
+                 "message" {"type" "chat"}
                  [(make-element
                    "body" {}
-                   [(:summary activity)])
+                   [(str
+                     (:username author) ": "
+                     (:summary activity))])
                   (index-section [activity])])})]
     (.initVars message)
     (deliver-packet! message)))
