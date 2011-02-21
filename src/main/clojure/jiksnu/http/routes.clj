@@ -54,9 +54,10 @@
     [:post "/notice/:id"]                            #'activity/update
     [:delete "/notice/:id"]                          #'activity/delete
     [:post "/main/register"]                         #'user/create
+    [:get "/users/:id"]                              #'user/remote-profile
     [:delete "/users/:id"]                           #'user/delete
     [:post "/:username"]                             #'user/update
-    [:get "/:username/all"]                                #'inbox/index
+    [:get "/:username/all"]                          #'inbox/index
     [:get "/:id"]                                    #'user/show
     [:get "/:id/subscriptions"]                      #'user/subscriptions
     [:get "/:id/subscribers"]                        #'user/subscribers

@@ -1,5 +1,6 @@
 (ns jiksnu.http.view.user-view
   (:use [clj-gravatar.core :only (gravatar-image)]
+        jiksnu.config
         jiksnu.http.controller.user-controller
         jiksnu.http.view
         jiksnu.model
@@ -47,7 +48,9 @@
    [:td (avatar-img user)]
    [:td (:username user)]
    [:td (:domain user)]
-   [:td [:a {:href (uri user)} "Show"]]
+   [:td [:a {:href (if (= (:domain user) (:domain (config)))
+                     (uri user)
+                     (str "/users/" (:_id user)))} "Show"]]
    [:td [:a {:href (str (uri user) "/edit")} "Edit"]]
    [:td (f/form-to [:delete (str "/users/" (:_id user))]
                    (f/submit-button "Delete"))]])
@@ -131,7 +134,9 @@
      (add-form (Activity.))
      [:div
       [:p (avatar-img user)]
-      [:p (:username user) " (" (:name user) ")"]
+      [:p (:username user) (if (not= (:domain user) (:domain (config)))
+                             (list "@" (:domain user)))
+       " (" (:name user) ")"]
       [:p (:location user)]
       [:p (:bio user)]
       [:p (:url user)]
@@ -246,3 +251,7 @@
 (defview #'profile :html
   [request user]
   {:body (edit-form user)})
+
+(defview #'remote-profile :html
+  [request user]
+  {:body (show-section user)})
