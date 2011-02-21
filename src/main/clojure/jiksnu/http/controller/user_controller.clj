@@ -63,10 +63,8 @@
 
 (defn subscriptions
   [request]
-  []
-  )
+  [])
 
 (defn subscribers
   [request]
-  []
-  )
+  [])

@@ -64,7 +64,6 @@
 
 (defview #'subscribers :xmpp
   [request subscribers]
-  (println "subscribers: " subscribers)
   {:body
    (make-element
     "iq" {"type" "result"
@@ -75,7 +74,21 @@
 
 (defview #'subscribe :xmpp
   [request subscription]
-  {:body subscription
+  {:body
+   (make-element
+    "iq" {"type" "result"
+          "id" (:id request)}
+    [(subscription-response-element subscription)])
+   :from (:to request)
+   :to (:from request)})
+
+(defview #'unsubscribe :xmpp
+  [request subscription]
+  {:body
+   (make-element
+    "iq" {"type" "result"
+          "id" (:id request)}
+    [])
    :from (:to request)
    :to (:from request)})
 

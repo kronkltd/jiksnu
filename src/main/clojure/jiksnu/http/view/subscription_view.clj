@@ -4,7 +4,8 @@
         jiksnu.view
         [ciste.core :only (defview)]
         ciste.view)
-  (:require [hiccup.form-helpers :as f])
+  (:require [hiccup.form-helpers :as f]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription))
 
 (defsection uri [Subscription]
@@ -25,8 +26,8 @@
   [subscription & options]
   [:tr
    [:td [:a {:href "#"} (:_id subscription)]]
-   [:td (:from subscription)]
-   [:td (:to subscription)]
+   [:td (link-to (model.user/fetch-by-id (:from subscription)))]
+   [:td (link-to (model.user/fetch-by-id (:to subscription)))]
    [:td (:created subscription)]
    [:td (delete-form subscription)]])
 

@@ -54,7 +54,7 @@
     [:post "/notice/:id"]                            #'activity/update
     [:delete "/notice/:id"]                          #'activity/delete
     [:post "/main/register"]                         #'user/create
-    [:delete "/:id"]                                 #'user/delete
+    [:delete "/users/:id"]                           #'user/delete
     [:post "/:username"]                             #'user/update
     [:get "/:username/all"]                                #'inbox/index
     [:get "/:id"]                                    #'user/show

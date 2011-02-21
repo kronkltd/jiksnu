@@ -20,7 +20,6 @@
           subscribers (model.subscription/subscribers user)]
       (doseq [subscription subscribers]
         (let [u (model.user/fetch-by-id (:from subscription))]
-          (println "u: " u)
           (model.item/push u created-activity)))
       (model.item/push user created-activity)
       created-activity)))

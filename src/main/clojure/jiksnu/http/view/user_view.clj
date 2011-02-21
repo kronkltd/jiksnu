@@ -33,7 +33,6 @@
        [:img.avatar.photo
         {:width "48"
          :height "48"
-         ;; :alt (or name jid)
          :src (or avatar-url
                   (and email (gravatar-image email))
                   (gravatar-image jid))}]])))
@@ -50,7 +49,7 @@
    [:td (:domain user)]
    [:td [:a {:href (uri user)} "Show"]]
    [:td [:a {:href (str (uri user) "/edit")} "Edit"]]
-   [:td (f/form-to [:delete (uri user)]
+   [:td (f/form-to [:delete (str "/users/" (:_id user))]
                    (f/submit-button "Delete"))]])
 
 (defsection add-form [User]
@@ -131,7 +130,6 @@
     (list
      (add-form (Activity.))
      [:div
-      ;; [:p "Id:" (:_id user)]
       [:p (avatar-img user)]
       [:p (:username user) " (" (:name user) ")"]
       [:p (:location user)]

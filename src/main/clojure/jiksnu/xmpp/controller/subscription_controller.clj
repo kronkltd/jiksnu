@@ -20,17 +20,10 @@
   [request]
   (let [to (:to request)
         from (:from request)]
-    (println "from: " from)
-    (println "to: " to)
     (let [user (model.user/fetch-by-jid to)
-          subscriber (model.user/fetch-by-jid from)
-          ]
-      (println "user: " user)
-      (println "subscriber: " subscriber)
-      true
-      )
-
-    ))
+          subscriber (model.user/find-or-create-by-jid from)]
+      (model.subscription/subscribe (:_id subscriber)
+                                    (:_id user)))))
 
 (defn subscribed
   [request]
@@ -39,9 +32,9 @@
 (defn unsubscribe
   [request]
   (let [to (:to request)
-        from (:from request)
-        
-        ]
-    true
-    )
-  )
+        from (:from request)]
+    (let [user (model.user/fetch-by-jid to)
+          subscriber (model.user/find-or-create-by-jid from)]
+      (model.subscription/unsubscribe (:_id subscriber)
+                                      (:_id user))
+      true)))

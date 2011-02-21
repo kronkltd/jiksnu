@@ -82,7 +82,6 @@ an Element"
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"
   [^Entry entry]
-  (debug (str "entry: " entry))
   (let [string-writer (StringWriter.)]
     (JSONUtil/toJson entry string-writer)
     string-writer))

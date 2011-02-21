@@ -212,7 +212,7 @@
 
 (defn make-jid
   ([user]
-     (println "user: " user)
+     ;; (println "user: " user)
      (make-jid (:username user) (:domain user)))
   ([user domain]
      (make-jid user domain ""))
@@ -227,7 +227,7 @@
          (:body packet-map)
          (:from packet-map)
          (:to packet-map))]
-    (println "making packet: " packet)
+    ;; (println "making packet: " packet)
     packet))
 
 (defn deliver-packet!

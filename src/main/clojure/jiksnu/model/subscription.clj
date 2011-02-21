@@ -43,7 +43,8 @@
 
 (defn unsubscribe
   [actor user]
-  (delete {:from actor :to user}))
+  (entity/delete
+   (entity/fetch-one Subscription {:from actor :to user})))
 
 (defn subscribing?
   "Does the actor have a subscription to the user"

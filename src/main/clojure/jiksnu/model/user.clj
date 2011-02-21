@@ -38,6 +38,13 @@
   [jid]
   (show (.getLocalpart jid) (.getDomain jid)))
 
+(defn find-or-create-by-jid
+  [jid]
+  (if-let [user (fetch-by-jid jid)]
+    user
+    (create {:username (.getLocalpart jid)
+             :domain (.getDomain jid)})))
+
 (defn get-id
   [user]
   (.getLocalpart user))
@@ -58,7 +65,7 @@
 
 (defn delete
   [id]
-  (entity/delete (show id)))
+  (entity/delete (fetch-by-id id)))
 
 (defn add-node
   [user name]
