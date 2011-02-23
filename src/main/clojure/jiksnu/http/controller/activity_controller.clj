@@ -5,7 +5,9 @@
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            jiksnu.xmpp.view.activity-view
+            )
   (:import jiksnu.model.Activity))
 
 (defn index
@@ -20,8 +22,10 @@
           subscribers (model.subscription/subscribers user)]
       (doseq [subscription subscribers]
         (let [u (model.user/fetch-by-id (:from subscription))]
-          (model.item/push u created-activity)))
+          (model.item/push u created-activity)
+          ))
       (model.item/push user created-activity)
+      (jiksnu.xmpp.view.activity-view/notify user created-activity)
       created-activity)))
 
 (defn new

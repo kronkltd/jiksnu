@@ -255,3 +255,4 @@
 (defview #'remote-profile :html
   [request user]
   {:body (show-section user)})
+

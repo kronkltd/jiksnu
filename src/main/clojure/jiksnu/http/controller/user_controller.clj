@@ -74,3 +74,4 @@
   (let [{{id "id"} :params} request]
     (let [user (model.user/fetch-by-id id)]
       user)))
+

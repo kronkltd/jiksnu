@@ -13,6 +13,7 @@
            org.apache.abdera.model.Entry
            org.apache.abdera.model.Element
            org.apache.abdera.ext.json.JSONUtil
+           com.cliqset.abdera.ext.activity.object.Person
            java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.User))
@@ -57,18 +58,25 @@ an Element"
 (defn add-author
   [^Entry entry author-id]
   (if-let [user (model.user/fetch-by-id author-id)]
-    (let [author (.newAuthor *abdera-factory*)
+    (let [author (Person. (com.cliqset.abdera.ext.activity.Object. (.addExtension entry atom-ns "author" "")))
           author-uri (full-uri user)
           author-name (:name user)
-          actor-element (.addExtension entry (QName. as-ns "actor"))]
+          actor-element (.addExtension entry as-ns "actor" "activity")]
       (doto author
-        (.setName author-name)
-        (.setEmail (:email user))
-        (.setUri author-uri))
-      (.addAuthor entry author)
+        (.setObjectType "http://activitystrea.ms/schema/1.0/person")
+        (.setId (str "acct:" (:username user)
+                     "@" (:domain user)))
+        (.setName (:first-name user) (:last-name user))
+        (.setDisplayName (:name user))
+        (.addSimpleExtension atom-ns "email" "" (or (:email user) (str (:username user)
+                     "@" (:domain user))))
+        (.addSimpleExtension atom-ns "name" "" (:name user))
+        (.addAvatar (:avatar-url user) "image/jpeg")
+        (.addSimpleExtension atom-ns "uri" "" author-uri))
+      (.addExtension entry author)
       (doto actor-element
         (.addSimpleExtension (QName. atom-ns "name") author-name)
-        (.addSimpleExtension (QName. atom-ns "email") (:email user))
+        (.addSimpleExtension (QName. atom-ns "email") author-uri)
         (.addSimpleExtension (QName. atom-ns "uri") author-uri)))))
 
 (defn add-authors
@@ -110,16 +118,43 @@ entry and converts it to an entry"
   (let [entry (new-entry)]
     (doto entry
       (.setId (:_id activity))
-      (.setTitle (or (:title activity) (:summary activity)))
-      (.addLink (full-uri activity) "alternate")
       (.setPublished (:published activity))
       (.setUpdated (:updated activity))
-      (.setContentAsHtml (:summary activity))
-      (.addSimpleExtension
-       (QName. as-ns
-               "object-type"
-               "activity") "post")
+      (.setTitle (or (:title activity) (:summary activity)))
       (add-authors activity)
+      ;; TODO: add acl rules
+      ;; TODO: add verb
+      (.addLink (full-uri activity) "alternate")
+      (.setContentAsHtml (:summary activity))
+      (.addSimpleExtension as-ns
+                           "object-type"
+                           "activity"
+                           "http://activitystrea.ms/schema/1.0/status")
+      (.addSimpleExtension as-ns
+                           "verb"
+                           "activity"
+                           "http://activitystrea.ms/schema/1.0/post")
       (add-extensions activity))
+
+    ;; TODO: add object
+    (let [object-element (.addExtension entry
+                                        as-ns
+                                        "object"
+                                        "activity")]
+      (.setObjectType object-element "http://activitystrea.ms/schema/1.0/status")
+      (.setContentAsHtml object-element (:summary activity))
+      #_(.addSimpleExtension object-element
+                     atom-ns
+                     "content"
+                     (:summary activity))
+      #_(.addSimpleExtension object-element
+                           as-ns
+                           "object-type"
+                           "activity"
+                           "http://activitystrea.ms/schema/1.0/note"                  
+                           )
+      
+        )
+    
     entry))
 

@@ -4,12 +4,15 @@
   (:require [karras.core :as karras])
   (:import org.apache.abdera.Abdera
            org.apache.abdera.factory.Factory
-           com.cliqset.abdera.ext.activity.ActivityExtensionFactory))
+           com.cliqset.abdera.ext.activity.ActivityExtensionFactory
+           com.cliqset.abdera.ext.poco.PocoExtensionFactory   
+           ))
 
 (defonce ^Abdera #^:dynamic *abdera* (Abdera.))
 (defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
 (defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
+(.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
 (def #^:dynamic *mongo-database*
      (karras/mongo-db (-> (config) :database :name)))

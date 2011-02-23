@@ -61,7 +61,9 @@
     [:get "/:id"]                                    #'user/show
     [:get "/:id/subscriptions"]                      #'user/subscriptions
     [:get "/:id/subscribers"]                        #'user/subscribers
-    #_[:get "/settings/profile"]                     #'user/edit])))
+    #_[:get "/settings/profile"]                     #'user/edit
+    [:get "/.well-known/host-meta"]                  #'user/host-meta
+    ])))
 
 (defn method-matches?
   [request matcher]

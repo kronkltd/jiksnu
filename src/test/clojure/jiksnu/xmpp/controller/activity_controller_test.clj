@@ -32,8 +32,8 @@
             (let [activity (model.activity/create (factory Activity))
                   packet
                   (make-packet
-                   {:from author
-                    :to author
+                   {:from (make-jid author)
+                    :to (make-jid author)
                     :body (make-element
                            "iq" {"type" "get"}
                            [(make-element

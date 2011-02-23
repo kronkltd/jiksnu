@@ -1,5 +1,6 @@
 (ns jiksnu.http.view.activity-view
-  (:use jiksnu.http.controller.activity-controller
+  (:use jiksnu.config
+        jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model
         jiksnu.session
@@ -129,10 +130,12 @@
    :body (make-feed
           {:title "Public Activities"
            :subtitle "All activities posted"
-           :links [{:href "/posts"
+           :links [{:href (str "http://" (:domain (config)) "/")
                     :rel "alternate"
                     :type "text/html"}
-                   {:href "/posts.atom"
+                   {:href (str "http://"
+                               (:domain (config))
+                               "/api/statuses/public_timeline.atom")
                     :rel "self"
                     :type "application/atom+xml"}]
            :updated (:updated (first activities))
@@ -159,7 +162,10 @@
     (add-form (Activity.))
     (if (seq activities)
       (index-block activities)
-      [:p "nothing here"]))})
+      [:p "nothing here"])
+    [:div.footer
+     [:p
+      [:a {:href "/api/statuses/public_timeline.atom"} "Atom"]]])})
 
 (defview #'show :html
   [request activity]

@@ -58,7 +58,7 @@
         message
         (make-packet
          {:to recipient-jid
-          :from (make-jid "update" (:domain (config)))
+          :from (make-jid author)
           :type :chat
           :body (make-element
                  "message" {"type" "chat"}
