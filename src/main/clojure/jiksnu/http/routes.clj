@@ -11,12 +11,14 @@
              [auth-controller :as auth]
              [inbox-controller :as inbox]
              [subscription-controller :as subscription]
-             [user-controller :as user])
+             [user-controller :as user]
+             [webfinger-controller :as webfinger])
             (jiksnu.http.view
              activity-view
              auth-view
              subscription-view
-             user-view)
+             user-view
+             webfinger-view)
             [compojure.route :as route]))
 
 (def #^:dynamic *standard-middleware*
@@ -62,7 +64,7 @@
     [:get "/:id/subscriptions"]                      #'user/subscriptions
     [:get "/:id/subscribers"]                        #'user/subscribers
     #_[:get "/settings/profile"]                     #'user/edit
-    [:get "/.well-known/host-meta"]                  #'user/host-meta
+    [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
     ])))
 
 (defn method-matches?

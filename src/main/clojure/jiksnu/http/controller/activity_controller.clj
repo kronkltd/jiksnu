@@ -6,8 +6,7 @@
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            jiksnu.xmpp.view.activity-view
-            )
+            jiksnu.xmpp.view.activity-view)
   (:import jiksnu.model.Activity))
 
 (defn index

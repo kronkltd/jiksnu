@@ -1,13 +1,33 @@
 (ns jiksnu.http.view.user-view-test
   (:use jiksnu.http.view.user-view
-        [lazytest.describe :only (describe it testing given)]
+        [lazytest.describe :only (describe it do-it testing given)]
+        [lazytest.expect :only (expect)]
         jiksnu.http.view
+        jiksnu.model
+        jiksnu.factory
         jiksnu.view
-        ciste.core))
+        ciste.core
+        ciste.view)
+  (:require [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.User))
 
-(describe uri "User")
+(describe uri "User :html :http"
+  (do-it "should return a link to that user"
+    (with-format :html
+      (with-serialization :http
+        (with-environment :test
+         (let [user (model.user/create (factory User))]
+           (let [response (uri user)]
+             (expect (instance? String response)))))))))
 
-(describe title "User")
+(describe title "User"
+  (do-it "should return the title of that user"
+    (with-format :html
+      (with-serialization :http
+        (with-environment :test
+          (let [user (model.user/create (factory User))]
+            (let [response (title user)]
+              (expect (instance? String response)))))))))
 
 (describe avatar-img)
 

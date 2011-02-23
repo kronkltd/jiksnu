@@ -73,7 +73,7 @@
            (if (not (is-admin? user))
              {:$or [{:public true}
                     {:authors (:_id user)}]})
-           {} #_{:public true}))]
+           {:public true}))]
     (entity/fetch-one Activity options)))
 
 (defn drop!
