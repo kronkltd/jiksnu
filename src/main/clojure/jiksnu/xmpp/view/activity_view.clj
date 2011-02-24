@@ -26,7 +26,7 @@
   [^Activity activity & options]
   (make-element
    "item" {"id" (:_id activity)}
-   [(show-section activity)]))
+   (show-section activity)))
 
 (defsection index-block [Activity :xmpp :xmpp]
   [activities & options]
@@ -38,7 +38,7 @@
   [activities & options]
   (make-element
    "pubsub" {}
-   [(index-block activities)]))
+   (index-block activities)))
 
 (defview #'index :xmpp
   [request activities]
@@ -46,7 +46,7 @@
    (make-element
     "iq" {"type" "result"
           "id" (:id request)}
-    [(index-section activities)])
+    (index-section activities))
    :to (:from request)
    :from (:to request)
    :type :response})
@@ -55,18 +55,16 @@
   [recipient ^Activity activity]
   (let [recipient-jid (make-jid (:username recipient) (:domain recipient))
         author (model.user/fetch-by-id (first (:authors activity)))
+        message-text (str (:username author) ": " (:summary activity))
         message
         (make-packet
          {:to recipient-jid
           :from (make-jid author)
           :type :chat
-          :body (make-element
-                 "message" {"type" "chat"}
-                 [(make-element
-                   "body" {}
-                   [(str
-                     (:username author) ": "
-                     (:summary activity))])
-                  (index-section [activity])])})]
+          :body
+          (make-element
+           "message" {"type" "chat"}
+           ["body" {} message-text]
+           (index-section [activity]))})]
     (.initVars message)
     (deliver-packet! message)))

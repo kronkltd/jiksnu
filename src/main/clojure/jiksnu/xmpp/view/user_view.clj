@@ -10,39 +10,34 @@
   (:import jiksnu.model.User
            tigase.xml.Element))
 
-(defsection show-section-minimal [User :xmpp :xmpp]
-  [property & options]
-  (make-element
-   (:key property) {}
-   [(make-element (:type property) {}
-                  [(:value property)])]))
+;; (defsection show-section-minimal [User :xmpp :xmpp]
+;;   [property & options]
+;;   (make-element
+;;    (:key property) {}
+;;    [(:type property) {} (:value property)]))
 
 (defsection show-section [User :xmpp :xmpp]
   [^User user & options]
-  (make-element
-   "vcard" {"xmlns" vcard-uri}
-   [(if (:name user)
-      (make-element
-       "fn" {}
-       [(make-element "text" {}
-                      [(:name user)])]))
-    (if (:avatar-url user)
-      (make-element
-       "photo" {}
-       [(make-element "uri" {}
-                      [(:avatar-url user)])]))]))
+  (let [{:keys [name avatar-url]} user]
+    (make-element
+     "vcard" {"xmlns" vcard-uri}
+     (if name
+       ["fn" {}
+        ["text" {} name]])
+     (if avatar-url
+       ["photo" {}
+        ["uri" {} avatar-url]]))))
 
 (defview #'show :xmpp
   [request user]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)}
-    [(make-element
-      "query" {"xmlns" query-uri}
-      [(show-section user)])])
-   :from (:to request)
-   :to (:from request)})
+  (let [{:keys [id to from]} request]
+    {:body
+     (make-element
+      "iq" {"type" "result"
+            "id" id}
+      ["query" {"xmlns" query-uri} (show-section user)])
+     :from to
+     :to from}))
 
 ;; (defview #'index :xmpp
 ;;   [request statements]
@@ -52,7 +47,3 @@
 ;;     [(make-element
 ;;       "vcard" {"xmlns" vcard-uri}
 ;;       (map show-section-minimal statements))])})
-
-(defview #'inbox :xmpp
-  [activities]
-  {:body (index-section activities)})

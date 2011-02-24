@@ -36,12 +36,9 @@
                     :to (make-jid author)
                     :body (make-element
                            "iq" {"type" "get"}
-                           [(make-element
-                             "pubsub" {"xmlns" pubsub-uri}
-                             [(make-element
-                               "items" {"node" microblog-uri}
-                               [(make-element
-                                 "item" {"id" (:_id activity)})])])])})
+                           ["pubsub" {"xmlns" pubsub-uri}
+                            ["items" {"node" microblog-uri}
+                             ["item" {"id" (:_id activity)}]]])})
                   request (make-request packet)
                   response (show request)]
               (expect (activity? response))))))))

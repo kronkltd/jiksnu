@@ -102,6 +102,8 @@
      :method type
      :items (get-items packet)}))
 
+(declare make-element)
+
 (defn process-child
   "adds content of the appropriate type to the element"
   [^Element element item]
@@ -109,8 +111,10 @@
     (.addChild element item)
     (if (map? item)
       (.addChild element (to-tigase-element item))
-      (if (string? item)
-        (.setCData element (trim item))))))
+      (if (vector? item)
+        (apply make-element item)
+        (if (string? item)
+          (.setCData element (trim item)))))))
 
 (defn ^Element to-tigase-element
   "turns a map into a tigase element"
@@ -197,7 +201,7 @@
      (make-element name {}))
   ([name attrs]
      (make-element name attrs []))
-  ([name attrs children]
+  ([name attrs & children]
      (let [element (Element. name)]
        (doseq [[attr val] attrs]
          (.addAttribute element attr val))

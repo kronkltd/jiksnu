@@ -28,9 +28,8 @@
   [subscribers]
   (make-element
    "pubsub" {"xmlns" pubsub-uri}
-   [(make-element
-     "subscribers" {"node" microblog-uri}
-     (map subscriber-response-element subscribers))]))
+   ["subscribers" {"node" microblog-uri}
+    (map subscriber-response-element subscribers)]))
 
 (defn subscription-response-element
   [subscription]
@@ -58,7 +57,7 @@
    (make-element
     "iq" {"type" "result"
           "id" (:id request)}
-    [(minimal-subscription-response subscriptions)])
+    (minimal-subscription-response subscriptions))
    :from (:to request)
    :to (:from request)})
 
@@ -68,7 +67,7 @@
    (make-element
     "iq" {"type" "result"
           "id" (:id request)}
-    [(minimal-subscriber-response subscribers)])
+    (minimal-subscriber-response subscribers))
    :from (:to request)
    :to (:from request)})
 
@@ -78,7 +77,7 @@
    (make-element
     "iq" {"type" "result"
           "id" (:id request)}
-    [(subscription-response-element subscription)])
+    (subscription-response-element subscription))
    :from (:to request)
    :to (:from request)})
 
@@ -87,8 +86,7 @@
   {:body
    (make-element
     "iq" {"type" "result"
-          "id" (:id request)}
-    [])
+          "id" (:id request)})
    :from (:to request)
    :to (:from request)})
 
