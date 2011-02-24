@@ -43,7 +43,7 @@
 
 (describe delete)
 
-(describe inbox
+#_(describe inbox
   (given [request (make-request (mock-inbox-query-request-packet))]
     (testing "when there are no activities"
       (do-it "should be empty"

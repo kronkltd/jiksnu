@@ -29,7 +29,14 @@
             (let [response (title user)]
               (expect (instance? String response)))))))))
 
-(describe avatar-img)
+(describe avatar-img
+  (do-it "should return an image html"
+    (with-format :html
+      (with-serialization :http
+        (with-environment :test
+          (let [user (model.user/create (factory User))]
+            (let [response (avatar-img user)]
+              (expect (vector? response)))))))))
 
 (describe display-minimal "User")
 

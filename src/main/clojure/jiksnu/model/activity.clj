@@ -35,7 +35,7 @@
 
 (defn set-public
   [activity]
-  (if (:public activity)
+  (if (false? (:public activity))
     activity
     (assoc activity :public true)))
 

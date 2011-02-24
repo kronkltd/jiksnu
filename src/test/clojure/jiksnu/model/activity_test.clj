@@ -127,7 +127,7 @@
                   (let [activity
                         (with-user author
                           (create (factory Activity {:public false})))]
-                    (with-user (:_id user)
+                    (with-user user
                       (let [response (show (:_id activity))]
                         (expect (nil? response))))))))))))
     (testing "and the record is not public"
