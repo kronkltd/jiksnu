@@ -26,9 +26,11 @@
 (defn children
   "returns the child elements of the given element"
   ([^Element element]
-     (seq (.getChildren element)))
+     (if element
+       (seq (.getChildren element))))
   ([^Packet packet path]
-     (if packet (seq (.getElemChildren packet path)))))
+     (if packet
+       (seq (.getElemChildren packet path)))))
 
 (defn ns-prefix
   [k]
@@ -44,7 +46,8 @@
 
 (defn pubsub-element?
   [^Element element]
-  (= (.getName element) "pubsub"))
+  (and element
+       (= (.getName element) "pubsub")))
 
 (defn packet?
   "Returns if the element is a packet"
@@ -87,8 +90,8 @@
         child-node (first (children payload))
         node (and child-node (node-value child-node))
         name (if pubsub?
-               (and child-node (.getName child-node))
-               (.getName payload))]
+               (if child-node (.getName child-node))
+               (if payload (.getName payload)))]
     {:to to
      :from from
      :pubsub pubsub?
@@ -96,7 +99,7 @@
      :id (.getAttribute packet "id")
      :name name
      :node node
-     :ns (.getXMLNS payload)
+     :ns (if payload (.getXMLNS payload))
      :packet packet
      :request-method type
      :method type
@@ -107,14 +110,26 @@
 (defn process-child
   "adds content of the appropriate type to the element"
   [^Element element item]
+  (println "item: " item \newline)
   (if (element? item)
-    (.addChild element item)
+    (do
+      (println "element")
+      (.addChild element item))
     (if (map? item)
-      (.addChild element (to-tigase-element item))
+      (do
+        (println "map")
+        (.addChild element (to-tigase-element item)))
       (if (vector? item)
-        (apply make-element item)
+        (do
+          (println "vector")
+          (if (seq item)
+           (do
+             (println "seq")
+             (apply make-element item))))
         (if (string? item)
-          (.setCData element (trim item)))))))
+          (do
+            (println "string")
+            (.setCData element (trim item))))))))
 
 (defn ^Element to-tigase-element
   "turns a map into a tigase element"
@@ -198,10 +213,14 @@
 (defn ^Element make-element
   "Create a tigase element"
   ([name]
-     (make-element name {}))
+     (make-element name {} nil))
   ([name attrs]
-     (make-element name attrs []))
+     (make-element name attrs nil))
   ([name attrs & children]
+     (println "name: " name)
+     (println "attrs: " attrs)
+     (println "children: " children)
+     (println "")
      (let [element (Element. name)]
        (doseq [[attr val] attrs]
          (.addAttribute element attr val))

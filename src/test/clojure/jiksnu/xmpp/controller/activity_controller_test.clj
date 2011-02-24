@@ -25,23 +25,24 @@
 
 (describe show
   (testing "when the activity exists"
-    (do-it "should return that activity"
+    (do-it "should return that activity" {:focus true}
       (with-environment :test
         (let [author (model.user/create (factory User))]
           (with-user author
             (let [activity (model.activity/create (factory Activity))
-                  packet
-                  (make-packet
-                   {:from (make-jid author)
-                    :to (make-jid author)
-                    :body (make-element
-                           "iq" {"type" "get"}
-                           ["pubsub" {"xmlns" pubsub-uri}
-                            ["items" {"node" microblog-uri}
-                             ["item" {"id" (:_id activity)}]]])})
-                  request (make-request packet)
-                  response (show request)]
-              (expect (activity? response))))))))
+                  packet-map {:from (make-jid author)
+                              :to (make-jid author)
+                              :body (make-element
+                                     "iq" {"type" "get"}
+                                     ["pubsub" {"xmlns" pubsub-uri}
+                                      ["items" {"node" microblog-uri}
+                                       ["item" {"id" (:_id activity)}]]])}]
+              (println "packet-map: " packet-map)
+              (let [packet (make-packet packet-map)]
+                (println "packet: " packet)
+                (let [request (make-request packet)
+                      response (show request)]
+                  (expect (activity? response))))))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))
 
