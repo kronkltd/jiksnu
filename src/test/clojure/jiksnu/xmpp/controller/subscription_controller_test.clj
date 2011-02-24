@@ -19,8 +19,8 @@
         (let [user (model.user/create (factory User))
               subscriber (model.user/create (factory User))
               packet (make-packet
-                      {:to user
-                       :from user
+                      {:to (make-jid user)
+                       :from (make-jid user)
                        :body (mock-subscriber-query-request-element)})
               request (make-request packet)
               s (model.subscription/create
@@ -38,8 +38,8 @@
         (let [user (model.user/create (factory User))
               subscribee (model.user/create (factory User))
               packet (make-packet
-                      {:to user
-                       :from user
+                      {:to (make-jid user)
+                       :from (make-jid user)
                        :body (mock-subscription-query-request-element)})
               request (make-request packet)
               subscription (model.subscription/create

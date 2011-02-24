@@ -25,8 +25,8 @@
         (model.user/drop!)
         (let [user (model.user/create (factory User))
               packet (make-packet
-                      {:from user
-                       :to user
+                      {:from (make-jid user)
+                       :to (make-jid user)
                        :body (mock-vcard-query-request-element)})
               request (make-request packet)
               response (show request)]

@@ -112,8 +112,8 @@
   (do-it "should return a packet"
     (with-environment :test
       (let [user (model.user/create (factory User))
-            packet-map {:to user
-                        :from user
+            packet-map {:to (make-jid user)
+                        :from (make-jid user)
                         :body (make-element "pubsub")}
             response (make-packet packet-map)]
         (expect (packet? response))))))
