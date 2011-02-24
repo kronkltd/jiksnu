@@ -1,20 +1,81 @@
 (ns jiksnu.http.view.activity-view-test
-  (:use jiksnu.http.view.activity-view
+  (:use ciste.core
+        ciste.view
+        jiksnu.config
+        jiksnu.factory
+        jiksnu.http.controller.activity-controller
         jiksnu.http.view
+        jiksnu.http.view.activity-view
+        jiksnu.model
+        jiksnu.session
         jiksnu.view
-        ciste.core
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe it do-it testing given)]
+        [lazytest.expect :only (expect)])
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
-(describe uri "Activity")
+(describe uri "Activity"
+  (do-it "should be a string"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (string? (uri activity))))))))))
 
-(describe add-form "Activity")
+(describe add-form "Activity"
+  (do-it "should be a vector"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (vector? (add-form activity))))))))))
 
-(describe display-minimal)
+(describe show-section-minimal "[Activity :html]"
+  (do-it "should be a vector"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (vector? (show-section-minimal activity))))))))))
 
-(describe edit-form)
+(describe edit-form
+  (do-it "should be a vector"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (vector? (edit-form activity))))))))))
 
-(describe index-list-line)
+(describe index-line-minimal
+  (do-it "should be a vector"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (vector? (index-line-minimal activity))))))))))
 
-(describe index-list-block)
+(describe index-block-minimal
+  (do-it "should be a vector"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (vector? (index-block-minimal [activity]))))))))))
 
-(describe apply-view "#'index :atom")
+(describe apply-view "#'index :atom"
+  (do-it "should be a map"
+    (with-environment :test
+      (with-serialization :http
+        (with-format :html
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (expect (map? (apply-view {:action #'index
+                                            :format :atom} activity))))))))))
