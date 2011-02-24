@@ -25,13 +25,13 @@
         <configuration>
           <!-- <script>script/server</script> -->
           <namespaces>
-            <!-- <namespace>!jiksnu</namespace> -->
+            <namespace>!jiksnu</namespace>
             <!-- <namespace>jiksnu.server.tigase.plugin</namespace> -->
           </namespaces>
-          <vmargs>-agentlib:jdwp=transport=dt_socket,address=8021,server=y,suspend=n -server</vmargs>
-          <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly>
-          <testDeclaredNamespaceOnly>true</testDeclaredNamespaceOnly>
-          <warnOnReflection>true</warnOnReflection>
+          <!-- <vmargs>-agentlib:jdwp=transport=dt_socket,address=8021,server=y,suspend=n -server</vmargs> -->
+          <!-- <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly> -->
+          <!-- <testDeclaredNamespaceOnly>true</testDeclaredNamespaceOnly> -->
+          <!-- <warnOnReflection>true</warnOnReflection> -->
         </configuration>
         <executions>
           <execution>
