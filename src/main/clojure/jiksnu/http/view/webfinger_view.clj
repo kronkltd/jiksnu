@@ -2,6 +2,7 @@
   (:use ciste.core
         ciste.view
         jiksnu.config
+        jiksnu.namespace
         jiksnu.http.controller.webfinger-controller))
 
 (defview #'host-meta :html
@@ -20,17 +21,7 @@
 (defview #'user-meta :html
   [request user]
   {:body
-   ["XRD" {"xmlns" xrd-ns
-
-           }
-    ["Subject" {} (str "acct:"
-                       (:username user)
-                       "@" (:domain user)
-                       )]
+   ["XRD" {"xmlns" xrd-ns}
+    ["Subject" {} (str "acct:" (:username user) "@" (:domain user))]
     ["Alias" {} (uri user)]
-    ["Link" {"rel" "describedby"
-             "href" (uri user)} ]
-
-    ]
-   }
-  )
+    ["Link" {"rel" "describedby" "href" (uri user)}]]})

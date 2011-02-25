@@ -7,3 +7,8 @@
 (def vcard-uri "urn:ietf:params:xml:ns:vcard-4.0")
 (def as-ns "http://activitystrea.ms/spec/1.0/")
 (def atom-ns "http://www.w3.org/2005/Atom")
+(def status-uri "http://activitystrea.ms/schema/1.0/status")
+(def person-uri "http://activitystrea.ms/schema/1.0/person")
+(def post-uri "http://activitystrea.ms/schema/1.0/post")
+(def xrd-ns "http://docs.oasis-open.org/ns/xri/xrd-1.0")
+(def host-meta-ns "http://host-meta.net/xrd/1.0")

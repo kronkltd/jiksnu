@@ -55,8 +55,7 @@
      (fn [user-id]
        (let [user (model.user/fetch-by-id user-id)]
          (list (view.user/avatar-img user)
-               (link-to user))
-         ))
+               (link-to user))))
      (:authors activity))
     (if-let [t (:title activity)]
       [:h3.entry-title t])]
@@ -98,15 +97,15 @@
    (atom.view.activity/to-entry activity)))
 
 (defn make-feed
-  [{:keys [title links entries updated]}]
+  [{:keys [title links entries updated id]}]
   (let [feed (.newFeed *abdera*)]
-    (.setTitle feed title)
+    (if title (.setTitle feed title))
     (.setGenerator feed
                    "http://jiksnu.com/"
                    "0.1.0-SNAPSHOT"
                    "Jiksnu")
-    (.setId feed "http://beta.jiksnu.com/api/statuses/user_timeline/duck.atom")
-    (.setUpdated feed updated)
+    (if id (.setId feed id))
+    (if updated (.setUpdated feed updated))
     (dorun
      (map
       (fn [link]
@@ -125,21 +124,23 @@
 
 (defview #'index :atom
   [request activities]
-  {:headers {"Content-Type" "application/xml"}
-   :template false
-   :body (make-feed
-          {:title "Public Activities"
-           :subtitle "All activities posted"
-           :links [{:href (str "http://" (:domain (config)) "/")
-                    :rel "alternate"
-                    :type "text/html"}
-                   {:href (str "http://"
-                               (:domain (config))
-                               "/api/statuses/public_timeline.atom")
-                    :rel "self"
-                    :type "application/atom+xml"}]
-           :updated (:updated (first activities))
-           :entries activities})})
+  (let [self (str "http://"
+                  (:domain (config))
+                  "/api/statuses/public_timeline.atom")]
+    {:headers {"Content-Type" "application/xml"}
+     :template false
+     :body (make-feed
+            {:title "Public Activities"
+             :subtitle "All activities posted"
+             :id self
+            :links [{:href (str "http://" (:domain (config)) "/")
+                     :rel "alternate"
+                     :type "text/html"}
+                    {:href self
+                     :rel "self"
+                     :type "application/atom+xml"}]
+            :updated (:updated (first activities))
+            :entries activities})}))
 
 (defview #'user-timeline :atom
   [request [user activities]]

@@ -58,8 +58,7 @@
 (defn profile
   [request]
   (if-let [user (current-user)]
-    user #_(model.user/show (:_id user))
-    (error "no user")))
+    user (error "no user")))
 
 (defn subscriptions
   [request]

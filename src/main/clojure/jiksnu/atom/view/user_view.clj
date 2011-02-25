@@ -1,10 +1,9 @@
 (ns jiksnu.atom.view.user-view
   (:use ciste.view
         jiksnu.view
-        jiksnu.model
-        jiksnu.model.user)
+        jiksnu.model)
+  (:require [jiksnu.model.user :as model.user])
   (:import javax.xml.namespace.QName
-           com.cliqset.abdera.ext.activity.ActivityEntry
            com.cliqset.abdera.ext.activity.object.Person
            jiksnu.model.User
            java.net.URI
@@ -26,10 +25,7 @@
 
 (defn get-uri
   [^User user]
-  (str
-   (:_id user)
-   "@"
-   (:domain user)))
+  (str (:_id user) "@" (:domain user)))
 
 (defn ^URI author-uri
   [^Entry entry]
