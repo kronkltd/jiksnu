@@ -53,18 +53,23 @@
 
 (defn notify
   [recipient ^Activity activity]
-  (let [recipient-jid (make-jid (:username recipient) (:domain recipient))
+  (let [recipient-jid (make-jid recipient)
         author (model.user/fetch-by-id (first (:authors activity)))
-        message-text (str (:username author) ": " (:summary activity))
-        message
+        message-text (:summary activity)
+        ele (make-element
+             "message" {"type" "headline"}
+             ["subject" {} "New activity"]
+             ["body" {} message-text]
+             ["event" {"xmlns" "http://jabber.org/protocol/pubsub#event"}
+              (with-format :xmpp
+                (with-serialization :xmpp
+                  (index-block [activity])))])]
+    (let [message
         (make-packet
          {:to recipient-jid
           :from (make-jid author)
           :type :chat
-          :body
-          (make-element
-           "message" {"type" "chat"}
-           ["body" {} message-text]
-           (index-section [activity]))})]
-    (.initVars message)
-    (deliver-packet! message)))
+          :body ele
+          })]
+      (.initVars message)
+      (deliver-packet! message))))

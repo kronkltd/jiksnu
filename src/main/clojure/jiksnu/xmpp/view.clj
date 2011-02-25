@@ -110,6 +110,7 @@
 (defn process-child
   "adds content of the appropriate type to the element"
   [^Element element item]
+  (println "item: " item)
   (if (element? item)
     (.addChild element item)
     (if (map? item)
@@ -118,7 +119,10 @@
         (if (seq item)
           (.addChild element (apply make-element item)))
         (if (string? item)
-          (.setCData element (trim item)))))))
+          (.setCData element (trim item))
+          (if (coll? item)
+            (doseq [i item]
+              (process-child element i))))))))
 
 (defn ^Element to-tigase-element
   "turns a map into a tigase element"
@@ -209,6 +213,7 @@
      (let [element (Element. name)]
        (doseq [[attr val] attrs]
          (.addAttribute element attr val))
+       (println "children: " children)
        (doseq [child children]
          (process-child element child))
        element)))

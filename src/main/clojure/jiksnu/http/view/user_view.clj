@@ -238,7 +238,7 @@
    [:div
     [:h1 "Register"]
     (f/form-to
-     [:post "/users"]
+     [:post "/main/register"]
      [:p
       (f/label :username "Username:")
       (f/text-field :username)]
