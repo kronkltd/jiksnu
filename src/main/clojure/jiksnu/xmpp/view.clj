@@ -110,7 +110,7 @@
 (defn process-child
   "adds content of the appropriate type to the element"
   [^Element element item]
-  (println "item: " item)
+  #_(println "item: " item)
   (if (element? item)
     (.addChild element item)
     (if (map? item)
@@ -213,7 +213,7 @@
      (let [element (Element. name)]
        (doseq [[attr val] attrs]
          (.addAttribute element attr val))
-       (println "children: " children)
+       #_(println "children: " children)
        (doseq [child children]
          (process-child element child))
        element)))

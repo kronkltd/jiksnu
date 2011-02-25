@@ -12,3 +12,7 @@
 (def post-uri "http://activitystrea.ms/schema/1.0/post")
 (def xrd-ns "http://docs.oasis-open.org/ns/xri/xrd-1.0")
 (def host-meta-ns "http://host-meta.net/xrd/1.0")
+(def osw-uri "http://onesocialweb.org/spec/1.0/")
+(def view-uri "http://onesocialweb.org/spec/1.0/acl/action/view")
+(def grant-uri "http://onesocialweb.org/spec/1.0/acl/permission/grant")
+(def everyone-uri "http://onesocialweb.org/spec/1.0/acl/subject/everyone")

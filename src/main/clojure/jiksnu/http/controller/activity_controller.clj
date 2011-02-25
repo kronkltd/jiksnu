@@ -22,6 +22,7 @@
       (doseq [subscription subscribers]
         (let [u (model.user/fetch-by-id (:from subscription))]
           (model.item/push u created-activity)
+          (jiksnu.xmpp.view.activity-view/notify u created-activity)
           ))
       (model.item/push user created-activity)
       (jiksnu.xmpp.view.activity-view/notify user created-activity)

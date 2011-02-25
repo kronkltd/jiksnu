@@ -65,6 +65,7 @@ an Element"
           author (Person. (make-object author-element))
           author-uri (full-uri user)
           author-name (:name user)
+          author-jid  (str (:username user) "@" (:domain user))
           actor-element (.addExtension entry as-ns "actor" "activity")]
       (doto author
         (.setObjectType person-uri)
@@ -73,16 +74,16 @@ an Element"
         (.setName (:first-name user) (:last-name user))
         (.setDisplayName (:name user))
         (.addSimpleExtension atom-ns "email" ""
-                             (or (:email user) (str (:username user)
-                                                    "@" (:domain user))))
+                             (or (:email user) author-jid))
         (.addSimpleExtension atom-ns "name" "" (:name user))
         (.addAvatar (:avatar-url user) "image/jpeg")
         (.addSimpleExtension atom-ns "uri" "" author-uri))
-      (.addExtension entry author)
       (doto actor-element
-        (.addSimpleExtension (QName. atom-ns "name") author-name)
-        (.addSimpleExtension (QName. atom-ns "email") author-uri)
-        (.addSimpleExtension (QName. atom-ns "uri") author-uri)))))
+        (.addSimpleExtension atom-ns "name" "" author-name)
+        (.addSimpleExtension atom-ns "email" "" author-jid)
+        (.addSimpleExtension atom-ns "uri" "" author-jid))
+      (.addExtension entry author)
+      (.addExtension entry actor-element))))
 
 (defn add-authors
   [^Entry entry ^Activity activity]
@@ -121,14 +122,26 @@ entry and converts it to an entry"
       (.setUpdated (:updated activity))
       (.setTitle (or (:title activity) (:summary activity)))
       (add-authors activity)
-      ;; TODO: add acl rules
-      ;; TODO: add verb
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:summary activity))
       (.addSimpleExtension as-ns "object-type" "activity" status-uri)
       (.addSimpleExtension as-ns "verb" "activity" post-uri)
       (add-extensions activity))
+    (if (:public activity)
+      (let [rule-element (.addExtension entry osw-uri "acl-rule" "")]
+        (let [action-element
+              (.addSimpleExtension rule-element osw-uri
+                                   "acl-action" "" view-uri)]
+          (.setAttributeValue action-element "permission" grant-uri))
+        (let [subject-element
+              (.addExtension rule-element osw-uri "acl-subject" "")]
+          (.setAttributeValue subject-element "type" everyone-uri))))
+
+
     (let [object-element (.addExtension entry as-ns "object" "activity")]
       (.setObjectType object-element status-uri)
+      (.setUpdated object-element (:object-updated activity))
+      (.setPublished object-element (:object-published activity))
+      (.setId object-element (:object-id activity))
       (.setContentAsHtml object-element (:summary activity)))
     entry))

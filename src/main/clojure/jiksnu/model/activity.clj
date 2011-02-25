@@ -16,17 +16,35 @@
     activity
     (assoc activity :_id (new-id))))
 
+(defn set-object-id
+  [activity]
+  (if (:object-id activity)
+    activity
+    (assoc activity :object-id (new-id))))
+
 (defn set-updated-time
   [activity]
   (if (:updated activity)
     activity
     (assoc activity :updated (sugar/date))))
 
+(defn set-object-updated
+  [activity]
+  (if (:object-updated activity)
+    activity
+    (assoc activity :object-updated (sugar/date))))
+
 (defn set-published-time
   [activity]
   (if (:published activity)
     activity
     (assoc activity :published (sugar/date))))
+
+(defn set-object-published
+  [activity]
+  (if (:object-published activity)
+    activity
+    (assoc activity :object-published (sugar/date))))
 
 (defn set-actor
   [activity]
@@ -43,9 +61,12 @@
   [activity]
   (-> activity
       set-id
+      set-object-id
       set-public
       set-published-time
+      set-object-published
       set-updated-time
+      set-object-updated
       set-actor))
 
 (defn create
