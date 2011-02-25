@@ -25,7 +25,7 @@
 
 (describe show
   (testing "when the activity exists"
-    (do-it "should return that activity" {:focus true}
+    (do-it "should return that activity"
       (with-environment :test
         (let [author (model.user/create (factory User))]
           (with-user author

@@ -4,6 +4,7 @@
         jiksnu.factory
         jiksnu.mock
         jiksnu.model
+        jiksnu.namespace
         jiksnu.xmpp.view
         jiksnu.view
         [lazytest.describe :only (describe it do-it testing given)]
@@ -92,17 +93,19 @@
            (let [response (abdera-to-tigase-element abdera-element)]
              (expect  (element? response)))))))))
 
-(describe make-element)
+(describe make-element
+  (testing "with a complex structure"
+    (do-it "should return an element"
+      (let [response  (make-element
+                       "iq" {"type" "get"}
+                       ["pubsub" {"xmlns" pubsub-uri}
+                        ["items" {"node" microblog-uri}
+                         ["item" {"id" "test-id"}]]])]
+        (expect (element? response))))))
 
 (describe respond-with)
 
 (describe make-minimal-item)
-
-#_(describe make-item
-  (given [entry (factory Activity)]
-    (given [response (make-item entry)]
-      (do-it "should return a tigase element"
-        (expect (element? response))))))
 
 (describe apply-template)
 
