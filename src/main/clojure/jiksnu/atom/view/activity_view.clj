@@ -130,7 +130,7 @@ serialization"
                             extension-maps)))))
 
 (defsection show-section [Activity :atom]
-  [^Activity activity]
+  [^Activity activity & _]
   (let [entry (new-entry)]
     (doto entry
       (.setId (:_id activity))
