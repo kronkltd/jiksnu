@@ -89,10 +89,11 @@
   (do-it "should return a tigase element"
     (with-serialization :xmpp
       (with-format :atom
-        (let [activity (factory Activity)]
-         (let [abdera-element (atom.view.activity/to-entry activity)]
-           (let [response (abdera-to-tigase-element abdera-element)]
-             (expect  (element? response)))))))))
+        (with-environment :test
+          (let [activity (factory Activity)
+                abdera-element (atom.view.activity/to-entry activity)
+                response (abdera-to-tigase-element abdera-element)]
+            (expect (element? response))))))))
 
 (describe make-element
   (testing "with a complex structure"
