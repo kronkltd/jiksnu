@@ -21,25 +21,23 @@
 (describe show
   (testing "when the user exists"
     (do-it "should return that user"
-      (with-environment :test
-        (model.user/drop!)
-        (let [user (model.user/create (factory User))
-              packet (make-packet
-                      {:from (make-jid user)
-                       :to (make-jid user)
-                       :body (mock-vcard-query-request-element)})
-              request (make-request packet)
-              response (show request)]
-          (expect (instance? User response))
-          (expect (= response user)))))))
+      (model.user/drop!)
+      (let [user (model.user/create (factory User))
+            packet (make-packet
+                    {:from (make-jid user)
+                     :to (make-jid user)
+                     :body (mock-vcard-query-request-element)})
+            request (make-request packet)
+            response (show request)]
+        (expect (instance? User response))
+        (expect (= response user))))))
 
 #_(describe create
     (do-it "should not be nil" :pending
-      (with-environment :test
-        (let [packet (mock-vcard-publish-request-packet)
-              request (make-request packet)
-              response (create request)]
-          (expect (not (nil? response)))))))
+      (let [packet (mock-vcard-publish-request-packet)
+            request (make-request packet)
+            response (create request)]
+        (expect (not (nil? response))))))
 
 (describe delete)
 
@@ -47,18 +45,16 @@
     (testing "when there are no activities"
       (do-it "should be empty"
         (let [request (make-request (mock-inbox-query-request-packet))]
-          (with-environment :test
-            (model.activity/drop!)
-            (let [response (inbox request)]
-              (expect (empty? response)))))))
+          (model.activity/drop!)
+          (let [response (inbox request)]
+            (expect (empty? response))))))
     (testing "when there are activities"
       (do-it "should return a seq of activities"
-        (with-environment :test
-          (let [request (make-request (mock-inbox-query-request-packet))]
-            (model.activity/drop!)
-            (let [author (model.user/create (factory User))]
-              (with-user author
-                (model.activity/create (factory Activity))))
-            (let [response (inbox request)]
-              (expect (seq response))
-              (expect (every? #(instance? Activity %) response))))))))
+        (let [request (make-request (mock-inbox-query-request-packet))]
+          (model.activity/drop!)
+          (let [author (model.user/create (factory User))]
+            (with-user author
+              (model.activity/create (factory Activity))))
+          (let [response (inbox request)]
+            (expect (seq response))
+            (expect (every? #(instance? Activity %) response)))))))

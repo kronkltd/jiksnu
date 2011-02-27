@@ -89,11 +89,10 @@
   (do-it "should return a tigase element"
     (with-serialization :xmpp
       (with-format :atom
-        (with-environment :test
-          (let [activity (factory Activity)
-                abdera-element (atom.view.activity/to-entry activity)
-                response (abdera-to-tigase-element abdera-element)]
-            (expect (element? response))))))))
+        (let [activity (factory Activity)
+              abdera-element (atom.view.activity/to-entry activity)
+              response (abdera-to-tigase-element abdera-element)]
+          (expect (element? response)))))))
 
 (describe make-element
   (testing "with a complex structure"
@@ -115,12 +114,11 @@
 
 (describe make-packet
   (do-it "should return a packet"
-    (with-environment :test
-      (let [user (model.user/create (factory User))
-            packet-map {:to (make-jid user)
-                        :from (make-jid user)
-                        :body (make-element "pubsub")}
-            response (make-packet packet-map)]
-        (expect (packet? response))))))
+    (let [user (model.user/create (factory User))
+          packet-map {:to (make-jid user)
+                      :from (make-jid user)
+                      :body (make-element "pubsub")}
+          response (make-packet packet-map)]
+      (expect (packet? response)))))
 
 (describe deliver-packet!)

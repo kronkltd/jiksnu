@@ -15,37 +15,35 @@
 (describe subscribers
   (testing "when there are subscribers"
     (do-it "should not be empty"
-      (with-environment :test
-        (let [user (model.user/create (factory User))
-              subscriber (model.user/create (factory User))
-              packet (make-packet
-                      {:to (make-jid user)
-                       :from (make-jid user)
-                       :body (mock-subscriber-query-request-element)})
-              request (make-request packet)
-              s (model.subscription/create
-                 (factory Subscription
-                          {:from (:_id subscriber)
-                           :to (:_id user)}))
-              response (subscribers request)]
-          (expect (seq response))
-          (expect (every? (partial instance? Subscription) response)))))))
+      (let [user (model.user/create (factory User))
+            subscriber (model.user/create (factory User))
+            packet (make-packet
+                    {:to (make-jid user)
+                     :from (make-jid user)
+                     :body (mock-subscriber-query-request-element)})
+            request (make-request packet)
+            s (model.subscription/create
+               (factory Subscription
+                        {:from (:_id subscriber)
+                         :to (:_id user)}))
+            response (subscribers request)]
+        (expect (seq response))
+        (expect (every? (partial instance? Subscription) response))))))
 
 (describe subscriptions
   (testing "when there are subscriptions"
     (do-it "should return a sequence of subscriptions"
-      (with-environment :test
-        (let [user (model.user/create (factory User))
-              subscribee (model.user/create (factory User))
-              packet (make-packet
-                      {:to (make-jid user)
-                       :from (make-jid user)
-                       :body (mock-subscription-query-request-element)})
-              request (make-request packet)
-              subscription (model.subscription/create
-                            (factory Subscription
-                                     {:from (:_id user)
-                                      :to (:_id subscribee)}))
-              results (subscriptions request)]
-          (expect (not (empty? results)))
-          (expect (every? (partial instance? Subscription) results)))))))
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            packet (make-packet
+                    {:to (make-jid user)
+                     :from (make-jid user)
+                     :body (mock-subscription-query-request-element)})
+            request (make-request packet)
+            subscription (model.subscription/create
+                          (factory Subscription
+                                   {:from (:_id user)
+                                    :to (:_id subscribee)}))
+            results (subscriptions request)]
+        (expect (not (empty? results)))
+        (expect (every? (partial instance? Subscription) results))))))

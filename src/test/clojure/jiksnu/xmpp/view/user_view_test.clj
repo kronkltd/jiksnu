@@ -13,10 +13,9 @@
 (describe "#'show :xmpp")
 
 #_(describe "#'index :xmpp"
-  (do-it "should contain a vcard query response element"
-    (with-environment :test
+    (do-it "should contain a vcard query response element"
       (let [packet (mock-vcard-query-request-packet)
             request (make-request packet)
             response (full-vcard-response request)]
-        (expect (element? response))))))
+        (expect (element? response)))))
 

@@ -16,28 +16,25 @@
 
 #_(describe minimal-response
   (do-it "should return a sequence of elements"
-    (with-environment :test
-      (let [packet (mock-activity-query-request-packet)
-            activities (model.activity/index)
-            response (minimal-response activities)]
-        (expect (every? element? response))))))
+    (let [packet (mock-activity-query-request-packet)
+          activities (model.activity/index)
+          response (minimal-response activities)]
+      (expect (every? element? response)))))
 
 #_(describe full-response
   (do-it "should return a sequence of elements"
-    (with-environment :test
-      (let [packet (mock-activity-query-request-packet)
-            entries (model.activity/index)
-            response (full-response entries)]
-        (expect (not (nil? response)))
-        (expect (every? element? response))))))
+    (let [packet (mock-activity-query-request-packet)
+          entries (model.activity/index)
+          response (full-response entries)]
+      (expect (not (nil? response)))
+      (expect (every? element? response)))))
 
 (describe notify
   (do-it "should return a packet"
-    (with-environment :test
-      (with-serialization :xmpp
-        (with-format :atom
-          (let [user (model.user/create (factory User))]
-            (with-user user
-              (let [activity (model.activity/create (factory Activity))
-                    response (notify user activity)]
-                (expect (packet? response))))))))))
+    (with-serialization :xmpp
+      (with-format :atom
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [activity (model.activity/create (factory Activity))
+                  response (notify user activity)]
+              (expect (packet? response)))))))))
