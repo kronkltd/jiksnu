@@ -13,21 +13,19 @@
 (describe index
   (testing "when there are no activities"
     (do-it "should be empty"
-      (with-environment :test
-        (model.activity/drop!)
-        (let [request {}
-              response (index request)]
-          (expect (empty? response))))))
+      (model.activity/drop!)
+      (let [request {}
+            response (index request)]
+        (expect (empty? response)))))
   (testing "when there are activities"
     (do-it "should return a seq of activities"
-      (with-environment :test
-        (let [author (model.user/create (factory User))]
-          (with-user author
-            (model.activity/create (factory Activity))))
-        (let [request {}
-              response (index request)]
-          (expect (seq response))
-          (expect (every? activity? response)))))))
+      (let [author (model.user/create (factory User))]
+        (with-user author
+          (model.activity/create (factory Activity))))
+      (let [request {}
+            response (index request)]
+        (expect (seq response))
+        (expect (every? activity? response))))))
 
 (describe create)
 

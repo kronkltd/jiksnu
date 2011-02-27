@@ -51,12 +51,11 @@
   (do-it "should return an abdera entry"
     (with-serialization :http
       (with-format :atom
-        (with-environment :test
-          (let [user (factory User)
-                actor (model.user/create user)
-                activity (factory Activity {:authors [(:_id actor)]})
-                response (to-entry activity)]
-            (expect (instance? Entry response))
-            (expect (.getId response))
-            (expect (.getTitle response))
-            (expect (.getUpdated response))))))))
+        (let [user (factory User)
+              actor (model.user/create user)
+              activity (factory Activity {:authors [(:_id actor)]})
+              response (to-entry activity)]
+          (expect (instance? Entry response))
+          (expect (.getId response))
+          (expect (.getTitle response))
+          (expect (.getUpdated response)))))))

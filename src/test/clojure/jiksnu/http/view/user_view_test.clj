@@ -15,28 +15,25 @@
   (do-it "should return a link to that user"
     (with-format :html
       (with-serialization :http
-        (with-environment :test
-         (let [user (model.user/create (factory User))]
-           (let [response (uri user)]
-             (expect (instance? String response)))))))))
+        (let [user (model.user/create (factory User))]
+          (let [response (uri user)]
+            (expect (instance? String response))))))))
 
 (describe title "User"
   (do-it "should return the title of that user"
     (with-format :html
       (with-serialization :http
-        (with-environment :test
-          (let [user (model.user/create (factory User))]
-            (let [response (title user)]
-              (expect (instance? String response)))))))))
+        (let [user (model.user/create (factory User))]
+          (let [response (title user)]
+            (expect (instance? String response))))))))
 
 (describe avatar-img
   (do-it "should return an image html"
     (with-format :html
       (with-serialization :http
-        (with-environment :test
-          (let [user (model.user/create (factory User))]
-            (let [response (avatar-img user)]
-              (expect (vector? response)))))))))
+        (let [user (model.user/create (factory User))]
+          (let [response (avatar-img user)]
+            (expect (vector? response))))))))
 
 (describe display-minimal "User")
 
