@@ -47,14 +47,14 @@
           response (to-activity entry)]
       (expect (map? response)))))
 
-(describe to-entry
+(describe show-section "Activity :atom"
   (do-it "should return an abdera entry"
     (with-serialization :http
       (with-format :atom
         (let [user (factory User)
               actor (model.user/create user)
               activity (factory Activity {:authors [(:_id actor)]})
-              response (to-entry activity)]
+              response (show-section activity)]
           (expect (instance? Entry response))
           (expect (.getId response))
           (expect (.getTitle response))

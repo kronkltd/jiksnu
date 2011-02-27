@@ -90,7 +90,7 @@
     (with-serialization :xmpp
       (with-format :atom
         (let [activity (factory Activity)
-              abdera-element (atom.view.activity/to-entry activity)
+              abdera-element (show-section activity)
               response (abdera-to-tigase-element abdera-element)]
           (expect (element? response)))))))
 

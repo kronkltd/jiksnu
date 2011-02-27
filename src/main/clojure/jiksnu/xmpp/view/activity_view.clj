@@ -20,7 +20,8 @@
 (defsection show-section [Activity :xmpp :xmpp]
   [^Activity activity & options]
   (abdera-to-tigase-element
-   (atom.view.activity/to-entry activity)))
+   (with-format :atom
+     (show-section activity))))
 
 (defsection index-line [Activity :xmpp :xmpp]
   [^Activity activity & options]
@@ -57,23 +58,22 @@
 
 (defn notify
   [recipient ^Activity activity]
-  (let [recipient-jid (make-jid recipient)
-        author (model.user/fetch-by-id (first (:authors activity)))
-        message-text (:summary activity)
-        ele (make-element
-             "message" {"type" "headline"}
-             ["subject" {} "New activity"]
-             ["body" {} message-text]
-             ["event" {"xmlns" "http://jabber.org/protocol/pubsub#event"}
-              (with-format :xmpp
-                (with-serialization :xmpp
-                  (index-block [activity])))])]
-    (let [message
-        (make-packet
-         {:to recipient-jid
-          :from (make-jid author)
-          :type :chat
-          :body ele
-          })]
-      (.initVars message)
-      (deliver-packet! message))))
+  (with-serialization :xmpp
+    (with-format :atom
+      (let [recipient-jid (make-jid recipient)
+            author (model.user/fetch-by-id (first (:authors activity)))
+            message-text (:summary activity)
+            ele (make-element
+                 "message" {"type" "headline"}
+                 ["subject" {} "New activity"]
+                 ["body" {} message-text]
+                 ["event" {"xmlns" "http://jabber.org/protocol/pubsub#event"}
+                  (index-block [activity])])]
+        (let [message
+              (make-packet
+               {:to recipient-jid
+                :from (make-jid author)
+                :type :chat
+                :body ele})]
+          (.initVars message)
+          (deliver-packet! message))))))

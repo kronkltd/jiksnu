@@ -92,9 +92,7 @@
 
 (defn add-entry
   [feed activity]
-  (.addEntry
-   feed
-   (atom.view.activity/to-entry activity)))
+  (.addEntry feed (show-section activity)))
 
 (defn make-feed
   [{:keys [title links entries updated id]}]
