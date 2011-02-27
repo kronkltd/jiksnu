@@ -1,6 +1,6 @@
 (ns jiksnu.session-test
   (:use jiksnu.session
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe do-it testing)]))
 
 (describe current-user)
 

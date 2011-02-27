@@ -7,7 +7,7 @@
         jiksnu.namespace
         jiksnu.xmpp.view
         jiksnu.view
-        [lazytest.describe :only (describe it do-it testing given)]
+        [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.file :as file]
@@ -22,10 +22,10 @@
 
 (describe ns-prefix
   (testing "when the key name is empty"
-    (given [k ""]
-      (do-it "should have just the xmlns"
-        (let [response (ns-prefix k)]
-          (expect          (= response "xmlns")))))))
+    (do-it "should have just the xmlns"
+      (let [k ""
+            response (ns-prefix k)]
+        (expect (= response "xmlns"))))))
 
 (describe element?)
 
@@ -36,8 +36,9 @@
 (describe iq-elements)
 
 (describe pubsub-items
-  (it "should return a seq of elements"
-    (every? element? (pubsub-items (mock-activity-publish-request-packet)))))
+  (do-it "should return a seq of elements"
+    (expect (every? element? (pubsub-items
+                              (mock-activity-publish-request-packet))))))
 
 (describe bare-recipient?)
 
@@ -56,17 +57,17 @@
 
 (describe to-tigase-element
   (testing "a simple element"
-    (given [element
+    (do-it "should"
+      (let [element
             {:tag :query,
              :attrs {:xmlns "http://onesocialweb.org/spec/1.0/vcard4#query"},
              :content nil}]
-      (do-it "should"
         (expect (element? (to-tigase-element element))))))
   (testing "a full entry"
-    (given [element (file/read-xml "entry.xml")]
-     (do-it "should return a tigase element"
-       (let [response (to-tigase-element element)]
-         (expect         (element? response)))))))
+    (do-it "should return a tigase element"
+      (let [element (file/read-xml "entry.xml")
+            response (to-tigase-element element)]
+        (expect         (element? response))))))
 
 (describe assign-namespace)
 

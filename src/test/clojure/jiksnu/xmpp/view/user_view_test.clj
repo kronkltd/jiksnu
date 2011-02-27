@@ -4,7 +4,7 @@
         [jiksnu.xmpp.view :only (make-request element?)]
         jiksnu.xmpp.view.user-view
         jiksnu.view
-        [lazytest.describe :only (describe it testing given do-it)]
+        [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
   (:import jiksnu.model.User))
 

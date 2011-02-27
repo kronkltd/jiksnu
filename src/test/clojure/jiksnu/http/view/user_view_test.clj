@@ -1,6 +1,6 @@
 (ns jiksnu.http.view.user-view-test
   (:use jiksnu.http.view.user-view
-        [lazytest.describe :only (describe it do-it testing given)]
+        [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)]
         jiksnu.http.view
         jiksnu.model

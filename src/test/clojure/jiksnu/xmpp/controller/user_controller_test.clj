@@ -5,7 +5,7 @@
         jiksnu.session
         jiksnu.xmpp.controller.user-controller
         jiksnu.xmpp.view
-        [lazytest.describe :only (describe it do-it testing given for-any)]
+        [lazytest.describe :only (describe do-it testing for-any)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
@@ -34,30 +34,31 @@
           (expect (= response user)))))))
 
 #_(describe create
-  (given [packet (mock-vcard-publish-request-packet)
-          request (make-request packet)]
-    (it "should not be nil" :pending
+    (do-it "should not be nil" :pending
       (with-environment :test
-        (let [response (create request)]
-          (not (nil? response)))))))
+        (let [packet (mock-vcard-publish-request-packet)
+              request (make-request packet)
+              response (create request)]
+          (expect (not (nil? response)))))))
 
 (describe delete)
 
 #_(describe inbox
-  (given [request (make-request (mock-inbox-query-request-packet))]
     (testing "when there are no activities"
       (do-it "should be empty"
-        (with-environment :test
-          (model.activity/drop!)
-          (let [response (inbox request)]
-            (expect (empty? response))))))
+        (let [request (make-request (mock-inbox-query-request-packet))]
+          (with-environment :test
+            (model.activity/drop!)
+            (let [response (inbox request)]
+              (expect (empty? response)))))))
     (testing "when there are activities"
       (do-it "should return a seq of activities"
         (with-environment :test
-          (model.activity/drop!)
-          (let [author (model.user/create (factory User))]
-            (with-user author
-              (model.activity/create (factory Activity))))
-          (let [response (inbox request)]
-            (expect (seq response))
-            (expect (every? #(instance? Activity %) response))))))))
+          (let [request (make-request (mock-inbox-query-request-packet))]
+            (model.activity/drop!)
+            (let [author (model.user/create (factory User))]
+              (with-user author
+                (model.activity/create (factory Activity))))
+            (let [response (inbox request)]
+              (expect (seq response))
+              (expect (every? #(instance? Activity %) response))))))))

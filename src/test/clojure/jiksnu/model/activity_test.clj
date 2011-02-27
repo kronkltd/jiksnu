@@ -1,5 +1,5 @@
 (ns jiksnu.model.activity-test
-  (:use [lazytest.describe :only (describe it testing given do-it)]
+  (:use [lazytest.describe :only (describe testing do-it)]
         jiksnu.factory
         jiksnu.mock
         jiksnu.model
@@ -12,34 +12,35 @@
            jiksnu.model.User))
 
 (describe new-id
-  (it "should return a string"
+  (do-it "should return a string"
     (let [response (new-id)]
-      (instance? String response))))
+      (expect (instance? String response)))))
 
 (describe set-id
-  (given [activity (factory Activity)]
-    (testing "when there is an id"
-      (it "should not change the value"
-        (let [response (set-id activity)]
-          (= (:_id activity)
-             (:_id response)))))
-    (testing "when there is no id"
-      (it "should add an id key"
-        (let [response (set-id activity)]
-          (:_id response))))))
+  (testing "when there is an id"
+    (do-it "should not change the value"
+      (let [activity (factory Activity)
+            response (set-id activity)]
+        (expect (= (:_id activity)
+                   (:_id response))))))
+  (testing "when there is no id"
+    (do-it "should add an id key"
+      (let [activity (factory Activity)
+            response (set-id activity)]
+        (:_id response)))))
 
 (describe set-updated-time
   (testing "when there is an updated property"
-    (given [activity (factory Activity)]
-      (it "should not change the value"
-        (let [response (set-updated-time activity)]
-          (= (:updated activity)
-             (:updated response))))))
+    (do-it "should not change the value"
+      (let [activity (factory Activity)
+            response (set-updated-time activity)]
+        (expect (= (:updated activity)
+                   (:updated response))))))
   (testing "when there is no updated property"
-    (given [activity (dissoc (factory Activity) :updated)]
-      (it "should add an updated property"
-        (let [response (set-updated-time activity)]
-          (:updated response))))))
+    (do-it "should add an updated property"
+      (let [activity (dissoc (factory Activity) :updated)
+            response (set-updated-time activity)]
+        (expect (:updated response))))))
 
 (describe prepare-activity)
 
@@ -141,11 +142,11 @@
         (testing "and the user is an admin"
           (do-it "should return the activity")))))
   (testing "when the record does not exist"
-    (it "should return nil" :pending)))
+    (do-it "should return nil" :pending)))
 
 (describe drop!
   (testing "when there are activities"
-    (it "should delete all of them"
+    (do-it "should delete all of them"
       (with-environment :test
         (create (factory Activity))
         (drop!)

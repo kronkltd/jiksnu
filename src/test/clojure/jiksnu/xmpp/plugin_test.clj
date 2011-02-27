@@ -4,7 +4,7 @@
         jiksnu.xmpp.routes
         jiksnu.xmpp.plugin
         jiksnu.xmpp.view
-        [lazytest.describe :only (describe it testing given do-it)]
+        [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
   (:require [karras.core :as karras]
             jiksnu.xmpp.view.activity-view))

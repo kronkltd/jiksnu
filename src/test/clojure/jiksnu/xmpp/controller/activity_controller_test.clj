@@ -6,7 +6,7 @@
         jiksnu.session
         jiksnu.xmpp.controller.activity-controller
         jiksnu.xmpp.view
-        [lazytest.describe :only (describe do-it it testing given)]
+        [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]

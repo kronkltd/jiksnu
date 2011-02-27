@@ -7,7 +7,7 @@
         jiksnu.xmpp.plugin
         jiksnu.xmpp.view
         #_karras.core
-        [lazytest.describe :only (describe it testing given do-it)]
+        [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
@@ -29,14 +29,14 @@
 
 (describe index
   (testing "when there are no subscriptions"
-      (it "should be empty"
-        (given [results [] #_(index)]
-          (with-environment :test
-            (empty? results))))
-      (it "should return a seq"
-        (given [results [] #_(index)]
-          (with-environment :test
-            (seq? results))))))
+    (do-it "should be empty"
+      (with-environment :test
+        (let [results [] #_(index)]
+          (empty? results))))
+    (do-it "should return a seq"
+      (with-environment :test
+        (let [results [] #_(index)]
+          (seq? results))))))
 
 (describe show)
 

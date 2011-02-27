@@ -1,15 +1,15 @@
 (ns jiksnu.file-test
   (:use jiksnu.file
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe do-it testing)]))
 
 (describe classpath-file)
 
 (describe read-xml)
 
 (describe slurp-classpath
-  (given [filename "entry.xml"]
-    (it "should return a string"
-      (let [response (slurp-classpath filename)]
-        (string? response)))))
+  (do-it "should return a string"
+    (let [filename "entry.xml"
+          response (slurp-classpath filename)]
+      (string? response))))
 
 (describe read-clojure)

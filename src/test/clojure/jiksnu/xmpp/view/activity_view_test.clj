@@ -7,7 +7,7 @@
         jiksnu.view
         jiksnu.xmpp.view
         jiksnu.xmpp.view.activity-view
-        [lazytest.describe :only (describe it testing do-it given for-any)]
+        [lazytest.describe :only (describe testing do-it for-any)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
@@ -25,9 +25,9 @@
 #_(describe full-response
   (do-it "should return a sequence of elements"
     (with-environment :test
-      (given [packet (mock-activity-query-request-packet)
-              entries (model.activity/index)
-              response (full-response entries)]
+      (let [packet (mock-activity-query-request-packet)
+            entries (model.activity/index)
+            response (full-response entries)]
         (expect (not (nil? response)))
         (expect (every? element? response))))))
 

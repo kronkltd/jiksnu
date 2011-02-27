@@ -1,6 +1,6 @@
 (ns jiksnu.http.controller.auth-controller-test
   (:use jiksnu.http.controller.auth-controller
-        [lazytest.describe :only (describe it testing given do-it)]))
+        [lazytest.describe :only (describe testing do-it)]))
 
 (describe login)
 

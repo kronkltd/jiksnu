@@ -2,7 +2,7 @@
   (:use jiksnu.atom.view
         jiksnu.file
         jiksnu.view
-        [lazytest.describe :only (describe it testing given do-it)]
+        [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
   (:import org.apache.abdera.model.Entry))
 

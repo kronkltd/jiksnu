@@ -1,7 +1,7 @@
 (ns jiksnu.atom.view.activity-view-test
   (:use ciste.view
         jiksnu.atom.view.activity-view
-        [lazytest.describe :only (describe it testing given do-it)]
+        [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)]
         jiksnu.factory
         jiksnu.mock

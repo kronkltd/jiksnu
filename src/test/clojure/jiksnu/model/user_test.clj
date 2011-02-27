@@ -2,7 +2,7 @@
   (:use jiksnu.factory
         jiksnu.model
         jiksnu.model.user
-        [lazytest.describe :only (describe do-it it testing given)]
+        [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:import jiksnu.model.User))
 
@@ -12,22 +12,22 @@
 
 (describe index
   (testing "when there are no users"
-    (it "should be empty"
+    (do-it "should be empty"
       (with-environment :test
         (drop!)
         (let [response (index)]
-          (empty? response)))))
+          (expect (empty? response))))))
   (testing "when there are users"
-    (it "should not be empty"
+    (do-it "should not be empty"
       (with-environment :test
         (create (factory User))
         (let [response (index)]
-          (seq response))))
-    (it "should return a seq of users"
+          (expect (seq response)))))
+    (do-it "should return a seq of users"
       (with-environment :test
         (create (factory User))
         (let [response (index)]
-          (every? (partial instance? User) response))))))
+          (expect (every? (partial instance? User) response)))))))
 
 (describe show
   (testing "when the user is found"
@@ -38,22 +38,22 @@
           (let [response (show username)]
             (expect (instance? User response)))))))
   (testing "when the user is not found"
-    (it "should return nil"
+    (do-it "should return nil"
       (with-environment :test
         (drop!)
         (let [username (fseq :id)]
           (let [response (show username)]
-            (expect (nil? response))))))))
+            (expect (expect (nil? response)))))))))
 
 (describe edit
   (testing "when the user is found"
-    (it "should return a user" :pending))
+    (do-it "should return a user" :pending))
   (testing "when the user is not found"
-    (it "should return nil" :pending)))
+    (do-it "should return nil" :pending)))
 
 (describe delete
   (testing "when the user exists"
-    (it "should be deleted" :pending)))
+    (do-it "should be deleted" :pending)))
 
 (describe bare-jid)
 
@@ -71,5 +71,5 @@
 
 (describe update
   (testing "when the request is valid"
-    (given [request {:params {"id" (fseq :word)}}]
-      (it "should return a user" :pending))))
+    (do-it "should return a user"
+      (let [request {:params {"id" (fseq :word)}}]))))

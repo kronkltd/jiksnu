@@ -1,6 +1,6 @@
 (ns jiksnu.http.controller.user-controller-test
   (:use jiksnu.http.controller.user-controller
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe testing do-it)]))
 
 (describe index)
 

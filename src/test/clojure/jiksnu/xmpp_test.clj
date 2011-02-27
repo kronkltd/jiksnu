@@ -1,6 +1,6 @@
 (ns jiksnu.xmpp-test
   (:use jiksnu.xmpp
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe do-it testing)]))
 
 
 (describe get-config)

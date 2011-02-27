@@ -1,6 +1,6 @@
 (ns jiksnu.core-test
   (:use jiksnu.core
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe do-it testing)]))
 
 (describe start)
 

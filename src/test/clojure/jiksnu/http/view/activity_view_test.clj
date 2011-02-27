@@ -9,7 +9,7 @@
         jiksnu.model
         jiksnu.session
         jiksnu.view
-        [lazytest.describe :only (describe it do-it testing given)]
+        [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])

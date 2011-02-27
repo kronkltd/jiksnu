@@ -1,7 +1,7 @@
 (ns jiksnu.http.view-test
   (:use jiksnu.http.view
         jiksnu.view
-        [lazytest.describe :only (describe it testing given)]))
+        [lazytest.describe :only (describe do-it testing)]))
 
 (describe dump)
 

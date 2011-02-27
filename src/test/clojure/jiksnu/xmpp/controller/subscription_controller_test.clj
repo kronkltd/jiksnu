@@ -5,7 +5,7 @@
         jiksnu.model
         jiksnu.xmpp.controller.subscription-controller
         [jiksnu.xmpp.view :only (make-request make-jid make-packet)]
-        [lazytest.describe :only (describe do-it it testing given)]
+        [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
