@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.subscription-controller
   (:use jiksnu.model
+        jiksnu.namespace
         jiksnu.xmpp.view)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
@@ -24,6 +25,16 @@
           subscriber (model.user/find-or-create-by-jid from)]
       (model.subscription/subscribe (:_id subscriber)
                                     (:_id user)))))
+
+(defn remote-subscribe
+  [actor user]
+  ["subscribe" {"xmlns" pubsub-uri
+                "node" microblog-uri
+                "jid" (str (:username user) "@" (:domain user))}])
+
+(defn remote-subscribe-confirm
+  [request]
+  true)
 
 (defn subscribed
   [request]

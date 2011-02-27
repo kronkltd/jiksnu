@@ -51,6 +51,10 @@
    :from (:to request)
    :type :response})
 
+(defview #'remote-create :xmpp
+  [request _]
+  nil)
+
 (defn notify
   [recipient ^Activity activity]
   (let [recipient-jid (make-jid recipient)

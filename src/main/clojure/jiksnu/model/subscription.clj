@@ -63,3 +63,14 @@
 (defn subscriptions
   [user]
   (index :from (:_id user)))
+
+(defn create-pending
+  [actor user]
+  (entity/create Subscription
+                 {:from actor
+                  :to user
+                  :pending true}))
+
+(defn pending?
+  [subscription]
+  (true? (:pending subscription)))

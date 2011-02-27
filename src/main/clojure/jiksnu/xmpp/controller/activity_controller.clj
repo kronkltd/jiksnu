@@ -32,3 +32,13 @@
 (defn create
   [{:keys [items] :as  request}]
   (first (map create-activity items)))
+
+(defn remote-create
+  [request]
+  (let [packet (:packet request)
+        items (children packet "/message/event/items/item")]
+    (doseq [entry items]
+      (let [activity (atom.view.activity/to-activity
+                      (atom.view/parse-xml-string (str entry)))]
+        (model.activity/create-raw activity)))
+    true))

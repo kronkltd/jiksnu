@@ -95,3 +95,7 @@
   {:body subscription
    :from (:to request)
    :to (:from request)})
+
+(defview #'remote-subscribe-confirm :xmpp
+  [request _]
+  nil)

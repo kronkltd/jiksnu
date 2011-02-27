@@ -99,17 +99,49 @@ an Element"
     (JSONUtil/toJson entry string-writer)
     string-writer))
 
+(defn parse-extension-element
+  [element]
+  (let [qname (.getQName element)
+        name (.getLocalPart qname)
+        namespace (.getNamespaceURI qname)]
+    (if (and (= name "actor")
+             (= namespace as-ns))
+      (let [uri (.getSimpleExtension element atom-ns "uri" "")]
+        {:authors [(:_id (model.user/find-or-create-by-uri uri))]})
+      (if (and (= name "object")
+                 (= namespace as-ns))
+        (let [object (make-object element)]
+          {:type (str (.getObjectType object))
+           :object-id (str (.getId object))
+           :object-updated (.getUpdated object)
+           :object-published (.getPublished object)
+           :object-content (.getContent object)})))))
+
 (defn ^Activity to-activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
   [^Entry entry]
-  ;; (println "entry: " entry)
-  (let [id (.getId entry)
+  (let [id (str (.getId entry))
         title (.getTitle entry)
-        published (.getPublished entry)]
-    (make Activity {:_id id
-                    :title title
-                    :published published})))
+        published (.getPublished entry)
+        updated (.getUpdated entry)
+        authors (.getAuthors entry)]
+    (doall
+     (map
+      (fn [author]
+        (println "author: " author))
+      authors))
+    (let [extension-maps
+          (doall
+           (map
+            parse-extension-element
+            (.getExtensions entry)))]
+      (make Activity (apply merge
+                            {:_id id
+                             :published published
+                             :updated updated
+                             :title title}
+                            extension-maps)))))
 
 (defn ^Entry to-entry
   "Takes a json object that matches the results of serializing an Abdera

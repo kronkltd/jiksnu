@@ -65,7 +65,15 @@
 
     [{:method :set
       :name "subscribers"}
-     #'subscription/subscribed]])))
+     #'subscription/subscribed]
+
+    [{:method :result
+      :name "subscription"
+      :ns pubsub-uri}
+     #'subscription/remote-subscribe-confirm]
+
+    [{:method :headline}
+     #'activity/remote-create]])))
 
 (defn node-matches?
   [request matcher]

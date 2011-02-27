@@ -69,10 +69,14 @@
       set-object-updated
       set-actor))
 
+(defn create-raw
+  [activity]
+  (entity/create Activity activity))
+
 (defn create
   [activity]
   (if-let [prepared-activity (prepare-activity activity)]
-    (entity/create Activity prepared-activity)))
+    (create-raw prepared-activity)))
 
 (defn index
   "Return all the activities in the database as abdera entries"

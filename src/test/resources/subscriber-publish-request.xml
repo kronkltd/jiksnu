@@ -1,7 +1,7 @@
 <iq type="set"
-    to="daniel@renfer.name"
+    to="duck@mycyclopedia.net"
     id="osw_159"
-    from="duck@mycyclopedia.net/1287624157761">
+    from="duck@beta.jiksnu.com/Psi+">
   <pubsub xmlns="http://jabber.org/protocol/pubsub">
     <subscribe xmlns="http://jabber.org/protocol/pubsub"
                node="urn:xmpp:microblog:0"

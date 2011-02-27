@@ -26,14 +26,14 @@
   [this]
   (into-array
    String
-   '("iq")))
+   '("iq" "message")))
 
 (defn -supNamespaces
   "The namespaces this plugin is interested in"
   [this]
   (into-array
    String
-   '("jabber:client")))
+   '("jabber:client" "jabber:client")))
 
 (defmethod default-format :atom
   [request response])
@@ -64,7 +64,6 @@
 (defn -process
   [this packet session
    repo queue settings]
-  #_(println " ")
   (if-let [to (.getStanzaTo packet)]
     (if-let [bare-to (.getBareJID to)]
       (with-database

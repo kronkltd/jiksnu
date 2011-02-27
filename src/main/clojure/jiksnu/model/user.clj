@@ -1,8 +1,17 @@
 (ns jiksnu.model.user
-  (:use jiksnu.model)
+  (:use jiksnu.model
+        [clojure.string :only (split)])
   (:require [karras.entity :as entity])
   (:import tigase.xmpp.BareJID
            jiksnu.model.User))
+
+(defn get-id
+  [user]
+  (.getLocalpart user))
+
+(defn get-domain
+  [^BareJID user]
+  (.getDomain user))
 
 (defn drop!
   []
@@ -30,6 +39,10 @@
   [local domain]
   (BareJID/bareJIDInstance local domain))
 
+(defn split-uri
+  [uri]
+  (split uri #"@"))
+
 (defn fetch-by-id
   [id]
   (entity/fetch-by-id User id))
@@ -38,20 +51,23 @@
   [jid]
   (show (.getLocalpart jid) (.getDomain jid)))
 
+(defn fetch-by-uri
+  [uri]
+  (apply show (split-uri uri)))
+
+(defn find-or-create
+  [username domain]
+  (if-let [user (show username domain)]
+      user
+      (create {:username username :domain domain})))
+
+(defn find-or-create-by-uri
+  [uri]
+  (apply find-or-create (split-uri uri)))
+
 (defn find-or-create-by-jid
   [jid]
-  (if-let [user (fetch-by-jid jid)]
-    user
-    (create {:username (.getLocalpart jid)
-             :domain (.getDomain jid)})))
-
-(defn get-id
-  [user]
-  (.getLocalpart user))
-
-(defn get-domain
-  [^BareJID user]
-  (.getDomain user))
+  (find-or-create (.getLocalpart jid) (.getDomain jid)))
 
 (defn subnodes
   [^BareJID user subnode]
