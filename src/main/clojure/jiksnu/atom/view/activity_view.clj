@@ -61,29 +61,15 @@ an Element"
 (defn add-author
   [^Entry entry author-id]
   (if-let [user (model.user/fetch-by-id author-id)]
-    (let [author-element (.addExtension entry atom-ns "author" "")
-          author (Person. (make-object author-element))
-          author-uri (full-uri user)
-          author-name (:name user)
+    (let [author-name (:name user)
           author-jid  (str (:username user) "@" (:domain user))
           actor-element (.addExtension entry as-ns "actor" "activity")]
-      (doto author
-        (.setObjectType person-uri)
-        (.setId (str "acct:" (:username user)
-                     "@" (:domain user)))
-        (.setName (:first-name user) (:last-name user))
-        (.setDisplayName (:name user))
-        (.addSimpleExtension atom-ns "email" ""
-                             (or (:email user) author-jid))
-        (.addSimpleExtension atom-ns "name" "" (:name user))
-        (.addAvatar (:avatar-url user) "image/jpeg")
-        (.addSimpleExtension atom-ns "uri" "" author-uri))
       (doto actor-element
         (.addSimpleExtension atom-ns "name" "" author-name)
         (.addSimpleExtension atom-ns "email" "" author-jid)
         (.addSimpleExtension atom-ns "uri" "" author-jid))
-      (.addExtension entry author)
-      (.addExtension entry actor-element))))
+      (.addExtension entry actor-element)
+      (.addExtension entry (show-section user)))))
 
 (defn add-authors
   [^Entry entry ^Activity activity]
@@ -143,9 +129,7 @@ serialization"
                              :title title}
                             extension-maps)))))
 
-(defn ^Entry to-entry
-  "Takes a json object that matches the results of serializing an Abdera
-entry and converts it to an entry"
+(defsection show-section [Activity :atom]
   [^Activity activity]
   (let [entry (new-entry)]
     (doto entry
@@ -168,8 +152,6 @@ entry and converts it to an entry"
         (let [subject-element
               (.addExtension rule-element osw-uri "acl-subject" "")]
           (.setAttributeValue subject-element "type" everyone-uri))))
-
-
     (let [object-element (.addExtension entry as-ns "object" "activity")]
       (.setObjectType object-element status-uri)
       (.setUpdated object-element (:object-updated activity))

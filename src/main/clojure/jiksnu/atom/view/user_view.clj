@@ -1,7 +1,8 @@
 (ns jiksnu.atom.view.user-view
   (:use ciste.view
         jiksnu.view
-        jiksnu.model)
+        jiksnu.model
+        jiksnu.namespace)
   (:require [jiksnu.model.user :as model.user])
   (:import javax.xml.namespace.QName
            com.cliqset.abdera.ext.activity.object.Person
@@ -10,18 +11,25 @@
            org.apache.abdera.model.Entry))
 
 (defn make-object
-  [name]
+  [namespace name prefix]
   (com.cliqset.abdera.ext.activity.Object.
-   *abdera-factory* (QName. name)))
+   *abdera-factory* (QName. namespace name prefix)))
 
-;; (defn ^Person show-section
-;;   [^User user]
-;;   (let [person (Person. (make-object "author"))]
-;;     (.setDisplayName person (:name user))
-;;     #_(.setName person (:first-name user) (:last-name user))
-;;     (.setObjectType person "person")
-;;     (.addAvatar person (:avatar-url user) "application/jpeg")
-;;     person))
+(defsection show-section [User :atom]
+  [^User user & options]
+  (let [person (Person. (make-object atom-ns "author" ""))
+        author-uri (full-uri user)]
+    (.setObjectType person person-uri)
+    (.setId person (str "acct:" (:username user)
+                        "@" (:domain user)))
+    (.setName person (:first-name user) (:last-name user))
+    (.setDisplayName person (:name user))
+    (.addSimpleExtension person atom-ns "email" ""
+                         (or (:email user) author-jid))
+    (.addSimpleExtension person atom-ns "name" "" (:name user))
+    (.addAvatar person (:avatar-url user) "image/jpeg")
+    (.addSimpleExtension person atom-ns "uri" "" author-uri)
+    person))
 
 (defn get-uri
   [^User user]
