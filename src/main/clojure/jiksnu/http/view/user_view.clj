@@ -17,23 +17,22 @@
 
 (defsection uri [User]
   [user & options]
-  (str "/" (:username user)))
+  (if (= (:domain user) (:domain (config)))
+    (str "/" (:username user))
+    (str "/users/" (:_id user))))
 
 (defsection title [User]
   [user & options]
   (or (:display-name user)
       (:first-name user)
-      (:username user)))
+      (str (:username user) "@" (:domain user))))
 
 (defn avatar-img
   [user]
   (let [{:keys [avatar-url title email domain name]} user]
     (let [jid (str (:username user) "@" domain)]
-      [:a.url {:href
-               (if (= (:domain user) (:domain (config)))
-                 (uri user)
-                 (str "/users/" (:_id user)))
-              :title title}
+      [:a.url {:href (uri user)
+               :title title}
        [:img.avatar.photo
         {:width "48"
          :height "48"
@@ -45,9 +44,7 @@
   [user & options]
   (list
    (avatar-img user)
-   (:username user)
-   "@"
-   (:domain user)))
+   (link-to user)))
 
 (defsection index-line [User :html]
   [user & options]
@@ -55,9 +52,7 @@
    [:td (avatar-img user)]
    [:td (:username user)]
    [:td (:domain user)]
-   [:td [:a {:href (if (= (:domain user) (:domain (config)))
-                     (uri user)
-                     (str "/users/" (:_id user)))} "Show"]]
+   [:td [:a {:href (uri user)} "Show"]]
    [:td [:a {:href (str (uri user) "/edit")} "Edit"]]
    [:td (f/form-to [:delete (str "/users/" (:_id user))]
                    (f/submit-button "Delete"))]])
