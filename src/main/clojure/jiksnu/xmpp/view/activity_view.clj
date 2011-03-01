@@ -59,14 +59,14 @@
 (defn notify
   [recipient ^Activity activity]
   (with-serialization :xmpp
-    (with-format :atom
+    (with-format :xmpp
       (let [recipient-jid (make-jid recipient)
             author (model.user/fetch-by-id (first (:authors activity)))
             message-text (:summary activity)
             ele (make-element
                  "message" {"type" "headline"}
-                 ["subject" {} "New activity"]
-                 ["body" {} message-text]
+                 #_["subject" {} "New activity"]
+                 #_["body" {} message-text]
                  ["event" {"xmlns" "http://jabber.org/protocol/pubsub#event"}
                   (index-block [activity])])]
         (let [message

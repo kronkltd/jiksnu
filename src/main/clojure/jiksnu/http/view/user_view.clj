@@ -29,7 +29,10 @@
   [user]
   (let [{:keys [avatar-url title email domain name]} user]
     (let [jid (str (:username user) "@" domain)]
-      [:a.url {:href (uri user)
+      [:a.url {:href
+               (if (= (:domain user) (:domain (config)))
+                 (uri user)
+                 (str "/users/" (:_id user)))
               :title title}
        [:img.avatar.photo
         {:width "48"
@@ -40,7 +43,11 @@
 
 (defsection show-section-minimal [User :html]
   [user & options]
-  (avatar-img user))
+  (list
+   (avatar-img user)
+   (:username user)
+   "@"
+   (:domain user)))
 
 (defsection index-line [User :html]
   [user & options]
