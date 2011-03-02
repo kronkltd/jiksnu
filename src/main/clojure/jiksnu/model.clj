@@ -17,6 +17,10 @@
 (def #^:dynamic *mongo-database*
      (karras/mongo-db (-> (config) :database :name)))
 
+(defn mongo-database
+  []
+  (karras/mongo-db (-> (config) :database :name)))
+
 (defembedded Person
   [:name])
 
@@ -41,7 +45,7 @@
 
 (defmacro with-database
   [& body]
-  `(karras/with-mongo-request *mongo-database*
+  `(karras/with-mongo-request (mongo-database)
      ~@body))
 
 (defmacro with-environment
