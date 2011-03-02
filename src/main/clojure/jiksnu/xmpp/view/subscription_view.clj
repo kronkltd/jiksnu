@@ -24,6 +24,12 @@
                    "jid" (str (:username subscriber) "@"
                               (:domain subscriber))})))
 
+(defn subscription-request-minimal
+  [subscription]
+  (make-element
+   "subscribe" {"node" microblog-uri
+                "jid" (:to subscription)}))
+
 (defn minimal-subscriber-response
   [subscribers]
   (make-element
@@ -80,6 +86,24 @@
     (subscription-response-element subscription))
    :from (:to request)
    :to (:from request)})
+
+(defn notify-subscribe
+  [request subscription]
+  (with-serialization :xmpp
+    (with-format :xmpp
+      (let [subscribee (model.user/fetch-by-id (:to subscription))]
+        (println "subscribee: " subscribee)
+        (let [ele (make-element
+                   "iq" {"type" "set"
+                         "id" (:id request)}
+                   ["pubsub" {"xmlns" pubsub-uri}
+                    (subscription-request-minimal subscription)])]
+          (println "ele: " ele)
+          (make-packet
+           {:body ele
+            :type :set
+            :from (:to subscription)
+            :to (:from subscription)}))))))
 
 (defview #'unsubscribe :xmpp
   [request subscription]

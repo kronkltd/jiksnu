@@ -174,7 +174,8 @@
         (map
          (fn [subscription]
            [:li (show-section-minimal
-                 (jiksnu.model.user/fetch-by-id (:to subscription)))])
+                 (jiksnu.model.user/fetch-by-id (:to subscription)))
+            (if (:pending subscription) " (pending)")])
          (model.subscription/subscriptions user))]
        [:p [:a {:href "#"} "Add Remote"]]]
       [:div

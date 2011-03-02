@@ -39,7 +39,7 @@
 
 (defn subscribe
   [actor user]
-  (create {:from actor :to user}))
+  (create {:from actor :to user :pending true}))
 
 (defn unsubscribe
   [actor user]
