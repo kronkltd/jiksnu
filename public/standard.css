@@ -8,7 +8,7 @@ body
 
 #wrap {
     margin: 0 auto;
-    max-width: 1000px;
+    max-width: 1300px;
     min-width: 760px;
     overflow: hidden;
     width: 100%;
@@ -16,6 +16,11 @@ body
 
 a img {
     border: none;
+}
+
+.aside {
+    float: right;
+    width: 30%;
 }
 
 .content
@@ -34,6 +39,7 @@ a img {
 
 .activities {
     padding-left: 0px;
+    width: 70%;
 }
 
 .activities article

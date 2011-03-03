@@ -129,64 +129,74 @@
           (unsubscribe-form user)
           (subscribe-form user))]])))
 
+
+(defn remote-subscribe-form
+  [user]
+  (list
+   [:a.entity_remote_subscribe
+    {:href (str "/main/ostatus?nickname="
+                (:username user))}
+    "Subscribe"]
+   (f/form-to
+    [:post "/main/ostatus"]
+    [:fieldset
+     [:legend "Subscribe to " (:username user)]
+     [:ul.form_data
+      [:li.ostatus_nickname
+       (f/label :nickname "User nickname")
+       (f/hidden-field :nickname (:username user))]
+      [:li.ostatus_profile
+       (f/label :profile "Profile Account")
+       (f/text-field :profile)]]
+     (f/submit-button "Submit")])))
+
+(defn subscriptions-list
+  [user]
+  [:div
+   [:h3 [:a {:href (str (uri user) "/subscriptions") }
+         "Subscriptions"]]
+   [:ul
+    (map
+     (fn [subscription]
+       [:li (show-section-minimal
+             (jiksnu.model.user/fetch-by-id (:to subscription)))
+        (if (:pending subscription) " (pending)")])
+     (model.subscription/subscriptions user))]
+   [:p [:a {:href "#"} "Add Remote"]]])
+
 (defsection show-section [User :html]
   [user & options]
   (let [actor (current-user-id)]
     (list
      (add-form (Activity.))
      [:div
-      [:p (avatar-img user)]
-      [:p (:username user) (if (not= (:domain user) (:domain (config)))
-                             (list "@" (:domain user)))
-       " (" (:name user) ")"]
-      [:p (:location user)]
-      [:p (:bio user)]
-      [:p (:url user)]
-      [:p "Id: " (:_id user)]
-      (if actor
-        (list
-         (if (model.subscription/subscribed? actor (:_id user))
-           [:p "This user follows you."])
-         (if (model.subscription/subscribing? actor (:_id user))
-           [:p "You follow this user."])
-         (user-actions user))
-        (list
-         [:a.entity_remote_subscribe
-          {:href (str "/main/ostatus?nickname="
-                      (:username user))}
-          "Subscribe"]
-         (f/form-to
-          [:post "/main/ostatus"]
-          [:fieldset
-           [:legend "Subscribe to " (:username user)]
-           [:ul.form_data
-            [:li.ostatus_nickname
-             (f/label :nickname "User nickname")
-             (f/hidden-field :nickname (:username user))]
-            [:li.ostatus_profile
-             (f/label :profile "Profile Account")
-             (f/text-field :profile)]]
-           (f/submit-button "Submit")])))
-      [:div
-       [:h3 [:a {:href (str (uri user) "/subscriptions") }
-            "Subscriptions"]]
-       [:ul
-        (map
-         (fn [subscription]
-           [:li (show-section-minimal
-                 (jiksnu.model.user/fetch-by-id (:to subscription)))
-            (if (:pending subscription) " (pending)")])
-         (model.subscription/subscriptions user))]
-       [:p [:a {:href "#"} "Add Remote"]]]
-      [:div
-       [:h3 [:a {:href (str (uri user) "/subscribers")}
-             "Subscribers"]]
-       [:ul
-        (map
-         (fn [subscriber]
-           [:li (show-section-minimal
-                 (jiksnu.model.user/fetch-by-id (:from subscriber)))])
-         (model.subscription/subscribers user))]]
+      [:div.aside
+       [:div.hcard
+        [:p (avatar-img user)]
+        [:p (:username user) (if (not= (:domain user) (:domain (config)))
+                               (list "@" (:domain user)))
+         " (" (:name user) ")"]
+        [:p (:location user)]
+        [:p (:bio user)]
+        [:p (:url user)]
+        [:p "Id: " (:_id user)]]
+       (if actor
+         (list
+          (if (model.subscription/subscribed? actor (:_id user))
+            [:p "This user follows you."])
+          (if (model.subscription/subscribing? actor (:_id user))
+            [:p "You follow this user."])))
+       (user-actions user)
+       (remote-subscribe-form user)
+       [:div
+        [:h3 [:a {:href (str (uri user) "/subscribers")}
+              "Subscribers"]]
+        [:ul
+         (map
+          (fn [subscriber]
+            [:li (show-section-minimal
+                  (jiksnu.model.user/fetch-by-id (:from subscriber)))])
+          (model.subscription/subscribers user))]]]
       [:div.activities
        (map show-section-minimal
             (model.activity/find-by-user user))]
