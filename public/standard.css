@@ -110,7 +110,7 @@ section
 /*     width: 50px; */
 /* } */
 
-.entry-content
+.entry-content, .entry-title
 {
     margin-left: 50px;
 }
