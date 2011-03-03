@@ -42,9 +42,8 @@
     (entity/fetch-one Subscription option-map)))
 
 (defn delete
-  [id]
-  (if-let [subscription (show :_id (make-id id))]
-    (entity/delete subscription)))
+  [subscription]
+  (entity/delete subscription))
 
 (defn subscribe
   [actor user]
