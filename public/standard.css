@@ -189,7 +189,7 @@ section.content
 
 article footer
 {
-    clear: both;
+    /* clear: both; */
     width: 100%;
     display: block;
 }

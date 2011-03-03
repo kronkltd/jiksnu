@@ -82,7 +82,7 @@
   "Return all the activities in the database as abdera entries"
   [& opts]
   (let [option-map (apply hash-map opts)]
-    (entity/fetch Activity option-map :sort [(sugar/desc :updated)])))
+    (entity/fetch Activity option-map :sort [(sugar/desc :published)])))
 
 (defn fetch-by-id
   [id]

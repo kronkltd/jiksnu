@@ -31,8 +31,14 @@
       [:fieldset
        [:legend "Post an activity"]
        [:ul
+        [:li (f/label :title "Title")
+         (f/text-field :title (:title activity))]
         [:li (f/label :summary "Summary")
-         (f/text-area :summary (:summary activity))]]
+         (f/text-area :summary (:summary activity))]
+        [:li (f/label :tags "Tags")
+         (f/text-field :tags (:tags activity))]
+        [:li (f/label :recipients "Recipients")
+         (f/text-field :recipients (:recipients activity))]]
        (f/submit-button "Post")]))])
 
 (defn delete-link
@@ -45,6 +51,18 @@
   [:a.edit-activity
            {:href (str (uri activity) "/edit")}
            "Edit"])
+
+(defn comment-link
+  [activity]
+  [:a.edit-activity
+           {:href (str (uri activity) "/comment")}
+           "Comment"])
+
+(defn like-link
+  [activity]
+  [:a.edit-activity
+           {:href (str (uri activity) "/likes")}
+           "Like"])
 
 (defsection show-section-minimal [Activity :html]
   [activity & options]
@@ -65,8 +83,10 @@
     [:p [:a {:href (uri activity)}
          [:time (:published activity)]]]
     (dump activity)]
-   #_[:footer
+   [:footer
     [:ul.buttons
+     [:li (comment-link activity)]
+     [:li (like-link activity)]
      [:li (delete-link activity)]
      [:li (edit-link activity)]]]])
 
