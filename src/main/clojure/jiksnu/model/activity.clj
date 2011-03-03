@@ -81,8 +81,18 @@
 (defn index
   "Return all the activities in the database as abdera entries"
   [& opts]
-  (let [option-map (apply hash-map opts)]
-    (entity/fetch Activity option-map :sort [(sugar/desc :published)])))
+  (let [user (current-user)]
+    (let [option-map (apply hash-map opts)]
+      (let [merged-options
+            (merge
+             (if user
+               (if (not (is-admin? user))
+                 {:$or [{:public true}
+                        {:authors (:_id user)}]})
+               {:public true})
+             option-map)]
+        (entity/fetch Activity merged-options
+                      :sort [(sugar/desc :published)])))))
 
 (defn fetch-by-id
   [id]
