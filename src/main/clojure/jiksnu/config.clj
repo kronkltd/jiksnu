@@ -8,9 +8,11 @@
   (ref {:development {:database {:host "localhost"
                                  :name :jiksnu_development}
                       :domain "beta.jiksnu.com"
+                      :registration-enabled false
                       :print {:request true
                               :params false}}
         :test {:domain "test.jiksnu.com"
+               :registration-enabled false
                :database {:host "localhost"
                           :name :jiksnu_test}}}))
 

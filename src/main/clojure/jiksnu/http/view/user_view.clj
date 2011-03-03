@@ -249,17 +249,20 @@
   [request _]
   {:body
    [:div
-    [:h1 "Register"]
-    (f/form-to
-     [:post "/main/register"]
-     [:p
-      (f/label :username "Username:")
-      (f/text-field :username)]
-     [:p (f/label :password "Password:")
-      (f/password-field :password)]
-     [:p (f/label :confirm_password "Confirm Password")
-      (f/password-field :confirm_password)]
-     [:p (f/submit-button "Register")])]})
+    (if (:registration-enabled (config))
+      (list
+       [:h1 "Register"]
+       (f/form-to
+        [:post "/main/register"]
+        [:p
+         (f/label :username "Username:")
+         (f/text-field :username)]
+        [:p (f/label :password "Password:")
+         (f/password-field :password)]
+        [:p (f/label :confirm_password "Confirm Password")
+         (f/password-field :confirm_password)]
+        [:p (f/submit-button "Register")]))
+      [:div "Registration is disabled at this time"])]})
 
 (defview #'profile :html
   [request user]
