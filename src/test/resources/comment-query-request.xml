@@ -1,0 +1,12 @@
+<body xmlns="http://jabber.org/protocol/httpbind"
+ rid="9696317" sid="2f5ff633">
+  <iq type="get"
+      to="duck@mycyclopedia.net"
+      id="osw_176"
+      from="duck@mycyclopedia.net/1299126555699">
+    <pubsub xmlns="http://jabber.org/protocol/pubsub">
+      <items xmlns="http://jabber.org/protocol/pubsub"
+             node="urn:xmpp:microblog:0:replies:item=urn:uuid:f8d0e5b5-4cf4-4806-83c1-015af6a7d0fa" />
+</pubsub>
+</iq>
+</body>
