@@ -75,6 +75,8 @@
          (list (view.user/avatar-img user)
                (link-to user))))
      (:authors activity))
+    (if (:public activity)
+      "public" "private")
     (if-let [t (:title activity)]
       [:h3.entry-title t])]
    [:section
