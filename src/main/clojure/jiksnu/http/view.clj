@@ -83,6 +83,11 @@
     :rel "stylesheet"
     :media "screen"}])
 
+(defn devel-environment-section
+  []
+  [:div.important.devel-section
+   "This site is running in development mode. No guarantees are made about the accuracy or security of information on this site. Use at your own risk."])
+
 (defmethod serialize-as :http
   [serialization response-map]
   (merge {:headers {"Content-Type" "text/html"}}
@@ -115,6 +120,7 @@
          (navigation-section)
          (login-section)]
         [:div#content
+         (devel-environment-section)
          (:body response)]
         [:footer
          [:p "Copyright © 2011 KRONK Ltd."]]]
