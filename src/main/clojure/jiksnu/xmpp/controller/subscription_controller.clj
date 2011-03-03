@@ -34,7 +34,15 @@
 
 (defn remote-subscribe-confirm
   [request]
-  true)
+  (let [subscriber (model.user/fetch-by-jid (:to request))
+        subscribee (model.user/fetch-by-jid (:from request))
+        subscription (model.subscription/find
+                      {:to (:_id subscribee) :from (:_id subscriber)})]
+    (println "subscriber: " subscriber)
+    (println "subscribee: " subscribee)
+    (println "subscription: " subscription)
+    (model.subscription/confirm subscription ))
+  )
 
 (defn subscribed
   [request]

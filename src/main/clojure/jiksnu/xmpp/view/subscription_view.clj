@@ -26,9 +26,10 @@
 
 (defn subscription-request-minimal
   [subscription]
-  (make-element
-   "subscribe" {"node" microblog-uri
-                "jid" (:to subscription)}))
+  (let [subscribee (model.user/fetch-by-id (:from subscription))]
+    (make-element
+     "subscribe" {"node" microblog-uri
+                  "jid" (make-jid subscribee)})))
 
 (defn minimal-subscriber-response
   [subscribers]
@@ -91,19 +92,26 @@
   [request subscription]
   (with-serialization :xmpp
     (with-format :xmpp
-      (let [subscribee (model.user/fetch-by-id (:to subscription))]
-        (println "subscribee: " subscribee)
+      (let [user (model.user/fetch-by-id (:from subscription))
+            subscribee (model.user/fetch-by-id (:to subscription))]
+        ;; (println "subscribee: " subscribee)
         (let [ele (make-element
-                   "iq" {"type" "set"
-                         "id" (:id request)}
+                   "iq" (merge {"type" "set"}
+                               (if (:id request)
+                                 {"id" (:id request)}))
                    ["pubsub" {"xmlns" pubsub-uri}
                     (subscription-request-minimal subscription)])]
-          (println "ele: " ele)
-          (make-packet
-           {:body ele
-            :type :set
-            :from (:to subscription)
-            :to (:from subscription)}))))))
+          ;; (println "ele: " ele)
+          (let [packet
+                (make-packet
+                 {:body ele
+                  :type :set
+                  :from (make-jid user)
+                  :to (make-jid subscribee)})]
+            (.initVars packet)
+            (println "packet: " packet)
+            (deliver-packet! packet)
+            ))))))
 
 (defview #'unsubscribe :xmpp
   [request subscription]

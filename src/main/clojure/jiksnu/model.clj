@@ -5,8 +5,8 @@
   (:import org.apache.abdera.Abdera
            org.apache.abdera.factory.Factory
            com.cliqset.abdera.ext.activity.ActivityExtensionFactory
-           com.cliqset.abdera.ext.poco.PocoExtensionFactory   
-           ))
+           com.cliqset.abdera.ext.poco.PocoExtensionFactory
+           org.bson.types.ObjectId))
 
 (defonce ^Abdera #^:dynamic *abdera* (Abdera.))
 (defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
@@ -56,3 +56,8 @@
 
 (def activity? (partial instance? Activity))
 (def subscription? (partial instance? Subscription))
+
+(defn make-id
+  [id]
+  (ObjectId. id))
+

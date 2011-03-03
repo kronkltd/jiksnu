@@ -2,25 +2,34 @@
   (:use jiksnu.model)
   (:require [karras.entity :as entity]
             [karras.sugar :as sugar])
-  (:import jiksnu.model.Subscription
-           org.bson.types.ObjectId))
-
-(defn make-id
-  [id]
-  (ObjectId. id))
+  (:import jiksnu.model.Subscription))
 
 (defn drop!
   []
   (entity/delete-all Subscription))
 
+(defn find
+  [args]
+  (entity/fetch-one Subscription args))
+
 (defn create
   [subscription & options]
-  (let [option-map
-        (merge {:to ""
-                :from ""
-                :created (sugar/date)}
-               subscription)]
-    (entity/create Subscription option-map)))
+  (println "subscription: " subscription)
+  (if-let [from (:from subscription)]
+    (if-let [to (:to subscription)]
+      (let [option-map
+            (merge {:created (sugar/date)}
+                   subscription)]
+        (let [subscription (find {:from from :to to})
+              query (sugar/where (sugar/eq :from from)
+                                      (sugar/eq :to to))]
+          (println "option-map: " option-map)
+          (println "query: " query)
+          (let [response (entity/update Subscription query
+                                        option-map :upsert)]
+            (println "response: " response)
+            (find {:from from :to to})
+            ))))))
 
 (defn index
   [& args]
@@ -40,6 +49,10 @@
 (defn subscribe
   [actor user]
   (create {:from actor :to user :pending true}))
+
+(defn confirm
+  [subscription]
+  (entity/save (assoc subscription :pending false)))
 
 (defn unsubscribe
   [actor user]

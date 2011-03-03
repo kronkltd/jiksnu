@@ -212,7 +212,7 @@
   ([name attrs & children]
      (let [element (Element. name)]
        (doseq [[attr val] attrs]
-         (.addAttribute element attr val))
+         (.addAttribute element attr (str val)))
        #_(println "children: " children)
        (doseq [child children]
          (process-child element child))
