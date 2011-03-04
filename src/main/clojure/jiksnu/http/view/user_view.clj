@@ -171,6 +171,11 @@
      (add-form (Activity.))
      [:div
       [:div.aside
+       (if (not= (:domain user) (:domain (config)))
+         [:p.important
+          "This is a cached copy of information for a user on a different system."
+          ]
+         )
        [:div.hcard
         [:p (avatar-img user)]
         [:p (:username user) (if (not= (:domain user) (:domain (config)))

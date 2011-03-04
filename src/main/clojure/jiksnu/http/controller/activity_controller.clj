@@ -49,7 +49,8 @@
 (defn delete
   [{{id "id"} :params
     :as request}]
-  (model.activity/delete id))
+  (model.activity/delete id)
+  true)
 
 (defn edit
   [request]
