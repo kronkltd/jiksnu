@@ -4,11 +4,12 @@
 
 (defonce #^:dynamic *debug* false)
 
-(defonce #^:dynamic *environments*
+(def #^:dynamic *environments*
   (ref {:development {:database {:host "localhost"
                                  :name :jiksnu_development}
                       :domain "beta.jiksnu.com"
                       :registration-enabled false
+                      :debug false
                       :print {:request true
                               :params false}}
         :test {:domain "test.jiksnu.com"
