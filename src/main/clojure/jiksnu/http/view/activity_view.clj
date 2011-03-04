@@ -203,8 +203,15 @@
      :template false
      :headers {"Location" (uri actor)}}))
 
+(defview #'update :html
+  [request activity]
+  (let [actor (current-user)]
+    {:status 303
+     :template false
+     :headers {"Location" (uri actor)}}))
+
 (defview #'delete :html
   [request activity]
   {:status 303
    :template false
-   :headers {"Location" (str (uri (current-user)) "/all")}})
+   :headers {"Location" "/"}})

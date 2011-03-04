@@ -73,6 +73,10 @@
   [activity]
   (entity/create Activity activity))
 
+(defn update
+  [activity]
+  (entity/save activity))
+
 (defn create
   [activity]
   (if-let [prepared-activity (prepare-activity activity)]
