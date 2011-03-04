@@ -89,6 +89,7 @@
     (let [option-map (apply hash-map opts)]
       (let [merged-options
             (merge
+             {:parent {:$exists false}}
              (if user
                (if (not (is-admin? user))
                  {:$or [{:public true}
@@ -126,3 +127,11 @@
 (defn find-by-user
   [user]
   (index :authors (:_id user)))
+
+(defn add-comment
+  [parent comment]
+  (entity/update Activity
+                 (sugar/eq :_id (:_id parent))
+                 (sugar/push :comments (:_id comment))
+                 )
+  )

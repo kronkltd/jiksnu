@@ -32,6 +32,12 @@
 
     [{:method :get
       :pubsub true
+      :name "items"
+      :node (str microblog-uri ":replies:item=:id")}
+     #'activity/fetch-comments]
+
+    [{:method :get
+      :pubsub true
       :node inbox-uri}
      #'user/inbox]
 
@@ -77,9 +83,13 @@
 
 (defn node-matches?
   [request matcher]
+  (println "matcher: " matcher)
   (if (:node matcher)
-    (if (= (:node request) (:node matcher))
-      request)
+    (if-let [response (clout.core/route-matches
+                       (clout.core/route-compile (:node matcher))
+                       (:node request))]
+      (do (println "node response: " response)
+       (assoc request :params response)))
     request))
 
 (defn type-matches?

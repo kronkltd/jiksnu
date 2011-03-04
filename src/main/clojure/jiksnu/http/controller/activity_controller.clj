@@ -14,7 +14,7 @@
   (model.activity/index))
 
 (defn create
-  [{{id "id" :as params} :params}]
+  [{{id "id" :as params} :params :as request}]
   (let [a (make Activity params)]
     (let [created-activity (model.activity/create a)
           user (current-user)
@@ -25,6 +25,9 @@
           (jiksnu.xmpp.view.activity-view/notify u created-activity)
           ))
       (model.item/push user created-activity)
+      (if (:parent created-activity)
+        (jiksnu.http.view.activity-view/notify-commented
+         request created-activity))
       (jiksnu.xmpp.view.activity-view/notify user created-activity)
       created-activity)))
 
@@ -55,6 +58,10 @@
 (defn edit
   [request]
   (show request))
+
+(defn new-comment
+  [{{id "id"} :params}]
+  (model.activity/show id))
 
 (defn user-timeline
   [{{id "id"} :params

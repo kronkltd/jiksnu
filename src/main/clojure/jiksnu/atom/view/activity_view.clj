@@ -136,13 +136,27 @@ serialization"
       (.setId (:_id activity))
       (.setPublished (:published activity))
       (.setUpdated (:updated activity))
-      (.setTitle (or (:title activity) (:summary activity)))
+      (.setTitle (or (and (not= (:title activity) "")
+                          (:title activity))
+                     (:summary activity)))
       (add-authors activity)
+;; <link rel="replies" thr:count="9" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:summary activity))
       (.addSimpleExtension as-ns "object-type" "activity" status-uri)
       (.addSimpleExtension as-ns "verb" "activity" post-uri)
       (add-extensions activity))
+    (if (:comments activity)
+      (let [comment-count (count (:comments activity))]
+        (let [thread-link (.newLink *abdera-factory*)]
+          (.setRel thread-link "replies")
+          (.setAttributeValue thread-link "count" (str comment-count))
+          (.setMimeType thread-link "application/atom+xml")
+          (.addLink entry thread-link)
+          )
+        )
+      )
     (if (:public activity)
       (let [rule-element (.addExtension entry osw-uri "acl-rule" "")]
         (let [action-element

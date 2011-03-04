@@ -56,6 +56,17 @@
   [request _]
   nil)
 
+(defview #'fetch-comments :xmpp
+  [request activities]
+  {:body
+   (make-element
+    "iq" {"type" "result"
+          "id" (:id request)}
+    (index-section activities))
+   :to (:from request)
+   :from (:to request)
+   :type :response})
+
 (defn notify
   [recipient ^Activity activity]
   (with-serialization :xmpp

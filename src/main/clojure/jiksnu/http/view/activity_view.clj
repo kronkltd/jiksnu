@@ -8,6 +8,7 @@
         ciste.core
         ciste.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.http.view.user-view :as view.user]
             [hiccup.form-helpers :as f])
@@ -23,34 +24,44 @@
   (:title activity))
 
 (defn activity-form
-  [activity uri]
-  (f/form-to
-   [:post uri]
-   [:fieldset
-    [:legend "Post an activity"]
-    [:ul
-     [:li (f/label :title "Title")
-      (f/text-field :title (:title activity))]
-     [:li (f/label :summary "Summary")
-      (f/text-area :summary (:summary activity))]
-     [:li (f/label :tags "Tags")
-      (f/text-field :tags (:tags activity))]
-     [:li (f/label :recipients "Recipients")
-      (f/text-field :recipients (:recipients activity))]]
-    [:li
-     [:fieldset
-      [:legend "Privacy"]
-      [:ul
-       [:li (f/label :public-public "Public")
-        (f/radio-button :public  true "public")]
-       [:li (f/label :public-group "Roster Group")
-        (f/radio-button :public (not (:public activity)) "group")]
-       [:li (f/label :public-custom "Custom Group")
-        (f/radio-button :public (not (:public activity)) "custom")]
-       [:li (f/label :public-private "Private")
-        (f/radio-button :public (not (:public activity)) "private")]
-       ]]]
-    (f/submit-button "Post")]))
+  ([activity]
+     (activity-form activity (uri activity)))
+  ([activity uri]
+     (activity-form activity uri nil))
+  ([activity uri parent]
+     (f/form-to
+      [:post uri]
+      [:fieldset
+       [:legend "Post an activity"]
+       [:ul
+        (if (:_id activity)
+          [:li.hidden
+           (f/hidden-field :_id (:_id activity))])
+        (if parents
+          [:li.hidden
+           (f/hidden-field :parent (:_id parent))])
+        [:li (f/label :title "Title")
+         (f/text-field :title (:title activity))]
+        [:li (f/label :summary "Summary")
+         (f/text-area :summary (:summary activity))]
+        [:li (f/label :tags "Tags")
+         (f/text-field :tags (:tags activity))]
+        [:li (f/label :recipients "Recipients")
+         (f/text-field :recipients (:recipients activity))]
+        [:li
+         [:fieldset
+          [:legend "Privacy"]
+          [:ul
+           [:li (f/label :public-public "Public")
+            (f/radio-button :public  true "public")]
+           [:li (f/label :public-group "Roster Group")
+            (f/radio-button :public (not (:public activity)) "group")]
+           [:li (f/label :public-custom "Custom Group")
+            (f/radio-button :public (not (:public activity)) "custom")]
+           [:li (f/label :public-private "Private")
+            (f/radio-button :public (not (:public activity)) "private")]
+           ]]]]
+       (f/submit-button "Post")])))
 
 (defsection add-form [Activity :html]
   [activity & options]
@@ -112,12 +123,18 @@
     [:p [:a {:href (uri activity)}
          [:time (:published activity)]]]
     (dump activity)]
+   [:div.comments
+    (map
+     (comp show-section-minimal model.activity/show)
+     (:comments activity))
+    ]
    [:footer
     [:ul.buttons
      [:li (comment-link activity)]
      [:li (like-link activity)]
      [:li (delete-link activity)]
-     [:li (edit-link activity)]]]])
+     [:li (edit-link activity)]]]]
+  )
 
 (defsection index-line-minimal [Activity :html]
   [activity & options]
@@ -219,6 +236,14 @@
   [request activity]
   {:body (edit-form activity)})
 
+(defview #'new-comment :html
+  [request activity]
+  {:body
+   [:div
+    (show-section-minimal activity)
+    [:p "new comment here"]
+    (activity-form {} "/notice/new" activity)]})
+
 (defview #'create :html
   [request activity]
   (let [actor (current-user)]
@@ -238,3 +263,10 @@
   {:status 303
    :template false
    :headers {"Location" "/"}})
+
+(defn notify-commented
+  [request activity]
+  (let [parent (model.activity/show (:parent activity))]
+    (model.activity/add-comment parent activity)
+    )
+  )

@@ -41,6 +41,7 @@
     [:get "/notice/:id"]                             #'activity/show
     [:get "/notice/:id.:format"]                     #'activity/show
     [:get "/notice/:id/edit"]                        #'activity/edit
+    [:get "/notice/:id/comment"]                     #'activity/new-comment
     [:get "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline
     [:get "/api/statuses/public_timeline.:format"]   #'activity/index
     [:get "/admin/subscriptions"]                    #'subscription/index
