@@ -71,7 +71,7 @@
 
 (defview #'subscribers :xmpp
   [request subscribers]
-  (request-packet request (subscriber-response-minimal subscribers)))
+  (result-packet request (subscriber-response-minimal subscribers)))
 
 (defview #'subscribe :xmpp
   [request subscription]

@@ -117,6 +117,7 @@
     (let [user (model.user/create (factory User))
           packet-map {:to (make-jid user)
                       :from (make-jid user)
+                      :type :get
                       :body (make-element "pubsub")}
           response (make-packet packet-map)]
       (expect (packet? response)))))

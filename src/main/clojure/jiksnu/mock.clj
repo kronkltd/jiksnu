@@ -2,12 +2,14 @@
   (:use jiksnu.factory
         jiksnu.file
         jiksnu.model
+        ciste.view
         jiksnu.namespace
         jiksnu.xmpp
         jiksnu.xmpp.view)
   (:require [jiksnu.atom.view :as atom.view]
             [jiksnu.model.subscription :as subscription])
-  (:import jiksnu.model.User
+  (:import jiksnu.model.Activity
+           jiksnu.model.User
            org.apache.axiom.util.UIDGenerator
            #_tigase.db.AuthRepository
            tigase.db.UserRepository
@@ -28,17 +30,22 @@
 
 (defn mock-activity-publish-request-element
   []
-  (to-tigase-element (read-xml "activity-publish-request.xml")))
+  (let [activity (factory Activity)]
+    (make-element
+     "pubsub"  {"xmlns" pubsub-uri}
+     ["items" {"node" microblog-uri}
+      (with-serialization :xmpp
+        (with-format :atom
+          (abdera-to-tigase-element (show-section activity))
+          ))
+     ]
+    ))
+  #_(to-tigase-element (read-xml "activity-publish-request.xml")))
 
 (defn mock-activity-query-request-element
   []
   (make-element
-   "iq" {"type" "get"
-         "id" (str (fseq :id))}
-   [(make-element
-     "pubsub" {"xmlns" pubsub-uri}
-     [(make-element
-       "items" {"node" microblog-uri} [])])]))
+   "pubsub" {"xmlns" pubsub-uri}))
 
 (defn mock-activity-query-request-with-id-element
   []
@@ -82,15 +89,20 @@
     (make-packet
      {:to (make-jid (factory User))
       :from (make-jid (factory User))
+      :type :set
       :body element})))
 
 (defn mock-activity-query-request-packet
   []
-  (let [element (mock-activity-query-request-element)]
-    (make-packet
-     {:to (make-jid (factory User))
-      :from (make-jid (factory User))
-      :body element})))
+  (let [element (mock-activity-query-request-element)
+        packet (make-packet
+                {:to (make-jid (factory User))
+                 :from (make-jid (factory User))
+                 :type :get
+                 :body element})
+        ]
+    (println "packet: " packet)
+    packet))
 
 (defn mock-activity-query-request-with-id-packet
   []
@@ -98,6 +110,7 @@
     (make-packet
      {:to (make-jid (factory User))
       :from (make-jid (factory User))
+      :type :get
       :body element})))
 
 (defn mock-inbox-query-request-packet
@@ -105,6 +118,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :get
     :body (mock-inbox-query-request-element)}))
 
 (defn mock-subscriber-publish-request-packet
@@ -112,6 +126,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :set
     :body (mock-subscriber-publish-request-element)}))
 
 (defn mock-subscriber-query-request-packet
@@ -119,6 +134,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :get
     :body (mock-subscriber-query-request-element)}))
 
 (defn mock-subscription-query-request-packet
@@ -126,6 +142,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :get
     :body (mock-subscription-query-request-element)}))
 
 (defn mock-subscription-publish-request-packet
@@ -133,6 +150,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :set
     :body (mock-subscription-publish-request-element)}))
 
 (defn mock-vcard-publish-request-packet
@@ -140,6 +158,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :get
     :body (mock-vcard-publish-request-element)}))
 
 (defn mock-vcard-query-request-packet
@@ -147,6 +166,7 @@
   (make-packet
    {:to (make-jid (factory User))
     :from (make-jid (factory User))
+    :type :get
     :body (mock-vcard-query-request-element)}))
 
 (defn mock-activity-entry

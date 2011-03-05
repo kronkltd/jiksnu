@@ -26,6 +26,7 @@
             packet (make-packet
                     {:from (make-jid user)
                      :to (make-jid user)
+                     :type :get
                      :body (mock-vcard-query-request-element)})
             request (make-request packet)
             response (show request)]

@@ -45,7 +45,7 @@
 
 (describe controller.subscription/subscribe ":xmpp")
 
-(describe notify-subscribe {:focus true}
+(describe notify-subscribe
   (do-it "should return a packet"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))

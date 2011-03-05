@@ -31,11 +31,12 @@
           (let [activity (model.activity/create (factory Activity))
                 packet-map {:from (make-jid author)
                             :to (make-jid author)
+                            :type :get
+                            :id "JIKSNU1"
                             :body (make-element
-                                   "iq" {"type" "get"}
-                                   ["pubsub" {"xmlns" pubsub-uri}
-                                    ["items" {"node" microblog-uri}
-                                     ["item" {"id" (:_id activity)}]]])}]
+                                   "pubsub" {"xmlns" pubsub-uri}
+                                   ["items" {"node" microblog-uri}
+                                    ["item" {"id" (:_id activity)}]])}]
             (println "packet-map: " packet-map)
             (let [packet (make-packet packet-map)]
               (println "packet: " packet)
@@ -50,18 +51,24 @@
     (do-it "should return an empty sequence"
       (let [packet (mock-activity-query-request-packet)
             request (make-request packet)]
+        (println "request: " request)
         (model.activity/drop!)
         (let [response (index request)]
           (expect (not (nil? response)))
           (expect (empty? response))))))
   (testing "when there are activities"
     (do-it "should return a sequence of activities"
-      (let [packet (mock-activity-query-request-packet)
-            author (model.user/create (factory User))
-            request (assoc (make-request packet)
-                      :to (make-jid (:username author) (:domain author)))]
+      (let [author (model.user/create (factory User))]
         (with-user author
-          (let [activity (model.activity/create (factory Activity))
+          (let [element (mock-activity-query-request-element)
+                packet (make-packet
+                        {:from (make-jid author)
+                         :to (make-jid author)
+                         :type :get
+                         :id (fseq :id)
+                         :body element})
+                request (make-request packet)
+                activity (model.activity/create (factory Activity))
                 response (index request)]
             (expect (seq response))
             (expect (every? activity? response))))))))

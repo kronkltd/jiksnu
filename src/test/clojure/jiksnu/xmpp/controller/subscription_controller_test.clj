@@ -20,6 +20,7 @@
             packet (make-packet
                     {:to (make-jid user)
                      :from (make-jid user)
+                     :type :get
                      :body (mock-subscriber-query-request-element)})
             request (make-request packet)
             s (model.subscription/create
@@ -38,6 +39,7 @@
             packet (make-packet
                     {:to (make-jid user)
                      :from (make-jid user)
+                     :type :get
                      :body (mock-subscription-query-request-element)})
             request (make-request packet)
             subscription (model.subscription/create
