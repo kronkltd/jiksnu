@@ -23,7 +23,7 @@
   [request]
   (if-let [actor (current-user-id)]
     (if-let [{{user "unsubscribeto"} :params} request]
-      (let [subscription (model.subscription/find
+      (let [subscription (model.subscription/find-record
                           {:from actor :to (make-id user)})]
         (println "unsubscribe: " subscription)
         (model.subscription/delete subscription)

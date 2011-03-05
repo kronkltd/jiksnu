@@ -8,7 +8,7 @@
   []
   (entity/delete-all Subscription))
 
-(defn find
+(defn find-record
   [args]
   (entity/fetch-one Subscription args))
 

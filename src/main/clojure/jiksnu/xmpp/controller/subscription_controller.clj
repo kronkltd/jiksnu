@@ -36,7 +36,7 @@
   [request]
   (let [subscriber (model.user/fetch-by-jid (:to request))
         subscribee (model.user/fetch-by-jid (:from request))
-        subscription (model.subscription/find
+        subscription (model.subscription/find-record
                       {:to (:_id subscribee) :from (:_id subscriber)})]
     (println "subscriber: " subscriber)
     (println "subscribee: " subscribee)
