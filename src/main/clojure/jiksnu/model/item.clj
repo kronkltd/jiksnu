@@ -6,6 +6,10 @@
   (:import jiksnu.model.Item
            jiksnu.model.Activity))
 
+(defn drop!
+  []
+  (entity/delete-all Item))
+
 (defn index
   [user]
   (entity/fetch Item {:user (:_id user)}))
