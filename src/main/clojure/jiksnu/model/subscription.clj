@@ -65,6 +65,7 @@
 
 (defn subscribers
   [user]
+  (println "user: " user)
   (index :to (:_id user)))
 
 (defn subscriptions

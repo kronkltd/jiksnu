@@ -5,7 +5,8 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.controller.subscription-controller
-        [jiksnu.xmpp.view :only (make-request make-jid make-packet make-element)]
+        [jiksnu.xmpp.view :only (make-request
+                                 make-jid make-packet make-element)]
         [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
@@ -13,7 +14,7 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-(describe subscriptions {:focus true}
+(describe subscriptions
   (testing "when there are subscriptions"
     (do-it "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))

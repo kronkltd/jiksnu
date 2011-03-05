@@ -13,9 +13,12 @@
 
 (defn subscribers
   [request]
-  (let [recipient (model.user/fetch-by-jid (:to request))
-        subscriptions (model.subscription/subscribers recipient)]
-    subscriptions))
+  (if-let [recipient (model.user/fetch-by-jid (:to request))]
+    (do (println "recipient: " recipient)
+      (let [subscriptions (model.subscription/subscribers recipient)]
+        (println "subscriptions: " subscriptions)
+        (println "all: " (model.subscription/index))
+        subscriptions))))
 
 (defn subscribe
   [request]

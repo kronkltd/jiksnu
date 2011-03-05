@@ -50,7 +50,13 @@
 (describe index
   (testing "when there are no activities"
     (do-it "should return an empty sequence"
-      (let [packet (mock-activity-query-request-packet)
+      (let [user (model.user/create (factory User))
+            element (mock-activity-query-request-element)
+            packet (make-packet
+                    {:from (make-jid user)
+                     :to (make-jid user)
+                     :type :get
+                     :body element})
             request (make-request packet)]
         (println "request: " request)
         (model.activity/drop!)
