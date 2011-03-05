@@ -43,11 +43,11 @@
 (defn update
   [request]
   (if-let [a (show request)]
-    (do (println "a: " a)
-        (model.activity/update
-         (merge a
-                (if (= (get (:params request) "public") "public")
-                  {:public true}))))))
+    (let [opts
+          (merge a
+                 (if (= (get (:params request) "public") "public")
+                   {:public true}))]
+      (model.activity/update opts))))
 
 (defn delete
   [{{id "id"} :params

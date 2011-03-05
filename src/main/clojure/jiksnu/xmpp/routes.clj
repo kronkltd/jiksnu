@@ -83,13 +83,11 @@
 
 (defn node-matches?
   [request matcher]
-  (println "matcher: " matcher)
   (if (:node matcher)
     (if-let [response (clout.core/route-matches
                        (clout.core/route-compile (:node matcher))
                        (:node request))]
-      (do (println "node response: " response)
-       (assoc request :params response)))
+      (assoc request :params response))
     request))
 
 (defn type-matches?
