@@ -83,91 +83,91 @@
   []
   (children (mock-activity-query-request-element)))
 
-(defn mock-activity-publish-request-packet
-  []
-  (let [element (mock-activity-publish-request-element)]
-    (make-packet
-     {:to (make-jid (factory User))
-      :from (make-jid (factory User))
-      :type :set
-      :body element})))
+;; (defn mock-activity-publish-request-packet
+;;   []
+;;   (let [element (mock-activity-publish-request-element)]
+;;     (make-packet
+;;      {:to (make-jid (factory User))
+;;       :from (make-jid (factory User))
+;;       :type :set
+;;       :body element})))
 
-(defn mock-activity-query-request-packet
-  []
-  (let [element (mock-activity-query-request-element)
-        packet (make-packet
-                {:to (make-jid (factory User))
-                 :from (make-jid (factory User))
-                 :type :get
-                 :body element})
-        ]
-    (println "packet: " packet)
-    packet))
+;; (defn mock-activity-query-request-packet
+;;   []
+;;   (let [element (mock-activity-query-request-element)
+;;         packet (make-packet
+;;                 {:to (make-jid (factory User))
+;;                  :from (make-jid (factory User))
+;;                  :type :get
+;;                  :body element})
+;;         ]
+;;     (println "packet: " packet)
+;;     packet))
 
-(defn mock-activity-query-request-with-id-packet
-  []
-  (let [element (mock-activity-query-request-with-id-element)]
-    (make-packet
-     {:to (make-jid (factory User))
-      :from (make-jid (factory User))
-      :type :get
-      :body element})))
+;; (defn mock-activity-query-request-with-id-packet
+;;   []
+;;   (let [element (mock-activity-query-request-with-id-element)]
+;;     (make-packet
+;;      {:to (make-jid (factory User))
+;;       :from (make-jid (factory User))
+;;       :type :get
+;;       :body element})))
 
-(defn mock-inbox-query-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :get
-    :body (mock-inbox-query-request-element)}))
+;; (defn mock-inbox-query-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :get
+;;     :body (mock-inbox-query-request-element)}))
 
-(defn mock-subscriber-publish-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :set
-    :body (mock-subscriber-publish-request-element)}))
+;; (defn mock-subscriber-publish-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :set
+;;     :body (mock-subscriber-publish-request-element)}))
 
-(defn mock-subscriber-query-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :get
-    :body (mock-subscriber-query-request-element)}))
+;; (defn mock-subscriber-query-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :get
+;;     :body (mock-subscriber-query-request-element)}))
 
-(defn mock-subscription-query-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :get
-    :body (mock-subscription-query-request-element)}))
+;; (defn mock-subscription-query-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :get
+;;     :body (mock-subscription-query-request-element)}))
 
-(defn mock-subscription-publish-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :set
-    :body (mock-subscription-publish-request-element)}))
+;; (defn mock-subscription-publish-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :set
+;;     :body (mock-subscription-publish-request-element)}))
 
-(defn mock-vcard-publish-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :get
-    :body (mock-vcard-publish-request-element)}))
+;; (defn mock-vcard-publish-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :get
+;;     :body (mock-vcard-publish-request-element)}))
 
-(defn mock-vcard-query-request-packet
-  []
-  (make-packet
-   {:to (make-jid (factory User))
-    :from (make-jid (factory User))
-    :type :get
-    :body (mock-vcard-query-request-element)}))
+;; (defn mock-vcard-query-request-packet
+;;   []
+;;   (make-packet
+;;    {:to (make-jid (factory User))
+;;     :from (make-jid (factory User))
+;;     :type :get
+;;     :body (mock-vcard-query-request-element)}))
 
 (defn mock-activity-entry
   []
