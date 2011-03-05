@@ -41,8 +41,7 @@
     (println "subscriber: " subscriber)
     (println "subscribee: " subscribee)
     (println "subscription: " subscription)
-    (model.subscription/confirm subscription ))
-  )
+    (model.subscription/confirm subscription )))
 
 (defn subscribed
   [request]

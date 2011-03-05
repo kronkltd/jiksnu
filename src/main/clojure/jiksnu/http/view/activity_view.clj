@@ -126,15 +126,13 @@
    [:div.comments
     (map
      (comp show-section-minimal model.activity/show)
-     (:comments activity))
-    ]
+     (:comments activity))]
    [:footer
     [:ul.buttons
      [:li (comment-link activity)]
      [:li (like-link activity)]
      [:li (delete-link activity)]
-     [:li (edit-link activity)]]]]
-  )
+     [:li (edit-link activity)]]]])
 
 (defsection index-line-minimal [Activity :html]
   [activity & options]

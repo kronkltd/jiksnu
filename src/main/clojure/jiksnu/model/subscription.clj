@@ -20,7 +20,7 @@
       (let [option-map
             (merge {:created (sugar/date)}
                    subscription)]
-        (let [subscription (find {:from from :to to})
+        (let [subscription (find-record {:from from :to to})
               query (sugar/where (sugar/eq :from from)
                                       (sugar/eq :to to))]
           (println "option-map: " option-map)
@@ -28,7 +28,7 @@
           (let [response (entity/update Subscription query
                                         option-map :upsert)]
             (println "response: " response)
-            (find {:from from :to to})
+            (find-record {:from from :to to})
             ))))))
 
 (defn index
