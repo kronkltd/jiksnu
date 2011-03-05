@@ -36,7 +36,7 @@
         (expect (not (empty? results)))
         (expect (every? (partial instance? Subscription) results))))))
 
-(describe subscribers {:focus true}
+(describe subscribers
   (testing "when there are subscribers"
     (do-it "should not be empty"
       (let [user (model.user/create (factory User))

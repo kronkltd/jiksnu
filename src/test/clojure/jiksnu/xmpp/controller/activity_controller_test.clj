@@ -38,9 +38,7 @@
                                    "pubsub" {"xmlns" pubsub-uri}
                                    ["items" {"node" microblog-uri}
                                     ["item" {"id" (:_id activity)}]])}]
-            (println "packet-map: " packet-map)
             (let [packet (make-packet packet-map)]
-              (println "packet: " packet)
               (let [request (make-request packet)
                     response (show request)]
                 (expect (activity? response)))))))))
@@ -58,8 +56,6 @@
                      :type :get
                      :body element})
             request (make-request packet)]
-        (println "request: " request)
-        (model.activity/drop!)
         (let [response (index request)]
           (expect (not (nil? response)))
           (expect (empty? response))))))

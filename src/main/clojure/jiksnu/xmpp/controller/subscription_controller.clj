@@ -14,11 +14,7 @@
 (defn subscribers
   [request]
   (if-let [recipient (model.user/fetch-by-jid (:to request))]
-    (do (println "recipient: " recipient)
-      (let [subscriptions (model.subscription/subscribers recipient)]
-        (println "subscriptions: " subscriptions)
-        (println "all: " (model.subscription/index))
-        subscriptions))))
+    (model.subscription/subscribers recipient)))
 
 (defn subscribe
   [request]
@@ -41,10 +37,7 @@
         subscribee (model.user/fetch-by-jid (:from request))
         subscription (model.subscription/find-record
                       {:to (:_id subscribee) :from (:_id subscriber)})]
-    (println "subscriber: " subscriber)
-    (println "subscribee: " subscribee)
-    (println "subscription: " subscription)
-    (model.subscription/confirm subscription )))
+    (model.subscription/confirm subscription)))
 
 (defn subscribed
   [request]

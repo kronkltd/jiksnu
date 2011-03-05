@@ -36,11 +36,8 @@
 
 (defn show
   [request]
-  (let [to (:to request)
-        id (.getLocalpart to)
-        domain (.getDomain to)]
-    (println "id: " id)
-    (model.user/show id domain)))
+  (let [to (:to request)]
+    (model.user/fetch-by-jid to)))
 
 (defn create
   [request]

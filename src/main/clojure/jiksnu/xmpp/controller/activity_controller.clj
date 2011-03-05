@@ -46,8 +46,5 @@
 
 (defn fetch-comments
   [{{id "id"} :params :as request}]
-  (println "fetch request: " request)
-  (println "id: " id)
   (if-let [activity (model.activity/show id)]
-    (do (println "activity: " activity)
-        (map model.activity/show (:comments activity)))))
+    (map model.activity/show (:comments activity))))
