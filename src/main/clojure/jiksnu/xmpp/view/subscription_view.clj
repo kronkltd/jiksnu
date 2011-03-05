@@ -38,7 +38,7 @@
      "unsubscribe" {"node" microblog-uri
                   "jid" (make-jid subscribee)})))
 
-(defn minimal-subscriber-response
+(defn subscriber-response-minimal
   [subscribers]
   (make-element
    "pubsub" {"xmlns" pubsub-uri}
@@ -56,7 +56,7 @@
                      "jid" (str (:username subscribee) "@"
                                 (:domain subscribee))})))
 
-(defn minimal-subscription-response
+(defn subscription-response-minimal
   "Returns a response iq packet containing the ids in entries"
   [subscriptions]
   (make-element
@@ -67,96 +67,61 @@
 
 (defview #'subscriptions :xmpp
   [request subscriptions]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)}
-    (minimal-subscription-response subscriptions))
-   :from (:to request)
-   :to (:from request)})
+  (result-packet request (subscription-response-minimal subscriptions)))
 
 (defview #'subscribers :xmpp
   [request subscribers]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)}
-    (minimal-subscriber-response subscribers))
-   :from (:to request)
-   :to (:from request)})
+  (request-packet request (subscriber-response-minimal subscribers)))
 
 (defview #'subscribe :xmpp
   [request subscription]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)}
-    (subscription-response-element subscription))
-   :from (:to request)
-   :to (:from request)})
+  (result-packet request (subscription-response-element subscription)))
 
 (defn notify-subscribe
   [request subscription]
   (with-serialization :xmpp
     (with-format :xmpp
       (let [user (model.user/fetch-by-id (:from subscription))
-            subscribee (model.user/fetch-by-id (:to subscription))]
-        ;; (println "subscribee: " subscribee)
-        (let [ele (make-element
-                   "iq" (merge {"type" "set"}
-                               (if (:id request)
-                                 {"id" (:id request)}))
-                   ["pubsub" {"xmlns" pubsub-uri}
-                    (subscription-request-minimal subscription)])]
-          ;; (println "ele: " ele)
-          (let [packet
-                (make-packet
-                 {:body ele
-                  :type :set
-                  :from (make-jid user)
-                  :to (make-jid subscribee)})]
-            (.initVars packet)
-            (println "packet: " packet)
-            (deliver-packet! packet)
-            ))))))
+            subscribee (model.user/fetch-by-id (:to subscription))
+            ele (make-element
+                 "pubsub" {"xmlns" pubsub-uri}
+                 (subscription-request-minimal subscription))
+            packet
+            (make-packet
+             {:body ele
+              :type :set
+              :id (:id request)
+              :from (make-jid user)
+              :to (make-jid subscribee)})]
+        (.initVars packet)
+        (deliver-packet! packet)))))
 
 (defn notify-unsubscribe
   [request subscription]
-  (println "subscription: " subscription)
   (with-serialization :xmpp
     (with-format :xmpp
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (make-element
-                   "iq" (merge {"type" "set"}
-                               (if (:id request)
-                                 {"id" (:id request)}))
-                   ["pubsub" {"xmlns" pubsub-uri}
-                    (unsubscription-request-minimal subscription)])
+                 "pubsub" {"xmlns" pubsub-uri}
+                 (unsubscription-request-minimal subscription))
             packet
-                (make-packet
-                 {:body ele
-                  :type :set
-                  :from (make-jid user)
-                  :to (make-jid subscribee)})]
+            (make-packet
+             {:body ele
+              :type :set
+              :id (:id request)
+              :from (make-jid user)
+              :to (make-jid subscribee)})]
         (.initVars packet)
-        (println "packet: " packet)
         (deliver-packet! packet)))))
 
 (defview #'unsubscribe :xmpp
   [request subscription]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)})
-   :from (:to request)
-   :to (:from request)})
+  (result-packet request))
 
 (defview #'subscribed :xmpp
   [request subscription]
-  {:body subscription
-   :from (:to request)
-   :to (:from request)})
+  (set-packet request subscription))
 
 (defview #'remote-subscribe-confirm :xmpp
   [request _]

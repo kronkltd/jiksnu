@@ -34,10 +34,6 @@
     (map (partial property-map (current-user))
          (children vcard-element))))
 
-;; (defn index
-;;   [request]
-;;   (model.user/index))
-
 (defn show
   [request]
   (let [to (:to request)

@@ -33,17 +33,8 @@
   (let [{:keys [id to from]} request]
     {:body
      (make-element
-      "iq" {"type" "result"
-            "id" id}
-      ["query" {"xmlns" query-uri} (show-section user)])
+      "query" {"xmlns" query-uri} (show-section user))
+     :type :result
+     :id id
      :from to
      :to from}))
-
-;; (defview #'index :xmpp
-;;   [request statements]
-;;   {:body
-;;    (make-element
-;;     "query" {"xmlns" query-uri}
-;;     [(make-element
-;;       "vcard" {"xmlns" vcard-uri}
-;;       (map show-section-minimal statements))])})

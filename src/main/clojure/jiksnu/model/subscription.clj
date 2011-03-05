@@ -14,22 +14,17 @@
 
 (defn create
   [subscription & options]
-  (println "subscription: " subscription)
   (if-let [from (:from subscription)]
     (if-let [to (:to subscription)]
       (let [option-map
             (merge {:created (sugar/date)}
-                   subscription)]
-        (let [subscription (find-record {:from from :to to})
-              query (sugar/where (sugar/eq :from from)
-                                      (sugar/eq :to to))]
-          (println "option-map: " option-map)
-          (println "query: " query)
-          (let [response (entity/update Subscription query
-                                        option-map :upsert)]
-            (println "response: " response)
-            (find-record {:from from :to to})
-            ))))))
+                   subscription)
+            subscription (find-record {:from from :to to})
+            query (sugar/where (sugar/eq :from from)
+                               (sugar/eq :to to))
+            response (entity/update Subscription query
+                                    option-map :upsert)]
+        (find-record {:from from :to to})))))
 
 (defn index
   [& args]

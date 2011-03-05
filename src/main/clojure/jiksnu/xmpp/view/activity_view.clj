@@ -43,13 +43,10 @@
 
 (defview #'index :xmpp
   [request activities]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)}
-    (index-section activities))
+  {:body (index-section activities)
    :to (:from request)
    :from (:to request)
+   :id (:id request)
    :type :response})
 
 (defview #'remote-create :xmpp
@@ -58,13 +55,10 @@
 
 (defview #'fetch-comments :xmpp
   [request activities]
-  {:body
-   (make-element
-    "iq" {"type" "result"
-          "id" (:id request)}
-    (index-section activities))
+  {:body (index-section activities)
    :to (:from request)
    :from (:to request)
+   :id (:id request)
    :type :response})
 
 (defn notify
@@ -85,6 +79,8 @@
                {:to recipient-jid
                 :from (make-jid author)
                 :type :chat
+                ;; FIXME: generate an id for this case
+                :id "JIKSNU1"
                 :body ele})]
           (.initVars message)
           (deliver-packet! message))))))

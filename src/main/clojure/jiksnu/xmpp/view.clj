@@ -233,15 +233,27 @@
      (JID/jidInstance user domain resource)))
 
 (defn make-packet
-  [packet-map]
+  [{:keys [to from body type id] :as packet-map}]
   ;; (println "packet-map: " packet-map)
-  (let [packet
-        (Packet/packetInstance
-         (:body packet-map)
-         (:from packet-map)
-         (:to packet-map))]
-    ;; (println "making packet: " packet)
-    packet))
+  (let [element-name (condp = type
+                         :result "iq"
+                         :set "iq"
+                         :get "iq"
+                         :chat "message"
+                         :headline "message")
+        element (make-element
+                 element-name {"id" id
+                               "type" (if type (name type) "")
+                               "to" to
+                               "from" from})]
+    (println "element: " element)
+    (if body
+      (.addChild element body))
+    (let [packet
+          (Packet/packetInstance
+           element from to)]
+      (println "making packet: " packet)
+      packet)))
 
 (defn deliver-packet!
   [packet]
@@ -251,3 +263,19 @@
       (error "Router not started: " e)
       #_(stacktrace/print-stack-trace e)
       packet)))
+
+(defn set-packet
+  [request body]
+  {:body body
+   :from (:to request)
+   :to (:from request)
+   :id (:id request)
+   :type :set})
+
+(defn result-packet
+  [request body]
+  {:body body
+   :from (:to request)
+   :to (:from request)
+   :id (:id request)
+   :type :set})

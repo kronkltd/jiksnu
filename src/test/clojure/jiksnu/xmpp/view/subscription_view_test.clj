@@ -29,16 +29,15 @@
             subscription (model.subscription/subscribe
                           (:_id user) (:_id subscribee))]
         (let [response (subscription-request-minimal subscription)]
-          (expect (element? response))
-          (println "response: " response)))))
+          (expect (element? response))))))
 
 (describe unsubscription-request-minimal)
 
-(describe minimal-subscriber-response)
+(describe subscriber-response-minimal)
 
 (describe subscriber-response-element)
 
-(describe minimal-subscription-response)
+(describe subscription-response-minimal)
 
 (describe controller.subscription/subscriptions ":xmpp")
 
@@ -46,13 +45,13 @@
 
 (describe controller.subscription/subscribe ":xmpp")
 
-(describe notify-subscribe
+(describe notify-subscribe {:focus true}
   (do-it "should return a packet"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))
-          response (notify-subscribe {} subscription)]
+          response (notify-subscribe {:id "JIKSNU1"} subscription)]
       (expect (packet? response)))))
 
 (describe notify-unsubscribe)
