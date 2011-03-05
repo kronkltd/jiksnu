@@ -42,11 +42,6 @@ a img {
     width: 70%;
 }
 
-.activities article
-{
-    background-color: white;
-}
-
 .activities li {
     list-style-type: none;
 }
@@ -67,6 +62,7 @@ nav ul li
 article
 {
     display: block;
+    background-color: white;
     border-size: 1px;
     border-style: solid;
     position: relative;
