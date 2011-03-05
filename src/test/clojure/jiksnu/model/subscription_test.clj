@@ -43,12 +43,14 @@
   (testing "when the user is not logged in"
     (do-it "should raise an exception"))
   (testing "when the user is logged in"
-    (do-it "should return a Subscription"
-      (let [actor (model.user/create (factory User))
-            user (model.user/create (factory User))]
-        (with-user (:_id actor)
-          (let [response (subscribe (current-user-id) (:_id user))]
-            (expect (subscription? response))))))))
+    (testing "and the subscription doesn't exist"
+      (do-it "should return a Subscription"
+        (drop!)
+        (let [actor (model.user/create (factory User))
+              user (model.user/create (factory User))]
+          (with-user actor
+            (let [response (subscribe (current-user-id) (:_id user))]
+              (expect (subscription? response)))))))))
 
 (describe unsubscribe)
 

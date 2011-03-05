@@ -7,7 +7,9 @@
         [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.xmpp.controller.subscription-controller :as
+             controller.subscription])
   (:import jiksnu.model.User))
 
 (describe subscriber-response-element
@@ -20,7 +22,7 @@
         (expect (element? response))
         (println "response: " response)))))
 
-#_(describe subscription-request-minimal {:focus true}
+(describe subscription-request-minimal
     (do-it "should"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
@@ -30,16 +32,33 @@
           (expect (element? response))
           (println "response: " response)))))
 
+(describe unsubscription-request-minimal)
+
+(describe minimal-subscriber-response)
+
+(describe subscriber-response-element)
+
+(describe minimal-subscription-response)
+
+(describe controller.subscription/subscriptions ":xmpp")
+
+(describe controller.subscription/subscribers ":xmpp")
+
+(describe controller.subscription/subscribe ":xmpp")
+
 (describe notify-subscribe
-  (do-it "should"
+  (do-it "should return a packet"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
           subscription (model.subscription/subscribe
-                        (:_id user) (:_id subscribee))]
-      (let [response (notify-subscribe {} subscription)]
-        (expect (packet? response))
-        (println "response: " response)))))
+                        (:_id user) (:_id subscribee))
+          response (notify-subscribe {} subscription)]
+      (expect (packet? response)))))
 
-(describe subscriber-response-minimal)
+(describe notify-unsubscribe)
 
-(describe index)
+(describe controller.subscription/unsubscribe ":xmpp")
+
+(describe controller.subscription/subscribed ":xmpp")
+
+(describe controller.subscription/remote-subscribe-confirm ":xmpp")
