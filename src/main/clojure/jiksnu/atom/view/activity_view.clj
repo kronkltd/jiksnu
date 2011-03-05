@@ -123,10 +123,10 @@ serialization"
             parse-extension-element
             (.getExtensions entry)))]
       (make Activity (apply merge
-                            {:_id id
-                             :published published
-                             :updated updated
-                             :title title}
+                            (if published {:published published})
+                            (if updated {:updated updated})
+                            (if title {:title title})
+                            {:_id id}
                             extension-maps)))))
 
 (defsection show-section [Activity :atom]
@@ -168,8 +168,11 @@ serialization"
           (.setAttributeValue subject-element "type" everyone-uri))))
     (let [object-element (.addExtension entry as-ns "object" "activity")]
       (.setObjectType object-element status-uri)
-      (.setUpdated object-element (:object-updated activity))
-      (.setPublished object-element (:object-published activity))
-      (.setId object-element (:object-id activity))
+      (if-let [object-updated (:object-updated activity)]
+        (.setUpdated object-element object-updated))
+      (if-let [object-published (:object-published activity)]
+        (.setPublished object-element object-published))
+      (if-let [object-id (:object-id activity)]
+        (.setId object-element object-id))
       (.setContentAsHtml object-element (:summary activity)))
     entry))

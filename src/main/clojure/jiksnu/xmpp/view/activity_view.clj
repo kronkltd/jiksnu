@@ -32,7 +32,7 @@
 (defsection index-block [Activity :xmpp :xmpp]
   [activities & options]
   (make-element
-   "items" {"node" "urn:xmpp:microblog:0"}
+   "items" {"node" microblog-uri}
    (map index-line activities)))
 
 (defsection index-section [Activity :xmpp :xmpp]
@@ -43,11 +43,7 @@
 
 (defview #'index :xmpp
   [request activities]
-  {:body (index-section activities)
-   :to (:from request)
-   :from (:to request)
-   :id (:id request)
-   :type :response})
+  (result-packet request (index-section activities)))
 
 (defview #'remote-create :xmpp
   [request _]
@@ -55,11 +51,7 @@
 
 (defview #'fetch-comments :xmpp
   [request activities]
-  {:body (index-section activities)
-   :to (:from request)
-   :from (:to request)
-   :id (:id request)
-   :type :response})
+  (result-packet request (index-section activities)))
 
 (defn notify
   [recipient ^Activity activity]

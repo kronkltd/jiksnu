@@ -246,7 +246,6 @@
                                "type" (if type (name type) "")
                                "to" to
                                "from" from})]
-    (println "element: " element)
     (if body
       (.addChild element body))
     (let [packet
@@ -278,4 +277,4 @@
    :from (:to request)
    :to (:from request)
    :id (:id request)
-   :type :set})
+   :type :result})
