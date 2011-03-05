@@ -1,9 +1,11 @@
 (ns jiksnu.xmpp.view-test
   (:use ciste.view
         clojure.contrib.pprint
+        jiksnu.core-test
         jiksnu.factory
         jiksnu.mock
         jiksnu.model
+        jiksnu.session
         jiksnu.namespace
         jiksnu.xmpp.view
         jiksnu.view
@@ -11,7 +13,7 @@
         [lazytest.expect :only (expect)])
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.file :as file]
-            [jiksnu.model.activity :as activity]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -37,8 +39,19 @@
 
 (describe pubsub-items
   (do-it "should return a seq of elements"
-    (expect (every? element? (pubsub-items
-                              (mock-activity-publish-request-packet))))))
+    (with-serialization :xmpp
+      (with-format :xmpp
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [activity (model.activity/create (factory Activity))
+                  element (index-section [activity])
+                  packet (make-packet
+                          {:to (make-jid user)
+                           :from (make-jid user)
+                           :type :set
+                           :body element})
+                  response (pubsub-items packet)]
+              (expect (every? element? response)))))))))
 
 (describe bare-recipient?)
 
@@ -49,7 +62,12 @@
 (describe make-request
   (testing "a pubsub publish"
     (do-it "should return a map"
-      (let [packet (mock-activity-publish-request-packet)
+      (let [user (model.user/create (factory User))
+            packet (make-packet
+                    {:to (make-jid user)
+                     :from (make-jid user)
+                     :type :get
+                     :id (fseq :id)})
             response (make-request packet)]
         (expect (map? response))))))
 
