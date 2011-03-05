@@ -25,7 +25,7 @@
           (jiksnu.xmpp.view.activity-view/notify u created-activity)
           ))
       (model.item/push user created-activity)
-      (if (:parent created-activity)
+      #_(if (:parent created-activity)
         (jiksnu.http.view.activity-view/notify-commented
          request created-activity))
       (jiksnu.xmpp.view.activity-view/notify user created-activity)
