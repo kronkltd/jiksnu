@@ -1,6 +1,8 @@
 (ns jiksnu.xmpp.view.subscription-view-test
-  (:use jiksnu.core-test
+  (:use ciste.core
+        jiksnu.core-test
         jiksnu.factory
+        jiksnu.namespace
         jiksnu.view
         jiksnu.xmpp.view
         jiksnu.xmpp.view.subscription-view
@@ -43,7 +45,7 @@
 
 (describe controller.subscription/subscribers ":xmpp")
 
-(describe controller.subscription/subscribe ":xmpp")
+(describe apply-view "#'controller.subscription/subscribe :xmpp")
 
 (describe notify-subscribe
   (do-it "should return a packet"
@@ -56,7 +58,25 @@
 
 (describe notify-unsubscribe)
 
-(describe controller.subscription/unsubscribe ":xmpp")
+(describe controller.subscription/unsubscribe ":xmpp"
+  (testing "when there is no subscription"
+    (do-it "should return a packet map"
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            element (make-element
+                     "pubsub" {"xmlns" pubsub-uri}
+                     ["unsubscribe" {"node" microblog-uri}])
+            packet (make-packet
+                    {:to (make-jid subscribee)
+                     :from (make-jid user)
+                     :type :set
+                     :body element})
+            request (merge (make-request packet)
+                           {:action #'controller.subscription/unsubscribe
+                            :format :xmpp})
+            record (controller.subscription/unsubscribe request)
+            response (apply-view request record)]
+        (expect (map? response))))))
 
 (describe controller.subscription/subscribed ":xmpp")
 
