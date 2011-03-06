@@ -213,7 +213,6 @@
      (let [element (Element. name)]
        (doseq [[attr val] attrs]
          (.addAttribute element attr (str val)))
-       #_(println "children: " children)
        (doseq [child children]
          (process-child element child))
        element)))
@@ -225,7 +224,6 @@
 
 (defn make-jid
   ([user]
-     ;; (println "user: " user)
      (make-jid (:username user) (:domain user)))
   ([user domain]
      (make-jid user domain ""))
@@ -251,7 +249,7 @@
     (let [packet
           (Packet/packetInstance
            element from to)]
-      (println "making packet: " packet)
+      #_(println "making packet: " packet)
       packet)))
 
 (defn deliver-packet!
