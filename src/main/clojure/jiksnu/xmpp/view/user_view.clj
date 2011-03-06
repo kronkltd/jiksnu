@@ -38,3 +38,18 @@
      :id id
      :from to
      :to from}))
+
+(defview #'fetch-remote :xmpp
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :get}))
+
+(defview #'remote-create :xmpp
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :result})
+  )

@@ -76,3 +76,10 @@
                 :body ele})]
           (.initVars message)
           (deliver-packet! message))))))
+
+(defview #'fetch-comments-remote :xmpp
+  [request activity]
+  {:type :get
+   :body
+   (pubsub-items
+    (str microblog-uri ":replies:item=" (:id activity)))})

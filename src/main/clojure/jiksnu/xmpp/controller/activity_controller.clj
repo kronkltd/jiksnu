@@ -48,3 +48,8 @@
   [{{id "id"} :params :as request}]
   (if-let [activity (model.activity/show id)]
     (map model.activity/show (:comments activity))))
+
+(defn fetch-comments-remote
+  [request]
+  
+  )
