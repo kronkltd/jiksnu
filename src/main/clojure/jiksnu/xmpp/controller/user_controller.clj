@@ -62,3 +62,12 @@
   [request]
   ;; TODO: limit this to the inbox of the user
   (model.user/inbox))
+
+(defn fetch-remote
+  [request]
+  (model.user/fetch-by-jid (:to request)))
+
+(defn remote-create
+  [request]
+  true
+  )
