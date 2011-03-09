@@ -183,7 +183,7 @@
          " (" (:name user) ")"]
         [:p (:location user)]
         [:p (:bio user)]
-        [:p (:url user)]
+        [:p [:a {:href (:url user) :rel "me"} (:url user)]]
         [:p "Id: " (:_id user)]]
        (if actor
          (list

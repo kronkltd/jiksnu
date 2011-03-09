@@ -5,8 +5,7 @@
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            jiksnu.xmpp.view.activity-view)
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity))
 
 (defn index
@@ -16,19 +15,10 @@
 (defn create
   [{{id "id" :as params} :params :as request}]
   (let [a (make Activity params)]
-    (let [created-activity (model.activity/create a)
-          user (current-user)
-          subscribers (model.subscription/subscribers user)]
-      (doseq [subscription subscribers]
-        (let [u (model.user/fetch-by-id (:from subscription))]
-          (model.item/push u created-activity)
-          (jiksnu.xmpp.view.activity-view/notify u created-activity)
-          ))
-      (model.item/push user created-activity)
+    (let [created-activity (model.activity/create a)]
       #_(if (:parent created-activity)
-        (jiksnu.http.view.activity-view/notify-commented
-         request created-activity))
-      (jiksnu.xmpp.view.activity-view/notify user created-activity)
+          (jiksnu.http.view.activity-view/notify-commented
+           request created-activity))
       created-activity)))
 
 (defn new
@@ -76,3 +66,9 @@
 (defn inbox
   [request]
   [])
+
+(defn fetch-comments
+  [{{id "id"} :params :as request}]
+  (if-let [activity (model.activity/show id)]
+    (if-let [author (model.user/fetch-by-id (first (:authors activity)))]
+      activity)))

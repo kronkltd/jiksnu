@@ -253,8 +253,9 @@
       packet)))
 
 (defn deliver-packet!
-  [packet]
+  [^Packet packet]
   (try
+    (.initVars packet)
     (.processPacket @*message-router* packet)
     (catch NullPointerException e
       (error "Router not started: " e)

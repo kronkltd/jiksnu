@@ -1,5 +1,6 @@
 (ns jiksnu.http.controller.webfinger-controller
   (:use jiksnu.namespace)
+  (:require [jiksnu.model.user :as model.user])
   (:import org.openxrd.xrd.core.impl.XRDBuilder
            com.cliqset.xrd.XRD
            com.cliqset.hostmeta.JavaNetXRDFetcher
@@ -22,5 +23,6 @@
     (.buildObject *xrd-builder*)))
 
 (defn user-meta
-  [request]
-  true)
+  [{{uri "uri"} :params :as request}]
+  (let [[_ username domain] (re-matches #"(?:acct:)(.*)@(.*)" uri)]
+    (model.user/show username domain)))

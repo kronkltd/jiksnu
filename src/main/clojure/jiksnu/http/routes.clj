@@ -42,6 +42,7 @@
     [:get "/notice/:id.:format"]                     #'activity/show
     [:get "/notice/:id/edit"]                        #'activity/edit
     [:get "/notice/:id/comment"]                     #'activity/new-comment
+    [:post "/notice/:id/comments/update"]            #'activity/fetch-comments
     [:get "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline
     [:get "/api/statuses/public_timeline.:format"]   #'activity/index
     [:get "/admin/subscriptions"]                    #'subscription/index
@@ -64,7 +65,8 @@
     [:get "/:id"]                                    #'user/show
     [:get "/:id/subscriptions"]                      #'user/subscriptions
     [:get "/:id/subscribers"]                        #'user/subscribers
-    [:get "/.well-known/host-meta"]                  #'webfinger/host-meta])))
+    [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
+    [:get "/main/xrd"]                               #'webfinger/user-meta])))
 
 (defn method-matches?
   [request matcher]

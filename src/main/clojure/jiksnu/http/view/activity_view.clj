@@ -119,7 +119,10 @@
      (:summary activity)]
     [:p "Tags: " (:tags activity)]
     [:p "Recipients: " (:recipients activity)]
-    [:p "Comments: " (count (:comments activity))]
+    [:p "Comments: " (count (:comments activity))
+     (f/form-to
+      [:post (str (uri activity) "/comments/update")]
+      (f/submit-button "Update"))]
     [:p [:a {:href (uri activity)}
          [:time (:published activity)]]]
     (dump activity)]
@@ -265,6 +268,11 @@
 (defn notify-commented
   [request activity]
   (let [parent (model.activity/show (:parent activity))]
-    (model.activity/add-comment parent activity)
-    )
-  )
+    (model.activity/add-comment parent activity)))
+
+(defview #'fetch-comments :html
+  [request activity]
+  {:status 303
+   :template false
+   :flash "comments are being fetched"
+   :headers {"Location" (uri activity)}})

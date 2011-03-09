@@ -1,14 +1,20 @@
 (ns jiksnu.xmpp.view.activity-view
   (:use [jiksnu.config :only (config)]
+        jiksnu.model
         jiksnu.namespace
+        jiksnu.session
         jiksnu.xmpp.controller.activity-controller
         jiksnu.xmpp.view
         jiksnu.view
         ciste.core
+        ciste.hook
         ciste.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.model.activity :as activity.model]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.item :as model.item]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            jiksnu.http.controller.activity-controller)
   (:import jiksnu.model.Activity))
 
 ;; TODO: This should be a special case of full response
@@ -53,7 +59,7 @@
   [request activities]
   (result-packet request (index-section activities)))
 
-(defn notify
+(defn notify-activity
   [recipient ^Activity activity]
   (with-serialization :xmpp
     (with-format :xmpp
@@ -74,8 +80,22 @@
                 ;; FIXME: generate an id for this case
                 :id "JIKSNU1"
                 :body ele})]
-          (.initVars message)
           (deliver-packet! message))))))
+
+(defn notify-subscribers
+  [action request activity]
+  (with-database
+    (let [user (model.user/fetch-by-id (first (:authors activity)))
+          subscribers (conj (model.subscription/subscribers user) user)]
+      (doseq [subscription subscribers]
+        (model.item/push user activity)
+        (notify-activity user activity)))))
+
+(add-hook! #'jiksnu.http.controller.activity-controller/create
+           #'notify-subscribers)
+(add-hook! #'jiksnu.http.controller.activity-controller/create
+           #'sleep-and-print)
+
 
 (defview #'fetch-comments-remote :xmpp
   [request activity]
