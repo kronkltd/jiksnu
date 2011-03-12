@@ -134,6 +134,4 @@
   [parent comment]
   (entity/update Activity
                  (sugar/eq :_id (:_id parent))
-                 (sugar/push :comments (:_id comment))
-                 )
-  )
+                 (sugar/push :comments (:_id comment))))

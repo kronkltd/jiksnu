@@ -55,7 +55,9 @@
        ~@body)))
 
 (def activity? (partial instance? Activity))
-(def subscription? (partial instance? Subscription))
+(defn subscription?
+  [s]
+  (instance? Subscription s))
 
 (defn make-id
   [id]

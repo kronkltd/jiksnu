@@ -30,6 +30,8 @@
             response (set-id activity)]
         (:_id response)))))
 
+(describe set-object-id)
+
 (describe set-updated-time
   (testing "when there is an updated property"
     (do-it "should not change the value"
@@ -43,9 +45,21 @@
             response (set-updated-time activity)]
         (expect (:updated response))))))
 
+(describe set-object-updated)
+
+(describe set-published-time)
+
+(describe set-object-published)
+
+(describe set-actor)
+
+(describe set-public)
+
 (describe prepare-activity)
 
-(describe create
+(describe create-raw)
+
+(describe create {:focus true}
   (testing "when the user is logged in"
     (do-it "should return an activity"
       (let [user (model.user/create (factory User))]
@@ -74,6 +88,8 @@
                 response (index)]
             (expect (seq response))
             (expect (every? activity? response))))))))
+
+(describe fetch-by-id)
 
 (describe show
   (testing "when the record exists"
@@ -151,3 +167,8 @@
             (let [activity (create (factory Activity))]
               (delete (:_id activity))
               (expect (nil? (show (:_id activity)))))))))))
+
+(describe find-by-user)
+
+(describe add-comment)
+

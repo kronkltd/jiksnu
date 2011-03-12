@@ -51,5 +51,4 @@
   (let [{:keys [to from]} request]
     {:from to
      :to from
-     :type :result})
-  )
+     :type :result}))

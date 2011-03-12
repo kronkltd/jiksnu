@@ -22,5 +22,5 @@
     ;; (model.user/drop!)
     (apply f args)))
 
-(add-hook #'lazytest.test-case/try-test-case env-hook)
+(add-hook #'lazytest.runner.console/run-tests env-hook)
 
