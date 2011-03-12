@@ -32,7 +32,6 @@
 (defn create
   [{:keys [items] :as  request}]
   (let [activities (map create-activity items)]
-    (println "activities: " activities)
     (first activities)))
 
 (defn remote-create

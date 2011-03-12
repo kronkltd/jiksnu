@@ -55,11 +55,17 @@
 
 (describe set-public)
 
-(describe prepare-activity)
+(describe prepare-activity
+  (do-it "should return an activity"
+    (let [user (model.user/create (factory User))]
+      (with-user user
+        (let [args (factory Activity)]
+          (let [response (prepare-activity args)]
+            (expect (activity? response))))))))
 
 (describe create-raw)
 
-(describe create {:focus true}
+(describe create
   (testing "when the user is logged in"
     (do-it "should return an activity"
       (let [user (model.user/create (factory User))]

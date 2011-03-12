@@ -4,6 +4,7 @@
         robert.hooke
         [lazytest.describe :only (describe do-it testing)])
   (:require [jiksnu.model.activity :as model.activity]
+            lazytest.runner.console
             [jiksnu.model.item :as model.item]
             [jiksnu.model.signature :as model.signature]
             [jiksnu.model.subscription :as model.subscription]
@@ -15,6 +16,7 @@
 
 (defn env-hook
   [f & args]
+  (println "env hook")
   (with-environment :test
     ;; (model.activity/drop!)
     ;; (model.item/drop!)

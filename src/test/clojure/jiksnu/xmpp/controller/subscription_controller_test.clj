@@ -1,5 +1,5 @@
 (ns jiksnu.xmpp.controller.subscription-controller-test
-  (:use [jiksnu.factory :only (factory)]
+  (:use [jiksnu.factory :only (factory fseq)]
         [jiksnu.mock :only (mock-subscriber-query-request-element
                             mock-subscription-query-request-element)]
         jiksnu.model
@@ -48,6 +48,7 @@
                     {:to (make-jid user)
                      :from (make-jid user)
                      :type :get
+                     :id (fseq :id)
                      :body element})
             request (make-request packet)
             subscription (model.subscription/create

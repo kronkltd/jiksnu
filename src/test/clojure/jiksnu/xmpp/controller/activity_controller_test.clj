@@ -96,8 +96,7 @@
                               :body element})
                      request (make-request packet)
                      response (create request)]
-                 (println "response: " response)
-                 (expect (every? activity? response)))))))))))
+                 (expect (activity? response)))))))))))
 
 (describe remote-create)
 
