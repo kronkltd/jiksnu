@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view.user-view-test
   (:use ciste.core
+        ciste.view
         jiksnu.factory
         jiksnu.mock
         jiksnu.model
@@ -12,20 +13,58 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(describe display-minimal "Statement")
+(describe show-section "User :xmpp :xmpp"
+  (do-it "should return an element"
+    (with-serialization :xmpp
+      (with-format :xmpp
+        (let [user (model.user/create (factory User))]
+          (let [response (show-section user)]
+            (expect (element? response))))))))
 
-(describe apply-view "#'show :xmpp")
+(describe apply-view "#'show :xmpp"
+  (do-it "should return a query results packet map"
+    (with-format :xmpp
+      (with-serialization :xmpp
+        (let [user (model.user/create (factory User))
+              packet (make-packet
+                      {:to (make-jid user)
+                       :from (make-jid user)
+                       :type :get})
+              request (merge {:format :xmpp
+                              :action #'controller.user/show}
+                             (make-request packet))]
+          (let [response (apply-view request user)]
+            (expect (map? response))
+            (expect (= :result (:type response)))))))))
 
-;; (describe apply-view "#'index :xmpp"
-;;   (do-it "should contain a vcard query response element"
-;;     (let [user (model.user/create (factory User))
-;;           element (mock-vcard-query-request-element)
-;;           packet (make-packet
-;;                   {:from (make-jid user)
-;;                    :to (make-jid user)
-;;                    :type :get
-;;                    :body element})
-;;           request (make-request packet)
-;;           record (controller.user/index request)
-;;           response (apply-view request record)]
-;;       (expect (element? response)))))
+(describe apply-view "#'fetch-remote :xmpp"
+  (do-it "should return an iq query packet map"
+    (with-format :xmpp
+      (with-serialization :xmpp
+        (let [user (model.user/create (factory User))
+              packet (make-packet
+                      {:to (make-jid user)
+                       :from (make-jid user)
+                       :type :get})
+              request (merge {:format :xmpp
+                              :action #'controller.user/fetch-remote}
+                             (make-request packet))]
+          (let [response (apply-view request user)]
+            (expect (map? response))
+            (expect (= :get (:type response)))))))))
+
+(describe apply-view "#'remote-create :xmpp"
+  (do-it "should return a query results packet map"
+    (with-format :xmpp
+      (with-serialization :xmpp
+        (let [user (model.user/create (factory User))
+              packet (make-packet
+                      {:to (make-jid user)
+                       :from (make-jid user)
+                       :type :get})
+              request (merge {:format :xmpp
+                              :action #'controller.user/remote-create}
+                             (make-request packet))]
+          (let [response (apply-view request user)]
+            (expect (map? response))
+            (expect (= :result (:type response)))))))))
