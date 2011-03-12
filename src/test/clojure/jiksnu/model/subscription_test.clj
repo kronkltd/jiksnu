@@ -55,6 +55,32 @@
 
 (describe unsubscribe)
 
-(describe subscribing?)
+(describe subscribing?
+  (testing "when the user is subscribing"
+    (do-it "should return true"
+      (let [actor (model.user/create (factory User))
+            user (model.user/create (factory User))]
+        (subscribe actor user)
+        (let [response (subscribing? actor user)]
+          (expect response)))))
+  (testing "when the user is not subscribed"
+    (do-it "should return a false value"
+      (let [actor (model.user/create (factory User))
+            user (model.user/create (factory User))]
+        (let [response (subscribing? actor user)]
+          (expect (not response)))))))
 
-(describe subscribed?)
+(describe subscribed?
+  (testing "when the user is subscribed"
+    (do-it "should return true"
+      (let [actor (model.user/create (factory User))
+            user (model.user/create (factory User))]
+        (subscribe user actor)
+        (let [response (subscribed? actor user)]
+          (expect response)))))
+  (testing "when the user is not subscribed"
+    (do-it "should return a false value"
+      (let [actor (model.user/create (factory User))
+            user (model.user/create (factory User))]
+        (let [response (subscribed? actor user)]
+          (expect (not response)))))))
