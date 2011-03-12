@@ -232,7 +232,9 @@
 
 (defview #'show :html
   [request user]
-  {:body (show-section user)})
+  {:body (show-section user)
+   :links [(str "/api/statuses/user_timeline/"
+                (:_id user) ".atom")]})
 
 (defview #'edit :html
   [request user]

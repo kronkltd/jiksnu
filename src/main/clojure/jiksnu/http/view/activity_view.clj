@@ -15,7 +15,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(defsection uri [Activity :html]
+(defsection uri [Activity]
   [activity & options]
   (str "/notice/" (:_id activity)))
 

@@ -29,7 +29,7 @@
       (expect (not (nil? response)))
       (expect (every? element? response)))))
 
-(describe notify
+#_(describe notify
   (do-it "should return a packet"
     (with-serialization :xmpp
       (with-format :atom

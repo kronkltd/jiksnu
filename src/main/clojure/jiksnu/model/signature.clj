@@ -6,6 +6,7 @@
            com.cliqset.magicsig.MagicSigConstants
            com.cliqset.magicsig.xml.XMLMagicEnvelopeSerializer
            com.cliqset.salmon.Salmon
+           com.cliqset.salmon.HostMetaSalmonEndpointFinder
            java.net.URI
            java.io.ByteArrayInputStream
            org.apache.commons.io.output.ByteArrayOutputStream
@@ -39,16 +40,30 @@
 (def destination-user
   (URI/create "acct:charlie@reticulateme.appspot.com"))
 
+;; (defn finder
+;;   []
+;;   (HostMetaSalmonEndpointFinder.)
+  
+;;   )
+
+(defn fetcher
+  []
+  (com.cliqset.hostmeta.JavaNetXRDFetcher.))
+
 (defn get-salmon
   []
   (Salmon/getDefault))
 
 (defn get-key
+  "The magic key must have 3 segments"
   [key]
   (MagicKey. (.getBytes key "UTF-8"))
   )
 
 (defn sign-and-deliver
+  "entry is an atom entry
+
+"
   [entry key user]
   (try (.signAndDeliver (get-salmon)
                     (.getBytes entry "UTF-8")
@@ -58,15 +73,16 @@
          (.printStackTrace e))))
 
 (defn get-envelope
+  "data is the xml signature"
   ([]
      (get-envelope "foo"))
-  ([data]
+  ([^String data]
      (let [me (MagicEnvelope.)]
        (.setData me data)
        me)))
 
 (defn serialize
-  [envelope]
+  [^MagicEnvelope envelope]
   (let [serializer (XMLMagicEnvelopeSerializer.)
         os (ByteArrayOutputStream.)]
     (.serialize serializer envelope os)
@@ -94,13 +110,14 @@
       (.setHttpClient header http-client)
       (.setHttpClient link http-client)
 
-      (.setParserPool host-meta (BasicParserPool.))
-      (.setParserPool header (BasicParserPool.))
-      (.setParserPool link (BasicParserPool.))
+      ;; (.setParserPool host-meta (BasicParserPool.))
+      ;; (.setParserPool header (BasicParserPool.))
+      ;; (.setParserPool link (BasicParserPool.))
 
-      (add-discovery-method manager host-meta)
-      (add-discovery-method manager header)
-      (add-discovery-method manager link))
+      ;; (add-discovery-method manager host-meta)
+      ;; (add-discovery-method manager header)
+      ;; (add-discovery-method manager link)
+      )
     manager))
 
 (defn get-deserializer

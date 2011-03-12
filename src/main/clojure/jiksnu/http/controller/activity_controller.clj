@@ -56,7 +56,8 @@
 (defn user-timeline
   [{{id "id"} :params
     :as request}]
-  (model.activity/index :authors id))
+  (let [user (model.user/fetch-by-id id)]
+    [user (model.activity/index :authors (make-id id))]))
 
 (defn friends-timeline
   [{{id "id"} :params

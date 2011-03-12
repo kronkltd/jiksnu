@@ -89,13 +89,15 @@
     (let [option-map (apply hash-map opts)]
       (let [merged-options
             (merge
-             {:parent {:$exists false}}
+             {:$or [{:parent ""}
+                    {:parent {:$exists false}}]}
              (if user
                (if (not (is-admin? user))
                  {:$or [{:public true}
                         {:authors (:_id user)}]})
                {:public true})
              option-map)]
+        (println "merged-options: " merged-options)
         (entity/fetch Activity merged-options
                       :sort [(sugar/desc :published)])))))
 
