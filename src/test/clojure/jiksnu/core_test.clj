@@ -16,10 +16,10 @@
 (defn env-hook
   [f & args]
   (with-environment :test
-    (model.activity/drop!)
-    (model.item/drop!)
-    (model.subscription/drop!)
-    (model.user/drop!)
+    ;; (model.activity/drop!)
+    ;; (model.item/drop!)
+    ;; (model.subscription/drop!)
+    ;; (model.user/drop!)
     (apply f args)))
 
 (add-hook #'lazytest.test-case/try-test-case env-hook)
