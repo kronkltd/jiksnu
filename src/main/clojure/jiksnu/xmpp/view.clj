@@ -124,16 +124,16 @@
             (doseq [i item]
               (process-child element i))))))))
 
-(defn ^Element to-tigase-element
-  "turns a map into a tigase element"
-  [{:keys [tag attrs content]}]
-  (let [attribute-names (into-array String (map name (keys attrs)))
-        attribute-values (into-array String (vals attrs))
-        tag-name (name tag)
-        element (Element. tag-name attribute-names attribute-values)]
-    (doseq [item content]
-      (process-child element item))
-    element))
+;; (defn to-tigase-element
+;;   "turns a map into a tigase element"
+;;   [{:keys [tag attrs content]}]
+;;   (let [attribute-names (into-array String (map name (keys attrs)))
+;;         attribute-values (into-array String (vals attrs))
+;;         tag-name (name tag)
+;;         element (Element. tag-name attribute-names attribute-values)]
+;;     (doseq [item content]
+;;       (process-child element item))
+;;     element))
 
 (defn assign-namespace
   [^Element element
