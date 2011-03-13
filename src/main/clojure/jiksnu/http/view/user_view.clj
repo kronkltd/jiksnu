@@ -6,6 +6,7 @@
         jiksnu.model
         jiksnu.session
         jiksnu.view
+        plaza.rdf.core
         ciste.core
         ciste.view)
   (:require [hiccup.form-helpers :as f]
@@ -207,6 +208,18 @@
             (model.activity/find-by-user user))]
       (dump user)])))
 
+(defsection show-section [User :rdf]
+  [user & _]
+  (let [rdf-model
+        (defmodel
+          (model-add-triples
+           [["a" "b" "c"]]))]
+
+    (println "rdf-model: " (model-to-format rdf-model :xml))
+    "<rdf></rdf>")
+
+  )
+
 (defsection index-section [User :html]
   [users & options]
   [:div
@@ -235,6 +248,13 @@
   {:body (show-section user)
    :links [(str "/api/statuses/user_timeline/"
                 (:_id user) ".atom")]})
+
+(defview #'show :rdf
+  [request user]
+  {:body (show-section user)
+   :template :false
+   }
+  )
 
 (defview #'edit :html
   [request user]

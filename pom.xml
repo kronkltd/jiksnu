@@ -25,10 +25,10 @@
         <configuration>
           <!-- <script>script/server</script> -->
           <namespaces>
-            <namespace>!jiksnu</namespace>
+            <!-- <namespace>!jiksnu</namespace> -->
             <!-- <namespace>jiksnu.server.tigase.plugin</namespace> -->
           </namespaces>
-          <!-- <vmargs>-agentlib:jdwp=transport=dt_socket,address=8021,server=y,suspend=n -server</vmargs> -->
+          <vmargs>-agentlib:jdwp=transport=dt_socket,address=8021,server=y,suspend=n -server -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128m</vmargs>
           <!-- <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly> -->
           <!-- <testDeclaredNamespaceOnly>true</testDeclaredNamespaceOnly> -->
           <!-- <warnOnReflection>true</warnOnReflection> -->

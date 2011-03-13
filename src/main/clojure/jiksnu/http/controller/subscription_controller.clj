@@ -25,7 +25,6 @@
     (if-let [{{user "unsubscribeto"} :params} request]
       (let [subscription (model.subscription/find-record
                           {:from actor :to (make-id user)})]
-        (println "unsubscribe: " subscription)
         (model.subscription/delete subscription)
         (xmpp.view.subscription/notify-unsubscribe request subscription)
         true))))

@@ -20,7 +20,7 @@
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
         (with-user user
-          (let [request {:params {}}]
+          (let [request {:params {"subscribeto" (str (:_id user))}}]
             (let [response (subscribe request)]
               (expect (subscription? response)))))))))
 

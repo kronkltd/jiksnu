@@ -16,16 +16,16 @@
 
 (describe set-actor)
 
-(describe parse-json-element
-  (testing "when there are attributes"
-    (do-it "should have an attribute"
-      (let [json-map (extension-with-attributes-map)
-            response (parse-json-element json-map)]
-        (expect (seq (.getAttributes response))))))
-  (testing "when there are children elements"
-    (do-it "should add those elements"
-      (let [response (parse-json-element (extension-with-children-map))]
-        (expect (seq (.getElements response)))))))
+;; (describe parse-json-element
+;;   (testing "when there are attributes"
+;;     (do-it "should have an attribute"
+;;       (let [json-map (extension-with-attributes-map)
+;;             response (parse-json-element json-map)]
+;;         (expect (seq (.getAttributes response))))))
+;;   (testing "when there are children elements"
+;;     (do-it "should add those elements"
+;;       (let [response (parse-json-element (extension-with-children-map))]
+;;         (expect (seq (.getElements response)))))))
 
 (describe new-entry)
 
@@ -37,13 +37,13 @@
 
 (describe to-json
   (do-it "should not be nil"
-    (let [entry (mock-activity-entry)
+    (let [entry (factory Activity)
           response (to-json entry)]
       (expect (not (nil? response))))))
 
 (describe to-activity
   (do-it "should return a map"
-    (let [entry (mock-activity-entry)
+    (let [entry (factory Activity)
           response (to-activity entry)]
       (expect (map? response)))))
 

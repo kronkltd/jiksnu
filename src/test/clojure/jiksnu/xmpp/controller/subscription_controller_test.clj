@@ -1,7 +1,7 @@
 (ns jiksnu.xmpp.controller.subscription-controller-test
   (:use [jiksnu.factory :only (factory fseq)]
-        [jiksnu.mock :only (mock-subscriber-query-request-element
-                            mock-subscription-query-request-element)]
+        ;; [jiksnu.mock :only (mock-subscriber-query-request-element
+        ;;                     mock-subscription-query-request-element)]
         jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.controller.subscription-controller

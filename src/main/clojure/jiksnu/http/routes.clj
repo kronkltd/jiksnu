@@ -63,6 +63,7 @@
     [:post "/:username"]                             #'user/update
     [:get "/:username/all"]                          #'inbox/index
     [:get "/:id"]                                    #'user/show
+    [:get "/:id.:format"]                                    #'user/show
     [:get "/:id/subscriptions"]                      #'user/subscriptions
     [:get "/:id/subscribers"]                        #'user/subscribers
     [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
