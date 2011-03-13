@@ -4,9 +4,11 @@
         jiksnu.http.controller.user-controller
         jiksnu.http.view
         jiksnu.model
+        jiksnu.namespace
         jiksnu.session
         jiksnu.view
         plaza.rdf.core
+        plaza.rdf.vocabularies.foaf
         ciste.core
         ciste.view)
   (:require [hiccup.form-helpers :as f]
@@ -174,9 +176,7 @@
       [:div.aside
        (if (not= (:domain user) (:domain (config)))
          [:p.important
-          "This is a cached copy of information for a user on a different system."
-          ]
-         )
+          "This is a cached copy of information for a user on a different system."])
        [:div.hcard
         [:p (avatar-img user)]
         [:p (:username user) (if (not= (:domain user) (:domain (config)))
@@ -202,7 +202,17 @@
           (fn [subscriber]
             [:li (show-section-minimal
                   (jiksnu.model.user/fetch-by-id (:from subscriber)))])
-          (model.subscription/subscribers user))]]]
+          (model.subscription/subscribers user))]]
+       [:div
+        [:ul
+         [:li
+          [:a {:href (str (uri user) ".rdf")} "FOAF"]]
+         [:li
+          [:a {:href (str (uri user) ".n3")} "N3"]]
+         [:li
+          [:a {:href (str "http://" (:domain user)
+                          "/api/statuses/user_timeline/" (:_id user)
+                          ".atom")} "Atom"]]]]]
       [:div.activities
        (map show-section-minimal
             (model.activity/find-by-user user))]
@@ -210,15 +220,33 @@
 
 (defsection show-section [User :rdf]
   [user & _]
-  (let [rdf-model
-        (defmodel
-          (model-add-triples
-           [["a" "b" "c"]]))]
+  (with-rdf-ns ""
+    [[(str (full-uri user) ".rdf")
+     [rdf:type foaf:PersonalProfileDocument
+      [foaf :maker] (full-uri user)
+      foaf:primaryTopic (rdf-resource
+                         (str "acct:" (:username user) "@"
+                              (:domain user)))]]
 
-    (println "rdf-model: " (model-to-format rdf-model :xml))
-    "<rdf></rdf>")
-
-  )
+    [(rdf-resource (str "acct:" (:username user) "@" (:domain user)))
+     [rdf:type [foaf :Person]
+      [foaf :name] (l (:name user))
+      foaf:nick (l (:username user))
+      foaf:name (l (:name user))
+      foaf:mbox (rdf-resource (str "mailto:" (:email user)))
+      foaf:givenName (l (:first-name user))
+      foaf:familyName (l (:last-name user))
+      foaf:homepage (rdf-resource (:url user))
+      foaf:weblog (rdf-resource (full-uri user))
+      foaf:img (:avatar-url user)
+      foaf:account (rdf-resource (str (full-uri user) "#acct"))]]
+    [(rdf-resource (str (full-uri user) "#acct"))
+     [rdf:type foaf:OnlineAccount
+      foaf:accountServiceHomepage (rdf-resource (str "http://" (:domain user)))
+      foaf:accountName (l (:username user))
+      [foaf "accountProfilePage"] (rdf-resource (full-uri user))
+      [sioc "account_of"] (rdf-resource (str "acct:" (:username user) "@"
+                                             (:domain user)))]]]))
 
 (defsection index-section [User :html]
   [users & options]
@@ -251,10 +279,20 @@
 
 (defview #'show :rdf
   [request user]
-  {:body (show-section user)
-   :template :false
-   }
-  )
+  {:body
+   (let [rdf-model (defmodel (model-add-triples (show-section user)))]
+     (with-out-str (model-to-format rdf-model :xml)))
+   :template :false})
+
+(defview #'show :n3
+  [request user]
+  {:body
+   (let [rdf-model
+         (defmodel (model-add-triples
+                    (with-format :rdf
+                      (show-section user))))]
+     (with-out-str (model-to-format rdf-model :n3)))
+   :template :false})
 
 (defview #'edit :html
   [request user]

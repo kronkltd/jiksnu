@@ -12,6 +12,7 @@
 
 (init-jena-framework)
 (register-rdf-ns :dc "http://purl.org/dc/elements/1.1/")
+(register-rdf-ns :foaf "http://xmlns.com/foaf/0.1/")
 
 
 (defonce ^Abdera #^:dynamic *abdera* (Abdera.))

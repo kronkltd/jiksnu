@@ -17,3 +17,4 @@
 (def grant-uri "http://onesocialweb.org/spec/1.0/acl/permission/grant")
 (def everyone-uri "http://onesocialweb.org/spec/1.0/acl/subject/everyone")
 (def thr-ns "http://purl.org/syndication/thread/1.0")
+(defonce sioc "http://rdfs.org/sioc/ns#")
