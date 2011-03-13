@@ -51,6 +51,11 @@
       :ns vcard-uri}
      #'user/create]
 
+    [{:method :result
+      :name "query"
+      :ns query-uri}
+     #'user/remote-create]
+
     [{:method :get
       :name "subscriptions"}
      #'subscription/subscriptions]

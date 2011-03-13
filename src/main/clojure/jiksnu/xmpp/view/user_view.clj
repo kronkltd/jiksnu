@@ -1,6 +1,7 @@
 (ns jiksnu.xmpp.view.user-view
   (:use ciste.core
         ciste.view
+        jiksnu.config
         jiksnu.model
         jiksnu.namespace
         jiksnu.view
@@ -39,12 +40,37 @@
      :from to
      :to from}))
 
-(defview #'fetch-remote :xmpp
+(defn vcard-request
   [request user]
   (let [{:keys [to from]} request]
     {:from to
      :to from
      :type :get}))
+
+(defn request-vcard!
+  [user]
+  (let [packet-map {:from (make-jid "" (:domain (config)))
+                    :to (make-jid user)
+                    :id "JIKSNU1"
+                    :type :get
+                    :body
+                    (make-element
+                     "query"
+                     {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"}
+                     )
+                    }
+        packet (make-packet packet-map)
+        ]
+    (println "packet: " packet)
+    (deliver-packet! packet)
+
+    )
+
+  )
+
+(defview #'fetch-remote :xmpp
+  [request user]
+  (vcard-request request user))
 
 (defview #'remote-create :xmpp
   [request user]

@@ -1,5 +1,6 @@
 (ns jiksnu.http.routes
   (:use ciste.core
+        compojure.core
         clojure.contrib.logging
         hiccup.core
         jiksnu.http.middleware
@@ -83,6 +84,9 @@
 
 (compojure/defroutes all-routes
   (route/files "/public")
+  (GET "/favicon.ico" request
+       (println "favicon")
+       (route/files "favicon.ico"))
   (resolve-routes @*routes*)
   (route/not-found "/public/404.html"))
 
