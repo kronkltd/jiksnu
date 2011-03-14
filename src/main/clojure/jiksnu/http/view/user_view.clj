@@ -212,7 +212,11 @@
          [:li
           [:a {:href (str "http://" (:domain user)
                           "/api/statuses/user_timeline/" (:_id user)
-                          ".atom")} "Atom"]]]]]
+                          ".atom")} "Atom"]]
+         [:li
+          [:a {:href (str "http://" (:domain user)
+                          "/api/statuses/user_timeline/" (:_id user)
+                          ".json")} "JSON"]]]]]
       [:div.activities
        (map show-section-minimal
             (model.activity/find-by-user user))]
@@ -261,15 +265,27 @@
     [:tbody
      (map index-line users)]]])
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defview #'index :html
   [request users]
   {:body (index-section users)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; create
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'create :html
   [request user]
   {:status 303,
    :template false
    :headers {"Location" (uri user)}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'show :html
   [request user]
@@ -293,6 +309,10 @@
                       (show-section user))))]
      (with-out-str (model-to-format rdf-model :n3)))
    :template :false})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; edit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'edit :html
   [request user]

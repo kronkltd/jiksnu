@@ -18,7 +18,7 @@
 (defn write-json-date [date out escape-unicode?]
   (.print out (str "\""
                    (.format
-                    (java.text.SimpleDateFormat. "yyyy-MM-dd hh:mm:ssZ")
+                    (java.text.SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ssZ")
                     date)
                    "\"")))
 

@@ -203,6 +203,58 @@
             :updated (:updated (first activities))
             :entries activities})}))
 
+(defsection show-section [Activity :json]
+  [activity & _]
+  {"postedTime" (:published activity)
+   "verb" "post"
+   "title" (:title activity)
+   "body" (:summary activity)
+   "id" (:_id activity)
+   "url" (full-uri activity)
+   "actor"
+   (let [authors
+         (map
+          (fn [author-id]
+            (model.activity/fetch-by-id
+             author-id))
+          (:authors activity))]
+     (index-section authors))
+   "object"
+   {"published" (:object-published activity)
+    "updated" (:object-updated activity)
+
+             }
+
+   }
+  
+  )
+
+(defview #'index :html
+  [request activities]
+  {:links ["/api/statuses/public_timeline.atom"]
+   :body
+   (list
+    (add-form (Activity.))
+    (if (seq activities)
+      (index-block activities)
+      [:p "nothing here"])
+    [:div.footer
+     [:ul
+      [:li
+       [:a {:href "/api/statuses/public_timeline.atom"} "Atom"]]
+      [:li
+       [:a {:href "/api/statuses/public_timeline.json"} "JSON"]]]])})
+
+(defview #'index :json
+  [request activities]
+  (with-format :json
+    (println "activities: " activities)
+    {:body (doall (map #(show-section %) activities))}))
+
+(defview #'show :html
+  [request activity]
+  {:body (show-section-minimal activity)})
+
 (defview #'user-timeline :atom
   [request [user activities]]
   {:headers {"Content-Type" "application/xml"}
@@ -215,23 +267,6 @@
                     :type "text/html"}]
            :updated (:updated (first activities))
            :entries activities})})
-
-(defview #'index :html
-  [request activities]
-  {:links ["/api/statuses/public_timeline.atom"]
-   :body
-   (list
-    (add-form (Activity.))
-    (if (seq activities)
-      (index-block activities)
-      [:p "nothing here"])
-    [:div.footer
-     [:p
-      [:a {:href "/api/statuses/public_timeline.atom"} "Atom"]]])})
-
-(defview #'show :html
-  [request activity]
-  {:body (show-section-minimal activity)})
 
 (defview #'edit :html
   [request activity]
