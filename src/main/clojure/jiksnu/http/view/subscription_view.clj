@@ -71,3 +71,15 @@
   {:status 302
    :template false
    :headers {"Location" "/admin/subscriptions"}})
+
+(defview #'ostatus :html
+  [request arg]
+  {:body
+   [:div
+    [:p (dump request)]
+    [:p (dump arg)]
+
+    ]
+   }
+  
+  )

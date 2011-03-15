@@ -32,6 +32,11 @@
      (if packet
        (seq (.getElemChildren packet path)))))
 
+(defn find-children
+  [element path]
+  (if element
+    (.findChild element path)))
+
 (defn ns-prefix
   [k]
   (apply str

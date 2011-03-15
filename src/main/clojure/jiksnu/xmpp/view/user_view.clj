@@ -74,6 +74,8 @@
 
 (defview #'remote-create :xmpp
   [request user]
+  (println "request: " request)
+  (println "user: " user)
   (let [{:keys [to from]} request]
     {:from to
      :to from

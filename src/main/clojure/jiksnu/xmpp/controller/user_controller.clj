@@ -69,5 +69,26 @@
 
 (defn remote-create
   [request]
-  true
-  )
+  (let [{:keys [to from payload]} request]
+    (let [user (model.user/fetch-by-jid from)]
+      ;; (println "user: " user)
+      (let [vcard (first (children payload))]
+        (println "vcard: " vcard)
+        (let [gender (.getCData (find-children vcard "/vcard/gender"))
+              name (.getCData (find-children vcard "/vcard/fn/text"))
+              first-name (.getCData (find-children vcard "/vcard/n/given/text"))
+              last-name (.getCData (find-children vcard "/vcard/n/surname/text"))
+              url (.getCData (find-children vcard "/vcard/url/uri"))
+              avatar-url (.getCData (find-children vcard "/vcard/photo/uri"))]
+          (let [new-user {:gender gender
+                          :name name
+                          :first-name first-name
+                          :last-name last-name
+                          :url url
+                          :avatar-url avatar-url
+                          }]
+            (let [updated-user (jiksnu.model.user/update (merge user new-user))]
+              (println "updated-user: " updated-user))
+            (println "new-user: " new-user)))
+        
+       user))))

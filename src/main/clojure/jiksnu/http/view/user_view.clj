@@ -155,7 +155,7 @@
 
 (defn subscriptions-list
   [user]
-  [:div
+  [:div#subscriptions
    [:h3 [:a {:href (str (uri user) "/subscriptions") }
          "Subscriptions"]]
    [:ul
@@ -166,6 +166,41 @@
         (if (:pending subscription) " (pending)")])
      (model.subscription/subscriptions user))]
    [:p [:a {:href "#"} "Add Remote"]]])
+
+(defn subscribers-list
+  [user]
+  [:div#subscribers
+   [:h3 [:a {:href (str (uri user) "/subscribers")}
+         "Subscribers"]]
+   [:ul
+    (map
+     (fn [subscriber]
+       [:li (show-section-minimal
+             (jiksnu.model.user/fetch-by-id (:from subscriber)))])
+     (model.subscription/subscribers user))]])
+
+(defn format-list
+  [user]
+  [:div#formats
+   [:ul
+    [:li
+     [:a {:href (str (uri user) ".rdf")} "FOAF"]]
+    [:li
+     [:a {:href (str (uri user) ".n3")} "N3"]]
+    [:li
+     [:a {:href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user)
+                     ".atom")} "Atom"]]
+    [:li
+     [:a {:href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user)
+                     ".json")} "JSON"]]]])
+
+(defn activities-list
+  [user]
+  [:div.activities
+   (map show-section-minimal
+        (model.activity/find-by-user user))])
 
 (defsection show-section [User :html]
   [user & options]
@@ -179,7 +214,7 @@
           "This is a cached copy of information for a user on a different system."])
        [:div.hcard
         [:p (avatar-img user)]
-        [:p (:username user) (if (not= (:domain user) (:domain (config)))
+        [:p.n.fn (:username user) (if (not= (:domain user) (:domain (config)))
                                (list "@" (:domain user)))
          " (" (:name user) ")"]
         [:p (:location user)]
@@ -194,32 +229,10 @@
             [:p "You follow this user."])))
        (user-actions user)
        (remote-subscribe-form user)
-       [:div
-        [:h3 [:a {:href (str (uri user) "/subscribers")}
-              "Subscribers"]]
-        [:ul
-         (map
-          (fn [subscriber]
-            [:li (show-section-minimal
-                  (jiksnu.model.user/fetch-by-id (:from subscriber)))])
-          (model.subscription/subscribers user))]]
-       [:div
-        [:ul
-         [:li
-          [:a {:href (str (uri user) ".rdf")} "FOAF"]]
-         [:li
-          [:a {:href (str (uri user) ".n3")} "N3"]]
-         [:li
-          [:a {:href (str "http://" (:domain user)
-                          "/api/statuses/user_timeline/" (:_id user)
-                          ".atom")} "Atom"]]
-         [:li
-          [:a {:href (str "http://" (:domain user)
-                          "/api/statuses/user_timeline/" (:_id user)
-                          ".json")} "JSON"]]]]]
-      [:div.activities
-       (map show-section-minimal
-            (model.activity/find-by-user user))]
+       (subscriptions-list user)
+       (subscribers-list user)
+       (format-list user)]
+      (activities-list user)
       (dump user)])))
 
 (defsection show-section [User :rdf]
