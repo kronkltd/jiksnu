@@ -129,6 +129,28 @@ serialization"
                             {:_id id}
                             extension-maps)))))
 
+(defn comment-link
+  [entry activity]
+  (if (:comments activity)
+    (let [comment-count (count (:comments activity))]
+      (let [thread-link (.newLink *abdera-factory*)]
+        (.setRel thread-link "replies")
+        (.setAttributeValue thread-link "count" (str comment-count))
+        (.setMimeType thread-link "application/atom+xml")
+        (.addLink entry thread-link)))))
+
+(defn acl-link
+  [entry activity]
+  (if (:public activity)
+    (let [rule-element (.addExtension entry osw-uri "acl-rule" "")]
+      (let [action-element
+            (.addSimpleExtension rule-element osw-uri
+                                 "acl-action" "" view-uri)]
+        (.setAttributeValue action-element "permission" grant-uri))
+      (let [subject-element
+            (.addExtension rule-element osw-uri "acl-subject" "")]
+        (.setAttributeValue subject-element "type" everyone-uri)))))
+
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
   (let [entry (new-entry)]
@@ -140,32 +162,13 @@ serialization"
                           (:title activity))
                      (:summary activity)))
       (add-authors activity)
-;; <link rel="replies" thr:count="9" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
-
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:summary activity))
       (.addSimpleExtension as-ns "object-type" "activity" status-uri)
       (.addSimpleExtension as-ns "verb" "activity" post-uri)
-      (add-extensions activity))
-    (if (:comments activity)
-      (let [comment-count (count (:comments activity))]
-        (let [thread-link (.newLink *abdera-factory*)]
-          (.setRel thread-link "replies")
-          (.setAttributeValue thread-link "count" (str comment-count))
-          (.setMimeType thread-link "application/atom+xml")
-          (.addLink entry thread-link)
-          )
-        )
-      )
-    (if (:public activity)
-      (let [rule-element (.addExtension entry osw-uri "acl-rule" "")]
-        (let [action-element
-              (.addSimpleExtension rule-element osw-uri
-                                   "acl-action" "" view-uri)]
-          (.setAttributeValue action-element "permission" grant-uri))
-        (let [subject-element
-              (.addExtension rule-element osw-uri "acl-subject" "")]
-          (.setAttributeValue subject-element "type" everyone-uri))))
+      (add-extensions activity)
+      (comment-link activity)
+      (acl-link activity))
     (let [object-element (.addExtension entry as-ns "object" "activity")]
       (.setObjectType object-element status-uri)
       (if-let [object-updated (:object-updated activity)]
