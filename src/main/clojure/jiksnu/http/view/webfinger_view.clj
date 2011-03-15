@@ -81,4 +81,7 @@
      ["Link" {"rel" "http://specs.openid.net/auth/2.0/provider"
               "href" (full-uri user)}]
 
+     ["Link" {"rel" "http://onesocialweb.org/rel/service"
+              "href" (str "xmpp:" (:username user) "@" (:domain user))
+              }]
      ])})
