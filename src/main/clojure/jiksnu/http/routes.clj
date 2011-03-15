@@ -52,6 +52,8 @@
     [:post "/main/login"]                            #'auth/login
     [:post "/main/logout"]                           #'auth/logout
     [:get  "/main/ostatus"]                          #'subscription/ostatus
+    [:get "/main/ostatussub"]                        #'subscription/ostatussub
+    [:post "/main/ostatussub"]                 #'subscription/ostatussub-submit
     [:post "/main/subscribe"]                        #'subscription/subscribe
     [:post "/main/unsubscribe"]                      #'subscription/unsubscribe
     [:delete "/subscriptions/:id"]                   #'subscription/delete

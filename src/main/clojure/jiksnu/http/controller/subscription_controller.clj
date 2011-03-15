@@ -4,7 +4,8 @@
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.xmpp.view.subscription-view :as xmpp.view.subscription])
-  (:import jiksnu.model.Subscription))
+  (:import jiksnu.model.Subscription
+           jiksnu.model.User))
 
 (defn index
   [request]
@@ -41,3 +42,27 @@ In most cases, use the user-specific versions. (unsubscribe)"
 (defn ostatus
   [request]
   true)
+
+(defn ostatussub
+  [request]
+  (let [{{profile "profile"} :params} request]
+    (if profile
+      (let [[username password] (clojure.string/split profile #"@")]
+        (let [user (model.user/show username password)]
+          (println "user: " user)
+          user))
+      (User.))))
+
+(defn ostatussub-submit
+  [request]
+  (let [{{profile "profile"} :params} request]
+    (if profile
+      (let [[username password] (clojure.string/split profile #"@")]
+        (let [user (model.user/show username password)]
+          (println "user: " user)
+          user))
+      
+      )
+
+    )
+  )

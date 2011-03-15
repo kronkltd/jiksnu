@@ -1,6 +1,6 @@
 (ns jiksnu.http.view.subscription-view
   (:use jiksnu.http.controller.subscription-controller
-        [jiksnu.http.view :only (dump)]
+        [jiksnu.http.view :only (dump dump*)]
         jiksnu.view
         [ciste.core :only (defview)]
         ciste.view)
@@ -76,10 +76,35 @@
   [request arg]
   {:body
    [:div
-    [:p (dump request)]
-    [:p (dump arg)]
+    (dump* request)
+    (dump* arg)
 
     ]
    }
   
   )
+
+(defview #'ostatussub :html
+  [request arg]
+  {:body
+   [:div
+    (f/form-to
+     [:post "/main/ostatussub"]
+     [:p (f/text-field :profile )]
+     (f/submit-button "Submit")
+     )
+    (dump* request)
+    (dump* arg)
+
+    ]
+   }
+  
+
+  )
+
+(defview #'ostatussub-submit :html
+  [request subscription]
+  {:status 303
+   :headers {"Location" "/"}
+   :flash "The request has been sent"
+   :template false})

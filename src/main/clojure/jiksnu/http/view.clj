@@ -8,15 +8,19 @@
   (:require [clojure.pprint :as pprint]
             [hiccup.form-helpers :as f]))
 
+(defn dump*
+  [val]
+  [:p
+   [:code
+    [:pre
+     (escape-html
+      (with-out-str
+        (pprint/pprint val)))]]])
+
 (defn dump
   [val]
   (if (-> (config) :debug)
-    [:p
-     [:code
-      [:pre
-       (escape-html
-        (with-out-str
-          (pprint/pprint val)))]]]))
+    (dump* val)))
 
 (defn dump-unescaped
   [val]

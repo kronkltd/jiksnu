@@ -165,7 +165,7 @@
              (jiksnu.model.user/fetch-by-id (:to subscription)))
         (if (:pending subscription) " (pending)")])
      (model.subscription/subscriptions user))]
-   [:p [:a {:href "#"} "Add Remote"]]])
+   [:p [:a {:href "/main/ostatussub"} "Add Remote"]]])
 
 (defn subscribers-list
   [user]
