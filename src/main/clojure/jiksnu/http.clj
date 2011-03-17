@@ -13,4 +13,7 @@
                (future
                 (run-jetty
                  (#'routes/app)
-                 {:port port}))))))
+                 {:port port
+                  :keystore "certs/rsa-keystore"
+                  :key-password ""
+                  :ssl? true}))))))
