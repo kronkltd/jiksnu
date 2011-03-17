@@ -50,6 +50,9 @@
 (defentity Item
   [:user :activity :created])
 
+(defentity Domain
+  [:osw :ostatus])
+
 (defmacro with-database
   [& body]
   `(karras/with-mongo-request (mongo-database)

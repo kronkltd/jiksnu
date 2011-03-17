@@ -10,6 +10,7 @@
             (jiksnu.http.controller
              [activity-controller :as activity]
              [auth-controller :as auth]
+             [domain-controller :as domain]
              [inbox-controller :as inbox]
              [subscription-controller :as subscription]
              [user-controller :as user]
@@ -17,6 +18,7 @@
             (jiksnu.http.view
              activity-view
              auth-view
+             domain-view
              subscription-view
              user-view
              webfinger-view)
@@ -60,6 +62,8 @@
     [:post "/notice/new"]                            #'activity/create
     [:post "/notice/:id"]                            #'activity/update
     [:delete "/notice/:id"]                          #'activity/delete
+    [:get "/domains"]                                #'domain/index
+    [:get "/domains/*"]                            #'domain/show
     [:post "/main/register"]                         #'user/create
     [:get "/users/:id"]                              #'user/remote-profile
     [:delete "/users/:id"]                           #'user/delete
