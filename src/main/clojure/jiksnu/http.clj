@@ -14,6 +14,9 @@
                 (run-jetty
                  (#'routes/app)
                  {:port port
-                  :keystore "certs/rsa-keystore"
-                  :key-password ""
+                  ;; :keystore "/home/duck/projects/jiksnu/certs/rsa-keystore"
+                  ;; :key-password "GuNgSkOWmWUa46XE1n52vuMPp"
+                  :keystore "/home/duck/projects/jiksnu/keystore"
+                  :key-password "password"
+                  :ssl-port 8443
                   :ssl? true}))))))
