@@ -26,3 +26,16 @@
   [{{uri "uri"} :params :as request}]
   (let [[_ username domain] (re-matches #"(?:acct:)(.*)@(.*)" uri)]
     (model.user/show username domain)))
+
+(defn get-links
+  [xrd]
+  (map
+   (fn [link]
+     {:href (.getHref link)
+      :rel (.getRel link)
+      :template (.getTemplate link)
+      :type (.getType link)
+
+      })
+   (.getLinks xrd))
+  )

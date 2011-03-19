@@ -63,7 +63,9 @@
     [:post "/notice/:id"]                            #'activity/update
     [:delete "/notice/:id"]                          #'activity/delete
     [:get "/domains"]                                #'domain/index
-    [:get "/domains/*"]                            #'domain/show
+    [:get "/domains/*"]                              #'domain/show
+    [:post "/domains"]                               #'domain/create
+    [:post "/domains/*/discover"]                    #'domain/discover
     [:post "/main/register"]                         #'user/create
     [:get "/users/:id"]                              #'user/remote-profile
     [:delete "/users/:id"]                           #'user/delete

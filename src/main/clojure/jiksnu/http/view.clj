@@ -41,6 +41,7 @@
        (list
         [:li [:a {:href (str (uri user) "/all")} "Home"]]
         [:li [:a {:href "/settings/profile"} "Profile"]]
+        [:li [:a {:href "/domains"} "Domains"]]
         (if (is-admin? user)
           (list
            [:li [:a {:href "/admin/users"} "Users"]]

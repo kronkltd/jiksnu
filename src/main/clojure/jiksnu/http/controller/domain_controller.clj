@@ -2,6 +2,13 @@
   (:require [jiksnu.model.domain :as model.domain])
   )
 
+(defn create
+  [request]
+  (let [{{domain "domain"} :params} request]
+    (model.domain/create {:_id domain})
+    )
+  )
+
 (defn index
   [request]
   (let [domains (model.domain/index)]
@@ -23,4 +30,18 @@
   [domain]
   
   
+  )
+
+
+(defn discover
+  [request]
+  (let [{{id "id"} :params} request]
+    (let [domain (model.domain/show id)]
+      (let [xrd (fetch (str "http://" id "/.well-known/host-meta"))]
+        (let [links (get-links xrd)]
+          (model.domain/update (assoc domain :links links))
+          )
+        ))
+
+    )
   )
