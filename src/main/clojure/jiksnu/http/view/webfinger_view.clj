@@ -1,5 +1,6 @@
 (ns jiksnu.http.view.webfinger-view
   (:use ciste.core
+        ciste.sections
         ciste.view
         hiccup.core
         jiksnu.config
@@ -27,9 +28,7 @@
    "http://"
    (:domain (config))
    "/main/salmon/user/"
-   (:_id user)
-   )
-  )
+   (:_id user)))
 
 (defview #'user-meta :html
   [request user]
@@ -57,31 +56,24 @@
               "href" (str (full-uri user) ".rdf")}]
 
      ["Link" {"rel" "salmon"
-              "href" (salmon-link user)
-              }]
+              "href" (salmon-link user)}]
 
      ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-replies"
-              "href" (salmon-link user)
-              }]
+              "href" (salmon-link user)}]
 
      ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-mention"
-              "href" (salmon-link user)
-              }]
+              "href" (salmon-link user)}]
 
      ["Link" {"rel" "magic-public-key"
-              "href" "data:application/magic-public-key,RSA"
-              }]
+              "href" "data:application/magic-public-key,RSA"}]
 
      ["Link" {"rel" "http://ostatus.org/schema/1.0/subscribe"
               "template" (str "http://"
                               (:domain (config))
-                              "/main/ostatussub?profile={uri}")
-              }]
+                              "/main/ostatussub?profile={uri}")}]
 
      ["Link" {"rel" "http://specs.openid.net/auth/2.0/provider"
               "href" (full-uri user)}]
 
      ["Link" {"rel" "http://onesocialweb.org/rel/service"
-              "href" (str "xmpp:" (:username user) "@" (:domain user))
-              }]
-     ])})
+              "href" (str "xmpp:" (:username user) "@" (:domain user))}]])})

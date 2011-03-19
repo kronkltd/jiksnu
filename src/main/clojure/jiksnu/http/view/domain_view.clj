@@ -1,14 +1,13 @@
 (ns jiksnu.http.view.domain-view
   (:use ciste.core
+        ciste.sections
         ciste.view
         jiksnu.http.controller.domain-controller
         jiksnu.model
         jiksnu.session
-        jiksnu.view
-        )
+        jiksnu.view)
   (:require [hiccup.form-helpers :as f])
-  (:import jiksnu.model.Domain)
-  )
+  (:import jiksnu.model.Domain))
 
 (defsection uri [Domain :html]
   [domain & options]
@@ -23,8 +22,7 @@
     [:p
      (f/label :domain "Domain")
      (f/text-field :domain (:_id domain))
-     (f/submit-button "Add")
-     ])])
+     (f/submit-button "Add")])])
 
 (defsection index-line [Domain :html]
   [domain & options]
@@ -65,24 +63,18 @@
    [:div
     [:p (:_id domain)]
     [:p (:osw domain)]
-    [:p (f/form-to
-         [:post (str "/domains/" (:_id domain) "/discover")]
-         (f/submit-button "Discover")
-         )]
-    ]
-   }
-  )
+    [:p
+     (f/form-to
+      [:post (str "/domains/" (:_id domain) "/discover")]
+      (f/submit-button "Discover"))]]})
 
 (defview #'create :html
   [request domain]
-  (println "domain: " domain)
+  ;; (println "domain: " domain)
   {:status 303
    :template false
-   :headers {"Location" (uri domain)}
-   }
-  )
+   :headers {"Location" (uri domain)}})
 
 (defview #'discover :html
   [request domain]
-  {:body "discovering"}
-  )
+  {:body "discovering"})

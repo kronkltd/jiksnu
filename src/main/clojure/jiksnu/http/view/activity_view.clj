@@ -1,12 +1,13 @@
 (ns jiksnu.http.view.activity-view
-  (:use jiksnu.config
+  (:use ciste.core
+        ciste.sections
+        ciste.view
+        jiksnu.config
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model
         jiksnu.session
-        jiksnu.view
-        ciste.core
-        ciste.view)
+        jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]

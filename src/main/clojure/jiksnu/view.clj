@@ -1,5 +1,6 @@
 (ns jiksnu.view
-  (:use ciste.view
+  (:use ciste.sections
+        ciste.view
         [jiksnu.config :only (config)]))
 
 (defsection full-uri :default

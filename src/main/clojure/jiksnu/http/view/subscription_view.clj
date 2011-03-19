@@ -1,9 +1,10 @@
 (ns jiksnu.http.view.subscription-view
-  (:use jiksnu.http.controller.subscription-controller
+  (:use [ciste.core :only (defview)]
+        ciste.sections
+        ciste.view
+        jiksnu.http.controller.subscription-controller
         [jiksnu.http.view :only (dump dump*)]
-        jiksnu.view
-        [ciste.core :only (defview)]
-        ciste.view)
+        jiksnu.view)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription))
@@ -77,12 +78,7 @@
   {:body
    [:div
     (dump* request)
-    (dump* arg)
-
-    ]
-   }
-  
-  )
+    (dump* arg)]})
 
 (defview #'ostatussub :html
   [request arg]
@@ -91,16 +87,9 @@
     (f/form-to
      [:post "/main/ostatussub"]
      [:p (f/text-field :profile )]
-     (f/submit-button "Submit")
-     )
+     (f/submit-button "Submit"))
     (dump* request)
-    (dump* arg)
-
-    ]
-   }
-  
-
-  )
+    (dump* arg)]})
 
 (defview #'ostatussub-submit :html
   [request subscription]

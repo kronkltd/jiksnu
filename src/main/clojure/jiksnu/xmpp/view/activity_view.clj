@@ -1,14 +1,15 @@
 (ns jiksnu.xmpp.view.activity-view
-  (:use [jiksnu.config :only (config)]
+  (:use ciste.core
+        ciste.hook
+        ciste.sections
+        ciste.view
+        [jiksnu.config :only (config)]
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         jiksnu.xmpp.controller.activity-controller
         jiksnu.xmpp.view
-        jiksnu.view
-        ciste.core
-        ciste.hook
-        ciste.view)
+        jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.model.activity :as activity.model]
             [jiksnu.model.item :as model.item]
@@ -16,12 +17,6 @@
             [jiksnu.model.user :as model.user]
             jiksnu.http.controller.activity-controller)
   (:import jiksnu.model.Activity))
-
-;; TODO: This should be a special case of full response
-;; (defn minimal-response
-;;   "Returns a response iq packet containing the ids in entries"
-;;   [activities]
-;;   (map make-minimal-item activities))
 
 (defsection show-section [Activity :xmpp :xmpp]
   [^Activity activity & options]

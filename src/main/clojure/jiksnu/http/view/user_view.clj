@@ -1,5 +1,8 @@
 (ns jiksnu.http.view.user-view
-  (:use [clj-gravatar.core :only (gravatar-image)]
+  (:use ciste.core
+        ciste.sections
+        ciste.view
+        [clj-gravatar.core :only (gravatar-image)]
         jiksnu.config
         jiksnu.http.controller.user-controller
         jiksnu.http.view
@@ -8,9 +11,7 @@
         jiksnu.session
         jiksnu.view
         plaza.rdf.core
-        plaza.rdf.vocabularies.foaf
-        ciste.core
-        ciste.view)
+        plaza.rdf.vocabularies.foaf)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]

@@ -1,10 +1,11 @@
 (ns jiksnu.http.view.auth-view
-  (:use jiksnu.http.controller.auth-controller
+  (:use ciste.core
+        ciste.sections
+        ciste.view
+        jiksnu.http.controller.auth-controller
         jiksnu.http.view
         jiksnu.model
-        jiksnu.view
-        ciste.core
-        ciste.view)
+        jiksnu.view)
   (:require [hiccup.form-helpers :as f])
   (:import jiksnu.model.User))
 
