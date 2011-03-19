@@ -5,10 +5,11 @@
         plaza.rdf.implementations.jena)
   (:require [karras.core :as karras]
             [karras.sugar :as sugar])
-  (:import org.apache.abdera.Abdera
-           org.apache.abdera.factory.Factory
-           com.cliqset.abdera.ext.activity.ActivityExtensionFactory
+  (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
+           org.apache.abdera.Abdera
+           org.apache.abdera.factory.Factory
+           org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId))
 
 (init-jena-framework)

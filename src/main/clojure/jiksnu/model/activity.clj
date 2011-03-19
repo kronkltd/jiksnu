@@ -3,8 +3,7 @@
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [karras.entity :as entity]
             [karras.sugar :as sugar])
-  (:import jiksnu.model.Activity
-           org.apache.axiom.util.UIDGenerator))
+  (:import jiksnu.model.Activity))
 
 (defn set-id
   [activity]
