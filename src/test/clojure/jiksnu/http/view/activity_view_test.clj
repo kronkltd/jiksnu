@@ -1,6 +1,7 @@
 (ns jiksnu.http.view.activity-view-test
   (:use ciste.core
         ciste.factory
+        ciste.sections
         ciste.view
         jiksnu.config
         jiksnu.http.controller.activity-controller

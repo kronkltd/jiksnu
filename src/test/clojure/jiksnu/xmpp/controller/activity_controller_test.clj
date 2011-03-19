@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.activity-controller-test
   (:use ciste.factory
+        ciste.sections
         ciste.view
         jiksnu.model
         jiksnu.namespace

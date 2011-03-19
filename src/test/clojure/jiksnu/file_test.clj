@@ -6,10 +6,10 @@
 
 (describe read-xml)
 
-(describe slurp-classpath
-  (do-it "should return a string"
-    (let [filename "entry.xml"
-          response (slurp-classpath filename)]
-      (string? response))))
+;; (describe slurp-classpath
+;;   (do-it "should return a string"
+;;     (let [filename "entry.xml"
+;;           response (slurp-classpath filename)]
+;;       (string? response))))
 
 (describe read-clojure)

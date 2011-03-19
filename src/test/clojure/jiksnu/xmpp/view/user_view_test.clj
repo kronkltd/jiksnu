@@ -1,6 +1,7 @@
 (ns jiksnu.xmpp.view.user-view-test
   (:use ciste.core
         ciste.factory
+        ciste.sections
         ciste.view
         jiksnu.model
         [jiksnu.xmpp.view :only (make-request element? make-packet make-jid)]

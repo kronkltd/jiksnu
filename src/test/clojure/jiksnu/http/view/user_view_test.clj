@@ -1,6 +1,7 @@
 (ns jiksnu.http.view.user-view-test
   (:use ciste.core
         ciste.factory
+        ciste.sections
         ciste.view
         jiksnu.http.view
         jiksnu.http.view.user-view

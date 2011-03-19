@@ -8,11 +8,11 @@
 
 (describe parse-stream)
 
-(describe parse-xml-string
-  (do-it "should be an entry"
-    (let [entry (slurp-classpath "entry.xml")
-          response (parse-xml-string entry)]
-      (expect (instance? Entry response)))))
+;; (describe parse-xml-string
+;;   (do-it "should be an entry"
+;;     (let [entry (slurp-classpath "entry.xml")
+;;           response (parse-xml-string entry)]
+;;       (expect (instance? Entry response)))))
 
 (describe not-namespace)
 

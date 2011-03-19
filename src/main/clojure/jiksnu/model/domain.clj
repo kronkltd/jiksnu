@@ -20,3 +20,7 @@
 (defn create
   [domain]
   (entity/create Domain domain))
+
+(defn update
+  [domain]
+  (entity/save domain))

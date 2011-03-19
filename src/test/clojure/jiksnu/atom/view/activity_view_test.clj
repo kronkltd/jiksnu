@@ -1,5 +1,6 @@
 (ns jiksnu.atom.view.activity-view-test
   (:use ciste.factory
+        ciste.sections
         ciste.view
         jiksnu.atom.view.activity-view
         [lazytest.describe :only (describe testing do-it)]
@@ -36,15 +37,21 @@
 
 (describe to-json
   (do-it "should not be nil"
-    (let [entry (factory Activity)
-          response (to-json entry)]
-      (expect (not (nil? response))))))
+    (with-serialization :http
+      (with-format :atom
+        (let [activity (factory Activity)
+              entry (show-section activity)
+              response (to-json entry)]
+          (expect (not (nil? response))))))))
 
 (describe to-activity
   (do-it "should return a map"
-    (let [entry (factory Activity)
-          response (to-activity entry)]
-      (expect (map? response)))))
+    (with-serialization :http
+      (with-format :atom
+        (let [activity (factory Activity)
+              entry (show-section activity)
+              response (to-activity entry)]
+          (expect (map? response)))))))
 
 (describe show-section "Activity :atom"
   (do-it "should return an abdera entry"
