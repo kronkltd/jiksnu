@@ -1,5 +1,5 @@
 (ns jiksnu.http.controller.activity-controller-test
-  (:use jiksnu.factory
+  (:use ciste.factory
         jiksnu.http.controller.activity-controller
         jiksnu.model
         jiksnu.session

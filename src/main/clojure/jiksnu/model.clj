@@ -3,7 +3,8 @@
         karras.entity
         plaza.rdf.core
         plaza.rdf.implementations.jena)
-  (:require [karras.core :as karras])
+  (:require [karras.core :as karras]
+            [karras.sugar :as sugar])
   (:import org.apache.abdera.Abdera
            org.apache.abdera.factory.Factory
            com.cliqset.abdera.ext.activity.ActivityExtensionFactory
@@ -73,3 +74,37 @@
   [id]
   (ObjectId. id))
 
+(defn new-id
+  []
+  (UIDGenerator/generateURNString))
+
+(defseq :id
+  [n]
+  n)
+
+(defseq :word
+  [n]
+  (str "word" n))
+
+(deffactory Activity
+  {:_id #'new-id
+   :title (fseq :word)
+   :summary (fseq :word)
+   :published #'sugar/date
+   :updated #'sugar/date
+   :public true})
+
+(deffactory User
+  (let [password (fseq :word)]
+    {:username (fseq :word)
+     :domain (-> (config) :domain)
+     :name (fseq :word)
+     :first-name (fseq :word)
+     :last-name (fseq :word)
+     :password password
+     :confirm-password password}))
+
+(deffactory Subscription
+  {:to (fseq :word)
+   :from (fseq :word)
+   :created #'sugar/date})

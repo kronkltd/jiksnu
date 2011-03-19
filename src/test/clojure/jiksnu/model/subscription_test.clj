@@ -1,6 +1,6 @@
 (ns jiksnu.model.subscription-test
-  (:use jiksnu.core-test
-        jiksnu.factory
+  (:use ciste.factory
+        jiksnu.core-test
         jiksnu.mock
         jiksnu.model
         jiksnu.model.subscription

@@ -1,10 +1,10 @@
 (ns jiksnu.model.activity-test
-  (:use [lazytest.describe :only (describe testing do-it)]
-        jiksnu.factory
+  (:use ciste.factory
         jiksnu.mock
         jiksnu.model
         jiksnu.model.activity
         jiksnu.session
+        [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
   (:require [karras.entity :as entity]
             [jiksnu.model.user :as model.user]

@@ -1,10 +1,9 @@
 (ns jiksnu.atom.view.activity-view-test
-  (:use ciste.view
+  (:use ciste.factory
+        ciste.view
         jiksnu.atom.view.activity-view
         [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)]
-        jiksnu.factory
-        jiksnu.mock
         jiksnu.model
         jiksnu.view)
   (:require [jiksnu.model.user :as model.user])

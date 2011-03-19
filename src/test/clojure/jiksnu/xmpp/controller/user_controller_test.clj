@@ -1,5 +1,5 @@
 (ns jiksnu.xmpp.controller.user-controller-test
-  (:use jiksnu.factory
+  (:use ciste.factory
         jiksnu.mock
         jiksnu.model
         jiksnu.session

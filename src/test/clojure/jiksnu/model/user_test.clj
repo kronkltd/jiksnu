@@ -1,5 +1,5 @@
 (ns jiksnu.model.user-test
-  (:use jiksnu.factory
+  (:use ciste.factory
         jiksnu.model
         jiksnu.model.user
         [lazytest.describe :only (describe do-it testing)]

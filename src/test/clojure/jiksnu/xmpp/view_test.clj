@@ -1,8 +1,8 @@
 (ns jiksnu.xmpp.view-test
-  (:use ciste.view
+  (:use ciste.factory
+        ciste.view
         clojure.contrib.pprint
         jiksnu.core-test
-        jiksnu.factory
         jiksnu.mock
         jiksnu.model
         jiksnu.session

@@ -1,13 +1,13 @@
 (ns jiksnu.http.view.user-view-test
-  (:use jiksnu.http.view.user-view
-        [lazytest.describe :only (describe do-it testing)]
-        [lazytest.expect :only (expect)]
+  (:use ciste.core
+        ciste.factory
+        ciste.view
         jiksnu.http.view
+        jiksnu.http.view.user-view
         jiksnu.model
-        jiksnu.factory
         jiksnu.view
-        ciste.core
-        ciste.view)
+        [lazytest.describe :only (describe do-it testing)]
+        [lazytest.expect :only (expect)])
   (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 

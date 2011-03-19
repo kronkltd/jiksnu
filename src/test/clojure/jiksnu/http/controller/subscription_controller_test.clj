@@ -1,6 +1,6 @@
 (ns jiksnu.http.controller.subscription-controller-test
-  (:use jiksnu.core-test
-        jiksnu.factory
+  (:use ciste.factory
+        jiksnu.core-test
         jiksnu.http.controller.subscription-controller
         jiksnu.model
         jiksnu.session

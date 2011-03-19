@@ -1,8 +1,8 @@
 (ns jiksnu.http.view.activity-view-test
   (:use ciste.core
+        ciste.factory
         ciste.view
         jiksnu.config
-        jiksnu.factory
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.http.view.activity-view

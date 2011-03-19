@@ -6,10 +6,6 @@
   (:import jiksnu.model.Activity
            org.apache.axiom.util.UIDGenerator))
 
-(defn new-id
-  []
-  (UIDGenerator/generateURNString))
-
 (defn set-id
   [activity]
   (if (:_id activity)

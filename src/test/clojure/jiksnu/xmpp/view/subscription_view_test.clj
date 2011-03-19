@@ -1,7 +1,7 @@
 (ns jiksnu.xmpp.view.subscription-view-test
   (:use ciste.core
+        ciste.factory
         jiksnu.core-test
-        jiksnu.factory
         jiksnu.namespace
         jiksnu.view
         jiksnu.xmpp.view
