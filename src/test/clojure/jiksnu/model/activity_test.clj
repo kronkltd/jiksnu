@@ -1,6 +1,5 @@
 (ns jiksnu.model.activity-test
   (:use ciste.factory
-        jiksnu.mock
         jiksnu.model
         jiksnu.model.activity
         jiksnu.session

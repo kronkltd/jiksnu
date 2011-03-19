@@ -3,7 +3,6 @@
         ciste.view
         clojure.contrib.pprint
         jiksnu.core-test
-        jiksnu.mock
         jiksnu.model
         jiksnu.session
         jiksnu.namespace

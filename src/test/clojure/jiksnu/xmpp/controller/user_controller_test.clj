@@ -1,6 +1,5 @@
 (ns jiksnu.xmpp.controller.user-controller-test
   (:use ciste.factory
-        jiksnu.mock
         jiksnu.model
         jiksnu.session
         jiksnu.xmpp.controller.user-controller
@@ -27,7 +26,7 @@
                     {:from (make-jid user)
                      :to (make-jid user)
                      :type :get
-                     :body (mock-vcard-query-request-element)})
+                     :body nil})
             request (make-request packet)
             response (show request)]
         (expect (instance? User response))
@@ -35,7 +34,7 @@
 
 #_(describe create
     (do-it "should not be nil" :pending
-      (let [packet (mock-vcard-publish-request-packet)
+      (let [packet nil
             request (make-request packet)
             response (create request)]
         (expect (not (nil? response))))))
@@ -45,13 +44,13 @@
 #_(describe inbox
     (testing "when there are no activities"
       (do-it "should be empty"
-        (let [request (make-request (mock-inbox-query-request-packet))]
+        (let [request (make-request nil)]
           (model.activity/drop!)
           (let [response (inbox request)]
             (expect (empty? response))))))
     (testing "when there are activities"
       (do-it "should return a seq of activities"
-        (let [request (make-request (mock-inbox-query-request-packet))]
+        (let [request (make-request nil)]
           (model.activity/drop!)
           (let [author (model.user/create (factory User))]
             (with-user author

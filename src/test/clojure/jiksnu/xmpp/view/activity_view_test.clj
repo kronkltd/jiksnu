@@ -1,7 +1,6 @@
 (ns jiksnu.xmpp.view.activity-view-test
   (:use ciste.factory
         ciste.view
-        jiksnu.mock
         jiksnu.model
         jiksnu.session
         jiksnu.view
@@ -16,14 +15,14 @@
 
 #_(describe minimal-response
   (do-it "should return a sequence of elements"
-    (let [packet (mock-activity-query-request-packet)
+    (let [packet nil
           activities (model.activity/index)
           response (minimal-response activities)]
       (expect (every? element? response)))))
 
 #_(describe full-response
   (do-it "should return a sequence of elements"
-    (let [packet (mock-activity-query-request-packet)
+    (let [packet nil
           entries (model.activity/index)
           response (full-response entries)]
       (expect (not (nil? response)))
