@@ -1,0 +1,21 @@
+development:
+  domain: beta.jiksnu.com
+  database:
+    host: localhost
+    name: jiksnu_development
+  registration_enabled: false
+  debug: false
+  print:
+    request: true
+    params: false
+
+test:
+  domain: test.jiksnu.com
+  database:
+    host: localhost
+    name: jiksnu_test
+  registration_enabled: false
+  debug: false
+  print:
+    request: true
+    params: false
