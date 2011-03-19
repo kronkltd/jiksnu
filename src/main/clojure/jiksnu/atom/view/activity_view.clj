@@ -1,12 +1,13 @@
 (ns jiksnu.atom.view.activity-view
-  (:use jiksnu.model
+  (:use ciste.sections
+        ciste.view
+        clojure.contrib.logging
         jiksnu.atom.view
         jiksnu.http.view
+        jiksnu.model
+        jiksnu.namespace
         jiksnu.view
-        clojure.contrib.logging
-        ciste.view
-        [karras.entity :only (make)]
-        jiksnu.namespace)
+        [karras.entity :only (make)])
   (:require [jiksnu.model.user :as model.user]
             [jiksnu.atom.view.user-view :as view.user])
   (:import jiksnu.model.Activity

@@ -1,7 +1,8 @@
 (ns jiksnu.atom.view
-  (:use jiksnu.model
-        clojure.contrib.logging
+  (:use ciste.sections
         ciste.view
+        clojure.contrib.logging
+        jiksnu.model
         jiksnu.view)
   (:import java.io.ByteArrayInputStream))
 

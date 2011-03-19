@@ -1,13 +1,14 @@
 (ns jiksnu.atom.view.user-view
-  (:use ciste.view
-        jiksnu.view
+  (:use ciste.sections
+        ciste.view
         jiksnu.model
-        jiksnu.namespace)
+        jiksnu.namespace
+        jiksnu.view)
   (:require [jiksnu.model.user :as model.user])
-  (:import javax.xml.namespace.QName
-           com.cliqset.abdera.ext.activity.object.Person
-           jiksnu.model.User
+  (:import com.cliqset.abdera.ext.activity.object.Person
            java.net.URI
+           javax.xml.namespace.QName
+           jiksnu.model.User
            org.apache.abdera.model.Entry))
 
 (defn make-object

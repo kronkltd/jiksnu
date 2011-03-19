@@ -1,10 +1,11 @@
 (ns jiksnu.http.view
-  (:use ciste.view
+  (:use ciste.core
+        ciste.sections
+        ciste.view
         hiccup.core
         [jiksnu.config :only (config)]
         jiksnu.session
-        jiksnu.view
-        ciste.core)
+        jiksnu.view)
   (:require [clojure.pprint :as pprint]
             [hiccup.form-helpers :as f]))
 
