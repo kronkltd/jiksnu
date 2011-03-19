@@ -1,5 +1,6 @@
 (ns jiksnu.model
-  (:use [jiksnu.config :only (config)]
+  (:use ciste.factory
+        [jiksnu.config :only (config)]
         karras.entity
         plaza.rdf.core
         plaza.rdf.implementations.jena)
