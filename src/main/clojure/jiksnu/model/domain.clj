@@ -24,3 +24,9 @@
 (defn update
   [domain]
   (entity/save domain))
+
+(defn delete
+  [id]
+  (let [domain (show id)]
+    (entity/delete domain)
+    domain))

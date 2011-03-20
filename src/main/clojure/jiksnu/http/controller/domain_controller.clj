@@ -1,48 +1,37 @@
 (ns jiksnu.http.controller.domain-controller
   (:use jiksnu.http.controller.webfinger-controller)
-  (:require [jiksnu.model.domain :as model.domain])
-  )
+  (:require [jiksnu.model.domain :as model.domain]))
 
 (defn create
   [request]
   (let [{{domain "domain"} :params} request]
-    (model.domain/create {:_id domain})
-    )
-  )
+    (model.domain/create {:_id domain})))
 
 (defn index
   [request]
   (let [domains (model.domain/index)]
-    (println "domains: " domains)
-    domains
-    )
-  )
+    domains))
 
 (defn show
   [request]
-  (let [{{id "*"} :params} request]
-    (println "id: " id)
-    (let [domain (model.domain/show id)]
-      (println "domain: " domain)
-      domain
-      )))
+  (let [{{id "*"} :params} request
+        domain (model.domain/show id)]
+    domain))
 
 (defn check-webfinger
   [domain]
-  
-  
-  )
-
+  true)
 
 (defn discover
   [request]
-  (let [{{id "id"} :params} request]
-    (let [domain (model.domain/show id)]
-      (let [xrd (fetch (str "http://" id "/.well-known/host-meta"))]
-        (let [links (get-links xrd)]
-          (model.domain/update (assoc domain :links links))
-          )
-        ))
+  (let [{{id "id"} :params} request
+        domain (model.domain/show id)
+        xrd (fetch (str "http://" id "/.well-known/host-meta"))
+        links (get-links xrd)]
+    (model.domain/update (assoc domain :links links))))
 
-    )
-  )
+(defn delete
+  [request]
+  (let [{{id "*"} :params} request
+        response (model.domain/delete id)]
+    response))

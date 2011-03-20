@@ -64,6 +64,7 @@
     [:delete "/notice/:id"]                          #'activity/delete
     [:get "/domains"]                                #'domain/index
     [:get "/domains/*"]                              #'domain/show
+    [:delete "/domains/*"]                           #'domain/delete
     [:post "/domains"]                               #'domain/create
     [:post "/domains/*/discover"]                    #'domain/discover
     [:post "/main/register"]                         #'user/create

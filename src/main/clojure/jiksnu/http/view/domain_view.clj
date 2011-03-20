@@ -35,14 +35,23 @@
                     "/.well-known/host-meta")} "Host-Meta"]]
    [:td (f/form-to
          [:post (str "/domains/" (:_id domain) "/discover")]
-         (f/submit-button "Discover"))]])
+         (f/submit-button "Discover"))]
+   [:td (f/form-to
+         [:delete (uri domain)]
+         (f/submit-button "Delete")
+         )]
+   ])
 
 (defsection index-section [Domain :html]
   [domains & options]
   [:table
    [:tr
     [:th "Name"]
-    [:th "OSW Enabled?"]]
+    [:th "OSW Enabled?"]
+    [:th "Host-Meta"]
+    [:th "Discover"]
+    [:th "Delete"]
+    ]
    (map index-line  domains)])
 
 (defsection index-block [Domain :html]
@@ -73,8 +82,14 @@
   ;; (println "domain: " domain)
   {:status 303
    :template false
-   :headers {"Location" (uri domain)}})
+   :headers {"Location" "/domains"}})
 
 (defview #'discover :html
   [request domain]
   {:body "discovering"})
+
+(defview #'delete :html
+  [request domain]
+  {:status 303
+   :template false
+   :headers {"Location" "/domains"}})
