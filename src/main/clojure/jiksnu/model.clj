@@ -21,6 +21,7 @@
 (defonce ^Abdera #^:dynamic *abdera* (Abdera.))
 (defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
 (defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
+
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
 (.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
