@@ -10,14 +10,14 @@
         [karras.entity :only (make)])
   (:require [jiksnu.model.user :as model.user]
             [jiksnu.atom.view.user-view :as view.user])
-  (:import jiksnu.model.Activity
-           org.apache.abdera.model.Entry
-           org.apache.abdera.model.Element
-           org.apache.abdera.ext.json.JSONUtil
-           com.cliqset.abdera.ext.activity.object.Person
+  (:import com.cliqset.abdera.ext.activity.object.Person
            java.io.StringWriter
            javax.xml.namespace.QName
-           jiksnu.model.User))
+           jiksnu.model.Activity
+           jiksnu.model.User
+           org.apache.abdera.ext.json.JSONUtil
+           org.apache.abdera.model.Element
+           org.apache.abdera.model.Entry))
 
 (defn has-author?
   [^Entry entry]

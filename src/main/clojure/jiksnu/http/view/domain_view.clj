@@ -79,7 +79,6 @@
 
 (defview #'create :html
   [request domain]
-  ;; (println "domain: " domain)
   {:status 303
    :template false
    :headers {"Location" "/domains"}})

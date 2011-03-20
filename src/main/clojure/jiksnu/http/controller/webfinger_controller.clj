@@ -1,10 +1,10 @@
 (ns jiksnu.http.controller.webfinger-controller
   (:use jiksnu.namespace)
   (:require [jiksnu.model.user :as model.user])
-  (:import org.openxrd.xrd.core.impl.XRDBuilder
+  (:import com.cliqset.hostmeta.JavaNetXRDFetcher
            com.cliqset.xrd.XRD
-           com.cliqset.hostmeta.JavaNetXRDFetcher
-           java.net.URL))
+           java.net.URL
+           org.openxrd.xrd.core.impl.XRDBuilder))
 
 (defonce #^:dynamic *fetcher*
   (JavaNetXRDFetcher.))
@@ -34,8 +34,5 @@
      {:href (.getHref link)
       :rel (.getRel link)
       :template (.getTemplate link)
-      :type (.getType link)
-
-      })
-   (.getLinks xrd))
-  )
+      :type (.getType link)})
+   (.getLinks xrd)))

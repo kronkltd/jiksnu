@@ -7,21 +7,14 @@
         [jiksnu.session :only (with-user current-user)]
         hiccup.core))
 
-(defn wrap-http-serialization
-  [handler]
-  (fn [request]
-    (if-let [response (handler request)]
-      (merge {:serialization :http} response))))
-
 (defn wrap-debug-binding
   "Checks if there is a debug flag passed in the request.
 Turns on debugging mode for that request."
   [handler]
   (fn [request]
-    (if (and
-         (:query-params request)
-         ((:query-params request) "debug"))
-      (do (with-debug (handler request)))
+    (if (and (:query-params request)
+             ((:query-params request) "debug"))
+      (with-debug (handler request))
       (handler request))))
 
 (defn wrap-user-binding
@@ -67,29 +60,9 @@ Turns on debugging mode for that request."
           (pprint response))
         response))))
 
-(defn wrap-vectored-params
-  [handler]
-  (fn [request]
-    (handler
-     (merge
-      request
-      {:query-params
-       (into {}
-             (map
-              (fn [[k v]]
-                [k (if (and (.endsWith k "[]")
-                            (not (vector? v)))
-                     [v] v)])
-              (:query-params request)))}))))
-
 (defn wrap-database
   [handler]
   (fn [request]
     (with-database
       (handler request))))
 
-(defn wrap-http-serialization
-  [handler]
-  (fn [request]
-    (handler (assoc (assoc request :serialization :http)
-               :format :html))))

@@ -48,9 +48,7 @@ In most cases, use the user-specific versions. (unsubscribe)"
   (let [{{profile "profile"} :params} request]
     (if profile
       (let [[username password] (clojure.string/split profile #"@")]
-        (let [user (model.user/show username password)]
-          (println "user: " user)
-          user))
+        (model.user/show username password))
       (User.))))
 
 (defn ostatussub-submit
@@ -58,11 +56,4 @@ In most cases, use the user-specific versions. (unsubscribe)"
   (let [{{profile "profile"} :params} request]
     (if profile
       (let [[username password] (clojure.string/split profile #"@")]
-        (let [user (model.user/show username password)]
-          (println "user: " user)
-          user))
-      
-      )
-
-    )
-  )
+        (model.user/show username password)))))

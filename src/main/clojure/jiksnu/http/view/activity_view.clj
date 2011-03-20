@@ -222,13 +222,7 @@
      (index-section authors))
    "object"
    {"published" (:object-published activity)
-    "updated" (:object-updated activity)
-
-             }
-
-   }
-  
-  )
+    "updated" (:object-updated activity)}})
 
 (defview #'index :html
   [request activities]
@@ -249,7 +243,6 @@
 (defview #'index :json
   [request activities]
   (with-format :json
-    (println "activities: " activities)
     {:body (doall (map #(show-section %) activities))}))
 
 (defview #'show :html

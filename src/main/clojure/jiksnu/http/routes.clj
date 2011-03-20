@@ -5,7 +5,8 @@
         hiccup.core
         jiksnu.http.middleware
         [ring.middleware.session :only (wrap-session)])
-  (:require [compojure.core :as compojure]
+  (:require [ciste.middleware :as middleware]
+            [compojure.core :as compojure]
             [jiksnu.http.view :as view]
             (jiksnu.http.controller
              [activity-controller :as activity]
@@ -108,5 +109,5 @@
       (wrap-database)
       ;; #'wrap-flash
       (wrap-session)
-      (wrap-http-serialization)
+      (middleware/wrap-http-serialization)
       (wrap-error-catching)))
