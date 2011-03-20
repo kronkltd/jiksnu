@@ -13,15 +13,12 @@
   (:import tigase.xml.Element
            java.text.SimpleDateFormat))
 
-(defonce xsd-formatter
-  (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss'Z'"))
-
 (defn subscriber-response-element
   [subscription]
   (let [subscriber (model.user/fetch-by-id (:from subscription))]
     (make-element
      "subscriber" {"node" microblog-uri
-                   "created" (.format xsd-formatter (:created subscription))
+                   "created" (format-date (:created subscription))
                    "jid" (str (:username subscriber) "@"
                               (:domain subscriber))})))
 
@@ -37,7 +34,7 @@
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
     (make-element
      "unsubscribe" {"node" microblog-uri
-                  "jid" (make-jid subscribee)})))
+                    "jid" (make-jid subscribee)})))
 
 (defn subscriber-response-minimal
   [subscribers]
@@ -53,7 +50,7 @@
     (make-element
      "subscription" {"node" microblog-uri
                      "subscription" "subscribed"
-                     "created" (.format xsd-formatter created)
+                     "created" (format-date created)
                      "jid" (str (:username subscribee) "@"
                                 (:domain subscribee))})))
 

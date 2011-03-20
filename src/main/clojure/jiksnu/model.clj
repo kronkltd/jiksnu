@@ -1,6 +1,8 @@
 (ns jiksnu.model
   (:use ciste.factory
+        clojure.contrib.json
         [jiksnu.config :only (config)]
+        jiksnu.namespace
         karras.entity
         plaza.rdf.core
         plaza.rdf.implementations.jena)
@@ -8,25 +10,35 @@
             [karras.sugar :as sugar])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
+           java.text.SimpleDateFormat
+           java.util.Date
            org.apache.abdera.Abdera
            org.apache.abdera.factory.Factory
            org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId))
 
-(init-jena-framework)
-(register-rdf-ns :dc "http://purl.org/dc/elements/1.1/")
-(register-rdf-ns :foaf "http://xmlns.com/foaf/0.1/")
-
+(def #^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 
 (defonce ^Abdera #^:dynamic *abdera* (Abdera.))
 (defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
 (defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
 
-(.registerExtension *abdera-factory* (ActivityExtensionFactory.))
-(.registerExtension *abdera-factory* (PocoExtensionFactory.))
-
 (def #^:dynamic *mongo-database*
      (karras/mongo-db (-> (config) :database :name)))
+
+(defonce *formatter*
+  (SimpleDateFormat. *date-format*))
+
+(defn format-date
+  [date]
+  (.format *formatter* date))
+
+(init-jena-framework)
+(register-rdf-ns :dc dc-ns)
+(register-rdf-ns :foaf foaf-ns)
+
+(.registerExtension *abdera-factory* (ActivityExtensionFactory.))
+(.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
 (defn mongo-database
   []
@@ -111,3 +123,16 @@
   {:to (fseq :word)
    :from (fseq :word)
    :created #'sugar/date})
+
+(defn write-json-date [date out escape-unicode?]
+  (let [formatted-date (.format (SimpleDateFormat. *date-format*) date)]
+    (.print out (str "\"" formatted-date "\""))))
+
+(defn write-json-object-id
+  [id out escape-unicode]
+  (.print out (str "\"" id "\"")))
+
+(extend Date Write-JSON
+  {:write-json write-json-date})
+(extend ObjectId Write-JSON
+  {:write-json write-json-object-id})

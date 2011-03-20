@@ -26,21 +26,17 @@
 
 (defsection index-line [Activity :xmpp :xmpp]
   [^Activity activity & options]
-  (make-element
-   "item" {"id" (:_id activity)}
-   (show-section activity)))
+  ["item" {"id" (:_id activity)}
+   (show-section activity)])
 
 (defsection index-block [Activity :xmpp :xmpp]
   [activities & options]
-  (make-element
-   "items" {"node" microblog-uri}
-   (map index-line activities)))
+  ["items" {"node" microblog-uri}
+   (map index-line activities)])
 
 (defsection index-section [Activity :xmpp :xmpp]
   [activities & options]
-  (make-element
-   "pubsub" {}
-   (index-block activities)))
+  ["pubsub" {} (index-block activities)])
 
 (defview #'index :xmpp
   [request activities]
@@ -63,9 +59,7 @@
             message-text (:summary activity)
             ele (make-element
                  "message" {"type" "headline"}
-                 #_["subject" {} "New activity"]
-                 #_["body" {} message-text]
-                 ["event" {"xmlns" "http://jabber.org/protocol/pubsub#event"}
+                 ["event" {"xmlns" event-ns}
                   (index-block [activity])])]
         (let [message
               (make-packet
