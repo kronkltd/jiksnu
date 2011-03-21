@@ -44,7 +44,7 @@
         (let [user (model.user/create (factory User))]
           (with-user user
             (let [activity (model.activity/create (factory Activity))
-                  element (index-section [activity])
+                  element (make-element (index-section [activity]))
                   packet (make-packet
                           {:to (make-jid user)
                            :from (make-jid user)
@@ -139,7 +139,8 @@
           packet-map {:to (make-jid user)
                       :from (make-jid user)
                       :type :get
-                      :body (make-element "pubsub")}
+                      :body (make-element
+                             ["pubsub" {}])}
           response (make-packet packet-map)]
       (expect (packet? response)))))
 
