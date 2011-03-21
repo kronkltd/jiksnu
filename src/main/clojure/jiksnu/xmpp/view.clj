@@ -17,8 +17,6 @@
 (declare to-tigase-element)
 (declare abdera-to-tigase-element)
 
-(def #^:dynamic *packet*)
-
 (defn node-value
   [^Element element]
   (.getAttribute element "node"))
