@@ -1,6 +1,6 @@
 (ns jiksnu.xmpp.view.activity-view
   (:use ciste.core
-        ciste.hook
+        ciste.trigger
         ciste.sections
         ciste.view
         [jiksnu.config :only (config)]
@@ -80,10 +80,10 @@
         (model.item/push user activity)
         (notify-activity user activity)))))
 
-(add-hook! #'jiksnu.http.controller.activity-controller/create
-           #'notify-subscribers)
-(add-hook! #'jiksnu.http.controller.activity-controller/create
-           #'sleep-and-print)
+(add-trigger! #'jiksnu.http.controller.activity-controller/create
+              #'notify-subscribers)
+(add-trigger! #'jiksnu.http.controller.activity-controller/create
+              #'sleep-and-print)
 
 
 (defview #'fetch-comments-remote :xmpp
