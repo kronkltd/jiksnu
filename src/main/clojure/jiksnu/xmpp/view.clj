@@ -208,8 +208,8 @@
 
 (defn ^Element make-element
   "Create a tigase element"
-  ([name]
-     (make-element name {} nil))
+  ([spec]
+     (apply make-element spec))
   ([name attrs]
      (make-element name attrs nil))
   ([name attrs & children]
