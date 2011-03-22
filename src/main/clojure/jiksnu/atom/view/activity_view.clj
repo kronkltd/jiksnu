@@ -180,3 +180,37 @@ serialization"
         (.setId object-element object-id))
       (.setContentAsHtml object-element (:summary activity)))
     entry))
+
+(defview #'index :atom
+  [request activities]
+  (let [self (str "http://"
+                  (:domain (config))
+                  "/api/statuses/public_timeline.atom")]
+    {:headers {"Content-Type" "application/xml"}
+     :template false
+     :body (make-feed
+            {:title "Public Activities"
+             :subtitle "All activities posted"
+             :id self
+            :links [{:href (str "http://" (:domain (config)) "/")
+                     :rel "alternate"
+                     :type "text/html"}
+                    {:href self
+                     :rel "self"
+                     :type "application/atom+xml"}]
+            :updated (:updated (first activities))
+            :entries activities})}))
+
+(defview #'user-timeline :atom
+  [request [user activities]]
+  {:headers {"Content-Type" "application/xml"}
+   :template false
+   :body (make-feed
+          {:title "User Timeline"
+           :subtitle ""
+           :links [{:href (uri user)
+                    :rel "alternate"
+                    :type "text/html"}]
+           :updated (:updated (first activities))
+           :entries activities})})
+

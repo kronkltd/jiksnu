@@ -3,7 +3,7 @@
         ciste.sections
         ciste.view
         [clj-gravatar.core :only (gravatar-image)]
-        jiksnu.config
+        ciste.config
         jiksnu.http.controller.user-controller
         jiksnu.http.view
         jiksnu.model

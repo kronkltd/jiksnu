@@ -1,7 +1,7 @@
 (ns jiksnu.view
   (:use ciste.sections
         ciste.view
-        [jiksnu.config :only (config)]))
+        [ciste.config :only (config)]))
 
 (defsection full-uri :default
   [record & options]

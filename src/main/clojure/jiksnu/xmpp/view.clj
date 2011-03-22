@@ -3,6 +3,7 @@
         [clojure.string :only (trim)]
         jiksnu.namespace
         jiksnu.xmpp
+        jiksnu.xmpp.element
         jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [clojure.stacktrace :as stacktrace])
@@ -235,7 +236,6 @@
 
 (defn make-packet
   [{:keys [to from body type id] :as packet-map}]
-  ;; (println "packet-map: " packet-map)
   (let [element-name (condp = type
                          :result "iq"
                          :set "iq"
@@ -247,13 +247,8 @@
                                "type" (if type (name type) "")
                                "to" to
                                "from" from})]
-    (if body
-      (.addChild element body))
-    (let [packet
-          (Packet/packetInstance
-           element from to)]
-      #_(println "making packet: " packet)
-      packet)))
+    (if body (.addChild element body))
+    (Packet/packetInstance element from to)))
 
 (defn deliver-packet!
   [^Packet packet]
@@ -280,3 +275,11 @@
    :to (:from request)
    :id (:id request)
    :type :result})
+
+(defmethod format-as :xmpp
+  [format request response]
+  response)
+
+(defmethod serialize-as :xmpp
+  [serialization elements]
+  (make-packet elements))

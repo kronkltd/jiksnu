@@ -2,7 +2,7 @@
   (:use ciste.core
         ciste.sections
         ciste.view
-        jiksnu.config
+        ciste.config
         jiksnu.model
         jiksnu.namespace
         jiksnu.view

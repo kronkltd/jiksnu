@@ -26,3 +26,6 @@
   [[k v]]
   (not (= k :xmlns)))
 
+(defmethod default-format :atom
+  [request response])
+

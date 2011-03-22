@@ -1,7 +1,7 @@
 (ns jiksnu.model
-  (:use ciste.factory
+  (:use [ciste.config :only (config)]
+        ciste.factory
         clojure.contrib.json
-        [jiksnu.config :only (config)]
         jiksnu.namespace
         karras.entity
         plaza.rdf.core
@@ -76,7 +76,7 @@
 
 (defmacro with-environment
   [environment & body]
-  `(binding [jiksnu.config/*current-environment* ~environment]
+  `(binding [ciste.config/*current-environment* ~environment]
      (with-database
        ~@body)))
 

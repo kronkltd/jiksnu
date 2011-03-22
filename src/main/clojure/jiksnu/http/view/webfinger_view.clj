@@ -3,7 +3,7 @@
         ciste.sections
         ciste.view
         hiccup.core
-        jiksnu.config
+        ciste.config
         jiksnu.namespace
         jiksnu.http.controller.webfinger-controller))
 

@@ -17,15 +17,15 @@
     (if (string? item)
       (.setCData element (trim item)))))
 
-(defn to-tigase-element
-  [{:keys [tag attrs content]}]
-  (let [attribute-names (into-array String (map name (keys attrs)))
-        attribute-values (into-array String (vals attrs))
-        tag-name (name tag)
-        element (Element. tag-name attribute-names attribute-values)]
-    (doseq [item content]
-      (process-child element item))
-    element))
+;; (defn to-tigase-element
+;;   [{:keys [tag attrs content]}]
+;;   (let [attribute-names (into-array String (map name (keys attrs)))
+;;         attribute-values (into-array String (vals attrs))
+;;         tag-name (name tag)
+;;         element (Element. tag-name attribute-names attribute-values)]
+;;     (doseq [item content]
+;;       (process-child element item))
+;;     element))
 
 (defn element?
   "Returns if the argument is an element"
@@ -95,46 +95,6 @@
   [{:keys [name prefix]}]
   (Element. (element-name name prefix)))
 
-(defn abdera-to-tigase-element
-  "converts an abdera element to a tigase element"
-  ([abdera-element]
-     (abdera-to-tigase-element abdera-element {}))
-  ([abdera-element namespace-map]
-     (let [element (-> abdera-element get-qname make-element-qname)]
-       (let [namespaces (.getNamespaces abdera-element)]
-         (let [bound-namespaces (merge-namespaces element
-                                                 namespace-map
-                                                 namespaces)]
-          (add-attributes element abdera-element)
-          (add-children element abdera-element bound-namespaces)
-          (if-let [text (.getText abdera-element)]
-            (.setCData element text))
-          element)))))
-
-(defn publish?
-  [#^Element element]
-  (= (.getName element) "publish"))
-
-(defn items?
-  [#^Element element]
-  (= (.getName element) "items"))
-
-(defn query-element?
-  [#^Element element]
-  (= (.getName element) "query"))
-
-(defn pubsub-element?
-  [#^Element element]
-  (= (.getName element) "pubsub"))
-
-(defn subscriptions?
-  [#^Element element]
-  (= (.getName element) "subscriptions"))
-
-(defn subscribers?
-  [#^Element element]
-  (= (.getName element) "subscribers"))
-
 (defn node-value
   [#^Element element]
   (.getAttribute element "node"))
@@ -150,7 +110,7 @@
 (defn vcard-publish?
   [#^Element element]
   (and (= (.getName element) "publish")
-       (= (.getXMLNS element) "http://onesocialweb.org/spec/1.0/vcard4#publish")))
+       (= (.getXMLNS element) vcard-publish-uri)))
 
 (defn inbox-node?
   [element]

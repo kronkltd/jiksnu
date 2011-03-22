@@ -3,7 +3,7 @@
         ciste.trigger
         ciste.sections
         ciste.view
-        [jiksnu.config :only (config)]
+        [ciste.config :only (config)]
         jiksnu.model
         jiksnu.namespace
         jiksnu.session

@@ -35,21 +35,10 @@
    String
    '("jabber:client" "jabber:client")))
 
-(defmethod default-format :atom
-  [request response])
-
 (defn offer-packet
   [^Queue queue ^Packet packet]
   (debug (str "offering packet: " packet))
   (.offer queue packet))
-
-(defmethod format-as :xmpp
-  [format request response]
-  response)
-
-(defmethod serialize-as :xmpp
-  [serialization elements]
-  (make-packet elements))
 
 (defn main-handler
   [queue request]
@@ -64,13 +53,11 @@
 (defn -process
   [this packet session
    repo queue settings]
-  (if-let [to (.getStanzaTo packet)]
-    (if-let [bare-to (.getBareJID to)]
-      (with-database
+  (with-database
+    (if-let [to (.getStanzaTo packet)]
+      (if-let [bare-to (.getBareJID to)]
         (let [request (make-request packet)]
           (if-let [response (main-handler queue request)]
             (do
               (.setPacketTo response (.getPacketFrom packet))
-              #_(let [connection-id (.getConnectionId session (:to request))]
-                  (.setPacketTo response connection-id))
-                (offer-packet queue response))))))))
+              (offer-packet queue response))))))))

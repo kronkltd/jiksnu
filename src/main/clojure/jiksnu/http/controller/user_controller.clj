@@ -1,8 +1,8 @@
 (ns jiksnu.http.controller.user-controller
-  (:use jiksnu.config
+  (:use ciste.config
+        clojure.contrib.logging
         jiksnu.model
-        [jiksnu.session :only (current-user)]
-        clojure.contrib.logging)
+        [jiksnu.session :only (current-user)])
   (:require [jiksnu.model.user :as model.user]))
 
 (defn index

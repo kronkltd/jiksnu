@@ -1,7 +1,7 @@
 (ns jiksnu.http.middleware
   (:use clojure.pprint
         clojure.stacktrace
-        [jiksnu.config :only (config with-debug)]
+        [ciste.config :only (config)]
         jiksnu.http.view
         jiksnu.model
         [jiksnu.session :only (with-user current-user)]
@@ -14,7 +14,9 @@ Turns on debugging mode for that request."
   (fn [request]
     (if (and (:query-params request)
              ((:query-params request) "debug"))
-      (with-debug (handler request))
+      ;; (with-debug
+        (handler request)
+        ;; )
       (handler request))))
 
 (defn wrap-user-binding
@@ -39,7 +41,9 @@ Turns on debugging mode for that request."
   (fn [request]
     (let [user (current-user)]
       (if (:debug user)
-        (with-debug (handler request))
+        ;; (with-debug
+          (handler request)
+          ;; )
         (handler request)))))
 
 (defn wrap-log-request

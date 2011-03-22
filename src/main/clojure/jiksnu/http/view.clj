@@ -1,36 +1,13 @@
 (ns jiksnu.http.view
   (:use ciste.core
+        ciste.html
         ciste.sections
         ciste.view
         hiccup.core
-        [jiksnu.config :only (config)]
+        [ciste.config :only (config)]
         jiksnu.session
         jiksnu.view)
-  (:require [clojure.pprint :as pprint]
-            [hiccup.form-helpers :as f]))
-
-(defn dump*
-  [val]
-  [:p
-   [:code
-    [:pre
-     (escape-html
-      (with-out-str
-        (pprint/pprint val)))]]])
-
-(defn dump
-  [val]
-  (if (-> (config) :debug)
-    (dump* val)))
-
-(defn dump-unescaped
-  [val]
-  (if (-> (config) :debug)
-    [:p
-     [:pre
-      [:code.prettyprint
-       (escape-html
-        val)]]]))
+  (:require [hiccup.form-helpers :as f]))
 
 (defn navigation-section
   []
@@ -74,32 +51,10 @@
      (logout-form)
      [:a {:href "/main/login"} "Log in"])])
 
-(defn link-to-script
-  [href]
-  [:script
-   {:type "text/javascript"
-    :lang "javascript"
-    :src href}])
-
-(defn link-to-stylesheet
-  [href]
-  [:link
-   {:type "text/css"
-    :href href
-    :rel "stylesheet"
-    :media "screen"}])
-
 (defn devel-environment-section
   []
   [:div.important.devel-section
    "This site is running in development mode. No guarantees are made about the accuracy or security of information on this site. Use at your own risk."])
-
-(defmethod serialize-as :http
-  [serialization response-map]
-  (merge {:headers {"Content-Type" "text/html"}}
-         response-map
-         (if-let [body (:body response-map)]
-           {:body (html body)})))
 
 (defn page-template-content
   [response]
@@ -133,6 +88,13 @@
        (link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
        #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
+
+(defmethod serialize-as :http
+  [serialization response-map]
+  (merge {:headers {"Content-Type" "text/html"}}
+         response-map
+         (if-let [body (:body response-map)]
+           {:body (html body)})))
 
 (defmethod apply-template :html
   [request response]
