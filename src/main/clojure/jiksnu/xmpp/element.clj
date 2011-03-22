@@ -6,7 +6,6 @@
            tigase.xml.Element
            tigase.server.Packet))
 
-(declare to-tigase-element)
 (declare abdera-to-tigase-element)
 
 (defn process-child

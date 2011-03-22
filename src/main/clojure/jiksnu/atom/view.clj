@@ -1,5 +1,6 @@
 (ns jiksnu.atom.view
-  (:use ciste.sections
+  (:use ciste.core
+        ciste.sections
         ciste.view
         clojure.contrib.logging
         jiksnu.model

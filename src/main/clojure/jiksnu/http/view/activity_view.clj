@@ -154,36 +154,6 @@
    [:ol.activities
     (map index-line-minimal activities)]])
 
-(defn add-entry
-  [feed activity]
-  (.addEntry feed (show-section activity)))
-
-(defn make-feed
-  [{:keys [title links entries updated id]}]
-  (let [feed (.newFeed *abdera*)]
-    (if title (.setTitle feed title))
-    (.setGenerator feed
-                   "http://jiksnu.com/"
-                   "0.1.0-SNAPSHOT"
-                   "Jiksnu")
-    (if id (.setId feed id))
-    (if updated (.setUpdated feed updated))
-    (dorun
-     (map
-      (fn [link]
-        (let [link-element (.newLink *abdera-factory*)]
-          (doto link-element
-            (.setHref (:href link))
-            (.setRel (:rel link))
-            (.setMimeType (:type link)))
-          (.addLink feed link-element)))
-      links))
-    (dorun
-     (map
-      (partial add-entry feed)
-      entries))
-    (str feed)))
-
 (defsection show-section [Activity :json]
   [activity & _]
   {"postedTime" (:published activity)
