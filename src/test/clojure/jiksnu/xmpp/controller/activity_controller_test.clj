@@ -40,7 +40,7 @@
     (do-it "should return nil" :pending)))
 
 (describe index
-  #_(testing "when there are no activities"
+  (testing "when there are no activities"
     (do-it "should return an empty sequence"
       (let [user (model.user/create (factory User))
             element nil
@@ -53,7 +53,7 @@
         (let [response (index request)]
           (expect (not (nil? response)))
           (expect (empty? response))))))
-  #_(testing "when there are activities"
+  (testing "when there are activities"
     (do-it "should return a sequence of activities"
       (let [author (model.user/create (factory User))]
         (with-user author

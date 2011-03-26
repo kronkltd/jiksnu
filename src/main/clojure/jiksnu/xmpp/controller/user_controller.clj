@@ -44,11 +44,10 @@
 
 (defn create
   [request]
-  (let [vcard-elements (:items request)]
+  (let [{:keys [items]} request]
     (doseq [property
             (flatten
-             (map process-vcard-element
-                  vcard-elements))]
+             (map process-vcard-element items))]
       (model.user/create property))))
 
 (defn delete
@@ -72,23 +71,20 @@
 
 (defn remote-create
   [request]
-  (let [{:keys [to from payload]} request]
-    (let [user (model.user/fetch-by-jid from)]
-      (let [vcard (first (children payload))]
-        (let [gender (.getCData (find-children vcard "/vcard/gender"))
-              name (.getCData (find-children vcard "/vcard/fn/text"))
-              first-name (.getCData (find-children vcard "/vcard/n/given/text"))
-              last-name (.getCData (find-children vcard "/vcard/n/surname/text"))
-              url (.getCData (find-children vcard "/vcard/url/uri"))
-              avatar-url (.getCData (find-children vcard "/vcard/photo/uri"))]
-          (let [new-user {:gender gender
-                          :name name
-                          :first-name first-name
-                          :last-name last-name
-                          :url url
-                          :avatar-url avatar-url
-                          }]
-            (let [updated-user (jiksnu.model.user/update (merge user new-user))]
-              updated-user)
-            new-user))
-        user))))
+  (let [{:keys [to from payload]} request
+        user (model.user/fetch-by-jid from)
+        vcard (first (children payload))
+        gender (.getCData (find-children vcard "/vcard/gender"))
+        name (.getCData (find-children vcard "/vcard/fn/text"))
+        first-name (.getCData (find-children vcard "/vcard/n/given/text"))
+        last-name (.getCData (find-children vcard "/vcard/n/surname/text"))
+        url (.getCData (find-children vcard "/vcard/url/uri"))
+        avatar-url (.getCData (find-children vcard "/vcard/photo/uri"))
+        new-user {:gender gender
+                  :name name
+                  :first-name first-name
+                  :last-name last-name
+                  :url url
+                  :avatar-url avatar-url}
+        merged-user (merge user new-user)]
+    (jiksnu.model.user/update merged-user)))

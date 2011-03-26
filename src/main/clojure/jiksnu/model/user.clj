@@ -1,17 +1,26 @@
 (ns jiksnu.model.user
-  (:use jiksnu.model
-        [clojure.string :only (split)])
-  (:require [karras.entity :as entity])
+  (:use jiksnu.model)
+  (:require [clojure.string :as string]
+            [karras.entity :as entity])
   (:import tigase.xmpp.BareJID
            jiksnu.model.User))
 
 (defn get-id
-  [user]
-  (.getLocalpart user))
+  [jid]
+  (.getLocalpart jid))
 
 (defn get-domain
   [^BareJID user]
   (.getDomain user))
+
+(defn bare-jid
+  [local domain]
+  (BareJID/bareJIDInstance local domain))
+
+(defn split-uri
+  [uri]
+  (split uri #"@"))
+
 
 (defn drop!
   []
@@ -34,14 +43,6 @@
                   (if domain
                     {:domain domain}))]
        (entity/fetch-one User opt-map))))
-
-(defn bare-jid
-  [local domain]
-  (BareJID/bareJIDInstance local domain))
-
-(defn split-uri
-  [uri]
-  (split uri #"@"))
 
 (defn fetch-by-id
   [id]

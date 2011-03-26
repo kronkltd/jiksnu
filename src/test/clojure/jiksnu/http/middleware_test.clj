@@ -4,7 +4,7 @@
 
 (describe wrap-debug-binding)
 
-#_(describe wrap-user-binding)
+(describe wrap-user-binding)
 
 (describe wrap-error-catching)
 

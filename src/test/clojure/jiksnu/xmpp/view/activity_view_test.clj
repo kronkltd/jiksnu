@@ -1,6 +1,7 @@
 (ns jiksnu.xmpp.view.activity-view-test
   (:use clj-tigase.core
         ciste.factory
+        ciste.sections
         ciste.view
         jiksnu.model
         jiksnu.session
@@ -14,27 +15,20 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-#_(describe minimal-response
-  (do-it "should return a sequence of elements"
-    (let [packet nil
-          activities (model.activity/index)
-          response (minimal-response activities)]
-      (expect (every? element? response)))))
-
-#_(describe full-response
+(describe show-section
   (do-it "should return a sequence of elements"
     (let [packet nil
           entries (model.activity/index)
-          response (full-response entries)]
+          response (show-section entries)]
       (expect (not (nil? response)))
       (expect (every? element? response)))))
 
-#_(describe notify
+(describe notify-activity
   (do-it "should return a packet"
     (with-serialization :xmpp
       (with-format :atom
         (let [user (model.user/create (factory User))]
           (with-user user
             (let [activity (model.activity/create (factory Activity))
-                  response (notify user activity)]
+                  response (notify-activity user activity)]
               (expect (packet? response)))))))))

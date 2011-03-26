@@ -119,7 +119,7 @@
     (.initVars packet)
     (.processPacket @*message-router* packet)
     (catch NullPointerException e
-      (error "Router not started: " e)
+      #_(error "Router not started: " e)
       #_(stacktrace/print-stack-trace e)
       packet)))
 

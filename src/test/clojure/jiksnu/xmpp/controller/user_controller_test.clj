@@ -34,28 +34,28 @@
         (expect (= response user))))))
 
 #_(describe create
-    (do-it "should not be nil" :pending
-      (let [packet nil
-            request (make-request packet)
-            response (create request)]
-        (expect (not (nil? response))))))
+  (do-it "should not be nil"
+    (let [packet nil
+          request (make-request packet)
+          response (create request)]
+      (expect (not (nil? response))))))
 
 (describe delete)
 
-#_(describe inbox
-    (testing "when there are no activities"
-      (do-it "should be empty"
-        (let [request (make-request nil)]
-          (model.activity/drop!)
-          (let [response (inbox request)]
-            (expect (empty? response))))))
-    (testing "when there are activities"
-      (do-it "should return a seq of activities"
-        (let [request (make-request nil)]
-          (model.activity/drop!)
-          (let [author (model.user/create (factory User))]
-            (with-user author
-              (model.activity/create (factory Activity))))
-          (let [response (inbox request)]
-            (expect (seq response))
-            (expect (every? #(instance? Activity %) response)))))))
+(describe inbox
+  (testing "when there are no activities"
+    (do-it "should be empty"
+      (model.activity/drop!)
+      (let [request (make-request nil)
+            response (inbox request)]
+        (expect (empty? response)))))
+  (testing "when there are activities"
+    (do-it "should return a seq of activities"
+      (model.activity/drop!)
+      (let [request (make-request nil)
+            author (model.user/create (factory User))
+            created-activity (with-user author
+                               (model.activity/create (factory Activity)))
+            response (inbox request)]
+        (expect (seq response))
+        (expect (every? #(instance? Activity %) response))))))

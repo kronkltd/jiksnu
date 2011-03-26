@@ -13,7 +13,7 @@
             :uri "/"}
            {:request-method :get
             :uri "/register"}
-           #_{:request-method :get
+           {:request-method :get
               :uri "/settings/profile"}
            {:request-method :get
             :uri "/posts.html"}
