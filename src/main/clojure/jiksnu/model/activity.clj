@@ -1,5 +1,6 @@
 (ns jiksnu.model.activity
-  (:use jiksnu.model
+  (:use jiksnu.core
+        jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [karras.entity :as entity]
             [karras.sugar :as sugar])
@@ -111,6 +112,7 @@
         (merge
          {:_id id}
          (privacy-filter user))]
+    (spy options)
     (entity/fetch-one Activity options)))
 
 (defn drop!

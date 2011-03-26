@@ -3,6 +3,7 @@
         ciste.factory
         ciste.sections
         ciste.view
+        jiksnu.core
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
@@ -34,6 +35,7 @@
             (let [packet (make-packet packet-map)]
               (let [request (make-request packet)
                     response (show request)]
+                (spy response)
                 (expect (activity? response)))))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))

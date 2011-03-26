@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.activity-controller
   (:use clj-tigase.core
+        jiksnu.core
         jiksnu.xmpp.element
         jiksnu.model
         jiksnu.namespace
@@ -16,7 +17,10 @@
   [{:keys [items] :as request}]
   (let [ids (map #(.getAttribute % "id") items)
         id (first ids)]
-    (model.activity/show id)))
+    (spy ids)
+    (let [activity (model.activity/show id)]
+      (spy activity)
+      activity)))
 
 (defn index
   [request]

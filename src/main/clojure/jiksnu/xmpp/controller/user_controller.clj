@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.user-controller
   (:use clj-tigase.core
+        jiksnu.core
         jiksnu.namespace
         [jiksnu.session :only (current-user)]
         jiksnu.xmpp.element
@@ -73,9 +74,9 @@
   [request]
   (let [{:keys [to from payload]} request]
     (let [user (model.user/fetch-by-jid from)]
-      ;; (println "user: " user)
+      ;; (spy user)
       (let [vcard (first (children payload))]
-        (println "vcard: " vcard)
+        (spy vcard)
         (let [gender (.getCData (find-children vcard "/vcard/gender"))
               name (.getCData (find-children vcard "/vcard/fn/text"))
               first-name (.getCData (find-children vcard "/vcard/n/given/text"))
@@ -90,7 +91,6 @@
                           :avatar-url avatar-url
                           }]
             (let [updated-user (jiksnu.model.user/update (merge user new-user))]
-              (println "updated-user: " updated-user))
-            (println "new-user: " new-user)))
-        
-       user))))
+              (spy updated-user))
+            (spy new-user)))
+        user))))
