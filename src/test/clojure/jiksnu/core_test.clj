@@ -18,7 +18,6 @@
 
 (defn env-hook
   [f & args]
-  ;; (println "env hook")
   (with-environment :test
     ;; (model.activity/drop!)
     ;; (model.item/drop!)
@@ -26,7 +25,6 @@
     ;; (model.user/drop!)
     (apply f args)))
 
-;; (println "applying hook")
 ;; (add-hook #'lazytest.runner.console/run-tests env-hook)
 ;; (add-hook #'lazytest.suite/expand-suite env-hook)
 (add-hook #'lazytest.test-case/try-test-case env-hook)

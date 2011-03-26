@@ -23,5 +23,4 @@
             :uri "/posts.json"}]]
       (doseq [request requests]
         (let [response ((resolve-routes *routes*) request)]
-          (println "response: " response)
           (expect response))))))

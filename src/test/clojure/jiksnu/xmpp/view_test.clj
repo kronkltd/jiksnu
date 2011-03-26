@@ -3,7 +3,6 @@
         ciste.factory
         ciste.sections
         ciste.view
-        clojure.contrib.pprint
         jiksnu.core-test
         jiksnu.model
         jiksnu.session

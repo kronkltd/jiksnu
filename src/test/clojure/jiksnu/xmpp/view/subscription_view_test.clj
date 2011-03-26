@@ -23,8 +23,7 @@
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))]
       (let [response (subscriber-response-element subscription)]
-        (expect (element? response))
-        (println "response: " response)))))
+        (expect (element? response))))))
 
 (describe subscription-request-minimal
     (do-it "should"

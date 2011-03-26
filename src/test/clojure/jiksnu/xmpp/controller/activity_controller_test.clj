@@ -31,12 +31,11 @@
                             :body (make-element
                                    "pubsub" {"xmlns" pubsub-uri}
                                    ["items" {"node" microblog-uri}
-                                    ["item" {"id" (:_id activity)}]])}]
-            (let [packet (make-packet packet-map)]
-              (let [request (make-request packet)
-                    response (show request)]
-                (spy response)
-                (expect (activity? response)))))))))
+                                    ["item" {"id" (:_id activity)}]])}
+                packet (make-packet packet-map)
+                request (make-request packet)
+                response (show request)]
+            (expect (activity? response)))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))
 
