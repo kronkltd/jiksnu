@@ -15,7 +15,7 @@
 (defn subscribers
   [request]
   (if-let [recipient (model.user/fetch-by-jid (:to request))]
-    (model.subscription/subscribers (spy recipient))))
+    (model.subscription/subscribers recipient)))
 
 (defn subscribe
   [request]
