@@ -3,7 +3,7 @@
         ciste.factory
         ciste.sections
         ciste.view
-        jiksnu.core
+        jiksnu.debug
         jiksnu.model
         jiksnu.namespace
         jiksnu.session

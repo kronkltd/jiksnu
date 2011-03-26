@@ -1,5 +1,5 @@
 (ns jiksnu.model.activity
-  (:use jiksnu.core
+  (:use jiksnu.debug
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [karras.entity :as entity]
