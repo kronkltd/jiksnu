@@ -112,7 +112,6 @@
         (merge
          {:_id id}
          (privacy-filter user))]
-    (spy options)
     (entity/fetch-one Activity options)))
 
 (defn drop!

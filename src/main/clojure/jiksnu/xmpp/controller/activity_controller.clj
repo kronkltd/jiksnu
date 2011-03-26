@@ -17,10 +17,7 @@
   [{:keys [items] :as request}]
   (let [ids (map #(.getAttribute % "id") items)
         id (first ids)]
-    (spy ids)
-    (let [activity (model.activity/show id)]
-      (spy activity)
-      activity)))
+    (model.activity/show id)))
 
 (defn index
   [request]

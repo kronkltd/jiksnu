@@ -74,9 +74,7 @@
   [request]
   (let [{:keys [to from payload]} request]
     (let [user (model.user/fetch-by-jid from)]
-      ;; (spy user)
       (let [vcard (first (children payload))]
-        (spy vcard)
         (let [gender (.getCData (find-children vcard "/vcard/gender"))
               name (.getCData (find-children vcard "/vcard/fn/text"))
               first-name (.getCData (find-children vcard "/vcard/n/given/text"))
@@ -91,6 +89,6 @@
                           :avatar-url avatar-url
                           }]
             (let [updated-user (jiksnu.model.user/update (merge user new-user))]
-              (spy updated-user))
-            (spy new-user)))
+              updated-user)
+            new-user))
         user))))
