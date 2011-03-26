@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.activity-controller
-  (:use jiksnu.xmpp.element
+  (:use clj-tigase.core
+        jiksnu.xmpp.element
         jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.view

@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view.activity-view-test
-  (:use ciste.factory
+  (:use clj-tigase.core
+        ciste.factory
         ciste.view
         jiksnu.model
         jiksnu.session

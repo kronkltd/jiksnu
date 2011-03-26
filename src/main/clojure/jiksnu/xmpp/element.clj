@@ -1,5 +1,5 @@
 (ns jiksnu.xmpp.element
-  (:use [clojure.string :only (trim)]
+  (:use clj-tigase.core
         jiksnu.namespace)
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
@@ -7,61 +7,6 @@
            tigase.server.Packet))
 
 (declare abdera-to-tigase-element)
-(declare to-tigase-element)
-
-(defn process-child
-  "adds content of the appropriate type to the element"
-  [^Element element item]
-  (if (map? item)
-    (.addChild element (to-tigase-element item))
-    (if (string? item)
-      (.setCData element (trim item)))))
-
-(defn to-tigase-element
-  [{:keys [tag attrs content]}]
-  (let [attribute-names (into-array String (map name (keys attrs)))
-        attribute-values (into-array String (vals attrs))
-        tag-name (name tag)
-        element (Element. tag-name attribute-names attribute-values)]
-    (doseq [item content]
-      (process-child element item))
-    element))
-
-(defn element?
-  "Returns if the argument is an element"
-  [arg]
-  (instance? Element arg))
-
-(defn children
-  "returns the child elements of the given element"
-  ([^Element element]
-     (if element
-       (seq (.getChildren element))))
-  ([^Packet packet path]
-     (if packet
-       (seq (.getElemChildren packet path)))))
-
-(defn ns-prefix
-  [k]
-  (apply str
-         "xmlns"
-         (if (not= k "")
-           (list ":" k))))
-
-(defn assign-namespace
-  [^Element element
-   namespace-map
-   [k v]]
-  (if (not= (get namespace-map k) v)
-    (do (.addAttribute
-         element (ns-prefix k) v)
-        [k v])))
-
-(defn element-name
-  [name prefix]
-  (str (if (not= prefix "")
-         (str prefix ":"))
-       name))
 
 (defn add-children
   [^Element element abdera-element bound-namespaces]
@@ -70,35 +15,21 @@
                (abdera-to-tigase-element
                 child-element bound-namespaces))))
 
-(defn add-attributes
-  [^Element element abdera-element]
-  (doseq [attribute (.getAttributes abdera-element)]
-    (let [value (.getAttributeValue abdera-element attribute)]
-      (.addAttribute element (.getLocalPart attribute) value))))
-
-(defn parse-qname
-  [^QName qname]
-  {:name (.getLocalPart qname)
-   :prefix (.getPrefix qname)})
-
-(defn merge-namespaces
-  [^Element element
-   namespace-map
-   namespaces]
-  (merge namespace-map
-         (into {}
-               (map
-                (partial assign-namespace element namespace-map)
-                namespaces))))
-
-(defn get-qname
-  "Returns a map representing the QName of the given element"
-  [element]
-  (parse-qname (.getQName element)))
-
-(defn make-element-qname
-  [{:keys [name prefix]}]
-  (Element. (element-name name prefix)))
+(defn abdera-to-tigase-element
+  "converts an abdera element to a tigase element"
+  ([abdera-element]
+     (abdera-to-tigase-element abdera-element {}))
+  ([abdera-element namespace-map]
+     (let [element (-> abdera-element get-qname make-element-qname)]
+       (let [namespaces (.getNamespaces abdera-element)]
+         (let [bound-namespaces (merge-namespaces element
+                                                 namespace-map
+                                                 namespaces)]
+          (add-attributes element abdera-element)
+          (add-children element abdera-element bound-namespaces)
+          (if-let [text (.getText abdera-element)]
+            (.setCData element text))
+          element)))))
 
 (defn node-value
   [#^Element element]
@@ -121,7 +52,3 @@
   [element]
   (= (node-value element) inbox-uri))
 
-(defn packet?
-  "Returns if the element is a packet"
-  [element]
-  (instance? Packet element))

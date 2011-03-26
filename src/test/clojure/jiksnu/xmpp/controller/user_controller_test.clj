@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.user-controller-test
-  (:use ciste.factory
+  (:use clj-tigase.core
+        ciste.factory
         jiksnu.model
         jiksnu.session
         jiksnu.xmpp.controller.user-controller

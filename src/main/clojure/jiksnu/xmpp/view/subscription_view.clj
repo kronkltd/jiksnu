@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view.subscription-view
-  (:use ciste.core
+  (:use clj-tigase.core
+        ciste.core
         ciste.sections
         ciste.view
         jiksnu.model

@@ -1,10 +1,10 @@
 (ns jiksnu.xmpp.controller.subscription-controller-test
-  (:use ciste.factory
+  (:use clj-tigase.core
+        ciste.factory
         jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.controller.subscription-controller
-        [jiksnu.xmpp.view :only (make-request
-                                 make-jid make-packet make-element)]
+        jiksnu.xmpp.view
         [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]

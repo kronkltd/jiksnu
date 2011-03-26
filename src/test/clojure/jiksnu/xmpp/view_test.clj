@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view-test
-  (:use ciste.factory
+  (:use clj-tigase.core
+        ciste.factory
         ciste.sections
         ciste.view
         clojure.contrib.pprint

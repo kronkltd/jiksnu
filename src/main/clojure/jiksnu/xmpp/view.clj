@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view
-  (:use clojure.contrib.logging
+  (:use clj-tigase.core
+        clojure.contrib.logging
         [clojure.string :only (trim)]
         ciste.core
         jiksnu.namespace
@@ -99,8 +100,6 @@
      :method type
      :items (get-items packet)}))
 
-(declare make-element)
-
 ;; (defn process-child
 ;;   "adds content of the appropriate type to the element"
 ;;   [^Element element item]
@@ -144,73 +143,6 @@
 ;;          (str prefix ":"))
 ;;        name))
 
-;; (defn add-children
-;;   [^Element element abdera-element bound-namespaces]
-;;   (doseq [child-element (.getElements abdera-element)]
-;;     (.addChild element
-;;                (abdera-to-tigase-element
-;;                 child-element bound-namespaces))))
-
-;; (defn add-attributes
-;;   [^Element element abdera-element]
-;;   (doseq [attribute (.getAttributes abdera-element)]
-;;     (let [value (.getAttributeValue abdera-element attribute)]
-;;       (.addAttribute element (.getLocalPart attribute) value))))
-
-;; (defn parse-qname
-;;   [^QName qname]
-;;   {:name (.getLocalPart qname)
-;;    :prefix (.getPrefix qname)})
-
-;; (defn merge-namespaces
-;;   [^Element element
-;;    namespace-map
-;;    namespaces]
-;;   (merge namespace-map
-;;          (into {}
-;;                (map
-;;                 (partial assign-namespace element namespace-map)
-;;                 namespaces))))
-
-;; (defn get-qname
-;;   "Returns a map representing the QName of the given element"
-;;   [element]
-;;   (parse-qname (.getQName element)))
-
-;; (defn make-element-qname
-;;   [{:keys [name prefix]}]
-;;   (Element. (element-name name prefix)))
-
-;; (defn abdera-to-tigase-element
-;;   "converts an abdera element to a tigase element"
-;;   ([abdera-element]
-;;      (abdera-to-tigase-element abdera-element {}))
-;;   ([abdera-element namespace-map]
-;;      (let [element (-> abdera-element get-qname make-element-qname)]
-;;        (let [namespaces (.getNamespaces abdera-element)]
-;;          (let [bound-namespaces (merge-namespaces element
-;;                                                  namespace-map
-;;                                                  namespaces)]
-;;           (add-attributes element abdera-element)
-;;           (add-children element abdera-element bound-namespaces)
-;;           (if-let [text (.getText abdera-element)]
-;;             (.setCData element text))
-;;           element)))))
-
-(defn ^Element make-element
-  "Create a tigase element"
-  ([spec]
-     (apply make-element spec))
-  ([name attrs]
-     (make-element name attrs nil))
-  ([name attrs & children]
-     (let [element (Element. name)]
-       (doseq [[attr val] attrs]
-         (.addAttribute element attr (str val)))
-       (doseq [child children]
-         (process-child element child))
-       element)))
-
 (defn ^Packet respond-with
   "given an item element, returns a packet"
   [request ^Element item]
@@ -223,22 +155,6 @@
      (make-jid user domain ""))
   ([user domain resource]
      (JID/jidInstance user domain resource)))
-
-(defn make-packet
-  [{:keys [to from body type id] :as packet-map}]
-  (let [element-name (condp = type
-                         :result "iq"
-                         :set "iq"
-                         :get "iq"
-                         :chat "message"
-                         :headline "message")
-        element (make-element
-                 element-name {"id" id
-                               "type" (if type (name type) "")
-                               "to" to
-                               "from" from})]
-    (if body (.addChild element body))
-    (Packet/packetInstance element from to)))
 
 (defn deliver-packet!
   [^Packet packet]

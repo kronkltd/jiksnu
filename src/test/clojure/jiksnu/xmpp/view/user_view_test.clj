@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.view.user-view-test
-  (:use ciste.core
+  (:use clj-tigase.core
+        ciste.core
         ciste.factory
         ciste.sections
         ciste.view
