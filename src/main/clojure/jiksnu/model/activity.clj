@@ -77,24 +77,28 @@
   (if-let [prepared-activity (prepare-activity activity)]
     (create-raw prepared-activity)))
 
+(defn privacy-filter
+  [user]
+  (if user
+    (if (not (is-admin? user))
+      {:$or [{:public true}
+             {:authors (:_id user)}]})
+    {:public true}))
+
 (defn index
   "Return all the activities in the database as abdera entries"
   [& opts]
-  (let [user (current-user)]
-    (let [option-map (apply hash-map opts)]
-      (let [merged-options
-            (merge
-             {:$or [{:parent ""}
-                    {:parent {:$exists false}}]}
-             (if user
-               (if (not (is-admin? user))
-                 {:$or [{:public true}
-                        {:authors (:_id user)}]})
-               {:public true})
-             option-map)]
-        (println "merged-options: " merged-options)
-        (entity/fetch Activity merged-options
-                      :sort [(sugar/desc :published)])))))
+  (let [user (current-user)
+        option-map (apply hash-map opts)
+        merged-options
+        (merge
+         {:$or [{:parent ""}
+                {:parent {:$exists false}}]}
+         (privacy-filter user)
+         option-map)]
+    ;; (println "merged-options: " merged-options)
+    (entity/fetch Activity merged-options
+                  :sort [(sugar/desc :published)])))
 
 (defn fetch-by-id
   [id]
@@ -106,11 +110,7 @@
         options
         (merge
          {:_id id}
-         (if user
-           (if (not (is-admin? user))
-             {:$or [{:public true}
-                    {:authors (:_id user)}]})
-           {:public true}))]
+         (privacy-filter user))]
     (entity/fetch-one Activity options)))
 
 (defn drop!
