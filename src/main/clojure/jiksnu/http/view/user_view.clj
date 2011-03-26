@@ -1,5 +1,6 @@
 (ns jiksnu.http.view.user-view
   (:use ciste.core
+        ciste.html
         ciste.sections
         ciste.view
         [clj-gravatar.core :only (gravatar-image)]

@@ -4,7 +4,8 @@
         ciste.sections
         ciste.view
         jiksnu.model
-        [jiksnu.xmpp.view :only (make-request element? make-packet make-jid)]
+        jiksnu.xmpp.element
+        jiksnu.xmpp.view
         jiksnu.xmpp.view.user-view
         jiksnu.view
         [lazytest.describe :only (describe testing do-it)]

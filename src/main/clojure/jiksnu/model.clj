@@ -76,7 +76,7 @@
 
 (defmacro with-environment
   [environment & body]
-  `(binding [ciste.config/*current-environment* ~environment]
+  `(binding [ciste.config/*environment* ~environment]
      (with-database
        ~@body)))
 

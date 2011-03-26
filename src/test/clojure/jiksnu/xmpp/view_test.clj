@@ -7,6 +7,7 @@
         jiksnu.model
         jiksnu.session
         jiksnu.namespace
+        jiksnu.xmpp.element
         jiksnu.xmpp.view
         jiksnu.view
         [lazytest.describe :only (describe do-it testing)]

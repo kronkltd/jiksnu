@@ -8,6 +8,7 @@
         jiksnu.namespace
         jiksnu.session
         jiksnu.xmpp.controller.activity-controller
+        jiksnu.xmpp.element
         jiksnu.xmpp.view
         jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]

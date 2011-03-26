@@ -1,6 +1,7 @@
 (ns jiksnu.xmpp.controller.user-controller
   (:use jiksnu.namespace
         [jiksnu.session :only (current-user)]
+        jiksnu.xmpp.element
         jiksnu.xmpp.view)
   (:require [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))

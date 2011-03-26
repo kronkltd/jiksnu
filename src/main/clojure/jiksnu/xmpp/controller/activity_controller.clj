@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.activity-controller
-  (:use jiksnu.model
+  (:use jiksnu.xmpp.element
+        jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.view
         [karras.entity :only (make)])

@@ -1,7 +1,7 @@
 (ns jiksnu.core-test
   (:use jiksnu.core
         jiksnu.model
-        [robert.hooke :only (add-hook)] 
+        [robert.hooke :only (add-hook)]
         [lazytest.describe :only (describe do-it testing)])
   (:require [jiksnu.model.activity :as model.activity]
             lazytest.runner.console

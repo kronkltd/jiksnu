@@ -3,7 +3,7 @@
         ciste.sections
         ciste.view
         jiksnu.http.controller.subscription-controller
-        [jiksnu.http.view :only (dump dump*)]
+        [ciste.html :only (dump dump*)]
         jiksnu.view)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.user :as model.user])

@@ -4,6 +4,7 @@
         jiksnu.core-test
         jiksnu.namespace
         jiksnu.view
+        jiksnu.xmpp.element
         jiksnu.xmpp.view
         jiksnu.xmpp.view.subscription-view
         [lazytest.describe :only (describe do-it testing)]

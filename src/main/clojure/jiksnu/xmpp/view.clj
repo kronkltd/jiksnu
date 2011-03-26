@@ -1,6 +1,7 @@
 (ns jiksnu.xmpp.view
   (:use clojure.contrib.logging
         [clojure.string :only (trim)]
+        ciste.core
         jiksnu.namespace
         jiksnu.xmpp
         jiksnu.xmpp.element
@@ -15,48 +16,46 @@
            tigase.xmpp.JID
            tigase.xmpp.StanzaType))
 
-(declare to-tigase-element)
-(declare abdera-to-tigase-element)
 
-(defn node-value
-  [^Element element]
-  (.getAttribute element "node"))
+;; (defn node-value
+;;   [^Element element]
+;;   (.getAttribute element "node"))
 
-(defn children
-  "returns the child elements of the given element"
-  ([^Element element]
-     (if element
-       (seq (.getChildren element))))
-  ([^Packet packet path]
-     (if packet
-       (seq (.getElemChildren packet path)))))
+;; (defn children
+;;   "returns the child elements of the given element"
+;;   ([^Element element]
+;;      (if element
+;;        (seq (.getChildren element))))
+;;   ([^Packet packet path]
+;;      (if packet
+;;        (seq (.getElemChildren packet path)))))
 
 (defn find-children
   [element path]
   (if element
     (.findChild element path)))
 
-(defn ns-prefix
-  [k]
-  (apply str
-         "xmlns"
-         (if (not= k "")
-           (list ":" k))))
+;; (defn ns-prefix
+;;   [k]
+;;   (apply str
+;;          "xmlns"
+;;          (if (not= k "")
+;;            (list ":" k))))
 
-(defn element?
-  "Returns if the argument is an element"
-  [arg]
-  (instance? Element arg))
+;; (defn element?
+;;   "Returns if the argument is an element"
+;;   [arg]
+;;   (instance? Element arg))
 
 (defn pubsub-element?
   [^Element element]
   (and element
        (= (.getName element) "pubsub")))
 
-(defn packet?
-  "Returns if the element is a packet"
-  [^Element element]
-  (instance? Packet element))
+;; (defn packet?
+;;   "Returns if the element is a packet"
+;;   [^Element element]
+;;   (instance? Packet element))
 
 (defn iq-elements
   [^Packet packet]
@@ -111,22 +110,22 @@
 
 (declare make-element)
 
-(defn process-child
-  "adds content of the appropriate type to the element"
-  [^Element element item]
-  #_(println "item: " item)
-  (if (element? item)
-    (.addChild element item)
-    (if (map? item)
-      (.addChild element (to-tigase-element item))
-      (if (vector? item)
-        (if (seq item)
-          (.addChild element (apply make-element item)))
-        (if (string? item)
-          (.setCData element (trim item))
-          (if (coll? item)
-            (doseq [i item]
-              (process-child element i))))))))
+;; (defn process-child
+;;   "adds content of the appropriate type to the element"
+;;   [^Element element item]
+;;   #_(println "item: " item)
+;;   (if (element? item)
+;;     (.addChild element item)
+;;     (if (map? item)
+;;       (.addChild element (to-tigase-element item))
+;;       (if (vector? item)
+;;         (if (seq item)
+;;           (.addChild element (apply make-element item)))
+;;         (if (string? item)
+;;           (.setCData element (trim item))
+;;           (if (coll? item)
+;;             (doseq [i item]
+;;               (process-child element i))))))))
 
 ;; (defn to-tigase-element
 ;;   "turns a map into a tigase element"
@@ -139,73 +138,73 @@
 ;;       (process-child element item))
 ;;     element))
 
-(defn assign-namespace
-  [^Element element
-   namespace-map
-   [k v]]
-  (if (not= (get namespace-map k) v)
-    (do (.addAttribute
-         element (ns-prefix k) v)
-        [k v])))
+;; (defn assign-namespace
+;;   [^Element element
+;;    namespace-map
+;;    [k v]]
+;;   (if (not= (get namespace-map k) v)
+;;     (do (.addAttribute
+;;          element (ns-prefix k) v)
+;;         [k v])))
 
-(defn element-name
-  [name prefix]
-  (str (if (not= prefix "")
-         (str prefix ":"))
-       name))
+;; (defn element-name
+;;   [name prefix]
+;;   (str (if (not= prefix "")
+;;          (str prefix ":"))
+;;        name))
 
-(defn add-children
-  [^Element element abdera-element bound-namespaces]
-  (doseq [child-element (.getElements abdera-element)]
-    (.addChild element
-               (abdera-to-tigase-element
-                child-element bound-namespaces))))
+;; (defn add-children
+;;   [^Element element abdera-element bound-namespaces]
+;;   (doseq [child-element (.getElements abdera-element)]
+;;     (.addChild element
+;;                (abdera-to-tigase-element
+;;                 child-element bound-namespaces))))
 
-(defn add-attributes
-  [^Element element abdera-element]
-  (doseq [attribute (.getAttributes abdera-element)]
-    (let [value (.getAttributeValue abdera-element attribute)]
-      (.addAttribute element (.getLocalPart attribute) value))))
+;; (defn add-attributes
+;;   [^Element element abdera-element]
+;;   (doseq [attribute (.getAttributes abdera-element)]
+;;     (let [value (.getAttributeValue abdera-element attribute)]
+;;       (.addAttribute element (.getLocalPart attribute) value))))
 
-(defn parse-qname
-  [^QName qname]
-  {:name (.getLocalPart qname)
-   :prefix (.getPrefix qname)})
+;; (defn parse-qname
+;;   [^QName qname]
+;;   {:name (.getLocalPart qname)
+;;    :prefix (.getPrefix qname)})
 
-(defn merge-namespaces
-  [^Element element
-   namespace-map
-   namespaces]
-  (merge namespace-map
-         (into {}
-               (map
-                (partial assign-namespace element namespace-map)
-                namespaces))))
+;; (defn merge-namespaces
+;;   [^Element element
+;;    namespace-map
+;;    namespaces]
+;;   (merge namespace-map
+;;          (into {}
+;;                (map
+;;                 (partial assign-namespace element namespace-map)
+;;                 namespaces))))
 
-(defn get-qname
-  "Returns a map representing the QName of the given element"
-  [element]
-  (parse-qname (.getQName element)))
+;; (defn get-qname
+;;   "Returns a map representing the QName of the given element"
+;;   [element]
+;;   (parse-qname (.getQName element)))
 
-(defn make-element-qname
-  [{:keys [name prefix]}]
-  (Element. (element-name name prefix)))
+;; (defn make-element-qname
+;;   [{:keys [name prefix]}]
+;;   (Element. (element-name name prefix)))
 
-(defn abdera-to-tigase-element
-  "converts an abdera element to a tigase element"
-  ([abdera-element]
-     (abdera-to-tigase-element abdera-element {}))
-  ([abdera-element namespace-map]
-     (let [element (-> abdera-element get-qname make-element-qname)]
-       (let [namespaces (.getNamespaces abdera-element)]
-         (let [bound-namespaces (merge-namespaces element
-                                                 namespace-map
-                                                 namespaces)]
-          (add-attributes element abdera-element)
-          (add-children element abdera-element bound-namespaces)
-          (if-let [text (.getText abdera-element)]
-            (.setCData element text))
-          element)))))
+;; (defn abdera-to-tigase-element
+;;   "converts an abdera element to a tigase element"
+;;   ([abdera-element]
+;;      (abdera-to-tigase-element abdera-element {}))
+;;   ([abdera-element namespace-map]
+;;      (let [element (-> abdera-element get-qname make-element-qname)]
+;;        (let [namespaces (.getNamespaces abdera-element)]
+;;          (let [bound-namespaces (merge-namespaces element
+;;                                                  namespace-map
+;;                                                  namespaces)]
+;;           (add-attributes element abdera-element)
+;;           (add-children element abdera-element bound-namespaces)
+;;           (if-let [text (.getText abdera-element)]
+;;             (.setCData element text))
+;;           element)))))
 
 (defn ^Element make-element
   "Create a tigase element"

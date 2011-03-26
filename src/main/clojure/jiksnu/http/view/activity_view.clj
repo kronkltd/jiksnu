@@ -1,5 +1,6 @@
 (ns jiksnu.http.view.activity-view
   (:use ciste.core
+        ciste.html
         ciste.sections
         ciste.view
         ciste.config
