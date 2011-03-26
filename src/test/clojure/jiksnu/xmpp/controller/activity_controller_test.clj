@@ -17,14 +17,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-#_(defn activity-request-packet
-  [sender activity]
-  (let [item (view/make-minimal-item activity)]
-    {:to (current-user)
-     :from sender
-     :pubsub true
-     :items [item]}))
-
 (describe show
   (testing "when the activity exists"
     (do-it "should return that activity"
