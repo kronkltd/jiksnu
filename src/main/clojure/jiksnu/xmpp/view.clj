@@ -21,15 +21,6 @@
 ;;   [^Element element]
 ;;   (.getAttribute element "node"))
 
-;; (defn children
-;;   "returns the child elements of the given element"
-;;   ([^Element element]
-;;      (if element
-;;        (seq (.getChildren element))))
-;;   ([^Packet packet path]
-;;      (if packet
-;;        (seq (.getElemChildren packet path)))))
-
 (defn find-children
   [element path]
   (if element

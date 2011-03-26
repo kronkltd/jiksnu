@@ -33,8 +33,13 @@
   (instance? Element arg))
 
 (defn children
-  [#^Element element]
-  (seq (.getChildren element)))
+  "returns the child elements of the given element"
+  ([^Element element]
+     (if element
+       (seq (.getChildren element))))
+  ([^Packet packet path]
+     (if packet
+       (seq (.getElemChildren packet path)))))
 
 (defn ns-prefix
   [k]
