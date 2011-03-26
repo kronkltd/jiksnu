@@ -97,7 +97,6 @@
                 {:parent {:$exists false}}]}
          (privacy-filter user)
          option-map)]
-    ;; (println "merged-options: " merged-options)
     (entity/fetch Activity merged-options
                   :sort [(sugar/desc :published)])))
 

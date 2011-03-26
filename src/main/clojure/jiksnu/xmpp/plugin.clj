@@ -44,11 +44,9 @@
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
                                :format :xmpp} request)]
-    #_(println "request: " merged-request)
     (let [route-fn (resolve-routes (filter identity (lazier @*routes*)))]
       (if-let [response (route-fn merged-request)]
-        (do #_(println " ")
-            response)))))
+        response))))
 
 (defn -process
   [this packet session

@@ -95,7 +95,6 @@
 (compojure/defroutes all-routes
   (route/files "/public")
   (GET "/favicon.ico" request
-       (println "favicon")
        (route/files "favicon.ico"))
   (resolve-routes @*routes*)
   (route/not-found "/public/404.html"))

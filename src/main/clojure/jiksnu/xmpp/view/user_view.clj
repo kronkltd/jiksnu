@@ -61,7 +61,6 @@
           "query"
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (make-packet packet-map)]
-    ;; (println "packet: " packet)
     (deliver-packet! packet)))
 
 (defview #'fetch-remote :xmpp
@@ -70,8 +69,6 @@
 
 (defview #'remote-create :xmpp
   [request user]
-  ;; (println "request: " request)
-  ;; (println "user: " user)
   (let [{:keys [to from]} request]
     {:from to
      :to from

@@ -119,7 +119,7 @@ serialization"
     (doall
      (map
       (fn [author]
-        (println "author: " author))
+        author)
       authors))
     (let [extension-maps
           (doall
