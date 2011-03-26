@@ -100,49 +100,6 @@
      :method type
      :items (get-items packet)}))
 
-;; (defn process-child
-;;   "adds content of the appropriate type to the element"
-;;   [^Element element item]
-;;   #_(println "item: " item)
-;;   (if (element? item)
-;;     (.addChild element item)
-;;     (if (map? item)
-;;       (.addChild element (to-tigase-element item))
-;;       (if (vector? item)
-;;         (if (seq item)
-;;           (.addChild element (apply make-element item)))
-;;         (if (string? item)
-;;           (.setCData element (trim item))
-;;           (if (coll? item)
-;;             (doseq [i item]
-;;               (process-child element i))))))))
-
-;; (defn to-tigase-element
-;;   "turns a map into a tigase element"
-;;   [{:keys [tag attrs content]}]
-;;   (let [attribute-names (into-array String (map name (keys attrs)))
-;;         attribute-values (into-array String (vals attrs))
-;;         tag-name (name tag)
-;;         element (Element. tag-name attribute-names attribute-values)]
-;;     (doseq [item content]
-;;       (process-child element item))
-;;     element))
-
-;; (defn assign-namespace
-;;   [^Element element
-;;    namespace-map
-;;    [k v]]
-;;   (if (not= (get namespace-map k) v)
-;;     (do (.addAttribute
-;;          element (ns-prefix k) v)
-;;         [k v])))
-
-;; (defn element-name
-;;   [name prefix]
-;;   (str (if (not= prefix "")
-;;          (str prefix ":"))
-;;        name))
-
 (defn ^Packet respond-with
   "given an item element, returns a packet"
   [request ^Element item]
