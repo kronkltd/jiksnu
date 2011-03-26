@@ -42,7 +42,7 @@
 
 (describe delete)
 
-(describe inbox
+#_(describe inbox
   (testing "when there are no activities"
     (do-it "should be empty"
       (model.activity/drop!)

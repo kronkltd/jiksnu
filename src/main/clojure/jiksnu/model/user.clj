@@ -19,8 +19,7 @@
 
 (defn split-uri
   [uri]
-  (split uri #"@"))
-
+  (string/split uri #"@"))
 
 (defn drop!
   []

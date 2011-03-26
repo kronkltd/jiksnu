@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.controller.subscription-controller
-  (:use jiksnu.model
+  (:use jiksnu.debug
+        jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.view)
   (:require [jiksnu.model.subscription :as model.subscription]
@@ -14,7 +15,7 @@
 (defn subscribers
   [request]
   (if-let [recipient (model.user/fetch-by-jid (:to request))]
-    (model.subscription/subscribers recipient)))
+    (model.subscription/subscribers (spy recipient))))
 
 (defn subscribe
   [request]

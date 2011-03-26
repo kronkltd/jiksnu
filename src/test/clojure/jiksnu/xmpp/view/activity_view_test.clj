@@ -15,13 +15,16 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(describe show-section
-  (do-it "should return a sequence of elements"
-    (let [packet nil
-          entries (model.activity/index)
-          response (show-section entries)]
-      (expect (not (nil? response)))
-      (expect (every? element? response)))))
+(describe show-section "Activity :xmpp :xmpp"
+  (do-it "should return an element"
+    (with-serialization :xmpp
+      (with-format :xmpp
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [entry (model.activity/create (factory Activity))
+                  response (show-section entry)]
+              (expect (not (nil? response)))
+              (expect (element? response)))))))))
 
 (describe notify-activity
   (do-it "should return a packet"
