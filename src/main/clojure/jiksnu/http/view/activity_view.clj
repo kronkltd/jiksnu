@@ -26,6 +26,20 @@
   [activity & options]
   (:title activity))
 
+(defn privacy-section
+  [activity]
+  [:fieldset
+   [:legend "Privacy"]
+   [:ul
+    [:li (f/label :public-public "Public")
+     (f/radio-button :public  true "public")]
+    [:li (f/label :public-group "Roster Group")
+     (f/radio-button :public (not (:public activity)) "group")]
+    [:li (f/label :public-custom "Custom Group")
+     (f/radio-button :public (not (:public activity)) "custom")]
+    [:li (f/label :public-private "Private")
+     (f/radio-button :public (not (:public activity)) "private")]]])
+
 (defn activity-form
   ([activity]
      (activity-form activity (uri activity)))
@@ -51,19 +65,7 @@
          (f/text-field :tags (:tags activity))]
         [:li (f/label :recipients "Recipients")
          (f/text-field :recipients (:recipients activity))]
-        [:li
-         [:fieldset
-          [:legend "Privacy"]
-          [:ul
-           [:li (f/label :public-public "Public")
-            (f/radio-button :public  true "public")]
-           [:li (f/label :public-group "Roster Group")
-            (f/radio-button :public (not (:public activity)) "group")]
-           [:li (f/label :public-custom "Custom Group")
-            (f/radio-button :public (not (:public activity)) "custom")]
-           [:li (f/label :public-private "Private")
-            (f/radio-button :public (not (:public activity)) "private")]
-           ]]]]
+        [:li (privacy-section activity)]]
        (f/submit-button "Post")])))
 
 (defsection add-form [Activity :html]
@@ -92,15 +94,21 @@
 
 (defn comment-link
   [activity]
-  [:a.edit-activity
-           {:href (str (uri activity) "/comment")}
-           "Comment"])
+  [:a.comment-activity
+   {:href (str (uri activity) "/comment")}
+   "Comment"])
 
 (defn like-link
   [activity]
-  [:a.edit-activity
+  [:a.like-activity
            {:href (str (uri activity) "/likes")}
            "Like"])
+
+(defn update-button
+  [activity]
+  (f/form-to
+   [:post (str (uri activity) "/comments/update")]
+   (f/submit-button "Update")))
 
 (defsection show-section-minimal [Activity :html]
   [activity & options]
@@ -110,11 +118,11 @@
     (map
      (fn [user-id]
        (let [user (model.user/fetch-by-id user-id)]
-         (list (view.user/avatar-img user)
-               (link-to user))))
+         (show-section-minimal user)))
      (:authors activity))
-    (if (:public activity)
-      "public" "private")
+    [:span.privacy
+     (if (:public activity)
+       "public" "private")]
     (if-let [t (:title activity)]
       [:h3.entry-title t])]
    [:section
@@ -122,10 +130,7 @@
      (:summary activity)]
     [:p "Tags: " (:tags activity)]
     [:p "Recipients: " (:recipients activity)]
-    [:p "Comments: " (count (:comments activity))
-     (f/form-to
-      [:post (str (uri activity) "/comments/update")]
-      (f/submit-button "Update"))]
+    [:p "Comments: " (count (:comments activity)) (update-button activity)]
     [:p [:a {:href (uri activity)}
          [:time (:published activity)]]]
     (dump activity)]
