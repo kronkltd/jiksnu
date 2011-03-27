@@ -133,7 +133,7 @@
 
 (defn result-packet
   [request body]
-  {:body body
+  {:body (make-element body)
    :from (:to request)
    :to (:from request)
    :id (:id request)
@@ -144,5 +144,6 @@
   response)
 
 (defmethod serialize-as :xmpp
-  [serialization elements]
-  (make-packet elements))
+  [serialization response]
+  (println "response: " response)
+  (make-packet response))

@@ -60,9 +60,9 @@
             author (model.user/fetch-by-id (first (:authors activity)))
             message-text (:summary activity)
             ele (make-element
-                 "message" {"type" "headline"}
-                 ["event" {"xmlns" event-ns}
-                  (index-block [activity])])]
+                 ["message" {"type" "headline"}
+                  ["event" {"xmlns" event-ns}
+                   (index-block [activity])]])]
         (let [message
               (make-packet
                {:to recipient-jid
@@ -92,5 +92,5 @@
   [request activity]
   {:type :get
    :body
-   (pubsub-items
-    (str microblog-uri ":replies:item=" (:id activity)))})
+   (make-element (pubsub-items
+     (str microblog-uri ":replies:item=" (:id activity))))})

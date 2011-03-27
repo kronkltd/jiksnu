@@ -17,52 +17,45 @@
 (defn subscriber-response-element
   [subscription]
   (let [subscriber (model.user/fetch-by-id (:from subscription))]
-    (make-element
-     "subscriber" {"node" microblog-uri
+    ["subscriber" {"node" microblog-uri
                    "created" (format-date (:created subscription))
                    "jid" (str (:username subscriber) "@"
-                              (:domain subscriber))})))
+                              (:domain subscriber))}]))
 
 (defn subscription-request-minimal
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
-    (make-element
-     "subscribe" {"node" microblog-uri
-                  "jid" (make-jid subscribee)})))
+    ["subscribe" {"node" microblog-uri
+                  "jid" (make-jid subscribee)}]))
 
 (defn unsubscription-request-minimal
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
-    (make-element
-     "unsubscribe" {"node" microblog-uri
-                    "jid" (make-jid subscribee)})))
+    ["unsubscribe" {"node" microblog-uri
+                    "jid" (make-jid subscribee)}]))
 
 (defn subscriber-response-minimal
   [subscribers]
-  (make-element
-   "pubsub" {"xmlns" pubsub-uri}
+  ["pubsub" {"xmlns" pubsub-uri}
    ["subscribers" {"node" microblog-uri}
-    (map subscriber-response-element subscribers)]))
+    (map subscriber-response-element subscribers)]])
 
 (defn subscription-response-element
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:to subscription))
         created (:created subscription)]
-    (make-element
-     "subscription" {"node" microblog-uri
+    ["subscription" {"node" microblog-uri
                      "subscription" "subscribed"
                      "created" (format-date created)
                      "jid" (str (:username subscribee) "@"
-                                (:domain subscribee))})))
+                                (:domain subscribee))}]))
 
 (defn subscription-response-minimal
   "Returns a response iq packet containing the ids in entries"
   [subscriptions]
-  (make-element
-   "pubsub" {"xmlns" pubsub-uri}
-   [(make-element
-     "subscriptions" {"node" microblog-uri}
-     (map subscription-response-element subscriptions))]))
+  ["pubsub" {"xmlns" pubsub-uri}
+   ["subscriptions" {"node" microblog-uri}
+    (map subscription-response-element subscriptions)]])
 
 (defview #'subscriptions :xmpp
   [request subscriptions]
@@ -83,8 +76,8 @@
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (make-element
-                 "pubsub" {"xmlns" pubsub-uri}
-                 (subscription-request-minimal subscription))
+                 ["pubsub" {"xmlns" pubsub-uri}
+                  (subscription-request-minimal subscription)])
             packet
             (make-packet
              {:body ele
@@ -102,8 +95,8 @@
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (make-element
-                 "pubsub" {"xmlns" pubsub-uri}
-                 (unsubscription-request-minimal subscription))
+                 ["pubsub" {"xmlns" pubsub-uri}
+                  (unsubscription-request-minimal subscription)])
             packet
             (make-packet
              {:body ele
@@ -116,7 +109,7 @@
 
 (defview #'unsubscribe :xmpp
   [request subscription]
-  (result-packet request nil))
+  (result-packet request []))
 
 (defview #'subscribed :xmpp
   [request subscription]

@@ -57,3 +57,15 @@ In most cases, use the user-specific versions. (unsubscribe)"
     (if profile
       (let [[username password] (clojure.string/split profile #"@")]
         (model.user/show username password)))))
+
+(defn subscriptions
+  [request]
+  (let [{{id "id"} :params} request
+        user (model.user/show id)]
+    (model.subscription/subscriptions user)))
+
+(defn subscribers
+  [request]
+  (let [{{id "id"} :params} request
+        user (model.user/show id)]
+    (model.subscription/subscribers user)))

@@ -60,14 +60,6 @@
   (if-let [user (current-user)]
     user (error "no user")))
 
-(defn subscriptions
-  [request]
-  [])
-
-(defn subscribers
-  [request]
-  [])
-
 (defn remote-profile
   [request]
   (let [{{id "id"} :params} request]

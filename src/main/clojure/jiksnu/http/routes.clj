@@ -56,7 +56,7 @@
     [:post "/main/logout"]                           #'auth/logout
     [:get  "/main/ostatus"]                          #'subscription/ostatus
     [:get "/main/ostatussub"]                        #'subscription/ostatussub
-    [:post "/main/ostatussub"]                 #'subscription/ostatussub-submit
+    [:post "/main/ostatussub"]                  #'subscription/ostatussub-submit
     [:post "/main/subscribe"]                        #'subscription/subscribe
     [:post "/main/unsubscribe"]                      #'subscription/unsubscribe
     [:delete "/subscriptions/:id"]                   #'subscription/delete
@@ -74,9 +74,9 @@
     [:post "/:username"]                             #'user/update
     [:get "/:username/all"]                          #'inbox/index
     [:get "/:id"]                                    #'user/show
-    [:get "/:id.:format"]                                    #'user/show
-    [:get "/:id/subscriptions"]                      #'user/subscriptions
-    [:get "/:id/subscribers"]                        #'user/subscribers
+    [:get "/:id.:format"]                            #'user/show
+    [:get "/:id/subscriptions"]                     #'subscription/subscriptions
+    [:get "/:id/subscribers"]                        #'subscription/subscribers
     [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
     [:get "/main/xrd"]                               #'webfinger/user-meta])))
 

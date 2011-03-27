@@ -4,6 +4,7 @@
         ciste.sections
         ciste.view
         ciste.config
+        jiksnu.debug
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model
@@ -195,6 +196,17 @@
   [request activities]
   (with-format :json
     {:body (doall (map #(show-section %) activities))}))
+
+(defview #'user-timeline :json
+  [request [user activities]]
+  (with-format :json
+    {:body
+     (doall (map
+             (fn [activity]
+               (show-section (spy activity)))
+             (spy activities)))
+     })
+  )
 
 (defview #'show :html
   [request activity]

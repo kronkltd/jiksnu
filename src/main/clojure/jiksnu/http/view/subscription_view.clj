@@ -6,6 +6,7 @@
         [ciste.html :only (dump dump*)]
         jiksnu.view)
   (:require [hiccup.form-helpers :as f]
+            [jiksnu.http.view.user-view :as view.user]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription))
 
@@ -97,3 +98,40 @@
    :headers {"Location" "/"}
    :flash "The request has been sent"
    :template false})
+
+(defview #'subscriptions :html
+  [request subscriptions]
+  {:title "Subscriptions"
+   :body
+   [:div
+    [:table
+     [:thead
+      [:tr
+       [:th "Avatar"]
+       [:th "To"]
+       [:th "Pending"]
+       [:th "Created"]
+       [:th "Resend"]
+       [:th "Cancel"]]]
+     [:tbody
+      (map
+       (fn [subscription]
+         (let [to (model.user/fetch-by-id (:to subscription))]
+           [:tr
+            [:td (view.user/avatar-img to)]
+            [:td (link-to to)]
+            [:td (:pending subscription)]
+            [:td (:created subscription)]
+            [:td (f/form-to
+                  [:post "/main/subscribe"]
+                  (f/hidden-field :subscribeto (:_id to))
+                  (f/submit-button "Subscribe"))]
+            [:td (f/form-to
+                  [:post "/main/unsubscribe"]
+                  (f/hidden-field :unsubscribeto (:_id to))
+                  (f/submit-button "Unsubscribe"))]]))
+       subscriptions)]]]})
+
+(defview #'subscribers :html
+  [request subscribers]
+  {:body [:div "subscribers"]})
