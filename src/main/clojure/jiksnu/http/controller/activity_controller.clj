@@ -81,5 +81,4 @@
     (if-let [user (current-user)]
       (if-let [activity (model.activity/fetch-by-id id)]
         (model.like/find-or-create activity user)
-        true)))
-  )
+        true))))

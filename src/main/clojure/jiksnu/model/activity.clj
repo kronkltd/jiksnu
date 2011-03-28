@@ -2,7 +2,8 @@
   (:use jiksnu.debug
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
-  (:require [karras.entity :as entity]
+  (:require [clojure.string :as string]
+            [karras.entity :as entity]
             [karras.sugar :as sugar])
   (:import jiksnu.model.Activity))
 
@@ -53,6 +54,20 @@
     activity
     (assoc activity :public true)))
 
+(defn set-tags
+  [activity]
+  (if-let [tags (get activity "tags")]
+    (let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+      (assoc activity :tags tag-seq))
+    activity))
+
+(defn set-recipients
+  [activity]
+  (if-let [recipients (get activity "recipients")]
+    (assoc activity :recipients
+           (string/split recipients #",\s*"))
+    activity))
+
 (defn prepare-activity
   [activity]
   (-> activity
@@ -60,6 +75,8 @@
       set-object-id
       set-public
       set-published-time
+      set-tags
+      set-recipients
       set-object-published
       set-updated-time
       set-object-updated

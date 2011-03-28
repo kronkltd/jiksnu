@@ -145,5 +145,4 @@
 
 (defmethod serialize-as :xmpp
   [serialization response]
-  (println "response: " response)
   (make-packet response))

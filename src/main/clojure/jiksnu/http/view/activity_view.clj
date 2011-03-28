@@ -14,6 +14,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.http.view.user-view :as view.user]
+            [karras.entity :as entity]
             [hiccup.form-helpers :as f])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -32,13 +33,13 @@
    [:legend "Privacy"]
    [:ul
     [:li (f/label :public-public "Public")
-     (f/radio-button :public  true "public")]
+     (f/radio-button :public true #_(= (:public activity) "public") "public")]
     [:li (f/label :public-group "Roster Group")
-     (f/radio-button :public (not (:public activity)) "group")]
+     (f/radio-button :public (= (:public activity) "group") "group")]
     [:li (f/label :public-custom "Custom Group")
-     (f/radio-button :public (not (:public activity)) "custom")]
+     (f/radio-button :public (= (:public activity) "custom") "custom")]
     [:li (f/label :public-private "Private")
-     (f/radio-button :public (not (:public activity)) "private")]]])
+     (f/radio-button :public (= (:public activity) "private") "private")]]])
 
 (defn activity-form
   ([activity]
@@ -128,8 +129,17 @@
    [:section.content
     [:p.entry-content
      (:summary activity)]
-    (if-let [tags (seq (:tags activity))]
-      [:p "Tags: " tags])
+    (if-let [tags (:tags activity)]
+      (if (seq tags)
+        [:div.tags
+         [:h "Tags"]
+         [:ul
+          (map
+           (fn [tag]
+             [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+           tags)
+
+         ]]))
     (if-let [recipients (seq (:recipients activity))]
       [:p "Recipients: " recipients])
     (if-let [comments (:comments activity)]
@@ -188,18 +198,13 @@
 (defview #'index :html
   [request activities]
   {:links ["/api/statuses/public_timeline.atom"]
-   :body
-   (list
-    (add-form (Activity.))
-    (if (seq activities)
-      (index-block activities)
-      [:p "nothing here"])
-    [:div.footer
-     [:ul
-      [:li
-       [:a {:href "/api/statuses/public_timeline.atom"} "Atom"]]
-      [:li
-       [:a {:href "/api/statuses/public_timeline.json"} "JSON"]]]])})
+   :formats {"Atom" "/api/statuses/public_timeline.atom"
+             "JSON" "/api/statuses/public_timeline.json"}
+   :body [:div
+          (add-form (entity/make Activity {:public "public"}))
+          (if (seq activities)
+            (index-block activities)
+            [:p "nothing here"])]})
 
 (defview #'index :json
   [request activities]
@@ -208,14 +213,10 @@
 
 (defview #'user-timeline :json
   [request [user activities]]
-  (with-format :json
-    {:body
-     (doall (map
-             (fn [activity]
-               (show-section (spy activity)))
-             (spy activities)))
-     })
-  )
+  {:body
+   (map
+    (fn [activity] (show-section activity))
+    activities)})
 
 (defview #'show :html
   [request activity]
@@ -230,8 +231,9 @@
   {:body
    [:div
     (show-section-minimal activity)
-    [:p "new comment here"]
-    (activity-form {} "/notice/new" activity)]})
+    (if-let [user (current-user)]
+      (activity-form {} "/notice/new" activity)
+      [:p "You must be authenticated to post comments"])]})
 
 (defview #'create :html
   [request activity]
