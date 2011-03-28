@@ -29,7 +29,11 @@ a img {
 
 .aside {
     float: right;
-    width: 30%;
+    background-color: whitesmoke;
+    width: 29%;
+    margin-left: 5px;
+    border: 2px solid black;
+    padding: 0 3px;
 }
 
 .content
@@ -121,6 +125,21 @@ section
 /*     width: 50px; */
 /* } */
 
+.vcard {
+    float: left;
+}
+
+.vcard .url > .fn
+{
+    margin-left: 50px;
+}
+
+.privacy
+{
+    float: right;
+}
+
+
 .entry-content, .entry-title
 {
     margin-left: 50px;
@@ -144,7 +163,7 @@ nav
 
 section.content
 {
-    width: 70%;
+    width: 69%;
     margin: 0 auto;
 }
 
@@ -172,7 +191,7 @@ section.content
 
 .comments
 {
-    clear: both;
+    /* clear: both; */
     margin-left: 15px;
 }
 
@@ -194,7 +213,7 @@ section.content
 
 article footer
 {
-    /* clear: both; */
+    clear: none;
     width: 100%;
     display: block;
 }
@@ -213,4 +232,8 @@ article footer .buttons li
 .hidden
 {
     display: none;
+}
+
+.buttons li form {
+    display: inline;
 }

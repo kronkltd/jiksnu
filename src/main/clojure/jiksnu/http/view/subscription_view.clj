@@ -89,8 +89,8 @@
      [:post "/main/ostatussub"]
      [:p (f/text-field :profile )]
      (f/submit-button "Submit"))
-    (dump* request)
-    (dump* arg)]})
+    #_(dump* request)
+    #_(dump* arg)]})
 
 (defview #'ostatussub-submit :html
   [request subscription]

@@ -62,6 +62,7 @@
     [:delete "/subscriptions/:id"]                   #'subscription/delete
     [:post "/notice/new"]                            #'activity/create
     [:post "/notice/:id"]                            #'activity/update
+    [:post "/notice/:id/likes"]                      #'activity/like-activity
     [:delete "/notice/:id"]                          #'activity/delete
     [:get "/domains"]                                #'domain/index
     [:get "/domains/*"]                              #'domain/show

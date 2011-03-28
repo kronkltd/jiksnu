@@ -100,9 +100,9 @@
 
 (defn like-link
   [activity]
-  [:a.like-activity
-           {:href (str (uri activity) "/likes")}
-           "Like"])
+  (f/form-to
+   [:post (str (uri activity) "/likes")]
+   (f/submit-button "Like")))
 
 (defn update-button
   [activity]
@@ -125,12 +125,15 @@
        "public" "private")]
     (if-let [t (:title activity)]
       [:h3.entry-title t])]
-   [:section
+   [:section.content
     [:p.entry-content
      (:summary activity)]
-    [:p "Tags: " (:tags activity)]
-    [:p "Recipients: " (:recipients activity)]
-    [:p "Comments: " (count (:comments activity)) (update-button activity)]
+    (if-let [tags (seq (:tags activity))]
+      [:p "Tags: " tags])
+    (if-let [recipients (seq (:recipients activity))]
+      [:p "Recipients: " recipients])
+    (if-let [comments (:comments activity)]
+      [:p "Comments: " (count comments)])
     [:p [:a {:href (uri activity)}
          [:time (:published activity)]]]
     (dump activity)]
@@ -140,6 +143,7 @@
      (:comments activity))]
    [:footer
     [:ul.buttons
+     [:li (update-button activity)]
      [:li (comment-link activity)]
      [:li (like-link activity)]
      [:li (delete-link activity)]

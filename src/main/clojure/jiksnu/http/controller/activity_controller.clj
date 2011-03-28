@@ -1,11 +1,12 @@
 (ns jiksnu.http.controller.activity-controller
-  (:use jiksnu.model
-        jiksnu.session
+  (:use (jiksnu model session)
         [karras.entity :only (make)])
-  (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.item :as model.item]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+  (:require (jiksnu.model
+             [activity :as model.activity]
+             [item :as model.item]
+             [like :as model.like]
+             [subscription :as model.subscription]
+             [user :as model.user]))
   (:import jiksnu.model.Activity))
 
 (defn index
@@ -73,3 +74,12 @@
   (if-let [activity (model.activity/show id)]
     (if-let [author (model.user/fetch-by-id (first (:authors activity)))]
       activity)))
+
+(defn like-activity
+  [request]
+  (let [{{id "id"} :params} request]
+    (if-let [user (current-user)]
+      (if-let [activity (model.activity/fetch-by-id id)]
+        (model.like/find-or-create activity user)
+        true)))
+  )

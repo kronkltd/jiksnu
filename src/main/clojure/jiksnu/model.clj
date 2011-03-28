@@ -52,6 +52,9 @@
    :actor
    :title])
 
+(defentity Like
+  [:id :user :activity :created])
+
 (defentity Subscription
   [:to :from :created])
 
