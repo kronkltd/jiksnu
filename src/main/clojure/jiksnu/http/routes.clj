@@ -102,8 +102,7 @@
   (resolve-routes @*routes*)
   (route/not-found "/public/404.html"))
 
-(defn app
-  []
+(def app
   (-> #'all-routes
       (wrap-user-debug-binding)
       (wrap-user-binding)

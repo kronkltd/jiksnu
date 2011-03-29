@@ -2,7 +2,7 @@
   (:use clojure.contrib.logging
         jiksnu.session
         jiksnu.model)
-  (:require [jiksnu.debug :as debug]
+  (:require [ciste.debug :as debug]
             [jiksnu.model.activity :as activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity

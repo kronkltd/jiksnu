@@ -1,6 +1,6 @@
 (ns jiksnu.xmpp.controller.user-controller
   (:use clj-tigase.core
-        jiksnu.debug
+        ciste.debug
         jiksnu.namespace
         [jiksnu.session :only (current-user)]
         jiksnu.xmpp.element

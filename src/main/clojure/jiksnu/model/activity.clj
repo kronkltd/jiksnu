@@ -1,5 +1,5 @@
 (ns jiksnu.model.activity
-  (:use jiksnu.debug
+  (:use ciste.debug
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [clojure.string :as string]

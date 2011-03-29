@@ -4,7 +4,7 @@
         ciste.sections
         ciste.view
         ciste.config
-        jiksnu.debug
+        ciste.debug
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model

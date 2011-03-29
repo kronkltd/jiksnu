@@ -1,8 +1,10 @@
 (ns jiksnu.model.user
   (:use jiksnu.model)
   (:require [clojure.string :as string]
-            [karras.entity :as entity])
+            [karras.entity :as entity]
+            [jiksnu.model.domain :as model.domain])
   (:import tigase.xmpp.BareJID
+           jiksnu.model.Domain
            jiksnu.model.User))
 
 (defn get-id
@@ -27,7 +29,8 @@
 
 (defn create
   [user]
-  (entity/create User user))
+  (let [domain (model.domain/find-or-create (:domain user))]
+    (entity/create User user)))
 
 (defn index
   [& opts]

@@ -11,7 +11,7 @@
       (ref-set *future-web*
                (future
                 (run-jetty
-                 (#'routes/app)
+                 #'routes/app
                  {:port port
                   ;; :keystore "/home/duck/projects/jiksnu/certs/rsa-keystore"
                   ;; :key-password "GuNgSkOWmWUa46XE1n52vuMPp"

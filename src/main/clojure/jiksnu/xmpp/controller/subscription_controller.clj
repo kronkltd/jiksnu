@@ -1,5 +1,5 @@
 (ns jiksnu.xmpp.controller.subscription-controller
-  (:use jiksnu.debug
+  (:use ciste.debug
         jiksnu.model
         jiksnu.namespace
         jiksnu.xmpp.view)

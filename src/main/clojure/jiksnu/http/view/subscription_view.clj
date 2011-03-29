@@ -12,7 +12,7 @@
 
 (defsection uri [Subscription]
   [subscription & options]
-  (str "/admin/subscriptions/" (:_id subscription)))
+  (str "/subscriptions/" (:_id subscription)))
 
 (defsection title [Subscription]
   [subscription & options]
@@ -27,9 +27,10 @@
 (defsection index-line [Subscription :html]
   [subscription & options]
   [:tr
-   [:td [:a {:href "#"} (:_id subscription)]]
+   [:td (link-to subscription)]
    [:td (link-to (model.user/fetch-by-id (:from subscription)))]
    [:td (link-to (model.user/fetch-by-id (:to subscription)))]
+   [:td (:pending subscription)]
    [:td (:created subscription)]
    [:td (delete-form subscription)]])
 
@@ -41,6 +42,7 @@
       [:td "Id"]
       [:td "From"]
       [:td "To"]
+      [:td "Pending"]
       [:td "Created"]]]
     [:tbody
      (map index-line subscriptions)]])

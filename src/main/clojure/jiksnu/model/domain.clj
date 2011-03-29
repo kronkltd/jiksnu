@@ -30,3 +30,9 @@
   (let [domain (show id)]
     (entity/delete domain)
     domain))
+
+(defn find-or-create
+  [id]
+  (if-let [domain (show id)]
+    domain
+    (create {:_id id})))
