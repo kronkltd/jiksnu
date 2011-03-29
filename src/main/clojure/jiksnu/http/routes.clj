@@ -99,7 +99,7 @@
   (route/files "/public")
   (GET "/favicon.ico" request
        (route/files "favicon.ico"))
-  (resolve-routes @*routes*)
+  (#'resolve-routes @*routes*)
   (route/not-found "/public/404.html"))
 
 (def app

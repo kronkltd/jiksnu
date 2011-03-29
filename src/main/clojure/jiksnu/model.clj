@@ -23,10 +23,9 @@
 (defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
 (defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
 
-(def #^:dynamic *mongo-database*
-     (karras/mongo-db (-> (config) :database :name)))
+(def #^:dynamic *mongo-database* (ref nil))
 
-(defonce *formatter*
+(defonce #^:dynamic *formatter*
   (SimpleDateFormat. *date-format*))
 
 (defn format-date
@@ -40,9 +39,17 @@
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
 (.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
+(defn mongo-database*
+  []
+  (println "initializing connection")
+  (karras/mongo-db (-> (config) :database :name))
+  )
+
 (defn mongo-database
   []
-  (karras/mongo-db (-> (config) :database :name)))
+  (or @*mongo-database*
+      (mongo-database*)
+      ))
 
 (defembedded Person
   [:name])
@@ -74,8 +81,10 @@
 
 (defmacro with-database
   [& body]
-  `(karras/with-mongo-request (mongo-database)
-     ~@body))
+  `(do
+     (println "creating database connection")
+     (karras/with-mongo-request (mongo-database)
+       ~@body)))
 
 (defmacro with-environment
   [environment & body]
