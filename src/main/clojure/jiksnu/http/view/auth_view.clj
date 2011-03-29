@@ -1,5 +1,6 @@
 (ns jiksnu.http.view.auth-view
   (:use ciste.core
+        ciste.html
         ciste.sections
         ciste.view
         jiksnu.http.controller.auth-controller
@@ -12,18 +13,43 @@
 (defn login-form
   []
   [:div
-   (f/form-to
-    [:post (login-uri)]
-    [:fieldset
-     [:legend "Login"]
-     [:ul
-      [:li
-       (f/label :username "Username")
-       (f/text-field :username)]
-      [:li
-       (f/label :password "Password")
-       (f/password-field  :password)]]
-     (f/submit-button "Login")])])
+   [:div
+    (f/form-to
+     [:post (login-uri)]
+     [:fieldset
+      [:legend "Login"]
+      [:ul
+       [:li
+        (f/label :username "Username")
+        (f/text-field :username)]
+       [:li
+        (f/label :password "Password")
+        (f/password-field  :password)]
+       [:li (f/submit-button "Login")]]])]
+   [:div
+    (f/form-to
+     [:post "/main/guest-login"]
+     [:fieldset
+      [:legend "Guest Login"]
+      [:ul
+       [:li
+        (f/label :webid "Web Id:")
+        (f/text-field :webid)]
+       [:li (f/submit-button "Login")]]])]])
+
+(defview #'password-page :html
+  [request user]
+  {:body
+   [:div
+    (f/form-to
+     [:post (login-uri)]
+     [:fieldset
+      [:legend "Enter Password"]
+      [:ul
+       [:li.hidden (f/hidden-field :username (:username user))]
+       [:li (f/label :password "Password")
+        (f/password-field  :password)]
+       [:li (f/submit-button "Login")]]])]})
 
 (defview #'login-page :html
   [request _]
@@ -44,3 +70,10 @@
      :status 303
      :template false
      :headers {"Location" "/"}}))
+
+(defview #'guest-login :html
+  [request user]
+  {:status 303
+   :template false
+   :session {:pending-id (:_id user)}
+   :headers {"Location" "/main/password"}})

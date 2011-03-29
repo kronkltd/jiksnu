@@ -2,7 +2,8 @@
   (:use clojure.contrib.logging
         jiksnu.session
         jiksnu.model)
-  (:require [jiksnu.model.activity :as activity]
+  (:require [jiksnu.debug :as debug]
+            [jiksnu.model.activity :as activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -24,3 +25,15 @@
 (defn logout
   [request]
   true)
+
+(defn guest-login
+  [request]
+  (let [{{webid "webid"} :params} (debug/spy request)]
+    (let [user (model.user/find-or-create-by-uri webid)]
+      (debug/spy user))
+    ))
+
+(defn password-page
+  [request]
+  (let [{{id :pending-id} :session} request]
+    (model.user/fetch-by-id id)))

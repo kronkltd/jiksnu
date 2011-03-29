@@ -52,8 +52,10 @@
     [:get "/admin/subscriptions"]                    #'subscription/index
     [:get "/admin/users"]                            #'user/index
     [:get "/main/login"]                             #'auth/login-page
+    [:post "/main/guest-login"]                       #'auth/guest-login
     [:post "/main/login"]                            #'auth/login
     [:post "/main/logout"]                           #'auth/logout
+    [:get "/main/password"]                          #'auth/password-page
     [:get  "/main/ostatus"]                          #'subscription/ostatus
     [:get "/main/ostatussub"]                        #'subscription/ostatussub
     [:post "/main/ostatussub"]                  #'subscription/ostatussub-submit
