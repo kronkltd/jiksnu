@@ -10,16 +10,16 @@
             ele (make-element
                  ["message" {"type" "headline"}
                   ["event" {"xmlns" event-ns}
-                   (index-block [activity])]])]
-        (let [message
-              (make-packet
-               {:to recipient-jid
-                :from (make-jid author)
-                :type :chat
-                ;; FIXME: generate an id for this case
-                :id "JIKSNU1"
-                :body ele})]
-          (deliver-packet! message))))))
+                   (index-block [activity])]])
+            message
+            (make-packet
+             {:to recipient-jid
+              :from (make-jid author)
+              :type :chat
+              ;; FIXME: generate an id for this case
+              :id "JIKSNU1"
+              :body ele})]
+        (deliver-packet! message)))))
 
 (defn notify-subscribers
   [action request activity]
