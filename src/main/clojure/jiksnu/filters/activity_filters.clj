@@ -1,7 +1,7 @@
 (ns jiksnu.filters.activity-filters)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Index
+;; index
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'index :http
@@ -13,8 +13,13 @@
   (action))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Show
+;; show
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deffilter #'show :http
+  [action request]
+  (let [{{id "id"} :params} request]
+    (action id)))
 
 (deffilter #'show :xmpp
   [action request]
@@ -23,10 +28,18 @@
         id (first ids)]
     (action id)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; user-timeline
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (deffilter #'user-timeline :http
   [action request]
   (let [{{id "id"} :params} request]
     (action id)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; delete
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'delete :http
   [action request]

@@ -16,11 +16,9 @@
 (defn create
   [{{id "id" :as params} :params :as request}]
   (let [a (make Activity params)]
-    (let [created-activity (model.activity/create a)]
-      #_(if (:parent created-activity)
-          (jiksnu.http.view.activity-view/notify-commented
-           request created-activity))
-      created-activity)))
+    (model.activity/create a)))
+
+(add-trigger! #'create #'jiksnu.http.view.activity-view/notify-commented)
 
 (defn new
   [request]
@@ -40,17 +38,17 @@
                    {:public true}))]
       (model.activity/update opts))))
 
-(defn delete
+(defaction delete
   [{{id "id"} :params
     :as request}]
   (model.activity/delete id)
   true)
 
-(defn edit
+(defaction edit
   [request]
   (show request))
 
-(defn new-comment
+(defaction new-comment
   [{{id "id"} :params}]
   (model.activity/show id))
 
