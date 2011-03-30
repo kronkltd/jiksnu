@@ -13,12 +13,6 @@
   (:import org.apache.abdera.model.Entry
            jiksnu.model.Activity))
 
-(defn show
-  [{:keys [items] :as request}]
-  (let [ids (map #(.getAttribute % "id") items)
-        id (first ids)]
-    (model.activity/show id)))
-
 (defn index
   [request]
   (let [to (model.user/get-id (:to request))
