@@ -1,4 +1,19 @@
-(ns jiksnu.triggers.activity-triggers)
+(ns jiksnu.triggers.activity-triggers
+  (:use clj-tigase.core
+        ciste.core
+        ciste.view
+        ciste.trigger
+        ciste.sections
+        jiksnu.model
+        jiksnu.namespace
+        jiksnu.session
+        jiksnu.xmpp.view)
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.item :as model.item]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 (defn notify-activity
   [recipient ^Activity activity]

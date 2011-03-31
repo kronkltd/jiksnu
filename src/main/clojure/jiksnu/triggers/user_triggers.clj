@@ -1,2 +1,2 @@
-(ns jiksnu.trigger.user-trigger)
+(ns jiksnu.triggers.user-triggers)
 

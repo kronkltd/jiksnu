@@ -25,13 +25,3 @@
                   response (show-section entry)]
               (expect (not (nil? response)))
               (expect (element? response)))))))))
-
-(describe notify-activity
-  (do-it "should return a packet"
-    (with-serialization :xmpp
-      (with-format :atom
-        (let [user (model.user/create (factory User))]
-          (with-user user
-            (let [activity (model.activity/create (factory Activity))
-                  response (notify-activity user activity)]
-              (expect (packet? response)))))))))
