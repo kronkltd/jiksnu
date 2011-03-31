@@ -1,4 +1,14 @@
-(ns jiksnu.sections.activity-sections)
+(ns jiksnu.sections.activity-sections
+  (:use ciste.view
+        ciste.html
+        ciste.sections
+        jiksnu.namespace
+        jiksnu.session
+        jiksnu.xmpp.element)
+  (:require [hiccup.form-helpers :as f]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity))
 
 (defsection uri [Activity]
   [activity & options]

@@ -1,4 +1,9 @@
-(ns jiksnu.controller.activity-controller)
+(ns jiksnu.controller.activity-controller
+  (:use ciste.core
+        jiksnu.model)
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
+  )
 
 (defaction index
   [& options]

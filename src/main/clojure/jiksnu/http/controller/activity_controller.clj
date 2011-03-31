@@ -1,5 +1,7 @@
 (ns jiksnu.http.controller.activity-controller
-  (:use (jiksnu model session)
+  (:use ciste.core
+        ciste.trigger
+        (jiksnu model session)
         [karras.entity :only (make)])
   (:require (jiksnu.model
              [activity :as model.activity]
@@ -17,8 +19,6 @@
   [{{id "id" :as params} :params :as request}]
   (let [a (make Activity params)]
     (model.activity/create a)))
-
-(add-trigger! #'create #'jiksnu.http.view.activity-view/notify-commented)
 
 (defn new
   [request]

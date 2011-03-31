@@ -1,4 +1,4 @@
-(ns jiksnu.trigger.activity-trigger)
+(ns jiksnu.triggers.activity-triggers)
 
 (defn notify-activity
   [recipient ^Activity activity]

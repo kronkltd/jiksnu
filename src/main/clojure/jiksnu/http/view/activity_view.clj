@@ -4,10 +4,12 @@
         ciste.sections
         ciste.view
         ciste.config
+        ciste.trigger
         ciste.debug
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model
+        jiksnu.sections.activity-sections
         jiksnu.session
         jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
@@ -83,6 +85,8 @@
   [request activity]
   (let [parent (model.activity/show (:parent activity))]
     (model.activity/add-comment parent activity)))
+
+(add-trigger! #'create #'notify-commented)
 
 (defview #'fetch-comments :html
   [request activity]
