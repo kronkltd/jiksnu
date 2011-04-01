@@ -1,4 +1,4 @@
-(ns jiksnu.http.middleware-test
+(ns jiksnu.middleware-test
   (:use jiksnu.http.middleware
         [lazytest.describe :only (describe do-it testing)]))
 

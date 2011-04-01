@@ -1,5 +1,5 @@
-(ns jiksnu.http.routes-test
-  (:use jiksnu.http.routes
+(ns jiksnu.routes-test
+  (:use jiksnu.routes
         jiksnu.model
         [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)]))

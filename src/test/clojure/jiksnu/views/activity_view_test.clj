@@ -3,6 +3,7 @@
         ciste.factory
         ciste.sections
         ciste.view
+        clj-tigase.core
         jiksnu.config
         jiksnu.model
         jiksnu.session
@@ -127,3 +128,14 @@
                response (apply-view {:action #'index
                                      :format :atom} [activity])]
            (expect (map? response))))))))
+
+(describe show-section "Activity :xmpp :xmpp"
+  (do-it "should return an element"
+    (with-serialization :xmpp
+      (with-format :xmpp
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [entry (model.activity/create (factory Activity))
+                  response (show-section entry)]
+              (expect (not (nil? response)))
+              (expect (element? response)))))))))
