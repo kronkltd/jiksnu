@@ -1,6 +1,7 @@
 (ns jiksnu.xmpp.view.subscription-view-test
   (:use clj-tigase.core
         ciste.core
+        ciste.debug
         ciste.factory
         jiksnu.core-test
         jiksnu.namespace
@@ -23,7 +24,8 @@
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))]
       (let [response (subscriber-response-element subscription)]
-        (expect (element? response))))))
+        (expect (or (vector? response)
+                    (element? response)))))))
 
 (describe subscription-request-minimal
     (do-it "should"
@@ -32,7 +34,8 @@
             subscription (model.subscription/subscribe
                           (:_id user) (:_id subscribee))]
         (let [response (subscription-request-minimal subscription)]
-          (expect (element? response))))))
+          (expect (or (vector? response)
+                      (element? response)))))))
 
 (describe unsubscription-request-minimal)
 

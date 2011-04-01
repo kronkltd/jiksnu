@@ -25,6 +25,10 @@
     ;; (model.user/drop!)
     (apply f args)))
 
+(with-environment :test
+  (dosync
+   (ref-set *mongo-database* (mongo-database*))))
+
 ;; (add-hook #'lazytest.runner.console/run-tests env-hook)
 ;; (add-hook #'lazytest.suite/expand-suite env-hook)
 (add-hook #'lazytest.test-case/try-test-case env-hook)

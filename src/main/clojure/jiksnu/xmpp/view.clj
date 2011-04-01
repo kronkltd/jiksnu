@@ -133,11 +133,12 @@
 
 (defn result-packet
   [request body]
-  {:body (make-element body)
-   :from (:to request)
-   :to (:from request)
-   :id (:id request)
-   :type :result})
+  (merge
+   (if body (make-element body))
+   {:from (:to request)
+    :to (:from request)
+    :id (:id request)
+    :type :result}))
 
 (defmethod format-as :xmpp
   [format request response]

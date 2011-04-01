@@ -109,7 +109,7 @@
 
 (defview #'unsubscribe :xmpp
   [request subscription]
-  (result-packet request []))
+  (result-packet request nil))
 
 (defview #'subscribed :xmpp
   [request subscription]
