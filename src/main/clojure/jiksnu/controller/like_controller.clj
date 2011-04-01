@@ -1,4 +1,4 @@
-(ns jiksnu.http.controller.like-controller
+(ns jiksnu.controller.like-controller
   (:use jiksnu.model
         jiksnu.session
         )

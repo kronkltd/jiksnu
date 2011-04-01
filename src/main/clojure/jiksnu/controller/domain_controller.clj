@@ -1,4 +1,4 @@
-(ns jiksnu.http.controller.domain-controller
+(ns jiksnu.controller.domain-controller
   (:use jiksnu.http.controller.webfinger-controller)
   (:require [jiksnu.model.domain :as model.domain]))
 

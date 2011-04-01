@@ -1,4 +1,4 @@
-(ns jiksnu.http.controller.auth-controller
+(ns jiksnu.controller.auth-controller
   (:use clojure.contrib.logging
         jiksnu.session
         jiksnu.model)
