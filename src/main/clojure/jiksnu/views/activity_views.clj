@@ -10,22 +10,19 @@
         ciste.trigger
         ciste.debug
         clojure.contrib.logging
-        jiksnu.http.controller.activity-controller
-        jiksnu.http.view
+        jiksnu.controller.activity-controller
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.activity-sections
         jiksnu.session
-        jiksnu.xmpp.controller.activity-controller
         jiksnu.xmpp.element
-        jiksnu.xmpp.view
         jiksnu.view
         [karras.entity :only (make)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.http.view.user-view :as view.user]
+            [jiksnu.views.user-views :as view.user]
             [karras.entity :as entity]
             [hiccup.form-helpers :as f])
   (:import jiksnu.model.Activity

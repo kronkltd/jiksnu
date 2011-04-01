@@ -8,7 +8,7 @@
         [ring.middleware.session :only (wrap-session)])
   (:require [ciste.middleware :as middleware]
             [compojure.core :as compojure]
-            [jiksnu.http.view :as view]
+            [jiksnu.view :as view]
             (jiksnu.http.controller
              [activity-controller :as activity]
              [auth-controller :as auth]
@@ -17,7 +17,7 @@
              [subscription-controller :as subscription]
              [user-controller :as user]
              [webfinger-controller :as webfinger])
-            (jiksnu.http.view
+            (jiksnu.view
              activity-view
              auth-view
              domain-view

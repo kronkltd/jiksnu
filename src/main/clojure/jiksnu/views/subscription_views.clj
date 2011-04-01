@@ -12,7 +12,7 @@
         jiksnu.xmpp.controller.subscription-controller
         jiksnu.xmpp.view)
   (:require [hiccup.form-helpers :as f]
-            [jiksnu.http.view.user-view :as view.user]
+            [jiksnu.views.user-views :as view.user]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription

@@ -2,7 +2,7 @@
   (:use clojure.pprint
         clojure.stacktrace
         [ciste.config :only (config)]
-        jiksnu.http.view
+        jiksnu.view
         jiksnu.model
         [jiksnu.session :only (with-user current-user)]
         hiccup.core))
