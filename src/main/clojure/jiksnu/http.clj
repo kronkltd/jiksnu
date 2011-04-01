@@ -1,6 +1,6 @@
 (ns jiksnu.http
   (:use ring.adapter.jetty)
-  (:require [jiksnu.http.routes :as routes]))
+  (:require [jiksnu.routes :as routes]))
 
 (def #^:dynamic *future-web* (ref nil))
 

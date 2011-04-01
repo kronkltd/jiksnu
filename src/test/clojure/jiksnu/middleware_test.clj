@@ -1,5 +1,5 @@
 (ns jiksnu.middleware-test
-  (:use jiksnu.http.middleware
+  (:use jiksnu.middleware
         [lazytest.describe :only (describe do-it testing)]))
 
 (describe wrap-debug-binding)

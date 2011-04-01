@@ -44,7 +44,7 @@
   [activity]
   (let [opts
         (merge activity
-               (if (= (get (:params request) "public") "public")
+               (if (= (get activity "public") "public")
                  {:public true}))]
     (model.activity/update opts)))
 

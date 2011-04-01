@@ -1,11 +1,11 @@
-(ns jiksnu.http.routes
+(ns jiksnu.routes
   (:use ciste.core
         compojure.core
         clojure.contrib.logging
         hiccup.core
-        jiksnu.http.middleware
-jiksnu.namespace
-                [ring.middleware.session :only (wrap-session)])
+        jiksnu.middleware
+        jiksnu.namespace
+        [ring.middleware.session :only (wrap-session)])
   (:require [ciste.middleware :as middleware]
             [compojure.core :as compojure]
             [jiksnu.http.view :as view]

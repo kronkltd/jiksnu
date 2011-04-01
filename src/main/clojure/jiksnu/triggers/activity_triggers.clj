@@ -45,7 +45,12 @@
         (model.item/push user activity)
         (notify-activity user activity)))))
 
-(add-trigger! #'jiksnu.http.controller.activity-controller/create
-              #'notify-subscribers)
-(add-trigger! #'jiksnu.http.controller.activity-controller/create
-              #'sleep-and-print)
+(defn notify-commented
+  [_ request activity]
+  (let [parent (model.activity/show (:parent activity))]
+    (model.activity/add-comment parent activity)))
+
+
+(add-trigger! #'create #'notify-commented)
+(add-trigger! #'create #'notify-subscribers)
+(add-trigger! #'create #'sleep-and-print)

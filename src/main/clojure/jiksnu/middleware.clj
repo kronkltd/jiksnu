@@ -1,4 +1,4 @@
-(ns jiksnu.http.middleware
+(ns jiksnu.middleware
   (:use clojure.pprint
         clojure.stacktrace
         [ciste.config :only (config)]

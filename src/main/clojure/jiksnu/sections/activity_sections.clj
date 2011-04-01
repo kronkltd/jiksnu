@@ -6,6 +6,7 @@
         jiksnu.namespace
         jiksnu.session
         jiksnu.xmpp.element
+        jiksnu.view
         [karras.entity :only (make)])
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
@@ -254,14 +255,6 @@ an Element"
 (defn has-author?
   [^Entry entry]
   (not (nil? (.getAuthor entry))))
-
-(defn notify-commented
-  [request activity]
-  (let [parent (model.activity/show (:parent activity))]
-    (model.activity/add-comment parent activity)))
-
-(add-trigger! #'create #'notify-commented)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uri
