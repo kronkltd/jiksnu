@@ -12,6 +12,20 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
+(describe index)
+
+(describe show)
+
+(describe delete)
+
+(describe create)
+
+(describe update)
+
+(describe edit)
+
+(describe profile)
+
 (describe rule-element?)
 
 (describe rule-map)
