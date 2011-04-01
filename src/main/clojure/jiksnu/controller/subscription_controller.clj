@@ -1,8 +1,7 @@
-(ns jiksnu.xmpp.controller.subscription-controller
+(ns jiksnu.controller.subscription-controller
   (:use ciste.debug
         jiksnu.model
-        jiksnu.namespace
-        jiksnu.xmpp.view)
+        jiksnu.namespace)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
 
