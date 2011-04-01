@@ -59,8 +59,8 @@
         (map
          (fn [item]
            (-> item children first
-               str atom.view/parse-xml-string
-               atom.view/to-activity
+               str jiksnu.view/parse-xml-string
+               jiksnu.view/to-activity
                #(make Activity %)))
          items)]
     (action (first activities))))

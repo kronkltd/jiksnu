@@ -6,14 +6,14 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.xmpp.view
         [karras.entity :only (make)])
   (:require (jiksnu.model
              [activity :as model.activity]
              [item :as model.item]
              [like :as model.like]
              [subscription :as model.subscription]
-             [user :as model.user]))
+             [user :as model.user])
+            jiksnu.view)
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
@@ -119,8 +119,8 @@
 (defn create-activity
   [item]
   (let [entry-string (str (first (children item)))
-        entry (atom.view/parse-xml-string entry-string)
-        activity (atom.view.activity/to-activity entry)]
+        entry (jiksnu.view/parse-xml-string entry-string)
+        activity (jiksnu.view/to-activity entry)]
     (model.activity/create (make Activity activity))))
 
 ;; (defn create
@@ -134,8 +134,8 @@
     (let [packet (:packet request)
           items (children packet "/message/event/items/item")]
       (doseq [entry items]
-        (let [activity (atom.view.activity/to-activity
-                        (atom.view/parse-xml-string (str entry)))]
+        (let [activity (jiksnu.view/to-activity
+                        (jiksnu.view/parse-xml-string (str entry)))]
           (model.activity/create-raw activity)))
       true)))
 

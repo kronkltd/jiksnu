@@ -7,8 +7,7 @@
         jiksnu.xmpp
         jiksnu.xmpp.element
         jiksnu.view)
-  (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [clojure.stacktrace :as stacktrace])
+  (:require [clojure.stacktrace :as stacktrace])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            jiksnu.model.Activity

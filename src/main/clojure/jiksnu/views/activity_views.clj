@@ -10,7 +10,6 @@
         ciste.trigger
         ciste.debug
         clojure.contrib.logging
-        jiksnu.atom.view
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model
@@ -22,8 +21,7 @@
         jiksnu.xmpp.view
         jiksnu.view
         [karras.entity :only (make)])
-  (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [jiksnu.model.activity :as model.activity]
+  (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -37,9 +35,7 @@
            jiksnu.model.User
            org.apache.abdera.ext.json.JSONUtil
            org.apache.abdera.model.Element
-           org.apache.abdera.model.Entry
-           )
-  )
+           org.apache.abdera.model.Entry))
 
 (defn notify-commented
   [request activity]
