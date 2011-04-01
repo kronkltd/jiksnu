@@ -1,5 +1,9 @@
 (ns jiksnu.triggers.activity-triggers-test
-  (:use jiksnu.xmpp.view.activity-view
+  (:use clj-tigase.core
+        ciste.factory
+        ciste.view
+        jiksnu.triggers.activity-triggers
+        jiksnu.xmpp.view.activity-view
         jiksnu.model
         jiksnu.session
         [lazytest.describe :only (describe testing do-it for-any)]

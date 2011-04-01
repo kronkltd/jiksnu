@@ -1,4 +1,6 @@
-(ns jiksnu.filters.activity-filters)
+(ns jiksnu.filters.activity-filters
+  (:use ciste.filters
+        jiksnu.controller.activity-controller))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index

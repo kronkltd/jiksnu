@@ -1,10 +1,16 @@
 (ns jiksnu.filters.activity-filters-test
-  (:use jiksnu.filters.activity-filters
-      jiksnu.model
+  (:use clj-tigase.core
+        ciste.factory
+        ciste.filters
+        jiksnu.controller.activity-controller
+        jiksnu.filters.activity-filters
+        jiksnu.model
+        jiksnu.namespace
         jiksnu.session
+        jiksnu.xmpp.element
+        jiksnu.xmpp.view
         [lazytest.describe :only (describe testing do-it for-any)]
-        [lazytest.expect :only (expect)]
-        )
+        [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -22,12 +28,13 @@
                             :type :get
                             :id "JIKSNU1"
                             :body (make-element
-                                   "pubsub" {"xmlns" pubsub-uri}
-                                   ["items" {"node" microblog-uri}
-                                    ["item" {"id" (:_id activity)}]])}
+                                   ["pubsub" {"xmlns" pubsub-uri}
+                                    ["items" {"node" microblog-uri}
+                                     ["item" {"id" (:_id activity)}]]])}
                 packet (make-packet packet-map)
                 request (make-request packet)
-                response (show request)]
+                response (assoc (apply-filter #'show request)
+                           :serialization :xmpp)]
             (expect (activity? response)))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))
