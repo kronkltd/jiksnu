@@ -5,12 +5,17 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.xmpp.element)
+        jiksnu.xmpp.element
+        [karras.entity :only (make)])
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
+  (:import com.cliqset.abdera.ext.activity.object.Person
+           java.io.StringWriter
+           javax.xml.namespace.QName
+           jiksnu.model.Activity
            org.apache.abdera.model.Entry
+           org.apache.abdera.ext.json.JSONUtil
            tigase.xml.Element))
 
 (defn ^Entry new-entry
@@ -219,15 +224,6 @@ serialization"
     (JSONUtil/toJson entry string-writer)
     string-writer))
 
-(defn add-extensions
-  [^Entry entry ^Activity activity]
-  (doseq [extension (:extensions activity)]
-    (.addExtension entry (parse-json-element extension))))
-
-(defn has-author?
-  [^Entry entry]
-  (not (nil? (.getAuthor entry))))
-
 (defn parse-json-element
   "Takes a json object representing an Abdera element and converts it to
 an Element"
@@ -249,6 +245,15 @@ an Element"
              (if (string? child)
                (.setText element child))))
          element))))
+
+(defn add-extensions
+  [^Entry entry ^Activity activity]
+  (doseq [extension (:extensions activity)]
+    (.addExtension entry (parse-json-element extension))))
+
+(defn has-author?
+  [^Entry entry]
+  (not (nil? (.getAuthor entry))))
 
 (defn notify-commented
   [request activity]

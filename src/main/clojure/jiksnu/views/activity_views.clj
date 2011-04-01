@@ -28,14 +28,8 @@
             [jiksnu.http.view.user-view :as view.user]
             [karras.entity :as entity]
             [hiccup.form-helpers :as f])
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           java.io.StringWriter
-           javax.xml.namespace.QName
-           jiksnu.model.Activity
-           jiksnu.model.User
-           org.apache.abdera.ext.json.JSONUtil
-           org.apache.abdera.model.Element
-           org.apache.abdera.model.Entry))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Index
