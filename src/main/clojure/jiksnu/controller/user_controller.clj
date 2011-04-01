@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.controller.user-controller
+(ns jiksnu.controller.user-controller
   (:use ciste.config
         ciste.debug
         clj-tigase.core

@@ -6,8 +6,6 @@
         ciste.view
         [clj-gravatar.core :only (gravatar-image)]
         clj-tigase.core
-        jiksnu.http.controller.user-controller
-        jiksnu.http.view
         jiksnu.model
         jiksnu.namespace
         jiksnu.session

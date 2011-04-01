@@ -1,9 +1,9 @@
-(ns jiksnu.xmpp.controller.user-controller-test
+(ns jiksnu.controller.user-controller-test
   (:use clj-tigase.core
         ciste.factory
         jiksnu.model
         jiksnu.session
-        jiksnu.xmpp.controller.user-controller
+        jiksnu.controller.user-controller
         jiksnu.xmpp.view
         [lazytest.describe :only (describe do-it testing for-any)]
         [lazytest.expect :only (expect)])
