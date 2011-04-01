@@ -32,9 +32,9 @@
                                     ["items" {"node" microblog-uri}
                                      ["item" {"id" (:_id activity)}]]])}
                 packet (make-packet packet-map)
-                request (make-request packet)
-                response (assoc (apply-filter #'show request)
-                           :serialization :xmpp)]
+                request (assoc (make-request packet)
+                          :serialization :xmpp)
+                response (apply-filter #'show request)]
             (expect (activity? response)))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))
