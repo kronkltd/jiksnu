@@ -1,4 +1,4 @@
-(ns jiksnu.http.view.webfinger-view
+(ns jiksnu.views.webfinger-views
   (:use ciste.core
         ciste.sections
         ciste.view

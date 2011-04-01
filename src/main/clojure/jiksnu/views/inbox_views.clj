@@ -1,4 +1,4 @@
-(ns jiksnu.http.view.inbox-view
+(ns jiksnu.views.inbox-views
   (:use ciste.core
         ciste.sections
         ciste.view

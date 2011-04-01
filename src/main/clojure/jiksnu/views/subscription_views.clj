@@ -1,4 +1,4 @@
-(ns jiksnu.http.view.subscription-view
+(ns jiksnu.views.subscription-views
   (:use [ciste.core :only (defview)]
         [ciste.html :only (dump dump*)]
         ciste.sections

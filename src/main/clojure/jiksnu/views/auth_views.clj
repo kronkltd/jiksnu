@@ -1,4 +1,4 @@
-(ns jiksnu.http.view.auth-view
+(ns jiksnu.views.auth-views
   (:use ciste.core
         ciste.html
         ciste.sections
