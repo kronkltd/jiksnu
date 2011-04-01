@@ -14,8 +14,7 @@
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
-           jiksnu.model.User)
-  )
+           jiksnu.model.User))
 
 (describe show ":xmpp"
   (testing "when the activity exists"
