@@ -1,7 +1,10 @@
-(ns jiksnu.http.view.activity-view
-  (:use ciste.core
+(ns jiksnu.view.activity-views
+  (:use clj-tigase.core
+        [ciste.config :only (config)]
+        ciste.core
         ciste.html
         ciste.sections
+        ciste.trigger
         ciste.view
         ciste.config
         ciste.trigger
@@ -9,17 +12,37 @@
         jiksnu.http.controller.activity-controller
         jiksnu.http.view
         jiksnu.model
+        jiksnu.namespace
         jiksnu.sections.activity-sections
         jiksnu.session
+        jiksnu.xmpp.controller.activity-controller
+        jiksnu.xmpp.element
+        jiksnu.xmpp.view
         jiksnu.view)
   (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.item :as model.item]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.http.view.user-view :as view.user]
             [karras.entity :as entity]
             [hiccup.form-helpers :as f])
   (:import jiksnu.model.Activity
-           jiksnu.model.User))
+           jiksnu.model.User)
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Index
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'index :xmpp
+  [request activities]
+  (result-packet request (index-section activities)))
+
+(defview #'index :json
+  [request activities]
+  (with-format :json
+    {:body (doall (map #(show-section %) activities))}))
 
 (defview #'index :html
   [request activities]
@@ -32,10 +55,25 @@
             (index-block activities)
             [:p "nothing here"])]})
 
-(defview #'index :json
-  [request activities]
-  (with-format :json
-    {:body (doall (map #(show-section %) activities))}))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Show
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'show :html
+  [request activity]
+  {:body (show-section-minimal activity)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; edit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'edit :html
+  [request activity]
+  {:body (edit-form activity)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; user-timeline
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'user-timeline :json
   [request [user activities]]
@@ -44,13 +82,28 @@
     (fn [activity] (show-section activity))
     activities)})
 
-(defview #'show :html
-  [request activity]
-  {:body (show-section-minimal activity)})
 
-(defview #'edit :html
+
+
+
+
+
+
+
+(defview #'remote-create :xmpp
+  [request _]
+  nil)
+
+(defview #'fetch-comments :xmpp
+  [request activities]
+  (result-packet request (index-section activities)))
+
+(defview #'fetch-comments-remote :xmpp
   [request activity]
-  {:body (edit-form activity)})
+  {:type :get
+   :body
+   (make-element (pubsub-items
+     (str microblog-uri ":replies:item=" (:id activity))))})
 
 (defview #'new-comment :html
   [request activity]

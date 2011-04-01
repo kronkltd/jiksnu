@@ -1,10 +1,10 @@
-(ns jiksnu.http.view.user-view
-  (:use ciste.core
+(ns jiksnu.views.user-views
+  (:use ciste.config
+        ciste.core
         ciste.html
         ciste.sections
         ciste.view
         [clj-gravatar.core :only (gravatar-image)]
-        ciste.config
         jiksnu.http.controller.user-controller
         jiksnu.http.view
         jiksnu.model
@@ -12,13 +12,19 @@
         jiksnu.session
         jiksnu.view
         plaza.rdf.core
-        plaza.rdf.vocabularies.foaf)
+        plaza.rdf.vocabularies.foaf
+        )
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+  (:import com.cliqset.abdera.ext.activity.object.Person
+           java.net.URI
+           javax.xml.namespace.QName
+           jiksnu.model.Activity
+           jiksnu.model.User
+           org.apache.abdera.model.Entry)
+  )
 
 (defsection uri [User]
   [user & options]
@@ -383,3 +389,34 @@
 (defview #'remote-profile :html
   [request user]
   {:body (show-section user)})
+
+
+(defn make-object
+  [namespace name prefix]
+  (com.cliqset.abdera.ext.activity.Object.
+   *abdera-factory* (QName. namespace name prefix)))
+
+(defn get-uri
+  [^User user]
+  (str (:_id user) "@" (:domain user)))
+
+(defn ^URI author-uri
+  [^Entry entry]
+  (let [author (.getAuthor entry)]
+    (let [uri (.getUri author)]
+      (URI. (.toString uri)))))
+
+(defsection show-section [User :atom]
+  [^User user & options]
+  (let [person (Person. (make-object atom-ns "author" ""))
+        author-uri (full-uri user)]
+    (.setObjectType person person-uri)
+    (.setId person (str "acct:" (get-uri user)))
+    (.setName person (:first-name user) (:last-name user))
+    (.setDisplayName person (:name user))
+    (.addSimpleExtension person atom-ns "email" ""
+                         (or (:email user) (get-uri user)))
+    (.addSimpleExtension person atom-ns "name" "" (:name user))
+    (.addAvatar person (:avatar-url user) "image/jpeg")
+    (.addSimpleExtension person atom-ns "uri" "" author-uri)
+    person))

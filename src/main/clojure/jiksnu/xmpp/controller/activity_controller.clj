@@ -27,10 +27,10 @@
         activity (atom.view.activity/to-activity entry)]
     (model.activity/create (make Activity activity))))
 
-(defn create
-  [{:keys [items] :as  request}]
-  (let [activities (map create-activity items)]
-    (first activities)))
+;; (defn create
+;;   [{:keys [items] :as  request}]
+;;   (let [activities (map create-activity items)]
+;;     (first activities)))
 
 (defn remote-create
   [request]

@@ -47,3 +47,20 @@
   [action request]
   (let [{{id "id"} :params} request]
     (action id)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Create
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deffilter #'create :xmpp
+  [action request]
+  (let [{:keys [items]} request
+        activities
+        (map
+         (fn [item]
+           (-> item children first
+               str atom.view/parse-xml-string
+               atom.view/to-activity
+               #(make Activity %)))
+         items)]
+    (action (first activities))))
