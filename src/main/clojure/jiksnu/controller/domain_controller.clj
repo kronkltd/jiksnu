@@ -1,5 +1,5 @@
 (ns jiksnu.controller.domain-controller
-  (:use jiksnu.http.controller.webfinger-controller)
+  (:use jiksnu.controller.webfinger-controller)
   (:require [jiksnu.model.domain :as model.domain]))
 
 (defn create

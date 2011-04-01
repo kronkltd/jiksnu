@@ -6,15 +6,13 @@
         ciste.view
         [clj-gravatar.core :only (gravatar-image)]
         clj-tigase.core
+        jiksnu.controller.user-controller
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         jiksnu.view
-        jiksnu.xmpp.controller.user-controller
-        jiksnu.xmpp.view
         plaza.rdf.core
-        plaza.rdf.vocabularies.foaf
-        )
+        plaza.rdf.vocabularies.foaf)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
@@ -25,8 +23,7 @@
            jiksnu.model.Activity
            jiksnu.model.User
            tigase.xml.Element
-           org.apache.abdera.model.Entry)
-  )
+           org.apache.abdera.model.Entry))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index

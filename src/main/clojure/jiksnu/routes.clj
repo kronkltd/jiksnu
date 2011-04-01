@@ -7,9 +7,10 @@
         jiksnu.namespace
         [ring.middleware.session :only (wrap-session)])
   (:require [ciste.middleware :as middleware]
+            clout.core
             [compojure.core :as compojure]
-            [jiksnu.view :as view]
-            (jiksnu.http.controller
+            [compojure.route :as route]
+            (jiksnu.controller
              [activity-controller :as activity]
              [auth-controller :as auth]
              [domain-controller :as domain]
@@ -17,23 +18,15 @@
              [subscription-controller :as subscription]
              [user-controller :as user]
              [webfinger-controller :as webfinger])
+            [jiksnu.view :as view]
             (jiksnu.view
              activity-view
              auth-view
              domain-view
              subscription-view
              user-view
-             webfinger-view)
-            [compojure.route :as route]
-            (jiksnu.xmpp.controller
-             [activity-controller :as activity]
-             [subscription-controller :as subscription]
-             [user-controller :as user])
-            [jiksnu.xmpp.view :as view]
-            compojure.core
-            clout.core)
-(:import tigase.xmpp.StanzaType)
-  )
+             webfinger-view))
+  (:import tigase.xmpp.StanzaType))
 
 (def #^:dynamic *standard-middleware*
   [#'wrap-log-request

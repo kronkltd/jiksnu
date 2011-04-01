@@ -1,19 +1,18 @@
-(ns jiksnu.xmpp.view.subscription-view-test
-  (:use clj-tigase.core
-        ciste.core
+(ns jiksnu.views.subscription-views-test
+  (:use ciste.core
         ciste.debug
         ciste.factory
+        clj-tigase.core
         jiksnu.core-test
         jiksnu.namespace
         jiksnu.view
+        jiksnu.views.subscription-views
         jiksnu.xmpp.element
-        jiksnu.xmpp.view
-        jiksnu.xmpp.view.subscription-view
         [lazytest.describe :only (describe do-it testing)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.xmpp.controller.subscription-controller :as
+            [jiksnu.controller.subscription-controller :as
              controller.subscription])
   (:import jiksnu.model.User))
 

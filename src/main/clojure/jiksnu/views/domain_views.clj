@@ -2,7 +2,7 @@
   (:use ciste.core
         ciste.sections
         ciste.view
-        jiksnu.http.controller.domain-controller
+        jiksnu.controller.domain-controller
         jiksnu.model
         jiksnu.session
         jiksnu.view)

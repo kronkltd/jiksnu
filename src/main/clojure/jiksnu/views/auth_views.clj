@@ -3,7 +3,7 @@
         ciste.html
         ciste.sections
         ciste.view
-        jiksnu.http.controller.auth-controller
+        jiksnu.controller.auth-controller
         jiksnu.model
         jiksnu.view)
   (:require [hiccup.form-helpers :as f])

@@ -4,12 +4,11 @@
         ciste.sections
         ciste.view
         clj-tigase.core
-        jiksnu.http.controller.subscription-controller
+        jiksnu.controller.subscription-controller
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         jiksnu.view
-        jiksnu.xmpp.controller.subscription-controller
         jiksnu.xmpp.view)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.views.user-views :as view.user]

@@ -5,7 +5,7 @@
         hiccup.core
         ciste.config
         jiksnu.namespace
-        jiksnu.http.controller.webfinger-controller))
+        jiksnu.controller.webfinger-controller))
 
 (defview #'host-meta :html
   [request _]
