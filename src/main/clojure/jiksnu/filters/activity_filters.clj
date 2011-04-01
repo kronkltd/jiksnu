@@ -52,6 +52,11 @@
 ;; Create
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(deffilter #'create :http
+  [action request]
+  (let [{params :params} request]
+    (action params)))
+
 (deffilter #'create :xmpp
   [action request]
   (let [{:keys [items]} request
@@ -60,7 +65,15 @@
          (fn [item]
            (-> item children first
                str jiksnu.view/parse-xml-string
-               jiksnu.view/to-activity
-               #(make Activity %)))
+               jiksnu.view/to-activity))
          items)]
     (action (first activities))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; update
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deffilter #'update :http
+  [action request]
+  (let [{params :params} request]
+    (action params)))

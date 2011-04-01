@@ -34,42 +34,25 @@
   [id]
   (model.activity/delete id))
 
+(defaction create
+  [activity]
+  (model.activity/create
+   (make Activity activity)))
+
+(defaction update
+  [activity]
+  (let [opts
+        (merge activity
+               (if (= (get (:params request) "public") "public")
+                 {:public true}))]
+    (model.activity/update opts)))
 
 ;; http
 
 
-(defn index
-  [request]
-  (model.activity/index))
-
-(defn create
-  [{{id "id" :as params} :params :as request}]
-  (let [a (make Activity params)]
-    (model.activity/create a)))
-
 (defn new
   [request]
   (Activity.))
-
-(defn show
-  [{{id "id"} :params
-    :as request}]
-  (model.activity/show id))
-
-(defn update
-  [request]
-  (if-let [a (show request)]
-    (let [opts
-          (merge a
-                 (if (= (get (:params request) "public") "public")
-                   {:public true}))]
-      (model.activity/update opts))))
-
-(defaction delete
-  [{{id "id"} :params
-    :as request}]
-  (model.activity/delete id)
-  true)
 
 (defaction edit
   [request]
@@ -110,7 +93,7 @@
 
 ;;;; xmpp
 
-(defn index
+(defn user-timeline
   [request]
   (let [to (model.user/get-id (:to request))
         user (model.user/show to)]
