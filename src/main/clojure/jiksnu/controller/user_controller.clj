@@ -6,8 +6,8 @@
         jiksnu.model
         jiksnu.namespace
         [jiksnu.session :only (current-user)]
-        jiksnu.xmpp.element
-        jiksnu.xmpp.view)
+        jiksnu.view
+        jiksnu.xmpp.element)
   (:require [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
 

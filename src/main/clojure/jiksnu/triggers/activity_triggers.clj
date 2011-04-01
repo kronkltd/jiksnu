@@ -7,7 +7,7 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.xmpp.view)
+        jiksnu.view)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]

@@ -4,8 +4,8 @@
         jiksnu.model
         jiksnu.model.subscription
         jiksnu.session
+        jiksnu.view
         jiksnu.xmpp.plugin
-        jiksnu.xmpp.view
         karras.core
         [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])

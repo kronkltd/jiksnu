@@ -4,7 +4,7 @@
         jiksnu.model
         jiksnu.session
         jiksnu.controller.user-controller
-        jiksnu.xmpp.view
+        jiksnu.view
         [lazytest.describe :only (describe do-it testing for-any)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]

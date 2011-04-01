@@ -8,8 +8,7 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.view
-        jiksnu.xmpp.view)
+        jiksnu.view)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.views.user-views :as view.user]
             [jiksnu.model.subscription :as model.subscription]

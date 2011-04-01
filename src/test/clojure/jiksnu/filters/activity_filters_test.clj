@@ -7,8 +7,8 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
+        jiksnu.view
         jiksnu.xmpp.element
-        jiksnu.xmpp.view
         [lazytest.describe :only (describe testing do-it for-any)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]

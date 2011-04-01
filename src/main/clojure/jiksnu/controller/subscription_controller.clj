@@ -71,9 +71,7 @@
   (if-let [actor (current-user-id)]
     (if-let [{{user-id "subscribeto"} :params} request]
       (if-let [user (model.user/fetch-by-id user-id)]
-        (let [subscription (model.subscription/subscribe actor (:_id user))]
-          (xmpp.view.subscription/notify-subscribe request subscription)
-          subscription)))))
+        (model.subscription/subscribe actor (:_id user))))))
 
 (defn unsubscribe
   [request]
@@ -82,7 +80,6 @@
       (let [subscription (model.subscription/find-record
                           {:from actor :to (make-id user)})]
         (model.subscription/delete subscription)
-        (xmpp.view.subscription/notify-unsubscribe request subscription)
         true))))
 
 (defn delete

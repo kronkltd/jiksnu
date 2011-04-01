@@ -1,12 +1,12 @@
 (ns jiksnu.xmpp.plugin
-  (:use jiksnu.model
-        jiksnu.namespace
-        jiksnu.xmpp
-        jiksnu.xmpp.routes
-        jiksnu.xmpp.view
-        ciste.core
+  (:use ciste.core
         clojure.pprint
-        clojure.contrib.logging)
+        clojure.contrib.logging
+        jiksnu.model
+        jiksnu.namespace
+        jiksnu.routes
+        jiksnu.view
+        jiksnu.xmpp)
   (:import java.util.Queue
            tigase.server.Packet
            tigase.xmpp.JID

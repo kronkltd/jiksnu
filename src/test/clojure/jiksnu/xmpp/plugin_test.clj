@@ -1,12 +1,12 @@
 (ns jiksnu.xmpp.plugin-test
   (:use jiksnu.model
-        jiksnu.xmpp.routes
+        jiksnu.view
+        jiksnu.routes
         jiksnu.xmpp.plugin
-        jiksnu.xmpp.view
         [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
   (:require [karras.core :as karras]
-            jiksnu.xmpp.view.activity-view))
+            jiksnu.views.activity-views))
 
 (describe -id)
 

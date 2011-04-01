@@ -2,10 +2,10 @@
   (:use clj-tigase.core
         ciste.factory
         ciste.view
-        jiksnu.triggers.activity-triggers
-        jiksnu.xmpp.view.activity-view
         jiksnu.model
         jiksnu.session
+        jiksnu.triggers.activity-triggers
+        jiksnu.views.activity-views
         [lazytest.describe :only (describe testing do-it for-any)]
         [lazytest.expect :only (expect)])
   (require [jiksnu.model.activity :as model.activity]
