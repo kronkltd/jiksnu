@@ -37,14 +37,6 @@
            org.apache.abdera.model.Element
            org.apache.abdera.model.Entry))
 
-(defn notify-commented
-  [request activity]
-  (let [parent (model.activity/show (:parent activity))]
-    (model.activity/add-comment parent activity)))
-
-(add-trigger! #'create #'notify-commented)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Index
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -136,10 +128,6 @@
   {:status 303
    :template false
    :headers {"Location" "/"}})
-
-
-
-
 
 
 

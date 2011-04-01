@@ -13,6 +13,7 @@
              [like :as model.like]
              [subscription :as model.subscription]
              [user :as model.user])
+            [jiksnu.sections.activity-sections :as sections.activity]
             jiksnu.view)
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
@@ -103,7 +104,7 @@
   [item]
   (let [entry-string (str (first (children item)))
         entry (jiksnu.view/parse-xml-string entry-string)
-        activity (jiksnu.view/to-activity entry)]
+        activity (sections.activity/to-activity entry)]
     (model.activity/create (make Activity activity))))
 
 ;; (defn create
@@ -117,7 +118,7 @@
     (let [packet (:packet request)
           items (children packet "/message/event/items/item")]
       (doseq [entry items]
-        (let [activity (jiksnu.view/to-activity
+        (let [activity (sections.activity/to-activity
                         (jiksnu.view/parse-xml-string (str entry)))]
           (model.activity/create-raw activity)))
       true)))

@@ -22,14 +22,6 @@
                                 "/main/xrd?uri={uri}")}
         ["Title" {} "Resource Descriptor"]]])}))
 
-(defn salmon-link
-  [user]
-  (str
-   "http://"
-   (:domain (config))
-   "/main/salmon/user/"
-   (:_id user)))
-
 (defview #'user-meta :html
   [request user]
   {:template false
