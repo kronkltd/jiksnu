@@ -2,8 +2,7 @@
   (:use ciste.core
         jiksnu.model)
   (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  )
+            [jiksnu.model.user :as model.user]))
 
 (defaction index
   [& options]
