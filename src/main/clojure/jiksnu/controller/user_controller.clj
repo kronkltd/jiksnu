@@ -29,10 +29,31 @@
   [id]
   (model.user/delete id))
 
+(defaction edit
+  [& _])
+
+(defaction fetch-remote
+  [& _])
+
 (defaction index
   [options]
   (model.user/index))
 
+(defaction profile
+  [& _])
+
+(defaction register
+  [& _])
+
+(defaction remote-create
+  [& _])
+
+(defaction remote-profile
+  [& _])
+
 (defaction show
   [id]
   (model.user/show id))
+
+(defaction update
+  [& _])
