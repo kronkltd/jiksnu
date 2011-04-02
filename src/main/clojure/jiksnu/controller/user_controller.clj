@@ -1,5 +1,6 @@
 (ns jiksnu.controller.user-controller
   (:use ciste.config
+        ciste.core
         ciste.debug
         clj-tigase.core
         [clojure.contrib.logging :only (error)]
@@ -10,11 +11,6 @@
         jiksnu.xmpp.element)
   (:require [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
-
-(defaction show
-  [id]
-  (model.user/show id)
-  )
 
 (defaction create
   [options]
@@ -37,20 +33,6 @@
   [options]
   (model.user/index))
 
-
-
-;; xmpp
-
-
-
-
-
-(deffilter inbox :xmpp
-  [request]
-  ;; TODO: limit this to the inbox of the user
-  (model.user/inbox))
-
-
-
-
-
+(defaction show
+  [id]
+  (model.user/show id))

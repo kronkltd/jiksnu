@@ -31,19 +31,24 @@
   [id]
   (model.activity/fetch-by-id id))
 
-(defaction fetch-comments)
+(defaction fetch-comments
+  [& _])
 
-(defaction fetch-comments-remote)
+(defaction fetch-comments-remote
+  [& _])
 
-(defaction friends-timeline)
+(defaction friends-timeline
+  [& _])
 
-(defaction inbox)
+(defaction inbox
+  [& _])
 
 (defaction index
   [& options]
   (model.activity/index))
 
-(defaction like-activity)
+(defaction like-activity
+  [& _])
 
 (defaction new
   [action request]
