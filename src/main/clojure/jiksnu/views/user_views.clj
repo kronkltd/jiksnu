@@ -4,11 +4,11 @@
         ciste.html
         ciste.sections
         ciste.view
-        [clj-gravatar.core :only (gravatar-image)]
         clj-tigase.core
         jiksnu.controller.user-controller
         jiksnu.model
         jiksnu.namespace
+        jiksnu.sections.user-sections
         jiksnu.session
         jiksnu.view
         plaza.rdf.core
@@ -21,7 +21,6 @@
            java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
-           jiksnu.model.User
            tigase.xml.Element
            org.apache.abdera.model.Entry))
 

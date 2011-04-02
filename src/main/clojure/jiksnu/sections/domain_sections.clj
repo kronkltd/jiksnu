@@ -1,4 +1,10 @@
-(ns jiksnu.sessions.domain-sections)
+(ns jiksnu.sections.domain-sections
+  (:use ciste.sections
+        ciste.view
+        )
+  (:require [hiccup.form-helpers :as f])
+  (:import jiksnu.model.Domain)
+  )
 
 (defsection uri [Domain :html]
   [domain & options]

@@ -1,21 +1,26 @@
-(ns jiksnu.views.activity-views-test
-  (:use ciste.core
-        ciste.factory
-        ciste.sections
-        ciste.view
-        clj-tigase.core
-        jiksnu.config
-        jiksnu.model
-        jiksnu.session
-        jiksnu.view
-        jiksnu.views.activity-views
-        [lazytest.describe :only (describe testing do-it)]
-        [lazytest.expect :only (expect)])
-  (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import org.apache.abdera.model.Entry
-           jiksnu.model.Activity
-           jiksnu.model.User))
+(describe new-entry)
+
+(describe add-author)
+
+(describe add-authors)
+
+(describe to-activity
+  (do-it "should return a map"
+    (with-serialization :http
+      (with-format :atom
+        (let [activity (factory Activity)
+              entry (show-section activity)
+              response (to-activity entry)]
+          (expect (map? response)))))))
+
+(describe to-json
+  (do-it "should not be nil"
+    (with-serialization :http
+      (with-format :atom
+        (let [activity (factory Activity)
+              entry (show-section activity)
+              response (to-json entry)]
+          (expect (not (nil? response))))))))
 
 (describe has-author?)
 
@@ -32,31 +37,7 @@
 ;;       (let [response (parse-json-element (extension-with-children-map))]
 ;;         (expect (seq (.getElements response)))))))
 
-(describe new-entry)
-
 (describe add-extensions)
-
-(describe add-author)
-
-(describe add-authors)
-
-(describe to-json
-  (do-it "should not be nil"
-    (with-serialization :http
-      (with-format :atom
-        (let [activity (factory Activity)
-              entry (show-section activity)
-              response (to-json entry)]
-          (expect (not (nil? response))))))))
-
-(describe to-activity
-  (do-it "should return a map"
-    (with-serialization :http
-      (with-format :atom
-        (let [activity (factory Activity)
-              entry (show-section activity)
-              response (to-activity entry)]
-          (expect (map? response)))))))
 
 (describe show-section "Activity :atom"
   (do-it "should return an abdera entry"
@@ -118,16 +99,6 @@
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
             (expect (vector? (index-block-minimal [activity])))))))))
-
-(describe apply-view "#'index :atom"
-  (do-it "should be a map"
-    (with-serialization :http
-      (with-format :atom
-       (with-user (model.user/create (factory User))
-         (let [activity (model.activity/create (factory Activity))
-               response (apply-view {:action #'index
-                                     :format :atom} [activity])]
-           (expect (map? response))))))))
 
 (describe show-section "Activity :xmpp :xmpp"
   (do-it "should return an element"

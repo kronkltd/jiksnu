@@ -2,7 +2,7 @@
   (:use ciste.config
         ciste.debug
         clj-tigase.core
-        clojure.contrib.logging
+        [clojure.contrib.logging :only (error)]
         jiksnu.model
         jiksnu.namespace
         [jiksnu.session :only (current-user)]

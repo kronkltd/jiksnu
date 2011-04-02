@@ -11,6 +11,7 @@
         ciste.core
         jiksnu.model
         jiksnu.namespace
+        jiksnu.sections.auth-sections
         jiksnu.session
         jiksnu.xmpp
         jiksnu.xmpp.element)
@@ -42,30 +43,6 @@
            [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]])))
        (list
         [:li [:a {:href "/main/register"} "Register"]]))]]))
-
-(defn login-uri
-  []
-  "/main/login")
-
-(defn logout-uri
-  []
-  "/main/logout")
-
-(defn logout-form
-  []
-  [:div
-   (f/form-to
-    [:post (logout-uri)]
-    [:p "Logged in as:"
-     (link-to (current-user))
-     (f/submit-button "Logout")])])
-
-(defn login-section
-  []
-  [:div
-   (if-let [user (current-user)]
-     (logout-form)
-     [:a {:href "/main/login"} "Log in"])])
 
 (defn devel-environment-section
   []

@@ -5,6 +5,7 @@
         ciste.view
         jiksnu.controller.auth-controller
         jiksnu.model
+        jiksnu.sections.auth-sections
         jiksnu.view)
   (:require [hiccup.form-helpers :as f])
   (:import jiksnu.model.User))

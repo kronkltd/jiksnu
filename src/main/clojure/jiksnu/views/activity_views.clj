@@ -1,4 +1,4 @@
-(ns jiksnu.view.activity-views
+(ns jiksnu.views.activity-views
   (:use clj-tigase.core
         [ciste.config :only (config)]
         ciste.core
@@ -9,7 +9,7 @@
         ciste.config
         ciste.trigger
         ciste.debug
-        clojure.contrib.logging
+        ;; clojure.contrib.logging
         jiksnu.controller.activity-controller
         jiksnu.model
         jiksnu.namespace

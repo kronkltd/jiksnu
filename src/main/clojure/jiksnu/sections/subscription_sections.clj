@@ -1,3 +1,16 @@
+(ns jiksnu.sections.subscription-sections
+  (:use ciste.html
+        ciste.sections
+        ciste.view
+        clj-tigase.core
+        jiksnu.model
+        jiksnu.namespace
+        jiksnu.view)
+  (:require [hiccup.form-helpers :as f]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Subscription))
+
 (defsection uri [Subscription]
   [subscription & options]
   (str "/subscriptions/" (:_id subscription)))

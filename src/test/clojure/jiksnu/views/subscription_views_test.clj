@@ -5,6 +5,7 @@
         clj-tigase.core
         jiksnu.core-test
         jiksnu.namespace
+        jiksnu.sections.subscription-sections
         jiksnu.view
         jiksnu.views.subscription-views
         jiksnu.xmpp.element

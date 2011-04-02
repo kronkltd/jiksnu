@@ -1,4 +1,44 @@
-(ns jiksnu.sections.user-sections)
+(ns jiksnu.sections.user-sections
+  (:use ciste.config
+        ciste.html
+        ciste.sections
+        ciste.view
+        [clj-gravatar.core :only (gravatar-image)]
+        clj-tigase.core
+        jiksnu.model
+        jiksnu.namespace
+        jiksnu.session
+        jiksnu.view
+        plaza.rdf.core
+        plaza.rdf.vocabularies.foaf)
+  (:require [hiccup.form-helpers :as f]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
+  (:import com.cliqset.abdera.ext.activity.object.Person
+           java.net.URI
+           javax.xml.namespace.QName
+           jiksnu.model.Activity
+           jiksnu.model.User
+           org.apache.abdera.model.Entry))
+
+(defsection uri [User]
+  [user & options]
+  (if (= (:domain user) (:domain (config)))
+    (str "/" (:username user))
+    (str "/users/" (:_id user))))
+
+(defsection title [User]
+  [user & options]
+  (or (:display-name user)
+      (:first-name user)
+      (str (:username user) "@" (:domain user))))
+
+(defsection link-to [User :html]
+  [user & options]
+  [:a.url {:href (uri user)
+           :rel "contact"}
+   [:span.fn.n (title user)]])
 
 (defn make-object
   [namespace name prefix]
@@ -240,24 +280,6 @@
 ;;   (make-element
 ;;    (:key property) {}
 ;;    [(:type property) {} (:value property)]))
-
-(defsection uri [User]
-  [user & options]
-  (if (= (:domain user) (:domain (config)))
-    (str "/" (:username user))
-    (str "/users/" (:_id user))))
-
-(defsection title [User]
-  [user & options]
-  (or (:display-name user)
-      (:first-name user)
-      (str (:username user) "@" (:domain user))))
-
-(defsection link-to [User :html]
-  [user & options]
-  [:a.url {:href (uri user)
-           :rel "contact"}
-   [:span.fn.n (title user)]])
 
 (defsection show-section-minimal [User :html]
   [user & options]

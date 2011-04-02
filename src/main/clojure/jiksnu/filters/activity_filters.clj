@@ -1,6 +1,8 @@
 (ns jiksnu.filters.activity-filters
   (:use ciste.filters
-        jiksnu.controller.activity-controller))
+        clj-tigase.core
+        jiksnu.controller.activity-controller
+        jiksnu.sections.activity-sections))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index
@@ -65,7 +67,7 @@
          (fn [item]
            (-> item children first
                str jiksnu.view/parse-xml-string
-               jiksnu.view/to-activity))
+               to-activity))
          items)]
     (action (first activities))))
 

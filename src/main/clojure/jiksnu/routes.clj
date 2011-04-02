@@ -19,13 +19,13 @@
              [user-controller :as user]
              [webfinger-controller :as webfinger])
             [jiksnu.view :as view]
-            (jiksnu.view
-             activity-view
-             auth-view
-             domain-view
-             subscription-view
-             user-view
-             webfinger-view))
+            (jiksnu.views
+             activity-views
+             auth-views
+             domain-views
+             subscription-views
+             user-views
+             webfinger-views))
   (:import tigase.xmpp.StanzaType))
 
 (def #^:dynamic *standard-middleware*

@@ -1,4 +1,16 @@
-(ns jiksnu.sections.auth-sections)
+(ns jiksnu.sections.auth-sections
+  (:use ciste.sections
+        ciste.view
+        jiksnu.session)
+  (:require [hiccup.form-helpers :as f]))
+
+(defn login-uri
+  []
+  "/main/login")
+
+(defn logout-uri
+  []
+  "/main/logout")
 
 (defn login-form
   []
@@ -27,3 +39,18 @@
         (f/text-field :webid)]
        [:li (f/submit-button "Login")]]])]])
 
+(defn logout-form
+  []
+  [:div
+   (f/form-to
+    [:post (logout-uri)]
+    [:p "Logged in as:"
+     (link-to (current-user))
+     (f/submit-button "Logout")])])
+
+(defn login-section
+  []
+  [:div
+   (if-let [user (current-user)]
+     (logout-form)
+     [:a {:href "/main/login"} "Log in"])])

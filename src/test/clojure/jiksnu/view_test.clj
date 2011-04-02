@@ -1,9 +1,8 @@
-(ns jiksnu.atom.view-test
+(ns jiksnu.view-test
   (:use clj-tigase.core
         ciste.factory
         ciste.sections
         ciste.view
-        jiksnu.atom.view
         jiksnu.core-test
         jiksnu.file
         jiksnu.model
@@ -11,16 +10,14 @@
         jiksnu.namespace
         jiksnu.view
         jiksnu.xmpp.element
-        jiksnu.xmpp.view
         [lazytest.describe :only (describe testing do-it)]
         [lazytest.expect :only (expect)])
-    (:require [jiksnu.atom.view.activity-view :as atom.view.activity]
-            [jiksnu.file :as file]
+  (:require [jiksnu.file :as file]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
-    (:import jiksnu.model.Activity
-             jiksnu.model.User
-             org.apache.abdera.model.Entry))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User
+           org.apache.abdera.model.Entry))
 
 (describe parse-stream)
 
