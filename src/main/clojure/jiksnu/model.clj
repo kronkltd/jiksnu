@@ -1,7 +1,8 @@
 (ns jiksnu.model
-  (:use [ciste.config :only (config)]
+  (:use [ciste.config :only (config environment)]
         ciste.factory
         clojure.contrib.json
+        jiksnu.config
         jiksnu.namespace
         karras.entity
         plaza.rdf.core
@@ -41,15 +42,12 @@
 
 (defn mongo-database*
   []
-  (println "initializing connection")
-  (karras/mongo-db (-> (config) :database :name))
-  )
+  (karras/mongo-db (-> (config) :database :name)))
 
 (defn mongo-database
   []
   (or @*mongo-database*
-      (mongo-database*)
-      ))
+      (mongo-database*)))
 
 (defembedded Person
   [:name])
