@@ -58,11 +58,6 @@
   [id]
   (model.activity/show id))
 
-(defaction user-timeline
-  [id]
-  (let [user (model.user/fetch-by-id id)]
-    [user (model.activity/index :authors (make-id id))]))
-
 (defaction update
   [activity]
   (let [opts
@@ -70,3 +65,9 @@
                (if (= (get activity "public") "public")
                  {:public true}))]
     (model.activity/update opts)))
+
+(defaction user-timeline
+  [id]
+  (let [user (model.user/fetch-by-id id)]
+    [user (model.activity/index :authors (make-id id))]))
+

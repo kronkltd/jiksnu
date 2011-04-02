@@ -29,7 +29,62 @@
            jiksnu.model.User))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Index
+;; create
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'create :html
+  [request activity]
+  (let [actor (current-user)]
+    {:status 303
+     :template false
+     :headers {"Location" (uri actor)}}))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; delete
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'delete :html
+  [request activity]
+  {:status 303
+   :template false
+   :headers {"Location" "/"}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; edit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'edit :html
+  [request activity]
+  {:body (edit-form activity)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fetch-comments
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'fetch-comments :html
+  [request activity]
+  {:status 303
+   :template false
+   :flash "comments are being fetched"
+   :headers {"Location" (uri activity)}})
+
+(defview #'fetch-comments :xmpp
+  [request activities]
+  (result-packet request (index-section activities)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fetch-comments-remote
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'fetch-comments-remote :xmpp
+  [request activity]
+  {:type :get
+   :body
+   (make-element (pubsub-items
+     (str microblog-uri ":replies:item=" (:id activity))))})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'index :xmpp
@@ -73,7 +128,28 @@
             :entries activities})}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Show
+;; new-comment
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'new-comment :html
+  [request activity]
+  {:body
+   [:div
+    (show-section-minimal activity)
+    (if-let [user (current-user)]
+      (activity-form {} "/notice/new" activity)
+      [:p "You must be authenticated to post comments"])]})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; remote-create
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'remote-create :xmpp
+  [request _]
+  nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'show :html
@@ -81,12 +157,15 @@
   {:body (show-section-minimal activity)})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit
+;; update
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defview #'edit :html
+(defview #'update :html
   [request activity]
-  {:body (edit-form activity)})
+  (let [actor (current-user)]
+    {:status 303
+     :template false
+     :headers {"Location" (uri actor)}}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; user-timeline
@@ -111,59 +190,3 @@
                     :type "text/html"}]
            :updated (:updated (first activities))
            :entries activities})})
-
-
-
-(defview #'delete :html
-  [request activity]
-  {:status 303
-   :template false
-   :headers {"Location" "/"}})
-
-
-
-(defview #'remote-create :xmpp
-  [request _]
-  nil)
-
-(defview #'fetch-comments :xmpp
-  [request activities]
-  (result-packet request (index-section activities)))
-
-(defview #'fetch-comments-remote :xmpp
-  [request activity]
-  {:type :get
-   :body
-   (make-element (pubsub-items
-     (str microblog-uri ":replies:item=" (:id activity))))})
-
-(defview #'new-comment :html
-  [request activity]
-  {:body
-   [:div
-    (show-section-minimal activity)
-    (if-let [user (current-user)]
-      (activity-form {} "/notice/new" activity)
-      [:p "You must be authenticated to post comments"])]})
-
-(defview #'create :html
-  [request activity]
-  (let [actor (current-user)]
-    {:status 303
-     :template false
-     :headers {"Location" (uri actor)}}))
-
-(defview #'update :html
-  [request activity]
-  (let [actor (current-user)]
-    {:status 303
-     :template false
-     :headers {"Location" (uri actor)}}))
-
-(defview #'fetch-comments :html
-  [request activity]
-  {:status 303
-   :template false
-   :flash "comments are being fetched"
-   :headers {"Location" (uri activity)}})
-
