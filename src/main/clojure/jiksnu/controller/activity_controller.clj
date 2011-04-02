@@ -18,9 +18,36 @@
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
+(defaction create
+  [activity]
+  (model.activity/create
+   (make Activity activity)))
+
+(defaction delete
+  [id]
+  (model.activity/delete id))
+
+(defaction edit
+  [id]
+  (model.activity/fetch-by-id id))
+
+(defaction fetch-comments)
+
+(defaction fetch-comments-remote)
+
+(defaction friends-timeline)
+
+(defaction inbox)
+
 (defaction index
   [& options]
   (model.activity/index))
+
+(defaction like-activity)
+
+(defaction new
+  [action request]
+  (Activity.))
 
 (defaction show
   [id]
@@ -31,15 +58,6 @@
   (let [user (model.user/fetch-by-id id)]
     [user (model.activity/index :authors (make-id id))]))
 
-(defaction delete
-  [id]
-  (model.activity/delete id))
-
-(defaction create
-  [activity]
-  (model.activity/create
-   (make Activity activity)))
-
 (defaction update
   [activity]
   (let [opts
@@ -47,91 +65,3 @@
                (if (= (get activity "public") "public")
                  {:public true}))]
     (model.activity/update opts)))
-
-;; http
-
-
-(defn new
-  [request]
-  (Activity.))
-
-(defaction edit
-  [request]
-  (show request))
-
-(defaction new-comment
-  [{{id "id"} :params}]
-  (model.activity/show id))
-
-(defn user-timeline
-  [{{id "id"} :params
-    :as request}]
-  (let [user (model.user/fetch-by-id id)]
-    [user (model.activity/index :authors (make-id id))]))
-
-(defn friends-timeline
-  [{{id "id"} :params
-    :as request}]
-  (model.activity/index :authors id))
-
-(defn inbox
-  [request]
-  [])
-
-(defn fetch-comments
-  [{{id "id"} :params :as request}]
-  (if-let [activity (model.activity/show id)]
-    (if-let [author (model.user/fetch-by-id (first (:authors activity)))]
-      activity)))
-
-(defn like-activity
-  [request]
-  (let [{{id "id"} :params} request]
-    (if-let [user (current-user)]
-      (if-let [activity (model.activity/fetch-by-id id)]
-        (model.like/find-or-create activity user)
-        true))))
-
-;;;; xmpp
-
-(defn user-timeline
-  [request]
-  (let [to (model.user/get-id (:to request))
-        user (model.user/show to)]
-    (model.activity/find-by-user user)))
-
-(defn create-activity
-  [item]
-  (let [entry-string (str (first (children item)))
-        entry (jiksnu.view/parse-xml-string entry-string)
-        activity (sections.activity/to-activity entry)]
-    (model.activity/create (make Activity activity))))
-
-;; (defn create
-;;   [{:keys [items] :as  request}]
-;;   (let [activities (map create-activity items)]
-;;     (first activities)))
-
-(defn remote-create
-  [request]
-  (if (not= (:to request) (:from request))
-    (let [packet (:packet request)
-          items (children packet "/message/event/items/item")]
-      (doseq [entry items]
-        (let [activity (sections.activity/to-activity
-                        (jiksnu.view/parse-xml-string (str entry)))]
-          (model.activity/create-raw activity)))
-      true)))
-
-(defn fetch-comments
-  [{{id "id"} :params :as request}]
-  (if-let [activity (model.activity/show id)]
-    (map model.activity/show (:comments activity))))
-
-(defn fetch-comments-remote
-  [request]
-  
-  )
-
-
-
