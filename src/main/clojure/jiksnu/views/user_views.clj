@@ -24,14 +24,6 @@
            tigase.xml.Element
            org.apache.abdera.model.Entry))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'index :html
-  [request users]
-  {:body (index-section users)})
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; create
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -41,6 +33,90 @@
   {:status 303,
    :template false
    :headers {"Location" (uri user)}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; delete
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'delete :html
+  [request _]
+  {:status 303
+   :template false
+   :headers {"Location" "/admin/users"}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; edit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'edit :html
+  [request user]
+  {:body (edit-form user)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fetch-remote
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'fetch-remote :xmpp
+  [request user]
+  (vcard-request request user))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'index :html
+  [request users]
+  {:body (index-section users)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; profile
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'profile :html
+  [request user]
+  {:body (edit-form user)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; register
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'register :html
+  [request _]
+  {:body
+   [:div
+    (if (:registration-enabled (config))
+      (list
+       [:h1 "Register"]
+       (f/form-to
+        [:post "/main/register"]
+        [:p
+         (f/label :username "Username:")
+         (f/text-field :username)]
+        [:p (f/label :password "Password:")
+         (f/password-field :password)]
+        [:p (f/label :confirm_password "Confirm Password")
+         (f/password-field :confirm_password)]
+        [:p (f/submit-button "Register")]))
+      [:div "Registration is disabled at this time"])]})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; remote-create
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'remote-create :xmpp
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :result}))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; remote-profile
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'remote-profile :html
+  [request user]
+  {:body (show-section user)})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show
@@ -80,68 +156,12 @@
      :from to
      :to from}))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'edit :html
-  [request user]
-  {:body (edit-form user)})
-
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; update
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'update :html
   [request user]
   {:status 302
    :template false
    :headers {"Location" (uri user)}})
-
-(defview #'delete :html
-  [request _]
-  {:status 303
-   :template false
-   :headers {"Location" "/admin/users"}})
-
-(defview #'register :html
-  [request _]
-  {:body
-   [:div
-    (if (:registration-enabled (config))
-      (list
-       [:h1 "Register"]
-       (f/form-to
-        [:post "/main/register"]
-        [:p
-         (f/label :username "Username:")
-         (f/text-field :username)]
-        [:p (f/label :password "Password:")
-         (f/password-field :password)]
-        [:p (f/label :confirm_password "Confirm Password")
-         (f/password-field :confirm_password)]
-        [:p (f/submit-button "Register")]))
-      [:div "Registration is disabled at this time"])]})
-
-(defview #'profile :html
-  [request user]
-  {:body (edit-form user)})
-
-(defview #'remote-profile :html
-  [request user]
-  {:body (show-section user)})
-
-
-(defview #'fetch-remote :xmpp
-  [request user]
-  (vcard-request request user))
-
-(defview #'remote-create :xmpp
-  [request user]
-  (let [{:keys [to from]} request]
-    {:from to
-     :to from
-     :type :result}))
-
-
-
-

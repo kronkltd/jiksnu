@@ -16,7 +16,7 @@
   [options]
   (let [{username "username"
          password "password"
-         confirm-password "confirm_password"}]
+         confirm-password "confirm_password"} options]
     (if (and username password confirm-password)
       (if (= password confirm-password)
         (do
