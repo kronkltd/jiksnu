@@ -12,20 +12,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(describe index)
-
-(describe show)
-
-(describe delete)
-
-(describe create)
-
-(describe update)
-
-(describe edit)
-
-(describe profile)
-
 (describe rule-element?)
 
 (describe rule-map)
@@ -47,12 +33,7 @@
         (expect (instance? User response))
         (expect (= response user))))))
 
-#_(describe create
-  (do-it "should not be nil"
-    (let [packet nil
-          request (make-request packet)
-          response (create request)]
-      (expect (not (nil? response))))))
+(describe create)
 
 (describe delete)
 
@@ -73,3 +54,31 @@
             response (inbox request)]
         (expect (seq response))
         (expect (every? #(instance? Activity %) response))))))
+
+(describe fetch-remote)
+
+(describe remote-create)
+
+
+
+
+
+(describe index)
+
+(describe show)
+
+(describe update)
+
+(describe edit)
+
+(describe profile)
+
+#_(describe create
+  (do-it "should not be nil"
+    (let [packet nil
+          request (make-request packet)
+          response (create request)]
+      (expect (not (nil? response))))))
+
+(describe delete)
+
