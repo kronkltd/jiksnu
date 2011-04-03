@@ -48,7 +48,7 @@
                               :type :set
                               :body element})
                      request (make-request packet)
-                     response (create request)]
+                     response (create activity)]
                  (expect (activity? response)))))))))))
 
 (describe new)
