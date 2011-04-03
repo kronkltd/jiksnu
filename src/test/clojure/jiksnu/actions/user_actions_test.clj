@@ -12,24 +12,18 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(describe rule-element?)
-
-(describe rule-map)
-
-(describe property-map)
-
-(describe show
-  (testing "when the user exists"
-    (do-it "should return that user"
-      (model.user/drop!)
-      (let [user (model.user/create (factory User))
-            response (show (:_id user))]
-        (expect (instance? User response))
-        (expect (= response user))))))
-
-(describe create)
+#_(describe create
+  (do-it "should not be nil"
+    (let [packet nil
+          request (make-request packet)
+          response (create request)]
+      (expect (not (nil? response))))))
 
 (describe delete)
+
+(describe edit)
+
+(describe fetch-remote)
 
 #_(describe inbox
   (testing "when there are no activities"
@@ -49,26 +43,31 @@
         (expect (seq response))
         (expect (every? #(instance? Activity %) response))))))
 
-(describe fetch-remote)
-
-(describe remote-create)
-
 (describe index)
-
-(describe show)
-
-(describe update)
-
-(describe edit)
 
 (describe profile)
 
-#_(describe create
-  (do-it "should not be nil"
-    (let [packet nil
-          request (make-request packet)
-          response (create request)]
-      (expect (not (nil? response))))))
+(describe register)
 
-(describe delete)
+(describe remote-create)
 
+(describe remote-profile)
+
+(describe show
+  (testing "when the user exists"
+    (do-it "should return that user"
+      (model.user/drop!)
+      (let [user (model.user/create (factory User))
+            response (show (:_id user))]
+        (expect (instance? User response))
+        (expect (= response user))))))
+
+(describe update)
+
+
+
+(describe rule-element?)
+
+(describe rule-map)
+
+(describe property-map)

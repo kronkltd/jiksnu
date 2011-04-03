@@ -1,8 +1,59 @@
+(ns jiksnu.sections.activity-sections-test
+  (:use ciste.factory
+        ciste.sections
+        ciste.view
+        clj-tigase.core
+        jiksnu.model
+        jiksnu.namespace
+        jiksnu.sections.activity-sections
+        jiksnu.session
+        jiksnu.xmpp.element
+        jiksnu.view
+        [lazytest.describe :only (describe testing do-it for-any)]
+        [lazytest.expect :only (expect)])
+  (:require [hiccup.form-helpers :as f]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
+  (:import com.cliqset.abdera.ext.activity.object.Person
+           java.io.StringWriter
+           javax.xml.namespace.QName
+           jiksnu.model.Activity
+           jiksnu.model.User
+           org.apache.abdera.model.Entry
+           org.apache.abdera.ext.json.JSONUtil
+           tigase.xml.Element))
+
 (describe new-entry)
+
+(describe make-object)
 
 (describe add-author)
 
 (describe add-authors)
+
+(describe add-entry)
+
+(describe privacy-section)
+
+(describe activity-form)
+
+(describe delete-link)
+
+(describe edit-link)
+
+(describe comment-link)
+
+(describe like-link)
+
+(describe update-button)
+
+(describe make-feed)
+
+(describe comment-link)
+
+(describe acl-link)
+
+(describe parse-extension-element)
 
 (describe to-activity
   (do-it "should return a map"
@@ -22,10 +73,6 @@
               response (to-json entry)]
           (expect (not (nil? response))))))))
 
-(describe has-author?)
-
-(describe set-actor)
-
 ;; (describe parse-json-element
 ;;   (testing "when there are attributes"
 ;;     (do-it "should have an attribute"
@@ -38,6 +85,39 @@
 ;;         (expect (seq (.getElements response)))))))
 
 (describe add-extensions)
+
+(describe has-author?)
+
+(describe uri "Activity"
+  (do-it "should be a string"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (string? (uri activity)))))))))
+
+(describe title "Activity")
+
+(describe show-section-minimal "[Activity :html]"
+  (do-it "should be a vector"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (vector? (show-section-minimal activity)))))))))
+
+(describe show-section "Activity :json")
+
+(describe show-section "Activity :xmpp :xmpp"
+  (do-it "should return an element"
+    (with-serialization :xmpp
+      (with-format :xmpp
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [entry (model.activity/create (factory Activity))
+                  response (show-section entry)]
+              (expect (not (nil? response)))
+              (expect (element? response)))))))))
 
 (describe show-section "Activity :atom"
   (do-it "should return an abdera entry"
@@ -52,39 +132,7 @@
           (expect (.getTitle response))
           (expect (.getUpdated response)))))))
 
-(describe uri "Activity"
-  (do-it "should be a string"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (string? (uri activity)))))))))
-
-(describe add-form "Activity"
-  (do-it "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (add-form activity)))))))))
-
-(describe show-section-minimal "[Activity :html]"
-  (do-it "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (show-section-minimal activity)))))))))
-
-(describe edit-form
-  (do-it "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (edit-form activity)))))))))
-
-(describe index-line-minimal
+(describe index-line-minimal "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -92,7 +140,9 @@
           (let [activity (model.activity/create (factory Activity))]
             (expect (vector? (index-line-minimal activity)))))))))
 
-(describe index-block-minimal
+(describe index-line "Activity :xmpp :xmpp")
+
+(describe index-block-minimal "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -100,13 +150,22 @@
           (let [activity (model.activity/create (factory Activity))]
             (expect (vector? (index-block-minimal [activity])))))))))
 
-(describe show-section "Activity :xmpp :xmpp"
-  (do-it "should return an element"
-    (with-serialization :xmpp
-      (with-format :xmpp
-        (let [user (model.user/create (factory User))]
-          (with-user user
-            (let [entry (model.activity/create (factory Activity))
-                  response (show-section entry)]
-              (expect (not (nil? response)))
-              (expect (element? response)))))))))
+(describe index-block "Activity :xmpp :xmpp")
+
+(describe index-block "Activity :html")
+
+(describe add-form "Activity :html"
+  (do-it "should be a vector"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (vector? (add-form activity)))))))))
+
+(describe edit-form "Activity :html"
+  (do-it "should be a vector"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (vector? (edit-form activity)))))))))
