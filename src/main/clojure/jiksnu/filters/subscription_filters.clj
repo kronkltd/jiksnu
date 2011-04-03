@@ -14,41 +14,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'delete :http
-  "Deletes a subscription.
-
-This action is primarily for the admin console.
-In most cases, use the user-specific versions. (unsubscribe)"
-  [{{id "id"} :params
-    :as request}]
-  (model.subscription/delete id))
+  [action request]
+  (let [{{id "id"} :params} request]
+    (action id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'index :http
-  [request]
-  (model.subscription/index))
+  [action request]
+  (action))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ostatus
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'ostatus :http
-  [request]
-  true)
+  [action request]
+  (action))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ostatussub
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'ostatussub :http
-  [request]
+  [action request]
   (let [{{profile "profile"} :params} request]
-    (if profile
-      (let [[username password] (clojure.string/split profile #"@")]
-        (model.user/show username password))
-      (User.))))
+    (action profile)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ostatussub-submit
@@ -116,31 +109,30 @@ In most cases, use the user-specific versions. (unsubscribe)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'subscribers :http
-  [request]
+  [action request]
   (let [{{id "id"} :params} request
         user (model.user/show id)]
-    (model.subscription/subscribers user)))
+    (action user)))
 
 (deffilter #'subscribers :xmpp
-  [request]
-  (if-let [recipient (model.user/fetch-by-jid (:to request))]
-    (model.subscription/subscribers recipient)))
+  [action request]
+  (if-let [user (model.user/fetch-by-jid (:to request))]
+    (action user)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscriptions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'subscriptions :http
-  [request]
+  [action request]
   (let [{{id "id"} :params} request
         user (model.user/show id)]
-    (model.subscription/subscriptions user)))
+    (action user)))
 
 (deffilter #'subscriptions :xmpp
-  [request]
-  (let [recipient (model.user/fetch-by-jid (:to request))
-        subscriptions (model.subscription/subscriptions recipient)]
-    subscriptions))
+  [action request]
+  (let [user (model.user/fetch-by-jid (:to request))]
+    (action user)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; unsubscribe
@@ -150,17 +142,11 @@ In most cases, use the user-specific versions. (unsubscribe)"
   [request]
   (if-let [actor (current-user-id)]
     (if-let [{{user "unsubscribeto"} :params} request]
-      (let [subscription (model.subscription/find-record
-                          {:from actor :to (make-id user)})]
-        (model.subscription/delete subscription)
-        true))))
+      (action actor (make-id user)))))
 
 (deffilter #'unsubscribe :xmpp
   [request]
-  (let [to (:to request)
-        from (:from request)]
-    (let [user (model.user/fetch-by-jid to)
-          subscriber (model.user/find-or-create-by-jid from)]
-      (model.subscription/unsubscribe (:_id subscriber)
-                                      (:_id user))
-      true)))
+  (let [{:keys [to from]} request
+        user (model.user/fetch-by-jid to)
+        subscriber (model.user/find-or-create-by-jid from)]
+    (action (:_id subscriber) (:_id user))))

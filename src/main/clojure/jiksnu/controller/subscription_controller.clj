@@ -10,16 +10,27 @@
            jiksnu.model.User))
 
 (defaction delete
-  [& _])
+  "Deletes a subscription.
+
+This action is primarily for the admin console.
+In most cases, use the user-specific versions. (unsubscribe)"
+  [id]
+  (model.subscription/delete id))
 
 (defaction index
-  [& _])
+  [& _]
+  (model.subscription/index))
 
 (defaction ostatus
-  [& _])
+  [& _]
+  true)
 
 (defaction ostatussub
-  [& _])
+  [profile]
+  (if profile
+    (let [[username password] (clojure.string/split profile #"@")]
+      (model.user/show username password))
+    (User.)))
 
 (defaction ostatussub-submit
   [& _])
@@ -37,11 +48,14 @@
   [& _])
 
 (defaction subscribers
-  [& _])
+  [user]
+  (model.subscription/subscribers user))
 
 (defaction subscriptions
-  [& _])
+  [user]
+  (model.subscription/subscriptions user))
 
 (defaction unsubscribe
-  [& _])
+  [actor-id user-id]
+  (model.subscription/unsubscribe actor-id user-id))
 
