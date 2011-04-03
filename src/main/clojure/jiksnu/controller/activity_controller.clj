@@ -54,6 +54,12 @@
   [action request]
   (Activity.))
 
+(defaction new-comment
+  [& _])
+
+(defaction remote-create
+  [& _])
+
 (defaction show
   [id]
   (model.activity/show id))

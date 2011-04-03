@@ -1,4 +1,15 @@
-(ns jiksnu.filters.user-filters)
+(ns jiksnu.filters.user-filters
+  (:use clj-tigase.core
+        [clojure.contrib.logging :only (error)]
+        ciste.config
+        ciste.filters
+        jiksnu.controller.user-controller
+        jiksnu.session
+        jiksnu.view)
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
+  (:import tigase.xml.Element))
 
 (defn rule-element?
   [^Element element]
@@ -83,10 +94,10 @@
 ;; inbox
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deffilter inbox :xmpp
-  [request]
-  ;; TODO: limit this to the inbox of the user
-  (model.user/inbox))
+;; (deffilter inbox :xmpp
+;;   [request]
+;;   ;; TODO: limit this to the inbox of the user
+;;   (model.user/inbox))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index
