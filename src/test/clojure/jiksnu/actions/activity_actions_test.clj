@@ -16,21 +16,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(describe index
-  (testing "when there are no activities"
-    (do-it "should be empty"
-      (model.activity/drop!)
-      (let [response (index)]
-        (expect (empty? response)))))
-  (testing "when there are activities"
-    (do-it "should return a seq of activities"
-      (let [author (model.user/create (factory User))]
-        (with-user author
-          (model.activity/create (factory Activity))))
-      (let [response (index)]
-        (expect (seq response))
-        (expect (every? activity? response))))))
-
 (describe create
   (testing "when the user is logged in"
     (testing "and it is a valid activity"
@@ -51,18 +36,41 @@
                      response (create activity)]
                  (expect (activity? response)))))))))))
 
+(describe delete)
+
+(describe edit)
+
+(describe fetch-comments)
+
+(describe fetch-comments-remote)
+
+(describe friends-timeline)
+
+(describe inbox)
+
+(describe index
+  (testing "when there are no activities"
+    (do-it "should be empty"
+      (model.activity/drop!)
+      (let [response (index)]
+        (expect (empty? response)))))
+  (testing "when there are activities"
+    (do-it "should return a seq of activities"
+      (let [author (model.user/create (factory User))]
+        (with-user author
+          (model.activity/create (factory Activity))))
+      (let [response (index)]
+        (expect (seq response))
+        (expect (every? activity? response))))))
+
+(describe like-activity)
+
 (describe new)
+
+(describe new-comment)
 
 (describe show)
 
 (describe update)
 
-(describe delete)
-
-(describe edit)
-
-(describe create-activity)
-
-(describe remote-create)
-
-(describe fetch-comments)
+(describe user-timeline)
