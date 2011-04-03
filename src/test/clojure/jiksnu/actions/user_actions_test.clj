@@ -23,13 +23,7 @@
     (do-it "should return that user"
       (model.user/drop!)
       (let [user (model.user/create (factory User))
-            packet (make-packet
-                    {:from (make-jid user)
-                     :to (make-jid user)
-                     :type :get
-                     :body nil})
-            request (make-request packet)
-            response (show request)]
+            response (show (:_id user))]
         (expect (instance? User response))
         (expect (= response user))))))
 
@@ -58,10 +52,6 @@
 (describe fetch-remote)
 
 (describe remote-create)
-
-
-
-
 
 (describe index)
 

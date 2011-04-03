@@ -42,7 +42,9 @@ In most cases, use the user-specific versions. (unsubscribe)"
   [& _])
 
 (defaction subscribe
-  [& _])
+  [user]
+  (let [actor-id (current-user-id)]
+    (model.subscription/subscribe actor-id (:_id user))))
 
 (defaction subscribed
   [& _])

@@ -8,7 +8,6 @@
         clojure.contrib.logging
         [clojure.string :only (trim)]
         hiccup.core
-        ciste.core
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.auth-sections

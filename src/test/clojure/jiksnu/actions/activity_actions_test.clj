@@ -31,20 +31,6 @@
         (expect (seq response))
         (expect (every? activity? response))))))
 
-(describe create)
-
-(describe new)
-
-(describe show)
-
-(describe update)
-
-(describe delete)
-
-(describe edit)
-
-(describe create-activity)
-
 (describe create
   (testing "when the user is logged in"
     (testing "and it is a valid activity"
@@ -64,6 +50,18 @@
                      request (make-request packet)
                      response (create request)]
                  (expect (activity? response)))))))))))
+
+(describe new)
+
+(describe show)
+
+(describe update)
+
+(describe delete)
+
+(describe edit)
+
+(describe create-activity)
 
 (describe remote-create)
 

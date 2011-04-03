@@ -53,7 +53,7 @@
 
 (defaction show
   [id]
-  (model.user/show id))
+  (model.user/fetch-by-id id))
 
 (defaction update
   [& _])
