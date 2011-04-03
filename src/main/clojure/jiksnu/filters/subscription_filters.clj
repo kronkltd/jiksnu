@@ -1,6 +1,7 @@
-(ns jiksnu.controller.subscription-controller
+(ns jiksnu.filters.subscription-filters
   (:use ciste.debug
         ciste.filters
+        jiksnu.controller.subscription-controller
         jiksnu.model
         jiksnu.namespace
         [jiksnu.session :only (current-user-id)])
@@ -48,7 +49,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'ostatussub-submit :http
-  [request]
+  [action request]
   (let [{{profile "profile"} :params} request]
     (if profile
       (let [[username password] (clojure.string/split profile #"@")]
@@ -58,18 +59,18 @@
 ;; remote-subscribe
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deffilter #'remote-subscribe :xmpp
-  [actor user]
-  ["subscribe" {"xmlns" pubsub-uri
-                "node" microblog-uri
-                "jid" (str (:username user) "@" (:domain user))}])
+;; (deffilter #'remote-subscribe :xmpp
+;;   [actor user]
+;;   ["subscribe" {"xmlns" pubsub-uri
+;;                 "node" microblog-uri
+;;                 "jid" (str (:username user) "@" (:domain user))}])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-subscribe-confirm
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'remote-subscribe-confirm :xmpp
-  [request]
+  [action request]
   (let [subscriber (model.user/fetch-by-jid (:to request))
         subscribee (model.user/fetch-by-jid (:from request))
         subscription (model.subscription/find-record
@@ -81,14 +82,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'subscribe :http
-  [request]
+  [action request]
   (if-let [actor (current-user-id)]
     (if-let [{{user-id "subscribeto"} :params} request]
       (if-let [user (model.user/fetch-by-id user-id)]
         (model.subscription/subscribe actor (:_id user))))))
 
 (deffilter #'subscribe :xmpp
-  [request]
+  [action request]
   (let [to (:to request)
         from (:from request)]
     (let [user (model.user/fetch-by-jid to)
@@ -101,7 +102,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'subscribed :xmpp
-  [request]
+  [action request]
   '())
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -139,13 +140,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'unsubscribe :http
-  [request]
+  [action request]
   (if-let [actor (current-user-id)]
     (if-let [{{user "unsubscribeto"} :params} request]
       (action actor (make-id user)))))
 
 (deffilter #'unsubscribe :xmpp
-  [request]
+  [action request]
   (let [{:keys [to from]} request
         user (model.user/fetch-by-jid to)
         subscriber (model.user/find-or-create-by-jid from)]

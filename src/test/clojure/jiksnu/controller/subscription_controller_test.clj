@@ -14,7 +14,19 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
+(describe delete)
+
 (describe index)
+
+(describe ostatus)
+
+(describe ostatussub)
+
+(describe ostatussub-submit)
+
+(describe remote-subscribe)
+
+(describe remote-subscribe-confirm)
 
 (describe subscribe
   (testing "when the user is not already subscribed"
@@ -26,32 +38,6 @@
           (let [request {:params {"subscribeto" (str (:_id user))}}]
             (let [response (subscribe request)]
               (expect (subscription? response)))))))))
-
-(describe unsubscribe)
-
-(describe delete)
-
-(describe subscriptions
-  (testing "when there are subscriptions"
-    (do-it "should return a sequence of subscriptions"
-      (let [user (model.user/create (factory User))
-            subscribee (model.user/create (factory User))
-            element (make-element
-                     ["pubsub" {"xmlns" pubsub-uri}
-                      ["subscriptions" {"node" microblog-uri}]])
-            packet (make-packet
-                    {:to (make-jid user)
-                     :from (make-jid user)
-                     :type :get
-                     :body element})
-            request (make-request packet)
-            subscription (model.subscription/create
-                          (factory Subscription
-                                   {:from (:_id user)
-                                    :to (:_id subscribee)}))
-            results (subscriptions request)]
-        (expect (not (empty? results)))
-        (expect (every? (partial instance? Subscription) results))))))
 
 (describe subscribers
   (testing "when there are subscribers"
@@ -76,12 +62,26 @@
         (expect (seq response))
         (expect (every? (partial instance? Subscription) response))))))
 
-(describe subscribe)
-
-(describe remote-subscribe)
-
-(describe remote-subscribe-confirm)
-
-(describe subscribed)
+(describe subscriptions
+  (testing "when there are subscriptions"
+    (do-it "should return a sequence of subscriptions"
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            element (make-element
+                     ["pubsub" {"xmlns" pubsub-uri}
+                      ["subscriptions" {"node" microblog-uri}]])
+            packet (make-packet
+                    {:to (make-jid user)
+                     :from (make-jid user)
+                     :type :get
+                     :body element})
+            request (make-request packet)
+            subscription (model.subscription/create
+                          (factory Subscription
+                                   {:from (:_id user)
+                                    :to (:_id subscribee)}))
+            results (subscriptions request)]
+        (expect (not (empty? results)))
+        (expect (every? (partial instance? Subscription) results))))))
 
 (describe unsubscribe)
