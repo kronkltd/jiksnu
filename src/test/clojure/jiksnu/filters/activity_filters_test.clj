@@ -16,7 +16,57 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(describe show ":xmpp"
+(describe apply-filter "#'index :http"
+  (testing "when there are no activities"
+    (do-it "should be empty"
+      (model.activity/drop!)
+      (let [request {:serialization :http}
+            response (apply-filter #'index request)]
+        (expect (empty? response)))))
+  (testing "when there are activities"
+    (do-it "should return a seq of activities"
+      (let [author (model.user/create (factory User))]
+        (with-user author
+          (model.activity/create (factory Activity))))
+      (let [request {:serialization :http}
+            response (index request)]
+        (expect (seq response))
+        (expect (every? activity? response))))))
+
+(describe apply-filter "#'index :xmpp"
+  (testing "when there are no activities"
+    (do-it "should return an empty sequence"
+      (let [user (model.user/create (factory User))
+            element nil
+            packet (make-packet
+                    {:from (make-jid user)
+                     :to (make-jid user)
+                     :type :get
+                     :body element})
+            request (assoc (make-request packet)
+                      :serialization :xmpp)]
+        (let [response (apply-filter #'index request)]
+          (expect (not (nil? response)))
+          (expect (empty? response))))))
+  (testing "when there are activities"
+    (do-it "should return a sequence of activities"
+      (let [author (model.user/create (factory User))]
+        (with-user author
+          (let [element nil
+                packet (make-packet
+                        {:from (make-jid author)
+                         :to (make-jid author)
+                         :type :get
+                         :id (fseq :id)
+                         :body element})
+                request (assoc (make-request packet)
+                          :serialization :xmpp)
+                activity (model.activity/create (factory Activity))
+                response (apply-filter #'index request)]
+            (expect (seq response))
+            (expect (every? activity? response))))))))
+
+(describe apply-filter "#'show :xmpp"
   (testing "when the activity exists"
     (do-it "should return that activity"
       (let [author (model.user/create (factory User))]

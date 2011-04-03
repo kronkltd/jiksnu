@@ -20,16 +20,14 @@
   (testing "when there are no activities"
     (do-it "should be empty"
       (model.activity/drop!)
-      (let [request {}
-            response (index request)]
+      (let [response (index)]
         (expect (empty? response)))))
   (testing "when there are activities"
     (do-it "should return a seq of activities"
       (let [author (model.user/create (factory User))]
         (with-user author
           (model.activity/create (factory Activity))))
-      (let [request {}
-            response (index request)]
+      (let [response (index)]
         (expect (seq response))
         (expect (every? activity? response))))))
 
@@ -44,37 +42,6 @@
 (describe delete)
 
 (describe edit)
-
-(describe index
-  (testing "when there are no activities"
-    (do-it "should return an empty sequence"
-      (let [user (model.user/create (factory User))
-            element nil
-            packet (make-packet
-                    {:from (make-jid user)
-                     :to (make-jid user)
-                     :type :get
-                     :body element})
-            request (make-request packet)]
-        (let [response (index request)]
-          (expect (not (nil? response)))
-          (expect (empty? response))))))
-  (testing "when there are activities"
-    (do-it "should return a sequence of activities"
-      (let [author (model.user/create (factory User))]
-        (with-user author
-          (let [element nil
-                packet (make-packet
-                        {:from (make-jid author)
-                         :to (make-jid author)
-                         :type :get
-                         :id (fseq :id)
-                         :body element})
-                request (make-request packet)
-                activity (model.activity/create (factory Activity))
-                response (index request)]
-            (expect (seq response))
-            (expect (every? activity? response))))))))
 
 (describe create-activity)
 

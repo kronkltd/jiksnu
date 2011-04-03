@@ -78,7 +78,8 @@
             request (merge (make-request packet)
                            {:action #'actions.subscription/unsubscribe
                             :format :xmpp})
-            record (actions.subscription/unsubscribe request)
+            record (actions.subscription/unsubscribe (:_id user)
+                                                     (:_id subscribee))
             response (apply-view request record)]
         (expect (map? response))))))
 
