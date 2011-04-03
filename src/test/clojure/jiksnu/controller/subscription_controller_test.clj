@@ -44,21 +44,11 @@
     (do-it "should not be empty"
       (let [user (model.user/create (factory User))
             subscriber (model.user/create (factory User))
-            element (make-element
-                     "pubsub" {"xmlns" pubsub-uri}
-                     ["subscribers" {"node" microblog-uri}])
-            packet (make-packet
-                    {:to (make-jid user)
-                     :from (make-jid user)
-                     :type :get
-                     :id (fseq :id)
-                     :body element})
-            request (make-request packet)
             subscription (model.subscription/create
                           (factory Subscription
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
-            response (subscribers request)]
+            response (subscribers user)]
         (expect (seq response))
         (expect (every? (partial instance? Subscription) response))))))
 
@@ -67,20 +57,11 @@
     (do-it "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
-            element (make-element
-                     ["pubsub" {"xmlns" pubsub-uri}
-                      ["subscriptions" {"node" microblog-uri}]])
-            packet (make-packet
-                    {:to (make-jid user)
-                     :from (make-jid user)
-                     :type :get
-                     :body element})
-            request (make-request packet)
             subscription (model.subscription/create
                           (factory Subscription
                                    {:from (:_id user)
                                     :to (:_id subscribee)}))
-            results (subscriptions request)]
+            results (subscriptions user)]
         (expect (not (empty? results)))
         (expect (every? (partial instance? Subscription) results))))))
 
