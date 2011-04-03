@@ -1,7 +1,7 @@
 (ns jiksnu.filters.subscription-filters
   (:use ciste.debug
         ciste.filters
-        jiksnu.controller.subscription-controller
+        jiksnu.actions.subscription-actions
         jiksnu.model
         jiksnu.namespace
         [jiksnu.session :only (current-user-id)])

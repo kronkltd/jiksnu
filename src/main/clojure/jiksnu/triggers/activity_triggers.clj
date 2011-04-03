@@ -4,7 +4,7 @@
         ciste.view
         ciste.trigger
         ciste.sections
-        jiksnu.controller.activity-controller
+        jiksnu.actions.activity-actions
         jiksnu.model
         jiksnu.namespace
         jiksnu.session

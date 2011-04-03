@@ -1,4 +1,4 @@
-(ns jiksnu.controller.activity-controller
+(ns jiksnu.actions.activity-actions
   (:use ciste.core
         ciste.debug
         ciste.trigger

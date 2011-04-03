@@ -1,4 +1,4 @@
-(ns jiksnu.controller.subscription-controller
+(ns jiksnu.actions.subscription-actions
   (:use ciste.core
         ciste.debug
         jiksnu.model

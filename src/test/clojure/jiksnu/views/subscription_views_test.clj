@@ -13,8 +13,8 @@
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.controller.subscription-controller :as
-             controller.subscription])
+            [jiksnu.actions.subscription-actions :as
+             actions.subscription])
   (:import jiksnu.model.User))
 
 (describe subscriber-response-element
@@ -45,11 +45,11 @@
 
 (describe subscription-response-minimal)
 
-(describe controller.subscription/subscriptions ":xmpp")
+(describe actions.subscription/subscriptions ":xmpp")
 
-(describe controller.subscription/subscribers ":xmpp")
+(describe actions.subscription/subscribers ":xmpp")
 
-(describe apply-view "#'controller.subscription/subscribe :xmpp")
+(describe apply-view "#'actions.subscription/subscribe :xmpp")
 
 (describe notify-subscribe
   (do-it "should return a packet"
@@ -62,7 +62,7 @@
 
 (describe notify-unsubscribe)
 
-(describe controller.subscription/unsubscribe ":xmpp"
+(describe actions.subscription/unsubscribe ":xmpp"
   (testing "when there is no subscription"
     (do-it "should return a packet map"
       (let [user (model.user/create (factory User))
@@ -76,12 +76,12 @@
                      :type :set
                      :body element})
             request (merge (make-request packet)
-                           {:action #'controller.subscription/unsubscribe
+                           {:action #'actions.subscription/unsubscribe
                             :format :xmpp})
-            record (controller.subscription/unsubscribe request)
+            record (actions.subscription/unsubscribe request)
             response (apply-view request record)]
         (expect (map? response))))))
 
-(describe controller.subscription/subscribed ":xmpp")
+(describe actions.subscription/subscribed ":xmpp")
 
-(describe controller.subscription/remote-subscribe-confirm ":xmpp")
+(describe actions.subscription/remote-subscribe-confirm ":xmpp")

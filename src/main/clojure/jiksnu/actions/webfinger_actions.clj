@@ -1,4 +1,4 @@
-(ns jiksnu.controller.webfinger-controller
+(ns jiksnu.actions.webfinger-actions
   (:use jiksnu.namespace)
   (:require [jiksnu.model.user :as model.user])
   (:import com.cliqset.hostmeta.JavaNetXRDFetcher

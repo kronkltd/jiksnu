@@ -3,7 +3,7 @@
         ciste.html
         ciste.sections
         ciste.view
-        jiksnu.controller.auth-controller
+        jiksnu.actions.auth-actions
         jiksnu.model
         jiksnu.sections.auth-sections
         jiksnu.view)

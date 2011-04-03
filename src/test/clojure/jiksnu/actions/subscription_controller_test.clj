@@ -1,7 +1,7 @@
-(ns jiksnu.controller.subscription-controller-test
+(ns jiksnu.actions.subscription-actions-test
   (:use ciste.factory
         clj-tigase.core
-        jiksnu.controller.subscription-controller
+        jiksnu.actions.subscription-actions
         jiksnu.core-test
         jiksnu.model
         jiksnu.namespace

@@ -1,9 +1,9 @@
-(ns jiksnu.controller.user-controller-test
+(ns jiksnu.actions.user-actions-test
   (:use clj-tigase.core
         ciste.factory
         jiksnu.model
         jiksnu.session
-        jiksnu.controller.user-controller
+        jiksnu.actions.user-actions
         jiksnu.view
         [lazytest.describe :only (describe do-it testing for-any)]
         [lazytest.expect :only (expect)])

@@ -3,7 +3,7 @@
         ciste.filters
         ciste.lazytest.filters
         clj-tigase.core
-        jiksnu.controller.subscription-controller
+        jiksnu.actions.subscription-actions
         jiksnu.filters.subscription-filters
         jiksnu.core-test
         jiksnu.model

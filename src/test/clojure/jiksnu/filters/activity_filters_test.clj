@@ -2,7 +2,7 @@
   (:use clj-tigase.core
         ciste.factory
         ciste.filters
-        jiksnu.controller.activity-controller
+        jiksnu.actions.activity-actions
         jiksnu.filters.activity-filters
         jiksnu.model
         jiksnu.namespace

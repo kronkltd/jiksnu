@@ -11,7 +11,7 @@
        [lazytest.describe :only (describe testing do-it)]
        [lazytest.expect :only (expect)])
  (:require [jiksnu.model.user :as model.user]
-           [jiksnu.controller.user-controller :as controller.user])
+           [jiksnu.actions.user-actions :as actions.user])
  (:import jiksnu.model.User))
 
 (describe get-uri)
@@ -86,7 +86,7 @@
                        :from (make-jid user)
                        :type :get})
               request (merge {:format :xmpp
-                              :action #'controller.user/show}
+                              :action #'actions.user/show}
                              (make-request packet))]
           (let [response (apply-view request user)]
             (expect (map? response))
@@ -102,7 +102,7 @@
                        :from (make-jid user)
                        :type :get})
               request (merge {:format :xmpp
-                              :action #'controller.user/fetch-remote}
+                              :action #'actions.user/fetch-remote}
                              (make-request packet))]
           (let [response (apply-view request user)]
             (expect (map? response))
@@ -118,7 +118,7 @@
                        :from (make-jid user)
                        :type :get})
               request (merge {:format :xmpp
-                              :action #'controller.user/remote-create}
+                              :action #'actions.user/remote-create}
                              (make-request packet))]
           (let [response (apply-view request user)]
             (expect (map? response))

@@ -5,7 +5,7 @@
         ciste.view
         clj-tigase.core
         jiksnu.config
-        jiksnu.controller.activity-controller
+        jiksnu.actions.activity-actions
         jiksnu.model
         jiksnu.session
         jiksnu.view

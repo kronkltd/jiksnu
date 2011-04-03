@@ -10,14 +10,14 @@
             clout.core
             [compojure.core :as compojure]
             [compojure.route :as route]
-            (jiksnu.controller
-             [activity-controller :as activity]
-             [auth-controller :as auth]
-             [domain-controller :as domain]
-             [inbox-controller :as inbox]
-             [subscription-controller :as subscription]
-             [user-controller :as user]
-             [webfinger-controller :as webfinger])
+            (jiksnu.actions
+             [activity-actions :as activity]
+             [auth-actions :as auth]
+             [domain-actions :as domain]
+             [inbox-actions :as inbox]
+             [subscription-actions :as subscription]
+             [user-actions :as user]
+             [webfinger-actions :as webfinger])
             [jiksnu.view :as view]
             (jiksnu.views
              activity-views

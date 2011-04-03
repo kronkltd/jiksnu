@@ -1,4 +1,4 @@
-(ns jiksnu.controller.user-controller
+(ns jiksnu.actions.user-actions
   (:use ciste.config
         ciste.core
         ciste.debug

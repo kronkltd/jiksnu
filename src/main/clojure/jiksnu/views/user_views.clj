@@ -5,7 +5,7 @@
         ciste.sections
         ciste.view
         clj-tigase.core
-        jiksnu.controller.user-controller
+        jiksnu.actions.user-actions
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.user-sections

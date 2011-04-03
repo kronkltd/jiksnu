@@ -2,7 +2,7 @@
   (:use ciste.config
         ciste.filters
         clj-tigase.core
-        jiksnu.controller.activity-controller
+        jiksnu.actions.activity-actions
         jiksnu.model
         jiksnu.sections.activity-sections
         jiksnu.session

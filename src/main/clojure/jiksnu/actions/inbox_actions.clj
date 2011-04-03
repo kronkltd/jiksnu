@@ -1,4 +1,4 @@
-(ns jiksnu.controller.inbox-controller
+(ns jiksnu.actions.inbox-actions
   (:use jiksnu.model)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.item :as model.item]

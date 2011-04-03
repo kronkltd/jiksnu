@@ -2,7 +2,7 @@
   (:use ciste.core
         ciste.sections
         ciste.view
-        jiksnu.controller.inbox-controller))
+        jiksnu.actions.inbox-actions))
 
 (defview #'index :html
   [request activities]

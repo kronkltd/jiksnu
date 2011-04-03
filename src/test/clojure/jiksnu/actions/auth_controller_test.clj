@@ -1,5 +1,5 @@
-(ns jiksnu.controller.auth-controller-test
-  (:use jiksnu.controller.auth-controller
+(ns jiksnu.actions.auth-actions-test
+  (:use jiksnu.actions.auth-actions
         [lazytest.describe :only (describe testing do-it)]))
 
 (describe login)

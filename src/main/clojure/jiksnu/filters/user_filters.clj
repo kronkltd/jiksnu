@@ -3,7 +3,7 @@
         [clojure.contrib.logging :only (error)]
         ciste.config
         ciste.filters
-        jiksnu.controller.user-controller
+        jiksnu.actions.user-actions
         jiksnu.session
         jiksnu.view)
   (:require [jiksnu.model.activity :as model.activity]

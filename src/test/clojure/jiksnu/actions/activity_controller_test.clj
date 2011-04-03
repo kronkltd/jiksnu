@@ -1,9 +1,9 @@
-(ns jiksnu.controller.activity-controller-test
+(ns jiksnu.actions.activity-actions-test
   (:use ciste.factory
         ciste.sections
         ciste.view
         clj-tigase.core
-        jiksnu.controller.activity-controller
+        jiksnu.actions.activity-actions
         ciste.debug
         jiksnu.model
         jiksnu.namespace
