@@ -152,7 +152,7 @@
       entries))
     (str feed)))
 
-(defn comment-link
+(defn comment-link-item
   [entry activity]
   (if (:comments activity)
     (let [comment-count (count (:comments activity))]
@@ -370,7 +370,7 @@ an Element"
       (.addSimpleExtension as-ns "object-type" "activity" status-uri)
       (.addSimpleExtension as-ns "verb" "activity" post-uri)
       (add-extensions activity)
-      (comment-link activity)
+      (comment-link-item activity)
       (acl-link activity))
     (let [object-element (.addExtension entry as-ns "object" "activity")]
       (.setObjectType object-element status-uri)

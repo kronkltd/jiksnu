@@ -49,7 +49,7 @@
 
 (describe make-feed)
 
-(describe comment-link)
+(describe comment-link-item)
 
 (describe acl-link)
 
