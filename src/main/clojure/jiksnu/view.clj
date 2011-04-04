@@ -8,6 +8,7 @@
         clojure.contrib.logging
         [clojure.string :only (trim)]
         hiccup.core
+        jiksnu.abdera
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.auth-sections
@@ -16,14 +17,28 @@
         jiksnu.xmpp.element)
   (:require [clojure.stacktrace :as stacktrace]
             [hiccup.form-helpers :as f])
-  (:import java.io.ByteArrayInputStream
-           com.cliqset.abdera.ext.activity.ActivityEntry
+  (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            jiksnu.model.Activity
            tigase.server.Packet
            tigase.xml.Element
            tigase.xmpp.JID
            tigase.xmpp.StanzaType))
+
+(defsection link-to :default
+  [record & options]
+  (let [options-map (apply hash-map options)]
+    [:a
+     (apply merge {:href (uri record)} options-map)
+     [:span {:about (uri record)
+             :property "dc:title"}
+      (or (:title options-map) (title record))] ]))
+
+(defsection full-uri :default
+  [record & options]
+  (str "http://" (-> (config) :domain)
+       (apply uri record options)))
+
 
 (defn navigation-section
   []
@@ -80,78 +95,6 @@
        (link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
        #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
-
-(defmethod serialize-as :http
-  [serialization response-map]
-  (merge {:headers {"Content-Type" "text/html"}}
-         response-map
-         (if-let [body (:body response-map)]
-           {:body (html body)})))
-
-(defmethod apply-template :html
-  [request response]
-  (merge
-   response
-   (if-not (= (:template response) false)
-     (page-template-content response))))
-
-(defsection link-to :default
-  [record & options]
-  (let [options-map (apply hash-map options)]
-    [:a
-     (apply merge {:href (uri record)} options-map)
-     [:span {:about (uri record)
-             :property "dc:title"}
-      (or (:title options-map) (title record))] ]))
-
-(defn parse-stream
-  [stream]
-  (try
-    (let [parser *abdera-parser*]
-      (.parse parser stream))
-    (catch IllegalStateException e
-      (error e))))
-
-(defn parse-xml-string
-  "Converts a string to an Abdera entry"
-  [entry-string]
-  (let [stream (ByteArrayInputStream. (.getBytes entry-string "UTF-8"))
-        parsed (parse-stream stream)]
-    (.getRoot parsed)))
-
-(defn not-namespace
-  "Filter for map entries that do not represent namespaces"
-  [[k v]]
-  (not (= k :xmlns)))
-
-(defmethod default-format :atom
-  [request response])
-
-(defsection full-uri :default
-  [record & options]
-  (str "http://" (-> (config) :domain)
-       (apply uri record options)))
-
-;; (defn node-value
-;;   [^Element element]
-;;   (.getAttribute element "node"))
-
-(defn find-children
-  [element path]
-  (if element
-    (.findChild element path)))
-
-;; (defn ns-prefix
-;;   [k]
-;;   (apply str
-;;          "xmlns"
-;;          (if (not= k "")
-;;            (list ":" k))))
-
-;; (defn element?
-;;   "Returns if the argument is an element"
-;;   [arg]
-;;   (instance? Element arg))
 
 (defn pubsub-element?
   [^Element element]
@@ -254,9 +197,28 @@
     :id (:id request)
     :type :result}))
 
+
+
+(defmethod apply-template :html
+  [request response]
+  (merge
+   response
+   (if-not (= (:template response) false)
+     (page-template-content response))))
+
+(defmethod default-format :atom
+  [request response])
+
 (defmethod format-as :xmpp
   [format request response]
   response)
+
+(defmethod serialize-as :http
+  [serialization response-map]
+  (merge {:headers {"Content-Type" "text/html"}}
+         response-map
+         (if-let [body (:body response-map)]
+           {:body (html body)})))
 
 (defmethod serialize-as :xmpp
   [serialization response]

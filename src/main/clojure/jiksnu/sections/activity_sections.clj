@@ -2,6 +2,7 @@
   (:use ciste.view
         ciste.html
         ciste.sections
+        jiksnu.abdera
         jiksnu.model
         jiksnu.namespace
         jiksnu.session

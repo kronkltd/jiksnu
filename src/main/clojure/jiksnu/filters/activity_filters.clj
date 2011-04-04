@@ -1,15 +1,13 @@
 (ns jiksnu.filters.activity-filters
-  (:use ciste.config
-        ciste.filters
+  (:use ciste.filters
         clj-tigase.core
+        jiksnu.abdera
         jiksnu.actions.activity-actions
         jiksnu.model
         jiksnu.sections.activity-sections
-        jiksnu.session
-        jiksnu.view)
+        jiksnu.session)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
-            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -28,7 +26,7 @@
         (map
          (fn [item]
            (-> item children first
-               str jiksnu.view/parse-xml-string
+               str parse-xml-string
                to-activity))
          items)]
     (action (first activities))))
@@ -157,7 +155,7 @@
           items (children packet "/message/event/items/item")]
       (doseq [entry items]
         (let [activity (to-activity
-                        (jiksnu.view/parse-xml-string (str entry)))]
+                        (parse-xml-string (str entry)))]
           (model.activity/create-raw activity)))
       true)))
 

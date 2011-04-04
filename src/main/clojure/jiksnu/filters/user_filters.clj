@@ -3,6 +3,7 @@
         [clojure.contrib.logging :only (error)]
         ciste.config
         ciste.filters
+        jiksnu.abdera
         jiksnu.actions.user-actions
         jiksnu.session
         jiksnu.view)

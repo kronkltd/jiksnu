@@ -36,6 +36,36 @@
   [& forms]
   forms)
 
+(defn method-matches?
+  [request matcher]
+  (and (#'compojure.core/method-matches
+        (:method matcher) request)
+       request))
+
+(defn path-matches?
+  [request matcher]
+  (let [prepared (#'compojure.core/prepare-route (:path matcher))]
+    (if-let [route-params (#'clout.core/route-matches prepared request)]
+      (#'compojure.core/assoc-route-params request route-params))))
+
+(compojure/defroutes all-routes
+  (route/files "/public")
+  (GET "/favicon.ico" request
+       (route/files "favicon.ico"))
+  (#'resolve-routes @*routes*)
+  (route/not-found "/public/404.html"))
+
+(def app
+  (-> #'all-routes
+      (wrap-user-debug-binding)
+      (wrap-user-binding)
+      (wrap-debug-binding)
+      (wrap-database)
+      ;; #'wrap-flash
+      (wrap-session)
+      (middleware/wrap-http-serialization)
+      (wrap-error-catching)))
+
 ;; (dosync
 ;;  (ref-set
 ;;   *routes*
@@ -85,36 +115,6 @@
 ;;     [:get "/:id/subscribers"]                        #'subscription/subscribers
 ;;     [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
 ;;     [:get "/main/xrd"]                               #'webfinger/user-meta])))
-
-(defn method-matches?
-  [request matcher]
-  (and (#'compojure.core/method-matches
-        (:method matcher) request)
-       request))
-
-(defn path-matches?
-  [request matcher]
-  (let [prepared (#'compojure.core/prepare-route (:path matcher))]
-    (if-let [route-params (#'clout.core/route-matches prepared request)]
-      (#'compojure.core/assoc-route-params request route-params))))
-
-(compojure/defroutes all-routes
-  (route/files "/public")
-  (GET "/favicon.ico" request
-       (route/files "favicon.ico"))
-  (#'resolve-routes @*routes*)
-  (route/not-found "/public/404.html"))
-
-(def app
-  (-> #'all-routes
-      (wrap-user-debug-binding)
-      (wrap-user-binding)
-      (wrap-debug-binding)
-      (wrap-database)
-      ;; #'wrap-flash
-      (wrap-session)
-      (middleware/wrap-http-serialization)
-      (wrap-error-catching)))
 
 ;; (dosync
 ;;  (ref-set
