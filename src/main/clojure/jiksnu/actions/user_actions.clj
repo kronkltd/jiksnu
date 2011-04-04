@@ -52,8 +52,9 @@
   [& _])
 
 (defaction show
-  [id]
-  (model.user/fetch-by-id id))
+  [user]
+  #_(model.user/fetch-by-id id)
+  (spy user))
 
 (defaction update
   [& _])

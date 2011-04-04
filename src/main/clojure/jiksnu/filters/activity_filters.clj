@@ -54,15 +54,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'fetch-comments :http
-  [{{id "id"} :params :as request}]
-  (if-let [activity (model.activity/show id)]
-    (if-let [author (model.user/fetch-by-id (first (:authors activity)))]
-      activity)))
+  [action request]
+  (let [{{id "id"} :params} request]
+    (if-let [activity (model.activity/show id)]
+      (if-let [author (model.user/fetch-by-id
+                       (first (:authors activity)))]
+        activity))))
 
 (deffilter #'fetch-comments :xmpp
-  [{{id "id"} :params :as request}]
-  (if-let [activity (model.activity/show id)]
-    (map model.activity/show (:comments activity))))
+  [action request]
+  (let [{{id "id"} :params} request]
+    (if-let [activity (model.activity/show id)]
+      (map model.activity/show (:comments activity)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fetch-comments-remote
@@ -76,9 +79,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'friends-timeline :http
-  [action {{id "id"} :params
-           :as request}]
-  (model.activity/index :authors id))
+  [action request]
+  (let [{{id "id"} :params} request]
+    (model.activity/index :authors id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; inbox
@@ -125,8 +128,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'new-comment :http
-  [{{id "id"} :params}]
-  (model.activity/show id))
+  [action request]
+  (let [{{id "id"} :params} request]
+    (model.activity/show id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show
@@ -149,7 +153,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'remote-create :xmpp
-  [request]
+  [action request]
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
           items (children packet "/message/event/items/item")]
@@ -175,17 +179,16 @@
 (deffilter #'user-timeline :http
   [action request]
   (let [{{id "id"} :params} request]
-    (action id)))
+    (let [user (model.user/fetch-by-id id)]
+      (action user))))
 
-(deffilter #'user-timeline :http
-  [{{id "id"} :params
-    :as request}]
-  (let [user (model.user/fetch-by-id id)]
-    [user (model.activity/index :authors (make-id id))]))
+;; (deffilter #'user-timeline :http
+;;   [action request]
+;;   (let [{{id "id"} :params} request
+;;         user (model.user/fetch-by-id id)]
+;;     [user (model.activity/index :authors (make-id id))]))
 
 (deffilter #'user-timeline :xmpp
-  [request]
-  (let [to (model.user/get-id (:to request))
-        user (model.user/show to)]
-    (model.activity/find-by-user user)))
-
+  [action request]
+  (let [user (model.user/fetch-by-jid (:to request))]
+    (action user)))

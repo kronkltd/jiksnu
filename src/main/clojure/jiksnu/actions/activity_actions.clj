@@ -73,7 +73,5 @@
     (model.activity/update opts)))
 
 (defaction user-timeline
-  [id]
-  (let [user (model.user/fetch-by-id id)]
-    [user (model.activity/index :authors (make-id id))]))
-
+  [user]
+  [user (model.activity/index :authors (make-id (:_id user)))])

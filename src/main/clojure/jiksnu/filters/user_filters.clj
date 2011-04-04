@@ -2,6 +2,7 @@
   (:use clj-tigase.core
         [clojure.contrib.logging :only (error)]
         ciste.config
+        ciste.debug
         ciste.filters
         jiksnu.abdera
         jiksnu.actions.user-actions
@@ -171,14 +172,16 @@
 
 (deffilter #'show :http
   [action request]
-  (let [{{id "id"} :params} request]
-    (action id)))
+  (let [{{id "id"} :params} request
+        user (model.user/show id)]
+    (action (spy user))))
 
 ;; TODO: This action is working off of a jid
 (deffilter #'show :xmpp
   [action request]
-  (let [{:keys [to]} request]
-    (action to)))
+  (let [{:keys [to]} request
+        user (model.user/fetch-by-jid to)]
+    (action user)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; update
