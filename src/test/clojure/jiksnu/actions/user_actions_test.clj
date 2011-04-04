@@ -58,7 +58,7 @@
     (do-it "should return that user"
       (model.user/drop!)
       (let [user (model.user/create (factory User))
-            response (show (:_id user))]
+            response (show user)]
         (expect (instance? User response))
         (expect (= response user))))))
 
