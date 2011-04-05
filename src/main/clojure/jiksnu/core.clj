@@ -1,5 +1,6 @@
 (ns jiksnu.core
   (:require [jiksnu.http :as http]
+            jiksnu.routes
             [jiksnu.xmpp :as xmpp]))
 
 (defn start
