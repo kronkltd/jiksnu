@@ -2,9 +2,10 @@
   (:use clojure.pprint
         clojure.stacktrace
         [ciste.config :only (config)]
+        ciste.debug
         jiksnu.view
         jiksnu.model
-        [jiksnu.session :only (with-user current-user)]
+        [jiksnu.session :only (with-user current-user with-user-id)]
         hiccup.core))
 
 (defn wrap-debug-binding
@@ -23,7 +24,7 @@ Turns on debugging mode for that request."
   [handler]
   (fn [{{username :id} :session
        :as request}]
-    (with-user username
+    (with-user-id username
       (handler request))))
 
 (defn wrap-error-catching

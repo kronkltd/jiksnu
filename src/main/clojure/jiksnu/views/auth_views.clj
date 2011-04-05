@@ -30,11 +30,12 @@
    :body (login-form)})
 
 (defview #'login :html
-  [request id]
-  {:session {:id id}
-   :status 303
-   :template false
-   :headers {"Location" "/"}})
+  [request user]
+  (if user
+    {:session {:id (:_id user)}
+     :status 303
+     :template false
+     :headers {"Location" "/"}}))
 
 (defview #'logout :html
   [request successful]
