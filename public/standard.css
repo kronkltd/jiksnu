@@ -125,11 +125,11 @@ section
 /*     width: 50px; */
 /* } */
 
-.vcard {
+.notice .vcard {
     float: left;
 }
 
-.vcard .url > .fn
+.notice .vcard .url > .fn
 {
     margin-left: 50px;
 }

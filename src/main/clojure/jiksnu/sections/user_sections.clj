@@ -187,6 +187,21 @@
 ;; show-section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defsection show-section [User :atom]
+  [^User user & options]
+  (let [person (Person. (make-object atom-ns "author" ""))
+        author-uri (full-uri user)]
+    (.setObjectType person person-uri)
+    (.setId person (str "acct:" (get-uri user)))
+    (.setName person (:first-name user) (:last-name user))
+    (.setDisplayName person (:name user))
+    (.addSimpleExtension person atom-ns "email" ""
+                         (or (:email user) (get-uri user)))
+    (.addSimpleExtension person atom-ns "name" "" (:name user))
+    (.addAvatar person (:avatar-url user) "image/jpeg")
+    (.addSimpleExtension person atom-ns "uri" "" author-uri)
+    person))
+
 (defsection show-section [User :xmpp :xmpp]
   [^User user & options]
   (let [{:keys [name avatar-url]} user]
@@ -230,10 +245,11 @@
             [:p "This user follows you."])
           (if (model.subscription/subscribing? actor (:_id user))
             [:p "You follow this user."])))
-       (user-actions user)
-       (remote-subscribe-form user)
-       (subscriptions-list user)
-       (subscribers-list user)
+       [:div.subscription-sections
+        (user-actions user)
+        (remote-subscribe-form user)
+        (subscriptions-list user)
+        (subscribers-list user)]
        (format-list user)
        (dump user)]
       (activities-list user)])))
@@ -360,17 +376,3 @@
     [:tbody
      (map index-line users)]]])
 
-(defsection show-section [User :atom]
-  [^User user & options]
-  (let [person (Person. (make-object atom-ns "author" ""))
-        author-uri (full-uri user)]
-    (.setObjectType person person-uri)
-    (.setId person (str "acct:" (get-uri user)))
-    (.setName person (:first-name user) (:last-name user))
-    (.setDisplayName person (:name user))
-    (.addSimpleExtension person atom-ns "email" ""
-                         (or (:email user) (get-uri user)))
-    (.addSimpleExtension person atom-ns "name" "" (:name user))
-    (.addAvatar person (:avatar-url user) "image/jpeg")
-    (.addSimpleExtension person atom-ns "uri" "" author-uri)
-    person))
