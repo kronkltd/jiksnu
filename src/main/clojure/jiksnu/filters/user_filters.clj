@@ -66,7 +66,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (action id)))
 
 (deffilter #'delete :xmpp
@@ -162,7 +162,7 @@
 
 (deffilter #'remote-profile :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (let [user (model.user/fetch-by-id id)]
       user)))
 
@@ -172,7 +172,7 @@
 
 (deffilter #'show :http
   [action request]
-  (let [{{id "id"} :params} request
+  (let [{{id :id} :params} (spy request)
         user (model.user/show id)]
     (action (spy user))))
 
@@ -188,7 +188,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'update :http
-  [action {{username "username" :as params} :params :as request}]
+  [action {{username :username :as params} :params :as request}]
   (let [user (model.user/show username (:domain (config)))]
     (let [new-params
           (-> (into {}
