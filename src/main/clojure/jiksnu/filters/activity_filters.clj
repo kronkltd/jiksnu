@@ -184,7 +184,7 @@
 
 ;; (deffilter #'user-timeline :http
 ;;   [action request]
-;;   (let [{{id "id"} :params} request
+;;   (let [{{id :id} :params} request
 ;;         user (model.user/fetch-by-id id)]
 ;;     [user (model.activity/index :authors (make-id id))]))
 

@@ -16,7 +16,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (action id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -41,7 +41,7 @@
 
 (deffilter #'ostatussub :http
   [action request]
-  (let [{{profile "profile"} :params} request]
+  (let [{{profile :profile} :params} request]
     (action profile)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -50,7 +50,7 @@
 
 (deffilter #'ostatussub-submit :http
   [action request]
-  (let [{{profile "profile"} :params} request]
+  (let [{{profile :profile} :params} request]
     (if profile
       (let [[username password] (clojure.string/split profile #"@")]
         (model.user/show username password)))))
@@ -84,7 +84,7 @@
 (deffilter #'subscribe :http
   [action request]
   (if-let [actor (current-user-id)]
-    (if-let [{{user-id "subscribeto"} :params} request]
+    (if-let [{{user-id :subscribeto} :params} request]
       (if-let [user (model.user/fetch-by-id user-id)]
         (model.subscription/subscribe actor (:_id user))))))
 
@@ -111,7 +111,7 @@
 
 (deffilter #'subscribers :http
   [action request]
-  (let [{{id "id"} :params} request
+  (let [{{id :id} :params} request
         user (model.user/show id)]
     (action user)))
 
@@ -126,7 +126,7 @@
 
 (deffilter #'subscriptions :http
   [action request]
-  (let [{{id "id"} :params} request
+  (let [{{id :id} :params} request
         user (model.user/show id)]
     (action user)))
 
@@ -142,7 +142,7 @@
 (deffilter #'unsubscribe :http
   [action request]
   (if-let [actor (current-user-id)]
-    (if-let [{{user "unsubscribeto"} :params} request]
+    (if-let [{{user :unsubscribeto} :params} request]
       (action actor (make-id user)))))
 
 (deffilter #'unsubscribe :xmpp

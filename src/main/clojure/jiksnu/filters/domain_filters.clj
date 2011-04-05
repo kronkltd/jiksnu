@@ -10,18 +10,18 @@
 
 (deffilter #'create :http
   [action request]
-  (let [{{domain "domain"} :params} request]
+  (let [{{domain :domain} :params} request]
     (model.domain/create {:_id domain})))
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id "*"} :params} request
+  (let [{{id :*} :params} request
         response (model.domain/delete id)]
     response))
 
 (deffilter #'discover :http
   [action request]
-  (let [{{id "id"} :params} request
+  (let [{{id :id} :params} request
         domain (model.domain/show id)
         xrd (fetch (str "http://" id "/.well-known/host-meta"))
         links (get-links xrd)]
@@ -34,6 +34,6 @@
 
 (deffilter #'show :http
   [action request]
-  (let [{{id "*"} :params} request
+  (let [{{id :*} :params} request
         domain (model.domain/show id)]
     domain))

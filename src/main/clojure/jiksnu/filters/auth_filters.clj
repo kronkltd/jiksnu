@@ -12,13 +12,13 @@
 
 (deffilter #'guest-login :http
   [action request]
-  (let [{{webid "webid"} :params} (debug/spy request)]
+  (let [{{webid :webid} :params} (debug/spy request)]
     (let [user (model.user/find-or-create-by-uri webid)]
       (debug/spy user))))
 
 (deffilter #'login :http
-  [action {{username "username"
-     password "password"} :params :as request}]
+  [action {{username :username
+            password :password} :params :as request}]
   (if-let [user (model.user/show username)]
     ;; TODO: encrypt
     (if (= password (:password user))
