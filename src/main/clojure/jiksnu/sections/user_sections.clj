@@ -213,7 +213,7 @@
 (defsection show-section-minimal [User :html]
   [user & options]
   [:div.vcard
-   (avatar-img user)
+   ;; (avatar-img user)
    (link-to user)])
 
 (defsection title [User]

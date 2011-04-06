@@ -81,22 +81,22 @@
            ]]))
      (if-let [recipients (seq (:recipients activity))]
        [:p "Recipients: " recipients])
-     (dump activity)]
-    [:footer
-     [:p [:a {:href (uri activity)}
-          [:time (:published activity)]]]
-     [:ul.buttons
-      [:li (update-button activity)]
-      [:li (comment-link activity)]
-      [:li (like-link activity)]
-      [:li (delete-link activity)]
-      [:li (edit-link activity)]]
-     (if-let [comments (:comments activity)]
-       [:p "Comments: " (count comments)])
-     [:div.comments
-      (map
-       (comp show-section-minimal model.activity/show)
-       (:comments activity))]]]))
+      (dump activity)
+      [:footer
+       [:p [:a {:href (uri activity)}
+            [:time (:published activity)]]]
+       [:ul.buttons
+        [:li (update-button activity)]
+        [:li (comment-link activity)]
+        [:li (like-link activity)]
+        [:li (delete-link activity)]
+        [:li (edit-link activity)]]
+       (if-let [comments (:comments activity)]
+         [:p "Comments: " (count comments)])
+       [:div.comments
+        (map
+         (comp show-section-minimal model.activity/show)
+         (:comments activity))]]]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section

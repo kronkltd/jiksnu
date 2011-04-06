@@ -6,6 +6,12 @@ body
     background-color: steelBlue;
 }
 
+body > header
+{
+    display: block;
+    margin-bottom: 10px;
+}
+
 .devel-section {
     background-color: yellow;
     border: 2px solid black;
@@ -36,7 +42,7 @@ a img {
     padding: 0 3px;
 }
 
-.content
+div.content
 {
     font-color: black;
     background-color: steelBlue;
@@ -86,26 +92,25 @@ article
     -moz-border-radius: 0 7px 7px 7px;
 }
 
-article header
+article section.content
 {
-    display: inline;
-    margin-left: 50px;
-/* width: 30%; */
-/* float: left; */
-}
-
-article section
-{
-    display: inline;
-    margin-left: 50px;
+    /* display: inline; */
+    margin-left: 60px;
     /* width: 70%; */
     /* float: left; */
+    display: block;
 }
 
-section
-{
-    display: block;
-    margin-left: 50px;
+/* article section.content header */
+/* { */
+/*     display: inline; */
+/*     margin-left: 60px; */
+/* /\* width: 30%; *\/ */
+/* /\* float: left; *\/ */
+/* } */
+
+.entry-content {
+    margin-top: 8px;
 }
 
 .actor
@@ -123,34 +128,31 @@ section
 /* .avatar */
 /* { */
 /*     float: left; */
-/*     width: 50px; */
+/*     width: 60px; */
 /* } */
 
-.notice .vcard {
-    float: left;
-}
+/* .entry-content, .entry-title */
+/* { */
+/*     margin-left: 60px; */
+/* } */
 
-.notice .vcard .url > .fn
-{
-    margin-left: 50px;
-}
+/* .notice .vcard { */
+/*     float: left; */
+/* } */
+
+/* .notice .vcard .url > .fn */
+/* { */
+/*     margin-left: 60px; */
+/* } */
 
 .privacy
 {
-    float: right;
+    /* float: right; */
+    position: absolute;
+    right: 0px;
+    top: 0px;
 }
 
-
-.entry-content, .entry-title
-{
-    margin-left: 50px;
-}
-
-body > header
-{
-    display: block;
-    margin-bottom: 10px;
-}
 
 .login
 {
@@ -160,12 +162,6 @@ body > header
 nav
 {
     /* float: left; */
-}
-
-section.content
-{
-    width: 69%;
-    margin: 0 auto;
 }
 
 .recipients
@@ -219,10 +215,14 @@ article footer
     display: block;
 }
 
+.buttons {
+    padding: 0px;
+}
+
 article footer .buttons li
 {
     display: inline;
-    margin-right: 5px;
+    margin-right: 12px;
 }
 
 .publish-actions
