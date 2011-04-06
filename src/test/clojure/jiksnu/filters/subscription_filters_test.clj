@@ -16,19 +16,19 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-;; (describe apply-filter delete)
+(describe apply-filter "delete")
 
-;; (describe apply-filter index)
+(describe apply-filter "index")
 
-;; (describe apply-filter ostatus)
+(describe apply-filter "ostatus")
 
-;; (describe apply-filter ostatussub)
+(describe apply-filter "ostatussub")
 
-;; (describe apply-filter ostatussub-submit)
+(describe apply-filter "ostatussub-submit")
 
-;; (describe apply-filter remote-subscribe)
+(describe apply-filter "remote-subscribe")
 
-;; (describe apply-filter remote-subscribe-confirm)
+(describe apply-filter "remote-subscribe-confirm")
 
 (describe apply-filter "#'subscribe :http"
   (testing "when the user is not already subscribed"
