@@ -42,28 +42,29 @@
             (let [response (apply-filter #'subscribe request)]
               (expect (subscription? response)))))))))
 
-;; (describe apply-filter subscribers
-;;   (testing "when there are subscribers"
-;;     (do-it "should not be empty"
-;;       (let [user (model.user/create (factory User))
-;;             subscriber (model.user/create (factory User))
-;;             element (make-element
-;;                      "pubsub" {"xmlns" pubsub-uri}
-;;                      ["subscribers" {"node" microblog-uri}])
-;;             packet (make-packet
-;;                     {:to (make-jid user)
-;;                      :from (make-jid user)
-;;                      :type :get
-;;                      :id (fseq :id)
-;;                      :body element})
-;;             request (make-request packet)
-;;             subscription (model.subscription/create
-;;                           (factory Subscription
-;;                                    {:from (:_id subscriber)
-;;                                     :to (:_id user)}))
-;;             response (subscribers request)]
-;;         (expect (seq response))
-;;         (expect (every? (partial instance? Subscription) response))))))
+(describe apply-filter "#'subscribers :xmpp"
+  (testing "when there are subscribers"
+    (do-it "should not be empty"
+      (let [user (model.user/create (factory User))
+            subscriber (model.user/create (factory User))
+            element (make-element
+                     "pubsub" {"xmlns" pubsub-uri}
+                     ["subscribers" {"node" microblog-uri}])
+            packet (make-packet
+                    {:to (make-jid user)
+                     :from (make-jid user)
+                     :type :get
+                     :id (fseq :id)
+                     :body element})
+            request (assoc (make-request packet)
+                      :serialization :xmpp)
+            subscription (model.subscription/create
+                          (factory Subscription
+                                   {:from (:_id subscriber)
+                                    :to (:_id user)}))
+            response (apply-filter #'subscribers request)]
+        (expect (seq response))
+        (expect (every? (partial instance? Subscription) response))))))
 
 ;; (describe apply-filter subscriptions
 ;;   (testing "when there are subscriptions"
