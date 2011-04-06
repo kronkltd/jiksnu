@@ -66,26 +66,27 @@
         (expect (seq response))
         (expect (every? (partial instance? Subscription) response))))))
 
-;; (describe apply-filter subscriptions
-;;   (testing "when there are subscriptions"
-;;     (do-it "should return a sequence of subscriptions"
-;;       (let [user (model.user/create (factory User))
-;;             subscribee (model.user/create (factory User))
-;;             element (make-element
-;;                      ["pubsub" {"xmlns" pubsub-uri}
-;;                       ["subscriptions" {"node" microblog-uri}]])
-;;             packet (make-packet
-;;                     {:to (make-jid user)
-;;                      :from (make-jid user)
-;;                      :type :get
-;;                      :body element})
-;;             request (make-request packet)
-;;             subscription (model.subscription/create
-;;                           (factory Subscription
-;;                                    {:from (:_id user)
-;;                                     :to (:_id subscribee)}))
-;;             results (subscriptions request)]
-;;         (expect (not (empty? results)))
-;;         (expect (every? (partial instance? Subscription) results))))))
+(describe apply-filter "#'subscriptions :xmpp"
+  (testing "when there are subscriptions"
+    (do-it "should return a sequence of subscriptions"
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            element (make-element
+                     ["pubsub" {"xmlns" pubsub-uri}
+                      ["subscriptions" {"node" microblog-uri}]])
+            packet (make-packet
+                    {:to (make-jid user)
+                     :from (make-jid user)
+                     :type :get
+                     :body element})
+            request (assoc (make-request packet)
+                      :serialization :xmpp)
+            subscription (model.subscription/create
+                          (factory Subscription
+                                   {:from (:_id user)
+                                    :to (:_id subscribee)}))
+            results (apply-filter #'subscriptions request)]
+        (expect (not (empty? results)))
+        (expect (every? (partial instance? Subscription) results))))))
 
-;; (describe apply-filter unsubscribe)
+(describe apply-filter "#'unsubscribe")
