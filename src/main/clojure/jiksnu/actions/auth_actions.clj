@@ -12,7 +12,7 @@
 (defaction guest-login
   [webid]
   (let [user (model.user/find-or-create-by-uri webid)]
-    (debug/spy user)))
+    user))
 
 (defaction login
   [{{username "username"

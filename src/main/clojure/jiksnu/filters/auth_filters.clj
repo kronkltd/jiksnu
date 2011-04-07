@@ -12,9 +12,8 @@
 
 (deffilter #'guest-login :http
   [action request]
-  (let [{{webid :webid} :params} (debug/spy request)]
-    (let [user (model.user/find-or-create-by-uri webid)]
-      (debug/spy user))))
+  (let [{{webid :webid} :params} request]
+    (model.user/find-or-create-by-uri webid)))
 
 (deffilter #'login :http
   [action {{username :username

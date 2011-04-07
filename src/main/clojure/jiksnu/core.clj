@@ -6,6 +6,7 @@
 (defn start
   ([] (start 8082))
   ([port]
+     (jiksnu.routes/set-handlers)
      (http/start port)
      (xmpp/start)))
 

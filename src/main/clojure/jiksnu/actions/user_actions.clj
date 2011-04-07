@@ -56,7 +56,7 @@
 The user needs to be retreived in the filter."
   [user]
   #_(model.user/fetch-by-id id)
-  (spy user))
+  user)
 
 (defaction update
   [& _])

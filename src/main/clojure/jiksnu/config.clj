@@ -12,6 +12,8 @@
                  :registration-enabled false
                  :debug false
                  :print {:request true
+                         :matchers true
+                         :predicates true
                          :params false}}
    :test {:domain "test.jiksnu.com"
           :registration-enabled false

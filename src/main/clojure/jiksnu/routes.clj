@@ -38,19 +38,24 @@
   (compojure/GET "/favicon.ico" request
        (route/files "favicon.ico"))
   (resolve-routes @*routes*)
-  (route/not-found "/public/404.html"))
+  (route/not-found "/public/404.html")
+  )
 
-(def app
-  (-> #'all-routes
+(defn app
+  []
+  (-> all-routes
       compojure.handler/site
+      wrap-log-request
       (wrap-user-debug-binding)
       (wrap-user-binding)
       (wrap-debug-binding)
       (wrap-database)
-      ;; #'wrap-flash
-      (wrap-session)
+      ;; ;; #'wrap-flash
+      ;; ;; (wrap-session)
       (middleware/wrap-http-serialization)
-      (wrap-error-catching)))
+      (wrap-error-catching)
+
+      ))
 
 (def http-matchers
   (make-matchers
@@ -171,24 +176,23 @@
      #'subscription/remote-subscribe-confirm]
 
     [{:method :headline}
-     #'activity/remote-create]])
-  )
+     #'activity/remote-create]]))
 
-(dosync
- (ref-set
-  *routes*
-  (concat
-   http-matchers
-   xmpp-matchers)))
 
-(dosync
- (ref-set *matchers*
-          [[#'xmpp-serialization?
-            [#'type-matches?
-             #'node-matches?
-             #'name-matches?
-             #'ns-matches?]]
-           [#'http-serialization?
-            [#'request-method-matches?
-             #'path-matches?]]]))
-
+(defn set-handlers
+  []
+  (dosync
+   (ref-set *routes*
+            (concat
+             http-matchers
+             xmpp-matchers)))
+  (dosync
+   (ref-set *matchers*
+            [[#'xmpp-serialization?
+              [#'type-matches?
+               #'node-matches?
+               #'name-matches?
+               #'ns-matches?]]
+             [#'http-serialization?
+              [#'request-method-matches?
+               #'path-matches?]]])))

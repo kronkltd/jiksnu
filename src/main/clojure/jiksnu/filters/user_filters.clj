@@ -172,9 +172,9 @@
 
 (deffilter #'show :http
   [action request]
-  (let [{{id :id} :params} (spy request)
+  (let [{{id :id} :params} request
         user (model.user/show id)]
-    (action (spy user))))
+    (action user)))
 
 ;; TODO: This action is working off of a jid
 (deffilter #'show :xmpp

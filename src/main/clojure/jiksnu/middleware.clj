@@ -50,10 +50,10 @@ Turns on debugging mode for that request."
 (defn wrap-log-request
   [handler]
   (fn [request]
+    (if (-> (config) :print :request)
+      (spy request))
     (if-let [response (handler request)]
       (do
-        (if (-> (config) :print :request)
-          (spy request))
         response))))
 
 (defn wrap-log-params
