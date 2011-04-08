@@ -37,7 +37,7 @@
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
         (with-user user
-          (let [request {:params {"subscribeto" (str (:_id user))}
+          (let [request {:params {:subscribeto (str (:_id user))}
                          :serialization :http}]
             (let [response (apply-filter #'subscribe request)]
               (expect (subscription? response)))))))))
