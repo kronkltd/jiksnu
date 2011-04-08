@@ -22,17 +22,54 @@
            jiksnu.model.User
            org.apache.abdera.model.Entry))
 
-(defsection uri [User]
-  [user & options]
-  (if (= (:domain user) (:domain (config)))
-    (str "/" (:username user))
-    (str "/users/" (:_id user))))
+(defsection add-form [User]
+  [record & options]
+  [:div
+   [:h3 "Create User"]
+   (f/form-to
+    [:post "/main/register"]
+    (f/text-field :username)
+    (f/submit-button "Add User"))])
 
-(defsection title [User]
+(defsection edit-form [User]
   [user & options]
-  (or (:display-name user)
-      (:first-name user)
-      (str (:username user) "@" (:domain user))))
+  (let [{:keys [domain first-name url email bio location last-name password
+                confirm-password avatar-url]} user]
+    [:div
+     (f/form-to
+      [:post (uri user)]
+      [:fieldset
+       [:legend "Edit User"]
+       [:ul
+        [:li (:username user)]
+        [:li (f/label :domain "Domain: ")
+         (f/text-field :domain domain)]
+        [:li (f/label :name "Display Name: ")
+         (f/text-field :name (:name user))]
+        [:li (f/label :first-name "First Name: ")
+         (f/text-field :first-name first-name)]
+        [:li (f/label :last-name "Last Name: ")
+         (f/text-field :last-name last-name)]
+        [:li (f/label :email "Email: ")
+         (f/text-field :email email)]
+        [:li (f/label :bio "Bio: ")
+         (f/text-field :bio bio)]
+        [:li (f/label :location "Location: ")
+         (f/text-field :location location)]
+        [:li (f/label :url "Url: ")
+         (f/text-field :url url)]
+        [:li (f/label :password "Password: ")
+         (f/text-field :password password)]
+        [:li (f/label :confirm-password "Confirm Password: ")
+         (f/text-field :confirm-password confirm-password)]
+        [:li (f/label :admin "Admin?: ")
+         (f/check-box :admin (:admin user))]
+        [:li (f/label :debug "Debug?: ")
+         (f/check-box :debug (:debug user))]
+        [:li (f/label :avatar-url "Avatar Url: ")
+         (f/text-field :avatar-url avatar-url)]]
+       (f/submit-button "Submit")])
+     (dump user)]))
 
 (defsection link-to [User :html]
   [user & options]
@@ -284,13 +321,6 @@
       [sioc "account_of"] (rdf-resource (str "acct:" (:username user) "@"
                                              (:domain user)))]]]))
 
-
-
-
-
-
-
-
 ;; (defsection show-section-minimal [User :xmpp :xmpp]
 ;;   [property & options]
 ;;   (make-element
@@ -303,76 +333,14 @@
    (avatar-img user)
    (link-to user)])
 
-(defsection index-line [User :html]
+(defsection title [User]
   [user & options]
-  [:tr
-   [:td (avatar-img user)]
-   [:td (:username user)]
-   [:td (:domain user)]
-   [:td [:a {:href (uri user)} "Show"]]
-   [:td [:a {:href (str (uri user) "/edit")} "Edit"]]
-   [:td (f/form-to [:delete (str "/users/" (:_id user))]
-                   (f/submit-button "Delete"))]])
+  (or (:display-name user)
+      (:first-name user)
+      (str (:username user) "@" (:domain user))))
 
-(defsection add-form [User]
-  [record & options]
-  [:div
-   [:h3 "Create User"]
-   (f/form-to
-    [:post "/main/register"]
-    (f/text-field :username)
-    (f/submit-button "Add User"))])
-
-(defsection edit-form [User]
+(defsection uri [User]
   [user & options]
-  (let [{:keys [domain first-name url email bio location last-name password
-                confirm-password avatar-url]} user]
-    [:div
-     (f/form-to
-      [:post (uri user)]
-      [:fieldset
-       [:legend "Edit User"]
-       [:ul
-        [:li (:username user)]
-        [:li (f/label :domain "Domain: ")
-         (f/text-field :domain domain)]
-        [:li (f/label :name "Display Name: ")
-         (f/text-field :name (:name user))]
-        [:li (f/label :first-name "First Name: ")
-         (f/text-field :first-name first-name)]
-        [:li (f/label :last-name "Last Name: ")
-         (f/text-field :last-name last-name)]
-        [:li (f/label :email "Email: ")
-         (f/text-field :email email)]
-        [:li (f/label :bio "Bio: ")
-         (f/text-field :bio bio)]
-        [:li (f/label :location "Location: ")
-         (f/text-field :location location)]
-        [:li (f/label :url "Url: ")
-         (f/text-field :url url)]
-        [:li (f/label :password "Password: ")
-         (f/text-field :password password)]
-        [:li (f/label :confirm-password "Confirm Password: ")
-         (f/text-field :confirm-password confirm-password)]
-        [:li (f/label :admin "Admin?: ")
-         (f/check-box :admin (:admin user))]
-        [:li (f/label :debug "Debug?: ")
-         (f/check-box :debug (:debug user))]
-        [:li (f/label :avatar-url "Avatar Url: ")
-         (f/text-field :avatar-url avatar-url)]]
-       (f/submit-button "Submit")])
-     (dump user)]))
-
-(defsection index-section [User :html]
-  [users & options]
-  [:div
-   (add-form (User.))
-   [:table
-    [:thead
-     [:tr
-      [:th]
-      [:th "User"]
-      [:th "Domain"]]]
-    [:tbody
-     (map index-line users)]]])
-
+  (if (= (:domain user) (:domain (config)))
+    (str "/" (:username user))
+    (str "/users/" (:_id user))))
