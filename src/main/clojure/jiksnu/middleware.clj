@@ -53,7 +53,7 @@ Turns on debugging mode for that request."
     (if-let [response (handler request)]
       (do
         (if (-> (config) :print :request)
-          (pprint request))
+          (spy request))
         response))))
 
 (defn wrap-log-params
