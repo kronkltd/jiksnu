@@ -37,7 +37,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (action id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -46,7 +46,7 @@
 
 (deffilter #'edit :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (action request)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,7 +55,7 @@
 
 (deffilter #'fetch-comments :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (if-let [activity (model.activity/show id)]
       (if-let [author (model.user/fetch-by-id
                        (first (:authors activity)))]
@@ -63,7 +63,7 @@
 
 (deffilter #'fetch-comments :xmpp
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (if-let [activity (model.activity/show id)]
       (map model.activity/show (:comments activity)))))
 
@@ -80,7 +80,7 @@
 
 (deffilter #'friends-timeline :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (model.activity/index :authors id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -109,7 +109,7 @@
 
 (deffilter #'like-activity :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (if-let [user (current-user)]
       (if-let [activity (model.activity/fetch-by-id id)]
         (model.like/find-or-create activity user)
@@ -129,7 +129,7 @@
 
 (deffilter #'new-comment :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (model.activity/show id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,7 +138,7 @@
 
 (deffilter #'show :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (action id)))
 
 (deffilter #'show :xmpp
@@ -178,7 +178,7 @@
 
 (deffilter #'user-timeline :http
   [action request]
-  (let [{{id "id"} :params} request]
+  (let [{{id :id} :params} request]
     (let [user (model.user/fetch-by-id id)]
       (action user))))
 
