@@ -1,7 +1,6 @@
 (ns jiksnu.filters.subscription-filters-test
   (:use ciste.factory
         ciste.filters
-        ciste.lazytest.filters
         clj-tigase.core
         jiksnu.actions.subscription-actions
         jiksnu.filters.subscription-filters
