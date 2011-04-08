@@ -134,9 +134,12 @@
    :from (fseq :word)
    :created #'sugar/date})
 
-(defn write-json-date [date out escape-unicode?]
-  (let [formatted-date (.format (SimpleDateFormat. *date-format*) date)]
-    (.print out (str "\"" formatted-date "\""))))
+(defn write-json-date
+  ([date out]
+     (write-json-date date out false))
+  ([date out escape-unicode?]
+     (let [formatted-date (.format (SimpleDateFormat. *date-format*) date)]
+       (.print out (str "\"" formatted-date "\"")))))
 
 (defn write-json-object-id
   [id out escape-unicode]
