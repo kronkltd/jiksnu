@@ -13,7 +13,6 @@
         jiksnu.sections.subscription-sections
         jiksnu.view)
   (:require [hiccup.form-helpers :as f]
-            [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
@@ -80,7 +79,7 @@
        (fn [subscription]
          (let [to (model.user/fetch-by-id (:to subscription))]
            [:tr
-            [:td (sections.user/avatar-img to)]
+            [:td (avatar-img to)]
             [:td (link-to to)]
             [:td (:pending subscription)]
             [:td (:created subscription)]

@@ -19,8 +19,7 @@
 
 (defn ^Entry new-entry
   [& opts]
-  (let [entry (.newEntry *abdera*)]
-    entry))
+  (.newEntry *abdera*))
 
 ;; TODO: Move this to user
 (defn add-author

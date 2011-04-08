@@ -20,7 +20,7 @@
   [^User user]
   (str (:_id user) "@" (:domain user)))
 
-(defn ^URI author-uri
+(defn author-uri
   [^Entry entry]
   (let [author (.getAuthor entry)]
     (let [uri (.getUri author)]
