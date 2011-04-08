@@ -1,7 +1,8 @@
 (ns jiksnu.abdera
   (:use jiksnu.model
         [clojure.contrib.logging :only (error)])
-  (:import java.io.ByteArrayInputStream))
+  (:import java.io.ByteArrayInputStream
+           javax.xml.namespace.QName))
 
 (defn parse-stream
   [stream]
@@ -22,6 +23,13 @@
   "Filter for map entries that do not represent namespaces"
   [[k v]]
   (not (= k :xmlns)))
+
+(defn make-object
+  ([element]
+     (com.cliqset.abdera.ext.activity.Object. element))
+  ([namespace name prefix]
+     (com.cliqset.abdera.ext.activity.Object.
+      *abdera-factory* (QName. namespace name prefix))))
 
 ;; (defn node-value
 ;;   [^Element element]
