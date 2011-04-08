@@ -6,6 +6,7 @@
         [ring.middleware.session :only (wrap-session)])
   (:require [ciste.middleware :as middleware]
             [compojure.core :as compojure]
+            compojure.handler
             [compojure.route :as route]
             (jiksnu.actions
              [activity-actions :as activity]
@@ -41,6 +42,7 @@
 
 (def app
   (-> #'all-routes
+      compojure.handler/site
       (wrap-user-debug-binding)
       (wrap-user-binding)
       (wrap-debug-binding)
