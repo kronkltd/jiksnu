@@ -1,5 +1,6 @@
 (ns jiksnu.views.auth-views
   (:use ciste.core
+        ciste.debug
         ciste.html
         ciste.sections
         ciste.view
@@ -32,8 +33,8 @@
 
 (defview #'login :html
   [request user]
-  (if user
-    {:session {:id (:_id user)}
+  (if (spy user)
+    {:session {:id user}
      :status 303
      :template false
      :headers {"Location" "/"}}))

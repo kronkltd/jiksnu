@@ -1,9 +1,15 @@
 (ns jiksnu.routes
   (:use ciste.core
+        ciste.debug
         ciste.predicates
         jiksnu.middleware
         jiksnu.namespace
-        [ring.middleware.session :only (wrap-session)])
+        (ring.middleware params
+                         keyword-params
+                         nested-params
+                         multipart-params
+                         cookies
+                         session))
   (:require [ciste.middleware :as middleware]
             [compojure.core :as compojure]
             compojure.handler
@@ -17,6 +23,12 @@
              [user-actions :as user]
              [webfinger-actions :as webfinger])
             [jiksnu.view :as view]
+            (jiksnu.filters
+             activity-filters
+             auth-filters
+             domain-filters
+             subscription-filters
+             user-filters)
             (jiksnu.views
              activity-views
              auth-views
@@ -35,27 +47,32 @@
 
 (compojure/defroutes all-routes
   (route/files "/public")
-  (compojure/GET "/favicon.ico" request
-       (route/files "favicon.ico"))
-  (resolve-routes @*routes*)
-  (route/not-found "/public/404.html")
+  (route/files "/favicon.ico")
+  ;; (compojure/GET "/favicon.ico" request
+  ;;      (route/files "favicon.ico"))
+  (compojure/ANY "*" request
+                 "foo"
+                 ((resolve-routes @*routes*) request))
+  (route/not-found "You found the hidden page. Don't tell anyone about this.\n")
   )
 
 (defn app
   []
   (-> all-routes
-      compojure.handler/site
       wrap-log-request
       (wrap-user-debug-binding)
       (wrap-user-binding)
       (wrap-debug-binding)
-      (wrap-database)
       ;; ;; #'wrap-flash
-      ;; ;; (wrap-session)
+      ;; (compojure.handler/site :memory)
+      (wrap-session)
+      wrap-multipart-params
+      wrap-keyword-params
+      wrap-nested-params
+      wrap-params
       (middleware/wrap-http-serialization)
-      (wrap-error-catching)
-
-      ))
+      (wrap-database)
+      (wrap-error-catching)))
 
 (def http-matchers
   (make-matchers

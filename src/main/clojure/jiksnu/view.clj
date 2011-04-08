@@ -17,6 +17,7 @@
         jiksnu.xmpp
         jiksnu.xmpp.element)
   (:require [clojure.stacktrace :as stacktrace]
+            [ciste.debug :as debug]
             [hiccup.form-helpers :as f])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
