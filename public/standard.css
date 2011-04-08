@@ -114,9 +114,10 @@ section
 }
 
 .activities .avatar {
-    top: 1px;
-    left: 1px;
-    position: absolute;
+    /* top: 1px; */
+    /* left: 1px; */
+    /* position: absolute; */
+    float: left;
 }
 
 /* .avatar */
