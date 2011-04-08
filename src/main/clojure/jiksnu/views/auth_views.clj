@@ -4,6 +4,7 @@
         ciste.sections
         ciste.view
         jiksnu.actions.auth-actions
+        jiksnu.helpers.auth-helpers
         jiksnu.model
         jiksnu.sections.auth-sections
         jiksnu.view)

@@ -10,7 +10,9 @@
         ciste.trigger
         ciste.debug
         ;; clojure.contrib.logging
+        jiksnu.abdera
         jiksnu.actions.activity-actions
+        jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.activity-sections

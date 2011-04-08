@@ -3,6 +3,7 @@
         clj-tigase.core
         jiksnu.abdera
         jiksnu.actions.activity-actions
+        jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.sections.activity-sections
         jiksnu.session)

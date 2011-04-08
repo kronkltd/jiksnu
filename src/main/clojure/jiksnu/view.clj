@@ -9,6 +9,7 @@
         [clojure.string :only (trim)]
         hiccup.core
         jiksnu.abdera
+        jiksnu.helpers.auth-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.auth-sections

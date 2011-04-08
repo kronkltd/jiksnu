@@ -4,6 +4,7 @@
         ciste.factory
         clj-tigase.core
         jiksnu.core-test
+        jiksnu.helpers.subscription-helpers
         jiksnu.namespace
         jiksnu.sections.subscription-sections
         jiksnu.view

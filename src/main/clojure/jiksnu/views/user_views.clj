@@ -6,6 +6,7 @@
         ciste.view
         clj-tigase.core
         jiksnu.actions.user-actions
+        jiksnu.helpers.user-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.user-sections
