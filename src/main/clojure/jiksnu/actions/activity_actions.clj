@@ -74,4 +74,4 @@
 
 (defaction user-timeline
   [user]
-  [user (model.activity/index :authors (make-id (:_id user)))])
+  [user (model.activity/index :authors (:_id user))])
