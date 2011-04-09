@@ -54,6 +54,8 @@
         [:li [:a {:href "/domains"} "Domains"]]
         (if (is-admin? user)
           (list
+           [:li [:a {:href "/admin/notices"} "Notices"]]
+           [:li [:a {:href "/admin/settings"} "Settings"]]
            [:li [:a {:href "/admin/users"} "Users"]]
            [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]])))
        (list
