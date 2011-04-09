@@ -1,5 +1,7 @@
 (ns jiksnu.middleware
-  (:use clojure.pprint
+  (:use clj-stacktrace.core
+        clj-stacktrace.repl
+        clojure.pprint
         clojure.stacktrace
         [ciste.config :only (config)]
         ciste.debug
@@ -34,8 +36,8 @@ Turns on debugging mode for that request."
      (handler request)
      (catch Exception e
        {:body (str "An error done happened: "
-                   (with-out-str
-                     (print-cause-trace e)))}))))
+                   (pst-str e))
+        :status 500}))))
 
 (defn wrap-user-debug-binding
   [handler]

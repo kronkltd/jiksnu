@@ -17,9 +17,9 @@
 (defn fetch-activities
   [user]
   (doall
-   (map
-    #(-> % :activity model.activity/fetch-by-id)
-    (index user))))
+   (filter identity (map
+     #(-> % :activity model.activity/fetch-by-id)
+     (index user)))))
 
 (defn push
   [user activity]

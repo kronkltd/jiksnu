@@ -10,10 +10,10 @@
            jiksnu.model.User))
 
 (defaction delete
-  "Deletes a subscription.
+;;   "Deletes a subscription.
 
-This action is primarily for the admin console.
-In most cases, use the user-specific versions. (unsubscribe)"
+;; This action is primarily for the admin console.
+;; In most cases, use the user-specific versions. (unsubscribe)"
   [id]
   (model.subscription/delete id))
 

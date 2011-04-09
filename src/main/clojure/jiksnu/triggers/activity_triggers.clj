@@ -51,7 +51,13 @@
   (let [parent (model.activity/show (:parent activity))]
     (model.activity/add-comment parent activity)))
 
+(defn show-trigger
+  [action params activity]
+  (println "show trigger")
 
+  )
+
+(add-trigger! #'show #'show-trigger)
 (add-trigger! #'create #'notify-commented)
 (add-trigger! #'create #'notify-subscribers)
 (add-trigger! #'create #'sleep-and-print)

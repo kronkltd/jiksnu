@@ -1,5 +1,6 @@
 (ns jiksnu.filters.activity-filters
-  (:use ciste.filters
+  (:use ciste.debug
+        ciste.filters
         clj-tigase.core
         jiksnu.abdera
         jiksnu.actions.activity-actions
@@ -39,7 +40,7 @@
 (deffilter #'delete :http
   [action request]
   (let [{{id :id} :params} request]
-    (action id)))
+    (action (spy id))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edit

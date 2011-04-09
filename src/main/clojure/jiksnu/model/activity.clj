@@ -119,7 +119,7 @@
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-one Activity {:_id id}))
+  (entity/fetch-one Activity (spy {:_id id})))
 
 (defn show
   [id]
@@ -136,7 +136,8 @@
 
 (defn delete
   [activity]
-  (entity/delete activity))
+  (entity/delete activity)
+  activity)
 
 (defn find-by-user
   [user]
