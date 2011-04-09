@@ -41,7 +41,6 @@
   (str "http://" (-> (config) :domain)
        (apply uri record options)))
 
-
 (defn navigation-section
   []
   (let [user (current-user)]
@@ -98,41 +97,6 @@
        #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
 
-(defn pubsub-element?
-  [^Element element]
-  (and element
-       (= (.getName element) "pubsub")))
-
-;; (defn packet?
-;;   "Returns if the element is a packet"
-;;   [^Element element]
-;;   (instance? Packet element))
-
-(defn iq-elements
-  [^Packet packet]
-  (children packet "/iq"))
-
-(defn pubsub-items
-  "Returns a seq of pubsub elements contained in a packet"
-  [^Packet packet]
-  (children packet "/iq/pubsub"))
-
-(defn bare-recipient?
-  [^Packet packet]
-  (if packet
-    (let [recipient-jid (.getStanzaTo packet)]
-     (= recipient-jid (.copyWithoutResource recipient-jid)))))
-
-#_(defn from-authenticated?
-  [^Packet packet]
-  (if packet
-    (let [sender-jid (.getStanzaFrom packet)]
-     (session/is-user? (.getBareJID sender-jid)))))
-
-(defn get-items
-  [^Packet packet]
-  (if-let [node (first (pubsub-items packet))]
-    (children node)))
 
 (defn make-request
   [^Packet packet]
@@ -159,11 +123,6 @@
      :method type
      :items (get-items packet)}))
 
-(defn ^Packet respond-with
-  "given an item element, returns a packet"
-  [request ^Element item]
-  (.okResult (:packet request) item 0))
-
 (defn make-jid
   ([user]
      (make-jid (:username user) (:domain user)))
@@ -181,25 +140,6 @@
       #_(error "Router not started: " e)
       #_(stacktrace/print-stack-trace e)
       packet)))
-
-(defn set-packet
-  [request body]
-  {:body body
-   :from (:to request)
-   :to (:from request)
-   :id (:id request)
-   :type :set})
-
-(defn result-packet
-  [request body]
-  (merge
-   (if body (make-element body))
-   {:from (:to request)
-    :to (:from request)
-    :id (:id request)
-    :type :result}))
-
-
 
 (defmethod apply-template :html
   [request response]
