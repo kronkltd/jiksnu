@@ -56,7 +56,7 @@
 
 (defn set-tags
   [activity]
-  (if-let [tags (get activity "tags")]
+  (if-let [tags (get activity :tags)]
     (let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
       (assoc activity :tags tag-seq))
     activity))
