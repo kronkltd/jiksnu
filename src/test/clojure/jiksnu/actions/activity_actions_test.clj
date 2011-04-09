@@ -57,7 +57,14 @@
 
 (describe edit)
 
-(describe fetch-comments)
+(describe fetch-comments
+  (testing "when the activity exists"
+    (testing "and there are no comments"
+      (do-it "should return an empty sequence"
+        (let [actor (model.user/create (factory User))]
+          (with-user actor
+            (let [activity (create (factory Activity))]
+              (expect (empty? (fetch-comments activity))))))))))
 
 (describe fetch-comments-remote)
 
@@ -86,7 +93,65 @@
 
 (describe new-comment)
 
-(describe show)
+(describe show
+  (testing "when the record exists"
+    (testing "and the user is not logged in"
+      (testing "and the record is public"
+        (do-it "should return the activity"
+          (let [author (model.user/create (factory User))
+                activity (with-user author
+                           (create (factory Activity)))
+                response (show (:_id activity))]
+            (expect (activity? response)))))
+      (testing "and the record is not public"
+        (do-it "should return nil"
+          (let [author (model.user/create (factory User))
+                activity (with-user author
+                           (create (factory Activity {:public false})))
+                response (show (:_id activity))]
+            (expect (nil? response))))))
+    (testing "and the user is logged in"
+      (testing "and is the author"
+        (do-it "should return the activity"
+          (let [user (model.user/create (factory User))]
+            (with-user user
+              (let [activity (create (factory Activity))
+                    response (show (:_id activity))]
+                (expect (activity? response)))))))
+      (testing "and is not the author"
+        (testing "and is on the access list"
+          (do-it "should return the activity"))
+        (testing "and is not on the access list"
+          (testing "and is an admin"
+            (do-it "should return the activity"
+              (let [user (model.user/create (factory User {:admin true}))
+                    author (model.user/create (factory User))]
+                (let [activity (with-user author
+                                 (create (factory Activity {:public false})))]
+                  (with-user user
+                    (let [response (show (:_id activity))]
+                      (expect (activity? response))))))))
+          (testing "and is not an admin"
+            (do-it "should return nil"
+              (let [user (model.user/create (factory User))
+                    author (model.user/create (factory User))]
+                (let [activity
+                      (with-user author
+                        (create (factory Activity {:public false})))]
+                  (with-user user
+                    (let [response (show (:_id activity))]
+                      (expect (nil? response)))))))))))
+    (testing "and the record is not public"
+      (testing "and the user is not logged in"
+        (do-it "should return nil"
+          (let [activity (create (factory Activity {:public false}))
+                response (show (:_id activity))]
+            (expect (nil? response)))))
+      (testing "and the user is logged in"
+        (testing "and the user is an admin"
+          (do-it "should return the activity")))))
+  (testing "when the record does not exist"
+    (do-it "should return nil" :pending)))
 
 (describe update)
 
