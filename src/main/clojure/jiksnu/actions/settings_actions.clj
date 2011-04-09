@@ -1,6 +1,7 @@
 (ns jiksnu.actions.settings-actions
-  (:use ciste.core))
+  (:use ciste.core
+        jiksnu.session))
 
 (defaction edit
   []
-  true)
+  (is-admin?))
