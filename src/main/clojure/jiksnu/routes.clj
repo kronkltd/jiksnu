@@ -19,6 +19,7 @@
              [auth-actions :as auth]
              [domain-actions :as domain]
              [inbox-actions :as inbox]
+             [settings-actions :as settings]
              [subscription-actions :as subscription]
              [user-actions :as user]
              [webfinger-actions :as webfinger])
@@ -89,6 +90,7 @@
     [:get "/api/statuses/public_timeline.:format"]   #'activity/index
     [:get "/admin/subscriptions"]                    #'subscription/index
     [:get "/admin/users"]                            #'user/index
+    [:get "/admin/settings"]                         #'settings/edit
     [:get "/main/login"]                             #'auth/login-page
     [:post "/main/guest-login"]                      #'auth/guest-login
     [:post "/main/login"]                            #'auth/login
