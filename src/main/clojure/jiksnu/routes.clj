@@ -56,8 +56,7 @@
                    (resolve-routes @*routes*)) request))
   (route/not-found "You found the hidden page. Don't tell anyone about this.\n"))
 
-(defn app
-  []
+(def app
   (-> all-routes
       ;; wrap-log-request
       (wrap-user-debug-binding)

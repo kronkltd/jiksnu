@@ -8,7 +8,7 @@
   ([] (start 8082))
   ([port]
      (run-jetty
-      (#'routes/app)
+      (var routes/app)
       {:port port
        ;; :keystore "/home/duck/projects/jiksnu/certs/rsa-keystore"
        ;; :key-password "GuNgSkOWmWUa46XE1n52vuMPp"
