@@ -35,7 +35,8 @@
              domain-views
              subscription-views
              user-views
-             webfinger-views)))
+             webfinger-views)
+            [ring.util.response :as response]))
 
 (def #^:dynamic *standard-middleware*
   [#'wrap-log-request
@@ -47,19 +48,17 @@
 
 (compojure/defroutes all-routes
   (route/files "/public")
-  (route/files "/favicon.ico")
-  ;; (compojure/GET "/favicon.ico" request
-  ;;      (route/files "favicon.ico"))
+  (compojure/GET "/favicon.ico" request
+                 (response/file-response "favicon.ico"))
   (compojure/ANY "*" request
-                 "foo"
-                 ((resolve-routes @*routes*) request))
-  (route/not-found "You found the hidden page. Don't tell anyone about this.\n")
-  )
+                 ((wrap-log-request
+                   (resolve-routes @*routes*)) request))
+  (route/not-found "You found the hidden page. Don't tell anyone about this.\n"))
 
 (defn app
   []
   (-> all-routes
-      wrap-log-request
+      ;; wrap-log-request
       (wrap-user-debug-binding)
       (wrap-user-binding)
       (wrap-debug-binding)
