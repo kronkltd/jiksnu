@@ -33,8 +33,8 @@
 
 (defview #'login :html
   [request user]
-  (if (spy user)
-    {:session {:id user}
+  (if user
+    {:session {:id (:_id user)}
      :status 303
      :template false
      :headers {"Location" "/"}}))
