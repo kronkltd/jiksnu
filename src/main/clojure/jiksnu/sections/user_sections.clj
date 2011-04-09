@@ -218,7 +218,8 @@
 
 (defsection title [User]
   [user & options]
-  (or (:display-name user)
+  (or (:name user)
+      (:display-name user)
       (:first-name user)
       (str (:username user) "@" (:domain user))))
 
