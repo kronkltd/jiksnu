@@ -6,7 +6,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(defn index
-  [request]
+(defaction index
+  [options]
   (let [user (model.user/show ((:params request) "username"))]
     (model.item/fetch-activities user)))
