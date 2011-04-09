@@ -170,7 +170,7 @@
         (let [actor (model.user/create (factory User))]
           (with-user actor
             (let [activity (create (factory Activity))]
-              (delete (:_id activity))
+              (delete activity)
               (expect (nil? (show (:_id activity)))))))))))
 
 (describe find-by-user)

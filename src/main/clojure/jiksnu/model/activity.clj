@@ -135,8 +135,8 @@
   (entity/delete-all Activity))
 
 (defn delete
-  [id]
-  (entity/delete (show id)))
+  [activity]
+  (entity/delete activity))
 
 (defn find-by-user
   [user]

@@ -36,7 +36,24 @@
                      response (create activity)]
                  (expect (activity? response)))))))))))
 
-(describe delete)
+(describe delete
+  (testing "when the activity exists"
+    (testing "and the user owns the activity"
+      (do-it "should delete that activity"
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [activity (model.activity/create (factory Activity))]
+              (delete (:_id activity))
+              (expect (nil? (model.activity/fetch-by-id (:_id activity)))))))))
+    (testing "and the user does not own the activity"
+      (do-it "should not delete that activity"
+        (let [user1 (model.user/create (factory User))
+              user2 (model.user/create (factory User))
+              activity (with-user user1
+                         (model.activity/create (factory Activity)))]
+          (with-user user2
+            (delete (:_id activity))
+            (expect (model.activity/fetch-by-id (:_id activity)))))))))
 
 (describe edit)
 
