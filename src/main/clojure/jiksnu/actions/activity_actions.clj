@@ -66,10 +66,15 @@
 
 (defaction update
   [activity]
-  (let [opts
-        (merge activity
-               (if (= (get activity "public") "public")
-                 {:public true}))]
+  (let [{{id :_id} :params} activity
+        original-activity (model.activity/fetch-by-id id)
+        opts
+        (make
+         Activity
+         (merge original-activity
+                activity
+                (if (= (get activity :public) "public")
+                  {:public true})))]
     (model.activity/update opts)))
 
 (defaction user-timeline

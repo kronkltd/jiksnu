@@ -48,7 +48,7 @@
 (deffilter #'edit :http
   [action request]
   (let [{{id :id} :params} request]
-    (action request)))
+    (action id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fetch-comments
