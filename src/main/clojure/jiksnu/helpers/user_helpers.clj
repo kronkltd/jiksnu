@@ -1,5 +1,6 @@
 (ns jiksnu.helpers.user-helpers
   (:use ciste.config
+        ciste.debug
         ciste.sections
         ciste.view
         [clj-gravatar.core :only (gravatar-image)]
@@ -8,8 +9,11 @@
         jiksnu.model
         jiksnu.session
         jiksnu.view)
-  (:require [hiccup.form-helpers :as f]
+  (:require [clojure.string :as string]
+            [hiccup.form-helpers :as f]
+            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.subscription :as model.subscription])
   (:import java.net.URI
            javax.xml.namespace.QName
@@ -18,7 +22,7 @@
 
 (defn get-uri
   [^User user]
-  (str (:_id user) "@" (:domain user)))
+  (str (:username user) "@" (:domain user)))
 
 (defn author-uri
   [^Entry entry]
@@ -148,7 +152,20 @@
                      ".json")} "JSON"]]]])
 
 (defn activities-list
-  [user]
+  [^User user]
   [:div.activities
    (map show-section-minimal
         (model.activity/find-by-user user))])
+
+(defn user-meta-uri
+  [^User user]
+  (let [domain-object (model.domain/show (:domain user))]
+    (let [{links :links} (spy domain-object)
+          template (:template (first (filter #(= (:rel %) "lrdd") links)))]
+      (string/replace template "{uri}" (get-uri user)))))
+
+(defn fetch-user-meta
+  [^User user]
+  (-> user
+      user-meta-uri
+      actions.webfinger/fetch))

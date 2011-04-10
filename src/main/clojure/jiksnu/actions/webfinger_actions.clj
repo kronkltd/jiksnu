@@ -32,8 +32,14 @@
   [xrd]
   (map
    (fn [link]
-     {:href (.getHref link)
-      :rel (str (.getRel link))
-      :template (.getTemplate link)
-      :type (.getType link)})
+     (let [href (str (.getHref link))
+           rel (str (.getRel link))
+           template (.getTemplate link)
+           type (.getType link)]
+       (merge
+        {}
+        (if href {:href href})
+        (if rel {:rel rel})
+        (if template {:template template})
+        (if type {:type type}))))
    (.getLinks xrd)))
