@@ -19,7 +19,8 @@
            javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera.model.Entry
-           org.apache.abdera.protocol.client.AbderaClient))
+           org.apache.abdera.protocol.client.AbderaClient
+           tigase.xml.Element))
 
 (defn get-uri
   [^User user]
@@ -232,11 +233,35 @@
   (let [activities (fetch-activities user)]
     (dorun
      (map
-      (fn [activity]
-        (model.activity/create-raw activity)
-        )
-      activities)
-     )
+      model.activity/create-raw
+      activities))))
 
-    )
-  )
+(defn rule-element?
+  [^Element element]
+  (= (.getName element) "acl-rule"))
+
+(defn rule-map
+  [rule]
+  (let [^Element action-element (.getChild rule "acl-action")
+        ^Element subject-element (.getChild rule "acl-subject")]
+    {:subject (.getAttribute subject-element "type")
+     :permission (.getAttribute action-element "permission")
+     :action (.getCData action-element)}))
+
+(defn property-map
+  [user property]
+  (let [child-elements (children property)
+        rule-elements (filter rule-element? child-elements)
+        type-element (first (filter (comp not rule-element?) child-elements))]
+    {:key (.getName property)
+     :type (.getName type-element)
+     :value (.getCData type-element)
+     :rules (map rule-map rule-elements)
+     :user user}))
+
+(defn process-vcard-element
+  [element]
+  (fn [vcard-element]
+    (map (partial property-map (current-user))
+         (children vcard-element))))
+

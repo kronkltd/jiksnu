@@ -13,35 +13,6 @@
             [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
 
-(defn rule-element?
-  [^Element element]
-  (= (.getName element) "acl-rule"))
-
-(defn rule-map
-  [rule]
-  (let [^Element action-element (.getChild rule "acl-action")
-        ^Element subject-element (.getChild rule "acl-subject")]
-    {:subject (.getAttribute subject-element "type")
-     :permission (.getAttribute action-element "permission")
-     :action (.getCData action-element)}))
-
-(defn property-map
-  [user property]
-  (let [child-elements (children property)
-        rule-elements (filter rule-element? child-elements)
-        type-element (first (filter (comp not rule-element?) child-elements))]
-    {:key (.getName property)
-     :type (.getName type-element)
-     :value (.getCData type-element)
-     :rules (map rule-map rule-elements)
-     :user user}))
-
-(defn process-vcard-element
-  [element]
-  (fn [vcard-element]
-    (map (partial property-map (current-user))
-         (children vcard-element))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; create
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,7 +54,6 @@
   (let [user (show request)]
     user))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fetch-remote
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -91,6 +61,16 @@
 (deffilter #'fetch-remote :xmpp
   [action request]
   (model.user/fetch-by-jid (:to request)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fetch-updates
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deffilter #'fetch-updates :http
+  [action request]
+  (let [{{id :id} :params} request
+        user (model.user/fetch-by-id id)]
+    (action user)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; inbox
@@ -188,15 +168,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'update :http
-  [action {{username :username :as params} :params :as request}]
-  (let [user (model.user/show username (:domain (config)))]
-    (let [new-params
-          (-> (into {}
-                    (map
-                     (fn [[k v]]
-                       (if (not= v "")
-                         [(keyword k) v]))
-                     params))
-              (dissoc :id)
-              #_(assoc :_id id))]
-      (model.user/update new-params))))
+  [action request]
+  (let [{params :params} request
+        {username :username} params
+        user (model.user/show username)]
+    (action user params)))

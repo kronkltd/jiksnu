@@ -62,8 +62,16 @@
   user)
 
 (defaction update
-  [user]
-  (model.user/update user))
+  [user params]
+  (let [new-params
+        (-> (into user
+                  (map
+                   (fn [[k v]]
+                     (if (not= v "")
+                       [(keyword k) v]))
+                   params))
+            (dissoc :id))]
+   (model.user/update new-params)))
 
 (defaction find-or-create
   [username domain]
@@ -78,3 +86,7 @@
         links (actions.webfinger/get-links xrd)
         new-user (assoc user :links links)]
     (update new-user)))
+
+(defaction fetch-updates
+  [user]
+  (load-activities user))

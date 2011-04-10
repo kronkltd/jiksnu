@@ -113,6 +113,7 @@
     [:post "/main/register"]                         #'user/create
     [:get "/users/:id"]                              #'user/remote-profile
     [:delete "/users/:id"]                           #'user/delete
+    [:post "/users/:id/update"]                      #'user/fetch-updates
     [:post "/:username"]                             #'user/update
     [:get "/:username/all"]                          #'inbox/index
     [:get "/:id"]                                    #'user/show
