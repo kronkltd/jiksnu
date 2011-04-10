@@ -1,5 +1,6 @@
 (ns jiksnu.views.domain-views
   (:use ciste.core
+        ciste.debug
         ciste.sections
         ciste.view
         jiksnu.actions.domain-actions
@@ -20,6 +21,23 @@
    [:div
     [:p (:_id domain)]
     [:p (:osw domain)]
+    [:div
+     [:table
+      [:thead
+       [:tr
+        [:th "Rel"]
+        [:th "Href"]
+        [:th "Template"]
+        [:th "Type"]]]
+      [:tbody
+       (map
+        (fn [link]
+          [:tr
+           [:td (:rel link)]
+           [:td (:href link)]
+           [:td (:template link)]
+           [:td (:type link)]])
+        (:links domain))]]]
     [:p
      (f/form-to
       [:post (str "/domains/" (:_id domain) "/discover")]
