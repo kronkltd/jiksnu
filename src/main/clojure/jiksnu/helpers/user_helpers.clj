@@ -220,21 +220,17 @@
 
 (defn fetch-activities
   [user]
-  (let [entries (fetch-entries user)]
-    (println (count entries))
-    (println (class entries))
+  (let [feed (fetch-feed user)]
     (map
-     (fn [entry]
-       (jiksnu.helpers.activity-helpers/to-activity (spy entry)))
-     entries)))
+     #(jiksnu.helpers.activity-helpers/to-activity % feed)
+     (.getEntries feed))))
 
 (defn load-activities
   [user]
-  (let [activities (fetch-activities user)]
-    (dorun
-     (map
-      model.activity/create-raw
-      activities))))
+  (dorun
+   (map
+    model.activity/create-raw
+    (fetch-activities user))))
 
 (defn rule-element?
   [^Element element]

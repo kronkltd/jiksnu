@@ -188,33 +188,41 @@
            :object-published (.getPublished object)
            :object-content (.getContent object)})))))
 
+(defn get-authors
+  [entry feed]
+  (concat
+   (.getAuthors entry)
+   (if feed (.getAuthors feed))))
+
 (defn ^Activity to-activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
-  [entry]
-  (let [id (str (.getId (spy entry)))
-        title (.getTitle entry)
-        published (.getPublished entry)
-        updated (.getUpdated entry)
-        authors (.getAuthors entry)]
-    (doall
-     (map
-      (fn [author]
-        author)
-      authors))
-    (let [extension-maps
-          (doall
-           (map
-            parse-extension-element
-            (.getExtensions entry)))]
-      (entity/make
-       Activity
-       (apply merge
-              (if published {:published published})
-              (if updated {:updated updated})
-              (if title {:title title})
-              {:_id id}
-              extension-maps)))))
+  ([entry] (to-activity entry nil))
+  ([entry feed]
+     (let [id (str (.getId (spy entry)))
+           title (.getTitle entry)
+           published (.getPublished entry)
+           updated (.getUpdated entry)
+           authors (get-authors entry feed)]
+       (doall
+        (map
+         (fn [author]
+           (println "")
+           (spy author))
+         authors))
+       (let [extension-maps
+             (doall
+              (map
+               parse-extension-element
+               (.getExtensions entry)))]
+         (entity/make
+          Activity
+          (apply merge
+                 (if published {:published published})
+                 (if updated {:updated updated})
+                 (if title {:title title})
+                 {:_id id}
+                 extension-maps))))))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"
