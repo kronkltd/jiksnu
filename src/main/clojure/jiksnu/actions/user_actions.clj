@@ -9,21 +9,22 @@
         [jiksnu.session :only (current-user)]
         jiksnu.view
         jiksnu.xmpp.element)
-  (:require [jiksnu.model.user :as model.user])
+  (:require [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
 
 (defaction create
   [options]
-  (let [{username "username"
-         password "password"
-         confirm-password "confirm_password"} options]
+  (let [{username :username
+         password :password
+         confirm-password :confirm-password} options]
     (if (and username password confirm-password)
       (if (= password confirm-password)
-        (do
-          (model.user/create {:username username
-                              :domain (:domain (config))
-                              :password password
-                              :confirm_password password}))))))
+        (let [opts {:username username
+                    :domain (:domain (config))
+                    :password password
+                    :confirm-password password}]
+          (model.user/create opts))))))
 
 (defaction delete
   [id]
@@ -60,3 +61,10 @@
 
 (defaction update
   [& _])
+
+(defaction find-or-create
+  [username domain]
+  (let [domain-record (actions.domain/find-or-create domain)]
+    (if-let [user (show username domain)]
+      user
+      (create {:username username :domain domain}))))

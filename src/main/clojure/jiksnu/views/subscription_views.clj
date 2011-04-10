@@ -148,9 +148,7 @@
     (f/form-to
      [:post "/main/ostatussub"]
      [:p (f/text-field :profile )]
-     (f/submit-button "Submit"))
-    #_(dump* request)
-    #_(dump* arg)]})
+     (f/submit-button "Submit"))]})
 
 (defview #'ostatussub-submit :html
   [request subscription]

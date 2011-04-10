@@ -52,8 +52,9 @@
   [action request]
   (let [{{profile :profile} :params} request]
     (if profile
-      (let [[username password] (clojure.string/split profile #"@")]
-        (model.user/show username password)))))
+      (let [[username password] (clojure.string/split profile #"@")
+            user (model.user/find-or-create username password)]
+        (action user)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-subscribe

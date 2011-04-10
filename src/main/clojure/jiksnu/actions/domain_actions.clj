@@ -36,3 +36,9 @@
   (let [{{id "*"} :params} request
         domain (model.domain/show id)]
     domain))
+
+(defaction find-or-create
+  [id]
+  (if-let [domain (model.domain/show id)]
+    domain
+    (create id)))

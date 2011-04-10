@@ -33,7 +33,8 @@
     (User.)))
 
 (defaction ostatussub-submit
-  [& _])
+  [user]
+  user)
 
 (defaction remote-subscribe
   [& _])
