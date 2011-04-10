@@ -48,7 +48,8 @@
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-by-id User id))
+  (if id
+   (entity/fetch-by-id User id)))
 
 (defn fetch-by-jid
   [jid]

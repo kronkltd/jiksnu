@@ -97,7 +97,9 @@
 
 (defn edit-link
   [activity]
-  (if (some #(= % (current-user-id)) (:authors activity))
+  (if (or (is-admin?)
+          (some #(= % (current-user-id))
+                (:authors activity)))
     [:a.edit-activity
      {:href (str (uri activity) "/edit")}
      "Edit"]))
