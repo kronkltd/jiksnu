@@ -172,7 +172,7 @@
 
 (defn parse-extension-element
   [element]
-  (let [qname (.getQName (spy element))
+  (let [qname (.getQName element)
         name (.getLocalPart qname)
         namespace (.getNamespaceURI qname)]
     (if (and (= name "actor")
