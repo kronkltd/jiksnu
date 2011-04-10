@@ -6,6 +6,7 @@
         ciste.filters
         jiksnu.abdera
         jiksnu.actions.user-actions
+        jiksnu.helpers.user-helpers
         jiksnu.session
         jiksnu.view)
   (:require [jiksnu.model.activity :as model.activity]
