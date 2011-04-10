@@ -4,12 +4,14 @@
         ciste.debug
         clj-tigase.core
         [clojure.contrib.logging :only (error)]
+        jiksnu.helpers.user-helpers
         jiksnu.model
         jiksnu.namespace
         [jiksnu.session :only (current-user)]
         jiksnu.view
         jiksnu.xmpp.element)
   (:require [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
 
@@ -60,7 +62,8 @@
   user)
 
 (defaction update
-  [& _])
+  [user]
+  (model.user/update user))
 
 (defaction find-or-create
   [username domain]
@@ -68,3 +71,10 @@
     (if-let [user (show username domain)]
       user
       (create {:username username :domain domain}))))
+
+(defaction discover
+  [^User user]
+  (let [xrd (fetch-user-meta user)
+        links (actions.webfinger/get-links xrd)
+        new-user (assoc user :links links)]
+    (update new-user)))

@@ -1,5 +1,6 @@
 (ns jiksnu.helpers.activity-helpers
-  (:use ciste.sections
+  (:use ciste.debug
+        ciste.sections
         ciste.view
         clj-tigase.core
         jiksnu.abdera
@@ -188,8 +189,8 @@
 (defn ^Activity to-activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
-  [^Entry entry]
-  (let [id (str (.getId entry))
+  [entry]
+  (let [id (str (.getId (spy entry)))
         title (.getTitle entry)
         published (.getPublished entry)
         updated (.getUpdated entry)

@@ -158,7 +158,14 @@
            [:p.locality (:location user)]]
           [:p.note (:bio user)]
           [:p [:a.url {:href (:url user) :rel "me"} (:url user)]]
-          [:p "Id: " (:_id user)]])
+          [:p "Id: " (:_id user)]
+          [:ul
+           (map
+            (fn [link]
+              [:li
+               [:p (:href link)]
+               [:p (:rel link)]])
+            (:links user))]])
        (if actor
          (list
           (if (model.subscription/subscribed? actor (:_id user))

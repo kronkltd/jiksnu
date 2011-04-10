@@ -18,7 +18,8 @@
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.User
-           org.apache.abdera.model.Entry))
+           org.apache.abdera.model.Entry
+           org.apache.abdera.protocol.client.AbderaClient))
 
 (defn get-uri
   [^User user]
@@ -157,11 +158,19 @@
    (map show-section-minimal
         (model.activity/find-by-user user))])
 
+(defn rel-filter
+  [rel links]
+  (filter #(= (:rel %) rel)
+          links))
+
+(defn get-link
+  [user rel]
+  (first (rel-filter rel (:links user))))
+
 (defn user-meta-uri
   [^User user]
   (let [domain-object (model.domain/show (:domain user))]
-    (let [{links :links} (spy domain-object)
-          template (:template (first (filter #(= (:rel %) "lrdd") links)))]
+    (let [template (:template (get-link domain-object "lrdd"))]
       (string/replace template "{uri}" (get-uri user)))))
 
 (defn fetch-user-meta
@@ -169,3 +178,58 @@
   (-> user
       user-meta-uri
       actions.webfinger/fetch))
+
+(defn feed-link-uri
+  [^User user]
+  (:href
+   (get-link
+    user "http://schemas.google.com/g/2010#updates-from")))
+
+(defn get-client
+  []
+  
+
+  )
+
+(defonce #^:dynamic *abdera-client* (AbderaClient.))
+
+(defn fetch-resource
+  [^User user]
+  (.get *abdera-client*
+        (feed-link-uri user)))
+
+(defn fetch-document
+  [user]
+  (.getDocument (fetch-resource user)))
+
+(defn fetch-feed
+  [user]
+  (.getRoot (fetch-document user)))
+
+(defn fetch-entries
+  [user]
+  (seq (.getEntries (fetch-feed user))))
+
+(defn fetch-activities
+  [user]
+  (let [entries (fetch-entries user)]
+    (println (count entries))
+    (println (class entries))
+    (map
+     (fn [entry]
+       (jiksnu.helpers.activity-helpers/to-activity (spy entry)))
+     entries)))
+
+(defn load-activities
+  [user]
+  (let [activities (fetch-activities user)]
+    (dorun
+     (map
+      (fn [activity]
+        (model.activity/create-raw activity)
+        )
+      activities)
+     )
+
+    )
+  )
