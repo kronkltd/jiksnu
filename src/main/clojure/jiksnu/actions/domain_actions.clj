@@ -21,7 +21,7 @@
 
 (defaction discover
   [request]
-  (let [{{id "id"} :params} request
+  (let [{{id :id} :params} request
         domain (model.domain/show id)
         xrd (fetch (str "http://" id "/.well-known/host-meta"))
         links (get-links xrd)]
