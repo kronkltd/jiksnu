@@ -180,11 +180,9 @@
     [[(str (full-uri user) ".rdf")
      [rdf:type foaf:PersonalProfileDocument
       [foaf :maker] (full-uri user)
-      foaf:primaryTopic (rdf-resource
-                         (str "acct:" (:username user) "@"
-                              (:domain user)))]]
+      foaf:primaryTopic (rdf-resource (str "acct:" (get-uri user)))]]
 
-    [(rdf-resource (str "acct:" (:username user) "@" (:domain user)))
+    [(rdf-resource (str "acct:" (get-uri user)))
      [rdf:type [foaf :Person]
       [foaf :name] (l (:name user))
       foaf:nick (l (:username user))
@@ -201,8 +199,7 @@
       foaf:accountServiceHomepage (rdf-resource (str "http://" (:domain user)))
       foaf:accountName (l (:username user))
       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
-      [sioc "account_of"] (rdf-resource (str "acct:" (:username user) "@"
-                                             (:domain user)))]]]))
+      [sioc "account_of"] (rdf-resource (str "acct:" (get-uri user)))]]]))
 
 ;; (defsection show-section-minimal [User :xmpp :xmpp]
 ;;   [property & options]
@@ -221,7 +218,7 @@
   (or (:name user)
       (:display-name user)
       (:first-name user)
-      (str (:username user) "@" (:domain user))))
+      (get-uri user)))
 
 (defsection uri [User]
   [user & options]
