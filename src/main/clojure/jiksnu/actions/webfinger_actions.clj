@@ -33,7 +33,7 @@
   (map
    (fn [link]
      {:href (.getHref link)
-      :rel (.getRel link)
+      :rel (str (.getRel link))
       :template (.getTemplate link)
       :type (.getType link)})
    (.getLinks xrd)))
