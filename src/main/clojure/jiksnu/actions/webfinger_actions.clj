@@ -1,5 +1,6 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use jiksnu.namespace)
+  (:use ciste.debug
+        jiksnu.namespace)
   (:require [jiksnu.model.user :as model.user])
   (:import com.cliqset.hostmeta.JavaNetXRDFetcher
            com.cliqset.xrd.XRD

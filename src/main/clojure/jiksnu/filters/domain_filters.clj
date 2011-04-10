@@ -1,5 +1,6 @@
 (ns jiksnu.filters.domain-filters
-  (:use ciste.filters
+  (:use ciste.debug
+        ciste.filters
         jiksnu.actions.domain-actions
         jiksnu.actions.webfinger-actions)
   (:require [jiksnu.model.domain :as model.domain]))
