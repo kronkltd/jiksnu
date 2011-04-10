@@ -204,7 +204,7 @@
 (defn fetch-resource
   [^User user]
   (.get *abdera-client*
-        (feed-link-uri user)))
+        (spy (feed-link-uri user))))
 
 (defn fetch-document
   [user]

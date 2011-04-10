@@ -172,7 +172,7 @@
 
 (defn parse-extension-element
   [element]
-  (let [qname (.getQName element)
+  (let [qname (.getQName (spy element))
         name (.getLocalPart qname)
         namespace (.getNamespaceURI qname)]
     (if (and (= name "actor")
@@ -182,7 +182,8 @@
       (if (and (= name "object")
                  (= namespace as-ns))
         (let [object (make-object element)]
-          {:type (str (.getObjectType object))
+          {
+           ;; :type (str (.getObjectType (spy object)))
            :object-id (str (.getId object))
            :object-updated (.getUpdated object)
            :object-published (.getPublished object)
@@ -203,26 +204,30 @@ serialization"
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
-           authors (get-authors entry feed)]
-       (doall
-        (map
-         (fn [author]
-           (println "")
-           (spy author))
-         authors))
+           authors (get-authors entry feed)
+           author-ids
+           (map
+            (fn [author]
+              (let [name (.getName author)
+                    uri (.getUri author)
+                    domain (.getHost uri)
+                    author-obj (model.user/find-or-create name domain)]
+                (:_id author-obj)))
+            authors)]
        (let [extension-maps
              (doall
               (map
                parse-extension-element
-               (.getExtensions entry)))]
-         (entity/make
-          Activity
-          (apply merge
+               (.getExtensions entry)))
+             opts (apply merge
                  (if published {:published published})
                  (if updated {:updated updated})
                  (if title {:title title})
-                 {:_id id}
-                 extension-maps))))))
+                 {:_id id
+                  :authors author-ids
+                  :public true}
+                 extension-maps)]
+         (spy (entity/make Activity opts))))))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"

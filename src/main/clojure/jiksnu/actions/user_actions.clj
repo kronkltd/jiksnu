@@ -89,4 +89,4 @@
 
 (defaction fetch-updates
   [user]
-  (load-activities user))
+  [user (load-activities user)])
