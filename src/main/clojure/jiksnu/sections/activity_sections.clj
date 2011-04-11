@@ -1,5 +1,6 @@
 (ns jiksnu.sections.activity-sections
-  (:use ciste.view
+  (:use ciste.debug
+        ciste.view
         ciste.html
         ciste.sections
         jiksnu.abdera
@@ -63,11 +64,13 @@
        [:span.privacy
         (if (:public activity)
           "public" "private")]
-       (if-let [t (:title activity)]
+       #_(if-let [t (:title activity)]
          (if (not= t "")
            [:h3.entry-title t]))]
       [:p.entry-content
-       (:summary activity)]
+       (or (:object-content activity)
+           (:summary activity)
+           (:title activity))]
       (if-let [tags (:tags activity)]
         (if (seq tags)
           [:div.tags
