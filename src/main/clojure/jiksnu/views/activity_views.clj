@@ -192,3 +192,8 @@
                     :type "text/html"}]
            :updated (:updated (first activities))
            :entries activities})})
+
+(defview #'user-timeline :xmpp
+  [request [user  activities]]
+  (result-packet request (index-section activities)))
+

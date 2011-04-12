@@ -13,6 +13,7 @@
   (:require [ciste.middleware :as middleware]
             [compojure.core :as compojure]
             compojure.handler
+            [clojure.string :as string]
             [compojure.route :as route]
             (jiksnu.actions
              [activity-actions :as activity]
@@ -94,6 +95,10 @@
     [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
     [:get "/main/xrd"]                               #'webfinger/user-meta]))
 
+(defn escape-route
+  [path]
+  (string/replace path #":" "\\:"))
+
 (def xmpp-matchers
   (map
    (fn [[m a]]
@@ -102,13 +107,13 @@
    [[{:method :get
       :pubsub true
       :name "items"
-      :node microblog-uri}
+      :node (escape-route microblog-uri)}
      #'activity/user-timeline]
 
     [{:method :set
       :pubsub true
       :name "publish"
-      :node microblog-uri}
+      :node (escape-route microblog-uri)}
      #'activity/create]
 
     [{:method :get
@@ -116,11 +121,6 @@
       :name "items"
       :node (str microblog-uri ":replies:item=:id")}
      #'activity/fetch-comments]
-
-    [{:method :get
-      :pubsub true
-      :node inbox-uri}
-     #'inbox/index]
 
     [{:method :get
       :name "query"
@@ -165,7 +165,12 @@
      #'subscription/remote-subscribe-confirm]
 
     [{:method :headline}
-     #'activity/remote-create]]))
+     #'activity/remote-create]
+
+    [{:method :get
+      :pubsub true
+      :node (escape-route inbox-uri)}
+     #'inbox/index]]))
 
 (def *routes*
   (concat
