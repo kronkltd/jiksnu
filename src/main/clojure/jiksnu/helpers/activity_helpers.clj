@@ -213,7 +213,8 @@ serialization"
                     domain (.getHost uri)
                     author-obj (model.user/find-or-create name domain)]
                 (:_id author-obj)))
-            authors)]
+            authors)
+           categories (.getCategories entry)]
        (let [extension-maps
              (doall
               (map
@@ -225,9 +226,12 @@ serialization"
                  (if title {:title title})
                  {:_id id
                   :authors author-ids
-                  :public true}
+                  :public true
+                  :tags (map
+                         (fn [category] (.getTerm category))
+                         categories)}
                  extension-maps)]
-         (spy (entity/make Activity opts))))))
+         (entity/make Activity opts)))))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"

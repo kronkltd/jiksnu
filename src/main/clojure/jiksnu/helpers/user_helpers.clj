@@ -84,12 +84,19 @@
    [:post (str (uri user) "/update")]
    (f/submit-button "Update")))
 
+(defn discover-button
+  [user]
+  (f/form-to
+   [:post (str (uri user) "/discover")]
+   (f/submit-button "Discover")))
+
 (defn user-actions
   [user]
   (let [actor-id (current-user-id)]
     (if (= (:_id user) actor-id)
       [:p "This is you!"]
       [:ul
+       [:li (discover-button user)]
        [:li (update-user-button user)]
        [:li
         (if (model.subscription/subscribing? actor-id (:_id user))

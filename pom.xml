@@ -26,9 +26,10 @@
           <!-- <script>script/server</script> -->
           <namespaces>
             <!-- <namespace>!jiksnu</namespace> -->
-            <!-- <namespace>jiksnu.server.tigase.plugin</namespace> -->
+            <namespace>jiksnu.server.tigase.plugin</namespace>
           </namespaces>
-          <vmargs>-agentlib:jdwp=transport=dt_socket,address=8021,server=y,suspend=n -server -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128m</vmargs>
+          <vmargs>-server -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128m</vmargs>
+          <!-- <vmargs>-agentlib:jdwp=transport=dt_socket,address=8021,server=y,suspend=n -server -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128m</vmargs> -->
           <!-- <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly> -->
           <!-- <testDeclaredNamespaceOnly>true</testDeclaredNamespaceOnly> -->
           <!-- <warnOnReflection>true</warnOnReflection> -->
@@ -57,33 +58,33 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>cuke4duke</groupId>
-        <artifactId>cuke4duke-maven-plugin</artifactId>
-        <version>${cuke4duke.version}</version>
-        <configuration>
-          <jvmArgs>
-            <jvmArg>
-              -Dcuke4duke.objectFactory=cuke4duke.internal.jvmclass.PicoFactory
-            </jvmArg>
-          </jvmArgs>
-          <cucumberArgs>
-            <cucumberArg>${project.basedir}/target/test-classes</cucumberArg>
-          </cucumberArgs>
-          <gems>
-            <gem>install cuke4duke --version ${cuke4duke.version}</gem>
-          </gems>
-        </configuration>
-        <executions>
-          <execution>
-            <id>run-features</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>cucumber</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+      <!-- <plugin> -->
+      <!--   <groupId>cuke4duke</groupId> -->
+      <!--   <artifactId>cuke4duke-maven-plugin</artifactId> -->
+      <!--   <version>${cuke4duke.version}</version> -->
+      <!--   <configuration> -->
+      <!--     <jvmArgs> -->
+      <!--       <jvmArg> -->
+      <!--         -Dcuke4duke.objectFactory=cuke4duke.internal.jvmclass.PicoFactory -->
+      <!--       </jvmArg> -->
+      <!--     </jvmArgs> -->
+      <!--     <cucumberArgs> -->
+      <!--       <cucumberArg>${project.basedir}/target/test-classes</cucumberArg> -->
+      <!--     </cucumberArgs> -->
+      <!--     <gems> -->
+      <!--       <gem>install cuke4duke - -version ${cuke4duke.version}</gem> -->
+      <!--     </gems> -->
+      <!--   </configuration> -->
+      <!--   <executions> -->
+      <!--     <execution> -->
+      <!--       <id>run-features</id> -->
+      <!--       <phase>integration-test</phase> -->
+      <!--       <goals> -->
+      <!--         <goal>cucumber</goal> -->
+      <!--       </goals> -->
+      <!--     </execution> -->
+      <!--   </executions> -->
+      <!-- </plugin> -->
     </plugins>
  </build>
 

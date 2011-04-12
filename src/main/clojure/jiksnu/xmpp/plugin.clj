@@ -44,10 +44,9 @@
 (defn main-handler
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
-                               :format :xmpp} request)]
-    (let [route-fn (resolve-routes (filter identity (lazier @*routes*)))]
-      (if-let [response (route-fn merged-request)]
-        response))))
+                               :format :xmpp} request)
+        route-fn (resolve-routes *predicates* *routes*)]
+    (route-fn merged-request)))
 
 (defn -process
   [this packet session

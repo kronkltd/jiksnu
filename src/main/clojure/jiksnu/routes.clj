@@ -43,36 +43,6 @@
   [#'wrap-log-request
    #'wrap-log-params])
 
-;; (defn with-template
-;;   [& forms]
-;;   forms)
-
-(compojure/defroutes all-routes
-  (route/files "/public")
-  (compojure/GET "/favicon.ico" request
-                 (response/file-response "favicon.ico"))
-  (compojure/ANY "*" request
-                 ((wrap-log-request
-                   (resolve-routes @*routes*)) request))
-  (route/not-found "You found the hidden page. Don't tell anyone about this.\n"))
-
-(def app
-  (-> all-routes
-      ;; wrap-log-request
-      (wrap-user-debug-binding)
-      (wrap-user-binding)
-      (wrap-debug-binding)
-      ;; ;; #'wrap-flash
-      ;; (compojure.handler/site :memory)
-      (wrap-session)
-      wrap-multipart-params
-      wrap-keyword-params
-      wrap-nested-params
-      wrap-params
-      (middleware/wrap-http-serialization)
-      (wrap-database)
-      (wrap-error-catching)))
-
 (def http-matchers
   (make-matchers
    [[:get "/"]                                       #'activity/index
@@ -114,6 +84,7 @@
     [:get "/users/:id"]                              #'user/remote-profile
     [:delete "/users/:id"]                           #'user/delete
     [:post "/users/:id/update"]                      #'user/fetch-updates
+    [:post "/users/:id/discover"]                    #'user/discover
     [:post "/:username"]                             #'user/update
     [:get "/:username/all"]                          #'inbox/index
     [:get "/:id"]                                    #'user/show
@@ -132,7 +103,7 @@
       :pubsub true
       :name "items"
       :node microblog-uri}
-     #'activity/index]
+     #'activity/user-timeline]
 
     [{:method :set
       :pubsub true
@@ -196,21 +167,43 @@
     [{:method :headline}
      #'activity/remote-create]]))
 
+(def *routes*
+  (concat
+   http-matchers
+   xmpp-matchers))
 
-(defn set-handlers
-  []
-  (dosync
-   (ref-set *routes*
-            (concat
-             http-matchers
-             xmpp-matchers)))
-  (dosync
-   (ref-set *matchers*
-            [[#'xmpp-serialization?
-              [#'type-matches?
-               #'node-matches?
-               #'name-matches?
-               #'ns-matches?]]
-             [#'http-serialization?
-              [#'request-method-matches?
-               #'path-matches?]]])))
+(def *predicates*
+  [[#'xmpp-serialization?
+    [#'type-matches?
+     #'node-matches?
+     #'name-matches?
+     #'ns-matches?]]
+   [#'http-serialization?
+    [#'request-method-matches?
+     #'path-matches?]]])
+
+(compojure/defroutes all-routes
+  (route/files "/public")
+  (compojure/GET "/favicon.ico" request
+                 (response/file-response "favicon.ico"))
+  (compojure/ANY "*" request
+                 ((wrap-log-request
+                   (resolve-routes *predicates* *routes*)) request))
+  (route/not-found "You found the hidden page. Don't tell anyone about this.\n"))
+
+(def app
+  (-> all-routes
+      ;; wrap-log-request
+      (wrap-user-debug-binding)
+      (wrap-user-binding)
+      (wrap-debug-binding)
+      ;; ;; #'wrap-flash
+      ;; (compojure.handler/site :memory)
+      (wrap-session)
+      wrap-multipart-params
+      wrap-keyword-params
+      wrap-nested-params
+      wrap-params
+      (middleware/wrap-http-serialization)
+      (wrap-database)
+      (wrap-error-catching)))
