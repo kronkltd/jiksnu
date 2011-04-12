@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.plugin
-  (:use ciste.core
+  (:use ciste.config
+        ciste.core
         ciste.debug
         clojure.pprint
         [clojure.contrib.logging :only (debug)]
@@ -55,6 +56,8 @@
     (if-let [to (.getStanzaTo packet)]
       (if-let [bare-to (.getBareJID to)]
         (let [request (make-request packet)]
+          (if (-> (config) :print :request)
+            (spy request))
           (if-let [response (main-handler queue request)]
             (do
               (.setPacketTo response (.getPacketFrom packet))
