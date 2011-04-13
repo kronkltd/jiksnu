@@ -85,6 +85,7 @@
     [:delete "/domains/*"]                           #'domain/delete
     [:post "/domains"]                               #'domain/create
     [:post "/domains/*/discover"]                    #'domain/discover
+    [:post "/domains/*/edit"]                        #'domain/edit
     [:post "/main/register"]                         #'user/create
     [:get "/users/:id"]                              #'user/remote-profile
     [:delete "/users/:id"]                           #'user/delete

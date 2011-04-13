@@ -63,8 +63,9 @@
       (do-it "should return an empty sequence"
         (let [actor (model.user/create (factory User))]
           (with-user actor
-            (let [activity (create (factory Activity))]
-              (expect (empty? (fetch-comments activity))))))))))
+            (let [activity (create (factory Activity))
+                  [_ comments] (fetch-comments activity)]
+              (expect (empty? comments)))))))))
 
 (describe fetch-comments-remote)
 

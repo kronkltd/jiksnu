@@ -23,22 +23,15 @@
 (defsection index-block [PushSubscription :html]
   [subscriptions & _]
   [:table
-   (map index-line subscriptions)
-   ]
-  )
+   (map index-line subscriptions)])
 
 (defsection index-line [PushSubscription :html]
   [subscription & _]
   [:tr
-   [:td "foo"]
-   ]
-  )
-
+   [:td "foo"]])
 
 (defsection index-section [PushSubscription :html]
   [subscriptions & _]
   [:div
    [:h3 "Subscriptions"]
-   (index-block subscriptions)
-   ]
-  )
+   (index-block subscriptions)])

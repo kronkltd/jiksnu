@@ -15,5 +15,4 @@
 
 (deffilter #'index :http
   [action request]
-  (action)
-  )
+  (action))

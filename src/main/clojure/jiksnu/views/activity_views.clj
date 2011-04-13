@@ -56,15 +56,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'fetch-comments :html
-  [request activity]
+  [request [activity comments]]
   {:status 303
    :template false
    :flash "comments are being fetched"
    :headers {"Location" (uri activity)}})
 
 (defview #'fetch-comments :xmpp
-  [request activities]
-  (result-packet request (index-section activities)))
+  [request [activity comments]]
+  (result-packet request (index-section comments)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fetch-comments-remote

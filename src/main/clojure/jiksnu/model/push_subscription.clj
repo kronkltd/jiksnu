@@ -9,6 +9,4 @@
 
 (defn index
   []
-  (entity/fetch PushSubscription {})
-  )
-
+  (entity/fetch PushSubscription {}))

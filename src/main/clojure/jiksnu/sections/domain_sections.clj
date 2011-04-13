@@ -30,6 +30,8 @@
    [:td
     [:a {:href (str "http://" (:_id domain)
                     "/.well-known/host-meta")} "Host-Meta"]]
+   [:td (count (:links domain))]
+   [:td [:a {:href (str "/domains/" (:_id domain) "/edit")} "Edit"]]
    [:td (f/form-to
          [:post (str "/domains/" (:_id domain) "/discover")]
          (f/submit-button "Discover"))]
@@ -46,6 +48,8 @@
     [:th "Name"]
     [:th "OSW Enabled?"]
     [:th "Host-Meta"]
+    [:th "Link Count"]
+    [:th "Edit"]
     [:th "Discover"]
     [:th "Delete"]
     ]

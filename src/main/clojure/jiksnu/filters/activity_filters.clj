@@ -59,15 +59,13 @@
   [action request]
   (let [{{id :id} :params} request]
     (if-let [activity (model.activity/show id)]
-      (if-let [author (model.user/fetch-by-id
-                       (first (:authors activity)))]
-        activity))))
+      (action activity))))
 
 (deffilter #'fetch-comments :xmpp
   [action request]
   (let [{{id :id} :params} request]
     (if-let [activity (model.activity/show id)]
-      (map model.activity/show (:comments activity)))))
+      (action activity))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fetch-comments-remote

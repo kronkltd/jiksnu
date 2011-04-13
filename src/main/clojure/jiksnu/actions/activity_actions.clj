@@ -7,6 +7,8 @@
         jiksnu.session
         [karras.entity :only (make)])
   (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
             jiksnu.view)
   (:import jiksnu.model.Activity
@@ -29,10 +31,18 @@
   (model.activity/fetch-by-id id))
 
 (defaction fetch-comments
-  [& _])
+  [activity]
+  [activity
+   (map model.activity/show (:comments activity))])
 
 (defaction fetch-comments-remote
-  [& _])
+  [activity]
+  (let [author (model.user/fetch-by-id (first (:authors activity)))
+        domain (model.domain/show (:domain author))]
+    (spy author)
+    (spy domain)
+
+    ))
 
 (defaction friends-timeline
   [& _])

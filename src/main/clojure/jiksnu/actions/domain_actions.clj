@@ -27,6 +27,10 @@
         links (get-links xrd)]
     (model.domain/update (assoc domain :links links))))
 
+(defaction edit
+  [id]
+  (model.domain/show id))
+
 (defaction index
   [request]
   (let [domains (model.domain/index)]

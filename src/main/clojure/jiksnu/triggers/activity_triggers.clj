@@ -1,6 +1,7 @@
 (ns jiksnu.triggers.activity-triggers
   (:use clj-tigase.core
         ciste.core
+        ciste.debug
         ciste.view
         ciste.trigger
         ciste.sections
@@ -10,6 +11,7 @@
         jiksnu.session
         jiksnu.view)
   (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
@@ -57,7 +59,22 @@
 
   )
 
+(defn fetch-more-comments
+  [action params [activity comments]]
+  (spy activity)
+  (let [author (model.user/fetch-by-id (first (:authors activity)))
+        domain (model.domain/show (:domain author))
+        ]
+    (spy author)
+    (spy domain)
+    (fetch-comments-remote activity)
+
+    )
+
+  )
+
 (add-trigger! #'show #'show-trigger)
 (add-trigger! #'create #'notify-commented)
 (add-trigger! #'create #'notify-subscribers)
 (add-trigger! #'create #'sleep-and-print)
+(add-trigger! #'fetch-comments #'fetch-more-comments)
