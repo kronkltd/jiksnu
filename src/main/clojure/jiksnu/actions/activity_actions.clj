@@ -21,8 +21,8 @@
   [id]
   (let [actor-id (current-user-id)
         activity (model.activity/fetch-by-id id)]
-    (if (or (is-admin?) (some #(= actor-id %) (:authors (spy activity))))
-      (model.activity/delete (spy activity)))))
+    (if (or (is-admin?) (some #(= actor-id %) (:authors activity)))
+      (model.activity/delete activity))))
 
 (defaction edit
   [id]
