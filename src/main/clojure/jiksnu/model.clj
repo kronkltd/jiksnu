@@ -77,6 +77,9 @@
 (defentity Domain
   [:osw :ostatus])
 
+(defentity PushSubscription
+  [:hub])
+
 (defmacro with-database
   [& body]
   `(do

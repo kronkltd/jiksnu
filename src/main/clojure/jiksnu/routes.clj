@@ -20,6 +20,7 @@
              [auth-actions :as auth]
              [domain-actions :as domain]
              [inbox-actions :as inbox]
+             [push-subscription-actions :as push]
              [settings-actions :as settings]
              [subscription-actions :as subscription]
              [user-actions :as user]
@@ -29,12 +30,14 @@
              activity-filters
              auth-filters
              domain-filters
+             push-subscription-filters
              subscription-filters
              user-filters)
             (jiksnu.views
              activity-views
              auth-views
              domain-views
+             push-subscription-views
              subscription-views
              user-views
              webfinger-views)
@@ -59,6 +62,7 @@
     [:get "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline
     [:get "/api/statuses/public_timeline.:format"]   #'activity/index
     [:get "/admin/subscriptions"]                    #'subscription/index
+    [:get "/admin/push/subscriptions"]               #'push/index
     [:get "/admin/users"]                            #'user/index
     [:get "/admin/settings"]                         #'settings/edit
     [:get "/main/login"]                             #'auth/login-page

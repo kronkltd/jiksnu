@@ -56,6 +56,7 @@
           (list
            [:li [:a {:href "/admin/notices"} "Notices"]]
            [:li [:a {:href "/admin/settings"} "Settings"]]
+           [:li [:a {:href "/admin/push/subscriptions"} "Pubsubhubbub"]]
            [:li [:a {:href "/admin/users"} "Users"]]
            [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]])))
        (list
