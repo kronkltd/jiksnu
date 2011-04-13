@@ -1,18 +1,12 @@
 (ns jiksnu.actions.activity-actions
   (:use ciste.core
         ciste.debug
-        ciste.trigger
         clj-tigase.core
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         [karras.entity :only (make)])
-  (:require (jiksnu.model
-             [activity :as model.activity]
-             [item :as model.item]
-             [like :as model.like]
-             [subscription :as model.subscription]
-             [user :as model.user])
+  (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.sections.activity-sections :as sections.activity]
             jiksnu.view)
   (:import jiksnu.model.Activity

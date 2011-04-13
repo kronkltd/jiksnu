@@ -2,14 +2,10 @@
   (:use clj-tigase.core
         [ciste.config :only (config)]
         ciste.core
+        ciste.debug
         ciste.html
         ciste.sections
-        ciste.trigger
         ciste.view
-        ciste.config
-        ciste.trigger
-        ciste.debug
-        ;; clojure.contrib.logging
         jiksnu.abdera
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers
@@ -18,13 +14,9 @@
         jiksnu.sections.activity-sections
         jiksnu.session
         jiksnu.xmpp.element
-        jiksnu.view
-        [karras.entity :only (make)])
+        jiksnu.view)
   (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.item :as model.item]
-            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.views.user-views :as view.user]
             [karras.entity :as entity]
             [hiccup.form-helpers :as f])
   (:import jiksnu.model.Activity
