@@ -2,6 +2,7 @@
   (:use ciste.core
         ciste.debug
         clj-tigase.core
+        jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
@@ -10,7 +11,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
-            jiksnu.view)
+            [jiksnu.view :as view])
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
@@ -37,12 +38,10 @@
 
 (defaction fetch-comments-remote
   [activity]
-  (let [author (model.user/fetch-by-id (first (:authors activity)))
+  (let [author (get-actor activity)
         domain (model.domain/show (:domain author))]
-    (spy author)
-    (spy domain)
-
-    ))
+    (if (:xmpp domain)
+      (view/deliver-packet! (comment-request activity)))))
 
 (defaction friends-timeline
   [& _])

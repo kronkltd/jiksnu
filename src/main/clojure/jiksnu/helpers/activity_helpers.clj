@@ -1,5 +1,6 @@
 (ns jiksnu.helpers.activity-helpers
-  (:use ciste.debug
+  (:use ciste.config
+        ciste.debug
         ciste.sections
         ciste.view
         clj-tigase.core
@@ -46,6 +47,10 @@
 (defn add-entry
   [feed activity]
   (.addEntry feed (show-section activity)))
+
+(defn get-actor
+  [activity]
+  (model.user/fetch-by-id (first (:authors activity))))
 
 (defn privacy-section
   [activity]
@@ -271,3 +276,19 @@ an Element"
   [^Entry entry]
   (not (nil? (.getAuthor entry))))
 
+(defn comment-node-uri
+  [activity]
+  (str microblog-uri
+       ":replies:item="
+       (:_id activity)))
+
+(defn comment-request
+  [activity]
+  (make-packet
+   {:type :get
+    :from (make-jid "" (-> (config) :domain))
+    :to (make-jid (get-actor activity))
+    :body
+    (make-element
+     ["pubsub" {"xmlns" pubsub-uri}
+      ["items" {"node" (comment-node-uri activity)}]])}))

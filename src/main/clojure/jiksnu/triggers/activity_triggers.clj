@@ -6,6 +6,7 @@
         ciste.trigger
         ciste.sections
         jiksnu.actions.activity-actions
+        jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
@@ -23,7 +24,7 @@
   (with-serialization :xmpp
     (with-format :xmpp
       (let [recipient-jid (make-jid recipient)
-            author (model.user/fetch-by-id (first (:authors activity)))
+            author (get-actor activity)
             message-text (:summary activity)
             ele (make-element
                  ["message" {"type" "headline"}
@@ -42,7 +43,7 @@
 (defn notify-subscribers
   [action request activity]
   (with-database
-    (let [user (model.user/fetch-by-id (first (:authors activity)))
+    (let [user (get-actor activity)
           subscribers (conj (model.subscription/subscribers user) user)]
       (doseq [subscription subscribers]
         (model.item/push user activity)
@@ -55,23 +56,13 @@
 
 (defn show-trigger
   [action params activity]
-  (println "show trigger")
-
-  )
+  (println "show trigger"))
 
 (defn fetch-more-comments
   [action params [activity comments]]
-  (spy activity)
-  (let [author (model.user/fetch-by-id (first (:authors activity)))
-        domain (model.domain/show (:domain author))
-        ]
-    (spy author)
-    (spy domain)
-    (fetch-comments-remote activity)
-
-    )
-
-  )
+  (let [author (get-actor activity)
+        domain (model.domain/show (:domain author))]
+    (fetch-comments-remote activity)))
 
 (add-trigger! #'show #'show-trigger)
 (add-trigger! #'create #'notify-commented)
