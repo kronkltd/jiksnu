@@ -23,11 +23,8 @@
 (deffilter #'discover :http
   [action request]
   (let [{{id :*} :params} request
-        domain (model.domain/show id)
-        xrd (fetch (str "http://" id "/.well-known/host-meta"))
-        links (get-links xrd)
-        new-domain (assoc domain :links links)]
-    (model.domain/update new-domain)))
+        domain (model.domain/show id)]
+    (action domain)))
 
 (deffilter #'index :http
   [action request]

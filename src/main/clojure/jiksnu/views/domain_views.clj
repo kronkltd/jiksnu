@@ -1,5 +1,7 @@
 (ns jiksnu.views.domain-views
-  (:use ciste.core
+  (:use clj-tigase.core
+        ciste.config
+        ciste.core
         ciste.debug
         ciste.sections
         ciste.view
@@ -58,3 +60,10 @@
   {:status 303
    :template false
    :headers {"Location" "/domains"}})
+
+(defview #'ping :xmpp
+  [request domain]
+  {:type :get
+   :to (make-jid "" (:_id domain))
+   :from (make-jid "" (-> (config) :domain))
+   :body (make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})

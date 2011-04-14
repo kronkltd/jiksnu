@@ -37,3 +37,8 @@
   (if-let [domain (show id)]
     domain
     (create {:_id id})))
+
+;; TODO: add the links to the list
+(defn add-links
+  [domain links]
+  (update (assoc domain :links links)))

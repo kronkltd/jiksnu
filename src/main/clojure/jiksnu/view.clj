@@ -1,13 +1,11 @@
 (ns jiksnu.view
   (:use ciste.core
+        ciste.debug
         ciste.html
         ciste.sections
         ciste.view
         [ciste.config :only (config)]
         clj-tigase.core
-        clojure.contrib.logging
-        [clojure.string :only (trim)]
-        hiccup.core
         jiksnu.abdera
         jiksnu.helpers.auth-helpers
         jiksnu.model
@@ -16,7 +14,8 @@
         jiksnu.session
         jiksnu.xmpp
         jiksnu.xmpp.element)
-  (:require [clojure.stacktrace :as stacktrace]
+  (:require [clojure.contrib.logging :as log]
+            [clojure.stacktrace :as stacktrace]
             [ciste.debug :as debug]
             [hiccup.form-helpers :as f])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
