@@ -175,7 +175,9 @@
     [{:method :get
       :pubsub true
       :node (escape-route inbox-uri)}
-     #'inbox/index]]))
+     #'inbox/index]
+
+    [{:method :result} #'domain/ping-response]]))
 
 (def *routes*
   (concat

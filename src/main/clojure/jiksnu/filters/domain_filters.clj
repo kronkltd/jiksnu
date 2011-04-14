@@ -36,3 +36,9 @@
   (let [{{id :*} :params} request
         domain (model.domain/show id)]
     domain))
+
+(deffilter #'ping-response :xmpp
+  [action request]
+  (let [id (.getDomain (:from request))
+        domain (model.domain/show id)]
+    (action domain)))

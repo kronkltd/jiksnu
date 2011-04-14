@@ -17,6 +17,7 @@
   (:require [clojure.contrib.logging :as log]
             [clojure.stacktrace :as stacktrace]
             [ciste.debug :as debug]
+            [hiccup.core :as hiccup]
             [hiccup.form-helpers :as f])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
@@ -72,7 +73,7 @@
    :body
    (str
     "<!doctype html>\n"
-    (html
+    (hiccup/html
      [:html
       [:head
        [:title "jiksnu"]
@@ -137,7 +138,7 @@
   [^Packet packet]
   (try
     (.initVars packet)
-    (.processPacket @*message-router* packet)
+    (.processPacket @*message-router* (spy packet))
     (catch NullPointerException e
       #_(error "Router not started: " e)
       #_(stacktrace/print-stack-trace e)
@@ -162,8 +163,9 @@
   (merge {:headers {"Content-Type" "text/html"}}
          response-map
          (if-let [body (:body response-map)]
-           {:body (html body)})))
+           {:body (hiccup/html body)})))
 
 (defmethod serialize-as :xmpp
   [serialization response]
-  (make-packet response))
+  (if response
+    (make-packet response)))

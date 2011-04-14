@@ -12,10 +12,40 @@
   (:require [hiccup.form-helpers :as f])
   (:import jiksnu.model.Domain))
 
+(defview #'create :html
+  [request domain]
+  {:status 303
+   :template false
+   :headers {"Location" "/domains"}})
+
+(defview #'delete :html
+  [request domain]
+  {:status 303
+   :template false
+   :headers {"Location" "/domains"}})
+
+(defview #'discover :html
+  [request domain]
+  {:status 303
+   :template false
+   :headers {"Location" "/domains"}})
+
 (defview #'index :html
   [request domains]
   {:body (index-block domains)})
 
+(defview #'ping :xmpp
+  [request domain]
+  {:type :get
+   :to (make-jid "" (:_id domain))
+   :from (make-jid "" (-> (config) :domain))
+   :body (make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
+
+(defview #'ping-response :xmpp
+  [request domain]
+  #_{:status 303
+   :template false
+   :headers {"Location" "/domains"}})
 
 (defview #'show :html
   [request domain]
@@ -45,25 +75,3 @@
       [:post (str "/domains/" (:_id domain) "/discover")]
       (f/submit-button "Discover"))]]})
 
-(defview #'create :html
-  [request domain]
-  {:status 303
-   :template false
-   :headers {"Location" "/domains"}})
-
-(defview #'discover :html
-  [request domain]
-  {:body "discovering"})
-
-(defview #'delete :html
-  [request domain]
-  {:status 303
-   :template false
-   :headers {"Location" "/domains"}})
-
-(defview #'ping :xmpp
-  [request domain]
-  {:type :get
-   :to (make-jid "" (:_id domain))
-   :from (make-jid "" (-> (config) :domain))
-   :body (make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})

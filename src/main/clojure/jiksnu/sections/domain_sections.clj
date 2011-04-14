@@ -26,7 +26,7 @@
   [:tr
    [:td
     [:a {:href (uri domain)} (:_id domain)]]
-   [:td (:osw domain)]
+   [:td (:xmpp domain)]
    [:td
     [:a {:href (str "http://" (:_id domain)
                     "/.well-known/host-meta")} "Host-Meta"]]
@@ -46,7 +46,7 @@
   [:table
    [:tr
     [:th "Name"]
-    [:th "OSW Enabled?"]
+    [:th "XMPP Enabled?"]
     [:th "Host-Meta"]
     [:th "Link Count"]
     [:th "Edit"]

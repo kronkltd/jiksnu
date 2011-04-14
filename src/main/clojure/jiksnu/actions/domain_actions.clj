@@ -20,8 +20,8 @@
     response))
 
 (defaction discover
-  [id]
-  (model.domain/show id))
+  [domain]
+  domain)
 
 (defaction edit
   [id]
@@ -47,3 +47,7 @@
 (defaction ping
   [domain]
   true)
+
+(defaction ping-response
+  [domain]
+  (model.domain/update (assoc (spy domain) :xmpp true)))
