@@ -142,6 +142,12 @@
       :ns query-uri}
      #'user/remote-create]
 
+    [{:method :result
+      :pubsub true
+      :node (str microblog-uri ":replies:item=:id")
+      :ns pubsub-uri}
+     #'activity/comment-response]
+
     [{:method :get
       :name "subscriptions"}
      #'subscription/subscriptions]

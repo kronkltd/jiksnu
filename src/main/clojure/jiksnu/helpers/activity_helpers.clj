@@ -192,7 +192,11 @@
            :object-id (str (.getId object))
            :object-updated (.getUpdated object)
            :object-published (.getPublished object)
-           :object-content (.getContent object)})))))
+           :object-content (.getContent object)})
+        (if (and (= name "in-reply-to")
+                 (= namespace "http://purl.org/syndication/thread/1.0"))
+          (let [parent-id (.getAttributeValue element "ref")]
+            {:parent parent-id}))))))
 
 (defn get-authors
   [entry feed]
@@ -225,17 +229,18 @@ serialization"
               (map
                parse-extension-element
                (.getExtensions entry)))
-             opts (apply merge
-                 (if published {:published published})
-                 (if updated {:updated updated})
-                 (if title {:title title})
-                 {:_id id
-                  :authors author-ids
-                  :public true
-                  :tags (map
-                         (fn [category] (.getTerm category))
-                         categories)}
-                 extension-maps)]
+             opts
+             (apply merge
+                    (if published {:published published})
+                    (if updated {:updated updated})
+                    (if title {:title title})
+                    {:_id id
+                     :authors author-ids
+                     :public true
+                     :tags (map
+                            (fn [category] (.getTerm category))
+                            categories)}
+                    extension-maps)]
          (entity/make Activity opts)))))
 
 (defn to-json

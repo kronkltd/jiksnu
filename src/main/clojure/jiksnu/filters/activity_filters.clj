@@ -12,6 +12,13 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]))
 
+(deffilter #'comment-response :xmpp
+  [action request]
+  (if (not= (:to request) (:from request))
+    (let [packet (:packet request)
+          items (children packet "/iq/pubsub/items/item")]
+      (action (map #(to-activity (parse-xml-string (str %))) items)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; create
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,11 +164,8 @@
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
           items (children packet "/message/event/items/item")]
-      (doseq [entry items]
-        (let [activity (to-activity
-                        (parse-xml-string (str entry)))]
-          (model.activity/create-raw activity)))
-      true)))
+      (action (map #(to-activity (parse-xml-string (str %)))
+            items)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; update
