@@ -189,3 +189,7 @@
   [request [user  activities]]
   (result-packet request (index-section activities)))
 
+(defview #'user-timeline :xml
+  [request [user activities]]
+  
+  )
