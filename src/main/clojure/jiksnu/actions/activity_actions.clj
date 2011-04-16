@@ -15,10 +15,6 @@
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
-(defaction comment-response
-  [activities]
-  (remote-create activities))
-
 (defaction create
   [activity]
   (model.activity/create
@@ -77,6 +73,10 @@
   (doseq [activity activities]
     (create-raw activity))
   true)
+
+(defaction comment-response
+  [activities]
+  (remote-create activities))
 
 (defaction show
   [id]
