@@ -58,6 +58,12 @@
   [action params activity]
   (println "show trigger"))
 
+(defn fetch-new-comments
+  [action params activity]
+  (let [author (get-actor activity)
+        domain (model.domain/show (:domain author))]
+    (fetch-comments-remote activity)))
+
 (defn fetch-more-comments
   [action params [activity comments]]
   (let [author (get-actor activity)
@@ -70,3 +76,5 @@
 (add-trigger! #'create #'notify-subscribers)
 (add-trigger! #'create #'sleep-and-print)
 (add-trigger! #'fetch-comments #'fetch-more-comments)
+(add-trigger! #'remote-create #'fetch-new-comments)
+(add-trigger! #'update #'fetch-new-comments)
