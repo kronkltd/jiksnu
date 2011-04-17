@@ -179,3 +179,8 @@
   [serialization response]
   (if response
     (make-packet response)))
+
+(defn get-text
+  [element]
+  (if element
+    (.getCData element)))

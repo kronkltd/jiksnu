@@ -172,7 +172,8 @@
   (map
    (fn [[m a]]
      [(merge {:serialization :xmpp
-              :format :xmpp} m) a])
+              :format :xmpp} m)
+      {:action a}])
    [[{:method :get
       :pubsub true
       :name "items"

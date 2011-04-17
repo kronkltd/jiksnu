@@ -130,22 +130,32 @@
 (deffilter #'remote-create :xmpp
   [action request]
   (let [{:keys [to from payload]} request
-        user (model.user/fetch-by-jid from)
-        vcard (first (children payload))
-        gender (.getCData (find-children vcard "/vcard/gender"))
-        name (.getCData (find-children vcard "/vcard/fn/text"))
-        first-name (.getCData (find-children vcard "/vcard/n/given/text"))
-        last-name (.getCData (find-children vcard "/vcard/n/surname/text"))
-        url (.getCData (find-children vcard "/vcard/url/uri"))
-        avatar-url (.getCData (find-children vcard "/vcard/photo/uri"))
-        new-user {:gender gender
-                  :name name
-                  :first-name first-name
-                  :last-name last-name
-                  :url url
-                  :avatar-url avatar-url}
-        merged-user (merge user new-user)]
-    (jiksnu.model.user/update merged-user)))
+        user (model.user/fetch-by-jid from)]
+    (spy payload)
+    (let [vcard (first (children payload))
+
+          avatar-url-element (find-children vcard "/vcard/photo/uri")
+          first-name-element (find-children vcard "/vcard/n/given/text")
+          gender-element     (find-children vcard "/vcard/gender")
+          last-name-element  (find-children vcard "/vcard/n/surname/text")
+          name-element       (find-children vcard "/vcard/fn/text")
+          url-element        (find-children vcard "/vcard/url/uri")
+
+          avatar-url (get-text avatar-url-element)
+          first-name (get-text first-name-element)
+          gender     (get-text gender-element)
+          last-name  (get-text last-name-element)
+          name       (get-text name-element)
+          url        (get-text url-element)
+
+          new-user {:gender gender
+                    :name name
+                    :first-name first-name
+                    :last-name last-name
+                    :url url
+                    :avatar-url avatar-url}
+          merged-user (merge user new-user)]
+     (jiksnu.model.user/update merged-user))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-profile

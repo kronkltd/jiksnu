@@ -35,7 +35,10 @@
   [& _])
 
 (defaction fetch-remote
-  [& _])
+  [user]
+  (let [domain (:domain user)]
+    (if (:xmpp domain)
+      (request-vcard! user))))
 
 (defaction index
   [options]

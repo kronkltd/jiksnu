@@ -14,6 +14,7 @@
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
             [jiksnu.model.subscription :as model.subscription])
   (:import java.net.URI
            javax.xml.namespace.QName
@@ -52,6 +53,13 @@
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (make-packet packet-map)]
     (deliver-packet! packet)))
+
+(defn request-usermeta
+  [user]
+  (let [xrd (fetch-user-meta user)
+        links (actions.webfinger/get-links xrd)
+        new-user (assoc user :links links)]
+    (model.user/update new-user)))
 
 (defn avatar-img
   [user]
