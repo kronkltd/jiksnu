@@ -150,23 +150,6 @@
              (jiksnu.model.user/fetch-by-id (:from subscriber)))])
      (model.subscription/subscribers user))]])
 
-(defn format-list
-  [user]
-  [:div#formats
-   [:ul
-    [:li
-     [:a {:href (str (uri user) ".rdf")} "FOAF"]]
-    [:li
-     [:a {:href (str (uri user) ".n3")} "N3"]]
-    [:li
-     [:a {:href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user)
-                     ".atom")} "Atom"]]
-    [:li
-     [:a {:href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user)
-                     ".json")} "JSON"]]]])
-
 (defn activities-list
   [^User user]
   [:div.activities

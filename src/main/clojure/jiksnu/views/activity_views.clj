@@ -93,11 +93,22 @@
 (defview #'index :html
   [request activities]
   {:links ["/api/statuses/public_timeline.atom"]
-   :formats {"Atom" "/api/statuses/public_timeline.atom"
-             "JSON" "/api/statuses/public_timeline.json"
-             "XML" "/api/statuses/public_timeline.xml"
-             "RDF" "/api/statuses/public_timeline.rdf"
-             "N3" "/api/statuses/public_timeline.n3"}
+   :formats
+   [{:label "Atom"
+     :href "/api/statuses/public_timeline.atom"
+     :type "application/atom+xml"}
+    {:label "JSON"
+     :href "/api/statuses/public_timeline.json"
+     :type "application/json"}
+    {:label "XML"
+     :href "/api/statuses/public_timeline.xml"
+     :type "application/xml"}
+    {:label "RDF"
+     :href "/api/statuses/public_timeline.rdf"
+     :type "application/rdf+xml"}
+    {:label "N3"
+     :href "/api/statuses/public_timeline.n3"
+     :type "text/n3"}]
    :body [:div
           (add-form (entity/make Activity {:public "public"}))
           (if (seq activities)

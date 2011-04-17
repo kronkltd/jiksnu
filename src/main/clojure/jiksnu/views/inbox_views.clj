@@ -7,4 +7,4 @@
 
 (defview #'index :html
   [request activities]
-  {:body (index-block (spy activities))})
+  {:body (index-block activities)})

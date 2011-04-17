@@ -176,9 +176,7 @@
         (user-actions user)
         (remote-subscribe-form user)
         (subscriptions-list user)
-        (subscribers-list user)]
-       (format-list user)
-       (dump user)]
+        (subscribers-list user)]]
       (activities-list user)])))
 
 (defsection show-section [User :rdf]

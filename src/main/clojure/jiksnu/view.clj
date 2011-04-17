@@ -98,9 +98,9 @@
          [:div.formats
           [:ul
            (map
-            (fn [[ label url]]
+            (fn [{:keys [label href type]}]
               [:li
-               [:a {:href url} label]])
+               [:a {:href href} label]])
             (:formats response))]]
          [:p "Copyright © 2011 KRONK Ltd."]]]
        (link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")

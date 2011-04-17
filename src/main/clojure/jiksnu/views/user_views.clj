@@ -146,8 +146,25 @@
 (defview #'show :html
   [request user]
   {:body (show-section user)
-   :links [(str "/api/statuses/user_timeline/"
-                (:_id user) ".atom")]})
+   :formats
+   [{:label "FOAF"
+     :href (str (uri user) ".rdf")
+     :type "application/rdf+xml"}
+    {:label "N3"
+     :href (str (uri user) ".n3")
+     :type "text/n3"}
+    {:label "Atom"
+     :href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user) ".atom")
+     :type "application/atom+xml"}
+    {:label "JSON"
+     :href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user) ".json")
+     :type "application/json"}
+    {:label "XML"
+     :href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user) ".xml")
+     :type "application/xml"}]})
 
 (defview #'show :rdf
   [request user]
