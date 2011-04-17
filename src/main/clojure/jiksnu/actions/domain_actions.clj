@@ -50,4 +50,4 @@
 
 (defaction ping-response
   [domain]
-  (model.domain/update (assoc (spy domain) :xmpp true)))
+  (model.domain/update (assoc domain :xmpp true)))

@@ -120,7 +120,7 @@
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-one Activity (spy {:_id id})))
+  (entity/fetch-one Activity {:_id id}))
 
 (defn show
   [id]

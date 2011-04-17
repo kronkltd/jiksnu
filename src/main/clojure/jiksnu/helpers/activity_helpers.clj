@@ -188,7 +188,7 @@
                  (= namespace as-ns))
         (let [object (make-object element)]
           {
-           ;; :type (str (.getObjectType (spy object)))
+           ;; :type (str (.getObjectType object)))
            :object-id (str (.getId object))
            :object-updated (.getUpdated object)
            :object-published (.getPublished object)
@@ -209,7 +209,7 @@
 serialization"
   ([entry] (to-activity entry nil))
   ([entry feed]
-     (let [id (str (.getId (spy entry)))
+     (let [id (str (.getId entry))
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)

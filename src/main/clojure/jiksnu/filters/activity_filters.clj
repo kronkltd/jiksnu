@@ -47,7 +47,7 @@
 (deffilter #'delete :http
   [action request]
   (let [{{id :id} :params} request]
-    (action (spy id))))
+    (action id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edit
