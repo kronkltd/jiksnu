@@ -92,8 +92,7 @@
 
 (defview #'index :html
   [request activities]
-  {:links ["/api/statuses/public_timeline.atom"]
-   :formats
+  {:formats
    [{:label "Atom"
      :href "/api/statuses/public_timeline.atom"
      :type "application/atom+xml"}

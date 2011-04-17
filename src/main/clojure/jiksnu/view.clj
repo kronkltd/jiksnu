@@ -78,11 +78,12 @@
       [:head
        [:title "jiksnu"]
        (map
-        (fn [link]
-          [:link {:type "application/atom+xml"
-                  :href link
+        (fn [{:keys [label href type]}]
+          [:link {:type type
+                  :href href
+                  :title label
                   :rel "alternate"}])
-        (:links response))
+        (:formats response))
        #_(link-to-stylesheet
           "/public/css/smoothness/jquery-ui-1.8.4.custom.css")
        (link-to-stylesheet "/public/standard.css")]
