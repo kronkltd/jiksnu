@@ -1,10 +1,11 @@
 (ns jiksnu.views.domain-views
-  (:use clj-tigase.core
-        ciste.config
+  (:use ciste.config
         ciste.core
         ciste.debug
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
+        clj-tigase.core
         jiksnu.actions.domain-actions
         jiksnu.model
         jiksnu.session

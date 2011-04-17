@@ -1,8 +1,9 @@
 (ns jiksnu.sections.activity-sections
-  (:use ciste.debug
-        ciste.view
+  (:use ciste.core
+        ciste.debug
         ciste.html
         ciste.sections
+        ciste.sections.default
         jiksnu.abdera
         jiksnu.model
         jiksnu.helpers.activity-helpers

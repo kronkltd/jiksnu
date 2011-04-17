@@ -2,7 +2,7 @@
   (:use ciste.config
         ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
         [clj-gravatar.core :only (gravatar-image)]
         clj-tigase.core
         jiksnu.abdera

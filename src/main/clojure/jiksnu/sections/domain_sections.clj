@@ -1,10 +1,8 @@
 (ns jiksnu.sections.domain-sections
   (:use ciste.sections
-        ciste.view
-        )
+        ciste.sections.default)
   (:require [hiccup.form-helpers :as f])
-  (:import jiksnu.model.Domain)
-  )
+  (:import jiksnu.model.Domain))
 
 (defsection uri [Domain :html]
   [domain & options]
@@ -37,9 +35,7 @@
          (f/submit-button "Discover"))]
    [:td (f/form-to
          [:delete (uri domain)]
-         (f/submit-button "Delete")
-         )]
-   ])
+         (f/submit-button "Delete"))]])
 
 (defsection index-section [Domain :html]
   [domains & options]

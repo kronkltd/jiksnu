@@ -3,7 +3,8 @@
         ciste.core
         ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         clj-tigase.core
         jiksnu.actions.user-actions
         jiksnu.helpers.user-helpers

@@ -1,9 +1,9 @@
 (ns jiksnu.triggers.domain-triggers
-  (:use clj-tigase.core
-        ciste.core
+  (:use ciste.core
         ciste.debug
-        ciste.trigger
-        ciste.view
+        ciste.triggers
+        ciste.views
+        clj-tigase.core
         jiksnu.actions.domain-actions
         jiksnu.actions.webfinger-actions
         jiksnu.view)

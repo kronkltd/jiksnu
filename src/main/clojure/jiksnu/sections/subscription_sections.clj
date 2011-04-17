@@ -1,7 +1,7 @@
 (ns jiksnu.sections.subscription-sections
   (:use ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
         clj-tigase.core
         jiksnu.helpers.subscription-helpers
         jiksnu.model

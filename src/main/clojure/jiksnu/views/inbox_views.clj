@@ -1,8 +1,7 @@
 (ns jiksnu.views.inbox-views
-  (:use ciste.core
-        ciste.debug
-        ciste.sections
-        ciste.view
+  (:use ciste.sections
+        ciste.sections.default
+        ciste.views
         jiksnu.actions.inbox-actions))
 
 (defview #'index :html

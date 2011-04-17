@@ -2,7 +2,7 @@
   (:use ciste.config
         ciste.debug
         ciste.sections
-        ciste.view
+        ciste.sections.default
         clj-tigase.core
         jiksnu.abdera
         jiksnu.model

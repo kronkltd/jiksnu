@@ -1,6 +1,5 @@
 (ns jiksnu.views.settings-views
-  (:use ciste.core
-        ciste.view
+  (:use ciste.views
         jiksnu.actions.settings-actions)
   (:require [hiccup.form-helpers :as f]))
 

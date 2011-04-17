@@ -1,7 +1,8 @@
 (ns jiksnu.views.webfinger-views
   (:use ciste.core
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         hiccup.core
         ciste.config
         jiksnu.namespace

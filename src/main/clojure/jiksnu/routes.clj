@@ -51,7 +51,7 @@
   [path]
   (string/replace path #":" "\\:"))
 
-(def http-matchers
+(def http-routes
   (make-matchers
    [[[:get  "/"]
      #'activity/index]
@@ -168,7 +168,7 @@
     [[:get "/:id/subscriptions"]
      #'subscription/subscriptions]]))
 
-(def xmpp-matchers
+(def xmpp-routes
   (map
    (fn [[m a]]
      [(merge {:serialization :xmpp
@@ -253,9 +253,6 @@
   [#'wrap-log-request
    #'wrap-log-params])
 
-(def routes
-  (concat http-routes xmpp-routes))
-
 (def http-predicates
   [#'http-serialization?
    [#'request-method-matches?
@@ -267,6 +264,9 @@
     #'node-matches?
     #'name-matches?
     #'ns-matches?]])
+
+(def routes
+  (concat http-routes xmpp-routes))
 
 (def all-predicates
   [http-predicates xmpp-predicates])

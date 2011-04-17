@@ -1,10 +1,9 @@
 (ns jiksnu.views.push-subscription-views
   (:use [ciste.config :only (config)]
-        ciste.core
         ciste.debug
-        ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         jiksnu.actions.push-subscription-actions
         jiksnu.helpers.push-subscription-helpers
         jiksnu.model

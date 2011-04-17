@@ -1,7 +1,6 @@
 (ns jiksnu.helpers.push-subscription-helpers
   (:use ciste.debug
         ciste.sections
-        ciste.view
         jiksnu.model
         jiksnu.namespace
         jiksnu.session

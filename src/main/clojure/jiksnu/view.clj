@@ -1,9 +1,11 @@
 (ns jiksnu.view
   (:use ciste.core
         ciste.debug
+        ciste.formats
         ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         [ciste.config :only (config)]
         clj-tigase.core
         jiksnu.abdera
@@ -159,7 +161,7 @@
    (if-not (= (:template response) false)
      (page-template-content response))))
 
-(defmethod default-format :atom
+(defmethod apply-view-by-format :atom
   [request response])
 
 (defmethod format-as :xmpp

@@ -1,6 +1,6 @@
 (ns jiksnu.sections.auth-sections
   (:use ciste.sections
-        ciste.view
+        ciste.sections.default
         jiksnu.session)
   (:require [hiccup.form-helpers :as f]))
 

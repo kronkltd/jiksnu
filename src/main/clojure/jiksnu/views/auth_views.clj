@@ -3,7 +3,8 @@
         ciste.debug
         ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         jiksnu.actions.auth-actions
         jiksnu.helpers.auth-helpers
         jiksnu.model

@@ -1,11 +1,12 @@
 (ns jiksnu.views.activity-views
-  (:use clj-tigase.core
-        [ciste.config :only (config)]
+  (:use [ciste.config :only (config)]
         ciste.core
         ciste.debug
         ciste.html
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
+        clj-tigase.core
         jiksnu.abdera
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers

@@ -1,10 +1,10 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use clj-tigase.core
-        ciste.core
+  (:use ciste.core
         ciste.debug
-        ciste.view
-        ciste.trigger
-        ciste.sections
+        ;; ciste.sections
+        ciste.sections.default
+        ciste.triggers
+        clj-tigase.core
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers
         jiksnu.model

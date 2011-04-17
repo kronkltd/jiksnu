@@ -1,6 +1,7 @@
 (ns jiksnu.helpers.subscription-helpers
-  (:use ciste.sections
-        ciste.view
+  (:use ciste.core
+        ciste.sections
+        ciste.sections.default
         clj-tigase.core
         jiksnu.model
         jiksnu.namespace

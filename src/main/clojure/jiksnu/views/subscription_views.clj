@@ -1,9 +1,9 @@
 (ns jiksnu.views.subscription-views
-  (:use [ciste.core :only (defview)]
-        ciste.debug
+  (:use ciste.debug
         [ciste.html :only (dump dump*)]
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         clj-tigase.core
         jiksnu.actions.subscription-actions
         jiksnu.helpers.subscription-helpers
@@ -18,8 +18,7 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
            tigase.xml.Element
-           java.text.SimpleDateFormat
-           ))
+           java.text.SimpleDateFormat))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index

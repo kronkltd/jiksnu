@@ -1,8 +1,8 @@
 (ns jiksnu.sections.push-subscription-sections
   (:use ciste.debug
-        ciste.view
         ciste.html
         ciste.sections
+        ciste.sections.default
         jiksnu.abdera
         jiksnu.model
         jiksnu.helpers.push-subscription-helpers
@@ -11,7 +11,6 @@
         jiksnu.sections.user-sections
         jiksnu.session
         jiksnu.xmpp.element
-        jiksnu.view
         [karras.entity :only (make)])
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.push-subscription :as model.push-subscription]
