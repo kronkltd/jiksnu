@@ -110,20 +110,14 @@
 
 (defsection show-section [Activity :json]
   [activity & _]
-  {"postedTime" (:published activity)
+  {"published" (:published activity)
+   "updated" (:updated activity)
    "verb" "post"
    "title" (:title activity)
-   "body" (:summary activity)
+   "content" (:summary activity)
    "id" (:_id activity)
    "url" (full-uri activity)
-   "actor"
-   (let [authors
-         (map
-          (fn [author-id]
-            (model.activity/fetch-by-id
-             author-id))
-          (:authors activity))]
-     (index-section authors))
+   "actor" (show-section (get-actor activity))
    "object"
    {"published" (:object-published activity)
     "updated" (:object-updated activity)}})

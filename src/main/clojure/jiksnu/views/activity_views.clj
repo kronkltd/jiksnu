@@ -89,7 +89,9 @@
 (defview #'index :json
   [request activities]
   (with-format :json
-    {:body (doall (map #(show-section %) activities))}))
+    {:body
+     {:items
+      (map show-section activities)}}))
 
 (defview #'index :html
   [request activities]

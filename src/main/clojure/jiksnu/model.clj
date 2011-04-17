@@ -145,8 +145,10 @@
        (.print out (str "\"" formatted-date "\"")))))
 
 (defn write-json-object-id
-  [id out escape-unicode]
-  (.print out (str "\"" id "\"")))
+  ([id out]
+     (write-json-object-id id out false))
+  ([id out escape-unicode]
+     (.print out (str "\"" id "\""))))
 
 (extend Date Write-JSON
   {:write-json write-json-date})

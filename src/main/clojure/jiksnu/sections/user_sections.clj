@@ -1,5 +1,6 @@
 (ns jiksnu.sections.user-sections
   (:use ciste.config
+        ciste.debug
         ciste.html
         ciste.sections
         ciste.sections.default
@@ -206,7 +207,7 @@
       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
       [sioc "account_of"] (rdf-resource (str "acct:" (get-uri user)))]]]))
 
-(defsection show-section [User :poco]
+(defsection show-section [User :json]
   [user & options]
   {:profileUrl (full-uri user)
    :id (:_id user)
