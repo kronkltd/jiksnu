@@ -11,7 +11,6 @@
         jiksnu.view
         jiksnu.xmpp.element)
   (:require [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
 
@@ -82,10 +81,7 @@
 
 (defaction discover
   [^User user]
-  (let [xrd (fetch-user-meta user)
-        links (actions.webfinger/get-links xrd)
-        new-user (assoc user :links links)]
-    (update new-user)))
+  user)
 
 (defaction fetch-updates
   [user]

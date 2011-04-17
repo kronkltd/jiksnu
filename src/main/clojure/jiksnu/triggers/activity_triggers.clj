@@ -1,7 +1,6 @@
 (ns jiksnu.triggers.activity-triggers
   (:use ciste.core
         ciste.debug
-        ;; ciste.sections
         ciste.sections.default
         ciste.triggers
         clj-tigase.core
