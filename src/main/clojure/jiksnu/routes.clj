@@ -1,7 +1,7 @@
 (ns jiksnu.routes
-  (:use ciste.core
-        ciste.debug
+  (:use ciste.debug
         ciste.predicates
+        ciste.routes
         jiksnu.middleware
         jiksnu.namespace
         (ring.middleware params
@@ -43,68 +43,130 @@
              webfinger-views)
             [ring.util.response :as response]))
 
-(def #^:dynamic *standard-middleware*
-  [#'wrap-log-request
-   #'wrap-log-params])
-
-(def http-matchers
-  (make-matchers
-   [[:get "/"]                                       #'activity/index
-    [:get "/main/register"]                          #'user/register
-    [:get "/settings/profile"]                       #'user/profile
-    [:get "/posts.:format"]                          #'activity/index
-    [:get "/posts/new"]                              #'activity/new
-    [:get "/notice/:id"]                             #'activity/show
-    [:get "/notice/:id.:format"]                     #'activity/show
-    [:get "/notice/:id/edit"]                        #'activity/edit
-    [:get "/notice/:id/comment"]                     #'activity/new-comment
-    [:post "/notice/:id/comments/update"]            #'activity/fetch-comments
-    [:get "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline
-    [:get "/api/statuses/public_timeline.:format"]   #'activity/index
-    [:get "/api/people/@me/@all"]                    #'user/index
-    [:get "/api/people/@me/@all/:id"]                #'user/show
-    [:get "/admin/subscriptions"]                    #'subscription/index
-    [:get "/admin/push/subscriptions"]               #'push/index
-    [:get "/admin/users"]                            #'user/index
-    [:get "/admin/settings"]                         #'settings/edit
-    [:get "/main/login"]                             #'auth/login-page
-    [:post "/main/guest-login"]                      #'auth/guest-login
-    [:post "/main/login"]                            #'auth/login
-    [:post "/main/logout"]                           #'auth/logout
-    [:get "/main/password"]                          #'auth/password-page
-    [:get  "/main/ostatus"]                          #'subscription/ostatus
-    [:get "/main/ostatussub"]                        #'subscription/ostatussub
-    [:post "/main/ostatussub"]                  #'subscription/ostatussub-submit
-    [:post "/main/subscribe"]                        #'subscription/subscribe
-    [:post "/main/unsubscribe"]                      #'subscription/unsubscribe
-    [:delete "/subscriptions/:id"]                   #'subscription/delete
-    [:post "/notice/new"]                            #'activity/create
-    [:post "/notice/:id"]                            #'activity/update
-    [:post "/notice/:id/likes"]                      #'activity/like-activity
-    [:delete "/notice/:id"]                          #'activity/delete
-    [:get "/domains"]                                #'domain/index
-    [:get "/domains/*"]                              #'domain/show
-    [:delete "/domains/*"]                           #'domain/delete
-    [:post "/domains"]                               #'domain/create
-    [:post "/domains/*/discover"]                    #'domain/discover
-    [:post "/domains/*/edit"]                        #'domain/edit
-    [:post "/main/register"]                         #'user/create
-    [:get "/users/:id"]                              #'user/remote-profile
-    [:delete "/users/:id"]                           #'user/delete
-    [:post "/users/:id/update"]                      #'user/fetch-updates
-    [:post "/users/:id/discover"]                    #'user/discover
-    [:post "/:username"]                             #'user/update
-    [:get "/:username/all"]                          #'inbox/index
-    [:get "/:id"]                                    #'user/show
-    [:get "/:id.:format"]                            #'user/show
-    [:get "/:id/subscriptions"]                     #'subscription/subscriptions
-    [:get "/:id/subscribers"]                        #'subscription/subscribers
-    [:get "/.well-known/host-meta"]                  #'webfinger/host-meta
-    [:get "/main/xrd"]                               #'webfinger/user-meta]))
+(defn not-found-msg
+  []
+  "You found the hidden page. Don't tell anyone about this.\n")
 
 (defn escape-route
   [path]
   (string/replace path #":" "\\:"))
+
+(def http-matchers
+  (make-matchers
+   [[[:get  "/"]
+     #'activity/index]
+    [[:get "/.well-known/host-meta"]
+     #'webfinger/host-meta]
+
+    [[:get "/admin/subscriptions"]
+     #'subscription/index]
+    [[:get "/admin/push/subscriptions"]
+     #'push/index]
+    [[:get "/admin/users"]
+     #'user/index]
+    [[:get "/admin/settings"]
+     #'settings/edit]
+
+    [[:get "/api/people/@me/@all"]
+     #'user/index]
+    [[:get "/api/people/@me/@all/:id"]
+     #'user/show]
+    [[:get "/api/statuses/public_timeline.:format"]
+     #'activity/index]
+    [[:get  "/api/statuses/user_timeline/:id.:format"]
+     #'activity/user-timeline]
+
+    [[:get "/domains"]
+     #'domain/index]
+    [[:get "/domains/*"]
+     #'domain/show]
+    [[:delete "/domains/*"]
+     #'domain/delete]
+    [[:post "/domains"]
+     #'domain/create]
+    [[:post "/domains/*/discover"]
+     #'domain/discover]
+    [[:post "/domains/*/edit"]
+     #'domain/edit]
+
+    [[:post "/main/guest-login"]
+     #'auth/guest-login]
+    [[:get "/main/login"]
+     #'auth/login-page]
+    [[:post "/main/login"]
+     #'auth/login]
+    [[:post "/main/logout"]
+     #'auth/logout]
+    [[:get "/main/ostatus"]
+     #'subscription/ostatus]
+    [[:get "/main/ostatussub"]
+     #'subscription/ostatussub]
+    [[:post "/main/ostatussub"]
+     #'subscription/ostatussub-submit]
+    [[:get "/main/password"]
+     #'auth/password-page]
+    [[:get "/main/register"]
+      #'user/register]
+    [[:post "/main/register"]
+      #'user/create]
+    [[:post "/main/subscribe"]
+      #'subscription/subscribe]
+    [[:post "/main/unsubscribe"]
+      #'subscription/unsubscribe]
+    [[:get "/main/xrd"]
+      #'webfinger/user-meta]
+
+    [[:delete "/notice/:id"]
+     #'activity/delete]
+    [[:get "/notice/:id"]
+     #'activity/show]
+    [[:post "/notice/:id"]
+     #'activity/update]
+    [[:get "/notice/:id.:format"]
+     #'activity/show]
+    [[:get  "/notice/:id/comment"]
+     #'activity/new-comment]
+    [[:post "/notice/:id/comments/update"]
+     #'activity/fetch-comments]
+    [[:get "/notice/:id/edit"]
+     #'activity/edit]
+    [[:post "/notice/:id/likes"]
+     #'activity/like-activity]
+    [[:post "/notice/new"]
+     #'activity/create]
+
+    [[:get "/posts.:format"]
+     #'activity/index]
+    [[:get "/posts/new"]
+     #'activity/new]
+
+    [[:get "/settings/profile"]
+     #'user/profile]
+
+    [[:delete "/subscriptions/:id"]
+     #'subscription/delete]
+
+    [[:delete "/users/:id"]
+     #'user/delete]
+    [[:get "/users/:id"]
+     #'user/remote-profile]
+    [[:post "/users/:id/discover"]
+     #'user/discover]
+    [[:post "/users/:id/update"]
+     #'user/fetch-updates]
+
+    [[:get "/:id"]
+     #'user/show]
+    [[:post "/:username"]
+     #'user/update]
+    [[:get "/:id.:format"]
+     #'user/show]
+    [[:get "/:username/all"]
+     #'inbox/index]
+    [[:get "/:id/subscribers"]
+     #'subscription/subscribers]
+    [[:get "/:id/subscriptions"]
+     #'subscription/subscriptions]]))
 
 (def xmpp-matchers
   (map
@@ -187,20 +249,27 @@
 
     [{:method :result} #'domain/ping-response]]))
 
-(def *routes*
-  (concat
-   http-matchers
-   xmpp-matchers))
+(def #^:dynamic *standard-middleware*
+  [#'wrap-log-request
+   #'wrap-log-params])
 
-(def *predicates*
-  [[#'xmpp-serialization?
-    [#'type-matches?
-     #'node-matches?
-     #'name-matches?
-     #'ns-matches?]]
-   [#'http-serialization?
-    [#'request-method-matches?
-     #'path-matches?]]])
+(def routes
+  (concat http-routes xmpp-routes))
+
+(def http-predicates
+  [#'http-serialization?
+   [#'request-method-matches?
+    #'path-matches?]])
+
+(def xmpp-predicates
+  [#'xmpp-serialization?
+   [#'type-matches?
+    #'node-matches?
+    #'name-matches?
+    #'ns-matches?]])
+
+(def all-predicates
+  [http-predicates xmpp-predicates])
 
 (compojure/defroutes all-routes
   (route/files "/public")
@@ -208,22 +277,19 @@
                  (response/file-response "favicon.ico"))
   (compojure/ANY "*" request
                  ((wrap-log-request
-                   (resolve-routes *predicates* *routes*)) request))
-  (route/not-found "You found the hidden page. Don't tell anyone about this.\n"))
+                   (resolve-routes all-predicates routes)) request))
+  (route/not-found (not-found-msg)))
 
 (def app
   (-> all-routes
-      ;; wrap-log-request
-      (wrap-user-debug-binding)
-      (wrap-user-binding)
-      (wrap-debug-binding)
-      ;; ;; #'wrap-flash
-      ;; (compojure.handler/site :memory)
-      (wrap-session)
+      wrap-user-debug-binding
+      wrap-user-binding
+      wrap-debug-binding
+      wrap-session
       wrap-multipart-params
       wrap-keyword-params
       wrap-nested-params
       wrap-params
-      (middleware/wrap-http-serialization)
-      (wrap-database)
-      (wrap-error-catching)))
+      middleware/wrap-http-serialization
+      wrap-database
+      wrap-error-catching))

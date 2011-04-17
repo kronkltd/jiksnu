@@ -1,7 +1,7 @@
 (ns jiksnu.xmpp.plugin
   (:use ciste.config
-        ciste.core
         ciste.debug
+        ciste.routes
         clojure.pprint
         [clojure.contrib.logging :only (debug)]
         jiksnu.model
