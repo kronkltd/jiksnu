@@ -120,21 +120,6 @@
    :template false
    :headers {"Location" "/admin/subscriptions"}})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (defview #'ostatus :html
   [request arg]
   {:body

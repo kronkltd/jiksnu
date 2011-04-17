@@ -3,7 +3,8 @@
         ciste.debug
         jiksnu.model
         jiksnu.namespace
-        [jiksnu.session :only (current-user-id)])
+        [jiksnu.session :only (current-user
+                               current-user-id)])
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
@@ -44,8 +45,11 @@
 
 (defaction subscribe
   [user]
-  (let [actor-id (current-user-id)]
-    (model.subscription/subscribe actor-id (:_id user))))
+  (let [actor (current-user)]
+    (model.subscription/create
+     {:from (:_id actor)
+      :to (:_id user)
+      :pending true})))
 
 (defaction subscribed
   [& _])

@@ -84,19 +84,14 @@
 
 (deffilter #'subscribe :http
   [action request]
-  (if-let [actor (current-user-id)]
-    (if-let [{{user-id :subscribeto} :params} request]
-      (if-let [user (model.user/fetch-by-id user-id)]
-        (model.subscription/subscribe actor (:_id user))))))
+  (if-let [{{user-id :subscribeto} :params} request]
+    (if-let [user (model.user/fetch-by-id user-id)]
+      (action user))))
 
 (deffilter #'subscribe :xmpp
   [action request]
-  (let [to (:to request)
-        from (:from request)]
-    (let [user (model.user/fetch-by-jid to)
-          subscriber (model.user/find-or-create-by-jid from)]
-      (model.subscription/subscribe (:_id subscriber)
-                                    (:_id user)))))
+  (let [user (model.user/fetch-by-jid (:to request))]
+    (action user)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribed
