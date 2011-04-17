@@ -64,7 +64,7 @@
 (defview #'subscriptions :html
   [request [user subscriptions]]
   {:title "Subscriptions"
-   :formats [{:href (str "/subscriptions.json")
+   :formats [{:href (str (uri user) "/subscriptions.json")
               :label "JSON"
               :type "application/json"}]
    :body
