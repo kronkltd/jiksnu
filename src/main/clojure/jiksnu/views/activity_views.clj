@@ -96,7 +96,8 @@
    :formats {"Atom" "/api/statuses/public_timeline.atom"
              "JSON" "/api/statuses/public_timeline.json"
              "XML" "/api/statuses/public_timeline.xml"
-             }
+             "RDF" "/api/statuses/public_timeline.rdf"
+             "N3" "/api/statuses/public_timeline.n3"}
    :body [:div
           (add-form (entity/make Activity {:public "public"}))
           (if (seq activities)

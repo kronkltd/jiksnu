@@ -95,6 +95,13 @@
          (devel-environment-section)
          (:body response)]
         [:footer
+         [:div.formats
+          [:ul
+           (map
+            (fn [[ label url]]
+              [:li
+               [:a {:href url} label]])
+            (:formats response))]]
          [:p "Copyright © 2011 KRONK Ltd."]]]
        (link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
        #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
