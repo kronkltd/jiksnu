@@ -115,7 +115,8 @@
          (privacy-filter user)
          option-map)]
     (entity/fetch Activity merged-options
-                  :sort [(sugar/desc :published)])))
+                  :sort [(sugar/desc :published)]
+                  :limit 20)))
 
 (defn fetch-by-id
   [id]
