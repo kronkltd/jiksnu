@@ -60,7 +60,7 @@
 
 (defaction subscriptions
   [user]
-  (model.subscription/subscriptions user))
+  [user (model.subscription/subscriptions user)])
 
 (defaction unsubscribe
   [actor-id user-id]

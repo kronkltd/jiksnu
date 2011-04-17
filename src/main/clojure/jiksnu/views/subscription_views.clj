@@ -62,8 +62,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'subscriptions :html
-  [request subscriptions]
+  [request [user subscriptions]]
   {:title "Subscriptions"
+   :formats [{:href (str "/subscriptions.json")
+              :label "JSON"
+              :type "application/json"}]
    :body
    [:div
     [:table
@@ -95,7 +98,7 @@
        subscriptions)]]]})
 
 (defview #'subscriptions :xmpp
-  [request subscriptions]
+  [request [user subscriptions]]
   (result-packet request (subscription-response-minimal subscriptions)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
