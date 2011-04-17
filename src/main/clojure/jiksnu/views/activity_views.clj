@@ -94,7 +94,9 @@
   [request activities]
   {:links ["/api/statuses/public_timeline.atom"]
    :formats {"Atom" "/api/statuses/public_timeline.atom"
-             "JSON" "/api/statuses/public_timeline.json"}
+             "JSON" "/api/statuses/public_timeline.json"
+             "XML" "/api/statuses/public_timeline.xml"
+             }
    :body [:div
           (add-form (entity/make Activity {:public "public"}))
           (if (seq activities)
@@ -191,5 +193,6 @@
 
 (defview #'user-timeline :xml
   [request [user activities]]
-  
+  {:body (index-block (spy activities))
+   :template :false}
   )

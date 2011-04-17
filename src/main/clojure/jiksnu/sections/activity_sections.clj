@@ -162,6 +162,52 @@
       (.setContentAsHtml object-element (:summary activity)))
     entry))
 
+(defsection show-section [Activity :xml]
+  [activity & _]
+  #_["status" 
+   ["created_at"  (:created activity)]
+   ["id" (:_id activity)]
+   ["text" (:content activity)]
+   ["source"
+    ;; TODO: generator info
+    ]
+   ["truncated" "false"]
+   ["in_reply_to_status_id"]
+   ["in_reply_to_user_id"]
+   ["favorited"
+    ;; (liked? (current-user) activity)
+    ]
+   ["in_reply_to_screen_name"]
+   (show-section (get-actor activity))
+   ["geo"]
+   ["coordinates"]
+   ["place"]
+   ["contributors"]
+   ["entities"
+    ["user_mentions"
+     ;; TODO: list mentions
+     ]
+    ["urls"
+     ;; TODO: list urls
+     ]
+    ["hashtags"
+     ;; TODO: list hashtags
+     ]
+    ]
+   ]
+  {:tag :status
+   :content
+   [{:tag :text
+     :content [(:summary activity)]}
+    {:tag :created_at
+     :content [(str (:published activity))]
+     }
+    
+    ]
+   }
+  
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -173,6 +219,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defsection index-line [Activity]
+  [activity & opts]
+  (apply show-section activity opts))
 
 (defsection index-line [Activity :xmpp :xmpp]
   [^Activity activity & options]
@@ -203,6 +253,11 @@
    [:h2 "Notices"]
    [:ol.activities
     (map index-line-minimal activities)]])
+
+(defsection index-block [Activity :xml]
+  [activities & _]
+  {:tag :statuses
+   :content (map index-line activities)})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-section
