@@ -206,6 +206,17 @@
       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
       [sioc "account_of"] (rdf-resource (str "acct:" (get-uri user)))]]]))
 
+(defsection show-section [User :poco]
+  [user & options]
+  {:profileUrl (full-uri user)
+   :id (:_id user)
+   :name {:formatted (:name user)
+          :familyName (:last-name user)
+          :givenName (:first-name user)}
+   :photos [{:value (:avatar-url user)
+             :type "thumbnail"}]
+   :displayName (:name user)})
+
 ;; (defsection show-section-minimal [User :xmpp :xmpp]
 ;;   [property & options]
 ;;   (make-element
