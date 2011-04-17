@@ -61,6 +61,8 @@
     [:post "/notice/:id/comments/update"]            #'activity/fetch-comments
     [:get "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline
     [:get "/api/statuses/public_timeline.:format"]   #'activity/index
+    [:get "/api/people/@me/@all"]                    #'user/index
+    [:get "/api/people/@me/@all/:id"]                #'user/show
     [:get "/admin/subscriptions"]                    #'subscription/index
     [:get "/admin/push/subscriptions"]               #'push/index
     [:get "/admin/users"]                            #'user/index
