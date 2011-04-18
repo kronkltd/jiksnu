@@ -10,6 +10,7 @@
         jiksnu.helpers.user-helpers
         jiksnu.model
         jiksnu.namespace
+        jiksnu.sections.subscription-sections
         jiksnu.session
         jiksnu.view
         plaza.rdf.core
@@ -170,8 +171,8 @@
         (following-section actor user)
         (user-actions user)
         (remote-subscribe-form user)
-        (subscriptions-list user)
-        (subscribers-list user)]]
+        (subscriptions-section [] #_user)
+        (subscribers-section [] #_user)]]
       (index-section (model.activity/find-by-user user))])))
 
 (defsection show-section [User :rdf]

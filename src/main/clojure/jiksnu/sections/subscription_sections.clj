@@ -12,6 +12,13 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription))
 
+(declare-section subscriptions-line)
+(declare-section subscribers-line)
+(declare-section subscriptions-block :seq)
+(declare-section subscribers-block :seq)
+(declare-section subscriptions-section :seq)
+(declare-section subscribers-section :seq)
+
 (defsection uri [Subscription]
   [subscription & options]
   (str "/subscriptions/" (:_id subscription)))
@@ -31,13 +38,10 @@
    [:td (delete-form subscription)]])
 
 (defsection subscriptions-line [Subscription :html]
-  [subscriptions & options]
-  (fn [subscription]
-       [:li (show-section-minimal
-             (jiksnu.model.user/fetch-by-id (:to subscription)))
-        (if (:pending subscription) " (pending)")])
-     
-  )
+  [subscription & options]
+  [:li (show-section-minimal
+        (jiksnu.model.user/fetch-by-id (:to subscription)))
+   (if (:pending subscription) " (pending)")])
 
 (defsection index-block [Subscription :html]
   [subscriptions & options]
@@ -63,23 +67,22 @@
    [:h2 "Subscriptions"]
    (index-block subscriptions)])
 
-(defsection user-subscriptions-section :html
-  [[user subscriptions] & _]
+(defsection subscriptions-section [Subscription :html]
+  [subscriptions & _]
   [:div#subscriptions
-   [:h3 [:a {:href (str (uri user) "/subscriptions") }
+   [:h3 [:a {:href (str #_(uri user) "/subscriptions") }
          "Subscriptions"]]
    (subscriptions-block subscriptions)
-   [:p [:a {:href "/main/ostatussub"} "Add Remote"]]]
-  )
+   [:p [:a {:href "/main/ostatussub"} "Add Remote"]]])
 
-(defsection user-subscribers-section [Subscription :html]
-  [[user subscriptions] & _]
+(defsection subscribers-section [Subscription :html]
+  [subscriptions & _]
   [:div#subscribers
-   [:h3 [:a {:href (str (uri user) "/subscribers")}
+   [:h3 [:a {:href (str #_(uri user) "/subscribers")}
          "Subscribers"]]
    [:ul
     (map
      (fn [subscriber]
        [:li (show-section-minimal
              (jiksnu.model.user/fetch-by-id (:from subscriber)))])
-     (model.subscription/subscribers user))]])
+     subscriptions)]])

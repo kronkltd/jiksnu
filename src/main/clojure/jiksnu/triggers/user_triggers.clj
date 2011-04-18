@@ -10,6 +10,6 @@
   (let [domain (model.domain/show (:domain user))]
     (if (:xmpp domain)
       (request-vcard! user)
-      (request-usermeta user))))
+      (update-usermeta user))))
 
 (add-trigger! #'discover #'discover-user)

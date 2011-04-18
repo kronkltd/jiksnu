@@ -11,6 +11,7 @@
         jiksnu.view
         jiksnu.xmpp.element)
   (:require [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
 

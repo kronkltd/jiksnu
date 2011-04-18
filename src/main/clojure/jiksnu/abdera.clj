@@ -2,7 +2,8 @@
   (:use jiksnu.model
         [clojure.contrib.logging :only (error)])
   (:import java.io.ByteArrayInputStream
-           javax.xml.namespace.QName))
+           javax.xml.namespace.QName
+           org.apache.abdera.protocol.client.AbderaClient))
 
 (defonce #^:dynamic *abdera-client* (AbderaClient.))
 

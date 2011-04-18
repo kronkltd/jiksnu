@@ -20,7 +20,6 @@
            javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera.model.Entry
-           org.apache.abdera.protocol.client.AbderaClient
            tigase.xml.Element))
 
 (defn get-uri
