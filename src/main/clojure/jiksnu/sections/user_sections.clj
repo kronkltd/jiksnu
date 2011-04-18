@@ -172,10 +172,10 @@
         (following-section actor user)
         (user-actions user)
         (remote-subscribe-form user)
-        (subscriptions-section
-         (nth (spy (actions.subscription/subscriptions user)) 1))
-        (subscribers-section
-         (nth (spy (actions.subscription/subscribers user)) 1))]]
+        (let [[_ records] (actions.subscription/subscriptions user)]
+          (if (spy (seq records)) (subscriptions-section records)))
+        (let [[_ records] (actions.subscription/subscribers user)]
+          (if (seq records) (subscribers-section records)))]]
       (index-section (model.activity/find-by-user user))])))
 
 (defsection show-section [User :rdf]
