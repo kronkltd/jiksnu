@@ -3,7 +3,7 @@
         ciste.factory
         ciste.filters
         ciste.sections
-        ciste.view
+        ciste.views
         jiksnu.actions.activity-actions
         jiksnu.filters.activity-filters
         jiksnu.model
@@ -18,7 +18,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-;; (describe apply-filter "#'create :xmpp"
+;; (describe filter-action "#'create :xmpp"
 ;;   (testing "when the user is logged in"
 ;;     (testing "and it is a valid activity"
 ;;       (do-it "should return that activity"
@@ -36,15 +36,15 @@
 ;;                                :body element})
 ;;                       request (assoc (make-request packet)
 ;;                                 :serialization :xmpp)
-;;                       response (apply-filter #'create request)]
+;;                       response (filter-action #'create request)]
 ;;                   (expect (activity? response)))))))))))
 
-(describe apply-filter "#'index :http"
+(describe filter-action "#'index :http"
   (testing "when there are no activities"
     (do-it "should be empty"
       (model.activity/drop!)
       (let [request {:serialization :http}
-            response (apply-filter #'index request)]
+            response (filter-action #'index request)]
         (expect (empty? response)))))
   (testing "when there are activities"
     (do-it "should return a seq of activities"
@@ -56,7 +56,7 @@
         (expect (seq response))
         (expect (every? activity? response))))))
 
-(describe apply-filter "#'index :xmpp"
+(describe filter-action "#'index :xmpp"
   (testing "when there are no activities"
     (do-it "should return an empty sequence"
       (model.activity/drop!)
@@ -69,7 +69,7 @@
                      :body element})
             request (assoc (make-request packet)
                       :serialization :xmpp)]
-        (let [response (apply-filter #'index request)]
+        (let [response (filter-action #'index request)]
           (expect (not (nil? response)))
           (expect (empty? response))))))
   (testing "when there are activities"
@@ -86,11 +86,11 @@
                 request (assoc (make-request packet)
                           :serialization :xmpp)
                 activity (model.activity/create (factory Activity))
-                response (apply-filter #'index request)]
+                response (filter-action #'index request)]
             (expect (seq response))
             (expect (every? activity? response))))))))
 
-(describe apply-filter "#'show :xmpp"
+(describe filter-action "#'show :xmpp"
   (testing "when the activity exists"
     (do-it "should return that activity"
       (let [author (model.user/create (factory User))]
@@ -107,7 +107,7 @@
                 packet (make-packet packet-map)
                 request (assoc (make-request packet)
                           :serialization :xmpp)
-                response (apply-filter #'show request)]
+                response (filter-action #'show request)]
             (expect (activity? response)))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))

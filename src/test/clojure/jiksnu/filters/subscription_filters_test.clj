@@ -16,21 +16,21 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-(describe apply-filter "delete")
+(describe filter-action "delete")
 
-(describe apply-filter "index")
+(describe filter-action "index")
 
-(describe apply-filter "ostatus")
+(describe filter-action "ostatus")
 
-(describe apply-filter "ostatussub")
+(describe filter-action "ostatussub")
 
-(describe apply-filter "ostatussub-submit")
+(describe filter-action "ostatussub-submit")
 
-(describe apply-filter "remote-subscribe")
+(describe filter-action "remote-subscribe")
 
-(describe apply-filter "remote-subscribe-confirm")
+(describe filter-action "remote-subscribe-confirm")
 
-(describe apply-filter "#'subscribe :http"
+(describe filter-action "#'subscribe :html :http" {:focus true}
   (testing "when the user is not already subscribed"
     (do-it "should return a subscription"
       (let [user (model.user/create (factory User))
@@ -38,11 +38,11 @@
         (model.subscription/drop!)
         (with-user user
           (let [request {:params {:subscribeto (str (:_id user))}
-                         :serialization :http}]
-            (let [response (apply-filter #'subscribe request)]
-              (expect (subscription? response)))))))))
+                         :serialization :http} ]
+            (let [[user subscription] (filter-action #'subscribe request)]
+              (expect (subscription? subscription)))))))))
 
-(describe apply-filter "#'subscribers :xmpp"
+(describe filter-action "#'subscribers :xmpp"
   (testing "when there are subscribers"
     (do-it "should not be empty"
       (let [user (model.user/create (factory User))
@@ -62,11 +62,11 @@
                           (factory Subscription
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
-            response (apply-filter #'subscribers request)]
+            response (filter-action #'subscribers request)]
         (expect (seq response))
         (expect (every? (partial instance? Subscription) response))))))
 
-(describe apply-filter "#'subscriptions :xmpp"
+(describe filter-action "#'subscriptions :xmpp"
   (testing "when there are subscriptions"
     (do-it "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
@@ -85,8 +85,8 @@
                           (factory Subscription
                                    {:from (:_id user)
                                     :to (:_id subscribee)}))
-            results (apply-filter #'subscriptions request)]
+            results (filter-action #'subscriptions request)]
         (expect (not (empty? results)))
         (expect (every? (partial instance? Subscription) results))))))
 
-(describe apply-filter "#'unsubscribe")
+(describe filter-action "#'unsubscribe")

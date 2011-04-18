@@ -2,7 +2,7 @@
  (:use ciste.core
        ciste.factory
        ciste.sections
-       ciste.view
+       ciste.views
        clj-tigase.core
        jiksnu.model
        jiksnu.view

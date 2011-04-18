@@ -47,9 +47,9 @@
                           (factory Subscription
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
-            response (subscribers user)]
-        (expect (seq response))
-        (expect (every? (partial instance? Subscription) response))))))
+            [user subscriptions] (subscribers user)]
+        (expect (seq subscriptions))
+        (expect (every? (partial instance? Subscription) subscriptions))))))
 
 (describe subscriptions
   (testing "when there are subscriptions"
@@ -60,8 +60,8 @@
                           (factory Subscription
                                    {:from (:_id user)
                                     :to (:_id subscribee)}))
-            results (subscriptions user)]
-        (expect (not (empty? results)))
-        (expect (every? (partial instance? Subscription) results))))))
+            [user subscriptions] (subscriptions user)]
+        (expect (not (empty? subscriptions)))
+        (expect (every? (partial instance? Subscription) subscriptions))))))
 
 (describe unsubscribe)

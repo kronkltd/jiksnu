@@ -1,7 +1,9 @@
 (ns jiksnu.sections.activity-sections-test
-  (:use ciste.factory
+  (:use ciste.core
+        ciste.factory
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         clj-tigase.core
         jiksnu.helpers.activity-helpers
         jiksnu.model

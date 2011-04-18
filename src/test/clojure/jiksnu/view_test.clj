@@ -1,8 +1,10 @@
 (ns jiksnu.view-test
   (:use clj-tigase.core
+        ciste.core
         ciste.factory
         ciste.sections
-        ciste.view
+        ciste.sections.default
+        ciste.views
         jiksnu.core-test
         jiksnu.file
         jiksnu.model
