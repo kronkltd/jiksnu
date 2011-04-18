@@ -33,34 +33,6 @@
     (let [uri (.getUri author)]
       (URI. (.toString uri)))))
 
-(defn vcard-request
-  [request user]
-  (let [{:keys [to from]} request]
-    {:from to
-     :to from
-     :type :get}))
-
-(defn request-vcard!
-  [user]
-  (let [packet-map
-        {:from (make-jid "" (:domain (config)))
-         :to (make-jid user)
-         :id "JIKSNU1"
-         :type :get
-         :body
-         (make-element
-          "query"
-          {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
-        packet (make-packet packet-map)]
-    (deliver-packet! packet)))
-
-(defn request-usermeta
-  [user]
-  (let [xrd (fetch-user-meta user)
-        links (actions.webfinger/get-links xrd)
-        new-user (assoc user :links links)]
-    (model.user/update new-user)))
-
 (defn avatar-img
   [user]
   (let [{:keys [avatar-url title email domain name]} user]
@@ -111,7 +83,6 @@
           (unsubscribe-form user)
           (subscribe-form user))]])))
 
-
 (defn remote-subscribe-form
   [user]
   (list
@@ -132,37 +103,29 @@
        (f/text-field :profile)]]
      (f/submit-button "Submit")])))
 
-(defn subscriptions-list
-  [user]
-  [:div#subscriptions
-   [:h3 [:a {:href (str (uri user) "/subscriptions") }
-         "Subscriptions"]]
-   [:ul
-    (map
-     (fn [subscription]
-       [:li (show-section-minimal
-             (jiksnu.model.user/fetch-by-id (:to subscription)))
-        (if (:pending subscription) " (pending)")])
-     (model.subscription/subscriptions user))]
-   [:p [:a {:href "/main/ostatussub"} "Add Remote"]]])
+(defn following-section
+  [actor user]
+  (if actor
+    (list
+     (if (model.subscription/subscribed? actor (:_id user))
+       [:p "This user follows you."])
+     (if (model.subscription/subscribing? actor (:_id user))
+       [:p "You follow this user."]))))
 
-(defn subscribers-list
+(defn links-list
   [user]
-  [:div#subscribers
-   [:h3 [:a {:href (str (uri user) "/subscribers")}
-         "Subscribers"]]
-   [:ul
-    (map
-     (fn [subscriber]
-       [:li (show-section-minimal
-             (jiksnu.model.user/fetch-by-id (:from subscriber)))])
-     (model.subscription/subscribers user))]])
+  [:ul
+   (map
+    (fn [link]
+      [:li
+       [:p (:href link)]
+       [:p (:rel link)]])
+    (:links user))])
 
-(defn activities-list
-  [^User user]
-  [:div.activities
-   (map show-section-minimal
-        (model.activity/find-by-user user))])
+(defn local?
+  [user]
+  (= (:domain user)
+     (-> (config) :domain)))
 
 (defn rel-filter
   [rel links]
@@ -185,40 +148,22 @@
       user-meta-uri
       actions.webfinger/fetch))
 
+(defn update-usermeta
+  [user]
+  (let [xrd (fetch-user-meta user)
+        links (actions.webfinger/get-links xrd)
+        new-user (assoc user :links links)]
+    (model.user/update new-user)))
+
 (defn feed-link-uri
   [^User user]
   (:href
    (get-link
     user "http://schemas.google.com/g/2010#updates-from")))
 
-(defn get-client
-  []
-  
-
-  )
-
-(defonce #^:dynamic *abdera-client* (AbderaClient.))
-
-(defn fetch-resource
-  [^User user]
-  (.get (AbderaClient.)
-        (feed-link-uri user)))
-
-(defn fetch-document
-  [user]
-  (.getDocument (fetch-resource user)))
-
-(defn fetch-feed
-  [user]
-  (.getRoot (fetch-document user)))
-
-(defn fetch-entries
-  [user]
-  (seq (.getEntries (fetch-feed user))))
-
 (defn fetch-activities
   [user]
-  (let [feed (fetch-feed user)]
+  (let [feed (fetch-feed (feed-link-uri user))]
     (map
      #(jiksnu.helpers.activity-helpers/to-activity % feed)
      (.getEntries feed))))
@@ -258,4 +203,25 @@
   (fn [vcard-element]
     (map (partial property-map (current-user))
          (children vcard-element))))
+
+(defn vcard-request
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :get}))
+
+(defn request-vcard!
+  [user]
+  (let [packet-map
+        {:from (make-jid "" (:domain (config)))
+         :to (make-jid user)
+         :id "JIKSNU1"
+         :type :get
+         :body
+         (make-element
+          "query"
+          {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
+        packet (make-packet packet-map)]
+    (deliver-packet! packet)))
 

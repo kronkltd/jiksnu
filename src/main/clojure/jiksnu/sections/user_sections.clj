@@ -142,43 +142,37 @@
      (add-form (Activity.))
      [:div
       [:div.aside
-       (if (not= (:domain user) (:domain (config)))
+       (when-not (local? user)
          [:p.important
           "This is a cached copy of information for a user on a different system."])
-       (let [{{id :_id
-               username :username} user} user]
+       (let [{id :_id
+              username :username
+              domain :domain
+              url :url
+              name :name
+              location :location
+              bio :bio} user]
          [:div.vcard
           [:p (avatar-img user)]
           [:p
            [:span.nickname
-            (:username user)
-            (if (not= (:domain user) (:domain (config)))
-              (list "@" (:domain user)))]
-           [:span.fn.n (:name user)]]
+            username
+            (when-not (local? user)
+              (list "@" domain))]]
+          [:p.fn.n name]
           [:div.adr
-           [:p.locality (:location user)]]
-          [:p.note (:bio user)]
-          [:p [:a.url {:href (:url user) :rel "me"} (:url user)]]
-          [:p "Id: " (:_id user)]
-          [:ul
-           (map
-            (fn [link]
-              [:li
-               [:p (:href link)]
-               [:p (:rel link)]])
-            (:links user))]])
-       (if actor
-         (list
-          (if (model.subscription/subscribed? actor (:_id user))
-            [:p "This user follows you."])
-          (if (model.subscription/subscribing? actor (:_id user))
-            [:p "You follow this user."])))
+           [:p.locality location]]
+          [:p.note bio]
+          [:p [:a.url {:href url :rel "me"} url]]
+          [:p "Id: " id]
+          (links-list user)])
        [:div.subscription-sections
+        (following-section actor user)
         (user-actions user)
         (remote-subscribe-form user)
         (subscriptions-list user)
         (subscribers-list user)]]
-      (activities-list user)])))
+      (index-section (model.activity/find-by-user user))])))
 
 (defsection show-section [User :rdf]
   [user & _]

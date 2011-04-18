@@ -57,8 +57,8 @@
   [& _])
 
 (defaction show
-;;   "This action just returns the passed user.
-;; The user needs to be retreived in the filter."
+  ;;   "This action just returns the passed user.
+  ;; The user needs to be retreived in the filter."
   [user]
   #_(model.user/fetch-by-id id)
   user)
@@ -88,4 +88,10 @@
 
 (defaction fetch-updates
   [user]
-  [user (load-activities user)])
+  (let [domain (model.domain/show (:domain user))]
+    [user
+     (if (:xmpp domain)
+       (do
+         
+         [])
+       (load-activities user))]))

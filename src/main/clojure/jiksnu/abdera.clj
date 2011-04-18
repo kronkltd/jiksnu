@@ -4,6 +4,24 @@
   (:import java.io.ByteArrayInputStream
            javax.xml.namespace.QName))
 
+(defonce #^:dynamic *abdera-client* (AbderaClient.))
+
+(defn fetch-resource
+  [uri]
+  (.get (AbderaClient.) uri))
+
+(defn fetch-document
+  [uri]
+  (.getDocument (fetch-resource uri)))
+
+(defn fetch-feed
+  [uri]
+  (.getRoot (fetch-document uri)))
+
+(defn fetch-entries
+  [uri]
+  (seq (.getEntries (fetch-feed uri))))
+
 (defn parse-stream
   [stream]
   (try
