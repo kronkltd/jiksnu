@@ -56,7 +56,7 @@
 
 (defaction subscribers
   [user]
-  (model.subscription/subscribers user))
+  [user (model.subscription/subscribers user)])
 
 (defaction subscriptions
   [user]

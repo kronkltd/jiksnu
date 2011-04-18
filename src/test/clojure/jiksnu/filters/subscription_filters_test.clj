@@ -1,5 +1,6 @@
 (ns jiksnu.filters.subscription-filters-test
-  (:use ciste.factory
+  (:use ciste.debug
+        ciste.factory
         ciste.filters
         clj-tigase.core
         jiksnu.actions.subscription-actions
@@ -30,7 +31,7 @@
 
 (describe filter-action "remote-subscribe-confirm")
 
-(describe filter-action "#'subscribe :html :http" {:focus true}
+(describe filter-action "#'subscribe :html :http"
   (testing "when the user is not already subscribed"
     (do-it "should return a subscription"
       (let [user (model.user/create (factory User))
@@ -39,7 +40,7 @@
         (with-user user
           (let [request {:params {:subscribeto (str (:_id user))}
                          :serialization :http} ]
-            (let [[user subscription] (filter-action #'subscribe request)]
+            (let [subscription (filter-action #'subscribe request)]
               (expect (subscription? subscription)))))))))
 
 (describe filter-action "#'subscribers :xmpp"
@@ -85,8 +86,9 @@
                           (factory Subscription
                                    {:from (:_id user)
                                     :to (:_id subscribee)}))
-            results (filter-action #'subscriptions request)]
-        (expect (not (empty? results)))
-        (expect (every? (partial instance? Subscription) results))))))
+            results (filter-action #'subscriptions request)
+            [user subscriptions] results]
+        (expect (not (empty? subscriptions)))
+        (expect (every? (partial instance? Subscription) subscriptions))))))
 
 (describe filter-action "#'unsubscribe")

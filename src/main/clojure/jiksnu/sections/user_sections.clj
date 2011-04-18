@@ -16,6 +16,7 @@
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
   (:require [hiccup.form-helpers :as f]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
@@ -171,8 +172,10 @@
         (following-section actor user)
         (user-actions user)
         (remote-subscribe-form user)
-        (subscriptions-section [] #_user)
-        (subscribers-section [] #_user)]]
+        (subscriptions-section
+         (nth (spy (actions.subscription/subscriptions user)) 1))
+        (subscribers-section
+         (nth (spy (actions.subscription/subscribers user)) 1))]]
       (index-section (model.activity/find-by-user user))])))
 
 (defsection show-section [User :rdf]
