@@ -31,6 +31,10 @@
 
 (describe filter-action "remote-subscribe-confirm")
 
+(describe filter-action "#'subscriptions :xmpp")
+
+(describe filter-action  "#'subscribers :xmpp")
+
 (describe filter-action "#'subscribe :html :http"
   (testing "when the user is not already subscribed"
     (do-it "should return a subscription"

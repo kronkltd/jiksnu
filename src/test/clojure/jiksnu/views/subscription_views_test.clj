@@ -19,52 +19,9 @@
              actions.subscription])
   (:import jiksnu.model.User))
 
-(describe subscriber-response-element
-  (do-it "should"
-    (let [user (model.user/create (factory User))
-          subscribee (model.user/create (factory User))
-          subscription (model.subscription/subscribe
-                        (:_id user) (:_id subscribee))]
-      (let [response (subscriber-response-element subscription)]
-        (expect (or (vector? response)
-                    (element? response)))))))
+(describe apply-view "#'subscribe :xmpp")
 
-(describe subscription-request-minimal
-    (do-it "should"
-      (let [user (model.user/create (factory User))
-            subscribee (model.user/create (factory User))
-            subscription (model.subscription/subscribe
-                          (:_id user) (:_id subscribee))]
-        (let [response (subscription-request-minimal subscription)]
-          (expect (or (vector? response)
-                      (element? response)))))))
-
-(describe unsubscription-request-minimal)
-
-(describe subscriber-response-minimal)
-
-(describe subscriber-response-element)
-
-(describe subscription-response-minimal)
-
-(describe actions.subscription/subscriptions ":xmpp")
-
-(describe actions.subscription/subscribers ":xmpp")
-
-(describe apply-view "#'actions.subscription/subscribe :xmpp")
-
-(describe notify-subscribe
-  (do-it "should return a packet"
-    (let [user (model.user/create (factory User))
-          subscribee (model.user/create (factory User))
-          subscription (model.subscription/subscribe
-                        (:_id user) (:_id subscribee))
-          response (notify-subscribe {:id "JIKSNU1"} subscription)]
-      (expect (packet? response)))))
-
-(describe notify-unsubscribe)
-
-(describe actions.subscription/unsubscribe ":xmpp"
+(describe apply-view  "#'unsubscribe :xmpp"
   (testing "when there is no subscription"
     (do-it "should return a packet map"
       (let [user (model.user/create (factory User))
@@ -85,6 +42,6 @@
             response (apply-view request record)]
         (expect (map? response))))))
 
-(describe actions.subscription/subscribed ":xmpp")
+(describe apply-view "#'subscribed :xmpp")
 
-(describe actions.subscription/remote-subscribe-confirm ":xmpp")
+(describe apply-view "#'remote-subscribe-confirm :xmpp")

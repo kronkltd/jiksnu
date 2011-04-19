@@ -98,7 +98,7 @@
 
 (defview #'subscriptions :xmpp
   [request [user subscriptions]]
-  (result-packet request (subscription-response-minimal subscriptions)))
+  (result-packet request (subscriptions-response subscriptions)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribers
@@ -110,7 +110,7 @@
 
 (defview #'subscribers :xmpp
   [request subscribers]
-  (result-packet request (subscriber-response-minimal subscribers)))
+  (result-packet request (subscribers-response subscribers)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; delete
