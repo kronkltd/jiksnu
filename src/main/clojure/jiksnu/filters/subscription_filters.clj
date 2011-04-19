@@ -99,7 +99,8 @@
 
 (deffilter #'subscribed :xmpp
   [action request]
-  '())
+
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribers

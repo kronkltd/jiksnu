@@ -41,6 +41,11 @@
              subscription-views
              user-views
              webfinger-views)
+            (jiksnu.triggers
+             activity-triggers
+             domain-triggers
+             subscription-triggers
+             user-triggers)
             [ring.util.response :as response]))
 
 (defn not-found-msg

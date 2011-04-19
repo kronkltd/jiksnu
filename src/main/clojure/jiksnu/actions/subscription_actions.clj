@@ -52,7 +52,18 @@
       :pending true})))
 
 (defaction subscribed
-  [& _])
+  [user]
+  true)
+
+(defaction subscribe-confirm
+  [user]
+  ;; TODO: unmark pending flag
+  true)
+
+(defaction unsubscribe
+  [actor-id user-id]
+  (model.subscription/unsubscribe actor-id user-id))
+
 
 (defaction subscribers
   [user]
@@ -62,7 +73,4 @@
   [user]
   [user (model.subscription/subscriptions user)])
 
-(defaction unsubscribe
-  [actor-id user-id]
-  (model.subscription/unsubscribe actor-id user-id))
 
