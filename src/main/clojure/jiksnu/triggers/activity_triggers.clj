@@ -43,8 +43,8 @@
   [action request activity]
   (with-database
     (let [user (get-actor activity)
-          subscribers (conj (model.subscription/subscribers user) user)]
-      (doseq [subscription subscribers]
+          subscribers (model.subscription/subscribers user)]
+      (doseq [subscription (spy subscribers)]
         (model.item/push user activity)
         (notify-activity user activity)))))
 
@@ -73,7 +73,7 @@
 (add-trigger! #'create #'notify-commented)
 (add-trigger! #'create-raw #'notify-commented)
 (add-trigger! #'create #'notify-subscribers)
-(add-trigger! #'create #'sleep-and-print)
+;; (add-trigger! #'create #'sleep-and-print)
 (add-trigger! #'fetch-comments #'fetch-more-comments)
 (add-trigger! #'remote-create #'fetch-new-comments)
 (add-trigger! #'update #'fetch-new-comments)

@@ -52,8 +52,10 @@
       :pending true})))
 
 (defaction subscribed
-  [user]
-  true)
+  [actor user]
+  (model.subscription/create
+   {:from (:_id actor)
+    :to (:_id user)}))
 
 (defaction subscribe-confirm
   [user]

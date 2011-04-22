@@ -1,4 +1,15 @@
-(ns jiksnu.triggers.subscription-triggers-test)
+(ns jiksnu.triggers.subscription-triggers-test
+  (:use ciste.factory
+        clj-tigase.core
+        jiksnu.triggers.subscription-triggers
+        [lazytest.describe :only (describe testing do-it for-any)]
+        [lazytest.expect :only (expect)])
+  (:require [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            
+            )
+  (:import jiksnu.model.User)
+  )
 
 (describe notify-subscribe-xmpp
   (do-it "should return a packet"

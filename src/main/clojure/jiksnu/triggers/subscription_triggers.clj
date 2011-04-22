@@ -1,5 +1,6 @@
 (ns jiksnu.triggers.subscription-triggers
   (:use ciste.core
+        ciste.debug
         ciste.triggers
         clj-tigase.core
         jiksnu.actions.subscription-actions
@@ -16,7 +17,7 @@
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (subscribe-request subscription)
-            packet (make-packet {:body ele
+            packet (make-packet {:body (make-element ele)
                                  :type :set
                                  :id (:id request)
                                  :from (make-jid user)
@@ -31,7 +32,7 @@
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (unsubscription-request subscription)
-            packet (make-packet {:body ele
+            packet (make-packet {:body (make-element ele)
                                  :type :set
                                  :id (:id request)
                                  :from (make-jid user)
@@ -43,15 +44,15 @@
 
 
 (defn notify-subscribe
-  [action user subscription]
-  (let [domain (model.domain/show (:domain user))]
-    (if (:xmpp domain)
+  [action [user] subscription]
+  (let [domain (model.domain/show (:domain (spy user)))]
+    (if (:xmpp (spy domain))
       (notify-subscribe-xmpp {} subscription)
       ;; TODO: OStatus case
       )))
 
 (defn notify-unsubscribe
-  [action user subscription]
+  [action [user] subscription]
   (let [domain (model.domain/show (:domain user))]
     (if (:xmpp domain)
       (notify-unsubscribe-xmpp {} subscription)

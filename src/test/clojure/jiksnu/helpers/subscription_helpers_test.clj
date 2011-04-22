@@ -1,4 +1,19 @@
-(ns jiksnu.helpers.subscription-helpers-test)
+(ns jiksnu.helpers.subscription-helpers-test
+  (:use ciste.factory
+        clj-tigase.core
+   jiksnu.helpers.subscription-helpers
+[lazytest.describe :only (describe testing do-it for-any)]
+        [lazytest.expect :only (expect)]
+   )
+  (:require
+   [jiksnu.model.subscription :as model.subscription]
+   
+   [jiksnu.model.user :as model.user]
+   )
+  (:import
+   jiksnu.model.User
+   )
+  )
 
 (describe delete-form)
 
@@ -22,7 +37,7 @@
           subscribee (model.user/create (factory User))
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))]
-      (let [response (subscriptions-request subscription)]
+      (let [response (subscribe-request subscription)]
         (expect (or (vector? response)
                     (element? response)))))))
 

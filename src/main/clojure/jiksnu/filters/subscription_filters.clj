@@ -99,8 +99,9 @@
 
 (deffilter #'subscribed :xmpp
   [action request]
-
-  )
+  (let [subscriber (model.user/fetch-by-jid (:from request))
+        subscribee (model.user/fetch-by-jid (:to request))]
+    (action subscriber subscribee)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribers

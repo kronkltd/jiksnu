@@ -70,13 +70,13 @@
 
 (defaction remote-create
   [activities]
-  (doseq [activity activities]
+  (doseq [activity (spy activities)]
     (create-raw activity))
   true)
 
 (defaction comment-response
   [activities]
-  (remote-create activities))
+  (remote-create (spy activities)))
 
 (defaction show
   [id]

@@ -121,12 +121,8 @@
     [[:get "/main/xrd"]
       #'webfinger/user-meta]
 
-    [[:delete "/notice/:id"]
-     #'activity/delete]
     [[:get "/notice/:id"]
      #'activity/show]
-    [[:post "/notice/:id"]
-     #'activity/update]
     [[:get "/notice/:id.:format"]
      #'activity/show]
     [[:get  "/notice/:id/comment"]
@@ -139,11 +135,15 @@
      #'activity/like-activity]
     [[:post "/notice/new"]
      #'activity/create]
+    [[:post "/notice/:id"]
+     #'activity/update]
+    [[:delete "/notice/:id"]
+     #'activity/delete]
 
-    [[:get "/posts.:format"]
-     #'activity/index]
-    [[:get "/posts/new"]
-     #'activity/new]
+    ;; [[:get "/posts.:format"]
+    ;;  #'activity/index]
+    ;; [[:get "/posts/new"]
+    ;;  #'activity/new]
 
     [[:get "/settings/profile"]
      #'user/profile]
@@ -225,7 +225,7 @@
     [{:method :set
       :name "subscribe"
       :ns pubsub-uri}
-     #'subscription/subscribe]
+     #'subscription/subscribed]
 
     [{:method :set
       :name "unsubscribe"
@@ -281,6 +281,8 @@
   (route/files "/public")
   (compojure/GET "/favicon.ico" request
                  (response/file-response "favicon.ico"))
+  (compojure/GET "/robots.txt" _
+                 (response/file-response "public/robots.txt"))
   (compojure/ANY "*" request
                  ((wrap-log-request
                    (resolve-routes all-predicates routes)) request))

@@ -102,7 +102,7 @@
        [:div.comments
         (map
          (comp show-section-minimal model.activity/show)
-         (:comments activity))]]]]))
+         (reverse (sort-by :published (:comments activity))))]]]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section
@@ -196,12 +196,7 @@
      :content [(:summary activity)]}
     {:tag :created_at
      :content [(str (:published activity))]
-     }
-    
-    ]
-   }
-  
-  )
+     }]})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line-minimal
