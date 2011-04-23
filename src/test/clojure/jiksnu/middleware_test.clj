@@ -8,10 +8,10 @@
 
 (describe wrap-error-catching)
 
+(describe wrap-user-debug-binding)
+
 (describe wrap-log-request)
 
-(describe wrap-vectored-params)
+(describe wrap-log-params)
 
 (describe wrap-database)
-
-(describe wrap-template)

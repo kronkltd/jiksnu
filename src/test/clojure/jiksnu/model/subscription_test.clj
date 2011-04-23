@@ -12,8 +12,6 @@
   (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(describe make-id)
-
 (describe drop!
   (testing "when there are subscriptions"
     (do-it "should delete them all"
@@ -23,6 +21,8 @@
           (subscribe (current-user-id) (:_id user))))
       (drop!)
       (expect (empty? (index))))))
+
+(describe find-record)
 
 (describe create)
 
@@ -51,6 +51,8 @@
           (with-user actor
             (let [response (subscribe (current-user-id) (:_id user))]
               (expect (subscription? response)))))))))
+
+(describe confirm)
 
 (describe unsubscribe)
 
@@ -83,3 +85,11 @@
             user (model.user/create (factory User))]
         (let [response (subscribed? actor user)]
           (expect (not response)))))))
+
+(describe subscribers)
+
+(describe subscriptions)
+
+(describe create-pending)
+
+(describe pending?)
