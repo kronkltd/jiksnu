@@ -26,25 +26,81 @@
            org.apache.abdera.ext.json.JSONUtil
            tigase.xml.Element))
 
-(describe make-object)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; add-form
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe uri "Activity"
-  (do-it "should be a string"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (string? (uri activity)))))))))
-
-(describe title "Activity")
-
-(describe show-section-minimal "[Activity :html]"
+(describe add-form "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (show-section-minimal activity)))))))))
+            (expect (vector? (add-form activity)))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; edit-form
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe edit-form "Activity :html"
+  (do-it "should be a vector"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (vector? (edit-form activity)))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-block
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe index-block "Activity :xmpp :xmpp")
+
+(describe index-block "Activity :html")
+
+(describe index-block "Activity :xml")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-block-minimal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe index-block-minimal "Activity :html"
+  (do-it "should be a vector"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (vector? (index-block-minimal [activity])))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-line
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe index-line "Activity")
+
+(describe index-line "Activity :xmpp :xmpp")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-line-minimal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe index-line-minimal "Activity :html"
+  (do-it "should be a vector"
+    (with-serialization :http
+      (with-format :html
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (expect (vector? (index-line-minimal activity)))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe index-section "Activity :xmpp :xmpp")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show-section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (describe show-section "Activity :json")
 
@@ -72,40 +128,34 @@
           (expect (.getTitle response))
           (expect (.getUpdated response)))))))
 
-(describe index-line-minimal "Activity :html"
+(describe show-section "Activity :xml")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show-section-minimal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe show-section-minimal "[Activity :html]"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (index-line-minimal activity)))))))))
+            (expect (vector? (show-section-minimal activity)))))))))
 
-(describe index-line "Activity :xmpp :xmpp")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; title
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe index-block-minimal "Activity :html"
-  (do-it "should be a vector"
+(describe title "Activity")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Uri
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(describe uri "Activity"
+  (do-it "should be a string"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (index-block-minimal [activity])))))))))
-
-(describe index-block "Activity :xmpp :xmpp")
-
-(describe index-block "Activity :html")
-
-(describe add-form "Activity :html"
-  (do-it "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (add-form activity)))))))))
-
-(describe edit-form "Activity :html"
-  (do-it "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (edit-form activity)))))))))
+            (expect (string? (uri activity)))))))))

@@ -26,83 +26,82 @@
            tigase.xml.Element))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Uri
+;; add-form
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection uri [Activity]
+(defsection add-form [Activity :html]
   [activity & options]
-  (str "/notice/" (:_id activity)))
+  [:div
+   (if (current-user-id)
+     (activity-form activity "/notice/new"))])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; title
+;; edit-form
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection title [Activity]
+(defsection edit-form [Activity :html]
   [activity & options]
-  (:title activity))
+  [:div
+   (activity-form activity (uri activity))])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show-section-minimal
+;; index-block
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection show-section-minimal [Activity :html]
+(defsection index-block [Activity :xmpp :xmpp]
+  [activities & options]
+  ["items" {"node" microblog-uri}
+   (map index-line activities)])
+
+(defsection index-block [Activity :html]
+  [activities & options]
+  [:div#notices_primary
+   [:h2 "Notices"]
+   [:ol.activities
+    (map index-line-minimal activities)]])
+
+(defsection index-block [Activity :xml]
+  [activities & _]
+  {:tag :statuses
+   :content (map index-line activities)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-block-minimal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defsection index-block-minimal [Activity :html]
+  [activities & options]
+  [:ul.activities
+   (map index-line-minimal activities)])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-line
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defsection index-line [Activity]
+  [activity & opts]
+  (apply show-section activity opts))
+
+(defsection index-line [Activity :xmpp :xmpp]
+  [^Activity activity & options]
+  ["item" {"id" (:_id activity)}
+   (show-section activity)])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-line-minimal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defsection index-line-minimal [Activity :html]
   [activity & options]
-  (let [user (-> activity
-                 :authors
-                 first
-                 model.user/fetch-by-id)]
-    [:article.hentry.notice
-     {"id" (:_id activity)}
-     [:header.avatar-section
-      (avatar-img user)]
-     [:section.content
-      [:header
-       (map
-        (fn [user-id]
-          (let [user (model.user/fetch-by-id user-id)]
-            (show-section-minimal user)))
-        (:authors activity))
-       [:span.privacy
-        (if (:public activity)
-          "public" "private")]
-       #_(if-let [t (:title activity)]
-         (if (not= t "")
-           [:h3.entry-title t]))]
-      [:p.entry-content
-       (or (:object-content activity)
-           (:summary activity)
-           (:title activity))]
-      (if-let [tags (:tags activity)]
-        (if (seq tags)
-          [:div.tags
-           [:h "Tags"]
-          [:ul
-           (map
-            (fn [tag]
-              [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
-            tags)
+  [:li (show-section-minimal activity)])
 
-           ]]))
-     (if-let [recipients (seq (:recipients activity))]
-       [:p "Recipients: " recipients])
-      (dump activity)
-      [:footer
-       [:p [:a {:href (uri activity)}
-            [:time (:published activity)]]]
-       [:ul.buttons
-        (if (or (current-user) (is-admin?))
-          (list
-           [:li (update-button activity)]
-           [:li (comment-link activity)]
-           [:li (like-link activity)]
-           [:li (delete-link activity)]
-           [:li (edit-link activity)]))]
-       (if-let [comments (:comments activity)]
-         [:p "Comments: " (count comments)])
-       [:div.comments
-        (map
-         (comp show-section-minimal model.activity/show)
-         (reverse (sort-by :published (:comments activity))))]]]]))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; index-section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defsection index-section [Activity :xmpp :xmpp]
+  [activities & options]
+  ["pubsub" {} (index-block activities)])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section
@@ -199,79 +198,80 @@
      }]})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-line-minimal
+;; show-section-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection index-line-minimal [Activity :html]
+(defsection show-section-minimal [Activity :html]
   [activity & options]
-  [:li (show-section-minimal activity)])
+  (let [user (-> activity
+                 :authors
+                 first
+                 model.user/fetch-by-id)]
+    [:article.hentry.notice
+     {"id" (:_id activity)}
+     [:header.avatar-section
+      (avatar-img user)]
+     [:section.content
+      [:header
+       (map
+        (fn [user-id]
+          (let [user (model.user/fetch-by-id user-id)]
+            (show-section-minimal user)))
+        (:authors activity))
+       [:span.privacy
+        (if (:public activity)
+          "public" "private")]
+       #_(if-let [t (:title activity)]
+         (if (not= t "")
+           [:h3.entry-title t]))]
+      [:p.entry-content
+       (or (:object-content activity)
+           (:summary activity)
+           (:title activity))]
+      (if-let [tags (:tags activity)]
+        (if (seq tags)
+          [:div.tags
+           [:h "Tags"]
+          [:ul
+           (map
+            (fn [tag]
+              [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+            tags)
+
+           ]]))
+     (if-let [recipients (seq (:recipients activity))]
+       [:p "Recipients: " recipients])
+      (dump activity)
+      [:footer
+       [:p [:a {:href (uri activity)}
+            [:time (:published activity)]]]
+       [:ul.buttons
+        (if (or (current-user) (is-admin?))
+          (list
+           [:li (update-button activity)]
+           [:li (comment-link activity)]
+           [:li (like-link activity)]
+           [:li (delete-link activity)]
+           [:li (edit-link activity)]))]
+       (if-let [comments (:comments activity)]
+         [:p "Comments: " (count comments)])
+       [:div.comments
+        (map
+         (comp show-section-minimal model.activity/show)
+         (reverse (sort-by :published (:comments activity))))]]]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-line
+;; title
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection index-line [Activity]
-  [activity & opts]
-  (apply show-section activity opts))
-
-(defsection index-line [Activity :xmpp :xmpp]
-  [^Activity activity & options]
-  ["item" {"id" (:_id activity)}
-   (show-section activity)])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-block-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection index-block-minimal [Activity :html]
-  [activities & options]
-  [:ul.activities
-   (map index-line-minimal activities)])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-block
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection index-block [Activity :xmpp :xmpp]
-  [activities & options]
-  ["items" {"node" microblog-uri}
-   (map index-line activities)])
-
-(defsection index-block [Activity :html]
-  [activities & options]
-  [:div#notices_primary
-   [:h2 "Notices"]
-   [:ol.activities
-    (map index-line-minimal activities)]])
-
-(defsection index-block [Activity :xml]
-  [activities & _]
-  {:tag :statuses
-   :content (map index-line activities)})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection index-section [Activity :xmpp :xmpp]
-  [activities & options]
-  ["pubsub" {} (index-block activities)])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add-form
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection add-form [Activity :html]
+(defsection title [Activity]
   [activity & options]
-  [:div
-   (if (current-user-id)
-     (activity-form activity "/notice/new"))])
+  (:title activity))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit-form
+;; Uri
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection edit-form [Activity :html]
+(defsection uri [Activity]
   [activity & options]
-  [:div
-   (activity-form activity (uri activity))])
+  (str "/notice/" (:_id activity)))
