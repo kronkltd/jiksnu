@@ -26,14 +26,13 @@
             author (get-actor activity)
             message-text (:summary activity)
             ele (make-element
-                 ["message" {"type" "headline"}
-                  ["event" {"xmlns" event-ns}
-                   (index-block [activity])]])
+                 ["event" {"xmlns" event-ns}
+                  (index-block [activity])])
             message
             (make-packet
              {:to recipient-jid
               :from (make-jid author)
-              :type :chat
+              :type :headline
               ;; FIXME: generate an id for this case
               :id "JIKSNU1"
               :body ele})]
@@ -44,9 +43,11 @@
   (with-database
     (let [user (get-actor activity)
           subscribers (model.subscription/subscribers user)]
-      (doseq [subscription (spy subscribers)]
-        (model.item/push user activity)
-        (notify-activity user activity)))))
+      (model.item/push user activity)
+      (doseq [subscription subscribers]
+        (notify-activity
+         (model.user/fetch-by-id (:from subscription))
+         activity)))))
 
 (defn notify-commented
   [_ request activity]
