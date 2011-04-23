@@ -9,20 +9,12 @@
         plaza.rdf.implementations.jena)
   (:require [karras.core :as karras]
             [karras.sugar :as sugar])
-  (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
-           com.cliqset.abdera.ext.poco.PocoExtensionFactory
-           java.text.SimpleDateFormat
+  (:import java.text.SimpleDateFormat
            java.util.Date
-           org.apache.abdera.Abdera
-           org.apache.abdera.factory.Factory
            org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId))
 
 (def #^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
-
-(defonce ^Abdera #^:dynamic *abdera* (Abdera.))
-(defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
-(defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
 
 (def #^:dynamic *mongo-database* (ref nil))
 
@@ -36,9 +28,6 @@
 (init-jena-framework)
 (register-rdf-ns :dc dc-ns)
 (register-rdf-ns :foaf foaf-ns)
-
-(.registerExtension *abdera-factory* (ActivityExtensionFactory.))
-(.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
 (defn mongo-database*
   []

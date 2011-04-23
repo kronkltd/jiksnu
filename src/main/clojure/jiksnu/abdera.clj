@@ -1,10 +1,20 @@
 (ns jiksnu.abdera
   (:use [clojure.contrib.logging :only (error)])
-  (:import java.io.ByteArrayInputStream
+  (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
+           com.cliqset.abdera.ext.poco.PocoExtensionFactory
+           java.io.ByteArrayInputStream
            javax.xml.namespace.QName
+           org.apache.abdera.Abdera
+           org.apache.abdera.factory.Factory
            org.apache.abdera.protocol.client.AbderaClient))
 
+(defonce ^Abdera #^:dynamic *abdera* (Abdera.))
+(defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
+(defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
 (defonce #^:dynamic *abdera-client* (AbderaClient.))
+
+(.registerExtension *abdera-factory* (ActivityExtensionFactory.))
+(.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
 (defn fetch-resource
   [uri]
