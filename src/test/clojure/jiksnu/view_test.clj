@@ -31,47 +31,9 @@
 
 (describe not-namespace)
 
-(describe node-value)
-
-(describe pubsub-element?)
-
-(describe packet?)
-
-(describe iq-elements)
-
-(describe pubsub-items
-  (do-it "should return a seq of elements"
-    (with-serialization :xmpp
-      (with-format :xmpp
-        (let [user (model.user/create (factory User))]
-          (with-user user
-            (let [activity (model.activity/create (factory Activity))
-                  element (make-element (index-section [activity]))
-                  packet (make-packet
-                          {:to (make-jid user)
-                           :from (make-jid user)
-                           :type :set
-                           :body element})
-                  response (pubsub-items packet)]
-              (expect (every? element? response)))))))))
-
 (describe bare-recipient?)
 
 (describe from-authenticated?)
-
-(describe get-items)
-
-(describe make-request
-  (testing "a pubsub publish"
-    (do-it "should return a map"
-      (let [user (model.user/create (factory User))
-            packet (make-packet
-                    {:to (make-jid user)
-                     :from (make-jid user)
-                     :type :get
-                     :id (fseq :id)})
-            response (make-request packet)]
-        (expect (map? response))))))
 
 (describe process-child)
 
@@ -96,10 +58,6 @@
 
 (describe add-attributes)
 
-(describe get-qname)
-
-(describe make-element-qname)
-
 (describe abdera-to-tigase-element
   (do-it "should return a tigase element"
     (with-serialization :xmpp
@@ -109,12 +67,6 @@
               response (abdera-to-tigase-element abdera-element)]
           (expect (element? response)))))))
 
-(describe respond-with)
-
 (describe make-minimal-item)
 
 (describe apply-template)
-
-(describe make-jid)
-
-(describe deliver-packet!)
