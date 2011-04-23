@@ -32,6 +32,10 @@
   [id]
   (model.user/delete id))
 
+(defaction discover
+  [^User user]
+  user)
+
 (defaction edit
   [& _])
 
@@ -40,6 +44,19 @@
   (let [domain (:domain user)]
     (if (:xmpp domain)
       (request-vcard! user))))
+
+(defaction fetch-updates
+  [user]
+  user)
+
+(declare show)
+
+(defaction find-or-create
+  [username domain]
+  (let [domain-record (actions.domain/find-or-create domain)]
+    (if-let [user (show username domain)]
+      user
+      (create {:username username :domain domain}))))
 
 (defaction index
   [options]
@@ -75,18 +92,3 @@
                    params))
             (dissoc :id))]
    (model.user/update new-params)))
-
-(defaction find-or-create
-  [username domain]
-  (let [domain-record (actions.domain/find-or-create domain)]
-    (if-let [user (show username domain)]
-      user
-      (create {:username username :domain domain}))))
-
-(defaction discover
-  [^User user]
-  user)
-
-(defaction fetch-updates
-  [user]
-  user)

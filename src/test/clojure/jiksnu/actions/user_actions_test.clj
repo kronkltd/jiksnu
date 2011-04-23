@@ -21,27 +21,15 @@
 
 (describe delete)
 
+(describe discover)
+
 (describe edit)
 
 (describe fetch-remote)
 
-#_(describe inbox
-  (testing "when there are no activities"
-    (do-it "should be empty"
-      (model.activity/drop!)
-      (let [request (make-request nil)
-            response (inbox request)]
-        (expect (empty? response)))))
-  (testing "when there are activities"
-    (do-it "should return a seq of activities"
-      (model.activity/drop!)
-      (let [request (make-request nil)
-            author (model.user/create (factory User))
-            created-activity (with-user author
-                               (model.activity/create (factory Activity)))
-            response (inbox request)]
-        (expect (seq response))
-        (expect (every? #(instance? Activity %) response))))))
+(describe fetch-updates)
+
+(describe find-or-create)
 
 (describe index)
 
@@ -63,11 +51,3 @@
         (expect (= response user))))))
 
 (describe update)
-
-
-
-(describe rule-element?)
-
-(describe rule-map)
-
-(describe property-map)

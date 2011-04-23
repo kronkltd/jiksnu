@@ -3,6 +3,7 @@
         ciste.factory
         ciste.sections
         ciste.sections.default
+        jiksnu.abdera
         jiksnu.core-test
         jiksnu.model
         jiksnu.session

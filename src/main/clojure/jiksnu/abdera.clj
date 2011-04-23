@@ -1,6 +1,5 @@
 (ns jiksnu.abdera
-  (:use jiksnu.model
-        [clojure.contrib.logging :only (error)])
+  (:use [clojure.contrib.logging :only (error)])
   (:import java.io.ByteArrayInputStream
            javax.xml.namespace.QName
            org.apache.abdera.protocol.client.AbderaClient))
