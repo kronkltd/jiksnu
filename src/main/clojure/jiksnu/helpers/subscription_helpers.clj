@@ -1,5 +1,6 @@
 (ns jiksnu.helpers.subscription-helpers
   (:use ciste.core
+        ciste.debug
         ciste.sections
         ciste.sections.default
         clj-tigase.core

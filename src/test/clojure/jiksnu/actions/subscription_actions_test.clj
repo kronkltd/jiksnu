@@ -47,7 +47,7 @@
                           (factory Subscription
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
-            subscriptions (subscribers user)]
+            [_ subscriptions] (subscribers user)]
         (expect (seq subscriptions))
         (expect (every? (partial instance? Subscription) subscriptions))))))
 

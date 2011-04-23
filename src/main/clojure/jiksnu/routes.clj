@@ -254,7 +254,6 @@
       :node microblog-uri}
      #'activity/remote-create]
 
-    
     [{:method :get
       :pubsub true
       :node (escape-route inbox-uri)}

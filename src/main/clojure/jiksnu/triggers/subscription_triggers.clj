@@ -26,7 +26,6 @@
                                  :id (:id request)
                                  :from (make-jid user)
                                  :to (make-jid subscribee)})]
-        (.initVars packet)
         (deliver-packet! packet)))))
 
 (defn notify-unsubscribe-xmpp
@@ -41,7 +40,6 @@
                                  :id (:id request)
                                  :from (make-jid user)
                                  :to (make-jid subscribee)})]
-        (.initVars packet)
         (deliver-packet! packet)))))
 
 
@@ -49,8 +47,8 @@
 
 (defn notify-subscribe
   [action [user] subscription]
-  (let [domain (model.domain/show (:domain (spy user)))]
-    (if (:xmpp (spy domain))
+  (let [domain (model.domain/show (:domain user))]
+    (if (:xmpp domain)
       (notify-subscribe-xmpp {} subscription)
       ;; TODO: OStatus case
       )))
@@ -65,7 +63,7 @@
 
 (defn notify-subscribed
   [action params subscription]
-  (let [[actor user] (spy params)]
+  (let [[actor user] params]
    (if (helpers.user/local? user)
      (let [packet (make-packet
                    {:type :headline

@@ -2,6 +2,7 @@
   (:use ciste.config
         ciste.debug
         ciste.routes
+        clj-tigase.core
         clojure.pprint
         [clojure.contrib.logging :only (debug)]
         jiksnu.model

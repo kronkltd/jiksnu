@@ -67,9 +67,9 @@
                           (factory Subscription
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
-            response (filter-action #'subscribers request)]
-        (expect (seq response))
-        (expect (every? (partial instance? Subscription) response))))))
+            [user subscribers] (filter-action #'subscribers request)]
+        (expect (seq subscribers))
+        (expect (every? (partial instance? Subscription) subscribers))))))
 
 (describe filter-action "#'subscriptions :xmpp"
   (testing "when there are subscriptions"

@@ -41,12 +41,13 @@
   [activity
    (map model.activity/show (:comments activity))])
 
+;; This should be a trigger
 (defaction fetch-comments-remote
   [activity]
   (let [author (get-actor activity)
         domain (model.domain/show (:domain author))]
     (if (:xmpp domain)
-      (view/deliver-packet! (comment-request activity)))))
+      (deliver-packet! (comment-request activity)))))
 
 (defaction friends-timeline
   [& _])

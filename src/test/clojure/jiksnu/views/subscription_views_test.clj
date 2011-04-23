@@ -27,8 +27,8 @@
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             element (make-element
-                     "pubsub" {"xmlns" pubsub-uri}
-                     ["unsubscribe" {"node" microblog-uri}])
+                     ["pubsub" {"xmlns" pubsub-uri}
+                      ["unsubscribe" {"node" microblog-uri}]])
             packet (make-packet
                     {:to (make-jid subscribee)
                      :from (make-jid user)

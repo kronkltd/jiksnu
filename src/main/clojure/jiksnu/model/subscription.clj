@@ -50,9 +50,10 @@
 
 (defn unsubscribe
   [actor user]
-  (let [subscription (entity/fetch-one Subscription {:from actor :to user})]
-    (entity/delete subscription)
-    subscription))
+  (if-let [subscription (entity/fetch-one Subscription {:from actor :to user})]
+    (do (entity/delete subscription)
+        subscription)
+    (entity/make Subscription {:from actor :to user :created (sugar/date)})))
 
 (defn subscribing?
   "Does the actor have a subscription to the user"

@@ -57,16 +57,6 @@
    {:from (:_id actor)
     :to (:_id user)}))
 
-(defaction subscribe-confirm
-  [user]
-  ;; TODO: unmark pending flag
-  true)
-
-(defaction unsubscribe
-  [actor-id user-id]
-  (model.subscription/unsubscribe actor-id user-id))
-
-
 (defaction subscribers
   [user]
   [user (model.subscription/subscribers user)])
@@ -74,5 +64,15 @@
 (defaction subscriptions
   [user]
   [user (model.subscription/subscriptions user)])
+
+
+(defaction unsubscribe
+  [actor-id user-id]
+  (model.subscription/unsubscribe actor-id user-id))
+
+(defaction subscribe-confirm
+  [user]
+  ;; TODO: unmark pending flag
+  true)
 
 
