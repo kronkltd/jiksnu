@@ -31,10 +31,6 @@
             (.setCData element text))
           element)))))
 
-(defn node-value
-  [#^Element element]
-  (.getAttribute element "node"))
-
 (defn microblog-node?
   [#^Element element]
   (= (node-value element) microblog-uri))

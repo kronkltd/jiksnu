@@ -89,10 +89,4 @@
 
 (defaction fetch-updates
   [user]
-  (let [domain (model.domain/show (:domain user))]
-    [user
-     (if (:xmpp domain)
-       (do
-         
-         [])
-       (load-activities user))]))
+  user)

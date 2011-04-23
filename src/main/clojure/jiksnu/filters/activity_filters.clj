@@ -17,7 +17,10 @@
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
           items (:items request)]
-      (action (map #(to-activity (parse-xml-string (str (first (children %))))) (spy items))))))
+      (action (map #(to-activity
+                     (parse-xml-string
+                      (str (first (children %)))))
+                   (spy items))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; create
@@ -163,7 +166,8 @@
   [action request]
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
-          items (children packet "/message/event/items/item")]
+          ;; items (children packet "/message/event/items/item")
+          items (map (comp first children) (:items request))]
       (action (map #(to-activity (parse-xml-string (str %)))
             items)))))
 

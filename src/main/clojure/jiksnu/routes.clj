@@ -245,15 +245,23 @@
       :ns pubsub-uri}
      #'subscription/remote-subscribe-confirm]
 
+    ;; FIXME: This is way too general
     [{:method :headline}
      #'activity/remote-create]
 
+    [{:method :result
+      :pubsub true
+      :node microblog-uri}
+     #'activity/remote-create]
+
+    
     [{:method :get
       :pubsub true
       :node (escape-route inbox-uri)}
      #'inbox/index]
 
-    [{:method :result} #'domain/ping-response]]))
+    [{:method :result
+      :pubsub false} #'domain/ping-response]]))
 
 (def #^:dynamic *standard-middleware*
   [#'wrap-log-request

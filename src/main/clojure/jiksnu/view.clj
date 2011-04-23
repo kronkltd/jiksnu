@@ -26,7 +26,6 @@
            jiksnu.model.Activity
            tigase.server.Packet
            tigase.xml.Element
-           tigase.xmpp.JID
            tigase.xmpp.StanzaType))
 
 (defsection link-to :default
@@ -110,49 +109,6 @@
        #_(link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
 
-
-(defn make-request
-  [^Packet packet]
-  (let [type (keyword (str (.getType packet)))
-        to (.getStanzaTo packet)
-        from (.getStanzaFrom packet)
-                payload  (first (iq-elements packet))
-        pubsub? (pubsub-element? payload)
-        child-node (first (children payload))
-        node (and child-node (node-value child-node))
-        name (if pubsub?
-               (if child-node (.getName child-node))
-               (if payload (.getName payload)))]
-    {:to to
-     :from from
-     :pubsub pubsub?
-     :payload payload
-     :id (.getAttribute packet "id")
-     :name name
-     :node node
-     :ns (if payload (.getXMLNS payload))
-     :packet packet
-     :request-method type
-     :method type
-     :items (get-items packet)}))
-
-(defn make-jid
-  ([user]
-     (make-jid (:username user) (:domain user)))
-  ([user domain]
-     (make-jid user domain ""))
-  ([user domain resource]
-     (JID/jidInstance user domain resource)))
-
-(defn deliver-packet!
-  [^Packet packet]
-  (try
-    (.initVars packet)
-    (.processPacket @*message-router* (spy packet))
-    (catch NullPointerException e
-      #_(error "Router not started: " e)
-      #_(stacktrace/print-stack-trace e)
-      packet)))
 
 (defmethod apply-template :html
   [request response]

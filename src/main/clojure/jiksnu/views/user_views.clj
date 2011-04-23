@@ -77,7 +77,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'fetch-updates :html
-  [request [user activities]]
+  [request user]
   {:status 303
    :template false
    :headers {"Location" (uri user)}})
