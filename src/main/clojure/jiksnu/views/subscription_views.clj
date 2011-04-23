@@ -21,12 +21,65 @@
            java.text.SimpleDateFormat))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; delete
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'delete :html
+  [request _]
+  {:status 302
+   :template false
+   :headers {"Location" "/admin/subscriptions"}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'index :html
   [request subscriptions]
   {:body (index-section subscriptions)})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ostatus
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'ostatus :html
+  [request arg]
+  {:body
+   [:div
+    (dump* request)
+    (dump* arg)]})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ostatussub
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'ostatussub :html
+  [request arg]
+  {:body
+   [:div
+    (f/form-to
+     [:post "/main/ostatussub"]
+     [:p (f/text-field :profile )]
+     (f/submit-button "Submit"))]})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ostatussub-submit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'ostatussub-submit :html
+  [request subscription]
+  {:status 303
+   :headers {"Location" "/"}
+   :flash "The request has been sent"
+   :template false})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; remote-subscribe-confirm
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'remote-subscribe-confirm :xmpp
+  [request _]
+  nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribe
@@ -43,18 +96,24 @@
   (result-packet request (subscription-response-element subscription)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Unsubscribe
+;; subscribed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defview #'unsubscribe :html
+(defview #'subscribed :xmpp
   [request subscription]
-  {:status 302
-   :template false
-   :headers {"Location" "/"}})
+  (result-packet request (subscriptions-response [subscription])))
 
-(defview #'unsubscribe :xmpp
-  [request subscription]
-  (result-packet request nil))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; subscribers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'subscribers :html
+  [request subscribers]
+  {:body [:div "subscribers"]})
+
+(defview #'subscribers :xmpp
+  [request subscribers]
+  (result-packet request (subscribers-response subscribers)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscriptions
@@ -101,54 +160,15 @@
   (result-packet request (subscriptions-response subscriptions)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; subscribers
+;; Unsubscribe
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defview #'subscribers :html
-  [request subscribers]
-  {:body [:div "subscribers"]})
-
-(defview #'subscribers :xmpp
-  [request subscribers]
-  (result-packet request (subscribers-response subscribers)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; delete
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'delete :html
-  [request _]
+(defview #'unsubscribe :html
+  [request subscription]
   {:status 302
    :template false
-   :headers {"Location" "/admin/subscriptions"}})
+   :headers {"Location" "/"}})
 
-(defview #'ostatus :html
-  [request arg]
-  {:body
-   [:div
-    (dump* request)
-    (dump* arg)]})
-
-(defview #'ostatussub :html
-  [request arg]
-  {:body
-   [:div
-    (f/form-to
-     [:post "/main/ostatussub"]
-     [:p (f/text-field :profile )]
-     (f/submit-button "Submit"))]})
-
-(defview #'ostatussub-submit :html
+(defview #'unsubscribe :xmpp
   [request subscription]
-  {:status 303
-   :headers {"Location" "/"}
-   :flash "The request has been sent"
-   :template false})
-
-(defview #'subscribed :xmpp
-  [request subscription]
-  (set-packet request subscription))
-
-(defview #'remote-subscribe-confirm :xmpp
-  [request _]
-  nil)
+  (result-packet request (subscriptions-response [subscription])))
