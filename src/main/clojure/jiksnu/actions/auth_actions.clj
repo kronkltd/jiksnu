@@ -1,18 +1,16 @@
 (ns jiksnu.actions.auth-actions
   (:use ciste.core
-        clojure.contrib.logging
-        jiksnu.session
-        jiksnu.model)
+        jiksnu.model
+        jiksnu.session)
   (:require [ciste.debug :as debug]
-            [jiksnu.model.activity :as activity]
+            [clojure.contrib.logging :as logger]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
 (defaction guest-login
   [webid]
-  (let [user (model.user/find-or-create-by-uri webid)]
-    user))
+  (model.user/find-or-create-by-uri webid))
 
 (defaction login
   [{{username "username"
@@ -21,8 +19,8 @@
     ;; TODO: encrypt
     (if (= password (:password user))
       user
-      (error "passwords do not match"))
-    (error "user not found")))
+      (logger/error "passwords do not match"))
+    (logger/error "user not found")))
 
 (defaction login-page
   [request]

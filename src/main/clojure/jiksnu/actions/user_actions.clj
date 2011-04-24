@@ -51,6 +51,11 @@
 
 (declare show)
 
+(defaction find-hub
+  [user]
+  (let [domain (get-domain user)]
+    domain))
+
 (defaction find-or-create
   [username domain]
   (let [domain-record (actions.domain/find-or-create domain)]

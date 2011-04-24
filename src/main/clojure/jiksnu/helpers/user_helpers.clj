@@ -131,15 +131,27 @@
   (filter #(= (:rel %) rel)
           links))
 
+(defn rel-filter-feed
+  [feed rel]
+  (filter
+   (fn [link]
+     (= (.getRel link) rel))
+   (.getLinks feed)))
+
 (defn get-link
   [user rel]
   (first (rel-filter rel (:links user))))
 
+(defn get-domain
+  [user]
+  (model.domain/show (:domain user)))
+
 (defn user-meta-uri
   [^User user]
-  (let [domain-object (model.domain/show (:domain user))]
-    (let [template (:template (get-link domain-object "lrdd"))]
-      (string/replace template "{uri}" (get-uri user)))))
+  (let [domain-object (get-domain user)]
+    (if-let [lrdd-link (get-link domain-object "lrdd")]
+      (let [template (:template lrdd-link)]
+        (string/replace template "{uri}" (get-uri user))))))
 
 (defn fetch-user-meta
   [^User user]
@@ -160,12 +172,34 @@
    (get-link
     user "http://schemas.google.com/g/2010#updates-from")))
 
+(defn fetch-user-feed
+  [user]
+  (fetch-feed (feed-link-uri user)))
+
+(defn get-activities
+  [feed]
+  (map
+   #(jiksnu.helpers.activity-helpers/to-activity % feed)
+   (.getEntries feed)))
+
 (defn fetch-activities
   [user]
-  (let [feed (fetch-feed (feed-link-uri user))]
-    (map
-     #(jiksnu.helpers.activity-helpers/to-activity % feed)
-     (.getEntries feed))))
+  (let [feed (fetch-user-feed user)]
+    (get-activities feed)))
+
+(defn get-hub-link
+  [feed]
+  (-> feed
+      (rel-filter-feed "hub")
+      first
+      .getHref
+      str))
+
+(defn update-hub-link
+  [user]
+  (let [feed (fetch-user-feed user)
+        hub-link (get-hub-link feed)]
+    (add-link user :hub hub-link)))
 
 (defn load-activities
   [user]
