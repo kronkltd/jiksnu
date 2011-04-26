@@ -159,13 +159,6 @@
       user-meta-uri
       actions.webfinger/fetch))
 
-(defn update-usermeta
-  [user]
-  (let [xrd (fetch-user-meta user)
-        links (actions.webfinger/get-links xrd)
-        new-user (assoc user :links links)]
-    (model.user/update new-user)))
-
 (defn feed-link-uri
   [^User user]
   (:href
@@ -194,12 +187,6 @@
       first
       .getHref
       str))
-
-(defn update-hub-link
-  [user]
-  (let [feed (fetch-user-feed user)
-        hub-link (get-hub-link feed)]
-    (add-link user :hub hub-link)))
 
 (defn load-activities
   [user]

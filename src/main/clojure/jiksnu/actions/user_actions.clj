@@ -11,9 +11,25 @@
         jiksnu.view
         jiksnu.xmpp.element)
   (:require [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user])
-  (:import tigase.xml.Element))
+            [jiksnu.model.user :as model.user]
+            [karras.entity :as entity])
+  (:import jiksnu.model.User
+           tigase.xml.Element))
+
+(declare update)
+
+(defaction add-link
+  [user link]
+  (update
+   (if-let [existing-link (get-link user (:rel link))]
+     (do
+       (assoc :links )
+       user)
+     (entity/update
+      User {:_id (:-id user)}
+      {:$addToSet {:links (bean link)}}))))
 
 (defaction create
   [options]
@@ -97,3 +113,17 @@
                    params))
             (dissoc :id))]
    (model.user/update new-params)))
+
+(defaction update-hub-link
+  [user]
+  (let [feed (fetch-user-feed user)
+        hub-link (get-hub-link feed)]
+    (add-link user :hub hub-link)))
+
+(defaction update-usermeta
+  [user]
+  (let [xrd (fetch-user-meta user)
+        links (actions.webfinger/get-links xrd)
+        new-user (assoc user :links links)]
+    (doseq [link links]
+      (add-link user link))))
