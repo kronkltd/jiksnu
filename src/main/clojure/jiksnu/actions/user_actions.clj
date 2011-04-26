@@ -114,11 +114,11 @@
             (dissoc :id))]
    (model.user/update new-params)))
 
-(defaction update-hub-link
+(defaction update-hub
   [user]
   (let [feed (fetch-user-feed user)
         hub-link (get-hub-link feed)]
-    (add-link user :hub hub-link)))
+    (add-link user :hub (spy hub-link))))
 
 (defaction update-usermeta
   [user]

@@ -159,6 +159,8 @@
      #'user/discover]
     [[:post "/users/:id/update"]
      #'user/fetch-updates]
+    [[:post "/users/:id/update-hub"]
+     #'user/update-hub]
 
     [[:get "/:id"]
      #'user/show]

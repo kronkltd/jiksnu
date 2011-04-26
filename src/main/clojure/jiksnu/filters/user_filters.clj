@@ -194,3 +194,14 @@
         {username :username} params
         user (model.user/show username)]
     (action user params)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; update
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deffilter #'update-hub :http
+  [action request]
+  (let [{params :params} request
+        {username :id} params
+        user (model.user/fetch-by-id username)]
+    (action user)))

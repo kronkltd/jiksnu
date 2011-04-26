@@ -1,5 +1,6 @@
 (ns jiksnu.abdera
-  (:use [clojure.contrib.logging :only (error)])
+  (:use ciste.debug
+        [clojure.contrib.logging :only (error)])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
            java.io.ByteArrayInputStream

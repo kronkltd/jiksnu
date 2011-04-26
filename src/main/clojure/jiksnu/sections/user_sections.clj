@@ -152,6 +152,7 @@
               domain :domain
               url :url
               name :name
+              hub :hub
               location :location
               bio :bio} user]
          [:div.vcard
@@ -166,6 +167,7 @@
            [:p.locality location]]
           [:p.note bio]
           [:p [:a.url {:href url :rel "me"} url]]
+          [:p "Hub: " hub]
           [:p "Id: " id]
           (links-list user)])
        [:div.subscription-sections
