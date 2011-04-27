@@ -29,7 +29,7 @@
 (deffilter #'create :http
   [action request]
   (let [{params :params} request]
-    (action params)))
+    (action (dissoc params :*))))
 
 (deffilter #'create :xmpp
   [action request]

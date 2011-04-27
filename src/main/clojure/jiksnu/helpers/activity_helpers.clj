@@ -85,8 +85,8 @@
            (f/hidden-field :parent (:_id parent))])
         [:li (f/label :title "Title")
          (f/text-field :title (:title activity))]
-        [:li (f/label :summary "Summary")
-         (f/text-area :summary (:summary activity))]
+        [:li (f/label :content "Content")
+         (f/text-area :content (:content activity))]
         [:li (f/label :tags "Tags")
          (f/text-field :tags (:tags activity))]
         [:li (f/label :recipients "Recipients")

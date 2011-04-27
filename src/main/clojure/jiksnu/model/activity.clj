@@ -15,9 +15,9 @@
 
 (defn set-object-id
   [activity]
-  (if (:object-id activity)
+  (if (:id (:object activity))
     activity
-    (assoc activity :object-id (new-id))))
+    (assoc-in activity [:object :id] (new-id))))
 
 (defn set-updated-time
   [activity]
@@ -27,9 +27,9 @@
 
 (defn set-object-updated
   [activity]
-  (if (:object-updated activity)
+  (if (:updated (:object activity))
     activity
-    (assoc activity :object-updated (sugar/date))))
+    (assoc-in activity [:object :updated] (sugar/date))))
 
 (defn set-published-time
   [activity]
@@ -39,9 +39,9 @@
 
 (defn set-object-published
   [activity]
-  (if (:object-published activity)
+  (if (:published (:object activity))
     activity
-    (assoc activity :object-published (sugar/date))))
+    (assoc-in activity [:object :published] (sugar/date))))
 
 (defn set-actor
   [activity]
@@ -56,10 +56,12 @@
 
 (defn set-tags
   [activity]
-  (if-let [tags (get activity :tags)]
-    (let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
-      (assoc activity :tags tag-seq))
-    activity))
+  (let [tags (:tags activity )]
+    (if (and tags (not= tags ""))
+      (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+        (assoc activity :tags tag-seq)
+        (dissoc activity :tags))
+      (dissoc activity :tags))))
 
 (defn set-recipients
   [activity]
@@ -75,7 +77,7 @@
       set-object-id
       set-public
       set-published-time
-      ;; set-tags
+      set-tags
       set-recipients
       set-object-published
       set-updated-time

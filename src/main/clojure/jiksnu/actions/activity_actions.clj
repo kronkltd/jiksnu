@@ -18,9 +18,10 @@
            org.apache.abdera.model.Entry))
 
 (defaction create
-  [activity]
-  (model.activity/create
-   (make Activity activity)))
+  [params]
+  (let [prepared-activity (model.activity/prepare-activity params)]
+    (model.activity/create-raw
+     (make Activity (spy prepared-activity)))))
 
 (defaction create-raw
   [activity]

@@ -113,13 +113,14 @@
    "updated" (:updated activity)
    "verb" "post"
    "title" (:title activity)
-   "content" (:summary activity)
+   "content" (:content activity)
    "id" (:_id activity)
    "url" (full-uri activity)
    "actor" (show-section (get-actor activity))
    "object"
-   {"published" (:object-published activity)
-    "updated" (:object-updated activity)}})
+   (let [object (:object activity)]
+     {"published" (:published object)
+      "updated" (:updated object)})})
 
 (defsection show-section [Activity :xmpp :xmpp]
   [^Activity activity & options]
@@ -136,29 +137,30 @@
       (.setUpdated (:updated activity))
       (.setTitle (or (and (not= (:title activity) "")
                           (:title activity))
-                     (:summary activity)))
+                     (:content activity)))
       (add-authors activity)
       (.addLink (full-uri activity) "alternate")
-      (.setContentAsHtml (:summary activity))
+      (.setContentAsHtml (:content activity))
       (.addSimpleExtension as-ns "object-type" "activity" status-uri)
       (.addSimpleExtension as-ns "verb" "activity" post-uri)
       (add-extensions activity)
       (comment-link-item activity)
       (acl-link activity))
-    (let [object-element (.addExtension entry as-ns "object" "activity")]
+    (let [object (:object activity)
+          object-element (.addExtension entry as-ns "object" "activity")]
       (.setObjectType object-element status-uri)
-      (if-let [object-updated (:object-updated activity)]
+      (if-let [object-updated (:updated object)]
         (.setUpdated object-element object-updated))
-      (if-let [object-published (:object-published activity)]
+      (if-let [object-published (:published object)]
         (.setPublished object-element object-published))
-      (if-let [object-id (:object-id activity)]
+      (if-let [object-id (:id object)]
         (.setId object-element object-id))
-      (.setContentAsHtml object-element (:summary activity)))
+      (.setContentAsHtml object-element (:content activity)))
     entry))
 
 (defsection show-section [Activity :xml]
   [activity & _]
-  #_["status" 
+  #_["status"
    ["created_at"  (:created activity)]
    ["id" (:_id activity)]
    ["text" (:content activity)]
@@ -192,7 +194,7 @@
   {:tag :status
    :content
    [{:tag :text
-     :content [(:summary activity)]}
+     :content [(:content activity)]}
     {:tag :created_at
      :content [(str (:published activity))]
      }]})
@@ -225,8 +227,8 @@
          (if (not= t "")
            [:h3.entry-title t]))]
       [:p.entry-content
-       (or (:object-content activity)
-           (:summary activity)
+       (or (:content (:object activity))
+           (:content activity)
            (:title activity))]
       (if-let [tags (:tags activity)]
         (if (seq tags)
