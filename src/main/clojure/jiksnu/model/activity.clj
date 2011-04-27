@@ -65,10 +65,24 @@
 
 (defn set-recipients
   [activity]
-  (if-let [recipients (get activity "recipients")]
-    (assoc activity :recipients
-           (string/split recipients #",\s*"))
+  (let [recipients (:recipients activity)
+        recipient-seq (seq (filter #(not= "" %)
+                                   (string/split recipients #",\s*")))]
+    (if recipient-seq
+      (assoc activity :recipients recipient-seq)
+      (dissoc activity :recipients))))
+
+(defn set-parent
+  [activity]
+  (if (= (:parent activity) "")
+    (dissoc activity :parent)
     activity))
+
+(defn set-object-type
+  [activity]
+  (if (:type (:object activity))
+    activity
+    (assoc-in activity [:object :object-type] "note")))
 
 (defn prepare-activity
   [activity]
@@ -82,7 +96,9 @@
       set-object-published
       set-updated-time
       set-object-updated
-      set-actor))
+      set-object-type
+      set-actor
+      set-parent))
 
 (defn create-raw
   [activity]
