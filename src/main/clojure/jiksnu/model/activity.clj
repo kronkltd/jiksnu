@@ -75,7 +75,7 @@
       set-object-id
       set-public
       set-published-time
-      set-tags
+      ;; set-tags
       set-recipients
       set-object-published
       set-updated-time
@@ -110,7 +110,7 @@
         option-map (apply hash-map opts)
         merged-options
         (merge
-         {:$or [{:parent ""}
+         #_{:$or [{:parent ""}
                 {:parent {:$exists false}}]}
          (privacy-filter user)
          option-map)]
