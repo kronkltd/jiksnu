@@ -2,12 +2,14 @@
   (:use ciste.core
         ciste.debug
         clj-tigase.core
+        jiksnu.abdera
         jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         [karras.entity :only (make)])
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
@@ -48,6 +50,12 @@
         domain (model.domain/show (:domain author))]
     (if (:xmpp domain)
       (deliver-packet! (comment-request activity)))))
+
+(defaction fetch-remote-feed
+  [uri]
+  (let [feed (fetch-feed uri)]
+    (doseq [activity (helpers.user/get-activities feed)]
+      (create (spy activity)))))
 
 (defaction friends-timeline
   [& _])

@@ -204,3 +204,13 @@
   {:status 302
    :template false
    :headers {"Location" (uri user)}})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; update-hub
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'update-hub :html
+  [request user]
+  {:status 302
+   :template false
+   :headers {"Location" (uri user)}})

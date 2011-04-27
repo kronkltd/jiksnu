@@ -21,15 +21,15 @@
 (declare update)
 
 (defaction add-link
-  [user link]
+  [user rel link]
   (update
-   (if-let [existing-link (get-link user (:rel link))]
+   (if-let [existing-link (get-link user rel)]
      (do
-       (assoc :links )
        user)
      (entity/update
-      User {:_id (:-id user)}
-      {:$addToSet {:links (bean link)}}))))
+      User {:_id (:_id user)}
+      {:$addToSet {:href link
+                   :rel rel}}))))
 
 (defaction create
   [options]
@@ -118,7 +118,10 @@
   [user]
   (let [feed (fetch-user-feed user)
         hub-link (get-hub-link feed)]
-    (add-link user :hub (spy hub-link))))
+    (entity/update
+     User {:_id (:_id user)}
+     {:$set {:hub hub-link}})
+    user))
 
 (defaction update-usermeta
   [user]

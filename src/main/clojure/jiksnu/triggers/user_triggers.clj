@@ -7,7 +7,8 @@
         jiksnu.helpers.user-helpers
         jiksnu.namespace
         jiksnu.view)
-  (:require [jiksnu.actions.webfinger-actions :as actions.webfinger]
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]))
 
 (defn discover-user
@@ -19,8 +20,8 @@
 
 (defn fetch-updates-http
   [user]
-  (load-activities user)
-  )
+  (let [uri (feed-link-uri user)]
+    (actions.activity/fetch-remote-feed uri)))
 
 (defn fetch-updates-xmpp
   [user]
