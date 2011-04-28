@@ -33,16 +33,7 @@
 
 (defaction create
   [options]
-  (let [{username :username
-         password :password
-         confirm-password :confirm-password} options]
-    (if (and username password confirm-password)
-      (if (= password confirm-password)
-        (let [opts {:username username
-                    :domain (:domain (config))
-                    :password password
-                    :confirm-password password}]
-          (model.user/create opts))))))
+  (model.user/create options))
 
 (defaction delete
   [id]
@@ -75,7 +66,7 @@
 (defaction find-or-create
   [username domain]
   (let [domain-record (actions.domain/find-or-create domain)]
-    (if-let [user (show username domain)]
+    (if-let [user (model.user/show username domain)]
       user
       (create {:username username :domain domain}))))
 
@@ -87,7 +78,17 @@
   [& _])
 
 (defaction register
-  [& _])
+  [options]
+  (let [{username :username
+         password :password
+         confirm-password :confirm-password} options]
+    (if (and username password confirm-password)
+      (if (= password confirm-password)
+        (let [opts {:username username
+                    :domain (:domain (config))
+                    :password password
+                    :confirm-password password}]
+          (create opts))))))
 
 (defaction remote-create
   [& _])

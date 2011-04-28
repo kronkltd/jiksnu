@@ -9,9 +9,8 @@
   true)
 
 (defaction create
-  [request]
-  (let [{{domain "domain"} :params} request]
-    (model.domain/create {:_id domain})))
+  [options]
+  (model.domain/create options))
 
 (defaction delete
   [request]
@@ -42,7 +41,7 @@
   [id]
   (if-let [domain (model.domain/show id)]
     domain
-    (create id)))
+    (create {:_id id})))
 
 (defaction ping
   [domain]

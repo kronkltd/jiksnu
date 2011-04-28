@@ -230,20 +230,22 @@
        (or (:content (:object activity))
            (:content activity)
            (:title activity))]
-      (if-let [tags (:tags activity)]
-        (if (seq tags)
-          [:div.tags
-           [:h "Tags"]
-          [:ul
-           (map
-            (fn [tag]
-              [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
-            tags)
-
-           ]]))
-     (if-let [recipients (seq (:recipients activity))]
-       [:p "Recipients: " recipients])
-      (dump activity)
+      (if-let [tags (seq (:tags activity))]
+        [:div.tags
+         [:h "Tags"]
+         [:ul
+          (map
+           (fn [tag]
+             [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+           tags)]])
+      (if-let [recipients (seq (:recipients activity))]
+        [:div.recipients
+         [:h "Recipients:"]
+         [:ul
+          (map
+           (fn [recipient-id]
+             [:ul (link-to (model.user/fetch-by-id recipient-id))])
+           recipients)]])
       [:footer
        [:p [:a {:href (uri activity)}
             [:time (:published activity)]]]

@@ -3,6 +3,8 @@
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [clojure.string :as string]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.user :as model.user]
             [karras.entity :as entity]
             [karras.sugar :as sugar])
   (:import jiksnu.model.Activity))
@@ -69,7 +71,12 @@
         recipient-seq (seq (filter #(not= "" %)
                                    (string/split recipients #",\s*")))]
     (if recipient-seq
-      (assoc activity :recipients recipient-seq)
+      (let [users (map
+                   (fn [uri]
+                     (let [[username domain] (model.user/split-uri uri)]
+                       (:_id (actions.user/find-or-create username domain))))
+                   recipient-seq)]
+        (assoc activity :recipients users))
       (dissoc activity :recipients))))
 
 (defn set-parent
