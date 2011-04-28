@@ -23,7 +23,7 @@
 (defaction add-link
   [user rel link]
   (update
-   (if-let [existing-link (get-link user rel)]
+   (if-let [existing-link (model.user/get-link user rel)]
      (do
        user)
      (entity/update

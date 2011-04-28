@@ -23,6 +23,22 @@
   [uri]
   (string/split uri #"@"))
 
+(defn rel-filter
+  [rel links]
+  (filter #(= (:rel %) rel)
+          links))
+
+(defn rel-filter-feed
+  [feed rel]
+  (filter
+   (fn [link]
+     (= (.getRel link) rel))
+   (.getLinks feed)))
+
+(defn get-link
+  [user rel]
+  (first (rel-filter rel (:links user))))
+
 (defn drop!
   []
   (entity/delete-all User))
