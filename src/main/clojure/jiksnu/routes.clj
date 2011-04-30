@@ -140,7 +140,7 @@
     [[:delete "/notice/:id"]
      #'activity/delete]
 
-    [[:get "/remote-user/:uri"]
+    [[:get "/remote-user/*"]
      #'user/remote-user]
 
     [[:get "/settings/profile"]
@@ -290,9 +290,8 @@
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
                  (response/file-response "public/robots.txt"))
-  (compojure/ANY "*" request
-                 ((wrap-log-request
-                   (resolve-routes all-predicates routes)) request))
+  (wrap-log-request
+   (resolve-routes [http-predicates] http-routes))
   (route/not-found (not-found-msg)))
 
 (def app

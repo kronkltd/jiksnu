@@ -237,8 +237,8 @@
       (:first-name user)
       (model.user/get-uri user)))
 
-(defsection uri [User]
+(defsection uri [User :html]
   [user & options]
-  (if (= (:domain user) (:domain (config)))
+  (if (local? user)
     (str "/" (:username user))
     (str "/users/" (:_id user))))

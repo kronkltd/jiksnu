@@ -173,7 +173,7 @@
 
 (deffilter #'remote-user :http
   [action request]
-  (let [{{uri :uri} :params} request]
+  (let [{{uri :*} :params} request]
     (action (model.user/fetch-by-uri uri))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
