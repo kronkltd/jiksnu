@@ -46,6 +46,20 @@
                      response (create activity)]
                  (expect (activity? response)))))))))))
 
+(describe create
+  (testing "when the user is logged in"
+    (do-it "should return an activity"
+      (let [user (model.user/create (factory User))]
+        (with-user user
+          (let [activity (factory Activity)
+                response (create activity)]
+            (expect (activity? response)))))))
+  #_(testing "when the user is not logged in"
+    (do-it "should return nil"
+      (let [activity (factory Activity)
+            response (create activity)]
+        (expect (nil? response))))))
+
 (describe delete
   (testing "when the activity exists"
     (testing "and the user owns the activity"

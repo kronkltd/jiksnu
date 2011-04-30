@@ -16,20 +16,6 @@
     (let [response (new-id)]
       (expect (instance? String response)))))
 
-(describe create
-  (testing "when the user is logged in"
-    (do-it "should return an activity"
-      (let [user (model.user/create (factory User))]
-        (with-user user
-          (let [activity (factory Activity)
-                response (create activity)]
-            (expect (activity? response)))))))
-  (testing "when the user is not logged in"
-    (do-it "should return nil"
-      (let [activity (factory Activity)
-            response (create activity)]
-        (expect (nil? response))))))
-
 (describe index
   (testing "when there are no activities"
     (do-it "should be empty"

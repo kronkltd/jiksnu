@@ -1,6 +1,7 @@
 (ns jiksnu.triggers.activity-triggers-test
   (:use clj-tigase.core
         ciste.core
+        ciste.debug
         ciste.factory
         ciste.views
         jiksnu.model
@@ -16,10 +17,10 @@
 
 (describe notify-activity
   (do-it "should return a packet"
-    (with-serialization :xmpp
-      (with-format :atom
-        (let [user (model.user/create (factory User))]
-          (with-user user
-            (let [activity (model.activity/create (factory Activity))
-                  response (notify-activity user activity)]
-              (expect (packet? response)))))))))
+    (let [user (model.user/create (factory User))]
+      (with-user user
+        (let [activity (model.activity/create
+                        (factory Activity
+                                 {:authors [(:_id user)]}))
+              response (notify-activity user activity)]
+          (expect (packet? response)))))))

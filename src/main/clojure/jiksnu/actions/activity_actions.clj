@@ -22,10 +22,12 @@
 
 (defn set-recipients
   [activity]
-  (let [recipients (:recipients activity)
-        recipient-seq (seq (filter #(not= "" %)
-                                   (string/split recipients #",\s*")))]
-    (if recipient-seq
+  (let [recipients (:recipients (spy activity))]
+    (if-let [recipient-seq
+             (if recipients
+               (seq (filter
+                     #(not= "" %)
+                     (string/split recipients #",\s*"))))]
       (let [users (map
                    (fn [uri]
                      (let [[username domain] (model.user/split-uri uri)]
