@@ -96,6 +96,10 @@
 (defaction remote-profile
   [& _])
 
+(defaction remote-user
+  [user]
+  user)
+
 (defaction show
   ;;   "This action just returns the passed user.
   ;; The user needs to be retreived in the filter."

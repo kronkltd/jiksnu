@@ -23,27 +23,6 @@
                    (spy items))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deffilter #'create :http
-  [action request]
-  (let [{params :params} request]
-    (action (dissoc params :*))))
-
-(deffilter #'create :xmpp
-  [action request]
-  (let [{:keys [items]} request
-        activities
-        (map
-         (fn [item]
-           (-> item children first
-               str parse-xml-string
-               to-activity))
-         items)]
-    (action (first activities))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; delete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -141,6 +120,27 @@
   [action request]
   (let [{{id :id} :params} request]
     (model.activity/show id)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; post
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deffilter #'post :http
+  [action request]
+  (let [{params :params} request]
+    (action (dissoc params :*))))
+
+(deffilter #'post :xmpp
+  [action request]
+  (let [{:keys [items]} request
+        activities
+        (map
+         (fn [item]
+           (-> item children first
+               str parse-xml-string
+               to-activity))
+         items)]
+    (action (first activities))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show

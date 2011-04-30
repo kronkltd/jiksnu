@@ -134,16 +134,14 @@
     [[:post "/notice/:id/likes"]
      #'activity/like-activity]
     [[:post "/notice/new"]
-     #'activity/create]
+     #'activity/post]
     [[:post "/notice/:id"]
      #'activity/update]
     [[:delete "/notice/:id"]
      #'activity/delete]
 
-    ;; [[:get "/posts.:format"]
-    ;;  #'activity/index]
-    ;; [[:get "/posts/new"]
-    ;;  #'activity/new]
+    [[:get "/remote-user/:uri"]
+     #'user/remote-user]
 
     [[:get "/settings/profile"]
      #'user/profile]
@@ -191,7 +189,7 @@
       :pubsub true
       :name "publish"
       :node (escape-route microblog-uri)}
-     #'activity/create]
+     #'activity/post]
 
     [{:method :get
       :pubsub true

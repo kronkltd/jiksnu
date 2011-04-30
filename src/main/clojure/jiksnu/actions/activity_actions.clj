@@ -9,6 +9,7 @@
         jiksnu.session
         [karras.entity :only (make)])
   (:require [clojure.string :as string]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
@@ -31,7 +32,7 @@
       (let [users (map
                    (fn [uri]
                      (let [[username domain] (model.user/split-uri uri)]
-                       (:_id (find-or-create username domain))))
+                       (:_id (actions.user/find-or-create username domain))))
                    recipient-seq)]
         (assoc activity :recipients users))
       (dissoc activity :recipients))))
@@ -54,9 +55,9 @@
 
 (defaction create
   [params]
-  (let [prepared-activity (prepare-activity params)]
-    (model.activity/create
-     (make Activity prepared-activity))))
+  (let [prepared-activity (prepare-activity params)
+        activity (make Activity prepared-activity)]
+    (model.activity/create (spy activity))))
 
 (defaction delete
   [id]
@@ -88,6 +89,10 @@
     (doseq [activity (helpers.user/get-activities feed)]
       (create activity))))
 
+;; (defaction find-or-create
+;;   [options]
+;;   (model.activity/find-or-create options))
+
 (defaction friends-timeline
   [& _])
 
@@ -107,6 +112,11 @@
 
 (defaction new-comment
   [& _])
+
+(defaction post
+  [activity]
+  ;; TODO: validate user
+  (create activity))
 
 (defaction remote-create
   [activities]

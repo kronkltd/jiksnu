@@ -35,11 +35,6 @@
                      "jid" (str (:username subscribee) "@"
                                 (:domain subscribee))}]))
 
-
-
-
-
-
 (defn unsubscription-request
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
@@ -47,14 +42,12 @@
      ["unsubscribe" {"node" microblog-uri
                      "jid" (make-jid subscribee)}]]))
 
-
 (defn subscribe-request
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
     ["pubsub"  {"xmlns" pubsub-uri}
      ["subscribe" {"node" microblog-uri
                    "jid" (make-jid subscribee)}]]))
-
 
 (defn subscribers-response
   [subscribers]
@@ -68,4 +61,3 @@
   ["pubsub" {"xmlns" pubsub-uri}
    ["subscriptions" {"node" microblog-uri}
     (map subscription-response-element subscriptions)]])
-
