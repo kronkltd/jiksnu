@@ -1,10 +1,10 @@
 (ns jiksnu.filters.activity-filters-test
   (:use clj-tigase.core
+        ciste.debug
         ciste.factory
         ciste.filters
         ciste.sections
-        ciste.views
-        jiksnu.actions.activity-actions
+        ;; ciste.views
         jiksnu.filters.activity-filters
         jiksnu.model
         jiksnu.namespace
@@ -13,12 +13,14 @@
         jiksnu.xmpp.element
         [lazytest.describe :only (describe testing do-it for-any)]
         [lazytest.expect :only (expect)])
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-;; (describe filter-action "#'create :xmpp"
+;; (describe filter-action "#'actions.activity/create :xmpp"
 ;;   (testing "when the user is logged in"
 ;;     (testing "and it is a valid activity"
 ;;       (do-it "should return that activity"
@@ -39,22 +41,26 @@
 ;;                       response (filter-action #'create request)]
 ;;                   (expect (activity? response)))))))))))
 
-(describe filter-action "#'index :http"
+(describe filter-action "#'index :http :html"
   (testing "when there are no activities"
     (do-it "should be empty"
       (model.activity/drop!)
       (let [request {:serialization :http}
-            response (filter-action #'index request)]
+            response (filter-action #'actions.activity/index request)]
         (expect (empty? response)))))
   (testing "when there are activities"
     (do-it "should return a seq of activities"
-      (let [author (model.user/create (factory User))]
+      (model.activity/drop!)
+      (let [author (actions.user/create (factory User))]
         (with-user author
-          (model.activity/create (factory Activity))))
-      (let [request {:serialization :http}
-            response (index request)]
-        (expect (seq response))
-        (expect (every? activity? response))))))
+          (actions.activity/create (factory Activity))
+          (let [request {:serialization :http
+                         :action #'actions.activity/index
+                         :format :html}
+                response (filter-action #'actions.activity/index request)]
+            (expect (seq response))
+            (expect (class (first response)))
+            (expect (every? activity? response))))))))
 
 (describe filter-action "#'index :xmpp"
   (testing "when there are no activities"
@@ -69,7 +75,7 @@
                      :body element})
             request (assoc (make-request packet)
                       :serialization :xmpp)]
-        (let [response (filter-action #'index request)]
+        (let [response (filter-action #'actions.activity/index request)]
           (expect (not (nil? response)))
           (expect (empty? response))))))
   (testing "when there are activities"
@@ -86,7 +92,7 @@
                 request (assoc (make-request packet)
                           :serialization :xmpp)
                 activity (model.activity/create (factory Activity))
-                response (filter-action #'index request)]
+                response (filter-action #'actions.activity/index request)]
             (expect (seq response))
             (expect (every? activity? response))))))))
 
@@ -107,7 +113,7 @@
                 packet (make-packet packet-map)
                 request (assoc (make-request packet)
                           :serialization :xmpp)
-                response (filter-action #'show request)]
+                response (filter-action #'actions.activity/show request)]
             (expect (activity? response)))))))
   (testing "when the activity does not exist"
     (do-it "should return nil" :pending)))

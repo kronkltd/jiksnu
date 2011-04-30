@@ -1,5 +1,7 @@
 (ns jiksnu.model.user-test
-  (:use ciste.factory
+  (:use ciste.config
+        ciste.factory
+        jiksnu.core-test
         jiksnu.model
         jiksnu.model.user
         [lazytest.describe :only (describe do-it testing)]
@@ -87,7 +89,16 @@
     (do-it "should return a user"
       (let [request {:params {"id" (fseq :word)}}]))))
 
-(describe local?)
+(describe local?
+  (testing "when there is a user"
+    (testing "and it's domain is the same as the current domain"
+      (do-it "should be true"
+        (let [user (factory User {:domain (-> (config) :domain)})]
+          (expect (local? user)))))
+    (testing "and it's domain is different from the current domain"
+      (do-it "should be false"
+        (let [user (factory User {:domain (fseq :domain)})]
+          (expect (not (local? user))))))))
 
 (describe get-uri)
 

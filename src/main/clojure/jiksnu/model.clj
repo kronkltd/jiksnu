@@ -82,7 +82,10 @@
      (with-database
        ~@body)))
 
-(def activity? (partial instance? Activity))
+(defn activity?
+  [activity]
+  (instance? Activity activity))
+
 (defn subscription?
   [s]
   (instance? Subscription s))
@@ -98,6 +101,10 @@
 (defseq :id
   [n]
   n)
+
+(defseq :domain
+  [n]
+  (str "example" n ".com"))
 
 (defseq :word
   [n]
