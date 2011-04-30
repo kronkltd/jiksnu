@@ -191,10 +191,10 @@
         (let [object (make-object element)]
           {
            ;; :type (str (.getObjectType object)))
-           :object-id (str (.getId object))
-           :object-updated (.getUpdated object)
-           :object-published (.getPublished object)
-           :object-content (.getContent object)})
+           :id (str (.getId object))
+           :updated (.getUpdated object)
+           :published (.getPublished object)
+           :content (.getContent object)})
         (if (and (= name "in-reply-to")
                  (= namespace "http://purl.org/syndication/thread/1.0"))
           (let [parent-id (.getAttributeValue element "ref")]
@@ -349,7 +349,7 @@ an Element"
 
 (defn set-tags
   [activity]
-  (let [tags (:tags activity )]
+  (let [tags (seq (:tags activity ))]
     (if (and tags (not= tags ""))
       (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
         (assoc activity :tags tag-seq)

@@ -78,7 +78,9 @@
 
 (defsection link-to [User :html]
   [user & options]
-  [:a.url {:href (uri user)
+  [:a.url {:href (if (model.user/local? user)
+                   (str "/" (:username user))
+                   (str "/remote-user/" (:username user) "@" (:domain user)))
            :rel "contact"}
    [:span.fn.n (title user)]])
 
@@ -239,6 +241,6 @@
 
 (defsection uri [User :html]
   [user & options]
-  (if (local? user)
+  (if (model.user/local? user)
     (str "/" (:username user))
     (str "/users/" (:_id user))))
