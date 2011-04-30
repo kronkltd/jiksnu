@@ -18,6 +18,14 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
+(describe prepare-activity
+  (do-it "should return an activity"
+    (let [user (model.user/create (factory User))]
+      (with-user user
+        (let [args (factory Activity)]
+          (let [response (prepare-activity args)]
+            (expect (activity? response))))))))
+
 (describe create
   (testing "when the user is logged in"
     (testing "and it is a valid activity"

@@ -85,3 +85,42 @@
 (describe comment-node-uri)
 
 (describe comment-request)
+
+(describe set-id
+  (testing "when there is an id"
+    (do-it "should not change the value"
+      (let [activity (factory Activity)
+            response (set-id activity)]
+        (expect (= (:_id activity)
+                   (:_id response))))))
+  (testing "when there is no id"
+    (do-it "should add an id key"
+      (let [activity (factory Activity)
+            response (set-id activity)]
+        (:_id response)))))
+
+(describe set-object-id)
+
+(describe set-updated-time
+  (testing "when there is an updated property"
+    (do-it "should not change the value"
+      (let [activity (factory Activity)
+            response (set-updated-time activity)]
+        (expect (= (:updated activity)
+                   (:updated response))))))
+  (testing "when there is no updated property"
+    (do-it "should add an updated property"
+      (let [activity (dissoc (factory Activity) :updated)
+            response (set-updated-time activity)]
+        (expect (:updated response))))))
+
+(describe set-object-updated)
+
+(describe set-published-time)
+
+(describe set-object-published)
+
+(describe set-actor)
+
+(describe set-public)
+

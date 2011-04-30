@@ -1,11 +1,15 @@
 (ns jiksnu.model.user
-  (:use jiksnu.model)
+  (:use ciste.config
+        jiksnu.model)
   (:require [clojure.string :as string]
             [karras.entity :as entity]
             [jiksnu.model.domain :as model.domain])
-  (:import tigase.xmpp.BareJID
+  (:import java.net.URI
            jiksnu.model.Domain
-           jiksnu.model.User))
+           jiksnu.model.User
+           org.apache.abdera.model.Entry
+           tigase.xml.Element
+           tigase.xmpp.BareJID))
 
 (defn get-id
   [jid]
@@ -125,3 +129,34 @@
         user (entity/make User merged-user)]
     (entity/update User {:_id (:_id old-user)} user)
     user))
+
+(defn local?
+  [user]
+  (= (:domain user)
+     (-> (config) :domain)))
+
+(defn get-uri
+  [^User user]
+  (str (:username user) "@" (:domain user)))
+
+(defn author-uri
+  [^Entry entry]
+  (let [author (.getAuthor entry)]
+    (let [uri (.getUri author)]
+      (URI. (.toString uri)))))
+
+(defn get-domain
+  [user]
+  (model.domain/show (:domain user)))
+
+(defn user-meta-uri
+  [^User user]
+  (let [domain-object (get-domain user)]
+    (if-let [lrdd-link (get-link domain-object "lrdd")]
+      (let [template (:template lrdd-link)]
+        (string/replace template "{uri}" (get-uri user))))))
+
+(defn rule-element?
+  [^Element element]
+  (= (.getName element) "acl-rule"))
+

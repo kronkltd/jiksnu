@@ -15,22 +15,12 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.subscription :as model.subscription])
-  (:import java.net.URI
-           javax.xml.namespace.QName
+            [jiksnu.model.subscription :as model.subscription]
+            [karras.sugar :as sugar])
+  (:import javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera.model.Entry
            tigase.xml.Element))
-
-(defn get-uri
-  [^User user]
-  (str (:username user) "@" (:domain user)))
-
-(defn author-uri
-  [^Entry entry]
-  (let [author (.getAuthor entry)]
-    (let [uri (.getUri author)]
-      (URI. (.toString uri)))))
 
 (defn avatar-img
   [user]
@@ -128,32 +118,16 @@
        [:p (:rel link)]])
     (:links user))])
 
-(defn local?
-  [user]
-  (= (:domain user)
-     (-> (config) :domain)))
-
-(defn get-domain
-  [user]
-  (model.domain/show (:domain user)))
-
-(defn user-meta-uri
-  [^User user]
-  (let [domain-object (get-domain user)]
-    (if-let [lrdd-link (get-link domain-object "lrdd")]
-      (let [template (:template lrdd-link)]
-        (string/replace template "{uri}" (get-uri user))))))
-
 (defn fetch-user-meta
   [^User user]
   (-> user
-      user-meta-uri
+      model.user/user-meta-uri
       actions.webfinger/fetch))
 
 (defn feed-link-uri
   [^User user]
   (:href
-   (get-link
+   (model.user/get-link
     user "http://schemas.google.com/g/2010#updates-from")))
 
 (defn fetch-user-feed
@@ -174,7 +148,7 @@
 (defn get-hub-link
   [feed]
   (-> feed
-      (rel-filter-feed "hub")
+      (model.user/rel-filter-feed "hub")
       first
       .getHref
       str))
@@ -183,12 +157,8 @@
   [user]
   (dorun
    (map
-    model.activity/create-raw
+    model.activity/create
     (fetch-activities user))))
-
-(defn rule-element?
-  [^Element element]
-  (= (.getName element) "acl-rule"))
 
 (defn rule-map
   [rule]
@@ -201,8 +171,9 @@
 (defn property-map
   [user property]
   (let [child-elements (children property)
-        rule-elements (filter rule-element? child-elements)
-        type-element (first (filter (comp not rule-element?) child-elements))]
+        rule-elements (filter model.user/rule-element? child-elements)
+        type-element (first (filter (comp not model.user/rule-element?)
+                                    child-elements))]
     {:key (.getName property)
      :type (.getName type-element)
      :value (.getCData type-element)
@@ -235,4 +206,3 @@
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (make-packet packet-map)]
     (deliver-packet! packet)))
-

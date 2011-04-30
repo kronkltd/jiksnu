@@ -3,122 +3,17 @@
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [clojure.string :as string]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.user :as model.user]
             [karras.entity :as entity]
             [karras.sugar :as sugar])
   (:import jiksnu.model.Activity))
 
-(defn set-id
-  [activity]
-  (if (:_id activity)
-    activity
-    (assoc activity :_id (new-id))))
-
-(defn set-object-id
-  [activity]
-  (if (:id (:object activity))
-    activity
-    (assoc-in activity [:object :id] (new-id))))
-
-(defn set-updated-time
-  [activity]
-  (if (:updated activity)
-    activity
-    (assoc activity :updated (sugar/date))))
-
-(defn set-object-updated
-  [activity]
-  (if (:updated (:object activity))
-    activity
-    (assoc-in activity [:object :updated] (sugar/date))))
-
-(defn set-published-time
-  [activity]
-  (if (:published activity)
-    activity
-    (assoc activity :published (sugar/date))))
-
-(defn set-object-published
-  [activity]
-  (if (:published (:object activity))
-    activity
-    (assoc-in activity [:object :published] (sugar/date))))
-
-(defn set-actor
-  [activity]
-  (if-let [author (current-user-id)]
-    (assoc activity :authors [author])))
-
-(defn set-public
-  [activity]
-  (if (false? (:public activity))
-    activity
-    (assoc activity :public true)))
-
-(defn set-tags
-  [activity]
-  (let [tags (:tags activity )]
-    (if (and tags (not= tags ""))
-      (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
-        (assoc activity :tags tag-seq)
-        (dissoc activity :tags))
-      (dissoc activity :tags))))
-
-(defn set-recipients
-  [activity]
-  (let [recipients (:recipients activity)
-        recipient-seq (seq (filter #(not= "" %)
-                                   (string/split recipients #",\s*")))]
-    (if recipient-seq
-      (let [users (map
-                   (fn [uri]
-                     (let [[username domain] (model.user/split-uri uri)]
-                       (:_id (actions.user/find-or-create username domain))))
-                   recipient-seq)]
-        (assoc activity :recipients users))
-      (dissoc activity :recipients))))
-
-(defn set-parent
-  [activity]
-  (if (= (:parent activity) "")
-    (dissoc activity :parent)
-    activity))
-
-(defn set-object-type
-  [activity]
-  (if (:type (:object activity))
-    activity
-    (assoc-in activity [:object :object-type] "note")))
-
-(defn prepare-activity
-  [activity]
-  (-> activity
-      set-id
-      set-object-id
-      set-public
-      set-published-time
-      set-tags
-      set-recipients
-      set-object-published
-      set-updated-time
-      set-object-updated
-      set-object-type
-      set-actor
-      set-parent))
-
-(defn create-raw
+(defn create
   [activity]
   (entity/create Activity activity))
 
 (defn update
   [activity]
   (entity/save activity))
-
-(defn create
-  [activity]
-  (if-let [prepared-activity (prepare-activity activity)]
-    (create-raw prepared-activity)))
 
 (defn privacy-filter
   [user]

@@ -16,54 +16,6 @@
     (let [response (new-id)]
       (expect (instance? String response)))))
 
-(describe set-id
-  (testing "when there is an id"
-    (do-it "should not change the value"
-      (let [activity (factory Activity)
-            response (set-id activity)]
-        (expect (= (:_id activity)
-                   (:_id response))))))
-  (testing "when there is no id"
-    (do-it "should add an id key"
-      (let [activity (factory Activity)
-            response (set-id activity)]
-        (:_id response)))))
-
-(describe set-object-id)
-
-(describe set-updated-time
-  (testing "when there is an updated property"
-    (do-it "should not change the value"
-      (let [activity (factory Activity)
-            response (set-updated-time activity)]
-        (expect (= (:updated activity)
-                   (:updated response))))))
-  (testing "when there is no updated property"
-    (do-it "should add an updated property"
-      (let [activity (dissoc (factory Activity) :updated)
-            response (set-updated-time activity)]
-        (expect (:updated response))))))
-
-(describe set-object-updated)
-
-(describe set-published-time)
-
-(describe set-object-published)
-
-(describe set-actor)
-
-(describe set-public)
-
-(describe prepare-activity
-  (do-it "should return an activity"
-    (let [user (model.user/create (factory User))]
-      (with-user user
-        (let [args (factory Activity)]
-          (let [response (prepare-activity args)]
-            (expect (activity? response))))))))
-
-(describe create-raw)
-
 (describe create
   (testing "when the user is logged in"
     (do-it "should return an activity"

@@ -60,7 +60,7 @@
 
 (defaction find-hub
   [user]
-  (let [domain (get-domain user)]
+  (let [domain (model.user/get-domain user)]
     domain))
 
 (defaction find-or-create

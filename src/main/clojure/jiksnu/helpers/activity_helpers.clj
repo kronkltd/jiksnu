@@ -9,9 +9,11 @@
         jiksnu.namespace
         jiksnu.session
         jiksnu.view)
-  (:require [hiccup.form-helpers :as f]
+  (:require [clojure.string :as string]
+            [hiccup.form-helpers :as f]
             [jiksnu.model.user :as model.user]
-            [karras.entity :as entity])
+            [karras.entity :as entity]
+            [karras.sugar :as sugar])
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -297,3 +299,71 @@ an Element"
     (make-element
      ["pubsub" {"xmlns" pubsub-uri}
       ["items" {"node" (comment-node-uri activity)}]])}))
+
+(defn set-id
+  [activity]
+  (if (:_id activity)
+    activity
+    (assoc activity :_id (new-id))))
+
+(defn set-object-id
+  [activity]
+  (if (:id (:object activity))
+    activity
+    (assoc-in activity [:object :id] (new-id))))
+
+(defn set-updated-time
+  [activity]
+  (if (:updated activity)
+    activity
+    (assoc activity :updated (sugar/date))))
+
+(defn set-object-updated
+  [activity]
+  (if (:updated (:object activity))
+    activity
+    (assoc-in activity [:object :updated] (sugar/date))))
+
+(defn set-published-time
+  [activity]
+  (if (:published activity)
+    activity
+    (assoc activity :published (sugar/date))))
+
+(defn set-object-published
+  [activity]
+  (if (:published (:object activity))
+    activity
+    (assoc-in activity [:object :published] (sugar/date))))
+
+(defn set-actor
+  [activity]
+  (if-let [author (current-user-id)]
+    (assoc activity :authors [author])))
+
+(defn set-public
+  [activity]
+  (if (false? (:public activity))
+    activity
+    (assoc activity :public true)))
+
+(defn set-tags
+  [activity]
+  (let [tags (:tags activity )]
+    (if (and tags (not= tags ""))
+      (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+        (assoc activity :tags tag-seq)
+        (dissoc activity :tags))
+      (dissoc activity :tags))))
+
+(defn set-parent
+  [activity]
+  (if (= (:parent activity) "")
+    (dissoc activity :parent)
+    activity))
+
+(defn set-object-type
+  [activity]
+  (if (:type (:object activity))
+    activity
+    (assoc-in activity [:object :object-type] "note")))

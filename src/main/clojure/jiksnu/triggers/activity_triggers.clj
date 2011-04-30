@@ -72,7 +72,6 @@
 
 (add-trigger! #'show #'show-trigger)
 (add-trigger! #'create #'notify-commented)
-(add-trigger! #'create-raw #'notify-commented)
 (add-trigger! #'create #'notify-subscribers)
 ;; (add-trigger! #'create #'sleep-and-print)
 (add-trigger! #'fetch-comments #'fetch-more-comments)

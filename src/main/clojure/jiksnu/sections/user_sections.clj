@@ -115,11 +115,11 @@
   (let [person (Person. (make-object atom-ns "author" ""))
         author-uri (full-uri user)]
     (.setObjectType person person-uri)
-    (.setId person (str "acct:" (get-uri user)))
+    (.setId person (str "acct:" (model.user/get-uri user)))
     (.setName person (:first-name user) (:last-name user))
     (.setDisplayName person (:name user))
     (.addSimpleExtension person atom-ns "email" ""
-                         (or (:email user) (get-uri user)))
+                         (or (:email user) (model.user/get-uri user)))
     (.addSimpleExtension person atom-ns "name" "" (:name user))
     (.addAvatar person (:avatar-url user) "image/jpeg")
     (.addSimpleExtension person atom-ns "uri" "" author-uri)
@@ -144,7 +144,7 @@
      (add-form (Activity.))
      [:div
       [:div.aside
-       (when-not (local? user)
+       (when-not (model.user/local? user)
          [:p.important
           "This is a cached copy of information for a user on a different system."])
        (let [{id :_id
@@ -160,7 +160,7 @@
           [:p
            [:span.nickname
             username
-            (when-not (local? user)
+            (when-not (model.user/local? user)
               (list "@" domain))]]
           [:p.fn.n name]
           [:div.adr
@@ -186,9 +186,9 @@
     [[(str (full-uri user) ".rdf")
      [rdf:type foaf:PersonalProfileDocument
       [foaf :maker] (full-uri user)
-      foaf:primaryTopic (rdf-resource (str "acct:" (get-uri user)))]]
+      foaf:primaryTopic (rdf-resource (str "acct:" (model.user/get-uri user)))]]
 
-    [(rdf-resource (str "acct:" (get-uri user)))
+    [(rdf-resource (str "acct:" (model.user/get-uri user)))
      [rdf:type [foaf :Person]
       [foaf :name] (l (:name user))
       foaf:nick (l (:username user))
@@ -205,7 +205,7 @@
       foaf:accountServiceHomepage (rdf-resource (str "http://" (:domain user)))
       foaf:accountName (l (:username user))
       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
-      [sioc "account_of"] (rdf-resource (str "acct:" (get-uri user)))]]]))
+      [sioc "account_of"] (rdf-resource (str "acct:" (model.user/get-uri user)))]]]))
 
 (defsection show-section [User :json]
   [user & options]
@@ -235,7 +235,7 @@
   (or (:name user)
       (:display-name user)
       (:first-name user)
-      (get-uri user)))
+      (model.user/get-uri user)))
 
 (defsection uri [User]
   [user & options]

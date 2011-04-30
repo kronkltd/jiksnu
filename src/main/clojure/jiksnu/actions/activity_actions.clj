@@ -8,7 +8,8 @@
         jiksnu.namespace
         jiksnu.session
         [karras.entity :only (make)])
-  (:require [jiksnu.helpers.user-helpers :as helpers.user]
+  (:require [clojure.string :as string]
+            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -17,16 +18,43 @@
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
+(declare find-or-create)
+
+(defn set-recipients
+  [activity]
+  (let [recipients (:recipients activity)
+        recipient-seq (seq (filter #(not= "" %)
+                                   (string/split recipients #",\s*")))]
+    (if recipient-seq
+      (let [users (map
+                   (fn [uri]
+                     (let [[username domain] (model.user/split-uri uri)]
+                       (:_id (find-or-create username domain))))
+                   recipient-seq)]
+        (assoc activity :recipients users))
+      (dissoc activity :recipients))))
+
+(defn prepare-activity
+  [activity]
+  (-> activity
+      set-id
+      set-object-id
+      set-public
+      set-published-time
+      set-tags
+      set-recipients
+      set-object-published
+      set-updated-time
+      set-object-updated
+      set-object-type
+      set-actor
+      set-parent))
+
 (defaction create
   [params]
-  (let [prepared-activity (model.activity/prepare-activity params)]
-    (model.activity/create-raw
+  (let [prepared-activity (prepare-activity params)]
+    (model.activity/create
      (make Activity (spy prepared-activity)))))
-
-(defaction create-raw
-  [activity]
-  (model.activity/create-raw
-   (make Activity activity)))
 
 (defaction delete
   [id]
@@ -81,7 +109,7 @@
 (defaction remote-create
   [activities]
   (doseq [activity (spy activities)]
-    (create-raw activity))
+    (create activity))
   true)
 
 (defaction comment-response

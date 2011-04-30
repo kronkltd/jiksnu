@@ -64,7 +64,7 @@
 (defn notify-subscribed
   [action params subscription]
   (let [[actor user] params]
-   (if (helpers.user/local? user)
+   (if (model.user/local? user)
      (let [packet (make-packet
                    {:type :headline
                     :to (make-jid user)
