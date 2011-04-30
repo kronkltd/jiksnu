@@ -22,7 +22,7 @@
 
 (defn set-recipients
   [activity]
-  (let [recipients (:recipients (spy activity))]
+  (let [recipients (:recipients activity)]
     (if-let [recipient-seq
              (if recipients
                (seq (filter
@@ -86,7 +86,7 @@
   [uri]
   (let [feed (fetch-feed uri)]
     (doseq [activity (helpers.user/get-activities feed)]
-      (create (spy activity)))))
+      (create activity))))
 
 (defaction friends-timeline
   [& _])
@@ -110,13 +110,13 @@
 
 (defaction remote-create
   [activities]
-  (doseq [activity (spy activities)]
+  (doseq [activity activities]
     (create activity))
   true)
 
 (defaction comment-response
   [activities]
-  (remote-create (spy activities)))
+  (remote-create activities))
 
 (defaction show
   [id]
