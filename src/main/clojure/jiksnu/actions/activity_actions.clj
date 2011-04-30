@@ -56,7 +56,7 @@
   [params]
   (let [prepared-activity (prepare-activity params)]
     (model.activity/create
-     (make Activity (spy prepared-activity)))))
+     (make Activity prepared-activity))))
 
 (defaction delete
   [id]
