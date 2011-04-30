@@ -70,7 +70,7 @@
         domain (model.domain/show (:domain author))]
     (fetch-comments-remote activity)))
 
-(add-trigger! #'show #'show-trigger)
+;; (add-trigger! #'show #'show-trigger)
 (add-trigger! #'create #'notify-commented)
 (add-trigger! #'create #'notify-subscribers)
 ;; (add-trigger! #'create #'sleep-and-print)
