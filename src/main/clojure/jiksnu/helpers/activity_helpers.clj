@@ -349,7 +349,7 @@ an Element"
 
 (defn set-tags
   [activity]
-  (let [tags (seq (:tags activity ))]
+  (let [tags (:tags activity )]
     (if (and tags (not= tags ""))
       (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
         (assoc activity :tags tag-seq)
