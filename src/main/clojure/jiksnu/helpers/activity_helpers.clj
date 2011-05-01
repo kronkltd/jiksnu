@@ -189,8 +189,19 @@
       (if (and (= name "object")
                  (= namespace as-ns))
         (let [object (make-object element)]
-          {
-           :object {:object-type (str (.getObjectType object))}
+          {:object
+           (let [links (.getLinks object)]
+             {:object-type (str (.getObjectType object))
+              :links
+              (map
+               (fn [link]
+                 (let [extension-attributes (.getExtensionAttributes link)]
+                   {:href (str (.getHref link))
+                    :rel (.getRel link)
+                    :title (.getTitle link)
+                    :mime-type (str (.getMimeType link))
+                    :extensions (spy extension-attributes)}))
+               links)})
            :id (str (.getId object))
            :updated (.getUpdated object)
            :published (.getPublished object)
@@ -239,6 +250,27 @@ serialization"
                     {:_id id
                      :authors author-ids
                      :public true
+                     :comment-count
+                     (if-let [link (.getLink entry "replies")]
+                       (or (Integer/parseInt
+                            (.getAttributeValue
+                             (spy link)
+                             (QName.
+                              "http://purl.org/syndication/thread/1.0"
+                              "count" )))
+                           0)
+                       0
+                       )
+                     :links (map
+                             (fn [link]
+                               {:href (str (.getHref link))
+                                :rel (.getRel link)
+                                :title (.getTitle link)
+                                :extensions (map
+                                             #(.getAttributeValue link  %)
+                                             (spy (.getExtensionAttributes link)))
+                                :mime-type (str (.getMimeType link))})
+                      (.getLinks entry))
                      :tags (map
                             (fn [category] (.getTerm category))
                             categories)}

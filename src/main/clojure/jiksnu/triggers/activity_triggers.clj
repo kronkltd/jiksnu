@@ -71,7 +71,7 @@
     (fetch-comments-remote activity)))
 
 (add-trigger! #'fetch-comments #'fetch-more-comments)
-(add-trigger! #'create #'fetch-new-comments)
-(add-trigger! #'update #'fetch-new-comments)
+;; (add-trigger! #'create #'fetch-new-comments)
+;; (add-trigger! #'update #'fetch-new-comments)
 (add-trigger! #'post #'notify-commented)
 (add-trigger! #'post #'notify-subscribers)

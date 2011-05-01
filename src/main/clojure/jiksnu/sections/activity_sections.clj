@@ -18,6 +18,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import com.cliqset.abdera.ext.activity.object.Person
+           com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -43,6 +44,11 @@
   [activity & options]
   [:div
    (activity-form activity (uri activity))])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; get-comments
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-block
@@ -208,7 +214,8 @@
   (let [user (-> activity
                  :authors
                  first
-                 model.user/fetch-by-id)]
+                 model.user/fetch-by-id)
+        object-type (-> activity :object :object-type)]
     [:article.hentry.notice
      {"id" (:_id activity)}
      [:header.avatar-section
@@ -221,8 +228,8 @@
             (show-section-minimal user)))
         (:authors activity))
        [:div#labels
-        [:span#object-type
-         (-> activity :object :object-type)] " "
+        [:span#object-type object-type]
+        " "
         [:span
          (if (-> activity :local)
            ""
@@ -237,6 +244,26 @@
        (or (:content (:object activity))
            (:content activity)
            (:title activity))]
+      [:p "Comments: "
+       (:comment-count activity)
+       " "
+       [:a {:href "#"} "Show"]]
+      (if-let [links (seq (:links (:object (spy activity))))]
+        [:div#links
+         [:h "links"]
+         [:ul
+          (map
+           (fn [link]
+             [:li
+              [:p "Href: " (:href link)]
+              [:p "Rel: " (:rel link)]
+              [:p "Title: " (:title link)]
+              [:p "Mime Type: " (:mime-type link)]
+              (if (= object-type "picture")
+                [:img {:src (:href link)
+                       :width "100"
+                       :height "100"}])])
+          links)]])
       (if-let [tags (seq (:tags activity))]
         [:div.tags
          [:h "Tags"]
@@ -254,8 +281,9 @@
              [:ul (link-to (model.user/fetch-by-id recipient-id))])
            recipients)]])
       [:footer
-       [:p [:a {:href (uri activity)}
-            [:time (:published activity)]]]
+       (if-let [published (:published activity)]
+         [:p [:a {:href (uri activity)}
+              [:time (.format (PrettyTime.) published)]]])
        [:ul.buttons
         (if (or (current-user) (is-admin?))
           (list

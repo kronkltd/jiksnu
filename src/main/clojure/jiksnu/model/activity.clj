@@ -30,7 +30,7 @@
         option-map (apply hash-map opts)
         merged-options
         (merge
-         #_{:$or [{:parent ""}
+         {:$or [{:parent ""}
                 {:parent {:$exists false}}]}
          (privacy-filter user)
          option-map)]

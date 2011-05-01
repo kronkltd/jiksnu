@@ -43,30 +43,30 @@
     activity
     (assoc activity :local false)))
 
+(defn set-local
+  [activity]
+  (assoc activity :local true))
+
 (defn prepare-activity
   [activity]
   (-> activity
       set-id
       set-object-id
       set-public
-      set-published-time
       set-remote
       set-tags
       set-recipients
-      set-object-published
-      set-updated-time
-      set-object-updated
       set-object-type
       set-parent))
-
-(defn set-local
-  [activity]
-  (assoc activity :local true))
 
 (defn prepare-post
   [activity]
   (-> activity
       set-local
+      set-updated-time
+      set-object-updated
+      set-object-published
+      set-published-time
       set-actor))
 
 (defaction create
