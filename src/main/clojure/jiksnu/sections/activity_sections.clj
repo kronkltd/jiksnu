@@ -222,10 +222,11 @@
         (:authors activity))
        [:div#labels
         [:span#object-type
-         (-> activity :object :object-type)]
+         (-> activity :object :object-type)] " "
         [:span
-         (if (-> activity :remote)
-           "remote")]
+         (if (-> activity :local)
+           ""
+           "remote")] " "
         [:span#privacy
          (if (:public activity)
            "public" "private")]]

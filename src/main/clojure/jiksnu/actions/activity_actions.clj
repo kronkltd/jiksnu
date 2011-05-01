@@ -37,6 +37,12 @@
         (assoc activity :recipients users))
       (dissoc activity :recipients))))
 
+(defn set-remote
+  [activity]
+  (if (:local activity)
+    activity
+    (assoc activity :local false)))
+
 (defn prepare-activity
   [activity]
   (-> activity
@@ -44,14 +50,24 @@
       set-object-id
       set-public
       set-published-time
+      set-remote
       set-tags
       set-recipients
       set-object-published
       set-updated-time
       set-object-updated
       set-object-type
-      set-actor
       set-parent))
+
+(defn set-local
+  [activity]
+  (assoc activity :local true))
+
+(defn prepare-post
+  [activity]
+  (-> activity
+      set-local
+      set-actor))
 
 (defaction create
   [params]
@@ -116,7 +132,8 @@
 (defaction post
   [activity]
   ;; TODO: validate user
-  (create activity))
+  (if-let [prepared-post (prepare-post activity)]
+    (create prepared-post)))
 
 (defaction remote-create
   [activities]
