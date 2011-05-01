@@ -18,6 +18,7 @@
            javax.xml.namespace.QName
            jiksnu.model.Activity
            org.apache.abdera.ext.json.JSONUtil
+           org.apache.abdera.ext.thread.InReplyTo
            org.apache.abdera.model.Entry
            tigase.xml.Element))
 
@@ -177,9 +178,24 @@
             (.addExtension rule-element osw-uri "acl-subject" "")]
         (.setAttributeValue subject-element "type" everyone-uri)))))
 
+(defn parse-object-element
+  [element]
+  (let [object (make-object element)]
+    {:object {:object-type (str (.getObjectType object))
+              :links (parse-links object)}
+     :id (str (.getId object))
+     :updated (.getUpdated object)
+     :published (.getPublished object)
+     :content (.getContent object)}))
+
+(defn parse-reply-to
+  [element]
+  (let [parent-id (.getAttributeValue element "ref")]
+    {:parent (spy parent-id)}))
+
 (defn parse-extension-element
   [element]
-  (let [qname (.getQName element)
+  (let [qname (.getQName (spy element))
         name (.getLocalPart qname)
         namespace (.getNamespaceURI qname)]
     (if (and (= name "actor")
@@ -188,34 +204,59 @@
         {:authors [(:_id (model.user/find-or-create-by-uri uri))]})
       (if (and (= name "object")
                  (= namespace as-ns))
-        (let [object (make-object element)]
-          {:object
-           (let [links (.getLinks object)]
-             {:object-type (str (.getObjectType object))
-              :links
-              (map
-               (fn [link]
-                 (let [extension-attributes (.getExtensionAttributes link)]
-                   {:href (str (.getHref link))
-                    :rel (.getRel link)
-                    :title (.getTitle link)
-                    :mime-type (str (.getMimeType link))
-                    :extensions (spy extension-attributes)}))
-               links)})
-           :id (str (.getId object))
-           :updated (.getUpdated object)
-           :published (.getPublished object)
-           :content (.getContent object)})
+        (parse-object-element element)
         (if (and (= name "in-reply-to")
                  (= namespace "http://purl.org/syndication/thread/1.0"))
-          (let [parent-id (.getAttributeValue element "ref")]
-            {:parent parent-id}))))))
+          (parse-reply-to element))))))
 
 (defn get-authors
   [entry feed]
   (concat
    (.getAuthors entry)
    (if feed (.getAuthors feed))))
+
+(defn get-comment-count
+  [entry]
+  (or
+   (if-let [link (.getLink entry "replies")]
+     (Integer/parseInt
+      (.getAttributeValue
+       link
+       (QName.
+        "http://purl.org/syndication/thread/1.0"
+        "count" ))))
+   0))
+
+(defn parse-links
+  [entry]
+  (map
+   (fn [link]
+     {:href (str (.getHref link))
+      :rel (.getRel link)
+      :title (.getTitle link)
+      :extensions (map
+                   #(.getAttributeValue link  %)
+                   (.getExtensionAttributes link))
+      :mime-type (str (.getMimeType link))})
+   (.getLinks entry)))
+
+(defn parse-tags
+  [entry]
+  (let [categories (.getCategories entry)]
+   (map
+    (fn [category] (.getTerm category))
+    categories)))
+
+(defn get-author-ids
+  [authors]
+  (map
+   (fn [author]
+     (let [name (.getName author)
+           uri (.getUri author)
+           domain (.getHost uri)
+           author-obj (model.user/find-or-create name domain)]
+       (:_id author-obj)))
+   authors))
 
 (defn ^Activity to-activity
   "Converts an Abdera entry to the clojure representation of the json
@@ -227,54 +268,23 @@ serialization"
            published (.getPublished entry)
            updated (.getUpdated entry)
            authors (get-authors entry feed)
-           author-ids
-           (map
-            (fn [author]
-              (let [name (.getName author)
-                    uri (.getUri author)
-                    domain (.getHost uri)
-                    author-obj (model.user/find-or-create name domain)]
-                (:_id author-obj)))
-            authors)
-           categories (.getCategories entry)]
-       (let [extension-maps
-             (doall
-              (map
-               parse-extension-element
-               (.getExtensions entry)))
-             opts
-             (apply merge
-                    (if published {:published published})
-                    (if updated {:updated updated})
-                    (if title {:title title})
-                    {:_id id
-                     :authors author-ids
-                     :public true
-                     :comment-count
-                     (or
-                      (if-let [link (.getLink entry "replies")]
-                        (Integer/parseInt
-                         (.getAttributeValue
-                          (spy link)
-                          (QName.
-                           "http://purl.org/syndication/thread/1.0"
-                           "count" ))))
-                      0)
-                     :links (map
-                             (fn [link]
-                               {:href (str (.getHref link))
-                                :rel (.getRel link)
-                                :title (.getTitle link)
-                                :extensions (map
-                                             #(.getAttributeValue link  %)
-                                             (spy (.getExtensionAttributes link)))
-                                :mime-type (str (.getMimeType link))})
-                      (.getLinks entry))
-                     :tags (map
-                            (fn [category] (.getTerm category))
-                            categories)}
-                    extension-maps)]
-         (entity/make Activity opts)))))
+           author-ids (get-author-ids authors)
+           extension-maps (doall
+                           (map
+                            parse-extension-element
+                            (.getExtensions entry)))
+           opts (apply merge
+                       (if published {:published published})
+                       (if updated {:updated updated})
+                       (if title {:title title})
+                       {:_id id
+                        :authors author-ids
+                        :public true
+                        :comment-count (get-comment-count entry)
+                        :links (parse-links entry)
+                        :tags (parse-tags entry)}
+                       extension-maps)]
+       (entity/make Activity opts))))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"

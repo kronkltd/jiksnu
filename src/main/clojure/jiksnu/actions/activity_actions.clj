@@ -15,7 +15,9 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
-            [jiksnu.view :as view])
+            [jiksnu.view :as view]
+            [karras.entity :as entity]
+            [karras.sugar :as sugar])
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
@@ -111,6 +113,11 @@
 
 (defaction friends-timeline
   [& _])
+
+(defaction get-comments
+  [activity]
+  (entity/fetch Activity {:parent (:_id activity)}
+                :sort [(sugar/asc :published)]))
 
 (defaction inbox
   [& _])

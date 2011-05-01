@@ -244,10 +244,6 @@
        (or (:content (:object activity))
            (:content activity)
            (:title activity))]
-      [:p "Comments: "
-       (:comment-count activity)
-       " "
-       [:a {:href "#"} "Show"]]
       (if-let [links (seq (:links (:object (spy activity))))]
         [:div#links
          [:h "links"]
@@ -292,12 +288,16 @@
            [:li (like-link activity)]
            [:li (delete-link activity)]
            [:li (edit-link activity)]))]
-       (if-let [comments (:comments activity)]
-         [:p "Comments: " (count comments)])
        [:div.comments
-        (map
-         (comp show-section-minimal model.activity/show)
-         (reverse (sort-by :published (:comments activity))))]]]]))
+        [:p "Comments: "
+         (:comment-count activity)
+         " "
+         [:a {:href "#"} "Show"]]
+        (if-let [comments (jiksnu.actions.activity-actions/get-comments
+                           activity)]
+          (map
+           show-section-minimal
+           comments))]]]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; title
