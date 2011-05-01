@@ -120,8 +120,8 @@
 
 (defaction remote-create
   [activities]
-  (doseq [activity activities]
-    (create activity))
+  (doseq [activity (spy activities)]
+    (create (spy activity)))
   true)
 
 (defaction comment-response

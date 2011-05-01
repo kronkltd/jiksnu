@@ -24,17 +24,6 @@
            jiksnu.model.User))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'create :html
-  [request activity]
-  (let [actor (current-user)]
-    {:status 303
-     :template false
-     :headers {"Location" (uri actor)}}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; delete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -149,6 +138,17 @@
     (if-let [user (current-user)]
       (activity-form {} "/notice/new" activity)
       [:p "You must be authenticated to post comments"])]})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; post
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'post :html
+  [request activity]
+  (let [actor (current-user)]
+    {:status 303
+     :template false
+     :headers {"Location" (uri actor)}}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-create
