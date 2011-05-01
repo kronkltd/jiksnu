@@ -31,5 +31,11 @@
       ;; No webfinger, nothing to do.
       )))
 
+(defn create-trigger
+  [action [domain-name] domain]
+  (discover domain)
+  )
+
+(add-trigger! #'create #'create-trigger)
 (add-trigger! #'discover #'discover-onesocialweb)
 (add-trigger! #'discover #'discover-webfinger)
