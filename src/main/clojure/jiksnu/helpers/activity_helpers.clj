@@ -123,11 +123,11 @@
    [:post (str (uri activity) "/likes")]
    (f/submit-button "Like")))
 
-(defn update-button
+(defn fetch-comments-button
   [activity]
   (f/form-to
    [:post (str (uri activity) "/comments/update")]
-   (f/submit-button "Update")))
+   (f/submit-button "Fetch Comments")))
 
 (defn make-feed
   [{:keys [title links entries updated id]}]
@@ -251,16 +251,15 @@ serialization"
                      :authors author-ids
                      :public true
                      :comment-count
-                     (if-let [link (.getLink entry "replies")]
-                       (or (Integer/parseInt
-                            (.getAttributeValue
-                             (spy link)
-                             (QName.
-                              "http://purl.org/syndication/thread/1.0"
-                              "count" )))
-                           0)
-                       0
-                       )
+                     (or
+                      (if-let [link (.getLink entry "replies")]
+                        (Integer/parseInt
+                         (.getAttributeValue
+                          (spy link)
+                          (QName.
+                           "http://purl.org/syndication/thread/1.0"
+                           "count" ))))
+                      0)
                      :links (map
                              (fn [link]
                                {:href (str (.getHref link))

@@ -287,7 +287,7 @@
        [:ul.buttons
         (if (or (current-user) (is-admin?))
           (list
-           [:li (update-button activity)]
+           [:li (fetch-comments-button activity)]
            [:li (comment-link activity)]
            [:li (like-link activity)]
            [:li (delete-link activity)]
