@@ -220,9 +220,15 @@
           (let [user (model.user/fetch-by-id user-id)]
             (show-section-minimal user)))
         (:authors activity))
-       [:span.privacy
-        (if (:public activity)
-          "public" "private")]
+       [:div#labels
+        [:span#object-type
+         (-> activity :object :object-type)]
+        [:span
+         (if (-> activity :remote)
+           "remote")]
+        [:span#privacy
+         (if (:public activity)
+           "public" "private")]]
        #_(if-let [t (:title activity)]
          (if (not= t "")
            [:h3.entry-title t]))]
