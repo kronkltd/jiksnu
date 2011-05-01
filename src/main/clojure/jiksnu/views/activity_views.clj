@@ -24,6 +24,20 @@
            jiksnu.model.User))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; comment-response
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'comment-response :html
+  [request activity]
+  {:status 303
+   :template false
+   :headers {"Location" (uri activity)}})
+
+(defview #'comment-response :xmpp
+  [request activity]
+ )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; delete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

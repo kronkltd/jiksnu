@@ -190,7 +190,7 @@
                  (= namespace as-ns))
         (let [object (make-object element)]
           {
-           ;; :type (str (.getObjectType object)))
+           :object {:object-type (str (.getObjectType object))}
            :id (str (.getId object))
            :updated (.getUpdated object)
            :published (.getPublished object)
@@ -368,6 +368,8 @@ an Element"
 
 (defn set-object-type
   [activity]
-  (if (:type (:object activity))
-    activity
+  (if-let [object-type (:object-type (:object activity))]
+    (assoc-in activity [:object :object-type]
+              (string/replace object-type
+                              #"http://onesocialweb.org/spec/1.0/object/" ""))
     (assoc-in activity [:object :object-type] "note")))
