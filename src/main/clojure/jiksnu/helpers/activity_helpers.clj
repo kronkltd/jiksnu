@@ -350,11 +350,15 @@ an Element"
 (defn set-tags
   [activity]
   (let [tags (:tags activity )]
-    (if (and tags (not= tags ""))
-      (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
-        (assoc activity :tags tag-seq)
+    (if (string? tags)
+      (if (and tags (not= tags ""))
+        (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+          (assoc activity :tags tag-seq)
+          (dissoc activity :tags))
         (dissoc activity :tags))
-      (dissoc activity :tags))))
+      (if (coll? tags)
+        activity
+        (dissoc activity :tags)))))
 
 (defn set-parent
   [activity]
