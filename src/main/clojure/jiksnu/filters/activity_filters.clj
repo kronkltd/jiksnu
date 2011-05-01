@@ -20,7 +20,7 @@
       (action (map #(to-activity
                      (parse-xml-string
                       (str (first (children %)))))
-                   (spy items))))))
+                   items)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; delete

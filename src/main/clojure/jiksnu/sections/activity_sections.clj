@@ -244,7 +244,7 @@
        (or (:content (:object activity))
            (:content activity)
            (:title activity))]
-      (if-let [links (seq (:links (:object (spy activity))))]
+      (if-let [links (seq (:links (:object activity)))]
         [:div#links
          [:h "links"]
          [:ul

@@ -131,7 +131,6 @@
   [action request]
   (let [{:keys [to from payload]} request
         user (model.user/fetch-by-jid from)]
-    (spy payload)
     (let [vcard (first (children payload))
 
           avatar-url-element (find-children vcard "/vcard/photo/uri")

@@ -75,7 +75,7 @@
   [params]
   (let [prepared-activity (prepare-activity params)
         activity (make Activity prepared-activity)]
-    (model.activity/create (spy activity))))
+    (model.activity/create activity)))
 
 (defaction delete
   [id]
@@ -144,8 +144,8 @@
 
 (defaction remote-create
   [activities]
-  (doseq [activity (spy activities)]
-    (create (spy activity)))
+  (doseq [activity activities]
+    (create activity))
   true)
 
 (defaction comment-response

@@ -32,14 +32,8 @@
                  :type :get
                  :body (make-element
                         ["pubsub" {"xmlns" pubsub-uri}
-                         ["items" {"node" microblog-uri}]
-                         ]
-
-                        )}
-                )]
-    (deliver-packet! (spy packet))
-    )
-  )
+                         ["items" {"node" microblog-uri}]])})]
+    (deliver-packet! packet)))
 
 (defn fetch-updates-trigger
   [action _ user]

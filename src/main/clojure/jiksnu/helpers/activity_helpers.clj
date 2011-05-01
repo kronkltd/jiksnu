@@ -191,11 +191,11 @@
 (defn parse-reply-to
   [element]
   (let [parent-id (.getAttributeValue element "ref")]
-    {:parent (spy parent-id)}))
+    {:parent parent-id}))
 
 (defn parse-extension-element
   [element]
-  (let [qname (.getQName (spy element))
+  (let [qname (.getQName element)
         name (.getLocalPart qname)
         namespace (.getNamespaceURI qname)]
     (if (and (= name "actor")
@@ -263,7 +263,7 @@
 serialization"
   ([entry] (to-activity entry nil))
   ([entry feed]
-     (let [id (str (.getId entry))
+     (let [id (str (.getId (spy entry)))
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
