@@ -91,6 +91,9 @@
    [:td (:username user)]
    [:td (:domain user)]
    [:td [:a {:href (uri user)} "Show"]]
+   [:td (discover-button user)]
+   [:td (update-user-button user)]
+   [:td (update-hub-button user)]
    [:td [:a {:href (str (uri user) "/edit")} "Edit"]]
    [:td (f/form-to [:delete (str "/users/" (:_id user))]
                    (f/submit-button "Delete"))]])
