@@ -9,7 +9,7 @@
 
 (defn create
   [activity]
-  (entity/create Activity activity))
+  (entity/create Activity (spy activity)))
 
 (defn update
   [activity]
@@ -30,7 +30,7 @@
         option-map (apply hash-map opts)
         merged-options
         (merge
-         {:$or [{:parent ""}
+         #_{:$or [{:parent ""}
                 {:parent {:$exists false}}]}
          (privacy-filter user)
          option-map)]

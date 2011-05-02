@@ -19,6 +19,7 @@
            jiksnu.model.Activity
            org.apache.abdera.ext.json.JSONUtil
            org.apache.abdera.ext.thread.InReplyTo
+           org.apache.abdera.ext.thread.ThreadHelper
            org.apache.abdera.model.Entry
            tigase.xml.Element))
 
@@ -273,10 +274,23 @@ serialization"
                            (map
                             parse-extension-element
                             (.getExtensions entry)))
+           irts (map
+                 (fn [irt]
+                   {:href (str (.getHref irt))})
+                 (ThreadHelper/getInReplyTos entry))
+           recipients
+           (filter
+            identity
+            (map
+             (fn [{:keys [href]}]
+               (if (re-matches #"^.+@.+$" href) href))
+             irts))
            opts (apply merge
                        (if published {:published published})
                        (if updated {:updated updated})
+                       (if recipients {:recipients (string/join ", " recipients)})
                        (if title {:title title})
+                       (if irts {:irts irts})
                        {:_id id
                         :authors author-ids
                         :public true

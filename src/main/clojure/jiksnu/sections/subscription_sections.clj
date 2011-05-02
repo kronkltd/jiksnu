@@ -1,5 +1,6 @@
 (ns jiksnu.sections.subscription-sections
-  (:use ciste.html
+  (:use ciste.debug
+        ciste.html
         ciste.sections
         ciste.sections.default
         clj-tigase.core
@@ -16,8 +17,8 @@
 (declare-section subscribers-line)
 (declare-section subscriptions-block :seq)
 (declare-section subscribers-block :seq)
-(declare-section subscriptions-section :seq)
-(declare-section subscribers-section :seq)
+;; (declare-section subscriptions-section :seq)
+;; (declare-section subscribers-section :seq)
 
 (defsection uri [Subscription]
   [subscription & options]
@@ -67,15 +68,15 @@
    [:h2 "Subscriptions"]
    (index-block subscriptions)])
 
-(defsection subscriptions-section [Subscription :html]
+(defn subscriptions-section
   [subscriptions & _]
   [:div#subscriptions
    [:h3 [:a {:href (str #_(uri user) "/subscriptions") }
          "Subscriptions"]]
-   (subscriptions-block subscriptions)
+   (if (seq subscriptions) (subscriptions-block subscriptions))
    [:p [:a {:href "/main/ostatussub"} "Add Remote"]]])
 
-(defsection subscribers-section [Subscription :html]
+(defn subscribers-section
   [subscriptions & _]
   [:div#subscribers
    [:h3 [:a {:href (str #_(uri user) "/subscribers")}

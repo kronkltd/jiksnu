@@ -21,15 +21,15 @@
 (declare update)
 
 (defaction add-link
-  [user rel link]
-  (update
-   (if-let [existing-link (model.user/get-link user rel)]
-     (do
-       user)
-     (entity/update
-      User {:_id (:_id user)}
-      {:$addToSet {:href link
-                   :rel rel}}))))
+  [user link]
+  (if-let [existing-link (model.user/get-link user (:rel link))]
+    user
+    (entity/update
+     User {:_id (:_id user)}
+     {:$addToSet
+      {:links {:href (:href link)
+               :type (:type link)
+               :rel (:rel link)}}})))
 
 (defaction create
   [options]
