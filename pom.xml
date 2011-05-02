@@ -252,6 +252,12 @@
       <artifactId>plaza</artifactId>
       <version>0.0.6-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <!-- jsoup HTML parser library @ http://jsoup.org/ -->
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.5.2</version>
+    </dependency>
     <!-- <dependency> -->
     <!--   <groupId>org.slf4j</groupId> -->
     <!--   <artifactId>slf4j-log4j12</artifactId> -->
