@@ -11,6 +11,11 @@
   [activity]
   (entity/create Activity (spy activity)))
 
+(defn get-comments
+  [activity]
+  (entity/fetch Activity {:parent (:_id activity)}
+                :sort [(sugar/asc :published)]))
+
 (defn update
   [activity]
   (entity/save activity))

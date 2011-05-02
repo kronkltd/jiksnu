@@ -179,6 +179,19 @@
             (.addExtension rule-element osw-uri "acl-subject" "")]
         (.setAttributeValue subject-element "type" everyone-uri)))))
 
+(defn parse-links
+  [entry]
+  (map
+   (fn [link]
+     {:href (str (.getHref link))
+      :rel (.getRel link)
+      :title (.getTitle link)
+      :extensions (map
+                   #(.getAttributeValue link  %)
+                   (.getExtensionAttributes link))
+      :mime-type (str (.getMimeType link))})
+   (.getLinks entry)))
+
 (defn parse-object-element
   [element]
   (let [object (make-object element)]
@@ -228,19 +241,6 @@
         "count" ))))
    0))
 
-(defn parse-links
-  [entry]
-  (map
-   (fn [link]
-     {:href (str (.getHref link))
-      :rel (.getRel link)
-      :title (.getTitle link)
-      :extensions (map
-                   #(.getAttributeValue link  %)
-                   (.getExtensionAttributes link))
-      :mime-type (str (.getMimeType link))})
-   (.getLinks entry)))
-
 (defn parse-tags
   [entry]
   (let [categories (.getCategories entry)]
@@ -288,7 +288,8 @@ serialization"
            opts (apply merge
                        (if published {:published published})
                        (if updated {:updated updated})
-                       (if recipients {:recipients (string/join ", " recipients)})
+                       (if recipients
+                         {:recipients (string/join ", " recipients)})
                        (if title {:title title})
                        (if irts {:irts irts})
                        {:_id id

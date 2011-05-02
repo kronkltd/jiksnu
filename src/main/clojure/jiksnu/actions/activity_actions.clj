@@ -114,11 +114,6 @@
 (defaction friends-timeline
   [& _])
 
-(defaction get-comments
-  [activity]
-  (entity/fetch Activity {:parent (:_id activity)}
-                :sort [(sugar/asc :published)]))
-
 (defaction inbox
   [& _])
 

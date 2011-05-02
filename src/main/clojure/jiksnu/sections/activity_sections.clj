@@ -293,8 +293,7 @@
          (:comment-count activity)
          " "
          [:a {:href "#"} "Show"]]
-        (if-let [comments (jiksnu.actions.activity-actions/get-comments
-                           activity)]
+        (if-let [comments (model.activity/get-comments activity)]
           (map
            show-section-minimal
            comments))]]]]))
