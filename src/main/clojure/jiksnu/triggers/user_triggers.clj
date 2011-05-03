@@ -42,5 +42,10 @@
       (fetch-updates-xmpp user)
       (fetch-updates-http user))))
 
+(defn create-trigger
+  [action _ user]
+  (discover user))
+
+(add-trigger! #'create #'create-trigger)
 (add-trigger! #'discover #'discover-user)
 (add-trigger! #'fetch-updates #'fetch-updates-trigger)

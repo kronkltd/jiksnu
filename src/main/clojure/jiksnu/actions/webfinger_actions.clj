@@ -15,7 +15,8 @@
 
 (defn fetch
   [url]
-  (.fetchXRD *fetcher* (URL. url)))
+  (if url
+    (.fetchXRD *fetcher* (URL. url))))
 
 (defn host-meta
   [request]
@@ -42,4 +43,4 @@
         (if rel {:rel rel})
         (if template {:template template})
         (if type {:type type}))))
-   (.getLinks xrd)))
+   (.getLinks (spy xrd))))

@@ -274,30 +274,39 @@ serialization"
                            (map
                             parse-extension-element
                             (.getExtensions entry)))
-           irts (map
-                 (fn [irt]
-                   {:href (str (.getHref irt))})
-                 (ThreadHelper/getInReplyTos entry))
+           irts (filter
+                 identity
+                 (map
+                  (fn [irt]
+                    (let [href (str (.getHref irt))]
+                      (if (not (re-matches #"node=" href))
+                        href)))
+                  (ThreadHelper/getInReplyTos entry)))
            recipients
            (filter
             identity
             (map
              (fn [{:keys [href]}]
-               (if (re-matches #"^.+@.+$" href) href))
+               (if href
+                 (if (re-matches #"^.+@.+$" href)
+                   (if (not (re-matches #"node=" href))
+                     href))))
              irts))
+           links (parse-links entry)
+           tags (parse-tags entry)
            opts (apply merge
                        (if published {:published published})
                        (if updated {:updated updated})
-                       (if recipients
+                       (if (seq recipients)
                          {:recipients (string/join ", " recipients)})
                        (if title {:title title})
-                       (if irts {:irts irts})
+                       (if (seq irts) {:irts irts})
+                       (if (seq links) {:links links})
+                       (if (seq tags) {:tags tags})
                        {:_id id
                         :authors author-ids
                         :public true
-                        :comment-count (get-comment-count entry)
-                        :links (parse-links entry)
-                        :tags (parse-tags entry)}
+                        :comment-count (get-comment-count entry)}
                        extension-maps)]
        (entity/make Activity opts))))
 
