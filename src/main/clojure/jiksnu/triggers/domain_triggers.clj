@@ -23,18 +23,17 @@
   ;; TODO: check https first
   (try
     (let [url (str "http://" (:_id domain)
-                   "/.well-known/host-meta")
-          xrd (fetch url)
-          links (get-links xrd)]
-      (model.domain/add-links domain links))
+                   "/.well-known/host-meta")]
+      (if-let [xrd (fetch url)]
+        (if-let [links (get-links xrd)]
+          (model.domain/add-links domain links))))
     (catch HostMetaException e
       ;; No webfinger, nothing to do.
       )))
 
 (defn create-trigger
   [action [domain-name] domain]
-  (discover domain)
-  )
+  (discover domain))
 
 (add-trigger! #'create #'create-trigger)
 (add-trigger! #'discover #'discover-onesocialweb)
