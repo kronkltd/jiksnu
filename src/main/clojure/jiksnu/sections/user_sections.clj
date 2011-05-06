@@ -173,6 +173,8 @@
           [:p.note bio]
           [:p [:a.url {:href url :rel "me"} url]]
           [:p "Hub: " hub]
+          [:p "Discovered: " (:discovered user)]
+          [:p "Local: " (:local user)]
           [:p "Id: " id]
           (links-list user)])
        [:div.subscription-sections

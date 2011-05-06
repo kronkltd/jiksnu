@@ -10,7 +10,8 @@
 
 (defaction create
   [options]
-  (model.domain/create options))
+  (let [prepared-domain (assoc options :discovered false)]
+    (model.domain/create options)))
 
 (defaction delete
   [request]
@@ -49,4 +50,6 @@
 
 (defaction ping-response
   [domain]
-  (model.domain/update (assoc domain :xmpp true)))
+  (model.domain/update
+   (merge domain {:xmpp true
+                  :discovered true})))

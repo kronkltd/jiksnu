@@ -52,8 +52,15 @@
   [request domain]
   {:body
    [:div
-    [:p (:_id domain)]
-    [:p (:osw domain)]
+    [:p "Id: " (:_id domain)]
+    [:p "XMPP: "
+     (let [xmpp (:xmpp domain)]
+       (if (nil? xmpp)
+         "Unknown"
+         xmpp
+         )
+                   )]
+    [:p "Discovered: " (:discovered domain)]
     [:div
      [:table
       [:thead

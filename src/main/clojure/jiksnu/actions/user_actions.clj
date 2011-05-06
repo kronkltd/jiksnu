@@ -33,7 +33,10 @@
 
 (defaction create
   [options]
-  (model.user/create options))
+  (let [prepared-user (merge {:discovered false
+                              :local false}
+                             options)]
+    (model.user/create prepared-user)))
 
 (defaction delete
   [id]
