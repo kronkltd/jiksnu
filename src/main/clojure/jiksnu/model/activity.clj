@@ -38,7 +38,7 @@
          {"object"  {:$ne {"object-type" "comment"}}}
          (privacy-filter user)
          option-map)]
-    (entity/fetch Activity merged-options
+    (entity/fetch Activity (spy merged-options)
                   :sort [(sugar/desc :published)]
                   :limit 20)))
 

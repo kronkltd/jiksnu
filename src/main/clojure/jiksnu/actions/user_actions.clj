@@ -14,7 +14,8 @@
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [karras.entity :as entity])
+            [karras.entity :as entity]
+            [karras.sugar :as sugar])
   (:import jiksnu.model.User
            tigase.xml.Element))
 
@@ -71,7 +72,10 @@
   (let [domain-record (actions.domain/find-or-create domain)]
     (if-let [user (model.user/show username domain)]
       user
-      (create {:username username :domain domain}))))
+      (create {:username username
+               :domain domain
+               :updated (sugar/date)
+               :discovered false}))))
 
 (defaction index
   [options]
@@ -86,12 +90,13 @@
          password :password
          confirm-password :confirm-password} options]
     (if (and username password confirm-password)
+      ;; Passwords must match
       (if (= password confirm-password)
-        (let [opts {:username username
+        (let [user {:username username
                     :domain (:domain (config))
                     :password password
                     :confirm-password password}]
-          (create opts))))))
+          (create user))))))
 
 (defaction remote-create
   [& _])
@@ -107,8 +112,7 @@
   ;;   "This action just returns the passed user.
   ;; The user needs to be retreived in the filter."
   [user]
-  #_(model.user/fetch-by-id id)
-  user)
+  (model.user/fetch-by-id (:_id user)))
 
 (defaction update
   [user params]
