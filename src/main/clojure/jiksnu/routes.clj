@@ -102,6 +102,8 @@
      #'auth/login]
     [[:post "/main/logout"]
      #'auth/logout]
+    [[:get "/main/events"]
+     #'activity/stream]
     [[:get "/main/ostatus"]
      #'subscription/ostatus]
     [[:get "/main/ostatussub"]

@@ -129,7 +129,7 @@
   (merge {:headers {"Content-Type" "text/html"}}
          response-map
          (if-let [body (:body response-map)]
-           {:body (hiccup/html body)})))
+           {:body body})))
 
 (defmethod serialize-as :xmpp
   [serialization response]

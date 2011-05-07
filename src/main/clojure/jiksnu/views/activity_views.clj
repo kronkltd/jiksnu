@@ -181,6 +181,22 @@
   {:body (show-section-minimal activity)})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; stream
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defview #'stream :html
+  [request response-fn]
+  (with-format :json
+    {:headers {"Content-Type" "application/json"}
+     :body (map
+            (fn [activity]
+              (with-format :json
+                (with-serialization :http
+                 (str (show-section activity) "\n\n\n"))))
+             response-fn)
+     :template false}))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; update
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

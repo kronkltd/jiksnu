@@ -147,6 +147,15 @@
   [activities]
   (remote-create activities))
 
+(defn do-foo
+  []
+  (Thread/sleep 75)
+  (ciste.factory/factory Activity))
+
+(defaction stream
+  []
+  (repeatedly do-foo))
+
 (defaction show
   [id]
   (model.activity/show id))
