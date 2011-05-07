@@ -145,16 +145,13 @@
           gender     (get-text gender-element)
           last-name  (get-text last-name-element)
           name       (get-text name-element)
-          url        (get-text url-element)
-
-          new-user {:gender gender
+          url        (get-text url-element)]
+      (action user {:gender gender
                     :name name
                     :first-name first-name
                     :last-name last-name
                     :url url
-                    :avatar-url avatar-url}
-          merged-user (merge user new-user)]
-     (jiksnu.model.user/update merged-user))))
+                    :avatar-url avatar-url}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-profile

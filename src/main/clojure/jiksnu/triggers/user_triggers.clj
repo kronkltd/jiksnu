@@ -7,16 +7,21 @@
         jiksnu.helpers.user-helpers
         jiksnu.namespace
         jiksnu.view)
-  (:require [jiksnu.actions.activity-actions :as actions.activity]
+  (:require [clojure.contrib.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]))
 
 (defn discover-user
   [action _ user]
   (let [domain (model.domain/show (:domain user))]
-    (if (:xmpp domain)
-      (request-vcard! user)
-      (update-usermeta user))))
+    (if (:discovered domain)
+      (if (:xmpp domain)
+        (request-vcard! user)
+        (update-usermeta user))
+      (do (log/info "Domain not discovered yet")
+          (Thread/sleep 100)
+          (recur action _ user)))))
 
 (defn fetch-updates-http
   [user]

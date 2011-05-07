@@ -98,8 +98,15 @@
                     :confirm-password password}]
           (create user))))))
 
+(declare update)
+
 (defaction remote-create
-  [& _])
+  [user options]
+  (let [user (merge user
+                    {:updated (sugar/date)
+                     :discovered true}
+                    options)]
+    (update user options)))
 
 (defaction remote-profile
   [& _])
