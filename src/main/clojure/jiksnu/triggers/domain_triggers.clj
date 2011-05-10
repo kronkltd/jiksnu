@@ -13,10 +13,10 @@
 (defn discover-onesocialweb
   [action [domain] _]
   (deliver-packet!
-   (make-packet
-    (apply-view {:format :xmpp
-                 :serialization :xmpp
-                 :action #'ping} domain))))
+   (spy (make-packet
+     (apply-view {:format :xmpp
+                  :serialization :xmpp
+                  :action #'ping} domain)))))
 
 (defn discover-webfinger
   [action [domain] _]

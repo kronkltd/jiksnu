@@ -20,7 +20,7 @@
         (request-vcard! user)
         (update-usermeta user))
       (do (log/info "Domain not discovered yet")
-          (Thread/sleep 100)
+          (Thread/sleep 1000)
           (recur action _ user)))))
 
 (defn fetch-updates-http
@@ -38,7 +38,7 @@
                  :body (make-element
                         ["pubsub" {"xmlns" pubsub-uri}
                          ["items" {"node" microblog-uri}]])})]
-    (deliver-packet! packet)))
+    (deliver-packet! (spy packet))))
 
 (defn fetch-updates-trigger
   [action _ user]

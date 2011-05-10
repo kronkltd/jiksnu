@@ -8,6 +8,15 @@
   [domain & options]
   (str "/domains/" (:_id domain)))
 
+(defsection link-to [Domain :html]
+  [domain & _]
+  [:a {:href (uri domain)} (title domain)])
+
+(defsection title [Domain]
+  [domain & _]
+  (:_id domain)
+  )
+
 (defsection add-form [Domain :html]
   [domain & options]
   [:div
@@ -25,6 +34,7 @@
    [:td
     [:a {:href (uri domain)} (:_id domain)]]
    [:td (:xmpp domain)]
+   [:td (:discovered domain)]
    [:td
     [:a {:href (str "http://" (:_id domain)
                     "/.well-known/host-meta")} "Host-Meta"]]
@@ -42,7 +52,8 @@
   [:table
    [:tr
     [:th "Name"]
-    [:th "XMPP Enabled?"]
+    [:th "XMPP?"]
+    [:th "Discovered"]
     [:th "Host-Meta"]
     [:th "Link Count"]
     [:th "Edit"]

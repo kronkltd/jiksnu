@@ -18,6 +18,7 @@
   (:require [hiccup.form-helpers :as f]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import com.cliqset.abdera.ext.activity.object.Person
@@ -89,7 +90,7 @@
   [:tr
    [:td (avatar-img user)]
    [:td (:username user)]
-   [:td (:domain user)]
+   [:td (link-to (spy (model.domain/show (:domain user))))]
    [:td [:a {:href (uri user)} "Show"]]
    [:td (discover-button user)]
    [:td (update-user-button user)]
@@ -107,7 +108,14 @@
      [:tr
       [:th]
       [:th "User"]
-      [:th "Domain"]]]
+      [:th "Domain"]
+      [:th "Show"]
+      [:th "Discover"]
+      [:th "Update"]
+      [:th "Update Hub"]
+      [:th "Edit"]
+      [:th "Delete"]
+      ]]
     [:tbody
      (map index-line users)]]])
 
