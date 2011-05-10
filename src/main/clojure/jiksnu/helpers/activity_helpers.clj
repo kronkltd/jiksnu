@@ -274,25 +274,25 @@ serialization"
                            (map
                             parse-extension-element
                             (.getExtensions entry)))
-           irts (spy (filter
-                  identity
-                  (map
-                   (fn [irt]
-                     (let [href (str (.getHref irt))]
-                       (if (re-matches #"node=" (spy href))
-                         href)))
-                   (ThreadHelper/getInReplyTos entry))))
+           irts (filter
+                 identity
+                 (map
+                  (fn [irt]
+                    (let [href (str (.getHref irt))]
+                      (if (re-find #"node=" href)
+                        href)))
+                  (ThreadHelper/getInReplyTos entry)))
            recipients
-           (spy (filter
-             identity
-             (map
-              (fn [link]
-                (let [href (str (.getHref link))]
-                  (if (spy href)
-                    (if (re-matches #"^.+@.+$" href)
-                      (if (not (re-matches #"node=" href))
-                        href)))))
-              (ThreadHelper/getInReplyTos entry))))
+           (filter
+            identity
+            (map
+             (fn [link]
+               (let [href (str (.getHref link))]
+                 (if href
+                   (if (re-find #"^.+@.+$" href)
+                     (if (not (re-find #"node=" href))
+                       href)))))
+             (ThreadHelper/getInReplyTos entry)))
            links (parse-links entry)
            tags (parse-tags entry)
            opts (apply merge
