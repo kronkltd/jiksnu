@@ -233,12 +233,11 @@
   [entry]
   (or
    (if-let [link (.getLink entry "replies")]
-     (Integer/parseInt
-      (.getAttributeValue
-       link
-       (QName.
-        "http://purl.org/syndication/thread/1.0"
-        "count" ))))
+     (let [count-qname (QName.
+                 "http://purl.org/syndication/thread/1.0"
+                 "count" )]
+       (if-let [count-attr (.getAttributeValue link count-qname)]
+         (Integer/parseInt count-attr))))
    0))
 
 (defn parse-tags
