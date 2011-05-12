@@ -227,7 +227,9 @@
   [entry feed]
   (concat
    (.getAuthors entry)
-   (if feed (.getAuthors feed))))
+   (if feed (.getAuthors feed))
+   (if-let [source (.getSource entry)]
+     (.getAuthors source))))
 
 (defn get-comment-count
   [entry]
@@ -251,10 +253,11 @@
   [authors]
   (map
    (fn [author]
-     (let [name (.getName author)
-           uri (.getUri author)
-           domain (.getHost uri)
-           author-obj (model.user/find-or-create name domain)]
+     (let [uri (.getUri author)
+           domain (.getHost (spy uri))
+           name (or (.getUserInfo uri)
+                    (.getName author))
+           author-obj (model.user/find-or-create (spy name) (spy domain))]
        (:_id author-obj)))
    authors))
 
@@ -268,7 +271,7 @@ serialization"
            published (.getPublished entry)
            updated (.getUpdated entry)
            authors (get-authors entry feed)
-           author-ids (get-author-ids authors)
+           author-ids (get-author-ids (spy authors))
            extension-maps (doall
                            (map
                             parse-extension-element
