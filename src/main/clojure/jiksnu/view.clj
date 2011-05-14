@@ -113,7 +113,7 @@
 (defmethod apply-template :html
   [request response]
   (merge
-   response
+   (dissoc response :formats)
    (if-not (= (:template response) false)
      (page-template-content response))))
 
