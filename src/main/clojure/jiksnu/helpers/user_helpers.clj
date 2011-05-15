@@ -205,4 +205,4 @@
           "query"
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (make-packet packet-map)]
-    (deliver-packet! packet)))
+    (deliver-packet! (spy packet))))

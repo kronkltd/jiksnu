@@ -126,15 +126,17 @@
 
 (defmethod serialize-as :http
   [serialization response-map]
-  (merge {:headers {"Content-Type" "text/html"}}
-         response-map
-         (if-let [body (:body response-map)]
-           {:body body})))
+  (assoc-in
+   (merge {:status 200}
+          response-map
+          (if-let [body (:body response-map)]
+            {:body body}))
+   [:headers "Content-Type"] "text/html"))
 
 (defmethod serialize-as :xmpp
   [serialization response]
   (if response
-    (make-packet response)))
+    (make-packet (spy response))))
 
 (defn get-text
   [element]
