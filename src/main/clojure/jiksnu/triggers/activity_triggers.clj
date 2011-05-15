@@ -38,22 +38,6 @@
               :body ele})]
         (deliver-packet! message)))))
 
-(defn notify-subscribers
-  [action request activity]
-  (with-database
-    (let [user (get-actor activity)
-          subscribers (model.subscription/subscribers user)]
-      (model.item/push user activity)
-      (doseq [subscription subscribers]
-        (notify-activity
-         (model.user/fetch-by-id (:from subscription))
-         activity)))))
-
-(defn notify-commented
-  [_ request activity]
-  (let [parent (model.activity/show (:parent activity))]
-    (model.activity/add-comment parent activity)))
-
 (defn show-trigger
   [action params activity]
   (println "show trigger"))
@@ -70,8 +54,17 @@
         domain (model.domain/show (:domain author))]
     (fetch-comments-remote activity)))
 
+(defn post-trigger
+  [action params activity]
+  (let [user (get-actor activity)
+        subscribers (model.subscription/subscribers user)
+        subscriber-users (map (comp model.user/fetch-by-id :from)
+                              subscribers)]
+    (model.item/push user activity)
+    (if-let [parent (model.activity/show (:parent activity))]
+      (model.activity/add-comment parent activity))
+    (doseq [user subscriber-users]
+      (notify-activity user activity))))
+
 (add-trigger! #'fetch-comments #'fetch-more-comments)
-;; (add-trigger! #'create #'fetch-new-comments)
-;; (add-trigger! #'update #'fetch-new-comments)
-(add-trigger! #'post #'notify-commented)
-(add-trigger! #'post #'notify-subscribers)
+(add-trigger! #'post #'post-trigger)
