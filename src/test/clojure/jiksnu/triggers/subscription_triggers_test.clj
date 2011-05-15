@@ -1,5 +1,5 @@
 (ns jiksnu.triggers.subscription-triggers-test
-  (:use ciste.factory
+  (:use clj-factory.core
         clj-tigase.core
         jiksnu.triggers.subscription-triggers
         [lazytest.describe :only (describe testing do-it for-any)]

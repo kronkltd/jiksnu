@@ -1,5 +1,5 @@
 (ns jiksnu.actions.subscription-actions-test
-  (:use ciste.factory
+  (:use clj-factory.core
         clj-tigase.core
         jiksnu.actions.subscription-actions
         jiksnu.core-test

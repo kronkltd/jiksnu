@@ -1,6 +1,6 @@
 (ns jiksnu.actions.user-actions-test
-  (:use clj-tigase.core
-        ciste.factory
+  (:use clj-factory.core
+        clj-tigase.core
         jiksnu.model
         jiksnu.session
         jiksnu.actions.user-actions

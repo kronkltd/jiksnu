@@ -1,8 +1,8 @@
 (ns jiksnu.abdera-test
   (:use ciste.core
-        ciste.factory
         ciste.sections
         ciste.sections.default
+        clj-factory.core
         jiksnu.abdera
         jiksnu.core-test
         jiksnu.model

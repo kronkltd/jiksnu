@@ -1,9 +1,9 @@
 (ns jiksnu.triggers.activity-triggers-test
-  (:use clj-tigase.core
-        ciste.core
+  (:use ciste.core
         ciste.debug
-        ciste.factory
         ciste.views
+        clj-factory.core
+        clj-tigase.core
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers

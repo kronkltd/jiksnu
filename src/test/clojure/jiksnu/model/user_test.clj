@@ -1,6 +1,6 @@
 (ns jiksnu.model.user-test
   (:use ciste.config
-        ciste.factory
+        clj-factory.core
         jiksnu.core-test
         jiksnu.model
         jiksnu.model.user

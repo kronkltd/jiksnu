@@ -1,8 +1,8 @@
 (ns jiksnu.views.subscription-views-test
   (:use ciste.core
         ciste.debug
-        ciste.factory
         ciste.views
+        clj-factory.core
         clj-tigase.core
         jiksnu.core-test
         jiksnu.helpers.subscription-helpers

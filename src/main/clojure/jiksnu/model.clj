@@ -1,6 +1,6 @@
 (ns jiksnu.model
   (:use [ciste.config :only (config environment)]
-        ciste.factory
+        clj-factory.core
         clojure.contrib.json
         jiksnu.config
         jiksnu.namespace

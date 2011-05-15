@@ -1,8 +1,8 @@
 (jiksnu.views.user-views-test
  (:use ciste.core
-       ciste.factory
        ciste.sections
        ciste.views
+       clj-factory.core
        clj-tigase.core
        jiksnu.model
        jiksnu.view

@@ -1,9 +1,9 @@
 (ns jiksnu.xmpp.element-test
-  (:use clj-tigase.core
-        ciste.core
-        ciste.factory
+  (:use ciste.core
         ciste.sections
         ciste.sections.default
+        clj-factory.core
+        clj-tigase.core
         jiksnu.core-test
         jiksnu.model
         jiksnu.session

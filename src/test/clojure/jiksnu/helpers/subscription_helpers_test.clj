@@ -1,5 +1,5 @@
 (ns jiksnu.helpers.subscription-helpers-test
-  (:use ciste.factory
+  (:use clj-factory.core
         clj-tigase.core
         jiksnu.helpers.subscription-helpers
         [lazytest.describe :only (describe testing do-it for-any)]

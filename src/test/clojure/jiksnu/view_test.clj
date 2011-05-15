@@ -1,25 +1,13 @@
 (ns jiksnu.view-test
   (:use clj-tigase.core
         ciste.core
-        ciste.factory
         ciste.sections
         ciste.sections.default
         ciste.views
         jiksnu.core-test
-        jiksnu.file
-        jiksnu.model
-        jiksnu.session
-        jiksnu.namespace
         jiksnu.view
-        jiksnu.xmpp.element
         [lazytest.describe :only (describe testing do-it)]
-        [lazytest.expect :only (expect)])
-  (:require [jiksnu.file :as file]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User
-           org.apache.abdera.model.Entry))
+        [lazytest.expect :only (expect)]))
 
 (describe link-to ":default")
 

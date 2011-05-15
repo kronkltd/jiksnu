@@ -1,10 +1,10 @@
 (ns jiksnu.filters.activity-filters-test
   (:use clj-tigase.core
         ciste.debug
-        ciste.factory
         ciste.filters
         ciste.sections
         ;; ciste.views
+        clj-factory.core
         jiksnu.filters.activity-filters
         jiksnu.model
         jiksnu.namespace

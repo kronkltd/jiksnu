@@ -150,7 +150,7 @@
 (defn do-foo
   []
   (Thread/sleep 75)
-  (ciste.factory/factory Activity))
+  (clj-factory.core/factory Activity))
 
 (defaction stream
   []

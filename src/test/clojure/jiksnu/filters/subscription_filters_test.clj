@@ -1,7 +1,7 @@
 (ns jiksnu.filters.subscription-filters-test
   (:use ciste.debug
-        ciste.factory
         ciste.filters
+        clj-factory.core
         clj-tigase.core
         jiksnu.actions.subscription-actions
         jiksnu.filters.subscription-filters

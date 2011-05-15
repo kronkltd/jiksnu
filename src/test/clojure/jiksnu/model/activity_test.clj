@@ -1,5 +1,5 @@
 (ns jiksnu.model.activity-test
-  (:use ciste.factory
+  (:use clj-factory.core
         jiksnu.model
         jiksnu.model.activity
         jiksnu.session
