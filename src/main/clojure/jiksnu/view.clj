@@ -135,7 +135,9 @@
           response-map
           (if-let [body (:body response-map)]
             {:body body}))
-   [:headers "Content-Type"] "text/html"))
+   [:headers "Content-Type"]
+   (or (-> response-map :headers (get "Content-Type"))
+       "text/html; charset=utf-8")))
 
 (defmethod serialize-as :xmpp
   [serialization response]
