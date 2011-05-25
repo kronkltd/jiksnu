@@ -13,6 +13,10 @@
             [jiksnu.model.push-subscription :as model.push]
             [jiksnu.model.user :as model.user]))
 
+(deffilter #'callback :http
+  [action request]
+  (action request))
+
 (deffilter #'index :http
   [action request]
   (action))

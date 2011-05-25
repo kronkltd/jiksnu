@@ -65,6 +65,12 @@
    [:post (str (uri user) "/update-hub")]
    (f/submit-button "Update Hub")))
 
+(defn push-subscribe-button
+  [user]
+  (f/form-to
+   [:post (str (uri user) "/push/subscribe")]
+   (f/submit-button "PuSh Subscribe")))
+
 (defn user-actions
   [user]
   (let [actor-id (current-user-id)]
@@ -74,6 +80,7 @@
        [:li (discover-button user)]
        [:li (update-user-button user)]
        [:li (update-hub-button user)]
+       [:li (push-subscribe-button user)]
        [:li
         (if (model.subscription/subscribing? actor-id (:_id user))
           (unsubscribe-form user)

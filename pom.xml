@@ -276,12 +276,17 @@
     <dependency>
       <groupId>aleph</groupId>
       <artifactId>aleph</artifactId>
-      <version>0.1.5-SNAPSHOT</version>
+      <version>0.2.0-alpha1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.netty</groupId>
       <artifactId>netty</artifactId>
       <version>3.2.4.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.bitcoin</groupId>
+      <artifactId>bitcoinj</artifactId>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

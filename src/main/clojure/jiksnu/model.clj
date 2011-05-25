@@ -67,7 +67,7 @@
   [:osw :ostatus])
 
 (defentity PushSubscription
-  [:hub])
+  [:hub :verify-token :created :updated :topic])
 
 (defmacro with-database
   [& body]
