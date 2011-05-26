@@ -1,5 +1,7 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use ciste.debug
+  (:use ciste.core
+        ciste.debug
+        jiksnu.model
         jiksnu.namespace)
   (:require [jiksnu.model.user :as model.user])
   (:import com.cliqset.hostmeta.JavaNetXRDFetcher
@@ -18,14 +20,14 @@
   (if url
     (.fetchXRD *fetcher* (URL. url))))
 
-(defn host-meta
-  [request]
+(defaction host-meta
+  []
   (let [xrd (XRD.)]
     (let [host-element nil])
     (.buildObject *xrd-builder*)))
 
-(defn user-meta
-  [{{uri "uri"} :params :as request}]
+(defaction user-meta
+  [uri]
   (let [[_ username domain] (re-matches #"(?:acct:)(.*)@(.*)" uri)]
     (model.user/show username domain)))
 

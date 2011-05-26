@@ -45,6 +45,13 @@
               "type" "text/html"
               "href" (full-uri user)}]
 
+     ["Link" {"rel" "http://schemas.google.com/g/2010#updates-from"
+              "type" "application/atom+xml"
+              "href" (str "http://" (-> (config) :domain)
+                          "/api/statuses/user_timeline/"
+                          (:_id user)
+                          ".atom")}]
+
      ["Link" {"rel" "describedby"
               "type" "application/rdf+xml"
               "href" (str (full-uri user) ".rdf")}]
