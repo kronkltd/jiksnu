@@ -113,6 +113,7 @@
     [[:get "/main/password"]
      #'auth/password-page]
     [[:get "/main/push/callback"] #'push/callback]
+    [[:post "/main/push/callback"] #'push/callback-publish]
     [[:get "/main/register"]
       #'user/register]
     [[:post "/main/register"]

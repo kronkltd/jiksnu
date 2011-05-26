@@ -17,6 +17,10 @@
   [action request]
   (action request))
 
+(deffilter #'callback-publish :http
+  [action request]
+  (action request))
+
 (deffilter #'index :http
   [action request]
   (action))

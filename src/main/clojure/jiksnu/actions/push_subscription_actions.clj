@@ -3,8 +3,12 @@
         [jiksnu model namespace session]
         [karras.entity :only (make)])
   (:require [aleph.http :as http]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.push-subscription :as model.push]
+            [jiksnu.helpers.activity-helpers :as helpers.activity]
             [jiksnu.helpers.user-helpers :as helpers.user]
+            [clojure.java.io :as io]
             [clojure.string :as string]
             jiksnu.view)
   (:import jiksnu.model.Activity
@@ -16,6 +20,14 @@
           topic :hub.topic} :params} params]
     challenge))
 
+(defaction callback-publish
+  [params]
+  (let [document (spy (abdera/parse-stream (:body params)))
+        feed (spy (.getRoot document))
+        entries (spy (.getEntries feed))]
+    (doseq [entry entries]
+      (let [activity (helpers.activity/to-activity entry feed)]
+        (actions.activity/create (spy activity))))))
 
 (defaction index
   [options]
@@ -48,5 +60,4 @@
              {:method :get
               :url subscribe-link
               :auto-transform true})]
-        @response-channel
-        ))))
+        @response-channel))))
