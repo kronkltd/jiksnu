@@ -107,8 +107,8 @@
          [:p "Copyright © 2011 KRONK Ltd."]]]
        (link-to-script "http://www.google.com/jsapi")
        [:script "google.load(\"jquery\", \"1.3\")"]
-       (link-to-script "http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js")
-       (link-to-script "http://jquery-websocket.googlecode.com/files/jquery.websocket-0.0.1.js")
+       (link-to-script "/public/jquery.json-2.2.min.js")
+       (link-to-script "/public/jquery.websocket-0.0.1.js")
        #_(link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
        (link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
