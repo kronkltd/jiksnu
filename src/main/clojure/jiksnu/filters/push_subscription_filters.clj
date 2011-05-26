@@ -24,3 +24,11 @@
 (deffilter #'index :http
   [action request]
   (action))
+
+(deffilter #'hub :http
+  [action request]
+  (action))
+
+(deffilter #'hub-publish :http
+  [action request]
+  (action))

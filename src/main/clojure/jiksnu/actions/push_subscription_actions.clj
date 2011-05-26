@@ -61,3 +61,12 @@
               :url subscribe-link
               :auto-transform true})]
         @response-channel))))
+
+(defaction hub
+  []
+  true
+  )
+
+(defaction hub-publish
+  []
+  true)

@@ -33,3 +33,11 @@
 (defview #'index :html
   [request subscriptions]
   {:body (index-section subscriptions)})
+
+(defview #'hub :html
+  [request _]
+  {:template :false})
+
+(defview #'hub-publish :html
+  [request _]
+  {:template :false})
