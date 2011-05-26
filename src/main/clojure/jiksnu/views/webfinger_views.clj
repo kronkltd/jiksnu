@@ -13,7 +13,7 @@
   [request _]
   (let [domain (:domain (config))]
     {:template false
-     :headers {"Content-Type" "application/xml"}
+     :headers {"Content-Type" "application/xrds+xml"}
      :body
      (html ["XRD" {"xmlns" xrd-ns
               "xmlns:hm" host-meta-ns}
@@ -27,7 +27,7 @@
 (defview #'user-meta :html
   [request user]
   {:template false
-   :headers {"Content-Type" "application/xml"}
+   :headers {"Content-Type" "application/xrds+xml"}
    :body
    (html ["XRD" {"xmlns" xrd-ns}
      ["Subject" {} (str "acct:" (:username user) "@" (:domain user))]
