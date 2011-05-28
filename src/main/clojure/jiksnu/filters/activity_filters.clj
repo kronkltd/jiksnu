@@ -1,5 +1,6 @@
 (ns jiksnu.filters.activity-filters
-  (:use ciste.debug
+  (:use aleph.http
+        ciste.debug
         ciste.filters
         clj-tigase.core
         jiksnu.abdera
@@ -7,7 +8,8 @@
         jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.sections.activity-sections
-        jiksnu.session)
+        jiksnu.session
+        lamina.core)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]))
