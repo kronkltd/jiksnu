@@ -14,11 +14,29 @@ function deleteActivity(obj) {
   return false;
 }
 
+  console.log("loaded")
+
 $(function () {
   $(".delete-activity").live("click", deleteActivity);
 
-  var ws = $.websocket("ws://beta.jiksnu.com/main/events", {
-    events: {
-      message: function(e) {
-        $('#content').append(e.data + '<br>')}}});
+  // alert("loaded");
+  console.log("loaded")
+  var ws = new WebSocket("ws://beta.jiksnu.com:8082/main/events");
+
+  console.log(ws.readyState);
+
+  ws.onopen = function() {
+    console.log("Socket has been opened");
+    ws.send("foobar");
+  }
+
+  ws.onmessage = function(msg) {
+    console.log(msg);
+  }
+
+  console.log(ws.readyState);
+
+  // ws.send("foo")
+
+  console.log(ws.readyState);
 })
