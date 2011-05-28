@@ -1,9 +1,12 @@
 (ns jiksnu.routes
-  (:use ciste.debug
+  (:use aleph.http
+        ciste.debug
+        ciste.filters
         ciste.predicates
         ciste.routes
         jiksnu.middleware
         jiksnu.namespace
+        lamina.core
         (ring.middleware params
                          keyword-params
                          nested-params

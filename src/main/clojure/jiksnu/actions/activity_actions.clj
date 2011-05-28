@@ -1,5 +1,6 @@
 (ns jiksnu.actions.activity-actions
-  (:use ciste.core
+  (:use aleph.http
+        ciste.core
         ciste.debug
         clj-tigase.core
         jiksnu.abdera
@@ -7,7 +8,8 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        [karras.entity :only (make)])
+        [karras.entity :only (make)]
+        lamina.core)
   (:require [clojure.string :as string]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
