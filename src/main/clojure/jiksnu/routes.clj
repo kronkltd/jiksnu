@@ -81,7 +81,7 @@
     [[:get "/main/login"]                  #'auth/login-page]
     [[:post "/main/login"]                 #'auth/login]
     [[:post "/main/logout"]                #'auth/logout]
-    [[:get "/main/events"]                 #'activity/stream]
+    ;; [[:get "/main/events"]                 #'activity/stream]
     [[:get "/main/ostatus"]                #'subscription/ostatus]
     [[:get "/main/ostatussub"]             #'subscription/ostatussub]
     [[:post "/main/ostatussub"]            #'subscription/ostatussub-submit]
@@ -233,6 +233,8 @@
 
 (compojure/defroutes all-routes
   (route/files "/public")
+  #_(compojure/GET "/main/events" _
+                 (wrap-aleph-handler activity/stream-handler))
   (compojure/GET "/favicon.ico" request
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _

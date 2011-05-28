@@ -164,15 +164,6 @@
 ;; stream
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deffilter #'stream :http
-  [action request]
-  (wrap-aleph-handler
-   (fn [ch request]
-     (receive
-      (:channel request)
-      (fn [message]
-        (repeatedly #(enqueue "foo")))))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-create
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

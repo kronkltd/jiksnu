@@ -178,3 +178,19 @@
 (defaction user-timeline
   [user]
   [user (model.activity/index :authors (:_id user))])
+
+(defn stream-handler
+  [ch request]
+  (println "in handler")
+  ;; (receive
+  ;;  (spy ch)
+  ;; (fn [message]
+  (receive ch
+           #(doseq [i (range 100)]
+     (Thread/sleep 500)
+     (println i)
+     (enqueue ch "foo")))
+     ;; )
+     ;; )
+)
+
