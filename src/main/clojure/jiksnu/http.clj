@@ -13,9 +13,9 @@
       {:port port
        ;; :keystore "/home/duck/projects/jiksnu/certs/rsa-keystore"
        ;; :key-password "GuNgSkOWmWUa46XE1n52vuMPp"
-       :keystore "/home/duck/projects/jiksnu/keystore"
-       :key-password "password"
+       ;; :keystore "/home/duck/projects/jiksnu/keystore"
+       ;; :key-password "password"
        :websocket true
-       :ssl-port 8443
-       :ssl? true
+       ;; :ssl-port 8443
+       ;; :ssl? true
        :join? false})))
