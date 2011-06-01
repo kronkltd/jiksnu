@@ -128,6 +128,10 @@
   [format request response]
   response)
 
+(defmethod format-as :html
+  [format request response]
+  response)
+
 (defmethod serialize-as :http
   [serialization response-map]
   (assoc-in
