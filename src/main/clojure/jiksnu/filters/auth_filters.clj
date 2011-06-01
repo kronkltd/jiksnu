@@ -1,5 +1,5 @@
 (ns jiksnu.filters.auth-filters
-  (:use clojure.contrib.logging
+  (:use clojure.tools.logging
         jiksnu.actions.auth-actions
         ciste.filters
         jiksnu.session

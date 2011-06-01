@@ -4,7 +4,7 @@
         ciste.routes
         clj-tigase.core
         clojure.pprint
-        [clojure.contrib.logging :only (debug)]
+        [clojure.tools.logging :only (debug)]
         jiksnu.model
         jiksnu.namespace
         jiksnu.routes

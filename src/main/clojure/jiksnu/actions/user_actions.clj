@@ -3,7 +3,7 @@
         ciste.core
         ciste.debug
         clj-tigase.core
-        [clojure.contrib.logging :only (error)]
+        [clojure.tools.logging :only (error)]
         jiksnu.helpers.user-helpers
         jiksnu.model
         jiksnu.namespace

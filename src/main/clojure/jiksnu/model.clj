@@ -1,7 +1,7 @@
 (ns jiksnu.model
   (:use [ciste.config :only (config environment)]
         clj-factory.core
-        clojure.contrib.json
+        clojure.data.json
         jiksnu.config
         jiksnu.namespace
         karras.entity

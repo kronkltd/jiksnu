@@ -1,6 +1,6 @@
 (ns jiksnu.filters.user-filters
   (:use clj-tigase.core
-        [clojure.contrib.logging :only (error)]
+        [clojure.tools.logging :only (error)]
         ciste.config
         ciste.debug
         ciste.filters

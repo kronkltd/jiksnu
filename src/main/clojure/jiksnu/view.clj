@@ -16,7 +16,7 @@
         jiksnu.session
         jiksnu.xmpp
         jiksnu.xmpp.element)
-  (:require [clojure.contrib.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [clojure.stacktrace :as stacktrace]
             [ciste.debug :as debug]
             [hiccup.core :as hiccup]

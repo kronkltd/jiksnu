@@ -7,7 +7,7 @@
         jiksnu.helpers.user-helpers
         jiksnu.namespace
         jiksnu.view)
-  (:require [clojure.contrib.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]))
