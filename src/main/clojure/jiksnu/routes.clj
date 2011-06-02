@@ -233,7 +233,7 @@
 
 (compojure/defroutes all-routes
   (route/files "/public")
-  #_(compojure/GET "/main/events" _
+  (compojure/GET "/main/events" _
                  (wrap-aleph-handler activity/stream-handler))
   (compojure/GET "/favicon.ico" request
                  (response/file-response "favicon.ico"))

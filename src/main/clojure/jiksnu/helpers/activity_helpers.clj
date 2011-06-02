@@ -438,6 +438,8 @@ an Element"
   [activity]
   (if-let [object-type (:object-type (:object activity))]
     (assoc-in activity [:object :object-type]
-              (string/replace object-type
-                              #"http://onesocialweb.org/spec/1.0/object/" ""))
+              (string/replace
+               (string/replace object-type
+                               #"http://onesocialweb.org/spec/1.0/object/" "")
+               #"http://activitystrea.ms/schema/1.0/" ""))
     (assoc-in activity [:object :object-type] "note")))

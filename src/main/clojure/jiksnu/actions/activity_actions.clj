@@ -2,6 +2,8 @@
   (:use aleph.http
         ciste.core
         ciste.debug
+        ciste.sections
+        ciste.sections.default
         clj-tigase.core
         jiksnu.abdera
         jiksnu.helpers.activity-helpers
@@ -10,7 +12,8 @@
         jiksnu.session
         [karras.entity :only (make)]
         lamina.core)
-  (:require [clojure.string :as string]
+  (:require [clojure.data.json :as json]
+            [clojure.string :as string]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
@@ -19,7 +22,8 @@
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.view :as view]
             [karras.entity :as entity]
-            [karras.sugar :as sugar])
+            [karras.sugar :as sugar]
+            [hiccup.core :as hiccup])
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
@@ -181,16 +185,19 @@
 
 (defn stream-handler
   [ch request]
-  (println "in handler")
-  ;; (receive
-  ;;  (spy ch)
-  ;; (fn [message]
-  (receive ch
-           #(doseq [i (range 100)]
-     (Thread/sleep 500)
-     (println i)
-     (enqueue ch "foo")))
-     ;; )
-     ;; )
-)
-
+  (receive
+   ch
+   (fn [m]
+     (enqueue ch "sending actions")
+     (receive-all
+      (filter*
+       #(#{#'create} (:action %))
+       (fork (spy ciste.core/*actions*)))
+      (fn [action]
+        (enqueue
+         ch
+         (with-format :html
+           (spy (hiccup/html
+             (index-line
+              (spy (make Activity
+                     (:records action)))))))))))))
