@@ -243,9 +243,9 @@
       <version>1.2.9</version>
     </dependency>
     <dependency>
-      <groupId>org.clojars.liquidz</groupId>
+      <groupId>net.kronkltd</groupId>
       <artifactId>clj-gravatar</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.cliqset</groupId>

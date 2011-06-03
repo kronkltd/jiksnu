@@ -188,16 +188,18 @@
   (receive
    ch
    (fn [m]
-     (enqueue ch "sending actions")
-     (receive-all
-      (filter*
-       #(#{#'create} (:action %))
-       (fork (spy ciste.core/*actions*)))
-      (fn [action]
-        (enqueue
-         ch
-         (with-format :html
-           (spy (hiccup/html
-             (index-line
-              (spy (make Activity
-                     (:records action)))))))))))))
+     ;; (enqueue ch "sending actions")
+     (let [create-channel (filter*
+                           (comp :action #{#'create})
+                           (fork ciste.core/*actions*))]
+       (loop []
+         (let [{:keys [records]} (wait-for-message (spy create-channel))
+               action-html
+               (with-format :html
+                 (with-serialization :http
+                   (hiccup/html
+                    (index-line-minimal records))))]
+           (enqueue ch action-html)
+           (println "recurring")
+           (recur))))))
+  (println "handler ending"))

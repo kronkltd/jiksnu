@@ -32,7 +32,7 @@ $(function () {
 
   ws.onmessage = function(msg) {
     console.log(msg.data);
-    $(".activities").append(msg.data);
+    $(".activities").prepend(msg.data);
   }
 
   // console.log(ws.readyState);
