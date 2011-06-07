@@ -80,4 +80,3 @@
 ;;   "Returns if the argument is an element"
 ;;   [arg]
 ;;   (instance? Element arg))
-

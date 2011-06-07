@@ -8,18 +8,6 @@
         [jiksnu.session :only (with-user current-user with-user-id)]
         hiccup.core))
 
-(defn wrap-debug-binding
-  "Checks if there is a debug flag passed in the request.
-Turns on debugging mode for that request."
-  [handler]
-  (fn [request]
-    (if (and (:query-params request)
-             ((:query-params request) "debug"))
-      ;; (with-debug
-        (handler request)
-        ;; )
-      (handler request))))
-
 (defn wrap-user-binding
   [handler]
   (fn [{{username :id} :session
@@ -38,24 +26,12 @@ Turns on debugging mode for that request."
                      (print-stack-trace e)))
         :status 500}))))
 
-(defn wrap-user-debug-binding
-  [handler]
-  (fn [request]
-    (let [user (current-user)]
-      (if (:debug user)
-        ;; (with-debug
-          (handler request)
-          ;; )
-        (handler request)))))
-
 (defn wrap-log-request
   [handler]
   (fn [request]
     (if (-> (config) :print :request)
       (spy request))
-    (if-let [response (handler request)]
-      (do
-        response))))
+    (handler request)))
 
 (defn wrap-log-params
   [handler]

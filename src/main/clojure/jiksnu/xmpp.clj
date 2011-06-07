@@ -19,7 +19,7 @@
 
 (defn start
   []
-  (let [config (get-config *initial-config* tigase-options)]
+  #_(let [config (get-config *initial-config* tigase-options)]
     (start-router! tigase-options config)))
 
 (defn -main

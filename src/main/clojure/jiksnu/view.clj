@@ -113,7 +113,6 @@
        (link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
 
-
 (defmethod apply-template :html
   [request response]
   (merge

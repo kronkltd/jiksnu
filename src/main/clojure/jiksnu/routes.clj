@@ -225,13 +225,9 @@
     #'name-matches?
     #'ns-matches?]])
 
-(def routes
-  (concat http-routes xmpp-routes))
-
-(def all-predicates
-  [http-predicates xmpp-predicates])
-
 (compojure/defroutes all-routes
+  (wrap-log-request
+   (resolve-routes [http-predicates] http-routes))
   (route/files "/public")
   (compojure/GET "/main/events" _
                  (wrap-aleph-handler activity/stream-handler))
@@ -239,20 +235,26 @@
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
                  (response/file-response "public/robots.txt"))
-  (wrap-log-request
-   (resolve-routes [http-predicates] http-routes))
   (route/not-found (not-found-msg)))
 
 (def app
-  (-> all-routes
-      wrap-user-debug-binding
-      wrap-user-binding
-      wrap-debug-binding
-      wrap-session
-      wrap-multipart-params
-      wrap-keyword-params
-      wrap-nested-params
-      wrap-params
-      middleware/wrap-http-serialization
-      wrap-database
-      wrap-error-catching))
+  (wrap-ring-handler
+   (-> all-routes
+       wrap-log-request
+       wrap-user-binding
+       wrap-session
+       ;; wrap-multipart-params
+       wrap-keyword-params
+       wrap-nested-params
+       wrap-params
+       middleware/wrap-http-serialization
+       wrap-database
+       wrap-error-catching)))
+
+#_(def app
+  (wrap-ring-handler
+   (fn [r] {:body "foo"
+           :status 200
+           :headers {"content-type" "text/plain"}
+           })
+   #_(route/files "/public")))

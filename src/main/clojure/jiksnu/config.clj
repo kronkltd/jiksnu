@@ -11,7 +11,7 @@
                  :domain "beta.jiksnu.com"
                  :registration-enabled false
                  :debug false
-                 :print {:request true
+                 :print {:request false
                          :matchers false
                          :predicates false
                          :params false}}

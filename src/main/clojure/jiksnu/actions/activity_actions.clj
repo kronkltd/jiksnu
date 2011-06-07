@@ -24,7 +24,8 @@
             [karras.entity :as entity]
             [karras.sugar :as sugar]
             [hiccup.core :as hiccup])
-  (:import jiksnu.model.Activity
+  (:import java.util.concurrent.TimeoutException
+           jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 
 (declare find-or-create)
@@ -185,21 +186,15 @@
 
 (defn stream-handler
   [ch request]
-  (receive
-   ch
-   (fn [m]
-     ;; (enqueue ch "sending actions")
-     (let [create-channel (filter*
-                           (comp :action #{#'create})
-                           (fork ciste.core/*actions*))]
-       (loop []
-         (let [{:keys [records]} (wait-for-message (spy create-channel))
-               action-html
-               (with-format :html
-                 (with-serialization :http
-                   (hiccup/html
-                    (index-line-minimal records))))]
-           (enqueue ch action-html)
-           (println "recurring")
-           (recur))))))
-  (println "handler ending"))
+  (siphon
+   (->> ciste.core/*actions*
+        (filter* (comp :action #{#'create}))
+        (map*
+         (fn [message]
+           (if-let [records (:records (spy message))]
+             (->> records
+                  index-line-minimal
+                  hiccup/html
+                  (with-serialization :http)
+                  (with-format :html))))))
+   ch))
