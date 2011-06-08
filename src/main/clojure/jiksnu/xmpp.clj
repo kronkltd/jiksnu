@@ -1,7 +1,7 @@
 (ns jiksnu.xmpp
   (:use clj-tigase.core ))
 
-(def #^:dynamic *initial-config*
+(def ^:dynamic *initial-config*
      (str
       "tigase.level=ALL\n"
       "tigase.xml.level=INFO\n"
@@ -19,7 +19,7 @@
 
 (defn start
   []
-  #_(let [config (get-config *initial-config* tigase-options)]
+  (let [config (get-config *initial-config* tigase-options)]
     (start-router! tigase-options config)))
 
 (defn -main

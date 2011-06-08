@@ -188,13 +188,13 @@
   [ch request]
   (siphon
    (->> ciste.core/*actions*
-        (filter* (comp :action #{#'create}))
+        (filter* (fn [m] (#{#'create} (:action m))))
         (map*
          (fn [message]
            (if-let [records (:records (spy message))]
-             (->> records
-                  index-line-minimal
-                  hiccup/html
-                  (with-serialization :http)
-                  (with-format :html))))))
+             (spy (->> records
+                   index-line-minimal
+                   hiccup/html
+                   (with-serialization :http)
+                   (with-format :html)))))))
    ch))
