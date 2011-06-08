@@ -226,9 +226,8 @@
     #'ns-matches?]])
 
 (compojure/defroutes all-routes
-  (wrap-log-request
-   (resolve-routes [http-predicates] http-routes))
   (route/files "/public")
+  (resolve-routes [http-predicates] http-routes)
   (compojure/GET "/main/events" _
                  (wrap-aleph-handler activity/stream-handler))
   (compojure/GET "/favicon.ico" request
