@@ -32,9 +32,15 @@ article {
 
 }
 
+.post-form #content {
+    background-color: white;
+}
 
 
 
+.clear {
+    clear: both;
+}
 
 
 body
@@ -48,6 +54,15 @@ body > header
     display: block;
     margin-bottom: 10px;
 }
+
+
+#login-section {
+    position: relative:
+    right: 0px;
+    top: 0px;
+}
+
+
 
 .devel-section {
     margin-bottom: 5px;
@@ -129,14 +144,6 @@ article section.content
     display: block;
 }
 
-/* article section.content header */
-/* { */
-/*     display: inline; */
-/*     margin-left: 60px; */
-/* /\* width: 30%; *\/ */
-/* /\* float: left; *\/ */
-/* } */
-
 .entry-content {
     margin-top: 8px;
 }
@@ -147,35 +154,11 @@ article section.content
 }
 
 .activities .avatar {
-    /* top: 1px; */
-    /* left: 1px; */
-    /* position: absolute; */
     float: left;
 }
 
-/* .avatar */
-/* { */
-/*     float: left; */
-/*     width: 60px; */
-/* } */
-
-/* .entry-content, .entry-title */
-/* { */
-/*     margin-left: 60px; */
-/* } */
-
-/* .notice .vcard { */
-/*     float: left; */
-/* } */
-
-/* .notice .vcard .url > .fn */
-/* { */
-/*     margin-left: 60px; */
-/* } */
-
 .privacy
 {
-    /* float: right; */
     position: absolute;
     right: 0px;
     top: 0px;
@@ -192,15 +175,35 @@ nav
     /* float: left; */
 }
 
+
+
 .post-form {
     width: 50%;
     margin: 0 auto;
 }
 
 .post-form ul {
-    list-item-type: none;
+    padding: 0px;
 }
 
+.post-form ul li {
+    list-style-type: none;
+    width: 100%;
+}
+
+.post-form ul li label {
+    width: 30%;
+}
+
+.post-form ul li input {
+    width: 30%;
+    position: relative;
+    right: 0px;
+}
+
+.post-form #content {
+    width: 100%;
+}
 
 .recipients
 {

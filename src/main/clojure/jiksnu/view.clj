@@ -91,11 +91,13 @@
       [:body
        [:div#wrap
         [:header
+         (login-section)
          (navigation-section)
-         (login-section)]
+         ]
         [:div#content
          (devel-environment-section)
-         (:body response)]
+         (:body response)
+         [:div.clear]]
         [:footer
          [:div.formats
           [:ul

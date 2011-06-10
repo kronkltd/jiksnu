@@ -56,20 +56,6 @@
   [activity]
   (model.user/fetch-by-id (first (:authors activity))))
 
-(defn privacy-section
-  [activity]
-  [:fieldset
-   [:legend "Privacy"]
-   [:ul
-    [:li (f/label :public-public "Public")
-     (f/radio-button :public true #_(= (:public activity) "public") "public")]
-    [:li (f/label :public-group "Roster Group")
-     (f/radio-button :public (= (:public activity) "group") "group")]
-    [:li (f/label :public-custom "Custom Group")
-     (f/radio-button :public (= (:public activity) "custom") "custom")]
-    [:li (f/label :public-private "Private")
-     (f/radio-button :public (= (:public activity) "private") "private")]]])
-
 (defn activity-form
   ([activity]
      (activity-form activity (uri activity)))
@@ -88,16 +74,18 @@
          (if parents
            [:li.hidden
             (f/hidden-field :parent (:_id parent))])
-         [:li (f/label :title "Title")
+         #_[:li (f/label :title "Title")
           (f/text-field :title (:title activity))]
-         [:li (f/label :content "Content")
+         [:li #_(f/label :content "Content")
           (f/text-area :content (:content activity))]
-         [:li (f/label :tags "Tags")
+         #_[:li (f/label :tags "Tags")
           (f/text-field :tags (:tags activity))]
-         [:li (f/label :recipients "Recipients")
+         #_[:li (f/label :recipients "Recipients")
           (f/text-field :recipients (:recipients activity))]
-         [:li (privacy-section activity)]]
-        (f/submit-button "Post")])]))
+         [:li (f/drop-down :public
+                ["public" "group" "custom" "private"]
+                "public")
+          (f/submit-button "Post")]]])]))
 
 (defn delete-link
   [activity]

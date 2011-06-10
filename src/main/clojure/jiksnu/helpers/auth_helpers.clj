@@ -50,7 +50,7 @@
 
 (defn login-section
   []
-  [:div
+  [:div#login-section
    (if-let [user (current-user)]
      (logout-form)
      [:a {:href "/main/login"} "Log in"])])
