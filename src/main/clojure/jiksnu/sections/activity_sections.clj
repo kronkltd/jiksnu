@@ -62,7 +62,6 @@
 (defsection index-block [Activity :html]
   [activities & options]
   [:div#notices_primary
-   [:h2 "Notices"]
    [:ol.activities
     (map index-line-minimal activities)]])
 

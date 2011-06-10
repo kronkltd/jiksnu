@@ -76,27 +76,28 @@
   ([activity uri]
      (activity-form activity uri nil))
   ([activity uri parent]
-     (f/form-to
-      [:post uri]
-      [:fieldset
-       [:legend "Post an activity"]
-       [:ul
-        (if (:_id activity)
-          [:li.hidden
-           (f/hidden-field :_id (:_id activity))])
-        (if parents
-          [:li.hidden
-           (f/hidden-field :parent (:_id parent))])
-        [:li (f/label :title "Title")
-         (f/text-field :title (:title activity))]
-        [:li (f/label :content "Content")
-         (f/text-area :content (:content activity))]
-        [:li (f/label :tags "Tags")
-         (f/text-field :tags (:tags activity))]
-        [:li (f/label :recipients "Recipients")
-         (f/text-field :recipients (:recipients activity))]
-        [:li (privacy-section activity)]]
-       (f/submit-button "Post")])))
+     [:div.post-form
+      (f/form-to
+       [:post uri]
+       [:fieldset
+        [:legend "Post an activity"]
+        [:ul
+         (if (:_id activity)
+           [:li.hidden
+            (f/hidden-field :_id (:_id activity))])
+         (if parents
+           [:li.hidden
+            (f/hidden-field :parent (:_id parent))])
+         [:li (f/label :title "Title")
+          (f/text-field :title (:title activity))]
+         [:li (f/label :content "Content")
+          (f/text-area :content (:content activity))]
+         [:li (f/label :tags "Tags")
+          (f/text-field :tags (:tags activity))]
+         [:li (f/label :recipients "Recipients")
+          (f/text-field :recipients (:recipients activity))]
+         [:li (privacy-section activity)]]
+        (f/submit-button "Post")])]))
 
 (defn delete-link
   [activity]

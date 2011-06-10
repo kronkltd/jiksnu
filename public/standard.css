@@ -1,9 +1,46 @@
 body
 {
-    padding-left: 10px;
-    padding-right: 10px;
+    font-color: black;
+    background-color: #9bb5a8;
+
+}
+
+#content {
+    background-color: #516d5f;
+}
+
+.devel-section {
+   background-color: yellow;
+    border: 2px solid black;
+    color: black;
+}
+
+.aside {
+    background-color: #cdbdaf;
+    border: 2px solid black;
+}
+
+
+div.content {
     font-color: black;
     background-color: steelBlue;
+}
+
+article {
+    display: block;
+    background-color: #91b5a3;
+
+}
+
+
+
+
+
+
+body
+{
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 body > header
@@ -13,9 +50,6 @@ body > header
 }
 
 .devel-section {
-    background-color: yellow;
-    border: 2px solid black;
-    color: black;
     margin-bottom: 5px;
     padding: 2px;
     text-align: center;
@@ -35,17 +69,13 @@ a img {
 
 .aside {
     float: right;
-    background-color: whitesmoke;
     width: 29%;
     margin-left: 5px;
-    border: 2px solid black;
     padding: 0 3px;
 }
 
 div.content
 {
-    font-color: black;
-    background-color: steelBlue;
     margin: 0 auto;
     width: 80%;
 }
@@ -80,8 +110,6 @@ nav ul li
 
 article
 {
-    display: block;
-    background-color: white;
     border-size: 1px;
     border-style: solid;
     position: relative;
@@ -164,6 +192,16 @@ nav
     /* float: left; */
 }
 
+.post-form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.post-form ul {
+    list-item-type: none;
+}
+
+
 .recipients
 {
     display: inline;
@@ -213,6 +251,7 @@ article footer
     clear: none;
     width: 100%;
     display: block;
+    margin-left: -40px;
 }
 
 .buttons {
@@ -230,6 +269,14 @@ article footer .buttons li
     float: right;
 }
 
+.comments .notice {
+    border: none;
+}
+
+.comments .notice footer {
+    display: none;
+}
+
 .hidden
 {
     display: none;
@@ -237,4 +284,9 @@ article footer .buttons li
 
 .buttons li form {
     display: inline;
+}
+
+
+footer {
+    clear: both;
 }
