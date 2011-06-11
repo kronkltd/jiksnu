@@ -44,8 +44,7 @@
   [:div
    (f/form-to
     [:post (logout-uri)]
-    [:p "Logged in as:"
-     (link-to (current-user))
+    [:p (link-to (current-user))
      (f/submit-button "Logout")])])
 
 (defn login-section

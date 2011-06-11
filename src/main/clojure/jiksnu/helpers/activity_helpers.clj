@@ -121,15 +121,18 @@
    (f/submit-button "Fetch Comments")))
 
 (defn make-feed
-  [{:keys [title links entries updated id]}]
-  (let [feed (.newFeed *abdera*)]
+  [{:keys [user title subtitle links entries updated id]}]
+  (let [feed (.newFeed *abdera*)
+        author (if user (show-section user))]
     (if title (.setTitle feed title))
+    (if subtitle (.setSubtitle feed subtitle))
     (.setGenerator feed
                    "http://jiksnu.com/"
                    "0.1.0-SNAPSHOT"
                    "Jiksnu")
     (if id (.setId feed id))
     (if updated (.setUpdated feed updated))
+    (if author (.addExtension (spy feed) (spy author)))
     (dorun
      (map
       (fn [link]

@@ -1,15 +1,11 @@
 (ns jiksnu.view
-  (:use ciste.core
-        ciste.debug
-        ciste.formats
-        ciste.html
-        ciste.sections
+  (:use [ciste core debug formats html sections views]
         ciste.sections.default
-        ciste.views
         [ciste.config :only (config)]
         clj-tigase.core
         jiksnu.abdera
         jiksnu.helpers.auth-helpers
+        jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.auth-sections
@@ -96,7 +92,8 @@
            "Jiksnu"
            [:a.logo.photo {:src "/public/logo.png"
                            :alt "Jiksnu"}]]]
-         (login-section)]
+         (login-section)
+         (activity-form {})]
         (navigation-section)
         [:div#content
          (:body response)

@@ -115,7 +115,6 @@
      :href "/api/statuses/public_timeline.n3"
      :type "text/n3"}]
    :body [:div
-          (add-form (entity/make Activity {:public "public"}))
           (if (seq activities)
             (index-block activities)
             [:p "nothing here"])]})
@@ -216,11 +215,20 @@
   {:headers {"Content-Type" "application/xml"}
    :template false
    :body (make-feed
-          {:title "User Timeline"
-           :subtitle ""
-           :links [{:href (uri user)
+          {:title (str (:username user) " timeline")
+           :subtitle (str "Updates from " (:username user)
+                          " on " (:domain user))
+           :id (str "http://" (-> (config) :domain)
+                    "/api/statuses/user_timeline/" (:_id user) ".atom")
+           :links [{:href (full-uri user)
                     :rel "alternate"
-                    :type "text/html"}]
+                    :type "text/html"}
+                   {:href (str (full-uri user) ".atom")
+                    :rel "alternate"
+                    :type "application/atom+xml"}
+                   {:href (str "http://" (-> (config) :domain) "/main/hub")
+                    :rel "hub"}]
+           :user user
            :updated (:updated (first activities))
            :entries activities})})
 
