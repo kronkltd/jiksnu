@@ -61,15 +61,21 @@ body
 {
     display: block;
     margin-bottom: 10px;
-    position: absolute;
+    position: relative;
     width: 100%;
+    padding-top: 2em;
 }
 
-#login-section {
-    position: relative:
+#login-section
+{
+    position: absolute;
     right: 1px;
     top: 1px;
-    width: 20%;
+/* width: 20%; */
+}
+
+#login-section p {
+    margin: 0;
 }
 
 nav

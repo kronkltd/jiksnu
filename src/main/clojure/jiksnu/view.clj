@@ -90,12 +90,17 @@
        (link-to-stylesheet "/public/standard.css")]
       [:body
        [:div#wrap
+        (devel-environment-section)
         [:header
-         (login-section)
-         (navigation-section)
-         ]
+         [:address#site_contact.vcard
+          [:a.url.home.bookmark
+           {:href "/home"}
+           "Jiksnu"
+           #_[:a.logo.photo {:src "/public/logo.png"
+                           :alt "Jiksnu"}]]]
+         (login-section)]
+        (navigation-section)
         [:div#content
-         (devel-environment-section)
          (:body response)
          [:div.clear]]
         [:footer
