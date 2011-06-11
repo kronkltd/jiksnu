@@ -85,8 +85,6 @@
                   :title label
                   :rel "alternate"}])
         (:formats response))
-       #_(link-to-stylesheet
-          "/public/css/smoothness/jquery-ui-1.8.4.custom.css")
        (link-to-stylesheet "/public/standard.css")]
       [:body
        [:div#wrap
@@ -96,7 +94,7 @@
           [:a.url.home.bookmark
            {:href "/home"}
            "Jiksnu"
-           #_[:a.logo.photo {:src "/public/logo.png"
+           [:a.logo.photo {:src "/public/logo.png"
                            :alt "Jiksnu"}]]]
          (login-section)]
         (navigation-section)
@@ -114,10 +112,6 @@
          [:p "Copyright © 2011 KRONK Ltd."]]]
        (link-to-script "http://www.google.com/jsapi")
        [:script "google.load(\"jquery\", \"1.3\")"]
-       (link-to-script "/public/jquery.json-2.2.min.js")
-       (link-to-script "/public/jquery.websocket-0.0.1.js")
-       #_(link-to-script "http://code.jquery.com/jquery-1.4.4.min.js")
-       (link-to-script "/public/js/jquery-ui-1.8.4.custom.min.js")
        (link-to-script "/public/standard.js")]]))})
 
 (defmethod apply-template :html
