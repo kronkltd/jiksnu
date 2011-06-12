@@ -154,7 +154,14 @@
 
 (defview #'show :html
   [request user]
-  {:body (show-section user)
+  {:body
+   [:div
+    [:div.aside
+     (when-not (model.user/local? user)
+       [:p.important
+        "This is a cached copy of information for a user on a different system."])
+     (show-section user)]
+    (index-section (model.activity/find-by-user user))]
    :formats
    [{:label "FOAF"
      :href (str (uri user) ".rdf")

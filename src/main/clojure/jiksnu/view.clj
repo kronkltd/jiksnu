@@ -55,9 +55,7 @@
            [:li [:a {:href "/admin/settings"} "Settings"]]
            [:li [:a {:href "/admin/push/subscriptions"} "Pubsubhubbub"]]
            [:li [:a {:href "/admin/users"} "Users"]]
-           [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]])))
-       (list
-        [:li [:a {:href "/main/register"} "Register"]]))]]))
+           [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]]))))]]))
 
 (defn devel-environment-section
   []
@@ -86,14 +84,14 @@
        [:div#wrap
         (devel-environment-section)
         [:header
+         (login-section)
          [:address#site_contact.vcard
           [:a.url.home.bookmark
            {:href "/home"}
-           "Jiksnu"
-           [:a.logo.photo {:src "/public/logo.png"
+           [:img.logo.photo {:src "/public/logo.png"
                            :alt "Jiksnu"}]]]
-         (login-section)
-         (activity-form {})]
+         (activity-form {})
+         [:div.clear]]
         (navigation-section)
         [:div#content
          (:body response)

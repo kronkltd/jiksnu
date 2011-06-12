@@ -1,12 +1,10 @@
 body
 {
     font-color: black;
-    background-color: #4d5965;
-
 }
 
-#content {
-    /* background-color: #516d5f; */
+#wrap {
+    background-color: skyblue;
 }
 
 .devel-section {
@@ -15,8 +13,11 @@ body
     border: 2px solid black;
 }
 
+.aside, article, nav ul li {
+    background-color: lightblue;
+}
+
 .aside {
-    background-color: #99a5b1;
     border: 2px solid black;
 }
 
@@ -26,16 +27,17 @@ div.content {
     background-color: steelBlue;
 }
 
-article {
-    display: block;
-    background-color: #91a1b1;
-
-}
-
 .post-form #content {
     background-color: white;
 }
 
+nav ul li {
+    border-color: black;
+}
+
+.post-activity {
+    border-color: black;
+}
 
 
 
@@ -51,7 +53,7 @@ body
 
 #wrap {
     margin: 0 auto;
-    max-width: 1300px;
+    max-width: 1200px;
     min-width: 760px;
     overflow: hidden;
     width: 100%;
@@ -78,35 +80,16 @@ body
     margin: 0;
 }
 
-nav
-{
-    /* float: left; */
-}
-
-#wrap > nav ul {
-    margin: 0;
-}
-
-nav ul li
-{
+#site_contact {
+    width: 30%;
     display: inline;
-    width: 100%;
-    margin-right: 5px;
-    border-width: 1px 1px 0px 1px;
-    border-style: solid;
-    border-color: black;
-    background-color: orange;
-}
-
-.devel-section {
-    margin-bottom: 5px;
-    padding: 2px;
-    text-align: center;
+    float: left;
 }
 
 .post-form {
     width: 50%;
-    margin: 0 auto;
+    float: left;
+    /* margin: 0 auto; */
 }
 
 .post-form ul {
@@ -132,9 +115,37 @@ nav ul li
     width: 100%;
 }
 
+nav
+{
+    /* float: left; */
+    margin: 0 0 -15px 0;
+}
+
+#wrap > nav ul {
+    margin: 0;
+    padding-left: 0;
+}
+
+nav ul li
+{
+    display: inline;
+    width: 100%;
+    margin-right: 5px;
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    padding: 3px;
+}
+
+.devel-section {
+    margin-bottom: 5px;
+    padding: 2px;
+    text-align: center;
+}
+
 .post-activity
 {
-    border: 1px solid black;
+    border-width: 1px;
+    border-style: solid;
     margin-bottom: 10px;
 }
 
@@ -172,6 +183,7 @@ div.content
 
 article
 {
+    display: block;
     border-size: 1px;
     border-style: solid;
     position: relative;
@@ -210,7 +222,6 @@ article section.content
     right: 0px;
     top: 0px;
 }
-
 
 .comments
 {
@@ -252,12 +263,15 @@ article footer
 
 .buttons {
     padding: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 article footer .buttons li
 {
     display: inline;
-    margin-right: 12px;
+    margin-right: 3px;
 }
 
 .publish-actions
@@ -265,26 +279,13 @@ article footer .buttons li
     float: right;
 }
 
-
-
-
-
-
-
 .clear {
     clear: both;
 }
 
-
-
-
 a img {
     border: none;
 }
-
-
-
-
 
 .recipients
 {
@@ -320,4 +321,20 @@ a img {
 
 footer {
     clear: both;
+    width: 100%;
+}
+
+.formats {
+    width: 100%;
+}
+
+.formats ul {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.formats ul li {
+    list-style-type: none;
+    display: inline;
 }

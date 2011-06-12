@@ -282,16 +282,16 @@
        [:ul.buttons
         (if (or (current-user) (is-admin?))
           (list
-           [:li (fetch-comments-button activity)]
-           [:li (comment-link activity)]
            [:li (like-link activity)]
-           [:li (delete-link activity)]
-           [:li (edit-link activity)]))]
+           [:li (fetch-comments-button activity)]
+           [:li (edit-link activity)]
+           [:li (delete-link activity)]))]
        [:div.comments
         [:p "Comments: "
          (:comment-count activity)
          " "
-         [:a {:href "#"} "Show"]]
+         [:a {:href "#"} "Show"]
+         (comment-link activity)]
         (if-let [comments (model.activity/get-comments activity)]
           (map
            show-section-minimal

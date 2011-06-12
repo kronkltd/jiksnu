@@ -227,7 +227,16 @@
                     :rel "alternate"
                     :type "application/atom+xml"}
                    {:href (str "http://" (-> (config) :domain) "/main/hub")
-                    :rel "hub"}]
+                    :rel "hub"}
+                   {:href (str "http://" (-> (config) :domain)
+                               "/main/salmon/user/" (:_id user))
+                    :rel "salmon"}
+                   {:href (str "http://" (-> (config) :domain)
+                               "/main/salmon/user/" (:_id user))
+                    :rel "http://salmon-protocol.org/ns/salmon-replies"}
+                   {:href (str "http://" (-> (config) :domain)
+                               "/main/salmon/user/" (:_id user))
+                    :rel "http://salmon-protocol.org/ns/salmon-mentions"}]
            :user user
            :updated (:updated (first activities))
            :entries activities})})

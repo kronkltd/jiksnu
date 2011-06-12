@@ -152,49 +152,42 @@
 
 (defsection show-section [User :html]
   [user & options]
-  (let [actor (current-user-id)]
+  (let [actor (current-user-id)
+        {id :_id
+         username :username
+         domain :domain
+         url :url
+         name :name
+         hub :hub
+         location :location
+         bio :bio} user]
     (list
-     (add-form (Activity.))
-     [:div
-      [:div.aside
-       (when-not (model.user/local? user)
-         [:p.important
-          "This is a cached copy of information for a user on a different system."])
-       (let [{id :_id
-              username :username
-              domain :domain
-              url :url
-              name :name
-              hub :hub
-              location :location
-              bio :bio} user]
-         [:div.vcard
-          [:p (avatar-img user)]
-          [:p
-           [:span.nickname
-            username
-            (when-not (model.user/local? user)
-              (list "@" domain))]]
-          [:p.fn.n name]
-          [:div.adr
-           [:p.locality location]]
-          [:p.note bio]
-          [:p [:a.url {:href url :rel "me"} url]]
-          [:p "Hub: " hub]
-          [:p "Discovered: " (:discovered user)]
-          [:p "Last Updated:" (:updated user)]
-          [:p "Local: " (:local user)]
-          [:p "Id: " id]
-          (links-list user)])
-       [:div.subscription-sections
-        (following-section actor user)
-        (user-actions user)
-        (remote-subscribe-form user)
-        (let [[_ records] (actions.subscription/subscriptions user)]
-          (subscriptions-section records))
-        (let [[_ records] (actions.subscription/subscribers user)]
-          (subscribers-section records))]]
-      (index-section (model.activity/find-by-user user))])))
+     [:div.vcard
+      [:p (avatar-img user)]
+      [:p
+       [:span.nickname
+        username
+        (when-not (model.user/local? user)
+          (list "@" domain))]]
+      [:p.fn.n name]
+      [:div.adr
+       [:p.locality location]]
+      [:p.note bio]
+      [:p [:a.url {:href url :rel "me"} url]]
+      [:p "Id: " id]
+      [:p "Local: " (:local user)]
+      [:p "Hub: " hub]
+      [:p "Discovered: " (:discovered user)]
+      [:p "Last Updated:" (:updated user)]
+      (links-list user)]
+     [:div.subscription-sections
+      (following-section actor user)
+      (user-actions user)
+      (remote-subscribe-form user)
+      (let [[_ records] (actions.subscription/subscriptions user)]
+        (subscriptions-section records))
+      (let [[_ records] (actions.subscription/subscribers user)]
+        (subscribers-section records))])))
 
 (defsection show-section [User :rdf]
   [user & _]

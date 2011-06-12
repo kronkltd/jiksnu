@@ -52,4 +52,6 @@
   [:div#login-section
    (if-let [user (current-user)]
      (logout-form)
-     [:a {:href "/main/login"} "Log in"])])
+     (list
+      [:a {:href "/main/login"} "Log in"]
+      " or " [:a {:href "/main/register"} "Register"]))])
