@@ -3,8 +3,8 @@ body
     font-color: black;
 }
 
-#wrap {
-    background-color: skyblue;
+#wrap, body {
+    background-color: #4444ee;
 }
 
 .devel-section {
@@ -14,17 +14,11 @@ body
 }
 
 .aside, article, nav ul li {
-    background-color: lightblue;
+    background-color: white;
 }
 
 .aside {
     border: 2px solid black;
-}
-
-
-div.content {
-    font-color: black;
-    background-color: steelBlue;
 }
 
 .post-form #content {
@@ -57,6 +51,7 @@ body
     min-width: 760px;
     overflow: hidden;
     width: 100%;
+    padding: 0 5px 5px 5px;
 }
 
 #wrap > header
@@ -81,7 +76,7 @@ body
 }
 
 #site_contact {
-    width: 30%;
+    width: 240px;
     display: inline;
     float: left;
 }
@@ -94,6 +89,16 @@ body
 
 .post-form ul {
     padding: 0px;
+}
+
+.type-buttons, .add-buttons {
+    padding: 0px;
+}
+
+.type-buttons li, .add-buttons li {
+    display: inline;
+    list-style-type: none;
+    margin-left: 5px;
 }
 
 .post-form ul li {

@@ -5,13 +5,13 @@
         clj-tigase.core
         jiksnu.abdera
         jiksnu.helpers.auth-helpers
-        jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.sections.auth-sections
         jiksnu.session
         jiksnu.xmpp
-        jiksnu.xmpp.element)
+        jiksnu.xmpp.element
+        [karras.entity :only (make)])
   (:require [clojure.tools.logging :as log]
             [clojure.stacktrace :as stacktrace]
             [ciste.debug :as debug]
@@ -90,7 +90,7 @@
            {:href "/home"}
            [:img.logo.photo {:src "/public/logo.png"
                            :alt "Jiksnu"}]]]
-         (activity-form {})
+         (add-form (make Activity {}))
          [:div.clear]]
         (navigation-section)
         [:div#content

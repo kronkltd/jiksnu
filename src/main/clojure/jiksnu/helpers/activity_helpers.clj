@@ -68,20 +68,41 @@
        [:fieldset
         [:legend "Post an activity"]
         [:ul
+         [:li
+          [:ul.type-buttons
+           [:li [:a {:href "#"} "Note"]]
+           [:li [:a {:href "#"} "Status"]]
+           [:li [:a {:href "#"} "Checkin"]]
+           [:li [:a {:href "#"} "Picture"]]
+           [:li [:a {:href "#"} "Event"]]]]
          (if (:_id activity)
            [:li.hidden
             (f/hidden-field :_id (:_id activity))])
          (if parents
            [:li.hidden
             (f/hidden-field :parent (:_id parent))])
-         #_[:li (f/label :title "Title")
-          (f/text-field :title (:title activity))]
-         [:li #_(f/label :content "Content")
-          (f/text-area :content (:content activity))]
-         #_[:li (f/label :tags "Tags")
-          (f/text-field :tags (:tags activity))]
-         #_[:li (f/label :recipients "Recipients")
-          (f/text-field :recipients (:recipients activity))]
+         (if (= (:type activity) "article")
+           [:li (f/text-field :title (:title activity))])
+         [:li (f/text-area :content (:content activity))]
+         [:li
+          [:ul.add-buttons
+           [:li.hidden.add-tags [:a {:href "#"} "Add Tags"]]
+           [:li.hidden.add-recipients [:a {:href "#"} "Add Recipients"]]
+           [:li.hidden.add-location [:a {:href "#"} "Add Location"]]
+           #_[:li.hidden.add-links [:a {:href "#"} "Add Links"]]
+           #_[:li.hidden.add-pictures [:a {:href "#"} "Add Pictures"]]]]
+         [:li.tag-line (f/label :tags "Tags")
+          (f/text-field :tags (:tags activity))
+          [:a {:href "#"} "Add Tag"]
+          ]
+         [:li.recipients-line (f/label :recipients "Recipients")
+          (f/text-field :recipients (:recipients activity))
+          [:a {:href "#"} "Add Recipient"]]
+         [:li.location-line
+          [:p (f/label :lat "Latitude")
+           (f/text-field :lat (:lat activity))]
+          [:p (f/label :long "Longitude")
+           (f/text-field :long (:long activity))]]
          [:li (f/drop-down :public
                 ["public" "group" "custom" "private"]
                 "public")
@@ -428,10 +449,10 @@ an Element"
 
 (defn set-object-type
   [activity]
-  (if-let [object-type (:object-type (:object activity))]
-    (assoc-in activity [:object :object-type]
-              (string/replace
-               (string/replace object-type
-                               #"http://onesocialweb.org/spec/1.0/object/" "")
-               #"http://activitystrea.ms/schema/1.0/" ""))
-    (assoc-in activity [:object :object-type] "note")))
+  (assoc-in
+   activity [:object :object-type]
+   (if-let [object-type (:object-type (:object activity))]
+     (-> object-type
+         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+     "note")))

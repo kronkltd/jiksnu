@@ -14,16 +14,23 @@ function deleteActivity(obj) {
   return false;
 }
 
-  // console.log("loaded")
-
 $(function () {
   $(".delete-activity").live("click", deleteActivity);
+  $(".add-buttons li").show();
+  $(".tag-line").hide();
+  $(".recipients-line").hide();
+  $(".location-line").hide();
+  $(".add-tags").live("click", function(obj) {
+    $(".tag-line").show();
+  });
+  $(".add-recipients").live("click", function(obj) {
+    $(".recipients-line").show();
+  });
+  $(".add-location").live("click", function(obj) {
+    $(".location-line").show();
+  });
 
-  // alert("loaded");
-  console.log("loaded")
   var ws = new WebSocket("ws://beta.jiksnu.com:8082/main/events");
-
-  // console.log(ws.readyState);
 
   ws.onopen = function() {
     console.log("Socket has been opened");
@@ -35,9 +42,14 @@ $(function () {
     $(".activities").prepend(msg.data);
   }
 
-  // console.log(ws.readyState);
-
-  // ws.send("foo")
-
-  // console.log(ws.readyState);
-})
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("lat: " + position.coords.latitude);
+      $("input[name='lat']").val(position.coords.latitude);
+      console.log("long: " + position.coords.longitude);
+      $("input[name='long']").val(position.coords.longitude);
+    });
+  } else {
+    console.log("location not available");
+  }
+});

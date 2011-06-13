@@ -204,6 +204,17 @@
      :content [(str (:published activity))]
      }]})
 
+(declare-section display-map)
+
+(defsection display-map [Activity :html]
+  [activity & options]
+  (if (and (:lat (spy activity)) (:long activity))
+    [:img
+     {:src
+      (str "https://maps.googleapis.com/maps/api/staticmap?"
+           "size=200x200&zoom=11&sensor=true&markers=color:red|"
+           (:lat activity) "," (:long activity))}]))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -226,20 +237,22 @@
           (let [user (model.user/fetch-by-id user-id)]
             (show-section-minimal user)))
         (:authors activity))
-       [:div#labels
-        [:span#object-type object-type]
-        " "
-        [:span
-         (if (-> activity :local)
-           ""
-           "remote")] " "
-        [:span#privacy
-         (if (:public activity)
-           "public" "private")]]
-       #_(if-let [t (:title activity)]
-         (if (not= t "")
-           [:h3.entry-title t]))]
+       (when-not (= object-type "comment")
+         [:div#labels
+          #_[:span#object-type object-type]
+          " "
+          [:span
+           (if (-> activity :local)
+             ""
+             "remote")] " "
+          [:span#privacy
+           (if (:public activity)
+             "" "private")]])]
       [:p.entry-content
+       (if (= object-type "article")
+         (if-let [t (:title activity)]
+           (if (not= t "")
+             [:h3.entry-title t])))
        (or (:content (:object activity))
            (:content activity)
            (:title activity))]
@@ -258,7 +271,10 @@
                 [:img {:src (:href link)
                        :width "100"
                        :height "100"}])])
-          links)]])
+           links)]])
+      #_[:p "Lat: " (:lat activity)]
+      #_[:p "Long: " (:long activity)]
+      (display-map activity)
       (if-let [tags (seq (:tags activity))]
         [:div.tags
          [:h "Tags"]
