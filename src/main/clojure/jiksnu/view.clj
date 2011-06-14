@@ -87,7 +87,7 @@
          (login-section)
          [:address#site_contact.vcard
           [:a.url.home.bookmark
-           {:href "/home"}
+           {:href "/"}
            [:img.logo.photo {:src "/public/logo.png"
                            :alt "Jiksnu"}]]]
          (add-form (make Activity {}))
