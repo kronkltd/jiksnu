@@ -111,8 +111,10 @@
 (defn delete-link
   [activity]
   (if (some #(= % (current-user-id)) (:authors activity))
-    (f/form-to [:delete (uri activity)]
-               (f/submit-button "Delete"))))
+    (f/form-to
+     [:delete (uri activity)]
+     [:span.delete-button
+      (f/submit-button "Delete")])))
 
 (defn edit-link
   [activity]
@@ -121,7 +123,8 @@
                 (:authors activity)))
     [:a.edit-activity
      {:href (str (uri activity) "/edit")}
-     "Edit"]))
+     [:img {:alt "Edit"
+            :src "/public/silk/page_white_edit.png"}]]))
 
 (defn comment-link
   [activity]
