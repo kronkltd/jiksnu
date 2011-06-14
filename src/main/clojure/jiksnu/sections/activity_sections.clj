@@ -208,7 +208,7 @@
 
 (defsection display-map [Activity :html]
   [activity & options]
-  (if (and (:lat (spy activity)) (:long activity))
+  (if (and (:lat activity) (:long activity))
     [:img
      {:src
       (str "https://maps.googleapis.com/maps/api/staticmap?"
