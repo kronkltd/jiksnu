@@ -138,7 +138,11 @@
 
 (defview #'remote-profile :html
   [request user]
-  {:body (show-section user)})
+  (apply-view
+   (-> request
+       (assoc :format :html)
+       (assoc :action #'show))
+   user))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-user
@@ -146,7 +150,11 @@
 
 (defview #'remote-user :html
   [request user]
-  {:body (show-section user)})
+  (apply-view
+   (-> request
+       (assoc :format :html)
+       (assoc :action #'show))
+   user))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show
