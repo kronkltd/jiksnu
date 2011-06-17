@@ -156,7 +156,7 @@
                    "Jiksnu")
     (if id (.setId feed id))
     (if updated (.setUpdated feed updated))
-    (if author (.addExtension (spy feed) (spy author)))
+    (if author (.addExtension feed author))
     (dorun
      (map
       (fn [link]
@@ -237,7 +237,13 @@
         (parse-object-element element)
         (if (and (= name "in-reply-to")
                  (= namespace "http://purl.org/syndication/thread/1.0"))
-          (parse-reply-to element))))))
+          (parse-reply-to element)
+          (if (and (= name "point")
+                   (= namespace "http://www.georss.org/georss"))
+            (let [coords (.getText element)
+                  [lat long] (string/split (spy coords) #" ")]
+              (spy {:lat lat
+                :long long}))))))))
 
 (defn get-authors
   [entry feed]
@@ -270,10 +276,10 @@
   (map
    (fn [author]
      (let [uri (.getUri author)
-           domain (.getHost (spy uri))
+           domain (.getHost uri)
            name (or (.getUserInfo uri)
                     (.getName author))
-           author-obj (model.user/find-or-create (spy name) (spy domain))]
+           author-obj (model.user/find-or-create name domain)]
        (:_id author-obj)))
    authors))
 
@@ -282,12 +288,12 @@
 serialization"
   ([entry] (to-activity entry nil))
   ([entry feed]
-     (let [id (str (.getId (spy entry)))
+     (let [id (str (.getId entry))
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
            authors (get-authors entry feed)
-           author-ids (get-author-ids (spy authors))
+           author-ids (get-author-ids authors)
            extension-maps (doall
                            (map
                             parse-extension-element
@@ -327,7 +333,7 @@ serialization"
                         :public true
                         :comment-count (get-comment-count entry)}
                        extension-maps)]
-       (entity/make Activity (spy opts)))))
+       (entity/make Activity opts))))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"

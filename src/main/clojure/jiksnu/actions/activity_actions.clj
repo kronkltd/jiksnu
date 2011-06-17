@@ -191,10 +191,10 @@
         (filter* (fn [m] (#{#'create} (:action m))))
         (map*
          (fn [message]
-           (if-let [records (:records (spy message))]
-             (spy (->> records
-                   index-line-minimal
-                   hiccup/html
-                   (with-serialization :http)
-                   (with-format :html)))))))
+           (if-let [records (:records message)]
+             (->> records
+                  index-line-minimal
+                  hiccup/html
+                  (with-serialization :http)
+                  (with-format :html))))))
    ch))
