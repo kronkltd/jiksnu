@@ -299,7 +299,6 @@
         (if (or (current-user) (is-admin?))
           (list
            [:li (like-link activity)]
-           [:li (fetch-comments-button activity)]
            [:li (edit-link activity)]
            [:li (delete-link activity)]))]
        [:div.comments
@@ -307,7 +306,8 @@
          (:comment-count activity)
          " "
          [:a {:href "#"} "Show"]
-         (comment-link activity)]
+         (comment-link activity)
+         (fetch-comments-button activity)]
         (if-let [comments (model.activity/get-comments activity)]
           (map
            show-section-minimal

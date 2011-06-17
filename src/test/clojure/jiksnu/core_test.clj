@@ -25,5 +25,5 @@
 ;;   (dosync
 ;;    (ref-set *mongo-database* (mongo-database*))))
 
-;; (add-hook #'lazytest.test-case/try-test-case #'env-hook)
+(add-hook #'lazytest.test-case/try-test-case #'env-hook)
 

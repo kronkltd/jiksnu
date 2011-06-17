@@ -3,6 +3,7 @@ Feature: Home
   As a user
 
 Scenario: Home page visit
-  Given a started server
+  Given the user is not logged in
+  And an activity exists
   When I visit the home page
-  Then I should see a list of activities
+  Then I should see an activity
