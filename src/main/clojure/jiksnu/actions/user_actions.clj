@@ -115,6 +115,10 @@
   [user]
   user)
 
+(defaction salmon
+  [request]
+  (spy request))
+
 (defaction show
   ;;   "This action just returns the passed user.
   ;; The user needs to be retreived in the filter."

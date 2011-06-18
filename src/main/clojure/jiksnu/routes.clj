@@ -92,6 +92,7 @@
     [[:post "/main/push/callback"]         #'push/callback-publish]
     [[:get "/main/register"]               #'user/register]
     [[:post "/main/register"]              #'user/create]
+    [[:post "/main/salmon/user/:id"]       #'user/salmon]
     [[:post "/main/subscribe"]             #'subscription/subscribe]
     [[:post "/main/unsubscribe"]           #'subscription/unsubscribe]
     [[:get "/main/xrd"]                    #'webfinger/user-meta]
