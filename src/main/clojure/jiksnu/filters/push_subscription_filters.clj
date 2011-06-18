@@ -32,3 +32,8 @@
 (deffilter #'hub-publish :http
   [action request]
   (action))
+
+(deffilter #'subscribe :http
+  [action request]
+  (let [user (model.user/fetch-by-id (:id (:params request)))]
+    (action user)))

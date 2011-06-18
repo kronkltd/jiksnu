@@ -41,3 +41,8 @@
 (defview #'hub-publish :html
   [request _]
   {:template :false})
+
+(defview #'subscribe :html
+  [request _]
+  {:template :false})
+

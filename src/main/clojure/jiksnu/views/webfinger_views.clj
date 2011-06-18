@@ -65,7 +65,7 @@
      ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-mention"
               "href" (salmon-link user)}]
 
-     ["Link" {"rel" "magic-public-key"
+     #_["Link" {"rel" "magic-public-key"
               "href" "data:application/magic-public-key,RSA"}]
 
      ["Link" {"rel" "http://ostatus.org/schema/1.0/subscribe"
