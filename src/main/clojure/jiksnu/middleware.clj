@@ -1,6 +1,7 @@
 (ns jiksnu.middleware
   (:use clojure.pprint
         clojure.stacktrace
+        [clojure.tools.logging :only (error)]
         [ciste.config :only (config)]
         ciste.debug
         jiksnu.view
@@ -21,6 +22,7 @@
     (try
      (handler request)
      (catch Exception e
+       (error e)
        {:body (str "An error done happened: "
                    (with-out-str
                      (print-stack-trace e)))
