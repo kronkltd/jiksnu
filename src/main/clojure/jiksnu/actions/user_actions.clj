@@ -1,5 +1,6 @@
 (ns jiksnu.actions.user-actions
-  (:use ciste.config
+  (:use aleph.http
+        ciste.config
         ciste.core
         ciste.debug
         clj-tigase.core
@@ -17,7 +18,10 @@
             [karras.entity :as entity]
             [karras.sugar :as sugar])
   (:import jiksnu.model.User
-           tigase.xml.Element))
+           tigase.xml.Element
+           com.cliqset.salmon.Salmon
+           com.cliqset.magicsig.MagicSig
+           com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer))
 
 (declare update)
 
@@ -117,7 +121,24 @@
 
 (defaction salmon
   [request]
-  (spy request))
+  (let [deserializer (com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer.)
+        default-sig (MagicSig/getDefault)
+        salmon (Salmon/getDefault)
+        body (:body request)
+        envelope (.deserialize deserializer body)]
+    (spy envelope)
+    (spy (.verify salmon envelope))
+    (let [signatures (.getSignatures envelope)]
+      (doseq [signature (spy signatures)]
+        (spy (.getKeyId signature))
+        (spy (.getValue signature))
+        )
+     (let [verification-result (.verify default-sig envelope)]
+       (let [result-data (.getData verification-result)]
+         (spy result-data)
+         (let [sig-results (.getSignatureVerificationResults
+                            verification-result)]
+           (spy (map (fn [r] (.isVerified r)) (spy sig-results)))))))))
 
 (defaction show
   ;;   "This action just returns the passed user.
