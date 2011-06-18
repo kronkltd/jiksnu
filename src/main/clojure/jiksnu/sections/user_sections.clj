@@ -135,7 +135,13 @@
                          (or (:email user) (model.user/get-uri user)))
     (.addSimpleExtension person atom-ns "name" "" (:name user))
     (.addAvatar person (:avatar-url user) "image/jpeg")
+    (.addLink person author-uri "alternate")
     (.addSimpleExtension person atom-ns "uri" "" author-uri)
+    (let [urls-element (.addExtension person poco-ns "poco" "urls")]
+      (doto urls-element
+        (.addSimpleExtension poco-ns "type" "poco" "homepage")
+        (.addSimpleExtension poco-ns "value" "poco" (full-uri user))
+        (.addSimpleExtension poco-ns "primary" "poco" "true")))
     person))
 
 (defsection show-section [User :xmpp :xmpp]

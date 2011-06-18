@@ -226,6 +226,10 @@
                    {:href (str (full-uri user) ".atom")
                     :rel "alternate"
                     :type "application/atom+xml"}
+                   {:href (str "http://" (-> (config) :domain)
+                               "/api/statuses/user_timeline/" (:_id user) ".atom")
+                    :rel "self"
+                    :type "application/atom+xml"}
                    {:href (str "http://" (-> (config) :domain) "/main/hub")
                     :rel "hub"}
                    {:href (str "http://" (-> (config) :domain)

@@ -22,3 +22,4 @@
 (def foaf-ns "http://xmlns.com/foaf/0.1/")
 (def event-ns "http://jabber.org/protocol/pubsub#event")
 (def vcard-publish-uri  "http://onesocialweb.org/spec/1.0/vcard4#publish")
+(def poco-ns "http://portablecontacts.net/spec/1.0")
