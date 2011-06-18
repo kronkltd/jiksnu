@@ -240,7 +240,7 @@
                     :rel "http://salmon-protocol.org/ns/salmon-replies"}
                    {:href (str "http://" (-> (config) :domain)
                                "/main/salmon/user/" (:_id user))
-                    :rel "http://salmon-protocol.org/ns/salmon-mentions"}]
+                    :rel "http://salmon-protocol.org/ns/salmon-mention"}]
            :user user
            :updated (:updated (first activities))
            :entries activities})})
