@@ -7,6 +7,7 @@
         [clojure.tools.logging :only (error)]
         jiksnu.helpers.user-helpers
         jiksnu.model
+        jiksnu.model.signature
         jiksnu.namespace
         [jiksnu.session :only (current-user)]
         jiksnu.view

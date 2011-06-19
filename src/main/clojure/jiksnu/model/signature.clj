@@ -1,4 +1,5 @@
 (ns jiksnu.model.signature
+  (:use ciste.debug)
   (:require jiksnu.model)
   (:import com.cliqset.magicsig.MagicEnvelope
            com.cliqset.magicsig.MagicEnvelopeSerializationProvider
@@ -9,6 +10,13 @@
            com.cliqset.salmon.HostMetaSalmonEndpointFinder
            java.net.URI
            java.io.ByteArrayInputStream
+           java.math.BigInteger
+           java.security.KeyFactory
+           java.security.KeyPair
+           java.security.KeyPairGenerator
+           java.security.spec.RSAPrivateKeySpec
+           java.security.spec.RSAPublicKeySpec
+           org.apache.commons.codec.binary.Base64
            org.apache.commons.io.output.ByteArrayOutputStream
            org.apache.http.impl.client.DefaultHttpClient
            org.opensaml.xml.parse.BasicParserPool
@@ -17,6 +25,56 @@
            org.openxrd.discovery.impl.HostMetaDiscoveryMethod
            org.openxrd.discovery.impl.HtmlLinkDiscoveryMethod
            org.openxrd.discovery.impl.HttpHeaderDiscoveryMethod))
+
+(def keypair-generator (KeyPairGenerator/getInstance "RSA"))
+(.initialize keypair-generator 1024)
+
+(def key-factory (KeyFactory/getInstance "RSA"))
+
+(defn generate-key
+  []
+  (.genKeyPair keypair-generator))
+
+(defn public-key
+  [keypair]
+  (.getPublic keypair))
+
+(defn private-key
+  [keypair]
+  (.getPrivate keypair))
+
+(defn public-spec
+  [keypair]
+  (.getKeySpec key-factory (public-key keypair) RSAPublicKeySpec))
+
+(defn private-spec
+  [keypair]
+  (.getKeySpec key-factory (private-key keypair) RSAPrivateKeySpec))
+
+(defn get-bytes
+  [bigint]
+  (com.sun.org.apache.xml.internal.security.utils.Base64/encode bigint)
+  #_(let [ba (.toByteArray (spy bigint))]
+    (println (count (spy ba)))
+    ba
+    ))
+
+(defn magic-key-string
+  [keypair]
+  (let [public-spec (public-spec keypair)
+        private-spec (private-spec keypair)]
+    (str
+     "data:application/magic-public-key,RSA."
+     
+     (spy (get-bytes (spy (.getModulus public-spec))))
+     "."
+     
+     (spy (get-bytes (spy (.getPublicExponent public-spec))))
+     ;; "."
+     
+     ;; (spy (get-bytes (spy (.getPrivateExponent private-spec))))
+
+     )))
 
 (def send-key
   "RSA.oidnySWI_e4OND41VHNtYSRzbg5SaZ0YwnQ0J1ihKFEHY49-61JFybnszkSaJJD7vBfxyVZ1lTJjxdtBJzSNGEZlzKbkFvcMdtln8g2ec6oI2G0jCsjKQtsH57uHbPY3IAkBAW3Ar14kGmOKwqoGUq1yhz93rXUomLnDYwz8E88=.AQAB.hgOzTxbqhZN9wce4I7fSKnsJu2eyzP69O9j2UZ56cuulA6_Q4YP5kaNMB53DF32L0ASqHBCM1WXz984hptlT0e4U3asXxqegTqrGPNAXw5A6r2E-9MeS84LDFUnUz420YPxMxknzMJBeAz21PuKyrv_QZf6zmRQ0m5eQ0QNJoYE=")
@@ -57,13 +115,10 @@
 (defn get-key
   "The magic key must have 3 segments"
   [key]
-  (MagicKey. (.getBytes key "UTF-8"))
-  )
+  (MagicKey. (.getBytes key "UTF-8")))
 
 (defn sign-and-deliver
-  "entry is an atom entry
-
-"
+  "entry is an atom entry"
   [entry key user]
   (try (.signAndDeliver (get-salmon)
                     (.getBytes entry "UTF-8")
