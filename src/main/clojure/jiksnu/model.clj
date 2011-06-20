@@ -69,6 +69,10 @@
 (defentity PushSubscription
   [:hub :verify-token :created :updated :topic])
 
+(defentity MagicKeyPair
+  [:crt-coefficient :prime-exponent-p :prime-exponent-q
+   :prime-p :prime-q :public-exponent :private-exponent :userid])
+
 (defmacro with-database
   [& body]
   `(do

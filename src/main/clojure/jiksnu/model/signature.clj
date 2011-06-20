@@ -1,6 +1,7 @@
 (ns jiksnu.model.signature
   (:use ciste.debug)
-  (:require jiksnu.model)
+  (:require jiksnu.model
+            [karras.entity :as entity])
   (:import com.cliqset.magicsig.MagicEnvelope
            com.cliqset.magicsig.MagicEnvelopeSerializationProvider
            com.cliqset.magicsig.MagicKey
@@ -16,6 +17,7 @@
            java.security.KeyPairGenerator
            java.security.spec.RSAPrivateKeySpec
            java.security.spec.RSAPublicKeySpec
+           jiksnu.model.MagicKeyPair
            org.apache.commons.codec.binary.Base64
            org.apache.commons.io.output.ByteArrayOutputStream
            org.apache.http.impl.client.DefaultHttpClient
@@ -53,28 +55,72 @@
 
 (defn get-bytes
   [bigint]
-  (com.sun.org.apache.xml.internal.security.utils.Base64/encode bigint)
-  #_(let [ba (.toByteArray (spy bigint))]
-    (println (count (spy ba)))
-    ba
-    ))
+  (let [bitlen (.bitLength bigint)
+        adjusted-bitlen (bit-shift-left (bit-shift-right (+ (spy bitlen) 7) 3) 3)]
+    (if (< (spy adjusted-bitlen) bitlen)
+      (throw (IllegalArgumentException. "Illegal bit len."))
+      (let [bigbytes (.toByteArray bigint)]
+        (let [biglen (alength bigbytes)
+              bitmod  (mod bitlen 8)
+              bitdiv (/ bitlen 8)]
+         (if (and (not= 0 bitmod)
+                  (= (+ bitdiv 1) (/ adjusted-bitlen 8)))
+           bigbytes
+           (let [start-src (if (= bitmod 0) 1 0)
+                 biglen2 (if (= bitmod 0) (- (spy biglen) 1) (spy biglen))
+                 start-dst (- (/ adjusted-bitlen 8) biglen2)
+                 new-size (/ adjusted-bitlen 8)
+                 resized-bytes (byte-array (spy new-size))]
+             (println (class bigbytes))
+             (System/arraycopy (spy bigbytes)
+                               (spy start-src)
+                               (spy resized-bytes)
+                               (spy start-dst)
+                               (spy biglen2))
+             resized-bytes)))))))
+
+(defn encode
+  [byte-array]
+  (
+   ;; com.sun.org.apache.xml.internal.security.utils.Base64/encode
+   Base64/encodeBase64URLSafeString
+   byte-array))
 
 (defn magic-key-string
   [keypair]
-  (let [public-spec (public-spec keypair)
-        private-spec (private-spec keypair)]
-    (str
-     "data:application/magic-public-key,RSA."
-     
-     (spy (get-bytes (spy (.getModulus public-spec))))
-     "."
-     
-     (spy (get-bytes (spy (.getPublicExponent public-spec))))
-     ;; "."
-     
-     ;; (spy (get-bytes (spy (.getPrivateExponent private-spec))))
+  (str
+   "data:application/magic-public-key,RSA."
+   (str (spy (encode (get-bytes (spy (BigInteger. (:modulus keypair)))))))
+   "."
+   (str (spy (encode (get-bytes (spy (BigInteger. (:public-exponent keypair)))))))))
 
-     )))
+(defn pair-hash
+  [keypair]
+  (let [public-key (public-key keypair)
+        private-key (private-key keypair)]
+    {:crt-coefficient  (str (.getCrtCoefficient private-key))
+     :modulus          (str (.getModulus private-key))
+     :prime-exponent-p (str (.getPrimeExponentP private-key))
+     :prime-exponent-q (str (.getPrimeExponentQ private-key))
+     :prime-p          (str (.getPrimeP private-key))
+     :prime-q          (str (.getPrimeQ private-key))
+     :private-exponent (str (.getPrivateExponent private-key))
+     :public-exponent  (str (.getPublicExponent private-key))}))
+
+(defn generate-key-for-user
+  [user]
+  (entity/create
+   MagicKeyPair
+   (assoc (pair-hash (generate-key))
+     :userid (:_id user))))
+
+(defn get-key-for-user
+  [user]
+  (entity/fetch-one MagicKeyPair {:userid (:_id user)}))
+
+(defn drop!
+  []
+  (entity/delete-all MagicKeyPair))
 
 (def send-key
   "RSA.oidnySWI_e4OND41VHNtYSRzbg5SaZ0YwnQ0J1ihKFEHY49-61JFybnszkSaJJD7vBfxyVZ1lTJjxdtBJzSNGEZlzKbkFvcMdtln8g2ec6oI2G0jCsjKQtsH57uHbPY3IAkBAW3Ar14kGmOKwqoGUq1yhz93rXUomLnDYwz8E88=.AQAB.hgOzTxbqhZN9wce4I7fSKnsJu2eyzP69O9j2UZ56cuulA6_Q4YP5kaNMB53DF32L0ASqHBCM1WXz984hptlT0e4U3asXxqegTqrGPNAXw5A6r2E-9MeS84LDFUnUz420YPxMxknzMJBeAz21PuKyrv_QZf6zmRQ0m5eQ0QNJoYE=")
