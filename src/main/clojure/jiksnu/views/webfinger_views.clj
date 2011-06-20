@@ -5,6 +5,7 @@
         ciste.views
         hiccup.core
         ciste.config
+        jiksnu.model.signature
         jiksnu.namespace
         jiksnu.actions.webfinger-actions
         jiksnu.sections.webfinger-sections))
@@ -65,8 +66,8 @@
      ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-mention"
               "href" (salmon-link user)}]
 
-     #_["Link" {"rel" "magic-public-key"
-              "href" "data:application/magic-public-key,RSA"}]
+     ["Link" {"rel" "magic-public-key"
+              "href" (magic-key-string (get-key-for-user user))}]
 
      ["Link" {"rel" "http://ostatus.org/schema/1.0/subscribe"
               "template" (str "http://"
