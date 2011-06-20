@@ -157,6 +157,7 @@
     (if id (.setId feed id))
     (if updated (.setUpdated feed updated))
     (if author (.addExtension feed author))
+    ;; (if user (subject-section user))
     (dorun
      (map
       (fn [link]
