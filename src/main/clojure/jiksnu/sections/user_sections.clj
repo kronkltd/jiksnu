@@ -136,8 +136,11 @@
     (.addSimpleExtension person atom-ns "name" "" (:name user))
     (.addAvatar person (:avatar-url user) "image/jpeg")
     (.addLink person author-uri "alternate")
+    (.addLink person (:avatar-url user) "avatar")
     (.addSimpleExtension person atom-ns "uri" "" author-uri)
-    (let [urls-element (.addExtension person poco-ns "poco" "urls")]
+    (.addSimpleExtension person poco-ns "preferredUsername" "poco" (:username user))
+    (.addSimpleExtension person poco-ns "displayName" "poco" (title user))
+    (let [urls-element (.addExtension person poco-ns "urls" "poco")]
       (doto urls-element
         (.addSimpleExtension poco-ns "type" "poco" "homepage")
         (.addSimpleExtension poco-ns "value" "poco" (full-uri user))
