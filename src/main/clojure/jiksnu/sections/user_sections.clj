@@ -252,7 +252,7 @@
       (:first-name user)
       (model.user/get-uri user)))
 
-(defsection uri [User :html]
+(defsection uri [User]
   [user & options]
   (if (model.user/local? user)
     (str "/" (:username user))
