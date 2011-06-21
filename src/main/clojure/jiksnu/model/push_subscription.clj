@@ -17,9 +17,13 @@
        :update now}
       options))))
 
+(defn find
+  [options]
+  (entity/fetch-one PushSubscription options))
+
 (defn find-or-create
   [options]
-  (or (entity/fetch-one PushSubscription options)
+  (or (find options)
       (create options)))
 
 (defn index

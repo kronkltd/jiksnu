@@ -1,7 +1,8 @@
 (ns jiksnu.actions.push-subscription-actions
   (:use [ciste core debug]
         [jiksnu model namespace session]
-        [karras.entity :only (make)])
+        [karras.entity :only (make)]
+        lamina.core)
   (:require [aleph.http :as http]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -62,10 +63,54 @@
               :auto-transform true})]
         @response-channel))))
 
+(defn valid?
+  "How could this ever go wrong?"
+  [_] true)
+
+(defn subscription-not-valid-error
+  []
+  
+  )
+
+(defn subscription-not-found-error
+  []
+  {:mode "error"
+   :message "not found"})
+
+(defn sync-subscribe
+  [subscription]
+  (if (and (valid? (:topic subscription))
+           (valid? (:callback subscription)))
+    ;; sending verification request
+    (let [params {:hub.mode (:mode subscription)
+                  :hub.topic (:topic subscription)
+                  :hub.challenge (:challenge subscription)
+                  :hub.lease_seconds (:lease-seconds subscription)
+                  :hub.verify_token (:verify-token subscription)}
+          url (make-subscribe-uri callback params)
+          response-channel (http/http-request
+                            {:method :get
+                             :url url
+                             :auto-transform true})]
+      (spy @response-channel))
+    (subscription-not-valid-error)))
+
+(defn async-subscribe
+  [subscription]
+  (task
+   (sync-subscribe subscription)))
+
+(defn remove-subscription
+  [subscription]
+  
+  )
+
 (defaction hub
   [params]
   (let [{mode :hub.mode
          callback :hub.callback
+         challenge :hub.challenge
+         lease-seconds :hub.lease_seconds
          verify :hub.verify
          verify-token :hub.verify_token
          secret :hub.secret
@@ -78,8 +123,19 @@
         (let [push-subscription
               (model.push/find-or-create {:topic topic
                                           :callback callback})]
+          (if (= verify "async")
+            (async-subscribe push-subscription)
+            (sync-subscribe push-subscription))
+
           ;; Subscription already exists, update record
-          (model.push/update push-subscription)))
+          #_(model.push/update push-subscription)))
+      (if (= mode "unsubscribe")
+        (if-let [subscription (model.push/find {:topic topic
+                                                :callback callback})]
+          (remove-subscription subscription)
+          (subscription-not-found-error)
+          )
+        )
       ;; some other options
       )))
 
