@@ -56,28 +56,29 @@
 (defn get-bytes
   [bigint]
   (let [bitlen (.bitLength bigint)
-        adjusted-bitlen (bit-shift-left (bit-shift-right (+ (spy bitlen) 7) 3) 3)]
-    (if (< (spy adjusted-bitlen) bitlen)
+        adjusted-bitlen (-> bitlen
+                            (+ 7)
+                            (bit-shift-right 3)
+                            (bit-shift-left 3))]
+    (if (< adjusted-bitlen bitlen)
       (throw (IllegalArgumentException. "Illegal bit len."))
-      (let [bigbytes (.toByteArray bigint)]
-        (let [biglen (alength bigbytes)
-              bitmod  (mod bitlen 8)
-              bitdiv (/ bitlen 8)]
-         (if (and (not= 0 bitmod)
-                  (= (+ bitdiv 1) (/ adjusted-bitlen 8)))
-           bigbytes
-           (let [start-src (if (= bitmod 0) 1 0)
-                 biglen2 (if (= bitmod 0) (- (spy biglen) 1) (spy biglen))
-                 start-dst (- (/ adjusted-bitlen 8) biglen2)
-                 new-size (/ adjusted-bitlen 8)
-                 resized-bytes (byte-array (spy new-size))]
-             (println (class bigbytes))
-             (System/arraycopy (spy bigbytes)
-                               (spy start-src)
-                               (spy resized-bytes)
-                               (spy start-dst)
-                               (spy biglen2))
-             resized-bytes)))))))
+      (let [bigbytes (.toByteArray bigint)
+            biglen (alength bigbytes)
+            bitmod  (mod bitlen 8)
+            bitdiv (/ bitlen 8)]
+        (if (and (not= 0 bitmod)
+                 (= (+ bitdiv 1) (/ adjusted-bitlen 8)))
+          bigbytes
+          (let [start-src (if (= bitmod 0) 1 0)
+                biglen2 (if (= bitmod 0) (- biglen 1) biglen)
+                start-dst (- (/ adjusted-bitlen 8) biglen2)
+                new-size (/ adjusted-bitlen 8)
+                resized-bytes (byte-array new-size)]
+            (println (class bigbytes))
+            (System/arraycopy
+             bigbytes start-src resized-bytes
+             start-dst biglen2)
+            resized-bytes))))))
 
 (defn encode
   [byte-array]
@@ -90,9 +91,9 @@
   [keypair]
   (str
    "data:application/magic-public-key,RSA."
-   (str (spy (encode (get-bytes (spy (BigInteger. (:modulus keypair)))))))
+   (str (encode (get-bytes (BigInteger. (:modulus keypair)))))
    "."
-   (str (spy (encode (get-bytes (spy (BigInteger. (:public-exponent keypair)))))))))
+   (str (encode (get-bytes (BigInteger. (:public-exponent keypair)))))))
 
 (defn pair-hash
   [keypair]

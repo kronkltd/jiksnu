@@ -90,7 +90,7 @@
   [:tr
    [:td (avatar-img user)]
    [:td (:username user)]
-   [:td (link-to (spy (model.domain/show (:domain user))))]
+   [:td (link-to (model.domain/show (:domain user)))]
    [:td [:a {:href (uri user)} "Show"]]
    [:td (discover-button user)]
    [:td (update-user-button user)]
@@ -127,19 +127,24 @@
   [^User user & options]
   (let [person (Person. (make-object atom-ns "author" ""))
         author-uri (full-uri user)]
-    (.setObjectType person person-uri)
-    (.setId person (str "acct:" (model.user/get-uri user)))
-    (.setName person (:first-name user) (:last-name user))
-    (.setDisplayName person (:name user))
-    (.addSimpleExtension person atom-ns "email" ""
-                         (or (:email user) (model.user/get-uri user)))
-    (.addSimpleExtension person atom-ns "name" "" (:name user))
-    (.addAvatar person (:avatar-url user) "image/jpeg")
-    (.addLink person author-uri "alternate")
-    (.addLink person (:avatar-url user) "avatar")
-    (.addSimpleExtension person atom-ns "uri" "" author-uri)
-    (.addSimpleExtension person poco-ns "preferredUsername" "poco" (:username user))
-    (.addSimpleExtension person poco-ns "displayName" "poco" (title user))
+    (doto person
+      (.setObjectType person-uri)
+      (.setId (str "acct:" (model.user/get-uri user)))
+      (.setName (:first-name user) (:last-name user))
+      (.setDisplayName (:name user))
+      (.addSimpleExtension atom-ns "email" ""
+                           (or (:email user) (model.user/get-uri user)))
+      (.addSimpleExtension atom-ns "name" "" (:name user))
+      (.addAvatar (:avatar-url user) "image/jpeg")
+      (.addLink (:avatar-url user) "avatar")
+      (.addSimpleExtension atom-ns "uri" "" author-uri)
+      (.addSimpleExtension poco-ns "preferredUsername" "poco" (:username user))
+      (.addSimpleExtension poco-ns "displayName" "poco" (title user)))
+    (-> person
+        (.addLink author-uri "alternate")
+        (.setMimeType "text/html"))
+    (-> (.addExtension person status-uri "profile_info" "statusnet")
+        (.setAttributeValue "local_id" (str (:_id user))))
     (let [urls-element (.addExtension person poco-ns "urls" "poco")]
       (doto urls-element
         (.addSimpleExtension poco-ns "type" "poco" "homepage")
