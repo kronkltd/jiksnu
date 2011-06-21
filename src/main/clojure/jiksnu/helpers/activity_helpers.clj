@@ -84,13 +84,13 @@
          (if (= (:type activity) "article")
            [:li (f/text-field :title (:title activity))])
          [:li (f/text-area :content (:content activity))]
-         [:li
+         [:li "Add: "
           [:ul.add-buttons
-           [:li.hidden.add-tags [:a {:href "#"} "Add Tags"]]
-           [:li.hidden.add-recipients [:a {:href "#"} "Add Recipients"]]
-           [:li.hidden.add-location [:a {:href "#"} "Add Location"]]
-           #_[:li.hidden.add-links [:a {:href "#"} "Add Links"]]
-           #_[:li.hidden.add-pictures [:a {:href "#"} "Add Pictures"]]]]
+           [:li.hidden.add-tags [:a {:href "#"} "Tags"]]
+           [:li.hidden.add-recipients [:a {:href "#"} "Recipients"]]
+           [:li.hidden.add-location [:a {:href "#"} "Location"]]
+           [:li.hidden.add-links [:a {:href "#"} "Links"]]
+           [:li.hidden.add-pictures [:a {:href "#"} "Pictures"]]]]
          [:li.tag-line (f/label :tags "Tags")
           (f/text-field :tags (:tags activity))
           [:a {:href "#"} "Add Tag"]

@@ -193,7 +193,7 @@
       [:p "Hub: " hub]
       [:p "Discovered: " (:discovered user)]
       [:p "Last Updated:" (:updated user)]
-      (links-list user)]
+      #_(links-list user)]
      [:div.subscription-sections
       (following-section actor user)
       (user-actions user)

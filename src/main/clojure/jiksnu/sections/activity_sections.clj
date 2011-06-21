@@ -209,7 +209,7 @@
 (defsection display-map [Activity :html]
   [activity & options]
   (if (and (:lat activity) (:long activity))
-    [:img
+    [:img.map
      {:src
       (str "https://maps.googleapis.com/maps/api/staticmap?"
            "size=200x200&zoom=11&sensor=true&markers=color:red|"
@@ -277,7 +277,7 @@
       (display-map activity)
       (if-let [tags (seq (:tags activity))]
         [:div.tags
-         [:h "Tags"]
+         "Tags: "
          [:ul
           (map
            (fn [tag]

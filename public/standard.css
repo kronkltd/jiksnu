@@ -7,10 +7,18 @@ body
     background-color: #4444ee;
 }
 
+#wrap > footer {
+    background-color: white;
+}
+
 .devel-section {
-    color: red;
+    color: orange;
     background-color: #1c3044;
     border: 2px solid black;
+}
+
+#content {
+    background-color: white;
 }
 
 .aside, article, nav ul li {
@@ -18,10 +26,11 @@ body
 }
 
 .aside {
-    border: 2px solid black;
+/*     border: 2px solid black; */
+    background-color: lightgoldenrodyellow;
 }
 
-.post-form #content {
+.post-form {
     background-color: white;
 }
 
@@ -93,6 +102,7 @@ body
 
 .type-buttons, .add-buttons {
     padding: 0px;
+    display: inline;
 }
 
 .type-buttons li, .add-buttons li {
@@ -123,7 +133,7 @@ body
 nav
 {
     /* float: left; */
-    margin: 0 0 -15px 0;
+    /* margin: 0 0 -15px 0; */
 }
 
 #wrap > nav ul {
@@ -155,13 +165,18 @@ nav ul li
 }
 
 #notices_primary {
-    margin-right: 15px;;
+    margin-right: 15px;
+    padding: 5px;
 }
 
 div.content
 {
     margin: 0 0 0 15px;
     /* width: 80%; */
+}
+
+.map {
+    display: none;
 }
 
 /* #content */
@@ -177,6 +192,10 @@ div.content
     padding: 0 3px;
 }
 
+/* .subscription-sections form { */
+/*     display: none; */
+/* } */
+
 .activities {
     padding-left: 0px;
     width: 70%;
@@ -189,14 +208,14 @@ div.content
 article
 {
     display: block;
-    border-size: 1px;
-    border-style: solid;
+    /* border-size: 1px; */
+    /* border-style: solid; */
     position: relative;
     /* border: 1px solid red; */
     margin-bottom: 15px;
     min-height: 60px;
-    -moz-box-shadow:5px 7px 7px rgba(194, 194, 194, 0.3);
-    -moz-border-radius: 0 7px 7px 7px;
+    /* -moz-box-shadow:5px 7px 7px rgba(194, 194, 194, 0.3); */
+    /* -moz-border-radius: 0 7px 7px 7px; */
 }
 
 article section.content
@@ -228,10 +247,30 @@ article section.content
     top: 0px;
 }
 
+.tags ul {
+    display: inline;
+    padding: 0px;
+}
+
+.tags li {
+    list-style-type: none;
+    display: inline;
+    margin-left: 1em;
+}
+
 .comments
 {
     /* clear: both; */
     margin-left: 15px;
+}
+
+.comments p
+{
+    display: inline;
+}
+
+.comments form {
+    display: inline;
 }
 
 .comments ul
@@ -263,7 +302,7 @@ article footer
     clear: none;
     width: 100%;
     display: block;
-    margin-left: -40px;
+    /* margin-left: -40px; */
 }
 
 .buttons {
