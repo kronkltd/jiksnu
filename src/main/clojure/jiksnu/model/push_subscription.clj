@@ -19,12 +19,8 @@
 
 (defn find-or-create
   [options]
-  (if-let [subscription
-           (entity/fetch-one PushSubscription
-                             {:hub (:hub options)
-                              :topic (:topic options)})]
-    subscription
-    (create options)))
+  (or (entity/fetch-one PushSubscription options)
+      (create options)))
 
 (defn index
   []

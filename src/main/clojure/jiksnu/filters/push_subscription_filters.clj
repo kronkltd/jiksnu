@@ -27,11 +27,11 @@
 
 (deffilter #'hub :http
   [action request]
-  (action))
+  (action (:params request)))
 
 (deffilter #'hub-publish :http
   [action request]
-  (action))
+  (action (:params request)))
 
 (deffilter #'subscribe :http
   [action request]

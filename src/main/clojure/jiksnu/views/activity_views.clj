@@ -227,7 +227,7 @@
                                "/api/statuses/user_timeline/" (:_id user) ".atom")
                     :rel "self"
                     :type "application/atom+xml"}
-                   {:href (str "http://" (-> (config) :domain) "/main/hub")
+                   {:href (str "http://" (-> (config) :domain) "/main/push/hub")
                     :rel "hub"}
                    {:href (str "http://" (-> (config) :domain)
                                "/main/salmon/user/" (:_id user))

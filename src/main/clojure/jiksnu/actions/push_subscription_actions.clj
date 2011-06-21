@@ -63,9 +63,25 @@
         @response-channel))))
 
 (defaction hub
-  []
-  true
-  )
+  [params]
+  (let [{mode :hub.mode
+         callback :hub.callback
+         verify :hub.verify
+         verify-token :hub.verify_token
+         secret :hub.secret
+         topic :hub.topic} params]
+    (if (= mode "subscribe")
+      (let [options {:callback callback
+                     :secret secret
+                     :verify-token verify-token
+                     :topic topic}]
+        (let [push-subscription
+              (model.push/find-or-create {:topic topic
+                                          :callback callback})]
+          ;; Subscription already exists, update record
+          (model.push/update push-subscription)))
+      ;; some other options
+      )))
 
 (defaction hub-publish
   []

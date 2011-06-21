@@ -67,7 +67,7 @@
   [:osw :ostatus])
 
 (defentity PushSubscription
-  [:hub :verify-token :created :updated :topic])
+  [:hub :verify-token :secret :created :updated :topic])
 
 (defentity MagicKeyPair
   [:crt-coefficient :prime-exponent-p :prime-exponent-q
