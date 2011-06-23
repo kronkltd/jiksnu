@@ -10,7 +10,8 @@
         jiksnu.sections.activity-sections
         jiksnu.session
         lamina.core)
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [clojure.java.io :as io]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]))
 
@@ -130,6 +131,8 @@
 (deffilter #'post :http
   [action request]
   (let [{params :params} request]
+    #_(with-open [rdr (io/reader (:body request))]
+      (spy (line-seq rdr)))
     (action (dissoc params :*))))
 
 (deffilter #'post :xmpp

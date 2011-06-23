@@ -63,8 +63,9 @@
      (activity-form activity uri nil))
   ([activity uri parent]
      [:div.post-form
-      (f/form-to
-       [:post uri]
+      [:form {:method "post"
+              :action uri
+              :enctype "multipart/form-data"}
        [:fieldset
         [:legend "Post an activity"]
         [:ul
@@ -95,6 +96,10 @@
           (f/text-field :tags (:tags activity))
           [:a {:href "#"} "Add Tag"]
           ]
+         [:li.pictures-line
+          (f/label :picture "Picture")
+          (f/file-upload :picture)
+          ]
          [:li.recipients-line (f/label :recipients "Recipients")
           (f/text-field :recipients (:recipients activity))
           [:a {:href "#"} "Add Recipient"]]
@@ -104,9 +109,9 @@
           [:p (f/label :long "Longitude")
            (f/text-field :long (:long activity))]]
          [:li (f/drop-down :public
-                ["public" "group" "custom" "private"]
-                "public")
-          (f/submit-button "Post")]]])]))
+                           ["public" "group" "custom" "private"]
+                           "public")
+          (f/submit-button "Post")]]]]]))
 
 (defn delete-link
   [activity]

@@ -130,7 +130,7 @@
           ;; Subscription already exists, update record
           #_(model.push/update push-subscription)))
       (if (= mode "unsubscribe")
-        (if-let [subscription (model.push/find {:topic topic
+        (if-let [subscription (model.push/fetch {:topic topic
                                                 :callback callback})]
           (remove-subscription subscription)
           (subscription-not-found-error)
