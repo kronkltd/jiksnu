@@ -243,20 +243,23 @@
   (wrap-ring-handler
    (-> all-routes
        wrap-log-request
-       wrap-user-binding
-       wrap-session
-       ;; wrap-multipart-params
+       wrap-flash
+       ;; wrap-nested-params
+       wrap-multipart-params
+       wrap-log-request
        wrap-keyword-params
-       wrap-nested-params
        wrap-params
+       wrap-user-binding
        middleware/wrap-http-serialization
+       wrap-flash
        wrap-database
+       wrap-session
        wrap-error-catching)))
 
 #_(def app
   (wrap-ring-handler
-   (fn [r] {:body "foo"
-           :status 200
-           :headers {"content-type" "text/plain"}
-           })
-   #_(route/files "/public")))
+   (wrap-multipart-params
+    (compojure/POST "/notice/new" [file]
+                    (io/copy (:picture file) (io/file "picture.jpg"))))
+
+   (route/files "/public")))

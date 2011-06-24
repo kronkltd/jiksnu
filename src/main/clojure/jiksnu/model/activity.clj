@@ -9,7 +9,7 @@
 
 (defn create
   [activity]
-  (entity/create Activity (spy activity)))
+  (entity/create Activity (spy (dissoc activity "picture"))))
 
 (defn get-comments
   [activity]

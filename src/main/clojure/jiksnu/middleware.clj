@@ -22,11 +22,11 @@
     (try
      (handler request)
      (catch Exception e
-       (error e)
-       {:body (str "An error done happened: "
-                   (with-out-str
-                     (print-stack-trace e)))
-        :status 500}))))
+       (let [msg (with-out-str
+                   (print-stack-trace e))]
+         (error e)
+         {:body (str "An error done happened: " msg)
+          :status 500})))))
 
 (defn wrap-log-request
   [handler]

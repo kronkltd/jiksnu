@@ -13,6 +13,7 @@
         [karras.entity :only (make)]
         lamina.core)
   (:require [clojure.data.json :as json]
+            [clojure.java.io :as io]
             [clojure.string :as string]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
@@ -142,7 +143,13 @@
   [activity]
   ;; TODO: validate user
   (if-let [prepared-post (prepare-post activity)]
-    (create prepared-post)))
+    (let [picture (get prepared-post "picture")]
+      (if-let [tempfile (:tempfile picture)]
+        (do
+          (.mkdirs (io/file (str (current-user-id))))
+          (io/copy tempfile (io/file (str (current-user-id) "/"
+                                          (:filename picture))))))
+      (create (dissoc (spy prepared-post) :tempfile)))))
 
 (defaction remote-create
   [activities]
@@ -178,7 +185,7 @@
                 activity
                 (if (= (get activity :public) "public")
                   {:public true})))]
-    (model.activity/update opts)))
+    (model.activity/update (spy (dissoc opts "picture")))))
 
 (defaction user-timeline
   [user]
