@@ -77,35 +77,36 @@
   {:mode "error"
    :message "not found"})
 
-(defn sync-subscribe
+(defn sync-verify-subscribe
   [subscription]
   (if (and (valid? (:topic subscription))
            (valid? (:callback subscription)))
     ;; sending verification request
-    (let [params {:hub.mode (:mode subscription)
-                  :hub.topic (:topic subscription)
-                  :hub.challenge (:challenge subscription)
-                  :hub.lease_seconds (:lease-seconds subscription)
-                  :hub.verify_token (:verify-token subscription)}
-          url (make-subscribe-uri callback params)
-          response-channel (http/http-request
-                            {:method :get
-                             :url url
-                             :auto-transform true})]
-      (spy @response-channel))
+    (let [params (merge {:hub.mode (:mode subscription)
+                         :hub.topic (:topic subscription)
+                         :hub.lease_seconds (:lease-seconds subscription)
+                         :hub.verify_token (:verify-token subscription)}
+                        (if (:challenge subscription)
+                          {:hub.challenge (:challenge subscription)}))
+          url (make-subscribe-uri (:callback subscription) params)
+          response-channel (http/http-request {:method :get
+                                               :url url
+                                               :auto-transform true})]
+      (let [response @response-channel]
+        (if (= 200 (:status response))
+          {:status 204}
+          {:status 404})))
     (subscription-not-valid-error)))
 
-(defn async-subscribe
+(defn async-verify-subscribe
   [subscription]
   (task
    (sync-subscribe subscription)))
 
 (defn remove-subscription
-  [subscription]
-  
-  )
+  [subscription])
 
-(defaction hub
+(defn hub-dispatch
   [params]
   (let [{mode :hub.mode
          callback :hub.callback
@@ -116,29 +117,28 @@
          secret :hub.secret
          topic :hub.topic} params]
     (if (= mode "subscribe")
-      (let [options {:callback callback
-                     :secret secret
-                     :verify-token verify-token
-                     :topic topic}]
-        (let [push-subscription
-              (model.push/find-or-create {:topic topic
-                                          :callback callback})]
-          (if (= verify "async")
-            (async-subscribe push-subscription)
-            (sync-subscribe push-subscription))
-
-          ;; Subscription already exists, update record
-          #_(model.push/update push-subscription)))
+      (let [push-subscription
+            (model.push/find-or-create {:topic topic
+                                        :callback callback})
+            merged-subscription (merge push-subscription
+                                       {:mode mode
+                                        :challenge challenge
+                                        :verify-token verify-token
+                                        :lease-seconds lease-seconds})]
+        (if (= verify "async")
+          (async-verify-subscribe merged-subscription)
+          (sync-verify-subscribe merged-subscription)))
       (if (= mode "unsubscribe")
         (if-let [subscription (model.push/fetch {:topic topic
-                                                :callback callback})]
+                                                 :callback callback})]
           (remove-subscription subscription)
-          (subscription-not-found-error)
-          )
-        )
-      ;; some other options
-      )))
+          (subscription-not-found-error))))))
+
+
+(defaction hub
+  [params]
+  (hub-dispatch params))
 
 (defaction hub-publish
-  []
-  true)
+  [params]
+  (hub-dispatch params))

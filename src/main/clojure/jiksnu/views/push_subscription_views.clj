@@ -39,8 +39,9 @@
   {:template :false})
 
 (defview #'hub-publish :html
-  [request _]
-  {:template :false})
+  [request response]
+  (merge {:template :false}
+         response))
 
 (defview #'subscribe :html
   [request _]
