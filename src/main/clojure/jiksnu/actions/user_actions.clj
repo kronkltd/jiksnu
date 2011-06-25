@@ -22,6 +22,7 @@
   (:import jiksnu.model.User
            tigase.xml.Element
            com.cliqset.salmon.Salmon
+           com.cliqset.magicsig.dataparser.SimpleAtomDataParser
            com.cliqset.magicsig.MagicSig
            com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer))
 
@@ -129,19 +130,22 @@
         body (:body request)
         envelope (.deserialize deserializer body)]
     (spy (bean envelope))
-    (let [data  (spy (String. (.decodeData default-sig envelope)))]
-      (if-let [entry (abdera/parse-xml-string data)]
-        (if-let [author (.getAuthor (spy entry))]
-          (do (spy author)
-              (let [signatures (.getSignatures envelope)]
-                (doseq [signature (spy signatures)]
-                  (spy (bean signature)))
-                (let [verification-result (.verify default-sig envelope)
-                      result-data (.getData (spy verification-result))
-                      sig-results (.getSignatureVerificationResults
-                                   (spy verification-result))]
-                  (spy (map (fn [r] (.isVerified r))
-                            (spy sig-results)))))))))))
+    (let [data-bytes (.decodeData default-sig envelope)
+          uri (.getSignerUri (SimpleAtomDataParser.) data-bytes)]
+      (spy uri)
+      (let [data  (spy (String. data-bytes))]
+        (if-let [entry (abdera/parse-xml-string data)]
+          (if-let [author (.getAuthor (spy entry))]
+            (do (spy author)
+                (let [signatures (.getSignatures envelope)]
+                  (doseq [signature (spy signatures)]
+                    (spy (bean signature)))
+                  (let [verification-result (.verify default-sig envelope)
+                        result-data (.getData (spy verification-result))
+                        sig-results (.getSignatureVerificationResults
+                                     (spy verification-result))]
+                    (spy (map (fn [r] (.isVerified r))
+                              (spy sig-results))))))))))))
 
 (defaction show
   ;;   "This action just returns the passed user.
@@ -176,4 +180,4 @@
         links (actions.webfinger/get-links xrd)
         new-user (assoc user :links links)]
     (doseq [link links]
-      (add-link user link))))
+      (add-link user (spy link)))))

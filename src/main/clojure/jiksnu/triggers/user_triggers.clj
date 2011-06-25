@@ -18,7 +18,9 @@
     (if (:discovered domain)
       (if (:xmpp domain)
         (request-vcard! user)
-        (update-usermeta user))
+        (do
+          (update-usermeta user)
+          #_(request-hcard user)))
       (do (log/info "Domain not discovered yet")
           (Thread/sleep 1000)
           (recur action _ user)))))

@@ -101,7 +101,7 @@
 (defn async-verify-subscribe
   [subscription]
   (task
-   (sync-subscribe subscription)))
+   (sync-verify-subscribe subscription)))
 
 (defn remove-subscription
   [subscription])

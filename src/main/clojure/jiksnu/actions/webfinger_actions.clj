@@ -5,6 +5,9 @@
         jiksnu.namespace)
   (:require [jiksnu.model.user :as model.user])
   (:import com.cliqset.hostmeta.JavaNetXRDFetcher
+           com.cliqset.hostmeta.HostMeta
+           com.cliqset.magicsig.keyfinder.MagicPKIKeyFinder
+           java.net.URI
            com.cliqset.xrd.XRD
            java.net.URL
            org.openxrd.xrd.core.impl.XRDBuilder))
@@ -46,3 +49,9 @@
         (if template {:template template})
         (if type {:type type}))))
    (.getLinks (spy xrd))))
+
+(defn get-keys
+  [uri]
+  (let [host-meta (HostMeta/getDefault)
+        key-finder (MagicPKIKeyFinder. host-meta)]
+    (.findKeys key-finder (URI. uri))))
