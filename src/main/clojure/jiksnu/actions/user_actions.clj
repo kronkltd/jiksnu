@@ -12,7 +12,8 @@
         [jiksnu.session :only (current-user)]
         jiksnu.view
         jiksnu.xmpp.element)
-  (:require [jiksnu.actions.domain-actions :as actions.domain]
+  (:require [jiksnu.abdera :as abdera]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -127,19 +128,20 @@
         salmon (Salmon/getDefault)
         body (:body request)
         envelope (.deserialize deserializer body)]
-    (spy envelope)
-    (spy (.verify salmon envelope))
-    (let [signatures (.getSignatures envelope)]
-      (doseq [signature (spy signatures)]
-        (spy (.getKeyId signature))
-        (spy (.getValue signature))
-        )
-     (let [verification-result (.verify default-sig envelope)]
-       (let [result-data (.getData verification-result)]
-         (spy result-data)
-         (let [sig-results (.getSignatureVerificationResults
-                            verification-result)]
-           (spy (map (fn [r] (.isVerified r)) (spy sig-results)))))))))
+    (spy (bean envelope))
+    (let [data  (spy (String. (.decodeData default-sig envelope)))]
+      (if-let [entry (abdera/parse-xml-string data)]
+        (if-let [author (.getAuthor (spy entry))]
+          (do (spy author)
+              (let [signatures (.getSignatures envelope)]
+                (doseq [signature (spy signatures)]
+                  (spy (bean signature)))
+                (let [verification-result (.verify default-sig envelope)
+                      result-data (.getData (spy verification-result))
+                      sig-results (.getSignatureVerificationResults
+                                   (spy verification-result))]
+                  (spy (map (fn [r] (.isVerified r))
+                            (spy sig-results)))))))))))
 
 (defaction show
   ;;   "This action just returns the passed user.
