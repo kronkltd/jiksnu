@@ -1,95 +1,94 @@
 (ns jiksnu.model.subscription-test
   (:use clj-factory.core
+        clojure.test
         jiksnu.core-test
         jiksnu.model
         jiksnu.model.subscription
         jiksnu.session
         jiksnu.view
         jiksnu.xmpp.plugin
-        karras.core
-        [lazytest.describe :only (describe testing do-it)]
-        [lazytest.expect :only (expect)])
+        karras.core)
   (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(describe drop!
+(deftest drop!-test
   (testing "when there are subscriptions"
-    (do-it "should delete them all"
+    (testing "should delete them all"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (with-user (:_id actor)
           (subscribe (current-user-id) (:_id user))))
       (drop!)
-      (expect (empty? (index))))))
+      (is (empty? (index))))))
 
-(describe find-record)
+(deftest find-record-test)
 
-(describe create)
+(deftest create-test)
 
-(describe index
+(deftest index-test
   (testing "when there are no subscriptions"
-    (do-it "should be empty"
+    (testing "should be empty"
       (let [results (index)]
         (empty? results)))
-    (do-it "should return a seq"
+    (testing "should return a seq"
       (let [results (index)]
         (seq? results)))))
 
-(describe show)
+(deftest show-test)
 
-(describe delete)
+(deftest delete-test)
 
-(describe subscribe
+(deftest subscribe-test
   (testing "when the user is not logged in"
-    (do-it "should raise an exception"))
+    (testing "should raise an exception"))
   (testing "when the user is logged in"
     (testing "and the subscription doesn't exist"
-      (do-it "should return a Subscription"
+      (testing "should return a Subscription"
         (drop!)
         (let [actor (model.user/create (factory User))
               user (model.user/create (factory User))]
           (with-user actor
             (let [response (subscribe (current-user-id) (:_id user))]
-              (expect (subscription? response)))))))))
+              (is (subscription? response)))))))))
 
-(describe confirm)
+(deftest confirm-test)
 
-(describe unsubscribe)
+(deftest unsubscribe-test)
 
-(describe subscribing?
+(deftest subscribing?-test
   (testing "when the user is subscribing"
-    (do-it "should return true"
+    (testing "should return true"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (subscribe actor user)
         (let [response (subscribing? actor user)]
-          (expect response)))))
+          (is response)))))
   (testing "when the user is not subscribed"
-    (do-it "should return a false value"
+    (testing "should return a false value"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (let [response (subscribing? actor user)]
-          (expect (not response)))))))
+          (is (not response)))))))
 
-(describe subscribed?
+(deftest subscribed?-test
   (testing "when the user is subscribed"
-    (do-it "should return true"
+    (testing "should return true"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (subscribe user actor)
         (let [response (subscribed? actor user)]
-          (expect response)))))
+          (is response)))))
   (testing "when the user is not subscribed"
-    (do-it "should return a false value"
+    (testing "should return a false value"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (let [response (subscribed? actor user)]
-          (expect (not response)))))))
+          (is (not response)))))))
 
-(describe subscribers)
+(deftest subscribers-test)
 
-(describe subscriptions)
+(deftest subscriptions-test)
 
-(describe create-pending)
+(deftest create-pending-test)
 
-(describe pending?)
+(deftest pending?-test)

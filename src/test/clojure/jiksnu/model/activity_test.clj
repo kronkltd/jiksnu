@@ -10,12 +10,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(defn test-environment-fixture
-  [f] (with-environment :test (f)))
-
-
-(use-fixtures :each test-environment-fixture)
-
 (deftest new-id-test
   (testing "should return a string"
     (let [response (new-id)]
