@@ -11,6 +11,8 @@
   (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
+(use-fixtures :each test-environment-fixture)
+
 (deftest drop!-test
   (testing "when there are subscriptions"
     (testing "should delete them all"

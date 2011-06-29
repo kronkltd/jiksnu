@@ -1,111 +1,112 @@
 (ns jiksnu.model.user-test
   (:use ciste.config
         clj-factory.core
+        clojure.test
         jiksnu.core-test
         jiksnu.model
-        jiksnu.model.user
-        [lazytest.describe :only (describe do-it testing)]
-        [lazytest.expect :only (expect)])
+        jiksnu.model.user)
   (:import jiksnu.model.User))
 
-(describe get-id)
+(use-fixtures :each test-environment-fixture)
 
-(describe get-domain)
+(deftest get-id-test)
 
-(describe bare-jid)
+(deftest get-domain-test)
 
-(describe split-uri)
+(deftest bare-jid-test)
 
-(describe rel-filter)
+(deftest split-uri-test)
 
-(describe rel-filter-feed)
+(deftest rel-filter-test)
 
-(describe get-link)
+(deftest rel-filter-feed-test)
 
-(describe drop!)
+(deftest get-link-test)
 
-(describe create)
+(deftest drop!-test)
 
-(describe index
+(deftest create-test)
+
+(deftest index-test
   (testing "when there are no users"
-    (do-it "should be empty"
+    (testing "should be empty"
       (drop!)
       (let [response (index)]
-        (expect (empty? response)))))
+        (is (empty? response)))))
   (testing "when there are users"
-    (do-it "should not be empty"
+    (testing "should not be empty"
       (create (factory User))
       (let [response (index)]
-        (expect (seq response))))
-    (do-it "should return a seq of users"
+        (is (seq response))))
+    (testing "should return a seq of users"
       (create (factory User))
       (let [response (index)]
-        (expect (every? (partial instance? User) response))))))
+        (is (every? (partial instance? User) response))))))
 
-(describe show
+(deftest show-test
   (testing "when the user is found"
-    (do-it "should return a user"
+    (testing "should return a user"
       (let [username (fseq :id)]
         (create (factory User {:username username}))
         (let [response (show username)]
-          (expect (instance? User response))))))
+          (is (instance? User response))))))
   (testing "when the user is not found"
-    (do-it "should return nil"
+    (testing "should return nil"
       (drop!)
       (let [username (fseq :id)]
         (let [response (show username)]
-          (expect (expect (nil? response))))))))
+          (is (is (nil? response))))))))
 
-(describe fetch-by-id)
+(deftest fetch-by-id-test)
 
-(describe fetch-by-jid)
+(deftest fetch-by-jid-test)
 
-(describe fetch-by-uri)
+(deftest fetch-by-uri-test)
 
-(describe find-or-create)
+(deftest find-or-create-test)
 
-(describe find-or-create-by-uri)
+(deftest find-or-create-by-uri-test)
 
-(describe find-or-create-by-jid)
+(deftest find-or-create-by-jid-test)
 
-(describe subnodes)
+(deftest subnodes-test)
 
-(describe edit
+(deftest edit-test
   (testing "when the user is found"
-    (do-it "should return a user" :pending))
+    (testing "should return a user" :pending))
   (testing "when the user is not found"
-    (do-it "should return nil" :pending)))
+    (testing "should return nil" :pending)))
 
-(describe delete
+(deftest delete-test
   (testing "when the user exists"
-    (do-it "should be deleted" :pending)))
+    (testing "should be deleted" :pending)))
 
-(describe add-node)
+(deftest add-node-test)
 
-(describe inbox)
+(deftest inbox-test)
 
-(describe update
+(deftest update-test
   (testing "when the request is valid"
-    (do-it "should return a user"
+    (testing "should return a user"
       (let [request {:params {"id" (fseq :word)}}]))))
 
-(describe local?
+(deftest local?-test
   (testing "when there is a user"
     (testing "and it's domain is the same as the current domain"
-      (do-it "should be true"
+      (testing "should be true"
         (let [user (factory User {:domain (-> (config) :domain)})]
-          (expect (local? user)))))
+          (is (local? user)))))
     (testing "and it's domain is different from the current domain"
-      (do-it "should be false"
+      (testing "should be false"
         (let [user (factory User {:domain (fseq :domain)})]
-          (expect (not (local? user))))))))
+          (is (not (local? user))))))))
 
-(describe get-uri)
+(deftest get-uri-test)
 
-(describe author-uri)
+(deftest author-uri-test)
 
-(describe get-domain)
+(deftest get-domain-test)
 
-(describe user-meta-uri)
+(deftest user-meta-uri-test)
 
-(describe rule-element?)
+(deftest rule-element?-test)

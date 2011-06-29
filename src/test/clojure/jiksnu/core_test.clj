@@ -6,6 +6,3 @@
   [f] (with-environment :test (f)))
 
 
-(use-fixtures :each test-environment-fixture)
-
-

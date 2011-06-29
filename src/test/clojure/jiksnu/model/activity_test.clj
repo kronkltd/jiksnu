@@ -1,14 +1,16 @@
 (ns jiksnu.model.activity-test
   (:use clj-factory.core
         clojure.test
+        jiksnu.core-test
         jiksnu.model
         jiksnu.model.activity
         jiksnu.session)
   (:require [karras.entity :as entity]
-            [jiksnu.model.user :as model.user]
-            jiksnu.core-test)
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 (deftest new-id-test
   (testing "should return a string"
