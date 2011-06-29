@@ -162,4 +162,4 @@
   [^Element element]
   (= (.getName element) "acl-rule"))
 
-(defn discover-by-url)
+;; (defn discover-by-url)
