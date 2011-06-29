@@ -1,79 +1,84 @@
 (ns jiksnu.model.activity-test
   (:use clj-factory.core
+        clojure.test
         jiksnu.model
         jiksnu.model.activity
-        jiksnu.session
-        [lazytest.describe :only (describe testing do-it)]
-        [lazytest.expect :only (expect)])
+        jiksnu.session)
   (:require [karras.entity :as entity]
             [jiksnu.model.user :as model.user]
             jiksnu.core-test)
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(describe new-id
-  (do-it "should return a string"
-    (let [response (new-id)]
-      (expect (instance? String response)))))
+(defn test-environment-fixture
+  [f] (with-environment :test (f)))
 
-(describe index
+
+(use-fixtures :each test-environment-fixture)
+
+(deftest new-id-test
+  (testing "should return a string"
+    (let [response (new-id)]
+      (is (instance? String response)))))
+
+(deftest index-test
   (testing "when there are no activities"
-    (do-it "should be empty"
+    (testing "should be empty"
       (drop!)
       (let [response (index)]
-        (expect (empty? response)))))
+        (is (empty? response)))))
   (testing "when there are activities"
-    (do-it "should return a seq of activities"
+    (testing "should return a seq of activities"
       (let [actor (model.user/create (factory User))]
         (drop!)
         (with-user actor
           (let [activity (create (factory Activity))
                 response (index)]
-            (expect (seq response))
-            (expect (every? activity? response))))))))
+            (is (seq response))
+            (is (every? activity? response))))))))
 
-(describe fetch-by-id)
+(deftest fetch-by-id-test)
 
-(describe show
+(deftest show-test
   (testing "when the record exists"
     (testing "and the user is not logged in"
       (testing "and the record is public"
-        (do-it "should return the activity"
+        (testing "should return the activity"
           (let [author (model.user/create (factory User))
                 activity (with-user author
                            (create (factory Activity)))
                 response (show (:_id activity))]
-            (expect (activity? response)))))
+            (is (activity? response)))))
       (testing "and the record is not public"
-        (do-it "should return nil"
+        (testing "should return nil"
           (let [author (model.user/create (factory User))
                 activity (with-user author
                            (create (factory Activity {:public false})))
                 response (show (:_id activity))]
-            (expect (nil? response))))))
+            (is (nil? response))))))
     (testing "and the user is logged in"
       (testing "and is the author"
-        (do-it "should return the activity"
+        (testing "should return the activity"
           (let [user (model.user/create (factory User))]
             (with-user user
               (let [activity (create (factory Activity))
                     response (show (:_id activity))]
-                (expect (activity? response)))))))
+                (is (activity? response)))))))
       (testing "and is not the author"
         (testing "and is on the access list"
-          (do-it "should return the activity"))
+          (testing "should return the activity"))
         (testing "and is not on the access list"
           (testing "and is an admin"
-            (do-it "should return the activity"
+            (testing "should return the activity"
               (let [user (model.user/create (factory User {:admin true}))
                     author (model.user/create (factory User))]
                 (let [activity (with-user author
                                  (create (factory Activity {:public false})))]
                   (with-user user
                     (let [response (show (:_id activity))]
-                      (expect (activity? response))))))))
+                      (is (activity? response))))))))
           (testing "and is not an admin"
-            (do-it "should return nil"
+            (testing "should return nil"
               (let [user (model.user/create (factory User))
                     author (model.user/create (factory User))]
                 (let [activity
@@ -81,37 +86,37 @@
                         (create (factory Activity {:public false})))]
                   (with-user user
                     (let [response (show (:_id activity))]
-                      (expect (nil? response)))))))))))
+                      (is (nil? response)))))))))))
     (testing "and the record is not public"
       (testing "and the user is not logged in"
-        (do-it "should return nil"
+        (testing "should return nil"
           (let [activity (create (factory Activity {:public false}))
                 response (show (:_id activity))]
-            (expect (nil? response)))))
+            (is (nil? response)))))
       (testing "and the user is logged in"
         (testing "and the user is an admin"
-          (do-it "should return the activity")))))
+          (testing "should return the activity")))))
   (testing "when the record does not exist"
-    (do-it "should return nil" :pending)))
+    (testing "should return nil" :pending)))
 
-(describe drop!
+(deftest drop!-test
   (testing "when there are activities"
-    (do-it "should delete all of them"
+    (testing "should delete all of them"
       (create (factory Activity))
       (drop!)
-      (expect (empty? (index))))))
+      (is (empty? (index))))))
 
-(describe delete
+(deftest delete-test
   (testing "when a user is logged in"
     (testing "and is the owner of the activity"
-      (do-it "should delete the activity"
+      (testing "should delete the activity"
         (let [actor (model.user/create (factory User))]
           (with-user actor
             (let [activity (create (factory Activity))]
               (delete activity)
-              (expect (nil? (show (:_id activity)))))))))))
+              (is (nil? (show (:_id activity)))))))))))
 
-(describe find-by-user)
+(deftest find-by-user-test)
 
-(describe add-comment)
+(deftest add-comment-test)
 
