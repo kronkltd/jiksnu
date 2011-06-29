@@ -133,19 +133,22 @@
     (let [data-bytes (.decodeData default-sig envelope)
           uri (.getSignerUri (SimpleAtomDataParser.) data-bytes)]
       (spy uri)
-      (let [data  (spy (String. data-bytes))]
+      (let [data (spy (String. data-bytes))]
         (if-let [entry (abdera/parse-xml-string data)]
           (if-let [author (.getAuthor (spy entry))]
-            (do (spy author)
-                (let [signatures (.getSignatures envelope)]
-                  (doseq [signature (spy signatures)]
-                    (spy (bean signature)))
-                  (let [verification-result (.verify default-sig envelope)
-                        result-data (.getData (spy verification-result))
-                        sig-results (.getSignatureVerificationResults
-                                     (spy verification-result))]
-                    (spy (map (fn [r] (.isVerified r))
-                              (spy sig-results))))))))))))
+            (let [author-uri (.getUri author)
+                  ;; user (model.user/fetch-or-create-by-url author-uri)
+                  ]
+              (spy author)
+              (let [signatures (.getSignatures envelope)]
+                (doseq [signature (spy signatures)]
+                  (spy (bean signature)))
+                (let [verification-result (.verify default-sig envelope)
+                      result-data (.getData (spy verification-result))
+                      sig-results (.getSignatureVerificationResults
+                                   (spy verification-result))]
+                  (spy (map (fn [r] (.isVerified r))
+                            (spy sig-results))))))))))))
 
 (defaction show
   ;;   "This action just returns the passed user.

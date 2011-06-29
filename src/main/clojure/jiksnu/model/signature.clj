@@ -235,3 +235,12 @@
                          (.getBytes envelope "UTF-8")))
         verified-data (.verify salmon m)]
     (String. verified-data "UTF-8")))
+
+(defn make-magic-key
+  [keypair]
+  (let [mk (MagicKey. "RSA" )]
+    (.setType "RSA")
+    (.setN )
+    (.setE )
+    )  
+  )

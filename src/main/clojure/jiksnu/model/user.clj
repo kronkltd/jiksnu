@@ -89,6 +89,8 @@
   [uri]
   (apply find-or-create (split-uri uri)))
 
+
+
 (defn find-or-create-by-jid
   [jid]
   (find-or-create (.getLocalpart jid) (.getDomain jid)))
@@ -160,3 +162,4 @@
   [^Element element]
   (= (.getName element) "acl-rule"))
 
+(defn discover-by-url)
