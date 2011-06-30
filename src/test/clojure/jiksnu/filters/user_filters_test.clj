@@ -5,14 +5,14 @@
         jiksnu.session
         jiksnu.actions.user-actions
         jiksnu.view
-        [lazytest.describe :only (describe do-it testing for-any)]
+        [lazytest.deftest :only (deftest do-it testing for-any)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-;; (describe show {:focus true}
+;; (deftest show {:focus true}
 ;;   (testing "when the user exists"
 ;;     (do-it "should return that user"
 ;;       (model.user/drop!)
@@ -28,7 +28,7 @@
 ;;         (expect (= response user))))))
 
 
-;; (describe inbox
+;; (deftest inbox
 ;;   (testing "when there are no activities"
 ;;     (do-it "should be empty"
 ;;       (model.activity/drop!)

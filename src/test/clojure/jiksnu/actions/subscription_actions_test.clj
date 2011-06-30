@@ -6,29 +6,13 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.view
-        [lazytest.describe :only (describe testing do-it)]
-        [lazytest.expect :only (expect)])
+        jiksnu.view)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-(describe delete)
-
-(describe index)
-
-(describe ostatus)
-
-(describe ostatussub)
-
-(describe ostatussub-submit)
-
-(describe remote-subscribe)
-
-(describe remote-subscribe-confirm)
-
-(describe subscribe
+(deftest subscribe
   (testing "when the user is not already subscribed"
     (do-it "should return a subscription"
       (let [user (model.user/create (factory User))
@@ -38,7 +22,7 @@
           (let [response (subscribe subscribee)]
             (expect (subscription? response))))))))
 
-(describe subscribers
+(deftest subscribers
   (testing "when there are subscribers"
     (do-it "should not be empty"
       (let [user (model.user/create (factory User))
@@ -51,7 +35,7 @@
         (expect (seq subscriptions))
         (expect (every? (partial instance? Subscription) subscriptions))))))
 
-(describe subscriptions
+(deftest subscriptions
   (testing "when there are subscriptions"
     (do-it "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
@@ -64,5 +48,3 @@
             [user subscriptions] response]
         (expect (not (empty? subscriptions)))
         (expect (every? (partial instance? Subscription) subscriptions))))))
-
-(describe unsubscribe)

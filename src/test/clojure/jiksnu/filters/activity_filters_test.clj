@@ -3,16 +3,13 @@
         ciste.debug
         ciste.filters
         ciste.sections
-        ;; ciste.views
         clj-factory.core
         jiksnu.filters.activity-filters
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         jiksnu.view
-        jiksnu.xmpp.element
-        [lazytest.describe :only (describe testing do-it for-any)]
-        [lazytest.expect :only (expect)])
+        jiksnu.xmpp.element)
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
@@ -20,7 +17,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-;; (describe filter-action "#'actions.activity/create :xmpp"
+;; (deftest filter-action "#'actions.activity/create :xmpp"
 ;;   (testing "when the user is logged in"
 ;;     (testing "and it is a valid activity"
 ;;       (do-it "should return that activity"
@@ -41,7 +38,7 @@
 ;;                       response (filter-action #'create request)]
 ;;                   (expect (activity? response)))))))))))
 
-(describe filter-action "#'index :http :html"
+(deftest filter-action "#'index :http :html"
   (testing "when there are no activities"
     (do-it "should be empty"
       (model.activity/drop!)
@@ -62,7 +59,7 @@
             (expect (class (first response)))
             (expect (every? activity? response))))))))
 
-(describe filter-action "#'index :xmpp"
+(deftest filter-action "#'index :xmpp"
   (testing "when there are no activities"
     (do-it "should return an empty sequence"
       (model.activity/drop!)
@@ -96,7 +93,7 @@
             (expect (seq response))
             (expect (every? activity? response))))))))
 
-(describe filter-action "#'show :xmpp"
+(deftest filter-action "#'show :xmpp"
   (testing "when the activity exists"
     (do-it "should return that activity"
       (let [author (model.user/create (factory User))]

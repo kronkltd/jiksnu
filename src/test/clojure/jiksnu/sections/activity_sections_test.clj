@@ -11,9 +11,7 @@
         jiksnu.sections.activity-sections
         jiksnu.session
         jiksnu.xmpp.element
-        jiksnu.view
-        [lazytest.describe :only (describe testing do-it for-any)]
-        [lazytest.expect :only (expect)])
+        jiksnu.view)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
@@ -30,7 +28,7 @@
 ;; add-form
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe add-form "Activity :html"
+(deftest add-form "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -42,7 +40,7 @@
 ;; edit-form
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe edit-form "Activity :html"
+(deftest edit-form "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -54,17 +52,17 @@
 ;; index-block
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe index-block "Activity :xmpp :xmpp")
+(deftest index-block "Activity :xmpp :xmpp")
 
-(describe index-block "Activity :html")
+(deftest index-block "Activity :html")
 
-(describe index-block "Activity :xml")
+(deftest index-block "Activity :xml")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-block-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe index-block-minimal "Activity :html"
+(deftest index-block-minimal "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -76,15 +74,15 @@
 ;; index-line
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe index-line "Activity")
+(deftest index-line "Activity")
 
-(describe index-line "Activity :xmpp :xmpp")
+(deftest index-line "Activity :xmpp :xmpp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe index-line-minimal "Activity :html"
+(deftest index-line-minimal "Activity :html"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -96,15 +94,15 @@
 ;; index-section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe index-section "Activity :xmpp :xmpp")
+(deftest index-section "Activity :xmpp :xmpp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe show-section "Activity :json")
+(deftest show-section "Activity :json")
 
-(describe show-section "Activity :xmpp :xmpp"
+(deftest show-section "Activity :xmpp :xmpp"
   (do-it "should return an element"
     (with-serialization :xmpp
       (with-format :xmpp
@@ -115,7 +113,7 @@
               (expect (not (nil? response)))
               (expect (element? response)))))))))
 
-(describe show-section "Activity :atom"
+(deftest show-section "Activity :atom"
   (do-it "should return an abdera entry"
     (with-serialization :http
       (with-format :atom
@@ -128,13 +126,13 @@
           (expect (.getTitle response))
           (expect (.getUpdated response)))))))
 
-(describe show-section "Activity :xml")
+(deftest show-section "Activity :xml")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe show-section-minimal "[Activity :html]"
+(deftest show-section-minimal "[Activity :html]"
   (do-it "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -146,13 +144,13 @@
 ;; title
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe title "Activity")
+(deftest title "Activity")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uri
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(describe uri "Activity"
+(deftest uri "Activity"
   (do-it "should be a string"
     (with-serialization :http
       (with-format :html

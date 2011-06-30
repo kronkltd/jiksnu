@@ -2,15 +2,13 @@
   (:use clj-factory.core
         clj-tigase.core
         jiksnu.helpers.subscription-helpers
-        [lazytest.describe :only (describe testing do-it for-any)]
+        [lazytest.deftest :only (deftest testing do-it for-any)]
         [lazytest.expect :only (expect)])
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(describe delete-form)
-
-(describe subscriber-response-element
+(deftest subscriber-response-element
   (do-it "should"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
@@ -20,11 +18,7 @@
         (expect (or (vector? response)
                     (element? response)))))))
 
-(describe subscription-response-element)
-
-(describe unsubscription-request)
-
-(describe subscribe-request
+(deftest subscribe-request
   (do-it "should"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
@@ -33,10 +27,3 @@
       (let [response (subscribe-request subscription)]
         (expect (or (vector? response)
                     (element? response)))))))
-
-(describe subscribers-response)
-
-(describe subscription-response)
-
-
-

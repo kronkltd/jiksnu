@@ -9,46 +9,46 @@
         jiksnu.namespace
         jiksnu.session
         jiksnu.view
-        [lazytest.describe :only (describe testing do-it for-any)]
+        [lazytest.deftest :only (deftest testing do-it for-any)]
         [lazytest.expect :only (expect)])
   (:import jiksnu.model.Activity))
 
 
-(describe new-entry)
+(deftest new-entry)
 
-(describe add-author)
+(deftest add-author)
 
-(describe add-authors)
+(deftest add-authors)
 
-(describe add-entry)
+(deftest add-entry)
 
-(describe get-actor)
+(deftest get-actor)
 
-(describe privacy-section)
+(deftest privacy-section)
 
-(describe activity-form)
+(deftest activity-form)
 
-(describe delete-link)
+(deftest delete-link)
 
-(describe edit-link)
+(deftest edit-link)
 
-(describe comment-link)
+(deftest comment-link)
 
-(describe like-link)
+(deftest like-link)
 
-(describe update-button)
+(deftest update-button)
 
-(describe make-feed)
+(deftest make-feed)
 
-(describe comment-link-item)
+(deftest comment-link-item)
 
-(describe acl-link)
+(deftest acl-link)
 
-(describe parse-extension-element)
+(deftest parse-extension-element)
 
-(describe get-authors)
+(deftest get-authors)
 
-(describe to-activity
+(deftest to-activity
   (do-it "should return a map"
     (with-serialization :http
       (with-format :atom
@@ -57,7 +57,7 @@
               response (to-activity entry)]
           (expect (map? response)))))))
 
-(describe to-json
+(deftest to-json
   (do-it "should not be nil"
     (with-serialization :http
       (with-format :atom
@@ -66,7 +66,7 @@
               response (to-json entry)]
           (expect (not (nil? response))))))))
 
-;; (describe parse-json-element
+;; (deftest parse-json-element
 ;;   (testing "when there are attributes"
 ;;     (do-it "should have an attribute"
 ;;       (let [json-map (extension-with-attributes-map)
@@ -77,15 +77,15 @@
 ;;       (let [response (parse-json-element (extension-with-children-map))]
 ;;         (expect (seq (.getElements response)))))))
 
-(describe add-extensions)
+(deftest add-extensions)
 
-(describe has-author?)
+(deftest has-author?)
 
-(describe comment-node-uri)
+(deftest comment-node-uri)
 
-(describe comment-request)
+(deftest comment-request)
 
-(describe set-id
+(deftest set-id
   (testing "when there is an id"
     (do-it "should not change the value"
       (let [activity (factory Activity)
@@ -98,9 +98,9 @@
             response (set-id activity)]
         (:_id response)))))
 
-(describe set-object-id)
+(deftest set-object-id)
 
-(describe set-updated-time
+(deftest set-updated-time
   (testing "when there is an updated property"
     (do-it "should not change the value"
       (let [activity (factory Activity)
@@ -113,13 +113,13 @@
             response (set-updated-time activity)]
         (expect (:updated response))))))
 
-(describe set-object-updated)
+(deftest set-object-updated)
 
-(describe set-published-time)
+(deftest set-published-time)
 
-(describe set-object-published)
+(deftest set-object-published)
 
-(describe set-actor)
+(deftest set-actor)
 
-(describe set-public)
+(deftest set-public)
 
