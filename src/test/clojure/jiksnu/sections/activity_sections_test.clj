@@ -29,7 +29,7 @@
 ;; add-form
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest add-form "Activity :html"
+(deftest add-form-test "Activity :html"
   (testing "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -41,7 +41,7 @@
 ;; edit-form
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest edit-form "Activity :html"
+(deftest edit-form-test "Activity :html"
   (testing "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -53,17 +53,17 @@
 ;; index-block
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest index-block "Activity :xmpp :xmpp")
+(deftest index-block-test "Activity :xmpp :xmpp")
 
-(deftest index-block "Activity :html")
+(deftest index-block-test "Activity :html")
 
-(deftest index-block "Activity :xml")
+(deftest index-block-test "Activity :xml")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-block-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest index-block-minimal "Activity :html"
+(deftest index-block-minimal-test "Activity :html"
   (testing "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -75,15 +75,15 @@
 ;; index-line
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest index-line "Activity")
+(deftest index-line-test "Activity")
 
-(deftest index-line "Activity :xmpp :xmpp")
+(deftest index-line-test "Activity :xmpp :xmpp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest index-line-minimal "Activity :html"
+(deftest index-line-minimal-test "Activity :html"
   (testing "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -95,15 +95,15 @@
 ;; index-section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest index-section "Activity :xmpp :xmpp")
+(deftest index-section-test "Activity :xmpp :xmpp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest show-section "Activity :json")
+(deftest show-section-test "Activity :json")
 
-(deftest show-section "Activity :xmpp :xmpp"
+(deftest show-section-test "Activity :xmpp :xmpp"
   (testing "should return an element"
     (with-serialization :xmpp
       (with-format :xmpp
@@ -114,7 +114,7 @@
               (expect (not (nil? response)))
               (expect (element? response)))))))))
 
-(deftest show-section "Activity :atom"
+(deftest show-section-test "Activity :atom"
   (testing "should return an abdera entry"
     (with-serialization :http
       (with-format :atom
@@ -127,13 +127,13 @@
           (expect (.getTitle response))
           (expect (.getUpdated response)))))))
 
-(deftest show-section "Activity :xml")
+(deftest show-section-test "Activity :xml")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section-minimal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest show-section-minimal "[Activity :html]"
+(deftest show-section-minimal-test "[Activity :html]"
   (testing "should be a vector"
     (with-serialization :http
       (with-format :html
@@ -145,13 +145,13 @@
 ;; title
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest title "Activity")
+(deftest title-test "Activity")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uri
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest uri "Activity"
+(deftest uri-test "Activity"
   (testing "should be a string"
     (with-serialization :http
       (with-format :html

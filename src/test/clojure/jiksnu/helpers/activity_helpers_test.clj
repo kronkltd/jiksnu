@@ -12,41 +12,6 @@
         jiksnu.view)
   (:import jiksnu.model.Activity))
 
-
-(deftest new-entry)
-
-(deftest add-author)
-
-(deftest add-authors)
-
-(deftest add-entry)
-
-(deftest get-actor)
-
-(deftest privacy-section)
-
-(deftest activity-form)
-
-(deftest delete-link)
-
-(deftest edit-link)
-
-(deftest comment-link)
-
-(deftest like-link)
-
-(deftest update-button)
-
-(deftest make-feed)
-
-(deftest comment-link-item)
-
-(deftest acl-link)
-
-(deftest parse-extension-element)
-
-(deftest get-authors)
-
 (deftest to-activity
   (testing "should return a map"
     (with-serialization :http
@@ -65,25 +30,6 @@
               response (to-json entry)]
           (expect (not (nil? response))))))))
 
-;; (deftest parse-json-element
-;;   (testing "when there are attributes"
-;;     (testing "should have an attribute"
-;;       (let [json-map (extension-with-attributes-map)
-;;             response (parse-json-element json-map)]
-;;         (expect (seq (.getAttributes response))))))
-;;   (testing "when there are children elements"
-;;     (testing "should add those elements"
-;;       (let [response (parse-json-element (extension-with-children-map))]
-;;         (expect (seq (.getElements response)))))))
-
-(deftest add-extensions)
-
-(deftest has-author?)
-
-(deftest comment-node-uri)
-
-(deftest comment-request)
-
 (deftest set-id
   (testing "when there is an id"
     (testing "should not change the value"
@@ -97,8 +43,6 @@
             response (set-id activity)]
         (:_id response)))))
 
-(deftest set-object-id)
-
 (deftest set-updated-time
   (testing "when there is an updated property"
     (testing "should not change the value"
@@ -111,14 +55,3 @@
       (let [activity (dissoc (factory Activity) :updated)
             response (set-updated-time activity)]
         (expect (:updated response))))))
-
-(deftest set-object-updated)
-
-(deftest set-published-time)
-
-(deftest set-object-published)
-
-(deftest set-actor)
-
-(deftest set-public)
-

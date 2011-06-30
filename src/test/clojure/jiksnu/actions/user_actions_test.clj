@@ -11,7 +11,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(deftest show
+(deftest show-test
   (testing "when the user exists"
     (testing "should return that user"
       (model.user/drop!)

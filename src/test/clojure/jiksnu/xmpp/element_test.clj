@@ -13,7 +13,7 @@
         jiksnu.xmpp.element)
   (:import jiksnu.model.Activity))
 
-(describe abdera-to-tigase-element
+(deftest abdera-to-tigase-element-test
   (testing "should return a tigase element"
     (with-serialization :xmpp
       (with-format :atom

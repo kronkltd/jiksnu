@@ -13,11 +13,7 @@
            [jiksnu.actions.user-actions :as actions.user])
  (:import jiksnu.model.User))
 
-(deftest get-uri)
-
-(deftest author-uri)
-
-(deftest uri "User :html :http"
+(deftest uri-test "User :html :http"
   (testing "should return a link to that user"
     (with-format :html
       (with-serialization :http
@@ -25,7 +21,7 @@
           (let [response (uri user)]
             (expect (instance? String response))))))))
 
-(deftest title "User"
+(deftest title-test "User"
   (testing "should return the title of that user"
     (with-format :html
       (with-serialization :http
@@ -33,7 +29,7 @@
           (let [response (title user)]
             (expect (instance? String response))))))))
 
-(deftest avatar-img
+(deftest avatar-img-test
   (testing "should return an image html"
     (with-format :html
       (with-serialization :http
@@ -41,33 +37,7 @@
           (let [response (avatar-img user)]
             (expect (vector? response))))))))
 
-(deftest display-minimal "User")
-
-(deftest index-table-line "User")
-
-(deftest add-form "User")
-
-(deftest edit-form "User")
-
-(deftest subscribe-form)
-
-(deftest unsubscribe-form)
-
-(deftest user-actions)
-
-(deftest show-section "User")
-
-(deftest apply-view "#'index :html")
-
-(deftest apply-view "#'show :html")
-
-(deftest apply-view "#'edit :html")
-
-(deftest apply-view "#'update :html")
-
-(deftest apply-view "#'delete :html")
-
-(deftest show-section "User :xmpp :xmpp"
+(deftest show-section-test "User :xmpp :xmpp"
   (testing "should return an element"
     (with-serialization :xmpp
       (with-format :xmpp
@@ -75,7 +45,7 @@
           (let [response (show-section user)]
             (expect (element? response))))))))
 
-(deftest apply-view "#'show :xmpp"
+(deftest apply-view-test "#'show :xmpp"
   (testing "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp
@@ -91,7 +61,7 @@
             (expect (map? response))
             (expect (= :result (:type response)))))))))
 
-(deftest apply-view "#'fetch-remote :xmpp"
+(deftest apply-view-test "#'fetch-remote :xmpp"
   (testing "should return an iq query packet map"
     (with-format :xmpp
       (with-serialization :xmpp
@@ -107,7 +77,7 @@
             (expect (map? response))
             (expect (= :get (:type response)))))))))
 
-(deftest apply-view "#'remote-create :xmpp"
+(deftest apply-view-test "#'remote-create :xmpp"
   (testing "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp

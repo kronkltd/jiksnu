@@ -16,25 +16,7 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-(deftest filter-action "delete")
-
-(deftest filter-action "index")
-
-(deftest filter-action "ostatus")
-
-(deftest filter-action "ostatussub")
-
-(deftest filter-action "ostatussub-submit")
-
-(deftest filter-action "remote-subscribe")
-
-(deftest filter-action "remote-subscribe-confirm")
-
-(deftest filter-action "#'subscriptions :xmpp")
-
-(deftest filter-action  "#'subscribers :xmpp")
-
-(deftest filter-action "#'subscribe :html :http"
+(deftest filter-action-test "#'subscribe :html :http"
   (testing "when the user is not already subscribed"
     (testing "should return a subscription"
       (let [user (model.user/create (factory User))
@@ -46,7 +28,7 @@
             (let [subscription (filter-action #'subscribe request)]
               (expect (subscription? subscription)))))))))
 
-(deftest filter-action "#'subscribers :xmpp"
+(deftest filter-action-test "#'subscribers :xmpp"
   (testing "when there are subscribers"
     (testing "should not be empty"
       (let [user (model.user/create (factory User))
@@ -70,7 +52,7 @@
         (expect (seq subscribers))
         (expect (every? (partial instance? Subscription) subscribers))))))
 
-(deftest filter-action "#'subscriptions :xmpp"
+(deftest filter-action-test "#'subscriptions :xmpp"
   (testing "when there are subscriptions"
     (testing "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
@@ -93,5 +75,3 @@
             [user subscriptions] results]
         (expect (not (empty? subscriptions)))
         (expect (every? (partial instance? Subscription) subscriptions))))))
-
-(deftest filter-action "#'unsubscribe")

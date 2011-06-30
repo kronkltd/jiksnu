@@ -14,7 +14,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(deftest notify-activity
+(deftest notify-activity-test
   (testing "should return a packet"
     (let [user (model.user/create (factory User))]
       (with-user user
