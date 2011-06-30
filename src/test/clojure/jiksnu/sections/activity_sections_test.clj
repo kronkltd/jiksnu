@@ -29,7 +29,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest add-form "Activity :html"
-  (do-it "should be a vector"
+  (testing "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
@@ -41,7 +41,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest edit-form "Activity :html"
-  (do-it "should be a vector"
+  (testing "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
@@ -63,7 +63,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest index-block-minimal "Activity :html"
-  (do-it "should be a vector"
+  (testing "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
@@ -83,7 +83,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest index-line-minimal "Activity :html"
-  (do-it "should be a vector"
+  (testing "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
@@ -103,7 +103,7 @@
 (deftest show-section "Activity :json")
 
 (deftest show-section "Activity :xmpp :xmpp"
-  (do-it "should return an element"
+  (testing "should return an element"
     (with-serialization :xmpp
       (with-format :xmpp
         (let [user (model.user/create (factory User))]
@@ -114,7 +114,7 @@
               (expect (element? response)))))))))
 
 (deftest show-section "Activity :atom"
-  (do-it "should return an abdera entry"
+  (testing "should return an abdera entry"
     (with-serialization :http
       (with-format :atom
         (let [user (factory User)
@@ -133,7 +133,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest show-section-minimal "[Activity :html]"
-  (do-it "should be a vector"
+  (testing "should be a vector"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
@@ -151,7 +151,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest uri "Activity"
-  (do-it "should be a string"
+  (testing "should be a string"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))

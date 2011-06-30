@@ -7,16 +7,14 @@
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers
-        jiksnu.views.activity-views
-        [lazytest.deftest :only (deftest testing do-it for-any)]
-        [lazytest.expect :only (expect)])
+        jiksnu.views.activity-views)
   (require [jiksnu.model.activity :as model.activity]
            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
 (deftest notify-activity
-  (do-it "should return a packet"
+  (testing "should return a packet"
     (let [user (model.user/create (factory User))]
       (with-user user
         (let [activity (model.activity/create

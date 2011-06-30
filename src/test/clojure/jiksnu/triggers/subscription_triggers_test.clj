@@ -7,7 +7,7 @@
   (:import jiksnu.model.User))
 
 (describe notify-subscribe-xmpp
-  (do-it "should return a packet"
+  (testing "should return a packet"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
           subscription (model.subscription/subscribe

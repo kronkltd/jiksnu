@@ -7,9 +7,7 @@
        jiksnu.model
        jiksnu.view
        jiksnu.view.user-views
-       jiksnu.xmpp.element
-       [lazytest.deftest :only (deftest testing do-it)]
-       [lazytest.expect :only (expect)])
+       jiksnu.xmpp.element)
  (:require [jiksnu.model.user :as model.user]
            [jiksnu.actions.user-actions :as actions.user])
  (:import jiksnu.model.User))
@@ -19,7 +17,7 @@
 (deftest author-uri)
 
 (deftest uri "User :html :http"
-  (do-it "should return a link to that user"
+  (testing "should return a link to that user"
     (with-format :html
       (with-serialization :http
         (let [user (model.user/create (factory User))]
@@ -27,7 +25,7 @@
             (expect (instance? String response))))))))
 
 (deftest title "User"
-  (do-it "should return the title of that user"
+  (testing "should return the title of that user"
     (with-format :html
       (with-serialization :http
         (let [user (model.user/create (factory User))]
@@ -35,7 +33,7 @@
             (expect (instance? String response))))))))
 
 (deftest avatar-img
-  (do-it "should return an image html"
+  (testing "should return an image html"
     (with-format :html
       (with-serialization :http
         (let [user (model.user/create (factory User))]
@@ -69,7 +67,7 @@
 (deftest apply-view "#'delete :html")
 
 (deftest show-section "User :xmpp :xmpp"
-  (do-it "should return an element"
+  (testing "should return an element"
     (with-serialization :xmpp
       (with-format :xmpp
         (let [user (model.user/create (factory User))]
@@ -77,7 +75,7 @@
             (expect (element? response))))))))
 
 (deftest apply-view "#'show :xmpp"
-  (do-it "should return a query results packet map"
+  (testing "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp
         (let [user (model.user/create (factory User))
@@ -93,7 +91,7 @@
             (expect (= :result (:type response)))))))))
 
 (deftest apply-view "#'fetch-remote :xmpp"
-  (do-it "should return an iq query packet map"
+  (testing "should return an iq query packet map"
     (with-format :xmpp
       (with-serialization :xmpp
         (let [user (model.user/create (factory User))
@@ -109,7 +107,7 @@
             (expect (= :get (:type response)))))))))
 
 (deftest apply-view "#'remote-create :xmpp"
-  (do-it "should return a query results packet map"
+  (testing "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp
         (let [user (model.user/create (factory User))

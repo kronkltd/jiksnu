@@ -14,7 +14,7 @@
 
 (deftest subscribe
   (testing "when the user is not already subscribed"
-    (do-it "should return a subscription"
+    (testing "should return a subscription"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
@@ -24,7 +24,7 @@
 
 (deftest subscribers
   (testing "when there are subscribers"
-    (do-it "should not be empty"
+    (testing "should not be empty"
       (let [user (model.user/create (factory User))
             subscriber (model.user/create (factory User))
             subscription (model.subscription/create
@@ -37,7 +37,7 @@
 
 (deftest subscriptions
   (testing "when there are subscriptions"
-    (do-it "should return a sequence of subscriptions"
+    (testing "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             subscription (model.subscription/create

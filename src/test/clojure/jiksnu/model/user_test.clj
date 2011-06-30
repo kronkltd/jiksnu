@@ -57,20 +57,6 @@
         (let [response (show username)]
           (is (is (nil? response))))))))
 
-(deftest fetch-by-id-test)
-
-(deftest fetch-by-jid-test)
-
-(deftest fetch-by-uri-test)
-
-(deftest find-or-create-test)
-
-(deftest find-or-create-by-uri-test)
-
-(deftest find-or-create-by-jid-test)
-
-(deftest subnodes-test)
-
 (deftest edit-test
   (testing "when the user is found"
     (testing "should return a user" :pending))
@@ -80,10 +66,6 @@
 (deftest delete-test
   (testing "when the user exists"
     (testing "should be deleted" :pending)))
-
-(deftest add-node-test)
-
-(deftest inbox-test)
 
 (deftest update-test
   (testing "when the request is valid"
@@ -100,13 +82,3 @@
       (testing "should be false"
         (let [user (factory User {:domain (fseq :domain)})]
           (is (not (local? user))))))))
-
-(deftest get-uri-test)
-
-(deftest author-uri-test)
-
-(deftest get-domain-test)
-
-(deftest user-meta-uri-test)
-
-(deftest rule-element?-test)

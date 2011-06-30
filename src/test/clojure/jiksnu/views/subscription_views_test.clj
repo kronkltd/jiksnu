@@ -10,9 +10,7 @@
         jiksnu.sections.subscription-sections
         jiksnu.view
         jiksnu.views.subscription-views
-        jiksnu.xmpp.element
-        [lazytest.describe :only (describe do-it testing)]
-        [lazytest.expect :only (expect)])
+        jiksnu.xmpp.element)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.subscription-actions :as
@@ -23,7 +21,7 @@
 
 (deftest apply-view  "#'unsubscribe :xmpp"
   (testing "when there is no subscription"
-    (do-it "should return a packet map"
+    (testing "should return a packet map"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             element (make-element

@@ -1,15 +1,13 @@
 (ns jiksnu.helpers.subscription-helpers-test
   (:use clj-factory.core
         clj-tigase.core
-        jiksnu.helpers.subscription-helpers
-        [lazytest.deftest :only (deftest testing do-it for-any)]
-        [lazytest.expect :only (expect)])
+        jiksnu.helpers.subscription-helpers)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
 (deftest subscriber-response-element
-  (do-it "should"
+  (testing "should"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
           subscription (model.subscription/subscribe
@@ -19,7 +17,7 @@
                     (element? response)))))))
 
 (deftest subscribe-request
-  (do-it "should"
+  (testing "should"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
           subscription (model.subscription/subscribe

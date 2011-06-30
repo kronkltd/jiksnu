@@ -12,7 +12,7 @@
 
 (deftest show
   (testing "when the user exists"
-    (do-it "should return that user"
+    (testing "should return that user"
       (model.user/drop!)
       (let [user (model.user/create (factory User))
             response (show user)]

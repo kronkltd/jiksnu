@@ -4,9 +4,7 @@
         jiksnu.model
         jiksnu.session
         jiksnu.actions.user-actions
-        jiksnu.view
-        [lazytest.deftest :only (deftest do-it testing for-any)]
-        [lazytest.expect :only (expect)])
+        jiksnu.view)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -14,7 +12,7 @@
 
 ;; (deftest show {:focus true}
 ;;   (testing "when the user exists"
-;;     (do-it "should return that user"
+;;     (testing "should return that user"
 ;;       (model.user/drop!)
 ;;       (let [user (model.user/create (factory User))
 ;;             packet (make-packet
@@ -30,13 +28,13 @@
 
 ;; (deftest inbox
 ;;   (testing "when there are no activities"
-;;     (do-it "should be empty"
+;;     (testing "should be empty"
 ;;       (model.activity/drop!)
 ;;       (let [request (make-request nil)
 ;;             response (inbox request)]
 ;;         (expect (empty? response)))))
 ;;   (testing "when there are activities"
-;;     (do-it "should return a seq of activities"
+;;     (testing "should return a seq of activities"
 ;;       (model.activity/drop!)
 ;;       (let [request (make-request nil)
 ;;             author (model.user/create (factory User))

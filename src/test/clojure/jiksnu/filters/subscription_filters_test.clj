@@ -9,9 +9,7 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.view
-        [lazytest.deftest :only (deftest testing do-it)]
-        [lazytest.expect :only (expect)])
+        jiksnu.view)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
@@ -37,7 +35,7 @@
 
 (deftest filter-action "#'subscribe :html :http"
   (testing "when the user is not already subscribed"
-    (do-it "should return a subscription"
+    (testing "should return a subscription"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
@@ -49,7 +47,7 @@
 
 (deftest filter-action "#'subscribers :xmpp"
   (testing "when there are subscribers"
-    (do-it "should not be empty"
+    (testing "should not be empty"
       (let [user (model.user/create (factory User))
             subscriber (model.user/create (factory User))
             element (make-element
@@ -73,7 +71,7 @@
 
 (deftest filter-action "#'subscriptions :xmpp"
   (testing "when there are subscriptions"
-    (do-it "should return a sequence of subscriptions"
+    (testing "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             element (make-element

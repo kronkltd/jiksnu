@@ -20,7 +20,7 @@
 ;; (deftest filter-action "#'actions.activity/create :xmpp"
 ;;   (testing "when the user is logged in"
 ;;     (testing "and it is a valid activity"
-;;       (do-it "should return that activity"
+;;       (testing "should return that activity"
 ;;         (with-serialization :xmpp
 ;;           (with-format :xmpp
 ;;             (let [user (model.user/create (factory User))]
@@ -40,13 +40,13 @@
 
 (deftest filter-action "#'index :http :html"
   (testing "when there are no activities"
-    (do-it "should be empty"
+    (testing "should be empty"
       (model.activity/drop!)
       (let [request {:serialization :http}
             response (filter-action #'actions.activity/index request)]
         (expect (empty? response)))))
   (testing "when there are activities"
-    (do-it "should return a seq of activities"
+    (testing "should return a seq of activities"
       (model.activity/drop!)
       (let [author (actions.user/create (factory User))]
         (with-user author
@@ -61,7 +61,7 @@
 
 (deftest filter-action "#'index :xmpp"
   (testing "when there are no activities"
-    (do-it "should return an empty sequence"
+    (testing "should return an empty sequence"
       (model.activity/drop!)
       (let [user (model.user/create (factory User))
             element nil
@@ -76,7 +76,7 @@
           (expect (not (nil? response)))
           (expect (empty? response))))))
   (testing "when there are activities"
-    (do-it "should return a sequence of activities"
+    (testing "should return a sequence of activities"
       (let [author (model.user/create (factory User))]
         (with-user author
           (let [element nil
@@ -95,7 +95,7 @@
 
 (deftest filter-action "#'show :xmpp"
   (testing "when the activity exists"
-    (do-it "should return that activity"
+    (testing "should return that activity"
       (let [author (model.user/create (factory User))]
         (with-user author
           (let [activity (model.activity/create (factory Activity))
@@ -113,4 +113,4 @@
                 response (filter-action #'actions.activity/show request)]
             (expect (activity? response)))))))
   (testing "when the activity does not exist"
-    (do-it "should return nil" :pending)))
+    (testing "should return nil" :pending)))
