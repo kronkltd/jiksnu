@@ -100,20 +100,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.stuartsierra</groupId>
-        <artifactId>lazytest-maven-plugin</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <!-- <executions> -->
-        <!--   <execution> -->
-        <!--     <id>lazytest-run</id> -->
-        <!--     <phase>test</phase> -->
-        <!--     <goals> -->
-        <!--       <goal>run</goal> -->
-        <!--     </goals> -->
-        <!--   </execution> -->
-        <!-- </executions> -->
-      </plugin>
-      <plugin>
         <groupId>cuke4duke</groupId>
         <artifactId>cuke4duke-maven-plugin</artifactId>
         <version>${cuke4duke.version}</version>
@@ -197,25 +183,10 @@
       <artifactId>clj-webdriver</artifactId>
       <version>0.2.7</version>
     </dependency>
-    <!-- <dependency> -->
-    <!--   <groupId>flutter</groupId> -->
-    <!--   <artifactId>flutter</artifactId> -->
-    <!--   <version>0.0.2</version> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!--   <groupId>clj-stacktrace</groupId> -->
-    <!--   <artifactId>clj-stacktrace</artifactId> -->
-    <!--   <version>0.2.1</version> -->
-    <!-- </dependency> -->
     <dependency>
       <groupId>swank-clojure</groupId>
       <artifactId>swank-clojure</artifactId>
       <version>1.3.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>robert</groupId>
-      <artifactId>hooke</artifactId>
-      <version>1.1.0</version>
     </dependency>
     <dependency>
       <groupId>tigase</groupId>
@@ -242,16 +213,11 @@
       <artifactId>abdera-parser</artifactId>
       <version>1.1.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-extensions-json</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.stuartsierra</groupId>
-      <artifactId>lazytest</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.apache.abdera</groupId> -->
+    <!--   <artifactId>abdera-extensions-json</artifactId> -->
+    <!--   <version>1.1.1</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.apache.ws.commons.axiom</groupId>
       <artifactId>axiom-impl</artifactId>
@@ -282,23 +248,12 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.15</version>
     </dependency>
-    <!-- <dependency> -->
-    <!--   <groupId>cuke4duke</groupId> -->
-    <!--   <artifactId>cuke4duke</artifactId> -->
-    <!--   <version>${cuke4duke.version}</version> -->
-    <!--   <scope>test</scope> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!--   <groupId>org.picocontainer</groupId> -->
-    <!--   <artifactId>picocontainer</artifactId> -->
-    <!--   <version>2.8.3</version> -->
-    <!--   <scope>test</scope> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!--   <groupId>org.clojars.rayne</groupId> -->
-    <!--   <artifactId>autodoc</artifactId> -->
-    <!--   <version>0.8.0-SNAPSHOT</version> -->
-    <!-- </dependency> -->
+    <dependency>
+      <groupId>cuke4duke</groupId>
+      <artifactId>cuke4duke</artifactId>
+      <version>${cuke4duke.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
@@ -325,11 +280,6 @@
       <artifactId>aleph</artifactId>
       <version>0.2.0-alpha3-SNAPSHOT</version>
     </dependency>
-    <!-- <dependency> -->
-    <!--   <groupId>org.jboss.netty</groupId> -->
-    <!--   <artifactId>netty</artifactId> -->
-    <!--   <version>3.2.4.Final</version> -->
-    <!-- </dependency> -->
   </dependencies>
 
   <repositories>
@@ -349,16 +299,6 @@
       <url>http://maven.tigase.org</url>
       <snapshots>
         <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>stuartsierra-snapshots</id>
-      <url>http://stuartsierra.com/m2snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository>
@@ -385,26 +325,6 @@
   </repositories>
 
   <pluginRepositories>
-    <pluginRepository>
-      <id>stuartsierra-releases</id>
-      <url>http://stuartsierra.com/maven2</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>stuartsierra-snapshots</id>
-      <url>http://stuartsierra.com/m2snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
     <pluginRepository>
       <id>atlasan</id>
       <url>https://maven.atlassian.com/public/</url>
