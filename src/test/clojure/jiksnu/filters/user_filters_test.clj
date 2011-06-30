@@ -1,6 +1,7 @@
 (ns jiksnu.filters.user-filters-test
   (:use clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.model
         jiksnu.session
         jiksnu.actions.user-actions

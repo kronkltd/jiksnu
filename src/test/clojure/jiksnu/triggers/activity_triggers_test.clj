@@ -4,6 +4,7 @@
         ciste.views
         clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers

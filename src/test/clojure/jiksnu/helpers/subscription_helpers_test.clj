@@ -1,6 +1,7 @@
 (ns jiksnu.helpers.subscription-helpers-test
   (:use clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.helpers.subscription-helpers)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])

@@ -4,6 +4,7 @@
         ciste.sections.default
         clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.core-test
         jiksnu.model
         jiksnu.session

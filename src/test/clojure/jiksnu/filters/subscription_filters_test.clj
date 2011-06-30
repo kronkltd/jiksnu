@@ -3,6 +3,7 @@
         ciste.filters
         clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.actions.subscription-actions
         jiksnu.filters.subscription-filters
         jiksnu.core-test

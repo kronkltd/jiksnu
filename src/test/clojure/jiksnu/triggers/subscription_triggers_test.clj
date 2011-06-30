@@ -1,6 +1,7 @@
 (ns jiksnu.triggers.subscription-triggers-test
   (:use clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.triggers.subscription-triggers)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])

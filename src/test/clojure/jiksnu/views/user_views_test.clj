@@ -4,7 +4,8 @@
        ciste.views
        clj-factory.core
        clj-tigase.core
-       jiksnu.model
+       clojure.test
+        jiksnu.model
        jiksnu.view
        jiksnu.view.user-views
        jiksnu.xmpp.element)

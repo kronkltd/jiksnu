@@ -1,6 +1,7 @@
 (ns jiksnu.actions.subscription-actions-test
   (:use clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.actions.subscription-actions
         jiksnu.core-test
         jiksnu.model

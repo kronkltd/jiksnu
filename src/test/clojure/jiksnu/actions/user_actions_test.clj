@@ -1,6 +1,7 @@
 (ns jiksnu.actions.user-actions-test
   (:use clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.model
         jiksnu.session
         jiksnu.actions.user-actions

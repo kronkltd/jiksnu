@@ -4,6 +4,7 @@
         ciste.filters
         ciste.sections
         clj-factory.core
+        clojure.test
         jiksnu.filters.activity-filters
         jiksnu.model
         jiksnu.namespace

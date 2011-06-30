@@ -4,6 +4,7 @@
         ciste.views
         clj-factory.core
         clj-tigase.core
+        clojure.test
         jiksnu.core-test
         jiksnu.helpers.subscription-helpers
         jiksnu.namespace
