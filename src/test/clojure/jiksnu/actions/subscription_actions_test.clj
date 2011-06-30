@@ -21,7 +21,7 @@
         (model.subscription/drop!)
         (with-user user
           (let [response (subscribe subscribee)]
-            (expect (subscription? response))))))))
+            (is (subscription? response))))))))
 
 (deftest subscribers
   (testing "when there are subscribers"
@@ -33,8 +33,8 @@
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
             [_ subscriptions] (subscribers user)]
-        (expect (seq subscriptions))
-        (expect (every? (partial instance? Subscription) subscriptions))))))
+        (is (seq subscriptions))
+        (is (every? (partial instance? Subscription) subscriptions))))))
 
 (deftest subscriptions
   (testing "when there are subscriptions"
@@ -47,5 +47,5 @@
                                     :to (:_id subscribee)}))
             response (subscriptions user)
             [user subscriptions] response]
-        (expect (not (empty? subscriptions)))
-        (expect (every? (partial instance? Subscription) subscriptions))))))
+        (is (not (empty? subscriptions)))
+        (is (every? (partial instance? Subscription) subscriptions))))))

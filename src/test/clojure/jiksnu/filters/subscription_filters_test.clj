@@ -26,7 +26,7 @@
           (let [request {:params {:subscribeto (str (:_id user))}
                          :serialization :http} ]
             (let [subscription (filter-action #'subscribe request)]
-              (expect (subscription? subscription)))))))))
+              (is (subscription? subscription)))))))))
 
 (deftest filter-action-test "#'subscribers :xmpp"
   (testing "when there are subscribers"
@@ -49,8 +49,8 @@
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
             [user subscribers] (filter-action #'subscribers request)]
-        (expect (seq subscribers))
-        (expect (every? (partial instance? Subscription) subscribers))))))
+        (is (seq subscribers))
+        (is (every? (partial instance? Subscription) subscribers))))))
 
 (deftest filter-action-test "#'subscriptions :xmpp"
   (testing "when there are subscriptions"
@@ -73,5 +73,5 @@
                                     :to (:_id subscribee)}))
             results (filter-action #'subscriptions request)
             [user subscriptions] results]
-        (expect (not (empty? subscriptions)))
-        (expect (every? (partial instance? Subscription) subscriptions))))))
+        (is (not (empty? subscriptions)))
+        (is (every? (partial instance? Subscription) subscriptions))))))

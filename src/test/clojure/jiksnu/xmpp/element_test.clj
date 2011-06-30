@@ -20,4 +20,4 @@
         (let [activity (factory Activity)
               abdera-element (show-section activity)
               response (abdera-to-tigase-element abdera-element)]
-          (expect (element? response)))))))
+          (is (element? response)))))))

@@ -14,4 +14,4 @@
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))
           response (notify-subscribe-xmpp {:id "JIKSNU1"} subscription)]
-      (expect (packet? response)))))
+      (is (packet? response)))))

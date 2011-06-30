@@ -17,5 +17,5 @@
       (model.user/drop!)
       (let [user (model.user/create (factory User))
             response (show user)]
-        (expect (instance? User response))
-        (expect (= response user))))))
+        (is (instance? User response))
+        (is (= response user))))))

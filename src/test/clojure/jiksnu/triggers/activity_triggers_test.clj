@@ -22,4 +22,4 @@
                         (factory Activity
                                  {:authors [(:_id user)]}))
               response (notify-activity user activity)]
-          (expect (packet? response)))))))
+          (is (packet? response)))))))

@@ -37,7 +37,7 @@
 ;;                       request (assoc (make-request packet)
 ;;                                 :serialization :xmpp)
 ;;                       response (filter-action #'create request)]
-;;                   (expect (activity? response)))))))))))
+;;                   (is (activity? response)))))))))))
 
 (deftest filter-action-test
   (testing "#'index :http :html"
@@ -46,7 +46,7 @@
         (model.activity/drop!)
         (let [request {:serialization :http}
               response (filter-action #'actions.activity/index request)]
-          (expect (empty? response)))))
+          (is (empty? response)))))
     (testing "when there are activities"
       (testing "should return a seq of activities"
         (model.activity/drop!)
@@ -57,9 +57,9 @@
                            :action #'actions.activity/index
                            :format :html}
                   response (filter-action #'actions.activity/index request)]
-              (expect (seq response))
-              (expect (class (first response)))
-              (expect (every? activity? response)))))))))
+              (is (seq response))
+              (is (class (first response)))
+              (is (every? activity? response)))))))))
 
 (deftest filter-action-test
   (testing "#'index :xmpp"
@@ -76,8 +76,8 @@
               request (assoc (make-request packet)
                         :serialization :xmpp)]
           (let [response (filter-action #'actions.activity/index request)]
-            (expect (not (nil? response)))
-            (expect (empty? response))))))
+            (is (not (nil? response)))
+            (is (empty? response))))))
     (testing "when there are activities"
       (testing "should return a sequence of activities"
         (let [author (model.user/create (factory User))]
@@ -93,8 +93,8 @@
                             :serialization :xmpp)
                   activity (model.activity/create (factory Activity))
                   response (filter-action #'actions.activity/index request)]
-              (expect (seq response))
-              (expect (every? activity? response)))))))))
+              (is (seq response))
+              (is (every? activity? response)))))))))
 
 (deftest filter-action-test
   (testing "#'show :xmpp"
@@ -115,6 +115,6 @@
                   request (assoc (make-request packet)
                             :serialization :xmpp)
                   response (filter-action #'actions.activity/show request)]
-              (expect (activity? response)))))))
+              (is (activity? response)))))))
     (testing "when the activity does not exist"
       (testing "should return nil" :pending))))

@@ -14,7 +14,7 @@
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))]
       (let [response (subscriber-response-element subscription)]
-        (expect (or (vector? response)
+        (is (or (vector? response)
                     (element? response)))))))
 
 (deftest subscribe-request
@@ -24,5 +24,5 @@
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))]
       (let [response (subscribe-request subscription)]
-        (expect (or (vector? response)
+        (is (or (vector? response)
                     (element? response)))))))

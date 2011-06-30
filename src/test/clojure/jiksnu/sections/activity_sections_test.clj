@@ -35,7 +35,7 @@
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (add-form activity)))))))))
+            (is (vector? (add-form activity)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edit-form
@@ -47,7 +47,7 @@
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (edit-form activity)))))))))
+            (is (vector? (edit-form activity)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-block
@@ -69,7 +69,7 @@
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (index-block-minimal [activity])))))))))
+            (is (vector? (index-block-minimal [activity])))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line
@@ -89,7 +89,7 @@
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (index-line-minimal activity)))))))))
+            (is (vector? (index-line-minimal activity)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-section
@@ -111,8 +111,8 @@
           (with-user user
             (let [entry (model.activity/create (factory Activity))
                   response (show-section entry)]
-              (expect (not (nil? response)))
-              (expect (element? response)))))))))
+              (is (not (nil? response)))
+              (is (element? response)))))))))
 
 (deftest show-section-test "Activity :atom"
   (testing "should return an abdera entry"
@@ -122,10 +122,10 @@
               actor (model.user/create user)
               activity (factory Activity {:authors [(:_id actor)]})
               response (show-section activity)]
-          (expect (instance? Entry response))
-          (expect (.getId response))
-          (expect (.getTitle response))
-          (expect (.getUpdated response)))))))
+          (is (instance? Entry response))
+          (is (.getId response))
+          (is (.getTitle response))
+          (is (.getUpdated response)))))))
 
 (deftest show-section-test "Activity :xml")
 
@@ -139,7 +139,7 @@
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (vector? (show-section-minimal activity)))))))))
+            (is (vector? (show-section-minimal activity)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; title
@@ -157,4 +157,4 @@
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (expect (string? (uri activity)))))))))
+            (is (string? (uri activity)))))))))

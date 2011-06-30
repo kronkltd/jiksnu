@@ -23,8 +23,8 @@
 ;;                      :body nil})
 ;;             request (make-request packet)
 ;;             response (show request)]
-;;         (expect (instance? User response))
-;;         (expect (= response user))))))
+;;         (is (instance? User response))
+;;         (is (= response user))))))
 
 
 ;; (deftest inbox
@@ -33,7 +33,7 @@
 ;;       (model.activity/drop!)
 ;;       (let [request (make-request nil)
 ;;             response (inbox request)]
-;;         (expect (empty? response)))))
+;;         (is (empty? response)))))
 ;;   (testing "when there are activities"
 ;;     (testing "should return a seq of activities"
 ;;       (model.activity/drop!)
@@ -42,6 +42,6 @@
 ;;             created-activity (with-user author
 ;;                                (model.activity/create (factory Activity)))
 ;;             response (inbox request)]
-;;         (expect (seq response))
-;;         (expect (every? #(instance? Activity %) response))))))
+;;         (is (seq response))
+;;         (is (every? #(instance? Activity %) response))))))
 

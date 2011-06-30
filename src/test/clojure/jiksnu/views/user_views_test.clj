@@ -19,7 +19,7 @@
       (with-serialization :http
         (let [user (model.user/create (factory User))]
           (let [response (uri user)]
-            (expect (instance? String response))))))))
+            (is (instance? String response))))))))
 
 (deftest title-test "User"
   (testing "should return the title of that user"
@@ -27,7 +27,7 @@
       (with-serialization :http
         (let [user (model.user/create (factory User))]
           (let [response (title user)]
-            (expect (instance? String response))))))))
+            (is (instance? String response))))))))
 
 (deftest avatar-img-test
   (testing "should return an image html"
@@ -35,7 +35,7 @@
       (with-serialization :http
         (let [user (model.user/create (factory User))]
           (let [response (avatar-img user)]
-            (expect (vector? response))))))))
+            (is (vector? response))))))))
 
 (deftest show-section-test "User :xmpp :xmpp"
   (testing "should return an element"
@@ -43,7 +43,7 @@
       (with-format :xmpp
         (let [user (model.user/create (factory User))]
           (let [response (show-section user)]
-            (expect (element? response))))))))
+            (is (element? response))))))))
 
 (deftest apply-view-test "#'show :xmpp"
   (testing "should return a query results packet map"
@@ -58,8 +58,8 @@
                               :action #'actions.user/show}
                              (make-request packet))]
           (let [response (apply-view request user)]
-            (expect (map? response))
-            (expect (= :result (:type response)))))))))
+            (is (map? response))
+            (is (= :result (:type response)))))))))
 
 (deftest apply-view-test "#'fetch-remote :xmpp"
   (testing "should return an iq query packet map"
@@ -74,8 +74,8 @@
                               :action #'actions.user/fetch-remote}
                              (make-request packet))]
           (let [response (apply-view request user)]
-            (expect (map? response))
-            (expect (= :get (:type response)))))))))
+            (is (map? response))
+            (is (= :get (:type response)))))))))
 
 (deftest apply-view-test "#'remote-create :xmpp"
   (testing "should return a query results packet map"
@@ -90,5 +90,5 @@
                               :action #'actions.user/remote-create}
                              (make-request packet))]
           (let [response (apply-view request user)]
-            (expect (map? response))
-            (expect (= :result (:type response)))))))))
+            (is (map? response))
+            (is (= :result (:type response)))))))))

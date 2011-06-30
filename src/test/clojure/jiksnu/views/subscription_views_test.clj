@@ -39,4 +39,4 @@
             record (actions.subscription/unsubscribe (:_id user)
                                                      (:_id subscribee))
             response (apply-view request record)]
-        (expect (map? response))))))
+        (is (map? response))))))
