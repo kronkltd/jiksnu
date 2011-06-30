@@ -19,9 +19,9 @@
              actions.subscription])
   (:import jiksnu.model.User))
 
-(describe apply-view "#'subscribe :xmpp")
+(deftest apply-view "#'subscribe :xmpp")
 
-(describe apply-view  "#'unsubscribe :xmpp"
+(deftest apply-view  "#'unsubscribe :xmpp"
   (testing "when there is no subscription"
     (do-it "should return a packet map"
       (let [user (model.user/create (factory User))
@@ -42,6 +42,6 @@
             response (apply-view request record)]
         (expect (map? response))))))
 
-(describe apply-view "#'subscribed :xmpp")
+(deftest apply-view "#'subscribed :xmpp")
 
-(describe apply-view "#'remote-subscribe-confirm :xmpp")
+(deftest apply-view "#'remote-subscribe-confirm :xmpp")

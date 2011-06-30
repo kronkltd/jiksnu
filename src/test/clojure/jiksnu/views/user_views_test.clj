@@ -8,17 +8,17 @@
        jiksnu.view
        jiksnu.view.user-views
        jiksnu.xmpp.element
-       [lazytest.describe :only (describe testing do-it)]
+       [lazytest.deftest :only (deftest testing do-it)]
        [lazytest.expect :only (expect)])
  (:require [jiksnu.model.user :as model.user]
            [jiksnu.actions.user-actions :as actions.user])
  (:import jiksnu.model.User))
 
-(describe get-uri)
+(deftest get-uri)
 
-(describe author-uri)
+(deftest author-uri)
 
-(describe uri "User :html :http"
+(deftest uri "User :html :http"
   (do-it "should return a link to that user"
     (with-format :html
       (with-serialization :http
@@ -26,7 +26,7 @@
           (let [response (uri user)]
             (expect (instance? String response))))))))
 
-(describe title "User"
+(deftest title "User"
   (do-it "should return the title of that user"
     (with-format :html
       (with-serialization :http
@@ -34,7 +34,7 @@
           (let [response (title user)]
             (expect (instance? String response))))))))
 
-(describe avatar-img
+(deftest avatar-img
   (do-it "should return an image html"
     (with-format :html
       (with-serialization :http
@@ -42,33 +42,33 @@
           (let [response (avatar-img user)]
             (expect (vector? response))))))))
 
-(describe display-minimal "User")
+(deftest display-minimal "User")
 
-(describe index-table-line "User")
+(deftest index-table-line "User")
 
-(describe add-form "User")
+(deftest add-form "User")
 
-(describe edit-form "User")
+(deftest edit-form "User")
 
-(describe subscribe-form)
+(deftest subscribe-form)
 
-(describe unsubscribe-form)
+(deftest unsubscribe-form)
 
-(describe user-actions)
+(deftest user-actions)
 
-(describe show-section "User")
+(deftest show-section "User")
 
-(describe apply-view "#'index :html")
+(deftest apply-view "#'index :html")
 
-(describe apply-view "#'show :html")
+(deftest apply-view "#'show :html")
 
-(describe apply-view "#'edit :html")
+(deftest apply-view "#'edit :html")
 
-(describe apply-view "#'update :html")
+(deftest apply-view "#'update :html")
 
-(describe apply-view "#'delete :html")
+(deftest apply-view "#'delete :html")
 
-(describe show-section "User :xmpp :xmpp"
+(deftest show-section "User :xmpp :xmpp"
   (do-it "should return an element"
     (with-serialization :xmpp
       (with-format :xmpp
@@ -76,7 +76,7 @@
           (let [response (show-section user)]
             (expect (element? response))))))))
 
-(describe apply-view "#'show :xmpp"
+(deftest apply-view "#'show :xmpp"
   (do-it "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp
@@ -92,7 +92,7 @@
             (expect (map? response))
             (expect (= :result (:type response)))))))))
 
-(describe apply-view "#'fetch-remote :xmpp"
+(deftest apply-view "#'fetch-remote :xmpp"
   (do-it "should return an iq query packet map"
     (with-format :xmpp
       (with-serialization :xmpp
@@ -108,7 +108,7 @@
             (expect (map? response))
             (expect (= :get (:type response)))))))))
 
-(describe apply-view "#'remote-create :xmpp"
+(deftest apply-view "#'remote-create :xmpp"
   (do-it "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp
