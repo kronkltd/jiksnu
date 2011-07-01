@@ -6,6 +6,7 @@
         clj-tigase.core
         clojure.test
         jiksnu.config
+        jiksnu.core-test
         jiksnu.actions.activity-actions
         jiksnu.model
         jiksnu.session
@@ -16,6 +17,8 @@
   (:import org.apache.abdera.model.Entry
            jiksnu.model.Activity
            jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 (deftest apply-view-test
   (testing "#'index :atom"

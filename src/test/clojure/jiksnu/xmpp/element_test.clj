@@ -13,6 +13,8 @@
         jiksnu.xmpp.element)
   (:import jiksnu.model.Activity))
 
+(use-fixtures :each test-environment-fixture)
+
 (deftest abdera-to-tigase-element-test
   (testing "should return a tigase element"
     (with-serialization :xmpp

@@ -13,7 +13,9 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-(deftest subscribe
+(use-fixtures :each test-environment-fixture)
+
+(deftest subscribe-test
   (testing "when the user is not already subscribed"
     (testing "should return a subscription"
       (let [user (model.user/create (factory User))
@@ -23,7 +25,7 @@
           (let [response (subscribe subscribee)]
             (is (subscription? response))))))))
 
-(deftest subscribers
+(deftest subscribers-test
   (testing "when there are subscribers"
     (testing "should not be empty"
       (let [user (model.user/create (factory User))
@@ -36,7 +38,7 @@
         (is (seq subscriptions))
         (is (every? (partial instance? Subscription) subscriptions))))))
 
-(deftest subscriptions
+(deftest subscriptions-test
   (testing "when there are subscriptions"
     (testing "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))

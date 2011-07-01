@@ -5,6 +5,7 @@
         ciste.sections
         clj-factory.core
         clojure.test
+        jiksnu.core-test
         jiksnu.filters.activity-filters
         jiksnu.model
         jiksnu.namespace
@@ -17,6 +18,8 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 ;; (deftest filter-action "#'actions.activity/create :xmpp"
 ;;   (testing "when the user is logged in"

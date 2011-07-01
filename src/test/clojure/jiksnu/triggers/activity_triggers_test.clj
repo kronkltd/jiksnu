@@ -5,6 +5,7 @@
         clj-factory.core
         clj-tigase.core
         clojure.test
+        jiksnu.core-test
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers
@@ -13,6 +14,8 @@
            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 (deftest notify-activity-test
   (testing "should return a packet"

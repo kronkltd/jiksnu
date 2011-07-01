@@ -2,12 +2,15 @@
   (:use clj-factory.core
         clj-tigase.core
         clojure.test
+        jiksnu.core-test
         jiksnu.helpers.subscription-helpers)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(deftest subscriber-response-element
+(use-fixtures :each test-environment-fixture)
+
+(deftest subscriber-response-element-test
   (testing "should"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))
@@ -17,7 +20,7 @@
         (is (or (vector? response)
                     (element? response)))))))
 
-(deftest subscribe-request
+(deftest subscribe-request-test
   (testing "should"
     (let [user (model.user/create (factory User))
           subscribee (model.user/create (factory User))

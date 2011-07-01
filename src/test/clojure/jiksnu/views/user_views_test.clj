@@ -1,17 +1,20 @@
-(jiksnu.views.user-views-test
- (:use ciste.core
-       ciste.sections
-       ciste.views
-       clj-factory.core
-       clj-tigase.core
-       clojure.test
+(ns jiksnu.views.user-views-test
+  (:use ciste.core
+        ciste.sections
+        ciste.views
+        clj-factory.core
+        clj-tigase.core
+        clojure.test
+        jiksnu.core-test
         jiksnu.model
-       jiksnu.view
-       jiksnu.view.user-views
-       jiksnu.xmpp.element)
- (:require [jiksnu.model.user :as model.user]
-           [jiksnu.actions.user-actions :as actions.user])
- (:import jiksnu.model.User))
+        jiksnu.view
+        jiksnu.view.user-views
+        jiksnu.xmpp.element)
+  (:require [jiksnu.model.user :as model.user]
+            [jiksnu.actions.user-actions :as actions.user])
+  (:import jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 (deftest uri-test "User :html :http"
   (testing "should return a link to that user"

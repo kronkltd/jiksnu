@@ -11,6 +11,8 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
+(use-fixtures :each test-environment-fixture)
+
 (deftest show-test
   (testing "when the user exists"
     (testing "should return that user"

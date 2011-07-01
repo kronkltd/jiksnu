@@ -2,10 +2,13 @@
   (:use clj-factory.core
         clj-tigase.core
         clojure.test
+        jiksnu.core-test
         jiksnu.triggers.subscription-triggers)
   (:require [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 (deftest notify-subscribe-xmpp-test
   (testing "should return a packet"

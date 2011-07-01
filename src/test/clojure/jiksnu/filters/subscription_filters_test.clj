@@ -16,6 +16,8 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
+(use-fixtures :each test-environment-fixture)
+
 (deftest filter-action-test "#'subscribe :html :http"
   (testing "when the user is not already subscribed"
     (testing "should return a subscription"

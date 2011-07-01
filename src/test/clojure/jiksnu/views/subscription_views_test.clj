@@ -18,6 +18,8 @@
              actions.subscription])
   (:import jiksnu.model.User))
 
+(use-fixtures :each test-environment-fixture)
+
 (deftest apply-view-test "#'subscribe :xmpp")
 
 (deftest apply-view-test "#'unsubscribe :xmpp"

@@ -6,6 +6,7 @@
         clj-factory.core
         clj-tigase.core
         clojure.test
+        jiksnu.core-test
         jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
@@ -24,6 +25,8 @@
            org.apache.abdera.model.Entry
            org.apache.abdera.ext.json.JSONUtil
            tigase.xml.Element))
+
+(use-fixtures :each test-environment-fixture)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; add-form

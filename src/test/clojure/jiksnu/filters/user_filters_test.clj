@@ -2,6 +2,7 @@
   (:use clj-factory.core
         clj-tigase.core
         clojure.test
+        jiksnu.core-test
         jiksnu.model
         jiksnu.session
         jiksnu.actions.user-actions
@@ -10,6 +11,8 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
+
+(use-fixtures :each test-environment-fixture)
 
 ;; (deftest show {:focus true}
 ;;   (testing "when the user exists"
