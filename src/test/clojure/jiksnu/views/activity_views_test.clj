@@ -10,7 +10,7 @@
         jiksnu.model
         jiksnu.session
         jiksnu.view
-        jiksnu.views.activity-views
+        jiksnu.views.activity-views)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import org.apache.abdera.model.Entry
@@ -27,4 +27,3 @@
                   response (apply-view {:action #'index
                                         :format :atom} [activity])]
               (is (map? response)))))))))
-
