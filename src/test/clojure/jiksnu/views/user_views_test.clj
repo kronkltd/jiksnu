@@ -1,14 +1,16 @@
 (ns jiksnu.views.user-views-test
   (:use ciste.core
         ciste.sections
+        ciste.sections.default
         ciste.views
         clj-factory.core
         clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.model
+        jiksnu.helpers.user-helpers
         jiksnu.view
-        jiksnu.view.user-views
+        jiksnu.views.user-views
         jiksnu.xmpp.element)
   (:require [jiksnu.model.user :as model.user]
             [jiksnu.actions.user-actions :as actions.user])

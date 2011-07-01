@@ -2,6 +2,7 @@
   (:use clj-factory.core
         clj-tigase.core
         clojure.test
+        jiksnu.core-test
         jiksnu.model
         jiksnu.session
         jiksnu.actions.user-actions
