@@ -26,6 +26,31 @@
            com.cliqset.magicsig.MagicSig
            com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer))
 
+(defonce ^:dynamic *pending-discover-tasks* (ref {}))
+
+(defn enqueue-discover
+  [user]
+  (let [domain (:domain user)
+        id (:_id user)]
+    (dosync
+     (alter *pending-discover-tasks*
+            (fn [m]
+              (assoc m domain
+                     (if-let [users (get m domain)]
+                       (conj users id)
+                       #{id})))))))
+
+(defn pop-user!
+  [domain]
+  (dosync
+   (if-let [s (get @*pending-discover-tasks* domain)]
+     (if-let [f (first s)]
+       (do (alter *pending-discover-tasks*
+                  #(assoc %
+                     domain
+                     (disj s f)))
+           f)))))
+
 (declare update)
 
 (defaction add-link
@@ -183,4 +208,5 @@
         links (actions.webfinger/get-links xrd)
         new-user (assoc user :links links)]
     (doseq [link links]
+      (if )
       (add-link user (spy link)))))

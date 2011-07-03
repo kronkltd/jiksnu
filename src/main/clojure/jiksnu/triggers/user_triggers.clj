@@ -12,18 +12,23 @@
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]))
 
+(defn discover-user-xmpp
+  [user]
+  (request-vcard! user))
+
+(defn discover-user-http
+  [user]
+  (update-usermeta user)
+  #_(request-hcard user)
+  )
+
 (defn discover-user
   [action _ user]
   (let [domain (model.domain/show (:domain user))]
-    (if (:discovered domain)
-      (if (:xmpp domain)
-        (request-vcard! user)
-        (do
-          (update-usermeta user)
-          #_(request-hcard user)))
-      (do (log/info "Domain not discovered yet")
-          (Thread/sleep 1000)
-          (recur action _ user)))))
+    ((if (:discovered domain)
+       (if (:xmpp domain) discover-user-xmpp discover-user-http)
+       enqueue-discover)
+     user)))
 
 (defn fetch-updates-http
   [user]
