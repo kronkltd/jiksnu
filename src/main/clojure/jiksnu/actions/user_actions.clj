@@ -208,5 +208,4 @@
         links (actions.webfinger/get-links xrd)
         new-user (assoc user :links links)]
     (doseq [link links]
-      (if )
       (add-link user (spy link)))))
