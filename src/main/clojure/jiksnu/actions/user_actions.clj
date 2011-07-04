@@ -12,7 +12,8 @@
         [jiksnu.session :only (current-user)]
         jiksnu.view
         jiksnu.xmpp.element)
-  (:require [jiksnu.abdera :as abdera]
+  (:require [clojure.string :as string]
+            [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
@@ -21,8 +22,8 @@
             [karras.sugar :as sugar])
   (:import jiksnu.model.User
            tigase.xml.Element
-           com.cliqset.salmon.Salmon
-           com.cliqset.magicsig.dataparser.SimpleAtomDataParser
+           org.apache.commons.codec.binary.Base64
+           com.cliqset.magicsig.MagicKey
            com.cliqset.magicsig.MagicSig
            com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer))
 
@@ -147,34 +148,6 @@
   [user]
   user)
 
-(defaction salmon
-  [request]
-  (let [deserializer (com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer.)
-        default-sig (MagicSig/getDefault)
-        salmon (Salmon/getDefault)
-        body (:body request)
-        envelope (.deserialize deserializer body)]
-    (spy (bean envelope))
-    (let [data-bytes (.decodeData default-sig envelope)
-          uri (.getSignerUri (SimpleAtomDataParser.) data-bytes)]
-      (spy uri)
-      (let [data (spy (String. data-bytes))]
-        (if-let [entry (abdera/parse-xml-string data)]
-          (if-let [author (.getAuthor (spy entry))]
-            (let [author-uri (.getUri author)
-                  ;; user (model.user/fetch-or-create-by-url author-uri)
-                  ]
-              (spy author)
-              (let [signatures (.getSignatures envelope)]
-                (doseq [signature (spy signatures)]
-                  (spy (bean signature)))
-                (let [verification-result (.verify default-sig envelope)
-                      result-data (.getData (spy verification-result))
-                      sig-results (.getSignatureVerificationResults
-                                   (spy verification-result))]
-                  (spy (map (fn [r] (.isVerified r))
-                            (spy sig-results))))))))))))
-
 (defaction show
   ;;   "This action just returns the passed user.
   ;; The user needs to be retreived in the filter."
@@ -202,10 +175,22 @@
      {:$set {:hub hub-link}})
     user))
 
+;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
   (let [xrd (fetch-user-meta user)
         links (actions.webfinger/get-links xrd)
-        new-user (assoc user :links links)]
+        new-user (assoc user :links links)
+        feed (fetch-user-feed user)
+        author (.getAuthor feed)
+        uri (.getUri author)]
+    (update (assoc user :remote-id (str uri)))
     (doseq [link links]
-      (add-link user (spy link)))))
+      (if (= (:rel link) "magic-public-key")
+        (let [key-string (:href link)
+              [_ n e]
+              (re-matches
+               #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+               key-string)]
+          (set-armored-key (:_id user) n e)))
+      (add-link user link))))

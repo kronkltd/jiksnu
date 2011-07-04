@@ -1,5 +1,6 @@
 (ns jiksnu.model.user
   (:use ciste.config
+        ciste.debug
         jiksnu.model)
   (:require [clojure.string :as string]
             [karras.entity :as entity]
@@ -79,6 +80,10 @@
   [uri]
   (apply show (split-uri uri)))
 
+(defn fetch-by-remote-id
+  [uri]
+  (entity/fetch-one User {:remote-id uri}))
+
 (defn find-or-create
   [username domain]
   (if-let [user (show username domain)]
@@ -87,9 +92,12 @@
 
 (defn find-or-create-by-uri
   [uri]
-  (apply find-or-create (split-uri uri)))
+  (apply find-or-create (split-uri (spy uri))))
 
-
+(defn find-or-create-by-remote-id
+  [id]
+  (or (fetch-by-remote-id id)
+      (create {:remote-id id})))
 
 (defn find-or-create-by-jid
   [jid]

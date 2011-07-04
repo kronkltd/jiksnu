@@ -26,6 +26,7 @@
              [domain-actions :as domain]
              [inbox-actions :as inbox]
              [push-subscription-actions :as push]
+             [salmon-actions :as salmon]
              [settings-actions :as settings]
              [subscription-actions :as subscription]
              [user-actions :as user]
@@ -36,6 +37,7 @@
              auth-filters
              domain-filters
              push-subscription-filters
+             salmon-filters
              subscription-filters
              user-filters)
             (jiksnu.views
@@ -94,7 +96,7 @@
     [[:post "/main/push/callback"]         #'push/callback-publish]
     [[:get "/main/register"]               #'user/register]
     [[:post "/main/register"]              #'user/create]
-    [[:post "/main/salmon/user/:id"]       #'user/salmon]
+    [[:post "/main/salmon/user/:id"]       #'salmon/process]
     [[:post "/main/subscribe"]             #'subscription/subscribe]
     [[:post "/main/unsubscribe"]           #'subscription/unsubscribe]
     [[:get "/main/xrd"]                    #'webfinger/user-meta]

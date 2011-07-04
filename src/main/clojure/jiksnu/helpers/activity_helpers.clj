@@ -237,7 +237,7 @@
     (if (and (= name "actor")
              (= namespace as-ns))
       (let [uri (.getSimpleExtension element atom-ns "uri" "")]
-        {:authors [(:_id (model.user/find-or-create-by-uri uri))]})
+        {:authors [(:_id (model.user/find-or-create-by-remote-id uri))]})
       (if (and (= name "object")
                  (= namespace as-ns))
         (parse-object-element element)

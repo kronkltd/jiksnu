@@ -115,9 +115,26 @@
    (assoc (pair-hash (generate-key))
      :userid (:_id user))))
 
+(defn get-key-for-user-id
+  [id]
+  (entity/fetch-one MagicKeyPair {:userid id}))
+
 (defn get-key-for-user
   [user]
-  (entity/fetch-one MagicKeyPair {:userid (:_id user)}))
+  (get-key-for-user-id (:_id user)))
+
+(defn set-armored-key
+  [user-id n e]
+  (if-let [key-pair (get-key-for-user-id user-id)]
+    (entity/save
+     (merge key-pair
+            {:armored-n n
+             :armored-e e}))
+    (entity/create
+     MagicKeyPair
+     {:armored-n n
+      :armored-e e
+      :userid user-id})))
 
 (defn drop!
   []
@@ -163,6 +180,11 @@
   "The magic key must have 3 segments"
   [key]
   (MagicKey. (.getBytes key "UTF-8")))
+
+(defn get-key-from-armored
+  [key-pair]
+  (MagicKey. "RSA" (:armored-n key-pair)
+             (:armored-e key-pair)))
 
 (defn sign-and-deliver
   "entry is an atom entry"
