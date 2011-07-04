@@ -24,7 +24,7 @@
      (catch Exception e
        (let [msg (with-out-str
                    (print-stack-trace e))]
-         (error e)
+         (error msg)
          {:body (str "An error done happened: " msg)
           :status 500})))))
 
