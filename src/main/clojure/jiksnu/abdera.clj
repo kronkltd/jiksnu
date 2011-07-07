@@ -1,6 +1,7 @@
 (ns jiksnu.abdera
   (:use ciste.debug
         [clojure.tools.logging :only (error)])
+  (:require [clj-tigase.core :as tigase])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
            java.io.ByteArrayInputStream
@@ -84,11 +85,11 @@
 ;; FIXME: Abdera element
 (defn get-qname
   "Returns a map representing the QName of the given element"
-  [^Element element]
-  (parse-qname (.getQName element)))
+  [element]
+  (tigase/parse-qname (.getQName element)))
 
 ;; (defn add-children
-;;   [^Element element abdera-element bound-namespaces]
+;;   [element abdera-element bound-namespaces]
 ;;   (doseq [child-element (.getElements abdera-element)]
 ;;     (.addChild element
 ;;                (abdera-to-tigase-element
@@ -98,7 +99,7 @@
 ;; TODO: This is not strictly a tigase function. Replace with a more
 ;; generic version
 (defn add-attributes
-  [^Element element abdera-element]
+  [element abdera-element]
   (doseq [^QName attribute (.getAttributes abdera-element)]
     (let [^String value (.getAttributeValue abdera-element attribute)]
       (.addAttribute element (.getLocalPart attribute) value))))

@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.element
   (:use clj-tigase.core
+        jiksnu.abdera
         jiksnu.namespace)
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
