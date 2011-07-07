@@ -80,3 +80,26 @@
 ;;   "Returns if the argument is an element"
 ;;   [arg]
 ;;   (instance? Element arg))
+
+;; FIXME: Abdera element
+(defn get-qname
+  "Returns a map representing the QName of the given element"
+  [^Element element]
+  (parse-qname (.getQName element)))
+
+;; (defn add-children
+;;   [^Element element abdera-element bound-namespaces]
+;;   (doseq [child-element (.getElements abdera-element)]
+;;     (.addChild element
+;;                (abdera-to-tigase-element
+;;                 child-element bound-namespaces))))
+
+
+;; TODO: This is not strictly a tigase function. Replace with a more
+;; generic version
+(defn add-attributes
+  [^Element element abdera-element]
+  (doseq [^QName attribute (.getAttributes abdera-element)]
+    (let [^String value (.getAttributeValue abdera-element attribute)]
+      (.addAttribute element (.getLocalPart attribute) value))))
+
