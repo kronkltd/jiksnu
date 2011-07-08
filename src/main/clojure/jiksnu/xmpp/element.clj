@@ -16,32 +16,38 @@
                (abdera-to-tigase-element
                 child-element bound-namespaces))))
 
+(defn add-attributes
+  [element abdera-element]
+  (doseq [^QName attribute (.getAttributes abdera-element)]
+    (let [^String value (.getAttributeValue abdera-element attribute)]
+      (.addAttribute element (.getLocalPart attribute) value))))
+
 (defn abdera-to-tigase-element
   "converts an abdera element to a tigase element"
   ([abdera-element]
      (abdera-to-tigase-element abdera-element {}))
   ([abdera-element namespace-map]
-     (let [element (-> abdera-element get-qname make-element-qname)]
-       (let [namespaces (.getNamespaces abdera-element)]
-         (let [bound-namespaces (merge-namespaces element
-                                                 namespace-map
-                                                 namespaces)]
-          (add-attributes element abdera-element)
-          (add-children element abdera-element bound-namespaces)
-          (if-let [text (.getText abdera-element)]
-            (.setCData element text))
-          element)))))
+     (let [element (-> abdera-element get-qname make-element-qname)
+           namespaces (.getNamespaces abdera-element)
+           bound-namespaces (merge-namespaces element
+                                              namespace-map
+                                              namespaces)]
+       (add-attributes element abdera-element)
+       (add-children element abdera-element bound-namespaces)
+       (if-let [text (.getText abdera-element)]
+         (.setCData element text))
+       element)))
 
 (defn microblog-node?
-  [#^Element element]
+  [^Element element]
   (= (node-value element) microblog-uri))
 
 (defn vcard-query-ns?
-  [#^Element element]
+  [^Element element]
   (= (.getXMLNS element) query-uri))
 
 (defn vcard-publish?
-  [#^Element element]
+  [^Element element]
   (and (= (.getName element) "publish")
        (= (.getXMLNS element) vcard-publish-uri)))
 

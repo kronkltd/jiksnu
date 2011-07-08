@@ -95,12 +95,3 @@
 ;;                (abdera-to-tigase-element
 ;;                 child-element bound-namespaces))))
 
-
-;; TODO: This is not strictly a tigase function. Replace with a more
-;; generic version
-(defn add-attributes
-  [element abdera-element]
-  (doseq [^QName attribute (.getAttributes abdera-element)]
-    (let [^String value (.getAttributeValue abdera-element attribute)]
-      (.addAttribute element (.getLocalPart attribute) value))))
-
