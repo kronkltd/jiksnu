@@ -17,17 +17,17 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.0-beta-2</version>
-        <configuration>
-          <reportPlugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
+      <!-- <plugin> -->
+      <!--   <groupId>org.apache.maven.plugins</groupId> -->
+      <!--   <artifactId>maven-site-plugin</artifactId> -->
+      <!--   <version>3.0-beta-2</version> -->
+      <!--   <configuration> -->
+      <!--     <reportPlugins> -->
+      <!--       <plugin> -->
+      <!--           <groupId>org.apache.maven.plugins</groupId> -->
+      <!--           <artifactId>maven-project-info-reports-plugin</artifactId> -->
+      <!--           <version>2.4</version> -->
+      <!--       </plugin> -->
             <!-- <plugin> -->
             <!--   <groupId>org.apache.maven.plugins</groupId> -->
             <!--   <artifactId>maven-javadoc-plugin</artifactId> -->
@@ -62,9 +62,9 @@
             <!--   <artifactId>maven-checkstyle-plugin</artifactId> -->
             <!--   <version>2.6</version> -->
             <!-- </plugin> -->
-          </reportPlugins>
-        </configuration>
-      </plugin>
+      <!--     </reportPlugins> -->
+      <!--   </configuration> -->
+      <!-- </plugin> -->
       <plugin>
         <groupId>com.theoryinpractise</groupId>
         <artifactId>clojure-maven-plugin</artifactId>
