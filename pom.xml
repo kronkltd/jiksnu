@@ -307,6 +307,14 @@
       <url>http://clojars.org/repo</url>
     </repository>
     <repository>
+      <id>jiksnu-internal</id>
+      <url>http://build.jiksnu.com/repository/internal</url>
+    </repository>
+    <repository>
+      <id>jiksnu-snapshots</id>
+      <url>http://build.jiksnu.com/repository/snapshots</url>
+    </repository>
+    <repository>
       <id>tigase</id>
       <url>http://maven.tigase.org</url>
       <snapshots>
