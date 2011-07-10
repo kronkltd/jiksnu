@@ -3,3 +3,4 @@ target
 logs
 certs
 dump
+config.clj

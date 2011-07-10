@@ -3,7 +3,7 @@
         ciste.debug)
   (:require [jiksnu.routes :as routes]))
 
-(def #^:dynamic *future-web* (ref nil))
+(def ^:dynamic *future-web* (ref nil))
 
 (defn start
   ([] (start 8082))

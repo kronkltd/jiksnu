@@ -2,7 +2,6 @@
   (:use [ciste.config :only (config environment)]
         clj-factory.core
         clojure.data.json
-        jiksnu.config
         jiksnu.namespace
         karras.entity
         plaza.rdf.core

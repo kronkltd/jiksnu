@@ -5,7 +5,6 @@
         clj-factory.core
         clj-tigase.core
         clojure.test
-        jiksnu.config
         jiksnu.core-test
         jiksnu.actions.activity-actions
         jiksnu.model
