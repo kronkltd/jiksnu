@@ -14,7 +14,8 @@
   [request _]
   (let [domain (:domain (config))]
     {:template false
-     :headers {"Content-Type" "application/xrds+xml"}
+     :headers {"Content-Type" "application/xrds+xml"
+               "Access-Control-Allow-Origin" "*"}
      :body
      (html ["XRD" {"xmlns" xrd-ns
               "xmlns:hm" host-meta-ns}
@@ -28,7 +29,8 @@
 (defview #'user-meta :html
   [request user]
   {:template false
-   :headers {"Content-Type" "application/xrds+xml"}
+   :headers {"Content-Type" "application/xrds+xml"
+             "Access-Control-Allow-Origin" "*"}
    :body
    (html ["XRD" {"xmlns" xrd-ns}
      ["Subject" {} (str "acct:" (:username user) "@" (:domain user))]
