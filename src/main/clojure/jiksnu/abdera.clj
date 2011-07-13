@@ -10,10 +10,10 @@
            org.apache.abdera.factory.Factory
            org.apache.abdera.protocol.client.AbderaClient))
 
-(defonce ^Abdera #^:dynamic *abdera* (Abdera.))
-(defonce ^Factory #^:dynamic *abdera-factory* (.getFactory *abdera*))
-(defonce #^:dynamic *abdera-parser* (.getParser *abdera*))
-(defonce #^:dynamic *abdera-client* (AbderaClient.))
+(defonce ^Abdera ^:dynamic *abdera* (Abdera.))
+(defonce ^Factory ^:dynamic *abdera-factory* (.getFactory *abdera*))
+(defonce ^:dynamic *abdera-parser* (.getParser *abdera*))
+(defonce ^:dynamic *abdera-client* (AbderaClient.))
 
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
 (.registerExtension *abdera-factory* (PocoExtensionFactory.))
@@ -61,37 +61,13 @@
      (com.cliqset.abdera.ext.activity.Object.
       *abdera-factory* (QName. namespace name prefix))))
 
-;; (defn node-value
-;;   [^Element element]
-;;   (.getAttribute element "node"))
-
 (defn find-children
   [element path]
   (if element
     (.findChild element path)))
-
-;; (defn ns-prefix
-;;   [k]
-;;   (apply str
-;;          "xmlns"
-;;          (if (not= k "")
-;;            (list ":" k))))
-
-;; (defn element?
-;;   "Returns if the argument is an element"
-;;   [arg]
-;;   (instance? Element arg))
 
 ;; FIXME: Abdera element
 (defn get-qname
   "Returns a map representing the QName of the given element"
   [element]
   (tigase/parse-qname (.getQName element)))
-
-;; (defn add-children
-;;   [element abdera-element bound-namespaces]
-;;   (doseq [child-element (.getElements abdera-element)]
-;;     (.addChild element
-;;                (abdera-to-tigase-element
-;;                 child-element bound-namespaces))))
-
