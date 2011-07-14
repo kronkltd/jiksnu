@@ -33,7 +33,8 @@
 
 (defn set-recipients
   [activity]
-  (let [recipients (:recipients activity)]
+  (let [recipients (or (:recipients activity)
+                       (get activity "recipients"))]
     (if-let [recipient-seq
              (if recipients
                (seq (filter
