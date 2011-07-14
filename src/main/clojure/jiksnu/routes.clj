@@ -2,6 +2,7 @@
   (:use aleph.http
         ciste.debug
         ciste.filters
+        ciste.formats.default
         ciste.predicates
         ciste.routes
         jiksnu.middleware
