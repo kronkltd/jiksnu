@@ -105,7 +105,7 @@
     {:label "JSON"
      :href "/api/statuses/public_timeline.json"
      :type "application/json"}
-    {:label "XML"
+    #_{:label "XML"
      :href "/api/statuses/public_timeline.xml"
      :type "application/xml"}
     {:label "RDF"
