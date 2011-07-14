@@ -143,12 +143,14 @@
   [activity]
   ;; TODO: validate user
   (if-let [prepared-post (prepare-post activity)]
-    (let [picture (get prepared-post "picture")]
-      (if-let [tempfile (:tempfile picture)]
-        (do
-          (.mkdirs (io/file (str (current-user-id))))
-          (io/copy tempfile (io/file (str (current-user-id) "/"
-                                          (:filename picture))))))
+    (let [picture (get prepared-post "picture")
+          filename (:filename picture)]
+      (if (not= filename "")
+        (if-let [tempfile (:tempfile picture)]
+          (do
+            (.mkdirs (io/file (str (current-user-id))))
+            (io/copy tempfile (io/file (str (current-user-id) "/"
+                                            (:filename picture)))))))
       (create (dissoc (spy prepared-post) :tempfile)))))
 
 (defaction remote-create
