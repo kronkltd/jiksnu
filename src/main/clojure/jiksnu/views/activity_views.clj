@@ -15,7 +15,9 @@
         jiksnu.sections.activity-sections
         jiksnu.session
         jiksnu.xmpp.element
-        jiksnu.view)
+        jiksnu.view
+        plaza.rdf.core
+        plaza.rdf.vocabularies.foaf)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [karras.entity :as entity]
@@ -95,6 +97,16 @@
     {:body
      {:items
       (map show-section activities)}}))
+
+(defview #'index :rdf
+  [request activities]
+  {:body
+   (let [rdf-model (-> activities
+                       index-section
+                       model-add-triples
+                       defmodel)]
+     (with-out-str (model-to-format (spy rdf-model) :xml)))
+   :template :false})
 
 (defview #'index :html
   [request activities]
