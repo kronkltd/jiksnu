@@ -258,11 +258,3 @@
        wrap-database
        wrap-session
        wrap-error-catching)))
-
-#_(def app
-  (wrap-ring-handler
-   (wrap-multipart-params
-    (compojure/POST "/notice/new" [file]
-                    (io/copy (:picture file) (io/file "picture.jpg"))))
-
-   (route/files "/public")))
