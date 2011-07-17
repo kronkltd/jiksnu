@@ -10,7 +10,8 @@
         jiksnu.model
         jiksnu.session
         jiksnu.view)
-  (:require [hiccup.form-helpers :as f])
+  (:require [hiccup.form-helpers :as f]
+            jiksnu.sections.domain-sections)
   (:import jiksnu.model.Domain))
 
 (defview #'create :html
