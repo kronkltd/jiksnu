@@ -40,7 +40,7 @@
   ;; TODO: send user timeline request
   (let [packet (make-packet
                 {:to (make-jid user)
-                 :from (make-jid "" (:domain (config)))
+                 :from (make-jid "" (config :domain))
                  :type :get
                  :body (make-element
                         ["pubsub" {"xmlns" pubsub-uri}

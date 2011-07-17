@@ -143,7 +143,7 @@
 (defn local?
   [user]
   (= (:domain user)
-     (-> (config) :domain)))
+     (config :domain)))
 
 (defn get-uri
   [^User user]

@@ -35,7 +35,7 @@
 
 (defsection full-uri :default
   [record & options]
-  (str "http://" (-> (config) :domain)
+  (str "http://" (config :domain)
        (apply uri record options)))
 
 (defn navigation-section

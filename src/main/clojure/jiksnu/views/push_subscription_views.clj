@@ -1,5 +1,5 @@
 (ns jiksnu.views.push-subscription-views
-  (:use [ciste.config :only (config)]
+  (:use ciste.config
         ciste.debug
         ciste.sections
         ciste.sections.default

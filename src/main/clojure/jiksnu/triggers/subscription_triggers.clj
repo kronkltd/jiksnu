@@ -68,7 +68,7 @@
      (let [packet (make-packet
                    {:type :headline
                     :to (make-jid user)
-                    :from (make-jid "" (:domain (config)))
+                    :from (make-jid "" (config :domain))
                     :body
                     (make-element
                      ["body" {}

@@ -31,7 +31,7 @@
 (defn wrap-log-request
   [handler]
   (fn [request]
-    (if (-> (config) :print :request)
+    (if (config :print :request)
       (spy request))
     (handler request)))
 
@@ -40,7 +40,7 @@
   (fn [request]
     (if-let [response (handler request)]
       (do
-        (if (-> (config) :print :params)
+        (if (config :print :params)
           (pprint response))
         response))))
 

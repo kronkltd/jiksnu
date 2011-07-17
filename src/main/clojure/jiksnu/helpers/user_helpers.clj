@@ -203,7 +203,7 @@
 (defn request-vcard!
   [user]
   (let [packet-map
-        {:from (make-jid "" (:domain (config)))
+        {:from (make-jid "" (config :domain))
          :to (make-jid user)
          :id "JIKSNU1"
          :type :get

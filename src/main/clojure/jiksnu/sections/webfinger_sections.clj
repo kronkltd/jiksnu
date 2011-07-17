@@ -5,7 +5,7 @@
   [user]
   (str
    "http://"
-   (:domain (config))
+   (config :domain)
    "/main/salmon/user/"
    (:_id user)))
 

@@ -40,7 +40,7 @@
   [request domain]
   {:type :get
    :to (make-jid "" (:_id domain))
-   :from (make-jid "" (-> (config) :domain))
+   :from (make-jid "" (config :domain))
    :body (make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
 
 (defview #'ping-response :xmpp

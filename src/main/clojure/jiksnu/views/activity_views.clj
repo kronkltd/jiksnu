@@ -1,5 +1,5 @@
 (ns jiksnu.views.activity-views
-  (:use [ciste.config :only (config)]
+  (:use ciste.config
         ciste.core
         ciste.debug
         ciste.html
@@ -134,7 +134,7 @@
 (defview #'index :atom
   [request activities]
   (let [self (str "http://"
-                  (:domain (config))
+                  (config :domain)
                   "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
@@ -142,7 +142,7 @@
             {:title "Public Activities"
              :subtitle "All activities posted"
              :id self
-            :links [{:href (str "http://" (:domain (config)) "/")
+             :links [{:href (str "http://" (config :domain) "/")
                      :rel "alternate"
                      :type "text/html"}
                     {:href self
@@ -230,24 +230,24 @@
           {:title (str (:username user) " timeline")
            :subtitle (str "Updates from " (:username user)
                           " on " (:domain user))
-           :id (str "http://" (-> (config) :domain)
+           :id (str "http://" (config :domain)
                     "/api/statuses/user_timeline/" (:_id user) ".atom")
            :links [{:href (full-uri user)
                     :rel "alternate"
                     :type "text/html"}
-                   {:href (str "http://" (-> (config) :domain)
+                   {:href (str "http://" (config :domain)
                                "/api/statuses/user_timeline/" (:_id user) ".atom")
                     :rel "self"
                     :type "application/atom+xml"}
-                   {:href (str "http://" (-> (config) :domain) "/main/push/hub")
+                   {:href (str "http://" (config :domain) "/main/push/hub")
                     :rel "hub"}
-                   {:href (str "http://" (-> (config) :domain)
+                   {:href (str "http://" (config :domain)
                                "/main/salmon/user/" (:_id user))
                     :rel "salmon"}
-                   {:href (str "http://" (-> (config) :domain)
+                   {:href (str "http://" (config :domain)
                                "/main/salmon/user/" (:_id user))
                     :rel "http://salmon-protocol.org/ns/salmon-replies"}
-                   {:href (str "http://" (-> (config) :domain)
+                   {:href (str "http://" (config :domain)
                                "/main/salmon/user/" (:_id user))
                     :rel "http://salmon-protocol.org/ns/salmon-mention"}]
            :user user

@@ -126,7 +126,7 @@
       ;; Passwords must match
       (if (= password confirm-password)
         (let [user {:username username
-                    :domain (:domain (config))
+                    :domain (config :domain)
                     :password password
                     :confirm-password password}]
           (create user))))))

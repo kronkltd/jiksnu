@@ -12,7 +12,7 @@
 
 (defview #'host-meta :html
   [request _]
-  (let [domain (:domain (config))]
+  (let [domain (config :domain)]
     {:template false
      :headers {"Content-Type" "application/xrds+xml"
                "Access-Control-Allow-Origin" "*"}
@@ -50,7 +50,7 @@
 
      ["Link" {"rel" "http://schemas.google.com/g/2010#updates-from"
               "type" "application/atom+xml"
-              "href" (str "http://" (-> (config) :domain)
+              "href" (str "http://" (config :domain)
                           "/api/statuses/user_timeline/"
                           (:_id user)
                           ".atom")}]
@@ -73,7 +73,7 @@
 
      ["Link" {"rel" "http://ostatus.org/schema/1.0/subscribe"
               "template" (str "http://"
-                              (:domain (config))
+                              (config :domain)
                               "/main/ostatussub?profile={uri}")}]
 
      ["Link" {"rel" "http://specs.openid.net/auth/2.0/provider"

@@ -393,7 +393,7 @@ an Element"
   [activity]
   (make-packet
    {:type :get
-    :from (make-jid "" (-> (config) :domain))
+    :from (make-jid "" (config :domain))
     :to (make-jid (get-actor activity))
     :body
     (make-element

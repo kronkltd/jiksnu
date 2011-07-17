@@ -106,7 +106,7 @@
   [request _]
   {:body
    [:div
-    (if (:registration-enabled (config))
+    (if (config :registration-enabled)
       (list
        [:h1 "Register"]
        (f/form-to

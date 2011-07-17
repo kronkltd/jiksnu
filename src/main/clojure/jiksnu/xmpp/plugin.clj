@@ -57,7 +57,7 @@
     (if-let [to (.getStanzaTo packet)]
       (if-let [bare-to (.getBareJID to)]
         (let [request (make-request packet)]
-          (if (-> (config) :print :request)
+          (if (config :print :request)
             (spy request))
           (if-let [response (main-handler queue request)]
             (do

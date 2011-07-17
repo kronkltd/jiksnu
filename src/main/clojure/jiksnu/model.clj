@@ -30,7 +30,7 @@
 
 (defn mongo-database*
   []
-  (karras/mongo-db (-> (config) :database :name)))
+  (karras/mongo-db (config :database :name)))
 
 (defn mongo-database
   []
@@ -124,7 +124,7 @@
 (deffactory User
   (let [password (fseq :word)]
     {:username (fseq :word)
-     :domain (-> (config) :domain)
+     :domain (config :domain)
      :name (fseq :word)
      :first-name (fseq :word)
      :last-name (fseq :word)
