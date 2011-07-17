@@ -137,7 +137,7 @@
   [^Activity activity & _]
   (let [entry (new-entry)]
     (doto entry
-      (.setId (:_id activity))
+      (.setId (or (:id activity) (str (:_id activity))))
       (.setPublished (:published activity))
       (.setUpdated (:updated activity))
       (.setTitle (or (and (not= (:title activity) "")
@@ -289,7 +289,7 @@
          [:ul
           (map
            (fn [recipient-id]
-             [:ul (link-to (model.user/fetch-by-id recipient-id))])
+             [:ul (link-to (model.user/fetch-by-remote-id recipient-id))])
            recipients)]])
       [:footer
        (if-let [published (:published activity)]

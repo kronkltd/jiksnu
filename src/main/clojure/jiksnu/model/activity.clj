@@ -9,7 +9,7 @@
 
 (defn create
   [activity]
-  (entity/create Activity (spy (dissoc activity "picture"))))
+  (entity/create Activity (spy activity)))
 
 (defn get-comments
   [activity]
@@ -18,7 +18,7 @@
 
 (defn update
   [activity]
-  (entity/save activity))
+  (entity/save (spy activity)))
 
 (defn privacy-filter
   [user]
@@ -45,6 +45,10 @@
 (defn fetch-by-id
   [id]
   (entity/fetch-one Activity {:_id id}))
+
+(defn fetch-by-remote-id
+  [id]
+  (entity/fetch-one Activity {:remote-id id}))
 
 (defn show
   [id]

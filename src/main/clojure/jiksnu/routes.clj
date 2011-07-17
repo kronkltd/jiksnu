@@ -245,16 +245,14 @@
 (def app
   (wrap-ring-handler
    (-> all-routes
-       wrap-log-request
-       wrap-flash
-       ;; wrap-nested-params
-       wrap-multipart-params
-       wrap-log-request
        wrap-keyword-params
+       wrap-nested-params
+       wrap-multipart-params
        wrap-params
+       wrap-flash
        wrap-user-binding
        middleware/wrap-http-serialization
-       wrap-flash
        wrap-database
        wrap-session
+       wrap-log-request
        wrap-error-catching)))

@@ -33,20 +33,14 @@
 
 (defn set-recipients
   [activity]
-  (let [recipients (or (:recipients activity)
-                       (get activity "recipients"))]
-    (if-let [recipient-seq
-             (if recipients
-               (seq (filter
-                     #(not= "" %)
-                     (string/split recipients #",\s*"))))]
-      (let [users (map
-                   (fn [uri]
-                     (let [[username domain] (model.user/split-uri uri)]
-                       (:_id (actions.user/find-or-create username domain))))
-                   recipient-seq)]
-        (assoc activity :recipients users))
-      (dissoc activity :recipients))))
+  (if-let [recipients (:recipients activity)]
+    (let [users (map
+                 (fn [uri]
+                   (let [[username domain] (model.user/split-uri uri)]
+                     (:_id (actions.user/find-or-create username domain))))
+                 recipients)]
+      (assoc activity :recipients users))
+    (dissoc activity :recipients)))
 
 (defn set-remote
   [activity]
@@ -144,7 +138,7 @@
   [activity]
   ;; TODO: validate user
   (if-let [prepared-post (prepare-post activity)]
-    (let [picture (get prepared-post "picture")
+    (let [picture (:picture prepared-post)
           filename (:filename picture)]
       (if (not= filename "")
         (if-let [tempfile (:tempfile picture)]
@@ -188,7 +182,7 @@
                 activity
                 (if (= (get activity :public) "public")
                   {:public true})))]
-    (model.activity/update (spy (dissoc opts "picture")))))
+    (model.activity/update (dissoc opts :picture))))
 
 (defaction user-timeline
   [user]

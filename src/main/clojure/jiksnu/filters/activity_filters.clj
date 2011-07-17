@@ -130,10 +130,9 @@
 
 (deffilter #'post :http
   [action request]
-  (let [{params :params} request]
-    #_(with-open [rdr (io/reader (:body request))]
-      (spy (line-seq rdr)))
-    (action (dissoc params :*))))
+  (let [{params :params} request
+        p (-> params (dissoc :*))]
+    (action p)))
 
 (deffilter #'post :xmpp
   [action request]
