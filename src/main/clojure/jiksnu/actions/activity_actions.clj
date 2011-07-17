@@ -33,7 +33,7 @@
 
 (defn set-recipients
   [activity]
-  (if-let [recipients (:recipients activity)]
+  (if-let [recipients (filter identity (:recipients activity))]
     (let [users (map
                  (fn [uri]
                    (let [[username domain] (model.user/split-uri uri)]
