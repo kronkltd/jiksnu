@@ -272,6 +272,14 @@
                        :width "100"
                        :height "100"}])])
            links)]])
+      (if-let [recipients (seq (:recipients activity))]
+        [:div.recipients
+         [:h "Recipients:"]
+         [:ul
+          (map
+           (fn [recipient-id]
+             [:li (link-to (model.user/fetch-by-id recipient-id))])
+           recipients)]])
       #_[:p "Lat: " (:lat activity)]
       #_[:p "Long: " (:long activity)]
       (display-map activity)
@@ -283,14 +291,6 @@
            (fn [tag]
              [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
            tags)]])
-      (if-let [recipients (seq (:recipients activity))]
-        [:div.recipients
-         [:h "Recipients:"]
-         [:ul
-          (map
-           (fn [recipient-id]
-             [:ul (link-to (model.user/fetch-by-remote-id recipient-id))])
-           recipients)]])
       [:footer
        (if-let [published (:published activity)]
          [:p [:a {:href (uri activity)}

@@ -340,20 +340,20 @@ a img {
     border: none;
 }
 
-.recipients
+.recipients h
 {
-    display: inline;
-    margin-left: 10px;
+    display: inline-block;
 }
 
 .recipients ul
 {
-    display: inline;
+    display: inline-block;
+    padding-left: 1em;
 }
 
 .recipient
 {
-    display: inline;
+    display: inline-block;
     margin-right: 10px;
 }
 
