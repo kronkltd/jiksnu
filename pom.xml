@@ -151,7 +151,7 @@
     <dependency>
       <groupId>ring</groupId>
       <artifactId>ring-core</artifactId>
-      <version>0.3.8</version>
+      <version>0.3.11</version>
     </dependency>
     <dependency>
       <groupId>net.kronkltd</groupId>
