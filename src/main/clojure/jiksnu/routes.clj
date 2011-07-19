@@ -1,10 +1,10 @@
 (ns jiksnu.routes
   (:use aleph.http
-        ciste.debug
-        ciste.filters
+        (ciste debug
+               filters
+               predicates
+               routes)
         ciste.formats.default
-        ciste.predicates
-        ciste.routes
         jiksnu.middleware
         jiksnu.namespace
         lamina.core
@@ -18,9 +18,9 @@
   (:require [ciste.middleware :as middleware]
             [compojure.core :as compojure]
             compojure.handler
+            [compojure.route :as route]
             [clojure.string :as string]
             [clojure.java.io :as io]
-            [compojure.route :as route]
             (jiksnu.actions
              [activity-actions :as activity]
              [auth-actions :as auth]
