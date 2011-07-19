@@ -150,6 +150,10 @@
       :node (str microblog-uri ":replies:item=:id")}
      #'activity/fetch-comments]
 
+    [{:method :error
+      :name "ping"}
+     #'domain/ping-error]
+
     [{:method :get
       :name "query"
       :ns query-uri}

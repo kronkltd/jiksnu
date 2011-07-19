@@ -48,6 +48,12 @@
   [domain]
   true)
 
+;; Occurs if the ping request caused an error
+(defaction ping-error
+  [domain]
+  (model.domain/update (assoc-in domain [:enabled :xmpp] false))
+  false)
+
 (defaction ping-response
   [domain]
   (model.domain/update
