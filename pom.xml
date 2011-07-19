@@ -161,7 +161,7 @@
     <dependency>
       <groupId>compojure</groupId>
       <artifactId>compojure</artifactId>
-      <version>0.6.3</version>
+      <version>0.6.5</version>
     </dependency>
     <dependency>
       <groupId>net.kronkltd</groupId>
