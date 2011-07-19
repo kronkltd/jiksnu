@@ -14,10 +14,12 @@
 
 (defn discover-user-xmpp
   [user]
+  (println "discover xmpp")
   (request-vcard! user))
 
 (defn discover-user-http
   [user]
+  (println "discovering http")
   (update-usermeta user)
   #_(request-hcard user)
   )
