@@ -16,11 +16,15 @@
    (ref-set *redis-stream* (redis-stream {:host "localhost"}))))
 
 (defn redis-keys
-  []
-  @(@*redis-client* [:keys "*"])
-  )
+  ([]
+     (redis-keys "*"))
+  ([pattern]
+     @(@*redis-client* [:keys pattern])))
 
 (defn queue-size
   [key]
   @(@*redis-client* [:llen key]))
 
+(defn sadd
+  [key val]
+  (@*redis-client* [:sadd key val]))

@@ -13,11 +13,13 @@
         jiksnu.view
         jiksnu.xmpp.element)
   (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
+            [jiksnu.redis :as redis]
             [karras.entity :as entity]
             [karras.sugar :as sugar])
   (:import jiksnu.model.User
@@ -33,13 +35,7 @@
   [user]
   (let [domain (:domain user)
         id (:_id user)]
-    (dosync
-     (alter *pending-discover-tasks*
-            (fn [m]
-              (assoc m domain
-                     (if-let [users (get m domain)]
-                       (conj users id)
-                       #{id})))))))
+    (redis/sadd (str "pending.domains." domain) id)))
 
 (defn pop-user!
   [domain]
@@ -79,6 +75,16 @@
 (defaction discover
   [^User user]
   user)
+
+(defn discover-pending-users
+  [domain]
+  (if-let [user (pop-user! domain)]
+    (do
+      (log/info "Discovering: " user)
+      (discover user))
+    (do (log/info "sleeping")
+        (Thread/sleep 3000)))
+  (recur domain))
 
 (defaction edit
   [& _])
