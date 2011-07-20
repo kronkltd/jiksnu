@@ -261,5 +261,4 @@
 (defview #'user-timeline :xml
   [request [user activities]]
   {:body (index-block activities)
-   :template :false}
-  )
+   :template :false})

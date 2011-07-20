@@ -58,9 +58,7 @@
      (let [xmpp (:xmpp domain)]
        (if (nil? xmpp)
          "Unknown"
-         xmpp
-         )
-                   )]
+         xmpp))]
     [:p "Discovered: " (:discovered domain)]
     [:div
      [:table

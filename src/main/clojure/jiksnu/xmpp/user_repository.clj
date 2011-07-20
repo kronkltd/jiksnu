@@ -1,9 +1,6 @@
 (ns jiksnu.xmpp.user-repository
   (:require [jiksnu.model.user :as user])
-  (:import tigase.xmpp.BareJID
-           
-           )
-  )
+  (:import tigase.xmpp.BareJID))
 
 (defn -addDataList
   "addDataList method adds mode entries to existing data list associated with

@@ -213,9 +213,3 @@
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (make-packet packet-map)]
     (deliver-packet! (spy packet))))
-
-;; (declare-section subject-section)
-;; (defsection subject-section
-;;   [user & _]
-  
-;;   )
