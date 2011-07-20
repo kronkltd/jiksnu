@@ -181,7 +181,7 @@
   (let [xrd (fetch-user-meta user)
         links (actions.webfinger/get-links xrd)
         new-user (assoc user :links links)
-        feed (fetch-user-feed user)
+        feed (fetch-user-feed new-user)
         author (.getAuthor feed)
         uri (.getUri author)]
     (update (assoc user :remote-id (str uri)))
