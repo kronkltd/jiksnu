@@ -11,7 +11,10 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.model.domain :as model.domain]))
+            [jiksnu.model.domain :as model.domain])
+  (:import org.deri.any23.Any23))
+
+(defonce a23 (Any23.))
 
 (defn discover-user-xmpp
   [user]

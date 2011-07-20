@@ -292,6 +292,11 @@
       <artifactId>aleph</artifactId>
       <version>0.2.0-alpha3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.deri.any23</groupId>
+      <artifactId>any23-core</artifactId>
+      <version>0.5.0</version>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -314,6 +319,20 @@
       <id>jiksnu-snapshots</id>
       <url>http://build.jiksnu.com/repository/snapshots</url>
     </repository>
+
+    <!-- Specific repository for Any23 dependencies without a
+         dedicated repository. -->
+    <repository>
+      <id>any23-repository-external</id>
+      <url>http://any23.googlecode.com/svn/repo-ext</url>
+    </repository>
+
+    <!-- The Any23 modules repository. -->
+    <repository>
+      <id>any23-repository</id>
+      <url>http://any23.googlecode.com/svn/repo</url>
+    </repository>
+
     <repository>
       <id>tigase</id>
       <url>http://maven.tigase.org</url>
