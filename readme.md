@@ -1,35 +1,38 @@
+# Jiksnu ("zheek snoo")
+
+Jiksnu is a Lojban compound word (lujvo) for the words "Jikca
+Casnu". This translates roughly to "is a social type of interaction"
+
+## About Jiksnu
+
 Jiksnu is a social network in a box.
 
-This is very much alpha at this point. I am only putting this out
-there because it was my New Years resolution to release come code.
+Jiksnu is built on top of the Ciste framework, and makes extensive use
+of it's MVC framework and view and routing helpers.
 
-Jiksnu is a Lojban word meaning roughly "Social Interaction"
+## Security Warnings
+
+This is project is still very much alpha-level software. I would not
+recommend storing any important data until a full security audit can
+be performed.
+
+For example, the passwords are still being stored in plain text and
+authorization is not checked for the various actions.
+
+## License
 
 I am reluctantly releasing this under the GPL as I'm using Tigase as
 the XMPP server component.
 
-For the HTTP component, I am using Jetty. It's written in Clojure 1.3,
-built with Maven, uses MongoDB as the datastore, and Abdera for Atom
+## Technologies Used
+
+For the HTTP component, I am using Aleph. It's written in Clojure 1.3,
+built with Maven, uses MongoDB and Redis as the datastores, and Abdera for Atom
 generation and parsing.
 
-All of the tests are written in Lazytest.
+All code was written in Emacs.
 
-The web component is using Compojure, but on top of that I'm using my
-render-ring framework to build a MVC framework.
+## Donate
 
-I have built a Ring-like library for XMPP dispatch. This will convert
-received packets into Clojure hash maps. These hash-maps will be
-matched to produce an action and format pair which is then used by
-render-ring.
-
-This application started life as a project to produce a Tigase
-plugin. Since then it was expanded so that the application embeds the
-Tigase server and the Jetty server as well.
-
-While much of the XMPP framework was working at one time, there have
-been substantial refactoring since then, and the XMPP component is not
-guarenteed to work at this time.
-
-At this point, there is no security whatsoever. There is a mechanism
-in the HTTP interface to supply a username, but no password. None of
-the actions restrict if you are logged in or not.
+If you would like to help support this project, send your bitcoin to
+1PKVaib8p7ypnmuovtRE8YN3yPkkY3JjPa
