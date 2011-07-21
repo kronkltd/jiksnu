@@ -26,7 +26,8 @@
                    "/.well-known/host-meta")]
       (if-let [xrd (fetch url)]
         (if-let [links (get-links xrd)]
-          (model.domain/add-links domain links))))
+          (do (model.domain/add-links domain links)
+              (model.domain/set-discovered domain)))))
     (catch HostMetaException e
       ;; No webfinger, nothing to do.
       )))

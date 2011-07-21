@@ -42,3 +42,10 @@
 (defn add-links
   [domain links]
   (update (assoc domain :links links)))
+
+(defn set-discovered
+  [domain]
+  (entity/find-and-modify
+   Domain
+   {:_id (:_id domain)}
+   {:$set {:discovered true}}))

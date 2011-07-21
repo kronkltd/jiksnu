@@ -190,7 +190,6 @@
         feed (fetch-user-feed new-user)
         author (.getAuthor feed)
         uri (.getUri author)]
-    (update (assoc user :remote-id (str uri)))
     (doseq [link links]
       (if (= (:rel link) "magic-public-key")
         (let [key-string (:href link)
@@ -199,4 +198,8 @@
                #"data:application/magic-public-key,RSA.(.+)\.(.+)"
                key-string)]
           (set-armored-key (:_id user) n e)))
-      (add-link user link))))
+      (add-link user link))
+    (update
+     (-> user
+         (assoc :remote-id (str uri))
+         (assoc :discovered true)))))
