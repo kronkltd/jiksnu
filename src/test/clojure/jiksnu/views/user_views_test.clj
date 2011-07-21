@@ -12,7 +12,10 @@
         jiksnu.view
         jiksnu.views.user-views
         jiksnu.xmpp.element)
-  (:require [jiksnu.model.user :as model.user]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model.user :as model.user]
             [jiksnu.actions.user-actions :as actions.user])
   (:import jiksnu.model.User))
 
@@ -48,20 +51,20 @@
       (with-format :xmpp
         (let [user (model.user/create (factory User))]
           (let [response (show-section user)]
-            (is (element? response))))))))
+            (is (element/element? response))))))))
 
 (deftest apply-view-test "#'show :xmpp"
   (testing "should return a query results packet map"
     (with-format :xmpp
       (with-serialization :xmpp
         (let [user (model.user/create (factory User))
-              packet (make-packet
-                      {:to (make-jid user)
-                       :from (make-jid user)
+              packet (tigase/make-packet
+                      {:to (tigase/make-jid user)
+                       :from (tigase/make-jid user)
                        :type :get})
               request (merge {:format :xmpp
                               :action #'actions.user/show}
-                             (make-request packet))]
+                             (packet/make-request packet))]
           (let [response (apply-view request user)]
             (is (map? response))
             (is (= :result (:type response)))))))))
@@ -71,13 +74,13 @@
     (with-format :xmpp
       (with-serialization :xmpp
         (let [user (model.user/create (factory User))
-              packet (make-packet
-                      {:to (make-jid user)
-                       :from (make-jid user)
+              packet (tigase/make-packet
+                      {:to (tigase/make-jid user)
+                       :from (tigase/make-jid user)
                        :type :get})
               request (merge {:format :xmpp
                               :action #'actions.user/fetch-remote}
-                             (make-request packet))]
+                             (packet/make-request packet))]
           (let [response (apply-view request user)]
             (is (map? response))
             (is (= :get (:type response)))))))))
@@ -87,13 +90,13 @@
     (with-format :xmpp
       (with-serialization :xmpp
         (let [user (model.user/create (factory User))
-              packet (make-packet
-                      {:to (make-jid user)
-                       :from (make-jid user)
+              packet (tigase/make-packet
+                      {:to (tigase/make-jid user)
+                       :from (tigase/make-jid user)
                        :type :get})
               request (merge {:format :xmpp
                               :action #'actions.user/remote-create}
-                             (make-request packet))]
+                             (packet/make-request packet))]
           (let [response (apply-view request user)]
             (is (map? response))
             (is (= :result (:type response)))))))))

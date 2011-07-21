@@ -4,7 +4,6 @@
         ciste.sections.default
         ciste.views
         clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.helpers.activity-helpers
@@ -14,7 +13,8 @@
         jiksnu.session
         jiksnu.xmpp.element
         jiksnu.view)
-  (:require [hiccup.form-helpers :as f]
+  (:require [clj-tigase.element :as element]
+            [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import com.cliqset.abdera.ext.activity.object.Person
@@ -115,7 +115,7 @@
             (let [entry (model.activity/create (factory Activity))
                   response (show-section entry)]
               (is (not (nil? response)))
-              (is (element? response)))))))))
+              (is (element/element? response)))))))))
 
 (deftest show-section-test "Activity :atom"
   (testing "should return an abdera entry"

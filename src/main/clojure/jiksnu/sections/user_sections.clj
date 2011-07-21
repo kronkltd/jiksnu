@@ -5,7 +5,6 @@
         ciste.sections
         ciste.sections.default
         [clj-gravatar.core :only (gravatar-image)]
-        clj-tigase.core
         jiksnu.abdera
         jiksnu.helpers.user-helpers
         jiksnu.model
@@ -15,7 +14,8 @@
         jiksnu.view
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
-  (:require [hiccup.form-helpers :as f]
+  (:require [clj-tigase.element :as element]
+            [hiccup.form-helpers :as f]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
@@ -155,7 +155,7 @@
 (defsection show-section [User :xmpp :xmpp]
   [^User user & options]
   (let [{:keys [name avatar-url]} user]
-    (make-element
+    (element/make-element
      "vcard" {"xmlns" vcard-uri}
      (if name
        ["fn" {}
@@ -243,7 +243,7 @@
 
 ;; (defsection show-section-minimal [User :xmpp :xmpp]
 ;;   [property & options]
-;;   (make-element
+;;   (element/make-element
 ;;    (:key property) {}
 ;;    [(:type property) {} (:value property)]))
 

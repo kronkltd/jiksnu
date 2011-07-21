@@ -3,13 +3,14 @@
         ciste.debug
         ciste.sections
         ciste.sections.default
-        clj-tigase.core
         jiksnu.abdera
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         jiksnu.view)
-  (:require [clojure.string :as string]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.string :as string]
             [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -391,12 +392,12 @@ an Element"
 
 (defn comment-request
   [activity]
-  (make-packet
+  (tigase/make-packet
    {:type :get
-    :from (make-jid "" (config :domain))
-    :to (make-jid (get-actor activity))
+    :from (tigase/make-jid "" (config :domain))
+    :to (tigase/make-jid (get-actor activity))
     :body
-    (make-element
+    (element/make-element
      ["pubsub" {"xmlns" pubsub-uri}
       ["items" {"node" (comment-node-uri activity)}]])}))
 

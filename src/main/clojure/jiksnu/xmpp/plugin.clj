@@ -2,7 +2,6 @@
   (:use ciste.config
         ciste.debug
         ciste.routes
-        clj-tigase.core
         clojure.pprint
         [clojure.tools.logging :only (debug)]
         jiksnu.model
@@ -10,6 +9,7 @@
         jiksnu.routes
         jiksnu.view
         jiksnu.xmpp)
+  (:require [clj-tigase.packet :as packet])
   (:import java.util.Queue
            tigase.server.Packet
            tigase.xmpp.JID
@@ -56,7 +56,7 @@
   (with-database
     (if-let [to (.getStanzaTo packet)]
       (if-let [bare-to (.getBareJID to)]
-        (let [request (make-request packet)]
+        (let [request (packet/make-request packet)]
           (if (config :print :request)
             (spy request))
           (if-let [response (main-handler queue request)]

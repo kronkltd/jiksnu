@@ -2,6 +2,7 @@
   (:use clj-tigase.core
         jiksnu.abdera
         jiksnu.namespace)
+  (:require [clj-tigase.element :as element])
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            tigase.xml.Element
@@ -27,9 +28,9 @@
   ([abdera-element]
      (abdera-to-tigase-element abdera-element {}))
   ([abdera-element namespace-map]
-     (let [element (-> abdera-element get-qname make-element-qname)
+     (let [element (-> abdera-element get-qname element/make-element-qname)
            namespaces (.getNamespaces abdera-element)
-           bound-namespaces (merge-namespaces element
+           bound-namespaces (element/merge-namespaces element
                                               namespace-map
                                               namespaces)]
        (add-attributes element abdera-element)
@@ -40,7 +41,7 @@
 
 (defn microblog-node?
   [^Element element]
-  (= (node-value element) microblog-uri))
+  (= (element/node-value element) microblog-uri))
 
 (defn vcard-query-ns?
   [^Element element]
@@ -53,5 +54,5 @@
 
 (defn inbox-node?
   [element]
-  (= (node-value element) inbox-uri))
+  (= (element/node-value element) inbox-uri))
 

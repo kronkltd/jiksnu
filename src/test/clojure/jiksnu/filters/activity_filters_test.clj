@@ -1,9 +1,8 @@
 (ns jiksnu.filters.activity-filters-test
-  (:use clj-tigase.core
+  (:use clj-factory.core
         ciste.debug
         ciste.filters
         ciste.sections
-        clj-factory.core
         clojure.test
         jiksnu.core-test
         jiksnu.filters.activity-filters
@@ -12,7 +11,10 @@
         jiksnu.session
         jiksnu.view
         jiksnu.xmpp.element)
-  (:require [jiksnu.actions.activity-actions :as actions.activity]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
@@ -30,14 +32,14 @@
 ;;             (let [user (model.user/create (factory User))]
 ;;               (with-user user
 ;;                 (let [activity (factory Activity)
-;;                       element (make-element
+;;                       element (element/make-element
 ;;                                (index-section [activity]))
-;;                       packet (make-packet
-;;                               {:to (make-jid user)
-;;                                :from (make-jid user)
+;;                       packet (tigase/make-packet
+;;                               {:to (tigase/make-jid user)
+;;                                :from (tigase/make-jid user)
 ;;                                :type :set
 ;;                                :body element})
-;;                       request (assoc (make-request packet)
+;;                       request (assoc (packet/make-request packet)
 ;;                                 :serialization :xmpp)
 ;;                       response (filter-action #'create request)]
 ;;                   (is (activity? response)))))))))))
@@ -71,12 +73,12 @@
         (model.activity/drop!)
         (let [user (model.user/create (factory User))
               element nil
-              packet (make-packet
-                      {:from (make-jid user)
-                       :to (make-jid user)
+              packet (tigase/make-packet
+                      {:from (tigase/make-jid user)
+                       :to (tigase/make-jid user)
                        :type :get
                        :body element})
-              request (assoc (make-request packet)
+              request (assoc (packet/make-request packet)
                         :serialization :xmpp)]
           (let [response (filter-action #'actions.activity/index request)]
             (is (not (nil? response)))
@@ -86,13 +88,13 @@
         (let [author (model.user/create (factory User))]
           (with-user author
             (let [element nil
-                  packet (make-packet
-                          {:from (make-jid author)
-                           :to (make-jid author)
+                  packet (tigase/make-packet
+                          {:from (tigase/make-jid author)
+                           :to (tigase/make-jid author)
                            :type :get
                            :id (fseq :id)
                            :body element})
-                  request (assoc (make-request packet)
+                  request (assoc (packet/make-request packet)
                             :serialization :xmpp)
                   activity (model.activity/create (factory Activity))
                   response (filter-action #'actions.activity/index request)]
@@ -106,16 +108,16 @@
         (let [author (model.user/create (factory User))]
           (with-user author
             (let [activity (model.activity/create (factory Activity))
-                  packet-map {:from (make-jid author)
-                              :to (make-jid author)
+                  packet-map {:from (tigase/make-jid author)
+                              :to (tigase/make-jid author)
                               :type :get
                               :id "JIKSNU1"
-                              :body (make-element
+                              :body (element/make-element
                                      ["pubsub" {"xmlns" pubsub-uri}
                                       ["items" {"node" microblog-uri}
                                        ["item" {"id" (:_id activity)}]]])}
-                  packet (make-packet packet-map)
-                  request (assoc (make-request packet)
+                  packet (tigase/make-packet packet-map)
+                  request (assoc (packet/make-request packet)
                             :serialization :xmpp)
                   response (filter-action #'actions.activity/show request)]
               (is (activity? response)))))))

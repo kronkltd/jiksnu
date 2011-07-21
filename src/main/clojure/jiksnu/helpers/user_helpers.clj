@@ -4,12 +4,14 @@
         ciste.sections
         ciste.sections.default
         [clj-gravatar.core :only (gravatar-image)]
-        clj-tigase.core
         jiksnu.abdera
         jiksnu.model
         jiksnu.session
         jiksnu.view)
-  (:require [clojure.string :as string]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [clojure.string :as string]
             [hiccup.form-helpers :as f]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.model.activity :as model.activity]
@@ -177,7 +179,7 @@
 
 (defn property-map
   [user property]
-  (let [child-elements (children property)
+  (let [child-elements (element/children property)
         rule-elements (filter model.user/rule-element? child-elements)
         type-element (first (filter (comp not model.user/rule-element?)
                                     child-elements))]
@@ -191,7 +193,7 @@
   [element]
   (fn [vcard-element]
     (map (partial property-map (current-user))
-         (children vcard-element))))
+         (element/children vcard-element))))
 
 (defn vcard-request
   [request user]
@@ -203,13 +205,13 @@
 (defn request-vcard!
   [user]
   (let [packet-map
-        {:from (make-jid "" (config :domain))
-         :to (make-jid user)
+        {:from (tigase/make-jid "" (config :domain))
+         :to (tigase/make-jid user)
          :id "JIKSNU1"
          :type :get
          :body
-         (make-element
+         (element/make-element
           "query"
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
-        packet (make-packet packet-map)]
-    (deliver-packet! (spy packet))))
+        packet (tigase/make-packet packet-map)]
+    (tigase/deliver-packet! (spy packet))))

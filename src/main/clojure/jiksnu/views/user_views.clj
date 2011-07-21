@@ -5,7 +5,6 @@
         ciste.sections
         ciste.sections.default
         ciste.views
-        clj-tigase.core
         jiksnu.actions.user-actions
         jiksnu.helpers.user-helpers
         jiksnu.model
@@ -15,7 +14,8 @@
         jiksnu.view
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
-  (:require [hiccup.form-helpers :as f]
+  (:require [clj-tigase.element :as element]
+            [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
@@ -211,7 +211,7 @@
   [request user]
   (let [{:keys [id to from]} request]
     {:body
-     (make-element
+     (element/make-element
       "query" {"xmlns" query-uri} (show-section user))
      :type :result
      :id id

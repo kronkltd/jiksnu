@@ -2,7 +2,6 @@
   (:use ciste.debug
         ciste.filters
         clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.actions.subscription-actions
         jiksnu.filters.subscription-filters
@@ -11,7 +10,10 @@
         jiksnu.namespace
         jiksnu.session
         jiksnu.view)
-  (:require [jiksnu.model.subscription :as model.subscription]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
@@ -35,16 +37,16 @@
     (testing "should not be empty"
       (let [user (model.user/create (factory User))
             subscriber (model.user/create (factory User))
-            element (make-element
+            element (element/make-element
                      "pubsub" {"xmlns" pubsub-uri}
                      ["subscribers" {"node" microblog-uri}])
-            packet (make-packet
-                    {:to (make-jid user)
-                     :from (make-jid user)
+            packet (tigase/make-packet
+                    {:to (tigase/make-jid user)
+                     :from (tigase/make-jid user)
                      :type :get
                      :id (fseq :id)
                      :body element})
-            request (assoc (make-request packet)
+            request (assoc (packet/make-request packet)
                       :serialization :xmpp)
             subscription (model.subscription/create
                           (factory Subscription
@@ -59,15 +61,15 @@
     (testing "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
-            element (make-element
+            element (element/make-element
                      ["pubsub" {"xmlns" pubsub-uri}
                       ["subscriptions" {"node" microblog-uri}]])
-            packet (make-packet
-                    {:to (make-jid user)
-                     :from (make-jid user)
+            packet (tigase/make-packet
+                    {:to (tigase/make-jid user)
+                     :from (tigase/make-jid user)
                      :type :get
                      :body element})
-            request (assoc (make-request packet)
+            request (assoc (packet/make-request packet)
                       :serialization :xmpp)
             subscription (model.subscription/create
                           (factory Subscription

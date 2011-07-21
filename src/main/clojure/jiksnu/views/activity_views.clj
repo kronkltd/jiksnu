@@ -6,7 +6,6 @@
         ciste.sections
         ciste.sections.default
         ciste.views
-        clj-tigase.core
         jiksnu.abdera
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers
@@ -18,7 +17,10 @@
         jiksnu.view
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [karras.entity :as entity]
             [hiccup.form-helpers :as f])
@@ -70,7 +72,7 @@
 
 (defview #'fetch-comments :xmpp
   [request [activity comments]]
-  (result-packet request (index-section comments)))
+  (tigase/result-packet request (index-section comments)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fetch-comments-remote
@@ -80,7 +82,7 @@
   [request activity]
   {:type :get
    :body
-   (make-element (pubsub-items
+   (element/make-element (packet/pubsub-items
      (str microblog-uri ":replies:item=" (:id activity))))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,7 +91,7 @@
 
 (defview #'index :xmpp
   [request activities]
-  (result-packet request (index-section activities)))
+  (tigase/result-packet request (index-section activities)))
 
 (defview #'index :json
   [request activities]
@@ -256,7 +258,7 @@
 
 (defview #'user-timeline :xmpp
   [request [user  activities]]
-  (result-packet request (index-section activities)))
+  (tigase/result-packet request (index-section activities)))
 
 (defview #'user-timeline :xml
   [request [user activities]]

@@ -5,12 +5,13 @@
         ciste.triggers
         ciste.sections
         ciste.sections.default
-        clj-tigase.core
         jiksnu.actions.subscription-actions
         jiksnu.helpers.subscription-helpers
         jiksnu.namespace
         jiksnu.view)
-  (:require [jiksnu.model.domain :as model.domain]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.helpers.user-helpers :as helpers.user]))
 
@@ -21,12 +22,12 @@
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (subscribe-request subscription)
-            packet (make-packet {:body (make-element ele)
+            packet (tigase/make-packet {:body (element/make-element ele)
                                  :type :set
                                  :id (:id request)
-                                 :from (make-jid user)
-                                 :to (make-jid subscribee)})]
-        (deliver-packet! packet)))))
+                                 :from (tigase/make-jid user)
+                                 :to (tigase/make-jid subscribee)})]
+        (tigase/deliver-packet! packet)))))
 
 (defn notify-unsubscribe-xmpp
   [request subscription]
@@ -35,15 +36,12 @@
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
             ele (unsubscription-request subscription)
-            packet (make-packet {:body (make-element ele)
+            packet (tigase/make-packet {:body (element/make-element ele)
                                  :type :set
                                  :id (:id request)
-                                 :from (make-jid user)
-                                 :to (make-jid subscribee)})]
-        (deliver-packet! packet)))))
-
-
-
+                                 :from (tigase/make-jid user)
+                                 :to (tigase/make-jid subscribee)})]
+        (tigase/deliver-packet! packet)))))
 
 (defn notify-subscribe
   [action [user] subscription]
@@ -65,16 +63,16 @@
   [action params subscription]
   (let [[actor user] params]
    (if (model.user/local? user)
-     (let [packet (make-packet
+     (let [packet (tigase/make-packet
                    {:type :headline
-                    :to (make-jid user)
-                    :from (make-jid "" (config :domain))
+                    :to (tigase/make-jid user)
+                    :from (tigase/make-jid "" (config :domain))
                     :body
-                    (make-element
+                    (element/make-element
                      ["body" {}
                       (str (title actor)
                            " has subscribed to you")])})]
-       (deliver-packet! packet)))))
+       (tigase/deliver-packet! packet)))))
 
 (add-trigger! #'subscribe #'notify-subscribe)
 (add-trigger! #'unsubscribe #'notify-unsubscribe)

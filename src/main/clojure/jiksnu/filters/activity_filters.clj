@@ -10,7 +10,8 @@
         jiksnu.sections.activity-sections
         jiksnu.session
         lamina.core)
-  (:require [clojure.java.io :as io]
+  (:require [clj-tigase.element :as element]
+            [clojure.java.io :as io]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]))
@@ -22,7 +23,7 @@
           items (:items request)]
       (action (map #(to-activity
                      (parse-xml-string
-                      (str (first (children %)))))
+                      (str (first (element/children %)))))
                    items)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -140,7 +141,7 @@
         activities
         (map
          (fn [item]
-           (-> item children first
+           (-> item element/children first
                str parse-xml-string
                to-activity))
          items)]
@@ -174,8 +175,8 @@
   [action request]
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
-          ;; items (children packet "/message/event/items/item")
-          items (map (comp first children) (:items request))]
+          ;; items (element/children packet "/message/event/items/item")
+          items (map (comp first element/children) (:items request))]
       (action (map #(to-activity (parse-xml-string (str %)))
             items)))))
 

@@ -1,7 +1,5 @@
 (ns jiksnu.filters.user-filters
-  (:use clj-tigase.core
-        [clojure.tools.logging :only (error)]
-        ciste.config
+  (:use ciste.config
         ciste.debug
         ciste.filters
         jiksnu.abdera
@@ -9,7 +7,9 @@
         jiksnu.helpers.user-helpers
         jiksnu.session
         jiksnu.view)
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import tigase.xml.Element))
@@ -113,7 +113,7 @@
 (deffilter #'profile :http
   [action request]
   (if-let [user (current-user)]
-    user (error "no user")))
+    user (log/error "no user")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; register
@@ -131,7 +131,7 @@
   [action request]
   (let [{:keys [to from payload]} request
         user (model.user/fetch-by-jid from)]
-    (let [vcard (first (children payload))
+    (let [vcard (first (element/children payload))
 
           avatar-url-element (find-children vcard "/vcard/photo/uri")
           first-name-element (find-children vcard "/vcard/n/given/text")

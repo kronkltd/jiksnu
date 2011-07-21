@@ -1,10 +1,10 @@
 (ns jiksnu.helpers.subscription-helpers-test
   (:use clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.helpers.subscription-helpers)
-  (:require [jiksnu.model.subscription :as model.subscription]
+  (:require [clj-tigase.element :as element]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
@@ -18,7 +18,7 @@
                         (:_id user) (:_id subscribee))]
       (let [response (subscriber-response-element subscription)]
         (is (or (vector? response)
-                    (element? response)))))))
+                    (element/element? response)))))))
 
 (deftest subscribe-request-test
   (testing "should"
@@ -28,4 +28,4 @@
                         (:_id user) (:_id subscribee))]
       (let [response (subscribe-request subscription)]
         (is (or (vector? response)
-                    (element? response)))))))
+                    (element/element? response)))))))

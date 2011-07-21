@@ -5,12 +5,13 @@
         ciste.sections
         ciste.sections.default
         ciste.views
-        clj-tigase.core
         jiksnu.actions.domain-actions
         jiksnu.model
         jiksnu.session
         jiksnu.view)
-  (:require [hiccup.form-helpers :as f]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [hiccup.form-helpers :as f]
             jiksnu.sections.domain-sections)
   (:import jiksnu.model.Domain))
 
@@ -39,9 +40,9 @@
 (defview #'ping :xmpp
   [request domain]
   {:type :get
-   :to (make-jid "" (:_id domain))
-   :from (make-jid "" (config :domain))
-   :body (make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
+   :to (tigase/make-jid "" (:_id domain))
+   :from (tigase/make-jid "" (config :domain))
+   :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
 
 (defview #'ping-response :xmpp
   [request domain]

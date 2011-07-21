@@ -1,7 +1,7 @@
 (ns jiksnu.abdera
   (:use ciste.debug
         [clojure.tools.logging :only (error)])
-  (:require [clj-tigase.core :as tigase])
+  (:require [clj-tigase.element :as element])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
            java.io.ByteArrayInputStream
@@ -66,8 +66,7 @@
   (if element
     (.findChild element path)))
 
-;; FIXME: Abdera element
 (defn get-qname
   "Returns a map representing the QName of the given element"
   [element]
-  (tigase/parse-qname (.getQName element)))
+  (element/parse-qname (.getQName element)))

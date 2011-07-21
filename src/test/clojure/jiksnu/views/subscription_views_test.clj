@@ -3,7 +3,6 @@
         ciste.debug
         ciste.views
         clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.helpers.subscription-helpers
@@ -12,7 +11,10 @@
         jiksnu.view
         jiksnu.views.subscription-views
         jiksnu.xmpp.element)
-  (:require [jiksnu.model.subscription :as model.subscription]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.subscription-actions :as
              actions.subscription])
@@ -27,15 +29,15 @@
     (testing "should return a packet map"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
-            element (make-element
+            element (element/make-element
                      ["pubsub" {"xmlns" pubsub-uri}
                       ["unsubscribe" {"node" microblog-uri}]])
-            packet (make-packet
-                    {:to (make-jid subscribee)
-                     :from (make-jid user)
+            packet (tigase/make-packet
+                    {:to (tigase/make-jid subscribee)
+                     :from (tigase/make-jid user)
                      :type :set
                      :body element})
-            request (merge (make-request packet)
+            request (merge (packet/make-request packet)
                            {:action #'actions.subscription/unsubscribe
                             :format :xmpp})
             record (actions.subscription/unsubscribe (:_id user)

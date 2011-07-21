@@ -3,14 +3,15 @@
         ciste.debug
         ciste.sections.default
         ciste.triggers
-        clj-tigase.core
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
         jiksnu.view)
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
@@ -22,21 +23,21 @@
   [recipient ^Activity activity]
   (with-serialization :xmpp
     (with-format :xmpp
-      (let [recipient-jid (make-jid recipient)
+      (let [recipient-jid (tigase/make-jid recipient)
             author (get-actor activity)
             message-text (:summary activity)
-            ele (make-element
+            ele (element/make-element
                  ["event" {"xmlns" event-ns}
                   (index-block [activity])])
             message
-            (make-packet
+            (tigase/make-packet
              {:to recipient-jid
-              :from (make-jid author)
+              :from (tigase/make-jid author)
               :type :headline
               ;; FIXME: generate an id for this case
               :id "JIKSNU1"
               :body ele})]
-        (deliver-packet! message)))))
+        (tigase/deliver-packet! message)))))
 
 (defn show-trigger
   [action params activity]

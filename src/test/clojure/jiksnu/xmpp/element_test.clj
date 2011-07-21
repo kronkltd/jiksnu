@@ -3,7 +3,6 @@
         ciste.sections
         ciste.sections.default
         clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.model
@@ -11,6 +10,7 @@
         jiksnu.namespace
         jiksnu.view
         jiksnu.xmpp.element)
+  (:require [clj-tigase.element :as element])
   (:import jiksnu.model.Activity))
 
 (use-fixtures :each test-environment-fixture)
@@ -22,4 +22,4 @@
         (let [activity (factory Activity)
               abdera-element (show-section activity)
               response (abdera-to-tigase-element abdera-element)]
-          (is (element? response)))))))
+          (is (element/element? response)))))))

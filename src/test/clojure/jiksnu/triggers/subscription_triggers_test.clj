@@ -1,10 +1,10 @@
 (ns jiksnu.triggers.subscription-triggers-test
   (:use clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.triggers.subscription-triggers)
-  (:require [jiksnu.model.subscription :as model.subscription]
+  (:require [clj-tigase.packet :as packet]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
@@ -17,4 +17,4 @@
           subscription (model.subscription/subscribe
                         (:_id user) (:_id subscribee))
           response (notify-subscribe-xmpp {:id "JIKSNU1"} subscription)]
-      (is (packet? response)))))
+      (is (packet/packet? response)))))

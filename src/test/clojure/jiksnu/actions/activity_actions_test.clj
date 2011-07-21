@@ -4,7 +4,6 @@
         ciste.sections.default
         ciste.views
         clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.actions.activity-actions
         ciste.debug
@@ -13,7 +12,10 @@
         jiksnu.namespace
         jiksnu.session
         jiksnu.view)
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -37,14 +39,14 @@
            (let [user (model.user/create (factory User))]
              (with-user user
                (let [activity (factory Activity)
-                     element (make-element
+                     element (element/make-element
                               (index-section [activity]))
-                     packet (make-packet
-                             {:to (make-jid user)
-                              :from (make-jid user)
+                     packet (tigase/make-packet
+                             {:to (tigase/make-jid user)
+                              :from (tigase/make-jid user)
                               :type :set
                               :body element})
-                     request (make-request packet)
+                     request (packet/make-request packet)
                      response (create activity)]
                  (is (activity? response)))))))))))
 

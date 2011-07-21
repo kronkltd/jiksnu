@@ -3,14 +3,14 @@
         ciste.debug
         ciste.views
         clj-factory.core
-        clj-tigase.core
         clojure.test
         jiksnu.core-test
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers
         jiksnu.views.activity-views)
-  (require [jiksnu.model.activity :as model.activity]
+  (require [clj-tigase.packet :as packet]
+           [jiksnu.model.activity :as model.activity]
            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -25,4 +25,4 @@
                         (factory Activity
                                  {:authors [(:_id user)]}))
               response (notify-activity user activity)]
-          (is (packet? response)))))))
+          (is (packet/packet? response)))))))
