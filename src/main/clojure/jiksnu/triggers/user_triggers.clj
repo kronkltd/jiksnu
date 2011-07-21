@@ -5,7 +5,8 @@
         jiksnu.actions.user-actions
         jiksnu.helpers.user-helpers
         jiksnu.namespace
-        jiksnu.view)
+        jiksnu.view
+        lamina.core)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -30,10 +31,10 @@
 (defn discover-user
   [action _ user]
   (let [domain (model.domain/show (:domain user))]
-    ((if (:discovered domain)
-       (if (:xmpp domain) discover-user-xmpp discover-user-http)
-       enqueue-discover)
-     user)))
+    (if (:discovered domain)
+      (do (async (discover-user-xmpp user))
+          (async (discover-user-http user)))
+      (enqueue-discover user))))
 
 (defn fetch-updates-http
   [user]
