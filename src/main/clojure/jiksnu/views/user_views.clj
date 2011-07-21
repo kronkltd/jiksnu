@@ -237,3 +237,7 @@
   {:status 302
    :template false
    :headers {"Location" (uri user)}})
+
+
+(defview #'xmpp-service-unavailable :xmpp
+  [request _])

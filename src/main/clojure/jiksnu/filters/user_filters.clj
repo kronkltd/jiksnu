@@ -210,3 +210,9 @@
         {username :id} params
         user (model.user/fetch-by-id username)]
     (action user)))
+
+(deffilter #'xmpp-service-unavailable :xmpp
+  [action request]
+  (let [from (:from request)
+        user (model.user/find-or-create-by-jid from)]
+    (action user)))

@@ -43,9 +43,13 @@
   [domain links]
   (update (assoc domain :links links)))
 
-(defn set-discovered
-  [domain]
+(defn set-field
+  [domain field value]
   (entity/find-and-modify
    Domain
    {:_id (:_id domain)}
-   {:$set {:discovered true}}))
+   {:$set {field value}}))
+
+(defn set-discovered
+  [domain]
+  (set-field domain :discovered true))

@@ -59,3 +59,7 @@
   (model.domain/update
    (merge domain {:xmpp true
                   :discovered true})))
+
+(defaction set-xmpp
+  [domain value]
+  (model.domain/set-field domain :xmpp false))

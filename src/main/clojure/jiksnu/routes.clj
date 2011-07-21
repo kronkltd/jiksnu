@@ -169,6 +169,10 @@
       :ns query-uri}
      #'user/remote-create]
 
+    [{:method :error
+      :name "error"}
+     #'user/xmpp-service-unavailable]
+
     [{:method :result
       :pubsub true
       :node (str microblog-uri ":replies:item=:id")

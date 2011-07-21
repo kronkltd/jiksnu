@@ -203,3 +203,9 @@
      (-> user
          (assoc :remote-id (str uri))
          (assoc :discovered true)))))
+
+(defaction xmpp-service-unavailable
+  [user]
+  (let [domain-name (:domain user)
+        domain (model.domain/show domain-name)]
+    (actions.domain/set-xmpp domain false)))
