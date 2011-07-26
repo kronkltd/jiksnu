@@ -183,6 +183,12 @@
       <artifactId>clj-webdriver</artifactId>
       <version>0.2.7</version>
     </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>clj-webdriver</groupId> -->
+    <!--   <artifactId>clj-webdriver</artifactId> -->
+    <!--   <version>0.2.7</version> -->
+    <!--   <scope>test</scope> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>swank-clojure</groupId>
       <artifactId>swank-clojure</artifactId>
