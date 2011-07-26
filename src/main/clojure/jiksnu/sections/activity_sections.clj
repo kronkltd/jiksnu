@@ -16,7 +16,9 @@
         [karras.entity :only (make)])
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            (jiksnu.templates
+             [activity :as template.activity]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
@@ -221,7 +223,8 @@
 
 (defsection show-section-minimal [Activity :html]
   [activity & options]
-  (let [user (-> activity
+  (template.activity/show (into {} activity))
+  #_(let [user (-> activity
                  :authors
                  first
                  model.user/fetch-by-id)

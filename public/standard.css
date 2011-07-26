@@ -126,7 +126,7 @@ body
     right: 0px;
 }
 
-.post-form #content {
+.post-form .content {
     width: 100%;
 }
 

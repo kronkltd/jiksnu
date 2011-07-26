@@ -1,0 +1,89 @@
+{namespace jiksnu.templates.layout}
+
+/**
+ * @param body
+ * @param? development
+ * @param? formats
+ * @param? links
+ * @param? title
+ */
+{template .layout}
+  <html>
+    <head>
+      <title>{if $title}{$title} - {/if}Jiksnu</title>
+      {if $links}
+        {foreach $link in $links}
+          <link type="{$link.type}"
+                href="{$link.href}"
+                title="{$link.label}"
+                rel="{$link.rel}" />
+        {/foreach}
+      {/if}
+      <link type="text/css"
+              href="/public/standard.css"
+              rel="stylesheet"
+              media="screen" />
+    </head>
+    <body>
+      <div id="wrap">
+        {call .develWarning data="all" /}
+        <header>
+          {call .loginSection /}
+          <address id="site_contact" class="vcard">
+            <a class="url home bookmark" href="/">
+              <img class="logo photo" src="/public/logo.png" />
+            </a>
+          </address>
+          {call .postActivityForm data="all" /}
+          <div class="clear"></div>
+        </header>
+        <div id="content">
+          {$body|noAutoescape}
+          <div class="clear"></div>
+        </div>
+        <footer>
+          {if $formats}
+            <div class="formats">
+              <ul>
+                {foreach $format in $formats}
+                  <li>
+                    <a href="{$format.href}">{$format.label}</a>
+                  </li>
+                {/foreach}
+              </ul>
+            </div>
+          {/if}
+          <p>Copyright © 2011 KRONK Ltd.</p>
+          <!-- TODO: Link to scripts -->
+        </footer>
+      </div>
+    </body>
+  </html>
+{/template}
+
+/**
+ * @param development Is the server running in development mode?
+ */
+{template .develWarning}
+  {if $development}
+    <div class="important devel-section">
+      This site is running in development mode.
+      No guarantees are made about the accuracy or security of
+      information on this site. Use at your own risk.
+    </div>
+  {/if}
+{/template}
+
+/**
+ *
+ */
+{template .loginSection}
+
+{/template}
+
+/**
+ *
+ */
+{template .postActivityForm}
+
+{/template}

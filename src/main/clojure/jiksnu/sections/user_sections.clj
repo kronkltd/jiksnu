@@ -1,8 +1,5 @@
 (ns jiksnu.sections.user-sections
-  (:use ciste.config
-        ciste.debug
-        ciste.html
-        ciste.sections
+  (:use (ciste config debug html sections)
         ciste.sections.default
         [clj-gravatar.core :only (gravatar-image)]
         jiksnu.abdera
@@ -17,10 +14,12 @@
   (:require [clj-tigase.element :as element]
             [hiccup.form-helpers :as f]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
+                          [subscription :as model.subscription]
+                          [user :as model.user])
+            (jiksnu.templates
+             [user :as template.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            java.net.URI
            javax.xml.namespace.QName

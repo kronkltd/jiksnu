@@ -16,7 +16,9 @@
             [clojure.stacktrace :as stacktrace]
             [ciste.debug :as debug]
             [hiccup.core :as hiccup]
-            [hiccup.form-helpers :as f])
+            [hiccup.form-helpers :as f]
+            (jiksnu.templates
+              [layout :as template.layout]))
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -65,49 +67,51 @@
 (defn page-template-content
   [response]
   {:headers {"Content-Type" "text/html"}
-   :body
+   :body 
    (str
     "<!doctype html>\n"
-    (hiccup/html
-     [:html
-      [:head
-       [:title "jiksnu"]
-       (map
-        (fn [{:keys [label href type]}]
-          [:link {:type type
-                  :href href
-                  :title label
-                  :rel "alternate"}])
-        (:formats response))
-       (link-to-stylesheet "/public/standard.css")]
-      [:body
-       [:div#wrap
-        (devel-environment-section)
-        [:header
-         (login-section)
-         [:address#site_contact.vcard
-          [:a.url.home.bookmark
-           {:href "/"}
-           [:img.logo.photo {:src "/public/logo.png"
-                           :alt "Jiksnu"}]]]
-         (add-form (make Activity {}))
-         [:div.clear]]
-        (navigation-section)
-        [:div#content
-         (:body response)
-         [:div.clear]]
-        [:footer
-         [:div.formats
-          [:ul
-           (map
-            (fn [{:keys [label href type]}]
-              [:li
-               [:a {:href href} label]])
-            (:formats response))]]
-         [:p "Copyright © 2011 KRONK Ltd."]]]
-       (link-to-script "http://www.google.com/jsapi")
-       [:script "google.load(\"jquery\", \"1.3\")"]
-       (link-to-script "/public/standard.js")]]))})
+    (template.layout/layout
+     {:body (hiccup/html (:body response))
+      :development (config :development)})
+    #_[:html
+       [:head
+        [:title "jiksnu"]
+        (map
+         (fn [{:keys [label href type]}]
+           [:link {:type type
+                   :href href
+                   :title label
+                   :rel "alternate"}])
+         (:formats response))
+        (link-to-stylesheet "/public/standard.css")]
+       [:body
+        [:div#wrap
+         (devel-environment-section)
+         [:header
+          (login-section)
+          [:address#site_contact.vcard
+           [:a.url.home.bookmark
+            {:href "/"}
+            [:img.logo.photo {:src "/public/logo.png"
+                              :alt "Jiksnu"}]]]
+          (add-form (make Activity {}))
+          [:div.clear]]
+         (navigation-section)
+         [:div#content
+          (:body response)
+          [:div.clear]]
+         [:footer
+          [:div.formats
+           [:ul
+            (map
+             (fn [{:keys [label href type]}]
+               [:li
+                [:a {:href href} label]])
+             (:formats response))]]
+          [:p "Copyright © 2011 KRONK Ltd."]]]
+        (link-to-script "http://www.google.com/jsapi")
+        [:script "google.load(\"jquery\", \"1.3\")"]
+        (link-to-script "/public/standard.js")]])})
 
 (defmethod apply-template :html
   [request response]
