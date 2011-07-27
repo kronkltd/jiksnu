@@ -63,36 +63,12 @@
 (deftest index-block-test "Activity :xml")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-block-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest index-block-minimal-test "Activity :html"
-  (testing "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (is (vector? (index-block-minimal [activity])))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest index-line-test "Activity")
 
 (deftest index-line-test "Activity :xmpp :xmpp")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-line-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest index-line-minimal-test "Activity :html"
-  (testing "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (is (vector? (index-line-minimal activity)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-section
