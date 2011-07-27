@@ -11,9 +11,8 @@
   [activity]
   (entity/create
    Activity
-   (spy
-    (->  activity
-         (dissoc :picture)))))
+   (->  activity
+        (dissoc :picture))))
 
 (defn get-comments
   [activity]
@@ -22,7 +21,7 @@
 
 (defn update
   [activity]
-  (entity/save (spy activity)))
+  (entity/save activity))
 
 (defn privacy-filter
   [user]

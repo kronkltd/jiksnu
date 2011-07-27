@@ -92,7 +92,7 @@
 
 (defn find-or-create-by-uri
   [uri]
-  (apply find-or-create (split-uri (spy uri))))
+  (apply find-or-create (split-uri uri)))
 
 (defn find-or-create-by-remote-id
   [id]
