@@ -74,11 +74,37 @@
   {/if}
 {/template}
 
+
+/**
+ * @param user
+ */
+{template .logoutButton}
+  <form method="post" action="/main/logout">
+    <ol>
+      <li>{call jiksnu.templates.user.linkTo data="$user" /}</li>
+      <li><input type="submit" value="Log out" /></li>
+    </ol>
+  </form>
+{/template}
+
 /**
  *
  */
-{template .loginSection}
+{template .loginLinks}
+  <a href="/main/login">Log in</a> or <a href="/main/register">Register</a>
+{/template}
 
+/**
+ * @param authenticated
+ */
+{template .loginSection}
+  <div id="login-section">
+    {if $authenticated}
+      {call .logoutButton data="all" /}
+    {else}
+      {call .loginLinks data="all" /}
+    {/if}
+  </div>
 {/template}
 
 /**

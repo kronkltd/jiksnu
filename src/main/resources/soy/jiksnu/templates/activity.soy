@@ -1,111 +1,24 @@
 {namespace jiksnu.templates.activity}
 
 /**
- * Display an activity
- * @param id
- * @param authors
- * @param content
- * @param objecttype
- * @param local
- * @param public
- * @param title
- * @param lat
- * @param long
- * @param uri
- * @param published
- * @param commentcount
- * @param buttonable
- * @param comments
+ * @param authenticated
  */
-{template .show}
-  <article class="{css hentry} {css notice}"
-           id="{$id}">
-    <header class="{css avatar-section}">
-      {foreach $user in $authors}
-        {call .avatarImg data="all"}
-          {param imgsrc: $user.imgsrc /}
-          {param name: $user.name /}
-        {/call}
-      {/foreach}
-    </header>
-    <section class="{css content}">
-      <header>
-        {foreach $user in $authors}
-          {call jiksnu.templates.user.showMinimal data="$user" /}
-        {/foreach}
-        {if $objecttype != 'comment'}
-          <div class="{css labels}">
-            <span id="{css local}">{if not $local} remote{/if}</span>
-            <span id="{css privacy}">{if not $public} private{/if}</span>
-          </div>
-        {/if}
-      </header>
-      <p class="{css entry-content}">
-        {if $objecttype == 'article' and $title}
-          <h3 class="{css entry-title}">{$title}</h3>
-        {/if}
-      </p>
-      <div>
-        {$content}
-      </div>
-      {call .linkSection /}
-      <div>
-        {if $lat}
-          <p>Lat: {$lat}</p>
-        {/if}
-        {if $long}
-          <p>Long: {$long}</p>
-        {/if}
-      </div>
-      {call .displayMap data="all" /}
-      {call .tagsSection data="all" /}
-      <footer>
-        {if $published}
-          <p>
-            <a href="{$uri}">
-              <time>
-                {if $published}
-                  {$published}
-                {else}
-                  Unknown
-                {/if}
-              </time>
-            </a>
-          </p>
-        {/if}
-        <ul class="{css buttons}">
-          {if $buttonable}
-            <li>{call .likeButton data="all" /}</li>
-            <li>{call .editButton data="all" /}</li>
-            <li>{call .deleteButton data="all" /}</li>
-          {/if}
-        </ul>
-        <div class="{css comments}">
-          <p>
-            <span>Comments: {$commentcount}</span>
-            {sp}
-            <a href="#">Show</a>
-            {sp}
-            {call .commentLink data="all" /}
-            {sp}
-            /* {call .fetchCommentsButton data="all" /} */
-          </p>
-          {if $comments}
-            {call .commentsSection data="all" /}
-          {/if}
-        </div>
-      </footer>
-    </section>
-  </article>
+{template .addForm}
+  <div>
+    {if $authenticated}
+      {call .activityForm data="all" /}
+    {/if}
+  </div>
 {/template}
 
+
 /**
+ * @param id
  * @param name
- * @param uri
  * @param imgsrc
  */
 {template .avatarImg }
-  <a class="{$uri}"
+  <a href="/users/{$id}"
      title="{$name}">
     <img class="avatar photo"
          width="48"
@@ -114,9 +27,110 @@
   </a>
 {/template}
 
+
+/**
+ * @param uri
+ */
+{template .commentLink}
+  <a href="{$uri}">Comment</a>
+{/template}
+
+
+/**
+ * @param comments
+ */
+{template .commentsSection}
+  {if $comments}
+
+  {/if}
+{/template}
+
+/**
+ * @param uri
+ */
+{template .deleteButton}
+  <form method="delete"
+        action="{$uri}">
+    <input type="submit" value="Delete" />
+  </form>
+{/template}
+
+
+/**
+ * @param lat
+ * @param long
+ */
+{template .displayMap}
+  {if $lat and $long}
+    <img src="https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|{$lat},{$long}"
+         class="map" />
+  {/if}
+{/template}
+
+
+/**
+ * @param uri
+ */
+{template .editButton}
+  <form method="post"
+        action="{$uri}/edit">
+    <input type="submit" value="Edit" />
+  </form>
+{/template}
+
+
+/**
+ * @param uri
+ */
+{template .fetchCommentButton}
+  <form method="post"
+        action="{$uri}/comments/update">
+    <input type="submit" value="Update" />
+  </form>
+{/template}
+
+
+/**
+ * @param activities
+ */
+{template .indexBlock}
+  <div id="notices_primary">
+    <ol class="activities">
+      {foreach $activity in $activities}
+        {call .show data="$activity" /}
+      {/foreach}
+    </ol>
+  </div>
+{/template}
+
+/**
+ * @param activities
+ */
+{template .indexBlockMinimal}
+  <ol class="activities">
+    {foreach $activity in $activities}
+      <li>
+        {call .show data="$activity" /}
+      </li>
+    {/foreach}
+  </ol>
+{/template}
+
+
+/**
+ * @param uri
+ */
+{template .likeButton}
+  <form method="post"
+        action="{$uri}/comments/post">
+    <input type="submit" value="Fetch Comments" />
+  </form>
+{/template}
+
+
 /**
  * @param links
- * @param objectType
+ * @param object_type
  */
 {template .linkSection }
   {if $links}
@@ -128,8 +142,8 @@
             <p>Href: {$link.href}</p>
             <p>Rel: {$link.rel}</p>
             <p>Title: {$link.title}</p>
-            <p>Mime Type: {$link.mimeType}</p>
-            {if $objectType == 'picture'}
+            <p>Mime Type: {$link.mime_type}</p>
+            {if $object_type == 'picture'}
               <img src="{$link.href}"
                    width="100"
                    height="100"/>
@@ -138,17 +152,6 @@
         {/foreach}
       </ul>
     </div>
-  {/if}
-{/template}
-
-
-/**
- * @param lat
- * @param long
- */
-{template .displayMap}
-  {if $lat and $long}
-
   {/if}
 {/template}
 
@@ -173,6 +176,107 @@
 
 
 /**
+ * Display an activity
+ * @param id
+ * @param authors
+ * @param content
+ * @param object_type
+ * @param local
+ * @param public
+ * @param title
+ * @param lat
+ * @param long
+ * @param uri
+ * @param published
+ * @param comment_count
+ * @param buttonable
+ * @param comments
+ */
+{template .show}
+  <article class="{css hentry} {css notice}"
+           id="{$id}">
+    <header class="{css avatar-section}">
+      {foreach $user in $authors}
+        {call .avatarImg data="all"}
+          {param id: $user.id /}
+          {param imgsrc: $user.imgsrc /}
+          {param name: $user.name /}
+        {/call}
+      {/foreach}
+    </header>
+    <section class="{css content}">
+      <header>
+        {foreach $user in $authors}
+          {call jiksnu.templates.user.showMinimal data="$user" /}
+        {/foreach}
+        {if $object_type != 'comment'}
+          <div class="{css labels}">
+            <span id="{css local}">{if not $local} remote{/if}</span>
+            <span id="{css privacy}">{if not $public} private{/if}</span>
+          </div>
+        {/if}
+      </header>
+      <p class="{css entry-content}">
+        {if $object_type == 'article' and $title}
+          <h3 class="{css entry-title}">{$title}</h3>
+        {/if}
+      </p>
+      <div>
+        {$content}
+      </div>
+      {call .linkSection /}
+      <div>
+        {if $lat}
+          <p>Lat: {$lat}</p>
+        {/if}
+        {if $long}
+          <p>Long: {$long}</p>
+        {/if}
+        {call .displayMap data="all" /}
+      </div>
+      {call .tagsSection data="all" /}
+      <footer>
+        {if $published}
+          <p>
+            <a href="{$uri}">
+              <time>
+                {if $published}
+                  {$published}
+                {else}
+                  Unknown
+                {/if}
+              </time>
+            </a>
+          </p>
+        {/if}
+        <ul class="{css buttons}">
+          {if $buttonable}
+            <li>{call .likeButton data="all" /}</li>
+            <li>{call .editButton data="all" /}</li>
+            <li>{call .deleteButton data="all" /}</li>
+          {/if}
+        </ul>
+        <div class="{css comments}">
+          <p>
+            <span>Comments: {$comment_count}</span>
+            {sp}
+            <a href="#">Show</a>
+            {sp}
+            {call .commentLink data="all" /}
+            {sp}
+            /* {call .fetchCommentsButton data="all" /} */
+          </p>
+          {if $comments}
+            {call .commentsSection data="all" /}
+          {/if}
+        </div>
+      </footer>
+    </section>
+  </article>
+{/template}
+
+
+/**
  * @param tags
  */
 {template .tagsSection}
@@ -188,68 +292,3 @@
     </ul>
   </div>
 {/template}
-
-
-/**
- * @param uri
- */
-{template .likeButton}
-  <form method="post"
-        action="{$uri}/comments/post">
-    <input type="submit" value="Fetch Comments" />
-  </form>
-{/template}
-
-
-/**
- * @param uri
- */
-{template .editButton}
-  <form method="post"
-        action="{$uri}/edit">
-    <input type="submit" value="Edit" />
-  </form>
-{/template}
-
-
-/**
- * @param uri
- */
-{template .deleteButton}
-  <form method="delete"
-        action="{$uri}">
-    <input type="submit" value="Delete" />
-  </form>
-{/template}
-
-
-/**
- * @param uri
- */
-{template .commentLink}
-  <a href="{$uri}">Comment</a>
-{/template}
-
-
-/**
- * @param uri
- */
-{template .fetchCommentButton}
-  <form method="post"
-        action="{$uri}/comments/update">
-    <input type="submit" value="Update" />
-  </form>
-{/template}
-
-
-/**
- * @param comments
- */
-{template .commentsSection}
-  {if $comments}
-
-  {/if}
-{/template}
-
-/*  LocalWords:  avatarImg
- */

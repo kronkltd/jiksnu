@@ -61,25 +61,10 @@
   ["items" {"node" microblog-uri}
    (map index-line activities)])
 
-(defsection index-block [Activity :html]
-  [activities & options]
-  [:div#notices_primary
-   [:ol.activities
-    (map index-line-minimal activities)]])
-
 (defsection index-block [Activity :xml]
   [activities & _]
   {:tag :statuses
    :content (map index-line activities)})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-block-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection index-block-minimal [Activity :html]
-  [activities & options]
-  [:ul.activities
-   (map index-line-minimal activities)])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-line
@@ -93,14 +78,6 @@
   [^Activity activity & options]
   ["item" {"id" (:_id activity)}
    (show-section activity)])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-line-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection index-line-minimal [Activity :html]
-  [activity & options]
-  [:li (show-section-minimal activity)])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; index-section
@@ -205,17 +182,6 @@
     {:tag :created_at
      :content [(str (:published activity))]
      }]})
-
-(declare-section display-map)
-
-(defsection display-map [Activity :html]
-  [activity & options]
-  (if (and (:lat activity) (:long activity))
-    [:img.map
-     {:src
-      (str "https://maps.googleapis.com/maps/api/staticmap?"
-           "size=200x200&zoom=11&sensor=true&markers=color:red|"
-           (:lat activity) "," (:long activity))}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show-section-minimal

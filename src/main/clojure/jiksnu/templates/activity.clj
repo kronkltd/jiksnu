@@ -7,20 +7,25 @@
             [jiksnu.model.user :as model.user])
   (:import com.ocpsoft.pretty.time.PrettyTime))
 
-(deftemplate show
+(defn format-data
   [activity]
   {:id (str (:_id activity))
    :authors (map
              (fn [id]
+               ;; FIXME: Move this to user
                (let [user (model.user/fetch-by-id id)]
-                 {:_id (str id)
-                  :name (:name user)
+                 {:id (str id)
+                  :name (:username user)
+                  :url (str "/users/" id)
+                  :display-name
+                  (or (:display-name user)
+                      (str (:first-name user) " " (:last-name user)))
                   :imgsrc (or (:avatar-url user)
                               (and (:email user)
                                    (gravatar-image (:email user)))
                               (gravatar-image (:jid user)))}))
              (:authors activity))
-   :objecttype (-> activity :object :object-type)
+   :object-type (-> activity :object :object-type)
    :local (:local activity)
    :public (:public activity)
    :content (or (-> activity :object :content)
@@ -34,7 +39,15 @@
    :tags []
    :uri (:uri activity)
    :published (str (:published activity))
-   :publishedformatted (.format (PrettyTime.) (:published activity))
+   :published-formatted (.format (PrettyTime.) (:published activity))
    :buttonable true
-   :commentcount (Integer. 0) #_(get-comment-count activity)
+   :comment-count (Integer. 0) #_(get-comment-count activity)
    :comments []})
+
+(deftemplate show
+  [activity]
+  (format-data activity))
+
+(deftemplate index-block
+  [activities]
+  {:activities (map format-data activities)})

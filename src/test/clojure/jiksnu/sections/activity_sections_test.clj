@@ -137,12 +137,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftest show-section-minimal-test "[Activity :html]"
-  (testing "should be a vector"
+  (testing "should be a string"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (is (vector? (show-section-minimal activity)))))))))
+            (is (string? (show-section-minimal activity)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; title

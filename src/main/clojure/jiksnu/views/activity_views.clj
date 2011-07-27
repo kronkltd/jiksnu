@@ -1,27 +1,19 @@
 (ns jiksnu.views.activity-views
-  (:use ciste.config
-        ciste.core
-        ciste.debug
-        ciste.html
-        ciste.sections
+  (:use (ciste config core debug html sections views)
         ciste.sections.default
-        ciste.views
-        jiksnu.abdera
+        (jiksnu abdera model namespace session view)
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers
-        jiksnu.model
-        jiksnu.namespace
         jiksnu.sections.activity-sections
-        jiksnu.session
         jiksnu.xmpp.element
-        jiksnu.view
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
+            (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
+            (jiksnu.templates [activity :as template.activity])
             [karras.entity :as entity]
             [hiccup.form-helpers :as f])
   (:import jiksnu.model.Activity
@@ -128,10 +120,7 @@
     {:label "N3"
      :href "/api/statuses/public_timeline.n3"
      :type "text/n3"}]
-   :body [:div
-          (if (seq activities)
-            (index-block activities)
-            [:p "nothing here"])]})
+   :body (template.activity/index-block activities)})
 
 (defview #'index :atom
   [request activities]

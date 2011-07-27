@@ -1,8 +1,202 @@
 {namespace jiksnu.templates.user}
 
 /**
- * @param name
+ *
+ */
+{template .addForm}
+  <div>
+    <h3>Create User</h3>
+    <form method="post" action="/main/register">
+      <input type="text" name="username" />
+      <input type="submit" value="Add User" />
+    </form>
+  </div>
+{/template}
+
+/**
+ * @param id
+ * @param username
+ * @param display_name
+ * @param first_name
+ * @param last_name
+ * @param email
+ * @param bio
+ * @param password
+ * @param confirm_password
+ * @param url
+ * @param domain
+ * @param location
+ */
+{template .editForm}
+  <div>
+    <form method="post" action="/users/{$id}">
+      <fieldset>
+        <legend>Edit User</legend>
+        <ul>
+          <li>{$username}</li>
+          <li>
+            <label for="domain">Domain</label>
+            <input type="text" name="domain" value="{$domain}" />
+          </li>
+          <li>
+            <label for="display-name">Display Name</label>
+            <input type="text" name="display-name" value="{$display_name}" />
+          </li>
+          <li>
+            <label for="first-name">First Name</label>
+            <input type="text" name="first-name" value="{$first_name}" />
+          </li>
+          <li>
+            <label for="last-name">Last Name</label>
+            <input type="text" name="last-name" value="{$last_name}" />
+          </li>
+          <li>
+            <label for="email">Email</label>
+            <input type="text" name="email" value="{$email}" />
+          </li>
+          <li>
+            <label for="bio">Bio</label>
+            <input type="text" name="bio" value="{$bio}" />
+          </li>
+          <li>
+            <label for="location">Location</label>
+            <input type="text" name="location" value="{$location}" />
+          </li>
+          <li>
+            <label for="password">Password</label>
+            <input type="text" name="password" value="{$password}" />
+          </li>
+          <li>
+            <label for="confirm-password">Confirm Password</label>
+            <input type="text" name="confirm-password" value="{$confirm_password}" />
+          </li>
+          <li>
+            <label for="url">Url</label>
+            <input type="text" name="url" value="{$url}" />
+          </li>
+          <li>
+            <input type="submit" value="Submit" />
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+  </div>
+{/template}
+
+
+/**
+ * @param username
+ * @param domain
+ */
+{template .indexLine}
+  <tr>
+    <td>/* avatar */</td>
+    <td>{$username}</td>
+    <td>{call .linkTo data="all" /}</td>
+    <td>
+      {call jiksnu.templates.domain.linkTo}
+        {param domain: $domain /}
+      {/call}
+    </td>
+    <td>{call .discoverButton data="all" /}</td>
+    <td>{call .updateButton data="all" /}</td>
+    <td>{call .editLink data="all" /}</td>
+    <td>{call .deleteButton data="all" /}</td>
+  </tr>
+{/template}
+
+
+/**
+ * @param users
+ */
+{template .indexSection}
+  <div>
+    {call .addForm data="all" /}
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>User</th>
+          <th>Domain</th>
+          <th>Show</th>
+          <th>Discover</th>
+          <th>Update</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $user in $users}
+          {call .indexLine data="$user" /}
+        {/foreach}
+      </tbody>
+    </table>
+  </div>
+{/template}
+
+
+/**
+ * @param url
+ * @param display_name
+ */
+{template .linkTo}
+  <a class="url" href="{$url}" rel="contact">
+    <span class="fn n">{$display_name}</span>
+  </a>
+{/template}
+
+
+/**
+ * @param display_name
  */
 {template .showMinimal}
-  {$name}
+  {call .linkTo data="all" /}
+{/template}
+
+
+/**
+ * @param display_name
+ * @param location
+ * @param bio
+ * @param local
+ * @param hub
+ * @param discovered
+ * @param updated
+ * @param id
+ * @param url
+ * @param links
+ */
+{template .showSection}
+  <div class="vcard">
+    <p>{call .displayAvatar data="all" /}</p>
+    <p>
+      <span class="nickname">{$display_name}</span>
+    </p>
+    <div class="adr">
+      <p class="locality">{$location}</p>
+    </div>
+    <p class="note">{$bio}</p>
+    <p><a class="url" rel="me" href="{$url}">{$url}</a></p>
+    <p>Id: {$id}</p>
+    <p>Local: {$local}</p>
+    <p>Hub: {$hub}</p>
+    <p>Discovered: {$discovered}</p>
+    <p>Last Updated: {$updated}</p>
+    {call .linksList data="$links" /}
+  </div>
+{/template}
+
+/**
+ * @param actor
+ */
+{template .subscriptionSection}
+  <div class="subscription-sections">
+    {call .followingSection data="all"}
+      {param actor: $actor /}
+    {/call}
+    {call .userActions data="all" /}
+    {call .remoteSubscribeForm data="all" /}
+    {call .subscriptionsSection data="all" /}
+    {call .subscribersSection data="all" /}
+  </div>
 {/template}
