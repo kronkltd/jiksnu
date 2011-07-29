@@ -3,4 +3,4 @@
 
 (deftemplate layout
   [response]
-  {:body (:body response)})
+  response)

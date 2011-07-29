@@ -1,6 +1,24 @@
 (ns jiksnu.templates.user
   (:use ciste.debug
-        closure.templates.core))
+        closure.templates.core
+        [clj-gravatar.core :only (gravatar-image)]))
+
+(defn format-data
+  [user]
+  {:id (str (:_id user))
+   :name (:username user)
+   :url (str "/users/" (:_id user))
+   :display-name
+   (or (:display-name user)
+       (str (:first-name user) " " (:last-name user)))
+   :imgsrc (or (:avatar-url user)
+               (and (:email user)
+                    (gravatar-image (:email user)))
+               (gravatar-image (:jid user)))})
+
+(deftemplate show
+  [user]
+  (format-data user))
 
 (deftemplate show-minimal
   [user]

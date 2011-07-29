@@ -13,22 +13,6 @@
 
 
 /**
- * @param id
- * @param name
- * @param imgsrc
- */
-{template .avatarImg }
-  <a href="/users/{$id}"
-     title="{$name}">
-    <img class="avatar photo"
-         width="48"
-         height="48"
-         src="{$imgsrc}" />
-  </a>
-{/template}
-
-
-/**
  * @param uri
  */
 {template .commentLink}
@@ -197,11 +181,7 @@
            id="{$id}">
     <header class="{css avatar-section}">
       {foreach $user in $authors}
-        {call .avatarImg data="all"}
-          {param id: $user.id /}
-          {param imgsrc: $user.imgsrc /}
-          {param name: $user.name /}
-        {/call}
+        {call jiksnu.templates.user.displayAvatar data="$user" /}
       {/foreach}
     </header>
     <section class="{css content}">
@@ -238,7 +218,7 @@
       <footer>
         {if $published}
           <p>
-            <a href="{$uri}">
+            <a href="/notice/{$id}">
               <time>
                 {if $published}
                   {$published}

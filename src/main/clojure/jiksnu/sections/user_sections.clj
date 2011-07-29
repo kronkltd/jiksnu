@@ -75,7 +75,8 @@
 
 (defsection show-section [User :html]
   [user & options]
-  (let [actor (current-user-id)
+  (template.user/show user)
+  #_(let [actor (current-user-id)
         {id :_id
          username :username
          domain :domain

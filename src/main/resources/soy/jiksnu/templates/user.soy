@@ -13,6 +13,23 @@
   </div>
 {/template}
 
+
+/**
+ * @param id
+ * @param name
+ * @param imgsrc
+ */
+{template .displayAvatar}
+  <a href="/users/{$id}"
+     title="{$name}">
+    <img class="avatar photo"
+         width="48"
+         height="48"
+         src="{$imgsrc}" />
+  </a>
+{/template}
+
+
 /**
  * @param id
  * @param username
@@ -166,7 +183,7 @@
  * @param url
  * @param links
  */
-{template .showSection}
+{template .show}
   <div class="vcard">
     <p>{call .displayAvatar data="all" /}</p>
     <p>

@@ -28,7 +28,7 @@
       <div id="wrap">
         {call .develWarning data="all" /}
         <header>
-          {call .loginSection /}
+          {call .loginSection data="all" /}
           <address id="site_contact" class="vcard">
             <a class="url home bookmark" href="/">
               <img class="logo photo" src="/public/logo.png" />
@@ -76,12 +76,12 @@
 
 
 /**
- * @param user
+ * @param authenticated
  */
 {template .logoutButton}
   <form method="post" action="/main/logout">
     <ol>
-      <li>{call jiksnu.templates.user.linkTo data="$user" /}</li>
+      <li>{call jiksnu.templates.user.linkTo data="$authenticated" /}</li>
       <li><input type="submit" value="Log out" /></li>
     </ol>
   </form>

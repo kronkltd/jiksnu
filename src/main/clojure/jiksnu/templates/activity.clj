@@ -1,30 +1,17 @@
 (ns jiksnu.templates.activity
   (:use ciste.debug
         closure.templates.core
-        [clj-gravatar.core :only (gravatar-image)]
         jiksnu.session)
   (:require [ciste.sections.default :as sd]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.templates.user :as template.user])
   (:import com.ocpsoft.pretty.time.PrettyTime))
 
 (defn format-data
   [activity]
   {:id (str (:_id activity))
-   :authors (map
-             (fn [id]
-               ;; FIXME: Move this to user
-               (let [user (model.user/fetch-by-id id)]
-                 {:id (str id)
-                  :name (:username user)
-                  :url (str "/users/" id)
-                  :display-name
-                  (or (:display-name user)
-                      (str (:first-name user) " " (:last-name user)))
-                  :imgsrc (or (:avatar-url user)
-                              (and (:email user)
-                                   (gravatar-image (:email user)))
-                              (gravatar-image (:jid user)))}))
-             (:authors activity))
+   :authors (map (comp template.user/format-data model.user/fetch-by-id)
+                 (:authors activity))
    :object-type (-> activity :object :object-type)
    :local (:local activity)
    :public (:public activity)

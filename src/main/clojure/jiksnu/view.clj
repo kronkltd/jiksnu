@@ -1,7 +1,7 @@
 (ns jiksnu.view
   (:use [ciste core debug formats html sections views]
         ciste.sections.default
-        [ciste.config :only (config)]
+        [ciste.config :only (config *environment*)]
         clj-tigase.core
         jiksnu.abdera
         jiksnu.helpers.auth-helpers
@@ -18,7 +18,8 @@
             [hiccup.core :as hiccup]
             [hiccup.form-helpers :as f]
             (jiksnu.templates
-              [layout :as template.layout]))
+             [layout :as template.layout]
+             [user :as template.user]))
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -67,12 +68,14 @@
 (defn page-template-content
   [response]
   {:headers {"Content-Type" "text/html"}
-   :body 
+   :body
    (str
     "<!doctype html>\n"
     (template.layout/layout
      {:body (hiccup/html (:body response))
-      :development (config :development)})
+      :authenticated (if-let [user (current-user)]
+                       (template.user/format-data user))
+      :development (= *environment* :development)})
     #_[:html
        [:head
         [:title "jiksnu"]

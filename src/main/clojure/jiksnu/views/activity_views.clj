@@ -182,6 +182,10 @@
   [request activity]
   {:body (show-section-minimal activity)})
 
+(defview #'show :clj
+  [request activity]
+  {:body (template.activity/format-data activity)})
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; stream
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
