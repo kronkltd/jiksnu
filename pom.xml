@@ -68,13 +68,14 @@
       <plugin>
         <groupId>com.theoryinpractise</groupId>
         <artifactId>clojure-maven-plugin</artifactId>
-        <version>1.3.8</version>
+        <version>1.3.7</version>
         <configuration>
           <namespaces>
             <!-- <namespace>!jiksnu</namespace> -->
             <namespace>jiksnu.server.tigase.plugin</namespace>
           </namespaces>
           <script>scripts/run.clj</script>
+          <!-- <testScript>src/test/clojure/test_runner.clj</testScript> -->
           <vmargs>-server -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128m</vmargs>
           <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly>
           <!-- <testDeclaredNamespaceOnly>true</testDeclaredNamespaceOnly> -->
