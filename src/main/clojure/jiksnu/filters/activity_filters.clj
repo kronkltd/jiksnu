@@ -32,8 +32,9 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id :id} :params} request]
-    (action id)))
+  (let [{{id :id} :params} request
+        activity (model.activity/show id)]
+    (action activity)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edit

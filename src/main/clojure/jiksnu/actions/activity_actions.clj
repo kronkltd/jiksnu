@@ -81,10 +81,11 @@
     (model.activity/create activity)))
 
 (defaction delete
-  [id]
+  [activity]
   (let [actor-id (current-user-id)
-        activity (model.activity/fetch-by-id id)]
-    (if (or (is-admin?) (some #(= actor-id %) (:authors activity)))
+        authors (:authors activity)]
+    (if (or (is-admin?)
+            (some #(= actor-id %) authors))
       (model.activity/delete activity))))
 
 (defaction edit
