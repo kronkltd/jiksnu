@@ -40,7 +40,8 @@
              push-subscription-filters
              salmon-filters
              subscription-filters
-             user-filters)
+             user-filters
+             webfinger-filters)
             (jiksnu.views
              activity-views
              auth-views

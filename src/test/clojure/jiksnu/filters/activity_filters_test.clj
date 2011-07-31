@@ -1,23 +1,26 @@
 (ns jiksnu.filters.activity-filters-test
   (:use clj-factory.core
-        ciste.debug
-        ciste.filters
-        ciste.sections
+        (ciste debug
+               filters
+               sections)
         clojure.test
-        jiksnu.core-test
+        (jiksnu core-test
+                model
+                namespace
+                [routes :only (app)]
+                session
+                view)
         jiksnu.filters.activity-filters
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view
-        jiksnu.xmpp.element)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+        jiksnu.xmpp.element
+        lamina.core)
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
+            (jiksnu.actions [activity-actions :as actions.activity]
+                            [user-actions :as actions.user])
+            (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
+            [ring.mock.request :as mock])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -66,8 +69,8 @@
               (is (class (first response)))
               (is (every? activity? response)))))))))
 
-(deftest filter-action-test
-  (testing "#'index :xmpp"
+(deftest index-filter-test
+  (testing "When the serialization is :xmpp"
     (testing "when there are no activities"
       (testing "should return an empty sequence"
         (model.activity/drop!)
@@ -99,9 +102,17 @@
                   activity (model.activity/create (factory Activity))
                   response (filter-action #'actions.activity/index request)]
               (is (seq response))
-              (is (every? activity? response)))))))))
+              (is (every? activity? response))))))))
+  (testing "when the serialization is :http"
+    (let [ch (channel)]
+      (app ch (mock/request :get "/" ))
+      (let [response (wait-for-message ch 5000)]
+        (is (= (:status response) 200))))
+    
+    )
+  )
 
-(deftest filter-action-test
+(deftest show-filter-test
   (testing "#'show :xmpp"
     (testing "when the activity exists"
       (testing "should return that activity"
