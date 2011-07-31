@@ -7,7 +7,6 @@
         jiksnu.helpers.auth-helpers
         jiksnu.model
         jiksnu.namespace
-        jiksnu.sections.auth-sections
         jiksnu.session
         jiksnu.xmpp
         jiksnu.xmpp.element

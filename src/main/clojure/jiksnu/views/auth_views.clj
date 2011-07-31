@@ -8,7 +8,6 @@
         jiksnu.actions.auth-actions
         jiksnu.helpers.auth-helpers
         jiksnu.model
-        jiksnu.sections.auth-sections
         jiksnu.view)
   (:require [hiccup.form-helpers :as f])
   (:import jiksnu.model.User))
