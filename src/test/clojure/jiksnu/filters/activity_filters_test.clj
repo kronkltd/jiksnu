@@ -107,10 +107,7 @@
     (let [ch (channel)]
       (app ch (mock/request :get "/" ))
       (let [response (wait-for-message ch 5000)]
-        (is (= (:status response) 200))))
-    
-    )
-  )
+        (is (= (:status response) 200))))))
 
 (deftest show-filter-test
   (testing "#'show :xmpp"
@@ -133,4 +130,13 @@
                   response (filter-action #'actions.activity/show request)]
               (is (activity? response)))))))
     (testing "when the activity does not exist"
-      (testing "should return nil" :pending))))
+      (testing "should return nil" :pending)))
+  (testing "when the serialization is http"
+    (testing "when the activity exists"
+      (let [author (model.user/create (factory User))]
+        (with-user author
+          (let [activity (actions.activity/post (factory Activity))
+                ch (channel)]
+            (app ch (mock/request :get (str "/notice/" (:_id activity))))
+            (let [response (wait-for-message ch 5000)]
+              (is (= (:status response) 200)))))))))
