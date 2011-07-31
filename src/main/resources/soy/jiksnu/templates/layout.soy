@@ -37,7 +37,9 @@
           {call .postActivityForm data="all" /}
           <div class="clear"></div>
         </header>
+        {call .navigationSection data="all" /}
         <div id="content">
+          {call jiksnu.templates.activity.activityForm data="all" /}
           {$body|noAutoescape}
           <div class="clear"></div>
         </div>
@@ -54,12 +56,30 @@
             </div>
           {/if}
           <p>Copyright © 2011 KRONK Ltd.</p>
+          {call .includeScript}
+            {param src}http://www.google.com/jsapi{/param}
+          {/call}
+          <script>google.load("jquery", "1.3")</script>
+          {call .includeScript}
+            {param src}/public/standard.js{/param}
+          {/call}
           <!-- TODO: Link to scripts -->
         </footer>
       </div>
     </body>
   </html>
 {/template}
+
+/**
+ * @param src
+ */
+{template .includeScript}
+  <script type="text/javascript"
+          lang="javascript"
+          src="{$src}">
+  </script>
+{/template}
+
 
 /**
  * @param development Is the server running in development mode?
@@ -112,4 +132,29 @@
  */
 {template .postActivityForm}
 
+{/template}
+
+
+/**
+ * @param authenticated
+ */
+{template .navigationSection}
+  <nav>
+    <ul>
+      <li>
+        <a href="/">Public</a>
+      </li>
+      {if $authenticated}
+        <li>
+          <a href="/all">Home</a>
+        </li>
+        <li>
+          <a href="/settings/profile">Profile</a>
+        </li>
+        <li>
+          <a href="/admin/domains">Domains</a>
+        </li>
+      {/if}
+    </ul>
+  </nav>
 {/template}
