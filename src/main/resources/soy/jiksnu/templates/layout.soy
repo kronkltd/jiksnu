@@ -56,16 +56,17 @@
             </div>
           {/if}
           <p>Copyright © 2011 KRONK Ltd.</p>
-          {call .includeScript}
-            {param src}http://www.google.com/jsapi{/param}
-          {/call}
-          <script>google.load("jquery", "1.3")</script>
-          {call .includeScript}
-            {param src}/public/standard.js{/param}
-          {/call}
-          <!-- TODO: Link to scripts -->
         </footer>
       </div>
+      {call .includeScript}
+        {param src}/public/out/goog/base.js{/param}
+      {/call}
+      {call .includeScript}
+        {param src}/public/cljs.js{/param}
+      {/call}
+      <script type="text/javascript">
+        goog.require('jiksnu.core');
+      </script>
     </body>
   </html>
 {/template}

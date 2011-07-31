@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd public
+# cljsc ../src/main/clojurescript '{:output-dir "public/cljs" :optimizations :advanced}' > cljs.js
+cljsc ../src/main/clojurescript > cljs.js
+cd ..
