@@ -71,7 +71,7 @@
         (let [user (model.user/create (factory User))]
           (with-user user
             (let [activity (create (factory Activity {:authors [(:_id user)]}))]
-              (delete (:_id activity))
+              (delete activity)
               (is (nil? (model.activity/fetch-by-id (:_id activity)))))))))
     (testing "and the user does not own the activity"
       (testing "should not delete that activity"
@@ -80,7 +80,7 @@
               activity (with-user user1
                          (model.activity/create (factory Activity)))]
           (with-user user2
-            (delete (:_id activity))
+            (delete activity)
             (is (model.activity/fetch-by-id (:_id activity)))))))))
 
 (deftest edit-test)
