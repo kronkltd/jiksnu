@@ -1,6 +1,130 @@
 {namespace jiksnu.templates.activity}
 
 /**
+ * @param? uri
+ * @param? parent_id
+ * @param? title
+ * @param? id
+ * @param? content
+ * @param? tags
+ * @param? pictures
+ * @param? lat
+ * @param? long
+ */
+{template .activityForm}
+  <div class="post-form">
+    <form method="post"
+          action="{$uri ? $uri : '/notice/post'}"
+          enctype="multipart/form-data">
+      <fieldset>
+        <legend>Post an Activity</legend>
+        <ul>
+          <li>
+            <ul class="type-buttons">
+              <li>
+                <a href="#">Note</a>
+              </li>
+              <li>
+                <a href="#">Status</a>
+              </li>
+              <li>
+                <a href="#">Checkin</a>
+              </li>
+              <li>
+                <a href="#">Picture</a>
+              </li>
+              <li>
+                <a href="#">Event</a>
+              </li>
+            </ul>
+          </li>
+          <li.hidden>
+            <input type="hidden" name="_id" value="{$id ? $id : ''}" />
+          </li>
+          {if $parent_id }
+            <li class="hidden">
+              <input type="hidden"
+                     name="parent"
+                     value="{$parent_id}" />
+            </li>
+          {/if}
+          <li>
+            <input type="text" name="title" value="{$title ? $title : ''}" />
+          </li>
+          <li>
+            <input type="textarea" name="content" value="{$content ?
+            $content : ''}" />
+          </li>
+          <li>
+            <fieldset>
+              <legend>Add:</legend>
+              <ul class="add-buttons">
+                <li class="hidden add-tags">
+                  <a href="#">Tags</a>
+                </li>
+                <li class="hidden add-recipients">
+                  <a href="#">Recipients</a>
+                </li>
+                <li class="hidden add-location">
+                  <a href="#">Location</a>
+                </li>
+                <li class="hidden add-links">
+                  <a href="#">Links</a>
+                </li>
+                <li class="hidden add-pictures">
+                  <a href="#">Pictures</a>
+                </li>
+              </ul>
+            </fieldset>
+          </li>
+          <li class="tag-line">
+            <fieldset>
+              <legend>Tags</legend>
+              <ul>
+                <li>
+                  <input type="text" name="tags" value="{$tags ? $tags
+                  : ''}" />
+                </li>
+                <li>
+                  <a href="#">Add Tag</a>
+                </li>
+              </ul>
+            </fieldset>
+          </li>
+          <li class="pictures-line">
+            <label for="pictures">Pictures</label>
+            <input type="file" name="pictures" value="{$pictures ?
+            $pictures : ''}" />
+          </li>
+          <li class="location-line">
+            <p>
+              <label for="lat">Latitude</label>
+              <input type="text" name="lat" value="{$lat ? $lat : ''}" />
+            </p>
+            <p>
+              <label for="long">Longitude</label>
+              <input type="text" name="long" value="{$long ? $long : ''}" />
+            </p>
+          </li>
+          <li>
+            <select name="privacy">
+              <option value="public">Public</option>
+              <option value="group">Group</option>
+              <option value="custom">Custom</option>
+              <option value="private">Private</option>
+            </select>
+          </li>
+          <li>
+            <input type="submit" value="Post" />
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+  </div>
+{/template}
+
+
+/**
  * @param authenticated
  */
 {template .addForm}
@@ -13,28 +137,45 @@
 
 
 /**
- * @param uri
+ * @param id
  */
 {template .commentLink}
-  <a href="{$uri}">Comment</a>
+  <a href="/notice/{$id}/comment">Comment</a>
 {/template}
-
 
 /**
  * @param comments
  */
-{template .commentsSection}
+{template .commentList}
   {if $comments}
 
   {/if}
 {/template}
 
+
 /**
- * @param uri
+ * @param comment_count
+ */
+{template .commentsSection}
+  <div class="{css comments}">
+    <p>
+      <span>Comments: {$comment_count}</span>
+      {sp}
+      <a href="#">Show</a>
+      {sp}
+      {call .commentLink data="all" /}
+    </p>
+    {call .commentList data="all" /}
+  </div>
+{/template}
+
+
+/**
+ * @param id
  */
 {template .deleteButton}
   <form method="delete"
-        action="{$uri}">
+        action="/notice/{$id}">
     <input type="submit" value="Delete" />
   </form>
 {/template}
@@ -53,23 +194,12 @@
 
 
 /**
- * @param uri
+ * @param id
  */
 {template .editButton}
   <form method="post"
-        action="{$uri}/edit">
+        action="/notice/{$id}/edit">
     <input type="submit" value="Edit" />
-  </form>
-{/template}
-
-
-/**
- * @param uri
- */
-{template .fetchCommentButton}
-  <form method="post"
-        action="{$uri}/comments/update">
-    <input type="submit" value="Update" />
   </form>
 {/template}
 
@@ -102,12 +232,12 @@
 
 
 /**
- * @param uri
+ * @param id
  */
 {template .likeButton}
   <form method="post"
-        action="{$uri}/comments/post">
-    <input type="submit" value="Fetch Comments" />
+        action="/notice/{$id}/like">
+    <input type="submit" value="Like" />
   </form>
 {/template}
 
@@ -170,11 +300,9 @@
  * @param title
  * @param lat
  * @param long
- * @param uri
  * @param published
  * @param comment_count
  * @param buttonable
- * @param comments
  */
 {template .show}
   <article class="{css hentry} {css notice}"
@@ -191,6 +319,7 @@
         {/foreach}
         {if $object_type != 'comment'}
           <div class="{css labels}">
+            {$object_type}
             <span id="{css local}">{if not $local} remote{/if}</span>
             <span id="{css privacy}">{if not $public} private{/if}</span>
           </div>
@@ -204,16 +333,9 @@
       <div>
         {$content}
       </div>
-      {call .linkSection /}
-      <div>
-        {if $lat}
-          <p>Lat: {$lat}</p>
-        {/if}
-        {if $long}
-          <p>Long: {$long}</p>
-        {/if}
-        {call .displayMap data="all" /}
-      </div>
+      {call .recipientsSection data="all" /}
+      {call .linkSection data="all" /}
+      {call .mapsSection data="all" /}
       {call .tagsSection data="all" /}
       <footer>
         {if $published}
@@ -229,32 +351,61 @@
             </a>
           </p>
         {/if}
-        <ul class="{css buttons}">
-          {if $buttonable}
-            <li>{call .likeButton data="all" /}</li>
-            <li>{call .editButton data="all" /}</li>
-            <li>{call .deleteButton data="all" /}</li>
-          {/if}
-        </ul>
-        <div class="{css comments}">
-          <p>
-            <span>Comments: {$comment_count}</span>
-            {sp}
-            <a href="#">Show</a>
-            {sp}
-            {call .commentLink data="all" /}
-            {sp}
-            /* {call .fetchCommentsButton data="all" /} */
-          </p>
-          {if $comments}
-            {call .commentsSection data="all" /}
-          {/if}
-        </div>
+        {call .postActions data="all" /}
+        {call .commentsSection data="all" /}
       </footer>
     </section>
   </article>
 {/template}
 
+
+/**
+ * @param buttonable
+ */
+{template .postActions}
+  <ul class="{css buttons}">
+    {if $buttonable}
+      <li>{call .likeButton data="all" /}</li>
+      <li>{call .updateButton data="all" /}</li>
+      <li>{call .editButton data="all" /}</li>
+      <li>{call .deleteButton data="all" /}</li>
+    {/if}
+  </ul>
+{/template}
+
+
+/**
+ * @param lat
+ * @param long
+ */
+{template .mapsSection}
+  <div>
+    {if $lat}
+      <p>Lat: {$lat}</p>
+    {/if}
+    {if $long}
+      <p>Long: {$long}</p>
+    {/if}
+    {call .displayMap data="all" /}
+  </div>
+{/template}
+
+
+/**
+ * @param recipients
+ */
+{template .recipientsSection}
+  <div class="recipients">
+    <h>Recipients</h>
+    <ul>
+      {foreach $user in $recipients}
+        <li>
+          {call .linkTo data="$user" /}
+        </li>
+      {/foreach}
+    </ul>
+  </div>
+{/template}
 
 /**
  * @param tags
@@ -271,4 +422,15 @@
       {/foreach}
     </ul>
   </div>
+{/template}
+
+
+/**
+ * @param id
+ */
+{template .updateButton}
+  <form method="post"
+        action="/notice/{$id}/update">
+    <input type="submit" value="Update" />
+  </form>
 {/template}

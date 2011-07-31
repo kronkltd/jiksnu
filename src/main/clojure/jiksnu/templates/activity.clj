@@ -25,6 +25,7 @@
    :long (str (:long activity))
    :tags []
    :uri (:uri activity)
+   :recipients []
    :published (str (:published activity))
    :published-formatted (.format (PrettyTime.) (:published activity))
    :buttonable true

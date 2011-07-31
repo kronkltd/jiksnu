@@ -184,98 +184,64 @@
 
 (defsection show-section-minimal [Activity :html]
   [activity & options]
-  (template.activity/show (into {} activity))
-  #_(let [user (-> activity
-                 :authors
-                 first
-                 model.user/fetch-by-id)
-        object-type (-> activity :object :object-type)]
-    [:article.hentry.notice
-     {"id" (:_id activity)}
-     [:header.avatar-section
-      (avatar-img user)]
-     [:section.content
-      [:header
-       (map
-        (fn [user-id]
-          (let [user (model.user/fetch-by-id user-id)]
-            (show-section-minimal user)))
-        (:authors activity))
-       (when-not (= object-type "comment")
-         [:div#labels
-          #_[:span#object-type object-type]
-          " "
-          [:span
-           (if (-> activity :local)
-             ""
-             "remote")] " "
-          [:span#privacy
-           (if (:public activity)
-             "" "private")]])]
-      [:p.entry-content
-       (if (= object-type "article")
-         (if-let [t (:title activity)]
-           (if (not= t "")
-             [:h3.entry-title t])))
-       (or (:content (:object activity))
-           (:content activity)
-           (:title activity))]
-      (if-let [links (seq (:links (:object activity)))]
-        [:div#links
-         [:h "links"]
-         [:ul
-          (map
-           (fn [link]
-             [:li
-              [:p "Href: " (:href link)]
-              [:p "Rel: " (:rel link)]
-              [:p "Title: " (:title link)]
-              [:p "Mime Type: " (:mime-type link)]
-              (if (= object-type "picture")
-                [:img {:src (:href link)
-                       :width "100"
-                       :height "100"}])])
-           links)]])
-      (if-let [recipients (seq (:recipients activity))]
-        [:div.recipients
-         [:h "Recipients:"]
-         [:ul
-          (map
-           (fn [recipient-id]
-             [:li (link-to (model.user/fetch-by-id recipient-id))])
-           recipients)]])
-      #_[:p "Lat: " (:lat activity)]
-      #_[:p "Long: " (:long activity)]
-      (display-map activity)
-      (if-let [tags (seq (:tags activity))]
-        [:div.tags
-         "Tags: "
-         [:ul
-          (map
-           (fn [tag]
-             [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
-           tags)]])
-      [:footer
-       (if-let [published (:published activity)]
-         [:p [:a {:href (uri activity)}
-              [:time (.format (PrettyTime.) published)]]])
-       [:ul.buttons
-        (if (or (current-user) (is-admin?))
-          (list
-           [:li (like-link activity)]
-           [:li (edit-link activity)]
-           [:li (delete-link activity)]))]
-       [:div.comments
-        [:p "Comments: "
-         (:comment-count activity)
-         " "
-         [:a {:href "#"} "Show"]
-         (comment-link activity)
-         (fetch-comments-button activity)]
-        (if-let [comments (model.activity/get-comments activity)]
-          (map
-           show-section-minimal
-           comments))]]]]))
+  (template.activity/show activity))
+
+
+(defn links-section
+  [activity]
+  (if-let [links (seq (:links (:object activity)))]
+    [:div#links
+     [:h "links"]
+     [:ul
+      (map
+       (fn [link]
+         [:li
+          [:p "Href: " (:href link)]
+          [:p "Rel: " (:rel link)]
+          [:p "Title: " (:title link)]
+          [:p "Mime Type: " (:mime-type link)]
+          (if (= (-> activity :object :object-type) "picture")
+            [:img {:src (:href link)
+                   :width "100"
+                   :height "100"}])])
+       links)]]))
+
+(defn recipients-section
+  [activity]
+  (if-let [recipients (seq (:recipients activity))]
+    [:div.recipients
+     [:h "Recipients:"]
+     [:ul
+      (map
+       (fn [recipient-id]
+         [:li (link-to (model.user/fetch-by-id recipient-id))])
+       recipients)]]))
+
+(defn tags-section
+  [activity]
+  (if-let [tags (seq (:tags activity))]
+    [:div.tags
+     "Tags: "
+     [:ul
+      (map
+       (fn [tag]
+         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+       tags)]]))
+
+
+(defn comments-section
+  [activity]
+  [:div.comments
+   [:p "Comments: "
+    (:comment-count activity)
+    " "
+    [:a {:href "#"} "Show"]
+    (comment-link activity)
+    (fetch-comments-button activity)]
+   (if-let [comments (model.activity/get-comments activity)]
+     (map
+      show-section-minimal
+      comments))])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; title
