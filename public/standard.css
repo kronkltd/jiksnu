@@ -444,3 +444,12 @@ fieldset {
 .pictures-line, .title-line {
     display: none;
 }
+
+fieldset {
+    display: inline;
+}
+
+.location-line, .tag-line, .location-line,
+.pictures-line, .title-line {
+    display: none;
+}
