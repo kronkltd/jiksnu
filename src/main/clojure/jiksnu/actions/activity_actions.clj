@@ -139,7 +139,7 @@
   [activity]
   ;; TODO: validate user
   (if-let [prepared-post (prepare-post activity)]
-    (let [picture (:picture prepared-post)
+    (let [pictures (:pictures prepared-post)
           filename (:filename picture)]
       (if (not= filename "")
         (if-let [tempfile (:tempfile picture)]
