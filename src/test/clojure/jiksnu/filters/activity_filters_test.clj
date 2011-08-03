@@ -1,8 +1,6 @@
 (ns jiksnu.filters.activity-filters-test
   (:use clj-factory.core
-        (ciste debug
-               filters
-               sections)
+        (ciste debug filters sections)
         clojure.test
         (jiksnu core-test
                 model
@@ -21,8 +19,7 @@
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             [ring.mock.request :as mock])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+  (:import (jiksnu.model Activity User)))
 
 (use-fixtures :each test-environment-fixture)
 

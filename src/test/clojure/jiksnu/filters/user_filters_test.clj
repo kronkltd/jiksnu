@@ -1,18 +1,37 @@
 (ns jiksnu.filters.user-filters-test
   (:use clj-factory.core
         clj-tigase.core
+        (ciste debug)
         clojure.test
-        jiksnu.core-test
-        jiksnu.model
-        jiksnu.session
-        jiksnu.actions.user-actions
-        jiksnu.view)
-  (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+        (jiksnu core-test
+                model
+                [routes :only (app)]
+                session
+                view)
+        lamina.core)
+  (:require (jiksnu.actions [user-actions :as actions.user])
+            (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
+            [ring.mock.request :as mock])
+  (:import (jiksnu.model Activity User)))
 
 (use-fixtures :each test-environment-fixture)
+
+(deftest show-filter-test
+  (testing "when the serialization is http"
+    (testing "and the user exists"
+      (let [user (model.user/create (factory User))]
+        (with-user user
+          (let [ch (channel)]
+            (app ch (mock/request :get (str "/" (:username user))))
+            (let [response (wait-for-message ch 5000)]
+              (is (= (:status response) 200)))))))
+    (testing "and the user does not exist"
+      (let [user (factory User)
+            ch (channel)]
+        (app ch (mock/request :get (str "/" (:username user))))
+        (let [response (wait-for-message ch 5000)]
+          (is (= (:status response) 404)))))))
 
 ;; (deftest show {:focus true}
 ;;   (testing "when the user exists"
