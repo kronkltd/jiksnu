@@ -67,66 +67,6 @@
    [:post (str (uri user) "/update-hub")]
    (f/submit-button "Update Hub")))
 
-(defn push-subscribe-button
-  [user]
-  (f/form-to
-   [:post (str (uri user) "/push/subscribe")]
-   (f/submit-button "PuSh Subscribe")))
-
-(defn user-actions
-  [user]
-  (let [actor-id (current-user-id)]
-    (if (= (:_id user) actor-id)
-      [:p "This is you!"]
-      [:ul
-       [:li (discover-button user)]
-       [:li (update-user-button user)]
-       [:li (update-hub-button user)]
-       [:li (push-subscribe-button user)]
-       [:li
-        (if (model.subscription/subscribing? actor-id (:_id user))
-          (unsubscribe-form user)
-          (subscribe-form user))]])))
-
-(defn remote-subscribe-form
-  [user]
-  (list
-   [:a.entity_remote_subscribe
-    {:href (str "/main/ostatus?nickname="
-                (:username user))}
-    "Subscribe"]
-   (f/form-to
-    [:post "/main/ostatus"]
-    [:fieldset
-     [:legend "Subscribe to " (:username user)]
-     [:ul.form_data
-      [:li.ostatus_nickname
-       (f/label :nickname "User nickname")
-       (f/hidden-field :nickname (:username user))]
-      [:li.ostatus_profile
-       (f/label :profile "Profile Account")
-       (f/text-field :profile)]]
-     (f/submit-button "Submit")])))
-
-(defn following-section
-  [actor user]
-  (if actor
-    (list
-     (if (model.subscription/subscribed? actor (:_id user))
-       [:p "This user follows you."])
-     (if (model.subscription/subscribing? actor (:_id user))
-       [:p "You follow this user."]))))
-
-(defn links-list
-  [user]
-  [:ul
-   (map
-    (fn [link]
-      [:li
-       [:p (:href link)]
-       [:p (:rel link)]])
-    (:links user))])
-
 (defn fetch-user-meta
   [^User user]
   (-> user

@@ -28,34 +28,12 @@
   [subscription & options]
   (:to subscription))
 
-(defsection index-line [Subscription :html]
-  [subscription & options]
-  [:tr
-   [:td (link-to subscription)]
-   [:td (link-to (model.user/fetch-by-id (:from subscription)))]
-   [:td (link-to (model.user/fetch-by-id (:to subscription)))]
-   [:td (:pending subscription)]
-   [:td (:created subscription)]
-   [:td (delete-form subscription)]])
 
 (defsection subscriptions-line [Subscription :html]
   [subscription & options]
   [:li (show-section-minimal
         (jiksnu.model.user/fetch-by-id (:to subscription)))
    (if (:pending subscription) " (pending)")])
-
-(defsection index-block [Subscription :html]
-  [subscriptions & options]
-  [:table
-    [:thead
-     [:tr
-      [:td "Id"]
-      [:td "From"]
-      [:td "To"]
-      [:td "Pending"]
-      [:td "Created"]]]
-    [:tbody
-     (map index-line subscriptions)]])
 
 (defsection subscriptions-block [Subscription :html]
   [subscriptions & _]

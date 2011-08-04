@@ -8,7 +8,6 @@
         jiksnu.helpers.push-subscription-helpers
         jiksnu.model
         jiksnu.namespace
-        jiksnu.sections.push-subscription-sections
         jiksnu.session
         jiksnu.xmpp.element
         jiksnu.view)

@@ -147,7 +147,7 @@
             (.mkdirs (io/file (str (current-user-id))))
             (io/copy tempfile (io/file (str (current-user-id) "/"
                                             (:filename picture)))))))
-      (create (dissoc (spy prepared-post) :tempfile)))))
+      (create (dissoc (spy prepared-post) :pictures)))))
 
 (defaction remote-create
   [activities]

@@ -28,9 +28,19 @@
            org.apache.abdera.model.Entry))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show-section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defsection title [User]
+  [user & options]
+  (or (:name user)
+      (:display-name user)
+      (:first-name user)
+      (model.user/get-uri user)))
+
+(defsection uri [User]
+  [user & options]
+  (if (model.user/local? user)
+    (str "/" (:username user))
+    (str "/users/" (:_id user))))
+
 
 (defsection show-section [User :atom]
   [^User user & options]
@@ -61,57 +71,11 @@
         (.addSimpleExtension poco-ns "primary" "poco" "true")))
     person))
 
-(defsection show-section [User :xmpp :xmpp]
-  [^User user & options]
-  (let [{:keys [name avatar-url]} user]
-    (element/make-element
-     "vcard" {"xmlns" vcard-uri}
-     (if name
-       ["fn" {}
-        ["text" {} name]])
-     (if avatar-url
-       ["photo" {}
-        ["uri" {} avatar-url]]))))
 
 (defsection show-section [User :html]
   [user & options]
-  (template.user/show user)
-  #_(let [actor (current-user-id)
-        {id :_id
-         username :username
-         domain :domain
-         url :url
-         name :name
-         hub :hub
-         location :location
-         bio :bio} user]
-    (list
-     [:div.vcard
-      [:p (avatar-img user)]
-      [:p
-       [:span.nickname
-        username
-        (when-not (model.user/local? user)
-          (list "@" domain))]]
-      [:p.fn.n name]
-      [:div.adr
-       [:p.locality location]]
-      [:p.note bio]
-      [:p [:a.url {:href url :rel "me"} url]]
-      [:p "Id: " id]
-      [:p "Local: " (:local user)]
-      [:p "Hub: " hub]
-      [:p "Discovered: " (:discovered user)]
-      [:p "Last Updated:" (:updated user)]
-      #_(links-list user)]
-     [:div.subscription-sections
-      (following-section actor user)
-      (user-actions user)
-      (remote-subscribe-form user)
-      (let [[_ records] (actions.subscription/subscriptions user)]
-        (subscriptions-section records))
-      (let [[_ records] (actions.subscription/subscribers user)]
-        (subscribers-section records))])))
+  (template.user/show user))
+
 
 (defsection show-section [User :rdf]
   [user & _]
@@ -151,27 +115,22 @@
              :type "thumbnail"}]
    :displayName (:name user)})
 
+
+(defsection show-section [User :xmpp :xmpp]
+  [^User user & options]
+  (let [{:keys [name avatar-url]} user]
+    (element/make-element
+     "vcard" {"xmlns" vcard-uri}
+     (if name
+       ["fn" {}
+        ["text" {} name]])
+     (if avatar-url
+       ["photo" {}
+        ["uri" {} avatar-url]]))))
+
 ;; (defsection show-section-minimal [User :xmpp :xmpp]
 ;;   [property & options]
 ;;   (element/make-element
 ;;    (:key property) {}
 ;;    [(:type property) {} (:value property)]))
 
-(defsection show-section-minimal [User :html]
-  [user & options]
-  [:div.vcard
-   ;; (avatar-img user)
-   (link-to user)])
-
-(defsection title [User]
-  [user & options]
-  (or (:name user)
-      (:display-name user)
-      (:first-name user)
-      (model.user/get-uri user)))
-
-(defsection uri [User]
-  [user & options]
-  (if (model.user/local? user)
-    (str "/" (:username user))
-    (str "/users/" (:_id user))))

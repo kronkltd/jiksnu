@@ -6,7 +6,6 @@
         jiksnu.actions.push-subscription-actions
         jiksnu.helpers.push-subscription-helpers
         jiksnu.model
-        jiksnu.sections.push-subscription-sections
         jiksnu.session)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]

@@ -70,50 +70,7 @@
    :body
    (str
     "<!doctype html>\n"
-    (template.layout/layout
-     {:body (hiccup/html (:body response))
-      :authenticated (if-let [user (current-user)]
-                       (template.user/format-data user))
-      :development (= *environment* :development)})
-    #_[:html
-       [:head
-        [:title "jiksnu"]
-        (map
-         (fn [{:keys [label href type]}]
-           [:link {:type type
-                   :href href
-                   :title label
-                   :rel "alternate"}])
-         (:formats response))
-        (link-to-stylesheet "/public/standard.css")]
-       [:body
-        [:div#wrap
-         (devel-environment-section)
-         [:header
-          (login-section)
-          [:address#site_contact.vcard
-           [:a.url.home.bookmark
-            {:href "/"}
-            [:img.logo.photo {:src "/public/logo.png"
-                              :alt "Jiksnu"}]]]
-          (add-form (make Activity {}))
-          [:div.clear]]
-         (navigation-section)
-         [:div#content
-          (:body response)
-          [:div.clear]]
-         [:footer
-          [:div.formats
-           [:ul
-            (map
-             (fn [{:keys [label href type]}]
-               [:li
-                [:a {:href href} label]])
-             (:formats response))]]
-          [:p "Copyright © 2011 KRONK Ltd."]]]
-        (link-to-script "http://www.google.com/jsapi")
-        [:script "google.load(\"jquery\", \"1.3\")"]
-        (link-to-script "/public/standard.js")]])})
+    (template.layout/layout response))})
 
 (defmethod apply-template :html
   [request response]

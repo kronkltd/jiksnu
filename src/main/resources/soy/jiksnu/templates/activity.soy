@@ -14,7 +14,7 @@
 {template .activityForm}
   <div class="post-form">
     <form method="post"
-          action="{$uri ? $uri : '/notice/post'}"
+          action="{$uri ? $uri : '/notice/new'}"
           enctype="multipart/form-data">
       <fieldset>
         <legend>Post an Activity</legend>
@@ -49,11 +49,14 @@
             </li>
           {/if}
           <li>
+            <label for="title">Title</label>
             <input type="text" name="title" value="{$title ? $title : ''}" />
           </li>
           <li>
-            <input type="textarea" name="content" value="{$content ?
-            $content : ''}" />
+            <label for="content">Content</label>
+            <textarea name="content">
+              {$content ? $content : ''}
+            </textarea>
           </li>
           <li>
             <fieldset>
@@ -97,14 +100,19 @@
             $pictures : ''}" />
           </li>
           <li class="location-line">
-            <p>
-              <label for="lat">Latitude</label>
-              <input type="text" name="lat" value="{$lat ? $lat : ''}" />
-            </p>
-            <p>
-              <label for="long">Longitude</label>
-              <input type="text" name="long" value="{$long ? $long : ''}" />
-            </p>
+            <fieldset>
+              <legend>Location</legend>
+              <ul>
+                <li>
+                  <label for="lat">Latitude</label>
+                  <input type="text" name="lat" value="{$lat ? $lat : ''}" />
+                </li>
+                <li>
+                  <label for="long">Longitude</label>
+                  <input type="text" name="long" value="{$long ? $long : ''}" />
+                </li>
+              </ul>
+            </fieldset>
           </li>
           <li>
             <select name="privacy">
@@ -280,7 +288,7 @@
       <ul>
         {foreach $recipient in $recipients}
           <li>
-            {call .linkTo data="all" /}
+            {call .linkTo data="$recipient" /}
           </li>
         {/foreach}
       </ul>
@@ -320,42 +328,49 @@
         {if $object_type != 'comment'}
           <div class="{css labels}">
             {$object_type}
-            <span id="{css local}">{if not $local} remote{/if}</span>
-            <span id="{css privacy}">{if not $public} private{/if}</span>
+            <span class="{css local}">{if not $local} remote{/if}</span>
+            <span class="{css privacy}">{if not $public} private{/if}</span>
           </div>
         {/if}
+        {call .postActions data="all" /}
       </header>
-      <p class="{css entry-content}">
+      <section class="{css entry-content}">
         {if $object_type == 'article' and $title}
           <h3 class="{css entry-title}">{$title}</h3>
         {/if}
-      </p>
-      <div>
-        {$content}
-      </div>
-      {call .recipientsSection data="all" /}
-      {call .linkSection data="all" /}
-      {call .mapsSection data="all" /}
-      {call .tagsSection data="all" /}
-      <footer>
-        {if $published}
-          <p>
-            <a href="/notice/{$id}">
-              <time>
-                {if $published}
-                  {$published}
-                {else}
-                  Unknown
-                {/if}
-              </time>
-            </a>
-          </p>
-        {/if}
-        {call .postActions data="all" /}
-        {call .commentsSection data="all" /}
-      </footer>
+        <section>
+          {$content}
+        </section>
+        <footer>
+          {call .recipientsSection data="all" /}
+          {call .linkSection data="all" /}
+          {call .mapsSection data="all" /}
+          {call .tagsSection data="all" /}
+          {call .postedLink data="all" /}
+          {call .commentsSection data="all" /}
+        </footer>
+      </section>
     </section>
   </article>
+{/template}
+
+
+/**
+ * @param id
+ * @param published
+ */
+{template .postedLink}
+  <span class="{css posted}">
+    <time>
+      {if $published}
+        <a href="/notice/{$id}">
+          {$published}
+        </a>
+        {else}
+        Unknown
+      {/if}
+    </time>
+  </span>
 {/template}
 
 
@@ -380,14 +395,17 @@
  */
 {template .mapsSection}
   <div>
-    {if $lat}
-      <p>Lat: {$lat}</p>
-    {/if}
-    {if $long}
-      <p>Long: {$long}</p>
-    {/if}
     {call .displayMap data="all" /}
-  </div>
+    <p>
+      {if $lat}
+        <span>Lat: {$lat}</span>
+      {/if}
+      {sp}
+      {if $long}
+        <span>Long: {$long}</span>
+      {/if}
+    </p>
+ </div>
 {/template}
 
 
@@ -395,33 +413,37 @@
  * @param recipients
  */
 {template .recipientsSection}
-  <div class="recipients">
-    <h>Recipients</h>
-    <ul>
-      {foreach $user in $recipients}
-        <li>
-          {call .linkTo data="$user" /}
-        </li>
-      {/foreach}
-    </ul>
-  </div>
+  {if $recipients and length($recipients) > 0}
+    <div class="recipients">
+      <h>Recipients</h>
+      <ul>
+        {foreach $user in $recipients}
+          <li>
+            {call .linkTo data="$user" /}
+          </li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
 {/template}
 
 /**
- * @param tags
+ * @param? tags
  */
 {template .tagsSection}
-  <div class="{css tags}">
-    <h>Tags:</h>
-    <ul>
-      {foreach $tag in $tags}
-        <li>
-          <a href="#{$tag}"
-             rel="tag">{$tag}</a>
-        </li>
-      {/foreach}
-    </ul>
-  </div>
+  {if $tags and length($tags) > 0}
+    <div class="{css tags}">
+      <h>Tags:</h>
+      <ul>
+        {foreach $tag in $tags}
+          <li>
+            <a href="#{$tag}"
+               rel="tag">{$tag}</a>
+          </li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
 {/template}
 
 

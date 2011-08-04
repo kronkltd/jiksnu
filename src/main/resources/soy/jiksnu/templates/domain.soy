@@ -1,0 +1,84 @@
+
+/**
+ *
+ */
+{template .addForm}
+  <div>
+    <p>Add Domain</p>
+    <form method="post" action="/domains">
+      <ul>
+        <li>
+          <label for="domain">Domain</label>
+          <input type="text" name="domain" value="" />
+        </li>
+        <li>
+          <input type="submit" value="Add" />
+        </li>
+      </ul>
+    </form>
+  </div>
+{/template}
+
+
+/**
+ *
+ */
+{template .indexLine}
+  <tr>
+    <td>
+      <a href="/main/domains/{$id}">{$id}</a>
+    </td>
+    <td>{$xmpp}</td>
+    <td>{$discovered}</td>
+    <td>
+      <a href="http://{$id}/.well-known/host-meta">Host-Meta</a>
+    </td>
+    <td>{$link_count}</td>
+    <td>
+      <form method="post" action="/main/domains/{$id}/discover">
+        <input type="submit" value="Discover" />
+      </form>
+    </td>
+    <td>{call .deleteButton data="all" /}</td>
+  </tr>
+{/template}
+
+/**
+ *
+ */
+{template .indexSection}
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>XMPP?</th>
+      <th>Discovered</th>
+      <th>Host-Meta</th>
+      <th>Link Count</th>
+      <th>Edit</th>
+      <th>Discover</th>
+      <th>Delete</th>
+    </tr>
+    {foreach $domain in $domains}
+      {call .indexLine data="$domain" /}
+    {/foreach}
+  </table>
+{/template}
+
+/**
+ *
+ */
+{template .linkTo}
+  <a href="/main/domains/{$id}">{$id}</a>
+{/template}
+
+
+/**
+ *
+ */
+{template .indexBlock}
+  <div>
+    <p>index domains</p>
+    {call .indexSections data="all" /}
+    {call .addForm data="all" /}
+  </div>
+{/template}

@@ -7,8 +7,15 @@
         ciste.config
         jiksnu.model.signature
         jiksnu.namespace
-        jiksnu.actions.webfinger-actions
-        jiksnu.sections.webfinger-sections))
+        jiksnu.actions.webfinger-actions))
+
+(defn salmon-link
+  [user]
+  (str
+   "http://"
+   (config :domain)
+   "/main/salmon/user/"
+   (:_id user)))
 
 (defview #'host-meta :html
   [request _]

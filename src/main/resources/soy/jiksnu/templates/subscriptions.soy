@@ -1,0 +1,36 @@
+/**
+ * @param from
+ * @param to
+ * @param pending
+ */
+{template .indexLine}
+  <tr>
+    <td>{call .linkTo data="all" /}</td>
+    <td>{call user.linkTo data="$from" /}</td>
+    <td>{call user.linkTo data="$to" /}</td>
+    <td>{$pending}</td>
+    <td>{call .deleteButton data="all" /}</td>
+  </tr>
+{/template}
+
+/**
+ *
+ */
+{template .indexBlock}
+  <table>
+    <thead>
+      <tr>
+        <td>Id</td>
+        <td>From</td>
+        <td>To</td>
+        <td>Pending</td>
+        <td>Created</td>
+      </tr>
+    </thead>
+    <tbody>
+      {foreach $subscription in $subscriptions}
+        {call .indexLine data="$subscription" /}
+      {/foreach}
+    </tbody>
+  </table>
+{/template}

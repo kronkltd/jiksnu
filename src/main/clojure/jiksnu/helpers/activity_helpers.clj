@@ -403,7 +403,7 @@ an Element"
 
 (defn set-id
   [activity]
-  (if (:_id activity)
+  (if (and (:_id activity) (not= (:_id activity) ""))
     activity
     (assoc activity :_id (new-id))))
 

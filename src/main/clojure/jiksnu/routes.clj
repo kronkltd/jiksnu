@@ -77,12 +77,12 @@
     [[:get "/api/people/@me/@all/:id"]     #'user/show]
     [[:get "/api/statuses/public_timeline.:format"]    #'activity/index]
     [[:get  "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline]
-    [[:get "/domains"]                     #'domain/index]
-    [[:get "/domains/*"]                   #'domain/show]
-    [[:delete "/domains/*"]                #'domain/delete]
-    [[:post "/domains"]                    #'domain/create]
-    [[:post "/domains/*/discover"]         #'domain/discover]
-    [[:post "/domains/*/edit"]             #'domain/edit]
+    [[:get "/main/domains"]                     #'domain/index]
+    [[:get "/main/domains/*"]                   #'domain/show]
+    [[:delete "/main/domains/*"]                #'domain/delete]
+    [[:post "/main/domains"]                    #'domain/create]
+    [[:post "/main/domains/*/discover"]         #'domain/discover]
+    [[:post "/main/domains/*/edit"]             #'domain/edit]
     [[:post "/main/guest-login"]           #'auth/guest-login]
     [[:get "/main/login"]                  #'auth/login-page]
     [[:post "/main/login"]                 #'auth/login]
@@ -242,13 +242,13 @@
 
 (compojure/defroutes all-routes
   (route/files "/public")
-  (resolve-routes [http-predicates] http-routes)
-  (compojure/GET "/main/events" _
-                 (wrap-aleph-handler activity/stream-handler))
   (compojure/GET "/favicon.ico" request
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
                  (response/file-response "public/robots.txt"))
+  (resolve-routes [http-predicates] http-routes)
+  (compojure/GET "/main/events" _
+                 (wrap-aleph-handler activity/stream-handler))
   (route/not-found (not-found-msg)))
 
 (def app

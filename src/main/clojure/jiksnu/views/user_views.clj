@@ -18,7 +18,8 @@
             [hiccup.form-helpers :as f]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.templates.user :as templates.user])
   (:import com.cliqset.abdera.ext.activity.object.Person
            java.net.URI
            javax.xml.namespace.QName
@@ -26,19 +27,11 @@
            tigase.xml.Element
            org.apache.abdera.model.Entry))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defview #'create :html
   [request user]
   {:status 303,
    :template false
    :headers {"Location" (uri user)}})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; delete
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'delete :html
   [request _]
@@ -46,35 +39,15 @@
    :template false
    :headers {"Location" "/admin/users"}})
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; discover
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defview #'discover :html
   [request user]
   {:status 303
    :template false
    :headers {"Location" (uri user)}})
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defview #'edit :html
   [request user]
   {:body (edit-form user)})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fetch-remote
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'fetch-remote :xmpp
-  [request user]
-  (vcard-request request user))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fetch-remote
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'fetch-updates :html
   [request user]
@@ -82,59 +55,17 @@
    :template false
    :headers {"Location" (uri user)}})
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defview #'index :html
   [request users]
   {:body (index-section users)})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; profile
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'profile :html
   [request user]
   {:body (edit-form user)})
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; register
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defview #'register :html
   [request _]
-  {:body
-   [:div
-    (if (config :registration-enabled)
-      (list
-       [:h1 "Register"]
-       (f/form-to
-        [:post "/main/register"]
-        [:p
-         (f/label :username "Username:")
-         (f/text-field :username)]
-        [:p (f/label :password "Password:")
-         (f/password-field :password)]
-        [:p (f/label :confirm_password "Confirm Password")
-         (f/password-field :confirm_password)]
-        [:p (f/submit-button "Register")]))
-      [:div "Registration is disabled at this time"])]})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'remote-create :xmpp
-  [request user]
-  (let [{:keys [to from]} request]
-    {:from to
-     :to from
-     :type :result}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-profile
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  {:body (templates.user/register-section request)})
 
 (defview #'remote-profile :html
   [request user]
@@ -144,10 +75,6 @@
        (assoc :action #'show))
    user))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-user
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defview #'remote-user :html
   [request user]
   (apply-view
@@ -155,10 +82,6 @@
        (assoc :format :html)
        (assoc :action #'show))
    user))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defview #'show :html
   [request user]
@@ -190,6 +113,56 @@
                      "/api/statuses/user_timeline/" (:_id user) ".xml")
      :type "application/xml"}]})
 
+(defview #'update :html
+  [request user]
+  {:status 302
+   :template false
+   :headers {"Location" (uri user)}})
+
+(defview #'update-hub :html
+  [request user]
+  {:status 302
+   :template false
+   :headers {"Location" (uri user)}})
+
+
+
+
+
+
+
+
+(defview #'fetch-remote :xmpp
+  [request user]
+  (vcard-request request user))
+
+(defview #'remote-create :xmpp
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :result}))
+
+(defview #'show :xmpp
+  [request user]
+  (let [{:keys [id to from]} request]
+    {:body
+     (element/make-element
+      "query" {"xmlns" query-uri} (show-section user))
+     :type :result
+     :id id
+     :from to
+     :to from}))
+
+(defview #'xmpp-service-unavailable :xmpp
+  [request _])
+
+
+
+
+
+
+
 (defview #'show :rdf
   [request user]
   {:body
@@ -207,37 +180,3 @@
      (with-out-str (model-to-format rdf-model :n3)))
    :template :false})
 
-(defview #'show :xmpp
-  [request user]
-  (let [{:keys [id to from]} request]
-    {:body
-     (element/make-element
-      "query" {"xmlns" query-uri} (show-section user))
-     :type :result
-     :id id
-     :from to
-     :to from}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; update
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'update :html
-  [request user]
-  {:status 302
-   :template false
-   :headers {"Location" (uri user)}})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; update-hub
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defview #'update-hub :html
-  [request user]
-  {:status 302
-   :template false
-   :headers {"Location" (uri user)}})
-
-
-(defview #'xmpp-service-unavailable :xmpp
-  [request _])

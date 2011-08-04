@@ -2,6 +2,7 @@
 
 /**
  * @param body
+ * @param authenticated
  * @param? development
  * @param? formats
  * @param? links
@@ -26,36 +27,69 @@
     </head>
     <body>
       <div id="wrap">
-        {call .develWarning data="all" /}
-        <header>
-          {call .loginSection data="all" /}
-          <address id="site_contact" class="vcard">
-            <a class="url home bookmark" href="/">
-              <img class="logo photo" src="/public/logo.png" />
-            </a>
-          </address>
-          {call .postActivityForm data="all" /}
+        <header id="site-header">
+          <section id="session-menu">
+            {call .loginSection data="all" /}
+          </section>
+          <section id="site-banner">
+            <address id="site_contact" class="vcard">
+              <a class="url home bookmark" href="/">
+                <img class="logo photo" src="/public/logo.png" />
+              </a>
+            </address>
+            {call .navigationSection data="all" /}
+          </section>
           <div class="clear"></div>
         </header>
-        {call .navigationSection data="all" /}
-        <div id="content">
-          {call jiksnu.templates.activity.activityForm data="all" /}
-          {$body|noAutoescape}
+        <section id="notification-area">
+          <div id="flash"></div>
+          {call .develWarning data="all" /}
+        </section>
+        <section id="site-main">
+          <section id="left-column">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Praesent vitae massa et mauris varius elementum vitae vel nisi.
+            Aenean dictum augue in massa suscipit facilisis.
+            Praesent id justo in ipsum viverra pretium id ut libero.
+            Phasellus egestas arcu ut lectus tristique pellentesque.
+
+            Vestibulum hendrerit orci vel mi faucibus vestibulum.
+            Phasellus vel quam nisi, nec sollicitudin erat.
+            Duis facilisis justo ac enim tristique et interdum odio suscipit.
+
+            Cras nec risus nisl, ornare pharetra neque.
+            Vivamus pharetra aliquam orci, ut suscipit nunc semper id.
+            Donec ultricies mauris et felis accumsan nec aliquet quam pulvinar.
+            Donec elementum mi id libero ultrices vitae pulvinar sem facilisis.
+            Cras rhoncus euismod elit, quis congue quam ultrices quis.
+            Vestibulum sagittis sem hendrerit lacus consectetur ultricies quis.
+
+            Etiam molestie mi eu erat feugiat pellentesque.
+            Morbi porttitor sapien at lectus elementum placerat.
+            Integer cursus justo posuere arcu ullamcorper eu luctus lorem.
+            Nunc a sapien at tellus dictum pulvinar feugiat a libero.
+            In eu arcu ac arcu porta cursus sed vitae orci.
+            Morbi iaculis porttitor nunc, non luctus magna ultricies non.
+
+            Vivamus fringilla leo quis risus condimentum scelerisque.
+            Praesent sed mi quis leo sodales congue.
+            Etiam consectetur varius magna, sed ornare risus laoreet ut.
+            Nulla blandit nibh ac leo rhoncus pulvinar.
+            Aenean et diam velit, in ultrices libero.
+            Donec fringilla rutrum ipsum, eu auctor urna blandit eget.
+            Donec id est ac diam feugiat lobortis eu et massa.
+          </section>
+          <div id="content">
+            {if $authenticated}
+              {call jiksnu.templates.activity.activityForm data="all" /}
+            {/if}
+            {$body|noAutoescape}
+          </div>
           <div class="clear"></div>
-        </div>
+        </section>
         <footer>
-          {if $formats}
-            <div class="formats">
-              <ul>
-                {foreach $format in $formats}
-                  <li>
-                    <a href="{$format.href}">{$format.label}</a>
-                  </li>
-                {/foreach}
-              </ul>
-            </div>
-          {/if}
           <p>Copyright © 2011 KRONK Ltd.</p>
+          {call .formatList data="all" /}
         </footer>
       </div>
       {call .includeScript}
@@ -69,6 +103,23 @@
       </script>
     </body>
   </html>
+{/template}
+
+/**
+ * @param formats
+ */
+{template .formatList}
+  {if $formats}
+    <div class="formats">
+      <ul>
+        {foreach $format in $formats}
+          <li>
+            <a href="{$format.href}">{$format.label}</a>
+          </li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
 {/template}
 
 /**
@@ -100,12 +151,14 @@
  * @param authenticated
  */
 {template .logoutButton}
-  <form method="post" action="/main/logout">
-    <ol>
-      <li>{call jiksnu.templates.user.linkTo data="$authenticated" /}</li>
-      <li><input type="submit" value="Log out" /></li>
-    </ol>
-  </form>
+  <div>
+    <span>{call jiksnu.templates.user.linkTo data="$authenticated" /}</span>
+    <span>
+      <form method="post" action="/main/logout">
+        <input type="submit" value="Log out" />
+      </form>
+    </span>
+  </div>
 {/template}
 
 /**
@@ -153,8 +206,25 @@
           <a href="/settings/profile">Profile</a>
         </li>
         <li>
-          <a href="/admin/domains">Domains</a>
+          <a href="/main/domains">Domains</a>
         </li>
+        {if $authenticated.admin }
+          <li>
+            <a href="/admin/notices">Notices</a>
+          </li>
+          /* <li> */
+          /*   <a href="/admin/settings">Settings</a> */
+          /* </li> */
+          <li>
+            <a href="/admin/push/subscriptions">Pubsubhubub</a>
+          </li>
+          <li>
+            <a href="/admin/users">Users</a>
+          </li>
+          <li>
+            <a href="/admin/subscriptions">Subscriptions</a>
+          </li>
+        {/if}
       {/if}
     </ul>
   </nav>

@@ -11,8 +11,7 @@
         jiksnu.view)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [hiccup.form-helpers :as f]
-            jiksnu.sections.domain-sections)
+            [hiccup.form-helpers :as f])
   (:import jiksnu.model.Domain))
 
 (defview #'create :html

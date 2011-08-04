@@ -164,7 +164,9 @@
   (let [actor (current-user)]
     {:status 303
      :template false
-     :headers {"Location" (uri actor)}}))
+     :headers {"Location" (or (-> request :params :redirect_to)
+                              "/"
+                              (uri actor))}}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; remote-create

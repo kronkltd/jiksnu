@@ -3,11 +3,11 @@ body
     font-color: black;
 }
 
-#wrap, body {
+body {
     background-color: #4444ee;
 }
 
-#wrap > footer {
+#site-main, #wrap footer {
     background-color: white;
 }
 
@@ -46,43 +46,83 @@ nav ul li {
 
 
 
-
-body
-{
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-
 #wrap {
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 1500px;
     min-width: 760px;
     overflow: hidden;
     width: 100%;
-    padding: 0 5px 5px 5px;
 }
 
-#wrap > header
+#site-header
 {
     display: block;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     position: relative;
     width: 100%;
-    padding-top: 2em;
+    /* padding-top: 2em; */
+    background-color: gray;
+}
+
+#session-menu {
+    position: relative;
+    float: right;
+    /* width: 100%; */
+    background-color: gray;
 }
 
 #login-section
 {
-    position: absolute;
-    right: 1px;
-    top: 1px;
+    /* position: absolute; */
+    /* right: 1px; */
+    /* top: 1px; */
+    /* float: right; */
 /* width: 20%; */
 }
 
-#login-section p {
+#login-section div span form {
+    display: inline;
+}
+
+#notification-area {
+    clear: both;
+}
+
+#site-banner {
+    float: left;
+    /* clear: both; */
+    /* width: 100%; */
+}
+
+#site-banner nav {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    /* float: right; */
+}
+
+nav ul {
+    margin: 0;
+    padding-left: 0;
+}
+
+nav ul li
+{
+    display: inline;
+    width: 100%;
+    margin-right: 5px;
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    padding: 3px 3px 0 3px;
+
+}
+
+
+body {
+    padding: 0;
     margin: 0;
 }
+
 
 #site_contact {
     width: 240px;
@@ -92,8 +132,8 @@ body
 
 .post-form {
     width: 50%;
-    float: left;
-    /* margin: 0 auto; */
+    /* float: left; */
+    margin: 0 auto;
 }
 
 .post-form ul {
@@ -130,29 +170,7 @@ body
     width: 100%;
 }
 
-nav
-{
-    /* float: left; */
-    /* margin: 0 0 -15px 0; */
-}
-
-#wrap > nav ul {
-    margin: 0;
-    padding-left: 0;
-}
-
-nav ul li
-{
-    display: inline;
-    width: 100%;
-    margin-right: 5px;
-    border-width: 1px 1px 0px 1px;
-    border-style: solid;
-    padding: 3px;
-}
-
 .devel-section {
-    margin-bottom: 5px;
     padding: 2px;
     text-align: center;
 }
@@ -164,10 +182,20 @@ nav ul li
     margin-bottom: 10px;
 }
 
-#notices_primary {
-    margin-right: 15px;
-    padding: 5px;
+#left-column {
+    float: left;
+    width: 20%;
 }
+
+#content {
+    float: left;
+    width: 79%;
+}
+
+/* #notices_primary { */
+/*     margin-right: 15px; */
+/*     padding: 5px; */
+/* } */
 
 div.content
 {
@@ -176,14 +204,13 @@ div.content
 }
 
 .map {
-    /* display: none; */
+    display: none;
 }
 
-/* #content */
-/* { */
-/*     width: 300px; */
-/*     height: 70px; */
-/* } */
+#content
+{
+    padding-left: 15px;
+}
 
 .aside {
     float: right;
@@ -198,7 +225,7 @@ div.content
 
 .activities {
     padding-left: 0px;
-    width: 70%;
+    /* width: 70%; */
 }
 
 .activities li {
@@ -212,8 +239,10 @@ article
     /* border-style: solid; */
     position: relative;
     /* border: 1px solid red; */
-    margin-bottom: 15px;
-    min-height: 60px;
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    /* min-height: 60px; */
     /* -moz-box-shadow:5px 7px 7px rgba(194, 194, 194, 0.3); */
     /* -moz-border-radius: 0 7px 7px 7px; */
 }
@@ -307,9 +336,10 @@ article footer
 
 .buttons {
     padding: 0px;
-    position: absolute;
-    top: 0px;
-    right: 0px;
+    /* position: absolute; */
+    /* top: 0px; */
+    /* right: 0px; */
+    float: right;
 }
 
 .delete-button input {
@@ -390,4 +420,27 @@ footer {
 .formats ul li {
     list-style-type: none;
     display: inline;
+}
+
+#wrap > footer {
+    margin-top: 5px;
+    text-align: center;
+}
+
+fieldset {
+    display: inline;
+}
+
+.location-line, .tag-line, .location-line,
+.pictures-line, .title-line {
+    display: none;
+}
+
+fieldset {
+    display: inline;
+}
+
+.location-line, .tag-line, .location-line,
+.pictures-line, .title-line {
+    display: none;
 }

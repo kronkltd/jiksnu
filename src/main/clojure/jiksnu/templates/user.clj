@@ -8,17 +8,29 @@
   {:id (str (:_id user))
    :name (:username user)
    :url (str "/users/" (:_id user))
+   :local (:local user)
+   :hub (:hub user)
+   :admin (:admin user)
+   :links []
    :display-name
    (or (:display-name user)
        (str (:first-name user) " " (:last-name user)))
    :imgsrc (or (:avatar-url user)
                (and (:email user)
                     (gravatar-image (:email user)))
-               (gravatar-image (:jid user)))})
+               (gravatar-image (:jid user))
+               (gravatar-image (str (:username user) "@" (:domain user)))
+               "")})
 
 (deftemplate show
   [user]
   (format-data user))
+
+(deftemplate register-section
+  [request]
+  {:username ""
+   :password ""
+   :confirm-password ""})
 
 (deftemplate show-minimal
   [user]
@@ -37,6 +49,8 @@
    :first-name first-name
    :last-name last-name
    :email email
+   :local true
+   :links {}
    :bio bio
    :password password
    :confirm-password confirm-password

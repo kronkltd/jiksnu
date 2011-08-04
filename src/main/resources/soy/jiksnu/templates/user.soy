@@ -50,7 +50,7 @@
       <fieldset>
         <legend>Edit User</legend>
         <ul>
-          <li>{$username}</li>
+          <li>{$username or ''}</li>
           <li>
             <label for="domain">Domain</label>
             <input type="text" name="domain" value="{$domain}" />
@@ -108,7 +108,7 @@
 {template .indexLine}
   <tr>
     <td>/* avatar */</td>
-    <td>{$username}</td>
+    <td>{$username or ''}</td>
     <td>{call .linkTo data="all" /}</td>
     <td>
       {call jiksnu.templates.domain.linkTo}
@@ -153,6 +153,45 @@
 
 
 /**
+ * @param authenticated
+ * @param id
+ */
+{template .userActions}
+  {if $authenticated}
+    {if $id == $authenticated.id}
+      <p>This is you</p>
+    {/if}
+    <ul>
+      <li>
+        {call .discoverButton data="all" /}
+      </li>
+      <li>
+        {call .updateButton data="all" /}
+      </li>
+      <li>
+        {call .subscribeButton data="all" /}
+      </li>
+      <li>
+        {call .subscribeSection data="all" /}
+      </li>
+    </ul>
+  {/if}
+{/template}
+
+/**
+ * @param following
+ */
+{template .subscribeSection}
+  {if $following}
+    {call .unsubscribeForm data="all" /}
+  {else}
+    {call .subscribeForm data="all" /}
+  {/if}
+{/template}
+
+
+
+/**
  * @param url
  * @param display_name
  */
@@ -165,14 +204,7 @@
 
 /**
  * @param display_name
- */
-{template .showMinimal}
-  {call .linkTo data="all" /}
-{/template}
-
-
-/**
- * @param display_name
+ * @param name
  * @param location
  * @param bio
  * @param local
@@ -189,19 +221,32 @@
     <p>
       <span class="nickname">{$display_name}</span>
     </p>
+    <p class="fn n">{$name}</p>
     <div class="adr">
-      <p class="locality">{$location}</p>
+      <p class="locality">{$location ? $location : ''}</p>
     </div>
-    <p class="note">{$bio}</p>
+    <p class="note">{$bio ? $bio : ''}</p>
     <p><a class="url" rel="me" href="{$url}">{$url}</a></p>
     <p>Id: {$id}</p>
     <p>Local: {$local}</p>
-    <p>Hub: {$hub}</p>
-    <p>Discovered: {$discovered}</p>
-    <p>Last Updated: {$updated}</p>
-    {call .linksList data="$links" /}
+    <p>Hub: {$hub ? $hub : ''}</p>
+    <p>Discovered: {$discovered ? 'true' : ''}</p>
+    <p>Last Updated: {$updated ? $updated : ''}</p>
+    {call .linksList data="all" /}
+    {call .subscriptionSection data="all" /}
   </div>
 {/template}
+
+
+/**
+ *
+ */
+{template .showMinimal}
+  <div class="vcard">
+    {call .linkTo data="all" /}
+  </div>
+{/template}
+
 
 /**
  * @param actor
@@ -213,7 +258,118 @@
     {/call}
     {call .userActions data="all" /}
     {call .remoteSubscribeForm data="all" /}
-    {call .subscriptionsSection data="all" /}
-    {call .subscribersSection data="all" /}
+    {call jiksnu.templates.subscriptions.subscriptionsSection data="all" /}
+    {call jiksnu.templates.subscriptions.subscribersSection data="all" /}
   </div>
+{/template}
+
+/**
+ * @param links
+ */
+{template .linksList }
+  <ul>
+    {foreach $link in $links}
+      <li>
+        <p>{$link.href}</p>
+        <p>{$link.rel}</p>
+      </li>
+    {/foreach}
+  </ul>
+{/template}
+
+/**
+ * @param push_subscribe_link
+ */
+{template .pushSubscribeButton}
+  <form method="post" action="{$push_subscribe_link}">
+    <input type="submit" value="PuSh subscribe" />
+  </form>
+{/template}
+
+/**
+ * @param users
+ */
+{template .adminIndex}
+  <table>
+    {foreach $user in $users}
+      <tr>
+
+      </tr>
+    {/foreach}
+  </table>
+{/template}
+
+/**
+ * @param? username
+ * @param? password
+ * @param? confirm_password
+ */
+{template .registerSection}
+  <div>
+    <h1>Register</h1>
+    <form method="post" action="/main/register">
+      <p>
+        <label for="username">Username</label>
+        <input type="text" name="username" value="{$username or ''}" />
+      </p>
+      <p>
+        <label for="password">Password</label>
+        <input type="password" name="password" value="{$password or ''}" />
+      </p>
+      <p>
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" name="confirm-password" value="{$confirm_password or ''}" />
+      </p>
+      <p>
+        <input type="submit" value="Register" />
+      </p>
+    </form>
+  </div>
+{/template}
+
+
+/**
+ * @param username
+ * @param profile
+ */
+{template .remoteSubscribeForm}
+  <div>
+    <a class="entity-remote-subscribe"
+       href="$url">Subscribe</a>
+    <form method="post" action="/main/ostatus">
+      <fieldset>
+        <legend>Subscribe to {$username or ''}</legend>
+        <ul class="form-data">
+          <li class="ostatus-nickname">
+            <label for="nickname">User Nickname</label>
+            <input type="hidden" name="nickname" value="{$username or ''}" />
+          </li>
+          <li class="ostatus_profile">
+            <label for="profile">Profile Account</label>
+            <input type="text" name="profile" value="{$profile or ''}" />
+          </li>
+          <li>
+            <input type="submit" value="Submit" />
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+  </div>
+{/template}
+
+
+/**
+ * @param authenticated
+ * @param following
+ * @param followed
+ */
+{template .followingSection}
+  {if $authenticated}
+    {if $following}
+      <p>This user follows you</p>
+    {/if}
+    {if $followed}
+      <p>You follow this user</p>
+    {/if}
+  {/if}
 {/template}

@@ -28,84 +28,21 @@
            org.apache.abdera.ext.json.JSONUtil
            tigase.xml.Element))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add-form
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection add-form [Activity :html]
+(defsection title [Activity]
   [activity & options]
-  [:div
-   (if (current-user-id)
-     (activity-form activity "/notice/new"))])
+  (:title activity))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit-form
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection edit-form [Activity :html]
+(defsection uri [Activity]
   [activity & options]
-  [:div
-   (activity-form activity (uri activity))])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-block
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection index-block [Activity :xmpp :xmpp]
-  [activities & options]
-  ["items" {"node" microblog-uri}
-   (map index-line activities)])
-
-(defsection index-block [Activity :xml]
-  [activities & _]
-  {:tag :statuses
-   :content (map index-line activities)})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-line
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (str "/notice/" (:_id activity)))
 
 (defsection index-line [Activity]
   [activity & opts]
   (apply show-section activity opts))
 
-(defsection index-line [Activity :xmpp :xmpp]
-  [^Activity activity & options]
-  ["item" {"id" (:_id activity)}
-   (show-section activity)])
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsection index-section [Activity :xmpp :xmpp]
-  [activities & options]
-  ["pubsub" {} (index-block activities)])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show-section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection show-section [Activity :json]
-  [activity & _]
-  {"published" (:published activity)
-   "updated" (:updated activity)
-   "verb" "post"
-   "title" (:title activity)
-   "content" (:content activity)
-   "id" (:_id activity)
-   "url" (full-uri activity)
-   "actor" (show-section (get-actor activity))
-   "object"
-   (let [object (:object activity)]
-     {"published" (:published object)
-      "updated" (:updated object)})})
-
-(defsection show-section [Activity :xmpp :xmpp]
-  [^Activity activity & options]
-  (abdera-to-tigase-element
-   (with-format :atom
-     (show-section activity))))
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
@@ -136,6 +73,61 @@
         (.setId object-element object-id))
       (.setContentAsHtml object-element (:content activity)))
     entry))
+
+
+
+(defsection show-section [Activity :json]
+  [activity & _]
+  {"published" (:published activity)
+   "updated" (:updated activity)
+   "verb" "post"
+   "title" (:title activity)
+   "content" (:content activity)
+   "id" (:_id activity)
+   "url" (full-uri activity)
+   "actor" (show-section (get-actor activity))
+   "object"
+   (let [object (:object activity)]
+     {"published" (:published object)
+      "updated" (:updated object)})})
+
+
+
+
+
+(defsection index-block [Activity :xmpp :xmpp]
+  [activities & options]
+  ["items" {"node" microblog-uri}
+   (map index-line activities)])
+
+(defsection index-line [Activity :xmpp :xmpp]
+  [^Activity activity & options]
+  ["item" {"id" (:_id activity)}
+   (show-section activity)])
+
+(defsection index-section [Activity :xmpp :xmpp]
+  [activities & options]
+  ["pubsub" {} (index-block activities)])
+
+(defsection show-section [Activity :xmpp :xmpp]
+  [^Activity activity & options]
+  (abdera-to-tigase-element
+   (with-format :atom
+     (show-section activity))))
+
+
+
+
+
+
+
+
+
+
+(defsection index-block [Activity :xml]
+  [activities & _]
+  {:tag :statuses
+   :content (map index-line activities)})
 
 (defsection show-section [Activity :xml]
   [activity & _]
@@ -177,84 +169,3 @@
     {:tag :created_at
      :content [(str (:published activity))]
      }]})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show-section-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection show-section-minimal [Activity :html]
-  [activity & options]
-  (template.activity/show activity))
-
-
-(defn links-section
-  [activity]
-  (if-let [links (seq (:links (:object activity)))]
-    [:div#links
-     [:h "links"]
-     [:ul
-      (map
-       (fn [link]
-         [:li
-          [:p "Href: " (:href link)]
-          [:p "Rel: " (:rel link)]
-          [:p "Title: " (:title link)]
-          [:p "Mime Type: " (:mime-type link)]
-          (if (= (-> activity :object :object-type) "picture")
-            [:img {:src (:href link)
-                   :width "100"
-                   :height "100"}])])
-       links)]]))
-
-(defn recipients-section
-  [activity]
-  (if-let [recipients (seq (:recipients activity))]
-    [:div.recipients
-     [:h "Recipients:"]
-     [:ul
-      (map
-       (fn [recipient-id]
-         [:li (link-to (model.user/fetch-by-id recipient-id))])
-       recipients)]]))
-
-(defn tags-section
-  [activity]
-  (if-let [tags (seq (:tags activity))]
-    [:div.tags
-     "Tags: "
-     [:ul
-      (map
-       (fn [tag]
-         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
-       tags)]]))
-
-
-(defn comments-section
-  [activity]
-  [:div.comments
-   [:p "Comments: "
-    (:comment-count activity)
-    " "
-    [:a {:href "#"} "Show"]
-    (comment-link activity)
-    (fetch-comments-button activity)]
-   (if-let [comments (model.activity/get-comments activity)]
-     (map
-      show-section-minimal
-      comments))])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; title
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection title [Activity]
-  [activity & options]
-  (:title activity))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Uri
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsection uri [Activity]
-  [activity & options]
-  (str "/notice/" (:_id activity)))
