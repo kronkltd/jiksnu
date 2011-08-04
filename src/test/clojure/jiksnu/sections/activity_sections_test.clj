@@ -28,70 +28,13 @@
 
 (use-fixtures :each test-environment-fixture)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add-form
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest add-form-test "Activity :html"
-  (testing "should be a vector"
+(deftest uri-test "Activity"
+  (testing "should be a string"
     (with-serialization :http
       (with-format :html
         (with-user (model.user/create (factory User))
           (let [activity (model.activity/create (factory Activity))]
-            (is (vector? (add-form activity)))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit-form
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest edit-form-test "Activity :html"
-  (testing "should be a vector"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (is (vector? (edit-form activity)))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-block
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest index-block-test "Activity :xmpp :xmpp")
-
-(deftest index-block-test "Activity :html")
-
-(deftest index-block-test "Activity :xml")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-line
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest index-line-test "Activity")
-
-(deftest index-line-test "Activity :xmpp :xmpp")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index-section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest index-section-test "Activity :xmpp :xmpp")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show-section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest show-section-test "Activity :json")
-
-(deftest show-section-test "Activity :xmpp :xmpp"
-  (testing "should return an element"
-    (with-serialization :xmpp
-      (with-format :xmpp
-        (let [user (model.user/create (factory User))]
-          (with-user user
-            (let [entry (model.activity/create (factory Activity))
-                  response (show-section entry)]
-              (is (not (nil? response)))
-              (is (element/element? response)))))))))
+            (is (string? (uri activity)))))))))
 
 (deftest show-section-test "Activity :atom"
   (testing "should return an abdera entry"
@@ -106,34 +49,13 @@
           (is (.getTitle response))
           (is (.getUpdated response)))))))
 
-(deftest show-section-test "Activity :xml")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show-section-minimal
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest show-section-minimal-test "[Activity :html]"
-  (testing "should be a string"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (is (string? (show-section-minimal activity)))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; title
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest title-test "Activity")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Uri
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deftest uri-test "Activity"
-  (testing "should be a string"
-    (with-serialization :http
-      (with-format :html
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (is (string? (uri activity)))))))))
+(deftest show-section-test "Activity :xmpp :xmpp"
+  (testing "should return an element"
+    (with-serialization :xmpp
+      (with-format :xmpp
+        (let [user (model.user/create (factory User))]
+          (with-user user
+            (let [entry (model.activity/create (factory Activity))
+                  response (show-section entry)]
+              (is (not (nil? response)))
+              (is (element/element? response)))))))))
