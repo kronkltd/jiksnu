@@ -246,7 +246,8 @@
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
                  (response/file-response "public/robots.txt"))
-  (resolve-routes [http-predicates] http-routes)
+  (wrap-log-request
+   (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/main/events" _
                  (wrap-aleph-handler activity/stream-handler))
   (route/not-found (not-found-msg)))
@@ -263,5 +264,4 @@
        middleware/wrap-http-serialization
        wrap-database
        wrap-session
-       wrap-log-request
        wrap-error-catching)))
