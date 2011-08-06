@@ -147,7 +147,7 @@
             (.mkdirs (io/file (str (current-user-id))))
             (io/copy tempfile (io/file (str (current-user-id) "/"
                                             (:filename picture)))))))
-      (create (dissoc (spy prepared-post) :pictures)))))
+      (create (dissoc prepared-post :pictures)))))
 
 (defaction add-comment
   [params]

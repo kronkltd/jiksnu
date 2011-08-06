@@ -19,24 +19,23 @@
         envelope (.deserialize deserializer body)
         data-bytes (.decodeData default-sig envelope)
         uri (.getSignerUri (SimpleAtomDataParser.) data-bytes)
-        data (spy (String. data-bytes))]
+        data (String. data-bytes)]
     (if-let [entry (abdera/parse-xml-string data)]
-      (let [activity (to-activity (spy entry))]
-        (spy activity)
-        (if-let [author (.getAuthor (spy entry))]
-         (let [author-uri (.getUri (spy author))
-               user (model.user/find-or-create-by-remote-id (str author-uri))
-               key-pair (model.signature/get-key-for-user (spy user))
-               key (model.signature/get-key-from-armored (spy key-pair))
-               signatures (.getSignatures envelope)
-               verification-result (.verify default-sig envelope
-                                            (list (spy key)))
-               result-data (.getData (spy verification-result))
-               sig-results (.getSignatureVerificationResults
-                            verification-result)]
-           (if (spy (some identity
-                       (map
-                        (fn [r] (.isVerified r))
-                        sig-results)))
-             (actions.activity/remote-create [activity]))))))))
+      (let [activity (to-activity entry)]
+        (if-let [author (.getAuthor entry)]
+          (let [author-uri (.getUri author)
+                user (model.user/find-or-create-by-remote-id (str author-uri))
+                key-pair (model.signature/get-key-for-user user)
+                key (model.signature/get-key-from-armored key-pair)
+                signatures (.getSignatures envelope)
+                verification-result (.verify default-sig envelope
+                                             (list key))
+                result-data (.getData verification-result)
+                sig-results (.getSignatureVerificationResults
+                             verification-result)]
+            (if (some identity
+                      (map
+                       (fn [r] (.isVerified r))
+                       sig-results))
+              (actions.activity/remote-create [activity]))))))))
 

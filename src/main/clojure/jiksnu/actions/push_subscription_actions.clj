@@ -23,12 +23,12 @@
 
 (defaction callback-publish
   [params]
-  (let [document (spy (abdera/parse-stream (:body params)))
-        feed (spy (.getRoot document))
-        entries (spy (.getEntries feed))]
+  (let [document (abdera/parse-stream (:body params))
+        feed (.getRoot document)
+        entries (.getEntries feed)]
     (doseq [entry entries]
       (let [activity (helpers.activity/to-activity entry feed)]
-        (actions.activity/create (spy activity))))))
+        (actions.activity/create activity)))))
 
 (defaction index
   [options]

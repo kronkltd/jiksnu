@@ -29,7 +29,7 @@
 ;;   ;; (println "setting properties")
 ;;   ;; (proxy-super props)
 ;;   ;; (let [packet-types (.get props packet-types-key)]
-;;   ;;   (spy packet-types)
+;;   ;;   packet-types
 ;;   ;;   )
 ;;   )
 
@@ -39,7 +39,7 @@
   (println "")
   (println "")
   (println "process packet")
-  (spy packet)
+  packet
   
   (println "")
   (println "")

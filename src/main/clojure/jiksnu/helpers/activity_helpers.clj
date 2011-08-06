@@ -249,9 +249,9 @@
           (if (and (= name "point")
                    (= namespace "http://www.georss.org/georss"))
             (let [coords (.getText element)
-                  [lat long] (string/split (spy coords) #" ")]
-              (spy {:lat lat
-                :long long}))))))))
+                  [lat long] (string/split coords #" ")]
+              {:lat lat
+               :long long})))))))
 
 (defn get-authors
   [entry feed]
@@ -297,54 +297,53 @@ serialization"
   ([entry] (to-activity entry nil))
   ([entry feed]
      (let [id (str (.getId entry))
-           original-activity (model.activity/fetch-by-remote-id id)]
-       (spy original-activity)
-       (let [title (.getTitle entry)
-            published (.getPublished entry)
-            updated (.getUpdated entry)
-            authors (get-authors entry feed)
-            author-ids (get-author-ids authors)
-            extension-maps (doall
-                            (map
-                             parse-extension-element
-                             (.getExtensions entry)))
-            irts (filter
-                  identity
-                  (map
-                   (fn [irt]
-                     (let [href (str (.getHref irt))]
-                       (if (re-find #"node=" href)
-                         href)))
-                   (ThreadHelper/getInReplyTos entry)))
-            recipients
-            (filter
-             identity
-             (map
-              (fn [link]
-                (let [href (str (.getHref link))]
-                  (if href
-                    (if (re-find #"^.+@.+$" href)
-                      (if (not (re-find #"node=" href))
-                        href)))))
-              (ThreadHelper/getInReplyTos entry)))
-            links (parse-links entry)
-            tags (parse-tags entry)
-            opts (apply merge
-                        (if published {:published published})
-                        (if updated {:updated updated})
-                        (if (seq recipients)
-                          {:recipients (string/join ", " recipients)})
-                        (if title {:title title})
-                        (if (seq irts) {:irts irts})
-                        (if (seq links) {:links links})
-                        (if (seq tags) {:tags tags})
-                        {:_id id
-                         :remote-id id
-                         :authors author-ids
-                         :public true
-                         :comment-count (get-comment-count entry)}
-                        extension-maps)]
-        (entity/make Activity opts)))))
+           original-activity (model.activity/fetch-by-remote-id id)
+           title (.getTitle entry)
+           published (.getPublished entry)
+           updated (.getUpdated entry)
+           authors (get-authors entry feed)
+           author-ids (get-author-ids authors)
+           extension-maps (doall
+                           (map
+                            parse-extension-element
+                            (.getExtensions entry)))
+           irts (filter
+                 identity
+                 (map
+                  (fn [irt]
+                    (let [href (str (.getHref irt))]
+                      (if (re-find #"node=" href)
+                        href)))
+                  (ThreadHelper/getInReplyTos entry)))
+           recipients
+           (filter
+            identity
+            (map
+             (fn [link]
+               (let [href (str (.getHref link))]
+                 (if href
+                   (if (re-find #"^.+@.+$" href)
+                     (if (not (re-find #"node=" href))
+                       href)))))
+             (ThreadHelper/getInReplyTos entry)))
+           links (parse-links entry)
+           tags (parse-tags entry)
+           opts (apply merge
+                       (if published {:published published})
+                       (if updated {:updated updated})
+                       (if (seq recipients)
+                         {:recipients (string/join ", " recipients)})
+                       (if title {:title title})
+                       (if (seq irts) {:irts irts})
+                       (if (seq links) {:links links})
+                       (if (seq tags) {:tags tags})
+                       {:_id id
+                        :remote-id id
+                        :authors author-ids
+                        :public true
+                        :comment-count (get-comment-count entry)}
+                       extension-maps)]
+       (entity/make Activity opts))))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"

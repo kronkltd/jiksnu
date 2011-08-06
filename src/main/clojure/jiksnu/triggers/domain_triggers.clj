@@ -16,7 +16,7 @@
                  :serialization :xmpp
                  :action #'ping}
         packet (make-packet (apply-view request domain))]
-    (deliver-packet! (spy packet))))
+    (deliver-packet! packet)))
 
 (defn discover-webfinger
   [action [domain] _]

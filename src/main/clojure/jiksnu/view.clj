@@ -80,7 +80,7 @@
 (defmethod serialize-as :xmpp
   [serialization response]
   (if response
-    (make-packet (spy response))))
+    (make-packet response)))
 
 (defn get-text
   [element]

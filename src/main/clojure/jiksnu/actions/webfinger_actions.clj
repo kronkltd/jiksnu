@@ -48,7 +48,7 @@
         (if rel {:rel rel})
         (if template {:template template})
         (if type {:type type}))))
-   (.getLinks (spy xrd))))
+   (.getLinks xrd)))
 
 (defn get-keys
   [uri]

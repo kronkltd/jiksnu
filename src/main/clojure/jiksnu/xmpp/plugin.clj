@@ -58,7 +58,7 @@
       (if-let [bare-to (.getBareJID to)]
         (let [request (packet/make-request packet)]
           (if (config :print :request)
-            (spy request))
+            request)
           (if-let [response (main-handler queue request)]
             (do
               (.setPacketTo response (.getPacketFrom packet))

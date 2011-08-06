@@ -51,7 +51,7 @@
                  :body (element/make-element
                         ["pubsub" {"xmlns" pubsub-uri}
                          ["items" {"node" microblog-uri}]])})]
-    (tigase/deliver-packet! (spy packet))))
+    (tigase/deliver-packet! packet)))
 
 (defn fetch-updates-trigger
   [action _ user]

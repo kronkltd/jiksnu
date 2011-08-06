@@ -1,6 +1,5 @@
 (ns jiksnu.templates.layout
-  (:use (ciste [config :only (*environment*)]
-               [debug :only (spy)])
+  (:use (ciste [config :only (*environment*)])
         closure.templates.core
         (jiksnu [session :only (current-user)]))
   (:require [jiksnu.templates.user :as templates.user]
@@ -9,6 +8,6 @@
 (deftemplate layout
   [response]
   {:body (hiccup/html (:body response))
-   :authenticated (spy (if-let [user (current-user)]
-                     (templates.user/format-data user)))
+   :authenticated (if-let [user (current-user)]
+                    (templates.user/format-data user))
    :development (= *environment* :development)})

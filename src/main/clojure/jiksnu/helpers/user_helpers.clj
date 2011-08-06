@@ -154,4 +154,4 @@
           "query"
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (tigase/make-packet packet-map)]
-    (tigase/deliver-packet! (spy packet))))
+    (tigase/deliver-packet! packet)))

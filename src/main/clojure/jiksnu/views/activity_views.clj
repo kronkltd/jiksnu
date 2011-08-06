@@ -37,8 +37,7 @@
    :headers {"Location" "/" #_(uri activity)}})
 
 (defview #'comment-response :xmpp
-  [request activity]
- )
+  [request activity])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; delete
@@ -106,7 +105,7 @@
                        index-section
                        model-add-triples
                        defmodel)]
-     (with-out-str (model-to-format (spy rdf-model) :xml)))
+     (with-out-str (model-to-format rdf-model :xml)))
    :template :false})
 
 (defview #'index :html
