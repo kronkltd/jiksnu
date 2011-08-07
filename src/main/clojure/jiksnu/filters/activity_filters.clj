@@ -30,28 +30,16 @@
                       (str (first (element/children %)))))
                    items)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; delete
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'delete :http
   [action request]
   (let [{{id :id} :params} request
         activity (model.activity/show id)]
     (action activity)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'edit :http
   [action request]
   (let [{{id :id} :params} request]
     (action id)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fetch-comments
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'fetch-comments :http
   [action request]
@@ -65,33 +53,17 @@
     (if-let [activity (model.activity/show id)]
       (action activity))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fetch-comments-remote
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'fetch-comments-remote :xmpp
   [action request])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; friends-timeline
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'friends-timeline :http
   [action request]
   (let [{{id :id} :params} request]
     (model.activity/index :authors id)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; inbox
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'inbox :http
   [action request]
   [])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'index :http
   [action request]
@@ -101,10 +73,6 @@
   [action request]
   (action))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; like-activity
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'like-activity :http
   [action request]
   (let [{{id :id} :params} request]
@@ -113,26 +81,14 @@
         (model.like/find-or-create activity user)
         true))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; new
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'new :http
   [action request]
   (action))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; new-comment
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'new-comment :http
   [action request]
   (let [{{id :id} :params} request]
     (model.activity/show id)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; post
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'post :http
   [action request]
@@ -152,10 +108,6 @@
          items)]
     (action (first activities))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
@@ -168,14 +120,6 @@
         id (first ids)]
     (action id)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; stream
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'remote-create :xmpp
   [action request]
   (if (not= (:to request) (:from request))
@@ -185,30 +129,16 @@
       (action (map #(to-activity (parse-xml-string (str %)))
             items)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; update
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'update :http
   [action request]
   (let [{params :params} request]
     (action params)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; user-timeline
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'user-timeline :http
   [action request]
   (let [{{id :id} :params} request]
     (let [user (model.user/fetch-by-id id)]
       (action user))))
-
-;; (deffilter #'user-timeline :http
-;;   [action request]
-;;   (let [{{id :id} :params} request
-;;         user (model.user/fetch-by-id id)]
-;;     [user (model.activity/index :authors (make-id id))]))
 
 (deffilter #'user-timeline :xmpp
   [action request]

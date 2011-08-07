@@ -40,30 +40,6 @@
   (str "http://" (config :domain)
        (apply uri record options)))
 
-(defn navigation-section
-  []
-  (let [user (current-user)]
-    [:nav
-    [:ul
-     [:li [:a {:href "/"} "Public"]]
-     (if user
-       (list
-        [:li [:a {:href (str (uri user) "/all")} "Home"]]
-        [:li [:a {:href "/settings/profile"} "Profile"]]
-        [:li [:a {:href "/domains"} "Domains"]]
-        (if (is-admin? user)
-          (list
-           [:li [:a {:href "/admin/notices"} "Notices"]]
-           [:li [:a {:href "/admin/settings"} "Settings"]]
-           [:li [:a {:href "/admin/push/subscriptions"} "Pubsubhubbub"]]
-           [:li [:a {:href "/admin/users"} "Users"]]
-           [:li [:a {:href "/admin/subscriptions"} "Subscriptions"]]))))]]))
-
-(defn devel-environment-section
-  []
-  [:div.important.devel-section
-   "This site is running in development mode. No guarantees are made about the accuracy or security of information on this site. Use at your own risk."])
-
 (defn page-template-content
   [response]
   {:headers {"Content-Type" "text/html"}
