@@ -31,6 +31,17 @@
 
 
 /**
+ * @param local
+ */
+{template .remoteWarning}
+  {if not $local}
+    <p>This is a cached copy of information for a user on a different
+    system</p>
+  {/if}
+{/template}
+
+
+/**
  * @param id
  * @param username
  * @param display_name

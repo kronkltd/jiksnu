@@ -1,25 +1,19 @@
 (ns jiksnu.views.user-views
-  (:use ciste.config
-        ciste.core
-        ciste.html
-        ciste.sections
+  (:use (ciste config core html sections views)
         ciste.sections.default
-        ciste.views
+        (jiksnu model namespace session view)
         jiksnu.actions.user-actions
         jiksnu.helpers.user-helpers
-        jiksnu.model
-        jiksnu.namespace
         jiksnu.sections.user-sections
-        jiksnu.session
-        jiksnu.view
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
             [hiccup.form-helpers :as f]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.templates.user :as templates.user])
+            (jiksnu.model [activity :as model.activity]
+                          [subscription :as model.subscription]
+                          [user :as model.user])
+            (jiksnu.templates [activity :as templates.activity]
+                              [user :as templates.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            java.net.URI
            javax.xml.namespace.QName
@@ -47,7 +41,7 @@
 
 (defview #'edit :html
   [request user]
-  {:body (edit-form user)})
+  {:body (templates.user/edit-form user)})
 
 (defview #'fetch-updates :html
   [request user]
@@ -57,11 +51,11 @@
 
 (defview #'index :html
   [request users]
-  {:body (index-section users)})
+  {:body (templates.user/index-section users)})
 
 (defview #'profile :html
   [request user]
-  {:body (edit-form user)})
+  {:body (templates.user/edit-form user)})
 
 (defview #'register :html
   [request _]
@@ -88,11 +82,9 @@
   {:body
    [:div
     [:div.aside
-     (when-not (model.user/local? user)
-       [:p.important
-        "This is a cached copy of information for a user on a different system."])
-     (show-section user)]
-    (index-section (model.activity/find-by-user user))]
+     (templates.user/show user)]
+    (templates.activity/index-block
+     (model.activity/find-by-user user))]
    :formats
    [{:label "FOAF"
      :href (str (uri user) ".rdf")

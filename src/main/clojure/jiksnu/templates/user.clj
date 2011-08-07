@@ -1,7 +1,8 @@
 (ns jiksnu.templates.user
   (:use ciste.debug
         closure.templates.core
-        [clj-gravatar.core :only (gravatar-image)]))
+        [clj-gravatar.core :only (gravatar-image)])
+  (:require jiksnu.templates.subscriptions))
 
 (defn format-data
   [user]
@@ -45,7 +46,7 @@
     :keys [username display-name first-name last-name domain
            email bio password confirm-password url location]
     :as user}]
-  {:id id
+  {:id (str id)
    :username username
    :domain domain
    :location location
