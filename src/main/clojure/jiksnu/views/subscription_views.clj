@@ -11,7 +11,6 @@
         jiksnu.model
         jiksnu.namespace
         jiksnu.session
-        jiksnu.sections.subscription-sections
         jiksnu.view)
   (:require [hiccup.form-helpers :as f]
             [jiksnu.model.subscription :as model.subscription]

@@ -1,3 +1,5 @@
+{namespace jiksnu.templates.subscriptions}
+
 /**
  * @param from
  * @param to
@@ -14,23 +16,77 @@
 {/template}
 
 /**
- *
+ * @param subscriptions
  */
-{template .indexBlock}
-  <table>
-    <thead>
-      <tr>
-        <td>Id</td>
-        <td>From</td>
-        <td>To</td>
-        <td>Pending</td>
-        <td>Created</td>
-      </tr>
-    </thead>
-    <tbody>
+{template .indexSection}
+  <div>
+    <h2>Subscriptions</h2>
+    <table>
+      <thead>
+        <tr>
+          <td>Id</td>
+          <td>From</td>
+          <td>To</td>
+          <td>Pending</td>
+          <td>Created</td>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $subscription in $subscriptions}
+          {call .indexLine data="$subscription" /}
+        {/foreach}
+      </tbody>
+    </table>
+  </div>
+{/template}
+
+
+/**
+ * @param to
+ * @param pending
+ */
+{template .subscriptionsLine}
+  <li>
+    {call jiksnu.templates.user.showMinimal data="$to" /}
+    {if $pending }
+      {sp}(pending)
+    {/if}
+  </li>
+{/template}
+
+/**
+ * @param user
+ * @param subscriptions
+ */
+{template .subscriptionsSection}
+  <div class="subscriptions">
+    <h3>
+      <a href="{$user.uri or ''}/subscriptions">Subscriptions</a>
+    </h3>
+    <ul>
       {foreach $subscription in $subscriptions}
-        {call .indexLine data="$subscription" /}
+        {call .subscriptionsLine data="$subscription" /}
       {/foreach}
-    </tbody>
-  </table>
+    </ul>
+    <p>
+      <a href="/main/ostatussub">Add Remote</a>
+    </p>
+  </div>
+{/template}
+
+/**
+ * @param user
+ * @param subscribers
+ */
+{template .subscribersSection}
+  <div class="subscribers">
+    <h3>
+      <a href="{$user.uri or ''}/subscribers">Subscribers</a>
+    </h3>
+    <ul>
+      {foreach $subscriber in $subscribers}
+        {call .subscriberLine data="$subscriber" /}
+      {/foreach}
+    </ul>
+  </div>
 {/template}

@@ -12,6 +12,8 @@
    :hub (:hub user)
    :admin (:admin user)
    :links []
+   :subscriptions []
+   :subscribers []
    :display-name
    (or (:display-name user)
        (str (:first-name user) " " (:last-name user)))

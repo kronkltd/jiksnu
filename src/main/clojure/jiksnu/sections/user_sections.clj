@@ -6,7 +6,6 @@
         jiksnu.helpers.user-helpers
         jiksnu.model
         jiksnu.namespace
-        jiksnu.sections.subscription-sections
         jiksnu.session
         jiksnu.view
         plaza.rdf.core

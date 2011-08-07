@@ -7,7 +7,6 @@
         jiksnu.core-test
         jiksnu.helpers.subscription-helpers
         jiksnu.namespace
-        jiksnu.sections.subscription-sections
         jiksnu.view
         jiksnu.views.subscription-views
         jiksnu.xmpp.element)
