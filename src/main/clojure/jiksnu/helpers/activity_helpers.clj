@@ -12,6 +12,7 @@
             [clj-tigase.element :as element]
             [clojure.string :as string]
             [hiccup.form-helpers :as f]
+            [jiksnu.abdera :as abdera]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [karras.entity :as entity]
@@ -25,14 +26,10 @@
            org.apache.abdera.model.Entry
            tigase.xml.Element))
 
-(defn ^Entry new-entry
-  [& opts]
-  (.newEntry *abdera*))
-
 ;; TODO: Move this to user
 (defn add-author
-  [^Entry entry author-id]
-  (if-let [user (model.user/fetch-by-id author-id)]
+  [^Entry entry author]
+  (if-let [user (model.user/fetch-by-id (:_id author))]
     (let [author-name (:name user)
           author-jid  (str (:username user) "@" (:domain user))
           actor-element (.addExtension entry as-ns "actor" "activity")]
@@ -43,113 +40,28 @@
       (.addExtension entry actor-element)
       (.addExtension entry (show-section user)))))
 
-(defn add-authors
-  [^Entry entry ^Activity activity]
-  (dorun
-   (map (partial add-author entry)
-        (:authors activity)))
-  entry)
+;; (defn add-author
+;;   [^Entry entry ^Activity activity]
+;;   (dorun
+;;    (map (partial add-author entry)
+;;         (:author activity)))
+;;   entry)
 
 (defn add-entry
   [feed activity]
   (.addEntry feed (show-section activity)))
 
-(defn get-actor
+(defn get-author
   [activity]
-  (model.user/fetch-by-id (first (:authors activity))))
+  (model.user/fetch-by-id (:author activity)))
 
-(defn activity-form
-  ([activity]
-     (activity-form activity (uri activity)))
-  ([activity uri]
-     (activity-form activity uri nil))
-  ([activity uri parent]
-     [:div.post-form
-      [:form {:method "post"
-              :action uri
-              :enctype "multipart/form-data"}
-       [:fieldset
-        [:legend "Post an activity"]
-        [:ul
-         [:li
-          [:ul.type-buttons
-           [:li [:a {:href "#"} "Note"]]
-           [:li [:a {:href "#"} "Status"]]
-           [:li [:a {:href "#"} "Checkin"]]
-           [:li [:a {:href "#"} "Picture"]]
-           [:li [:a {:href "#"} "Event"]]]]
-         (if (:_id activity)
-           [:li.hidden
-            (f/hidden-field :_id (:_id activity))])
-         (if parents
-           [:li.hidden
-            (f/hidden-field :parent (:_id parent))])
-         (if (= (:type activity) "article")
-           [:li (f/text-field :title (:title activity))])
-         [:li (f/text-area :content (:content activity))]
-         [:li "Add: "
-          [:ul.add-buttons
-           [:li.hidden.add-tags [:a {:href "#"} "Tags"]]
-           [:li.hidden.add-recipients [:a {:href "#"} "Recipients"]]
-           [:li.hidden.add-location [:a {:href "#"} "Location"]]
-           [:li.hidden.add-links [:a {:href "#"} "Links"]]
-           [:li.hidden.add-pictures [:a {:href "#"} "Pictures"]]]]
-         [:li.tag-line (f/label :tags "Tags")
-          (f/text-field :tags (:tags activity))
-          [:a {:href "#"} "Add Tag"]
-          ]
-         [:li.pictures-line
-          (f/label :picture "Picture")
-          (f/file-upload :picture)
-          ]
-         [:li.recipients-line (f/label "recipients[]" "Recipients")
-          (f/text-field "recipients[]"  (:recipients activity))
-          [:a {:href "#"} "Add Recipient"]]
-         [:li.location-line
-          [:p (f/label :lat "Latitude")
-           (f/text-field :lat (:lat activity))]
-          [:p (f/label :long "Longitude")
-           (f/text-field :long (:long activity))]]
-         [:li (f/drop-down :public
-                           ["public" "group" "custom" "private"]
-                           "public")
-          (f/submit-button "Post")]]]]]))
-
-(defn delete-link
-  [activity]
-  (if (some #(= % (current-user-id)) (:authors activity))
-    (f/form-to
-     [:delete (uri activity)]
-     [:span.delete-button
-      (f/submit-button "Delete")])))
-
-(defn edit-link
-  [activity]
-  (if (or (is-admin?)
-          (some #(= % (current-user-id))
-                (:authors activity)))
-    [:a.edit-activity
-     {:href (str (uri activity) "/edit")}
-     [:img {:alt "Edit"
-            :src "/public/silk/page_white_edit.png"}]]))
-
-(defn comment-link
-  [activity]
-  [:a.comment-activity
-   {:href (str (uri activity) "/comment")}
-   "Comment"])
-
-(defn like-link
-  [activity]
-  (f/form-to
-   [:post (str (uri activity) "/likes")]
-   (f/submit-button "Like")))
-
-(defn fetch-comments-button
-  [activity]
-  (f/form-to
-   [:post (str (uri activity) "/comments/update")]
-   (f/submit-button "Fetch Comments")))
+(defn get-atom-author
+  [entry feed]
+  (concat
+   (.getAuthors entry)
+   (if feed (.getAuthors feed))
+   (if-let [source (.getSource entry)]
+     (.getAuthors source))))
 
 (defn make-feed
   [{:keys [user title subtitle links entries updated id]}]
@@ -157,6 +69,7 @@
         author (if user (show-section user))]
     (if title (.setTitle feed title))
     (if subtitle (.setSubtitle feed subtitle))
+    ;; TODO: pick these up from maven
     (.setGenerator feed
                    "http://jiksnu.com/"
                    "0.1.0-SNAPSHOT"
@@ -165,20 +78,15 @@
     (if updated (.setUpdated feed updated))
     (if author (.addExtension feed author))
     ;; (if user (subject-section user))
-    (dorun
-     (map
-      (fn [link]
-        (let [link-element (.newLink *abdera-factory*)]
-          (doto link-element
-            (.setHref (:href link))
-            (.setRel (:rel link))
-            (.setMimeType (:type link)))
-          (.addLink feed link-element)))
-      links))
-    (dorun
-     (map
-      (partial add-entry feed)
-      entries))
+    (doseq [link links]
+      (let [link-element (.newLink *abdera-factory*)]
+        (doto link-element
+          (.setHref (:href link))
+          (.setRel (:rel link))
+          (.setMimeType (:type link)))
+        (.addLink feed link-element)))
+    (doseq [entry entries]
+      (add-entry feed entry))
     (str feed)))
 
 (defn comment-link-item
@@ -239,7 +147,7 @@
     (if (and (= name "actor")
              (= namespace as-ns))
       (let [uri (.getSimpleExtension element atom-ns "uri" "")]
-        {:authors [(:_id (model.user/find-or-create-by-remote-id uri))]})
+        {:author (:_id (model.user/find-or-create-by-remote-id uri))})
       (if (and (= name "object")
                  (= namespace as-ns))
         (parse-object-element element)
@@ -253,43 +161,121 @@
               {:lat lat
                :long long})))))))
 
-(defn get-authors
-  [entry feed]
-  (concat
-   (.getAuthors entry)
-   (if feed (.getAuthors feed))
-   (if-let [source (.getSource entry)]
-     (.getAuthors source))))
+(defn parse-json-element
+  "Takes a json object representing an Abdera element and converts it to
+an Element"
+  ([activity]
+     (parse-json-element activity ""))
+  ([{children :children
+     attributes :attributes
+     element-name :name
+     :as activity} bound-ns]
+     (let [xmlns (or (:xmlns attributes) bound-ns)
+           qname (QName. xmlns element-name)
+           element (.newExtensionElement *abdera-factory* qname)
+           filtered (filter not-namespace attributes)]
+       (doseq [[k v] filtered]
+         (.setAttributeValue element (name k) v))
+       (doseq [child children]
+         (if (map? child)
+           (.addExtension element (parse-json-element child xmlns))
+           (if (string? child)
+             (.setText element child))))
+       element)))
 
-(defn get-comment-count
-  [entry]
-  (or
-   (if-let [link (.getLink entry "replies")]
-     (let [count-qname (QName.
-                 "http://purl.org/syndication/thread/1.0"
-                 "count" )]
-       (if-let [count-attr (.getAttributeValue link count-qname)]
-         (Integer/parseInt count-attr))))
-   0))
+(defn comment-node-uri
+  [activity]
+  (str microblog-uri
+       ":replies:item="
+       (:_id activity)))
 
-(defn parse-tags
-  [entry]
-  (let [categories (.getCategories entry)]
-   (map
-    (fn [category] (.getTerm category))
-    categories)))
+(defn comment-request
+  [activity]
+  (tigase/make-packet
+   {:type :get
+    :from (tigase/make-jid "" (config :domain))
+    :to (tigase/make-jid (get-author activity))
+    :body
+    (element/make-element
+     ["pubsub" {"xmlns" pubsub-uri}
+      ["items" {"node" (comment-node-uri activity)}]])}))
 
-(defn get-author-ids
-  [authors]
-  (map
-   (fn [author]
-     (let [uri (.getUri author)
-           domain (.getHost uri)
-           name (or (.getUserInfo uri)
-                    (.getName author))
-           author-obj (model.user/find-or-create name domain)]
-       (:_id author-obj)))
-   authors))
+(defn set-id
+  [activity]
+  (if (and (:id activity) (not= (:id activity) ""))
+    activity
+    (assoc activity :id (new-id))))
+
+(
+ defn set-object-id
+  [activity]
+  (if (:id (:object activity))
+    activity
+    (assoc-in activity [:object :id] (new-id))))
+
+(defn set-updated-time
+  [activity]
+  (if (:updated activity)
+    activity
+    (assoc activity :updated (sugar/date))))
+
+(defn set-object-updated
+  [activity]
+  (if (:updated (:object activity))
+    activity
+    (assoc-in activity [:object :updated] (sugar/date))))
+
+(defn set-published-time
+  [activity]
+  (if (:published activity)
+    activity
+    (assoc activity :published (sugar/date))))
+
+(defn set-object-published
+  [activity]
+  (if (:published (:object activity))
+    activity
+    (assoc-in activity [:object :published] (sugar/date))))
+
+(defn set-actor
+  [activity]
+  (if-let [author (current-user-id)]
+    (assoc activity :author author)))
+
+(defn set-public
+  [activity]
+  (if (false? (:public activity))
+    activity
+    (assoc activity :public true)))
+
+(defn set-tags
+  [activity]
+  (let [tags (:tags activity )]
+    (if (string? tags)
+      (if (and tags (not= tags ""))
+        (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+          (assoc activity :tags tag-seq)
+          (dissoc activity :tags))
+        (dissoc activity :tags))
+      (if (coll? tags)
+        activity
+        (dissoc activity :tags)))))
+
+(defn set-parent
+  [activity]
+  (if (= (:parent activity) "")
+    (dissoc activity :parent)
+    activity))
+
+(defn set-object-type
+  [activity]
+  (assoc-in
+   activity [:object :object-type]
+   (if-let [object-type (:object-type (:object activity))]
+     (-> object-type
+         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+     "note")))
 
 (defn ^Activity to-activity
   "Converts an Abdera entry to the clojure representation of the json
@@ -301,8 +287,7 @@ serialization"
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
-           authors (get-authors entry feed)
-           author-ids (get-author-ids authors)
+           author (first (get-atom-author entry feed))
            extension-maps (doall
                            (map
                             parse-extension-element
@@ -339,139 +324,9 @@ serialization"
                        (if (seq tags) {:tags tags})
                        {:_id id
                         :remote-id id
-                        :authors author-ids
+                        :author (:_id author)
                         :public true
                         :comment-count (get-comment-count entry)}
                        extension-maps)]
        (entity/make Activity opts))))
 
-(defn to-json
-  "Serializes an Abdera entry to a json StringWriter"
-  [^Entry entry]
-  (let [string-writer (StringWriter.)]
-    (JSONUtil/toJson entry string-writer)
-    string-writer))
-
-(defn parse-json-element
-  "Takes a json object representing an Abdera element and converts it to
-an Element"
-  ([activity]
-     (parse-json-element activity ""))
-  ([{children :children
-     attributes :attributes
-     element-name :name
-     :as activity} bound-ns]
-     (let [xmlns (or (:xmlns attributes) bound-ns)]
-       (let [qname (QName. xmlns element-name)
-             element (.newExtensionElement *abdera-factory* qname)
-             filtered (filter not-namespace attributes)]
-         (doseq [[k v] filtered]
-           (.setAttributeValue element (name k) v))
-         (doseq [child children]
-           (if (map? child)
-             (.addExtension element (parse-json-element child xmlns))
-             (if (string? child)
-               (.setText element child))))
-         element))))
-
-(defn add-extensions
-  [^Entry entry ^Activity activity]
-  (doseq [extension (:extensions activity)]
-    (.addExtension entry (parse-json-element extension))))
-
-(defn has-author?
-  [^Entry entry]
-  (not (nil? (.getAuthor entry))))
-
-(defn comment-node-uri
-  [activity]
-  (str microblog-uri
-       ":replies:item="
-       (:_id activity)))
-
-(defn comment-request
-  [activity]
-  (tigase/make-packet
-   {:type :get
-    :from (tigase/make-jid "" (config :domain))
-    :to (tigase/make-jid (get-actor activity))
-    :body
-    (element/make-element
-     ["pubsub" {"xmlns" pubsub-uri}
-      ["items" {"node" (comment-node-uri activity)}]])}))
-
-(defn set-id
-  [activity]
-  (if (and (:_id activity) (not= (:_id activity) ""))
-    activity
-    (assoc activity :_id (new-id))))
-
-(defn set-object-id
-  [activity]
-  (if (:id (:object activity))
-    activity
-    (assoc-in activity [:object :id] (new-id))))
-
-(defn set-updated-time
-  [activity]
-  (if (:updated activity)
-    activity
-    (assoc activity :updated (sugar/date))))
-
-(defn set-object-updated
-  [activity]
-  (if (:updated (:object activity))
-    activity
-    (assoc-in activity [:object :updated] (sugar/date))))
-
-(defn set-published-time
-  [activity]
-  (if (:published activity)
-    activity
-    (assoc activity :published (sugar/date))))
-
-(defn set-object-published
-  [activity]
-  (if (:published (:object activity))
-    activity
-    (assoc-in activity [:object :published] (sugar/date))))
-
-(defn set-actor
-  [activity]
-  (if-let [author (current-user-id)]
-    (assoc activity :authors [author])))
-
-(defn set-public
-  [activity]
-  (if (false? (:public activity))
-    activity
-    (assoc activity :public true)))
-
-(defn set-tags
-  [activity]
-  (let [tags (:tags activity )]
-    (if (string? tags)
-      (if (and tags (not= tags ""))
-        (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
-          (assoc activity :tags tag-seq)
-          (dissoc activity :tags))
-        (dissoc activity :tags))
-      (if (coll? tags)
-        activity
-        (dissoc activity :tags)))))
-
-(defn set-parent
-  [activity]
-  (if (= (:parent activity) "")
-    (dissoc activity :parent)
-    activity))
-
-(defn set-object-type
-  [activity]
-  (assoc-in
-   activity [:object :object-type]
-   (if-let [object-type (:object-type (:object activity))]
-     (-> object-type
-         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
-         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
-     "note")))

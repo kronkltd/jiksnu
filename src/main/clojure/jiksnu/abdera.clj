@@ -1,13 +1,17 @@
 (ns jiksnu.abdera
   (:use ciste.debug
         [clojure.tools.logging :only (error)])
-  (:require [clj-tigase.element :as element])
+  (:require [clj-tigase.element :as element]
+            [jiksnu.model.user :as model.user])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
            java.io.ByteArrayInputStream
+           java.io.StringWriter
            javax.xml.namespace.QName
            org.apache.abdera.Abdera
+           org.apache.abdera.ext.json.JSONUtil
            org.apache.abdera.factory.Factory
+           org.apache.abdera.model.Entry
            org.apache.abdera.protocol.client.AbderaClient))
 
 (defonce ^Abdera ^:dynamic *abdera* (Abdera.))
@@ -17,6 +21,10 @@
 
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
 (.registerExtension *abdera-factory* (PocoExtensionFactory.))
+
+(defn ^Entry new-entry
+  [& opts]
+  (.newEntry *abdera*))
 
 (defn fetch-resource
   [uri]
@@ -70,3 +78,42 @@
   "Returns a map representing the QName of the given element"
   [element]
   (element/parse-qname (.getQName element)))
+
+(defn get-comment-count
+  [entry]
+  (or
+   (if-let [link (.getLink entry "replies")]
+     (let [count-qname (QName.
+                 "http://purl.org/syndication/thread/1.0"
+                 "count" )]
+       (if-let [count-attr (.getAttributeValue link count-qname)]
+         (Integer/parseInt count-attr))))
+   0))
+
+(defn parse-tags
+  [entry]
+  (let [categories (.getCategories entry)]
+   (map
+    (fn [category] (.getTerm category))
+    categories)))
+
+(defn get-author-id
+  [author]
+  (let [uri (.getUri author)
+        domain (.getHost uri)
+        name (or (.getUserInfo uri)
+                 (.getName author))
+        author-obj (model.user/find-or-create name domain)]
+    (:_id author-obj)))
+
+(defn to-json
+  "Serializes an Abdera entry to a json StringWriter"
+  [^Entry entry]
+  (let [string-writer (StringWriter.)]
+    (JSONUtil/toJson entry string-writer)
+    string-writer))
+
+(defn has-author?
+  [^Entry entry]
+  (not (nil? (.getAuthor entry))))
+

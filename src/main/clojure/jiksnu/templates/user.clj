@@ -1,8 +1,7 @@
 (ns jiksnu.templates.user
   (:use ciste.debug
         closure.templates.core
-        [clj-gravatar.core :only (gravatar-image)])
-  (:require jiksnu.templates.subscriptions))
+        [clj-gravatar.core :only (gravatar-image)]))
 
 (defn format-data
   [user]
@@ -61,3 +60,6 @@
    :confirm-password confirm-password
    :url url})
 
+(deftemplate index-section
+  [users]
+  {:users (map format-data users)})

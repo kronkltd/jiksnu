@@ -114,7 +114,7 @@
   (str "word" n))
 
 (deffactory Activity
-  {:_id #'new-id
+  {:id #'new-id
    :title (fseq :word)
    :summary (fseq :word)
    :published #'sugar/date

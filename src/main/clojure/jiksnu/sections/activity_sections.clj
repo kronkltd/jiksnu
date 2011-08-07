@@ -54,12 +54,11 @@
       (.setTitle (or (and (not= (:title activity) "")
                           (:title activity))
                      (:content activity)))
-      (add-authors activity)
+      (add-author activity)
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
       (.addSimpleExtension as-ns "object-type" "activity" status-uri)
       (.addSimpleExtension as-ns "verb" "activity" post-uri)
-      (add-extensions activity)
       (comment-link-item activity)
       (acl-link activity))
     (let [object (:object activity)
@@ -85,7 +84,7 @@
    "content" (:content activity)
    "id" (:_id activity)
    "url" (full-uri activity)
-   "actor" (show-section (get-actor activity))
+   "actor" (show-section (get-author activity))
    "object"
    (let [object (:object activity)]
      {"published" (:published object)
@@ -145,7 +144,7 @@
     ;; (liked? (current-user) activity)
     ]
    ["in_reply_to_screen_name"]
-   (show-section (get-actor activity))
+   (show-section (get-author activity))
    ["geo"]
    ["coordinates"]
    ["place"]

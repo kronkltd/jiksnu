@@ -148,8 +148,10 @@
  * @param id
  */
 {template .commentLink}
-  <a href="/notice/{$id}/comment">Comment</a>
+  <a href="/notice/{$id}/comment"
+     class="comment-activity">Comment</a>
 {/template}
+
 
 /**
  * @param comments
@@ -164,33 +166,6 @@
   </ul>
 {/template}
 
-
-/**
- * @param authors
- * @param content
- * @param published_formatted
- */
-{template .showComment}
-  <article class="comment">
-    <header>
-      {foreach $author in $authors}
-        {call jiksnu.templates.user.displayAvatar data="$author" /}
-      {/foreach}
-    </header>
-    <section class="comment-body">
-      <div>
-        {foreach $author in $authors}
-          {$author.display_name}
-        {/foreach}
-      </div>
-      {sp}-{sp}
-      <span>{$content}</span>
-    </section>
-    <footer>
-      {$published_formatted}
-    </footer>
-  </article>
-{/template}
 
 /**
  * @param comment_count
@@ -259,6 +234,7 @@
 {template .editButton}
   <form method="post"
         action="/notice/{$id}/edit">
+    <img src="/public/silk/page_white_edit.png" alt="edit" />
     <input type="submit" value="Edit" />
   </form>
 {/template}
@@ -331,10 +307,65 @@
 
 
 /**
+ * @param lat
+ * @param long
+ */
+{template .mapsSection}
+  <div>
+    {call .displayMap data="all" /}
+    <p>
+      {if $lat}
+        <span>Lat: {$lat}</span>
+      {/if}
+      {sp}
+      {if $long}
+        <span>Long: {$long}</span>
+      {/if}
+    </p>
+ </div>
+{/template}
+
+
+/**
+ * @param buttonable
+ */
+{template .postActions}
+  <ul class="{css buttons}">
+    {if $buttonable}
+      <li>{call .likeButton data="all" /}</li>
+      <li>{call .updateButton data="all" /}</li>
+      <li>{call .editButton data="all" /}</li>
+      <li>{call .deleteButton data="all" /}</li>
+    {/if}
+  </ul>
+{/template}
+
+
+/**
+ * @param id
+ * @param published
+ * @param published_formatted
+ */
+{template .postedLink}
+  <span class="{css posted}">
+    <time>
+      {if $published}
+        <a href="/notice/{$id}">
+          {$published_formatted}
+        </a>
+        {else}
+        Unknown
+      {/if}
+    </time>
+  </span>
+{/template}
+
+
+/**
  * @param recipients
  */
-{template .recipientSection}
-  {if $recipients}
+{template .recipientsSection}
+  {if $recipients and length($recipients) > 0}
     <div class="{css recipients}">
       <h>Recipients:</h>
       <ul>
@@ -352,7 +383,7 @@
 /**
  * Display an activity
  * @param id
- * @param authors
+ * @param author
  * @param content
  * @param object_type
  * @param local
@@ -368,15 +399,13 @@
   <article class="{css hentry} {css notice}"
            id="{$id}">
     <header class="{css avatar-section}">
-      {foreach $user in $authors}
-        {call jiksnu.templates.user.displayAvatar data="$user" /}
-      {/foreach}
+      {call jiksnu.templates.user.displayAvatar data="$author" /}
     </header>
     <section class="{css content}">
       <header>
-        {foreach $user in $authors}
-          {call jiksnu.templates.user.showMinimal data="$user" /}
-        {/foreach}
+        <div>
+          {call jiksnu.templates.user.showMinimal data="$author" /}
+        </div>
         {if $object_type != 'comment'}
           <div class="{css labels}">
             {$object_type}
@@ -410,77 +439,28 @@
 
 
 /**
- * @param id
- * @param published
+ * @param author
+ * @param content
  * @param published_formatted
  */
-{template .postedLink}
-  <span class="{css posted}">
-    <time>
-      {if $published}
-        <a href="/notice/{$id}">
-          {$published_formatted}
-        </a>
-        {else}
-        Unknown
-      {/if}
-    </time>
-  </span>
+{template .showComment}
+  <article class="comment">
+    <header>
+      {call jiksnu.templates.user.displayAvatar data="$author" /}
+    </header>
+    <section class="comment-body">
+      <div>
+        {$author.display_name}
+      </div>
+      {sp}-{sp}
+      <span>{$content}</span>
+    </section>
+    <footer>
+      {$published_formatted}
+    </footer>
+  </article>
 {/template}
 
-
-/**
- * @param buttonable
- */
-{template .postActions}
-  <ul class="{css buttons}">
-    {if $buttonable}
-      <li>{call .likeButton data="all" /}</li>
-      <li>{call .updateButton data="all" /}</li>
-      <li>{call .editButton data="all" /}</li>
-      <li>{call .deleteButton data="all" /}</li>
-    {/if}
-  </ul>
-{/template}
-
-
-/**
- * @param lat
- * @param long
- */
-{template .mapsSection}
-  <div>
-    {call .displayMap data="all" /}
-    <p>
-      {if $lat}
-        <span>Lat: {$lat}</span>
-      {/if}
-      {sp}
-      {if $long}
-        <span>Long: {$long}</span>
-      {/if}
-    </p>
- </div>
-{/template}
-
-
-/**
- * @param recipients
- */
-{template .recipientsSection}
-  {if $recipients and length($recipients) > 0}
-    <div class="recipients">
-      <h>Recipients</h>
-      <ul>
-        {foreach $user in $recipients}
-          <li>
-            {call .linkTo data="$user" /}
-          </li>
-        {/foreach}
-      </ul>
-    </div>
-  {/if}
-{/template}
 
 /**
  * @param? tags

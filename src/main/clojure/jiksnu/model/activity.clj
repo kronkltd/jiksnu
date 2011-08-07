@@ -28,7 +28,7 @@
   (if user
     (if (not (is-admin? user))
       {:$or [{:public true}
-             {:authors (:_id user)}]})
+             {:author (:_id user)}]})
     {:public true}))
 
 (defn index
@@ -73,7 +73,7 @@
 
 (defn find-by-user
   [user]
-  (index :authors (:_id user)))
+  (index :author (:_id user)))
 
 (defn add-comment
   [parent comment]

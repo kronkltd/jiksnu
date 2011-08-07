@@ -59,7 +59,7 @@
 (deffilter #'friends-timeline :http
   [action request]
   (let [{{id :id} :params} request]
-    (model.activity/index :authors id)))
+    (model.activity/index :author id)))
 
 (deffilter #'inbox :http
   [action request]
@@ -111,14 +111,14 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (action id)))
+    (action (make-id id))))
 
 (deffilter #'show :xmpp
   [action request]
   (let [{:keys [items]} request
         ids (map #(.getAttribute % "id") items)
         id (first ids)]
-    (action id)))
+    (action (make-id id))))
 
 (deffilter #'remote-create :xmpp
   [action request]

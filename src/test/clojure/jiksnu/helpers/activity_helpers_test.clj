@@ -24,14 +24,14 @@
               response (to-activity entry)]
           (is (map? response)))))))
 
-(deftest to-json-test
-  (testing "should not be nil"
-    (with-serialization :http
-      (with-format :atom
-        (let [activity (factory Activity)
-              entry (show-section activity)
-              response (to-json entry)]
-          (is (not (nil? response))))))))
+;; (deftest to-json-test
+;;   (testing "should not be nil"
+;;     (with-serialization :http
+;;       (with-format :atom
+;;         (let [activity (factory Activity)
+;;               entry (show-section activity)
+;;               response (to-json entry)]
+;;           (is (not (nil? response))))))))
 
 (deftest set-id-test
   (testing "when there is an id"

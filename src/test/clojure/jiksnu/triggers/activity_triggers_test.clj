@@ -23,6 +23,6 @@
       (with-user user
         (let [activity (model.activity/create
                         (factory Activity
-                                 {:authors [(:_id user)]}))
+                                 {:author (:_id user)}))
               response (notify-activity user activity)]
           (is (packet/packet? response)))))))

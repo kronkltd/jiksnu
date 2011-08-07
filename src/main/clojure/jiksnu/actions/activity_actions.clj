@@ -83,9 +83,8 @@
 (defaction delete
   [activity]
   (let [actor-id (current-user-id)
-        authors (:authors activity)]
-    (if (or (is-admin?)
-            (some #(= actor-id %) authors))
+        author (:author activity)]
+    (if (or (is-admin?) (= actor-id author))
       (model.activity/delete activity))))
 
 (defaction edit
@@ -100,7 +99,7 @@
 ;; This should be a trigger
 (defaction fetch-comments-remote
   [activity]
-  (let [author (get-actor activity)
+  (let [author (get-author activity)
         domain (model.domain/show (:domain author))]
     (if (:xmpp domain)
       (deliver-packet! (comment-request activity)))))
@@ -194,7 +193,7 @@
 
 (defaction user-timeline
   [user]
-  [user (model.activity/index :authors (:_id user))])
+  [user (model.activity/index :author (:_id user))])
 
 (defn stream-handler
   [ch request]

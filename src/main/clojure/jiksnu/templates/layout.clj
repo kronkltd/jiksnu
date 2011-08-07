@@ -3,6 +3,7 @@
         closure.templates.core
         (jiksnu [session :only (current-user)]))
   (:require [jiksnu.templates.user :as templates.user]
+            [jiksnu.templates.subscriptions :as template.subscriptions]
             [hiccup.core :as hiccup]))
 
 (deftemplate layout

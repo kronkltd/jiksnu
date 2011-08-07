@@ -152,14 +152,14 @@
 ;; new-comment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defview #'new-comment :html
-  [request activity]
-  {:body
-   [:div
-    (show-section-minimal activity)
-    (if-let [user (current-user)]
-      (activity-form {} "/notice/new" activity)
-      [:p "You must be authenticated to post comments"])]})
+;; (defview #'new-comment :html
+;;   [request activity]
+;;   {:body
+;;    [:div
+;;     (show-section-minimal activity)
+;;     (if-let [user (current-user)]
+;;       (activity-form {} "/notice/new" activity)
+;;       [:p "You must be authenticated to post comments"])]})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; post

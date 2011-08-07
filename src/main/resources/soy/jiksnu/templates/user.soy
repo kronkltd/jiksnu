@@ -16,6 +16,17 @@
 
 /**
  * @param id
+ */
+{template .discoverButton}
+  <form method="post"
+        action="/users/{$id}">
+    <input type="submit" value="Discover" class="discover-button" />
+  </form>
+{/template}
+
+
+/**
+ * @param id
  * @param name
  * @param imgsrc
  */
@@ -27,17 +38,6 @@
          height="48"
          src="{$imgsrc}" />
   </a>
-{/template}
-
-
-/**
- * @param local
- */
-{template .remoteWarning}
-  {if not $local}
-    <p>This is a cached copy of information for a user on a different
-    system</p>
-  {/if}
 {/template}
 
 
@@ -123,13 +123,13 @@
     <td>{call .linkTo data="all" /}</td>
     <td>
       {call jiksnu.templates.domain.linkTo}
-        {param domain: $domain /}
+        {param id: $domain /}
       {/call}
     </td>
     <td>{call .discoverButton data="all" /}</td>
     <td>{call .updateButton data="all" /}</td>
-    <td>{call .editLink data="all" /}</td>
-    <td>{call .deleteButton data="all" /}</td>
+    /* <td>{call .editLink data="all" /}</td> */
+    /* <td>{call .deleteButton data="all" /}</td> */
   </tr>
 {/template}
 
@@ -160,6 +160,17 @@
       </tbody>
     </table>
   </div>
+{/template}
+
+
+/**
+ * @param local
+ */
+{template .remoteWarning}
+  {if not $local}
+    <p>This is a cached copy of information for a user on a different
+    system</p>
+  {/if}
 {/template}
 
 
@@ -384,3 +395,16 @@
     {/if}
   {/if}
 {/template}
+
+
+/**
+ * @param id
+ */
+{template .updateButton}
+  <form method="post"
+        action="/users/{$id}/update">
+    <input type="submit" value="Update" class="update-button" />
+  </form>
+{/template}
+
+

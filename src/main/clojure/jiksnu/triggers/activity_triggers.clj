@@ -24,7 +24,7 @@
   (with-serialization :xmpp
     (with-format :xmpp
       (let [recipient-jid (tigase/make-jid recipient)
-            author (get-actor activity)
+            author (get-author activity)
             message-text (:summary activity)
             ele (element/make-element
                  ["event" {"xmlns" event-ns}
@@ -45,19 +45,19 @@
 
 (defn fetch-new-comments
   [action params activity]
-  (let [author (get-actor activity)
+  (let [author (get-author activity)
         domain (model.domain/show (:domain author))]
     (fetch-comments-remote activity)))
 
 (defn fetch-more-comments
   [action params [activity comments]]
-  (let [author (get-actor activity)
+  (let [author (get-author activity)
         domain (model.domain/show (:domain author))]
     (fetch-comments-remote activity)))
 
 (defn post-trigger
   [action params activity]
-  (let [user (get-actor activity)
+  (let [user (get-author activity)
         subscribers (model.subscription/subscribers user)
         subscriber-users (map (comp model.user/fetch-by-id :from)
                               subscribers)]

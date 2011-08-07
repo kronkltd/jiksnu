@@ -70,7 +70,7 @@
       (testing "should delete that activity"
         (let [user (model.user/create (factory User))]
           (with-user user
-            (let [activity (create (factory Activity {:authors [(:_id user)]}))]
+            (let [activity (create (factory Activity {:author (:_id user)}))]
               (delete activity)
               (is (nil? (model.activity/fetch-by-id (:_id activity)))))))))
     (testing "and the user does not own the activity"

@@ -13,9 +13,8 @@
   (let [comments (map format-data (model.activity/get-comments activity))
         actor (current-user)]
     {:id (str (:_id activity))
-     :authors (map (comp template.user/format-data
-                         model.user/fetch-by-id)
-                   (:authors activity))
+     :author (-> activity :author model.user/fetch-by-id
+                 template.user/format-data)
      :object-type (-> activity :object :object-type)
      :local (:local activity)
      :public (:public activity)
