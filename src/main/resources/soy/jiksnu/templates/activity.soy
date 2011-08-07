@@ -155,14 +155,47 @@
  * @param comments
  */
 {template .commentList}
-  {if $comments}
-
-  {/if}
+  <ul>
+    {foreach $comment in $comments}
+      <li>
+        {call .showComment data="$comment" /}
+      </li>
+    {/foreach}
+  </ul>
 {/template}
 
 
 /**
+ * @param authors
+ * @param content
+ * @param published_formatted
+ */
+{template .showComment}
+  <article class="comment">
+    <header>
+      {foreach $author in $authors}
+        {call jiksnu.templates.user.displayAvatar data="$author" /}
+      {/foreach}
+    </header>
+    <section class="comment-body">
+      <div>
+        {foreach $author in $authors}
+          {$author.display_name}
+        {/foreach}
+      </div>
+      {sp}-{sp}
+      <span>{$content}</span>
+    </section>
+    <footer>
+      {$published_formatted}
+    </footer>
+  </article>
+{/template}
+
+/**
  * @param comment_count
+ * @param parent_id
+ * @param authenticated
  */
 {template .commentsSection}
   <div class="{css comments}">
@@ -174,6 +207,25 @@
       {call .commentLink data="all" /}
     </p>
     {call .commentList data="all" /}
+    {if $authenticated}
+      <p>
+        <form method="post"
+              action="/notice/{$parent_id}/comments"
+              class="comment-form">
+          <fieldset>
+            <legend>Post a comment</legend>
+            <ul>
+              <li>
+                <input type="text" name="content" />
+              </li>
+              <li>
+                <input type="submit" value="Comment" />
+              </li>
+            </ul>
+          </fieldset>
+        </form>
+      </p>
+    {/if}
   </div>
 {/template}
 
@@ -347,7 +399,9 @@
           {call .mapsSection data="all" /}
           {call .tagsSection data="all" /}
           {call .postedLink data="all" /}
-          {call .commentsSection data="all" /}
+          {call .commentsSection data="all"}
+            {param parent_id: $id /}
+          {/call}
         </footer>
       </section>
     </section>
@@ -358,13 +412,14 @@
 /**
  * @param id
  * @param published
+ * @param published_formatted
  */
 {template .postedLink}
   <span class="{css posted}">
     <time>
       {if $published}
         <a href="/notice/{$id}">
-          {$published}
+          {$published_formatted}
         </a>
         {else}
         Unknown

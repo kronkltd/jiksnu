@@ -48,10 +48,8 @@ nav ul li {
 
 #wrap {
     margin: 0 auto;
-    max-width: 1500px;
-    min-width: 760px;
+    width: 950px;
     overflow: hidden;
-    width: 100%;
 }
 
 #site-header
@@ -184,12 +182,12 @@ body {
 
 #left-column {
     float: left;
-    width: 20%;
+    width: 190px;
 }
 
 #content {
     float: left;
-    width: 79%;
+    width: 740px;
 }
 
 /* #notices_primary { */
@@ -230,6 +228,7 @@ div.content
 
 .activities li {
     list-style-type: none;
+    display: inline-block;
 }
 
 article
@@ -258,6 +257,10 @@ article section.content
 
 .entry-content {
     margin-top: 8px;
+}
+
+.entry-content footer {
+    width: 700px
 }
 
 .activities .avatar {
@@ -290,16 +293,7 @@ article section.content
 .comments
 {
     /* clear: both; */
-    margin-left: 15px;
-}
-
-.comments p
-{
-    display: inline;
-}
-
-.comments form {
-    display: inline;
+    margin-left: -15px;
 }
 
 .comments ul
@@ -326,6 +320,37 @@ article section.content
     width: 100%;
 }
 
+.comment-form fieldset {
+    width: 75%;
+}
+
+.comment-form li {
+    display: inline-block;
+}
+
+.comment-form input[name="content"] {
+    width: 430px;
+}
+
+.comment {
+    border: none;
+    padding-bottom: 0;
+}
+
+.comment header {
+    float: left;
+}
+
+.comment-body, .comment footer{
+    margin-left: 55px;
+
+}
+
+.comment-body div {
+    display: inline;
+}
+
+
 article footer
 {
     clear: none;
@@ -336,10 +361,10 @@ article footer
 
 .buttons {
     padding: 0px;
-    /* position: absolute; */
-    /* top: 0px; */
-    /* right: 0px; */
-    float: right;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    /* float: right; */
 }
 
 .delete-button input {

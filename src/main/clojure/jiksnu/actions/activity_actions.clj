@@ -149,6 +149,13 @@
                                             (:filename picture)))))))
       (create (dissoc (spy prepared-post) :pictures)))))
 
+(defaction add-comment
+  [params]
+  (if-let [parent (model.activity/fetch-by-id (:id params))]
+    (post (-> params
+              (assoc :parent (:_id parent))
+              (assoc-in [:object :object-type] "comment")))))
+
 (defaction remote-create
   [activities]
   (doseq [activity activities]

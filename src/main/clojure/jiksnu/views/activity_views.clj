@@ -19,6 +19,12 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
+(defview #'add-comment :html
+  [request activity]
+  {:status 303
+   :template false
+   :headers {"Location" "/" #_(str "/notice/" (:_id activity))}})
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; comment-response
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -27,7 +33,8 @@
   [request activity]
   {:status 303
    :template false
-   :headers {"Location" (uri activity)}})
+   ;; TODO: without js, go to the activity. otherwise, stay on page
+   :headers {"Location" "/" #_(uri activity)}})
 
 (defview #'comment-response :xmpp
   [request activity]

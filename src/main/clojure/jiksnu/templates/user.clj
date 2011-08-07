@@ -6,7 +6,9 @@
 (defn format-data
   [user]
   {:id (str (:_id user))
-   :name (:username user)
+   :name (str (:username user) "@" (:domain user))
+   :username (:username user)
+   :domain (:domain user)
    :url (str "/users/" (:_id user))
    :local (:local user)
    :hub (:hub user)

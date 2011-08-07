@@ -76,7 +76,7 @@
   [request response]
   (merge
    (dissoc response :formats)
-   (if-not (= (:template response) false)
+   (if (not= (:template response) false)
      (page-template-content response))))
 
 (defmethod apply-view-by-format :atom

@@ -105,6 +105,7 @@
     [[:get "/notice/:id"]                  #'activity/show]
     [[:get "/notice/:id.:format"]          #'activity/show]
     [[:get  "/notice/:id/comment"]         #'activity/new-comment]
+    [[:post "/notice/:id/comments"]        #'activity/add-comment]
     [[:post "/notice/:id/comments/update"] #'activity/fetch-comments]
     [[:get "/notice/:id/edit"]             #'activity/edit]
     [[:post "/notice/:id/likes"]           #'activity/like-activity]

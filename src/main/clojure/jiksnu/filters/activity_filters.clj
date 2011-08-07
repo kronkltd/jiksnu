@@ -16,6 +16,10 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]))
 
+(deffilter #'add-comment :http
+  [action request]
+  (action (:params request)))
+
 (deffilter #'comment-response :xmpp
   [action request]
   (if (not= (:to request) (:from request))
