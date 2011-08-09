@@ -31,6 +31,7 @@
 
 (defn mongo-database*
   []
+  (println (config :database :name))
   (karras/mongo-db (config :database :name)))
 
 (defn mongo-database
@@ -76,7 +77,7 @@
 (defmacro with-database
   [& body]
   `(do
-     ;; (println "creating database connection")
+     (println "creating database connection")
      (karras/with-mongo-request (mongo-database)
        ~@body)))
 
