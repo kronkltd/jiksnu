@@ -9,7 +9,7 @@
  * @param? title
  */
 {template .layout}
-  <html>
+  <html xmlns:sioc="http://rdfs.org/sioc/ns#">
     <head>
       <title>{if $title}{$title} - {/if}Jiksnu</title>
       {if $links}
@@ -33,7 +33,7 @@
           </section>
           <section id="site-banner">
             <address id="site_contact" class="vcard">
-              <a class="url home bookmark" href="/">
+              <a class="url home bookmark fn" href="/">
                 <img class="logo photo" src="/public/logo.png"
                      alt="Jiksnu" />
               </a>
