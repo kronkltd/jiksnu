@@ -47,51 +47,7 @@
           {call .develWarning data="all" /}
         </section>
         <section id="site-main">
-          <section id="left-column">
-            <div id="user-info">
-              <div>Big picture</div>
-              <div>username</div>
-            </div>
-            <div>
-              <h1>Streams</h1>
-              <ul>
-                <li>All</li>
-                <li>Stream 1</li>
-                <li>Stream 2</li>
-              </ul>
-            </div>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Praesent vitae massa et mauris varius elementum vitae vel nisi.
-            Aenean dictum augue in massa suscipit facilisis.
-            Praesent id justo in ipsum viverra pretium id ut libero.
-            Phasellus egestas arcu ut lectus tristique pellentesque.
-
-            Vestibulum hendrerit orci vel mi faucibus vestibulum.
-            Phasellus vel quam nisi, nec sollicitudin erat.
-            Duis facilisis justo ac enim tristique et interdum odio suscipit.
-
-            Cras nec risus nisl, ornare pharetra neque.
-            Vivamus pharetra aliquam orci, ut suscipit nunc semper id.
-            Donec ultricies mauris et felis accumsan nec aliquet quam pulvinar.
-            Donec elementum mi id libero ultrices vitae pulvinar sem facilisis.
-            Cras rhoncus euismod elit, quis congue quam ultrices quis.
-            Vestibulum sagittis sem hendrerit lacus consectetur ultricies quis.
-
-            Etiam molestie mi eu erat feugiat pellentesque.
-            Morbi porttitor sapien at lectus elementum placerat.
-            Integer cursus justo posuere arcu ullamcorper eu luctus lorem.
-            Nunc a sapien at tellus dictum pulvinar feugiat a libero.
-            In eu arcu ac arcu porta cursus sed vitae orci.
-            Morbi iaculis porttitor nunc, non luctus magna ultricies non.
-
-            Vivamus fringilla leo quis risus condimentum scelerisque.
-            Praesent sed mi quis leo sodales congue.
-            Etiam consectetur varius magna, sed ornare risus laoreet ut.
-            Nulla blandit nibh ac leo rhoncus pulvinar.
-            Aenean et diam velit, in ultrices libero.
-            Donec fringilla rutrum ipsum, eu auctor urna blandit eget.
-            Donec id est ac diam feugiat lobortis eu et massa.
-          </section>
+          {call .leftColumn data="all" /}
           <div id="content">
             {if $authenticated}
               {call jiksnu.templates.activity.activityForm data="all" /}
@@ -116,6 +72,57 @@
       </script>
     </body>
   </html>
+{/template}
+
+/**
+ *
+ */
+{template .leftColumn}
+  <section id="left-column">
+    <div id="user-info">
+      <div>Big picture</div>
+      <div>username</div>
+    </div>
+    <div>
+      <h3>Streams</h3>
+      <ul>
+        <li>All</li>
+        <li>Stream 1</li>
+        <li>Stream 2</li>
+      </ul>
+    </div>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Praesent vitae massa et mauris varius elementum vitae vel nisi.
+    Aenean dictum augue in massa suscipit facilisis.
+    Praesent id justo in ipsum viverra pretium id ut libero.
+    Phasellus egestas arcu ut lectus tristique pellentesque.
+
+    Vestibulum hendrerit orci vel mi faucibus vestibulum.
+    Phasellus vel quam nisi, nec sollicitudin erat.
+    Duis facilisis justo ac enim tristique et interdum odio suscipit.
+
+    Cras nec risus nisl, ornare pharetra neque.
+    Vivamus pharetra aliquam orci, ut suscipit nunc semper id.
+    Donec ultricies mauris et felis accumsan nec aliquet quam pulvinar.
+    Donec elementum mi id libero ultrices vitae pulvinar sem facilisis.
+    Cras rhoncus euismod elit, quis congue quam ultrices quis.
+    Vestibulum sagittis sem hendrerit lacus consectetur ultricies quis.
+
+    Etiam molestie mi eu erat feugiat pellentesque.
+    Morbi porttitor sapien at lectus elementum placerat.
+    Integer cursus justo posuere arcu ullamcorper eu luctus lorem.
+    Nunc a sapien at tellus dictum pulvinar feugiat a libero.
+    In eu arcu ac arcu porta cursus sed vitae orci.
+    Morbi iaculis porttitor nunc, non luctus magna ultricies non.
+
+    Vivamus fringilla leo quis risus condimentum scelerisque.
+    Praesent sed mi quis leo sodales congue.
+    Etiam consectetur varius magna, sed ornare risus laoreet ut.
+    Nulla blandit nibh ac leo rhoncus pulvinar.
+    Aenean et diam velit, in ultrices libero.
+    Donec fringilla rutrum ipsum, eu auctor urna blandit eget.
+    Donec id est ac diam feugiat lobortis eu et massa.
+  </section>
 {/template}
 
 /**

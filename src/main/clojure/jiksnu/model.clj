@@ -76,10 +76,8 @@
 
 (defmacro with-database
   [& body]
-  `(do
-     (println "creating database connection")
-     (karras/with-mongo-request (mongo-database)
-       ~@body)))
+  `(karras/with-mongo-request (mongo-database)
+    ~@body))
 
 (defmacro with-environment
   [environment & body]

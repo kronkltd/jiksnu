@@ -11,7 +11,7 @@
      (load-config)
      (dosync
       (ref-set model/*mongo-database*
-               (mongo-database*)))
+               (model/mongo-database*)))
      (http/start port)
      (xmpp/start)))
 

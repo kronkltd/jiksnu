@@ -175,7 +175,8 @@
  * @param authenticated
  */
 {template .commentsSection}
-  <div class="{css comments}">
+  <section class="{css comments}">
+    <h1 class="hidden">Comments</h1>
     <div>
       <span>Comments: {$comment_count}</span>
       {sp}
@@ -203,7 +204,7 @@
         </form>
       </div>
     {/if}
-  </div>
+  </section>
 {/template}
 
 
@@ -213,9 +214,9 @@
 {template .deleteButton}
   <form method="delete"
         action="/notice/{$id}">
-    <button type="submit"
-            value="Delete"
-            class="delete-button">
+    <input type="submit"
+           value="Delete"
+           class="delete-button">
   </form>
 {/template}
 

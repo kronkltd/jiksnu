@@ -85,9 +85,17 @@ nav ul li {
 
 #content {
     background-color: white;
-    padding-left: 15px;
-    float: left;
+    /* padding-left: 15px; */
+    /* float: left; */
+    margin-left: 200px;
+}
+
+#content {
     width: 730px;
+}
+
+.activities li {
+    width: 500px;
 }
 
 .post-activity {
@@ -144,11 +152,6 @@ nav ul li {
     margin-left: 5px;
 }
 
-div.content
-{
-    margin: 0 0 0 15px;
-}
-
 .map {
     display: none;
 }
@@ -160,6 +163,7 @@ div.content
 .activities li {
     list-style-type: none;
     display: inline-block;
+    width: 100%;
 }
 
 
@@ -174,10 +178,16 @@ article {
     border-bottom: 1px solid black;
     padding-bottom: 20px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 article section.content {
     margin-left: 60px;
+    display: block;
+    position: relative;
+}
+
+.content header {
     display: block;
 }
 
@@ -210,9 +220,9 @@ article section.content {
     margin-left: 1em;
 }
 
-.comments {
-    margin-left: -25px;
-}
+/* .comments { */
+/*     margin-left: -25px; */
+/* } */
 
 .comments ul {
     margin: 0;
@@ -274,13 +284,6 @@ article footer {
     display: block;
 }
 
-article footer .buttons li {
-    display: inline;
-    margin-right: 3px;
-}
-
-
-
 .buttons {
     padding: 0px;
     /* position: absolute; */
@@ -289,16 +292,16 @@ article footer .buttons li {
     float: right;
 }
 
-.delete-button {
-    background: url(/public/silk/delete.png) no-repeat center top;
-    width: 16px;
-    height: 16px;
-    text-indent: -1000em;
-    border: 0;
-    padding: 0;
-    position: absolute;
-    overflow: hidden;
-}
+/* .delete-button { */
+/*     background: url(/public/silk/delete.png) no-repeat center top; */
+/*     width: 16px; */
+/*     height: 16px; */
+/*     text-indent: -1000em; */
+/*     border: 0; */
+/*     padding: 0; */
+/*     position: absolute; */
+/*     overflow: hidden; */
+/* } */
 
 .buttons li form {
     display: inline;
@@ -386,4 +389,8 @@ fieldset {
 .location-line, .tag-line, .location-line,
 .pictures-line, .title-line {
     display: none;
+}
+
+.vcard, .labels {
+    float: left;
 }
