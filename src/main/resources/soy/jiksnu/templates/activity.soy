@@ -19,25 +19,6 @@
       <fieldset>
         <legend>Post an Activity</legend>
         <ul>
-          <li>
-            <ul class="type-buttons">
-              <li>
-                <a href="#">Note</a>
-              </li>
-              <li>
-                <a href="#">Status</a>
-              </li>
-              <li>
-                <a href="#">Checkin</a>
-              </li>
-              <li>
-                <a href="#">Picture</a>
-              </li>
-              <li>
-                <a href="#">Event</a>
-              </li>
-            </ul>
-          </li>
           {if $id}
             <li.hidden>
               <input type="hidden" name="_id" value="{$id}" />
@@ -51,11 +32,20 @@
             </li>
           {/if}
           <li>
-            <label for="title">Title</label>
+            <select name="type">
+              <option>Note</option>
+              <option>Status</option>
+              <option>Checkin</option>
+              <option>Picture</option>
+              <option>Event</option>
+            </select>
+          </li>
+          <li>
+            <label for="title" class="hidden">Title</label>
             <input type="text" name="title" value="{$title ? $title : ''}" />
           </li>
           <li>
-            <label for="content">Content</label>
+            <label for="content" class="hidden">Content</label>
             <textarea name="content">
               {$content ? $content : ''}
             </textarea>
@@ -82,40 +72,9 @@
               </ul>
             </fieldset>
           </li>
-          <li class="tag-line">
-            <fieldset>
-              <legend>Tags</legend>
-              <ul>
-                <li>
-                  <input type="text" name="tags" value="{$tags ? $tags
-                  : ''}" />
-                </li>
-                <li>
-                  <a href="#">Add Tag</a>
-                </li>
-              </ul>
-            </fieldset>
-          </li>
-          <li class="pictures-line">
-            <label for="pictures">Pictures</label>
-            <input type="file" name="pictures" value="{$pictures ?
-            $pictures : ''}" />
-          </li>
-          <li class="location-line">
-            <fieldset>
-              <legend>Location</legend>
-              <ul>
-                <li>
-                  <label for="lat">Latitude</label>
-                  <input type="text" name="lat" value="{$lat ? $lat : ''}" />
-                </li>
-                <li>
-                  <label for="long">Longitude</label>
-                  <input type="text" name="long" value="{$long ? $long : ''}" />
-                </li>
-              </ul>
-            </fieldset>
-          </li>
+          {call .pictureSection data="all" /}
+          {call .locationSection data="all" /}
+          {call .tagSection data="all" /}
           <li>
             <select name="privacy">
               <option value="public">Public</option>
@@ -133,6 +92,57 @@
   </div>
 {/template}
 
+/**
+ * @param? pictures 
+ */
+{template .pictureSection}
+  <li class="pictures-line">
+    <label for="pictures">Pictures</label>
+    <input type="file" name="pictures" value="{$pictures ?
+                                              $pictures : ''}" />
+  </li>
+{/template}
+
+/**
+ * @param? tags
+ */
+{template .tagSection}
+  <li class="tag-line">
+    <fieldset>
+      <legend>Tags</legend>
+      <ul>
+        <li>
+          <input type="text" name="tags" value="{$tags ? $tags : ''}" />
+        </li>
+        <li>
+          <a href="#">Add Tag</a>
+        </li>
+      </ul>
+    </fieldset>
+  </li>
+{/template}
+
+/**
+ * @param? lat
+ * @param? long
+ */
+{template .locationSection}
+  <li class="location-line">
+    <fieldset>
+      <legend>Location</legend>
+      <ul>
+        <li>
+          <label for="lat">Latitude</label>
+          <input type="text" name="lat" value="{$lat ? $lat : ''}" />
+        </li>
+        <li>
+          <label for="long">Longitude</label>
+          <input type="text" name="long" value="{$long ? $long : ''}" />
+        </li>
+      </ul>
+    </fieldset>
+  </li>
+{/template}
 
 /**
  * @param authenticated
