@@ -38,9 +38,11 @@
               </li>
             </ul>
           </li>
-          <li.hidden>
-            <input type="hidden" name="_id" value="{$id ? $id : ''}" />
-          </li>
+          {if $id}
+            <li.hidden>
+              <input type="hidden" name="_id" value="{$id}" />
+            </li>
+          {/if}
           {if $parent_id }
             <li class="hidden">
               <input type="hidden"
@@ -174,16 +176,16 @@
  */
 {template .commentsSection}
   <div class="{css comments}">
-    <p>
+    <div>
       <span>Comments: {$comment_count}</span>
       {sp}
       <a href="#">Show</a>
       {sp}
       {call .commentLink data="all" /}
-    </p>
+    </div>
     {call .commentList data="all" /}
     {if $authenticated}
-      <p>
+      <div>
         <form method="post"
               action="/notice/{$parent_id}/comments"
               class="comment-form">
@@ -199,7 +201,7 @@
             </ul>
           </fieldset>
         </form>
-      </p>
+      </div>
     {/if}
   </div>
 {/template}
@@ -211,7 +213,9 @@
 {template .deleteButton}
   <form method="delete"
         action="/notice/{$id}">
-    <input type="submit" value="Delete" class="delete-button" />
+    <button type="submit"
+            value="Delete"
+            class="delete-button">
   </form>
 {/template}
 
@@ -247,7 +251,9 @@
   <div id="notices_primary">
     <ol class="activities">
       {foreach $activity in $activities}
-        {call .show data="$activity" /}
+        <li>
+          {call .show data="$activity" /}
+        </li>
       {/foreach}
     </ol>
   </div>
@@ -348,15 +354,15 @@
  */
 {template .postedLink}
   <span class="{css posted}">
-    <time>
-      {if $published}
+    {if $published}
+      <time datetime="{$published}">
         <a href="/notice/{$id}">
           {$published_formatted}
         </a>
-        {else}
-        Unknown
-      {/if}
-    </time>
+      </time>
+    {else}
+      Unknown
+    {/if}
   </span>
 {/template}
 
@@ -397,15 +403,15 @@
  */
 {template .show}
   <article class="{css hentry} {css notice}"
-           id="{$id}">
+           id="{$id}"
+           about="/notice/{$id}"
+           typeof="sioc:Post">
     <header class="{css avatar-section}">
       {call jiksnu.templates.user.displayAvatar data="$author" /}
     </header>
     <section class="{css content}">
       <header>
-        <div>
-          {call jiksnu.templates.user.showMinimal data="$author" /}
-        </div>
+        {call jiksnu.templates.user.showMinimal data="$author" /}
         {if $object_type != 'comment'}
           <div class="{css labels}">
             {$object_type}

@@ -1,22 +1,16 @@
 (ns jiksnu.helpers.activity-helpers
-  (:use ciste.config
-        ciste.debug
-        ciste.sections
+  (:use (ciste config debug sections)
         ciste.sections.default
-        jiksnu.abdera
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view)
+        (jiksnu model namespace session view))
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.string :as string]
             [hiccup.form-helpers :as f]
             [jiksnu.abdera :as abdera]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar])
+            (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
+            (karras [entity :as entity]
+                    [sugar :as sugar]))
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -65,7 +59,7 @@
 
 (defn make-feed
   [{:keys [user title subtitle links entries updated id]}]
-  (let [feed (.newFeed *abdera*)
+  (let [feed (.newFeed abdera/*abdera*)
         author (if user (show-section user))]
     (if title (.setTitle feed title))
     (if subtitle (.setSubtitle feed subtitle))
@@ -79,7 +73,7 @@
     (if author (.addExtension feed author))
     ;; (if user (subject-section user))
     (doseq [link links]
-      (let [link-element (.newLink *abdera-factory*)]
+      (let [link-element (.newLink abdera/*abdera-factory*)]
         (doto link-element
           (.setHref (:href link))
           (.setRel (:rel link))
@@ -93,7 +87,7 @@
   [entry activity]
   (if (:comments activity)
     (let [comment-count (count (:comments activity))]
-      (let [thread-link (.newLink *abdera-factory*)]
+      (let [thread-link (.newLink abdera/*abdera-factory*)]
         (.setRel thread-link "replies")
         (.setAttributeValue thread-link "count" (str comment-count))
         (.setMimeType thread-link "application/atom+xml")
@@ -126,7 +120,7 @@
 
 (defn parse-object-element
   [element]
-  (let [object (make-object element)]
+  (let [object (abdera/make-object element)]
     {:object {:object-type (str (.getObjectType object))
               :links (parse-links object)}
      :id (str (.getId object))
@@ -172,8 +166,8 @@ an Element"
      :as activity} bound-ns]
      (let [xmlns (or (:xmlns attributes) bound-ns)
            qname (QName. xmlns element-name)
-           element (.newExtensionElement *abdera-factory* qname)
-           filtered (filter not-namespace attributes)]
+           element (.newExtensionElement abdera/*abdera-factory* qname)
+           filtered (filter abdera/not-namespace attributes)]
        (doseq [[k v] filtered]
          (.setAttributeValue element (name k) v))
        (doseq [child children]
@@ -206,8 +200,7 @@ an Element"
     activity
     (assoc activity :id (new-id))))
 
-(
- defn set-object-id
+(defn set-object-id
   [activity]
   (if (:id (:object activity))
     activity
@@ -312,7 +305,7 @@ serialization"
                        href)))))
              (ThreadHelper/getInReplyTos entry)))
            links (parse-links entry)
-           tags (parse-tags entry)
+           tags (abdera/parse-tags entry)
            opts (apply merge
                        (if published {:published published})
                        (if updated {:updated updated})
@@ -322,11 +315,11 @@ serialization"
                        (if (seq irts) {:irts irts})
                        (if (seq links) {:links links})
                        (if (seq tags) {:tags tags})
-                       {:_id id
+                       {:id id
                         :remote-id id
                         :author (:_id author)
                         :public true
-                        :comment-count (get-comment-count entry)}
+                        :comment-count (abdera/get-comment-count entry)}
                        extension-maps)]
        (entity/make Activity opts))))
 

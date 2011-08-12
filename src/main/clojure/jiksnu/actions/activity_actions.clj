@@ -1,15 +1,10 @@
 (ns jiksnu.actions.activity-actions
   (:use aleph.http
-        ciste.core
-        ciste.debug
-        ciste.sections
+        (ciste core debug sections)
         ciste.sections.default
         clj-tigase.core
-        jiksnu.abdera
+        (jiksnu abdera model namespace session)
         jiksnu.helpers.activity-helpers
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
         [karras.entity :only (make)]
         lamina.core)
   (:require [clojure.data.json :as json]
@@ -17,13 +12,13 @@
             [clojure.string :as string]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
+            (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
+                          [user :as model.user])
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.view :as view]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar]
+            (karras [entity :as entity]
+                    [sugar :as sugar])
             [hiccup.core :as hiccup])
   (:import java.util.concurrent.TimeoutException
            jiksnu.model.Activity
@@ -31,14 +26,15 @@
 
 (declare find-or-create)
 
+(defn user-for-uri
+  [uri]
+  (let [[username domain] (model.user/split-uri uri)]
+    (:_id (actions.user/find-or-create username domain))))
+
 (defn set-recipients
   [activity]
   (if-let [recipients (filter identity (:recipients activity))]
-    (let [users (map
-                 (fn [uri]
-                   (let [[username domain] (model.user/split-uri uri)]
-                     (:_id (actions.user/find-or-create username domain))))
-                 recipients)]
+    (let [users (map user-for-uri recipients)]
       (assoc activity :recipients users))
     (dissoc activity :recipients)))
 
@@ -51,6 +47,16 @@
 (defn set-local
   [activity]
   (assoc activity :local true))
+
+(defn parse-pictures
+  [picture]
+  (let [filename (:filename picture)
+        tempfile (:tempfile picture)
+        dest-file (io/file (str (current-user-id) "/" filename))]
+    (when (and (not= filename "") tempfile)
+      (.mkdirs (io/file (str (current-user-id))))
+      (io/copy tempfile dest-file))))
+
 
 (defn prepare-activity
   [activity]
@@ -91,6 +97,7 @@
   [id]
   (model.activity/fetch-by-id id))
 
+;; TODO: fetch all in 1 request
 (defaction fetch-comments
   [activity]
   [activity
@@ -137,16 +144,11 @@
 (defaction post
   [activity]
   ;; TODO: validate user
-  (if-let [prepared-post (prepare-post activity)]
-    (let [picture (:pictures prepared-post)
-          filename (:filename picture)]
-      (if (not= filename "")
-        (if-let [tempfile (:tempfile picture)]
-          (do
-            (.mkdirs (io/file (str (current-user-id))))
-            (io/copy tempfile (io/file (str (current-user-id) "/"
-                                            (:filename picture)))))))
-      (create (dissoc prepared-post :pictures)))))
+  (when-let [prepared-post (-> activity
+                               prepare-post
+                               (dissoc :pictures))]
+    (-> activity :pictures parse-pictures)
+    (create prepared-post)))
 
 (defaction add-comment
   [params]

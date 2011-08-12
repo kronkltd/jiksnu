@@ -9,10 +9,7 @@
 
 (defn create
   [activity]
-  (entity/create
-   Activity
-   (->  activity
-        (dissoc :picture))))
+  (entity/create Activity activity))
 
 (defn get-comments
   [activity]
@@ -47,7 +44,7 @@
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-one Activity {:_id id}))
+  (entity/fetch-by-id Activity id))
 
 (defn fetch-by-remote-id
   [id]

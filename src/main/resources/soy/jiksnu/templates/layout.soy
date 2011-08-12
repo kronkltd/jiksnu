@@ -34,7 +34,8 @@
           <section id="site-banner">
             <address id="site_contact" class="vcard">
               <a class="url home bookmark" href="/">
-                <img class="logo photo" src="/public/logo.png" />
+                <img class="logo photo" src="/public/logo.png"
+                     alt="Jiksnu" />
               </a>
             </address>
             {call .navigationSection data="all" /}
@@ -52,7 +53,7 @@
               <div>username</div>
             </div>
             <div>
-              <h>Streams</h>
+              <h1>Streams</h1>
               <ul>
                 <li>All</li>
                 <li>Stream 1</li>
@@ -139,7 +140,6 @@
  */
 {template .includeScript}
   <script type="text/javascript"
-          lang="javascript"
           src="{$src}">
   </script>
 {/template}

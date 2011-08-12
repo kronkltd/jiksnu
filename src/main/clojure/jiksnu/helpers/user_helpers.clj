@@ -4,20 +4,18 @@
         ciste.sections
         ciste.sections.default
         [clj-gravatar.core :only (gravatar-image)]
-        jiksnu.abdera
-        jiksnu.model
-        jiksnu.session
-        jiksnu.view)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
+        (jiksnu abdera model session view))
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
             [clojure.string :as string]
             [hiccup.form-helpers :as f]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.subscription :as model.subscription]
+            jiksnu.helpers.activity-helpers
+            (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
+                          [user :as model.user]
+                          [subscription :as model.subscription])
             [karras.sugar :as sugar])
   (:import javax.xml.namespace.QName
            jiksnu.model.User
@@ -26,16 +24,16 @@
 
 (defn avatar-img
   [user]
-  (let [{:keys [avatar-url title email domain name]} user]
-    (let [jid (str (:username user) "@" domain)]
-      [:a.url {:href (uri user)
-               :title title}
-       [:img.avatar.photo
-        {:width "48"
-         :height "48"
-         :src (or avatar-url
-                  (and email (gravatar-image email))
-                  (gravatar-image jid))}]])))
+  (let [{:keys [avatar-url title email domain name]} user
+        jid (str (:username user) "@" domain)]
+    [:a.url {:href (uri user)
+             :title title}
+     [:img.avatar.photo
+      {:width "48"
+       :height "48"
+       :src (or avatar-url
+                (and email (gravatar-image email))
+                (gravatar-image jid))}]]))
 
 (defn subscribe-form
   [user]
@@ -105,9 +103,8 @@
 (defn load-activities
   [user]
   (dorun
-   (map
-    model.activity/create
-    (fetch-activities user))))
+   (map model.activity/create
+        (fetch-activities user))))
 
 (defn rule-map
   [rule]

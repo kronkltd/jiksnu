@@ -92,9 +92,7 @@
 
 (deffilter #'post :http
   [action request]
-  (let [{params :params} request
-        p (-> params (dissoc :*))]
-    (action p)))
+  (-> request :params (dissoc :*) action))
 
 (deffilter #'post :xmpp
   [action request]

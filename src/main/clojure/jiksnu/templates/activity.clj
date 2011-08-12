@@ -1,7 +1,7 @@
 (ns jiksnu.templates.activity
   (:use ciste.debug
         closure.templates.core
-        jiksnu.session)
+        (jiksnu model session))
   (:require [ciste.sections.default :as sd]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -26,11 +26,12 @@
                 (:title activity))
      :lat (str (:lat activity))
      :long (str (:long activity))
-     :authenticated (template.user/format-data actor)
+     :authenticated (if-let [user (current-user)]
+                      (template.user/format-data user))
      :tags []
      :uri (:uri activity)
      :recipients []
-     :published (str (:published activity))
+     :published (format-date (:published activity))
      :published-formatted (.format (PrettyTime.) (:published activity))
      :buttonable (and actor
                       (or (:admin actor)
