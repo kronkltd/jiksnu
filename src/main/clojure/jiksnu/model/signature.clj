@@ -38,23 +38,23 @@
   (.genKeyPair keypair-generator))
 
 (defn public-key
-  [keypair]
+  [^KeyPair keypair]
   (.getPublic keypair))
 
 (defn private-key
-  [keypair]
+  [^RSAPrivateKeySpec keypair]
   (.getPrivate keypair))
 
 (defn public-spec
-  [keypair]
+  [^KeyPair keypair]
   (.getKeySpec key-factory (public-key keypair) RSAPublicKeySpec))
 
 (defn private-spec
-  [keypair]
+  [^KeyPair keypair]
   (.getKeySpec key-factory (private-key keypair) RSAPrivateKeySpec))
 
 (defn get-bytes
-  [bigint]
+  [^BigInteger bigint]
   (let [bitlen (.bitLength bigint)
         adjusted-bitlen (-> bitlen
                             (+ 7)
@@ -88,7 +88,7 @@
    byte-array))
 
 (defn magic-key-string
-  [keypair]
+  [^KeyPair keypair]
   (str
    "data:application/magic-public-key,RSA."
    (str (encode (get-bytes (BigInteger. (:modulus keypair)))))
@@ -161,12 +161,6 @@
 
 (def destination-user
   (URI/create "acct:charlie@reticulateme.appspot.com"))
-
-;; (defn finder
-;;   []
-;;   (HostMetaSalmonEndpointFinder.)
-  
-;;   )
 
 (defn fetcher
   []
@@ -246,23 +240,12 @@
 
 (defn get-deserializer
   []
-  (.getDeserializer
-   (MagicEnvelopeSerializationProvider/getDefault)
-   MagicSigConstants/MEDIA_TYPE_MAGIC_ENV_XML))
+  (-> (MagicEnvelopeSerializationProvider/getDefault)
+      (.getDeserializer MagicSigConstants/MEDIA_TYPE_MAGIC_ENV_XML)))
 
 (defn get-verified-data
-  [salmon envelope]
-  (let [m (.deserialize (get-deserializer)
-                        (ByteArrayInputStream.
-                         (.getBytes envelope "UTF-8")))
+  [^Salmon salmon ^MagicEnvelope envelope]
+  (let [is (ByteArrayInputStream. (.getBytes envelope "UTF-8"))
+        m (.deserialize (get-deserializer) is)
         verified-data (.verify salmon m)]
     (String. verified-data "UTF-8")))
-
-;; (defn make-magic-key
-;;   [keypair]
-;;   (let [mk (MagicKey. "RSA" )]
-;;     (.setType "RSA")
-;;     (.setN )
-;;     (.setE )
-;;     )  
-;;   )

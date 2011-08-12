@@ -9,11 +9,13 @@
            jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera.model.Entry
+           org.apache.abdera.model.Feed
            tigase.xml.Element
-           tigase.xmpp.BareJID))
+           tigase.xmpp.BareJID
+           tigase.xmpp.JID))
 
 (defn get-id
-  [jid]
+  [^JID jid]
   (.getLocalpart jid))
 
 (defn get-domain
@@ -34,7 +36,7 @@
           links))
 
 (defn rel-filter-feed
-  [feed rel]
+  [^Feed feed rel]
   (filter
    (fn [link]
      (= (.getRel link) rel))

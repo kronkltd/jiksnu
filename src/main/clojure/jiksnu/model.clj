@@ -8,7 +8,8 @@
         plaza.rdf.implementations.jena)
   (:require [karras.core :as karras]
             [karras.sugar :as sugar])
-  (:import java.text.SimpleDateFormat
+  (:import java.io.PrintWriter
+           java.text.SimpleDateFormat
            java.util.Date
            org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId))
@@ -21,7 +22,7 @@
   (SimpleDateFormat. *date-format*))
 
 (defn format-date
-  [date]
+  [^Date date]
   (.format *formatter* date))
 
 (init-jena-framework)
@@ -94,7 +95,7 @@
   (instance? Subscription s))
 
 (defn make-id
-  [id]
+  [^String id]
   (ObjectId. id))
 
 (defn new-id
@@ -139,14 +140,14 @@
 (defn write-json-date
   ([date out]
      (write-json-date date out false))
-  ([date out escape-unicode?]
+  ([^Date date ^PrintWriter out escape-unicode?]
      (let [formatted-date (.format (SimpleDateFormat. *date-format*) date)]
        (.print out (str "\"" formatted-date "\"")))))
 
 (defn write-json-object-id
   ([id out]
      (write-json-object-id id out false))
-  ([id out escape-unicode]
+  ([id ^PrintWriter out escape-unicode]
      (.print out (str "\"" id "\""))))
 
 (extend Date Write-JSON

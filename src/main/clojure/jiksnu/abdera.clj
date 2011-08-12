@@ -11,6 +11,7 @@
            org.apache.abdera.Abdera
            org.apache.abdera.ext.json.JSONUtil
            org.apache.abdera.factory.Factory
+           org.apache.abdera.model.Element
            org.apache.abdera.model.Entry
            org.apache.abdera.protocol.client.AbderaClient))
 
@@ -63,7 +64,7 @@
   (not (= k :xmlns)))
 
 (defn make-object
-  ([element]
+  ([^Element element]
      (com.cliqset.abdera.ext.activity.Object. element))
   ([namespace name prefix]
      (com.cliqset.abdera.ext.activity.Object.
@@ -76,11 +77,11 @@
 
 (defn get-qname
   "Returns a map representing the QName of the given element"
-  [element]
+  [^Element element]
   (element/parse-qname (.getQName element)))
 
 (defn get-comment-count
-  [entry]
+  [^Entry entry]
   (or
    (if-let [link (.getLink entry "replies")]
      (let [count-qname (QName.
@@ -91,7 +92,7 @@
    0))
 
 (defn parse-tags
-  [entry]
+  [^Entry entry]
   (let [categories (.getCategories entry)]
    (map
     (fn [category] (.getTerm category))
