@@ -16,18 +16,6 @@
     (with-user-id username
       (handler request))))
 
-(defn wrap-error-catching
-  [handler]
-  (fn [request]
-    (try
-     (handler request)
-     (catch Exception e
-       (let [msg (with-out-str
-                   (print-stack-trace e))]
-         (error msg)
-         {:body (str "An error done happened: " msg)
-          :status 500})))))
-
 (defn wrap-log-request
   [handler]
   (fn [request]

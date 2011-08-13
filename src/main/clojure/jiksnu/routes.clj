@@ -52,8 +52,9 @@
                              subscription-triggers
                              user-triggers)
             (noir.util [cljs :as cljs])
-            [ring.middleware.file :as file]
-            [ring.middleware.file-info :as file-info]
+            (ring.middleware [file :as file]
+                             [file-info :as file-info]
+                             [stacktrace :as stacktrace])
             [ring.util.response :as response]))
 
 (defn not-found-msg
@@ -266,4 +267,5 @@
        middleware/wrap-http-serialization
        wrap-database
        wrap-session
-       wrap-error-catching)))
+       stacktrace/wrap-stacktrace
+       #_wrap-error-catching)))
