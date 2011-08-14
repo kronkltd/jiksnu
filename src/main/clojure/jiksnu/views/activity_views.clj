@@ -119,7 +119,7 @@
 
 (defview #'show :clj
   [request activity]
-  {:body (templates.activity/format-data activity)})
+  {:body (model.activity/format-data activity)})
 
 
 
@@ -178,8 +178,8 @@
         (assoc :template false))))
 
 (defview #'user-timeline :html
-  [request user]
-  {:body (templates.user/user-timeline user)
+  [request [user activities]]
+  {:body (templates.activity/user-timeline user activities)
    :formats (timeline-formats user)})
 
 

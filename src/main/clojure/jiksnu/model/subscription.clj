@@ -1,7 +1,8 @@
 (ns jiksnu.model.subscription
   (:use jiksnu.model)
-  (:require [karras.entity :as entity]
-            [karras.sugar :as sugar])
+  (:require (jiksnu.model [user :as model.user])
+            (karras [entity :as entity]
+                    [sugar :as sugar]))
   (:import jiksnu.model.Subscription))
 
 (defn drop!
@@ -83,3 +84,13 @@
 (defn pending?
   [subscription]
   (true? (:pending subscription)))
+
+(defn format-data
+  [subscription]
+  {:to (-> subscription :to
+           model.user/fetch-by-id model.user/format-data)
+   :from (-> subscription :to
+             model.user/fetch-by-id model.user/format-data)
+   :pending (-> subscription :pending)
+   :created (-> subscription :created)})
+

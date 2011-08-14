@@ -500,9 +500,11 @@
  * @param user
  * @param activities
  */
-{template .userPage}
+{template .userTimeline}
   <div>
-    {call .show data="$user" /}
-    {call jiksnu.templates.activity.indexBlock data="$activities" /}
+    {call jiksnu.templates.user.show data="$user" /}
+    {call .indexBlock data="all"}
+      {param activities: $activities /}
+    {/call}
   </div>
 {/template}

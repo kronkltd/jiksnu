@@ -1,10 +1,9 @@
 (ns jiksnu.templates.layout
   (:use (ciste [config :only (*environment*)]
-               debug)
-        closure.templates.core
+               [debug :only (spy)])
+        (closure.templates [core :only (deftemplate)])
         (jiksnu [session :only (current-user)]))
-  (:require [jiksnu.templates.user :as templates.user]
-            [jiksnu.templates.subscriptions :as template.subscriptions]
+  (:require (jiksnu.model [user :as model.user])
             [hiccup.core :as hiccup]))
 
 (deftemplate layout
@@ -12,5 +11,5 @@
   {:body (hiccup/html (:body response))
    :formats (:formats response)
    :authenticated (if-let [user (current-user)]
-                    (templates.user/format-data user))
+                    (model.user/format-data user))
    :development (= *environment* :development)})
