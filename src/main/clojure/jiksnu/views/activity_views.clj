@@ -21,6 +21,48 @@
             (plaza.rdf.vocabularies [foaf :as foaf])
             (ring.util [response :as response])))
 
+(defn timeline-formats
+  [user]
+  [{:label "FOAF"
+     :href (str (uri user) ".rdf")
+     :type "application/rdf+xml"}
+    {:label "N3"
+     :href (str (uri user) ".n3")
+     :type "text/n3"}
+    {:label "Atom"
+     :href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user) ".atom")
+     :type "application/atom+xml"}
+    {:label "JSON"
+     :href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user) ".json")
+     :type "application/json"}
+    {:label "XML"
+     :href (str "http://" (:domain user)
+                     "/api/statuses/user_timeline/" (:_id user) ".xml")
+     :type "application/xml"}])
+
+(defn index-formats
+  [activities]
+  [{:label "Atom"
+     :href "/api/statuses/public_timeline.atom"
+     :type "application/atom+xml"}
+    {:label "JSON"
+     :href "/api/statuses/public_timeline.json"
+     :type "application/json"}
+    #_{:label "XML"
+     :href "/api/statuses/public_timeline.xml"
+     :type "application/xml"}
+    {:label "RDF"
+     :href "/api/statuses/public_timeline.rdf"
+     :type "application/rdf+xml"}
+    {:label "N3"
+     :href "/api/statuses/public_timeline.n3"
+     :type "text/n3"}])
+
+
+
+
 (defview #'index :atom
   [request activities]
   (let [self (str "http://"
@@ -109,22 +151,7 @@
 
 (defview #'index :html
   [request activities]
-  {:formats
-   [{:label "Atom"
-     :href "/api/statuses/public_timeline.atom"
-     :type "application/atom+xml"}
-    {:label "JSON"
-     :href "/api/statuses/public_timeline.json"
-     :type "application/json"}
-    #_{:label "XML"
-     :href "/api/statuses/public_timeline.xml"
-     :type "application/xml"}
-    {:label "RDF"
-     :href "/api/statuses/public_timeline.rdf"
-     :type "application/rdf+xml"}
-    {:label "N3"
-     :href "/api/statuses/public_timeline.n3"
-     :type "text/n3"}]
+  {:formats (index-formats activities)
    :body (templates.activity/index-block activities)})
 
 (defview #'post :html
@@ -149,6 +176,13 @@
   (let [actor (session/current-user)]
     (-> (response/redirect-after-post (uri actor))
         (assoc :template false))))
+
+(defview #'user-timeline :html
+  [request user]
+  {:body (templates.user/user-timeline user)
+   :formats (timeline-formats user)})
+
+
 
 
 
