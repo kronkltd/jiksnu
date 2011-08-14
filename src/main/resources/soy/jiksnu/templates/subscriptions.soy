@@ -1,21 +1,6 @@
 {namespace jiksnu.templates.subscriptions}
 
 /**
- * @param from
- * @param to
- * @param pending
- */
-{template .indexLine}
-  <tr>
-    <td>{call .linkTo data="all" /}</td>
-    <td>{call user.linkTo data="$from" /}</td>
-    <td>{call user.linkTo data="$to" /}</td>
-    <td>{$pending}</td>
-    <td>{call .deleteButton data="all" /}</td>
-  </tr>
-{/template}
-
-/**
  * @param subscriptions
  */
 {template .indexSection}
@@ -33,7 +18,13 @@
       </thead>
       <tbody>
         {foreach $subscription in $subscriptions}
-          {call .indexLine data="$subscription" /}
+          <tr>
+            <td>{call .linkTo data="all" /}</td>
+            <td>{call user.linkTo data="$subscription.from" /}</td>
+            <td>{call user.linkTo data="$subscription.to" /}</td>
+            <td>{$subscription.pending}</td>
+            <td>{call .deleteButton data="all" /}</td>
+          </tr>
         {/foreach}
       </tbody>
     </table>
@@ -42,55 +33,21 @@
 
 
 /**
- * @param to
- * @param pending
+ *
  */
-{template .subscriptionsLine}
-  <li>
-    {call jiksnu.templates.user.showMinimal data="$to" /}
-    {if $pending }
-      {sp}(pending)
-    {/if}
-  </li>
-{/template}
-
-/**
- * @param user
- */
-{template .subscriptionsSection}
-  {if $user}
-    <div class="subscriptions">
-      <h3>
-        <a href="{$user.uri or ''}/subscriptions">Subscriptions</a>
-      </h3>
-      <ul>
-        {foreach $subscription in $user.subscriptions}
-          {call .subscriptionsLine data="$subscription" /}
-        {/foreach}
-      </ul>
+{template .ostatusSub}
+  <div>
+    <form method="post"
+          action="/main/ostatussub">
       <p>
-        <a href="/main/ostatussub">Add Remote</a>
+        <input name="profile"
+               type="text" />
       </p>
-    </div>
-  {/if}
-{/template}
-
-/**
- * @param user
- */
-{template .subscribersSection}
-  {if $user}
-    <div class="subscribers">
-      <h3>
-        <a href="{$user.uri or ''}/subscribers">Subscribers</a>
-      </h3>
-      <ul>
-        {foreach $subscriber in $user.subscribers}
-          {call .subscriberLine data="$subscriber" /}
-        {/foreach}
-      </ul>
-    </div>
-  {/if}
+      <p>
+        <input type="submit" value="Submit" />
+      </p>
+    </form>
+  </div>
 {/template}
 
 
@@ -125,6 +82,25 @@
 {/template}
 
 /**
+ * @param user
+ */
+{template .subscribersSection}
+  {if $user}
+    <div class="subscribers">
+      <h3>
+        <a href="{$user.uri or ''}/subscribers">Subscribers</a>
+      </h3>
+      <ul>
+        {foreach $subscriber in $user.subscribers}
+          {call .subscriberLine data="$subscriber" /}
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
+{/template}
+
+
+/**
  * @param subscriptions
  */
 {template .subscriptionsIndex}
@@ -154,20 +130,38 @@
   </table>
 {/template}
 
+
 /**
- *
+ * @param to
+ * @param pending
  */
-{template .ostatusSub}
-  <div>
-    <form method="post"
-          action="/main/ostatussub">
+{template .subscriptionsLine}
+  <li>
+    {call jiksnu.templates.user.showMinimal data="$to" /}
+    {if $pending }
+      {sp}(pending)
+    {/if}
+  </li>
+{/template}
+
+
+/**
+ * @param user
+ */
+{template .subscriptionsSection}
+  {if $user}
+    <div class="subscriptions">
+      <h3>
+        <a href="{$user.uri or ''}/subscriptions">Subscriptions</a>
+      </h3>
+      <ul>
+        {foreach $subscription in $user.subscriptions}
+          {call .subscriptionsLine data="$subscription" /}
+        {/foreach}
+      </ul>
       <p>
-        <input name="profile"
-               type="text" />
+        <a href="/main/ostatussub">Add Remote</a>
       </p>
-      <p>
-        <input type="submit" value="Submit" />
-      </p>
-    </form>
-  </div>
+    </div>
+  {/if}
 {/template}

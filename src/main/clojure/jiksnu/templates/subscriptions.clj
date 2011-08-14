@@ -4,23 +4,26 @@
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user])))
 
-(deftemplate subscriptions-section
-  [subscriptions]
-  {:subscriptions subscriptions
-   :user (model.user/format-data (session/current-user))})
-
-(deftemplate subscribers-index
-  [subscriptions]
-  (map model.subscription/format-data subscriptions))
-
-(deftemplate subscriptions-index
-  [subscriptions]
-  (map model.subscription/format-data subscriptions))
-
 (deftemplate index-section
   [subscriptions]
-  (map model.subscription/format-data subscriptions))
+  {:subscriptions (map model.subscription/format-data subscriptions)})
 
 (deftemplate ostatus-sub
   []
   {})
+
+(deftemplate subscribers-index
+  [subscriptions]
+  {:subscriptions (map model.subscription/format-data subscriptions)})
+
+(deftemplate subscribers-section
+  [user]
+  {:user (-> user model.user/format-data)})
+
+(deftemplate subscriptions-index
+  [subscriptions]
+  {:subscriptions (map model.subscription/format-data subscriptions)})
+
+(deftemplate subscriptions-section
+  [user]
+  {:user (-> user model.user/format-data)})
