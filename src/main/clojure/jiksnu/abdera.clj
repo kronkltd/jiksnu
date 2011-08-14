@@ -23,6 +23,11 @@
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
 (.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
+(defn get-text
+  [element]
+  (if element
+    (.getCData element)))
+
 (defn ^Entry new-entry
   [& opts]
   (.newEntry *abdera*))

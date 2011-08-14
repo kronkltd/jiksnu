@@ -2,10 +2,8 @@
   (:use (ciste core debug html sections views)
         ciste.sections.default
         (jiksnu model view)
-        jiksnu.actions.auth-actions
-        jiksnu.helpers.auth-helpers)
-  (:require [hiccup.form-helpers :as f]
-            (jiksnu.templates [auth :as templates.auth])
+        jiksnu.actions.auth-actions)
+  (:require (jiksnu.templates [auth :as templates.auth])
             (ring.util [response :as response]))
   (:import jiksnu.model.User))
 
@@ -16,7 +14,7 @@
 (defview #'login-page :html
   [request _]
   {:title "Login"
-   :body (login-form)})
+   :body (templates.auth/login-form)})
 
 (defview #'login :html
   [request user]

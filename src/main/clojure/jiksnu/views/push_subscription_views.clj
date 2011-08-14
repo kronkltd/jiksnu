@@ -1,20 +1,11 @@
 (ns jiksnu.views.push-subscription-views
-  (:use ciste.config
-        ciste.debug
-        ciste.sections
+  (:use (ciste config debug sections views)
         ciste.sections.default
-        ciste.views
         jiksnu.actions.push-subscription-actions
-        jiksnu.helpers.push-subscription-helpers
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.xmpp.element
-        jiksnu.view)
-  (:require [jiksnu.model.push-subscription :as model.push-subscription]
-            [jiksnu.model.user :as model.user]
-            [karras.entity :as entity]
-            [hiccup.form-helpers :as f])
+        (jiksnu model namespace session view)
+        jiksnu.xmpp.element)
+  (:require (jiksnu.model [push-subscription :as model.push-subscription]
+                          [user :as model.user]))
   (:import jiksnu.model.PushSubscription
            jiksnu.model.User))
 

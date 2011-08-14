@@ -1,9 +1,6 @@
 (ns jiksnu.routes
   (:use aleph.http
-        (ciste debug
-               filters
-               predicates
-               routes)
+        (ciste debug filters predicates routes)
         ciste.formats.default
         jiksnu.middleware
         jiksnu.namespace
@@ -16,9 +13,9 @@
                          cookies
                          session))
   (:require [ciste.middleware :as middleware]
-            [compojure.core :as compojure]
-            compojure.handler
-            [compojure.route :as route]
+            (compojure [core :as compojure]
+                       handler
+                       [route :as route])
             [clojure.string :as string]
             [clojure.java.io :as io]
             (jiksnu.actions [activity-actions :as activity]

@@ -1,16 +1,12 @@
 (ns jiksnu.filters.push-subscription-filters
-  (:use ciste.debug
-        ciste.filters
-        clj-tigase.core
-        jiksnu.abdera
-        jiksnu.actions.push-subscription-actions
-        jiksnu.helpers.push-subscription-helpers
-        jiksnu.model
-        jiksnu.session)
-  (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.like :as model.like]
-            [jiksnu.model.push-subscription :as model.push]
-            [jiksnu.model.user :as model.user]))
+  (:use (ciste debug filters)
+        (jiksnu abdera model session)
+        jiksnu.actions.push-subscription-actions)
+  (:require (clj-tigase [core :as tigase])
+            (jiksnu.model [activity :as model.activity]
+                          [like :as model.like]
+                          [push-subscription :as model.push]
+                          [user :as model.user])))
 
 (deffilter #'callback :http
   [action request]
@@ -34,5 +30,5 @@
 
 (deffilter #'subscribe :http
   [action request]
-  (let [user (model.user/fetch-by-id (:id (:params request)))]
-    (action user)))
+  (-> request :params :id
+      model.user/fetch-by-id action))
