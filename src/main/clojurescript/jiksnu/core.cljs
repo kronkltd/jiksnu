@@ -12,6 +12,12 @@
   (let [helper (goog.dom.DomHelper.)]
     (.getAncestorByTagNameAndClass helper element "article" "notice")))
 
+(defn position-handler
+  [position]
+  (let [coords (. position (coords))]
+    (console/log "lat: " (. coords (latitude)))
+    (console/log "long: " (. coords (longitude)))))
+
 (defn do-delete-activity
   [x]
   (console/log "Delete button clicked")
@@ -29,6 +35,13 @@
       (. x (preventDefault)))
     (console/log "article not found")))
 
+(defn do-like-button
+  [x]
+  (console/log "like button clicked")
+
+  (. x (stopPropagation))
+  (. x (preventDefault)))
+
 (defn add-handler
   [handler elements]
   (doseq [i (range (alength elements))]
@@ -38,11 +51,12 @@
 
 (defn find-element
   [selector]
-  (dom/getElementsByClass "delete-button"))
+  (dom/getElementsByClass selector))
 
 (defn -main
   []
   (console/log "starting application")
-  (add-handler do-delete-activity (find-element "delete-button")))
+  (add-handler do-delete-activity (find-element "delete-button"))
+  (add-handler do-like-button (find-element "like-button")))
 
 (-main)
