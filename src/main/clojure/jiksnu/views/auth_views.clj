@@ -1,15 +1,11 @@
 (ns jiksnu.views.auth-views
-  (:use ciste.core
-        ciste.debug
-        ciste.html
-        ciste.sections
+  (:use (ciste core debug html sections views)
         ciste.sections.default
-        ciste.views
+        (jiksnu model view)
         jiksnu.actions.auth-actions
-        jiksnu.helpers.auth-helpers
-        jiksnu.model
-        jiksnu.view)
-  (:require [hiccup.form-helpers :as f])
+        jiksnu.helpers.auth-helpers)
+  (:require [hiccup.form-helpers :as f]
+            (ring.util [response :as response]))
   (:import jiksnu.model.User))
 
 (defview #'password-page :html

@@ -1,5 +1,6 @@
 (ns jiksnu.templates.layout
-  (:use (ciste [config :only (*environment*)])
+  (:use (ciste [config :only (*environment*)]
+               debug)
         closure.templates.core
         (jiksnu [session :only (current-user)]))
   (:require [jiksnu.templates.user :as templates.user]

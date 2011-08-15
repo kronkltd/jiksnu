@@ -1,23 +1,25 @@
 (ns jiksnu.views.activity-views
-  (:use (ciste config core debug html sections views)
+  (:use (ciste config core debug html sections
+               [views :only (defview)])
         ciste.sections.default
-        (jiksnu abdera model namespace session view)
         jiksnu.actions.activity-actions
         jiksnu.helpers.activity-helpers
-        jiksnu.sections.activity-sections
-        jiksnu.xmpp.element
-        plaza.rdf.core
-        plaza.rdf.vocabularies.foaf)
+        jiksnu.sections.activity-sections)
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
+            (jiksnu [abdera :as abdera]
+                    [model :as model]
+                    [namespace :as namespace]
+                    [session :as session]
+                    [view :as view])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
-            (jiksnu.templates [activity :as template.activity])
-            [karras.entity :as entity]
-            [hiccup.form-helpers :as f])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+            (jiksnu.templates [activity :as templates.activity])
+            (jiksnu.xmpp [element :as xmpp.element])
+            (plaza.rdf [core :as plaza])
+            (plaza.rdf.vocabularies [foaf :as foaf])
+            (ring.util [response :as response])))
 
 (defview #'index :atom
   [request activities]
@@ -75,29 +77,25 @@
 
 (defview #'show :clj
   [request activity]
-  {:body (template.activity/format-data activity)})
+  {:body (templates.activity/format-data activity)})
 
 
 
 
 (defview #'add-comment :html
   [request activity]
-  {:status 303
-   :template false
-   :headers {"Location" "/" #_(str "/notice/" (:_id activity))}})
+  (-> (response/redirect-after-post "/")
+      (assoc :template false)))
 
 (defview #'comment-response :html
   [request activity]
-  {:status 303
-   :template false
-   ;; TODO: without js, go to the activity. otherwise, stay on page
-   :headers {"Location" "/" #_(uri activity)}})
+  (-> (response/redirect-after-post "/")
+      (assoc :template false)))
 
 (defview #'delete :html
   [request activity]
-  {:status 303
-   :template false
-   :headers {"Location" "/"}})
+  (-> (response/redirect-after-post "/")
+      (assoc :template false)))
 
 (defview #'edit :html
   [request activity]
@@ -105,10 +103,9 @@
 
 (defview #'fetch-comments :html
   [request [activity comments]]
-  {:status 303
-   :template false
-   :flash "comments are being fetched"
-   :headers {"Location" (uri activity)}})
+  (-> (response/redirect-after-post (uri activity))
+      (assoc :template false)
+      (assoc :flash "comments are being fetched")))
 
 (defview #'index :html
   [request activities]
@@ -128,20 +125,19 @@
     {:label "N3"
      :href "/api/statuses/public_timeline.n3"
      :type "text/n3"}]
-   :body (template.activity/index-block activities)})
+   :body (templates.activity/index-block activities)})
 
 (defview #'post :html
   [request activity]
-  (let [actor (current-user)]
-    {:status 303
-     :template false
-     :headers {"Location" (or (-> request :params :redirect_to)
-                              "/"
-                              (uri actor))}}))
+  (let [actor (session/current-user)
+        url (or (-> request :params :redirect_to)
+                "/" (uri actor))]
+    (-> (response/redirect-after-post url)
+        (assoc :template false))))
 
 (defview #'show :html
   [request activity]
-  {:body (show-section-minimal activity)})
+  {:body (templates.activity/show activity)})
 
 (defview #'stream :html
   [request response-fn]
@@ -150,10 +146,9 @@
 
 (defview #'update :html
   [request activity]
-  (let [actor (current-user)]
-    {:status 303
-     :template false
-     :headers {"Location" (uri actor)}}))
+  (let [actor (session/current-user)]
+    (-> (response/redirect-after-post (uri actor))
+        (assoc :template false))))
 
 
 
@@ -183,9 +178,9 @@
   {:body
    (let [rdf-model (-> activities
                        index-section
-                       model-add-triples
-                       defmodel)]
-     (with-out-str (model-to-format rdf-model :xml)))
+                       plaza/model-add-triples
+                       plaza/defmodel)]
+     (with-out-str (plaza/model-to-format rdf-model :xml)))
    :template :false})
 
 
@@ -209,7 +204,7 @@
   {:type :get
    :body
    (element/make-element (packet/pubsub-items
-     (str microblog-uri ":replies:item=" (:id activity))))})
+     (str namespace/microblog-uri ":replies:item=" (:id activity))))})
 
 (defview #'index :xmpp
   [request activities]

@@ -2,19 +2,17 @@
   (:use (ciste debug
                [html :only (dump dump*)]
                sections
-               ciste.views)
+               [views :only (defview)])
         ciste.sections.default
-        clj-tigase.core
         jiksnu.actions.subscription-actions
         (jiksnu.helpers subscription-helpers
                         user-helpers)
         (jiksnu model namespace session view))
-  (:require [hiccup.form-helpers :as f]
+  (:require (clj-tigase [core :as tigase])
+            (hiccup [form-helpers :as f])
             (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user]))
-  (:import jiksnu.model.Subscription
-           tigase.xml.Element
-           java.text.SimpleDateFormat))
+                          [user :as model.user])
+            (jiksnu.templates [subscriptions :as templates.subscriptions])))
 
 (defview #'delete :html
   [request _]
@@ -81,20 +79,20 @@
 
 (defview #'subscribe :xmpp
   [request subscription]
-  (result-packet request (subscription-response-element subscription)))
+  (tigase/result-packet request (subscription-response-element subscription)))
 
 (defview #'subscribed :xmpp
   [request subscription]
-  (result-packet request (subscriptions-response [subscription])))
+  (tigase/result-packet request (subscriptions-response [subscription])))
 
 (defview #'subscribers :xmpp
   [request subscribers]
-  (result-packet request (subscribers-response subscribers)))
+  (tigase/result-packet request (subscribers-response subscribers)))
 
 (defview #'subscriptions :xmpp
   [request [user subscriptions]]
-  (result-packet request (subscriptions-response subscriptions)))
+  (tigase/result-packet request (subscriptions-response subscriptions)))
 
 (defview #'unsubscribe :xmpp
   [request subscription]
-  (result-packet request (subscriptions-response [subscription])))
+  (tigase/result-packet request (subscriptions-response [subscription])))
