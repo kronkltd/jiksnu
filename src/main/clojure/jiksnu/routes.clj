@@ -8,7 +8,7 @@
         jiksnu.middleware
         jiksnu.namespace
         lamina.core
-        (ring.middleware params
+        (ring.middleware [params :only (wrap-params)]
                          keyword-params
                          flash
                          nested-params
@@ -21,40 +21,37 @@
             [compojure.route :as route]
             [clojure.string :as string]
             [clojure.java.io :as io]
-            (jiksnu.actions
-             [activity-actions :as activity]
-             [auth-actions :as auth]
-             [domain-actions :as domain]
-             [inbox-actions :as inbox]
-             [push-subscription-actions :as push]
-             [salmon-actions :as salmon]
-             [settings-actions :as settings]
-             [subscription-actions :as subscription]
-             [user-actions :as user]
-             [webfinger-actions :as webfinger])
+            (jiksnu.actions [activity-actions :as activity]
+                            [auth-actions :as auth]
+                            [domain-actions :as domain]
+                            [inbox-actions :as inbox]
+                            [push-subscription-actions :as push]
+                            [salmon-actions :as salmon]
+                            [settings-actions :as settings]
+                            [subscription-actions :as subscription]
+                            [user-actions :as user]
+                            [webfinger-actions :as webfinger])
             [jiksnu.view :as view]
-            (jiksnu.filters
-             activity-filters
-             auth-filters
-             domain-filters
-             push-subscription-filters
-             salmon-filters
-             subscription-filters
-             user-filters
-             webfinger-filters)
-            (jiksnu.views
-             activity-views
-             auth-views
-             domain-views
-             push-subscription-views
-             subscription-views
-             user-views
-             webfinger-views)
-            (jiksnu.triggers
-             activity-triggers
-             domain-triggers
-             subscription-triggers
-             user-triggers)
+            (jiksnu.filters activity-filters
+                            auth-filters
+                            domain-filters
+                            push-subscription-filters
+                            salmon-filters
+                            subscription-filters
+                            user-filters
+                            webfinger-filters)
+            (jiksnu.views activity-views
+                          auth-views
+                          domain-views
+                          push-subscription-views
+                          subscription-views
+                          user-views
+                          webfinger-views)
+            (jiksnu.triggers activity-triggers
+                             domain-triggers
+                             subscription-triggers
+                             user-triggers)
+            (noir.util [cljs :as cljs])
             [ring.util.response :as response]))
 
 (defn not-found-msg

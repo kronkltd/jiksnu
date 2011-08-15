@@ -3,9 +3,9 @@
        clojure.test
        jiksnu.core-test
        [jiksnu.routes :only (app)]
-        jiksnu.model
-        jiksnu.model.activity
-        jiksnu.session
+       jiksnu.model
+       jiksnu.model.activity
+       jiksnu.session
        lamina.core
        ring.mock.request
        ))
