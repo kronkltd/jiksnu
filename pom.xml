@@ -142,14 +142,30 @@
       <artifactId>tools.logging</artifactId>
       <version>0.1.2</version>
     </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>pinot</groupId> -->
+    <!--   <artifactId>pinot</artifactId> -->
+    <!--   <version>0.1.0-SNAPSHOT</version> -->
+    <!-- </dependency> -->
     <dependency>
-      <groupId>pinot</groupId>
-      <artifactId>pinot</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <groupId>noir</groupId>
+      <artifactId>noir</artifactId>
+      <version>1.1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>noir-cljs</groupId>
       <artifactId>noir-cljs</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>cljs-compiler-jar</groupId>
+          <artifactId>cljs-compiler-jar</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojurescript</artifactId>
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>

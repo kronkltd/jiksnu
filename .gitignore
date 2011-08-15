@@ -7,3 +7,4 @@ config.clj
 checkouts
 public/cljs*
 public/out
+resources/public/cljs

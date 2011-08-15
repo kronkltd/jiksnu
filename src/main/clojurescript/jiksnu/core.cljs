@@ -3,7 +3,7 @@
             [goog.dom :as dom]
             [goog.net.XhrIo :as xhrio]))
 
-(defn ^{:export greet} greet
+(defn greet
   [n]
   (str "Hello " n))
 
@@ -40,7 +40,7 @@
   [selector]
   (dom/getElementsByClass "delete-button"))
 
-(defn ^:export -main
+(defn -main
   []
   (console/log "starting application")
   (add-handler do-delete-activity (find-element "delete-button")))
