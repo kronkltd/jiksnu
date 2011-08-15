@@ -67,7 +67,7 @@
 
 (def http-routes
   (make-matchers
-   [[[:get  "/"]     #'activity/index]
+   [[[:get  "/"]                           #'activity/index]
     [[:get "/.well-known/host-meta"]       #'webfinger/host-meta]
     [[:get "/admin/subscriptions"]         #'subscription/index]
     [[:get "/admin/push/subscriptions"]    #'push/index]
@@ -77,12 +77,12 @@
     [[:get "/api/people/@me/@all/:id"]     #'user/show]
     [[:get "/api/statuses/public_timeline.:format"]    #'activity/index]
     [[:get  "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline]
-    [[:get "/main/domains"]                     #'domain/index]
-    [[:get "/main/domains/*"]                   #'domain/show]
-    [[:delete "/main/domains/*"]                #'domain/delete]
-    [[:post "/main/domains"]                    #'domain/create]
-    [[:post "/main/domains/*/discover"]         #'domain/discover]
-    [[:post "/main/domains/*/edit"]             #'domain/edit]
+    [[:get "/main/domains"]                #'domain/index]
+    [[:get "/main/domains/*"]              #'domain/show]
+    [[:delete "/main/domains/*"]           #'domain/delete]
+    [[:post "/main/domains"]               #'domain/create]
+    [[:post "/main/domains/*/discover"]    #'domain/discover]
+    [[:post "/main/domains/*/edit"]        #'domain/edit]
     [[:post "/main/guest-login"]           #'auth/guest-login]
     [[:get "/main/login"]                  #'auth/login-page]
     [[:post "/main/login"]                 #'auth/login]
@@ -121,12 +121,14 @@
     [[:post "/users/:id/update"]           #'user/fetch-updates]
     [[:post "/users/:id/update-hub"]       #'user/update-hub]
     [[:post "/users/:id/push/subscribe"]   #'push/subscribe]
-    [[:get "/:id"]                         #'user/show]
+    [[:get "/:username"]                   #'activity/user-timeline]
+    [[:get "/:username.:format"]           #'activity/user-timeline]
+
+    ;; FIXME: Updating the user should probably post to a different uri
     [[:post "/:username"]                  #'user/update]
-    [[:get "/:id.:format"]                 #'user/show]
     [[:get "/:username/all"]               #'inbox/index]
-    [[:get "/:id/subscribers"]             #'subscription/subscribers]
-    [[:get "/:id/subscriptions"]           #'subscription/subscriptions]]))
+    [[:get "/:username/subscribers"]       #'subscription/subscribers]
+    [[:get "/:username/subscriptions"]     #'subscription/subscriptions]]))
 
 (def xmpp-routes
   (map

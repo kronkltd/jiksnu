@@ -134,9 +134,8 @@
 
 (deffilter #'user-timeline :http
   [action request]
-  (let [{{id :id} :params} request]
-    (let [user (model.user/fetch-by-id id)]
-      (action user))))
+  (-> request :params :username
+      model.user/show action))
 
 (deffilter #'user-timeline :xmpp
   [action request]

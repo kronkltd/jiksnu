@@ -1,21 +1,9 @@
 (ns jiksnu.helpers.subscription-helpers
-  (:use ciste.core
-        ciste.debug
-        ciste.sections
+  (:use (ciste core debug sections)
         ciste.sections.default
         clj-tigase.core
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.view)
-  (:require [hiccup.form-helpers :as f]
-            [jiksnu.model.user :as model.user]))
-
-(defn delete-form
-  [subscription]
-  (f/form-to [:delete (uri subscription)]
-             (f/hidden-field :id (:_id subscription))
-             (f/submit-button "Delete")))
-
+        (jiksnu model namespace view))
+  (:require [jiksnu.model.user :as model.user]))
 
 (defn subscriber-response-element
   [subscription]

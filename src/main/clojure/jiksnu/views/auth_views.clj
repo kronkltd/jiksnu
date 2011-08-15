@@ -5,22 +5,13 @@
         jiksnu.actions.auth-actions
         jiksnu.helpers.auth-helpers)
   (:require [hiccup.form-helpers :as f]
+            (jiksnu.templates [auth :as templates.auth])
             (ring.util [response :as response]))
   (:import jiksnu.model.User))
 
 (defview #'password-page :html
   [request user]
-  {:body
-   [:div
-    (f/form-to
-     [:post (login-uri)]
-     [:fieldset
-      [:legend "Enter Password"]
-      [:ul
-       [:li.hidden (f/hidden-field :username (:username user))]
-       [:li (f/label :password "Password")
-        (f/password-field  :password)]
-       [:li (f/submit-button "Login")]]])]})
+  {:body (templates.auth/password-page user)})
 
 (defview #'login-page :html
   [request _]

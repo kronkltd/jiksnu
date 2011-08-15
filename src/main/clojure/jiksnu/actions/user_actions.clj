@@ -135,7 +135,7 @@
                     :domain (config :domain)
                     :password password
                     :confirm-password password}]
-          (create user))))))
+          (create (spy user)))))))
 
 (declare update)
 

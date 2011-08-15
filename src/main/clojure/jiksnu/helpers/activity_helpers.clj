@@ -22,6 +22,7 @@
 
 ;; TODO: Move this to user
 (defn add-author
+  "Adds the supplied user to the atom entry"
   [^Entry entry author]
   (if-let [user (model.user/fetch-by-id (:_id author))]
     (let [author-name (:name user)
@@ -33,13 +34,6 @@
         (.addSimpleExtension atom-ns "uri" "" author-jid))
       (.addExtension entry actor-element)
       (.addExtension entry (show-section user)))))
-
-;; (defn add-author
-;;   [^Entry entry ^Activity activity]
-;;   (dorun
-;;    (map (partial add-author entry)
-;;         (:author activity)))
-;;   entry)
 
 (defn add-entry
   [feed activity]

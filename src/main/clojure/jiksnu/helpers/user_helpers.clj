@@ -22,49 +22,6 @@
            org.apache.abdera.model.Entry
            tigase.xml.Element))
 
-(defn avatar-img
-  [user]
-  (let [{:keys [avatar-url title email domain name]} user
-        jid (str (:username user) "@" domain)]
-    [:a.url {:href (uri user)
-             :title title}
-     [:img.avatar.photo
-      {:width "48"
-       :height "48"
-       :src (or avatar-url
-                (and email (gravatar-image email))
-                (gravatar-image jid))}]]))
-
-(defn subscribe-form
-  [user]
-  (f/form-to [:post "/main/subscribe"]
-             (f/hidden-field :subscribeto (:_id user))
-             (f/submit-button "Subscribe")))
-
-(defn unsubscribe-form
-  [user]
-  (f/form-to [:post "/main/unsubscribe"]
-             (f/hidden-field :unsubscribeto (:_id user))
-             (f/submit-button "Unsubscribe")))
-
-(defn update-user-button
-  [user]
-  (f/form-to
-   [:post (str (uri user) "/update")]
-   (f/submit-button "Update")))
-
-(defn discover-button
-  [user]
-  (f/form-to
-   [:post (str (uri user) "/discover")]
-   (f/submit-button "Discover")))
-
-(defn update-hub-button
-  [user]
-  (f/form-to
-   [:post (str (uri user) "/update-hub")]
-   (f/submit-button "Update Hub")))
-
 (defn fetch-user-meta
   [^User user]
   (-> user

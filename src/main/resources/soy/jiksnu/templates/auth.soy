@@ -1,0 +1,108 @@
+{namespace jiksnu.templates.auth}
+
+/**
+ *
+ */
+{template .loginForm}
+  <div>
+    <div>
+      <form method="post" action="/main/login">
+        <fieldset>
+          <legend>Login</legend>
+          <ul>
+            <li>
+              <label for="username">Username</label>
+              <input type="text" name="username" />
+            </li>
+            <li>
+              <label for="password">Password</label>
+              <input type="password" name="password" />
+            </li>
+            <li>
+              <input type="submit" value="Login" />
+            </li>
+          </ul>
+        </fieldset>
+      </form>
+    </div>
+    <div>
+      <form method="post" action="/main/guest-login">
+        <fieldset>
+          <legend>Guest Login</legend>
+          <ul>
+            <li>
+              <label for="webid">Web Id</label>
+              <input type="text" name="webid" />
+            </li>
+            <li>
+              <input type="submit" value="Login" />
+            </li>
+          </ul>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+{/template}
+
+
+/**
+ * @param authenticated
+ */
+{template .logoutButton}
+  <div>
+    <span>{call jiksnu.templates.user.linkTo data="$authenticated" /}</span>
+    <span>
+      <form method="post" action="/main/logout">
+        <input type="submit" value="Log out" />
+      </form>
+    </span>
+  </div>
+{/template}
+
+/**
+ *
+ */
+{template .loginLinks}
+  <a href="/main/login">Log in</a> or <a href="/main/register">Register</a>
+{/template}
+
+/**
+ * @param authenticated
+ */
+{template .loginSection}
+  <div id="login-section">
+    {if $authenticated}
+      {call .logoutButton data="all" /}
+    {else}
+      {call .loginLinks data="all" /}
+    {/if}
+  </div>
+{/template}
+
+
+/**
+ *
+ */
+{template .passwordPage}
+  <div>
+    <form method="post"
+          action="/main/login">
+      <fieldset>
+        <legend>Enter Password</legend>
+        <ul>
+          <li class="hidden">
+            <input type="hidden" name="username" />
+          </li>
+          <li>
+            <label for="password">Pasword</label>
+            <input type="password" name="password" />
+          </li>
+          <li>
+            <input type="submit" value="Login" />
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+  </div>
+{/template}
+

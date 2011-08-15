@@ -241,7 +241,6 @@
 {template .editButton}
   <form method="post"
         action="/notice/{$id}/edit">
-    <img src="/public/silk/page_white_edit.png" alt="edit" />
     <input type="submit" value="Edit" />
   </form>
 {/template}
@@ -378,7 +377,7 @@
       <ul>
         {foreach $recipient in $recipients}
           <li>
-            {call .linkTo data="$recipient" /}
+            {call jiksnu.templates.user.linkTo data="$recipient" /}
           </li>
         {/foreach}
       </ul>
@@ -455,11 +454,9 @@
       {call jiksnu.templates.user.displayAvatar data="$author" /}
     </header>
     <section class="comment-body">
-      <div>
-        {$author.display_name}
-      </div>
+      {call jiksnu.templates.user.linkTo data="$author" /}
       {sp}-{sp}
-      <span>{$content}</span>
+      {$content}
     </section>
     <footer>
       {$published_formatted}
@@ -496,4 +493,16 @@
         action="/notice/{$id}/update">
     <input type="submit" value="Update" />
   </form>
+{/template}
+
+
+/**
+ * @param user
+ * @param activities
+ */
+{template .userPage}
+  <div>
+    {call .show data="$user" /}
+    {call jiksnu.templates.activity.indexBlock data="$activities" /}
+  </div>
 {/template}

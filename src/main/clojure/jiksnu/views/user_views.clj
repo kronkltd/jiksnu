@@ -79,12 +79,7 @@
 
 (defview #'show :html
   [request user]
-  {:body
-   [:div
-    [:div.aside
-     (templates.user/show user)]
-    (templates.activity/index-block
-     (model.activity/find-by-user user))]
+  {:body (templates.user/user-page user)
    :formats
    [{:label "FOAF"
      :href (str (uri user) ".rdf")

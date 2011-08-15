@@ -37,6 +37,16 @@
 /**
  * @param id
  */
+{template .discoverButton}
+  <form method="post"
+        action="/main/domains/{$id}/discover">
+    <input type="submit" value="Discover" class="discover-button" />
+  </form>
+{/template}
+
+/**
+ * @param id
+ */
 {template .editButton}
   <form method="post"
         action="/main/domains/{$id}/edit">

@@ -1,17 +1,9 @@
 (ns jiksnu.views.settings-views
   (:use ciste.views
         jiksnu.actions.settings-actions)
-  (:require [hiccup.form-helpers :as f]))
+  (:require [hiccup.form-helpers :as f]
+            (jiksnu.templates [settings :as templates.settings])))
 
 (defview #'edit :html
   [request _]
-  {:body
-   [:div
-    [:h1 "Settings page"]
-    (f/form-to
-     [:post "/settings"]
-     [:ul
-      [:li (f/label :print.request "Print Request")
-       (f/check-box :print.request true)]
-      [:li (f/label :registration-enabled "Registration Enabled?")
-       (f/check-box :registration-enabled true)]])]})
+  {:body (templates.settings/edit-page)})

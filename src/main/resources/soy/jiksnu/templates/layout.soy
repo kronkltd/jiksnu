@@ -29,7 +29,7 @@
       <div id="wrap">
         <header id="site-header">
           <section id="session-menu">
-            {call .loginSection data="all" /}
+            {call jiksnu.templates.auth.loginSection data="all" /}
           </section>
           <section id="site-banner">
             <address id="site_contact" class="vcard">
@@ -78,10 +78,8 @@
  */
 {template .leftColumn}
   <aside id="left-column">
-    <div id="user-info">
-      <div>Big picture</div>
-      <div>username</div>
-    </div>
+    {call .userInfoSection data="all" /}
+    {call .streamSection data="all" /}
     {call jiksnu.templates.subscriptions.subscriptionsSection
       data="all"}
       {param user: $authenticated /}
@@ -90,9 +88,20 @@
       data="all"}
       {param user: $authenticated /}
     {/call}
-    {call .streamSection data="all" /}
     {call .formatList data="all" /}
   </aside>
+{/template}
+
+/**
+ * @param authenticated
+ */
+{template .userInfoSection}
+  {if $authenticated}
+    <div id="user-info">
+      {call jiksnu.templates.user.displayAvatar data="$authenticated" /}
+      {call jiksnu.templates.user.linkTo data="$authenticated" /}
+    </div>
+  {/if}
 {/template}
 
 /**
@@ -152,40 +161,6 @@
 
 
 /**
- * @param authenticated
- */
-{template .logoutButton}
-  <div>
-    <span>{call jiksnu.templates.user.linkTo data="$authenticated" /}</span>
-    <span>
-      <form method="post" action="/main/logout">
-        <input type="submit" value="Log out" />
-      </form>
-    </span>
-  </div>
-{/template}
-
-/**
- *
- */
-{template .loginLinks}
-  <a href="/main/login">Log in</a> or <a href="/main/register">Register</a>
-{/template}
-
-/**
- * @param authenticated
- */
-{template .loginSection}
-  <div id="login-section">
-    {if $authenticated}
-      {call .logoutButton data="all" /}
-    {else}
-      {call .loginLinks data="all" /}
-    {/if}
-  </div>
-{/template}
-
-/**
  *
  */
 {template .postActivityForm}
@@ -204,9 +179,6 @@
       </li>
       {if $authenticated}
         <li>
-          <a href="/all">Home</a>
-        </li>
-        <li>
           <a href="/settings/profile">Profile</a>
         </li>
         <li>
@@ -216,9 +188,9 @@
           <li>
             <a href="/admin/notices">Notices</a>
           </li>
-          /* <li> */
-          /*   <a href="/admin/settings">Settings</a> */
-          /* </li> */
+          <li>
+            <a href="/admin/settings">Settings</a>
+          </li>
           <li>
             <a href="/admin/push/subscriptions">Pubsubhubub</a>
           </li>

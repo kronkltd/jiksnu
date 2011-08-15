@@ -37,14 +37,6 @@
           (let [response (title user)]
             (is (instance? String response))))))))
 
-(deftest avatar-img-test
-  (testing "should return an image html"
-    (with-format :html
-      (with-serialization :http
-        (let [user (model.user/create (factory User))]
-          (let [response (avatar-img user)]
-            (is (vector? response))))))))
-
 (deftest show-section-test "User :xmpp :xmpp"
   (testing "should return an element"
     (with-serialization :xmpp

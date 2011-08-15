@@ -1,6 +1,6 @@
 (ns jiksnu.model.user
-  (:use ciste.config
-        ciste.debug
+  (:use (ciste config debug)
+        [clj-gravatar.core :only (gravatar-image)]
         jiksnu.model)
   (:require [clojure.string :as string]
             [karras.entity :as entity]
@@ -173,3 +173,34 @@
   (= (.getName element) "acl-rule"))
 
 ;; (defn discover-by-url)
+
+(defn display-name
+  [user]
+  (or (:display-name user)
+      (if (and (:first-name user) (:last-name user))
+        (str (:first-name user) " " (:last-name user)))
+      (get-uri user)))
+
+(defn format-data
+  [user]
+  (let [{id :_id
+         :keys [username domain local hub admin]} user
+         uri (get-uri user)]
+    {:id (str id)
+     :name uri
+     :username username
+     :domain domain
+     :url (if (:local user)
+            (str "/" username)
+            (str "/remote-user/" uri))
+     :local local
+     :hub hub
+     :admin admin
+     :links []
+     :subscriptions []
+     :subscribers []
+     :display-name (display-name user)
+     :imgsrc (or (:avatar-url user)
+                 (and (:email user) (gravatar-image (:email user)))
+                 (gravatar-image (:jid user))
+                 (gravatar-image uri) "")}))

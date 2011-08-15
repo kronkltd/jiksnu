@@ -26,10 +26,8 @@
 
 (defview #'ostatus :html
   [request arg]
-  {:body
-   [:div
-    (dump* request)
-    (dump* arg)]})
+  {:body ""
+   :template false})
 
 (defview #'ostatussub :html
   [request arg]
@@ -50,7 +48,7 @@
 
 (defview #'subscribers :html
   [request subscribers]
-  {:body [:div "subscribers"]})
+  {:body (templates.subscriptions/subscribers-index subscribers)})
 
 (defview #'subscriptions :html
   [request [user subscriptions]]

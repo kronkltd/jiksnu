@@ -3,9 +3,11 @@
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [clojure.string :as string]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar])
-  (:import jiksnu.model.Activity))
+            (jiksnu.model [user :as model.user])
+            (karras [entity :as entity]
+                    [sugar :as sugar]))
+  (:import com.ocpsoft.pretty.time.PrettyTime
+           jiksnu.model.Activity))
 
 (defn create
   [activity]
@@ -77,3 +79,35 @@
   (entity/update Activity
                  (sugar/eq :_id (:_id parent))
                  (sugar/push :comments (:_id comment))))
+
+(defn format-data
+  [activity]
+  (let [comments (map format-data (get-comments activity))
+        actor (current-user)]
+    {:id (str (:_id activity))
+     :author (-> activity :author model.user/fetch-by-id
+                 model.user/format-data)
+     :object-type (-> activity :object :object-type)
+     :local (:local activity)
+     :public (:public activity)
+     :content (or (-> activity :object :content)
+                  (-> activity :content)
+                  (-> activity :title))
+     :title (or (-> activity :object :content)
+                (:content activity)
+                (:title activity))
+     :lat (str (:lat activity))
+     :long (str (:long activity))
+     :authenticated (if-let [user (current-user)]
+                      (model.user/format-data user))
+     :tags []
+     :uri (:uri activity)
+     :recipients []
+     :published (format-date (:published activity))
+     :published-formatted (.format (PrettyTime.) (:published activity))
+     :buttonable (and actor
+                      (or (:admin actor)
+                          (some #(= % (:authors activity)) actor)))
+     :comment-count (str (count comments))
+     :comments comments}))
+

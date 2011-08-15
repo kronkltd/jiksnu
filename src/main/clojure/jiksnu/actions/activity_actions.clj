@@ -195,7 +195,7 @@
 
 (defaction user-timeline
   [user]
-  [user (model.activity/index :author (:_id user))])
+  [user (model.activity/find-by-user user)])
 
 (defn stream-handler
   [ch request]

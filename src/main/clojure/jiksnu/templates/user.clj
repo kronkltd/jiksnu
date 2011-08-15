@@ -1,36 +1,11 @@
 (ns jiksnu.templates.user
-  (:use ciste.debug
-        closure.templates.core
-        [clj-gravatar.core :only (gravatar-image)]))
-
-(defn format-data
-  [user]
-  {:id (str (:_id user))
-   :name (str (:username user) "@" (:domain user))
-   :username (:username user)
-   :domain (:domain user)
-   :url (str "/users/" (:_id user))
-   :local (:local user)
-   :hub (:hub user)
-   :admin (:admin user)
-   :links []
-   :subscriptions []
-   :subscribers []
-   :display-name
-   (or (:display-name user)
-       (if (and (:first-name user) (:last-name user))
-         (str (:first-name user) " " (:last-name user)))
-       (str (:username user) "@" (:domain user)))
-   :imgsrc (or (:avatar-url user)
-               (and (:email user)
-                    (gravatar-image (:email user)))
-               (gravatar-image (:jid user))
-               (gravatar-image (str (:username user) "@" (:domain user)))
-               "")})
+  (:use (ciste [debug :only (spy)])
+        (closure.templates [core :only (deftemplate)]))
+  (:require (jiksnu.model [user :as model.user])))
 
 (deftemplate show
   [user]
-  (format-data user))
+  (model.user/format-data user))
 
 (deftemplate register-section
   [request]
@@ -64,4 +39,4 @@
 
 (deftemplate index-section
   [users]
-  {:users (map format-data users)})
+  {:users (map model.user/format-data users)})

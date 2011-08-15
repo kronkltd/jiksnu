@@ -97,6 +97,36 @@
 /**
  * @param subscriptions
  */
+{template .subscribersIndex}
+  <table>
+    <thead>
+      <tr>
+        <th>Avatar</th>
+        <th>To</th>
+        <th>Pending</th>
+        <th>Created</th>
+        <th>Resend</th>
+        <th>Cancel</th>
+      </tr>
+    </thead>
+    <tbody>
+      {foreach $subscription in $subscriptions}
+        <tr>
+          <td>{call jiksnu.templates.user.displayAvatar data="$subscription.from" /}</td>
+          <td>{call jiksnu.templates.user.linkTo data="$subscription.from" /}</td>
+          <td>{$subscription.pending}</td>
+          <td>{$subscription.created}</td>
+          <td>{call .subscribeButton data="all" /}</td>
+          <td>{call .unsubscribeButton data="all" /}</td>
+        </tr>
+      {/foreach}
+    </tbody>
+  </table>
+{/template}
+
+/**
+ * @param subscriptions
+ */
 {template .subscriptionsIndex}
   <table>
     <thead>

@@ -1,0 +1,25 @@
+{namespace jiksnu.templates.settings}
+
+/**
+ *
+ */
+{template .editPage}
+  <div>
+    <form method="post" action="/main/settings">
+      <fieldset>
+        <legend>Settings Page</legend>
+        <ul>
+          <li>
+            <label for="print.request">Print Request</label>
+            <input type="checkbox" name="print.request" />
+          </li>
+          <li>
+            <label for="registration-enabled">Registration
+            Enabled</label>
+            <input type="checkbox" name="registration-enabled" />
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+  </div>
+{/template}

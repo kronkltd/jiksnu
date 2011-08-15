@@ -16,6 +16,10 @@
   {:subscriptions subscriptions
    :user (templates.user/format-data (session/current-user))})
 
+(deftemplate subscribers-index
+  [subscriptions]
+  (map format-data subscriptions))
+
 (deftemplate subscriptions-index
   [subscriptions]
   (map format-data subscriptions))

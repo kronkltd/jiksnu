@@ -5,10 +5,21 @@
  */
 {template .addForm}
   <div>
-    <h1>Create User</h1>
-    <form method="post" action="/main/register">
-      <input type="text" name="username" />
-      <input type="submit" value="Add User" />
+    <form method="post" action="/admin/users">
+      <fieldset>
+        <legend>Add User</legend>
+        <ul>
+          <li>
+            <input type="text" name="username" />
+          </li>
+          <li>
+            <input type="text" name="domain" .>
+          </li>
+          <li>
+            <input type="submit" value="Add User" />
+          </li>
+        </ul>
+      </fieldset>
     </form>
   </div>
 {/template}
@@ -17,9 +28,22 @@
 /**
  * @param id
  */
+{template .deleteButton}
+  <form method="delete"
+        action="/users/{$id}">
+    <input type="submit"
+           value="Delete"
+           class="delete-button">
+  </form>
+{/template}
+
+
+/**
+ * @param id
+ */
 {template .discoverButton}
   <form method="post"
-        action="/users/{$id}">
+        action="/users/{$id}/discover">
     <input type="submit" value="Discover" class="discover-button" />
   </form>
 {/template}
@@ -41,6 +65,16 @@
   </a>
 {/template}
 
+
+/**
+ * @param id
+ */
+{template .editButton}
+  <form method="post"
+        action="/users/{$id}/edit">
+    <input type="submit" value="Edit" />
+  </form>
+{/template}
 
 /**
  * @param id
@@ -119,9 +153,12 @@
  */
 {template .indexLine}
   <tr>
-    <td>/* avatar */</td>
-    <td>{$username or ''}</td>
-    <td>{call .linkTo data="all" /}</td>
+    <td>{call .displayAvatar data="all" /}</td>
+    <td>
+      {call .linkTo data="all"}
+        {param display_name: $username /}
+      {/call}
+    </td>
     <td>
       {call jiksnu.templates.domain.linkTo}
         {param id: $domain /}
@@ -129,8 +166,8 @@
     </td>
     <td>{call .discoverButton data="all" /}</td>
     <td>{call .updateButton data="all" /}</td>
-    /* <td>{call .editLink data="all" /}</td> */
-    /* <td>{call .deleteButton data="all" /}</td> */
+    <td>{call .editButton data="all" /}</td>
+    <td>{call .deleteButton data="all" /}</td>
   </tr>
 {/template}
 
@@ -140,14 +177,12 @@
  */
 {template .indexSection}
   <div>
-    {call .addForm data="all" /}
     <table>
       <thead>
         <tr>
           <th></th>
           <th>User</th>
           <th>Domain</th>
-          <th>Show</th>
           <th>Discover</th>
           <th>Update</th>
           <th>Edit</th>
@@ -160,6 +195,7 @@
         {/foreach}
       </tbody>
     </table>
+    {call .addForm data="all" /}
   </div>
 {/template}
 
@@ -172,6 +208,28 @@
     <p>This is a cached copy of information for a user on a different
     system</p>
   {/if}
+{/template}
+
+
+/**
+ * @param id
+ */
+{template .subscribeForm}
+  <form method="post" action="/main/subscribe">
+    <input type="hidden" name="subscribeto" value="{$id}" />
+    <input type="submit" value="Subscribe" />
+  </form>
+{/template}
+
+
+/**
+ * @param id
+ */
+{template .unsubscribeForm}
+  <form method="post" action="/main/unsubscribe">
+    <input type="hidden" name="unsubscribeto" value="{$id}" />
+    <input type="submit" value="Unsubscribe" />
+  </form>
 {/template}
 
 
@@ -407,5 +465,3 @@
     <input type="submit" value="Update" class="update-button" />
   </form>
 {/template}
-
-
