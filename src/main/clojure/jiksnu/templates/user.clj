@@ -18,7 +18,9 @@
    :subscribers []
    :display-name
    (or (:display-name user)
-       (str (:first-name user) " " (:last-name user)))
+       (if (and (:first-name user) (:last-name user))
+         (str (:first-name user) " " (:last-name user)))
+       (str (:username user) "@" (:domain user)))
    :imgsrc (or (:avatar-url user)
                (and (:email user)
                     (gravatar-image (:email user)))

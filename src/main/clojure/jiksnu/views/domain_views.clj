@@ -1,17 +1,12 @@
 (ns jiksnu.views.domain-views
-  (:use ciste.config
-        ciste.core
-        ciste.debug
-        ciste.sections
+  (:use (ciste config core debug sections views)
         ciste.sections.default
-        ciste.views
         jiksnu.actions.domain-actions
-        jiksnu.model
-        jiksnu.session
-        jiksnu.view)
+        (jiksnu model session view))
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [hiccup.form-helpers :as f])
+            [hiccup.form-helpers :as f]
+            (jiksnu.templates [domain :as templates.domain]))
   (:import jiksnu.model.Domain))
 
 (defview #'create :html
@@ -34,7 +29,17 @@
 
 (defview #'index :html
   [request domains]
-  {:body (index-block domains)})
+  {:body (templates.domain/index-block domains)})
+
+(defview #'show :html
+  [request domain]
+  {:body (templates.domain/show domain)})
+
+
+
+
+
+
 
 (defview #'ping :xmpp
   [request domain]
@@ -48,37 +53,3 @@
   #_{:status 303
    :template false
    :headers {"Location" "/domains"}})
-
-(defview #'show :html
-  [request domain]
-  {:body
-   [:div
-    [:p "Id: " (:_id domain)]
-    [:p "XMPP: "
-     (let [xmpp (:xmpp domain)]
-       (if (nil? xmpp)
-         "Unknown"
-         xmpp))]
-    [:p "Discovered: " (:discovered domain)]
-    [:div
-     [:table
-      [:thead
-       [:tr
-        [:th "Rel"]
-        [:th "Href"]
-        [:th "Template"]
-        [:th "Type"]]]
-      [:tbody
-       (map
-        (fn [link]
-          [:tr
-           [:td (:rel link)]
-           [:td (:href link)]
-           [:td (:template link)]
-           [:td (:type link)]])
-        (:links domain))]]]
-    [:p
-     (f/form-to
-      [:post (str "/domains/" (:_id domain) "/discover")]
-      (f/submit-button "Discover"))]]})
-

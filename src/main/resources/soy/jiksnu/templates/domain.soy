@@ -24,6 +24,29 @@
 
 /**
  * @param id
+ */
+{template .deleteButton}
+  <form method="delete"
+        action="/main/domains/{$id}">
+    <input type="submit"
+           value="Delete"
+           class="delete-button">
+  </form>
+{/template}
+
+/**
+ * @param id
+ */
+{template .editButton}
+  <form method="post"
+        action="/main/domains/{$id}/edit">
+    <input type="submit" value="Edit" />
+  </form>
+{/template}
+
+
+/**
+ * @param id
  * @param xmpp
  * @param discovered
  * @param link_count
@@ -44,29 +67,9 @@
         <input type="submit" value="Discover" />
       </form>
     </td>
+    <td>{call .editButton data="all" /}</td>
     <td>{call .deleteButton data="all" /}</td>
   </tr>
-{/template}
-
-/**
- * @param domains
- */
-{template .indexSection}
-  <table>
-    <tr>
-      <th>Name</th>
-      <th>XMPP?</th>
-      <th>Discovered</th>
-      <th>Host-Meta</th>
-      <th>Link Count</th>
-      <th>Edit</th>
-      <th>Discover</th>
-      <th>Delete</th>
-    </tr>
-    {foreach $domain in $domains}
-      {call .indexLine data="$domain" /}
-    {/foreach}
-  </table>
 {/template}
 
 /**
@@ -78,12 +81,62 @@
 
 
 /**
- *
+ * @param domains
  */
 {template .indexBlock}
   <div>
     <p>index domains</p>
-    {call .indexSections data="all" /}
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>XMPP?</th>
+        <th>Discovered</th>
+        <th>Host-Meta</th>
+        <th>Link Count</th>
+        <th>Discover</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {foreach $domain in $domains}
+        {call .indexLine data="$domain" /}
+      {/foreach}
+    </table>
     {call .addForm data="all" /}
+  </div>
+{/template}
+
+
+/**
+ * @param id
+ * @param xmpp
+ * @param discovered
+ * @param links
+ */
+{template .show}
+  <div>
+    <p>Id: {$id}</p>
+    <p>XMPP: {$xmpp}</p>
+    <p>Discovered: {$discovered}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Rel</th>
+          <th>href</th>
+          <th>template</th>
+          <th>type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $link in $links}
+          <tr>
+            <td>{$link.rel}</td>
+            <td>{$link.href}</td>
+            <td>{$link.template}</td>
+            <td>{$link.type}</td>
+          </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {call .discoverButton data="all" /}
   </div>
 {/template}

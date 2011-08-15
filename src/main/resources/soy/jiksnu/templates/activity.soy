@@ -32,15 +32,6 @@
             </li>
           {/if}
           <li>
-            <select name="type">
-              <option>Note</option>
-              <option>Status</option>
-              <option>Checkin</option>
-              <option>Picture</option>
-              <option>Event</option>
-            </select>
-          </li>
-          <li>
             <label for="title" class="hidden">Title</label>
             <input type="text" name="title" value="{$title ? $title : ''}" />
           </li>
@@ -51,9 +42,9 @@
             </textarea>
           </li>
           <li>
-            <fieldset>
+            <fieldset class="add-buttons">
               <legend>Add:</legend>
-              <ul class="add-buttons">
+              <ul>
                 <li class="hidden add-tags">
                   <a href="#">Tags</a>
                 </li>
@@ -75,12 +66,21 @@
           {call .pictureSection data="all" /}
           {call .locationSection data="all" /}
           {call .tagSection data="all" /}
-          <li>
+          <li class="privacy-line">
             <select name="privacy">
               <option value="public">Public</option>
               <option value="group">Group</option>
               <option value="custom">Custom</option>
               <option value="private">Private</option>
+            </select>
+          </li>
+          <li class="type-line">
+            <select name="type">
+              <option>Note</option>
+              <option>Status</option>
+              <option>Checkin</option>
+              <option>Picture</option>
+              <option>Event</option>
             </select>
           </li>
           <li>
@@ -93,7 +93,7 @@
 {/template}
 
 /**
- * @param? pictures 
+ * @param? pictures
  */
 {template .pictureSection}
   <li class="pictures-line">
@@ -180,20 +180,12 @@
 
 
 /**
- * @param comment_count
  * @param parent_id
  * @param authenticated
  */
 {template .commentsSection}
   <section class="{css comments}">
     <h1 class="hidden">Comments</h1>
-    <div>
-      <span>Comments: {$comment_count}</span>
-      {sp}
-      <a href="#">Show</a>
-      {sp}
-      {call .commentLink data="all" /}
-    </div>
     {call .commentList data="all" /}
     {if $authenticated}
       <div>
@@ -290,7 +282,7 @@
 {template .likeButton}
   <form method="post"
         action="/notice/{$id}/like">
-    <input type="submit" value="Like" />
+    <input type="submit" value="Like" class="like-button" />
   </form>
 {/template}
 
@@ -328,18 +320,16 @@
  * @param long
  */
 {template .mapsSection}
-  <div>
-    {call .displayMap data="all" /}
-    <p>
-      {if $lat}
+  {if $lat and $long}
+    <div>
+      {call .displayMap data="all" /}
+      <p>
         <span>Lat: {$lat}</span>
-      {/if}
-      {sp}
-      {if $long}
+        {sp}
         <span>Long: {$long}</span>
-      {/if}
-    </p>
- </div>
+      </p>
+    </div>
+  {/if}
 {/template}
 
 
@@ -409,7 +399,6 @@
  * @param lat
  * @param long
  * @param published
- * @param comment_count
  * @param buttonable
  */
 {template .show}
@@ -433,23 +422,23 @@
         {call .postActions data="all" /}
       </header>
       <section class="{css entry-content}">
-        {if $object_type == 'article' and $title}
-          <h3 class="{css entry-title}">{$title}</h3>
+        {if $title and $title != $content}
+          <h1 class="{css entry-title}">{$title}</h1>
         {/if}
-        <section>
+        <p>
           {$content}
-        </section>
-        <footer>
-          {call .recipientsSection data="all" /}
-          {call .linkSection data="all" /}
-          {call .mapsSection data="all" /}
-          {call .tagsSection data="all" /}
-          {call .postedLink data="all" /}
-          {call .commentsSection data="all"}
-            {param parent_id: $id /}
-          {/call}
-        </footer>
+        </p>
       </section>
+      <footer>
+        {call .recipientsSection data="all" /}
+        {call .linkSection data="all" /}
+        {call .mapsSection data="all" /}
+        {call .tagsSection data="all" /}
+        {call .postedLink data="all" /}
+        {call .commentsSection data="all"}
+          {param parent_id: $id /}
+        {/call}
+      </footer>
     </section>
   </article>
 {/template}

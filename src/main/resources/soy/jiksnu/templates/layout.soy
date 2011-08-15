@@ -42,10 +42,10 @@
           </section>
           <div class="clear"></div>
         </header>
-        <section id="notification-area">
+        <div id="notification-area">
           <div id="flash"></div>
           {call .develWarning data="all" /}
-        </section>
+        </div>
         <section id="site-main">
           {call .leftColumn data="all" /}
           <div id="content">
@@ -78,13 +78,13 @@
  *
  */
 {template .leftColumn}
-  <section id="left-column">
+  <aside id="left-column">
     <div id="user-info">
       <div>Big picture</div>
       <div>username</div>
     </div>
     <div>
-      <h3>Streams</h3>
+      <h1>Streams</h1>
       <ul>
         <li>All</li>
         <li>Stream 1</li>
@@ -122,7 +122,7 @@
     Aenean et diam velit, in ultrices libero.
     Donec fringilla rutrum ipsum, eu auctor urna blandit eget.
     Donec id est ac diam feugiat lobortis eu et massa.
-  </section>
+  </aside>
 {/template}
 
 /**

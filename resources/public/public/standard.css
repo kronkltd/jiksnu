@@ -94,10 +94,6 @@ nav ul li {
     width: 730px;
 }
 
-.activities li {
-    width: 500px;
-}
-
 .post-activity {
     border-color: black;
     border-width: 1px;
@@ -115,10 +111,6 @@ nav ul li {
     padding: 0px;
 }
 
-.post-form ul li {
-    list-style-type: none;
-    width: 100%;
-}
 
 .post-form ul li label {
     width: 30%;
@@ -130,13 +122,23 @@ nav ul li {
     right: 0px;
 }
 
-.post-form .content {
+.post-form textarea, .post-form input[name=title] {
     width: 100%;
 }
 
+.post-form input[type=submit] {
+    float: right;
+}
 
+.add-buttons {
+    border: none;
+}
 
-
+.type-line, .privacy-line {
+    display: inline-block;
+    float: left;
+    width: 100px;
+}
 
 
 
@@ -160,10 +162,14 @@ nav ul li {
     padding-left: 0px;
 }
 
-.activities li {
+li {
     list-style-type: none;
+
+}
+
+.activities > li {
     display: inline-block;
-    width: 100%;
+    width: 740px;
 }
 
 
@@ -189,10 +195,12 @@ article section.content {
 
 .content header {
     display: block;
+    position: relative;
+    overflow: hidden;
 }
 
-.entry-content {
-    margin-top: 8px;
+.entry-content p {
+    margin: 0;
 }
 
 .entry-content footer {
@@ -220,9 +228,10 @@ article section.content {
     margin-left: 1em;
 }
 
-/* .comments { */
-/*     margin-left: -25px; */
-/* } */
+.comments {
+    margin-top: 5px;
+    /* margin-left: -25px; */
+}
 
 .comments ul {
     margin: 0;
@@ -246,15 +255,15 @@ article section.content {
 }
 
 .comment-form fieldset {
-    width: 75%;
+    width: 650px;
 }
 
 .comment-form li {
     display: inline-block;
 }
 
-.comment-form input[name="content"] {
-    width: 430px;
+.comment-form input[name=content] {
+    width: 550px;
 }
 
 .comment {
@@ -289,19 +298,37 @@ article footer {
     /* position: absolute; */
     /* top: 0px; */
     /* right: 0px; */
+    /* width: 100%; */
     float: right;
 }
 
-/* .delete-button { */
-/*     background: url(/public/silk/delete.png) no-repeat center top; */
-/*     width: 16px; */
-/*     height: 16px; */
-/*     text-indent: -1000em; */
-/*     border: 0; */
-/*     padding: 0; */
-/*     position: absolute; */
-/*     overflow: hidden; */
-/* } */
+.buttons > li {
+    /* width: 30px; */
+    display: inline-block;
+}
+
+.delete-button {
+    background: url(/public/silk/delete.png) no-repeat center top;
+    width: 16px;
+    height: 16px;
+    text-indent: -1000em;
+    border: 0;
+    padding: 0;
+    /* position: absolute; */
+    overflow: hidden;
+}
+
+.like-button {
+    background: url(/public/open_star.png) no-repeat center top;
+    width: 24px;
+    height: 24px;
+    text-indent: -1000em;
+    border: 0;
+    padding: 0;
+    /* position: absolute; */
+    overflow: hidden;
+}
+
 
 .buttons li form {
     display: inline;
@@ -393,4 +420,8 @@ fieldset {
 
 .vcard, .labels {
     float: left;
+}
+
+.labels {
+    margin-left: 15px;
 }

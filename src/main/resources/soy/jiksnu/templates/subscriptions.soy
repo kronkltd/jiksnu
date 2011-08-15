@@ -90,3 +90,52 @@
     </ul>
   </div>
 {/template}
+
+
+/**
+ * @param subscriptions
+ */
+{template .subscriptionsIndex}
+  <table>
+    <thead>
+      <tr>
+        <th>Avatar</th>
+        <th>To</th>
+        <th>Pending</th>
+        <th>Created</th>
+        <th>Resend</th>
+        <th>Cancel</th>
+      </tr>
+    </thead>
+    <tbody>
+      {foreach $subscription in $subscriptions}
+        <tr>
+          <td>{call jiksnu.templates.user.displayAvatar data="$subscription.to" /}</td>
+          <td>{call jiksnu.templates.user.linkTo data="$subscription.to" /}</td>
+          <td>{$subscription.pending}</td>
+          <td>{$subscription.created}</td>
+          <td>{call .subscribeButton data="all" /}</td>
+          <td>{call .unsubscribeButton data="all" /}</td>
+        </tr>
+      {/foreach}
+    </tbody>
+  </table>
+{/template}
+
+/**
+ *
+ */
+{template .ostatusSub}
+  <div>
+    <form method="post"
+          action="/main/ostatussub">
+      <p>
+        <input name="profile"
+               type="text" />
+      </p>
+      <p>
+        <input type="submit" value="Submit" />
+      </p>
+    </form>
+  </div>
+{/template}
