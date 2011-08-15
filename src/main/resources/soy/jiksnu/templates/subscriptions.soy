@@ -56,39 +56,41 @@
 
 /**
  * @param user
- * @param subscriptions
  */
 {template .subscriptionsSection}
-  <div class="subscriptions">
-    <h3>
-      <a href="{$user.uri or ''}/subscriptions">Subscriptions</a>
-    </h3>
-    <ul>
-      {foreach $subscription in $subscriptions}
-        {call .subscriptionsLine data="$subscription" /}
-      {/foreach}
-    </ul>
-    <p>
-      <a href="/main/ostatussub">Add Remote</a>
-    </p>
-  </div>
+  {if $user}
+    <div class="subscriptions">
+      <h3>
+        <a href="{$user.uri or ''}/subscriptions">Subscriptions</a>
+      </h3>
+      <ul>
+        {foreach $subscription in $user.subscriptions}
+          {call .subscriptionsLine data="$subscription" /}
+        {/foreach}
+      </ul>
+      <p>
+        <a href="/main/ostatussub">Add Remote</a>
+      </p>
+    </div>
+  {/if}
 {/template}
 
 /**
  * @param user
- * @param subscribers
  */
 {template .subscribersSection}
-  <div class="subscribers">
-    <h3>
-      <a href="{$user.uri or ''}/subscribers">Subscribers</a>
-    </h3>
-    <ul>
-      {foreach $subscriber in $subscribers}
-        {call .subscriberLine data="$subscriber" /}
-      {/foreach}
-    </ul>
-  </div>
+  {if $user}
+    <div class="subscribers">
+      <h3>
+        <a href="{$user.uri or ''}/subscribers">Subscribers</a>
+      </h3>
+      <ul>
+        {foreach $subscriber in $user.subscribers}
+          {call .subscriberLine data="$subscriber" /}
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
 {/template}
 
 

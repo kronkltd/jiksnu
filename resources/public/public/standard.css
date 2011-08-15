@@ -373,7 +373,7 @@ article footer {
 
 .formats ul li {
     list-style-type: none;
-    display: inline;
+    /* display: inline; */
 }
 
 .clear {

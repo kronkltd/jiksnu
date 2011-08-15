@@ -19,3 +19,11 @@
 (deftemplate subscriptions-index
   [subscriptions]
   (map format-data subscriptions))
+
+(deftemplate index-section
+  [subscriptions]
+  (map format-data subscriptions))
+
+(deftemplate ostatus-sub
+  []
+  {})

@@ -10,6 +10,7 @@
 (deftemplate layout
   [response]
   {:body (hiccup/html (:body response))
+   :formats (:formats response)
    :authenticated (if-let [user (current-user)]
                     (templates.user/format-data user))
    :development (= *environment* :development)})
