@@ -52,6 +52,8 @@
                              subscription-triggers
                              user-triggers)
             (noir.util [cljs :as cljs])
+            [ring.middleware.file :as file]
+            [ring.middleware.file-info :as file-info]
             [ring.util.response :as response]))
 
 (defn not-found-msg
@@ -239,7 +241,6 @@
     #'ns-matches?]])
 
 (compojure/defroutes all-routes
-  (route/files "/public")
   (compojure/GET "/favicon.ico" request
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
@@ -253,6 +254,8 @@
 (def app
   (wrap-ring-handler
    (-> all-routes
+       (file/wrap-file "resources/public/")
+       file-info/wrap-file-info
        wrap-keyword-params
        wrap-nested-params
        wrap-multipart-params
