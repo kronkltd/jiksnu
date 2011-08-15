@@ -79,7 +79,7 @@
           <vmargs>-server -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128m</vmargs>
           <!-- <compileDeclaredNamespaceOnly>true</compileDeclaredNamespaceOnly> -->
           <!-- <testDeclaredNamespaceOnly>true</testDeclaredNamespaceOnly> -->
-          <warnOnReflection>true</warnOnReflection>
+          <!-- <warnOnReflection>true</warnOnReflection> -->
         </configuration>
         <executions>
           <execution>
