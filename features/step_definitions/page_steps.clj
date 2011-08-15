@@ -50,7 +50,7 @@
   (fn []
     (let [response @current-page
           body (channel-buffer->string (:body response))]
-      (is (re-matches #".*hentry.*" body)))))
+      (is (re-find #".*hentry.*" body)))))
 
 (Then #"I should see a list of activities"
   (fn []
