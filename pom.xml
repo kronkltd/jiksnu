@@ -199,9 +199,9 @@
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>net.kronkltd</groupId>
+      <groupId>hiccup</groupId>
       <artifactId>hiccup</artifactId>
-      <version>0.3.5</version>
+      <version>0.3.6</version>
     </dependency>
     <dependency>
       <groupId>karras</groupId>
