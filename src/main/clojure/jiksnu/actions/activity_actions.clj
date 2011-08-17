@@ -2,27 +2,27 @@
   (:use aleph.http
         (ciste core debug sections)
         ciste.sections.default
-        clj-tigase.core
-        (jiksnu abdera model namespace session)
-        jiksnu.helpers.activity-helpers
-        [karras.entity :only (make)]
+        (jiksnu model namespace)
         lamina.core)
-  (:require [clojure.data.json :as json]
+  (:require (aleph [http :as http])
+            [clj-tigase.core :as tigase]
+            [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.string :as string]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.helpers.user-helpers :as helpers.user]
+            (jiksnu [abdera :as abdera]
+                    [session :as session]
+                    [view :as view])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user])
+            [jiksnu.actions.user-actions :as actions.user]
+            (jiksnu.helpers [activity-helpers :as helpers.activity]
+                            [user-helpers :as helpers.user])
             [jiksnu.sections.activity-sections :as sections.activity]
-            [jiksnu.view :as view]
             (karras [entity :as entity]
                     [sugar :as sugar])
             [hiccup.core :as hiccup])
-  (:import java.util.concurrent.TimeoutException
-           jiksnu.model.Activity
-           org.apache.abdera.model.Entry))
+  (:import jiksnu.model.Activity))
 
 (declare find-or-create)
 
@@ -52,45 +52,46 @@
   [picture]
   (let [filename (:filename picture)
         tempfile (:tempfile picture)
-        dest-file (io/file (str (current-user-id) "/" filename))]
+        user-id (str (session/current-user-id))
+        dest-file (io/file (str user-id "/" filename))]
     (when (and (not= filename "") tempfile)
-      (.mkdirs (io/file (str (current-user-id))))
+      (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
 
 
 (defn prepare-activity
   [activity]
   (-> activity
-      set-id
-      set-object-id
-      set-public
+      helpers.activity/set-id
+      helpers.activity/set-object-id
+      helpers.activity/set-public
       set-remote
-      set-tags
+      helpers.activity/set-tags
       set-recipients
-      set-object-type
-      set-parent))
+      helpers.activity/set-object-type
+      helpers.activity/set-parent))
 
 (defn prepare-post
   [activity]
   (-> activity
       set-local
-      set-updated-time
-      set-object-updated
-      set-object-published
-      set-published-time
-      set-actor))
+      helpers.activity/set-updated-time
+      helpers.activity/set-object-updated
+      helpers.activity/set-object-published
+      helpers.activity/set-published-time
+      helpers.activity/set-actor))
 
 (defaction create
   [params]
   (let [prepared-activity (prepare-activity params)
-        activity (make Activity prepared-activity)]
+        activity (entity/make Activity prepared-activity)]
     (model.activity/create activity)))
 
 (defaction delete
   [activity]
-  (let [actor-id (current-user-id)
+  (let [actor-id (session/current-user-id)
         author (:author activity)]
-    (if (or (is-admin?) (= actor-id author))
+    (if (or (session/is-admin?) (= actor-id author))
       (model.activity/delete activity))))
 
 (defaction edit
@@ -106,14 +107,14 @@
 ;; This should be a trigger
 (defaction fetch-comments-remote
   [activity]
-  (let [author (get-author activity)
+  (let [author (helpers.activity/get-author activity)
         domain (model.domain/show (:domain author))]
     (if (:xmpp domain)
-      (deliver-packet! (comment-request activity)))))
+      (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
 
 (defaction fetch-remote-feed
   [uri]
-  (let [feed (fetch-feed uri)]
+  (let [feed (abdera/fetch-feed uri)]
     (doseq [activity (helpers.user/get-activities feed)]
       (create activity))))
 
@@ -185,7 +186,7 @@
   (let [{{id :_id} :params} activity
         original-activity (model.activity/fetch-by-id id)
         opts
-        (make
+        (entity/make
          Activity
          (merge original-activity
                 activity
