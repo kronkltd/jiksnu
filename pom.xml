@@ -156,22 +156,22 @@
       <groupId>noir-cljs</groupId>
       <artifactId>noir-cljs</artifactId>
       <version>0.1.0-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>cljs-compiler-jar</groupId>
-          <artifactId>cljs-compiler-jar</artifactId>
-        </exclusion>
-      </exclusions>
+      <!-- <exclusions> -->
+      <!--   <exclusion> -->
+      <!--     <groupId>cljs-compiler-jar</groupId> -->
+      <!--     <artifactId>cljs-compiler-jar</artifactId> -->
+      <!--   </exclusion> -->
+      <!-- </exclusions> -->
     </dependency>
-    <dependency>
-      <groupId>org.clojure</groupId>
-      <artifactId>clojurescript</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.clojure</groupId> -->
+    <!--   <artifactId>clojurescript</artifactId> -->
+    <!--   <version>0.1.0-SNAPSHOT</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>net.kronkltd</groupId>
       <artifactId>lamina</artifactId>
-      <version>0.4.0-alpha3-SNAPSHOT</version>
+      <version>0.4.0-beta2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
@@ -204,7 +204,7 @@
       <version>0.3.6</version>
     </dependency>
     <dependency>
-      <groupId>karras</groupId>
+      <groupId>net.kronkltd</groupId>
       <artifactId>karras</artifactId>
       <version>0.6.0</version>
     </dependency>
@@ -332,7 +332,7 @@
     <dependency>
       <groupId>org.clojure.contrib</groupId>
       <artifactId>prxml</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>1.3.0-alpha4</version>
     </dependency>
     <dependency>
       <groupId>potemkin</groupId>
@@ -348,7 +348,7 @@
     <dependency>
       <groupId>net.kronkltd</groupId>
       <artifactId>aleph</artifactId>
-      <version>0.2.0-alpha3-SNAPSHOT</version>
+      <version>0.2.0-beta2-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>org.clojure.contrib</groupId>
@@ -426,6 +426,21 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>jiksnu-internal</id>
+      <name>Internal Release Repository</name>
+      <url>http://build.jiksnu.com/repository/internal/</url>
+    </repository>
+    <snapshotRepository>
+      <id>jiksnu-snapshots</id>
+      <name>Internal Snapshot Repository</name>
+      <url>http://build.jiksnu.com/repository/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
 
   <pluginRepositories>
     <pluginRepository>
