@@ -269,12 +269,12 @@ an Element"
 serialization"
   ([entry] (to-activity entry nil))
   ([entry feed]
-     (let [id (str (.getId entry))
+     (let [id (str (.getId (spy entry)))
            original-activity (model.activity/fetch-by-remote-id id)
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
-           author (first (get-atom-author entry feed))
+           author (first (spy (get-atom-author entry feed)))
            extension-maps (doall
                            (map
                             parse-extension-element
@@ -315,5 +315,5 @@ serialization"
                         :public true
                         :comment-count (abdera/get-comment-count entry)}
                        extension-maps)]
-       (entity/make Activity opts))))
+       (entity/make Activity (spy opts)))))
 
