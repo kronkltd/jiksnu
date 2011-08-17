@@ -118,15 +118,15 @@
             <gem>install cuke4duke --version ${cuke4duke.version}</gem>
           </gems>
         </configuration>
-        <executions>
-          <execution>
-            <id>run-features</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>cucumber</goal>
-            </goals>
-          </execution>
-        </executions>
+        <!-- <executions> -->
+        <!--   <execution> -->
+        <!--     <id>run-features</id> -->
+        <!--     <phase>integration-test</phase> -->
+        <!--     <goals> -->
+        <!--       <goal>cucumber</goal> -->
+        <!--     </goals> -->
+        <!--   </execution> -->
+        <!-- </executions> -->
       </plugin>
     </plugins>
   </build>
