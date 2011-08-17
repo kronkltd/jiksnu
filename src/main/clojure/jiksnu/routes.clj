@@ -254,7 +254,7 @@
 (def app
   (wrap-ring-handler
    (-> all-routes
-       #_(cljs/wrap-cljs "src/main/clojurescript/")
+       ;; (cljs/wrap-cljs "src/main/clojurescript/")
        (file/wrap-file "resources/public/")
        file-info/wrap-file-info
        wrap-keyword-params
