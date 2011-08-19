@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.element-test
   (:use ciste.core
+        ciste.debug
         ciste.sections
         ciste.sections.default
         clj-factory.core
@@ -21,5 +22,5 @@
       (with-format :atom
         (let [activity (factory Activity)
               abdera-element (show-section activity)
-              response (abdera-to-tigase-element abdera-element)]
+              response (abdera-to-tigase-element (spy abdera-element))]
           (is (element/element? response)))))))

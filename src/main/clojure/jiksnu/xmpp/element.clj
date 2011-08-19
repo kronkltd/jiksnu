@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.element
-  (:use clj-tigase.core
+  (:use ciste.debug
+        clj-tigase.core
         jiksnu.abdera
         jiksnu.namespace)
   (:require [clj-tigase.element :as element])

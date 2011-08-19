@@ -1,6 +1,6 @@
 (ns jiksnu.templates.layout
   (:use (ciste [config :only (*environment*)]
-               [debug :only (spy)])
+               debug)
         (closure.templates [core :only (deftemplate)])
         (jiksnu [session :only (current-user)]))
   (:require (jiksnu.model [user :as model.user])

@@ -290,34 +290,35 @@ an Element"
 serialization"
   ([entry] (entry->activity entry nil))
   ([entry feed]
-     (let [id (str (.getId entry))
-           original-activity (model.activity/fetch-by-remote-id id)
-           title (.getTitle entry)
-           published (.getPublished entry)
-           updated (.getUpdated entry)
-           author (first (get-atom-author entry feed))
-           extension-maps (->> (.getExtensions entry)
-                               (map parse-extension-element)
-                               doall)
-           irts (parse-irts entry)
-           recipients (->> (ThreadHelper/getInReplyTos entry)
-                           (map parse-link)
-                           (filter identity))
-           links (parse-links entry)
-           tags (abdera/parse-tags entry)
-           opts (apply merge
-                       (if published {:published published})
-                       (if updated {:updated updated})
-                       (if (seq recipients)
-                         {:recipients (string/join ", " recipients)})
-                       (if title {:title title})
-                       (if (seq irts) {:irts irts})
-                       (if (seq links) {:links links})
-                       (if (seq tags) {:tags tags})
-                       {:id id
-                        :author (:_id author)
-                        :public true
-                        :comment-count (abdera/get-comment-count entry)}
-                       extension-maps)]
-       (entity/make Activity (spy opts)))))
+     (if entry
+       (let [id (str (.getId entry))
+            original-activity (model.activity/fetch-by-remote-id id)
+            title (.getTitle entry)
+            published (.getPublished entry)
+            updated (.getUpdated entry)
+            author (first (get-atom-author entry feed))
+            extension-maps (->> (.getExtensions entry)
+                                (map parse-extension-element)
+                                doall)
+            irts (parse-irts entry)
+            recipients (->> (ThreadHelper/getInReplyTos entry)
+                            (map parse-link)
+                            (filter identity))
+            links (parse-links entry)
+            tags (abdera/parse-tags entry)
+            opts (apply merge
+                        (if published {:published published})
+                        (if updated {:updated updated})
+                        (if (seq recipients)
+                          {:recipients (string/join ", " recipients)})
+                        (if title {:title title})
+                        (if (seq irts) {:irts irts})
+                        (if (seq links) {:links links})
+                        (if (seq tags) {:tags tags})
+                        {:id id
+                         :author (:_id author)
+                         :public true
+                         :comment-count (abdera/get-comment-count entry)}
+                        extension-maps)]
+        (entity/make Activity (spy opts))))))
 

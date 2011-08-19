@@ -22,7 +22,6 @@
     (let [report-orig report
           junit-report-orig junit-report]
       (with-junit-output
-        (run-tests)))
+        (run-all-tests)))
     (shutdown-agents)
     (System/exit (if (empty? (filter #{:fail :error} @results)) 0 -1))))
-
