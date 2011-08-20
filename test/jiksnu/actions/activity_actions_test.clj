@@ -5,7 +5,8 @@
         clojure.test
         jiksnu.actions.activity-actions
         (jiksnu core-test model namespace session view)
-        [karras.entity :only (make)])
+        [karras.entity :only (make)]
+        midje.sweet)
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
@@ -17,18 +18,17 @@
 (use-fixtures :each test-environment-fixture)
 
 (deftest prepare-activity-test
-  (testing "should return an activity"
+  (facts "should return an activity"
     (let [user (model.user/create (factory User))]
       (with-user user
         ;; TODO: fix clj-factory
         (let [args (make Activity (factory Activity))]
-          (let [response (prepare-activity args)]
-            (is (activity? response))))))))
+          (prepare-activity args) => activity?)))))
 
 (deftest create-test
   (testing "when the user is logged in"
     (testing "and it is a valid activity"
-     (testing "should return that activity"
+     (facts "should return that activity"
        (with-serialization :xmpp
          (with-format :xmpp
            (let [user (model.user/create (factory User))]
@@ -41,23 +41,20 @@
                               :from (tigase/make-jid user)
                               :type :set
                               :body element})
-                     request (packet/make-request packet)
-                     response (create activity)]
-                 (is (activity? response)))))))))))
+                     request (packet/make-request packet)]
+                 (create activity) => activity?)))))))))
 
 (deftest create-test
   (testing "when the user is logged in"
-    (testing "should return an activity"
-      (let [user (model.user/create (factory User))]
-        (with-user user
-          (let [activity (factory Activity)
-                response (create activity)]
-            (is (activity? response)))))))
+    (facts "should return an activity"
+      (with-user (model.user/create (factory User))
+        (let [activity (factory Activity)]
+          (create activity) => activity?))))
+  ;; TODO: Move this to 'post'
   #_(testing "when the user is not logged in"
-    (testing "should return nil"
-      (let [activity (factory Activity)
-            response (create activity)]
-        (is (nil? response))))))
+    (facts "should return nil"
+      (let [activity (factory Activity)]
+        (create activity) => nil))))
 
 (deftest delete-test
   (testing "when the activity exists"
@@ -121,61 +118,48 @@
   (testing "when the record exists"
     (testing "and the user is not logged in"
       (testing "and the record is public"
-        (testing "should return the activity"
+        (facts "should return the activity"
           (let [author (model.user/create (factory User))
                 activity (with-user author
-                           (create (factory Activity)))
-                response (show (:_id activity))]
-            (is (activity? response)))))
+                           (create (factory Activity)))]
+            (show (:_id activity)) => activity?)))
       (testing "and the record is not public"
-        (testing "should return nil"
+        (facts "should return nil"
           (let [author (model.user/create (factory User))
                 activity (with-user author
-                           (create (factory Activity {:public false})))
-                response (show (:_id activity))]
-            (is (nil? response))))))
+                           (create (factory Activity {:public false})))]
+            (show (:_id activity)) => nil?))))
     (testing "and the user is logged in"
       (testing "and is the author"
-        (testing "should return the activity"
+        (facts "should return the activity"
           (let [user (model.user/create (factory User))]
             (with-user user
-              (let [activity (create (factory Activity))
-                    response (show (:_id activity))]
-                (is (activity? response)))))))
+              (let [activity (create (factory Activity))]
+                (show (:_id activity)) => activity?)))))
       (testing "and is not the author"
-        (testing "and is on the access list"
-          (testing "should return the activity"))
         (testing "and is not on the access list"
           (testing "and is an admin"
-            (testing "should return the activity"
+            (facts "should return the activity"
               (let [user (model.user/create (factory User {:admin true}))
                     author (model.user/create (factory User))]
                 (let [activity (with-user author
                                  (create (factory Activity {:public false})))]
                   (with-user user
-                    (let [response (show (:_id activity))]
-                      (is (activity? response))))))))
+                    (show (:_id activity)) => activity?)))))
           (testing "and is not an admin"
-            (testing "should return nil"
+            (facts "should return nil"
               (let [user (model.user/create (factory User))
-                    author (model.user/create (factory User))]
-                (let [activity
-                      (with-user author
-                        (create (factory Activity {:public false})))]
-                  (with-user user
-                    (let [response (show (:_id activity))]
-                      (is (nil? response)))))))))))
+                    author (model.user/create (factory User))
+                    activity (with-user author
+                               (create (factory Activity {:public false})))]
+                (with-user user
+                  (show (:_id activity)) => nil?)))))))
     (testing "and the record is not public"
       (testing "and the user is not logged in"
-        (testing "should return nil"
+        (facts "should return nil"
           (let [activity (create (factory Activity {:public false}))
                 response (show (:_id activity))]
-            (is (nil? response)))))
-      (testing "and the user is logged in"
-        (testing "and the user is an admin"
-          (testing "should return the activity")))))
-  (testing "when the record does not exist"
-    (testing "should return nil" :pending)))
+            (is (nil? response))))))))
 
 (deftest update-test)
 
