@@ -1,16 +1,13 @@
 (ns jiksnu.helpers.activity-helpers-test
-  (:use ciste.core
-        ciste.sections
+  (:use (ciste core debug sections)
         ciste.sections.default
         clj-factory.core
         clj-tigase.core
         clojure.test
-        jiksnu.core-test
+        (jiksnu core-test model namespace session view)
         jiksnu.helpers.activity-helpers
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view)
+        [karras.entity :only (make)])
+  (:require jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity))
 
 (use-fixtures :each test-environment-fixture)
@@ -19,7 +16,8 @@
   (testing "should return a map"
     (with-serialization :http
       (with-format :atom
-        (let [activity (factory Activity)
+        ;; TODO: fix clj-factory
+        (let [activity (make Activity (factory Activity))
               entry (show-section activity)
               response (entry->activity entry)]
           (is (map? response)))))))

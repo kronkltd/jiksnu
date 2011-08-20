@@ -1,22 +1,15 @@
 (ns jiksnu.sections.activity-sections
-  (:use ciste.core
-        ciste.debug
-        ciste.html
-        ciste.sections
+  (:use (ciste core debug html sections)
         ciste.sections.default
-        jiksnu.abdera
-        jiksnu.model
-        jiksnu.helpers.activity-helpers
-        jiksnu.helpers.user-helpers
-        jiksnu.namespace
-        jiksnu.sections.user-sections
-        jiksnu.session
+        (jiksnu abdera model namespace view session)
+        (jiksnu.helpers activity-helpers
+                        user-helpers)
         jiksnu.xmpp.element
-        jiksnu.view
         [karras.entity :only (make)])
   (:require [hiccup.form-helpers :as f]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
+            (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
+            jiksnu.sections.user-sections
             (jiksnu.templates
              [activity :as template.activity]))
   (:import com.cliqset.abdera.ext.activity.object.Person

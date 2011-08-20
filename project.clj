@@ -1,12 +1,7 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
-  :description "a framework for asynchronous communication"
-  :repositories {"jboss" "http://repository.jboss.org/nexus/content/groups/public/"
-                 "jiksnu-internal" "http://build.jiksnu.com/repository/internal"
-                 "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
-                 }
-  :license {:name "Eclipse Public License - v 1.0"
-            :url "http://www.eclipse.org/legal/epl-v10.html"
-            :distribution :repo}
+  :description "distributed social network"
+  :repositories {"jiksnu-internal" "http://build.jiksnu.com/repository/internal"
+                 "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"}
   :dependencies [[org.clojure/clojure "1.3.0-beta1"]
                  [org.clojure/tools.logging "0.1.2"]
                  [noir "1.1.1-SNAPSHOT"]
@@ -34,11 +29,15 @@
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
                  [net.kronkltd/aleph "0.2.0-beta2-SNAPSHOT"]
                  [org.deri.any23/any23-core "0.5.0"]
-                 [org.slf4j/slf4j-simple "1.6.1"]]
+                 [org.slf4j/slf4j-simple "1.6.1"]
+                 ;; [midje "1.3-alpha1"]
+                 [swank-clojure "1.4.0-SNAPSHOT"]]
   :exclusions [org.clojure/contrib
                org.slf4j/slf4j-log4j12
-               org.slf4j/slf4j-jdk14
-               ]
-  :aot [jiksnu.xmpp.plugin]
+               org.slf4j/slf4j-jdk14]
+  :aot [jiksnu.xmpp.plugin
+        jiksnu.xmpp.channels
+        jiksnu.core]
+  :main jiksnu.core
   :warn-on-reflection false
   :jvm-opts ["-server"])

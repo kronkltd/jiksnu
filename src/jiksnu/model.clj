@@ -14,11 +14,11 @@
            org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId))
 
-(def #^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
+(def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 
-(def #^:dynamic *mongo-database* (ref nil))
+(def ^:dynamic *mongo-database* (ref nil))
 
-(defonce #^:dynamic *formatter*
+(defonce ^:dynamic *formatter*
   (SimpleDateFormat. *date-format*))
 
 (defn format-date
@@ -31,7 +31,6 @@
 
 (defn mongo-database*
   []
-  (println (config :database :name))
   (karras/mongo-db (config :database :name)))
 
 (defn mongo-database
