@@ -1,22 +1,16 @@
 (ns jiksnu.actions.activity-actions-test
-  (:use ciste.core
-        ciste.sections
+  (:use (ciste core debug sections views)
         ciste.sections.default
-        ciste.views
         clj-factory.core
         clojure.test
         jiksnu.actions.activity-actions
-        ciste.debug
-        jiksnu.core-test
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+        (jiksnu core-test model namespace session view)
+        [karras.entity :only (make)])
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
+            (jiksnu.model [activity :as model.activity]
+                          [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -26,7 +20,8 @@
   (testing "should return an activity"
     (let [user (model.user/create (factory User))]
       (with-user user
-        (let [args (factory Activity)]
+        ;; TODO: fix clj-factory
+        (let [args (make Activity (factory Activity))]
           (let [response (prepare-activity args)]
             (is (activity? response))))))))
 
