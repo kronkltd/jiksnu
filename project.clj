@@ -30,7 +30,7 @@
                  [net.kronkltd/aleph "0.2.0-beta2-SNAPSHOT"]
                  [org.deri.any23/any23-core "0.5.0"]
                  [org.slf4j/slf4j-simple "1.6.1"]
-                 ;; [midje "1.3-alpha1"]
+                 [net.kronkltd/midje "1.3-alpha1"]
                  [swank-clojure "1.4.0-SNAPSHOT"]]
   :exclusions [org.clojure/contrib
                org.slf4j/slf4j-log4j12
