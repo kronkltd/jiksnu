@@ -25,7 +25,7 @@
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
           items (:items request)]
-      (action (map #(to-activity
+      (action (map #(entry->activity
                      (parse-xml-string
                       (str (first (element/children %)))))
                    items)))))
@@ -102,7 +102,7 @@
          (fn [item]
            (-> item element/children first
                str parse-xml-string
-               to-activity))
+               entry->activity))
          items)]
     (action (first activities))))
 
@@ -124,7 +124,7 @@
     (let [packet (:packet request)
           ;; items (element/children packet "/message/event/items/item")
           items (map (comp first element/children) (:items request))]
-      (action (map #(to-activity (parse-xml-string (str %)))
+      (action (map #(entry->activity (parse-xml-string (str %)))
             items)))))
 
 (deffilter #'update :http

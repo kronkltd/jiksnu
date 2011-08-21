@@ -27,7 +27,7 @@
         feed (.getRoot document)
         entries (.getEntries feed)]
     (doseq [entry entries]
-      (let [activity (helpers.activity/to-activity entry feed)]
+      (let [activity (helpers.activity/entry->activity entry feed)]
         (actions.activity/create activity)))))
 
 (defaction index

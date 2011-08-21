@@ -21,7 +21,7 @@
         uri (.getSignerUri (SimpleAtomDataParser.) data-bytes)
         data (String. data-bytes)]
     (if-let [entry (abdera/parse-xml-string data)]
-      (let [activity (to-activity entry)]
+      (let [activity (entry->activity entry)]
         (if-let [author (.getAuthor entry)]
           (let [author-uri (.getUri author)
                 user (model.user/find-or-create-by-remote-id (str author-uri))

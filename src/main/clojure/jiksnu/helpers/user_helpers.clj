@@ -17,7 +17,8 @@
                           [user :as model.user]
                           [subscription :as model.subscription])
             [karras.sugar :as sugar])
-  (:import javax.xml.namespace.QName
+  (:import com.cliqset.abdera.ext.activity.object.Person
+           javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera.model.Entry
            tigase.xml.Element))
@@ -41,7 +42,7 @@
 (defn get-activities
   [feed]
   (map
-   #(jiksnu.helpers.activity-helpers/to-activity % feed)
+   #(jiksnu.helpers.activity-helpers/entry->activity % feed)
    (.getEntries feed)))
 
 (defn fetch-activities
@@ -109,3 +110,23 @@
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (tigase/make-packet packet-map)]
     (tigase/deliver-packet! packet)))
+
+(defn person->user
+  [^Person person]
+  (let [name (.getName person)
+        avatars (.getAvatars person)]
+    {:email (.getEmail person)
+     :first-name (.getGiven name)
+     :last-name (.getFamily name)
+     :display-name (.getFormatted name)
+     :uri (.getUri person)
+     :gender (.getGender person)
+     :avatars (map
+               (fn [avatar]
+                 {:rel (.getRel avatar)
+                  :title (.getTile avatar)
+                  :mime-type (.getMimeType avatar)
+                  :href (.getHref avatar)
+                  :width (.getWidth avatar)
+                  :height (.getHeight avatar)})
+               avatars)}))

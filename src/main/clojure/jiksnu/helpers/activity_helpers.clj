@@ -264,40 +264,45 @@ an Element"
          (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
      "note")))
 
-(defn ^Activity to-activity
+(defn parse-irt
+  [irt]
+  (->> irt
+       .getHref
+       str
+       (re-find #"node=")))
+
+(defn parse-irts
+  [entry]
+  (->> (ThreadHelper/getInReplyTos entry)
+       (map parse-irt)
+       (filter identity)))
+
+(defn parse-link
+  [link]
+  (let [href (str (.getHref link))]
+    (if href
+      (if (re-find #"^.+@.+$" href)
+        (if (not (re-find #"node=" href))
+          href)))))
+
+(defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
-  ([entry] (to-activity entry nil))
+  ([entry] (entry->activity entry nil))
   ([entry feed]
-     (let [id (str (.getId (spy entry)))
+     (let [id (str (.getId entry))
            original-activity (model.activity/fetch-by-remote-id id)
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
-           author (first (spy (get-atom-author entry feed)))
-           extension-maps (doall
-                           (map
-                            parse-extension-element
-                            (.getExtensions entry)))
-           irts (filter
-                 identity
-                 (map
-                  (fn [irt]
-                    (let [href (str (.getHref irt))]
-                      (if (re-find #"node=" href)
-                        href)))
-                  (ThreadHelper/getInReplyTos entry)))
-           recipients
-           (filter
-            identity
-            (map
-             (fn [link]
-               (let [href (str (.getHref link))]
-                 (if href
-                   (if (re-find #"^.+@.+$" href)
-                     (if (not (re-find #"node=" href))
-                       href)))))
-             (ThreadHelper/getInReplyTos entry)))
+           author (first (get-atom-author entry feed))
+           extension-maps (->> (.getExtensions entry)
+                               (map parse-extension-element)
+                               doall)
+           irts (parse-irts entry)
+           recipients (->> (ThreadHelper/getInReplyTos entry)
+                           (map parse-link)
+                           (filter identity))
            links (parse-links entry)
            tags (abdera/parse-tags entry)
            opts (apply merge
@@ -310,7 +315,6 @@ serialization"
                        (if (seq links) {:links links})
                        (if (seq tags) {:tags tags})
                        {:id id
-                        :remote-id id
                         :author (:_id author)
                         :public true
                         :comment-count (abdera/get-comment-count entry)}

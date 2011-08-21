@@ -15,13 +15,13 @@
 
 (use-fixtures :each test-environment-fixture)
 
-(deftest to-activity-test
+(deftest entry->activity-test
   (testing "should return a map"
     (with-serialization :http
       (with-format :atom
         (let [activity (factory Activity)
               entry (show-section activity)
-              response (to-activity entry)]
+              response (entry->activity entry)]
           (is (map? response)))))))
 
 ;; (deftest to-json-test
