@@ -1,24 +1,23 @@
 (ns jiksnu.actions.user-actions-test
-  (:use clj-factory.core
-        clj-tigase.core
+  (:use [clj-factory.core :only (factory)]
         clojure.test
-        jiksnu.core-test
-        jiksnu.model
-        jiksnu.session
+        (jiksnu core-test model)
         jiksnu.actions.user-actions
-        jiksnu.view)
-  (:require [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+        midje.sweet)
+  (:require [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
 
+(background
+ (around :facts (with-environment :test
+                  (model.user/drop!)
+                  ?form)))
+
 (deftest show-test
   (testing "when the user exists"
-    (testing "should return that user"
-      (model.user/drop!)
+    (facts "should return that user"
       (let [user (model.user/create (factory User))
             response (show user)]
-        (is (instance? User response))
-        (is (= response user))))))
+        response => (partial instance? User)
+        response => user))))
