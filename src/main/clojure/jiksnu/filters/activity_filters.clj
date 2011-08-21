@@ -32,9 +32,8 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id :id} :params} request
-        activity (model.activity/show id)]
-    (action activity)))
+  (-> request :params :id
+      model.activity/show action))
 
 (deffilter #'edit :http
   [action request]
@@ -58,8 +57,8 @@
 
 (deffilter #'friends-timeline :http
   [action request]
-  (let [{{id :id} :params} request]
-    (model.activity/index :author id)))
+  (->> request :params :id
+       (model.activity/index :author)))
 
 (deffilter #'inbox :http
   [action request]
@@ -87,8 +86,7 @@
 
 (deffilter #'new-comment :http
   [action request]
-  (let [{{id :id} :params} request]
-    (model.activity/show id)))
+  (-> request :params :id model.activity/show))
 
 (deffilter #'post :http
   [action request]
@@ -108,8 +106,8 @@
 
 (deffilter #'show :http
   [action request]
-  (let [{{id :id} :params} request]
-    (action (make-id id))))
+  (-> request :params :id
+      make-id action))
 
 (deffilter #'show :xmpp
   [action request]
@@ -129,8 +127,7 @@
 
 (deffilter #'update :http
   [action request]
-  (let [{params :params} request]
-    (action params)))
+  (-> request :params action))
 
 (deffilter #'user-timeline :http
   [action request]
@@ -139,5 +136,5 @@
 
 (deffilter #'user-timeline :xmpp
   [action request]
-  (let [user (model.user/fetch-by-jid (:to request))]
-    (action user)))
+  (-> request :to
+      model.user/fetch-by-jid action))
