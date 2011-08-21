@@ -8,3 +8,5 @@ checkouts
 public/cljs*
 public/out
 resources/public/cljs
+lib
+classes
