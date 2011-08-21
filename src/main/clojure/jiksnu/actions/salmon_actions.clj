@@ -10,32 +10,34 @@
            com.cliqset.magicsig.dataparser.SimpleAtomDataParser
            com.cliqset.magicsig.MagicSig))
 
+(defonce default-sig (MagicSig/getDefault))
+(defonce salmon (Salmon/getDefault))
+(defonce deserializer (com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer.))
+
+(defn get-key-for-author
+  [author]
+  (->> author .getUri str
+       model.user/find-or-create-by-remote-id
+       model.signature/get-key-for-user
+       model.signature/get-key-from-armored))
+
+(defn signature-valid?
+  [envelope key]
+  (->> (.verify default-sig envelope (list key))
+       .getSignatureVerificationResults
+       (map #(.isVerified %))
+       (some identity)))
+
 (defaction process
   [request]
-  (let [deserializer (com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer.)
-        default-sig (MagicSig/getDefault)
-        salmon (Salmon/getDefault)
-        body (:body request)
+  (let [body (:body request)
         envelope (.deserialize deserializer body)
         data-bytes (.decodeData default-sig envelope)
-        uri (.getSignerUri (SimpleAtomDataParser.) data-bytes)
         data (String. data-bytes)]
     (if-let [entry (abdera/parse-xml-string data)]
-      (let [activity (entry->activity entry)]
-        (if-let [author (.getAuthor entry)]
-          (let [author-uri (.getUri author)
-                user (model.user/find-or-create-by-remote-id (str author-uri))
-                key-pair (model.signature/get-key-for-user user)
-                key (model.signature/get-key-from-armored key-pair)
-                signatures (.getSignatures envelope)
-                verification-result (.verify default-sig envelope
-                                             (list key))
-                result-data (.getData verification-result)
-                sig-results (.getSignatureVerificationResults
-                             verification-result)]
-            (if (some identity
-                      (map
-                       (fn [r] (.isVerified r))
-                       sig-results))
-              (actions.activity/remote-create [activity]))))))))
+      (if-let [author (.getAuthor entry)]
+        (let [key (get-key-for-author author)]
+          (if (signature-valid? envelope key)
+            (actions.activity/remote-create
+             [(entry->activity entry)])))))))
 
