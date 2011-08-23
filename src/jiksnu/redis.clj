@@ -15,16 +15,20 @@
   (dosync
    (ref-set *redis-stream* (redis-stream {:host "localhost"}))))
 
+(defn client
+  [& args]
+  (apply @*redis-client* args))
+
 (defn redis-keys
   ([]
      (redis-keys "*"))
   ([pattern]
-     @(@*redis-client* [:keys pattern])))
+     @(client [:keys pattern])))
 
 (defn queue-size
   [key]
-  @(@*redis-client* [:llen key]))
+  @(client [:llen key]))
 
 (defn sadd
   [key val]
-  (@*redis-client* [:sadd key val]))
+  (client [:sadd key val]))
