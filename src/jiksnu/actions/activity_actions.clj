@@ -29,7 +29,7 @@
 (defn set-recipients
   [activity]
   (if-let [recipients (filter identity (:recipients activity))]
-    (let [users (map user-for-uri recipients)]
+    (let [users (map actions.user/user-for-uri recipients)]
       (assoc activity :recipients users))
     (dissoc activity :recipients)))
 

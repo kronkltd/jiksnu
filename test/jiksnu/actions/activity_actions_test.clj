@@ -17,6 +17,27 @@
 
 (use-fixtures :each test-environment-fixture)
 
+(deftest test-set-recipients
+  (fact "should return an activity with the recipients added"
+    (let [activity (factory Activity)]
+      (set-recipients activity) => activity?)))
+
+(deftest test-set-remote
+  (testing "when the local flag is not set"
+    (fact "the local flag should be false"
+      (let [activity (factory Activity)]
+        (:local (set-remote activity)) => falsey)))
+  (testing "when the local flag is set to true"
+    (fact "the local flag should be true"
+      (let [activity (factory Activity {:local true})]
+        (:local (set-remote activity)) => truthy)))
+  (testing "when the local flag is set to false"
+    (fact "the local flag should be false"
+      (let [activity (factory Activity {:local false})]
+        (:local (set-remote activity)) => falsey))))
+
+
+
 (deftest prepare-activity-test
   (facts "should return an activity"
     (let [user (model.user/create (factory User))]
