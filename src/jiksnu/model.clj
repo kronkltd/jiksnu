@@ -7,7 +7,8 @@
         karras.entity
         plaza.rdf.core
         plaza.rdf.implementations.jena)
-  (:require (karras [core :as karras]
+  (:require (jiksnu [redis :as redis])
+            (karras [core :as karras]
                     [sugar :as sugar]))
   (:import java.io.PrintWriter
            java.text.SimpleDateFormat
@@ -82,6 +83,7 @@
 (defmacro with-environment
   [environment & body]
   `(binding [ciste.config/*environment* ~environment]
+     (redis/init-client)
      (with-database
        ~@body)))
 

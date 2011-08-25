@@ -14,6 +14,14 @@
                   (model.user/drop!)
                   ?form)))
 
+(deftest test-enqueue-discover
+  (fact
+    (let [user (model.user/create (factory User))]
+      @(enqueue-discover user) => 1
+      )
+    )
+  )
+
 (deftest show-test
   (testing "when the user exists"
     (facts "should return that user"
