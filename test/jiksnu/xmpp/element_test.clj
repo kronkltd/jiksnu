@@ -16,8 +16,7 @@
   (testing "should return a tigase element"
     (with-serialization :xmpp
       (with-format :atom
-        ;; TODO: fix clj-factory
-        (let [activity (make Activity (factory Activity))
+        (let [activity (factory Activity)
               abdera-element (show-section activity)
               response (abdera-to-tigase-element abdera-element)]
           (is (element/element? response)))))))

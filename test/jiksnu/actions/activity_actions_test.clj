@@ -19,7 +19,7 @@
 
 (deftest test-set-recipients
   (fact "should return an activity with the recipients added"
-    (let [activity (make Activity (factory Activity))]
+    (let [activity (factory Activity)]
       (set-recipients activity) => activity?)))
 
 (deftest test-set-remote
@@ -42,8 +42,7 @@
   (facts "should return an activity"
     (let [user (model.user/create (factory User))]
       (with-user user
-        ;; TODO: fix clj-factory
-        (let [args (make Activity (factory Activity))]
+        (let [args (factory Activity)]
           (prepare-activity args) => activity?)))))
 
 (deftest create-test
