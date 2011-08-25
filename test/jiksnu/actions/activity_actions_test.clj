@@ -19,7 +19,7 @@
 
 (deftest test-set-recipients
   (fact "should return an activity with the recipients added"
-    (let [activity (factory Activity)]
+    (let [activity (make Activity (factory Activity))]
       (set-recipients activity) => activity?)))
 
 (deftest test-set-remote
