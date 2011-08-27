@@ -1,26 +1,44 @@
-{:development
+{
+ :development
 
- {:domain                 "beta.jiksnu.com"
+ {
+  :database {
+             :host        "localhost"
+             :name        :jiksnu_development
+             }
   :debug                  false
-  :registration-enabled   false
-  :database {:host        "localhost"
-             :name        :jiksnu_development}
-  :print    {:request     true
+  :domain                 "beta.jiksnu.com"
+  :print    {
+             :actions     true
              :matchers    false
+             :params      false
              :predicates  false
-             :params      false}}
+             :request     false
+             }
+  :registration-enabled   false
+  :run-triggers           true
+  :use-pipeline           true
+  }
 
 
  :test
 
- {:domain                 "test.jiksnu.com"
+ {
+  :database {
+             :host        "localhost"
+             :name        :jiksnu_test
+             }
   :debug                  false
-  :registration-enabled   false
-  :database {:host        "localhost"
-             :name        :jiksnu_test}
-  :print    {:request     true
+  :domain                 "test.jiksnu.com"
+  :print    {
+             :actions     false
              :matchers    false
+             :params      false
              :predicates  false
-             :params      false}}
-
+             :request     false
+             }
+  :registration-enabled   false
+  :run-triggers           true
+  :use-pipeline           true
+  }
  }
