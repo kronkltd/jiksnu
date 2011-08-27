@@ -1,11 +1,9 @@
 (ns jiksnu.views.domain-views
-  (:use (ciste config core debug sections views)
-        ciste.sections.default
+  (:use (ciste config core debug views)
         jiksnu.actions.domain-actions
         (jiksnu model session view))
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [hiccup.form-helpers :as f]
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
             (jiksnu.templates [domain :as templates.domain]))
   (:import jiksnu.model.Domain))
 

@@ -1,15 +1,11 @@
 (ns jiksnu.view
-  (:use [ciste core debug formats html sections views]
+  (:use (ciste core
+               [config :only (config)]
+               debug formats html sections views)
         ciste.sections.default
-        [ciste.config :only (config)]
-        (jiksnu model namespace session))
-  (:require [clj-tigase.core :as tigase]
-            [clojure.tools.logging :as log]
-            [clojure.stacktrace :as stacktrace]
-            [ciste.debug :as debug]
-            [hiccup.core :as hiccup]
-            (jiksnu [abdera :as abdera]
-                    [namespace :ads namespace]
+        (jiksnu model session))
+  (:require (clj-tigase [core :as tigase])
+            (jiksnu [namespace :ads namespace]
                     [xmpp :as xmpp])
             (jiksnu.templates [layout :as template.layout]
                               [user :as template.user])
