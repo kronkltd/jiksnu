@@ -1,23 +1,34 @@
 (ns jiksnu.model.signature-test
   (:use clojure.test
         midje.sweet
-        jiksnu.core-test)
+        jiksnu.core-test
+        jiksnu.model.signature
 
+        )
+  (:import java.security.KeyPair
+           java.security.PrivateKey
+           java.security.PublicKey
+           java.security.spec.RSAPrivateKeySpec
+           java.security.spec.RSAPublicKeySpec
+
+           )
   )
 
 (deftest test-generate-key
   (fact
-    (generate-key) => nil #_(partial instance? Key)
+    (generate-key) => (partial instance? KeyPair)
     )
   )
 
 (deftest test-public-key
   (fact
-    (public-key .keypair.) => nil #_(partial instance? RSAPublicKeySpec)))
+    (let [keypair (generate-key)]
+     (public-key keypair)) => (partial instance? PublicKey)))
 
 (deftest test-private-key
   (fact
-    (private-key .keypair.) => nil
+    (let [keypair (generate-key)]
+      (private-key keypair)) => (partial instance? PrivateKey)
     )
   )
 
@@ -26,9 +37,9 @@
 (deftest test-private-spec)
 
 (deftest test-get-bytes
-  (fact
-    (let [bigint (BigInteger. )]
-      (get-byte bigint)) => nil
+  (future-fact "should return an array of bytes"
+    (let [bigint (BigInteger. "42")]
+      (get-bytes bigint)) => nil
     )
   )
 
@@ -47,10 +58,4 @@
 (deftest test-set-armored-key)
 
 (deftest test-drop!)
-
-(deftest test-fetcher
-  (fact
-    (fetcher) => nil #_(partial instance? JavaNetXRDFetcher)
-    )
-  )
 

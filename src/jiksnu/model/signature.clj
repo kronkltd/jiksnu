@@ -18,9 +18,11 @@
            java.security.spec.RSAPrivateKeySpec
            java.security.spec.RSAPublicKeySpec
            jiksnu.model.MagicKeyPair
+           jiksnu.model.User
            org.apache.commons.codec.binary.Base64
            org.apache.commons.io.output.ByteArrayOutputStream
            org.apache.http.impl.client.DefaultHttpClient
+           org.bson.types.ObjectId
            org.opensaml.xml.parse.BasicParserPool
            org.openxrd.DefaultBootstrap
            org.openxrd.discovery.DiscoveryManager
@@ -29,6 +31,8 @@
            org.openxrd.discovery.impl.HostMetaDiscoveryMethod
            org.openxrd.discovery.impl.HtmlLinkDiscoveryMethod
            org.openxrd.discovery.impl.HttpHeaderDiscoveryMethod))
+
+(DefaultBootstrap/bootstrap)
 
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
@@ -47,7 +51,7 @@
   (.getPublic keypair))
 
 (defn private-key
-  [^RSAPrivateKeySpec keypair]
+  [^KeyPair keypair]
   (.getPrivate keypair))
 
 (defn public-spec
@@ -90,7 +94,7 @@
   (Base64/encodeBase64URLSafeString byte-array))
 
 (defn magic-key-string
-  [^KeyPair keypair]
+  [^MagicKeyPair keypair]
   (str
    "data:application/magic-public-key,RSA."
    (str (encode (get-bytes (BigInteger. (:modulus keypair)))))
@@ -98,7 +102,7 @@
    (str (encode (get-bytes (BigInteger. (:public-exponent keypair)))))))
 
 (defn pair-hash
-  [keypair]
+  [^KeyPair keypair]
   (let [public-key (public-key keypair)
         private-key (private-key keypair)]
     {:crt-coefficient  (str (.getCrtCoefficient private-key))
@@ -111,22 +115,24 @@
      :public-exponent  (str (.getPublicExponent private-key))}))
 
 (defn generate-key-for-user
-  [user]
+  [^User user]
   (entity/create
    MagicKeyPair
    (assoc (pair-hash (generate-key))
      :userid (:_id user))))
 
 (defn get-key-for-user-id
-  [id]
+  [^ObjectId id]
   (entity/fetch-one MagicKeyPair {:userid id}))
 
 (defn get-key-for-user
-  [user]
+  [^User user]
   (get-key-for-user-id (:_id user)))
 
 (defn set-armored-key
-  [user-id n e]
+  [^ObjectId user-id
+   ^String n
+   ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
     (entity/save
      (merge key-pair
@@ -174,6 +180,7 @@
        me)))
 
 (defn serialize
+  "Returns an XML string representing the envelope"
   [^MagicEnvelope envelope]
   (let [serializer (XMLMagicEnvelopeSerializer.)
         os (ByteArrayOutputStream.)]
@@ -192,7 +199,6 @@
 
 (defn get-discovery-manager
   []
-  (DefaultBootstrap/bootstrap)
   (let [http-client (DefaultHttpClient.)
         manager (BasicDiscoveryManager.)]
     (let [host-meta (HostMetaDiscoveryMethod.)
@@ -209,9 +215,14 @@
 
       (add-discovery-method manager host-meta)
       (add-discovery-method manager header)
-      (add-discovery-method manager link)
-      )
+      (add-discovery-method manager link))
     manager))
+
+(def ^:dynamic *discovery-manager* (get-discovery-manager))
+
+(defn discover
+  [^String url]
+  (.discover *discovery-manager* (URI. url)))
 
 (defn get-deserializer
   []
