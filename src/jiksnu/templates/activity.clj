@@ -14,5 +14,5 @@
 
 (deftemplate user-timeline
   [user activities]
-  (spy {:user (model.user/format-data user)
-        :activities (map model.activity/format-data activities)}))
+  {:user (model.user/format-data user)
+   :activities (map model.activity/format-data activities)})

@@ -320,5 +320,4 @@ serialization"
                          :public true
                          :comment-count (abdera/get-comment-count entry)}
                         extension-maps)]
-        (entity/make Activity (spy opts))))))
-
+         (entity/make Activity opts)))))
