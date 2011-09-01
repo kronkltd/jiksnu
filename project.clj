@@ -39,5 +39,6 @@
         jiksnu.xmpp.channels
         jiksnu.core]
   :main jiksnu.core
+  :dev-resources-path "src/test/resources"
   :warn-on-reflection false
   :jvm-opts ["-server"])
