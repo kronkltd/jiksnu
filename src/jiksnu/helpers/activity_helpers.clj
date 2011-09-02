@@ -2,20 +2,18 @@
   (:use (ciste config debug sections)
         ciste.sections.default
         (jiksnu model namespace session view))
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
             [clojure.string :as string]
-            [hiccup.form-helpers :as f]
             [jiksnu.abdera :as abdera]
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import java.io.StringWriter
-           javax.xml.namespace.QName
+  (:import javax.xml.namespace.QName
            jiksnu.model.Activity
-           org.apache.abdera.ext.json.JSONUtil
-           org.apache.abdera.ext.thread.InReplyTo
+           jiksnu.model.User
            org.apache.abdera.ext.thread.ThreadHelper
            org.apache.abdera.model.Entry
            tigase.xml.Element))
@@ -127,6 +125,7 @@
   (let [parent-id (.getAttributeValue element "ref")]
     {:parent parent-id}))
 
+;; TODO: This is a job for match
 (defn parse-extension-element
   [element]
   (let [qname (.getQName element)
@@ -171,11 +170,10 @@ an Element"
              (.setText element child))))
        element)))
 
+;; TODO: What id should be used here?
 (defn comment-node-uri
-  [activity]
-  (str microblog-uri
-       ":replies:item="
-       (:_id activity)))
+  [{id :id :as activity}]
+  (str microblog-uri ":replies:item=" id))
 
 (defn comment-request
   [activity]
@@ -187,6 +185,8 @@ an Element"
     (element/make-element
      ["pubsub" {"xmlns" pubsub-uri}
       ["items" {"node" (comment-node-uri activity)}]])}))
+
+;; TODO: Move these to their own ns
 
 (defn set-id
   [activity]
@@ -292,12 +292,13 @@ serialization"
   ([entry feed]
      (if entry
        (let [id (str (.getId entry))
-            original-activity (model.activity/fetch-by-remote-id id)
-            title (.getTitle entry)
-            published (.getPublished entry)
-            updated (.getUpdated entry)
-            author (first (get-atom-author entry feed))
-            extension-maps (->> (.getExtensions entry)
+             original-activity (model.activity/fetch-by-remote-id id)
+             title (.getTitle entry)
+             published (.getPublished entry)
+             updated (.getUpdated entry)
+             author (spy (first (get-atom-author entry feed)))
+             user (helpers.user/person->user author)
+             extension-maps (->> (.getExtensions entry)
                                 (map parse-extension-element)
                                 doall)
             irts (parse-irts entry)
@@ -316,8 +317,28 @@ serialization"
                         (if (seq links) {:links links})
                         (if (seq tags) {:tags tags})
                         {:id id
-                         :author (:_id author)
+                         :author (:_id user)
                          :public true
                          :comment-count (abdera/get-comment-count entry)}
                         extension-maps)]
          (entity/make Activity opts)))))
+
+(defn get-activities
+  [feed]
+  (map #(entry->activity % feed)
+       (.getEntries feed)))
+
+(defn get-hub-link
+  [feed]
+  (-> feed
+      (model.user/rel-filter-feed "hub")
+      first
+      .getHref
+      str))
+
+(defn load-activities
+  [^User user]
+  (let [feed (helpers.user/fetch-user-feed user)]
+    (doseq [activity (getactivities feed)]
+      (model.activity/create activity))))
+

@@ -1,10 +1,11 @@
 (ns jiksnu.views.activity-views
-  (:use (ciste config core debug html sections
+  (:use (ciste [config :only (config)]
+               core
+               [debug :only (spy)]
+               html sections
                [views :only (defview)])
         ciste.sections.default
-        jiksnu.actions.activity-actions
-        jiksnu.helpers.activity-helpers
-        jiksnu.sections.activity-sections)
+        jiksnu.actions.activity-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
@@ -13,8 +14,10 @@
                     [namespace :as namespace]
                     [session :as session]
                     [view :as view])
+            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
+            (jiksnu.sections [activity-sections :as sections.activity])
             (jiksnu.templates [activity :as templates.activity])
             (jiksnu.xmpp [element :as xmpp.element])
             (plaza.rdf [core :as plaza])
@@ -70,7 +73,7 @@
                   "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
-     :body (make-feed
+     :body (helpers.activity/make-feed
             {:title "Public Activities"
              :subtitle "All activities posted"
              :id self
@@ -87,7 +90,7 @@
   [request [user activities]]
   {:headers {"Content-Type" "application/xml"}
    :template false
-   :body (make-feed
+   :body (helpers.activity/make-feed
           {:title (str (:username user) " timeline")
            :subtitle (str "Updates from " (:username user)
                           " on " (:domain user))

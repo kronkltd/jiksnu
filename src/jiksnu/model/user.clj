@@ -2,29 +2,13 @@
   (:use (ciste config debug)
         [clj-gravatar.core :only (gravatar-image)]
         jiksnu.model)
-  (:require [clojure.string :as string]
+  (:require [jiksnu.abdera :as abdera]
+            [clojure.string :as string]
             [karras.entity :as entity]
             [jiksnu.model.domain :as model.domain])
-  (:import java.net.URI
-           jiksnu.model.Domain
+  (:import jiksnu.model.Domain
            jiksnu.model.User
-           org.apache.abdera.model.Entry
-           org.apache.abdera.model.Feed
-           tigase.xml.Element
-           tigase.xmpp.BareJID
            tigase.xmpp.JID))
-
-(defn get-id
-  [^JID jid]
-  (.getLocalpart jid))
-
-(defn get-domain
-  [^BareJID user]
-  (.getDomain user))
-
-(defn bare-jid
-  [local domain]
-  (BareJID/bareJIDInstance local domain))
 
 (defn split-uri
   [uri]
@@ -34,13 +18,6 @@
   [rel links]
   (filter #(= (:rel %) rel)
           links))
-
-(defn rel-filter-feed
-  [^Feed feed rel]
-  (filter
-   (fn [link]
-     (= (.getRel link) rel))
-   (.getLinks feed)))
 
 (defn get-link
   [user rel]
@@ -102,13 +79,14 @@
       (create {:id id})))
 
 (defn find-or-create-by-jid
-  [jid]
-  (find-or-create (.getLocalpart jid) (.getDomain jid)))
+  [^JID jid]
+  (find-or-create (abdera/get-id jid) (abdera/get-domain jid)))
 
+;; TODO: Is this needed?
 (defn subnodes
   [^BareJID user subnode]
-  (let [id (get-id user)
-        domain (get-domain user)]
+  (let [id (abdera/get-id user)
+        domain (abdera/get-domain user)]
     (:nodes (show id))))
 
 (defn edit
@@ -119,18 +97,14 @@
   [id]
   (entity/delete (fetch-by-id id)))
 
+;; TODO: Is this needed?
 (defn add-node
-  [user name]
+  [^User user name]
   (entity/update User
-          {:_id (get-id user)}))
-
-(defn inbox
-  []
-  #_(model.activity/index)
-  [])
+          {:_id (abdera/get-id user)}))
 
 (defn update
-  [new-user]
+  [^User new-user]
   (let [old-user (show (:username new-user) (:domain new-user))
         merged-user (merge old-user
                            ;; If these fields are unchecked, they
@@ -143,46 +117,33 @@
     user))
 
 (defn local?
-  [user]
-  (= (:domain user)
-     (config :domain)))
+  [^User user]
+  (= (:domain user) (config :domain)))
 
 (defn get-uri
   [^User user]
   (str (:username user) "@" (:domain user)))
 
-(defn author-uri
-  [^Entry entry]
-  (let [author (.getAuthor entry)]
-    (let [uri (.getUri author)]
-      (URI. (.toString uri)))))
-
 (defn get-domain
-  [user]
+  [^User user]
   (model.domain/show (:domain user)))
 
 (defn user-meta-uri
   [^User user]
-  (let [domain-object (get-domain user)]
+  (let [domain-object (abdera/get-domain user)]
     (if-let [lrdd-link (get-link domain-object "lrdd")]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user))))))
 
-(defn rule-element?
-  [^Element element]
-  (= (.getName element) "acl-rule"))
-
-;; (defn discover-by-url)
-
 (defn display-name
-  [user]
+  [^User user]
   (or (:display-name user)
       (if (and (:first-name user) (:last-name user))
         (str (:first-name user) " " (:last-name user)))
       (get-uri user)))
 
 (defn format-data
-  [user]
+  [^User user]
   (let [{id :_id
          :keys [username domain local hub admin]} user
          uri (get-uri user)]

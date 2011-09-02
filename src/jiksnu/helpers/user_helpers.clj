@@ -1,7 +1,5 @@
 (ns jiksnu.helpers.user-helpers
-  (:use ciste.config
-        ciste.debug
-        ciste.sections
+  (:use (ciste config debug sections)
         ciste.sections.default
         [clj-gravatar.core :only (gravatar-image)]
         (jiksnu abdera model session view))
@@ -9,9 +7,7 @@
                         [element :as element]
                         [packet :as packet])
             [clojure.string :as string]
-            [hiccup.form-helpers :as f]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            jiksnu.helpers.activity-helpers
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user]
@@ -36,33 +32,9 @@
     user "http://schemas.google.com/g/2010#updates-from")))
 
 (defn fetch-user-feed
-  [user]
-  (fetch-feed (feed-link-uri user)))
-
-(defn get-activities
-  [feed]
-  (map
-   #(jiksnu.helpers.activity-helpers/entry->activity % feed)
-   (.getEntries feed)))
-
-(defn fetch-activities
-  [user]
-  (let [feed (fetch-user-feed user)]
-    (get-activities feed)))
-
-(defn get-hub-link
-  [feed]
-  (-> feed
-      (model.user/rel-filter-feed "hub")
-      first
-      .getHref
-      str))
-
-(defn load-activities
-  [user]
-  (dorun
-   (map model.activity/create
-        (fetch-activities user))))
+  "returns a feed"
+  [^User user]
+  (abdera/fetch-feed (feed-link-uri user)))
 
 (defn rule-map
   [rule]

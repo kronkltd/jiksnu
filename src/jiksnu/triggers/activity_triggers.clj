@@ -1,21 +1,16 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use ciste.core
-        ciste.debug
+  (:use (ciste core debug triggers)
         ciste.sections.default
-        ciste.triggers
         jiksnu.actions.activity-actions
-        jiksnu.helpers.activity-helpers
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.item :as model.item]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+        (jiksnu model namespace session view))
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (jiksnu.helpers [activity-helpers :as helpers.activity])
+            (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
+                          [item :as model.item]
+                          [subscription :as model.subscription]
+                          [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

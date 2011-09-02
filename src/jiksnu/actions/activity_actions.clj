@@ -213,3 +213,9 @@
                   (with-serialization :http)
                   (with-format :html))))))
    ch))
+
+(defn get-author
+  [activity]
+  (-> activity
+      :author
+      model.user/fetch-by-id))

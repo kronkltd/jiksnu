@@ -1,20 +1,18 @@
 (ns jiksnu.filters.activity-filters
   (:use aleph.http
-        ciste.debug
-        ciste.filters
-        clj-tigase.core
-        jiksnu.abdera
+        (ciste debug filters)
+        (jiksnu model session)
         jiksnu.actions.activity-actions
-        jiksnu.helpers.activity-helpers
-        jiksnu.model
-        jiksnu.sections.activity-sections
-        jiksnu.session
         lamina.core)
-  (:require [clj-tigase.element :as element]
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
             [clojure.java.io :as io]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.like :as model.like]
-            [jiksnu.model.user :as model.user]))
+            (jiksnu [abdera :as abdera])
+            (jiksnu.helpers [activity-helpers :as helpers.activity])
+            (jiksnu.sections [activity-sections :as sections.activity])
+            (jiksnu.model [activity :as model.activity]
+                          [like :as model.like]
+                          [user :as model.user])))
 
 (deffilter #'add-comment :http
   [action request]
@@ -25,8 +23,8 @@
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
           items (:items request)]
-      (action (map #(entry->activity
-                     (parse-xml-string
+      (action (map #(helpers.activity/entry->activity
+                     (abdera/parse-xml-string
                       (str (first (element/children %)))))
                    items)))))
 
@@ -99,8 +97,8 @@
         (map
          (fn [item]
            (-> item element/children first
-               str parse-xml-string
-               entry->activity))
+               str abdera/parse-xml-string
+               helpers.activity/entry->activity))
          items)]
     (action (first activities))))
 
@@ -122,7 +120,8 @@
     (let [packet (:packet request)
           ;; items (element/children packet "/message/event/items/item")
           items (map (comp first element/children) (:items request))]
-      (action (map #(entry->activity (parse-xml-string (str %)))
+      (action (map #(helpers.activity/entry->activity
+                     (abdera/parse-xml-string (str %)))
             items)))))
 
 (deffilter #'update :http

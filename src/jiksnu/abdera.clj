@@ -1,18 +1,19 @@
 (ns jiksnu.abdera
   (:use ciste.debug
         [clojure.tools.logging :only (error)])
-  (:require [clj-tigase.element :as element]
-            [jiksnu.model.user :as model.user])
+  (:require [clj-tigase.element :as element])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
            java.io.ByteArrayInputStream
            java.io.StringWriter
+           java.net.URI
            javax.xml.namespace.QName
            org.apache.abdera.Abdera
            org.apache.abdera.ext.json.JSONUtil
            org.apache.abdera.factory.Factory
            org.apache.abdera.model.Element
            org.apache.abdera.model.Entry
+           org.apache.abdera.model.Feed
            org.apache.abdera.protocol.client.AbderaClient))
 
 (defonce ^Abdera ^:dynamic *abdera* (Abdera.))
@@ -103,14 +104,13 @@
     (fn [category] (.getTerm category))
     categories)))
 
-(defn get-author-id
-  [author]
-  (let [uri (.getUri author)
-        domain (.getHost uri)
-        name (or (.getUserInfo uri)
-                 (.getName author))
-        author-obj (model.user/find-or-create name domain)]
-    (:_id author-obj)))
+;; (defn get-author-id
+;;   [author]
+;;   (let [uri (.getUri author)
+;;         domain (.getHost uri)
+;;         name (or (.getUserInfo uri)
+;;                  (.getName author))]
+;;     (str name "@" domain)))
 
 (defn to-json
   "Serializes an Abdera entry to a json StringWriter"
@@ -122,4 +122,23 @@
 (defn has-author?
   [^Entry entry]
   (not (nil? (.getAuthor entry))))
+
+
+(defn rel-filter-feed
+  [^Feed feed rel]
+  (filter
+   (fn [link]
+     (= (.getRel link) rel))
+   (.getLinks feed)))
+
+(defn author-uri
+  [^Entry entry]
+  (let [author (.getAuthor entry)]
+    (let [uri (.getUri author)]
+      (URI. (.toString uri)))))
+
+(defn rule-element?
+  [^Element element]
+  (= (.getName element) "acl-rule"))
+
 
