@@ -26,11 +26,6 @@
 
 (declare find-or-create)
 
-(defn user-for-uri
-  [uri]
-  (let [[username domain] (model.user/split-uri uri)]
-    (:_id (actions.user/find-or-create username domain))))
-
 (defn set-recipients
   [activity]
   (if-let [recipients (filter identity (:recipients activity))]

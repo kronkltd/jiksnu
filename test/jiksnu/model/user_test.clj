@@ -2,32 +2,35 @@
   (:use ciste.config
         clj-factory.core
         clojure.test
-        jiksnu.core-test
-        jiksnu.model
-        jiksnu.model.user)
+        (jiksnu core-test model)
+        jiksnu.model.user
+        midje.sweet)
   (:import jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
 
-(deftest get-id-test)
+(deftest test-split-uri
+  (facts
+    (split-uri "bob@example.com") => ["bob" "example.com"]))
 
-(deftest get-domain-test)
+(deftest test-rel-filter
+  (facts
+    (let [links [{:rel "alternate"}
+                 {:rel "contains"}]]
+      (rel-filter "alternate" links) => [{:rel "alternate"}]
+      (rel-filter "foo" links) => [])))
 
-(deftest bare-jid-test)
+(deftest test-get-link
+  (fact
+    (let [user (factory User {:links [{:rel "foo" :href "bar"}]})]
+      (:href (get-link user "foo")) => "bar"
+      (get-link user "baz") => nil)))
 
-(deftest split-uri-test)
+(deftest test-drop!)
 
-(deftest rel-filter-test)
+(deftest test-create)
 
-(deftest rel-filter-feed-test)
-
-(deftest get-link-test)
-
-(deftest drop!-test)
-
-(deftest create-test)
-
-(deftest index-test
+(deftest test-index
   (testing "when there are no users"
     (testing "should be empty"
       (drop!)
@@ -43,7 +46,7 @@
       (let [response (index)]
         (is (every? (partial instance? User) response))))))
 
-(deftest show-test
+(deftest test-show
   (testing "when the user is found"
     (testing "should return a user"
       (let [username (fseq :id)]
@@ -56,6 +59,24 @@
       (let [username (fseq :id)]
         (let [response (show username)]
           (is (is (nil? response))))))))
+
+(deftest test-fetch-by-id)
+
+
+
+
+
+
+
+
+
+(deftest get-id-test)
+
+(deftest get-domain-test)
+
+(deftest bare-jid-test)
+
+(deftest rel-filter-feed-test)
 
 (deftest edit-test
   (testing "when the user is found"

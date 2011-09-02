@@ -112,6 +112,19 @@
                :updated (sugar/date)
                :discovered false}))))
 
+
+(defn user-for-uri
+  "Returns a user with the passed account uri,
+  or creates one if it does not exist."
+  [uri]
+  (->> uri model.user/split-uri
+      (apply find-or-create) :_id))
+
+
+
+
+
+
 (defaction index
   [options]
   (model.user/index))

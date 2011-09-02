@@ -120,7 +120,8 @@
 
 (defn local?
   [^User user]
-  (= (:domain user) (config :domain)))
+  (or (:local user)
+      (= (:domain user) (config :domain))))
 
 (defn get-uri
   [^User user]
@@ -153,7 +154,7 @@
      :name uri
      :username username
      :domain domain
-     :url (if (:local user)
+     :url (if (local? user)
             (str "/" username)
             (str "/remote-user/" uri))
      :local local
