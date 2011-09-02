@@ -7,6 +7,7 @@
                         [element :as element]
                         [packet :as packet])
             [clojure.string :as string]
+            (jiksnu [abdera :as abdera])
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
@@ -47,8 +48,8 @@
 (defn property-map
   [user property]
   (let [child-elements (element/children property)
-        rule-elements (filter model.user/rule-element? child-elements)
-        type-element (first (filter (comp not model.user/rule-element?)
+        rule-elements (filter abdera/rule-element? child-elements)
+        type-element (first (filter (comp not abdera/rule-element?)
                                     child-elements))]
     {:key (.getName property)
      :type (.getName type-element)
@@ -84,21 +85,9 @@
     (tigase/deliver-packet! packet)))
 
 (defn person->user
-  [^Person person]
-  (let [name (.getName person)
-        avatars (.getAvatars person)]
-    {:email (.getEmail person)
-     :first-name (.getGiven name)
-     :last-name (.getFamily name)
-     :display-name (.getFormatted name)
-     :uri (.getUri person)
-     :gender (.getGender person)
-     :avatars (map
-               (fn [avatar]
-                 {:rel (.getRel avatar)
-                  :title (.getTile avatar)
-                  :mime-type (.getMimeType avatar)
-                  :href (.getHref avatar)
-                  :width (.getWidth avatar)
-                  :height (.getHeight avatar)})
-               avatars)}))
+  [person]
+  (let [email (.getEmail person)
+        name (.getName person)]
+    (merge {:id (str (.getUri person))}
+           (if email {:email email})
+           (if name {:display-name name}))))

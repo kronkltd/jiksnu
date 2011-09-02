@@ -141,4 +141,10 @@
   [^Element element]
   (= (.getName element) "acl-rule"))
 
-
+(defn get-hub-link
+  [feed]
+  (-> feed
+      (rel-filter-feed "hub")
+      first
+      .getHref
+      str))

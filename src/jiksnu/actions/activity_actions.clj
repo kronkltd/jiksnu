@@ -112,10 +112,11 @@
     (if (:xmpp domain)
       (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
 
+;; TODO: merge this with h.a/load-activities
 (defaction fetch-remote-feed
   [uri]
   (let [feed (abdera/fetch-feed uri)]
-    (doseq [activity (helpers.user/get-activities feed)]
+    (doseq [activity (helpers.activity/get-activities feed)]
       (create activity))))
 
 ;; (defaction find-or-create

@@ -1,26 +1,35 @@
 (ns jiksnu.helpers.activity-helpers-test
-  (:use (ciste core debug sections)
+  (:use (ciste core
+               [debug :only (spy)]
+               sections)
         ciste.sections.default
         clj-factory.core
         clj-tigase.core
         clojure.test
         (jiksnu core-test model namespace session view)
         jiksnu.helpers.activity-helpers
-        [karras.entity :only (make)])
+        [karras.entity :only (make)]
+        midje.sweet)
   (:require jiksnu.sections.activity-sections)
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
 
-(deftest entry->activity-test
-  (testing "should return a map"
-    (with-serialization :http
-      (with-format :atom
-        ;; TODO: fix clj-factory
-        (let [activity (make Activity (factory Activity))
-              entry (show-section activity)
-              response (entry->activity entry)]
-          (is (map? response)))))))
+(background
+ (around :facts
+   (with-environment :test
+     (let [actor (factory User)]
+       ?form))))
+
+(deftest test-entry->activity
+  (facts "should return an Activity"
+    (with-context [:http :atom]
+      (let [entry (->> (factory Activity)
+                       ;; TODO: fix clj-factory
+                       (make Activity )
+                       show-section)]
+        (entry->activity entry) => map?))))
 
 ;; (deftest to-json-test
 ;;   (testing "should not be nil"

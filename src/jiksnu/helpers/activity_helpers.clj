@@ -11,7 +11,8 @@
                           [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import javax.xml.namespace.QName
+  (:import com.cliqset.abdera.ext.activity.ActivityEntry
+           javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera.ext.thread.ThreadHelper
@@ -43,11 +44,13 @@
 
 (defn get-atom-author
   [entry feed]
-  (concat
-   (.getAuthors entry)
-   (if feed (.getAuthors feed))
-   (if-let [source (.getSource entry)]
-     (.getAuthors source))))
+  (or
+   ;; (.getActor entry)
+   (.getAuthor entry)
+   ;; (if feed (first (.getAuthors feed)))
+   ;; (if-let [source (.getSource entry)]
+   ;;   (first (.getAuthors source)))
+   ))
 
 (defn make-feed
   [{:keys [user title subtitle links entries updated id]}]
@@ -72,6 +75,7 @@
           (.setMimeType (:type link)))
         (.addLink feed link-element)))
     (doseq [entry entries]
+      (.addEntry feed (show-section entry))
       (add-entry feed entry))
     (str feed)))
 
@@ -290,37 +294,39 @@ an Element"
 serialization"
   ([entry] (entry->activity entry nil))
   ([entry feed]
-     (if entry
+     (if-let [entry (ActivityEntry. entry)]
        (let [id (str (.getId entry))
              original-activity (model.activity/fetch-by-remote-id id)
              title (.getTitle entry)
              published (.getPublished entry)
              updated (.getUpdated entry)
-             author (spy (first (get-atom-author entry feed)))
-             user (helpers.user/person->user author)
+             user (-> entry
+                      (get-atom-author feed)
+                      helpers.user/person->user :id
+                      model.user/find-or-create-by-remote-id)
              extension-maps (->> (.getExtensions entry)
-                                (map parse-extension-element)
-                                doall)
-            irts (parse-irts entry)
-            recipients (->> (ThreadHelper/getInReplyTos entry)
-                            (map parse-link)
-                            (filter identity))
-            links (parse-links entry)
-            tags (abdera/parse-tags entry)
-            opts (apply merge
-                        (if published {:published published})
-                        (if updated {:updated updated})
-                        (if (seq recipients)
-                          {:recipients (string/join ", " recipients)})
-                        (if title {:title title})
-                        (if (seq irts) {:irts irts})
-                        (if (seq links) {:links links})
-                        (if (seq tags) {:tags tags})
-                        {:id id
-                         :author (:_id user)
-                         :public true
-                         :comment-count (abdera/get-comment-count entry)}
-                        extension-maps)]
+                                 (map parse-extension-element)
+                                 doall)
+             irts (parse-irts entry)
+             recipients (->> (ThreadHelper/getInReplyTos entry)
+                             (map parse-link)
+                             (filter identity))
+             links (parse-links entry)
+             tags (abdera/parse-tags entry)
+             opts (apply merge
+                         (if published {:published published})
+                         (if updated {:updated updated})
+                         (if (seq recipients)
+                           {:recipients (string/join ", " recipients)})
+                         (if title {:title title})
+                         (if (seq irts) {:irts irts})
+                         (if (seq links) {:links links})
+                         (if (seq tags) {:tags tags})
+                         {:id id
+                          :author user
+                          :public true
+                          :comment-count (abdera/get-comment-count entry)}
+                         extension-maps)]
          (entity/make Activity opts)))))
 
 (defn get-activities
@@ -328,17 +334,9 @@ serialization"
   (map #(entry->activity % feed)
        (.getEntries feed)))
 
-(defn get-hub-link
-  [feed]
-  (-> feed
-      (model.user/rel-filter-feed "hub")
-      first
-      .getHref
-      str))
-
 (defn load-activities
   [^User user]
   (let [feed (helpers.user/fetch-user-feed user)]
-    (doseq [activity (getactivities feed)]
+    (doseq [activity (get-activities feed)]
       (model.activity/create activity))))
 

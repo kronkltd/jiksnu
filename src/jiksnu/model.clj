@@ -1,13 +1,14 @@
 (ns jiksnu.model
-  (:use [ciste.config :only (config environment)]
+  (:use ciste.core
+        [ciste.config :only (config environment)]
         clj-factory.core
         clojure.data.json
         jiksnu.namespace
         karras.entity
         plaza.rdf.core
         plaza.rdf.implementations.jena)
-  (:require [karras.core :as karras]
-            [karras.sugar :as sugar])
+  (:require (karras [core :as karras]
+                    [sugar :as sugar]))
   (:import java.io.PrintWriter
            java.text.SimpleDateFormat
            java.util.Date
@@ -152,3 +153,9 @@
   {:write-json write-json-date})
 (extend ObjectId Write-JSON
   {:write-json write-json-object-id})
+
+(defmacro with-context
+  [[serialization format] & body]
+  `(with-serialization ~serialization
+    (with-format ~format
+      ~@body)))

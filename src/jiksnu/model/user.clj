@@ -4,10 +4,12 @@
         jiksnu.model)
   (:require [jiksnu.abdera :as abdera]
             [clojure.string :as string]
+            (clj-tigase [core :as tigase])
             [karras.entity :as entity]
             [jiksnu.model.domain :as model.domain])
   (:import jiksnu.model.Domain
            jiksnu.model.User
+           tigase.xmpp.BareJID
            tigase.xmpp.JID))
 
 (defn split-uri
@@ -80,13 +82,13 @@
 
 (defn find-or-create-by-jid
   [^JID jid]
-  (find-or-create (abdera/get-id jid) (abdera/get-domain jid)))
+  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
 
 ;; TODO: Is this needed?
 (defn subnodes
   [^BareJID user subnode]
-  (let [id (abdera/get-id user)
-        domain (abdera/get-domain user)]
+  (let [id (tigase/get-id user)
+        domain (tigase/get-domain user)]
     (:nodes (show id))))
 
 (defn edit
@@ -101,7 +103,7 @@
 (defn add-node
   [^User user name]
   (entity/update User
-          {:_id (abdera/get-id user)}))
+          {:_id (tigase/get-id user)}))
 
 (defn update
   [^User new-user]
@@ -130,7 +132,7 @@
 
 (defn user-meta-uri
   [^User user]
-  (let [domain-object (abdera/get-domain user)]
+  (let [domain-object (tigase/get-domain user)]
     (if-let [lrdd-link (get-link domain-object "lrdd")]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user))))))

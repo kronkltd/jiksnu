@@ -171,7 +171,7 @@
 (defaction update-hub
   [user]
   (let [feed (fetch-user-feed user)
-        hub-link (get-hub-link feed)]
+        hub-link (abdera/get-hub-link feed)]
     (entity/update
      User {:_id (:_id user)}
      {:$set {:hub hub-link}})
