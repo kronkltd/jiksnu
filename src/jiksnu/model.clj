@@ -99,9 +99,13 @@
   [^String id]
   (ObjectId. id))
 
+;; TODO: Since I am no longer using this style of id, I am not sure if
+;; this is still needed. Perhaps move to abdera
 (defn new-id
   []
   (UIDGenerator/generateURNString))
+
+;; TODO: Moke this to a factories file
 
 (defseq :id
   [n]
@@ -142,6 +146,9 @@
    :from (fseq :word)
    :created #'sugar/date})
 
+
+;; TODO: Find a good place for this
+
 (defn write-json-date
   ([date out]
      (write-json-date date out false))
@@ -160,8 +167,3 @@
 (extend ObjectId Write-JSON
   {:write-json write-json-object-id})
 
-(defmacro with-context
-  [[serialization format] & body]
-  `(with-serialization ~serialization
-    (with-format ~format
-      ~@body)))

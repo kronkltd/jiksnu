@@ -83,11 +83,3 @@
           {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
         packet (tigase/make-packet packet-map)]
     (tigase/deliver-packet! packet)))
-
-(defn person->user
-  [person]
-  (let [email (.getEmail person)
-        name (.getName person)]
-    (merge {:id (str (.getUri person))}
-           (if email {:email email})
-           (if name {:display-name name}))))

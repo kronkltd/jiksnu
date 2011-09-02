@@ -1,33 +1,35 @@
 (ns jiksnu.actions.subscription-actions-test
-  (:use clj-factory.core
-        clj-tigase.core
+  (:use [clj-factory.core :only (factory)]
         clojure.test
         jiksnu.actions.subscription-actions
-        jiksnu.core-test
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view)
-  (:require [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+        (jiksnu core-test model
+                [session :only (with-user)])
+        midje.sweet)
+  (:require (jiksnu.model [subscription :as model.subscription]
+                          [user :as model.user]))
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
 
-(deftest subscribe-test
+(deftest test-subscribe
   (testing "when the user is not already subscribed"
-    (testing "should return a subscription"
+    (fact "should return a subscription"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
         (with-user user
-          (let [response (subscribe subscribee)]
-            (is (subscription? response))))))))
+          (subscribe subscribee) => subscription?)))))
 
-(deftest subscribers-test
+(deftest test-subscribed
+  (fact "should return a subscription"
+    (let [user (model.user/create (factory User))
+          subscribee (model.user/create (factory User))]
+      (subscribed user subscribee) => subscription?)))
+
+(deftest test-subscribers
   (testing "when there are subscribers"
-    (testing "should not be empty"
+    (fact "should not be empty"
       (let [user (model.user/create (factory User))
             subscriber (model.user/create (factory User))
             subscription (model.subscription/create
@@ -35,19 +37,18 @@
                                    {:from (:_id subscriber)
                                     :to (:_id user)}))
             [_ subscriptions] (subscribers user)]
-        (is (seq subscriptions))
-        (is (every? (partial instance? Subscription) subscriptions))))))
+        subscriptions => seq?
+        subscriptions => (partial every? (partial instance? Subscription))))))
 
-(deftest subscriptions-test
+(deftest test-subscriptions
   (testing "when there are subscriptions"
-    (testing "should return a sequence of subscriptions"
+    (fact "should return a sequence of subscriptions"
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             subscription (model.subscription/create
                           (factory Subscription
                                    {:from (:_id user)
                                     :to (:_id subscribee)}))
-            response (subscriptions user)
-            [user subscriptions] response]
-        (is (not (empty? subscriptions)))
-        (is (every? (partial instance? Subscription) subscriptions))))))
+            [user subscriptions] (subscriptions user)]
+        subscriptions => (comp not empty?)
+        subscriptions => (partial every? (partial instance? Subscription))))))

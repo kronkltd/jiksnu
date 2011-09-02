@@ -22,7 +22,10 @@
             (karras [entity :as entity]
                     [sugar :as sugar])
             [hiccup.core :as hiccup])
-  (:import jiksnu.model.Activity))
+  (:import com.cliqset.abdera.ext.activity.ActivityEntry
+           jiksnu.model.Activity
+           jiksnu.model.User
+           org.apache.abdera.ext.thread.ThreadHelper))
 
 (declare find-or-create)
 
@@ -107,11 +110,68 @@
     (if (:xmpp domain)
       (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
 
+(defn ^Activity entry->activity
+  "Converts an Abdera entry to the clojure representation of the json
+serialization"
+  ([entry] (entry->activity entry nil))
+  ([entry feed]
+     (if-let [entry (ActivityEntry. entry)]
+       (let [id (str (.getId entry))
+             original-activity (model.activity/fetch-by-remote-id id)
+             title (.getTitle entry)
+             published (.getPublished entry)
+             updated (.getUpdated entry)
+             user (-> entry
+                      (helpers.activity/get-atom-author feed)
+                      actions.user/person->user
+                      actions.user/find-or-create-by-remote-id)
+             extension-maps (->> (.getExtensions entry)
+                                 (map helpers.activity/parse-extension-element)
+                                 doall)
+             irts (helpers.activity/parse-irts entry)
+             recipients (->> (ThreadHelper/getInReplyTos entry)
+                             (map helpers.activity/parse-link)
+                             (filter identity))
+             links (helpers.activity/parse-links entry)
+             tags (abdera/parse-tags entry)
+             opts (apply merge
+                         (if published {:published published})
+                         (if updated {:updated updated})
+                         (if (seq recipients)
+                           {:recipients (string/join ", " recipients)})
+                         (if title {:title title})
+                         (if (seq irts) {:irts irts})
+                         (if (seq links) {:links links})
+                         (if (seq tags) {:tags tags})
+                         {:id id
+                          :author user
+                          :public true
+                          :comment-count (abdera/get-comment-count entry)}
+                         extension-maps)]
+         (entity/make Activity opts)))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+(defn get-activities
+  [feed]
+  (map #(entry->activity % feed)
+       (.getEntries feed)))
+
 ;; TODO: merge this with h.a/load-activities
 (defaction fetch-remote-feed
   [uri]
   (let [feed (abdera/fetch-feed uri)]
-    (doseq [activity (helpers.activity/get-activities feed)]
+    (doseq [activity (get-activities feed)]
       (create activity))))
 
 ;; (defaction find-or-create
@@ -215,3 +275,10 @@
   (-> activity
       :author
       model.user/fetch-by-id))
+
+(defn load-activities
+  [^User user]
+  (let [feed (helpers.user/fetch-user-feed user)]
+    (doseq [activity (get-activities feed)]
+      (create activity))))
+

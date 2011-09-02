@@ -6,7 +6,11 @@
         jiksnu.model)
   (:import jiksnu.model.User))
 
-
+(background
+ (around :facts
+   (with-environment :test
+     (let [actor (factory User)]
+       ?form))))
 
 (deftest test-fetch-user-meta
   (fact

@@ -31,8 +31,7 @@
 
 (defn create
   [user]
-  (let [domain (model.domain/find-or-create (:domain user))]
-    (entity/create User user)))
+  (entity/create User user))
 
 (defn index
   [& opts]

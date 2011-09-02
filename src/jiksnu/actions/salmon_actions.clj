@@ -41,7 +41,7 @@
   (-?> envelope
        decode-envelope
        abdera/parse-xml-string
-       helpers.activity/entry->activity))
+       actions.activity/entry->activity))
 
 (defn stream->envelope
   "convert an input stream to an envelope"

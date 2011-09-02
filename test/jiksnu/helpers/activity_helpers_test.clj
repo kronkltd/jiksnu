@@ -22,12 +22,6 @@
      (let [actor (factory User)]
        ?form))))
 
-(deftest test-entry->activity
-  (facts "should return an Activity"
-    (with-context [:http :atom]
-      (let [entry (show-section (factory Activity))]
-        (entry->activity entry) => map?))))
-
 ;; (deftest to-json-test
 ;;   (testing "should not be nil"
 ;;     (with-serialization :http

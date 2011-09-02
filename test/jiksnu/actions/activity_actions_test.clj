@@ -26,15 +26,22 @@
   (testing "when the local flag is not set"
     (fact "the local flag should be false"
       (let [activity (factory Activity)]
-        (:local (set-remote activity)) => falsey)))
+        (set-remote activity) => (contains {:local false}))))
   (testing "when the local flag is set to true"
     (fact "the local flag should be true"
       (let [activity (factory Activity {:local true})]
-        (:local (set-remote activity)) => truthy)))
+        (:local (set-remote activity)) => true)))
   (testing "when the local flag is set to false"
     (fact "the local flag should be false"
       (let [activity (factory Activity {:local false})]
-        (:local (set-remote activity)) => falsey))))
+        (:local (set-remote activity)) => false))))
+
+(deftest test-entry->activity
+  (facts "should return an Activity"
+    (with-context [:http :atom]
+      (let [entry (show-section (factory Activity))]
+        (entry->activity entry) => map?))))
+
 
 
 
@@ -49,20 +56,19 @@
   (testing "when the user is logged in"
     (testing "and it is a valid activity"
      (facts "should return that activity"
-       (with-serialization :xmpp
-         (with-format :xmpp
-           (let [user (model.user/create (factory User))]
-             (with-user user
-               (let [activity (factory Activity)
-                     element (element/make-element
-                              (index-section [activity]))
-                     packet (tigase/make-packet
-                             {:to (tigase/make-jid user)
-                              :from (tigase/make-jid user)
-                              :type :set
-                              :body element})
-                     request (packet/make-request packet)]
-                 (create activity) => activity?)))))))))
+       (with-context [:xmpp :xmpp]
+         (let [user (model.user/create (factory User))]
+           (with-user user
+             (let [activity (factory Activity)
+                   element (element/make-element
+                            (index-section [activity]))
+                   packet (tigase/make-packet
+                           {:to (tigase/make-jid user)
+                            :from (tigase/make-jid user)
+                            :type :set
+                            :body element})
+                   request (packet/make-request packet)]
+               (create activity) => activity?))))))))
 
 (deftest create-test
   (testing "when the user is logged in"
@@ -79,33 +85,33 @@
 (deftest delete-test
   (testing "when the activity exists"
     (testing "and the user owns the activity"
-      (testing "should delete that activity"
+      (fact "should delete that activity"
         (let [user (model.user/create (factory User))]
           (with-user user
             (let [activity (create (factory Activity {:author (:_id user)}))]
               (delete activity)
-              (is (nil? (model.activity/fetch-by-id (:_id activity)))))))))
+              (model.activity/fetch-by-id (:_id activity)) => nil)))))
     (testing "and the user does not own the activity"
-      (testing "should not delete that activity"
+      (fact "should not delete that activity"
         (let [user1 (model.user/create (factory User))
               user2 (model.user/create (factory User))
               activity (with-user user1
                          (model.activity/create (factory Activity)))]
           (with-user user2
             (delete activity)
-            (is (model.activity/fetch-by-id (:_id activity)))))))))
+            (model.activity/fetch-by-id (:_id activity)) => activity?))))))
 
 (deftest edit-test)
 
 (deftest fetch-comments-test
   (testing "when the activity exists"
     (testing "and there are no comments"
-      (testing "should return an empty sequence"
+      (fact "should return an empty sequence"
         (let [actor (model.user/create (factory User))]
           (with-user actor
             (let [activity (create (factory Activity))
                   [_ comments] (fetch-comments activity)]
-              (is (empty? comments)))))))))
+              comments => empty?)))))))
 
 (deftest fetch-comments-remote-test)
 
@@ -115,18 +121,17 @@
 
 (deftest index-test
   (testing "when there are no activities"
-    (testing "should be empty"
+    (fact "should be empty"
       (model.activity/drop!)
-      (let [response (index)]
-        (is (empty? response)))))
+      (index) => empty?))
   (testing "when there are activities"
-    (testing "should return a seq of activities"
+    (fact "should return a seq of activities"
       (let [author (model.user/create (factory User))]
         (with-user author
           (model.activity/create (factory Activity))))
       (let [response (index)]
-        (is (seq response))
-        (is (every? activity? response))))))
+        response => seq?
+        response => (partial every? activity?)))))
 
 (deftest like-activity-test)
 
@@ -177,9 +182,8 @@
     (testing "and the record is not public"
       (testing "and the user is not logged in"
         (facts "should return nil"
-          (let [activity (create (factory Activity {:public false}))
-                response (show (:_id activity))]
-            (is (nil? response))))))))
+          (let [activity (create (factory Activity {:public false}))]
+            (show (:_id activity)) => nil))))))
 
 (deftest update-test)
 

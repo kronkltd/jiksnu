@@ -32,7 +32,7 @@
 (deftest test-process
   (testing "with a valid signature"
     (fact "should create the message"
-      (process (valid-envelope-stream)) => truthy))
+      (process (valid-envelope-stream)) => true))
   (testing "with an invalid signature"
     (fact "should reject the message"
 

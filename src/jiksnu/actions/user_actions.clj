@@ -18,12 +18,13 @@
                           [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import jiksnu.model.User
-           tigase.xml.Element
-           org.apache.commons.codec.binary.Base64
+  (:import com.cliqset.abdera.ext.activity.object.Person
            com.cliqset.magicsig.MagicKey
            com.cliqset.magicsig.MagicSig
-           com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer))
+           com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer
+           jiksnu.model.User
+           org.apache.commons.codec.binary.Base64
+           tigase.xml.Element))
 
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
@@ -59,10 +60,12 @@
 
 (defaction create
   [options]
-  (let [prepared-user (merge {:discovered false
-                              :local false}
-                             options)]
-    (model.user/create prepared-user)))
+  (let [user (merge {:discovered false :local false} options)
+        domain (actions.domain/find-or-create (:domain user))]
+    (if (and (:username user)
+             (:domain user)
+             (:id user))
+      (model.user/create user))))
 
 (defaction delete
   [id]
@@ -144,7 +147,7 @@
                     :domain (config :domain)
                     :password password
                     :confirm-password password}]
-          (create (spy user)))))))
+          (create user))))))
 
 (declare update)
 
@@ -218,3 +221,20 @@
   (let [domain-name (:domain user)
         domain (model.domain/show domain-name)]
     (actions.domain/set-xmpp domain false)))
+
+(defn find-or-create-by-remote-id
+  ([user] (find-or-create-by-remote-id user {}))
+  ([user params]
+     (or (entity/fetch-one User {:id (:id user)} )
+         (create (merge user params)))))
+
+(defn person->user
+  [^Person person]
+  (let [id (.getUri person)
+        email (.getEmail person)
+        name (.getName person)]
+    (find-or-create-by-remote-id
+     {:id (str id)}
+     (merge {:domain (.getHost id)}
+            (if email {:email email})
+            (if name {:display-name name})))))
