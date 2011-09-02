@@ -30,16 +30,30 @@
        (map #(.isVerified %))
        (some identity)))
 
+(defn decode-envelope
+  [envelope]
+  (->> envelope
+       (.decodeData default-sig)
+       String.))
+
+(defn extract-activity
+  [envelope]
+  (-?> envelope
+       decode-envelope
+       abdera/parse-xml-string
+       helpers.activity/entry->activity))
+
+(defn stream->envelope
+  "convert an input stream to an envelope"
+  [input-stream]
+  (.deserialize deserializer input-stream))
+
 (defaction process
-  [request]
-  ;; TODO: extract body in filter
-  (let [body (:body request)]
-    (let [envelope (.deserialize deserializer body)
-          data-bytes (.decodeData default-sig envelope)
-          data (String. data-bytes)]
-      (if-let [entry (abdera/parse-xml-string data)]
-        (if-let [activity (helpers.activity/entry->activity entry)]
-          (let [author (actions.activity/get-author activity)]
-            (if-let [key (get-key author)]
-              (if (signature-valid? envelope key)
-                (actions.activity/remote-create)))))))))
+  [stream]
+  (let [envelope (stream->envelope stream)]
+    (if-let [activity (extract-activity envelope)]
+      (if-let [key (-?> activity
+                        actions.activity/get-author
+                        get-key)]
+        (if (signature-valid? envelope key)
+          (actions.activity/remote-create activity))))))

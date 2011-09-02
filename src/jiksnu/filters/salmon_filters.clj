@@ -8,5 +8,5 @@
 
 (deffilter #'process :http
   [action request]
-  (action request))
+  (action (:body request)))
 
