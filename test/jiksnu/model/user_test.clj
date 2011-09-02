@@ -1,11 +1,14 @@
 (ns jiksnu.model.user-test
   (:use ciste.config
+        ciste.debug
         clj-factory.core
         clojure.test
         (jiksnu core-test model)
         jiksnu.model.user
         midje.sweet)
-  (:import jiksnu.model.User))
+  (:require (jiksnu.model [domain :as model.domain]))
+  (:import jiksnu.model.Domain
+           jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
 
@@ -62,7 +65,20 @@
 
 (deftest test-fetch-by-id)
 
-
+(deftest test-user-meta-uri
+  (testing "when the user's domain does not have a lrdd link"
+    (fact "should return nil"
+     (let [user (factory User)]
+       (user-meta-uri user) => nil)))
+  (testing "when the user's domain has a lrdd link"
+    (fact "should insert the user's uri into the template"
+      (let [domain (model.domain/create
+                    (factory Domain
+                             {:links [{:rel "lrdd"
+                                       :template "{uri}"}]}))
+            user (create
+                  (factory User {:domain (:_id domain)}))]
+        (user-meta-uri user) => (get-uri user)))))
 
 
 

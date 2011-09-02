@@ -133,8 +133,8 @@
 
 (defn user-meta-uri
   [^User user]
-  (let [domain-object (tigase/get-domain user)]
-    (if-let [lrdd-link (get-link domain-object "lrdd")]
+  (let [domain (get-domain user)]
+    (if-let [lrdd-link (get-link domain "lrdd")]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user))))))
 

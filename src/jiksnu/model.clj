@@ -121,6 +121,10 @@
    :updated #'sugar/date
    :public true})
 
+(deffactory Domain
+  {:_id (fseq :domain)
+   :local false})
+
 (deffactory User
   (let [password (fseq :word)]
     {:username (fseq :word)
