@@ -16,23 +16,19 @@
 
 (defn notify-activity
   [recipient ^Activity activity]
-  (with-serialization :xmpp
-    (with-format :xmpp
-      (let [recipient-jid (tigase/make-jid recipient)
-            author (get-author activity)
-            message-text (:summary activity)
-            ele (element/make-element
-                 ["event" {"xmlns" event-ns}
-                  (index-block [activity])])
-            message
-            (tigase/make-packet
-             {:to recipient-jid
-              :from (tigase/make-jid author)
-              :type :headline
-              ;; FIXME: generate an id for this case
-              :id "JIKSNU1"
-              :body ele})]
-        (tigase/deliver-packet! message)))))
+  (with-context [:xmpp :xmpp]
+    (let [recipient-jid (tigase/make-jid recipient)
+          author (get-author activity)
+          message-text (:summary activity)
+          ele (element/make-element ["event" {"xmlns" event-ns}
+                                     (index-block [activity])])
+          message (tigase/make-packet {:to recipient-jid
+                                       :from (tigase/make-jid author)
+                                       :type :headline
+                                       ;; FIXME: generate an id for this case
+                                       :id "JIKSNU1"
+                                       :body ele})]
+      (tigase/deliver-packet! message))))
 
 (defn show-trigger
   [action params activity]

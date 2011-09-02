@@ -1,31 +1,29 @@
 (ns jiksnu.triggers.domain-triggers
-  (:use ciste.core
-        ciste.debug
-        ciste.triggers
-        ciste.views
-        clj-tigase.core
-        jiksnu.actions.domain-actions
-        jiksnu.actions.webfinger-actions
+  (:use (ciste core
+               [debug :only (spy)]
+               triggers views)
         jiksnu.view)
-  (:require [jiksnu.model.domain :as model.domain])
+  (:require (clj-tigase [core :as tigase])
+            (jiksnu.model [domain :as model.domain])
+            (jiksnu.actions [domain-actions :as actions.domain]
+                            [webfinger-actions :as actions.webfinger]))
   (:import com.cliqset.hostmeta.HostMetaException))
 
 (defn discover-onesocialweb
   [action [domain] _]
   (let [request {:format :xmpp
                  :serialization :xmpp
-                 :action #'ping}
-        packet (make-packet (apply-view request domain))]
-    (deliver-packet! packet)))
+                 :action #'actions.domain/ping}
+        packet (tigase/make-packet (apply-view request domain))]
+    (tigase/deliver-packet! packet)))
 
 (defn discover-webfinger
   [action [domain] _]
   ;; TODO: check https first
   (try
-    (let [url (str "http://" (:_id domain)
-                   "/.well-known/host-meta")]
-      (if-let [xrd (fetch url)]
-        (if-let [links (get-links xrd)]
+    (let [url (str "http://" (:_id domain) "/.well-known/host-meta")]
+      (if-let [xrd (actions.webfinger/fetch url)]
+        (if-let [links (actions.webfinger/get-links xrd)]
           (do (model.domain/add-links domain links)
               (model.domain/set-discovered domain)))))
     (catch HostMetaException e
@@ -34,8 +32,8 @@
 
 (defn create-trigger
   [action [domain-name] domain]
-  (discover domain))
+  (actions.domain/discover domain))
 
-(add-trigger! #'create #'create-trigger)
-(add-trigger! #'discover #'discover-onesocialweb)
-(add-trigger! #'discover #'discover-webfinger)
+(add-trigger! #'actions.domain/create   #'create-trigger)
+(add-trigger! #'actions.domain/discover #'discover-onesocialweb)
+(add-trigger! #'actions.domain/discover #'discover-webfinger)

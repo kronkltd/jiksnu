@@ -1,6 +1,8 @@
 (ns jiksnu.model
-  (:use ciste.core
-        [ciste.config :only (config environment)]
+  (:use (ciste core
+               [config :only (config environment)]
+               sections)
+        ciste.sections.default
         clj-factory.core
         clojure.data.json
         jiksnu.namespace
@@ -13,7 +15,6 @@
   (:import java.io.PrintWriter
            java.text.SimpleDateFormat
            java.util.Date
-           org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId))
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
@@ -99,53 +100,10 @@
   [^String id]
   (ObjectId. id))
 
-;; TODO: Since I am no longer using this style of id, I am not sure if
-;; this is still needed. Perhaps move to abdera
-(defn new-id
-  []
-  (UIDGenerator/generateURNString))
-
-;; TODO: Moke this to a factories file
-
-(defseq :id
-  [n]
-  n)
-
-(defseq :domain
-  [n]
-  (str "example" n ".com"))
-
-(defseq :word
-  [n]
-  (str "word" n))
-
-(deffactory Activity
-  {:id #'new-id
-   :title (fseq :word)
-   :summary (fseq :word)
-   :published #'sugar/date
-   :updated #'sugar/date
-   :public true})
-
-(deffactory Domain
-  {:_id (fseq :domain)
-   :local false})
-
-(deffactory User
-  (let [password (fseq :word)]
-    {:username (fseq :word)
-     :domain (config :domain)
-     :name (fseq :word)
-     :first-name (fseq :word)
-     :last-name (fseq :word)
-     :password password
-     :confirm-password password}))
-
-(deffactory Subscription
-  {:to (fseq :word)
-   :from (fseq :word)
-   :created #'sugar/date})
-
+(defsection full-uri :default
+  [record & options]
+  (str "http://" (config :domain)
+       (apply uri record options)))
 
 ;; TODO: Find a good place for this
 
@@ -167,3 +125,4 @@
 (extend ObjectId Write-JSON
   {:write-json write-json-object-id})
 
+(load-file "factories.clj")

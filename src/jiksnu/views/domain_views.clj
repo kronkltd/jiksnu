@@ -7,6 +7,14 @@
             (jiksnu.templates [domain :as templates.domain]))
   (:import jiksnu.model.Domain))
 
+(defn ping-request
+  [domain]
+  {:type :get
+   :to (tigase/make-jid "" (:_id (spy domain)))
+   :from (tigase/make-jid "" (config :domain))
+   :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
+
+
 (defview #'create :html
   [request domain]
   {:status 303
@@ -34,17 +42,9 @@
   {:body (templates.domain/show domain)})
 
 
-
-
-
-
-
 (defview #'ping :xmpp
   [request domain]
-  {:type :get
-   :to (tigase/make-jid "" (:_id domain))
-   :from (tigase/make-jid "" (config :domain))
-   :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
+  (ping-request domain))
 
 (defview #'ping-response :xmpp
   [request domain]

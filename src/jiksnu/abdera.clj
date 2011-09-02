@@ -14,7 +14,8 @@
            org.apache.abdera.model.Element
            org.apache.abdera.model.Entry
            org.apache.abdera.model.Feed
-           org.apache.abdera.protocol.client.AbderaClient))
+           org.apache.abdera.protocol.client.AbderaClient
+           org.apache.axiom.util.UIDGenerator))
 
 (defonce ^Abdera ^:dynamic *abdera* (Abdera.))
 (defonce ^Factory ^:dynamic *abdera-factory* (.getFactory *abdera*))
@@ -23,6 +24,12 @@
 
 (.registerExtension *abdera-factory* (ActivityExtensionFactory.))
 (.registerExtension *abdera-factory* (PocoExtensionFactory.))
+
+;; TODO: Since I am no longer using this style of id, I am not sure if
+;; this is still needed. Perhaps move to abdera
+(defn new-id
+  []
+  (UIDGenerator/generateURNString))
 
 (defn get-text
   [element]

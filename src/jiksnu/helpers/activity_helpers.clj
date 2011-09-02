@@ -196,13 +196,13 @@ an Element"
   [activity]
   (if (and (:id activity) (not= (:id activity) ""))
     activity
-    (assoc activity :id (new-id))))
+    (assoc activity :id (abdera/new-id))))
 
 (defn set-object-id
   [activity]
   (if (:id (:object activity))
     activity
-    (assoc-in activity [:object :id] (new-id))))
+    (assoc-in activity [:object :id] (abdera/new-id))))
 
 (defn set-updated-time
   [activity]

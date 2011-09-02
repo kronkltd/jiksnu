@@ -1,10 +1,8 @@
 (ns jiksnu.model.activity-test
   (:use clj-factory.core
         clojure.test
-        jiksnu.core-test
-        jiksnu.model
-        jiksnu.model.activity
-        jiksnu.session)
+        (jiksnu core-test model session)
+        jiksnu.model.activity)
   (:require [karras.entity :as entity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -12,10 +10,10 @@
 
 (use-fixtures :each test-environment-fixture)
 
-(deftest new-id-test
-  (testing "should return a string"
-    (let [response (new-id)]
-      (is (instance? String response)))))
+;; (deftest new-id-test
+;;   (testing "should return a string"
+;;     (let [response (new-id)]
+;;       (is (instance? String response)))))
 
 (deftest index-test
   (testing "when there are no activities"

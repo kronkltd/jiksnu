@@ -1,19 +1,15 @@
 (ns jiksnu.triggers.subscription-triggers
-  (:use ciste.config
-        ciste.core
-        ciste.debug
-        ciste.triggers
-        ciste.sections
+  (:use (ciste config core debug triggers sections)
         ciste.sections.default
+        (jiksnu namespace view)
         jiksnu.actions.subscription-actions
-        jiksnu.helpers.subscription-helpers
-        jiksnu.namespace
-        jiksnu.view)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.helpers.user-helpers :as helpers.user]))
+        jiksnu.helpers.subscription-helpers)
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (jiksnu.model [domain :as model.domain]
+                          [user :as model.user])
+            (jiksnu.helpers [subscription-helpers :as helpers.subscription]
+                            [user-helpers :as helpers.user])))
 
 (defn notify-subscribe-xmpp
   [request subscription]

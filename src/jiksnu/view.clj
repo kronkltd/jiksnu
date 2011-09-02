@@ -20,11 +20,6 @@
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))
 
-(defsection full-uri :default
-  [record & options]
-  (str "http://" (config :domain)
-       (apply uri record options)))
-
 (defn page-template-content
   [response]
   {:headers {"Content-Type" "text/html; charset=utf-8"}
