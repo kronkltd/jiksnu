@@ -84,7 +84,7 @@
 
 (defn fetch-by-remote-id
   [uri]
-  (entity/fetch-one User {:remote-id uri}))
+  (entity/fetch-one User {:id uri}))
 
 (defn find-or-create
   [username domain]
@@ -99,7 +99,7 @@
 (defn find-or-create-by-remote-id
   [id]
   (or (fetch-by-remote-id id)
-      (create {:remote-id id})))
+      (create {:id id})))
 
 (defn find-or-create-by-jid
   [jid]

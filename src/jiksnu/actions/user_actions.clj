@@ -1,27 +1,23 @@
 (ns jiksnu.actions.user-actions
-  (:use aleph.http
-        ciste.config
-        ciste.core
-        ciste.debug
-        clj-tigase.core
-        [clojure.tools.logging :only (error)]
+  (:use (ciste config core debug)
+        (jiksnu model namespace
+                [session :only (current-user)]
+                view)
         jiksnu.helpers.user-helpers
-        jiksnu.model
-        jiksnu.model.signature
-        jiksnu.namespace
-        [jiksnu.session :only (current-user)]
-        jiksnu.view
         jiksnu.xmpp.element)
-  (:require [clojure.string :as string]
+  (:require (aleph [http :as http])
+            (clj-tigase [core :as tigase])
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.redis :as redis]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar])
+            (jiksnu [abdera :as abdera]
+                    [redis :as redis])
+            (jiksnu.actions [domain-actions :as actions.domain]
+                            [webfinger-actions :as actions.webfinger])
+            (jiksnu.model [domain :as model.domain]
+                          [signature :as model.signature]
+                          [user :as model.user])
+            (karras [entity :as entity]
+                    [sugar :as sugar]))
   (:import jiksnu.model.User
            tigase.xml.Element
            org.apache.commons.codec.binary.Base64
@@ -197,7 +193,7 @@
               (re-matches
                #"data:application/magic-public-key,RSA.(.+)\.(.+)"
                key-string)]
-          (set-armored-key (:_id user) n e)))
+          (model.signature/set-armored-key (:_id user) n e)))
       (add-link user link))
     (update
      (-> user
