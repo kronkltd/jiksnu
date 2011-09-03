@@ -28,13 +28,14 @@
 (deftest test-get-link
   (fact
     (let [user (factory User {:links [{:rel "foo" :href "bar"}]})]
-      (:href (get-link user "foo")) => "bar"
+      (get-link user "foo") => (contains {:href "bar"})
       (get-link user "baz") => nil)))
 
 (deftest test-drop!)
 
 (deftest test-create)
 
+;; TODO: This is a better test for actions
 (deftest test-index
   (testing "when there are no users"
     (testing "should be empty"
