@@ -32,9 +32,11 @@
   (filter #(= (:rel %) rel) links))
 
 (defn split-uri
+  "accepts a uri in the form of username@domain or scheme:username@domain and
+   returns a vector containing both the username and the domain"
   [uri]
-  (let [[_ _ usename password] (re-matches #"(\w+:)?([^@]+)@([^\?])" uri)]
-    [username password]))
+  (let [[_ _ username domain] (re-find #"(.*:)?([^@]+)@([^\?]+)" uri)]
+    (if (and username domain) [username domain])))
 
 (defn display-name
   [^User user]

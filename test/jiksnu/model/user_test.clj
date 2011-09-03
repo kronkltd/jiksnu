@@ -14,7 +14,9 @@
 
 (deftest test-split-uri
   (facts
-    (split-uri "bob@example.com") => ["bob" "example.com"]))
+    (split-uri "bob@example.com") => ["bob" "example.com"]
+    (split-uri "acct:bob@example.com") => ["bob" "example.com"]
+    (split-uri "http://example.com/bob") => nil))
 
 (deftest test-rel-filter
   (facts
