@@ -32,9 +32,9 @@
   (testing "when the url matches a known user"
     (fact
       (let [user (actions.user/create (factory User))
-            uri (str "http://beta.jiksnu.com/main/xrd?uri="
-                     (model.user/get-uri user))]
-        (user-meta uri) => (partial instance? XRDImpl)))))
+            uri (model.user/get-uri user)]
+        (user-meta uri) => (partial instance? User)
+        (user-meta uri) => user))))
 
 (deftest test-get-links
   (fact

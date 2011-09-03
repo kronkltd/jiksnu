@@ -29,8 +29,9 @@
 
 (defaction user-meta
   [uri]
-  (let [[_ username domain] (re-matches #"(?:acct:)(.*)@(.*)" uri)]
-    (model.user/show username domain)))
+  (->> uri
+       model.user/split-uri
+       (apply model.user/show )))
 
 (defn parse-link
   "Turns a XRD link into a may with the same info"
