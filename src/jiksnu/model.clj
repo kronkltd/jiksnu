@@ -33,8 +33,9 @@
   (.format *formatter* date))
 
 (init-jena-framework)
-(register-rdf-ns :dc dc-ns)
-(register-rdf-ns :foaf foaf-ns)
+;; TODO: Find a better ns for this
+(register-rdf-ns :dc namespace/dc-ns)
+(register-rdf-ns :foaf namespace/foaf-ns)
 
 (defn mongo-database*
   []
@@ -129,9 +130,9 @@
   ([id ^PrintWriter out escape-unicode]
      (.print out (str "\"" id "\""))))
 
-(extend Date Write-JSON
+(extend Date json/Write-JSON
   {:write-json write-json-date})
-(extend ObjectId Write-JSON
+(extend ObjectId json/Write-JSON
   {:write-json write-json-object-id})
 
 (load-file "factories.clj")

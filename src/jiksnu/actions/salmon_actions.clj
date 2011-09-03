@@ -2,13 +2,8 @@
   (:use (ciste [core :only (defaction)]
                [debug :only (spy)])
         clojure.contrib.core)
-  (:require (clojure.java [io :as io])
-            (clojure.contrib [zip-filter :as zip-filter])
-            (clojure.contrib.zip-filter [xml :as zfx])
-            (aleph [http :as http])
-            (clj-http [client :as client])
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.activity-actions :as actions.activity]
+  (:require (jiksnu [abdera :as abdera])
+            (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [user :as model.user]
                           [signature :as model.signature]))
