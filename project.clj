@@ -1,5 +1,6 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
   :description "distributed social network"
+  :url "http://github.com/duck1123/jiksnu"
   :repositories {"jiksnu-internal" "http://build.jiksnu.com/repository/internal"
                  "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"}
   :dependencies [[closure-templates-clj "0.0.1"]
@@ -26,6 +27,7 @@
                  [org.apache.abdera/abdera-extensions-json "1.1.1"]
                  [org.apache.ws.commons.axiom/axiom-impl "1.2.9"]
                  [org.clojure/clojure "1.3.0-beta1"]
+                 [org.clojure.contrib/zip-filter "1.3.0-alpha4"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.deri.any23/any23-core "0.5.0"]
                  [org.slf4j/slf4j-simple "1.6.1"]

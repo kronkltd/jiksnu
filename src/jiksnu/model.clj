@@ -4,18 +4,22 @@
                sections)
         ciste.sections.default
         clj-factory.core
-        clojure.data.json
-        jiksnu.namespace
         karras.entity
         plaza.rdf.core
         plaza.rdf.implementations.jena)
-  (:require (jiksnu [redis :as redis])
+  (:require (clojure [xml :as xml]
+                     [zip :as zip])
+            (clojure.data [json :as json])
+            (jiksnu [namespace :as namespace]
+                    [redis :as redis])
             (karras [core :as karras]
                     [sugar :as sugar]))
   (:import java.io.PrintWriter
+           java.io.StringReader
            java.text.SimpleDateFormat
            java.util.Date
-           org.bson.types.ObjectId))
+           org.bson.types.ObjectId
+           org.xml.sax.InputSource))
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 
@@ -104,6 +108,11 @@
   [record & options]
   (str "http://" (config :domain)
        (apply uri record options)))
+
+(defn parse-str
+  [s]
+  (-> s StringReader. InputSource.
+      xml/parse zip/xml-zip))
 
 ;; TODO: Find a good place for this
 
