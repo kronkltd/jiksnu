@@ -142,7 +142,7 @@
   or creates one if it does not exist."
   [uri]
   (->> uri model.user/split-uri
-      (apply find-or-create) :_id))
+      (apply find-or-create)))
 
 
 

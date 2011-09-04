@@ -25,17 +25,28 @@
     @(enqueue-discover user) => 1))
 
 (deftest test-pop-user!
-  (fact
-    (pop-user! (:domain user)) => user?))
+  (testing "when there are no pending users"
+    (fact "should return nil"
+      (pop-user! (:domain user)) => nil))
+  (testing "when there are pending users"
+    (fact "should return that user"
+      (enqueue-discover user)
+      (pop-user! (:domain user)) => user)))
 
 (deftest test-add-link
   (fact
     (add-link user options) => user?))
 
 (deftest test-create
-  (let [options {:username (fseq :username)
-                 :domain (fseq :domain)}]
-    (create options) => user?))
+  (testing "when the options contain all the required params"
+    (fact "should create the user"
+     (let [options {:username (fseq :username)
+                    :domain (fseq :domain)}]
+       (create options) => user?)))
+  (testing "when the options are missing params"
+    ;; TODO: maybe throw exception
+    (fact "should return nil"
+      (create options) => nil)))
 
 (deftest test-delete
   (fact
@@ -80,9 +91,10 @@
       (find-or-create username domain) => user?)))
 
 (deftest test-user-for-uri
-  (fact
-    (let [uri (:uri user)]
-      (user-for-uri uri) => user?)))
+  (testing "when the uri is a valid acct uri"
+    (fact "should return a user"
+      (let [uri (model.user/get-uri user)]
+        (user-for-uri uri) => user?))))
 
 (deftest test-index
   (fact
