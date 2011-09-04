@@ -6,6 +6,8 @@
         jiksnu.actions.user-actions
         midje.sweet)
   (:require (clj-tigase [packet :as packet])
+            (jiksnu [namespace :as namespace]
+                    [redis :as redis])
             (jiksnu.model [user :as model.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            jiksnu.model.User))
@@ -30,11 +32,13 @@
       (pop-user! (:domain user)) => nil))
   (testing "when there are pending users"
     (fact "should return that user"
+      @(redis/client [:del (pending-domains-key (:domain user))])
       (enqueue-discover user)
       (pop-user! (:domain user)) => user)))
 
 (deftest test-add-link
   (fact
+    ;; TODO: test that the link is associated
     (add-link user options) => user?))
 
 (deftest test-create
@@ -139,8 +143,15 @@
     (update user options) => user?))
 
 (deftest test-update-hub
-  (fact
-    (update-hub user) => user?))
+  (testing "when a link has not been specified"
+    (fact "should return nil"
+      (update-hub user) => nil))
+  (testing "when a link has been specified"
+    (future-fact "should return an updated user"
+      (let [uri (fseq :uri)]
+        (add-link user {:rel namespace/updates-from
+                        :href uri})
+        (update-hub user) => user?))))
 
 (deftest test-xmpp-service-unavailable
   (fact

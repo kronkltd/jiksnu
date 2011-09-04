@@ -19,6 +19,7 @@
 (def sioc          "http://rdfs.org/sioc/ns#")
 (def status        "http://activitystrea.ms/schema/1.0/status")
 (def thr           "http://purl.org/syndication/thread/1.0")
+(def updates-from  "http://schemas.google.com/g/2010#updates-from")
 (def vcard         "urn:ietf:params:xml:ns:vcard-4.0")
 (def vcard-publish "http://onesocialweb.org/spec/1.0/vcard4#publish")
 (def vcard-query   "http://onesocialweb.org/spec/1.0/vcard4#query")

@@ -2,6 +2,7 @@
   (:use (ciste [config :only (config)]
                [core :only (defaction)]
                [debug :only (spy)])
+        (clojure.contrib [core :only (-?>)])
         (jiksnu model
                 [session :only (current-user)]))
   (:require (aleph [http :as http])
@@ -32,22 +33,22 @@
 
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
+(defn pending-domains-key
+  [domain]
+  (str "pending.domains." domain))
+
 (defn enqueue-discover
   [user]
   (let [domain (:domain user)
         id (:_id user)]
-    (redis/sadd (str "pending.domains." domain) id)))
+    (redis/sadd (pending-domains-key domain) id)))
 
 (defn pop-user!
   [domain]
-  (dosync
-   (if-let [s (get @*pending-discover-tasks* domain)]
-     (if-let [f (first s)]
-       (do (alter *pending-discover-tasks*
-                  #(assoc %
-                     domain
-                     (disj s f)))
-           f)))))
+  (-?> domain
+       pending-domains-key
+       redis/spop
+       model.user/fetch-by-id))
 
 (declare update)
 
@@ -207,18 +208,19 @@
 
 (defaction update-hub
   [user]
-  (let [feed (helpers.user/fetch-user-feed user)
-        hub-link (abdera/get-hub-link feed)]
-    (entity/update
-     User {:_id (:_id user)}
-     {:$set {:hub hub-link}})
-    user))
+  (if-let [hub-link (-?> user
+                         helpers.user/fetch-user-feed
+                         abdera/get-hub-link)]
+    (do (entity/update User {:_id (:_id user)}
+                       {:$set {:hub hub-link}})
+        user)))
 
 (defaction xmpp-service-unavailable
   [user]
   (let [domain-name (:domain user)
-        domain (model.domain/show domain-name)]
-    (actions.domain/set-xmpp domain false)))
+        domain (actions.domain/find-or-create domain-name)]
+    (actions.domain/set-xmpp domain false)
+    user))
 
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))

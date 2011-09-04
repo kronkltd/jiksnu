@@ -1,5 +1,6 @@
 (ns jiksnu.abdera
   (:use (ciste [debug :only (spy)])
+        (clojure.contrib [core :only (-?>)])
         [clojure.tools.logging :only (error)])
   (:require [clj-tigase.element :as element])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
@@ -133,10 +134,11 @@
 
 (defn rel-filter-feed
   [^Feed feed rel]
-  (filter
-   (fn [link]
-     (= (.getRel link) rel))
-   (.getLinks feed)))
+  (if feed
+    (filter
+     (fn [link]
+       (= (.getRel link) rel))
+     (.getLinks feed))))
 
 (defn author-uri
   [^Entry entry]
@@ -150,8 +152,8 @@
 
 (defn get-hub-link
   [feed]
-  (-> feed
-      (rel-filter-feed "hub")
-      first
-      .getHref
-      str))
+  (-?> feed
+       (rel-filter-feed "hub")
+       first
+       .getHref
+       str))

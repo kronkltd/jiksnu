@@ -31,3 +31,7 @@
 (defn sadd
   [key val]
   (client [:sadd key val]))
+
+(defn spop
+  [key]
+  @(client [:spop key]))

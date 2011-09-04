@@ -1,14 +1,16 @@
 (ns jiksnu.helpers.user-helpers
-  (:use (ciste config
+  (:use (ciste [config :only (config)]
                [debug :only (spy)]
                sections)
         ciste.sections.default
+        (clojure.contrib [core :only (-?>)])
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
             (clojure [string :as string])
-            (jiksnu [abdera :as abdera])
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user]
@@ -22,14 +24,15 @@
 
 (defn feed-link-uri
   [^User user]
-  (:href
-   (model.user/get-link
-    user "http://schemas.google.com/g/2010#updates-from")))
+  (if-let [link (model.user/get-link user namespace/updates-from)]
+    (:href link)))
 
 (defn fetch-user-feed
   "returns a feed"
   [^User user]
-  (abdera/fetch-feed (feed-link-uri user)))
+  (-?> user
+       feed-link-uri
+       abdera/fetch-feed))
 
 (defn rule-map
   [rule]
