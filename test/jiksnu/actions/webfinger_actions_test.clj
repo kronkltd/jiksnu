@@ -3,7 +3,7 @@
         clj-factory.core
         clojure.test
         midje.sweet
-        (jiksnu core-test)
+        (jiksnu core-test model)
         jiksnu.actions.webfinger-actions)
   (:require (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
@@ -13,6 +13,14 @@
            com.cliqset.hostmeta.HostMetaException))
 
 (use-fixtures :each test-environment-fixture)
+
+(background
+ (around :facts
+   (with-environment :test
+     (model.user/drop!)
+     (let [user (model.user/create (factory User))
+           options {}]
+      ?form))))
 
 (deftest test-fetch
   (testing "when the url points to a valid XRD document"
@@ -31,8 +39,7 @@
 (deftest test-user-meta
   (testing "when the url matches a known user"
     (fact
-      (let [user (actions.user/create (factory User))
-            uri (model.user/get-uri user)]
+      (let [uri (model.user/get-uri user)]
         (user-meta uri) => (partial instance? User)
         (user-meta uri) => user))))
 
@@ -48,8 +55,7 @@
 
 (deftest test-fetch-user-meta
   (fact "should return an xml stream"
-    (let [user (actions.user/create (factory User))]
-      (fetch-user-meta user)) => nil))
+    (fetch-user-meta user) => nil))
 
 (deftest test-get-links
   (fact
@@ -60,3 +66,7 @@
   (future-fact "should return a sequence of keys for the uri"
     (let [uri "acct:duck@kronkltd.net"]
       (get-keys uri)) => seq?))
+
+(deftest test-update-usermeta
+  (fact
+    (update-usermeta user) => user?))

@@ -1,6 +1,7 @@
 (ns jiksnu.actions.webfinger-actions
   (:use (ciste [core :only (defaction)]
                [debug :only (spy)])
+        (clojure.contrib [core :only (-?>)])
         (jiksnu model))
   (:require (jiksnu [namespace :as namespace])
             (jiksnu.actions [domain-actions :as actions.domain]
@@ -28,7 +29,10 @@
 (defn fetch
   "returns a cliqset xrd corresponding to the given url"
   [url]
-  (if url (.fetchXRD *fetcher* (URL. url))))
+  (if url
+    (try
+      (.fetchXRD *fetcher* (URL. url))
+      (catch Exception e))))
 
 (defaction host-meta
   []
@@ -72,7 +76,7 @@
 
 (defn get-links
   [^XRD xrd]
-  (map parse-link (.getLinks xrd)))
+  (if xrd (map parse-link (.getLinks xrd))))
 
 (defn get-keys-from-xrd
   [uri]
@@ -87,8 +91,9 @@
         links (get-links xrd)
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
-        author (.getAuthor feed)
-        uri (.getUri author)]
+        uri (if feed (-?> feed
+                          .getAuthor
+                          .getUri))]
     (doseq [link links]
       ;; TODO: process this in a trigger
       (if (= (:rel link) "magic-public-key")
