@@ -112,7 +112,7 @@
   (let [{:keys [id to from]} request]
     {:body
      (element/make-element
-      "query" {"xmlns" query-uri} (show-section user))
+      "query" {"xmlns" namespace/vcard-query} (show-section user))
      :type :result
      :id id
      :from to

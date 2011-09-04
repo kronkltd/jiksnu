@@ -113,8 +113,8 @@
                               :type :get
                               :id "JIKSNU1"
                               :body (element/make-element
-                                     ["pubsub" {"xmlns" pubsub-uri}
-                                      ["items" {"node" microblog-uri}
+                                     ["pubsub" {"xmlns" namespace/pubsub}
+                                      ["items" {"node" namespace/microblog}
                                        ["item" {"id" (:_id activity)}]]])}
                   packet (tigase/make-packet packet-map)
                   request (assoc (packet/make-request packet)

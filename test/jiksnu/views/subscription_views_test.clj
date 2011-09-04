@@ -1,22 +1,20 @@
 (ns jiksnu.views.subscription-views-test
-  (:use ciste.core
-        ciste.debug
-        ciste.views
-        clj-factory.core
+  (:use (ciste core
+               [debug :only (spy)]
+               views)
+        (clj-factory [core :only (factory)])
         clojure.test
-        jiksnu.core-test
+        (jiksnu core-test view)
         jiksnu.helpers.subscription-helpers
-        jiksnu.view
         jiksnu.views.subscription-views
         jiksnu.xmpp.element)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
             (jiksnu [namespace :as namespace])
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.actions.subscription-actions :as
-             actions.subscription])
+            (jiksnu.model [subscription :as model.subscription]
+                          [user :as model.user])
+            (jiksnu.actions [subscription-actions :as actions.subscription]))
   (:import jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
@@ -29,8 +27,8 @@
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             element (element/make-element
-                     ["pubsub" {"xmlns" pubsub-uri}
-                      ["unsubscribe" {"node" microblog-uri}]])
+                     ["pubsub" {"xmlns" namespace/pubsub}
+                      ["unsubscribe" {"node" namespace/microblog}]])
             packet (tigase/make-packet
                     {:to (tigase/make-jid subscribee)
                      :from (tigase/make-jid user)

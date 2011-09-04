@@ -38,8 +38,8 @@
       (let [user (model.user/create (factory User))
             subscriber (model.user/create (factory User))
             element (element/make-element
-                     "pubsub" {"xmlns" pubsub-uri}
-                     ["subscribers" {"node" microblog-uri}])
+                     "pubsub" {"xmlns" namespace/pubsub}
+                     ["subscribers" {"node" namespace/microblog}])
             packet (tigase/make-packet
                     {:to (tigase/make-jid user)
                      :from (tigase/make-jid user)
@@ -62,8 +62,8 @@
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))
             element (element/make-element
-                     ["pubsub" {"xmlns" pubsub-uri}
-                      ["subscriptions" {"node" microblog-uri}]])
+                     ["pubsub" {"xmlns" namespace/pubsub}
+                      ["subscriptions" {"node" namespace/microblog}]])
             packet (tigase/make-packet
                     {:to (tigase/make-jid user)
                      :from (tigase/make-jid user)

@@ -249,11 +249,11 @@
   (wrap-log-request
    (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/main/events" _
-                 (wrap-aleph-handler activity/stream-handler))
+                 (http/wrap-aleph-handler activity/stream-handler))
   (route/not-found (not-found-msg)))
 
 (def app
-  (wrap-ring-handler
+  (http/wrap-ring-handler
    (-> all-routes
        ;; (cljs/wrap-cljs "src/main/clojurescript/")
        (file/wrap-file "resources/public/")
