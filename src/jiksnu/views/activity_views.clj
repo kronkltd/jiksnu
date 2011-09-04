@@ -241,7 +241,7 @@
   {:type :get
    :body
    (element/make-element (packet/pubsub-items
-     (str namespace/microblog-uri ":replies:item=" (:id activity))))})
+     (str namespace/microblog ":replies:item=" (:id activity))))})
 
 (defview #'index :xmpp
   [request activities]

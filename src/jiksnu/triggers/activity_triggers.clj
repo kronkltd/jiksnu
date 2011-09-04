@@ -4,9 +4,10 @@
                triggers)
         ciste.sections.default
         jiksnu.actions.activity-actions
-        (jiksnu model namespace session view))
+        (jiksnu model session view))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
+            (jiksnu [namespace :as namespace])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
@@ -22,7 +23,7 @@
     (let [recipient-jid (tigase/make-jid recipient)
           author (get-author activity)
           message-text (:summary activity)
-          ele (element/make-element ["event" {"xmlns" event-ns}
+          ele (element/make-element ["event" {"xmlns" namespace/event}
                                      (index-block [activity])])
           message (tigase/make-packet {:to recipient-jid
                                        :from (tigase/make-jid author)

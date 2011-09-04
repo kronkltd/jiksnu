@@ -2,11 +2,12 @@
   (:use (ciste config
                [debug :only (spy)]
                triggers)
-        (jiksnu namespace view)
+        (jiksnu view)
         lamina.core)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
             (clojure.tools [logging :as log])
+            (jiksnu [namespace :as namespace])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [webfinger-actions :as actions.webfinger]
                             [user-actions :as actions.user]
@@ -50,7 +51,7 @@
                  :type :get
                  :body (element/make-element
                         ["pubsub" {"xmlns" namespace/pubsub}
-                         ["items" {"node" microblog-uri}]])})]
+                         ["items" {"node" namespace/microblog}]])})]
     (tigase/deliver-packet! packet)))
 
 (defn fetch-updates-trigger

@@ -1,14 +1,14 @@
 (ns jiksnu.views.user-views
   (:use (ciste config core html sections views)
         ciste.sections.default
-        (jiksnu model namespace session view)
+        (jiksnu model session view)
         jiksnu.actions.user-actions
-        jiksnu.helpers.user-helpers
         jiksnu.sections.user-sections
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
-  (:require [clj-tigase.element :as element]
-            [hiccup.form-helpers :as f]
+  (:require (clj-tigase [element :as element])
+            (jiksnu [namespace :as namespace])
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [subscription :as model.subscription]
                           [user :as model.user])

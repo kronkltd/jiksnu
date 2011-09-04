@@ -4,8 +4,9 @@
                sections)
         ciste.sections.default
         clj-tigase.core
-        (jiksnu model namespace view))
-  (:require [jiksnu.model.user :as model.user]))
+        (jiksnu model view))
+  (:require (jiksnu [namespace :as namespace])
+            (jiksnu.model [user :as model.user])))
 
 (defn subscriber-response-element
   [subscription]
