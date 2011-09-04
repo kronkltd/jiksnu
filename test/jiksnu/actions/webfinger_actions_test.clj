@@ -30,7 +30,7 @@
   (testing "when the url does not point to a valid XRD document"
     (fact "should raise an exception"
       (let [url "http://example.com/.well-known/host-meta"]
-        (fetch url) => (throws RuntimeException #_HostMetaException)))))
+        (fetch url) => nil))))
 
 (deftest test-host-meta
   (fact
