@@ -1,17 +1,13 @@
 (ns jiksnu.views.subscription-views
   (:use (ciste [debug :only (spy)]
-               [html :only (dump dump*)]
                sections
                [views :only (defview)])
         ciste.sections.default
         jiksnu.actions.subscription-actions
-        (jiksnu.helpers subscription-helpers
-                        user-helpers)
-        (jiksnu model namespace session view))
+        (jiksnu model session view))
   (:require (clj-tigase [core :as tigase])
-            (hiccup [form-helpers :as f])
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user])
+            (jiksnu.helpers [subscription-helpers :as helpers.subscription]
+                            [user-helpers :as helpers.user])
             (jiksnu.templates [subscriptions :as templates.subscriptions])))
 
 (defview #'delete :html
@@ -77,20 +73,25 @@
 
 (defview #'subscribe :xmpp
   [request subscription]
-  (tigase/result-packet request (subscription-response-element subscription)))
+  (tigase/result-packet
+   request (helpers.subscription/subscription-response-element subscription)))
 
 (defview #'subscribed :xmpp
   [request subscription]
-  (tigase/result-packet request (subscriptions-response [subscription])))
+  (tigase/result-packet
+   request (helpers.subscription/subscriptions-response [subscription])))
 
 (defview #'subscribers :xmpp
   [request subscribers]
-  (tigase/result-packet request (subscribers-response subscribers)))
+  (tigase/result-packet
+   request (helpers.subscription/subscribers-response subscribers)))
 
 (defview #'subscriptions :xmpp
   [request [user subscriptions]]
-  (tigase/result-packet request (subscriptions-response subscriptions)))
+  (tigase/result-packet
+   request (helpers.subscription/subscriptions-response subscriptions)))
 
 (defview #'unsubscribe :xmpp
   [request subscription]
-  (tigase/result-packet request (subscriptions-response [subscription])))
+  (tigase/result-packet
+   request (helpers.subscription/subscriptions-response [subscription])))
