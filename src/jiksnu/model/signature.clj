@@ -32,7 +32,7 @@
            org.openxrd.discovery.impl.HtmlLinkDiscoveryMethod
            org.openxrd.discovery.impl.HttpHeaderDiscoveryMethod))
 
-(DefaultBootstrap/bootstrap)
+;; (DefaultBootstrap/bootstrap)
 
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
