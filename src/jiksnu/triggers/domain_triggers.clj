@@ -2,6 +2,7 @@
   (:use (ciste core
                [debug :only (spy)]
                triggers views)
+        (clojure.contrib [core :only (-?>)])
         jiksnu.view)
   (:require (clj-tigase [core :as tigase])
             (jiksnu.model [domain :as model.domain])

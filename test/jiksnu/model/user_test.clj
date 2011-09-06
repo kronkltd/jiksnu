@@ -81,14 +81,17 @@
 (deftest test-show
   (testing "when the user is found"
     (fact "should return a user"
-      (let [username (fseq :id)]
-        (actions.user/create (factory User {:username username}))
-        (show username) => user?)))
+      (let [username (fseq :id)
+            domain (actions.domain/create (factory Domain))]
+        (actions.user/create (factory User {:username username
+                                            :domain (:_id domain)}))
+        (show username (:_id domain)) => user?)))
   (testing "when the user is not found"
     (fact "should return nil"
       (drop!)
-      (let [username (fseq :id)]
-        (show username) => nil))))
+      (let [username (fseq :id)
+            domain (actions.domain/create (factory Domain))]
+        (show username (:_id domain)) => nil))))
 
 (deftest test-fetch-by-id)
 
