@@ -11,6 +11,7 @@
                         [element :as element]
                         [packet :as packet])
             (jiksnu [namespace :as namespace])
+            (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user]))
   (:import jiksnu.model.Activity
@@ -40,7 +41,8 @@
 (deftest test-entry->activity
   (facts "should return an Activity"
     (with-context [:http :atom]
-      (let [entry (show-section (factory Activity))]
+      (let [user (actions.user/create (factory User))
+            entry (show-section (factory Activity {:author (:_id user)}))]
         (entry->activity entry) => activity?))))
 
 
