@@ -10,7 +10,6 @@
            java.net.URI
            javax.xml.namespace.QName
            org.apache.abdera.Abdera
-           org.apache.abdera.ext.json.JSONUtil
            org.apache.abdera.factory.Factory
            org.apache.abdera.model.Element
            org.apache.abdera.model.Entry
@@ -119,13 +118,6 @@
 ;;         name (or (.getUserInfo uri)
 ;;                  (.getName author))]
 ;;     (str name "@" domain)))
-
-(defn to-json
-  "Serializes an Abdera entry to a json StringWriter"
-  [^Entry entry]
-  (let [string-writer (StringWriter.)]
-    (JSONUtil/toJson entry string-writer)
-    string-writer))
 
 (defn has-author?
   [^Entry entry]
