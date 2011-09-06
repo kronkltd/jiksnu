@@ -23,10 +23,11 @@
   ;; TODO: check https first
   (try
     (let [url (str "http://" (:_id domain) "/.well-known/host-meta")]
-      (if-let [xrd (actions.webfinger/fetch url)]
-        (if-let [links (actions.webfinger/get-links xrd)]
-          (do (model.domain/add-links domain links)
-              (model.domain/set-discovered domain)))))
+      (if-let [links (-?> url
+                          actions.webfinger/fetch
+                          actions.webfinger/get-links)]
+        (do (model.domain/add-links domain links)
+            (model.domain/set-discovered domain))))
     (catch HostMetaException e
       ;; No webfinger, nothing to do.
       )))

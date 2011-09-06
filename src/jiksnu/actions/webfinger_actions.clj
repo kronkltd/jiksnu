@@ -82,7 +82,7 @@
   [uri]
   (let [host-meta (HostMeta/getDefault)
         key-finder (MagicPKIKeyFinder. host-meta)]
-    (seq (.findKeys key-finder (URI. (spy uri))))))
+    (seq (.findKeys key-finder (URI. uri)))))
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
