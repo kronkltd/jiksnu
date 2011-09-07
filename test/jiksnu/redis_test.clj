@@ -5,13 +5,7 @@
         clj-factory.core
         (jiksnu core-test model redis)))
 
-(use-fixtures :each test-environment-fixture)
-
-(background
- (around :facts
-   (with-environment :test
-     (init-client)
-     ?form)))
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-sadd
   (fact "should add the value to the set at the key"

@@ -12,7 +12,7 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-get-domain
   (facts

@@ -8,7 +8,7 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest subscriber-response-element-test
   (testing "should"

@@ -12,15 +12,13 @@
            org.openxrd.xrd.core.impl.XRDImpl
            com.cliqset.hostmeta.HostMetaException))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (background
  (around :facts
-   (with-environment :test
-     (model.user/drop!)
-     (let [user (model.user/create (factory User))
-           options {}]
-      ?form))))
+   (let [user (model.user/create (factory User))
+         options {}]
+     ?form)))
 
 (deftest test-fetch
   (testing "when the url points to a valid XRD document"

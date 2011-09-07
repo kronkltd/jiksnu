@@ -9,7 +9,7 @@
             (jiksnu.views [domain-views :as views.domain]))
   (:import jiksnu.model.Domain))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-discover-onesocialweb
   (fact

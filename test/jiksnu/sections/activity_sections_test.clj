@@ -22,7 +22,7 @@
            org.apache.abdera.ext.json.JSONUtil
            tigase.xml.Element))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-uri "Activity"
   (facts "should be a string"

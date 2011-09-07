@@ -15,7 +15,7 @@
             [ring.mock.request :as mock])
   (:import (jiksnu.model Activity User)))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest show-filter-test
   (testing "when the serialization is http"

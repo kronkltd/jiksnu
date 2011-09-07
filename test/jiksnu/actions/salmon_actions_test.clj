@@ -10,7 +10,7 @@
            java.security.Key
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (defn valid-envelope-stream
   []

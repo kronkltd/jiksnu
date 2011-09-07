@@ -19,7 +19,7 @@
             [jiksnu.actions.user-actions :as actions.user])
   (:import jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest uri-test "User :html :http"
   (testing "should return a link to that user"

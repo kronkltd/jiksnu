@@ -21,7 +21,7 @@
             [ring.mock.request :as mock])
   (:import (jiksnu.model Activity User)))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 ;; (deftest filter-action "#'actions.activity/create :xmpp"
 ;;   (testing "when the user is logged in"

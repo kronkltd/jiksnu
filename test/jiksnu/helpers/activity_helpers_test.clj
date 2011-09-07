@@ -15,13 +15,12 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (background
  (around :facts
-   (with-environment :test
-     (let [actor (factory User)]
-       ?form))))
+   (let [actor (factory User)]
+     ?form)))
 
 ;; (deftest to-json-test
 ;;   (testing "should not be nil"

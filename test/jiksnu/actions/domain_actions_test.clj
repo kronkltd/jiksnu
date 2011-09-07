@@ -6,7 +6,7 @@
   (:require (jiksnu.model [domain :as model.domain]))
   (:import jiksnu.model.Domain))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-check-webfinger)
 

@@ -17,7 +17,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-set-recipients
   (fact "should return an activity with the recipients added"

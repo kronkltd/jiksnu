@@ -2,25 +2,18 @@
   (:use clojure.test
         midje.sweet
         jiksnu.core-test
-        jiksnu.model.signature
-
-        )
+        jiksnu.model.signature)
   (:import java.security.KeyPair
            java.security.PrivateKey
            java.security.PublicKey
            java.security.spec.RSAPrivateKeySpec
-           java.security.spec.RSAPublicKeySpec
+           java.security.spec.RSAPublicKeySpec))
 
-           )
-  )
-
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-generate-key
-  (fact
-    (generate-key) => (partial instance? KeyPair)
-    )
-  )
+  (fact "should return a KeyPair"
+    (generate-key) => (partial instance? KeyPair)))
 
 (deftest test-public-key
   (fact
@@ -30,9 +23,7 @@
 (deftest test-private-key
   (fact
     (let [keypair (generate-key)]
-      (private-key keypair)) => (partial instance? PrivateKey)
-    )
-  )
+      (private-key keypair)) => (partial instance? PrivateKey)))
 
 (deftest test-public-spec)
 

@@ -6,10 +6,9 @@
         jiksnu.helpers.user-helpers)
   (:import jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (background
  (around :facts
-   (with-environment :test
-     (let [actor (factory User)]
-       ?form))))
+   (let [actor (factory User)]
+     ?form)))

@@ -15,7 +15,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest notify-activity-test
   (testing "should return a packet"

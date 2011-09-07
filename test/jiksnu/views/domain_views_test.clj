@@ -9,7 +9,7 @@
   (:require (jiksnu.actions [domain-actions :as actions.domain]))
   (:import jiksnu.model.Domain))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-ping-request
   (fact

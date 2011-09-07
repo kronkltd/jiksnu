@@ -10,7 +10,7 @@
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest test-subscribe
   (testing "when the user is not already subscribed"

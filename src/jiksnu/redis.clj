@@ -1,5 +1,6 @@
 (ns jiksnu.redis
-  (:use aleph.redis))
+  (:use aleph.redis
+        (ciste [config :only (definitializer)])))
 
 (defonce ^:dynamic *redis-client* (ref nil))
 (defonce ^:dynamic *redis-stream* (ref nil))
@@ -13,6 +14,10 @@
   []
   (dosync
    (ref-set *redis-stream* (redis-stream {:host "localhost"}))))
+
+(definitializer
+  (init-client)
+  (init-stream))
 
 (defn client
   [& args]

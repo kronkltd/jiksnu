@@ -11,7 +11,7 @@
             jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest abdera-to-tigase-element-test
   (testing "should return a tigase element"

@@ -86,12 +86,12 @@
   `(karras/with-mongo-request (mongo-database)
     ~@body))
 
-(defmacro with-environment
-  [environment & body]
-  `(binding [ciste.config/*environment* ~environment]
-     (redis/init-client)
-     (with-database
-       ~@body)))
+;; (defmacro with-environment
+;;   [environment & body]
+;;   `(binding [ciste.config/*environment* ~environment]
+;;      (redis/init-client)
+;;      (with-database
+;;        ~@body)))
 
 (def activity? (partial instance? Activity))
 (def subscription? (partial instance? Subscription))

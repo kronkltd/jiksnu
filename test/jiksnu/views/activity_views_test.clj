@@ -17,7 +17,7 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest apply-view-test
   (testing "#'index :atom"

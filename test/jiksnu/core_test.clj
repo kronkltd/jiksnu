@@ -10,7 +10,8 @@
   [f]
   (load-config)
   (with-environment :test
-    (doseq [model [Person Activity Subscription
-                   User Item Domain PushSubscription MagicKeyPair]]
-      (entity/delete-all model))
-    (f)))
+    (with-database
+      (doseq [model [Person Activity Subscription
+                     User Item Domain PushSubscription MagicKeyPair]]
+        (entity/delete-all model))
+      (f))))

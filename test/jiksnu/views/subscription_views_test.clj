@@ -17,7 +17,7 @@
             (jiksnu.actions [subscription-actions :as actions.subscription]))
   (:import jiksnu.model.User))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest apply-view-test "#'subscribe :xmpp")
 

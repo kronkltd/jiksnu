@@ -10,7 +10,7 @@
        ring.mock.request
        ))
 
-(use-fixtures :each test-environment-fixture)
+(use-fixtures :once test-environment-fixture)
 
 (deftest webfinger-host-meta-test
   (let [ch (channel)]
