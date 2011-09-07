@@ -1,5 +1,6 @@
 (ns jiksnu.filters.activity-filters
-  (:use (ciste [debug :only (spy)]
+  (:use (ciste [config :only (config)]
+               [debug :only (spy)]
                [filters :only (deffilter)])
         (jiksnu model session)
         jiksnu.actions.activity-actions
