@@ -76,6 +76,7 @@
     [[:get "/api/statuses/public_timeline.:format"]    #'activity/index]
     [[:get  "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline]
     [[:get "/main/domains"]                            #'domain/index]
+    [[:post "/main/domains"]                           #'domain/find-or-create]
     [[:get "/main/domains/*"]                          #'domain/show]
     [[:delete "/main/domains/*"]                       #'domain/delete]
     [[:post "/main/domains"]                           #'domain/create]

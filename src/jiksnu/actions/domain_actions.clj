@@ -39,9 +39,8 @@
 
 (defaction find-or-create
   [id]
-  (if-let [domain (model.domain/show id)]
-    domain
-    (create {:_id id})))
+  (or (model.domain/show id)
+      (create {:_id id})))
 
 (defaction ping
   [domain]

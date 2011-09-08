@@ -27,6 +27,10 @@
         domain (model.domain/show id)]
     (action domain)))
 
+(deffilter #'find-or-create :http
+  [action request]
+  (-> request :params :domain action))
+
 (deffilter #'index :http
   [action request]
   (let [domains (model.domain/index)]

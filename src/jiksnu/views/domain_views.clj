@@ -21,19 +21,27 @@
   [request domain]
   {:status 303
    :template false
-   :headers {"Location" "/domains"}})
+   :headers {"Location" "/main/domains"}})
 
 (defview #'delete :html
   [request domain]
   {:status 303
    :template false
-   :headers {"Location" "/domains"}})
+   :headers {"Location" "/main/domains"}})
 
 (defview #'discover :html
   [request domain]
   {:status 303
    :template false
-   :headers {"Location" "/domains"}})
+   :headers {"Location" "/main/domains"}})
+
+(defview #'find-or-create :html
+  [request domain]
+  {:status 303
+   :template false
+   :headers {"Location" "/main/domains"}
+   }
+  )
 
 (defview #'index :html
   [request domains]
@@ -52,4 +60,4 @@
   [request domain]
   #_{:status 303
    :template false
-   :headers {"Location" "/domains"}})
+   :headers {"Location" "/main/domains"}})
