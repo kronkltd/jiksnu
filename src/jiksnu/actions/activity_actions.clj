@@ -33,10 +33,11 @@
 
 (defn set-recipients
   [activity]
-  (if-let [recipients (filter identity (:recipients activity))]
-    (let [users (map actions.user/user-for-uri recipients)]
-      (assoc activity :recipients users))
-    (dissoc activity :recipients)))
+  (let [recipients (filter identity (:recipients activity))]
+    (if (not (empty? recipients))
+      (let [users (map actions.user/user-for-uri recipients)]
+        (assoc activity :recipients users))
+      (dissoc activity :recipients))))
 
 (defn set-remote
   [activity]
@@ -58,11 +59,18 @@
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
 
+(defn set-title
+  [activity]
+  (if (= (:title activity) "")
+    (dissoc activity :title)
+    activity))
+
 
 (defn prepare-activity
   [activity]
   (-> activity
       helpers.activity/set-id
+      set-title
       helpers.activity/set-object-id
       helpers.activity/set-public
       set-remote
