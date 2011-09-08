@@ -1,5 +1,6 @@
 (ns jiksnu.model.activity
   (:use (ciste [debug :only (spy)])
+        (clojure.contrib [core :only (-?> -?>>)])
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [clojure.string :as string]
@@ -103,8 +104,8 @@
      :tags []
      :uri (:uri activity)
      :recipients []
-     :published (format-date (:published activity))
-     :published-formatted (.format (PrettyTime.) (:published activity))
+     :published (-?> activity :published format-date)
+     :published-formatted (-?>> activity :published (.format (PrettyTime.)))
      :buttonable (and actor
                       (or (:admin actor)
                           (some #(= % (:authors activity)) actor)))

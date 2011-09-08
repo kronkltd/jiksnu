@@ -77,6 +77,13 @@
        (assoc :action #'show))
    user))
 
+(defview #'show :html
+  [request user]
+  {:status 200
+   :body "Show user"
+   }
+  )
+
 (defview #'update :html
   [request user]
   {:status 302

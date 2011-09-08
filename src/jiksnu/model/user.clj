@@ -72,11 +72,12 @@
   (entity/fetch-all User))
 
 (defn show
-  [username domain]
-  (entity/fetch-one
-   User
-   {:username username
-    :domain domain}))
+  ([username] (show username (config :domain)))
+  ([username domain]
+     (entity/fetch-one
+      User
+      {:username username
+       :domain domain})))
 
 (defn fetch-by-id
   [id]
