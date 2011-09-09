@@ -26,11 +26,14 @@
  * @param id
  */
 {template .deleteButton}
-  <form method="delete"
+  <form method="post"
         action="/main/domains/{$id}">
+    <input type="hidden"
+           name="_method"
+           value="DELETE" />
     <input type="submit"
            value="Delete"
-           class="delete-button">
+           class="delete-button" />
   </form>
 {/template}
 
