@@ -45,12 +45,12 @@
     (let [envelope (stream->envelope (valid-envelope-stream))]
       (extract-activity envelope)) => activity?))
 
-;; (deftest test-process
-;;   (testing "with a valid signature"
-;;     (future-fact "should create the message"
-;;       (let [stream (valid-envelope-stream)]
-;;         (process stream)) => true))
-;;   (testing "with an invalid signature"
-;;     (fact "should reject the message"
+(deftest test-process
+  (testing "with a valid signature"
+    (fact "should create the message"
+      (let [stream (valid-envelope-stream)]
+        (process stream)) => true))
+  (testing "with an invalid signature"
+    (fact "should reject the message"
 
-;;       )))
+      )))

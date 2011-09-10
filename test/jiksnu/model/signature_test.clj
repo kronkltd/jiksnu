@@ -32,9 +32,7 @@
 (deftest test-get-bytes
   (future-fact "should return an array of bytes"
     (let [bigint (BigInteger. "42")]
-      (get-bytes bigint)) => nil
-    )
-  )
+      (get-bytes bigint)) => nil))
 
 (deftest test-encode)
 
