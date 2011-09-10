@@ -20,15 +20,15 @@
          options {}]
      ?form)))
 
-(deftest test-fetch
+(deftest test-fetch-host-meta
   (testing "when the url points to a valid XRD document"
     (fact
       (let [url "http://kronkltd.net/.well-known/host-meta"]
-        (fetch url) => (partial instance? XRD))))
+        (fetch-host-meta url) => (partial instance? XRD))))
   (testing "when the url does not point to a valid XRD document"
     (fact "should raise an exception"
       (let [url "http://example.com/.well-known/host-meta"]
-        (fetch url) => nil))))
+        (fetch-host-meta url) => nil))))
 
 (deftest test-host-meta
   (fact
