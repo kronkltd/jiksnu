@@ -1,19 +1,21 @@
 (ns jiksnu.sections.activity-sections
-  (:use (ciste core
+  (:use (ciste [core :only (with-format)]
                [debug :only (spy)]
-               html sections)
-        ciste.sections.default
-        (jiksnu abdera model view session)
-        (jiksnu.helpers activity-helpers
-                        user-helpers)
-        jiksnu.xmpp.element
-        [karras.entity :only (make)])
-  (:require [hiccup.form-helpers :as f]
-            (jiksnu [namespace :as namespace])
+               [sections :only (defsection)])
+        ciste.sections.default)
+  (:require (ciste [html :as html])
+            (jiksnu [abdera :as abdera]
+                    [model :as model]
+                    [namespace :as namespace]
+                    [session :as session]
+                    [view :as view])
+            (jiksnu.helpers [activity-helpers :as helpers.activity]
+                            [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             jiksnu.sections.user-sections
-            (jiksnu.templates [activity :as template.activity]))
+            (jiksnu.templates [activity :as template.activity])
+            (jiksnu.xmpp [element :as element]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
@@ -41,7 +43,7 @@
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
-  (let [entry (new-entry)]
+  (let [entry (abdera/new-entry)]
     (doto entry
       (.setId (or (:id activity) (str (:_id activity))))
       (.setPublished (:published activity))
@@ -49,15 +51,15 @@
       (.setTitle (or (and (not= (:title activity) "")
                           (:title activity))
                      (:content activity)))
-      (add-author activity)
+      (helpers.activity/add-author activity)
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
       (.addSimpleExtension
        namespace/as "object-type" "activity" namespace/status)
       (.addSimpleExtension
        namespace/as "verb" "activity" namespace/post)
-      (comment-link-item activity)
-      (acl-link activity))
+      (helpers.activity/comment-link-item activity)
+      (helpers.activity/acl-link activity))
     (let [object (:object activity)
           object-element (.addExtension entry namespace/as "object" "activity")]
       (.setObjectType object-element namespace/status)
@@ -81,7 +83,7 @@
    "content" (:content activity)
    "id" (:_id activity)
    "url" (full-uri activity)
-   "actor" (show-section (get-author activity))
+   "actor" (show-section (helpers.activity/get-author activity))
    "object"
    (let [object (:object activity)]
      {"published" (:published object)
@@ -107,7 +109,7 @@
 
 (defsection show-section [Activity :xmpp :xmpp]
   [^Activity activity & options]
-  (abdera-to-tigase-element
+  (element/abdera-to-tigase-element
    (with-format :atom
      (show-section activity))))
 

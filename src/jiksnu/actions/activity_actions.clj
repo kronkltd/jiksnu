@@ -128,7 +128,7 @@ serialization"
              published (.getPublished entry)
              updated (.getUpdated entry)
              user (-> entry
-                      (helpers.activity/get-atom-author feed)
+                      (abdera/get-author feed)
                       actions.user/person->user
                       actions.user/find-or-create-by-remote-id)
              extension-maps (->> (.getExtensions entry)
