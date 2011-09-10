@@ -1,11 +1,12 @@
 (ns jiksnu.actions.user-actions-test
-  (:use [clj-factory.core :only (factory)]
+  (:use (ciste [debug :only (spy)])
+        (clj-factory [core :only (factory fseq)])
         clojure.test
         (jiksnu core-test model)
         jiksnu.actions.user-actions
         midje.sweet)
   (:require (clj-tigase [packet :as packet])
-            [jiksnu.model.user :as model.user])
+            (jiksnu.model [user :as model.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            jiksnu.model.User))
 
@@ -15,32 +16,50 @@
  (around :facts
    (with-environment :test
      (model.user/drop!)
-     (let [user (model.user/create (factory User))]
+     (let [user (model.user/create (factory User))
+           options {}]
       ?form))))
 
 (deftest test-enqueue-discover
   (fact
     @(enqueue-discover user) => 1))
 
-(deftest test-pop-user!)
+(deftest test-pop-user!
+  (fact
+    (pop-user! (:domain user)) => user?))
 
-(deftest test-add-link)
+(deftest test-add-link
+  (fact
+    (add-link user options) => user?))
 
-(deftest test-create)
+(deftest test-create
+  (let [options {:username (fseq :username)
+                 :domain (fseq :domain)}]
+    (create options) => user?))
 
-(deftest test-delete)
+(deftest test-delete
+  (fact
+    (delete (:_id user)) => nil))
 
-(deftest test-discover)
+(deftest test-discover
+  (fact
+    (discover user) => user?))
 
-(deftest test-discover-pending-users)
+(deftest test-discover-pending-users
+  (future-fact
+    (discover-pending-users (:domain user)) => nil))
 
-(deftest test-edit)
+(deftest test-edit
+  (fact
+    (edit user) => nil))
 
 (deftest test-vcard-request
   (fact
     (vcard-request user) => packet/packet?))
 
-(deftest test-request-vcard!)
+(deftest test-request-vcard!
+  (fact
+    (request-vcard! user) => packet/packet?))
 
 (deftest test-fetch-remote
   (fact
@@ -54,21 +73,46 @@
   (fact
     (find-hub user) => nil))
 
-(deftest test-find-or-create)
+(deftest test-find-or-create
+  (fact
+    (let [username (fseq :username)
+          domain (fseq :domain)]
+      (find-or-create username domain) => user?)))
 
-(deftest test-user-for-uri)
+(deftest test-user-for-uri
+  (fact
+    (let [uri (:uri user)]
+      (user-for-uri uri) => user?)))
 
-(deftest test-index)
+(deftest test-index
+  (fact
+    (let [options {}]
+     (index options) => (partial every? user?))))
 
-(deftest test-profile)
+(deftest test-profile
+  (fact
+    (let [options {}]
+     (profile options) => nil)))
 
-(deftest test-register)
+(deftest test-register
+  (fact
+    (let [password (fseq :password)
+          options {:username (fseq :username)
+                   :password password
+                   :confirm-password password}]
+      (register options) => user?)))
 
-(deftest test-remote-create)
+(deftest test-remote-create
+  (fact
+    (remote-create user options) => user?))
 
-(deftest test-remote-profile)
+(deftest test-remote-profile
+  (fact
+    (remote-profile) => nil))
 
-(deftest test-remote-user)
+(deftest test-remote-user
+  (fact
+    (remote-user user) => user?))
 
 (deftest test-show
   (testing "when the user exists"
@@ -78,18 +122,23 @@
         response => (partial instance? User)
         response => user))))
 
-(deftest test-update)
+(deftest test-update
+  (fact
+    (update user options) => user?))
 
-(deftest test-update-hub)
+(deftest test-update-hub
+  (fact
+    (update-hub user) => user?))
 
-(deftest test-xmpp-service-unavailable)
+(deftest test-xmpp-service-unavailable
+  (fact
+    (xmpp-service-unavailable user) => user?))
 
 (deftest test-find-or-create-by-remote-id
-  ()
-  )
+  (fact
+    (find-or-create-by-remote-id user options) => user?))
 
 (deftest test-person->user
   (future-fact
     (let [person (Person.)]
      (person-> user => user?))))
-

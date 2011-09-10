@@ -9,6 +9,14 @@
   [n]
   n)
 
+(defseq :username
+  [n]
+  (str "user" n))
+
+(defseq :password
+  [n]
+  (str "hunter" n))
+
 (defseq :domain
   [n]
   (str "example" n ".com"))

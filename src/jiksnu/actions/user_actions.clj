@@ -55,12 +55,13 @@
   [user link]
   (if-let [existing-link (model.user/get-link user (:rel link))]
     user
-    (entity/update
-     User {:_id (:_id user)}
-     {:$addToSet
-      {:links {:href (:href link)
-               :type (:type link)
-               :rel (:rel link)}}})))
+    (do (entity/update
+         User {:_id (:_id user)}
+         {:$addToSet
+          {:links {:href (:href link)
+                   :type (:type link)
+                   :rel (:rel link)}}})
+        user)))
 
 (defaction create
   [options]

@@ -1,12 +1,13 @@
 (ns jiksnu.views.push-subscription-views
-  (:use (ciste config
+  (:use (ciste [config :only (config)]
                [debug :only (spy)]
-               sections views)
+               sections
+               [views :only (defview)])
         ciste.sections.default
         jiksnu.actions.push-subscription-actions
-        (jiksnu model namespace session view)
-        jiksnu.xmpp.element)
-  (:require (jiksnu.model [push-subscription :as model.push-subscription]
+        (jiksnu model session view))
+  (:require (jiksnu [namespace :as namespace])
+            (jiksnu.model [push-subscription :as model.push-subscription]
                           [user :as model.user]))
   (:import jiksnu.model.PushSubscription
            jiksnu.model.User))

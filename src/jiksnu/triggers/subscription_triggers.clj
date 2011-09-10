@@ -1,13 +1,15 @@
 (ns jiksnu.triggers.subscription-triggers
-  (:use (ciste config core
+  (:use (ciste [config :only (config)]
+               core
                [debug :only (spy)]
-               triggers sections)
+               triggers
+               sections)
         ciste.sections.default
-        (jiksnu namespace view)
-        jiksnu.actions.subscription-actions
-        jiksnu.helpers.subscription-helpers)
+        (jiksnu view)
+        jiksnu.actions.subscription-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
+            (jiksnu [namespace :as namespace])
             (jiksnu.model [domain :as model.domain]
                           [user :as model.user])
             (jiksnu.helpers [subscription-helpers :as helpers.subscription]
@@ -19,12 +21,12 @@
     (with-format :xmpp
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
-            ele (subscribe-request subscription)
+            ele (helpers.subscription/subscribe-request subscription)
             packet (tigase/make-packet {:body (element/make-element ele)
-                                 :type :set
-                                 :id (:id request)
-                                 :from (tigase/make-jid user)
-                                 :to (tigase/make-jid subscribee)})]
+                                        :type :set
+                                        :id (:id request)
+                                        :from (tigase/make-jid user)
+                                        :to (tigase/make-jid subscribee)})]
         (tigase/deliver-packet! packet)))))
 
 (defn notify-unsubscribe-xmpp
@@ -33,12 +35,12 @@
     (with-format :xmpp
       (let [user (model.user/fetch-by-id (:from subscription))
             subscribee (model.user/fetch-by-id (:to subscription))
-            ele (unsubscription-request subscription)
+            ele (helpers.subscription/unsubscription-request subscription)
             packet (tigase/make-packet {:body (element/make-element ele)
-                                 :type :set
-                                 :id (:id request)
-                                 :from (tigase/make-jid user)
-                                 :to (tigase/make-jid subscribee)})]
+                                        :type :set
+                                        :id (:id request)
+                                        :from (tigase/make-jid user)
+                                        :to (tigase/make-jid subscribee)})]
         (tigase/deliver-packet! packet)))))
 
 (defn notify-subscribe
