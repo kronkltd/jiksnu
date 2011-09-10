@@ -5,6 +5,7 @@
         (clojure.contrib [core :only (-?>)])
         jiksnu.view)
   (:require (clj-tigase [core :as tigase])
+            (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain])
             (jiksnu.actions [domain-actions :as actions.domain]
                             [webfinger-actions :as actions.webfinger]))
@@ -16,22 +17,24 @@
         request {:format :xmpp
                  :serialization :xmpp
                  :action #'actions.domain/ping}
-        packet (tigase/make-packet (apply-view request domain))]
+        packet (tigase/make-packet
+                (apply-view request {:_id domain}))]
     (tigase/deliver-packet! packet)))
 
 (defn discover-webfinger
   [action [domain] _]
   ;; TODO: check https first
   (try
-    (let [url (str "http://" (:_id domain) "/.well-known/host-meta")]
-      (if-let [links (-?> url
-                          actions.webfinger/fetch-user-meta
-                          actions.webfinger/get-links)]
-        (do (model.domain/add-links domain links)
-            (model.domain/set-discovered domain))))
+    (let [url (str "http://" domain "/.well-known/host-meta")]
+      (if-let [xrd (actions.webfinger/fetch-host-meta url)]
+        (if-let [links (actions.webfinger/get-links xrd)]
+          ;; TODO: These should call actions
+          (do (model.domain/add-links domain links)
+              (model.domain/set-discovered domain))
+          (log/error "Host meta does not have any links"))
+        (log/error (str "Could not find host meta for domain: " domain))))
     (catch HostMetaException e
-      ;; No webfinger, nothing to do.
-      )))
+      (log/error e))))
 
 (defn create-trigger
   [action [domain-name] domain]
