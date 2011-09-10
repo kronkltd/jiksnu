@@ -32,11 +32,11 @@
   (testing "when the local flag is set to true"
     (fact "the local flag should be true"
       (let [activity (factory Activity {:local true})]
-        (:local (set-remote activity)) => true)))
+        (set-remote activity) => (contains {:local true}))))
   (testing "when the local flag is set to false"
     (fact "the local flag should be false"
       (let [activity (factory Activity {:local false})]
-        (:local (set-remote activity)) => false))))
+        (set-remote activity) => (contains {:local false})))))
 
 (deftest test-entry->activity
   (facts "should return an Activity"
@@ -63,14 +63,15 @@
          (let [user (model.user/create (factory User))]
            (with-user user
              (let [activity (factory Activity)
-                   element (element/make-element
-                            (index-section [activity]))
-                   packet (tigase/make-packet
-                           {:to (tigase/make-jid user)
-                            :from (tigase/make-jid user)
-                            :type :set
-                            :body element})
-                   request (packet/make-request packet)]
+                   ;; element (element/make-element
+                   ;;          (index-section [activity]))
+                   ;; packet (tigase/make-packet
+                   ;;         {:to (tigase/make-jid user)
+                   ;;          :from (tigase/make-jid user)
+                   ;;          :type :set
+                   ;;          :body element})
+                   ;; request (packet/make-request packet)
+                   ]
                (create activity) => activity?))))))))
 
 (deftest create-test
