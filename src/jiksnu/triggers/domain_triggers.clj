@@ -25,7 +25,7 @@
   (try
     (let [url (str "http://" (:_id domain) "/.well-known/host-meta")]
       (if-let [links (-?> url
-                          actions.webfinger/fetch
+                          actions.webfinger/fetch-user-meta
                           actions.webfinger/get-links)]
         (do (model.domain/add-links domain links)
             (model.domain/set-discovered domain))))
