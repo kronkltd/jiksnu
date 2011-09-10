@@ -1,8 +1,8 @@
 (ns jiksnu.abdera
   (:use (ciste [debug :only (spy)])
-        (clojure.contrib [core :only (-?>)])
-        [clojure.tools.logging :only (error)])
-  (:require [clj-tigase.element :as element])
+        (clojure.contrib [core :only (-?>)]))
+  (:require (clj-tigase [element :as element])
+            (clojure.tools [logging :as log]))
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
            com.cliqset.abdera.ext.poco.PocoExtensionFactory
            java.io.ByteArrayInputStream
@@ -62,7 +62,7 @@
     (let [parser *abdera-parser*]
       (.parse parser stream))
     (catch IllegalStateException e
-      (error e))))
+      (log/error e))))
 
 (defn parse-xml-string
   "Converts a string to an Abdera entry"
