@@ -10,6 +10,10 @@
   (:import com.ocpsoft.pretty.time.PrettyTime
            jiksnu.model.Activity))
 
+(defn make-activity
+  [options]
+  (entity/make Activity options))
+
 (defn create
   [activity]
   (entity/create Activity activity))

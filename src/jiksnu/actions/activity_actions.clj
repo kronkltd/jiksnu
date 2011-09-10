@@ -8,21 +8,16 @@
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase])
             (clojure [string :as string])
-            (clojure.data [json :as json])
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace]
-                    [session :as session]
-                    [view :as view])
+                    [session :as session])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.helpers [activity-helpers :as helpers.activity]
                             [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user])
-            (jiksnu.sections [activity-sections :as sections.activity])
-            (karras [entity :as entity]
-                    [sugar :as sugar])
             (hiccup [core :as hiccup]))
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            jiksnu.model.Activity
@@ -91,9 +86,10 @@
 
 (defaction create
   [params]
-  (let [prepared-activity (prepare-activity params)
-        activity (entity/make Activity prepared-activity)]
-    (model.activity/create activity)))
+  (-> params
+      prepare-activity
+      model.activity/make-activity
+      model.activity/create))
 
 (defaction delete
   [activity]
@@ -158,19 +154,7 @@ serialization"
                           :public true
                           :comment-count (abdera/get-comment-count entry)}
                          extension-maps)]
-         (entity/make Activity opts)))))
-
-
-
-
-
-
-
-
-
-
-
-
+         (model.activity/make-activity opts)))))
 
 (defn get-activities
   [feed]
@@ -252,8 +236,7 @@ serialization"
   (let [{{id :_id} :params} activity
         original-activity (model.activity/fetch-by-id id)
         opts
-        (entity/make
-         Activity
+        (model.activity/make-activity
          (merge original-activity
                 activity
                 (if (= (get activity :public) "public")
