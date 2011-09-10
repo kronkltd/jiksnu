@@ -45,16 +45,6 @@
   [activity]
   (model.user/fetch-by-id (:author activity)))
 
-(defn get-atom-author
-  [entry feed]
-  (or
-   ;; (.getActor entry)
-   (.getAuthor entry)
-   (if feed (first (.getAuthors feed)))
-   (if-let [source (.getSource entry)]
-     (first (.getAuthors source)))
-   ))
-
 (defn make-feed
   [{:keys [user title subtitle links entries updated id]}]
   (let [feed (.newFeed abdera/*abdera*)

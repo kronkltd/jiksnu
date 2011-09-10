@@ -6,7 +6,8 @@
         jiksnu.actions.user-actions
         midje.sweet)
   (:require (clj-tigase [packet :as packet])
-            (jiksnu [namespace :as namespace]
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace]
                     [redis :as redis])
             (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.model [user :as model.user]))
