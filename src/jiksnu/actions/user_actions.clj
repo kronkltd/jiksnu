@@ -78,6 +78,7 @@
   [^User user]
   user)
 
+;; TODO: turn this into a worker
 (defn discover-pending-users
   [domain]
   (if-let [user (pop-user! domain)]
@@ -86,7 +87,7 @@
       (discover user))
     (do (log/info "sleeping")
         (Thread/sleep 3000)))
-  (recur domain))
+  #_(recur domain))
 
 (defaction edit
   [& _])
