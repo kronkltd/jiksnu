@@ -13,29 +13,24 @@
     (model.domain/create options)))
 
 (defaction delete
-  [request]
-  (let [{{id "*"} :params} request
-        response (model.domain/delete id)]
-    response))
+  [id]
+  (model.domain/delete id))
 
 (defaction discover
-  [domain]
-  domain)
+  [id]
+  (model.domain/show id))
 
 (defaction edit
   [id]
   (model.domain/show id))
 
 (defaction index
-  [request]
-  (let [domains (model.domain/index)]
-    domains))
+  []
+  (model.domain/index))
 
 (defaction show
-  [request]
-  (let [{{id "*"} :params} request
-        domain (model.domain/show id)]
-    domain))
+  [id]
+  (model.domain/show id))
 
 (defaction find-or-create
   [id]
@@ -49,14 +44,15 @@
 ;; Occurs if the ping request caused an error
 (defaction ping-error
   [domain]
-  (model.domain/update (assoc-in domain [:enabled :xmpp] false))
+  (model.domain/set-field domain :xmpp false)
   false)
 
 (defaction ping-response
   [domain]
-  (model.domain/update
-   (merge domain {:xmpp true
-                  :discovered true})))
+  (-> domain
+      (assoc :xmpp true)
+      (assoc :discovered true)
+      model.domain/update))
 
 (defaction set-xmpp
   [domain value]

@@ -5,27 +5,21 @@
   (:require (jiksnu.model [domain :as model.domain])))
 
 (deffilter #'check-webfinger :http
-  [action domain]
-  true)
+  [action request]
+  (action))
 
-;; TODO: creating the domain should be performed in the action
 (deffilter #'create :http
   [action request]
-  (let [{{domain :domain} :params} request]
-    (model.domain/create {:_id domain})))
+  (let [{:keys [params]} request]
+    (action {:_id (:domain params)})))
 
-;; TODO: deleting the domain should be done in the action
 (deffilter #'delete :http
   [action request]
-  (let [{{id :*} :params} request
-        response (model.domain/delete id)]
-    response))
+  (-> request :params :* action))
 
 (deffilter #'discover :http
   [action request]
-  (let [{{id :*} :params} request
-        domain (model.domain/show id)]
-    (action domain)))
+  (-> request :params :* action))
 
 (deffilter #'find-or-create :http
   [action request]
@@ -33,14 +27,11 @@
 
 (deffilter #'index :http
   [action request]
-  (let [domains (model.domain/index)]
-    domains))
+  (action))
 
 (deffilter #'show :http
   [action request]
-  (let [{{id :*} :params} request
-        domain (model.domain/show id)]
-    domain))
+  (-> request :params :* action))
 
 (deffilter #'ping-response :xmpp
   [action request]

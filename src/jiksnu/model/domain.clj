@@ -37,9 +37,8 @@
 
 (defn find-or-create
   [id]
-  (if-let [domain (show id)]
-    domain
-    (create {:_id id})))
+  (or (show id)
+      (create {:_id id})))
 
 ;; TODO: add the links to the list
 (defn add-links
