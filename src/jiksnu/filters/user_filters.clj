@@ -1,54 +1,27 @@
 (ns jiksnu.filters.user-filters
   (:use (ciste [config :only (config)]
                [debug :only (spy)]
-               filters)
-        jiksnu.abdera
-        jiksnu.actions.user-actions
-        jiksnu.helpers.user-helpers
-        jiksnu.session
-        jiksnu.view)
-  (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+               [filters :only (deffilter)])
+        (jiksnu session view)
+        jiksnu.actions.user-actions)
+  (:require (clj-tigase [element :as element])
+            (clojure.tools [logging :as log])
+            (jiksnu [abdera :as abdera])
+            (jiksnu.helpers [user-helpers :as helpers.user])
+            (jiksnu.model [activity :as model.activity]
+                          [subscription :as model.subscription]
+                          [user :as model.user]))
   (:import tigase.xml.Element))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'create :http
   [action request]
   (let [{:keys [params]} request]
     (action params)))
 
-;; TODO: this one wasn't working in the first place
-(deffilter #'create :xmpp
-  [action request]
-  (let [{:keys [items]} request]
-    (let [properties
-          (flatten
-           (map process-vcard-element items))]
-      (action properties))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; delete
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'delete :http
   [action request]
   (let [{{id :id} :params} request]
     (action id)))
-
-(deffilter #'delete :xmpp
-  [action request]
-  ;; TODO: implement
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; discover
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'discover :http
   [action request]
@@ -56,26 +29,10 @@
         user (model.user/fetch-by-id id)]
     (action user)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'edit :http
   [action request]
   (let [user (show request)]
     user))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fetch-remote
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deffilter #'fetch-remote :xmpp
-  [action request]
-  (model.user/fetch-by-jid (:to request)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fetch-updates
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'fetch-updates :http
   [action request]
@@ -83,79 +40,19 @@
         user (model.user/fetch-by-id id)]
     (action user)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; inbox
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (deffilter inbox :xmpp
-;;   [request]
-;;   ;; TODO: limit this to the inbox of the user
-;;   (model.user/inbox))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; index
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'index :http
   [action request]
   (let [{params :params} request]
     (action params)))
-
-(deffilter #'index :xmpp
-  [action request]
-  '()
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; profile
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'profile :http
   [action request]
   (if-let [user (current-user)]
     user (log/error "no user")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; register
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'register :http
   [action request]
   true)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-create
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(deffilter #'remote-create :xmpp
-  [action request]
-  (let [{:keys [to from payload]} request
-        user (model.user/fetch-by-jid from)]
-    (let [vcard (first (element/children payload))
-
-          avatar-url-element (find-children vcard "/vcard/photo/uri")
-          first-name-element (find-children vcard "/vcard/n/given/text")
-          gender-element     (find-children vcard "/vcard/gender")
-          last-name-element  (find-children vcard "/vcard/n/surname/text")
-          name-element       (find-children vcard "/vcard/fn/text")
-          url-element        (find-children vcard "/vcard/url/uri")
-
-          avatar-url (get-text avatar-url-element)
-          first-name (get-text first-name-element)
-          gender     (get-text gender-element)
-          last-name  (get-text last-name-element)
-          name       (get-text name-element)
-          url        (get-text url-element)]
-      (action user {:gender gender
-                    :name name
-                    :first-name first-name
-                    :last-name last-name
-                    :url url
-                    :avatar-url avatar-url}))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-profile
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'remote-profile :http
   [action request]
@@ -163,35 +60,16 @@
     (let [user (model.user/fetch-by-id id)]
       user)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; remote-user
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'remote-user :http
   [action request]
   (let [{{uri :*} :params} request]
     (action (model.user/fetch-by-uri uri))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request
         user (model.user/show id)]
     (action user)))
-
-;; TODO: This action is working off of a jid
-(deffilter #'show :xmpp
-  [action request]
-  (let [{:keys [to]} request
-        user (model.user/fetch-by-jid to)]
-    (action user)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; update
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffilter #'update :http
   [action request]
@@ -200,15 +78,72 @@
         user (model.user/show username)]
     (action user params)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; update
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (deffilter #'update-hub :http
   [action request]
   (let [{params :params} request
         {username :id} params
         user (model.user/fetch-by-id username)]
+    (action user)))
+
+
+
+
+
+
+
+;; TODO: this one wasn't working in the first place
+(deffilter #'create :xmpp
+  [action request]
+  (let [{:keys [items]} request]
+    (let [properties
+          (flatten
+           (map helpers.user/process-vcard-element items))]
+      (action properties))))
+
+(deffilter #'delete :xmpp
+  [action request]
+  ;; TODO: implement
+  )
+
+(deffilter #'fetch-remote :xmpp
+  [action request]
+  (model.user/fetch-by-jid (:to request)))
+
+(deffilter #'index :xmpp
+  [action request]
+  '())
+
+(deffilter #'remote-create :xmpp
+  [action request]
+  (let [{:keys [to from payload]} request
+        user (model.user/fetch-by-jid from)]
+    (let [vcard (first (element/children payload))
+
+          avatar-url-element (abdera/find-children vcard "/vcard/photo/uri")
+          first-name-element (abdera/find-children vcard "/vcard/n/given/text")
+          gender-element     (abdera/find-children vcard "/vcard/gender")
+          last-name-element  (abdera/find-children vcard "/vcard/n/surname/text")
+          name-element       (abdera/find-children vcard "/vcard/fn/text")
+          url-element        (abdera/find-children vcard "/vcard/url/uri")
+
+          avatar-url (abdera/get-text avatar-url-element)
+          first-name (abdera/get-text first-name-element)
+          gender     (abdera/get-text gender-element)
+          last-name  (abdera/get-text last-name-element)
+          name       (abdera/get-text name-element)
+          url        (abdera/get-text url-element)]
+      (action user {:gender gender
+                    :name name
+                    :first-name first-name
+                    :last-name last-name
+                    :url url
+                    :avatar-url avatar-url}))))
+
+;; TODO: This action is working off of a jid
+(deffilter #'show :xmpp
+  [action request]
+  (let [{:keys [to]} request
+        user (model.user/fetch-by-jid to)]
     (action user)))
 
 (deffilter #'xmpp-service-unavailable :xmpp
