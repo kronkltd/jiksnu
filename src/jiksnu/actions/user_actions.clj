@@ -64,7 +64,7 @@
         domain (actions.domain/find-or-create (:domain user))]
     (if (and (:username user)
              (:domain user)
-             (:id user))
+             #_(:id user))
       (model.user/create user))))
 
 (defaction delete

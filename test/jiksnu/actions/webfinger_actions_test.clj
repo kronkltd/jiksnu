@@ -1,5 +1,6 @@
 (ns jiksnu.actions.webfinger-actions-test
-  (:use clj-factory.core
+  (:use (ciste [debug :only (spy)])
+        clj-factory.core
         clojure.test
         midje.sweet
         (jiksnu core-test)

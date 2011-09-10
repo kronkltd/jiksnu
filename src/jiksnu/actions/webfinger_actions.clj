@@ -33,6 +33,7 @@
     (model.user/show username domain)))
 
 (defn parse-link
+  "Turns a XRD link into a may with the same info"
   [link]
   (let [href (str (.getHref link))
         rel (str (.getRel link))

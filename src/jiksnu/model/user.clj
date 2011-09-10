@@ -12,14 +12,36 @@
            tigase.xmpp.BareJID
            tigase.xmpp.JID))
 
-(defn split-uri
-  [uri]
-  (string/split uri #"@"))
+(defn get-domain
+  [^User user]
+  (model.domain/show (:domain user)))
+
+(defn get-uri
+  [^User user]
+  (str "acct:" (:username user) "@" (:domain user)))
+
+(defn local?
+  [^User user]
+  (or (:local user)
+      (= (:domain user) (config :domain))))
 
 (defn rel-filter
+  "returns all the links in the collection where the rel value matches the
+   supplied value"
   [rel links]
-  (filter #(= (:rel %) rel)
-          links))
+  (filter #(= (:rel %) rel) links))
+
+(defn split-uri
+  [uri]
+  (let [[_ _ usename password] (re-matches #"(\w+:)?([^@]+)@([^\?])" uri)]
+    [username password]))
+
+(defn display-name
+  [^User user]
+  (or (:display-name user)
+      (if (and (:first-name user) (:last-name user))
+        (str (:first-name user) " " (:last-name user)))
+      (get-uri user)))
 
 (defn get-link
   [user rel]
@@ -117,32 +139,12 @@
     (entity/update User {:_id (:_id old-user)} user)
     user))
 
-(defn local?
-  [^User user]
-  (or (:local user)
-      (= (:domain user) (config :domain))))
-
-(defn get-uri
-  [^User user]
-  (str (:username user) "@" (:domain user)))
-
-(defn get-domain
-  [^User user]
-  (model.domain/show (:domain user)))
-
 (defn user-meta-uri
   [^User user]
   (let [domain (get-domain user)]
     (if-let [lrdd-link (get-link domain "lrdd")]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user))))))
-
-(defn display-name
-  [^User user]
-  (or (:display-name user)
-      (if (and (:first-name user) (:last-name user))
-        (str (:first-name user) " " (:last-name user)))
-      (get-uri user)))
 
 (defn format-data
   [^User user]
