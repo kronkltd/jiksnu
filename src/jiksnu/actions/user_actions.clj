@@ -66,8 +66,11 @@
 
 (defaction create
   [options]
-  (let [user (merge {:discovered false :local false} options)
-        domain (actions.domain/find-or-create (:domain user))]
+  (let [user (-> options
+                 (assoc :discovered false)
+                 (assoc :local false)
+                 (assoc :updated (sugar/date)))]
+    (-> user :domain actions.domain/find-or-create)
     (model.user/create user)))
 
 (defaction delete
@@ -122,19 +125,12 @@
 
 (defaction find-hub
   [user]
-  (let [domain (model.user/get-domain user)]
-    domain))
+  (model.user/get-domain user))
 
 (defaction find-or-create
   [username domain]
-  (let [domain-record (actions.domain/find-or-create domain)]
-    (if-let [user (model.user/show username domain)]
-      user
-      (create {:username username
-               :domain domain
-               :updated (sugar/date)
-               :discovered false}))))
-
+  (or (model.user/show username domain)
+      (create {:username username :domain domain})))
 
 (defn user-for-uri
   "Returns a user with the passed account uri,
@@ -142,11 +138,6 @@
   [uri]
   (->> uri model.user/split-uri
       (apply find-or-create)))
-
-
-
-
-
 
 (defaction index
   [options]
@@ -225,14 +216,13 @@
 (defn person->user
   [person]
   (if person
-    (do
-     (let [id (.getUri person)
-           email (.getEmail person)
-           name (or
-                 (.getSimpleExtension person namespace/poco "displayName" "poco" )
-                 (.getName person))]
-       (find-or-create-by-remote-id
-        {:id (str id)}
-        (merge {:domain (.getHost id)}
-               (if email {:email email})
-               (if name {:display-name name})))))))
+    (let [id (.getUri person)
+          email (.getEmail person)
+          name (or (.getSimpleExtension person namespace/poco
+                                        "displayName" "poco" )
+                   (.getName person))
+          params (merge {:domain (.getHost id)}
+                        (if email {:email email})
+                        (if name {:display-name name}))]
+      (find-or-create-by-remote-id
+       {:id (str id)} params))))
