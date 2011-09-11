@@ -84,10 +84,6 @@
   (if id
    (entity/fetch-by-id User id)))
 
-(defn fetch-by-jid
-  [jid]
-  (show (.getLocalpart jid) (.getDomain jid)))
-
 (defn fetch-by-uri
   [uri]
   (apply show (split-uri uri)))
@@ -96,24 +92,20 @@
   [uri]
   (entity/fetch-one User {:id uri}))
 
-(defn find-or-create
-  [username domain]
-  (if-let [user (show username domain)]
-      user
-      (create {:username username :domain domain})))
+;; (defn find-or-create
+;;   [username domain]
+;;   (if-let [user (show username domain)]
+;;       user
+;;       (create {:username username :domain domain})))
 
-(defn find-or-create-by-uri
-  [uri]
-  (apply find-or-create (split-uri uri)))
+;; (defn find-or-create-by-remote-id
+;;   [id]
+;;   (or (fetch-by-remote-id id)
+;;       (create {:id id})))
 
-(defn find-or-create-by-remote-id
-  [id]
-  (or (fetch-by-remote-id id)
-      (create {:id id})))
-
-(defn find-or-create-by-jid
-  [^JID jid]
-  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
+;; (defn find-or-create-by-jid
+;;   [^JID jid]
+;;   (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
 
 ;; TODO: Is this needed?
 (defn subnodes

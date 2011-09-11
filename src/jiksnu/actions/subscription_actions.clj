@@ -75,4 +75,10 @@
   ;; TODO: unmark pending flag
   true)
 
+(defn find-record
+  [args]
+  (model.subscription/find-record args))
 
+(defn confirm
+  [subscription]
+  (model.subscription/confirm subscription))

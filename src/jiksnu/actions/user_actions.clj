@@ -29,7 +29,8 @@
            com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer
            jiksnu.model.User
            org.apache.commons.codec.binary.Base64
-           tigase.xml.Element))
+           tigase.xml.Element
+           tigase.xmpp.JID))
 
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
@@ -229,3 +230,20 @@
                         (if name {:display-name name}))]
       (find-or-create-by-remote-id
        {:id (str id)} params))))
+
+(defn fetch-by-id
+  [id]
+  (model.user/fetch-by-id id))
+
+(defn fetch-by-jid
+  [jid]
+  (show (.getLocalpart jid) (.getDomain jid)))
+
+(defn find-or-create-by-jid
+  [^JID jid]
+  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
+
+(defn find-or-create-by-uri
+  [uri]
+  (apply find-or-create (model.user/split-uri uri)))
+

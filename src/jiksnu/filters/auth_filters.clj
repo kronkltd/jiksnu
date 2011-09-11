@@ -4,20 +4,17 @@
         (jiksnu session model)
         jiksnu.actions.auth-actions)
   (:require (clojure.tools [logging :as log])
-            (jiksnu.model [activity :as activity]
-                          [user :as model.user]))
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+            (jiksnu.actions [user-actions :as actions.user])))
 
 (deffilter #'guest-login :http
   [action request]
   (let [{{webid :webid} :params} request]
-    (model.user/find-or-create-by-uri webid)))
+    (actions.user/find-or-create-by-uri webid)))
 
 (deffilter #'login :http
   [action {{username :username
             password :password} :params :as request}]
-  (if-let [user (model.user/show username)]
+  (if-let [user (actions.user/show username)]
     ;; TODO: encrypt
     (if (= password (:password user))
       user
@@ -35,4 +32,4 @@
 (deffilter #'password-page :http
   [action request]
   (let [{{id :pending-id} :session} request]
-    (model.user/fetch-by-id id)))
+    (actions.user/fetch-by-id id)))

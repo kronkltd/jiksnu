@@ -3,18 +3,18 @@
                [debug :only (spy)])
         (jiksnu model session))
   (:require (clojure.tools [logging :as log])
-            (jiksnu.model [user :as model.user]))
+            (jiksnu.actions [user-actions :as actions.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
 (defaction guest-login
   [webid]
-  (model.user/find-or-create-by-uri webid))
+  (actions.user/find-or-create-by-uri webid))
 
 (defaction login
   [{{username "username"
      password "password"} :params :as request}]
-  (if-let [user (model.user/show username)]
+  (if-let [user (actions.user/show username)]
     ;; TODO: encrypt
     (if (= password (:password user))
       user
@@ -32,4 +32,4 @@
 (defaction password-page
   [request]
   (let [{{id :pending-id} :session} request]
-    (model.user/fetch-by-id id)))
+    (actions.user/fetch-by-id id)))
