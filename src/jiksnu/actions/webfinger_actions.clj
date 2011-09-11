@@ -116,14 +116,15 @@
   [^Domain domain]
   ;; TODO: check https first
   (try
-    (let [url (str "http://" domain "/.well-known/host-meta")]
+    (let [url (str "http://" (:_id domain) "/.well-known/host-meta")]
       (if-let [xrd (fetch-host-meta url)]
         (if-let [links (get-links xrd)]
           ;; TODO: These should call actions
           (do (model.domain/add-links domain links)
               (model.domain/set-discovered domain))
           (log/error "Host meta does not have any links"))
-        (log/error (str "Could not find host meta for domain: " domain))))
+        (log/error
+         (str "Could not find host meta for domain: " (:_id domain)))))
     (catch HostMetaException e
       (log/error e))))
 
