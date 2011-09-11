@@ -149,5 +149,5 @@
 (deffilter #'xmpp-service-unavailable :xmpp
   [action request]
   (let [from (:from request)
-        user (model.user/find-or-create-by-jid from)]
+        user (find-or-create-by-jid from)]
     (action user)))
