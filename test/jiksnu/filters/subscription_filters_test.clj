@@ -1,20 +1,21 @@
 (ns jiksnu.filters.subscription-filters-test
-  (:use ciste.debug
-        ciste.filters
-        clj-factory.core
+  (:use (ciste [debug :only (spy)]
+               filters)
+        (clj-factory [core :only (factory fseq)])
         clojure.test
-        jiksnu.actions.subscription-actions
-        jiksnu.filters.subscription-filters
         jiksnu.core-test
-        jiksnu.model
-        jiksnu.session
-        jiksnu.view)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
-            (jiksnu [namespace :as namespace])
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+        jiksnu.actions.subscription-actions
+        jiksnu.filters.subscription-filters)
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
+            (jiksnu [model :as model]
+                    [namespace :as namespace]
+                    [session :as session]
+                    [view :as view])
+            (jiksnu.actions [user-actions :as actions.user])
+            (jiksnu.model [subscription :as model.subscription]
+                          [user :as model.user]))
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -26,11 +27,11 @@
       (let [user (model.user/create (factory User))
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
-        (with-user user
+        (session/with-user user
           (let [request {:params {:subscribeto (str (:_id user))}
                          :serialization :http} ]
             (let [subscription (filter-action #'subscribe request)]
-              (is (subscription? subscription)))))))))
+              (is (model/subscription? subscription)))))))))
 
 (deftest filter-action-test "#'subscribers :xmpp"
   (testing "when there are subscribers"
@@ -54,13 +55,13 @@
                                     :to (:_id user)}))
             [user subscribers] (filter-action #'subscribers request)]
         (is (seq subscribers))
-        (is (every? (partial instance? Subscription) subscribers))))))
+        (is (every? model/subscription? subscribers))))))
 
 (deftest filter-action-test "#'subscriptions :xmpp"
   (testing "when there are subscriptions"
     (testing "should return a sequence of subscriptions"
-      (let [user (model.user/create (factory User))
-            subscribee (model.user/create (factory User))
+      (let [user (actions.user/create (factory User))
+            subscribee (actions.user/create (factory User))
             element (element/make-element
                      ["pubsub" {"xmlns" namespace/pubsub}
                       ["subscriptions" {"node" namespace/microblog}]])
@@ -78,4 +79,4 @@
             results (filter-action #'subscriptions request)
             [user subscriptions] results]
         (is (not (empty? subscriptions)))
-        (is (every? (partial instance? Subscription) subscriptions))))))
+        (is (every? model/subscription? subscriptions))))))
