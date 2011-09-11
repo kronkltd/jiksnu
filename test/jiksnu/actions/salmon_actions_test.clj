@@ -26,24 +26,22 @@
       (let [user (actions.user/create (factory User))]
         (get-key user))) => (partial instance? Key)))
 
+(deftest test-signature-valid?)
 
-
-
-
-(deftest test-stream->envelope
-  (fact "should return an envelope"
-    (stream->envelope (valid-envelope-stream)) =>
-    (partial instance? MagicEnvelope)))
-
-;; (deftest test-decode-envelope
-;;   (fact "should return a string"
-;;     (let [envelope (stream->envelope (valid-envelope-stream))]
-;;      (decode-envelope envelope) => string?)))
+(deftest test-decode-envelope
+  (fact "should return a string"
+    (let [envelope (stream->envelope (valid-envelope-stream))]
+     (decode-envelope envelope) => string?)))
 
 (deftest test-extract-activity
   (fact "should return an activity"
     (let [envelope (stream->envelope (valid-envelope-stream))]
       (extract-activity envelope)) => activity?))
+
+(deftest test-stream->envelope
+  (fact "should return an envelope"
+    (stream->envelope (valid-envelope-stream)) =>
+    (partial instance? MagicEnvelope)))
 
 (deftest test-process
   (testing "with a valid signature"

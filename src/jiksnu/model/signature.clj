@@ -172,12 +172,10 @@
 
 (defn get-envelope
   "data is the xml signature"
-  ([]
-     (get-envelope "foo"))
-  ([^String data]
-     (let [me (MagicEnvelope.)]
-       (.setData me data)
-       me)))
+  [^String data]
+  (let [me (MagicEnvelope.)]
+    (.setData me data)
+    me))
 
 (defn serialize
   "Returns an XML string representing the envelope"
