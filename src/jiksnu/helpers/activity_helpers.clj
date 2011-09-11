@@ -130,10 +130,8 @@
         namespace (.getNamespaceURI qname)]
     (if (and (= name "actor")
              (= namespace namespace/as))
-      (let [uri (.getSimpleExtension element namespace/atom "uri" "")]
-        {:author (:_id (model.user/find-or-create-by-remote-id uri))})
       (if (and (= name "object")
-                 (= namespace namespace/as))
+               (= namespace namespace/as))
         (parse-object-element element)
         (if (and (= name "in-reply-to")
                  (= namespace "http://purl.org/syndication/thread/1.0"))

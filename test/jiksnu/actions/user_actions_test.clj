@@ -6,6 +6,7 @@
         jiksnu.actions.user-actions
         midje.sweet)
   (:require (clj-tigase [packet :as packet])
+            (clojure.java [io :as io])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace]
                     [redis :as redis])
@@ -179,7 +180,11 @@
 (deftest test-person->user
   (testing "when parsing an identi.ca feed"
     (fact "should return a user"
-      (let [feed (abdera/fetch-feed "identica-update.xml")
+      (let [feed (-> "identica-update.xml"
+                     io/resource
+                     io/input-stream
+                     abdera/parse-stream
+                     .getRoot)
             entry (first (abdera/get-entries feed))
             person (abdera/get-author entry feed)]
         (person->user person) => user?))))

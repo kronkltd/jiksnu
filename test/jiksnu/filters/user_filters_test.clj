@@ -20,7 +20,7 @@
 (deftest show-filter-test
   (testing "when the serialization is http"
     (testing "and the user exists"
-      (let [user (model.user/create (factory User))]
+      (let [user (actions.user/create (factory User))]
         (with-user user
           (let [ch (channel)]
             (app ch (mock/request :get (str "/" (:username user))))
