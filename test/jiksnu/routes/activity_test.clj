@@ -7,7 +7,8 @@
   (:require (jiksnu [routes :as r]
                     [session :as session])
             (jiksnu.model [user :as model.user])
-            (jiksnu.actions [activity-actions :as actions.activity])
+            (jiksnu.actions [activity-actions :as actions.activity]
+                            [user-actions :as actions.user])
             (ring.mock [request :as mock]))
   (:import (jiksnu.model Activity User)))
 
@@ -25,7 +26,7 @@
 (deftest show-http-route-test
   (testing "when the user is not authenticated"
     (testing "and the activity does not exist"
-      (let [author (model.user/create (factory User))
+      (let [author (actions.user/create (factory User))
             ch (channel)
             activity (factory Activity)]
         (session/with-user author
@@ -36,7 +37,7 @@
               ;; TODO: no activities visible
               )))))
     (testing "and there are activities"
-      (let [author (model.user/create (factory User))
+      (let [author (actions.user/create (factory User))
             ch (channel)
             activity (factory Activity)
             created-activity (session/with-user author
