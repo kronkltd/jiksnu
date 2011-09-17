@@ -1,12 +1,12 @@
 (ns jiksnu.session
   (:require [jiksnu.model.user :as model.user]))
 
-(def #^:dynamic *current-user* nil)
+(def ^:dynamic *current-user* (ref nil))
 (def #^:dynamic *admin-mode* false)
 
 (defn current-user-id
   []
-  *current-user*)
+  @*current-user*)
 
 (defn current-user
   []
@@ -21,17 +21,21 @@
   ([user]
      (or *admin-mode* (:admin user))))
 
-(defmacro with-user
-  [user & body]
-  `(binding [jiksnu.session/*current-user* (:_id ~user)]
-     ~@body))
-
 (defmacro with-user-id
   [id & body]
-  `(binding [jiksnu.session/*current-user* ~id]
+  `(binding [jiksnu.session/*current-user* (ref ~id)]
      ~@body))
+
+(defmacro with-user
+  [user & body]
+  `(with-user-id (:_id ~user) ~@body))
 
 (defmacro with-admin
   [& body]
   `(binding [jiksnu.session/*admin-mode* true]
     ~@body))
+
+(defn set-authenticated-user!
+  [user]
+  (dosync
+   (ref-set *current-user* (:_id user))))
