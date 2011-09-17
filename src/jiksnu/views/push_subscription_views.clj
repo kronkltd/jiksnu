@@ -1,5 +1,7 @@
 (ns jiksnu.views.push-subscription-views
-  (:use (ciste config debug sections views)
+  (:use (ciste config
+               [debug :only (spy)]
+               sections views)
         ciste.sections.default
         jiksnu.actions.push-subscription-actions
         (jiksnu model namespace session view)

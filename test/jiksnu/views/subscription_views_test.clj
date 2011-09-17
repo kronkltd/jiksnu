@@ -6,13 +6,13 @@
         clojure.test
         jiksnu.core-test
         jiksnu.helpers.subscription-helpers
-        jiksnu.namespace
         jiksnu.view
         jiksnu.views.subscription-views
         jiksnu.xmpp.element)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            (jiksnu [namespace :as namespace])
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.subscription-actions :as

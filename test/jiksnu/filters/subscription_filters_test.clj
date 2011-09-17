@@ -7,12 +7,12 @@
         jiksnu.filters.subscription-filters
         jiksnu.core-test
         jiksnu.model
-        jiksnu.namespace
         jiksnu.session
         jiksnu.view)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            (jiksnu [namespace :as namespace])
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription

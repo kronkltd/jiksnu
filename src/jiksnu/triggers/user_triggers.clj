@@ -1,5 +1,7 @@
 (ns jiksnu.triggers.user-triggers
-  (:use (ciste config debug triggers)
+  (:use (ciste config
+               [debug :only (spy)]
+               triggers)
         (jiksnu namespace view)
         lamina.core)
   (:require (clj-tigase [core :as tigase]
@@ -47,7 +49,7 @@
                  :from (tigase/make-jid "" (config :domain))
                  :type :get
                  :body (element/make-element
-                        ["pubsub" {"xmlns" pubsub-uri}
+                        ["pubsub" {"xmlns" namespace/pubsub}
                          ["items" {"node" microblog-uri}]])})]
     (tigase/deliver-packet! packet)))
 

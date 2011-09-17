@@ -3,10 +3,11 @@
         ciste.sections.default
         [clj-factory.core :only (factory)]
         [clojure.test :only (deftest is use-fixtures testing)]
-        (jiksnu core-test model session namespace view)
+        (jiksnu core-test model session view)
         jiksnu.xmpp.element
         [karras.entity :only (make)])
   (:require [clj-tigase.element :as element]
+            (jiksnu [namespace :as namespace])
             jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity))
 

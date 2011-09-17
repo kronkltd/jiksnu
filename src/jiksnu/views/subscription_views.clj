@@ -1,5 +1,5 @@
 (ns jiksnu.views.subscription-views
-  (:use (ciste debug
+  (:use (ciste [debug :only (spy)]
                [html :only (dump dump*)]
                sections
                [views :only (defview)])

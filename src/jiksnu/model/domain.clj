@@ -1,5 +1,5 @@
 (ns jiksnu.model.domain
-  (:use ciste.debug
+  (:use (ciste [debug :only (spy)])
         jiksnu.model)
   (:require [karras.entity :as entity])
   (:import jiksnu.model.Domain))

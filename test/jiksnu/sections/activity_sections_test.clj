@@ -3,13 +3,14 @@
         ciste.sections.default
         clj-factory.core
         clojure.test
-        (jiksnu core-test model namespace session)
+        (jiksnu core-test model session)
         jiksnu.helpers.activity-helpers
         jiksnu.sections.activity-sections
         jiksnu.xmpp.element
         midje.sweet)
   (:require [clj-tigase.element :as element]
             [hiccup.form-helpers :as f]
+            (jiksnu [namespace :as namespace])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person

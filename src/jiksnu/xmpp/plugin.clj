@@ -40,7 +40,7 @@
 
 (defn offer-packet
   [^Queue queue ^Packet packet]
-  (debug (str "offering packet: " packet))
+  (log/debug (str "offering packet: " packet))
   (.offer queue packet))
 
 (defn main-handler

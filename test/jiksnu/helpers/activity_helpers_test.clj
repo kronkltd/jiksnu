@@ -6,11 +6,12 @@
         clj-factory.core
         clj-tigase.core
         clojure.test
-        (jiksnu core-test model namespace session view)
+        (jiksnu core-test model session view)
         jiksnu.helpers.activity-helpers
         [karras.entity :only (make)]
         midje.sweet)
-  (:require jiksnu.sections.activity-sections)
+  (:require (jiksnu [namespace :as namespace])
+            jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

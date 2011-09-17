@@ -1,5 +1,7 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use (ciste core debug triggers)
+  (:use (ciste core
+               [debug :only (spy)]
+               triggers)
         ciste.sections.default
         jiksnu.actions.activity-actions
         (jiksnu model namespace session view))

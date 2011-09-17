@@ -1,11 +1,13 @@
 (ns jiksnu.sections.user-sections
   (:use (ciste [config :only (config)]
-               [debug :only (debug)]
+               [debug :only (spy)]
                html
                sections)
         ciste.sections.default
         (clj-gravatar [core :only (gravatar-image)])
-        (jiksnu model session view))
+        (jiksnu model session view)
+        (plaza.rdf core)
+        (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
             (hiccup [form-helpers :as f])
             (jiksnu [abdera :as abdera]
@@ -17,8 +19,7 @@
                           [subscription :as model.subscription]
                           [user :as model.user])
             (jiksnu.templates [user :as templates.user])
-            (plaza.rdf [core :as rdf])
-            (plaza.rdf.vocabularies [foaf :as foaf]))
+            )
   (:import com.cliqset.abdera.ext.activity.object.Person
            java.net.URI
            javax.xml.namespace.QName
@@ -43,7 +44,7 @@
 
 (defsection show-section [User :atom]
   [^User user & options]
-  (let [person (Person. (make-object atom-ns "author" ""))
+  (let [person (Person. (abdera/make-object namespace/atom "author" ""))
         author-uri (full-uri user)]
     (doto person
       (.setObjectType namespace/person)
@@ -73,35 +74,38 @@
 
 (defsection show-section [User :html]
   [user & options]
-  (template.user/show user))
+  (templates.user/show user))
 
 
 (defsection show-section [User :rdf]
   [user & _]
   (with-rdf-ns ""
     [[(str (full-uri user) ".rdf")
-     [rdf:type foaf:PersonalProfileDocument
-      [foaf :maker] (full-uri user)
-      foaf:primaryTopic (rdf-resource (str "acct:" (model.user/get-uri user)))]]
-
-    [(rdf-resource (str "acct:" (model.user/get-uri user)))
-     [rdf:type [foaf :Person]
-      [foaf :name] (l (:name user))
-      foaf:nick (l (:username user))
-      foaf:name (l (:name user))
-      foaf:mbox (rdf-resource (str "mailto:" (:email user)))
-      foaf:givenName (l (:first-name user))
-      foaf:familyName (l (:last-name user))
-      foaf:homepage (rdf-resource (:url user))
-      foaf:weblog (rdf-resource (full-uri user))
-      foaf:img (:avatar-url user)
-      foaf:account (rdf-resource (str (full-uri user) "#acct"))]]
-    [(rdf-resource (str (full-uri user) "#acct"))
-     [rdf:type foaf:OnlineAccount
-      foaf:accountServiceHomepage (rdf-resource (str "http://" (:domain user)))
-      foaf:accountName (l (:username user))
-      [foaf "accountProfilePage"] (rdf-resource (full-uri user))
-      [sioc "account_of"] (rdf-resource (model.user/get-uri user))]]]))
+      [rdf:type                    foaf:PersonalProfileDocument
+       [foaf :maker]               (full-uri user)
+       foaf:primaryTopic           (rdf-resource
+                                    (model.user/get-uri user))]]
+     [(rdf-resource (model.user/get-uri user))
+      [rdf:type                    [foaf :Person]
+       [foaf :name]                (l (:name user))
+       foaf:nick                   (l (:username user))
+       foaf:name                   (l (:name user))
+       foaf:mbox                   (rdf-resource
+                                    (str "mailto:" (:email user)))
+       foaf:givenName              (l (:first-name user))
+       foaf:familyName             (l (:last-name user))
+       foaf:homepage               (rdf-resource (:url user))
+       foaf:weblog                 (rdf-resource (full-uri user))
+       foaf:img                    (:avatar-url user)
+       foaf:account                (rdf-resource
+                                    (str (full-uri user) "#acct"))]]
+     [(rdf-resource (str (full-uri user) "#acct"))
+      [rdf:type                    foaf:OnlineAccount
+       foaf:accountServiceHomepage (rdf-resource (full-uri user))
+       foaf:accountName            (l (:username user))
+       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
+       [namespace/sioc "account_of"]         (rdf-resource
+                                    (model.user/get-uri user))]]]))
 
 (defsection show-section [User :json]
   [user & options]

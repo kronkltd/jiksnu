@@ -1,11 +1,14 @@
 (ns jiksnu.helpers.activity-helpers
-  (:use (ciste config debug sections)
+  (:use (ciste config
+               [debug :only (spy)]
+               sections)
         ciste.sections.default
-        (jiksnu model namespace session view))
+        (jiksnu model session view))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
             [clojure.string :as string]
-            [jiksnu.abdera :as abdera]
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
@@ -26,11 +29,11 @@
   (if-let [user (model.user/fetch-by-id (:_id author))]
     (let [author-name (:name user)
           author-jid  (str (:username user) "@" (:domain user))
-          actor-element (.addExtension entry as-ns "actor" "activity")]
+          actor-element (.addExtension entry namespace/as "actor" "activity")]
       (doto actor-element
-        (.addSimpleExtension atom-ns "name" "" author-name)
-        (.addSimpleExtension atom-ns "email" "" author-jid)
-        (.addSimpleExtension atom-ns "uri" "" author-jid))
+        (.addSimpleExtension namespace/atom "name" "" author-name)
+        (.addSimpleExtension namespace/atom "email" "" author-jid)
+        (.addSimpleExtension namespace/atom "uri" "" author-jid))
       (.addExtension entry actor-element)
       (.addExtension entry (show-section user)))))
 
@@ -187,7 +190,7 @@ an Element"
     :to (tigase/make-jid (get-author activity))
     :body
     (element/make-element
-     ["pubsub" {"xmlns" pubsub-uri}
+     ["pubsub" {"xmlns" namespace/pubsub}
       ["items" {"node" (comment-node-uri activity)}]])}))
 
 ;; TODO: Move these to their own ns

@@ -4,7 +4,6 @@
         clojure.test
         (jiksnu core-test
                 model
-                namespace
                 [routes :only (app)]
                 session
                 view)
@@ -14,6 +13,7 @@
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
+            (jiksnu [namespace :as namespace])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [user-actions :as actions.user])
             (jiksnu.model [activity :as model.activity]

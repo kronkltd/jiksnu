@@ -1,17 +1,19 @@
 (ns jiksnu.sections.activity-sections
-  (:use (ciste core debug html sections)
+  (:use (ciste core
+               [debug :only (spy)]
+               html sections)
         ciste.sections.default
-        (jiksnu abdera model namespace view session)
+        (jiksnu abdera model view session)
         (jiksnu.helpers activity-helpers
                         user-helpers)
         jiksnu.xmpp.element
         [karras.entity :only (make)])
   (:require [hiccup.form-helpers :as f]
+            (jiksnu [namespace :as namespace])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             jiksnu.sections.user-sections
-            (jiksnu.templates
-             [activity :as template.activity]))
+            (jiksnu.templates [activity :as template.activity]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
@@ -50,8 +52,10 @@
       (add-author activity)
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
-      (.addSimpleExtension namespace/as "object-type" "activity" status-uri)
-      (.addSimpleExtension namespace/as "verb" "activity" post-uri)
+      (.addSimpleExtension
+       namespace/as "object-type" "activity" namespace/status)
+      (.addSimpleExtension
+       namespace/as "verb" "activity" namespace/post)
       (comment-link-item activity)
       (acl-link activity))
     (let [object (:object activity)

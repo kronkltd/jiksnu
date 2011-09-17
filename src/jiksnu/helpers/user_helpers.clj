@@ -1,5 +1,7 @@
 (ns jiksnu.helpers.user-helpers
-  (:use (ciste config debug sections)
+  (:use (ciste config
+               [debug :only (spy)]
+               sections)
         ciste.sections.default
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase]

@@ -1,5 +1,7 @@
 (ns jiksnu.triggers.subscription-triggers
-  (:use (ciste config core debug triggers sections)
+  (:use (ciste config core
+               [debug :only (spy)]
+               triggers sections)
         ciste.sections.default
         (jiksnu namespace view)
         jiksnu.actions.subscription-actions

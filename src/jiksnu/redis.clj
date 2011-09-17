@@ -1,6 +1,5 @@
 (ns jiksnu.redis
-  (:use aleph.redis)
-  )
+  (:use aleph.redis))
 
 (defonce ^:dynamic *redis-client* (ref nil))
 (defonce ^:dynamic *redis-stream* (ref nil))

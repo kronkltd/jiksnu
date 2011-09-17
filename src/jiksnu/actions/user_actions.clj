@@ -206,7 +206,7 @@
 
 (defaction update-hub
   [user]
-  (let [feed (fetch-user-feed user)
+  (let [feed (helpers.user/fetch-user-feed user)
         hub-link (abdera/get-hub-link feed)]
     (entity/update
      User {:_id (:_id user)}

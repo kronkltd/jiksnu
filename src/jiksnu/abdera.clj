@@ -1,5 +1,5 @@
 (ns jiksnu.abdera
-  (:use ciste.debug
+  (:use (ciste [debug :only (spy)])
         [clojure.tools.logging :only (error)])
   (:require [clj-tigase.element :as element])
   (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory

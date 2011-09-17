@@ -1,5 +1,7 @@
 (ns jiksnu.helpers.subscription-helpers
-  (:use (ciste core debug sections)
+  (:use (ciste core
+               [debug :only (spy)]
+               sections)
         ciste.sections.default
         clj-tigase.core
         (jiksnu model namespace view))
@@ -26,7 +28,7 @@
 (defn unsubscription-request
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
-    ["pubsub"  {"xmlns" pubsub-uri}
+    ["pubsub"  {"xmlns" namespace/pubsub}
      ["unsubscribe" {"node" namespace/microblog
                      "jid" (make-jid subscribee)}]]))
 

@@ -1,7 +1,7 @@
 (ns jiksnu.filters.user-filters
-  (:use ciste.config
-        ciste.debug
-        ciste.filters
+  (:use (ciste [config :only (config)]
+               [debug :only (spy)]
+               filters)
         jiksnu.abdera
         jiksnu.actions.user-actions
         jiksnu.helpers.user-helpers

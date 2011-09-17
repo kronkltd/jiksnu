@@ -1,5 +1,6 @@
 (ns jiksnu.model.user
-  (:use (ciste config debug)
+  (:use (ciste config
+               [debug :only (spy)])
         [clj-gravatar.core :only (gravatar-image)]
         jiksnu.model)
   (:require [jiksnu.abdera :as abdera]

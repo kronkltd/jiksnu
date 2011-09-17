@@ -1,9 +1,8 @@
 (ns jiksnu.middleware
   (:use clojure.pprint
         clojure.stacktrace
-        [clojure.tools.logging :only (error)]
         [ciste.config :only (config)]
-        ciste.debug
+        (ciste [debug :only (spy)])
         jiksnu.view
         jiksnu.model
         [jiksnu.session :only (with-user current-user with-user-id)]

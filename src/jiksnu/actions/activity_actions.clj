@@ -1,5 +1,7 @@
 (ns jiksnu.actions.activity-actions
-  (:use (ciste core debug sections)
+  (:use (ciste core
+               [debug :only (spy)]
+               sections)
         ciste.sections.default
         (jiksnu model)
         lamina.core)

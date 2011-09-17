@@ -1,4 +1,5 @@
-(ns jiksnu.namespace)
+(ns jiksnu.namespace
+  (:refer-clojure :exclude (atom)))
 
 (def as            "http://activitystrea.ms/spec/1.0/")
 (def atom          "http://www.w3.org/2005/Atom")

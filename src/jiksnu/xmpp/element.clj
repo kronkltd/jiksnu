@@ -29,7 +29,8 @@
   ([abdera-element]
      (abdera-to-tigase-element abdera-element {}))
   ([abdera-element namespace-map]
-     (let [element (-> abdera-element get-qname element/make-element-qname)
+     (let [element (-> abdera-element abdera/get-qname
+                       element/make-element-qname)
            namespaces (.getNamespaces abdera-element)
            bound-namespaces (element/merge-namespaces element
                                               namespace-map
@@ -42,18 +43,18 @@
 
 (defn microblog-node?
   [^Element element]
-  (= (element/node-value element) microblog-uri))
+  (= (element/node-value element) namespace/microblog))
 
 (defn vcard-query-ns?
   [^Element element]
-  (= (.getXMLNS element) query-uri))
+  (= (.getXMLNS element) namespace/vcard-query))
 
 (defn vcard-publish?
   [^Element element]
   (and (= (.getName element) "publish")
-       (= (.getXMLNS element) vcard-publish-uri)))
+       (= (.getXMLNS element) namespace/vcard-publish)))
 
 (defn inbox-node?
   [element]
-  (= (element/node-value element) inbox-uri))
+  (= (element/node-value element) namespace/inbox))
 

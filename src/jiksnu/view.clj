@@ -1,14 +1,15 @@
 (ns jiksnu.view
   (:use (ciste core
                [config :only (config)]
-               debug formats html sections views)
+               [debug :only (spy)]
+               formats html sections views)
         ciste.sections.default
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase])
             (jiksnu [namespace :ads namespace]
                     [xmpp :as xmpp])
-            (jiksnu.templates [layout :as template.layout]
-                              [user :as template.user])
+            (jiksnu.templates [layout :as templates.layout]
+                              [user :as templates.user])
             (jiksnu.xmpp [element :as element])))
 
 (defsection link-to :default
@@ -26,7 +27,7 @@
    :body
    (str
     "<!doctype html>\n"
-    (template.layout/layout response))})
+    (templates.layout/layout response))})
 
 (defmethod apply-template :html
   [request response]

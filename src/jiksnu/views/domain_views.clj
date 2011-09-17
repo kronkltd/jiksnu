@@ -1,5 +1,7 @@
 (ns jiksnu.views.domain-views
-  (:use (ciste config core debug views)
+  (:use (ciste config core
+               [debug :only (spy)]
+               views)
         jiksnu.actions.domain-actions
         (jiksnu model session view))
   (:require (clj-tigase [core :as tigase]

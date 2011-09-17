@@ -1,6 +1,6 @@
 (ns jiksnu.filters.webfinger-filters
-  (:use ciste.debug
-        ciste.filters
+  (:use (ciste [debug :only (spy)]
+               filters)
         jiksnu.actions.webfinger-actions))
 
 (deffilter #'host-meta :http

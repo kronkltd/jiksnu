@@ -1,5 +1,6 @@
 (ns jiksnu.filters.push-subscription-filters
-  (:use (ciste debug filters)
+  (:use (ciste [debug :only (spy)]
+               filters)
         (jiksnu abdera model session)
         jiksnu.actions.push-subscription-actions)
   (:require (clj-tigase [core :as tigase])

@@ -1,5 +1,5 @@
 (ns jiksnu.model.signature
-  (:use ciste.debug)
+  (:use (ciste [debug :only (spy)]))
   (:require jiksnu.model
             [karras.entity :as entity])
   (:import com.cliqset.magicsig.MagicEnvelope

@@ -158,7 +158,7 @@
 
     [{:method :get
       :name "query"
-      :ns namespace/query}
+      :ns namespace/vcard-query}
      #'user/show]
 
     [{:method :set

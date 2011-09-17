@@ -21,8 +21,8 @@
     ;; TODO: encrypt
     (if (= password (:password user))
       user
-      (error "passwords do not match"))
-    (error "user not found")))
+      (log/error "passwords do not match"))
+    (log/error "user not found")))
 
 (deffilter #'login-page :http
   [action request]
