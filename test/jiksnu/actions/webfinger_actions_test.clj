@@ -68,3 +68,5 @@
 (deftest test-update-usermeta
   (fact
     (update-usermeta user) => user?))
+
+(deftest test-discover-webfinger)

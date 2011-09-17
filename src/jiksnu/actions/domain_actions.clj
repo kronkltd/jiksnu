@@ -1,7 +1,8 @@
 (ns jiksnu.actions.domain-actions
   (:use (ciste [core :only (defaction)]
                [debug :only (spy)]))
-  (:require (jiksnu.model [domain :as model.domain])))
+  (:require (clj-tigase [core :as tigase])
+            (jiksnu.model [domain :as model.domain])))
 
 (defaction check-webfinger
   [domain]
@@ -62,3 +63,10 @@
   [domain username]
   ;; TODO: find the template and insert the username
   "")
+
+(defn discover-onesocialweb
+  [domain]
+  (-> domain
+      model.domain/ping-request
+      tigase/make-packet
+      tigase/deliver-packet!))

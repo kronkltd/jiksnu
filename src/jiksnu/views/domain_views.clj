@@ -1,21 +1,12 @@
 (ns jiksnu.views.domain-views
-  (:use (ciste config core
+  (:use (ciste core
                [debug :only (spy)]
-               views)
+               [views :only (defview)])
         jiksnu.actions.domain-actions
         (jiksnu model session view))
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element])
+  (:require (jiksnu.model [domain :as model.domain])
             (jiksnu.templates [domain :as templates.domain]))
   (:import jiksnu.model.Domain))
-
-(defn ping-request
-  [domain]
-  {:type :get
-   :to (tigase/make-jid "" (:_id domain))
-   :from (tigase/make-jid "" (config :domain))
-   :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
-
 
 (defview #'create :html
   [request domain]
@@ -39,9 +30,7 @@
   [request domain]
   {:status 303
    :template false
-   :headers {"Location" "/main/domains"}
-   }
-  )
+   :headers {"Location" "/main/domains"}})
 
 (defview #'index :html
   [request domains]
@@ -54,7 +43,7 @@
 
 (defview #'ping :xmpp
   [request domain]
-  (ping-request domain))
+  (model.domain/ping-request domain))
 
 (defview #'ping-response :xmpp
   [request domain]

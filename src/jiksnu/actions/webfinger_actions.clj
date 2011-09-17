@@ -3,14 +3,17 @@
                [debug :only (spy)])
         (clojure.contrib [core :only (-?>)])
         (jiksnu model))
-  (:require (jiksnu [namespace :as namespace])
+  (:require (clojure.tools [logging :as log])
+            (jiksnu [namespace :as namespace])
             (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [signature :as model.signature]
+            (jiksnu.model [domain :as model.domain]
+                          [signature :as model.signature]
                           [user :as model.user]))
   (:import com.cliqset.hostmeta.JavaNetXRDFetcher
            com.cliqset.hostmeta.HostMeta
+           com.cliqset.hostmeta.HostMetaException
            com.cliqset.magicsig.keyfinder.MagicPKIKeyFinder
            com.cliqset.xrd.XRD
            java.net.URI
@@ -108,3 +111,19 @@
         (assoc :id (str uri))
         (assoc :discovered true)
         actions.user/update)))
+
+(defn discover-webfinger
+  [^Domain domain]
+  ;; TODO: check https first
+  (try
+    (let [url (str "http://" domain "/.well-known/host-meta")]
+      (if-let [xrd (fetch-host-meta url)]
+        (if-let [links (get-links xrd)]
+          ;; TODO: These should call actions
+          (do (model.domain/add-links domain links)
+              (model.domain/set-discovered domain))
+          (log/error "Host meta does not have any links"))
+        (log/error (str "Could not find host meta for domain: " domain))))
+    (catch HostMetaException e
+      (log/error e))))
+

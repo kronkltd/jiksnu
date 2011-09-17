@@ -1,7 +1,10 @@
 (ns jiksnu.model.domain
-  (:use (ciste [debug :only (spy)])
+  (:use (ciste [config :only (config)]
+               [debug :only (spy)])
         jiksnu.model)
-  (:require (clojure.tools [logging :as log])
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (clojure.tools [logging :as log])
             (karras [entity :as entity]))
   (:import jiksnu.model.Domain))
 
@@ -55,3 +58,10 @@
 (defn set-discovered
   [domain]
   (set-field domain :discovered true))
+
+(defn ping-request
+  [domain]
+  {:type :get
+   :to (tigase/make-jid "" (:_id domain))
+   :from (tigase/make-jid "" (config :domain))
+   :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
