@@ -3,7 +3,8 @@
                [debug :only (spy)])
         (jiksnu model session))
   (:require (clojure.tools [logging :as log])
-            (jiksnu.actions [user-actions :as actions.user]))
+            (jiksnu.actions [user-actions :as actions.user])
+            (jiksnu.model [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -12,9 +13,9 @@
   (actions.user/find-or-create-by-uri webid))
 
 (defaction login
-  [{{username "username"
-     password "password"} :params :as request}]
-  (if-let [user (actions.user/show username)]
+  [username password]
+  ;; TODO: fix this
+  (if-let [user (model.user/show username)]
     ;; TODO: encrypt
     (if (= password (:password user))
       user

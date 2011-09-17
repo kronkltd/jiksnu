@@ -14,12 +14,7 @@
 (deffilter #'login :http
   [action {{username :username
             password :password} :params :as request}]
-  (if-let [user (actions.user/show username)]
-    ;; TODO: encrypt
-    (if (= password (:password user))
-      user
-      (log/error "passwords do not match"))
-    (log/error "user not found")))
+  (action username password))
 
 (deffilter #'login-page :http
   [action request]
