@@ -1,30 +1,22 @@
 (ns jiksnu.helpers.user-helpers
   (:use (ciste config debug sections)
         ciste.sections.default
-        [clj-gravatar.core :only (gravatar-image)]
-        (jiksnu abdera model session view))
+        (jiksnu model session))
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
-            [clojure.string :as string]
+            (clojure [string :as string])
             (jiksnu [abdera :as abdera])
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user]
                           [subscription :as model.subscription])
-            [karras.sugar :as sugar])
+            (karras [sugar :as sugar]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera.model.Entry
            tigase.xml.Element))
-
-(defn fetch-user-meta
-  [^User user]
-  (-> user
-      model.user/user-meta-uri
-      actions.webfinger/fetch))
 
 (defn feed-link-uri
   [^User user]

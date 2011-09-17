@@ -17,8 +17,9 @@
   (model.domain/show (:domain user)))
 
 (defn get-uri
-  [^User user]
-  (str "acct:" (:username user) "@" (:domain user)))
+  ([^User user] (get-uri user true))
+  ([^User user use-scheme?]
+     (str (if use-scheme? "acct:") (:username user) "@" (:domain user))))
 
 (defn local?
   [^User user]

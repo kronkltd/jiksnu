@@ -6,11 +6,20 @@
         (jiksnu core-test model)
         jiksnu.model.user
         midje.sweet)
-  (:require (jiksnu.model [domain :as model.domain]))
+  (:require (jiksnu.actions [domain-actions :as actions.domain]
+                            [user-actions :as actions.user])
+            (jiksnu.model [domain :as model.domain]))
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
+
+(deftest test-get-domain
+  (facts
+    (let [domain (actions.domain/create (factory Domain))
+          user (actions.user/create (factory User {:domain (:_id domain)}))]
+      (get-domain nil) => nil
+      (get-domain user) => domain)))
 
 (deftest test-split-uri
   (facts
@@ -38,48 +47,44 @@
 ;; TODO: This is a better test for actions
 (deftest test-index
   (testing "when there are no users"
-    (testing "should be empty"
+    (fact "should be empty"
+      ;; TODO: all collections should be emptied in background
       (drop!)
-      (let [response (index)]
-        (is (empty? response)))))
+      (index) => empty?))
   (testing "when there are users"
-    (testing "should not be empty"
-      (create (factory User))
-      (let [response (index)]
-        (is (seq response))))
-    (testing "should return a seq of users"
-      (create (factory User))
-      (let [response (index)]
-        (is (every? (partial instance? User) response))))))
+    (fact "should not be empty"
+      (actions.user/create (factory User))
+      (index) => seq?)
+    (fact "should return a seq of users"
+      (actions.user/create (factory User))
+      (index) => (partial every? user?))))
 
 (deftest test-show
   (testing "when the user is found"
-    (testing "should return a user"
+    (fact "should return a user"
       (let [username (fseq :id)]
-        (create (factory User {:username username}))
-        (let [response (show username)]
-          (is (instance? User response))))))
+        (actions.user/create (factory User {:username username}))
+        (show username) => user?)))
   (testing "when the user is not found"
-    (testing "should return nil"
+    (fact "should return nil"
       (drop!)
       (let [username (fseq :id)]
-        (let [response (show username)]
-          (is (is (nil? response))))))))
+        (show username) => nil))))
 
 (deftest test-fetch-by-id)
 
 (deftest test-user-meta-uri
   (testing "when the user's domain does not have a lrdd link"
     (fact "should return nil"
-     (let [user (factory User)]
+     (let [user (actions.user/create (factory User))]
        (user-meta-uri user) => nil)))
   (testing "when the user's domain has a lrdd link"
     (fact "should insert the user's uri into the template"
-      (let [domain (model.domain/create
+      (let [domain (actions.domain/create
                     (factory Domain
                              {:links [{:rel "lrdd"
                                        :template "{uri}"}]}))
-            user (create
+            user (actions.user/create
                   (factory User {:domain (:_id domain)}))]
         (user-meta-uri user) => (get-uri user)))))
 
@@ -99,26 +104,28 @@
 
 (deftest edit-test
   (testing "when the user is found"
-    (testing "should return a user" :pending))
+    (future-fact "should return a user"))
   (testing "when the user is not found"
-    (testing "should return nil" :pending)))
+    (future-fact "should return nil")))
 
 (deftest delete-test
   (testing "when the user exists"
-    (testing "should be deleted" :pending)))
+    (future-fact "should be deleted")))
 
 (deftest update-test
   (testing "when the request is valid"
-    (testing "should return a user"
+    (future-fact "should return a user"
       (let [request {:params {"id" (fseq :word)}}]))))
 
 (deftest local?-test
   (testing "when there is a user"
     (testing "and it's domain is the same as the current domain"
-      (testing "should be true"
-        (let [user (factory User {:domain (-> (config) :domain)})]
-          (is (local? user)))))
+      (fact "should be true"
+        (let [domain (-> (config) :domain)
+              user (factory User {:domain domain})]
+          (local? user) => truthy)))
     (testing "and it's domain is different from the current domain"
-      (testing "should be false"
-        (let [user (factory User {:domain (fseq :domain)})]
-          (is (not (local? user))))))))
+      (fact "should be false"
+        (let [domain (fseq :domain)
+              user (factory User {:domain domain})]
+          (local? user) => falsey)))))
