@@ -2,7 +2,9 @@
   (:use (ciste [core :only (with-format)]
                [debug :only (spy)]
                [sections :only (defsection)])
-        ciste.sections.default)
+        ciste.sections.default
+        (plaza.rdf core)
+        (plaza.rdf.vocabularies foaf))
   (:require (ciste [html :as html])
             (jiksnu [abdera :as abdera]
                     [model :as model]
@@ -89,7 +91,22 @@
      {"published" (:published object)
       "updated" (:updated object)})})
 
+(defsection show-section [Activity :rdf]
+  [activity & _]
+  (with-rdf-ns ""
+    [[(full-uri activity)
+      [rdf:type   (str namespace/sioc "Post")
+       
 
+       ]
+      
+
+      
+
+      ]]
+
+    )
+  )
 
 
 

@@ -10,6 +10,7 @@
                         [element :as element])
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
+            (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.sections [activity-sections :as sections.activity])
             (jiksnu.model [activity :as model.activity]
@@ -146,4 +147,4 @@
 (deffilter #'user-timeline :xmpp
   [action request]
   (-> request :to
-      model.user/fetch-by-jid action))
+      actions.user/fetch-by-jid action))

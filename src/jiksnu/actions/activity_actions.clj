@@ -64,25 +64,25 @@
 (defn prepare-activity
   [activity]
   (-> activity
-      helpers.activity/set-id
+      model.activity/set-id
       set-title
-      helpers.activity/set-object-id
-      helpers.activity/set-public
+      model.activity/set-object-id
+      model.activity/set-public
       set-remote
-      helpers.activity/set-tags
+      model.activity/set-tags
       set-recipients
-      helpers.activity/set-object-type
-      helpers.activity/set-parent))
+      model.activity/set-object-type
+      model.activity/set-parent))
 
 (defn prepare-post
   [activity]
   (-> activity
       set-local
-      helpers.activity/set-updated-time
-      helpers.activity/set-object-updated
-      helpers.activity/set-object-published
-      helpers.activity/set-published-time
-      helpers.activity/set-actor))
+      model.activity/set-updated-time
+      model.activity/set-object-updated
+      model.activity/set-object-published
+      model.activity/set-published-time
+      model.activity/set-actor))
 
 (defaction create
   [params]

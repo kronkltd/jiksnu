@@ -237,7 +237,11 @@
 
 (defn fetch-by-jid
   [jid]
-  (show (.getLocalpart jid) (.getDomain jid)))
+  (model.user/show (.getLocalpart jid) (.getDomain jid)))
+
+(defn fetch-by-uri
+  [uri]
+  (model.user/fetch-by-uri uri))
 
 (defn find-or-create-by-jid
   [^JID jid]

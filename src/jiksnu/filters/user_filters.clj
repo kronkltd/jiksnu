@@ -26,7 +26,7 @@
 (deffilter #'discover :http
   [action request]
   (let [{{id :id} :params} request
-        user (model.user/fetch-by-id id)]
+        user (fetch-by-id id)]
     (action user)))
 
 (deffilter #'edit :http
@@ -37,7 +37,7 @@
 (deffilter #'fetch-updates :http
   [action request]
   (let [{{id :id} :params} request
-        user (model.user/fetch-by-id id)]
+        user (fetch-by-id id)]
     (action user)))
 
 (deffilter #'index :http
@@ -57,32 +57,32 @@
 (deffilter #'remote-profile :http
   [action request]
   (let [{{id :id} :params} request]
-    (let [user (model.user/fetch-by-id id)]
+    (let [user (fetch-by-id id)]
       user)))
 
 (deffilter #'remote-user :http
   [action request]
   (let [{{uri :*} :params} request]
-    (action (model.user/fetch-by-uri uri))))
+    (action (fetch-by-uri uri))))
 
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request
-        user (model.user/show id)]
+        user (show id)]
     (action user)))
 
 (deffilter #'update :http
   [action request]
   (let [{params :params} request
         {username :username} params
-        user (model.user/show username)]
+        user (show username)]
     (action user params)))
 
 (deffilter #'update-hub :http
   [action request]
   (let [{params :params} request
         {username :id} params
-        user (model.user/fetch-by-id username)]
+        user (fetch-by-id username)]
     (action user)))
 
 
@@ -107,7 +107,7 @@
 
 (deffilter #'fetch-remote :xmpp
   [action request]
-  (model.user/fetch-by-jid (:to request)))
+  (fetch-by-jid (:to request)))
 
 (deffilter #'index :xmpp
   [action request]
@@ -116,7 +116,7 @@
 (deffilter #'remote-create :xmpp
   [action request]
   (let [{:keys [to from payload]} request
-        user (model.user/fetch-by-jid from)]
+        user (fetch-by-jid from)]
     (let [vcard (first (element/children payload))
 
           avatar-url-element (abdera/find-children vcard "/vcard/photo/uri")
@@ -143,7 +143,7 @@
 (deffilter #'show :xmpp
   [action request]
   (let [{:keys [to]} request
-        user (model.user/fetch-by-jid to)]
+        user (fetch-by-jid to)]
     (action user)))
 
 (deffilter #'xmpp-service-unavailable :xmpp

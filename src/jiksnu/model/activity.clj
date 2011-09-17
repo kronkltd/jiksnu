@@ -4,6 +4,7 @@
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
   (:require [clojure.string :as string]
+            (jiksnu [abdera :as abdera])
             (jiksnu.model [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
@@ -115,4 +116,80 @@
                           (some #(= % (:authors activity)) actor)))
      :comment-count (str (count comments))
      :comments comments}))
+
+(defn set-id
+  [activity]
+  (if (and (:id activity) (not= (:id activity) ""))
+    activity
+    (assoc activity :id (abdera/new-id))))
+
+(defn set-object-id
+  [activity]
+  (if (:id (:object activity))
+    activity
+    (assoc-in activity [:object :id] (abdera/new-id))))
+
+(defn set-updated-time
+  [activity]
+  (if (:updated activity)
+    activity
+    (assoc activity :updated (sugar/date))))
+
+(defn set-object-updated
+  [activity]
+  (if (:updated (:object activity))
+    activity
+    (assoc-in activity [:object :updated] (sugar/date))))
+
+(defn set-published-time
+  [activity]
+  (if (:published activity)
+    activity
+    (assoc activity :published (sugar/date))))
+
+(defn set-object-published
+  [activity]
+  (if (:published (:object activity))
+    activity
+    (assoc-in activity [:object :published] (sugar/date))))
+
+(defn set-actor
+  [activity]
+  (if-let [author (current-user-id)]
+    (assoc activity :author author)))
+
+(defn set-public
+  [activity]
+  (if (false? (:public activity))
+    activity
+    (assoc activity :public true)))
+
+(defn set-tags
+  [activity]
+  (let [tags (:tags activity )]
+    (if (string? tags)
+      (if (and tags (not= tags ""))
+        (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+          (assoc activity :tags tag-seq)
+          (dissoc activity :tags))
+        (dissoc activity :tags))
+      (if (coll? tags)
+        activity
+        (dissoc activity :tags)))))
+
+(defn set-parent
+  [activity]
+  (if (= (:parent activity) "")
+    (dissoc activity :parent)
+    activity))
+
+(defn set-object-type
+  [activity]
+  (assoc-in
+   activity [:object :object-type]
+   (if-let [object-type (:object-type (:object activity))]
+     (-> object-type
+         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+     "note")))
 

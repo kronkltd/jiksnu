@@ -1,6 +1,10 @@
 (ns jiksnu.model.subscription
-  (:use jiksnu.model)
-  (:require (jiksnu.model [user :as model.user])
+  (:use (ciste [debug :only (spy)])
+        jiksnu.model)
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (jiksnu [namespace :as namespace])
+            (jiksnu.model [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
   (:import jiksnu.model.Subscription))
@@ -94,3 +98,24 @@
    :pending (-> subscription :pending)
    :created (-> subscription :created)})
 
+(defn subscriptions-request
+  "returns a xmpp packet requesting subscriptions"
+  [from to]
+  (tigase/make-packet
+   {:to (tigase/make-jid to)
+    :from (tigase/make-jid from)
+    :type :get
+    :body (element/make-element
+           ["pubsub" {"xmlns" namespace/pubsub}
+            ["subscriptions" {"node" namespace/microblog}]])}))
+
+(defn subscribers-request
+  [from to]
+  (tigase/make-packet
+   {:to (tigase/make-jid to)
+    :from (tigase/make-jid from)
+    :type :get
+    ;; :id (fseq :id)
+    :body (element/make-element
+           "pubsub" {"xmlns" namespace/pubsub}
+           ["subscribers" {"node" namespace/microblog}])}))

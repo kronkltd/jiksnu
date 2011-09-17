@@ -216,12 +216,43 @@
 
 (defview #'index :rdf
   [request activities]
-  {:body
-   (let [rdf-model (-> activities
-                       index-section
-                       plaza/model-add-triples
-                       plaza/defmodel)]
-     (with-out-str (plaza/model-to-format rdf-model :xml)))
+  {:body (-> activities
+             index-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :xml)
+             with-out-str)
+   :template :false})
+
+(defview #'index :n3
+  [request activities]
+  {:body (-> activities
+             index-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :n3)
+             with-out-str)
+   :template :false})
+
+
+(defview #'show :rdf
+  [request activity]
+  {:body (-> activity
+             show-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :xml)
+             with-out-str)
+   :template :false})
+
+(defview #'show :n3
+  [request activity]
+  {:body (-> activity
+             index-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :n3)
+             with-out-str)
    :template :false})
 
 
