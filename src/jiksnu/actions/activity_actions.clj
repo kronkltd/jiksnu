@@ -154,7 +154,7 @@ serialization"
                          (if (seq links) {:links links})
                          (if (seq tags) {:tags tags})
                          {:id id
-                          :author user
+                          :author (:_id user)
                           :public true
                           :comment-count (abdera/get-comment-count entry)}
                          extension-maps)]

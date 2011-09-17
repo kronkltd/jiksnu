@@ -20,12 +20,12 @@
 
 (defn discover-user-xmpp
   [user]
-  (println "discover xmpp")
+  (log/info "discover xmpp")
   (actions.user/request-vcard! user))
 
 (defn discover-user-http
   [user]
-  (println "discovering http")
+  (log/info "discovering http")
   (actions.webfinger/update-usermeta user)
   #_(request-hcard user))
 

@@ -50,9 +50,9 @@
   (or
    ;; (.getActor entry)
    (.getAuthor entry)
-   ;; (if feed (first (.getAuthors feed)))
-   ;; (if-let [source (.getSource entry)]
-   ;;   (first (.getAuthors source)))
+   (if feed (first (.getAuthors feed)))
+   (if-let [source (.getSource entry)]
+     (first (.getAuthors source)))
    ))
 
 (defn make-feed

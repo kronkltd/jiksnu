@@ -26,7 +26,7 @@
   (XRDBuilder.))
 
 ;; TODO: rename fetch-host-meta
-(defn fetch
+(defn fetch-host-meta
   "returns a cliqset xrd corresponding to the given url"
   [url]
   (if url
@@ -70,7 +70,7 @@
   [^User user]
   (-> user
       model.user/user-meta-uri
-      #_fetch))
+      fetch-host-meta))
 
 
 
@@ -105,6 +105,6 @@
           (model.signature/set-armored-key (:_id user) n e)))
       (actions.user/add-link user link))
     (-> user
-        (assoc :remote-id (str uri))
+        (assoc :id (str uri))
         (assoc :discovered true)
         actions.user/update)))

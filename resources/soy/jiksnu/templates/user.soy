@@ -13,7 +13,7 @@
             <input type="text" name="username" />
           </li>
           <li>
-            <input type="text" name="domain" .>
+            <input type="text" name="domain" />
           </li>
           <li>
             <input type="submit" value="Add User" />
@@ -29,11 +29,14 @@
  * @param id
  */
 {template .deleteButton}
-  <form method="delete"
+  <form method="post"
         action="/users/{$id}">
+    <input type="hidden"
+           name="_method"
+           value="DELETE" />
     <input type="submit"
            value="Delete"
-           class="delete-button">
+           class="delete-button" />
   </form>
 {/template}
 

@@ -193,15 +193,11 @@
 
 (defaction update
   [user params]
-  (let [new-params
-        (-> (into user
-                  (map
-                   (fn [[k v]]
-                     (if (not= v "")
-                       [(keyword k) v]))
-                   params))
-            (dissoc :id))]
-   (model.user/update new-params)))
+  (-> user
+      (into (map
+             (fn [[k v]] (if (not= v "") [(keyword k) v]))
+             params))
+      model.user/update))
 
 (defaction update-hub
   [user]
@@ -226,13 +222,16 @@
          (create (merge user params)))))
 
 (defn person->user
-  [^Person person]
+  [person]
   (if person
-    (let [id (.getUri person)
-          email (.getEmail person)
-          name (.getName person)]
-      (find-or-create-by-remote-id
-       {:id (str id)}
-       (merge {:domain (.getHost id)}
-              (if email {:email email})
-              (if name {:display-name name}))))))
+    (do
+     (let [id (.getUri person)
+           email (.getEmail person)
+           name (or
+                 (.getSimpleExtension person namespace/poco "displayName" "poco" )
+                 (.getName person))]
+       (find-or-create-by-remote-id
+        {:id (str id)}
+        (merge {:domain (.getHost id)}
+               (if email {:email email})
+               (if name {:display-name name})))))))
