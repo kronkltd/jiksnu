@@ -62,7 +62,7 @@
       (fetch-updates-http user))))
 
 (defn create-trigger
-  [action _ user]
+  [action params user]
   (actions.user/discover user))
 
 (add-trigger! #'actions.user/create        #'create-trigger)

@@ -10,8 +10,9 @@
   (:import com.cliqset.hostmeta.HostMetaException))
 
 (defn discover-onesocialweb
-  [action [domain] _]
-  (let [request {:format :xmpp
+  [action params response]
+  (let [[domain] params
+        request {:format :xmpp
                  :serialization :xmpp
                  :action #'actions.domain/ping}
         packet (tigase/make-packet (apply-view request domain))]

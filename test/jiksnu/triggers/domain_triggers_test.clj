@@ -1,20 +1,22 @@
 (ns jiksnu.triggers.domain-triggers-test
-  (:use clojure.test
+  (:use (clj-factory [core :only (factory)])
+        clojure.test
         midje.sweet
+        (jiksnu core-test)
         jiksnu.triggers.domain-triggers)
-  (:require (jiksnu.actions [domain-actions :as actions.domain])))
+  (:require (clj-tigase [packet :as packet])
+            (jiksnu.actions [domain-actions :as actions.domain])
+            (jiksnu.views [domain-views :as views.domain]))
+  (:import jiksnu.model.Domain))
 
-#_(deftest test-discover-onesocialweb
+(use-fixtures :each test-environment-fixture)
+
+(deftest test-discover-onesocialweb
   (fact
-    (discover-onesocialweb .action. [.domain.] .response.)
-    (provided
-      (apply-view {:fomat :xmpp
-                   :serialization :xmpp
-                   :action #'actions.domain/ping
-                   } .domain.) => nil
-      )
-    )
-  )
+    (let [action actions.domain/discover
+          domain (actions.domain/create (factory Domain))
+          response {}]
+      (discover-onesocialweb action [domain] response) => packet/packet?)))
 
 (deftest test-discover-webfinger)
 

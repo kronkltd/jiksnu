@@ -3,8 +3,9 @@
         clojure.test
         midje.sweet
         clj-factory.core
-        jiksnu.model
-        jiksnu.redis))
+        (jiksnu core-test model redis)))
+
+(use-fixtures :each test-environment-fixture)
 
 (background
  (around :facts

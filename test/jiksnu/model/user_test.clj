@@ -1,5 +1,6 @@
 (ns jiksnu.model.user-test
-  (:use (ciste config debug)
+  (:use (ciste [config :only (config)]
+               [debug :only (spy)])
         clj-factory.core
         clojure.test
         (jiksnu core-test model)
@@ -26,7 +27,7 @@
   (testing "when there is a user"
     (testing "and it's domain is the same as the current domain"
       (fact "should be true"
-        (let [domain (-> (config) :domain)
+        (let [domain (config :domain)
               user (factory User {:domain domain})]
           (local? user) => truthy)))
     (testing "and it's domain is different from the current domain"

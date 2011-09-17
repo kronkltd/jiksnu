@@ -5,6 +5,7 @@
         jiksnu.model)
   (:require [jiksnu.abdera :as abdera]
             [clojure.string :as string]
+            (clojure.tools [logging :as log])
             (clj-tigase [core :as tigase])
             [karras.entity :as entity]
             [jiksnu.model.domain :as model.domain])
@@ -57,21 +58,24 @@
 
 (defn create
   [user]
-  (entity/create User user))
+  (if user
+    (let [{:keys [username domain]} user]
+      (if (and (and username (not= username ""))
+               (and domain (not= domain "")))
+        (entity/create User user)
+        (log/error "Users must contain both a username and a domain")))
+    (log/error "Can not create nil users")))
 
 (defn index
   [& opts]
   (entity/fetch-all User))
 
 (defn show
-  ([id]
-     (show id nil))
-  ([username domain]
-     (let [opt-map
-           (merge {:username username}
-                  (if domain
-                    {:domain domain}))]
-       (entity/fetch-one User opt-map))))
+  [username domain]
+  (entity/fetch-one
+   User
+   {:username username
+    :domain domain}))
 
 (defn fetch-by-id
   [id]

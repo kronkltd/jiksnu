@@ -1,7 +1,8 @@
 (ns jiksnu.model.domain
   (:use (ciste [debug :only (spy)])
         jiksnu.model)
-  (:require [karras.entity :as entity])
+  (:require (clojure.tools [logging :as log])
+            (karras [entity :as entity]))
   (:import jiksnu.model.Domain))
 
 (defn drop!
@@ -20,7 +21,9 @@
 
 (defn create
   [domain]
-  (entity/create Domain domain))
+  (if (:_id domain)
+    (entity/create Domain domain)
+    (log/error "Domain must have id")))
 
 (defn update
   [domain]

@@ -41,7 +41,7 @@
   (facts "should return an Activity"
     (with-context [:http :atom]
       (let [entry (show-section (factory Activity))]
-        (entry->activity entry) => map?))))
+        (entry->activity entry) => activity?))))
 
 
 

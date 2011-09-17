@@ -14,6 +14,8 @@
            )
   )
 
+(use-fixtures :each test-environment-fixture)
+
 (deftest test-generate-key
   (fact
     (generate-key) => (partial instance? KeyPair)

@@ -230,11 +230,12 @@
 
 (defn person->user
   [^Person person]
-  (let [id (.getUri person)
-        email (.getEmail person)
-        name (.getName person)]
-    (find-or-create-by-remote-id
-     {:id (str id)}
-     (merge {:domain (.getHost id)}
-            (if email {:email email})
-            (if name {:display-name name})))))
+  (if (spy person)
+    (let [id (.getUri person)
+          email (.getEmail person)
+          name (.getName person)]
+      (find-or-create-by-remote-id
+       {:id (str id)}
+       (spy (merge {:domain (.getHost id)}
+                   (if email {:email email})
+                   (if name {:display-name name})))))))
