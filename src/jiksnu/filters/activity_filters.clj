@@ -19,32 +19,27 @@
 
 (deffilter #'add-comment :http
   [action request]
-  (action (:params request)))
+  (-> request :params action))
 
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id
-      model.activity/show action))
+  (-> request :params :id show action))
 
 (deffilter #'edit :http
   [action request]
-  (let [{{id :id} :params} request]
-    (action id)))
+  (-> request :params :id show action))
 
 (deffilter #'fetch-comments :http
   [action request]
-  (let [{{id :id} :params} request]
-    (if-let [activity (model.activity/show id)]
-      (action activity))))
+  (-> request :params :id show action))
 
 (deffilter #'friends-timeline :http
   [action request]
-  (->> request :params :id
-       (model.activity/index :author)))
+  (-> request :params :id model.user/show action))
 
 (deffilter #'inbox :http
   [action request]
-  [])
+  (action))
 
 (deffilter #'index :http
   [action request]
@@ -52,11 +47,7 @@
 
 (deffilter #'like-activity :http
   [action request]
-  (let [{{id :id} :params} request]
-    (if-let [user (current-user)]
-      (if-let [activity (model.activity/fetch-by-id id)]
-        (model.like/find-or-create activity user)
-        true))))
+  (-> request :params :id show action))
 
 (deffilter #'new :http
   [action request]
@@ -68,7 +59,7 @@
 
 (deffilter #'post :http
   [action request]
-  (-> request :params (dissoc :*) action))
+  (-> request :params action))
 
 (deffilter #'show :http
   [action request]
@@ -82,7 +73,7 @@
 (deffilter #'user-timeline :http
   [action request]
   (-> request :params :username
-      (model.user/show (config :domain))
+      model.user/show
       action))
 
 
