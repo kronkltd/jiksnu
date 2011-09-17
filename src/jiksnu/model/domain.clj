@@ -23,7 +23,7 @@
   [domain]
   (if (:_id domain)
     (entity/create Domain domain)
-    (log/error "Domain must have id")))
+    (throw (IllegalArgumentException. "Domain must have id"))))
 
 (defn update
   [domain]

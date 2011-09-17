@@ -8,8 +8,10 @@
   (:require (clj-tigase [packet :as packet])
             (jiksnu [namespace :as namespace]
                     [redis :as redis])
+            (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.model [user :as model.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person
+           jiksnu.model.Domain
            jiksnu.model.User))
 
 (use-fixtures :each test-environment-fixture)
@@ -44,13 +46,13 @@
 (deftest test-create
   (testing "when the options contain all the required params"
     (fact "should create the user"
-     (let [options {:username (fseq :username)
-                    :domain (fseq :domain)}]
-       (create options) => user?)))
+      (let [domain (actions.domain/create (factory Domain))
+            options {:username (fseq :username)
+                     :domain (:_id domain)}]
+        (create options) => user?)))
   (testing "when the options are missing params"
-    ;; TODO: maybe throw exception
-    (fact "should return nil"
-      (create options) => nil)))
+    (fact "should raise an exception"
+      (create options) => (throws IllegalArgumentException))))
 
 (deftest test-delete
   (fact

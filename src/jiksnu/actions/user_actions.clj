@@ -68,10 +68,7 @@
   [options]
   (let [user (merge {:discovered false :local false} options)
         domain (actions.domain/find-or-create (:domain user))]
-    (if (and (:username user)
-             (:domain user)
-             #_(:id user))
-      (model.user/create user))))
+    (model.user/create user)))
 
 (defaction delete
   [id]

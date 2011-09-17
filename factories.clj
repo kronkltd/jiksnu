@@ -19,7 +19,7 @@
 
 (defseq :domain
   [n]
-  (str "example" n ".com"))
+  (str "subdomain" n ".example.com"))
 
 (defseq :uri
   [n]
@@ -49,7 +49,7 @@
 (deffactory User
   (let [password (fseq :word)]
     {:username (fseq :word)
-     :domain (config :domain)
+     :domain (fseq :domain)
      :name (fseq :word)
      :first-name (fseq :word)
      :last-name (fseq :word)

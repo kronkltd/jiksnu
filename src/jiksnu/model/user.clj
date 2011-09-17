@@ -63,8 +63,9 @@
       (if (and (and username (not= username ""))
                (and domain (not= domain "")))
         (entity/create User user)
-        (log/error "Users must contain both a username and a domain")))
-    (log/error "Can not create nil users")))
+        (throw (IllegalArgumentException.
+                "Users must contain both a username and a domain"))))
+    (throw (IllegalArgumentException. "Can not create nil users"))))
 
 (defn index
   [& opts]
