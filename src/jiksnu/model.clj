@@ -93,13 +93,9 @@
      (with-database
        ~@body)))
 
-(defn activity?
-  [activity]
-  (instance? Activity activity))
-
-(defn subscription?
-  [s]
-  (instance? Subscription s))
+(def activity? (partial instance? Activity))
+(def subscription? (partial instance? Subscription))
+(def user? (partial instance? User))
 
 (defn make-id
   [^String id]
