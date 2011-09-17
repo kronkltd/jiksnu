@@ -7,3 +7,4 @@ Scenario: Home page visit
   And an activity exists
   When I visit the home page
   Then I should see an activity
+  And the response is sucsessful

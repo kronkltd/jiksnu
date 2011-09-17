@@ -34,7 +34,8 @@
                  [ring/ring-core "0.3.11"]
                  [ring-mock "0.1.1"]
                  [swank-clojure "1.4.0-SNAPSHOT"]]
-  :dev-dependencies [[net.kronkltd/midje "1.3-alpha2-SNAPSHOT"]]
+  :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]
+                     [net.kronkltd/midje "1.3-alpha2-SNAPSHOT"]]
   :exclusions [org.clojure/contrib
                org.clojure/clojure-contrib
                org.slf4j/slf4j-log4j12

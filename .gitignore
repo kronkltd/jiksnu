@@ -1,5 +1,6 @@
 *.log
 *.jar
+.gems
 .lein-failures
 .vagrant
 certs
