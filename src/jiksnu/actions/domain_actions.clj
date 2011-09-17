@@ -1,5 +1,6 @@
 (ns jiksnu.actions.domain-actions
-  (:use (ciste [core :only (defaction)]
+  (:use (ciste [config :only (config)]
+               [core :only (defaction)]
                [debug :only (spy)]))
   (:require (clj-tigase [core :as tigase])
             (jiksnu.model [domain :as model.domain])))
@@ -37,6 +38,10 @@
   [id]
   (or (model.domain/show id)
       (create {:_id id})))
+
+(defn current-domain
+  []
+  (find-or-create (config :domain)))
 
 (defaction ping
   [domain]

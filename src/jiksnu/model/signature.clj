@@ -95,11 +95,12 @@
 
 (defn magic-key-string
   [^MagicKeyPair keypair]
-  (str
-   "data:application/magic-public-key,RSA."
-   (str (encode (get-bytes (BigInteger. (:modulus keypair)))))
-   "."
-   (str (encode (get-bytes (BigInteger. (:public-exponent keypair)))))))
+  (if keypair
+    (str
+     "data:application/magic-public-key,RSA."
+     (-> keypair :modulus (BigInteger.) get-bytes encode str)
+     "."
+     (-> keypair :public-exponent (BigInteger.) get-bytes encode str))))
 
 (defn pair-hash
   [^KeyPair keypair]
