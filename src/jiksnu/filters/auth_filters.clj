@@ -8,23 +8,20 @@
 
 (deffilter #'guest-login :http
   [action request]
-  (let [{{webid :webid} :params} request]
-    (actions.user/find-or-create-by-uri webid)))
+  (-> request :params :webid action))
 
 (deffilter #'login :http
-  [action {{username :username
-            password :password} :params :as request}]
+  [action {:keys [username password]}]
   (action username password))
 
 (deffilter #'login-page :http
   [action request]
-  true)
+  (action))
 
 (deffilter #'logout :http
   [action request]
-  true)
+  (action))
 
 (deffilter #'password-page :http
   [action request]
-  (let [{{id :pending-id} :session} request]
-    (actions.user/fetch-by-id id)))
+  (-> request :session :pending-id action))
