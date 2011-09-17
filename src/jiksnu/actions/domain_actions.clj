@@ -1,8 +1,6 @@
 (ns jiksnu.actions.domain-actions
-  (:use ciste.core
-        ciste.debug
-        jiksnu.actions.webfinger-actions)
-  (:require [jiksnu.model.domain :as model.domain]))
+  (:use (ciste core debug))
+  (:require (jiksnu.model [domain :as model.domain])))
 
 (defaction check-webfinger
   [domain]
