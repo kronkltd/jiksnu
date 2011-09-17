@@ -52,9 +52,13 @@
   [uri]
   (.getRoot (fetch-document uri)))
 
-(defn fetch-entries
-  [uri]
-  (seq (.getEntries (fetch-feed uri))))
+(defn get-entries
+  [^Feed feed]
+  (-> feed .getEntries seq))
+
+;; (defn fetch-entries
+;;   [uri]
+;;   (seq (.getEntries (fetch-feed uri))))
 
 (defn parse-stream
   [stream]
@@ -98,8 +102,8 @@
   (or
    (if-let [link (.getLink entry "replies")]
      (let [count-qname (QName.
-                 "http://purl.org/syndication/thread/1.0"
-                 "count" )]
+                        "http://purl.org/syndication/thread/1.0"
+                        "count" )]
        (if-let [count-attr (.getAttributeValue link count-qname)]
          (Integer/parseInt count-attr))))
    0))

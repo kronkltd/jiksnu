@@ -221,7 +221,10 @@
           name (or (.getSimpleExtension person namespace/poco
                                         "displayName" "poco" )
                    (.getName person))
+          username (.getSimpleExtension person namespace/poco
+                                        "preferredUsername" "poco")
           params (merge {:domain (.getHost id)}
+                        (if username {:username username})
                         (if email {:email email})
                         (if name {:display-name name}))]
       (find-or-create-by-remote-id

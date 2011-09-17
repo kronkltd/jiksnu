@@ -24,6 +24,11 @@
            options {}]
        ?form))))
 
+(deftest test-pending-domains-key
+  (fact "should return a key name"
+    (let [domain (actions.domain/create (factory Domain))]
+      (pending-domains-key domain) => string?)))
+
 (deftest test-enqueue-discover
   (fact
     @(enqueue-discover user) => 1))
@@ -160,10 +165,20 @@
     (xmpp-service-unavailable user) => user?))
 
 (deftest test-find-or-create-by-remote-id
-  (fact
-    (find-or-create-by-remote-id user options) => user?))
+  (testing "when the user exists"
+    (fact "should return that user"
+      (let [response (find-or-create-by-remote-id user options)]
+        response => user?
+        response => user)))
+  (testing "when the user does not exist"
+    (fact "should create that user"
+      (let [user2 (factory User)]
+        (find-or-create-by-remote-id user2 options) => user?))))
 
 (deftest test-person->user
-  (future-fact
-    (let [person (Person.)]
-     (person-> user => user?))))
+  (testing "when parsing an identi.ca feed"
+    (fact "should return a user"
+      (let [feed (abdera/fetch-feed "identica-update.xml")
+            entry (first (abdera/get-entries feed))
+            person (abdera/get-author entry feed)]
+        (person->user person) => user?))))
