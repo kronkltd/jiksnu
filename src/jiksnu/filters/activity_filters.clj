@@ -1,12 +1,13 @@
 (ns jiksnu.filters.activity-filters
-  (:use aleph.http
-        (ciste debug filters)
+  (:use (ciste [debug :only (spy)]
+               [filters :only (deffilter)])
         (jiksnu model session)
         jiksnu.actions.activity-actions
         lamina.core)
-  (:require (clj-tigase [core :as tigase]
+  (:require (aleph [http :as http])
+            (clj-tigase [core :as tigase]
                         [element :as element])
-            [clojure.java.io :as io]
+            (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.sections [activity-sections :as sections.activity])
@@ -17,16 +18,6 @@
 (deffilter #'add-comment :http
   [action request]
   (action (:params request)))
-
-(deffilter #'comment-response :xmpp
-  [action request]
-  (if (not= (:to request) (:from request))
-    (let [packet (:packet request)
-          items (:items request)]
-      (action (map #(entry->activity
-                     (abdera/parse-xml-string
-                      (str (first (element/children %)))))
-                   items)))))
 
 (deffilter #'delete :http
   [action request]
@@ -44,15 +35,6 @@
     (if-let [activity (model.activity/show id)]
       (action activity))))
 
-(deffilter #'fetch-comments :xmpp
-  [action request]
-  (let [{{id :id} :params} request]
-    (if-let [activity (model.activity/show id)]
-      (action activity))))
-
-(deffilter #'fetch-comments-remote :xmpp
-  [action request])
-
 (deffilter #'friends-timeline :http
   [action request]
   (->> request :params :id
@@ -63,10 +45,6 @@
   [])
 
 (deffilter #'index :http
-  [action request]
-  (action))
-
-(deffilter #'index :xmpp
   [action request]
   (action))
 
@@ -90,6 +68,50 @@
   [action request]
   (-> request :params (dissoc :*) action))
 
+(deffilter #'show :http
+  [action request]
+  (-> request :params :id
+      make-id action))
+
+(deffilter #'update :http
+  [action request]
+  (-> request :params action))
+
+(deffilter #'user-timeline :http
+  [action request]
+  (-> request :params :username
+      model.user/show action))
+
+
+
+
+
+
+
+
+(deffilter #'comment-response :xmpp
+  [action request]
+  (if (not= (:to request) (:from request))
+    (let [packet (:packet request)
+          items (:items request)]
+      (action (map #(entry->activity
+                     (abdera/parse-xml-string
+                      (str (first (element/children %)))))
+                   items)))))
+
+(deffilter #'fetch-comments :xmpp
+  [action request]
+  (let [{{id :id} :params} request]
+    (if-let [activity (model.activity/show id)]
+      (action activity))))
+
+(deffilter #'fetch-comments-remote :xmpp
+  [action request])
+
+(deffilter #'index :xmpp
+  [action request]
+  (action))
+
 (deffilter #'post :xmpp
   [action request]
   (let [{:keys [items]} request
@@ -101,11 +123,6 @@
                entry->activity))
          items)]
     (action (first activities))))
-
-(deffilter #'show :http
-  [action request]
-  (-> request :params :id
-      make-id action))
 
 (deffilter #'show :xmpp
   [action request]
@@ -123,15 +140,6 @@
       (action (map #(entry->activity
                      (abdera/parse-xml-string (str %)))
             items)))))
-
-(deffilter #'update :http
-  [action request]
-  (-> request :params action))
-
-(deffilter #'user-timeline :http
-  [action request]
-  (-> request :params :username
-      model.user/show action))
 
 (deffilter #'user-timeline :xmpp
   [action request]

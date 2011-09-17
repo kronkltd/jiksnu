@@ -1,7 +1,9 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use (ciste core debug)
-        (jiksnu model namespace))
-  (:require (jiksnu.actions [domain-actions :as actions.domain]
+  (:use (ciste [core :only (defaction)]
+               [debug :only (spy)])
+        (jiksnu model))
+  (:require (jiksnu [namespace :as namespace])
+            (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [signature :as model.signature]
@@ -101,7 +103,3 @@
         (assoc :remote-id (str uri))
         (assoc :discovered true)
         actions.user/update)))
-
-
-
-

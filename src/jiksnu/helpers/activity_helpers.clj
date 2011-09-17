@@ -92,14 +92,14 @@
 (defn acl-link
   [entry activity]
   (if (:public activity)
-    (let [rule-element (.addExtension entry osw-uri "acl-rule" "")]
+    (let [rule-element (.addExtension entry namespace/osw "acl-rule" "")]
       (let [action-element
-            (.addSimpleExtension rule-element osw-uri
-                                 "acl-action" "" view-uri)]
-        (.setAttributeValue action-element "permission" grant-uri))
+            (.addSimpleExtension rule-element namespace/osw
+                                 "acl-action" "" namespace/view)]
+        (.setAttributeValue action-element "permission" namespace/grant))
       (let [subject-element
-            (.addExtension rule-element osw-uri "acl-subject" "")]
-        (.setAttributeValue subject-element "type" everyone-uri)))))
+            (.addExtension rule-element namespace/osw "acl-subject" "")]
+        (.setAttributeValue subject-element "type" namespace/everyone)))))
 
 (defn parse-links
   [entry]
@@ -136,11 +136,11 @@
         name (.getLocalPart qname)
         namespace (.getNamespaceURI qname)]
     (if (and (= name "actor")
-             (= namespace as-ns))
-      (let [uri (.getSimpleExtension element atom-ns "uri" "")]
+             (= namespace namespace/as))
+      (let [uri (.getSimpleExtension element namespace/atom "uri" "")]
         {:author (:_id (model.user/find-or-create-by-remote-id uri))})
       (if (and (= name "object")
-                 (= namespace as-ns))
+                 (= namespace namespace/as))
         (parse-object-element element)
         (if (and (= name "in-reply-to")
                  (= namespace "http://purl.org/syndication/thread/1.0"))
@@ -177,7 +177,7 @@ an Element"
 ;; TODO: What id should be used here?
 (defn comment-node-uri
   [{id :id :as activity}]
-  (str microblog-uri ":replies:item=" id))
+  (str namespace/microblog ":replies:item=" id))
 
 (defn comment-request
   [activity]

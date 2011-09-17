@@ -1,12 +1,12 @@
 (ns jiksnu.actions.subscription-actions
-  (:use ciste.core
-        ciste.debug
-        jiksnu.model
-        jiksnu.namespace
-        [jiksnu.session :only (current-user
-                               current-user-id)])
-  (:require [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+  (:use (ciste [core :only (defaction)]
+               [debug :only (spy)])
+        (jiksnu model
+                [session :only (current-user
+                                current-user-id)]))
+  (:require (jiksnu [namespace :as namespace])
+            (jiksnu.model [subscription :as model.subscription]
+                          [user :as model.user]))
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 

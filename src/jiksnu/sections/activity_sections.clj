@@ -50,13 +50,13 @@
       (add-author activity)
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
-      (.addSimpleExtension as-ns "object-type" "activity" status-uri)
-      (.addSimpleExtension as-ns "verb" "activity" post-uri)
+      (.addSimpleExtension namespace/as "object-type" "activity" status-uri)
+      (.addSimpleExtension namespace/as "verb" "activity" post-uri)
       (comment-link-item activity)
       (acl-link activity))
     (let [object (:object activity)
-          object-element (.addExtension entry as-ns "object" "activity")]
-      (.setObjectType object-element status-uri)
+          object-element (.addExtension entry namespace/as "object" "activity")]
+      (.setObjectType object-element namespace/status)
       (if-let [object-updated (:updated object)]
         (.setUpdated object-element object-updated))
       (if-let [object-published (:published object)]
@@ -89,7 +89,7 @@
 
 (defsection index-block [Activity :xmpp :xmpp]
   [activities & options]
-  ["items" {"node" microblog-uri}
+  ["items" {"node" namespace/microblog}
    (map index-line activities)])
 
 (defsection index-line [Activity :xmpp :xmpp]

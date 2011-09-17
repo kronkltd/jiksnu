@@ -1,12 +1,11 @@
 (ns jiksnu.filters.auth-filters
-  (:use clojure.tools.logging
-        jiksnu.actions.auth-actions
-        ciste.filters
-        jiksnu.session
-        jiksnu.model)
-  (:require [ciste.debug :as debug]
-            [jiksnu.model.activity :as activity]
-            [jiksnu.model.user :as model.user])
+  (:use (ciste [debug :only (spy)]
+               [filters :only (deffilter)])
+        (jiksnu session model)
+        jiksnu.actions.auth-actions)
+  (:require (clojure.tools [logging :as log])
+            (jiksnu.model [activity :as activity]
+                          [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

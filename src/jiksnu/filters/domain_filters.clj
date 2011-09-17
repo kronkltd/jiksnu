@@ -1,5 +1,6 @@
 (ns jiksnu.filters.domain-filters
-  (:use (ciste debug filters)
+  (:use (ciste [debug :only (spy)]
+               [filters :only (deffilter)])
         jiksnu.actions.domain-actions)
   (:require (jiksnu.model [domain :as model.domain])))
 

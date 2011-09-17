@@ -1,10 +1,9 @@
 (ns jiksnu.actions.auth-actions
-  (:use ciste.core
-        jiksnu.model
-        jiksnu.session)
-  (:require [ciste.debug :as debug]
-            [clojure.tools.logging :as logger]
-            [jiksnu.model.user :as model.user])
+  (:use (ciste core
+               [debug :only (spy)])
+        (jiksnu model session))
+  (:require (clojure.tools [logging :as log])
+            (jiksnu.model [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -19,8 +18,8 @@
     ;; TODO: encrypt
     (if (= password (:password user))
       user
-      (logger/error "passwords do not match"))
-    (logger/error "user not found")))
+      (log/error "passwords do not match"))
+    (log/error "user not found")))
 
 (defaction login-page
   [request]

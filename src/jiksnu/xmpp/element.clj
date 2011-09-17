@@ -1,9 +1,9 @@
 (ns jiksnu.xmpp.element
-  (:use ciste.debug
-        clj-tigase.core
-        jiksnu.abdera
-        jiksnu.namespace)
-  (:require [clj-tigase.element :as element])
+  (:use (ciste [debug :only (spy)]))
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace]))
   (:import com.cliqset.abdera.ext.activity.ActivityEntry
            javax.xml.namespace.QName
            tigase.xml.Element

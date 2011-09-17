@@ -8,7 +8,7 @@
 (defn subscriber-response-element
   [subscription]
   (let [subscriber (model.user/fetch-by-id (:from subscription))]
-    ["subscriber" {"node" microblog-uri
+    ["subscriber" {"node" namespace/microblog
                    "created" (format-date (:created subscription))
                    "jid" (str (:username subscriber) "@"
                               (:domain subscriber))}]))
@@ -17,7 +17,7 @@
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:to subscription))
         created (:created subscription)]
-    ["subscription" {"node" microblog-uri
+    ["subscription" {"node" namespace/microblog
                      "subscription" "subscribed"
                      "created" (format-date created)
                      "jid" (str (:username subscribee) "@"
@@ -27,25 +27,25 @@
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
     ["pubsub"  {"xmlns" pubsub-uri}
-     ["unsubscribe" {"node" microblog-uri
+     ["unsubscribe" {"node" namespace/microblog
                      "jid" (make-jid subscribee)}]]))
 
 (defn subscribe-request
   [subscription]
   (let [subscribee (model.user/fetch-by-id (:from subscription))]
-    ["pubsub"  {"xmlns" pubsub-uri}
-     ["subscribe" {"node" microblog-uri
+    ["pubsub"  {"xmlns" namespace/pubsub}
+     ["subscribe" {"node" namespace/microblog
                    "jid" (make-jid subscribee)}]]))
 
 (defn subscribers-response
   [subscribers]
-  ["pubsub" {"xmlns" pubsub-uri}
-   ["subscribers" {"node" microblog-uri}
+  ["pubsub" {"xmlns" namespace/pubsub}
+   ["subscribers" {"node" namespace/microblog}
     (map subscriber-response-element subscribers)]])
 
 (defn subscriptions-response
   "Returns a response iq packet containing the ids in entries"
   [subscriptions]
-  ["pubsub" {"xmlns" pubsub-uri}
-   ["subscriptions" {"node" microblog-uri}
+  ["pubsub" {"xmlns" namespace/pubsub}
+   ["subscriptions" {"node" namespace/microblog}
     (map subscription-response-element subscriptions)]])

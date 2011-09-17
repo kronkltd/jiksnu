@@ -1,10 +1,9 @@
 (ns jiksnu.actions.user-actions
-  (:use (ciste config core debug)
-        (jiksnu model namespace
-                [session :only (current-user)]
-                view)
-        jiksnu.helpers.user-helpers
-        jiksnu.xmpp.element)
+  (:use (ciste [config :only (config)]
+               [core :only (defaction)]
+               [debug :only (spy)])
+        (jiksnu model
+                [session :only (current-user)]))
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase]
                         [element :as element]
@@ -12,11 +11,15 @@
             (clojure [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
-                    [redis :as redis])
+                    [namespace :as namespace]
+                    [redis :as redis]
+                    [view :as view])
             (jiksnu.actions [domain-actions :as actions.domain])
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]
                           [user :as model.user])
+            (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
                     [sugar :as sugar]))
   (:import com.cliqset.abdera.ext.activity.object.Person
@@ -89,18 +92,20 @@
 (defaction edit
   [& _])
 
+(defn vcard-request
+  [user]
+  (let [body (element/make-element
+              "query" {"xmlns" namespace/vcard-query})
+        packet-map {:from (tigase/make-jid "" (config :domain))
+                    :to (tigase/make-jid user)
+                    :id "JIKSNU1"
+                    :type :get
+                    :body body}]
+    (tigase/make-packet packet-map)))
+
 (defn request-vcard!
   [user]
-  (let [packet-map
-        {:from (tigase/make-jid "" (config :domain))
-         :to (tigase/make-jid user)
-         :id "JIKSNU1"
-         :type :get
-         :body
-         (element/make-element
-          "query"
-          {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
-        packet (tigase/make-packet packet-map)]
+  (let [packet (vcard-request user)]
     (tigase/deliver-packet! packet)))
 
 (defaction fetch-remote

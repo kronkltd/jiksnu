@@ -34,8 +34,8 @@
 
 (init-jena-framework)
 ;; TODO: Find a better ns for this
-(register-rdf-ns :dc namespace/dc-ns)
-(register-rdf-ns :foaf namespace/foaf-ns)
+(register-rdf-ns :dc namespace/dc)
+(register-rdf-ns :foaf namespace/foaf)
 
 (defn mongo-database*
   []

@@ -1,9 +1,8 @@
 (ns jiksnu.routes
-  (:use aleph.http
-        (ciste debug filters predicates routes)
+  (:use (ciste [debug :only (spy)]
+               filters predicates routes)
         ciste.formats.default
         jiksnu.middleware
-        jiksnu.namespace
         lamina.core
         (ring.middleware [params :only (wrap-params)]
                          keyword-params
@@ -12,12 +11,15 @@
                          multipart-params
                          cookies
                          session))
-  (:require [ciste.middleware :as middleware]
+  (:require (aleph [http :as http])
+            (ciste [middleware :as middleware])
             (compojure [core :as compojure]
                        handler
                        [route :as route])
             [clojure.string :as string]
             [clojure.java.io :as io]
+            (jiksnu [namespace :as namespace]
+                    [view :as view])
             (jiksnu.actions [activity-actions :as activity]
                             [auth-actions :as auth]
                             [domain-actions :as domain]
@@ -28,7 +30,6 @@
                             [subscription-actions :as subscription]
                             [user-actions :as user]
                             [webfinger-actions :as webfinger])
-            [jiksnu.view :as view]
             (jiksnu.filters activity-filters
                             auth-filters
                             domain-filters
@@ -37,6 +38,10 @@
                             subscription-filters
                             user-filters
                             webfinger-filters)
+            (jiksnu.triggers activity-triggers
+                             domain-triggers
+                             subscription-triggers
+                             user-triggers)
             (jiksnu.views activity-views
                           auth-views
                           domain-views
@@ -44,10 +49,6 @@
                           subscription-views
                           user-views
                           webfinger-views)
-            (jiksnu.triggers activity-triggers
-                             domain-triggers
-                             subscription-triggers
-                             user-triggers)
             (noir.util [cljs :as cljs])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
@@ -101,8 +102,8 @@
     [[:get "/main/xrd"]                                #'webfinger/user-meta]
     [[:get "/notice/:id"]                              #'activity/show]
     [[:get "/notice/:id.:format"]                      #'activity/show]
-    [[:get  "/notice/:id/comment"]         #'activity/new-comment]
-    [[:post "/notice/:id/comments"]        #'activity/add-comment]
+    [[:get  "/notice/:id/comment"]                     #'activity/new-comment]
+    [[:post "/notice/:id/comments"]                    #'activity/add-comment]
     [[:post "/notice/:id/comments/update"] #'activity/fetch-comments]
     [[:get "/notice/:id/edit"]             #'activity/edit]
     [[:post "/notice/:id/likes"]           #'activity/like-activity]
@@ -136,19 +137,19 @@
    [[{:method :get
       :pubsub true
       :name "items"
-      :node (escape-route microblog-uri)}
+      :node (escape-route namespace/microblog)}
      #'activity/user-timeline]
 
     [{:method :set
       :pubsub true
       :name "publish"
-      :node (escape-route microblog-uri)}
+      :node (escape-route namespace/microblog)}
      #'activity/post]
 
     [{:method :get
       :pubsub true
       :name "items"
-      :node (str microblog-uri ":replies:item=:id")}
+      :node (str namespace/microblog ":replies:item=:id")}
      #'activity/fetch-comments]
 
     [{:method :error
@@ -157,17 +158,17 @@
 
     [{:method :get
       :name "query"
-      :ns query-uri}
+      :ns namespace/query}
      #'user/show]
 
     [{:method :set
       :name "publish"
-      :ns vcard-uri}
+      :ns namespace/vcard}
      #'user/create]
 
     [{:method :result
       :name "query"
-      :ns query-uri}
+      :ns namespace/vcard-query}
      #'user/remote-create]
 
     [{:method :error
@@ -176,8 +177,8 @@
 
     [{:method :result
       :pubsub true
-      :node (str microblog-uri ":replies:item=:id")
-      :ns pubsub-uri}
+      :node (str namespace/microblog ":replies:item=:id")
+      :ns namespace/pubsub}
      #'activity/comment-response]
 
     [{:method :get
@@ -186,12 +187,12 @@
 
     [{:method :set
       :name "subscribe"
-      :ns pubsub-uri}
+      :ns namespace/pubsub}
      #'subscription/subscribed]
 
     [{:method :set
       :name "unsubscribe"
-      :ns pubsub-uri}
+      :ns namespace/pubsub}
      #'subscription/unsubscribe]
 
     [{:method :get
@@ -204,7 +205,7 @@
 
     [{:method :result
       :name "subscription"
-      :ns pubsub-uri}
+      :ns namespace/pubsub}
      #'subscription/remote-subscribe-confirm]
 
     ;; FIXME: This is way too general
@@ -213,12 +214,12 @@
 
     [{:method :result
       :pubsub true
-      :node microblog-uri}
+      :node namespace/microblog}
      #'activity/remote-create]
 
     [{:method :get
       :pubsub true
-      :node (escape-route inbox-uri)}
+      :node (escape-route namespace/inbox)}
      #'inbox/index]
 
     [{:method :result

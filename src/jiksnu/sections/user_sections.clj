@@ -1,24 +1,24 @@
 (ns jiksnu.sections.user-sections
-  (:use (ciste config debug html sections)
+  (:use (ciste [config :only (config)]
+               [debug :only (debug)]
+               html
+               sections)
         ciste.sections.default
-        [clj-gravatar.core :only (gravatar-image)]
-        jiksnu.abdera
-        jiksnu.helpers.user-helpers
-        jiksnu.model
-        jiksnu.namespace
-        jiksnu.session
-        jiksnu.view
-        plaza.rdf.core
-        plaza.rdf.vocabularies.foaf)
-  (:require [clj-tigase.element :as element]
-            [hiccup.form-helpers :as f]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
+        (clj-gravatar [core :only (gravatar-image)])
+        (jiksnu model session view))
+  (:require (clj-tigase [element :as element])
+            (hiccup [form-helpers :as f])
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace])
+            (jiksnu.actions [subscription-actions :as actions.subscription])
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [subscription :as model.subscription]
                           [user :as model.user])
-            (jiksnu.templates
-             [user :as template.user]))
+            (jiksnu.templates [user :as templates.user])
+            (plaza.rdf [core :as rdf])
+            (plaza.rdf.vocabularies [foaf :as foaf]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            java.net.URI
            javax.xml.namespace.QName
@@ -46,28 +46,28 @@
   (let [person (Person. (make-object atom-ns "author" ""))
         author-uri (full-uri user)]
     (doto person
-      (.setObjectType person-uri)
-      (.setId (str "acct:" (model.user/get-uri user)))
+      (.setObjectType namespace/person)
+      (.setId (model.user/get-uri user))
       (.setName (:first-name user) (:last-name user))
       (.setDisplayName (:name user))
-      (.addSimpleExtension atom-ns "email" ""
+      (.addSimpleExtension namespace/atom "email" ""
                            (or (:email user) (model.user/get-uri user)))
-      (.addSimpleExtension atom-ns "name" "" (:name user))
+      (.addSimpleExtension namespace/atom "name" "" (:name user))
       (.addAvatar (:avatar-url user) "image/jpeg")
       (.addLink (:avatar-url user) "avatar")
-      (.addSimpleExtension atom-ns "uri" "" author-uri)
-      (.addSimpleExtension poco-ns "preferredUsername" "poco" (:username user))
-      (.addSimpleExtension poco-ns "displayName" "poco" (title user)))
+      (.addSimpleExtension namespace/atom "uri" "" author-uri)
+      (.addSimpleExtension namespace/poco "preferredUsername" "poco" (:username user))
+      (.addSimpleExtension namespace/poco "displayName" "poco" (title user)))
     (-> person
         (.addLink author-uri "alternate")
         (.setMimeType "text/html"))
-    (-> (.addExtension person status-uri "profile_info" "statusnet")
+    (-> (.addExtension person namespace/status "profile_info" "statusnet")
         (.setAttributeValue "local_id" (str (:_id user))))
-    (let [urls-element (.addExtension person poco-ns "urls" "poco")]
+    (let [urls-element (.addExtension person namespace/poco "urls" "poco")]
       (doto urls-element
-        (.addSimpleExtension poco-ns "type" "poco" "homepage")
-        (.addSimpleExtension poco-ns "value" "poco" (full-uri user))
-        (.addSimpleExtension poco-ns "primary" "poco" "true")))
+        (.addSimpleExtension namespace/poco "type" "poco" "homepage")
+        (.addSimpleExtension namespace/poco "value" "poco" (full-uri user))
+        (.addSimpleExtension namespace/poco "primary" "poco" "true")))
     person))
 
 
@@ -101,7 +101,7 @@
       foaf:accountServiceHomepage (rdf-resource (str "http://" (:domain user)))
       foaf:accountName (l (:username user))
       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
-      [sioc "account_of"] (rdf-resource (str "acct:" (model.user/get-uri user)))]]]))
+      [sioc "account_of"] (rdf-resource (model.user/get-uri user))]]]))
 
 (defsection show-section [User :json]
   [user & options]
@@ -119,7 +119,7 @@
   [^User user & options]
   (let [{:keys [name avatar-url]} user]
     (element/make-element
-     "vcard" {"xmlns" vcard-uri}
+     "vcard" {"xmlns" namespace/vcard}
      (if name
        ["fn" {}
         ["text" {} name]])
@@ -132,4 +132,3 @@
 ;;   (element/make-element
 ;;    (:key property) {}
 ;;    [(:type property) {} (:value property)]))
-

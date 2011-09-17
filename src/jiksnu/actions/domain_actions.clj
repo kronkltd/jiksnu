@@ -1,5 +1,6 @@
 (ns jiksnu.actions.domain-actions
-  (:use (ciste core debug))
+  (:use (ciste [core :only (defaction)]
+               [debug :only (spy)]))
   (:require (jiksnu.model [domain :as model.domain])))
 
 (defaction check-webfinger

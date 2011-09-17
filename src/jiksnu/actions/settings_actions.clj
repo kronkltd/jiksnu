@@ -1,6 +1,6 @@
 (ns jiksnu.actions.settings-actions
-  (:use ciste.core
-        jiksnu.session))
+  (:use (ciste [core :only (defaction)])
+        (jiksnu session)))
 
 (defaction edit
   []

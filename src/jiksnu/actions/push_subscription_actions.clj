@@ -1,17 +1,19 @@
 (ns jiksnu.actions.push-subscription-actions
-  (:use [ciste core debug]
-        [jiksnu model namespace session]
-        [karras.entity :only (make)]
-        lamina.core)
-  (:require [aleph.http :as http]
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model.push-subscription :as model.push]
-            [jiksnu.helpers.activity-helpers :as helpers.activity]
-            [jiksnu.helpers.user-helpers :as helpers.user]
-            [clojure.java.io :as io]
-            [clojure.string :as string]
-            jiksnu.view)
+  (:use (ciste [core :only (defaction)]
+               [debug :only (spy)])
+        (jiksnu model session)
+        (karras [entity :only (make)])
+        (lamina core))
+  (:require (aleph [http :as http])
+            (clojure [string :as string])
+            (clojure.java [io :as io])
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace]
+                    [view :as view])
+            (jiksnu.actions [activity-actions :as actions.activity])
+            (jiksnu.helpers [activity-helpers :as helpers.activity]
+                            [user-helpers :as helpers.user])
+            (jiksnu.model [push-subscription :as model.push]))
   (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry))
 

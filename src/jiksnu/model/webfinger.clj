@@ -1,8 +1,9 @@
 (ns jiksnu.model.webfinger
-  (:use (ciste config sections)
-        ciste.sections.default
-        jiksnu.namespace)
-  (:require (jiksnu.model [signature :as model.signature]
+  (:use (ciste [config :only (config)]
+               sections)
+        ciste.sections.default)
+  (:require (jiksnu [namespace :as namespace])
+            (jiksnu.model [signature :as model.signature]
                           [user :as model.user])))
 
 (defn salmon-link
@@ -15,8 +16,8 @@
 
 (defn host-meta
   [domain]
-  ["XRD" {"xmlns" xrd-ns
-              "xmlns:hm" host-meta-ns}
+  ["XRD" {"xmlns" namespace/xrd
+          "xmlns:hm" namespace/host-meta}
    ["hm:Host" domain]
    ["Link" {"rel" "lrdd"
             "template" (str "http://"
@@ -26,7 +27,7 @@
 
 (defn user-meta
   [user]
-  ["XRD" {"xmlns" xrd-ns}
+  ["XRD" {"xmlns" namespace/xrd}
    ["Subject" {} (model.user/get-uri user)]
    ["Alias" {} (full-uri user)]
 
