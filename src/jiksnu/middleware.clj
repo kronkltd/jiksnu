@@ -1,18 +1,14 @@
 (ns jiksnu.middleware
-  (:use clojure.pprint
-        clojure.stacktrace
-        [ciste.config :only (config)]
-        (ciste [debug :only (spy)])
-        jiksnu.view
-        jiksnu.model
-        [jiksnu.session :only (with-user current-user with-user-id)]
-        hiccup.core))
+  (:use (clojure [pprint :only (pprint)])
+        (ciste [config :only (config)]
+               [debug :only (spy)])
+        (jiksnu [model :only (with-database)]
+                [session :only (with-user-id)])))
 
 (defn wrap-user-binding
   [handler]
-  (fn [{{username :id} :session
-       :as request}]
-    (with-user-id username
+  (fn [request]
+    (with-user-id (-> request :session :id)
       (handler request))))
 
 (defn wrap-log-request
@@ -36,4 +32,3 @@
   (fn [request]
     (with-database
       (handler request))))
-
