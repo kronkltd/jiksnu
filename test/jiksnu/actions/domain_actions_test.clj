@@ -1,7 +1,7 @@
 (ns jiksnu.actions.domain-actions-test
   (:use (clj-factory [core :only (factory)])
         clojure.test
-        (jiksnu model test-helper)
+        (jiksnu model core-test)
         midje.sweet)
   (:require (jiksnu.model [domain :as model.domain]))
   (:import jiksnu.model.Domain))

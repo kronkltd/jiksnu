@@ -62,16 +62,3 @@
      :to from
      :type :get}))
 
-(defn request-vcard!
-  [user]
-  (let [packet-map
-        {:from (tigase/make-jid "" (config :domain))
-         :to (tigase/make-jid user)
-         :id "JIKSNU1"
-         :type :get
-         :body
-         (element/make-element
-          "query"
-          {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
-        packet (tigase/make-packet packet-map)]
-    (tigase/deliver-packet! packet)))

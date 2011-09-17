@@ -13,6 +13,10 @@
   [n]
   (str "example" n ".com"))
 
+(defseq :uri
+  [n]
+  (str "http://" (fseq :domain) "/" n))
+
 (defseq :word
   [n]
   (str "word" n))

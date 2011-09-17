@@ -1,6 +1,5 @@
 (ns jiksnu.model.user-test
-  (:use ciste.config
-        ciste.debug
+  (:use (ciste config debug)
         clj-factory.core
         clojure.test
         (jiksnu core-test model)
@@ -21,11 +20,20 @@
       (get-domain nil) => nil
       (get-domain user) => domain)))
 
-(deftest test-split-uri
-  (facts
-    (split-uri "bob@example.com") => ["bob" "example.com"]
-    (split-uri "acct:bob@example.com") => ["bob" "example.com"]
-    (split-uri "http://example.com/bob") => nil))
+(deftest test-get-uri)
+
+(deftest test-local?
+  (testing "when there is a user"
+    (testing "and it's domain is the same as the current domain"
+      (fact "should be true"
+        (let [domain (-> (config) :domain)
+              user (factory User {:domain domain})]
+          (local? user) => truthy)))
+    (testing "and it's domain is different from the current domain"
+      (fact "should be false"
+        (let [domain (fseq :domain)
+              user (factory User {:domain domain})]
+          (local? user) => falsey)))))
 
 (deftest test-rel-filter
   (facts
@@ -33,6 +41,16 @@
                  {:rel "contains"}]]
       (rel-filter "alternate" links) => [{:rel "alternate"}]
       (rel-filter "foo" links) => [])))
+
+(deftest test-split-uri
+  (facts
+    (split-uri "bob@example.com") => ["bob" "example.com"]
+    (split-uri "acct:bob@example.com") => ["bob" "example.com"]
+    (split-uri "http://example.com/bob") => nil))
+
+(deftest test-display-name
+  (facts
+    (display-name .user.) => string?))
 
 (deftest test-get-link
   (fact
@@ -73,6 +91,39 @@
 
 (deftest test-fetch-by-id)
 
+(deftest test-fetch-by-jid)
+
+(deftest test-fetch-by-uri)
+
+(deftest test-fetch-by-remote-id)
+
+(deftest test-find-or-create)
+
+(deftest test-find-or-create-by-uri)
+
+(deftest test-find-or-create-by-remote-id)
+
+(deftest test-find-or-create-by-jid)
+
+(deftest test-subnodes)
+
+(deftest edit-test
+  (testing "when the user is found"
+    (future-fact "should return a user"))
+  (testing "when the user is not found"
+    (future-fact "should return nil")))
+
+(deftest delete-test
+  (testing "when the user exists"
+    (future-fact "should be deleted")))
+
+(deftest test-add-node)
+
+(deftest update-test
+  (testing "when the request is valid"
+    (future-fact "should return a user"
+      (let [request {:params {"id" (fseq :word)}}]))))
+
 (deftest test-user-meta-uri
   (testing "when the user's domain does not have a lrdd link"
     (fact "should return nil"
@@ -88,44 +139,4 @@
                   (factory User {:domain (:_id domain)}))]
         (user-meta-uri user) => (get-uri user)))))
 
-
-
-
-
-
-
-(deftest get-id-test)
-
-(deftest get-domain-test)
-
-(deftest bare-jid-test)
-
-(deftest rel-filter-feed-test)
-
-(deftest edit-test
-  (testing "when the user is found"
-    (future-fact "should return a user"))
-  (testing "when the user is not found"
-    (future-fact "should return nil")))
-
-(deftest delete-test
-  (testing "when the user exists"
-    (future-fact "should be deleted")))
-
-(deftest update-test
-  (testing "when the request is valid"
-    (future-fact "should return a user"
-      (let [request {:params {"id" (fseq :word)}}]))))
-
-(deftest local?-test
-  (testing "when there is a user"
-    (testing "and it's domain is the same as the current domain"
-      (fact "should be true"
-        (let [domain (-> (config) :domain)
-              user (factory User {:domain domain})]
-          (local? user) => truthy)))
-    (testing "and it's domain is different from the current domain"
-      (fact "should be false"
-        (let [domain (fseq :domain)
-              user (factory User {:domain domain})]
-          (local? user) => falsey)))))
+(deftest test-format-data)

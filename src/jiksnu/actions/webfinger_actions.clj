@@ -3,13 +3,17 @@
         (jiksnu model namespace))
   (:require (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
-            (jiksnu.model [user :as model.user]))
+            (jiksnu.helpers [user-helpers :as helpers.user])
+            (jiksnu.model [signature :as model.signature]
+                          [user :as model.user]))
   (:import com.cliqset.hostmeta.JavaNetXRDFetcher
            com.cliqset.hostmeta.HostMeta
            com.cliqset.magicsig.keyfinder.MagicPKIKeyFinder
            com.cliqset.xrd.XRD
            java.net.URI
            java.net.URL
+           jiksnu.model.Domain
+           jiksnu.model.User
            org.openxrd.xrd.core.impl.XRDBuilder))
 
 (defonce ^:dynamic *fetcher*
@@ -18,6 +22,7 @@
 (defonce ^:dynamic *xrd-builder*
   (XRDBuilder.))
 
+;; TODO: rename fetch-host-meta
 (defn fetch
   "returns a cliqset xrd corresponding to the given url"
   [url]
@@ -53,14 +58,13 @@
   (let [username (:username user)
         domain (model.user/get-domain user)]
     (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-uri domain username)))
-  )
+        (actions.domain/get-user-meta-uri domain username))))
 
 (defn fetch-user-meta
   [^User user]
   (-> user
       model.user/user-meta-uri
-      actions.webfinger/fetch))
+      #_fetch))
 
 
 
@@ -68,7 +72,7 @@
   [^XRD xrd]
   (map parse-link (.getLinks xrd)))
 
-(defn get-keys
+(defn get-keys-from-xrd
   [uri]
   (let [host-meta (HostMeta/getDefault)
         key-finder (MagicPKIKeyFinder. host-meta)]
@@ -80,7 +84,7 @@
   (let [xrd (fetch-user-meta user)
         links (get-links xrd)
         new-user (assoc user :links links)
-        feed (fetch-user-feed new-user)
+        feed (helpers.user/fetch-user-feed new-user)
         author (.getAuthor feed)
         uri (.getUri author)]
     (doseq [link links]

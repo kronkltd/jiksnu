@@ -1,18 +1,16 @@
 (ns jiksnu.triggers.user-triggers
-  (:use ciste.config
-        ciste.debug
-        ciste.triggers
-        jiksnu.actions.user-actions
-        jiksnu.helpers.user-helpers
-        jiksnu.namespace
-        jiksnu.view
+  (:use (ciste config debug triggers)
+        (jiksnu namespace view)
         lamina.core)
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.webfinger-actions :as actions.webfinger]
-            [jiksnu.model.domain :as model.domain])
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (clojure.tools [logging :as log])
+            (jiksnu.actions [activity-actions :as actions.activity]
+                            [webfinger-actions :as actions.webfinger]
+                            [user-actions :as actions.user]
+                            [webfinger-actions :as actions.webfinger])
+            (jiksnu.helpers [user-helpers :as helpers.user])
+            (jiksnu.model [domain :as model.domain]))
   (:import org.deri.any23.Any23))
 
 (defonce a23 (Any23.))
@@ -20,12 +18,12 @@
 (defn discover-user-xmpp
   [user]
   (println "discover xmpp")
-  (request-vcard! user))
+  (actions.user/request-vcard! user))
 
 (defn discover-user-http
   [user]
   (println "discovering http")
-  (update-usermeta user)
+  (actions.webfinger/update-usermeta user)
   #_(request-hcard user))
 
 (defn discover-user
@@ -34,11 +32,11 @@
     (if (:discovered domain)
       (do (async (discover-user-xmpp user))
           (async (discover-user-http user)))
-      (enqueue-discover user))))
+      (actions.user/enqueue-discover user))))
 
 (defn fetch-updates-http
   [user]
-  (let [uri (feed-link-uri user)]
+  (let [uri (helpers.user/feed-link-uri user)]
     (actions.activity/fetch-remote-feed uri)))
 
 (defn fetch-updates-xmpp
@@ -62,8 +60,8 @@
 
 (defn create-trigger
   [action _ user]
-  (discover user))
+  (actions.user/discover user))
 
-(add-trigger! #'create #'create-trigger)
-(add-trigger! #'discover #'discover-user)
-(add-trigger! #'fetch-updates #'fetch-updates-trigger)
+(add-trigger! #'actions.user/create        #'create-trigger)
+(add-trigger! #'actions.user/discover      #'discover-user)
+(add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)

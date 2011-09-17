@@ -40,21 +40,23 @@
 
 (deftest test-get-user-meta-uri
   (testing "when the user meta link has been associated"
-    (let [user (actions.user/create (factory User {:user-meta-uri .uri.}))]
-      (get-user-meta-uri user) => .uri.)))
+    (fact "should return that uri"
+      (let [user-meta-uri (fseq :uri)
+            user (actions.user/create
+                  (factory User {:user-meta-uri user-meta-uri}))]
+        (get-user-meta-uri user) => user-meta-uri))))
 
 (deftest test-fetch-user-meta
-  (future-fact "should return an xml stream"
-    (fetch-user-meta .user.) => truthy
-    
-    ))
+  (fact "should return an xml stream"
+    (let [user (actions.user/create (factory User))]
+      (fetch-user-meta user)) => nil))
 
 (deftest test-get-links
   (fact
     (let [xrd (XRD.)]
       (get-links xrd)) => seq?))
 
-(deftest test-get-keys
-  (fact
+(deftest test-get-keys-from-xrd
+  (future-fact "should return a sequence of keys for the uri"
     (let [uri "acct:duck@kronkltd.net"]
       (get-keys uri)) => seq?))

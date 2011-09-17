@@ -61,3 +61,8 @@
 (defaction set-xmpp
   [domain value]
   (model.domain/set-field domain :xmpp false))
+
+(defn get-user-meta-uri
+  [domain username]
+  ;; TODO: find the template and insert the username
+  "")

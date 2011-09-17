@@ -11,10 +11,3 @@
    (with-environment :test
      (let [actor (factory User)]
        ?form))))
-
-(deftest test-fetch-user-meta
-  (fact
-    (let [user (factory User)]
-      (fetch-user-meta user)) => nil
-    )
-  )

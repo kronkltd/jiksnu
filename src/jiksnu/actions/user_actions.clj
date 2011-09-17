@@ -6,9 +6,11 @@
         jiksnu.helpers.user-helpers
         jiksnu.xmpp.element)
   (:require (aleph [http :as http])
-            (clj-tigase [core :as tigase])
-            [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            (clj-tigase [core :as tigase]
+                        [element :as element]
+                        [packet :as packet])
+            (clojure [string :as string])
+            (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [redis :as redis])
             (jiksnu.actions [domain-actions :as actions.domain])
@@ -86,6 +88,20 @@
 
 (defaction edit
   [& _])
+
+(defn request-vcard!
+  [user]
+  (let [packet-map
+        {:from (tigase/make-jid "" (config :domain))
+         :to (tigase/make-jid user)
+         :id "JIKSNU1"
+         :type :get
+         :body
+         (element/make-element
+          "query"
+          {"xmlns" "http://onesocialweb.org/spec/1.0/vcard4#query"})}
+        packet (tigase/make-packet packet-map)]
+    (tigase/deliver-packet! packet)))
 
 (defaction fetch-remote
   [user]
