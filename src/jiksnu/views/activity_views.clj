@@ -73,25 +73,29 @@
                   "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
-     :body (helpers.activity/make-feed
+     :body (abdera/make-feed
             {:title "Public Activities"
              :subtitle "All activities posted"
              :id self
              :links [{:href (str "http://" (config :domain) "/")
-                     :rel "alternate"
-                     :type "text/html"}
-                    {:href self
-                     :rel "self"
-                     :type "application/atom+xml"}]
-            :updated (:updated (first activities))
-            :entries activities})}))
+                      :rel "alternate"
+                      :type "text/html"}
+                     {:href self
+                      :rel "self"
+                      :type "application/atom+xml"}]
+             :updated (:updated (first activities))
+             :entries (map show-section activities)})}))
 
 (defview #'user-timeline :atom
   [request [user activities]]
   {:headers {"Content-Type" "application/xml"}
    :template false
-   :body (helpers.activity/make-feed
+   :body (abdera/make-feed
           {:title (str (:username user) " timeline")
+           ;; TODO: pick these up from maven
+           :generator {:uri "http://jiksnu.com/"
+                       :name "Jiksnu"
+                       :version "0.1.0-SNAPSHOT"}
            :subtitle (str "Updates from " (:username user)
                           " on " (:domain user))
            :id (str "http://" (config :domain)
@@ -114,9 +118,9 @@
                    {:href (str "http://" (config :domain)
                                "/main/salmon/user/" (:_id user))
                     :rel "http://salmon-protocol.org/ns/salmon-mention"}]
-           :user user
+           :author (show-section user)
            :updated (:updated (first activities))
-           :entries activities})})
+           :entries (map show-section activities)})})
 
 
 

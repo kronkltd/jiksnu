@@ -162,3 +162,78 @@
    (if feed (first (.getAuthors feed)))
    (if-let [source (.getSource entry)]
      (first (.getAuthors source)))))
+
+(defn add-link
+  [feed link]
+  (let [{:keys [href rel type attributes]} link
+        link-element (.newLink *abdera-factory*)]
+    (if href (.setHref link-element href))
+    (if rel (.setRel link-element rel))
+    (if type (.setMimeType link-element type))
+    (if attributes
+      (doseq [{:keys [name value]} attributes]
+        (.setAttributeValue link-element name value)))
+    (.addLink feed link-element)))
+
+(defn make-feed
+  [{:keys [author title subtitle links entries updated id generator]}]
+  (let [feed (.newFeed *abdera*)]
+    (if title (.setTitle feed title))
+    (if subtitle (.setSubtitle feed subtitle))
+    (if generator
+      (let [{:keys [uri name version]} generator]
+        (.setGenerator feed uri name version)))
+    (if id (.setId feed id))
+    (if updated (.setUpdated feed updated))
+    (if author (.addExtension feed author))
+    (doseq [link links]
+      (add-link feed link))
+    (doseq [entry entries]
+      (.addEntry feed entry)
+      #_(add-entry feed entry))
+    (str feed)))
+
+(defn parse-links
+  [entry]
+  (map
+   (fn [link]
+     {:href (str (.getHref link))
+      :rel (.getRel link)
+      :title (.getTitle link)
+      :extensions (map
+                   #(.getAttributeValue link  %)
+                   (.getExtensionAttributes link))
+      :mime-type (str (.getMimeType link))})
+   (.getLinks entry)))
+
+(defn parse-object-element
+  [element]
+  (let [object (make-object element)]
+    {:object {:object-type (str (.getObjectType object))
+              :links (parse-links object)}
+     :id (str (.getId object))
+     :updated (.getUpdated object)
+     :published (.getPublished object)
+     :content (.getContent object)}))
+
+(defn parse-json-element
+  "Takes a json object representing an Abdera element and converts it to
+an Element"
+  ([activity]
+     (parse-json-element activity ""))
+  ([{children :children
+     attributes :attributes
+     element-name :name
+     :as activity} bound-ns]
+     (let [xmlns (or (:xmlns attributes) bound-ns)
+           qname (QName. xmlns element-name)
+           element (.newExtensionElement *abdera-factory* qname)
+           filtered (filter not-namespace attributes)]
+       (doseq [[k v] filtered]
+         (.setAttributeValue element (name k) v))
+       (doseq [child children]
+         (if (map? child)
+           (.addExtension element (parse-json-element child xmlns))
+           (if (string? child)
+             (.setText element child))))
+       element)))

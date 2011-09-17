@@ -45,42 +45,21 @@
   [activity]
   (model.user/fetch-by-id (:author activity)))
 
-(defn make-feed
-  [{:keys [user title subtitle links entries updated id]}]
-  (let [feed (.newFeed abdera/*abdera*)
-        author (if user (show-section user))]
-    (if title (.setTitle feed title))
-    (if subtitle (.setSubtitle feed subtitle))
-    ;; TODO: pick these up from maven
-    (.setGenerator feed
-                   "http://jiksnu.com/"
-                   "0.1.0-SNAPSHOT"
-                   "Jiksnu")
-    (if id (.setId feed id))
-    (if updated (.setUpdated feed updated))
-    (if author (.addExtension feed author))
-    ;; (if user (subject-section user))
-    (doseq [link links]
-      (let [link-element (.newLink abdera/*abdera-factory*)]
-        (doto link-element
-          (.setHref (:href link))
-          (.setRel (:rel link))
-          (.setMimeType (:type link)))
-        (.addLink feed link-element)))
-    (doseq [entry entries]
-      (.addEntry feed (show-section entry))
-      (add-entry feed entry))
-    (str feed)))
+(defn activity->entry-map
+  [^Activity activity
+   ]
+  
+  
+  )
 
 (defn comment-link-item
   [entry activity]
   (if (:comments activity)
     (let [comment-count (count (:comments activity))]
-      (let [thread-link (.newLink abdera/*abdera-factory*)]
-        (.setRel thread-link "replies")
-        (.setAttributeValue thread-link "count" (str comment-count))
-        (.setMimeType thread-link "application/atom+xml")
-        (.addLink entry thread-link)))))
+      (abdera/add-link entry {:rel "replies"
+                              :type "application/atom+xml"
+                              :attributes [{:name "count"
+                                            :value (str comment-count)}]}))))
 
 (defn acl-link
   [entry activity]
@@ -93,29 +72,6 @@
       (let [subject-element
             (.addExtension rule-element namespace/osw "acl-subject" "")]
         (.setAttributeValue subject-element "type" namespace/everyone)))))
-
-(defn parse-links
-  [entry]
-  (map
-   (fn [link]
-     {:href (str (.getHref link))
-      :rel (.getRel link)
-      :title (.getTitle link)
-      :extensions (map
-                   #(.getAttributeValue link  %)
-                   (.getExtensionAttributes link))
-      :mime-type (str (.getMimeType link))})
-   (.getLinks entry)))
-
-(defn parse-object-element
-  [element]
-  (let [object (abdera/make-object element)]
-    {:object {:object-type (str (.getObjectType object))
-              :links (parse-links object)}
-     :id (str (.getId object))
-     :updated (.getUpdated object)
-     :published (.getPublished object)
-     :content (.getContent object)}))
 
 (defn parse-reply-to
   [element]
@@ -132,7 +88,7 @@
              (= namespace namespace/as))
       (if (and (= name "object")
                (= namespace namespace/as))
-        (parse-object-element element)
+        (abdera/parse-object-element element)
         (if (and (= name "in-reply-to")
                  (= namespace "http://purl.org/syndication/thread/1.0"))
           (parse-reply-to element)
@@ -143,27 +99,6 @@
               {:lat lat
                :long long})))))))
 
-(defn parse-json-element
-  "Takes a json object representing an Abdera element and converts it to
-an Element"
-  ([activity]
-     (parse-json-element activity ""))
-  ([{children :children
-     attributes :attributes
-     element-name :name
-     :as activity} bound-ns]
-     (let [xmlns (or (:xmlns attributes) bound-ns)
-           qname (QName. xmlns element-name)
-           element (.newExtensionElement abdera/*abdera-factory* qname)
-           filtered (filter abdera/not-namespace attributes)]
-       (doseq [[k v] filtered]
-         (.setAttributeValue element (name k) v))
-       (doseq [child children]
-         (if (map? child)
-           (.addExtension element (parse-json-element child xmlns))
-           (if (string? child)
-             (.setText element child))))
-       element)))
 
 ;; TODO: What id should be used here?
 (defn comment-node-uri

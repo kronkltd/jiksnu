@@ -138,7 +138,7 @@ serialization"
              recipients (->> (ThreadHelper/getInReplyTos entry)
                              (map helpers.activity/parse-link)
                              (filter identity))
-             links (helpers.activity/parse-links entry)
+             links (abdera/parse-links entry)
              tags (abdera/parse-tags entry)
              opts (apply merge
                          (if published {:published published})

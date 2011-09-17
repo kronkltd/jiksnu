@@ -81,7 +81,8 @@
 (deffilter #'user-timeline :http
   [action request]
   (-> request :params :username
-      (model.user/show (config :domain)) action))
+      (model.user/show (config :domain))
+      action))
 
 
 

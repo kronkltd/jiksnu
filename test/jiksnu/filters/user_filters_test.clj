@@ -1,7 +1,8 @@
 (ns jiksnu.filters.user-filters-test
   (:use clj-factory.core
         clj-tigase.core
-        (ciste debug)
+        (ciste [config :only (config)]
+               [debug :only (spy)])
         clojure.test
         (jiksnu core-test
                 model
@@ -12,7 +13,7 @@
   (:require (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
-            [ring.mock.request :as mock])
+            (ring.mock [request :as mock]))
   (:import (jiksnu.model Activity User)))
 
 (use-fixtures :once test-environment-fixture)
@@ -20,7 +21,7 @@
 (deftest show-filter-test
   (testing "when the serialization is http"
     (testing "and the user exists"
-      (let [user (actions.user/create (factory User))]
+      (let [user (actions.user/create (factory User {:domain (config :domain)}))]
         (with-user user
           (let [ch (channel)]
             (app ch (mock/request :get (str "/" (:username user))))
