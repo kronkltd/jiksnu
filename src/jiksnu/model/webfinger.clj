@@ -2,7 +2,8 @@
   (:use (ciste config sections)
         ciste.sections.default
         jiksnu.namespace)
-  (:require (jiksnu.model [signature :as model.signature])))
+  (:require (jiksnu.model [signature :as model.signature]
+                          [user :as model.user])))
 
 (defn salmon-link
   [user]
@@ -26,7 +27,7 @@
 (defn user-meta
   [user]
   ["XRD" {"xmlns" xrd-ns}
-   ["Subject" {} (str "acct:" (:username user) "@" (:domain user))]
+   ["Subject" {} (model.user/get-uri user)]
    ["Alias" {} (full-uri user)]
 
    ["Link" {"rel" "http://webfinger.net/rel/profile-page"

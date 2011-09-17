@@ -36,6 +36,19 @@
         (user-meta uri) => (partial instance? User)
         (user-meta uri) => user))))
 
+(deftest test-parse-link)
+
+(deftest test-get-user-meta-uri
+  (testing "when the user meta link has been associated"
+    (let [user (actions.user/create (factory User {:user-meta-uri .uri.}))]
+      (get-user-meta-uri user) => .uri.)))
+
+(deftest test-fetch-user-meta
+  (future-fact "should return an xml stream"
+    (fetch-user-meta .user.) => truthy
+    
+    ))
+
 (deftest test-get-links
   (fact
     (let [xrd (XRD.)]
@@ -43,6 +56,5 @@
 
 (deftest test-get-keys
   (fact
-    (let [uri #_"acct:duck@kronkltd.net"
-          "http://kronkltd.net/"]
+    (let [uri "acct:duck@kronkltd.net"]
       (get-keys uri)) => seq?))
