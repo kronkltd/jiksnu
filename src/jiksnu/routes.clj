@@ -268,5 +268,5 @@
        middleware/wrap-http-serialization
        wrap-database
        wrap-session
-       stacktrace/wrap-stacktrace
-       #_wrap-error-catching)))
+       wrap-authentication-handler
+       stacktrace/wrap-stacktrace)))

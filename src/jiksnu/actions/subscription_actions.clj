@@ -8,7 +8,8 @@
   (:require (jiksnu [namespace :as namespace])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
-  (:import jiksnu.model.Subscription
+  (:import javax.security.sasl.AuthenticationException
+           jiksnu.model.Subscription
            jiksnu.model.User))
 
 (defaction delete
@@ -21,10 +22,9 @@
 
 (defaction index
   [& _]
-  (spy (current-user))
   (if (is-admin?)
     (model.subscription/index)
-    (throw (RuntimeException. "Must be admin"))))
+    (throw (AuthenticationException. "Must be admin"))))
 
 (defaction ostatus
   [& _]

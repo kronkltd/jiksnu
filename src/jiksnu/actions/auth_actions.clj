@@ -5,7 +5,9 @@
   (:require (clojure.tools [logging :as log])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
-  (:import jiksnu.model.Activity
+  (:import javax.security.auth.login.AccountNotFoundException
+           javax.security.auth.login.LoginException
+           jiksnu.model.Activity
            jiksnu.model.User))
 
 (defaction guest-login
@@ -19,8 +21,10 @@
     ;; TODO: encrypt
     (if (= password (:password user))
       user
-      (log/error "passwords do not match"))
-    (log/error "user not found")))
+      (do (log/error "passwords do not match")
+          (throw (LoginException. "passwords do not match"))))
+    (do (log/error "user not found")
+        (throw (AccountNotFoundException. "user not found")))))
 
 (defaction login-page
   [request]

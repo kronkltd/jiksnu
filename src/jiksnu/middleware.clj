@@ -1,9 +1,11 @@
 (ns jiksnu.middleware
-  (:use (clojure [pprint :only (pprint)])
+  (:use (clojure [pprint :only (pprint)]
+                 stacktrace)
         (ciste [config :only (config)]
                [debug :only (spy)])
         (jiksnu [model :only (with-database)]
-                [session :only (with-user-id)])))
+                [session :only (with-user-id)]))
+  (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
   [handler]
@@ -32,3 +34,13 @@
   (fn [request]
     (with-database
       (handler request))))
+
+(defn wrap-authentication-handler
+  [handler]
+  (fn [request]
+    (try
+      (handler request)
+      (catch LoginException e
+        (print-stack-trace e)
+        {:status 400
+         :headers {"location" "/auth/login"}}))))
