@@ -20,7 +20,7 @@
                  [net.kronkltd/clj-gravatar "0.0.1"]
                  [net.kronkltd/clj-tigase "0.1.0-SNAPSHOT"]
                  [net.kronkltd/lamina "0.4.0-beta2-SNAPSHOT"]
-                 [net.kronkltd/karras "0.6.0"]
+                 [net.kronkltd/karras "0.7.1-SNAPSHOT"]
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
                  [noir "1.1.1-SNAPSHOT"]
                  [noir-cljs "0.1.0-SNAPSHOT"]
