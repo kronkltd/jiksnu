@@ -8,6 +8,7 @@
 (use 'midje.sweet)
 (use 'ring.mock.request)
 (require '[ciste.config :as c])
+(require '[clj-webdriver.core :as w])
 (require '[jiksnu.session :as session])
 (require '[jiksnu.actions.activity-actions :as actions.activity])
 (require '[jiksnu.actions.domain-actions :as actions.domain])
@@ -18,6 +19,7 @@
 
 (def server (atom nil))
 (def current-page (ref nil))
+(def current-browser (ref nil))
 (def domain "localhost")
 (def port 8085)
 (def that-activity (ref nil))
@@ -28,25 +30,35 @@
   `(and (not (fact ~@body))
         (throw (RuntimeException. "failed"))))
 
+(defn expand-url
+  [path]
+  (str "http://" domain ":" port path))
+
 (Before
    (c/load-config)
    (c/set-environment! :test)
-   (dosync
-    (reset! server (start port))))
+   (let [browser (w/new-driver :firefox)]
+     (dosync
+      (ref-set current-browser browser)
+      (reset! server (start port)))))
 
 (After
   (@server)
+  (w/quit @current-browser)
   (shutdown-agents))
 
 
 (defn fetch-page
   [method path]
-  (let [url (str "http://" domain ":" port path)
-        request {:method method
-                 :url url}
+  (let [request {:method method
+                 :url (expand-url path)}
         response (sync-http-request request)]
     (dosync
      (ref-set current-page response))))
+
+(defn fetch-page-browser
+  [method path]
+  (w/get-url @current-browser (expand-url path)))
 
 (defn a-user-exists
   []
@@ -60,7 +72,19 @@
 (defn a-normal-user-is-logged-in
   []
   (a-user-exists)
-  (session/set-authenticated-user! @that-user))
+  (-> @current-browser
+      (w/to (expand-url "/main/login")))
+  (-> @current-browser
+      (w/find-it {:name "username"})
+      (w/input-text (-> @that-user :username)))
+  (-> @current-browser
+      (w/find-it {:name "password"})
+      (w/input-text (-> @that-user :password)))
+  (-> @current-browser
+      (w/find-it {:value "Login"})
+      w/click)
+
+  #_(session/set-authenticated-user! @that-user))
 
 (defn an-admin-is-logged-in
   []
@@ -97,17 +121,26 @@
 
 (When #"I visit the home page"
   (fn []
-    (fetch-page :get "/")))
+    (fetch-page-browser :get "/")))
 
 (When #"I request the host-meta page"
+  (fn []
+    (fetch-page-browser :get "/.well-known/host-meta")))
+
+(When #"I request the host-meta page with a client"
   (fn []
     (fetch-page :get "/.well-known/host-meta")))
 
 (When #"I request the subscription index page"
   (fn []
-    (fetch-page :get "/admin/subscriptions")))
+    (fetch-page-browser :get "/admin/subscriptions")))
 
 (When #"I request the user-meta page for that user"
+  (fn []
+    (fetch-page-browser :get
+                (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
+
+(When #"I request the user-meta page for that user with a client"
   (fn []
     (fetch-page :get
                 (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
@@ -117,12 +150,12 @@
 (Then #"I should see an activity"
   (fn []
     (check-response
-      (get-body)  => #".*hentry")))
+     (w/find-it @current-browser {:class "activities"}) => truthy)))
 
 (Then #"I should see a list of activities"
   (fn []
     (check-response
-      (get-body)) => #".*activities"))
+     (w/find-it @current-browser {:class "activities"}) => truthy)))
 
 (Then #"I should see a subscription list"
   (fn []
@@ -137,8 +170,8 @@
 (Then #"the response is a redirect"
   (fn []
     (check-response
-      (:status @current-page) => #(>= 300 %)
-      (:status @current-page) => #(< 400 %))))
+      (:status @current-page) => #(<= 300 %)
+      (:status @current-page) => #(> 400 %))))
 
 (Then #"the content-type is \"([^\"]+)\""
   (fn [type]
@@ -148,7 +181,8 @@
 (Then #"I am redirected to the login page"
   (fn []
     (check-response
-      (get @current-page [:headers "location"]) => #"/main/login")))
+     (w/current-url @current-browser) => #"/main/login"
+     #_(get @current-page [:headers "location"]) => #"/main/login")))
 
 (Then #"the host field matches the current domain"
   (fn []

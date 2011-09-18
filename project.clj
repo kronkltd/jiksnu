@@ -14,6 +14,7 @@
                  [mysql/mysql-connector-java "5.1.15"]
                  [net.kronkltd/aleph "0.2.0-beta2-SNAPSHOT"]
                  [clj-factory "0.1.0-SNAPSHOT"]
+                 [clj-webdriver "0.2.13"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
                  [net.kronkltd/clj-tigase "0.1.0-SNAPSHOT"]
                  [net.kronkltd/lamina "0.4.0-beta2-SNAPSHOT"]
@@ -45,4 +46,6 @@
         jiksnu.core]
   :main jiksnu.core
   :warn-on-reflection false
-  :jvm-opts ["-server"])
+  :jvm-opts ["-server"
+             "-XX:MaxPermSize=1024m"
+             ])

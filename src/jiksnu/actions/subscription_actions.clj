@@ -3,7 +3,8 @@
                [debug :only (spy)])
         (jiksnu model
                 [session :only (current-user
-                                current-user-id)]))
+                                current-user-id
+                                is-admin?)]))
   (:require (jiksnu [namespace :as namespace])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
@@ -20,7 +21,10 @@
 
 (defaction index
   [& _]
-  (model.subscription/index))
+  (spy (current-user))
+  (if (is-admin?)
+    (model.subscription/index)
+    (throw (RuntimeException. "Must be admin"))))
 
 (defaction ostatus
   [& _]
