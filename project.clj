@@ -2,7 +2,9 @@
   :description "distributed social network"
   :url "http://github.com/duck1123/jiksnu"
   :repositories {"jiksnu-internal" "http://build.jiksnu.com/repository/internal"
-                 "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"}
+                 "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
+                 "any23-repository-external" "http://any23.googlecode.com/svn/repo-ext"
+                 "any23-repository" "http://any23.googlecode.com/svn/repo"}
   :dependencies [[closure-templates-clj "0.0.1"]
                  [ciste "0.2.0-SNAPSHOT"]
                  [com.cliqset/java-salmon-core "0.0.1-SNAPSHOT"]
