@@ -7,6 +7,7 @@
                  "any23-repository" "http://any23.googlecode.com/svn/repo"}
   :dependencies [
                  [clj-factory "0.1.0-SNAPSHOT"]
+                 [clj-tigase "0.1.0-SNAPSHOT"]
                  [clj-webdriver "0.2.13"]
                  [closure-templates-clj "0.0.1"]
                  [ciste "0.2.0-SNAPSHOT"]
@@ -20,7 +21,6 @@
                  [mysql/mysql-connector-java "5.1.15"]
                  [net.kronkltd/aleph "0.2.0-beta2-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
-                 [net.kronkltd/clj-tigase "0.1.0-SNAPSHOT"]
                  [net.kronkltd/lamina "0.4.0-beta2-SNAPSHOT"]
                  [net.kronkltd/karras "0.7.1-SNAPSHOT"]
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
