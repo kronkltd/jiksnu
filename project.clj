@@ -31,7 +31,7 @@
                  [org.apache.abdera/abdera-parser "1.1.2"]
                  [org.apache.abdera/abdera-extensions-json "1.1.2"]
                  [org.apache.ws.commons.axiom/axiom-impl "1.2.9"]
-                 [org.clojure/clojure "1.3.0-beta3"]
+                 [org.clojure/clojure "1.3.0-RC0"]
                  [org.clojure.contrib/zip-filter "1.3.0-alpha4"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.deri.any23/any23-core "0.5.0"]
@@ -53,5 +53,4 @@
   :main jiksnu.core
   :warn-on-reflection false
   :jvm-opts ["-server"
-             "-XX:MaxPermSize=1024m"
-             ])
+             "-XX:MaxPermSize=1024m"])
