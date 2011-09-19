@@ -5,7 +5,10 @@
                  "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
                  "any23-repository-external" "http://any23.googlecode.com/svn/repo-ext"
                  "any23-repository" "http://any23.googlecode.com/svn/repo"}
-  :dependencies [[closure-templates-clj "0.0.1"]
+  :dependencies [
+                 [clj-factory "0.1.0-SNAPSHOT"]
+                 [clj-webdriver "0.2.13"]
+                 [closure-templates-clj "0.0.1"]
                  [ciste "0.2.0-SNAPSHOT"]
                  [com.cliqset/java-salmon-core "0.0.1-SNAPSHOT"]
                  [com.cliqset/java-salmon-simple "0.0.1-SNAPSHOT"]
@@ -13,10 +16,9 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [compojure "0.6.5"]
                  [hiccup "0.3.6"]
+                 [inflections "0.5.3-SNAPSHOT"]
                  [mysql/mysql-connector-java "5.1.15"]
                  [net.kronkltd/aleph "0.2.0-beta2-SNAPSHOT"]
-                 [clj-factory "0.1.0-SNAPSHOT"]
-                 [clj-webdriver "0.2.13"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
                  [net.kronkltd/clj-tigase "0.1.0-SNAPSHOT"]
                  [net.kronkltd/lamina "0.4.0-beta2-SNAPSHOT"]
@@ -36,7 +38,9 @@
                  [org.slf4j/slf4j-simple "1.6.1"]
                  [ring/ring-core "0.3.11"]
                  [ring-mock "0.1.1"]
-                 [swank-clojure "1.4.0-SNAPSHOT"]]
+                 [swank-clojure "1.4.0-SNAPSHOT"]
+
+                 ]
   :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]
                      [net.kronkltd/midje "1.3-alpha2-SNAPSHOT"]]
   :exclusions [org.clojure/contrib
