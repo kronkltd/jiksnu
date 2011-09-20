@@ -11,7 +11,7 @@
   (-> request :params :webid action))
 
 (deffilter #'login :http
-  [action {:keys [username password]}]
+  [action {{:keys [username password]} :params}]
   (action username password))
 
 (deffilter #'login-page :http
