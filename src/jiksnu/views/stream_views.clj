@@ -25,69 +25,6 @@
             (plaza.rdf.vocabularies [foaf :as foaf])
             (ring.util [response :as response])))
 
-(defview #'remote-profile :html
-  [request user]
-  (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'user-timeline))
-   user))
-
-(defview #'remote-user :html
-  [request user]
-  (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'user-timeline))
-   user))
-
-;; (defview #'show :xmpp
-;;   [request user]
-;;   (let [{:keys [id to from]} request]
-;;     {:body
-;;      (element/make-element
-;;       "query" {"xmlns" namespace/vcard-query} (show-section user))
-;;      :type :result
-;;      :id id
-;;      :from to
-;;      :to from}))
-
-;; (defview #'show :rdf
-;;   [request user]
-;;   {:body
-;;    (let [rdf-model (defmodel (model-add-triples (show-section user)))]
-;;      (with-out-str (model-to-format rdf-model :xml)))
-;;    :template :false})
-
-;; (defview #'show :n3
-;;   [request user]
-;;   {:body
-;;    (let [rdf-model
-;;          (defmodel (model-add-triples
-;;                     (with-format :rdf
-;;                       (show-section user))))]
-;;      (with-out-str (model-to-format rdf-model :n3)))
-;;    :template :false})
-
-(defview #'user-timeline :html
-  [request [user activities]]
-  {:body (templates.activity/user-timeline user activities)
-   :formats (helpers.activity/timeline-formats user)})
-
-(defview #'index :json
-  [request activities]
-  (with-format :json
-    {:body
-     {:items
-      (map show-section activities)}}))
-
-(defview #'user-timeline :json
-  [request [user activities]]
-  {:body
-   (map
-    (fn [activity] (show-section activity))
-    activities)})
-
 (defview #'index :atom
   [request activities]
   (let [self (str "http://"
@@ -107,6 +44,100 @@
                       :type "application/atom+xml"}]
              :updated (:updated (first activities))
              :entries (map show-section activities)})}))
+
+(defview #'index :html
+  [request activities]
+  {:formats (helpers.activity/index-formats activities)
+   :body (templates.activity/index-block activities)})
+
+(defview #'index :json
+  [request activities]
+  (with-format :json
+    {:body
+     {:items
+      (map show-section activities)}}))
+
+(defview #'index :n3
+  [request activities]
+  {:body (-> activities
+             index-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :n3)
+             with-out-str)
+   :template :false})
+
+(defview #'index :rdf
+  [request activities]
+  {:body (-> activities
+             index-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :xml)
+             with-out-str)
+   :template :false})
+
+(defview #'index :xmpp
+  [request activities]
+  (tigase/result-packet request (index-section activities)))
+
+(defview #'remote-profile :html
+  [request user]
+  (apply-view
+   (-> request
+       (assoc :format :html)
+       (assoc :action #'user-timeline))
+   user))
+
+(defview #'remote-user :html
+  [request user]
+  (apply-view
+   (-> request
+       (assoc :format :html)
+       (assoc :action #'user-timeline))
+   user))
+
+(defview #'show :html
+  [request user]
+  {:status 200
+   :body
+   (apply-view
+    (-> request
+        (assoc :action #'user-timeline))
+    user)})
+
+(defview #'show :n3
+  [request user]
+  {:body
+   (let [rdf-model
+         (defmodel (model-add-triples
+                    (with-format :rdf
+                      (show-section user))))]
+     (with-out-str (model-to-format rdf-model :n3)))
+   :template :false})
+
+(defview #'show :rdf
+  [request user]
+  {:body
+   (let [rdf-model (defmodel (model-add-triples (show-section user)))]
+     (with-out-str (model-to-format rdf-model :xml)))
+   :template :false})
+
+(defview #'show :xmpp
+  [request user]
+  (let [{:keys [id to from]} request]
+    {:body (element/make-element
+            "query" {"xmlns" namespace/vcard-query}
+            (show-section user))
+     :type :result
+     :id id
+     :from to
+     :to from}))
+
+(defview #'stream :html
+  [request response-fn]
+  {:body response-fn
+   :template false})
 
 (defview #'user-timeline :atom
   [request [user activities]]
@@ -144,30 +175,17 @@
            :updated (:updated (first activities))
            :entries (map show-section activities)})})
 
-(defview #'stream :html
-  [request response-fn]
-  {:body response-fn
-   :template false})
+(defview #'user-timeline :html
+  [request [user activities]]
+  {:body (templates.activity/user-timeline user activities)
+   :formats (helpers.activity/timeline-formats user)})
 
-(defview #'index :rdf
-  [request activities]
-  {:body (-> activities
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :xml)
-             with-out-str)
-   :template :false})
-
-(defview #'index :n3
-  [request activities]
-  {:body (-> activities
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :n3)
-             with-out-str)
-   :template :false})
+(defview #'user-timeline :json
+  [request [user activities]]
+  {:body
+   (map
+    (fn [activity] (show-section activity))
+    activities)})
 
 (defview #'user-timeline :xml
   [request [user activities]]
@@ -177,22 +195,3 @@
 (defview #'user-timeline :xmpp
   [request [user  activities]]
   (tigase/result-packet request (index-section activities)))
-
-(defview #'index :xmpp
-  [request activities]
-  (tigase/result-packet request (index-section activities)))
-
-;; (defview #'show :html
-;;   [request user]
-;;   {:status 200
-;;    :body
-;;    (apply-view
-;;     (-> request
-;;         (assoc :action #'user-timeline))
-;;     user)})
-
-(defview #'index :html
-  [request activities]
-  {:formats (helpers.activity/index-formats activities)
-   :body (templates.activity/index-block activities)})
-
