@@ -9,9 +9,8 @@
   (action))
 
 (deffilter #'create :http
-  [action request]
-  (let [{:keys [params]} request]
-    (action {:_id (:domain params)})))
+  [action {{:keys [domain]} :params}]
+  (action {:_id domain}))
 
 (deffilter #'delete :http
   [action request]
@@ -33,8 +32,12 @@
   [action request]
   (-> request :params :* action))
 
+(deffilter #'ping-error :xmpp
+  [action request]
+  (-> request :from .getDomain
+      model.domain/show action))
+
 (deffilter #'ping-response :xmpp
   [action request]
-  (let [id (.getDomain (:from request))
-        domain (model.domain/show id)]
-    (action domain)))
+  (-> request :from .getDomain
+      model.domain/show action))
