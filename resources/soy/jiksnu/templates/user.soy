@@ -414,7 +414,6 @@
 
 /**
  * @param username
- * @param profile
  */
 {template .remoteSubscribeForm}
   <div>
@@ -422,15 +421,15 @@
        href="$url">Subscribe</a>
     <form method="post" action="/main/ostatus">
       <fieldset>
-        <legend>Subscribe to {$username or ''}</legend>
+        <legend>Subscribe to {$username}</legend>
         <ul class="form-data">
-          <li class="ostatus-nickname">
+          <li class="ostatus-nickname hidden">
             <label for="nickname">User Nickname</label>
-            <input type="hidden" name="nickname" value="{$username or ''}" />
+            <input type="hidden" name="nickname" value="{$username}" />
           </li>
           <li class="ostatus_profile">
             <label for="profile">Profile Account</label>
-            <input type="text" name="profile" value="{$profile or ''}" />
+            <input type="text" name="profile" value="" />
           </li>
           <li>
             <input type="submit" value="Submit" />

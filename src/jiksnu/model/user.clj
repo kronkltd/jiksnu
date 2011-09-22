@@ -150,20 +150,19 @@
 
 (defn format-data
   [^User user]
-  (let [{id :_id
-         :keys [username domain local hub admin]} user
+  (let [{id :id
+         :keys [admin domain hub links local username]} user
          uri (get-uri user)]
     {:id (str id)
      :name uri
      :username username
      :domain domain
      :url (if (local? user)
-            (str "/" username)
-            (str "/remote-user/" uri))
+            (str "/" username) id)
      :local local
      :hub hub
      :admin admin
-     :links []
+     :links links
      :subscriptions []
      :subscribers []
      :display-name (display-name user)
