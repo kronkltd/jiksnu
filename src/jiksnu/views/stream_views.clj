@@ -70,10 +70,9 @@
 ;;    :template :false})
 
 (defview #'user-timeline :html
-  [request & args]
-  (let [[user activities] args]
-    {:body (templates.activity/user-timeline user activities)
-     :formats (helpers.activity/timeline-formats user)}))
+  [request [user activities]]
+  {:body (templates.activity/user-timeline user activities)
+   :formats (helpers.activity/timeline-formats user)})
 
 (defview #'index :json
   [request activities]

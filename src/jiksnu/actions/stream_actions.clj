@@ -18,7 +18,7 @@
 (defaction user-timeline
   [user]
   (if user
-    [user (spy (model.activity/find-by-user user))]))
+    [user (model.activity/find-by-user user)]))
 
 (defaction remote-profile
   [user]
