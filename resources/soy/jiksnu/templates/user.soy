@@ -350,15 +350,17 @@
 /**
  * @param links
  */
-{template .linksList }
-  <ul>
-    {foreach $link in $links}
-      <li>
-        <p>{$link.href}</p>
-        <p>{$link.rel}</p>
-      </li>
-    {/foreach}
-  </ul>
+{template .linksList}
+  {if $links}
+    <ul>
+      {foreach $link in $links}
+        <li>
+          <p>{$link.href}</p>
+          <p>{$link.rel}</p>
+        </li>
+      {/foreach}
+    </ul>
+  {/if}
 {/template}
 
 /**

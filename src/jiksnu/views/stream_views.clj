@@ -97,42 +97,14 @@
        (assoc :action #'user-timeline))
    user))
 
-(defview #'show :html
-  [request user]
-  {:status 200
-   :body
-   (apply-view
-    (-> request
-        (assoc :action #'user-timeline))
-    user)})
-
-(defview #'show :n3
-  [request user]
-  {:body
-   (let [rdf-model
-         (defmodel (model-add-triples
-                    (with-format :rdf
-                      (show-section user))))]
-     (with-out-str (model-to-format rdf-model :n3)))
-   :template :false})
-
-(defview #'show :rdf
-  [request user]
-  {:body
-   (let [rdf-model (defmodel (model-add-triples (show-section user)))]
-     (with-out-str (model-to-format rdf-model :xml)))
-   :template :false})
-
-(defview #'show :xmpp
-  [request user]
-  (let [{:keys [id to from]} request]
-    {:body (element/make-element
-            "query" {"xmlns" namespace/vcard-query}
-            (show-section user))
-     :type :result
-     :id id
-     :from to
-     :to from}))
+;; (defview #'show :html
+;;   [request user]
+;;   {:status 200
+;;    :body
+;;    (apply-view
+;;     (-> request
+;;         (assoc :action #'user-timeline))
+;;     user)})
 
 (defview #'stream :html
   [request response-fn]

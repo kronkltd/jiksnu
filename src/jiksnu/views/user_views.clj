@@ -43,6 +43,10 @@
   [request user]
   {:body (templates.user/edit-form user)})
 
+(defview #'fetch-remote :xmpp
+  [request user]
+  (vcard-request request user))
+
 (defview #'fetch-updates :html
   [request user]
   {:status 303
@@ -61,6 +65,41 @@
   [request _]
   {:body (templates.user/register-section request)})
 
+(defview #'remote-create :xmpp
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :result}))
+
+(defview #'show :n3
+  [request user]
+  {:body
+   (let [rdf-model
+         (defmodel (model-add-triples
+                    (with-format :rdf
+                      (show-section user))))]
+     (with-out-str (model-to-format rdf-model :n3)))
+   :template :false})
+
+(defview #'show :rdf
+  [request user]
+  {:body
+   (let [rdf-model (defmodel (model-add-triples (show-section user)))]
+     (with-out-str (model-to-format rdf-model :xml)))
+   :template :false})
+
+(defview #'show :xmpp
+  [request user]
+  (let [{:keys [id to from]} request]
+    {:body (element/make-element
+            "query" {"xmlns" namespace/vcard-query}
+            (show-section user))
+     :type :result
+     :id id
+     :from to
+     :to from}))
+
 (defview #'update :html
   [request user]
   {:status 302
@@ -73,23 +112,5 @@
    :template false
    :headers {"Location" (uri user)}})
 
-(defview #'fetch-remote :xmpp
-  [request user]
-  (vcard-request request user))
-
-(defview #'remote-create :xmpp
-  [request user]
-  (let [{:keys [to from]} request]
-    {:from to
-     :to from
-     :type :result}))
-
 (defview #'xmpp-service-unavailable :xmpp
   [request _])
-
-
-
-
-
-
-
