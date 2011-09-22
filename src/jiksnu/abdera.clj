@@ -193,18 +193,23 @@
       #_(add-entry feed entry))
     (str feed)))
 
+(defn parse-link
+  [link]
+  (let [mime-type (str (.getMimeType link))
+        extensions (map
+                    #(.getAttributeValue link  %)
+                    (.getExtensionAttributes link))
+        title (.getTitle link)]
+    (merge {:href (str (.getHref link))
+            :rel (.getRel link)}
+           (if (and title (not= title ""))
+             {:title title})
+           (if (seq extensions) {:extensions extensions})
+           (if mime-type {:mime-type (str mime-type)}))))
+
 (defn parse-links
   [entry]
-  (map
-   (fn [link]
-     {:href (str (.getHref link))
-      :rel (.getRel link)
-      :title (.getTitle link)
-      :extensions (map
-                   #(.getAttributeValue link  %)
-                   (.getExtensionAttributes link))
-      :mime-type (str (.getMimeType link))})
-   (.getLinks entry)))
+  (map parse-link (.getLinks entry)))
 
 (defn parse-object-element
   [element]
