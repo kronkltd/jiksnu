@@ -26,7 +26,7 @@
       (let [url "http://kronkltd.net/.well-known/host-meta"]
         (fetch-host-meta url) => (partial instance? XRD))))
   (testing "when the url does not point to a valid XRD document"
-    (fact "should raise an exception"
+    (future-fact "should raise an exception"
       (let [url "http://example.com/.well-known/host-meta"]
         (fetch-host-meta url) => nil))))
 
