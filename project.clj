@@ -6,7 +6,7 @@
                  "any23-repository-external" "http://any23.googlecode.com/svn/repo-ext"
                  "any23-repository" "http://any23.googlecode.com/svn/repo"}
   :dependencies [
-                 [clj-factory "0.1.0-SNAPSHOT"]
+                 [clj-factory "0.1.0"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [clj-webdriver "0.2.13"]
                  [closure-templates-clj "0.0.1"]
