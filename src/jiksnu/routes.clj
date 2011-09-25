@@ -49,7 +49,6 @@
                           subscription-views
                           user-views
                           webfinger-views)
-            (noir.util [cljs :as cljs])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
@@ -256,7 +255,6 @@
 (def app
   (http/wrap-ring-handler
    (-> all-routes
-       ;; (cljs/wrap-cljs "src/main/clojurescript/")
        (file/wrap-file "resources/public/")
        file-info/wrap-file-info
        wrap-keyword-params
