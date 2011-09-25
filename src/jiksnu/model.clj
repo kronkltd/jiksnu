@@ -95,7 +95,9 @@
 
 (def activity? (partial instance? Activity))
 (def subscription? (partial instance? Subscription))
-(def user? (partial instance? User))
+;; (def user? (partial instance? User))
+(defn user?
+  [user] (instance? User user))
 
 (defn make-id
   [^String id]
