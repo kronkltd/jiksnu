@@ -70,7 +70,8 @@
  * @param authenticated
  */
 {template .loginSection}
-  <div id="login-section">
+  <div id="login-section"
+       class="{$authenticated ? '' : 'un'}authenticated">
     {if $authenticated}
       {call .logoutButton data="all" /}
     {else}

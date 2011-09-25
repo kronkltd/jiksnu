@@ -8,8 +8,8 @@
   :dependencies [
                  [clj-factory "0.1.0"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
-                 [clj-webdriver "0.2.13"]
-                 [closure-templates-clj "0.0.1"]
+                 [clj-webdriver "0.2.14"]
+                 [closure-templates-clj "0.0.3"]
                  [ciste "0.2.0-SNAPSHOT"]
                  [com.cliqset/java-salmon-core "0.0.1-SNAPSHOT"]
                  [com.cliqset/java-salmon-simple "0.0.1-SNAPSHOT"]

@@ -1,6 +1,7 @@
 (use 'aleph.http)
 (use 'aleph.formats)
 (use '[ciste.debug :only (spy)])
+(use 'ciste.sections.default)
 (use '[clj-factory.core :only (factory)])
 (use 'clojure.test)
 (use 'jiksnu.http)
@@ -8,7 +9,9 @@
 (use 'midje.sweet)
 (use 'ring.mock.request)
 (require '[ciste.config :as c])
+(require '[ciste.core :as core])
 (require '[clj-webdriver.core :as w])
+(require '[jiksnu.model :as model])
 (require '[jiksnu.session :as session])
 (require '[jiksnu.actions.activity-actions :as actions.activity])
 (require '[jiksnu.actions.domain-actions :as actions.domain])
@@ -32,15 +35,27 @@
 
 (defn expand-url
   [path]
-  (str "http://" domain ":" port path))
+  (str "http://" domain
+       (if-not (= port 80)
+         (str ":" port)) path))
+
+(def page-names
+  {"home" "/"
+   "login" "/main/login"
+   "ostatus sub" "/main/ostatussub"
+   "host-meta" "/.well-known/host-meta"
+   "subscription index" "/admin/subscriptions"})
 
 (Before
-   (c/load-config)
-   (c/set-environment! :test)
-   (let [browser (w/new-driver :firefox)]
-     (dosync
-      (ref-set current-browser browser)
-      (reset! server (start port)))))
+  (let [browser (w/new-driver :firefox)]
+    (c/load-config)
+    (c/set-environment! :test)
+    (with-database
+      (model/drop-all!))
+
+    (dosync
+     (ref-set current-browser browser)
+     (reset! server (start port)))))
 
 (After
   (@server)
@@ -65,7 +80,8 @@
   (with-database
     (let [domain (actions.domain/current-domain)
           user (actions.user/create
-                (factory User {:domain (:_id domain)}))]
+                (factory User {:domain (:_id domain)
+                               :password "hunter2"}))]
       (dosync
        (ref-set that-user user)))))
 
@@ -101,39 +117,51 @@
 
 ;; Given
 
-(Given #"the user is not logged in"
+(Given #"an? user exists" a-user-exists)
+
+(Given #"a user exists with the password \"hunter2\"" a-user-exists)
+
+(Given #"I am not logged in"
   (fn []))
 
-(Given #"an? activity exists"
-  (fn []
-    (with-database
-      (let [activity (actions.activity/create (factory Activity))]
-        (dosync
-         (ref-set that-activity activity))))))
-
-(Given #"an? user exists" a-user-exists)
+(Given #"I am logged in" a-normal-user-is-logged-in)
 
 (Given #"a normal user is logged in" a-normal-user-is-logged-in)
 
 (Given #"an admin is logged in" an-admin-is-logged-in)
 
+
+(Given #"there is a (.+) activity"
+  (fn [modifier]
+    (core/with-context [:html :http]
+      (with-database
+        (let [activity (actions.activity/create
+                        (factory Activity
+                                 {:public (= modifier "public")}))]
+          (dosync
+           (ref-set that-activity activity)))))))
+
+(Given #"I am at the (.+) page"
+  (fn [page-name]
+    (let [path (get page-names page-name)]
+      (fetch-page-browser :get path))))
+
 ;; When
 
-(When #"I visit the home page"
-  (fn []
-    (fetch-page-browser :get "/")))
+(When #"I go to the (.+) page"
+  (fn [page-name]
+    (let [path (get page-names page-name)]
+      (fetch-page-browser :get path))))
 
-(When #"I request the host-meta page"
+(When #"I go to the page for that activity"
   (fn []
-    (fetch-page-browser :get "/.well-known/host-meta")))
+    (core/with-context [:html :http]
+      (let [path (uri @that-activity)]
+        (fetch-page-browser :get path)))))
 
 (When #"I request the host-meta page with a client"
   (fn []
     (fetch-page :get "/.well-known/host-meta")))
-
-(When #"I request the subscription index page"
-  (fn []
-    (fetch-page-browser :get "/admin/subscriptions")))
 
 (When #"I request the user-meta page for that user"
   (fn []
@@ -145,12 +173,47 @@
     (fetch-page :get
                 (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
 
+(When #"I click \"([^\"]*)\""
+  (fn [value]
+    (-> @current-browser
+        (w/find-it {:value value})
+        w/click)))
+
+(When #"I click the \"([^\"]*)\" button"
+  (fn [value]
+    (-> @current-browser
+        (w/find-it {:value value})
+        w/click)))
+
+(When #"I put my username in the \"username\" field"
+  (fn []
+    (let [field-name "username"
+          value (:username @that-user)]
+      (-> @current-browser
+          (w/find-it {:name field-name})
+          (w/send-keys value)))))
+
+(When #"I put my password in the \"password\" field"
+  (fn []
+    (let [field-name "password"
+          ;; TODO: Get password from somewhere
+          value "hunter2"]
+      (-> @current-browser
+          (w/find-it {:name field-name})
+          (w/send-keys value)))))
+
 ;; Then
 
 (Then #"I should see an activity"
   (fn []
     (check-response
      (w/find-it @current-browser {:class "activities"}) => truthy)))
+
+(Then #"I should see that activity"
+  (fn []
+    (check-response
+     (w/find-it @current-browser
+                :article {:id (str (:_id @that-activity))}) => w/visible?)))
 
 (Then #"I should see a list of activities"
   (fn []
@@ -178,11 +241,13 @@
     (check-response
       (get-in @current-page [:headers "content-type"]) => type)))
 
-(Then #"I am redirected to the login page"
-  (fn []
+(Then #"I should be at the (.+) page"
+  (fn [page-name]
     (check-response
-     (w/current-url @current-browser) => #"/main/login"
-     #_(get @current-page [:headers "location"]) => #"/main/login")))
+     (let [path (get page-names page-name)]
+       (w/current-url @current-browser) => (re-pattern
+                                            (str ".*" (expand-url path)
+                                                 ".*"))))))
 
 (Then #"the host field matches the current domain"
   (fn []
@@ -197,3 +262,28 @@
      (let [uri (model.user/get-uri @that-user)
            pattern (re-pattern (str ".*" uri ".*"))]
        (get-body) => pattern))))
+
+(Then #"it should have a \"([^\"]+)\" field"
+  (fn [field-name]
+    (check-response
+     (w/find-it @current-browser {:name field-name})) => w/visible?))
+
+(Then #"I should see a form"
+  (fn []
+    (check-response
+     (w/find-it @current-browser :form) => w/visible?)))
+
+(Then #"I should get a not found error"
+  (fn []
+    (check-response
+     (w/page-source @current-browser) => #"Not Found")))
+
+(Then #"I should be logged in"
+  (fn []
+    (check-response
+     (w/find-it @current-browser {:class "authenticated"}) => w/visible?)))
+
+(Then #"I should not be logged in"
+  (fn []
+    (check-response
+     (w/find-it @current-browser {:class "unauthenticated"}) => w/visible?)))

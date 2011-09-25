@@ -3,8 +3,8 @@ Feature: Home
   As a user
 
 Scenario: Home page visit
-  Given the user is not logged in
-  And an activity exists
-  When I visit the home page
+  Given I am not logged in
+  And there is a public activity
+  When I go to the home page
   Then I should see an activity
   # And the response is sucsessful

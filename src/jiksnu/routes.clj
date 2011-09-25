@@ -19,6 +19,7 @@
             [clojure.string :as string]
             [clojure.java.io :as io]
             (jiksnu [namespace :as namespace]
+                    [session :as session]
                     [view :as view])
             (jiksnu.actions [activity-actions :as activity]
                             [auth-actions :as auth]
@@ -57,25 +58,30 @@
             (ring.middleware [file :as file]
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
-            [ring.util.response :as response]))
+            [ring.util.response :as response])
+  (:import javax.security.auth.login.LoginException))
 
 (defn not-found-msg
   []
-  "You found the hidden page. Don't tell anyone about this.\n")
+  "Not Found")
 
 (defn escape-route
   [path]
   (string/replace path #":" "\\:"))
 
-(def http-routes
+(def admin-routes
   (make-matchers
-   [[[:get  "/"]                                       #'stream/index]
-    [[:get "/.well-known/host-meta"]                   #'webfinger/host-meta]
+   [
     [[:get "/admin/subscriptions"]                     #'subscription/index]
     [[:get "/admin/push/subscriptions"]                #'push/index]
     [[:post "/admin/users"]                            #'user/create]
     [[:get "/admin/users"]                             #'user/index]
-    [[:get "/admin/settings"]                          #'settings/edit]
+    [[:get "/admin/settings"]                          #'settings/edit]]))
+
+(def http-routes
+  (make-matchers
+   [[[:get  "/"]                                       #'stream/index]
+    [[:get "/.well-known/host-meta"]                   #'webfinger/host-meta]
     [[:get "/api/people/@me/@all"]                     #'user/index]
     [[:get "/api/people/@me/@all/:id"]                 #'user/show]
     [[:get "/api/statuses/public_timeline.:format"]    #'stream/index]
@@ -230,10 +236,6 @@
     [{:method :result
       :pubsub false} #'domain/ping-response]]))
 
-(def #^:dynamic *standard-middleware*
-  [#'wrap-log-request
-   #'wrap-log-params])
-
 (def http-predicates
   [#'http-serialization?
    [#'request-method-matches?
@@ -253,6 +255,10 @@
                  (response/file-response "public/robots.txt"))
   (wrap-log-request
    (resolve-routes [http-predicates] http-routes))
+  (compojure/ANY "/admin*" request
+                 (if (spy (session/is-admin?))
+                   ((resolve-routes [http-predicates] admin-routes) request)
+                   (throw (LoginException. "Must be admin"))))
   (compojure/GET "/main/events" _
                  (http/wrap-aleph-handler stream/stream-handler))
   (route/not-found (not-found-msg)))

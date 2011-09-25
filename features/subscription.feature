@@ -3,19 +3,24 @@ Feature: Subscriptions
   Should provide interactions on those subscriptions
 
 Scenario: Admin page, unauthenticated
-  Given the user is not logged in
-  When I request the subscription index page
-  Then I am redirected to the login page
+  Given I am not logged in
+  When I go to the subscription index page
+  Then I should be at the login page
   # And the response is a redirect
 
 Scenario: Admin page, user
   Given a normal user is logged in
-  When I request the subscription index page
-  Then I am redirected to the login page
+  When I go to the subscription index page
+  Then I should be at the login page
   # And the response is a redirect
 
 Scenario: Admin page, user
   Given an admin is logged in
-  When I request the subscription index page
+  When I go to the subscription index page
   Then I should see a subscription list
   # And the response is sucsessful
+
+Scenario: Ostatus subscription page
+  Given I am not logged in
+  When I go to the ostatus sub page
+  Then I should see a form

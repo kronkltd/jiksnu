@@ -11,7 +11,5 @@
   (load-config)
   (with-environment :test
     (with-database
-      (doseq [model [Person Activity Subscription
-                     User Item Domain PushSubscription MagicKeyPair]]
-        (entity/delete-all model))
+      (drop-all!)
       (f))))

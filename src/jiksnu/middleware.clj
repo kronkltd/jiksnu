@@ -41,6 +41,5 @@
     (try
       (handler request)
       (catch LoginException e
-        (print-stack-trace e)
-        {:status 400
+        {:status 302
          :headers {"location" "/auth/login"}}))))

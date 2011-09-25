@@ -93,9 +93,14 @@
 ;;      (with-database
 ;;        ~@body)))
 
-(def activity? (partial instance? Activity))
-(def subscription? (partial instance? Subscription))
-;; (def user? (partial instance? User))
+(defn activity?
+  [activity]
+  (instance? Activity activity))
+
+(defn subscription?
+  [subscription]
+  (instance? Subscription subscription))
+
 (defn user?
   [user] (instance? User user))
 
@@ -112,6 +117,13 @@
   [s]
   (-> s StringReader. InputSource.
       xml/parse zip/xml-zip))
+
+(defn drop-all!
+  []
+  (doseq [entity [Activity Like Subscription
+                  User Item Domain PushSubscription
+                  MagicKeyPair]]
+    (delete-all entity)))
 
 ;; TODO: Find a good place for this
 
