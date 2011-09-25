@@ -90,7 +90,7 @@
       (log/info "Discovering: " user)
       (discover user))
     (do (log/info "sleeping")
-        (Thread/sleep 3000)))
+        #_(Thread/sleep 3000)))
   #_(recur domain))
 
 (defaction edit
