@@ -8,6 +8,8 @@
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
             (jiksnu [namespace :as namespace])
+            (jiksnu.actions [comment-actions :as actions.comment]
+                            [stream-actions :as actions.stream])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
@@ -41,13 +43,13 @@
   [action params activity]
   (let [author (get-author activity)
         domain (model.domain/show (:domain author))]
-    (fetch-comments-remote activity)))
+    (actions.comment/fetch-comments-remote activity)))
 
 (defn fetch-more-comments
   [action params [activity comments]]
   (let [author (get-author activity)
         domain (model.domain/show (:domain author))]
-    (fetch-comments-remote activity)))
+    (actions.comment/fetch-comments-remote activity)))
 
 (defn post-trigger
   [action params activity]
@@ -61,5 +63,5 @@
     (doseq [user subscriber-users]
       (notify-activity user activity))))
 
-(add-trigger! #'fetch-comments #'fetch-more-comments)
+(add-trigger! #'actions.comment/fetch-comments #'fetch-more-comments)
 (add-trigger! #'post #'post-trigger)

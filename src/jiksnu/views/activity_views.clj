@@ -24,123 +24,6 @@
             (plaza.rdf.vocabularies [foaf :as foaf])
             (ring.util [response :as response])))
 
-(defn timeline-formats
-  [user]
-  [{:label "FOAF"
-     :href (str (uri user) ".rdf")
-     :type "application/rdf+xml"}
-    {:label "N3"
-     :href (str (uri user) ".n3")
-     :type "text/n3"}
-    {:label "Atom"
-     :href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user) ".atom")
-     :type "application/atom+xml"}
-    {:label "JSON"
-     :href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user) ".json")
-     :type "application/json"}
-    {:label "XML"
-     :href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user) ".xml")
-     :type "application/xml"}])
-
-(defn index-formats
-  [activities]
-  [{:label "Atom"
-     :href "/api/statuses/public_timeline.atom"
-     :type "application/atom+xml"}
-    {:label "JSON"
-     :href "/api/statuses/public_timeline.json"
-     :type "application/json"}
-    #_{:label "XML"
-     :href "/api/statuses/public_timeline.xml"
-     :type "application/xml"}
-    {:label "RDF"
-     :href "/api/statuses/public_timeline.rdf"
-     :type "application/rdf+xml"}
-    {:label "N3"
-     :href "/api/statuses/public_timeline.n3"
-     :type "text/n3"}])
-
-
-
-
-(defview #'index :atom
-  [request activities]
-  (let [self (str "http://"
-                  (config :domain)
-                  "/api/statuses/public_timeline.atom")]
-    {:headers {"Content-Type" "application/xml"}
-     :template false
-     :body (abdera/make-feed
-            {:title "Public Activities"
-             :subtitle "All activities posted"
-             :id self
-             :links [{:href (str "http://" (config :domain) "/")
-                      :rel "alternate"
-                      :type "text/html"}
-                     {:href self
-                      :rel "self"
-                      :type "application/atom+xml"}]
-             :updated (:updated (first activities))
-             :entries (map show-section activities)})}))
-
-(defview #'user-timeline :atom
-  [request [user activities]]
-  {:headers {"Content-Type" "application/xml"}
-   :template false
-   :body (abdera/make-feed
-          {:title (str (:username user) " timeline")
-           ;; TODO: pick these up from maven
-           :generator {:uri "http://jiksnu.com/"
-                       :name "Jiksnu"
-                       :version "0.1.0-SNAPSHOT"}
-           :subtitle (str "Updates from " (:username user)
-                          " on " (:domain user))
-           :id (str "http://" (config :domain)
-                    "/api/statuses/user_timeline/" (:_id user) ".atom")
-           :links [{:href (full-uri user)
-                    :rel "alternate"
-                    :type "text/html"}
-                   {:href (str "http://" (config :domain)
-                               "/api/statuses/user_timeline/" (:_id user) ".atom")
-                    :rel "self"
-                    :type "application/atom+xml"}
-                   {:href (str "http://" (config :domain) "/main/push/hub")
-                    :rel "hub"}
-                   {:href (str "http://" (config :domain)
-                               "/main/salmon/user/" (:_id user))
-                    :rel "salmon"}
-                   {:href (str "http://" (config :domain)
-                               "/main/salmon/user/" (:_id user))
-                    :rel "http://salmon-protocol.org/ns/salmon-replies"}
-                   {:href (str "http://" (config :domain)
-                               "/main/salmon/user/" (:_id user))
-                    :rel "http://salmon-protocol.org/ns/salmon-mention"}]
-           :author (show-section user)
-           :updated (:updated (first activities))
-           :entries (map show-section activities)})})
-
-
-
-(defview #'show :clj
-  [request activity]
-  {:body (model.activity/format-data activity)})
-
-
-
-
-(defview #'add-comment :html
-  [request activity]
-  (-> (response/redirect-after-post "/")
-      (assoc :template false)))
-
-(defview #'comment-response :html
-  [request activity]
-  (-> (response/redirect-after-post "/")
-      (assoc :template false)))
-
 (defview #'delete :html
   [request activity]
   (-> (response/redirect-after-post "/")
@@ -150,17 +33,6 @@
   [request activity]
   {:body (edit-form activity)})
 
-(defview #'fetch-comments :html
-  [request [activity comments]]
-  (-> (response/redirect-after-post (uri activity))
-      (assoc :template false)
-      (assoc :flash "comments are being fetched")))
-
-(defview #'index :html
-  [request activities]
-  {:formats (index-formats activities)
-   :body (templates.activity/index-block activities)})
-
 (defview #'post :html
   [request activity]
   (let [actor (session/current-user)
@@ -169,81 +41,17 @@
     (-> (response/redirect-after-post url)
         (assoc :template false))))
 
+(defview #'remote-create :xmpp
+  [request _]
+  nil)
+
+(defview #'show :clj
+  [request activity]
+  {:body (model.activity/format-data activity)})
+
 (defview #'show :html
   [request activity]
   {:body (templates.activity/show activity)})
-
-(defview #'stream :html
-  [request response-fn]
-  {:body response-fn
-   :template false})
-
-(defview #'update :html
-  [request activity]
-  (let [actor (session/current-user)]
-    (-> (response/redirect-after-post (uri actor))
-        (assoc :template false))))
-
-(defview #'user-timeline :html
-  [request [user activities]]
-  {:body (templates.activity/user-timeline user activities)
-   :formats (timeline-formats user)})
-
-
-
-
-
-
-
-(defview #'index :json
-  [request activities]
-  (with-format :json
-    {:body
-     {:items
-      (map show-section activities)}}))
-
-(defview #'user-timeline :json
-  [request [user activities]]
-  {:body
-   (map
-    (fn [activity] (show-section activity))
-    activities)})
-
-
-
-
-
-
-(defview #'index :rdf
-  [request activities]
-  {:body (-> activities
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :xml)
-             with-out-str)
-   :template :false})
-
-(defview #'index :n3
-  [request activities]
-  {:body (-> activities
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :n3)
-             with-out-str)
-   :template :false})
-
-
-(defview #'show :rdf
-  [request activity]
-  {:body (-> activity
-             show-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :xml)
-             with-out-str)
-   :template :false})
 
 (defview #'show :n3
   [request activity]
@@ -255,37 +63,18 @@
              with-out-str)
    :template :false})
 
-
-
-(defview #'user-timeline :xml
-  [request [user activities]]
-  {:body (index-block activities)
+(defview #'show :rdf
+  [request activity]
+  {:body (-> activity
+             show-section
+             plaza/model-add-triples
+             plaza/defmodel
+             (plaza/model-to-format :xml)
+             with-out-str)
    :template :false})
 
-
-
-(defview #'comment-response :xmpp
-  [request activity])
-
-(defview #'fetch-comments :xmpp
-  [request [activity comments]]
-  (tigase/result-packet request (index-section comments)))
-
-(defview #'fetch-comments-remote :xmpp
+(defview #'update :html
   [request activity]
-  {:type :get
-   :body
-   (element/make-element (packet/pubsub-items
-     (str namespace/microblog ":replies:item=" (:id activity))))})
-
-(defview #'index :xmpp
-  [request activities]
-  (tigase/result-packet request (index-section activities)))
-
-(defview #'remote-create :xmpp
-  [request _]
-  nil)
-
-(defview #'user-timeline :xmpp
-  [request [user  activities]]
-  (tigase/result-packet request (index-section activities)))
+  (let [actor (session/current-user)]
+    (-> (response/redirect-after-post (uri actor))
+        (assoc :template false))))

@@ -17,10 +17,6 @@
                           [like :as model.like]
                           [user :as model.user])))
 
-(deffilter #'add-comment :http
-  [action request]
-  (-> request :params action))
-
 (deffilter #'delete :http
   [action request]
   (-> request :params :id show action))
@@ -29,33 +25,9 @@
   [action request]
   (-> request :params :id show action))
 
-(deffilter #'fetch-comments :http
-  [action request]
-  (-> request :params :id show action))
-
-(deffilter #'friends-timeline :http
-  [action request]
-  (-> request :params :id model.user/show action))
-
-(deffilter #'inbox :http
-  [action request]
-  (action))
-
-(deffilter #'index :http
-  [action request]
-  (action))
-
-(deffilter #'like-activity :http
-  [action request]
-  (-> request :params :id show action))
-
 (deffilter #'new :http
   [action request]
   (action))
-
-(deffilter #'new-comment :http
-  [action request]
-  (-> request :params :id model.activity/show))
 
 (deffilter #'post :http
   [action request]
@@ -69,42 +41,6 @@
 (deffilter #'update :http
   [action request]
   (-> request :params action))
-
-(deffilter #'user-timeline :http
-  [action request]
-  (-> request :params :username
-      model.user/show
-      action))
-
-
-
-
-
-
-
-
-(deffilter #'comment-response :xmpp
-  [action request]
-  (if (not= (:to request) (:from request))
-    (let [packet (:packet request)
-          items (:items request)]
-      (action (map #(entry->activity
-                     (abdera/parse-xml-string
-                      (str (first (element/children %)))))
-                   items)))))
-
-(deffilter #'fetch-comments :xmpp
-  [action request]
-  (let [{{id :id} :params} request]
-    (if-let [activity (model.activity/show id)]
-      (action activity))))
-
-(deffilter #'fetch-comments-remote :xmpp
-  [action request])
-
-(deffilter #'index :xmpp
-  [action request]
-  (action))
 
 (deffilter #'post :xmpp
   [action request]
@@ -134,8 +70,3 @@
       (action (map #(entry->activity
                      (abdera/parse-xml-string (str %)))
             items)))))
-
-(deffilter #'user-timeline :xmpp
-  [action request]
-  (-> request :to
-      actions.user/fetch-by-jid action))

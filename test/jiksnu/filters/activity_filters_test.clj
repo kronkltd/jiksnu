@@ -44,63 +44,6 @@
 ;;                       response (filter-action #'create request)]
 ;;                   (is (activity? response)))))))))))
 
-(deftest filter-action-test
-  (testing "#'index :http :html"
-    (testing "when there are no activities"
-      (testing "should be empty"
-        (model.activity/drop!)
-        (let [request {:serialization :http}
-              response (filter-action #'actions.activity/index request)]
-          (is (empty? response)))))
-    (testing "when there are activities"
-      (testing "should return a seq of activities"
-        (model.activity/drop!)
-        (let [author (actions.user/create (factory User))]
-          (with-user author
-            (actions.activity/create (factory Activity))
-            (let [request {:serialization :http
-                           :action #'actions.activity/index
-                           :format :html}
-                  response (filter-action #'actions.activity/index request)]
-              (is (seq response))
-              (is (class (first response)))
-              (is (every? activity? response)))))))))
-
-(deftest index-filter-test
-  (testing "When the serialization is :xmpp"
-    (testing "when there are no activities"
-      (testing "should return an empty sequence"
-        (model.activity/drop!)
-        (let [user (model.user/create (factory User))
-              element nil
-              packet (tigase/make-packet
-                      {:from (tigase/make-jid user)
-                       :to (tigase/make-jid user)
-                       :type :get
-                       :body element})
-              request (assoc (packet/make-request packet)
-                        :serialization :xmpp)]
-          (let [response (filter-action #'actions.activity/index request)]
-            (is (not (nil? response)))
-            (is (empty? response))))))
-    (testing "when there are activities"
-      (testing "should return a sequence of activities"
-        (let [author (model.user/create (factory User))]
-          (with-user author
-            (let [element nil
-                  packet (tigase/make-packet
-                          {:from (tigase/make-jid author)
-                           :to (tigase/make-jid author)
-                           :type :get
-                           :id (fseq :id)
-                           :body element})
-                  request (assoc (packet/make-request packet)
-                            :serialization :xmpp)
-                  activity (model.activity/create (factory Activity))
-                  response (filter-action #'actions.activity/index request)]
-              (is (seq response))
-              (is (every? activity? response)))))))))
-
 (deftest show-filter-test
   (testing "#'show :xmpp"
     (testing "when the activity exists"

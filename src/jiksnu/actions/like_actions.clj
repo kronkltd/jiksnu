@@ -1,5 +1,6 @@
 (ns jiksnu.actions.like-actions
-  (:use (jiksnu model session))
+  (:use (ciste core)
+        (jiksnu model session))
   (:require (jiksnu.model [like :as model.like]))
   (:import jiksnu.model.Like))
 
@@ -9,3 +10,8 @@
    [:div
     
     ]})
+
+
+(defaction like-activity
+  [& _])
+

@@ -131,22 +131,6 @@
   (fact
     (remote-create user options) => user?))
 
-(deftest test-remote-profile
-  (fact
-    (remote-profile) => nil))
-
-(deftest test-remote-user
-  (fact
-    (remote-user user) => user?))
-
-(deftest test-show
-  (testing "when the user exists"
-    (facts "should return that user"
-      (let [user (model.user/create (factory User))
-            response (show user)]
-        response => (partial instance? User)
-        response => user))))
-
 (deftest test-update
   (fact
     (update user options) => user?))

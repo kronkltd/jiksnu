@@ -22,11 +22,14 @@
                     [view :as view])
             (jiksnu.actions [activity-actions :as activity]
                             [auth-actions :as auth]
+                            [comment-actions :as comment]
                             [domain-actions :as domain]
                             [inbox-actions :as inbox]
+                            [like-actions :as like]
                             [push-subscription-actions :as push]
                             [salmon-actions :as salmon]
                             [settings-actions :as settings]
+                            [stream-actions :as stream]
                             [subscription-actions :as subscription]
                             [user-actions :as user]
                             [webfinger-actions :as webfinger])
@@ -35,6 +38,7 @@
                             domain-filters
                             push-subscription-filters
                             salmon-filters
+                            stream-filters
                             subscription-filters
                             user-filters
                             webfinger-filters)
@@ -46,6 +50,7 @@
                           auth-views
                           domain-views
                           push-subscription-views
+                          stream-views
                           subscription-views
                           user-views
                           webfinger-views)
@@ -64,7 +69,7 @@
 
 (def http-routes
   (make-matchers
-   [[[:get  "/"]                                       #'activity/index]
+   [[[:get  "/"]                                       #'stream/index]
     [[:get "/.well-known/host-meta"]                   #'webfinger/host-meta]
     [[:get "/admin/subscriptions"]                     #'subscription/index]
     [[:get "/admin/push/subscriptions"]                #'push/index]
@@ -73,8 +78,8 @@
     [[:get "/admin/settings"]                          #'settings/edit]
     [[:get "/api/people/@me/@all"]                     #'user/index]
     [[:get "/api/people/@me/@all/:id"]                 #'user/show]
-    [[:get "/api/statuses/public_timeline.:format"]    #'activity/index]
-    [[:get  "/api/statuses/user_timeline/:id.:format"] #'activity/user-timeline]
+    [[:get "/api/statuses/public_timeline.:format"]    #'stream/index]
+    [[:get  "/api/statuses/user_timeline/:id.:format"] #'stream/user-timeline]
     [[:get "/main/domains"]                            #'domain/index]
     [[:get "/main/domains/*"]                          #'domain/show]
     [[:delete "/main/domains/*"]                       #'domain/delete]
@@ -102,29 +107,29 @@
     [[:get "/main/xrd"]                                #'webfinger/user-meta]
     [[:get "/notice/:id"]                              #'activity/show]
     [[:get "/notice/:id.:format"]                      #'activity/show]
-    [[:get  "/notice/:id/comment"]                     #'activity/new-comment]
-    [[:post "/notice/:id/comments"]                    #'activity/add-comment]
-    [[:post "/notice/:id/comments/update"]             #'activity/fetch-comments]
+    [[:get  "/notice/:id/comment"]                     #'comment/new-comment]
+    [[:post "/notice/:id/comments"]                    #'comment/add-comment]
+    [[:post "/notice/:id/comments/update"]             #'comment/fetch-comments]
     [[:get "/notice/:id/edit"]                         #'activity/edit]
-    [[:post "/notice/:id/likes"]                       #'activity/like-activity]
+    [[:post "/notice/:id/likes"]                       #'like/like-activity]
     [[:post "/notice/new"]                             #'activity/post]
     [[:post "/notice/:id"]                             #'activity/update]
     [[:delete "/notice/:id"]                           #'activity/delete]
-    [[:get "/remote-user/*"]                           #'user/remote-user]
+    [[:get "/remote-user/*"]                           #'stream/remote-user]
     [[:get "/settings/profile"]                        #'user/profile]
     [[:delete "/subscriptions/:id"]                    #'subscription/delete]
     [[:delete "/users/:id"]                            #'user/delete]
-    [[:get "/users/:id"]                               #'user/remote-profile]
+    [[:get "/users/:id"]                               #'stream/remote-profile]
     [[:post "/users/:id/discover"]                     #'user/discover]
     [[:post "/users/:id/update"]                       #'user/fetch-updates]
     [[:post "/users/:id/update-hub"]                   #'user/update-hub]
     [[:post "/users/:id/push/subscribe"]               #'push/subscribe]
-    [[:get "/:username"]                               #'activity/user-timeline]
-    [[:get "/:username.:format"]                       #'activity/user-timeline]
+    [[:get "/:username"]                               #'stream/user-timeline]
+    [[:get "/:username.:format"]                       #'stream/user-timeline]
 
     ;; FIXME: Updating the user should probably post to a different uri
     [[:post "/:username"]                              #'user/update]
-    [[:get "/:username/all"]                           #'inbox/index]
+    [[:get "/:username/all"]                           #'stream/index]
     [[:get "/:username/subscribers"]                   #'subscription/subscribers]
     [[:get "/:username/subscriptions"]                 #'subscription/subscriptions]]))
 
@@ -138,7 +143,7 @@
       :pubsub true
       :name "items"
       :node (escape-route namespace/microblog)}
-     #'activity/user-timeline]
+     #'stream/user-timeline]
 
     [{:method :set
       :pubsub true
@@ -150,7 +155,7 @@
       :pubsub true
       :name "items"
       :node (str namespace/microblog ":replies:item=:id")}
-     #'activity/fetch-comments]
+     #'comment/fetch-comments]
 
     [{:method :error
       :name "ping"}
@@ -179,7 +184,7 @@
       :pubsub true
       :node (str namespace/microblog ":replies:item=:id")
       :ns namespace/pubsub}
-     #'activity/comment-response]
+     #'comment/comment-response]
 
     [{:method :get
       :name "subscriptions"}
@@ -249,7 +254,7 @@
   (wrap-log-request
    (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/main/events" _
-                 (http/wrap-aleph-handler activity/stream-handler))
+                 (http/wrap-aleph-handler stream/stream-handler))
   (route/not-found (not-found-msg)))
 
 (def app

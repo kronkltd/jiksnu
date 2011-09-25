@@ -14,15 +14,6 @@
 
 (use-fixtures :once test-environment-fixture)
 
-(deftest index-http-route-test
-  (testing "when the serialization is :http"
-    (testing "and there are no activities"
-      (let [ch (channel)]
-        (r/app ch (mock/request :get "/" ))
-        (let [response (wait-for-message ch 5000)]
-          (is (= (:status response) 200)))))))
-
-
 (deftest show-http-route-test
   (testing "when the user is not authenticated"
     (testing "and the activity does not exist"

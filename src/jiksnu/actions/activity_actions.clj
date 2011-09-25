@@ -24,8 +24,6 @@
            jiksnu.model.User
            org.apache.abdera.ext.thread.ThreadHelper))
 
-(declare find-or-create)
-
 (defn set-recipients
   [activity]
   (let [recipients (filter identity (:recipients activity))]
@@ -34,41 +32,14 @@
         (assoc activity :recipients users))
       (dissoc activity :recipients))))
 
-(defn set-remote
-  [activity]
-  (if (:local activity)
-    activity
-    (assoc activity :local false)))
-
-(defn set-local
-  [activity]
-  (assoc activity :local true))
-
-(defn parse-pictures
-  [picture]
-  (let [filename (:filename picture)
-        tempfile (:tempfile picture)
-        user-id (str (session/current-user-id))
-        dest-file (io/file (str user-id "/" filename))]
-    (when (and (not= filename "") tempfile)
-      (.mkdirs (io/file user-id))
-      (io/copy tempfile dest-file))))
-
-(defn set-title
-  [activity]
-  (if (= (:title activity) "")
-    (dissoc activity :title)
-    activity))
-
-
 (defn prepare-activity
   [activity]
   (-> activity
       model.activity/set-id
-      set-title
+      model.activity/set-title
       model.activity/set-object-id
       model.activity/set-public
-      set-remote
+      model.activity/set-remote
       model.activity/set-tags
       set-recipients
       model.activity/set-object-type
@@ -77,7 +48,7 @@
 (defn prepare-post
   [activity]
   (-> activity
-      set-local
+      model.activity/set-local
       model.activity/set-updated-time
       model.activity/set-object-updated
       model.activity/set-object-published
@@ -101,20 +72,6 @@
 (defaction edit
   [id]
   (model.activity/fetch-by-id id))
-
-;; TODO: fetch all in 1 request
-(defaction fetch-comments
-  [activity]
-  [activity
-   (map model.activity/show (:comments activity))])
-
-;; This should be a trigger
-(defaction fetch-comments-remote
-  [activity]
-  (let [author (helpers.activity/get-author activity)
-        domain (model.domain/show (:domain author))]
-    (if (:xmpp domain)
-      (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
@@ -173,25 +130,9 @@ serialization"
 ;;   [options]
 ;;   (model.activity/find-or-create options))
 
-(defaction friends-timeline
-  [& _])
-
-(defaction inbox
-  [& _])
-
-(defaction index
-  [& options]
-  (model.activity/index))
-
-(defaction like-activity
-  [& _])
-
 (defaction new
   [action request]
   (Activity.))
-
-(defaction new-comment
-  [& _])
 
 (defaction post
   [activity]
@@ -199,34 +140,14 @@ serialization"
   (when-let [prepared-post (-> activity
                                prepare-post
                                (dissoc :pictures))]
-    (-> activity :pictures parse-pictures)
+    (-> activity :pictures model.activity/parse-pictures)
     (create prepared-post)))
-
-(defaction add-comment
-  [params]
-  (if-let [parent (model.activity/fetch-by-id (:id params))]
-    (post (-> params
-              (assoc :parent (:_id parent))
-              (assoc-in [:object :object-type] "comment")))))
 
 (defaction remote-create
   [activities]
   (doseq [activity activities]
     (create activity))
   true)
-
-(defaction comment-response
-  [activities]
-  (remote-create activities))
-
-(defn do-foo
-  []
-  (Thread/sleep 75)
-  (clj-factory.core/factory Activity))
-
-(defaction stream
-  []
-  (repeatedly do-foo))
 
 (defaction show
   [id]
@@ -244,31 +165,11 @@ serialization"
                   {:public true})))]
     (model.activity/update (dissoc opts :picture))))
 
-(defaction user-timeline
-  [user]
-  (if user
-   [user (model.activity/find-by-user user)]))
-
-(defn stream-handler
-  [ch request]
-  (siphon
-   (->> ciste.core/*actions*
-        (filter* (fn [m] (#{#'create} (:action m))))
-        (map*
-         (fn [message]
-           (if-let [records (:records message)]
-             (->> records
-                  index-line-minimal
-                  hiccup/html
-                  (with-serialization :http)
-                  (with-format :html))))))
-   ch))
-
 (defn get-author
   [activity]
   (-> activity
       :author
-      model.user/fetch-by-id))
+      actions.user/fetch-by-id))
 
 (defn load-activities
   [^User user]

@@ -3,7 +3,8 @@
         (clojure.contrib [core :only (-?> -?>>)])
         jiksnu.model
         [jiksnu.session :only (current-user current-user-id is-admin?)])
-  (:require [clojure.string :as string]
+  (:require (clojure [string :as string])
+            (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
             (jiksnu.model [user :as model.user])
             (karras [entity :as entity]
@@ -192,4 +193,31 @@
          (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
          (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
      "note")))
+
+(defn set-local
+  [activity]
+  (assoc activity :local true))
+
+(defn set-remote
+  [activity]
+  (if (:local activity)
+    activity
+    (assoc activity :local false)))
+
+(defn parse-pictures
+  [picture]
+  (let [filename (:filename picture)
+        tempfile (:tempfile picture)
+        user-id (str (current-user-id))
+        dest-file (io/file (str user-id "/" filename))]
+    (when (and (not= filename "") tempfile)
+      (.mkdirs (io/file user-id))
+      (io/copy tempfile dest-file))))
+
+(defn set-title
+  [activity]
+  (if (= (:title activity) "")
+    (dissoc activity :title)
+    activity))
+
 

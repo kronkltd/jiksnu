@@ -8,14 +8,12 @@
             (ring.util [response :as response]))
   (:import jiksnu.model.User))
 
-(defview #'password-page :html
+(defview #'guest-login :html
   [request user]
-  {:body (templates.auth/password-page user)})
-
-(defview #'login-page :html
-  [request _]
-  {:title "Login"
-   :body (templates.auth/login-form)})
+  {:status 303
+   :template false
+   :session {:pending-id (:_id user)}
+   :headers {"Location" "/main/password"}})
 
 (defview #'login :html
   [request user]
@@ -25,6 +23,11 @@
      :template false
      :headers {"Location" "/"}}))
 
+(defview #'login-page :html
+  [request _]
+  {:title "Login"
+   :body (templates.auth/login-form)})
+
 (defview #'logout :html
   [request successful]
   (if successful
@@ -33,9 +36,6 @@
      :template false
      :headers {"Location" "/"}}))
 
-(defview #'guest-login :html
+(defview #'password-page :html
   [request user]
-  {:status 303
-   :template false
-   :session {:pending-id (:_id user)}
-   :headers {"Location" "/main/password"}})
+  {:body (templates.auth/password-page user)})

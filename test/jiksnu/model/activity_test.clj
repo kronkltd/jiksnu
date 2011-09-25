@@ -2,7 +2,8 @@
   (:use clj-factory.core
         clojure.test
         (jiksnu core-test model session)
-        jiksnu.model.activity)
+        jiksnu.model.activity
+        midje.sweet)
   (:require [karras.entity :as entity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -139,3 +140,18 @@
       (let [activity (dissoc (factory Activity) :updated)
             response (set-updated-time activity)]
         (is (:updated response))))))
+
+(deftest test-set-remote
+  (testing "when the local flag is not set"
+    (fact "the local flag should be false"
+      (let [activity (factory Activity)]
+        (set-remote activity) => (contains {:local false}))))
+  (testing "when the local flag is set to true"
+    (fact "the local flag should be true"
+      (let [activity (factory Activity {:local true})]
+        (set-remote activity) => (contains {:local true}))))
+  (testing "when the local flag is set to false"
+    (fact "the local flag should be false"
+      (let [activity (factory Activity {:local false})]
+        (set-remote activity) => (contains {:local false})))))
+

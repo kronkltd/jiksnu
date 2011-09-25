@@ -1,0 +1,2 @@
+(deftest like-activity-test)
+

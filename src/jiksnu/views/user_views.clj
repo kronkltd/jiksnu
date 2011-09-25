@@ -61,29 +61,6 @@
   [request _]
   {:body (templates.user/register-section request)})
 
-(defview #'remote-profile :html
-  [request user]
-  (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'show))
-   user))
-
-(defview #'remote-user :html
-  [request user]
-  (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'show))
-   user))
-
-(defview #'show :html
-  [request user]
-  {:status 200
-   :body "Show user"
-   }
-  )
-
 (defview #'update :html
   [request user]
   {:status 302
@@ -96,13 +73,6 @@
    :template false
    :headers {"Location" (uri user)}})
 
-
-
-
-
-
-
-
 (defview #'fetch-remote :xmpp
   [request user]
   (vcard-request request user))
@@ -114,17 +84,6 @@
      :to from
      :type :result}))
 
-(defview #'show :xmpp
-  [request user]
-  (let [{:keys [id to from]} request]
-    {:body
-     (element/make-element
-      "query" {"xmlns" namespace/vcard-query} (show-section user))
-     :type :result
-     :id id
-     :from to
-     :to from}))
-
 (defview #'xmpp-service-unavailable :xmpp
   [request _])
 
@@ -133,21 +92,4 @@
 
 
 
-
-(defview #'show :rdf
-  [request user]
-  {:body
-   (let [rdf-model (defmodel (model-add-triples (show-section user)))]
-     (with-out-str (model-to-format rdf-model :xml)))
-   :template :false})
-
-(defview #'show :n3
-  [request user]
-  {:body
-   (let [rdf-model
-         (defmodel (model-add-triples
-                    (with-format :rdf
-                      (show-section user))))]
-     (with-out-str (model-to-format rdf-model :n3)))
-   :template :false})
 

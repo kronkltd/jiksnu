@@ -54,17 +54,6 @@
   [action request]
   true)
 
-(deffilter #'remote-profile :http
-  [action request]
-  (let [{{id :id} :params} request]
-    (let [user (fetch-by-id id)]
-      user)))
-
-(deffilter #'remote-user :http
-  [action request]
-  (let [{{uri :*} :params} request]
-    (action (fetch-by-uri uri))))
-
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request
