@@ -62,6 +62,13 @@
   {:body (templates.user/edit-form user)})
 
 (defview #'register :html
+  [request user]
+  {:status 303,
+   :template false
+   :session {:id (:_id user)}
+   :headers {"Location" (uri user)}})
+
+(defview #'register-page :html
   [request _]
   {:body (templates.user/register-section request)})
 

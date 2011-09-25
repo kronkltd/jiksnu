@@ -148,18 +148,15 @@
   [& _])
 
 (defaction register
-  [options]
-  (let [{username :username
-         password :password
-         confirm-password :confirm-password} options]
-    (if (and username password confirm-password)
-      ;; Passwords must match
-      (if (= password confirm-password)
-        (let [user {:username username
-                    :domain (config :domain)
-                    :password password
-                    :confirm-password password}]
-          (create user))))))
+  [username password]
+  (create {:username username
+           :domain (config :domain)
+           ;; TODO: encrypt here
+           :password password}))
+
+(defaction register-page
+  []
+  true)
 
 (declare update)
 

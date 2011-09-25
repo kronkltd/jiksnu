@@ -51,8 +51,14 @@
     user (log/error "no user")))
 
 (deffilter #'register :http
+  [action {{:keys [username password confirm-password]} :params}]
+  (if (= password confirm-password)
+    (action username password)
+    (throw (RuntimeException. "Password and confirm password do not match"))))
+
+(deffilter #'register-page :http
   [action request]
-  true)
+  (action))
 
 (deffilter #'show :http
   [action request]
