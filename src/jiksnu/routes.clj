@@ -255,10 +255,11 @@
                  (response/file-response "public/robots.txt"))
   (wrap-log-request
    (resolve-routes [http-predicates] http-routes))
-  (compojure/ANY "/admin*" request
-                 (if (spy (session/is-admin?))
-                   ((resolve-routes [http-predicates] admin-routes) request)
-                   (throw (LoginException. "Must be admin"))))
+  (wrap-authentication-handler
+   (compojure/ANY "/admin*" request
+                  (if (session/is-admin?)
+                    ((resolve-routes [http-predicates] admin-routes) request)
+                    (throw (LoginException. "Must be admin")))))
   (compojure/GET "/main/events" _
                  (http/wrap-aleph-handler stream/stream-handler))
   (route/not-found (not-found-msg)))
@@ -266,6 +267,7 @@
 (def app
   (http/wrap-ring-handler
    (-> all-routes
+       wrap-authentication-handler
        (file/wrap-file "resources/public/")
        file-info/wrap-file-info
        wrap-keyword-params
@@ -277,5 +279,4 @@
        middleware/wrap-http-serialization
        wrap-database
        wrap-session
-       wrap-authentication-handler
        stacktrace/wrap-stacktrace)))

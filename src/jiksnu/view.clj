@@ -33,7 +33,10 @@
   [request response]
   (merge response
          (if (not= (:template response) false)
-           (page-template-content response))))
+           (page-template-content
+            (if (:flash request)
+              (assoc response :flash (:flash request))
+              response)))))
 
 (defmethod apply-view-by-format :atom
   [request response])
@@ -41,10 +44,7 @@
 (defmethod serialize-as :http
   [serialization response-map]
   (assoc-in
-   (merge {:status 200}
-          response-map
-          (if-let [body (:body response-map)]
-            {:body body}))
+   (merge {:status 200} response-map)
    [:headers "Content-Type"]
    (or (-> response-map :headers (get "Content-Type"))
        "text/html; charset=utf-8")))

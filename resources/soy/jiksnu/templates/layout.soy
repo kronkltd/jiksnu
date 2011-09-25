@@ -6,6 +6,7 @@
  * @param? development
  * @param? formats
  * @param? links
+ * @param? flash
  * @param? title
  */
 {template .layout}
@@ -43,7 +44,9 @@
           <div class="clear"></div>
         </header>
         <div id="notification-area">
-          <div id="flash"></div>
+          {if $flash }
+            <div id="flash">{$flash}</div>
+          {/if}
           {call .develWarning data="all" /}
         </div>
         <section id="site-main">

@@ -9,6 +9,7 @@
 (deftemplate layout
   [response]
   {:body (hiccup/html (:body response))
+   :flash (:flash response)
    :formats (:formats response)
    :authenticated (if-let [user (current-user)]
                     (model.user/format-data user))

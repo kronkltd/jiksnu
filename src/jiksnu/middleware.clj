@@ -5,6 +5,7 @@
                [debug :only (spy)])
         (jiksnu [model :only (with-database)]
                 [session :only (with-user-id)]))
+  (:require (clojure.tools [logging :as log]))
   (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
@@ -41,5 +42,7 @@
     (try
       (handler request)
       (catch LoginException e
-        {:status 302
-         :headers {"location" "/auth/login"}}))))
+        {:status 303
+         :template false
+         :flash "You must be logged in to do that."
+         :headers {"location" "/main/login"}}))))
