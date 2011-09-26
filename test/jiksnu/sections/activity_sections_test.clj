@@ -12,7 +12,8 @@
                     [namespace :as namespace])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
-                          [user :as model.user]))
+                          [user :as model.user])
+            (jiksnu.xmpp [element :as xmpp.element]))
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
