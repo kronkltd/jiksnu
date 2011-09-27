@@ -40,11 +40,15 @@
          (str ":" port)) path))
 
 (def page-names
-  {"home" "/"
-   "login" "/main/login"
-   "ostatus sub" "/main/ostatussub"
-   "host-meta" "/.well-known/host-meta"
-   "subscription index" "/admin/subscriptions"})
+  {
+   "home"               "/"
+   "login"              "/main/login"
+   "ostatus sub"        "/main/ostatussub"
+   "host-meta"          "/.well-known/host-meta"
+   "subscription index" "/admin/subscriptions"
+   "edit profile"       "/settings/profile"
+   "user admin"         "/admin/users"
+   })
 
 (Before
   (let [browser (w/new-driver :firefox)]
@@ -85,9 +89,8 @@
       (dosync
        (ref-set that-user user)))))
 
-(defn a-normal-user-is-logged-in
+(defn do-login
   []
-  (a-user-exists)
   (-> @current-browser
       (w/to (expand-url "/main/login")))
   (-> @current-browser
@@ -99,8 +102,12 @@
   (-> @current-browser
       (w/find-it {:value "Login"})
       w/click)
+  (session/set-authenticated-user! @that-user))
 
-  #_(session/set-authenticated-user! @that-user))
+(defn a-normal-user-is-logged-in
+  []
+  (a-user-exists)
+  (do-login))
 
 (defn an-admin-is-logged-in
   []
@@ -109,7 +116,8 @@
     (-> @that-user
         (assoc :admin true)
         actions.user/update
-        session/set-authenticated-user!)))
+        session/set-authenticated-user!)
+    (do-login)))
 
 (defn get-body
   []
@@ -186,6 +194,12 @@
         (w/find-it {:value value})
         w/click)))
 
+(When #"I type \"(.*)\" into the \"(.*)\" field"
+  (fn [value field-name]
+    (-> @current-browser
+        (w/find-it {:name field-name})
+        (w/send-keys value))))
+
 (When #"I put my username in the \"username\" field"
   (fn []
     (let [field-name "username"
@@ -204,6 +218,12 @@
           (w/send-keys value)))))
 
 ;; Then
+
+(Then #"I should be an admin"
+  (fn []
+    (check-response
+     (with-database
+       (session/current-user) => (contains {:admin true})))))
 
 (Then #"I should see an activity"
   (fn []

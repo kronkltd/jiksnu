@@ -131,12 +131,8 @@
 (defn update
   [^User new-user]
   (let [old-user (show (:username new-user) (:domain new-user))
-        merged-user (merge old-user
-                           ;; If these fields are unchecked, they
-                           ;; won't be sent. These fields must be sent
-                           ;; every time.
-                           {:admin false :debug false}
-                           new-user)
+        merged-user (merge {:admin false :debug false}
+                           old-user new-user)
         user (entity/make User merged-user)]
     (entity/update User {:_id (:_id old-user)} user)
     user))
