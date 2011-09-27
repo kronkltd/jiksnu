@@ -15,7 +15,7 @@ Scenario: Admin page, user
   # And the response is a redirect
 
 Scenario: Admin page, user
-  Given an admin is logged in
+  Given I am logged in as an admin
   When I go to the subscription index page
   Then I should see a subscription list
   # And the response is sucsessful

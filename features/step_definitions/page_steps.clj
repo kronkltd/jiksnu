@@ -128,7 +128,7 @@
 
 (Given #"a normal user is logged in" a-normal-user-is-logged-in)
 
-(Given #"an admin is logged in" an-admin-is-logged-in)
+(Given #"I am logged in as an admin" an-admin-is-logged-in)
 
 
 (Given #"there is a (.+) activity"
@@ -150,8 +150,9 @@
 
 (When #"I go to the (.+) page"
   (fn [page-name]
-    (let [path (get page-names page-name)]
-      (fetch-page-browser :get path))))
+    (if-let [path (get page-names page-name)]
+      (fetch-page-browser :get path)
+      (throw (RuntimeException. (str "No path defined for " page-name))))))
 
 (When #"I go to the page for that activity"
   (fn []
@@ -215,10 +216,10 @@
      (w/find-it @current-browser
                 :article {:id (str (:_id @that-activity))}) => w/visible?)))
 
-(Then #"I should see a list of activities"
-  (fn []
+(Then #"I should see a list of (.*)"
+  (fn [class-name]
     (check-response
-     (w/find-it @current-browser {:class "activities"}) => truthy)))
+     (w/find-it @current-browser {:class class-name}) => truthy)))
 
 (Then #"I should see a subscription list"
   (fn []
@@ -287,3 +288,7 @@
   (fn []
     (check-response
      (w/find-it @current-browser {:class "unauthenticated"}) => w/visible?)))
+
+(Then #"that user's name should be \"(.*)\""
+  (fn [display-name]
+    @that-user => (contains {:display-name display-name})))

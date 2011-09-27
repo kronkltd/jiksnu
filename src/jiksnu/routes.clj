@@ -253,13 +253,13 @@
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
                  (response/file-response "public/robots.txt"))
-  (wrap-log-request
-   (resolve-routes [http-predicates] http-routes))
   (wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
                     ((resolve-routes [http-predicates] admin-routes) request)
                     (throw (LoginException. "Must be admin")))))
+  (wrap-log-request
+   (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/main/events" _
                  (http/wrap-aleph-handler stream/stream-handler))
   (route/not-found (not-found-msg)))
