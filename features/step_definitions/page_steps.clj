@@ -19,6 +19,7 @@
 (require '[jiksnu.model.user :as model.user])
 (import 'jiksnu.model.Activity)
 (import 'jiksnu.model.User)
+(import 'org.openqa.selenium.NoSuchElementException)
 
 (def server (atom nil))
 (def current-page (ref nil))
