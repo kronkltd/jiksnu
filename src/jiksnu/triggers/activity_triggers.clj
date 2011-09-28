@@ -7,7 +7,8 @@
         (jiksnu model session view))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
-            (jiksnu [namespace :as namespace])
+            (jiksnu [abdera :as abdera]
+                    [namespace :as namespace])
             (jiksnu.actions [comment-actions :as actions.comment]
                             [stream-actions :as actions.stream])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
