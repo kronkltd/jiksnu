@@ -4,6 +4,7 @@
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
             (jiksnu [abdera :as abdera])
+            (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity])))
 
 (deffilter #'add-comment :http
@@ -12,7 +13,7 @@
 
 (deffilter #'fetch-comments :http
   [action request]
-  (-> request :params :id show action))
+  (-> request :params :id actions.activity/show action))
 
 (deffilter #'new-comment :http
   [action request]
@@ -23,7 +24,7 @@
   (if (not= (:to request) (:from request))
     (let [packet (:packet request)
           items (:items request)]
-      (action (map #(entry->activity
+      (action (map #(actions.activity/entry->activity
                      (abdera/parse-xml-string
                       (str (first (element/children %)))))
                    items)))))
