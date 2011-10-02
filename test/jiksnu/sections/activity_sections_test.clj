@@ -1,20 +1,20 @@
 (ns jiksnu.sections.activity-sections-test
   (:use (ciste core sections views)
         ciste.sections.default
-        clj-factory.core
+        (clj-factory [core :only (factory)])
         clojure.test
         (jiksnu core-test model session)
-        jiksnu.helpers.activity-helpers
         jiksnu.sections.activity-sections
-        jiksnu.xmpp.element
         midje.sweet)
-  (:require [clj-tigase.element :as element]
+  (:require (clj-tigase [element :as element])
             [hiccup.form-helpers :as f]
-            (jiksnu [namespace :as namespace])
+            (jiksnu [model :as model]
+                    [namespace :as namespace])
+            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
-                          [user :as model.user]))
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           java.io.StringWriter
+                          [user :as model.user])
+            (jiksnu.xmpp [element :as xmpp.element]))
+  (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
