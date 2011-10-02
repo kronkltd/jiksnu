@@ -47,7 +47,7 @@
                org.slf4j/slf4j-jdk14]
   :aot [jiksnu.xmpp.plugin
         jiksnu.xmpp.channels
-        jiksnu.core]
+        jiksnu.xmpp.user-repository]
   :main jiksnu.core
   :warn-on-reflection false
   :jvm-opts ["-server"

@@ -212,15 +212,20 @@ of registered users"
 (defn -removeSubnode
   "removes given subnode with all subnodes in this node and all data stored in
 this node and in all subnodes."
-  [#^BareJID user
-   #^String subnode]
+  [this ^BareJID user
+   ^String subnode]
   ;; TODO: implement
+  (log/info "remove subnode")
+  ;; (spy user)
+  ;; (spy subnode)
   )
 
 (defn -removeUser
   "allows to remove user and all his data from user repository."
-  [#^BareJID user]
+  [this ^BareJID user]
   ;; TODO: implement
+  (log/info "remove user")
+  ;; (spy user)
   )
 
 (declare get-id)
@@ -230,31 +235,37 @@ this node and in all subnodes."
 (defn -setData
   "sets data value for given user ID in repository under given node path and
 associates it with given key."
-  ([#^BareJID user
-    #^String key
-    #^String value]
+  ([this ^BareJID user ^String key ^String value]
+     (.setData this user nil key value))
+  ([this ^BareJID user ^String subnode ^String key ^String value]
      ;; TODO: implement
-     (let [id (get-id user)
-           domain (get-domain user)]
-       (set-key user key value)))
-  ([#^BareJID user
-    #^String subnode
-    #^String key
-    #^String value]
-     ;; TODO: implement
+     (log/info "set data")
+     ;; (spy user)
+     ;; (spy subnode)
+     ;; (spy key)
+     ;; (spy value)
+
      ))
 
 
 (defn -setDataList
   "sets list of values for given user associated given key in repository under
 given node path."
-  [#^BareJID user
-   #^String subnode
-   #^String key
-   list]
+  [this ^BareJID user ^String subnode ^String key list]
+  (log/info "set data list")
   ;; TODO: implement
+  )
+
+(defn -updatePassword
+  [user password]
+  (log/info "update password")
+  ;; (spy user)
+  ;; (spy password)
   )
 
 (defn -userExists
   "checks whether the user (or repository top node) exists in the database."
-  [#^BareJID user])
+  [this ^BareJID user]
+  (log/info "user exists")
+  (with-database
+    (not (nil? (model.user/fetch-by-jid user)))))
