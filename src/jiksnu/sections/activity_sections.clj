@@ -8,7 +8,7 @@
   (:require (ciste [html :as html])
             (jiksnu [abdera :as abdera]
                     [model :as model]
-                    [namespace :as namespace]
+                    [namespace :as ns]
                     [session :as session]
                     [view :as view])
             (jiksnu.actions [user-actions :as actions.user])
@@ -63,14 +63,14 @@
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
       (.addSimpleExtension
-       namespace/as "object-type" "activity" namespace/status)
+       ns/as "object-type" "activity" ns/status)
       (.addSimpleExtension
-       namespace/as "verb" "activity" namespace/post)
+       ns/as "verb" "activity" ns/post)
       (helpers.activity/comment-link-item activity)
       (helpers.activity/acl-link activity))
     (let [object (:object activity)
-          object-element (.addExtension entry namespace/as "object" "activity")]
-      (.setObjectType object-element namespace/status)
+          object-element (.addExtension entry ns/as "object" "activity")]
+      (.setObjectType object-element ns/status)
       (if-let [object-updated (:updated object)]
         (.setUpdated object-element object-updated))
       (if-let [object-published (:published object)]
@@ -97,34 +97,41 @@
      {"published" (:published object)
       "updated" (:updated object)})})
 
+(register-rdf-ns :aair ns/aair)
+(register-rdf-ns :as ns/as)
+(register-rdf-ns :dc ns/dc)
+
+
 (defsection show-section [Activity :rdf]
   [activity & _]
   (with-rdf-ns ""
-    [[(full-uri activity)
-      [rdf:type   (str namespace/sioc "Post")
-       
-
-       ]
-      
-
-      
-
-      ]]
-
-    )
-  )
+    (let [uri (full-uri activity)]
+      [
+       [uri [:rdf :type]      [:as :activity]]
+       [uri [:as  :verb]      (l "post")]
+       [uri [:as  :content]   (l (:content activity))]
+       [uri [:as  :author]    (rdf-resource
+                               (let [user (get-author activity)]
+                                 (or (:id user)
+                                     (model.user/get-uri user))))]
+       [uri [:dc  :published] (date (:published activity))]
+       ])))
 
 
 
 (defsection index-block [Activity :xmpp :xmpp]
   [activities & options]
-  ["items" {"node" namespace/microblog}
+  ["items" {"node" ns/microblog}
    (map index-line activities)])
 
 (defsection index-line [Activity :xmpp :xmpp]
   [^Activity activity & options]
   ["item" {"id" (:_id activity)}
    (show-section activity)])
+
+(defsection index-section [Activity :rdf]
+  [activities & _]
+  (vector (reduce concat (index-block activities))))
 
 (defsection index-section [Activity :xmpp :xmpp]
   [activities & options]

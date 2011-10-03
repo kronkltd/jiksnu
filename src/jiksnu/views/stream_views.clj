@@ -69,13 +69,18 @@
 
 (defview #'index :rdf
   [request activities]
-  {:body (-> activities
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :xml)
-             with-out-str)
-   :template :false})
+  (let [model (plaza/build-model)]
+    (.setNsPrefix (plaza/to-java model) "activity" namespace/as)
+    (plaza/with-model model
+      (-> activities
+          index-section
+          ;; first
+          plaza/make-triples
+          spy
+          plaza/model-add-triples)
+      {:body (with-out-str
+               (plaza/model-to-format model :xml))
+      :template :false})))
 
 (defview #'index :xmpp
   [request activities]
