@@ -119,5 +119,12 @@
    :template false
    :headers {"Location" (uri user)}})
 
+(defview #'update-profile :html
+  [request user]
+  {:status 303
+   :template false
+   :flash "Profile updated"
+   :headers {"Location" "/settings/profile"}})
+
 (defview #'xmpp-service-unavailable :xmpp
   [request _])

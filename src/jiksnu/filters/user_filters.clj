@@ -18,10 +18,24 @@
   (let [{:keys [params]} request]
     (action params)))
 
+;; TODO: this one wasn't working in the first place
+(deffilter #'create :xmpp
+  [action request]
+  (let [{:keys [items]} request]
+    (let [properties
+          (flatten
+           (map helpers.user/process-vcard-element items))]
+      (action properties))))
+
 (deffilter #'delete :http
   [action request]
   (let [{{id :id} :params} request]
     (action id)))
+
+(deffilter #'delete :xmpp
+  [action request]
+  ;; TODO: implement
+  )
 
 (deffilter #'discover :http
   [action request]
@@ -34,6 +48,10 @@
   (let [user (show request)]
     user))
 
+(deffilter #'fetch-remote :xmpp
+  [action request]
+  (fetch-by-jid (:to request)))
+
 (deffilter #'fetch-updates :http
   [action request]
   (let [{{id :id} :params} request
@@ -44,6 +62,10 @@
   [action request]
   (let [{params :params} request]
     (action params)))
+
+(deffilter #'index :xmpp
+  [action request]
+  '())
 
 (deffilter #'profile :http
   [action request]
@@ -59,54 +81,6 @@
 (deffilter #'register-page :http
   [action request]
   (action))
-
-(deffilter #'show :http
-  [action request]
-  (let [{{id :id} :params} request
-        user (show id)]
-    (action user)))
-
-(deffilter #'update :http
-  [action request]
-  (let [{params :params} request
-        {username :username} params
-        user (show username)]
-    (action user params)))
-
-(deffilter #'update-hub :http
-  [action request]
-  (let [{params :params} request
-        {username :id} params
-        user (fetch-by-id username)]
-    (action user)))
-
-
-
-
-
-
-
-;; TODO: this one wasn't working in the first place
-(deffilter #'create :xmpp
-  [action request]
-  (let [{:keys [items]} request]
-    (let [properties
-          (flatten
-           (map helpers.user/process-vcard-element items))]
-      (action properties))))
-
-(deffilter #'delete :xmpp
-  [action request]
-  ;; TODO: implement
-  )
-
-(deffilter #'fetch-remote :xmpp
-  [action request]
-  (fetch-by-jid (:to request)))
-
-(deffilter #'index :xmpp
-  [action request]
-  '())
 
 (deffilter #'remote-create :xmpp
   [action request]
@@ -134,12 +108,36 @@
                     :url url
                     :avatar-url avatar-url}))))
 
+(deffilter #'show :http
+  [action request]
+  (let [{{id :id} :params} request
+        user (show id)]
+    (action user)))
+
 ;; TODO: This action is working off of a jid
 (deffilter #'show :xmpp
   [action request]
   (let [{:keys [to]} request
         user (fetch-by-jid to)]
     (action user)))
+
+(deffilter #'update :http
+  [action request]
+  (let [{params :params} request
+        {username :username} params
+        user (show username)]
+    (action user params)))
+
+(deffilter #'update-hub :http
+  [action request]
+  (let [{params :params} request
+        {username :id} params
+        user (fetch-by-id username)]
+    (action user)))
+
+(deffilter #'update-profile :http
+  [action {params :params}]
+  (action params))
 
 (deffilter #'xmpp-service-unavailable :xmpp
   [action request]

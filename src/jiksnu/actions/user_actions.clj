@@ -34,24 +34,20 @@
 
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
-(defn pending-domains-key
-  [domain]
-  (str "pending.domains." domain))
-
 (defn enqueue-discover
   [user]
   (let [domain (:domain user)
         id (:_id user)]
-    (redis/sadd (pending-domains-key domain) id)))
+    (redis/sadd (model.domain/pending-domains-key domain) id)))
 
 (defn pop-user!
   [domain]
   (-?> domain
-       pending-domains-key
+       model.domain/pending-domains-key
        redis/spop
        model.user/fetch-by-id))
 
-(declare update)
+
 
 (defaction add-link
   [user link]
@@ -96,21 +92,19 @@
 (defaction edit
   [& _])
 
-(defn vcard-request
-  [user]
-  (let [body (element/make-element
-              "query" {"xmlns" namespace/vcard-query})
-        packet-map {:from (tigase/make-jid "" (config :domain))
-                    :to (tigase/make-jid user)
-                    :id "JIKSNU1"
-                    :type :get
-                    :body body}]
-    (tigase/make-packet packet-map)))
+(defn fetch-by-id
+  [id]
+  (model.user/fetch-by-id id))
 
-(defn request-vcard!
-  [user]
-  (let [packet (vcard-request user)]
-    (tigase/deliver-packet! packet)))
+(defn fetch-by-jid
+  [jid]
+  (model.user/show (.getLocalpart jid) (.getDomain jid)))
+
+(defn fetch-by-uri
+  [uri]
+  (model.user/fetch-by-uri uri))
+
+(declare request-vcard!)
 
 (defaction fetch-remote
   [user]
@@ -122,8 +116,6 @@
   [user]
   user)
 
-(declare show)
-
 (defaction find-hub
   [user]
   (model.user/get-domain user))
@@ -133,16 +125,40 @@
   (or (model.user/show username domain)
       (create {:username username :domain domain})))
 
-(defn user-for-uri
-  "Returns a user with the passed account uri,
-  or creates one if it does not exist."
+(defn find-or-create-by-jid
+  [^JID jid]
+  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
+
+(defn find-or-create-by-remote-id
+  ([user] (find-or-create-by-remote-id user {}))
+  ([user params]
+     (or (entity/fetch-one User {:id (:id user)} )
+         (create (merge user params)))))
+
+(defn find-or-create-by-uri
   [uri]
-  (->> uri model.user/split-uri
-      (apply find-or-create)))
+  (apply find-or-create (model.user/split-uri uri)))
 
 (defaction index
   [options]
   (model.user/index))
+
+(defn person->user
+  [person]
+  (if person
+    (let [id (.getUri person)
+          email (.getEmail person)
+          name (or (.getSimpleExtension person namespace/poco
+                                        "displayName" "poco" )
+                   (.getName person))
+          username (.getSimpleExtension person namespace/poco
+                                        "preferredUsername" "poco")
+          params (merge {:domain (.getHost id)}
+                        (if username {:username username})
+                        (if email {:email email})
+                        (if name {:display-name name}))]
+      (find-or-create-by-remote-id
+       {:id (str id)} params))))
 
 (defaction profile
   [& _])
@@ -158,7 +174,12 @@
   []
   true)
 
-(declare update)
+(declare vcard-request)
+
+(defn request-vcard!
+  [user]
+  (let [packet (vcard-request user)]
+    (tigase/deliver-packet! packet)))
 
 (defaction remote-create
   [user options]
@@ -166,7 +187,7 @@
                     {:updated (sugar/date)
                      :discovered true}
                     options)]
-    (update user options)))
+    (create user options)))
 
 (defaction show
   ;;   "This action just returns the passed user.
@@ -191,53 +212,32 @@
                        {:$set {:hub hub-link}})
         user)))
 
+(defaction update-profile
+  [options]
+  (let [user (current-user)]
+    (update user options)))
+
+(defn user-for-uri
+  "Returns a user with the passed account uri,
+  or creates one if it does not exist."
+  [uri]
+  (->> uri model.user/split-uri
+      (apply find-or-create)))
+
+(defn vcard-request
+  [user]
+  (let [body (element/make-element
+              "query" {"xmlns" namespace/vcard-query})
+        packet-map {:from (tigase/make-jid "" (config :domain))
+                    :to (tigase/make-jid user)
+                    :id "JIKSNU1"
+                    :type :get
+                    :body body}]
+    (tigase/make-packet packet-map)))
+
 (defaction xmpp-service-unavailable
   [user]
   (let [domain-name (:domain user)
         domain (actions.domain/find-or-create domain-name)]
     (actions.domain/set-xmpp domain false)
     user))
-
-(defn find-or-create-by-remote-id
-  ([user] (find-or-create-by-remote-id user {}))
-  ([user params]
-     (or (entity/fetch-one User {:id (:id user)} )
-         (create (merge user params)))))
-
-(defn person->user
-  [person]
-  (if person
-    (let [id (.getUri person)
-          email (.getEmail person)
-          name (or (.getSimpleExtension person namespace/poco
-                                        "displayName" "poco" )
-                   (.getName person))
-          username (.getSimpleExtension person namespace/poco
-                                        "preferredUsername" "poco")
-          params (merge {:domain (.getHost id)}
-                        (if username {:username username})
-                        (if email {:email email})
-                        (if name {:display-name name}))]
-      (find-or-create-by-remote-id
-       {:id (str id)} params))))
-
-(defn fetch-by-id
-  [id]
-  (model.user/fetch-by-id id))
-
-(defn fetch-by-jid
-  [jid]
-  (model.user/show (.getLocalpart jid) (.getDomain jid)))
-
-(defn fetch-by-uri
-  [uri]
-  (model.user/fetch-by-uri uri))
-
-(defn find-or-create-by-jid
-  [^JID jid]
-  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
-
-(defn find-or-create-by-uri
-  [uri]
-  (apply find-or-create (model.user/split-uri uri)))
-

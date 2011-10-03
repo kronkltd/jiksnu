@@ -123,6 +123,7 @@
     [[:delete "/notice/:id"]                           #'activity/delete]
     [[:get "/remote-user/*"]                           #'stream/remote-user]
     [[:get "/settings/profile"]                        #'user/profile]
+    [[:post "/settings/profile"]                       #'user/update-profile]
     [[:delete "/subscriptions/:id"]                    #'subscription/delete]
     [[:delete "/users/:id"]                            #'user/delete]
     [[:get "/users/:id"]                               #'stream/remote-profile]

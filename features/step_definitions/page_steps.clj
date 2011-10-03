@@ -311,4 +311,13 @@
 
 (Then #"that user's name should be \"(.*)\""
   (fn [display-name]
-    @that-user => (contains {:display-name display-name})))
+    (check-response
+     (with-database
+       (actions.user/show @that-user)) =>
+       (contains {:display-name display-name}))))
+
+(Then #"I should not see the class \"(.*)\""
+  (fn [class-name]
+    (check-response
+     (w/find-it @current-browser
+                {:class class-name}) => (throws NoSuchElementException))))

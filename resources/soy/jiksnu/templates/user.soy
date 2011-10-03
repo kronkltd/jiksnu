@@ -93,65 +93,66 @@
 {/template}
 
 /**
- * @param id
  * @param username
  * @param display_name
  * @param first_name
  * @param last_name
  * @param email
  * @param bio
- * @param password
- * @param confirm_password
  * @param url
  * @param domain
  * @param location
  */
 {template .editForm}
   <div>
-    <form method="post" action="/users/{$id}">
+    <form method="post" action="/settings/profile">
       <fieldset>
         <legend>Edit User</legend>
         <ul>
-          <li>{$username or ''}</li>
+          <li>
+            <label for="username">Username</label>
+            <input type="text" name="username"
+                   value="{$username}"/>
+          </li>
           <li>
             <label for="domain">Domain</label>
             <input type="text" name="domain" value="{$domain}" />
           </li>
           <li>
             <label for="display-name">Display Name</label>
-            <input type="text" name="display-name" value="{$display_name}" />
+            <input type="text" name="display-name"
+                   value="{if $display_name}{$display_name}{/if}" />
           </li>
           <li>
             <label for="first-name">First Name</label>
-            <input type="text" name="first-name" value="{$first_name}" />
+            <input type="text" name="first-name"
+                   value="{if $first_name}{$first_name}{/if}" />
           </li>
           <li>
             <label for="last-name">Last Name</label>
-            <input type="text" name="last-name" value="{$last_name}" />
+            <input type="text" name="last-name"
+                   value="{if $last_name}{$last_name}{/if}" />
           </li>
           <li>
             <label for="email">Email</label>
-            <input type="text" name="email" value="{$email}" />
+            <input type="text" name="email"
+                   value="{if $email}{$email}{/if}" />
           </li>
           <li>
             <label for="bio">Bio</label>
-            <input type="text" name="bio" value="{$bio}" />
+            <textarea name="bio">
+              {if $bio}{$bio}{/if}
+            </textarea>
           </li>
           <li>
             <label for="location">Location</label>
-            <input type="text" name="location" value="{$location}" />
-          </li>
-          <li>
-            <label for="password">Password</label>
-            <input type="text" name="password" value="{$password}" />
-          </li>
-          <li>
-            <label for="confirm-password">Confirm Password</label>
-            <input type="text" name="confirm-password" value="{$confirm_password}" />
+            <input type="text" name="location"
+                   value="{if $location}{$location}{/if}" />
           </li>
           <li>
             <label for="url">Url</label>
-            <input type="text" name="url" value="{$url}" />
+            <input type="text" name="url"
+                   value="{if $url}{$url}{/if}" />
           </li>
           <li>
             <input type="submit" value="Submit" />

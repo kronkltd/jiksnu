@@ -9,9 +9,11 @@
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace]
+                    [session :as session]
                     [redis :as redis])
             (jiksnu.actions [domain-actions :as actions.domain])
-            (jiksnu.model [user :as model.user]))
+            (jiksnu.model [domain :as model.domain]
+                          [user :as model.user]))
   (:import com.cliqset.abdera.ext.activity.object.Person
            jiksnu.model.Domain
            jiksnu.model.User))
@@ -26,11 +28,6 @@
            options {}]
        ?form))))
 
-(deftest test-pending-domains-key
-  (fact "should return a key name"
-    (let [domain (actions.domain/create (factory Domain))]
-      (pending-domains-key domain) => string?)))
-
 (deftest test-enqueue-discover
   (fact
     @(enqueue-discover user) => 1))
@@ -41,7 +38,7 @@
       (pop-user! (:domain user)) => nil))
   (testing "when there are pending users"
     (fact "should return that user"
-      @(redis/client [:del (pending-domains-key (:domain user))])
+      @(redis/client [:del (model.domain/pending-domains-key (:domain user))])
       (enqueue-discover user)
       (pop-user! (:domain user)) => user)))
 
@@ -172,3 +169,13 @@
             entry (first (abdera/get-entries feed))
             person (abdera/get-author entry feed)]
         (person->user person) => user?))))
+
+(deftest test-update-profile
+  (testing "when the user is logged in"
+    (fact "should update the user profile"
+      (let [display-name "John Smith"
+            options {:_id (:_id user)
+                     :display-name display-name}]
+        (session/with-user user
+          (update-profile options)
+          (show user) => (contains {:display-name display-name}))))))
