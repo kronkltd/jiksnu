@@ -13,7 +13,7 @@
         jiksnu.views.activity-views)
   (:require [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
-  (:import org.apache.abdera.model.Entry
+  (:import org.apache.abdera2.model.Entry
            jiksnu.model.Activity
            jiksnu.model.User))
 

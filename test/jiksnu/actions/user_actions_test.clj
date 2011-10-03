@@ -14,8 +14,7 @@
             (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.model [domain :as model.domain]
                           [user :as model.user]))
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           jiksnu.model.Domain
+  (:import jiksnu.model.Domain
            jiksnu.model.User))
 
 (use-fixtures :once test-environment-fixture)

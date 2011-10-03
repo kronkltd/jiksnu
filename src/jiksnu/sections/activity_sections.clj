@@ -19,13 +19,11 @@
             jiksnu.sections.user-sections
             (jiksnu.templates [activity :as template.activity])
             (jiksnu.xmpp [element :as element]))
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           com.ocpsoft.pretty.time.PrettyTime
+  (:import com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
-           org.apache.abdera.model.Entry
-           org.apache.abdera.ext.json.JSONUtil
+           org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
 (defn get-author
@@ -59,25 +57,25 @@
       (.setTitle (or (and (not= (:title activity) "")
                           (:title activity))
                      (:content activity)))
-      (helpers.activity/add-author activity)
+      #_(helpers.activity/add-author activity)
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
       (.addSimpleExtension
        ns/as "object-type" "activity" ns/status)
       (.addSimpleExtension
        ns/as "verb" "activity" ns/post)
-      (helpers.activity/comment-link-item activity)
+      #_(helpers.activity/comment-link-item activity)
       (helpers.activity/acl-link activity))
     (let [object (:object activity)
           object-element (.addExtension entry ns/as "object" "activity")]
-      (.setObjectType object-element ns/status)
+      #_(.setObjectType object-element ns/status)
       (if-let [object-updated (:updated object)]
         (.setUpdated object-element object-updated))
       (if-let [object-published (:published object)]
         (.setPublished object-element object-published))
       (if-let [object-id (:id object)]
         (.setId object-element object-id))
-      (.setContentAsHtml object-element (:content activity)))
+      #_(.setContentAsHtml object-element (:content activity)))
     entry))
 
 

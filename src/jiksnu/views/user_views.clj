@@ -14,12 +14,11 @@
                           [user :as model.user])
             (jiksnu.templates [activity :as templates.activity]
                               [user :as templates.user]))
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           java.net.URI
+  (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
            tigase.xml.Element
-           org.apache.abdera.model.Entry))
+           org.apache.abdera2.model.Entry))
 
 (defview #'create :html
   [request user]

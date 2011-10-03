@@ -12,14 +12,12 @@
                     [namespace :as namespace])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (jiksnu.xmpp [element :as xmpp.element]))
+                          [user :as model.user]))
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera.model.Entry
-           org.apache.abdera.ext.json.JSONUtil
+           org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
 (use-fixtures :once test-environment-fixture)

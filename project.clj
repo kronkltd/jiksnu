@@ -14,7 +14,6 @@
                  [ciste "0.2.0-SNAPSHOT"]
                  [com.cliqset/java-salmon-core "0.0.1-SNAPSHOT"]
                  [com.cliqset/java-salmon-simple "0.0.1-SNAPSHOT"]
-                 [com.cliqset.abdera/abdera-extensions-activitystreams "0.1.0-SNAPSHOT"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [compojure "0.6.5"]
                  [hiccup "0.3.6"]
@@ -26,11 +25,9 @@
                  [net.kronkltd/karras "0.7.1-SNAPSHOT"]
                  [net.kronkltd/midje "1.3-alpha2-SNAPSHOT"]
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
-                 [org.apache.abdera/abdera-client "1.1.2"]
-                 [org.apache.abdera/abdera-core "1.1.2"]
-                 [org.apache.abdera/abdera-parser "1.1.2"]
-                 [org.apache.abdera/abdera-extensions-json "1.1.2"]
-                 [org.apache.ws.commons.axiom/axiom-impl "1.2.9"]
+                 [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"]
+                 [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
+                 [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
                  [org.clojure.contrib/lazy-xml "1.3.0-alpha4"]
                  [org.clojure.contrib/zip-filter "1.3.0-alpha4"]
@@ -43,7 +40,8 @@
                  [swank-clojure "1.4.0-SNAPSHOT"]
                  ]
   :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]]
-  :exclusions [org.clojure/contrib
+  :exclusions [org.apache.abdera/abdera-core
+               org.clojure/contrib
                org.clojure/clojure-contrib
                org.slf4j/slf4j-log4j12
                org.slf4j/slf4j-jdk14]

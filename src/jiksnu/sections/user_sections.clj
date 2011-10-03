@@ -20,12 +20,11 @@
                           [user :as model.user])
             (jiksnu.templates [user :as templates.user])
             )
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           java.net.URI
+  (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera.model.Entry))
+           org.apache.abdera2.model.Entry))
 
 
 (defsection title [User]
@@ -44,7 +43,7 @@
 
 (defsection show-section [User :atom]
   [^User user & options]
-  (let [person (Person. (abdera/make-object namespace/atom "author" ""))
+  (let [person nil #_(Person. (abdera/make-object namespace/atom "author" ""))
         author-uri (full-uri user)]
     (doto person
       (.setObjectType namespace/person)

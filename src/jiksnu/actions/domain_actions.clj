@@ -76,7 +76,7 @@
 
 (defn discover-onesocialweb
   [domain]
-  (-> (spy domain)
+  (-> domain
       model.domain/ping-request
       tigase/make-packet
       tigase/deliver-packet!))

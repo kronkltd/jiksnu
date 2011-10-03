@@ -3,27 +3,22 @@
         (clojure.contrib [core :only (-?>)]))
   (:require (clj-tigase [element :as element])
             (clojure.tools [logging :as log]))
-  (:import com.cliqset.abdera.ext.activity.ActivityExtensionFactory
-           com.cliqset.abdera.ext.poco.PocoExtensionFactory
-           java.io.ByteArrayInputStream
+  (:import java.io.ByteArrayInputStream
            java.io.StringWriter
            java.net.URI
            javax.xml.namespace.QName
-           org.apache.abdera.Abdera
-           org.apache.abdera.factory.Factory
-           org.apache.abdera.model.Element
-           org.apache.abdera.model.Entry
-           org.apache.abdera.model.Feed
-           org.apache.abdera.protocol.client.AbderaClient
+           org.apache.abdera2.Abdera
+           org.apache.abdera2.factory.Factory
+           org.apache.abdera2.model.Element
+           org.apache.abdera2.model.Entry
+           org.apache.abdera2.model.Feed
+           org.apache.abdera2.protocol.client.AbderaClient
            org.apache.axiom.util.UIDGenerator))
 
-(defonce ^Abdera ^:dynamic *abdera* (Abdera.))
+(defonce ^Abdera ^:dynamic *abdera* (Abdera/getInstance))
 (defonce ^Factory ^:dynamic *abdera-factory* (.getFactory *abdera*))
 (defonce ^:dynamic *abdera-parser* (.getParser *abdera*))
 (defonce ^:dynamic *abdera-client* (AbderaClient.))
-
-(.registerExtension *abdera-factory* (ActivityExtensionFactory.))
-(.registerExtension *abdera-factory* (PocoExtensionFactory.))
 
 ;; TODO: Since I am no longer using this style of id, I am not sure if
 ;; this is still needed. Perhaps move to abdera
@@ -32,12 +27,12 @@
   (UIDGenerator/generateURNString))
 
 (defn get-text
-  [element]
+  [^Element element]
   (if element
-    (.getCData element)))
+    (.getText element)))
 
 (defn ^Entry new-entry
-  [& opts]
+  []
   (.newEntry *abdera*))
 
 (defn fetch-resource
@@ -79,13 +74,6 @@
   "Filter for map entries that do not represent namespaces"
   [[k v]]
   (not (= k :xmlns)))
-
-(defn make-object
-  ([^Element element]
-     (com.cliqset.abdera.ext.activity.Object. element))
-  ([namespace name prefix]
-     (com.cliqset.abdera.ext.activity.Object.
-      *abdera-factory* (QName. namespace name prefix))))
 
 (defn find-children
   [element path]
@@ -213,7 +201,7 @@
 
 (defn parse-object-element
   [element]
-  (let [object (make-object element)]
+  #_(let [object (make-object element)]
     {:object {:object-type (str (.getObjectType object))
               :links (parse-links object)}
      :id (str (.getId object))

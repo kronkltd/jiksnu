@@ -16,10 +16,9 @@
                           [user :as model.user]
                           [subscription :as model.subscription])
             (karras [sugar :as sugar]))
-  (:import com.cliqset.abdera.ext.activity.object.Person
-           javax.xml.namespace.QName
+  (:import javax.xml.namespace.QName
            jiksnu.model.User
-           org.apache.abdera.model.Entry
+           org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
 (defn feed-link-uri

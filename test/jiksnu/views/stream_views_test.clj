@@ -8,7 +8,7 @@
         midje.sweet)
   (:require (jiksnu.model [activity :as model.activity]
                           [user :as model.user]))
-  (:import org.apache.abdera.model.Entry
+  (:import org.apache.abdera2.model.Entry
            jiksnu.model.Activity
            jiksnu.model.User))
 

@@ -14,12 +14,11 @@
                           [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import com.cliqset.abdera.ext.activity.ActivityEntry
-           javax.xml.namespace.QName
+  (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera.ext.thread.ThreadHelper
-           org.apache.abdera.model.Entry
+           org.apache.abdera2.ext.thread.ThreadHelper
+           org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
 (defn timeline-formats

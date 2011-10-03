@@ -15,7 +15,7 @@
                             [user-helpers :as helpers.user])
             (jiksnu.model [push-subscription :as model.push]))
   (:import jiksnu.model.Activity
-           org.apache.abdera.model.Entry))
+           org.apache.abdera2.model.Entry))
 
 (defaction callback
   [params]

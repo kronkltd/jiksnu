@@ -19,10 +19,9 @@
                           [domain :as model.domain]
                           [user :as model.user])
             (hiccup [core :as hiccup]))
-  (:import com.cliqset.abdera.ext.activity.ActivityEntry
-           jiksnu.model.Activity
+  (:import jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera.ext.thread.ThreadHelper))
+           org.apache.abdera2.ext.thread.ThreadHelper))
 
 (defn set-recipients
   [activity]
@@ -79,40 +78,39 @@ serialization"
   ([entry] (entry->activity entry nil))
   ([entry feed]
      (if entry
-       (if-let [entry (ActivityEntry. entry)]
-         (let [id (str (.getId entry))
-               original-activity (model.activity/fetch-by-remote-id id)
-               title (.getTitle entry)
-               published (.getPublished entry)
-               updated (.getUpdated entry)
-               user (-> entry
-                        (abdera/get-author feed)
-                        actions.user/person->user
-                        actions.user/find-or-create-by-remote-id)
-               extension-maps (->> (.getExtensions entry)
-                                   (map helpers.activity/parse-extension-element)
-                                   doall)
-               irts (helpers.activity/parse-irts entry)
-               recipients (->> (ThreadHelper/getInReplyTos entry)
-                               (map helpers.activity/parse-link)
-                               (filter identity))
-               links (abdera/parse-links entry)
-               tags (abdera/parse-tags entry)
-               opts (apply merge
-                           (if published {:published published})
-                           (if updated {:updated updated})
-                           (if (seq recipients)
-                             {:recipients (string/join ", " recipients)})
-                           (if title {:title title})
-                           (if (seq irts) {:irts irts})
-                           (if (seq links) {:links links})
-                           (if (seq tags) {:tags tags})
-                           {:id id
-                            :author (:_id user)
-                            :public true
-                            :comment-count (abdera/get-comment-count entry)}
-                           extension-maps)]
-           (model.activity/make-activity opts))))))
+       (let [id (str (.getId entry))
+             original-activity (model.activity/fetch-by-remote-id id)
+             title (.getTitle entry)
+             published (.getPublished entry)
+             updated (.getUpdated entry)
+             user (-> entry
+                      (abdera/get-author feed)
+                      actions.user/person->user
+                      actions.user/find-or-create-by-remote-id)
+             extension-maps (->> (.getExtensions entry)
+                                 (map helpers.activity/parse-extension-element)
+                                 doall)
+             irts (helpers.activity/parse-irts entry)
+             recipients (->> (ThreadHelper/getInReplyTos entry)
+                             (map helpers.activity/parse-link)
+                             (filter identity))
+             links (abdera/parse-links entry)
+             tags (abdera/parse-tags entry)
+             opts (apply merge
+                         (if published {:published published})
+                         (if updated {:updated updated})
+                         (if (seq recipients)
+                           {:recipients (string/join ", " recipients)})
+                         (if title {:title title})
+                         (if (seq irts) {:irts irts})
+                         (if (seq links) {:links links})
+                         (if (seq tags) {:tags tags})
+                         {:id id
+                          :author (:_id user)
+                          :public true
+                          :comment-count (abdera/get-comment-count entry)}
+                         extension-maps)]
+         (model.activity/make-activity opts)))))
 
 (defn get-activities
   [feed]

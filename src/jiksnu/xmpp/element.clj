@@ -4,8 +4,7 @@
                         [element :as element])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace]))
-  (:import com.cliqset.abdera.ext.activity.ActivityEntry
-           javax.xml.namespace.QName
+  (:import javax.xml.namespace.QName
            tigase.xml.Element
            tigase.server.Packet))
 
