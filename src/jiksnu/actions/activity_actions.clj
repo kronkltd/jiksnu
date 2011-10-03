@@ -165,12 +165,6 @@ serialization"
                   {:public true})))]
     (model.activity/update (dissoc opts :picture))))
 
-(defn get-author
-  [activity]
-  (-> activity
-      :author
-      actions.user/fetch-by-id))
-
 (defn load-activities
   [^User user]
   (let [feed (helpers.user/fetch-user-feed user)]

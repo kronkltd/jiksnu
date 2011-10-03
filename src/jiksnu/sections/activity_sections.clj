@@ -11,6 +11,7 @@
                     [namespace :as namespace]
                     [session :as session]
                     [view :as view])
+            (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.helpers [activity-helpers :as helpers.activity]
                             [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
@@ -27,6 +28,11 @@
            org.apache.abdera.ext.json.JSONUtil
            tigase.xml.Element))
 
+(defn get-author
+  [activity]
+  (-> activity
+      :author
+      actions.user/fetch-by-id))
 
 (defsection title [Activity]
   [activity & options]

@@ -52,7 +52,7 @@
   (let [envelope (stream->envelope stream)]
     (if-let [activity (extract-activity envelope)]
       (if-let [key (-?> activity
-                        actions.activity/get-author
+                        helpers.activity/get-author
                         get-key)]
         (if (signature-valid? envelope key)
           (actions.activity/remote-create activity))))))
