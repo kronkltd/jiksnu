@@ -84,6 +84,11 @@
   (if id
    (entity/fetch-by-id User id)))
 
+(defn fetch-by-jid
+  [jid]
+  (show (.getLocalpart jid)
+        (.getDomain jid)))
+
 (defn fetch-by-uri
   [uri]
   (apply show (split-uri uri)))
