@@ -4,7 +4,8 @@
   :repositories {"jiksnu-internal" "http://build.jiksnu.com/repository/internal"
                  "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
                  "any23-repository-external" "http://any23.googlecode.com/svn/repo-ext"
-                 "any23-repository" "http://any23.googlecode.com/svn/repo"}
+                 "any23-repository" "http://any23.googlecode.com/svn/repo"
+                 "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
                  [clj-factory "0.1.0"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
@@ -19,10 +20,11 @@
                  [hiccup "0.3.6"]
                  [inflections "0.5.3-SNAPSHOT"]
                  [mysql/mysql-connector-java "5.1.15"]
-                 [net.kronkltd/aleph "0.2.0-beta2-SNAPSHOT"]
+                 [net.kronkltd/aleph "0.2.0-beta3-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
-                 [net.kronkltd/lamina "0.4.0-beta2-SNAPSHOT"]
+                 [net.kronkltd/lamina "0.4.0-beta3-SNAPSHOT"]
                  [net.kronkltd/karras "0.7.1-SNAPSHOT"]
+                 [net.kronkltd/midje "1.3-alpha2-SNAPSHOT"]
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
                  [org.apache.abdera/abdera-client "1.1.2"]
                  [org.apache.abdera/abdera-core "1.1.2"]
@@ -39,8 +41,7 @@
                  [ring-mock "0.1.1"]
                  [swank-clojure "1.4.0-SNAPSHOT"]
                  ]
-  :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]
-                     [net.kronkltd/midje "1.3-alpha2-SNAPSHOT"]]
+  :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]]
   :exclusions [org.clojure/contrib
                org.clojure/clojure-contrib
                org.slf4j/slf4j-log4j12
