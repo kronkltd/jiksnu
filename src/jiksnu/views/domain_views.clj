@@ -36,17 +36,19 @@
   [request domains]
   {:body (templates.domain/index-block domains)})
 
-(defview #'show :html
-  [request domain]
-  {:body (templates.domain/show domain)})
-
-
 (defview #'ping :xmpp
   [request domain]
   (model.domain/ping-request domain))
+
+(defview #'ping-error :xmpp
+  [request _])
 
 (defview #'ping-response :xmpp
   [request domain]
   #_{:status 303
    :template false
    :headers {"Location" "/main/domains"}})
+
+(defview #'show :html
+  [request domain]
+  {:body (templates.domain/show domain)})

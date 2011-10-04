@@ -154,12 +154,16 @@
   (let [{id :id
          :keys [admin domain hub links local username]} user
          uri (get-uri user)]
-    {:id (str id)
+    {:remote_id (str id)
+     :id (str (:_id user))
      :name uri
      :username username
      :domain domain
      :url (if (local? user)
-            (str "/" username) id)
+            (str "/" username)
+            (if id
+              id
+              (str "/users/" (str (:_id user)))))
      :local local
      :hub hub
      :admin admin

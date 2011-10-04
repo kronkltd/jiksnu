@@ -19,29 +19,26 @@
   [action request]
   (action))
 
-(deffilter #'user-timeline :http
-  [action request]
-  (-> request :params :username
-      model.user/show
-      action))
-
 (deffilter #'index :xmpp
   [action request]
   (action))
+
+(deffilter #'remote-profile :http
+  [action request]
+  (-> request :params :id
+      actions.user/fetch-by-id action))
+
+(deffilter #'remote-user :http
+  [action request]
+  (-> request :params :*
+      actions.user/fetch-by-uri action))
+
+(deffilter #'user-timeline :http
+  [action request]
+  (-> request :params :username
+      model.user/show action))
 
 (deffilter #'user-timeline :xmpp
   [action request]
   (-> request :to
       actions.user/fetch-by-jid action))
-
-(deffilter #'remote-profile :http
-  [action request]
-  (let [{{id :id} :params} request]
-    (let [user (actions.user/fetch-by-id id)]
-      user)))
-
-(deffilter #'remote-user :http
-  [action request]
-  (let [{{uri :*} :params} request]
-    (action (actions.user/fetch-by-uri uri))))
-

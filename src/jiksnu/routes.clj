@@ -36,6 +36,7 @@
                             [webfinger-actions :as webfinger])
             (jiksnu.filters activity-filters
                             auth-filters
+                            comment-filters
                             domain-filters
                             push-subscription-filters
                             salmon-filters
@@ -49,6 +50,7 @@
                              user-triggers)
             (jiksnu.views activity-views
                           auth-views
+                          comment-views
                           domain-views
                           push-subscription-views
                           stream-views

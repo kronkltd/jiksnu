@@ -15,19 +15,6 @@
                           [user :as model.user])
             (lamina [core :as l])))
 
-(defaction user-timeline
-  [user]
-  (if user
-    [user (model.activity/find-by-user user)]))
-
-(defaction remote-profile
-  [user]
-  (user-timeline user))
-
-(defaction remote-user
-  [user]
-  (user-timeline user))
-
 (defaction friends-timeline
   [& _])
 
@@ -37,6 +24,16 @@
 (defaction index
   [& options]
   (model.activity/index))
+
+(declare user-timeline)
+
+(defaction remote-profile
+  [user]
+  [(spy user) (spy (user-timeline user))])
+
+(defaction remote-user
+  [user]
+  (user-timeline user))
 
 (defaction stream
   [])
@@ -55,3 +52,8 @@
                   (with-serialization :http)
                   (with-format :html))))))
    ch))
+
+(defaction user-timeline
+  [user]
+  (if user
+    [user (model.activity/find-by-user user)]))
