@@ -37,7 +37,7 @@
 
 (defn fetch-resource
   [uri]
-  (.get (AbderaClient.) uri))
+  (spy (.get (AbderaClient.) uri)))
 
 (defn fetch-document
   [uri]
@@ -45,7 +45,7 @@
 
 (defn fetch-feed
   [uri]
-  (.getRoot (fetch-document uri)))
+  (.getRoot (fetch-resource uri)))
 
 (defn get-entries
   [^Feed feed]
