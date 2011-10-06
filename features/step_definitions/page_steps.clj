@@ -18,6 +18,7 @@
 (require '[jiksnu.actions.user-actions :as actions.user])
 (require '[jiksnu.model.user :as model.user])
 (import 'jiksnu.model.Activity)
+(import 'jiksnu.model.Domain)
 (import 'jiksnu.model.User)
 (import 'org.openqa.selenium.NoSuchElementException)
 
@@ -27,6 +28,7 @@
 (def domain "localhost")
 (def port 8085)
 (def that-activity (ref nil))
+(def that-domain (ref nil))
 (def that-user (ref nil))
 
 (defmacro check-response
@@ -80,6 +82,13 @@
   [method path]
   (w/get-url @current-browser (expand-url path)))
 
+(defn a-domain-exists
+  []
+  (with-database
+    (let [domain (actions.domain/create (factory Domain))]
+      (dosync
+       (ref-set that-domain domain)))))
+
 (defn a-user-exists
   []
   (with-database
@@ -125,6 +134,8 @@
   (-> @current-page :body channel-buffer->string))
 
 ;; Given
+
+(Given #"a domain exists" a-domain-exists)
 
 (Given #"an? user exists" a-user-exists)
 
@@ -190,6 +201,12 @@
         w/click)))
 
 (When #"I click the \"([^\"]*)\" button"
+  (fn [value]
+    (-> @current-browser
+        (w/find-it {:value value})
+        w/click)))
+
+(When #"I click the \"([^\"]*)\" button for that domain"
   (fn [value]
     (-> @current-browser
         (w/find-it {:value value})
@@ -322,3 +339,11 @@
     (check-response
      (w/find-it @current-browser
                 {:class class-name}) => (throws NoSuchElementException))))
+
+(Then #"that domain should be discovered"
+  (fn []
+    (check-response
+     @that-domain => (contains {:discovered true})
+     )
+    )
+  )
