@@ -12,3 +12,6 @@ lib
 logs
 resources/public/cljs
 target
+.classpath
+.project
+.settings
