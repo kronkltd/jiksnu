@@ -31,7 +31,7 @@
                             [salmon-actions :as salmon]
                             [settings-actions :as settings]
                             [stream-actions :as stream]
-                            [subscription-actions :as subscription]
+                            [subscription-actions :as sub]
                             [user-actions :as user]
                             [webfinger-actions :as webfinger])
             (jiksnu.filters activity-filters
@@ -74,7 +74,7 @@
 (def admin-routes
   (make-matchers
    [
-    [[:get "/admin/subscriptions"]                     #'subscription/index]
+    [[:get "/admin/subscriptions"]                     #'sub/index]
     [[:get "/admin/push/subscriptions"]                #'push/index]
     [[:post "/admin/users"]                            #'user/create]
     [[:get "/admin/users"]                             #'user/index]
@@ -99,9 +99,9 @@
     [[:post "/main/login"]                             #'auth/login]
     [[:post "/main/logout"]                            #'auth/logout]
     ;; [[:get "/main/events"]                             #'activity/stream]
-    [[:get "/main/ostatus"]                            #'subscription/ostatus]
-    [[:get "/main/ostatussub"]                         #'subscription/ostatussub]
-    [[:post "/main/ostatussub"]                        #'subscription/ostatussub-submit]
+    [[:get "/main/ostatus"]                            #'sub/ostatus]
+    [[:get "/main/ostatussub"]                         #'sub/ostatussub]
+    [[:post "/main/ostatussub"]                        #'sub/ostatussub-submit]
     [[:get "/main/password"]                           #'auth/password-page]
     [[:get "/main/push/hub"]                           #'push/hub]
     [[:post "/main/push/hub"]                          #'push/hub-publish]
@@ -110,8 +110,8 @@
     [[:get "/main/register"]                           #'user/register-page]
     [[:post "/main/register"]                          #'user/register]
     [[:post "/main/salmon/user/:id"]                   #'salmon/process]
-    [[:post "/main/subscribe"]                         #'subscription/subscribe]
-    [[:post "/main/unsubscribe"]                       #'subscription/unsubscribe]
+    [[:post "/main/subscribe"]                         #'sub/subscribe]
+    [[:post "/main/unsubscribe"]                       #'sub/unsubscribe]
     [[:get "/main/xrd"]                                #'webfinger/user-meta]
     [[:get "/notice/:id"]                              #'activity/show]
     [[:get "/notice/:id.:format"]                      #'activity/show]
@@ -126,10 +126,12 @@
     [[:get "/remote-user/*"]                           #'stream/remote-user]
     [[:get "/settings/profile"]                        #'user/profile]
     [[:post "/settings/profile"]                       #'user/update-profile]
-    [[:delete "/subscriptions/:id"]                    #'subscription/delete]
+    [[:delete "/subscriptions/:id"]                    #'sub/delete]
     [[:delete "/users/:id"]                            #'user/delete]
     [[:get "/users/:id"]                               #'stream/remote-profile]
     [[:post "/users/:id/discover"]                     #'user/discover]
+    [[:get "/users/:id/subscribers"]                   #'sub/subscribers]
+    [[:get "/users/:id/subscriptions"]                 #'sub/subscriptions]
     [[:post "/users/:id/update"]                       #'user/fetch-updates]
     [[:post "/users/:id/update-hub"]                   #'user/update-hub]
     [[:post "/users/:id/push/subscribe"]               #'push/subscribe]
@@ -139,8 +141,8 @@
     ;; FIXME: Updating the user should probably post to a different uri
     [[:post "/:username"]                              #'user/update]
     [[:get "/:username/all"]                           #'stream/index]
-    [[:get "/:username/subscribers"]                   #'subscription/subscribers]
-    [[:get "/:username/subscriptions"]                 #'subscription/subscriptions]]))
+    [[:get "/:username/subscribers"]                   #'sub/subscribers]
+    [[:get "/:username/subscriptions"]                 #'sub/subscriptions]]))
 
 (def xmpp-routes
   (map
@@ -197,30 +199,30 @@
 
     [{:method :get
       :name "subscriptions"}
-     #'subscription/subscriptions]
+     #'sub/subscriptions]
 
     [{:method :set
       :name "subscribe"
       :ns namespace/pubsub}
-     #'subscription/subscribed]
+     #'sub/subscribed]
 
     [{:method :set
       :name "unsubscribe"
       :ns namespace/pubsub}
-     #'subscription/unsubscribe]
+     #'sub/unsubscribe]
 
     [{:method :get
       :name "subscribers"}
-     #'subscription/subscribers]
+     #'sub/subscribers]
 
     [{:method :set
       :name "subscribers"}
-     #'subscription/subscribed]
+     #'sub/subscribed]
 
     [{:method :result
       :name "subscription"
       :ns namespace/pubsub}
-     #'subscription/remote-subscribe-confirm]
+     #'sub/remote-subscribe-confirm]
 
     ;; FIXME: This is way too general
     [{:method :headline}
