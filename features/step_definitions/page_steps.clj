@@ -343,7 +343,4 @@
 (Then #"that domain should be discovered"
   (fn []
     (check-response
-     @that-domain => (contains {:discovered true})
-     )
-    )
-  )
+     @that-domain => (contains {:discovered true}))))
