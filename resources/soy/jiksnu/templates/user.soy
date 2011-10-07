@@ -283,15 +283,37 @@
     <form method="post" action="/main/register">
       <p>
         <label for="username">Username</label>
-        <input type="text" name="username" value="{$username or ''}" />
+        <input type="text" name="username"
+               value="{if $username}{$username}{/if}" />
       </p>
       <p>
         <label for="password">Password</label>
-        <input type="password" name="password" value="{$password or ''}" />
+        <input type="password" name="password"
+               value="{if $password}{$password}{/if}" />
       </p>
       <p>
         <label for="confirm-password">Confirm Password</label>
-        <input type="password" name="confirm-password" value="{$confirm_password or ''}" />
+        <input type="password" name="confirm-password"
+               value="{if $confirm_password}{$confirm_password}{/if}" />
+      </p>
+      <p>
+        <label for="email">Email</label>
+        <input type="email" name="email"
+               value=""/>
+      </p>
+      <p>
+        <label for="display-name">Display Name</label>
+        <input type="text" name="display-name"
+               value=""/>
+      </p>
+      <p>
+        <label for="location">Location</label>
+        <input type="text" name="location" value=""/>
+      </p>
+      <p>
+        <input type="checkbox" name="accepted" value="true" />
+        <label for="accepted">I have checked the box</label>
+      </p>
       </p>
       <p>
         <input type="submit" value="Register" />
@@ -368,11 +390,11 @@
     <p><a class="url" rel="me" href="{$url}">{$url}</a></p>
     <p>Id: {$remote_id}</p>
     <p>Local: {$local}</p>
-    <p>Hub: {$hub ? $hub : ''}</p>
-    <p>Discovered: {$discovered ? 'true' : ''}</p>
-    <p>Last Updated: {$updated ? $updated : ''}</p>
+    <p>Hub: {$hub ? $hub : 'unknown'}</p>
+    <p>Discovered: {$discovered ? 'true' : 'false'}</p>
+    <p>Last Updated: {$updated ? $updated : 'never'}</p>
+    {call .userActions data="all" /}
     {call .linksList data="all" /}
-    {call .subscriptionSection data="all" /}
   </div>
 {/template}
 
@@ -384,6 +406,17 @@
   <div class="vcard">
     {call .linkTo data="all" /}
   </div>
+{/template}
+
+
+/**
+ * @param id
+ */
+{template .subscribeButton}
+  <form method="post"
+        action="/users/{$id}/subscribe">
+    <input type="submit" value="Subscribe" class="subscribe-button" />
+  </form>
 {/template}
 
 
@@ -457,19 +490,19 @@
     {if $id == $authenticated.id}
       <p>This is you</p>
     {/if}
-    <ul>
-      <li>
-        {call .discoverButton data="all" /}
-      </li>
-      <li>
-        {call .updateButton data="all" /}
-      </li>
-      <li>
-        {call .subscribeButton data="all" /}
-      </li>
-      <li>
-        {call .subscribeSection data="all" /}
-      </li>
-    </ul>
   {/if}
+  <ul>
+    <li>
+      {call .discoverButton data="all" /}
+    </li>
+    <li>
+      {call .updateButton data="all" /}
+    </li>
+    <li>
+      {call .subscribeButton data="all" /}
+    </li>
+    <li>
+      {call .subscribeSection data="all" /}
+    </li>
+  </ul>
 {/template}
