@@ -40,8 +40,7 @@
     <form method="post"
           action="/main/ostatussub">
       <p>
-        <input name="profile"
-               type="text" />
+        <input name="profile" type="text" />
       </p>
       <p>
         <input type="submit" value="Submit" />
@@ -88,7 +87,7 @@
   {if $user}
     <div class="subscribers">
       <h3>
-        <a href="{$user.uri or ''}/subscribers">Subscribers</a>
+        <a href="/users/{$user.id}/subscribers">Subscribers</a>
       </h3>
       <ul>
         {foreach $subscriber in $user.subscribers}
@@ -152,7 +151,7 @@
   {if $user}
     <div class="subscriptions">
       <h3>
-        <a href="{$user.uri or ''}/subscriptions">Subscriptions</a>
+        <a href="/users/{$user.id}/subscriptions">Subscriptions</a>
       </h3>
       <ul>
         {foreach $subscription in $user.subscriptions}
