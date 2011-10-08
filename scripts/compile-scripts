@@ -1,6 +1,6 @@
 #!/bin/sh
 
 cd resources/public
-# cljsc ../src/main/clojurescript '{:output-dir "public/cljs" :optimizations :advanced}' > cljs.js
-cljsc ../../src/main/clojurescript '{:output-dir "cljs"}' > cljs/bootstrap.js
+# cljsc ../resources/clojurescript '{:output-dir "public/cljs" :optimizations :advanced}' > cljs.js
+cljsc ../../resources/clojurescript '{:output-dir "cljs"}' > cljs/bootstrap.js
 cd ..

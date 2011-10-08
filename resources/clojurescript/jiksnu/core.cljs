@@ -1,7 +1,9 @@
 (ns jiksnu.core
   (:require [goog.events :as events]
             [goog.dom :as dom]
-            [goog.net.XhrIo :as xhrio]))
+            [goog.net.XhrIo :as xhrio]
+            [pinot.html :as html]
+            [pinot.dom :as dom]))
 
 (defn greet
   [n]
@@ -56,7 +58,11 @@
 (defn -main
   []
   (console/log "starting application")
-  (add-handler do-delete-activity (find-element "delete-button"))
-  (add-handler do-like-button (find-element "like-button")))
+  (let [x (html/html [:p [:em "hey"]])]
+    (dom/css x {:color :blue})
+    (dom/attr x {:class "para"})
+    (dom/append (dom/query "#content"))
+    (add-handler do-delete-activity (find-element "delete-button"))
+    (add-handler do-like-button (find-element "like-button"))))
 
 (-main)
