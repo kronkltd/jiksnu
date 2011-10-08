@@ -34,6 +34,7 @@
                  [org.clojure/tools.logging "0.1.2"]
                  [org.deri.any23/any23-core "0.5.0"]
                  [org.slf4j/slf4j-simple "1.6.1"]
+                 [pinot "0.1.1-SNAPSHOT"]
                  [ring/ring-core "0.3.11"]
                  [ring/ring-devel "0.3.11"]
                  [ring-mock "0.1.1"]
