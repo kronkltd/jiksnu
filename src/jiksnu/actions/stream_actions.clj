@@ -29,7 +29,7 @@
 
 (defaction remote-profile
   [user]
-  (spy (user-timeline user)))
+  (user-timeline user))
 
 (defaction remote-user
   [user]

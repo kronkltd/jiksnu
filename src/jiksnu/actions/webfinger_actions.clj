@@ -90,9 +90,9 @@
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
-  (let [xrd (fetch-user-meta (spy user))
-        links (get-links (spy xrd))
-        new-user (assoc user :links (spy links))
+  (let [xrd (fetch-user-meta user)
+        links (get-links xrd)
+        new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
         uri (if feed (-?> feed
                           .getAuthor
