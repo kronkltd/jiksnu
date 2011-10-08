@@ -39,7 +39,7 @@
 (defn fetch-updates-http
   [user]
   (let [uri (helpers.user/feed-link-uri user)]
-    (actions.activity/fetch-remote-feed uri)))
+    (actions.activity/fetch-remote-feed (spy uri))))
 
 (defn fetch-updates-xmpp
   [user]
@@ -57,8 +57,8 @@
   [action _ user]
   (let [domain (model.domain/show (:domain user))]
     (if (:xmpp domain)
-      (fetch-updates-xmpp user)
-      (fetch-updates-http user))))
+      (spy (fetch-updates-xmpp user))
+      (spy (fetch-updates-http user)))))
 
 (defn create-trigger
   [action params user]
