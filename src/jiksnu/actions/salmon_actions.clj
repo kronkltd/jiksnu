@@ -6,8 +6,10 @@
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [user :as model.user]
-                          [signature :as model.signature]))
-  (:import jiksnu.model.User))
+                          [signature :as model.signature])
+            [saxon :as s])
+  (:import jiksnu.model.User
+           org.apache.commons.codec.binary.Base64))
 
 (defn get-key
   [^User author]
@@ -24,9 +26,8 @@
 
 (defn decode-envelope
   [envelope]
-  #_(->> envelope
-       (.decodeData default-sig)
-       String.))
+  (let [data (:data envelope)]
+    (String. (Base64/decodeBase64 (spy data)))))
 
 (defn extract-activity
   [envelope]
@@ -38,7 +39,9 @@
 (defn stream->envelope
   "convert an input stream to an envelope"
   [input-stream]
-  #_(.deserialize deserializer input-stream))
+  (let [doc (s/compile-xml input-stream)]
+    {:sig (str (s/query "//*[local-name()='sig']/text()" doc))
+     :data (str (s/query "//*[local-name()='data']/text()" doc))}))
 
 (defaction process
   [stream]

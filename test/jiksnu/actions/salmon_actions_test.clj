@@ -31,7 +31,7 @@
 (deftest test-decode-envelope
   (fact "should return a string"
     (let [envelope (stream->envelope (valid-envelope-stream))]
-     (decode-envelope envelope) => string?)))
+      (decode-envelope envelope) => string?)))
 
 (deftest test-extract-activity
   (fact "should return an activity"
