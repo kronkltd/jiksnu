@@ -22,6 +22,7 @@
            java.io.StringReader
            java.text.SimpleDateFormat
            java.util.Date
+           java.net.URL
            org.bson.types.ObjectId
            org.dom4j.DocumentFactory
            org.dom4j.io.SAXReader
@@ -131,6 +132,10 @@
        :url url}
       h/sync-http-request
       :body f/channel-buffer->string))
+
+(defn fetch-document
+  [url]
+  (.read xml-reader (URL. url)))
 
 (defn drop-all!
   []
