@@ -38,7 +38,7 @@
                  [ring-mock "0.1.1"]
                  [swank-clojure "1.4.0-SNAPSHOT"]
                  ]
-  ;; :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]]
+  :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]]
   :exclusions [org.apache.abdera/abdera-core
                org.clojure/contrib
                org.clojure/clojure-contrib
