@@ -11,8 +11,10 @@
             (jiksnu.model [user :as model.user])
             (karras [collection :as col]))
   (:import tigase.db.AuthorizationException
+           tigase.db.AuthRepository
            tigase.db.AuthRepositoryImpl
            tigase.db.UserNotFoundException
+           tigase.db.UserRepository
            tigase.xmpp.BareJID)
   (:gen-class
    :implements [tigase.db.AuthRepository
@@ -60,9 +62,11 @@
      ))
 
 (defn -digestAuth
-  [this user digest id alg]
+  [^AuthRepository this ^BareJID user ^String digest
+   ^String id ^String alg]
   (log/info "digest auth")
-  (.digestAuth @auth-repository user digest id alg))
+  (.digestAuth
+   @auth-repository user digest id alg))
 
 (defn key-seq
   [subnode key]
@@ -94,11 +98,11 @@
 (defn ^String -getData
   "returns a value associated with given key for user repository in default
 subnode."
-  ([this ^BareJID user ^String key]
+  ([^UserRepository this ^BareJID user ^String key]
      (.getData this user nil key nil))
-  ([this ^BareJID user ^String subnode ^String key]
+  ([^UserRepository this ^BareJID user ^String subnode ^String key]
      (.getData this user subnode key nil))
-  ([this ^BareJID user-id ^String subnode ^String key ^String def]
+  ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
      ;; TODO: implement
      (try
        (with-database
@@ -113,7 +117,7 @@ subnode."
 (defn -getDataList
   "returns array of values associated with given key or null if given key does
 not exist for given user ID in given node path."
-  [this ^BareJID user ^String subnode ^String key]
+  [^UserRepository this ^BareJID user ^String subnode ^String key]
   ;; TODO: implement
   (log/info "get data list")
   ;; (spy user)
@@ -123,9 +127,9 @@ not exist for given user ID in given node path."
 
 (defn -getKeys
   "returns list of all keys stored in given subnode in user repository."
-  ([this ^BareJID user-id]
+  ([^UserRepository this ^BareJID user-id]
      (.getKeys this user-id nil))
-  ([this ^BareJID user ^String subnode]
+  ([^UserRepository this ^BareJID user ^String subnode]
      ;; TODO: implement
      (log/info "get keys")
      ;; (spy user)
@@ -134,16 +138,16 @@ not exist for given user ID in given node path."
 
 (defn ^String -getResourceUri
   "Returns a DB connection string or DB connection URI."
-  [this]
+  [^UserRepository this]
   (log/info "get resource uri")
   ;; TODO: implement
   nil)
 
 (defn -getSubnodes
   "returns list of all direct subnodes from given node."
-  ([this ^BareJID user-id]
+  ([^UserRepository this ^BareJID user-id]
      (.getSubnodes this user-id nil))
-  ([this ^BareJID user-id ^String subnode]
+  ([^UserRepository this ^BareJID user-id ^String subnode]
      (log/info "get subnodes")
      ;; (spy user-id)
      ;; (spy subnode)
@@ -151,7 +155,7 @@ not exist for given user ID in given node path."
 
 (defn -getUsers
   "This method is only used by the data conversion tools."
-  [this ]
+  [^UserRepository this]
   (log/info "get users")
   ;; TODO: implement
   (actions.user/index))
@@ -159,12 +163,12 @@ not exist for given user ID in given node path."
 (defn ^long -getUsersCount
   "This method is only used by the server statistics component to report number
 of registered users"
-  ([this]
+  ([^UserRepository this]
      ;; TODO: implement
      (with-database
        (log/info "get users count")
        (count (actions.user/index))))
-  ([this ^String domain]
+  ([^UserRepository this ^String domain]
      (with-database
        (log/info "get users count")
        (count (actions.user/index

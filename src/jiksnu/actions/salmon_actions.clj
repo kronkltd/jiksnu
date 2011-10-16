@@ -27,7 +27,7 @@
 (defn decode-envelope
   [envelope]
   (let [data (:data envelope)]
-    (String. (Base64/decodeBase64 (spy data)))))
+    (String. (Base64/decodeBase64 data))))
 
 (defn extract-activity
   [envelope]

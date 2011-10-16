@@ -16,24 +16,25 @@
            java.util.Map
            tigase.xml.Element
            tigase.xmpp.StanzaType
+           tigase.xmpp.XMPPProcessor
            tigase.xmpp.XMPPResourceConnection)
   (:gen-class
    :extends tigase.xmpp.XMPPProcessorAbstract))
 
 (defn -id
-  [this]
+  [^XMPPProcessor this]
   "jiksnu")
 
 (defn -supElements
   "The elements this plugin is inerested in"
-  [this]
+  [^XMPPProcessor this]
   (into-array
    String
    '("iq" "message")))
 
 (defn -supNamespaces
   "The namespaces this plugin is interested in"
-  [this]
+  [^XMPPProcessor this]
   (into-array
    String
    '("jabber:client" "jabber:client")))
@@ -51,7 +52,7 @@
     (route-fn merged-request)))
 
 (defn -process
-  [this packet session
+  [this ^Packet packet session
    repo queue settings]
   (with-database
     (if-let [to (.getStanzaTo packet)]
