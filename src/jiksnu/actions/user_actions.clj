@@ -161,11 +161,16 @@
   [& _])
 
 (defaction register
-  [username password]
-  (create {:username username
-           :domain (config :domain)
-           ;; TODO: encrypt here
-           :password password}))
+  [{:keys [username password email display-name location]}]
+  (if (and username password)
+    (let [user (merge {:username username
+                       :domain (config :domain)
+                       ;; TODO: encrypt here
+                       :password password}
+                      (if email {:email email})
+                      (if display-name {:display-name display-name})
+                      (if location {:location location}))]
+      (create user))))
 
 (defaction register-page
   []
