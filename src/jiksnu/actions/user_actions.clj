@@ -35,7 +35,7 @@
   [user]
   (let [domain (:domain user)
         id (:_id user)]
-    (redis/sadd (model.domain/pending-domains-key domain) id)))
+    #_(redis/sadd (model.domain/pending-domains-key domain) id)))
 
 (defn pop-user!
   [domain]
