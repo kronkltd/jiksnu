@@ -17,7 +17,6 @@
                  [compojure "0.6.5"]
                  [hiccup "0.3.6"]
                  [inflections "0.5.3-SNAPSHOT"]
-                 [mysql/mysql-connector-java "5.1.15"]
                  [net.kronkltd/aleph "0.2.0-beta3-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
                  [net.kronkltd/lamina "0.4.0-beta3-SNAPSHOT"]
@@ -28,8 +27,6 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
-                 ;; [org.clojure.contrib/lazy-xml "1.3.0-alpha4"]
-                 ;; [org.clojure.contrib/zip-filter "1.3.0-alpha4"]
                  [org.clojure/data.zip "0.1.1-SNAPSHOT"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.deri.any23/any23-core "0.5.0"]
@@ -51,6 +48,6 @@
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository]
   :main jiksnu.core
-  :warn-on-reflection true
+  :warn-on-reflection false
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"])

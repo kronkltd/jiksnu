@@ -32,9 +32,11 @@
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
 (defn enqueue-discover
+  "Queues the user to be discoverd once discovery of the domain has been completed."
   [user]
   (let [domain (:domain user)
         id (:_id user)]
+    1
     #_(redis/sadd (model.domain/pending-domains-key domain) id)))
 
 (defn pop-user!

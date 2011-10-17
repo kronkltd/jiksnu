@@ -18,7 +18,7 @@
 
 (deffilter #'discover :http
   [action request]
-  (-> request :params :* action))
+  (-> request :params :* model.domain/show action))
 
 (deffilter #'find-or-create :http
   [action request]

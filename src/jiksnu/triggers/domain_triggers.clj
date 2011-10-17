@@ -5,7 +5,7 @@
 
 (defn create-trigger
   [action [domain-name] domain]
-  (actions.domain/discover (:_id domain)))
+  (actions.domain/discover domain))
 
 (defn discover-trigger
   [action [id] domain])

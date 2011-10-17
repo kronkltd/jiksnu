@@ -28,7 +28,7 @@
        ?form))))
 
 (deftest test-enqueue-discover
-  (fact
+  (fact "the user should be queued"
     @(enqueue-discover user) => 1))
 
 (deftest test-pop-user!
