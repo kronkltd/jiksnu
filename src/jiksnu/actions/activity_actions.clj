@@ -67,7 +67,7 @@
     (if (or (session/is-admin?) (= actor-id author))
       (model.activity/delete activity))))
 
-(defaction edit
+(defaction edit-page
   [id]
   (model.activity/fetch-by-id id))
 

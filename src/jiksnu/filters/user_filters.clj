@@ -65,7 +65,7 @@
 
 (deffilter #'index :xmpp
   [action request]
-  '())
+  (action {}))
 
 (deffilter #'profile :http
   [action request]

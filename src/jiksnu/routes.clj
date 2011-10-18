@@ -75,7 +75,7 @@
     [[:get "/admin/push/subscriptions"]                #'push/index]
     [[:post "/admin/users"]                            #'user/create]
     [[:get "/admin/users"]                             #'user/index]
-    [[:get "/admin/settings"]                          #'settings/edit]]))
+    [[:get "/admin/settings"]                          #'settings/edit-page]]))
 
 (def http-routes
   (make-matchers
@@ -115,7 +115,7 @@
     [[:get  "/notice/:id/comment"]                     #'comment/new-comment]
     [[:post "/notice/:id/comments"]                    #'comment/add-comment]
     [[:post "/notice/:id/comments/update"]             #'comment/fetch-comments]
-    [[:get "/notice/:id/edit"]                         #'activity/edit]
+    [[:get "/notice/:id/edit"]                         #'activity/edit-page]
     [[:post "/notice/:id/likes"]                       #'like/like-activity]
     [[:post "/notice/new"]                             #'activity/post]
     [[:post "/notice/:id"]                             #'activity/update]

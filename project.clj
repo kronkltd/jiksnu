@@ -21,7 +21,7 @@
                  [net.kronkltd/clj-gravatar "0.0.1"]
                  [net.kronkltd/lamina "0.4.0-beta3-SNAPSHOT"]
                  [net.kronkltd/karras "0.7.1-SNAPSHOT"]
-                 [midje "1.3-alpha3"]
+                 [midje "1.3-alpha4"]
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]

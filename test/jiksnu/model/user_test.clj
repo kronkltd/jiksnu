@@ -1,12 +1,13 @@
 (ns jiksnu.model.user-test
   (:use (ciste [config :only (config)]
                [debug :only (spy)])
-        clj-factory.core
+        (clj-factory [core :only (factory fseq)])
         clojure.test
         (jiksnu core-test model)
         jiksnu.model.user
         midje.sweet)
-  (:require (jiksnu.actions [domain-actions :as actions.domain]
+  (:require (clj-tigase [packet :as packet])
+            (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.model [domain :as model.domain]))
   (:import jiksnu.model.Domain
@@ -144,3 +145,9 @@
         (user-meta-uri user) => (get-uri user)))))
 
 (deftest test-format-data)
+
+(deftest test-vcard-request
+  (fact
+    (let [user (actions.user/create (factory User))]
+      (vcard-request user) => packet/packet?)))
+

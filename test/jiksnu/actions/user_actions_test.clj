@@ -69,14 +69,6 @@
   (future-fact
     (discover-pending-users (:domain user)) => nil))
 
-(deftest test-edit
-  (fact
-    (edit user) => nil))
-
-(deftest test-vcard-request
-  (fact
-    (vcard-request user) => packet/packet?))
-
 (deftest test-request-vcard!
   (fact
     (request-vcard! user) => packet/packet?))

@@ -2,6 +2,6 @@
   (:use (ciste [core :only (defaction)])
         (jiksnu session)))
 
-(defaction edit
+(defaction edit-page
   []
   (is-admin?))

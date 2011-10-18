@@ -3,10 +3,12 @@
                [debug :only (spy)])
         [clj-gravatar.core :only (gravatar-image)]
         jiksnu.model)
-  (:require [jiksnu.abdera :as abdera]
+  (:require (jiksnu [abdera :as abdera]
+                    [namespace :as namespace])
             [clojure.string :as string]
             (clojure.tools [logging :as log])
-            (clj-tigase [core :as tigase])
+            (clj-tigase [core :as tigase]
+                        [element :as element])
             [karras.entity :as entity]
             [jiksnu.model.domain :as model.domain])
   (:import jiksnu.model.Domain
@@ -180,3 +182,14 @@
                  (and (:email user) (gravatar-image (:email user)))
                  (gravatar-image (:jid user))
                  (gravatar-image uri) "")}))
+
+(defn vcard-request
+  [user]
+  (let [body (element/make-element
+              "query" {"xmlns" namespace/vcard-query})
+        packet-map {:from (tigase/make-jid "" (config :domain))
+                    :to (tigase/make-jid user)
+                    :id "JIKSNU1"
+                    :type :get
+                    :body body}]
+    (tigase/make-packet packet-map)))

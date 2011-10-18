@@ -88,13 +88,6 @@
         #_(Thread/sleep 3000)))
   #_(recur domain))
 
-(defaction edit
-  [& _])
-
-(defn fetch-by-id
-  [id]
-  (model.user/fetch-by-id id))
-
 (defn fetch-by-jid
   [jid]
   (model.user/show (.getLocalpart jid) (.getDomain jid)))
@@ -208,6 +201,7 @@
       model.user/update))
 
 (defaction update-hub
+  ;; Determine the user's hub link and update the user object
   [user]
   (if-let [hub-link (-?> user
                          helpers.user/fetch-user-feed
@@ -228,17 +222,6 @@
   (->> uri model.user/split-uri
       (apply find-or-create)))
 
-(defn vcard-request
-  [user]
-  (let [body (element/make-element
-              "query" {"xmlns" namespace/vcard-query})
-        packet-map {:from (tigase/make-jid "" (config :domain))
-                    :to (tigase/make-jid user)
-                    :id "JIKSNU1"
-                    :type :get
-                    :body body}]
-    (tigase/make-packet packet-map)))
-
 (defaction xmpp-service-unavailable
   [user]
   (let [domain-name (:domain user)
@@ -254,6 +237,7 @@
         (actions.domain/get-user-meta-uri domain username))))
 
 (defn fetch-user-meta
+  "returns a user meta document"
   [^User user]
   (-> user
       model.user/user-meta-uri
@@ -279,4 +263,3 @@
   (->> uri
        model.user/split-uri
        (apply model.user/show )))
-
