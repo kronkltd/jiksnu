@@ -185,11 +185,11 @@
     (let [user (actions.user/update (assoc user :domain "kronkltd.net"))
           domain (get-domain user)]
       (actions.domain/update
-       (assoc domain :links
+       (assoc (spy domain) :links
               [{:rel "lrdd"
                 :template (str "http://" (:_id domain)
                                "/main/xrd?uri={uri}")}]))
-      (fetch-user-meta user)) => nil))
+      (fetch-user-meta (spy user))) => nil))
 
 (deftest test-user-meta
   (testing "when the url matches a known user"
