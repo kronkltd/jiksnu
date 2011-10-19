@@ -26,7 +26,7 @@
 (deffilter #'remote-profile :http
   [action request]
   (-> request :params :id
-      actions.user/fetch-by-id action))
+      model.user/fetch-by-id action))
 
 (deffilter #'remote-user :http
   [action request]

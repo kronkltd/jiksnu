@@ -175,7 +175,7 @@
 
 (defn request-vcard!
   [user]
-  (let [packet (vcard-request user)]
+  (let [packet (model.user/vcard-request user)]
     (tigase/deliver-packet! packet)))
 
 (defaction remote-create

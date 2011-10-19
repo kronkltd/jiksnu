@@ -40,13 +40,8 @@
 (deffilter #'discover :http
   [action request]
   (let [{{id :id} :params} request
-        user (fetch-by-id id)]
+        user (model.user/fetch-by-id id)]
     (action user)))
-
-(deffilter #'edit :http
-  [action request]
-  (let [user (show request)]
-    user))
 
 (deffilter #'fetch-remote :xmpp
   [action request]
@@ -55,7 +50,7 @@
 (deffilter #'fetch-updates :http
   [action request]
   (let [{{id :id} :params} request
-        user (fetch-by-id id)]
+        user (model.user/fetch-by-id id)]
     (action user)))
 
 (deffilter #'index :http

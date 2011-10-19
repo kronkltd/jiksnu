@@ -14,9 +14,11 @@
   [url]
   (let [hm (-> url spy model/fetch-resource s/compile-xml)
         host (s/query "//hm:Host/text()" model/bound-ns hm)]
-    (if (= (.getHost (URI. url)) (str host))
+    ;; (if (= (.getHost (URI. url)) (str host))
       hm
-      (throw (RuntimeException. "Hostname does not match")))))
+      ;; (throw (RuntimeException. "Hostname does not match"))
+      ;; )
+  ))
 
 (defn host-meta
   [domain]
