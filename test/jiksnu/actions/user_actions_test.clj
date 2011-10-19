@@ -11,7 +11,8 @@
                     [namespace :as namespace]
                     [session :as session]
                     [redis :as redis])
-            (jiksnu.actions [domain-actions :as actions.domain])
+            (jiksnu.actions [domain-actions :as actions.domain]
+                            [user-actions :as actions.user])
             (jiksnu.model [domain :as model.domain]
                           [user :as model.user]))
   (:import jiksnu.model.Domain
@@ -27,19 +28,19 @@
            options {}]
        ?form))))
 
-(deftest test-enqueue-discover
-  (fact "the user should be queued"
-    @(enqueue-discover user) => 1))
+;; (deftest test-enqueue-discover
+;;   (fact "the user should be queued"
+;;     (enqueue-discover user) => 1))
 
-(deftest test-pop-user!
-  (testing "when there are no pending users"
-    (fact "should return nil"
-      (pop-user! (:domain user)) => nil))
-  (testing "when there are pending users"
-    (fact "should return that user"
-      @(redis/client [:del (model.domain/pending-domains-key (:domain user))])
-      (enqueue-discover user)
-      (pop-user! (:domain user)) => user)))
+;; (deftest test-pop-user!
+;;   (testing "when there are no pending users"
+;;     (fact "should return nil"
+;;       (pop-user! (:domain user)) => nil))
+;;   (testing "when there are pending users"
+;;     (fact "should return that user"
+;;       @(redis/client [:del (model.domain/pending-domains-key (:domain user))])
+;;       (enqueue-discover user)
+;;       (pop-user! (:domain user)) => user)))
 
 (deftest test-add-link
   (fact
@@ -181,7 +182,8 @@
 
 (deftest test-fetch-user-meta
   (fact "should return an xml stream"
-    (let [domain (model.user/get-domain user)]
+    (let [user (actions.user/update (assoc user :domain "kronkltd.net"))
+          domain (get-domain user)]
       (actions.domain/update
        (assoc domain :links
               [{:rel "lrdd"

@@ -47,6 +47,9 @@
        model.user/fetch-by-id))
 
 
+(defn get-domain
+  [^User user]
+  (-> user :domain actions.domain/find-or-create))
 
 (defaction add-link
   [user link]
@@ -110,7 +113,7 @@
 
 (defaction find-hub
   [user]
-  (model.user/get-domain user))
+  (get-domain user))
 
 (defaction find-or-create
   [username domain]
@@ -232,9 +235,9 @@
 (defn get-user-meta-uri
   [user]
   (let [username (:username user)
-        domain (model.user/get-domain user)]
+        domain (get-domain user)]
     (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-uri domain username))))
+        (actions.domain/get-user-meta-uri (:_id domain) username))))
 
 (defn fetch-user-meta
   "returns a user meta document"
