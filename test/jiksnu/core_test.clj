@@ -1,5 +1,6 @@
 (ns jiksnu.core-test
-  (:use ciste.config
+  (:use (ciste [config :only [load-config with-environment]]
+               [triggers :only [*thread-pool*]])
         clojure.test
         jiksnu.model)
   (:require (karras [entity :as entity]))
@@ -12,4 +13,5 @@
   (with-environment :test
     (with-database
       (drop-all!)
-      (f))))
+      (f)
+      (.shutdown @*thread-pool*))))
