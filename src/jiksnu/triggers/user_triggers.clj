@@ -66,6 +66,17 @@
   [action params user]
   (actions.user/discover user))
 
+(defn add-link-trigger
+  [action [user link] _]
+  (if (= (:rel link) "magic-public-key")
+    (let [key-string (:href link)
+          [_ n e]
+          (re-matches
+           #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+           key-string)]
+      (model.signature/set-armored-key (:_id user) n e))))
+
+(add-trigger! #'actions.user/add-link      #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
 (add-trigger! #'actions.user/discover      #'discover-user)
 (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)

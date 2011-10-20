@@ -21,7 +21,7 @@
   (testing "when the url points to a valid XRD document"
     (fact
       (let [url "http://kronkltd.net/.well-known/host-meta"]
-        (fetch-host-meta url) => (partial instance? XRD))))
+        (fetch-host-meta url) => vector?)))
   (testing "when the url does not point to a valid XRD document"
     (future-fact "should raise an exception"
       (let [url "http://example.com/.well-known/host-meta"]
@@ -29,7 +29,7 @@
 
 (deftest test-host-meta
   (fact
-    (host-meta) => (partial instance? XRDImpl)))
+    (host-meta) => vector?))
 
 (deftest test-user-meta
   (testing "when the url matches a known user"
@@ -53,8 +53,8 @@
     (fetch-user-meta user) => nil))
 
 (deftest test-get-links
-  (fact
-    (let [xrd (XRD.)]
+  (future-fact
+    (let [xrd nil]
       (get-links xrd)) => seq?))
 
 (deftest test-get-keys-from-xrd

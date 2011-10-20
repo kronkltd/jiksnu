@@ -7,14 +7,7 @@
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [user :as model.user]
                           [signature :as model.signature]))
-  (:import com.cliqset.salmon.Salmon
-           com.cliqset.magicsig.dataparser.SimpleAtomDataParser
-           com.cliqset.magicsig.MagicSig
-           jiksnu.model.User))
-
-(defonce default-sig (MagicSig/getDefault))
-(defonce salmon (Salmon/getDefault))
-(defonce deserializer (com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer.))
+  (:import jiksnu.model.User))
 
 (defn get-key
   [^User author]
@@ -24,14 +17,14 @@
 
 (defn signature-valid?
   [envelope key]
-  (->> (.verify default-sig envelope (list key))
+  #_(->> (.verify default-sig envelope (list key))
        .getSignatureVerificationResults
        (map #(.isVerified %))
        (some identity)))
 
 (defn decode-envelope
   [envelope]
-  (->> envelope
+  #_(->> envelope
        (.decodeData default-sig)
        String.))
 
@@ -45,7 +38,7 @@
 (defn stream->envelope
   "convert an input stream to an envelope"
   [input-stream]
-  (.deserialize deserializer input-stream))
+  #_(.deserialize deserializer input-stream))
 
 (defaction process
   [stream]

@@ -24,45 +24,32 @@
            jiksnu.model.Domain
            jiksnu.model.User))
 
-(defonce ^:dynamic *fetcher*
-  (JavaNetXRDFetcher.))
+(defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
+                   :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
 
-(defonce ^:dynamic *xrd-builder*
-  (XRDBuilder.))
+(defn force-coll
+  [x]
+  (if (coll? x)
+    x (list x)))
 
-;; TODO: rename fetch-host-meta
 (defn fetch-host-meta
-  "returns a cliqset xrd corresponding to the given url"
   [url]
-  (if url
-    (try
-      (.fetchXRD *fetcher* (URL. url))
-      (catch Exception e))))
+  (let [hm (-> url fetch-resource s/compile-xml)
+        host (s/query "//hm:Host/text()" bound-ns hm)]
+    (if (= (.getHost (URI. url)) (str host))
+      hm
+      (throw (RuntimeException. "Hostname does not match")))))
 
 (defaction host-meta
   []
-  (let [xrd (XRD.)]
-    ;; TODO: add the other info items
-    (.buildObject *xrd-builder*)))
+  (let [domain (config :domain)]
+    (model.webfinger/host-meta domain)))
 
 (defaction user-meta
   [uri]
   (->> uri
        model.user/split-uri
        (apply model.user/show )))
-
-(defn parse-link
-  "Turns a XRD link into a may with the same info"
-  [link]
-  (let [href (str (.getHref link))
-        rel (str (.getRel link))
-        template (.getTemplate link)
-        type (.getType link)]
-    (merge {}
-           (if href {:href href})
-           (if rel {:rel rel})
-           (if template {:template template})
-           (if type {:type type}))))
 
 (defn get-user-meta-uri
   [user]
@@ -77,17 +64,22 @@
       model.user/user-meta-uri
       fetch-host-meta))
 
-
-
 (defn get-links
-  [^XRD xrd]
-  (if xrd (map parse-link (.getLinks xrd))))
+  [xrd]
+  (let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
+    (map
+     (fn [link]
+       {:rel (s/query "string(@rel)" bound-ns link)
+        :template (s/query "string(@template)" bound-ns link)
+        :href (s/query "string(@href)" bound-ns link)
+        :lang (s/query "string(@lang)" bound-ns link)})
+     links)))
 
-(defn get-keys-from-xrd
-  [uri]
-  (let [host-meta (HostMeta/getDefault)
-        key-finder (MagicPKIKeyFinder. host-meta)]
-    (seq (.findKeys key-finder (URI. uri)))))
+;; (defn get-keys-from-xrd
+;;   [uri]
+;;   (let [host-meta (HostMeta/getDefault)
+;;         key-finder (MagicPKIKeyFinder. host-meta)]
+;;     (seq (.findKeys key-finder (URI. uri)))))
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
@@ -96,37 +88,29 @@
         links (get-links xrd)
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
-        uri (if feed (-?> feed
-                          .getAuthor
-                          .getUri))]
+        uri (if feed (-?> feed .getAuthor .getUri))]
     (doseq [link links]
-      ;; TODO: process this in a trigger
-      (if (= (:rel link) "magic-public-key")
-        (let [key-string (:href link)
-              [_ n e]
-              (re-matches
-               #"data:application/magic-public-key,RSA.(.+)\.(.+)"
-               key-string)]
-          (model.signature/set-armored-key (:_id user) n e)))
       (actions.user/add-link user link))
     (-> user
         (assoc :id (str uri))
         (assoc :discovered true)
         actions.user/update)))
 
+(defn host-meta-link
+  [domain]
+  (str "http://" (:_id domain) "/.well-known/host-meta"))
+
 (defn discover-webfinger
   [^Domain domain]
   ;; TODO: check https first
-  (try
-    (let [url (str "http://" (:_id domain) "/.well-known/host-meta")]
-      (if-let [xrd (fetch-host-meta url)]
-        (if-let [links (get-links xrd)]
-          ;; TODO: These should call actions
-          (do (model.domain/add-links domain links)
-              (model.domain/set-discovered domain))
-          (log/error "Host meta does not have any links"))
-        (log/error
-         (str "Could not find host meta for domain: " (:_id domain)))))
-    (catch HostMetaException e
-      (log/error e))))
+  (if-let [xrd (-> domain
+                   host-meta-link
+                   fetch-host-meta)]
+    (if-let [links (get-links xrd)]
+      ;; TODO: These should call actions
+      (do (model.domain/add-links domain (spy links))
+          (model.domain/set-discovered domain))
+      (log/error "Host meta does not have any links"))
+    (log/error
+     (str "Could not find host meta for domain: " (:_id domain)))))
 

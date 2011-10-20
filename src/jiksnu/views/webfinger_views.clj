@@ -6,12 +6,12 @@
                           [webfinger :as model.webfinger])))
 
 (defview #'host-meta :html
-  [request _]
+  [request xrd]
   (let [domain (config :domain)]
     {:template false
      :headers {"Content-Type" "application/xrds+xml"
                "Access-Control-Allow-Origin" "*"}
-     :body (h/html (model.webfinger/host-meta domain))}))
+     :body (h/html xrd)}))
 
 (defview #'user-meta :html
   [request user]

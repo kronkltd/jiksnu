@@ -2,15 +2,9 @@
   (:use (ciste [debug :only (spy)]))
   (:require jiksnu.model
             [karras.entity :as entity])
-  (:import com.cliqset.magicsig.MagicEnvelope
-           com.cliqset.magicsig.MagicEnvelopeSerializationProvider
-           com.cliqset.magicsig.MagicKey
-           com.cliqset.magicsig.MagicSigConstants
-           com.cliqset.magicsig.xml.XMLMagicEnvelopeSerializer
-           com.cliqset.salmon.Salmon
-           com.cliqset.salmon.HostMetaSalmonEndpointFinder
-           java.net.URI
+  (:import java.net.URI
            java.io.ByteArrayInputStream
+           java.io.InputStream
            java.math.BigInteger
            java.security.KeyFactory
            java.security.KeyPair
@@ -22,25 +16,11 @@
            org.apache.commons.codec.binary.Base64
            org.apache.commons.io.output.ByteArrayOutputStream
            org.apache.http.impl.client.DefaultHttpClient
-           org.bson.types.ObjectId
-           org.opensaml.xml.parse.BasicParserPool
-           org.openxrd.DefaultBootstrap
-           org.openxrd.discovery.DiscoveryManager
-           org.openxrd.discovery.DiscoveryMethod
-           org.openxrd.discovery.impl.BasicDiscoveryManager
-           org.openxrd.discovery.impl.HostMetaDiscoveryMethod
-           org.openxrd.discovery.impl.HtmlLinkDiscoveryMethod
-           org.openxrd.discovery.impl.HttpHeaderDiscoveryMethod))
-
-;; (DefaultBootstrap/bootstrap)
-
-(def keypair-generator (KeyPairGenerator/getInstance "RSA"))
-(.initialize keypair-generator 1024)
+           org.bson.types.ObjectId))
 
 (def key-factory (KeyFactory/getInstance "RSA"))
-(def salmon (Salmon/getDefault))
-(def fetcher (com.cliqset.hostmeta.JavaNetXRDFetcher.))
-
+(def keypair-generator (KeyPairGenerator/getInstance "RSA"))
+(.initialize keypair-generator 1024)
 
 (defn generate-key
   []
@@ -152,17 +132,17 @@
 (defn get-key
   "The magic key must have 3 segments"
   [key]
-  (MagicKey. (.getBytes key "UTF-8")))
+  #_(MagicKey. (.getBytes key "UTF-8")))
 
 (defn get-key-from-armored
   [key-pair]
-  (MagicKey. "RSA" (:armored-n key-pair)
+  #_(MagicKey. "RSA" (:armored-n key-pair)
              (:armored-e key-pair)))
 
 (defn sign-and-deliver
   "entry is an atom entry"
   [entry key user]
-  (try
+  #_(try
     (.signAndDeliver
      salmon
      (.getBytes entry "UTF-8")
@@ -174,14 +154,14 @@
 (defn get-envelope
   "data is the xml signature"
   [^String data]
-  (let [me (MagicEnvelope.)]
-    (.setData me data)
-    me))
+  #_(let [me (MagicEnvelope.)]
+      (.setData me data)
+      me))
 
 (defn serialize
   "Returns an XML string representing the envelope"
-  [^MagicEnvelope envelope]
-  (let [serializer (XMLMagicEnvelopeSerializer.)
+  [envelope]
+  #_(let [serializer (XMLMagicEnvelopeSerializer.)
         os (ByteArrayOutputStream.)]
     (.serialize serializer envelope os)
     (.toString os "UTF-8")))
@@ -191,46 +171,28 @@
   
   )
 
-(defn add-discovery-method
-  [^DiscoveryManager manager
-   ^DiscoveryMethod method]
-  (.add (.getDiscoveryMethods manager) method))
-
-(defn get-discovery-manager
-  []
-  (let [http-client (DefaultHttpClient.)
-        manager (BasicDiscoveryManager.)]
-    (let [host-meta (HostMetaDiscoveryMethod.)
-          header (HttpHeaderDiscoveryMethod.)
-          link (HtmlLinkDiscoveryMethod.)]
-
-      (.setHttpClient host-meta http-client)
-      (.setHttpClient header http-client)
-      (.setHttpClient link http-client)
-
-      (.setParserPool host-meta (BasicParserPool.))
-      (.setParserPool header (BasicParserPool.))
-      (.setParserPool link (BasicParserPool.))
-
-      (add-discovery-method manager host-meta)
-      (add-discovery-method manager header)
-      (add-discovery-method manager link))
-    manager))
-
-(def ^:dynamic *discovery-manager* (get-discovery-manager))
-
 (defn discover
   [^String url]
-  (.discover *discovery-manager* (URI. url)))
+  #_(.discover *discovery-manager* (URI. url)))
 
-(defn get-deserializer
+#_(defn get-deserializer
   []
-  (-> (MagicEnvelopeSerializationProvider/getDefault)
+  #_(-> (MagicEnvelopeSerializationProvider/getDefault)
       (.getDeserializer MagicSigConstants/MEDIA_TYPE_MAGIC_ENV_XML)))
 
+(defn deserialize
+  [^InputStream input-stream]
+  ;; TODO: Implement
+  )
+
+(defn verify
+  [msg]
+  ;; TODO: implement
+  )
+
 (defn get-verified-data
-  [^Salmon salmon ^MagicEnvelope envelope]
+  [envelope]
   (let [is (ByteArrayInputStream. (.getBytes envelope "UTF-8"))
-        m (.deserialize (get-deserializer) is)
-        verified-data (.verify salmon m)]
+        m (deserialize is)
+        verified-data (verify m)]
     (String. verified-data "UTF-8")))

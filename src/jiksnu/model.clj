@@ -124,6 +124,21 @@
   (-> s StringReader. InputSource.
       xml/parse zip/xml-zip))
 
+(defn str->zip
+  [s]
+  (zip/xml-zip (parse-str s)))
+
+(defn stream->document
+  [^InputStream input-stream]
+  (.read xml-reader input-stream))
+
+(defn fetch-resource
+  [url]
+  (-> {:method :get
+       :url url}
+      h/sync-http-request
+      :body f/channel-buffer->string))
+
 (defn drop-all!
   []
   (doseq [entity [Activity Like Subscription

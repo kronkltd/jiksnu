@@ -1,13 +1,13 @@
 (ns jiksnu.actions.salmon-actions-test
-  (:use clj-factory.core
+  (:use (ciste [debug :only (spy)])
+        clj-factory.core
         clojure.test
         midje.sweet
         (jiksnu core-test model)
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]
             (jiksnu.actions [user-actions :as actions.user]))
-  (:import com.cliqset.magicsig.MagicEnvelope
-           java.security.Key
+  (:import java.security.Key
            jiksnu.model.User))
 
 (use-fixtures :once test-environment-fixture)
@@ -40,8 +40,7 @@
 
 (deftest test-stream->envelope
   (fact "should return an envelope"
-    (stream->envelope (valid-envelope-stream)) =>
-    (partial instance? MagicEnvelope)))
+    (stream->envelope (valid-envelope-stream)) => map?))
 
 (deftest test-process
   (testing "with a valid signature"

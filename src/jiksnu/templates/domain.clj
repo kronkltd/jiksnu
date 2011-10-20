@@ -7,8 +7,10 @@
   {:id (:_id domain)
    :xmpp (if-let [xmpp (:xmpp domain)] xmpp "Unknown")
    :discovered (:discovered domain)
-   :link-count (Integer. 0)
-   :links []})
+   :link-count (Integer. (count (:links domain)))
+   :links (map #(merge {:href "" :type ""
+                        :rel "" :template ""} %)
+               (:links domain))})
 
 (deftemplate link-to
   [domain]

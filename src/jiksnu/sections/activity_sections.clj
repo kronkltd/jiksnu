@@ -73,7 +73,7 @@
         (.setUpdated object-element object-updated))
       (if-let [object-published (:published object)]
         (.setPublished object-element object-published))
-      (if-let [object-id (:id object)]
+      #_(if-let [object-id (:id object)]
         (.setId object-element object-id))
       #_(.setContentAsHtml object-element (:content activity)))
     entry))
