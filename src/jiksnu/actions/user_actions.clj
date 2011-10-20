@@ -23,10 +23,7 @@
             (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import com.cliqset.magicsig.MagicKey
-           com.cliqset.magicsig.MagicSig
-           com.cliqset.magicsig.xml.XMLMagicEnvelopeDeserializer
-           jiksnu.model.User
+  (:import jiksnu.model.User
            org.apache.commons.codec.binary.Base64
            tigase.xml.Element
            tigase.xmpp.JID))

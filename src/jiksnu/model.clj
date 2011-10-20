@@ -4,27 +4,33 @@
                sections)
         ciste.sections.default
         clj-factory.core
-        karras.entity
+        (karras [entity :only (defembedded
+                                defentity delete-all)])
         plaza.rdf.core
         plaza.rdf.implementations.jena)
-  (:require (clojure [xml :as xml]
+  (:require (aleph [formats :as f]
+                   [http :as h])
+            (clojure [xml :as xml]
                      [zip :as zip])
             (clojure.data [json :as json])
-            (jiksnu [namespace :as namespace]
-                    [redis :as redis])
+            (clojure.data.zip [xml :as xf])
+            (jiksnu [namespace :as ns])
             (karras [core :as karras]
                     [sugar :as sugar]))
-  (:import java.io.PrintWriter
+  (:import java.io.InputStream
+           java.io.PrintWriter
            java.io.StringReader
            java.text.SimpleDateFormat
            java.util.Date
            org.bson.types.ObjectId
+           org.dom4j.DocumentFactory
+           org.dom4j.io.SAXReader
            org.xml.sax.InputSource))
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 
 (def ^:dynamic *mongo-database* (ref nil))
-
+(defonce xml-reader (SAXReader.))
 (defonce ^:dynamic *formatter*
   (SimpleDateFormat. *date-format*))
 

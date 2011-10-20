@@ -1,7 +1,7 @@
 (ns jiksnu.http
-  (:use aleph.http
+  (:use (aleph [http :only (start-http-server)])
         (ciste [debug :only (spy)]))
-  (:require [jiksnu.routes :as routes]))
+  (:require (jiksnu [routes :as routes])))
 
 (def ^:dynamic *future-web* (ref nil))
 

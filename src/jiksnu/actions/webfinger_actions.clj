@@ -1,26 +1,28 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use (ciste [core :only (defaction)]
+  (:use (ciste [config :only (config)]
+               [core :only (defaction)]
                [debug :only (spy)])
         (clojure.contrib [core :only (-?>)])
         (jiksnu model))
-  (:require (clojure.tools [logging :as log])
+  (:require (aleph [formats :as f]
+                   [http :as h])
+            (clojure [xml :as xml]
+                     [zip :as zip])
+            (clojure.data.zip [xml :as xf])
+            (clojure.tools [logging :as log])
             (jiksnu [namespace :as namespace])
+            (jiksnu.model [webfinger :as model.webfinger])
             (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]
-                          [user :as model.user]))
-  (:import com.cliqset.hostmeta.JavaNetXRDFetcher
-           com.cliqset.hostmeta.HostMeta
-           com.cliqset.hostmeta.HostMetaException
-           com.cliqset.magicsig.keyfinder.MagicPKIKeyFinder
-           com.cliqset.xrd.XRD
-           java.net.URI
+                          [user :as model.user])
+            [saxon :as s])
+  (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
-           jiksnu.model.User
-           org.openxrd.xrd.core.impl.XRDBuilder))
+           jiksnu.model.User))
 
 (defonce ^:dynamic *fetcher*
   (JavaNetXRDFetcher.))

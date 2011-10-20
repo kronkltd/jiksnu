@@ -13,7 +13,8 @@
                             [user-actions :as actions.user]
                             [webfinger-actions :as actions.webfinger])
             (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [domain :as model.domain]))
+            (jiksnu.model [domain :as model.domain]
+                          [signature :as model.signature]))
   (:import org.deri.any23.Any23))
 
 (defonce a23 (Any23.))

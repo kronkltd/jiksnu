@@ -1,15 +1,14 @@
 (ns jiksnu.actions.activity-actions
-  (:use (ciste core
-               [debug :only (spy)]
-               sections)
-        ciste.sections.default
-        (jiksnu model)
-        lamina.core)
+  (:use (ciste [core :only (defaction)]
+               [debug :only (spy)])
+        ciste.sections.default)
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase])
             (clojure [string :as string])
             (clojure.java [io :as io])
+            (hiccup [core :as hiccup])
             (jiksnu [abdera :as abdera]
+                    [model :as model]
                     [namespace :as namespace]
                     [session :as session])
             (jiksnu.actions [user-actions :as actions.user])
@@ -18,7 +17,7 @@
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user])
-            (hiccup [core :as hiccup]))
+            (lamina [core :as l]))
   (:import jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera2.ext.thread.ThreadHelper))

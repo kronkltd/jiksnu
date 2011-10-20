@@ -1,6 +1,6 @@
 (ns jiksnu.routes
   (:use (ciste [debug :only (spy)]
-               filters predicates routes)
+               predicates routes)
         ciste.formats.default
         jiksnu.middleware
         lamina.core

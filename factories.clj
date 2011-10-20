@@ -1,5 +1,5 @@
 (use 'clj-factory.core)
-(use 'jiksnu.abdera)
+(require '[jiksnu.abdera :as abdera])
 (import 'jiksnu.model.Activity)
 (import 'jiksnu.model.Domain)
 (import 'jiksnu.model.Subscription)
@@ -30,7 +30,7 @@
   (str "word" n))
 
 (deffactory Activity
-  {:id #'new-id
+  {:id #'abdera/new-id
    :title (fseq :word)
    :summary (fseq :word)
    :published #'sugar/date

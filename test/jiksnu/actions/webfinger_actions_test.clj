@@ -7,10 +7,7 @@
         jiksnu.actions.webfinger-actions)
   (:require (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
-  (:import com.cliqset.xrd.XRD
-           jiksnu.model.User
-           org.openxrd.xrd.core.impl.XRDImpl
-           com.cliqset.hostmeta.HostMetaException))
+  (:import jiksnu.model.User))
 
 (use-fixtures :once test-environment-fixture)
 
