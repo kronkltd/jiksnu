@@ -144,3 +144,8 @@
   (let [from (:from request)
         user (find-or-create-by-jid from)]
     (action user)))
+
+(deffilter #'user-meta :http
+  [action request]
+  (let [{{uri :uri} :params} request]
+    (action uri)))

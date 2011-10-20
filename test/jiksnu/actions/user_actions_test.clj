@@ -178,3 +178,28 @@
         (session/with-user user
           (update-profile options)
           (show user) => (contains {:display-name display-name}))))))
+
+(deftest test-get-user-meta-uri
+  (testing "when the user meta link has been associated"
+    (fact "should return that uri"
+      (let [user-meta-uri (fseq :uri)
+            user (create
+                  (factory User {:user-meta-uri user-meta-uri}))]
+        (get-user-meta-uri user) => user-meta-uri))))
+
+(deftest test-fetch-user-meta
+  (fact "should return an xml stream"
+    (let [domain (model.user/get-domain user)]
+      (actions.domain/update
+       (assoc domain :links
+              [{:rel "lrdd"
+                :template (str "http://" (:_id domain)
+                               "/main/xrd?uri={uri}")}]))
+      (fetch-user-meta user)) => nil))
+
+(deftest test-user-meta
+  (testing "when the url matches a known user"
+    (fact "should return a XRD object"
+      (let [uri (model.user/get-uri user)]
+        (user-meta uri) => map?))))
+

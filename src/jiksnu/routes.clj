@@ -32,8 +32,7 @@
                             [settings-actions :as settings]
                             [stream-actions :as stream]
                             [subscription-actions :as sub]
-                            [user-actions :as user]
-                            [webfinger-actions :as webfinger])
+                            [user-actions :as user])
             (jiksnu.filters activity-filters
                             auth-filters
                             comment-filters
@@ -42,8 +41,7 @@
                             salmon-filters
                             stream-filters
                             subscription-filters
-                            user-filters
-                            webfinger-filters)
+                            user-filters)
             (jiksnu.triggers activity-triggers
                              domain-triggers
                              subscription-triggers
@@ -55,8 +53,7 @@
                           push-subscription-views
                           stream-views
                           subscription-views
-                          user-views
-                          webfinger-views)
+                          user-views)
             (ring.middleware [file :as file]
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
@@ -83,7 +80,7 @@
 (def http-routes
   (make-matchers
    [[[:get  "/"]                                       #'stream/index]
-    [[:get "/.well-known/host-meta"]                   #'webfinger/host-meta]
+    [[:get "/.well-known/host-meta"]                   #'domain/host-meta]
     [[:get "/api/people/@me/@all"]                     #'user/index]
     [[:get "/api/people/@me/@all/:id"]                 #'user/show]
     [[:get "/api/statuses/public_timeline.:format"]    #'stream/index]
@@ -92,7 +89,7 @@
     [[:get "/main/domains/*"]                          #'domain/show]
     [[:delete "/main/domains/*"]                       #'domain/delete]
     [[:post "/main/domains/*/discover"]                #'domain/discover]
-    [[:post "/main/domains/*/edit"]                    #'domain/edit]
+    [[:post "/main/domains/*/edit"]                    #'domain/edit-page]
     [[:post "/main/domains"]                           #'domain/find-or-create]
     [[:post "/main/guest-login"]                       #'auth/guest-login]
     [[:get "/main/login"]                              #'auth/login-page]
@@ -112,7 +109,7 @@
     [[:post "/main/salmon/user/:id"]                   #'salmon/process]
     [[:post "/main/subscribe"]                         #'sub/subscribe]
     [[:post "/main/unsubscribe"]                       #'sub/unsubscribe]
-    [[:get "/main/xrd"]                                #'webfinger/user-meta]
+    [[:get "/main/xrd"]                                #'user/user-meta]
     [[:get "/notice/:id"]                              #'activity/show]
     [[:get "/notice/:id.:format"]                      #'activity/show]
     [[:get  "/notice/:id/comment"]                     #'comment/new-comment]

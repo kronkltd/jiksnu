@@ -7,11 +7,13 @@
         plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
   (:require (clj-tigase [element :as element])
+            (hiccup [core :as h])
             (jiksnu [namespace :as namespace])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [subscription :as model.subscription]
-                          [user :as model.user])
+                          [user :as model.user]
+                          [webfinger :as model.webfinger])
             (jiksnu.templates [activity :as templates.activity]
                               [user :as templates.user]))
   (:import java.net.URI
@@ -127,3 +129,10 @@
 
 (defview #'xmpp-service-unavailable :xmpp
   [request _])
+
+(defview #'user-meta :html
+  [request user]
+  {:template false
+   :headers {"Content-Type" "application/xrds+xml"
+             "Access-Control-Allow-Origin" "*"}
+   :body (h/html (model.webfinger/user-meta user))})

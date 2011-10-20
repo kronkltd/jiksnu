@@ -1,6 +1,7 @@
 (ns jiksnu.model
   (:use (ciste core
                [config :only (config environment)]
+               [debug :only (spy)]
                sections)
         ciste.sections.default
         clj-factory.core
@@ -35,6 +36,9 @@
 (defonce ^:dynamic *formatter*
   (SimpleDateFormat. *date-format*))
 
+(defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
+                   :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
+
 (defn format-date
   [^Date date]
   (if date (.format *formatter* date)))
@@ -43,6 +47,11 @@
 ;; TODO: Find a better ns for this
 (register-rdf-ns :dc ns/dc)
 (register-rdf-ns :foaf ns/foaf)
+
+(defn force-coll
+  [x]
+  (if (coll? x)
+    x (list x)))
 
 (defn mongo-database*
   []

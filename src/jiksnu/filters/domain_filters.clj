@@ -41,3 +41,8 @@
   [action request]
   (-> request :from .getDomain
       model.domain/show action))
+
+(deffilter #'host-meta :http
+  [action request]
+  (action))
+

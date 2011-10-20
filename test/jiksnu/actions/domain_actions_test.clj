@@ -41,3 +41,7 @@
           id (:_id domain)]
       (discover-onesocialweb domain) => packet/packet?)))
 
+(deftest test-host-meta
+  (fact "should return a XRD object"
+    (host-meta) => map?))
+

@@ -14,6 +14,11 @@
            tigase.xmpp.BareJID
            tigase.xmpp.JID))
 
+(defn salmon-link
+  [user]
+  (str "http://" (config :domain)
+       "/main/salmon/user/" (:_id user)))
+
 (defn get-domain
   [^User user]
   (model.domain/show (:domain user)))

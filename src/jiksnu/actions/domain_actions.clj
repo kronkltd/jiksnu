@@ -4,7 +4,10 @@
                [debug :only (spy)])
         (jiksnu [model :only (with-database)]))
   (:require (clj-tigase [core :as tigase])
-            (jiksnu.model [domain :as model.domain])))
+            (clojure.tools [logging :as log])
+            (jiksnu.model [domain :as model.domain]
+                          [webfinger :as model.webfinger]))
+  (:import jiksnu.model.Domain))
 
 (defaction check-webfinger
   [domain]
@@ -19,11 +22,33 @@
   [id]
   (model.domain/delete id))
 
-(defaction discover
-  [id]
-  (model.domain/show id))
+(defn discover-onesocialweb
+  [domain]
+  (-> domain
+      model.domain/ping-request
+      tigase/make-packet
+      tigase/deliver-packet!))
 
-(defaction edit
+(defn discover-webfinger
+  [^Domain domain]
+  ;; TODO: check https first
+  (if-let [xrd (-> domain
+                   model.domain/host-meta-link
+                   model.webfinger/fetch-host-meta)]
+    (if-let [links (model.webfinger/get-links xrd)]
+      ;; TODO: These should call actions
+      (do (model.domain/add-links domain links)
+          (model.domain/set-discovered domain))
+      (log/error "Host meta does not have any links"))
+    (log/error
+     (str "Could not find host meta for domain: " (:_id domain)))))
+
+(defaction discover
+  [domain]
+  (discover-onesocialweb domain)
+  (discover-webfinger domain))
+
+(defaction edit-page
   [id]
   (model.domain/show id))
 
@@ -74,9 +99,17 @@
   ;; TODO: find the template and insert the username
   "")
 
-(defn discover-onesocialweb
+(defaction update
   [domain]
-  (-> domain
-      model.domain/ping-request
-      tigase/make-packet
-      tigase/deliver-packet!))
+  (model.domain/update domain))
+
+
+(defaction host-meta
+  []
+  (let [domain (config :domain)
+        template (str "http://" domain "/main/xrd?uri={uri}")]
+    {:host domain
+     :links [{:template template
+              :rel "lrdd"
+              :title "Resource Descriptor"}]}))
+

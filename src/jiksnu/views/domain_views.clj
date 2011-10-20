@@ -4,7 +4,9 @@
                [views :only (defview)])
         jiksnu.actions.domain-actions
         (jiksnu model session view))
-  (:require (jiksnu.model [domain :as model.domain])
+  (:require (hiccup [core :as h])
+            (jiksnu [namespace :as ns])
+            (jiksnu.model [domain :as model.domain])
             (jiksnu.templates [domain :as templates.domain]))
   (:import jiksnu.model.Domain))
 
@@ -52,3 +54,25 @@
 (defview #'show :html
   [request domain]
   {:body (templates.domain/show domain)})
+
+(defview #'host-meta :html
+  [request xrd]
+  (let [domain (:host xrd)]
+    {:template false
+     :headers {"Content-Type" "application/xrds+xml"
+               "Access-Control-Allow-Origin" "*"}
+     :body
+     (h/html
+      ["XRD" {"xmlns" ns/xrd
+              "xmlns:hm" ns/host-meta}
+       ["hm:Host" domain]
+       (map
+        (fn [{:keys [title rel href template] :as link}]
+          [:Link (merge {}
+                        (if rel {:rel rel})
+                        (if href {:href href})
+                        (if template {:template template}))
+           (if title
+             [:Title title])])
+        (:links xrd))])}))
+

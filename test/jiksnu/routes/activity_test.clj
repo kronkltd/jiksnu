@@ -1,5 +1,5 @@
 (ns jiksnu.routes.activity-test
-  (:use ciste.debug
+  (:use (ciste [debug :only (spy)])
         clj-factory.core
         clojure.test
         lamina.core
@@ -24,7 +24,7 @@
               activity (factory Activity)]
           (session/with-user author
             (let [path (str "/notice/" (:_id activity))]
-              (r/app ch (mock/request :get (spy path)))
+              (r/app ch (mock/request :get path))
               (let [response (wait-for-message ch 5000)]
                 response => (contains {:status 404})))))))
     (testing "and there are activities"

@@ -19,7 +19,8 @@
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]
-                          [user :as model.user])
+                          [user :as model.user]
+                          [webfinger :as model.webfinger])
             (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
                     [sugar :as sugar]))
@@ -237,3 +238,38 @@
         domain (actions.domain/find-or-create domain-name)]
     (actions.domain/set-xmpp domain false)
     user))
+
+(defn get-user-meta-uri
+  [user]
+  (let [username (:username user)
+        domain (model.user/get-domain user)]
+    (or (:user-meta-uri user)
+        (actions.domain/get-user-meta-uri domain username))))
+
+(defn fetch-user-meta
+  [^User user]
+  (-> user
+      model.user/user-meta-uri
+      model.webfinger/fetch-host-meta))
+
+;; TODO: Collect all changes and update the user once.
+(defaction update-usermeta
+  [user]
+  (let [xrd (fetch-user-meta user)
+        links (model.webfinger/get-links xrd)
+        new-user (assoc user :links links)
+        feed (helpers.user/fetch-user-feed new-user)
+        uri (if feed (-?> feed .getAuthor .getUri))]
+    (doseq [link links]
+      (add-link user link))
+    (-> user
+        (assoc :id (str uri))
+        (assoc :discovered true)
+        update)))
+
+(defaction user-meta
+  [uri]
+  (->> uri
+       model.user/split-uri
+       (apply model.user/show )))
+

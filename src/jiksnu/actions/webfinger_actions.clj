@@ -6,7 +6,8 @@
         (jiksnu model))
   (:require (aleph [formats :as f]
                    [http :as h])
-            (clojure [xml :as xml]
+            (clojure [string :as string]
+                     [xml :as xml]
                      [zip :as zip])
             (clojure.data.zip [xml :as xf])
             (clojure.tools [logging :as log])
@@ -42,8 +43,12 @@
 
 (defaction host-meta
   []
-  (let [domain (config :domain)]
-    (model.webfinger/host-meta domain)))
+  (let [domain (config :domain)
+        template (str "http://" domain "/main/xrd?uri={uri}")]
+    {:host domain
+     :links [{:template template
+              :rel "lrdd"
+              :title "Resource Descriptor"}]}))
 
 (defaction user-meta
   [uri]

@@ -9,9 +9,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [namespace :as namespace])
             (jiksnu.actions [activity-actions :as actions.activity]
-                            [webfinger-actions :as actions.webfinger]
-                            [user-actions :as actions.user]
-                            [webfinger-actions :as actions.webfinger])
+                            [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]))
@@ -27,7 +25,7 @@
 (defn discover-user-http
   [user]
   (log/info "discovering http")
-  (actions.webfinger/update-usermeta user)
+  (actions.user/update-usermeta user)
   #_(request-hcard user))
 
 (defn discover-user

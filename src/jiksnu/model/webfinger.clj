@@ -1,18 +1,22 @@
 (ns jiksnu.model.webfinger
   (:use (ciste [config :only (config)]
+               [debug :only (spy)]
                sections)
         ciste.sections.default)
-  (:require (jiksnu [namespace :as namespace])
+  (:require (jiksnu [model :as model]
+                    [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
-                          [user :as model.user])))
+                          [user :as model.user])
+            [saxon :as s])
+  (:import java.net.URI))
 
-(defn salmon-link
-  [user]
-  (str
-   "http://"
-   (config :domain)
-   "/main/salmon/user/"
-   (:_id user)))
+(defn fetch-host-meta
+  [url]
+  (let [hm (-> url spy model/fetch-resource s/compile-xml)
+        host (s/query "//hm:Host/text()" model/bound-ns hm)]
+    (if (= (.getHost (URI. url)) (str host))
+      hm
+      (throw (RuntimeException. "Hostname does not match")))))
 
 (defn host-meta
   [domain]
@@ -55,13 +59,13 @@
             "href" (str (full-uri user) ".rdf")}]
 
    ["Link" {"rel" "salmon"
-            "href" (salmon-link user)}]
+            "href" (model.user/salmon-link user)}]
 
    ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-replies"
-            "href" (salmon-link user)}]
+            "href" (model.user/salmon-link user)}]
 
    ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-mention"
-            "href" (salmon-link user)}]
+            "href" (model.user/salmon-link user)}]
 
    ["Link" {"rel" "magic-public-key"
             "href" (-> user
@@ -78,3 +82,14 @@
 
    ["Link" {"rel" "http://onesocialweb.org/rel/service"
             "href" (str "xmpp:" (:username user) "@" (:domain user))}]])
+
+(defn get-links
+  [xrd]
+  (let [links (model/force-coll (s/query "//xrd:Link" model/bound-ns xrd))]
+    (map
+     (fn [link]
+       {:rel (s/query "string(@rel)" model/bound-ns link)
+        :template (s/query "string(@template)" model/bound-ns link)
+        :href (s/query "string(@href)" model/bound-ns link)
+        :lang (s/query "string(@lang)" model/bound-ns link)})
+     links)))

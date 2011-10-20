@@ -70,3 +70,7 @@
   [domain]
   (str "pending.domains." domain))
 
+(defn host-meta-link
+  [domain]
+  (str "http://" (:_id domain) "/.well-known/host-meta"))
+
