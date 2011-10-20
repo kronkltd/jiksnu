@@ -1,13 +1,9 @@
 (ns jiksnu.filters.push-subscription-filters
   (:use (ciste [debug :only (spy)]
-               filters)
-        (jiksnu abdera model session)
+               [filters :only (deffilter)])
         jiksnu.actions.push-subscription-actions)
-  (:require (clj-tigase [core :as tigase])
-            (jiksnu.model [activity :as model.activity]
-                          [like :as model.like]
-                          [push-subscription :as model.push]
-                          [user :as model.user])))
+  (:require (jiksnu [abdera :as abdera])
+            (jiksnu.model [user :as model.user])))
 
 (deffilter #'callback :http
   [action request]

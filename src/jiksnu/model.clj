@@ -40,8 +40,8 @@
 
 (init-jena-framework)
 ;; TODO: Find a better ns for this
-(register-rdf-ns :dc namespace/dc)
-(register-rdf-ns :foaf namespace/foaf)
+(register-rdf-ns :dc ns/dc)
+(register-rdf-ns :foaf ns/foaf)
 
 (defn mongo-database*
   []
@@ -91,13 +91,6 @@
   [& body]
   `(karras/with-mongo-request (mongo-database)
     ~@body))
-
-;; (defmacro with-environment
-;;   [environment & body]
-;;   `(binding [ciste.config/*environment* ~environment]
-;;      (redis/init-client)
-;;      (with-database
-;;        ~@body)))
 
 (defn activity?
   [activity]
