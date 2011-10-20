@@ -37,4 +37,4 @@
 (defaction password-page
   [request]
   (let [{{id :pending-id} :session} request]
-    (actions.user/fetch-by-id id)))
+    (model.user/fetch-by-id id)))

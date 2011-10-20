@@ -30,7 +30,7 @@
   [activity]
   (-> activity
       :author
-      actions.user/fetch-by-id))
+      model.user/fetch-by-id))
 
 (defsection title [Activity]
   [activity & options]
