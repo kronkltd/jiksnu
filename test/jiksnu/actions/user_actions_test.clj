@@ -84,7 +84,7 @@
 
 (deftest test-find-hub
   (fact
-    (find-hub user) => nil))
+    (find-hub user) => (partial instance? Domain)))
 
 (deftest test-find-or-create
   (fact

@@ -2,7 +2,7 @@
   (:use (ciste [config :only (config)]
                [core :only (defaction)]
                [debug :only (spy)])
-        (clojure.contrib [core :only (-?>)])
+        (clojure.core [incubator :only (-?>)])
         (jiksnu model
                 [session :only (current-user)]))
   (:require (aleph [http :as http])
@@ -242,7 +242,7 @@
 (defn fetch-user-meta
   "returns a user meta document"
   [^User user]
-  (-> user
+  (-?> user
       model.user/user-meta-uri
       model.webfinger/fetch-host-meta))
 

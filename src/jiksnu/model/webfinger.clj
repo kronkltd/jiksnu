@@ -2,7 +2,8 @@
   (:use (ciste [config :only (config)]
                [debug :only (spy)]
                sections)
-        ciste.sections.default)
+        ciste.sections.default
+        (clojure.core [incubator :only (-?>)]))
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
@@ -12,13 +13,13 @@
 
 (defn fetch-host-meta
   [url]
-  (let [hm (-> url spy model/fetch-resource s/compile-xml)
-        host (s/query "//hm:Host/text()" model/bound-ns hm)]
-    ;; (if (= (.getHost (URI. url)) (str host))
+  (if-let [hm (-?> url model/fetch-resource s/compile-xml)]
+    (let [host (s/query "//hm:Host/text()" model/bound-ns hm)]
+      ;; (if (= (.getHost (URI. (spy url))) (str (spy host)))
       hm
       ;; (throw (RuntimeException. "Hostname does not match"))
       ;; )
-  ))
+      )))
 
 (defn host-meta
   [domain]

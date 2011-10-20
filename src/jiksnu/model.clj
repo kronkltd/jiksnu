@@ -137,10 +137,11 @@
 
 (defn fetch-resource
   [url]
-  (-> {:method :get
-       :url url}
-      h/sync-http-request
-      :body f/channel-buffer->string))
+  (let [response (-> {:method :get
+                      :url url}
+                     h/sync-http-request)]
+    (if (not (#{404 500} (:status response)))
+      (-> response :body f/channel-buffer->string))))
 
 (defn fetch-document
   [url]
