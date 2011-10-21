@@ -17,7 +17,8 @@
             (clojure.data.zip [xml :as xf])
             (jiksnu [namespace :as ns])
             (karras [core :as karras]
-                    [sugar :as sugar]))
+                    [sugar :as sugar])
+            (lamina [core :as l]))
   (:import java.io.InputStream
            java.io.PrintWriter
            java.io.StringReader
@@ -143,10 +144,10 @@
                      h/sync-http-request)
         {:keys [body status]} response]
     (when (not (#{404 500} status))
-      (spy (class body))
-      (if (instance? Channel body)
-        ""
-        (body f/channel-buffer->string)))))
+      (f/channel-buffer->string
+       (if (instance? Channel body)
+         (l/wait-for-message body)
+         body)))))
 
 (defn fetch-document
   [url]
