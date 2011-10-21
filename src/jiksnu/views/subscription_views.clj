@@ -43,7 +43,7 @@
    :headers {"Location" "/"}})
 
 (defview #'subscribers :html
-  [request subscribers]
+  [request [user subscribers]]
   {:body (templates.subscriptions/subscribers-index subscribers)})
 
 (defview #'subscriptions :html

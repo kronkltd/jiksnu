@@ -5,7 +5,8 @@
         (jiksnu [session :only (current-user-id)]))
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
-            (jiksnu.actions [user-actions :as actions.user])))
+            (jiksnu.actions [user-actions :as actions.user])
+            (jiksnu.model [user :as model.user])))
 
 (deffilter #'delete :http
   [action request]
@@ -36,19 +37,19 @@
 (deffilter #'subscribe :http
   [action request]
   (if-let [{{user-id :subscribeto} :params} request]
-    (if-let [user (actions.user/fetch-by-id user-id)]
+    (if-let [user (model.user/fetch-by-id user-id)]
       (action user))))
 
 (deffilter #'subscribers :http
   [action request]
   (let [{{id :id} :params} request
-        user (actions.user/show id)]
+        user (model.user/fetch-by-id id)]
     (action user)))
 
 (deffilter #'subscriptions :http
   [action request]
   (let [{{id :id} :params} request
-        user (actions.user/show id)]
+        user (model.user/fetch-by-id id)]
     (action user)))
 
 (deffilter #'unsubscribe :http

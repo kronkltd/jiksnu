@@ -21,10 +21,6 @@
   [action request]
   (-> request :params :id show action))
 
-(deffilter #'edit :http
-  [action request]
-  (-> request :params :id show action))
-
 (deffilter #'new :http
   [action request]
   (action))

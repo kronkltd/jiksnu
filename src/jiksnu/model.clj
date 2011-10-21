@@ -24,6 +24,7 @@
            java.text.SimpleDateFormat
            java.util.Date
            java.net.URL
+           lamina.core.channel.Channel
            org.bson.types.ObjectId
            org.dom4j.DocumentFactory
            org.dom4j.io.SAXReader
@@ -41,7 +42,7 @@
 
 (defn format-date
   [^Date date]
-  (if date (.format *formatter* date)))
+  (when date (.format *formatter* (spy date))))
 
 (init-jena-framework)
 ;; TODO: Find a better ns for this
@@ -139,9 +140,13 @@
   [url]
   (let [response (-> {:method :get
                       :url url}
-                     h/sync-http-request)]
-    (if (not (#{404 500} (:status response)))
-      (-> response :body f/channel-buffer->string))))
+                     h/sync-http-request)
+        {:keys [body status]} response]
+    (when (not (#{404 500} status))
+      (spy (class body))
+      (if (instance? Channel body)
+        ""
+        (body f/channel-buffer->string)))))
 
 (defn fetch-document
   [url]

@@ -37,10 +37,6 @@
       (model.user/show username password))
     (User.)))
 
-(defaction ostatussub-submit
-  [user]
-  user)
-
 (defaction remote-subscribe
   [& _])
 
@@ -51,9 +47,13 @@
   [user]
   (let [actor (current-user)]
     (model.subscription/create
-     {:from (:_id actor)
-      :to (:_id user)
+     {:from (:_id (spy actor))
+      :to (:_id (spy user))
       :pending true})))
+
+(defaction ostatussub-submit
+  [user]
+  (subscribe user))
 
 (defaction subscribed
   [actor user]
@@ -67,7 +67,7 @@
 
 (defaction subscriptions
   [user]
-  [user (model.subscription/subscriptions user)])
+  [(spy user) (spy (model.subscription/subscriptions user))])
 
 
 (defaction unsubscribe

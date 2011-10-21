@@ -127,7 +127,7 @@
   [action request]
   (let [{params :params} request
         {username :id} params
-        user (fetch-by-id username)]
+        user (model.user/fetch-by-id username)]
     (action user)))
 
 (deffilter #'update-profile :http

@@ -1,5 +1,6 @@
 (ns jiksnu.templates.subscriptions
-  (:use closure.templates.core)
+  (:use (ciste [debug :only [spy]])
+        closure.templates.core)
   (:require [jiksnu.session :as session]
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user])))
@@ -14,7 +15,7 @@
 
 (deftemplate subscribers-index
   [subscriptions]
-  {:subscriptions (map model.subscription/format-data subscriptions)})
+  {:subscriptions (map model.subscription/format-data (spy subscriptions))})
 
 (deftemplate subscribers-section
   [user]
@@ -22,7 +23,7 @@
 
 (deftemplate subscriptions-index
   [subscriptions]
-  {:subscriptions (map model.subscription/format-data subscriptions)})
+  {:subscriptions (spy (map model.subscription/format-data (spy subscriptions)))})
 
 (deftemplate subscriptions-section
   [user]

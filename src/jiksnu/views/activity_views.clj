@@ -29,7 +29,7 @@
   (-> (response/redirect-after-post "/")
       (assoc :template false)))
 
-(defview #'edit :html
+(defview #'edit-page :html
   [request activity]
   {:body (edit-form activity)})
 

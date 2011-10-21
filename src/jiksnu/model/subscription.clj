@@ -93,10 +93,10 @@
   [subscription]
   {:to (-> subscription :to
            model.user/fetch-by-id model.user/format-data)
-   :from (-> subscription :to
+   :from (-> subscription :from
              model.user/fetch-by-id model.user/format-data)
    :pending (-> subscription :pending)
-   :created (-> subscription :created)})
+   :created (-> subscription :created str)})
 
 (defn subscriptions-request
   "returns a xmpp packet requesting subscriptions"
