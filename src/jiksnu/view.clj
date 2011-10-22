@@ -8,8 +8,7 @@
   (:require (clj-tigase [core :as tigase])
             (jiksnu [namespace :ads namespace]
                     [xmpp :as xmpp])
-            (jiksnu.templates [layout :as templates.layout]
-                              [user :as templates.user])
+            (jiksnu.templates [layout :as templates.layout])
             (jiksnu.xmpp [element :as element])))
 
 (defsection link-to :default

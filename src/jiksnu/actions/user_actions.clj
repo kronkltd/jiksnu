@@ -13,8 +13,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace]
-                    [redis :as redis]
-                    [view :as view])
+                    [redis :as redis])
             (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
