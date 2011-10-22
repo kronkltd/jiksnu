@@ -45,7 +45,6 @@
        redis/spop
        model.user/fetch-by-id))
 
-
 (defn get-domain
   [^User user]
   (-> user :domain actions.domain/find-or-create))
