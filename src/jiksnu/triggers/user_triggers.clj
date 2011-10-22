@@ -39,7 +39,7 @@
 (defn fetch-updates-http
   [user]
   (let [uri (helpers.user/feed-link-uri user)]
-    (actions.activity/fetch-remote-feed (spy uri))))
+    (actions.activity/fetch-remote-feed uri)))
 
 (defn fetch-updates-xmpp
   [user]
@@ -57,8 +57,8 @@
   [action _ user]
   (let [domain (model.domain/show (:domain user))]
     (if (:xmpp domain)
-      (spy (fetch-updates-xmpp user))
-      (spy (fetch-updates-http user)))))
+      (fetch-updates-xmpp user)
+      (fetch-updates-http user))))
 
 (defn create-trigger
   [action params user]
@@ -66,13 +66,17 @@
 
 (defn add-link-trigger
   [action [user link] _]
-  (if (= (:rel link) "magic-public-key")
-    (let [key-string (:href link)
-          [_ n e]
-          (re-matches
-           #"data:application/magic-public-key,RSA.(.+)\.(.+)"
-           key-string)]
-      (model.signature/set-armored-key (:_id user) n e))))
+  (condp = (:rel link)
+    "magic-public-key" (let [key-string (:href link)
+                             [_ n e]
+                             (re-matches
+                              #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+                              key-string)]
+                         (model.signature/set-armored-key (:_id user) n e))
+    ;; TODO: Fix exstension extraction
+    "avatar" (if (= (first (:extensions link)) "96")
+               (actions.user/update (assoc user :avatar-url (:href link))))
+    nil))
 
 (add-trigger! #'actions.user/add-link      #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)

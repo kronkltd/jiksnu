@@ -23,7 +23,9 @@
             (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import jiksnu.model.User
+  (:import javax.xml.namespace.QName
+           jiksnu.model.User
+           org.apache.abdera2.model.Person
            org.apache.commons.codec.binary.Base64
            tigase.xml.Element
            tigase.xmpp.JID))
@@ -53,12 +55,8 @@
   [user link]
   (if-let [existing-link (model.user/get-link user (:rel link))]
     user
-    (do (entity/update
-         User {:_id (:_id user)}
-         {:$addToSet
-          {:links {:href (:href link)
-                   :type (:type link)
-                   :rel (:rel link)}}})
+    (do (entity/update User {:_id (:_id user)}
+                       {:$addToSet {:links link}})
         user)))
 
 (defaction create
@@ -139,7 +137,7 @@
   (model.user/index))
 
 (defn person->user
-  [person]
+  [^Person person]
   (if person
     (let [id (.getUri person)
           email (.getEmail person)
@@ -148,12 +146,19 @@
                    (.getName person))
           username (.getSimpleExtension person namespace/poco
                                         "preferredUsername" "poco")
+          links (-> person
+                    (.getExtensions (QName. namespace/atom "link"))
+                    (->> (map abdera/parse-link)))
           params (merge {:domain (.getHost id)}
-                        (if username {:username username})
-                        (if email {:email email})
-                        (if name {:display-name name}))]
-      (find-or-create-by-remote-id
-       {:id (str id)} params))))
+                        (when username {:username username})
+                        (when email {:email email})
+                        (when name {:display-name name}))]
+      (let [user (update (merge (find-or-create-by-remote-id
+                                 {:id (str id)} params)
+                                params))]
+        (doseq [link links]
+          (add-link user link))
+        user))))
 
 (defaction profile
   [& _])
@@ -254,8 +259,8 @@
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
         author (when feed (.getAuthor feed))
-        uri (when (spy author) (.getUri author))]
-    
+        uri (when author (.getUri author))]
+    (update (person->user author))
     (doseq [link links]
       (add-link user link))
     (-> user
