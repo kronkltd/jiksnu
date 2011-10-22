@@ -37,7 +37,7 @@ Vagrant::Config.run do |config|
     chef.add_recipe "git"
     chef.add_recipe "openssl"
     chef.add_recipe "mysql"
-    chef.add_recipe "java::openjdk"
+    chef.add_recipe "java"
     chef.add_recipe "leiningen"
     chef.add_recipe "mongodb::apt"
     chef.add_recipe "maven"

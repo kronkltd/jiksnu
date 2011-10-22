@@ -43,7 +43,7 @@
 
 (defn format-date
   [^Date date]
-  (when date (.format *formatter* (spy date))))
+  (when date (.format *formatter* date)))
 
 (init-jena-framework)
 ;; TODO: Find a better ns for this
