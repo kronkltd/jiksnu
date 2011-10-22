@@ -2,7 +2,7 @@
   (:use (ciste core
                [config :only [config environment]]
                [debug :only [spy]]
-               #_sections)
+               sections)
         ciste.sections.default
         (clj-factory [core :only [factory]])
         (karras [entity :only [defembedded defentity delete-all]])
