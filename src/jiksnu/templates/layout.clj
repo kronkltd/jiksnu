@@ -15,10 +15,10 @@
    {:body (hiccup/html (:body response))
     :flash (:flash response)
     :formats (:formats response)
-    :development (= (spy @*environment*) :development)}
+    :development (= @*environment* :development)}
    (if-let [user (current-user)]
      {:authenticated (model.user/format-data user)
       :subscriptions (->> user actions.subscription/subscriptions
-                          second (map model.subscription/format-data) spy)
+                          second (map model.subscription/format-data))
       :subscribers (->> user actions.subscription/subscribers
-                        second (map model.subscription/format-data) spy)})))
+                        second (map model.subscription/format-data))})))
