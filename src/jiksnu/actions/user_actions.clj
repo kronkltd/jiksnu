@@ -78,7 +78,9 @@
 
 (defaction discover
   [^User user]
-  user)
+  user
+
+  )
 
 ;; TODO: turn this into a worker
 (defn discover-pending-users
@@ -253,7 +255,7 @@
         links (model.webfinger/get-links xrd)
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
-        uri (if feed (-?> feed .getAuthor .getUri))]
+        uri (when (spy feed) (-?> feed .getAuthor .getUri))]
     (doseq [link links]
       (add-link user link))
     (-> user

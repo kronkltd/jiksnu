@@ -1,8 +1,8 @@
 (ns jiksnu.actions.domain-actions
-  (:use (ciste [config :only (config definitializer)]
-               [core :only (defaction)]
-               [debug :only (spy)])
-        (jiksnu [model :only (with-database)]))
+  (:use (ciste [config :only [config definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]])
+        (jiksnu [model :only [with-database]]))
   (:require (clj-tigase [core :as tigase])
             (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain]
@@ -35,18 +35,19 @@
   (if-let [xrd (-> domain
                    model.domain/host-meta-link
                    model.webfinger/fetch-host-meta)]
-    (if-let [links (model.webfinger/get-links xrd)]
-      ;; TODO: These should call actions
-      (do (model.domain/add-links domain links)
-          (model.domain/set-discovered domain))
-      (log/error "Host meta does not have any links"))
+    (do (if-let [links (model.webfinger/get-links xrd)]
+          ;; TODO: These should call actions
+          (do (model.domain/add-links domain links)
+              (model.domain/set-discovered domain))
+          (log/error "Host meta does not have any links"))
+        xrd)
     (log/error
      (str "Could not find host meta for domain: " (:_id domain)))))
 
 (defaction discover
   [domain]
   (discover-onesocialweb domain)
-  (discover-webfinger domain))
+  (spy (discover-webfinger domain)))
 
 (defaction edit-page
   [id]

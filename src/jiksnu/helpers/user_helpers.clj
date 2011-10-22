@@ -31,9 +31,7 @@
   [^User user]
   (-?> user
        feed-link-uri
-       spy
-       abdera/fetch-feed
-       spy))
+       abdera/fetch-feed))
 
 (defn rule-map
   [rule]

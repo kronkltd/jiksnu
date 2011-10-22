@@ -1,8 +1,8 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use (ciste [config :only (config)]
-               [core :only (defaction)]
-               [debug :only (spy)])
-        (clojure.contrib [core :only (-?>)])
+  (:use (ciste [config :only [config]]
+               [core :only [defaction]]
+               [debug :only [spy]])
+        (clojure.contrib [core :only [-?>]])
         (jiksnu model))
   (:require (aleph [formats :as f]
                    [http :as h])
