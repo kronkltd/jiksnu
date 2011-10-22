@@ -99,7 +99,7 @@
 {template .indexBlock}
   <div>
     <p>index domains</p>
-    <table>
+    <table class="domains">
       <tr>
         <th>Name</th>
         <th>XMPP?</th>
@@ -127,7 +127,7 @@
  */
 {template .show}
   <div>
-    <p>Id: {$id}</p>
+    <p>Id: <span class="domain-id">{$id}</span></p>
     <p>XMPP: {$xmpp}</p>
     <p>Discovered: {$discovered}</p>
     <table>

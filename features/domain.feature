@@ -18,7 +18,7 @@ Feature: Domains
     Given I am logged in as an admin
     And a domain exists
     And I am at the domain index page
-    When I click the "Detete" button for that domain
+    When I click the "Delete" button for that domain
     Then I should be at the domain index page
     And that domain should be deleted
 
@@ -36,4 +36,4 @@ Feature: Domains
     When I type "example.com" into the "domain" field
     And I click the "Add" button
     Then I should be at the domain index page
-    And I should see that domain
+    And I should see a domain named "example.com"

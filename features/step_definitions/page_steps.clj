@@ -51,7 +51,7 @@
    "subscription index" "/admin/subscriptions"
    "edit profile"       "/settings/profile"
    "user admin"         "/admin/users"
-   })
+   "domain index"       "/main/domains"})
 
 (Before
   (let [browser (w/new-driver :firefox)]
@@ -178,6 +178,12 @@
   (fn []
     (core/with-context [:html :http]
       (let [path (uri @that-activity)]
+        (fetch-page-browser :get path)))))
+
+(When #"I go to the page for that domain"
+  (fn []
+    (core/with-context [:html :http]
+      (let [path (str "/main/domains/" (:_id @that-domain))]
         (fetch-page-browser :get path)))))
 
 (When #"I request the host-meta page with a client"
@@ -312,6 +318,18 @@
     (check-response
      (w/find-it @current-browser :form) => w/visible?)))
 
+(Then #"I should see a domain named \"(.*)\""
+  (fn [name]
+    (check-response
+     (w/find-it @current-browser :a {:href (str "/main/domains/" name)}) => w/visible?)))
+
+(Then #"I should see that domain"
+  (fn []
+    (check-response
+     (-> @current-browser
+         (w/find-it {:class "domain-id"})
+         .getText) => (:_id @that-domain))))
+
 (Then #"I should get a not found error"
   (fn []
     (check-response
@@ -344,3 +362,15 @@
   (fn []
     (check-response
      @that-domain => (contains {:discovered true}))))
+
+(Then #"that domain should be deleted"
+  (fn []
+    (check-response
+     (with-database
+       (actions.domain/show @that-domain) => nil))))
+
+(Then #"I should be at the page for that domain"
+  (fn []
+    (check-response
+     (let [url (:_id @that-domain)]
+       (w/find-it @current-browser url) => w/visible?))))
