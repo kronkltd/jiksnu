@@ -255,6 +255,7 @@
         feed (helpers.user/fetch-user-feed new-user)
         author (when feed (.getAuthor feed))
         uri (when (spy author) (.getUri author))]
+    
     (doseq [link links]
       (add-link user link))
     (-> user

@@ -63,17 +63,19 @@
 ;; TODO: Move this to user
 (defn add-author
   "Adds the supplied user to the atom entry"
-  [^Entry entry author]
-  (if-let [user (model.user/fetch-by-id (:_id author))]
-    (let [author-name (:name user)
-          author-jid  (str (:username user) "@" (:domain user))
-          actor-element (.addExtension entry namespace/as "actor" "activity")]
-      (doto actor-element
-        (.addSimpleExtension namespace/atom "name" "" author-name)
-        (.addSimpleExtension namespace/atom "email" "" author-jid)
-        (.addSimpleExtension namespace/atom "uri" "" author-jid))
-      (.addExtension entry actor-element)
-      (.addExtension entry (show-section user)))))
+  [^Entry entry ^User user]
+  ;; TODO: Do we need to re-fetch here?
+  (if-let [user (model.user/fetch-by-id (:_id user))]
+    (let [name (:name user)
+          jid  (get-uri user false)
+          actor (.addExtension entry namespace/as "actor" "activity")]
+      (doto actor
+        (.addSimpleExtension namespace/atom "name" "" name)
+        (.addSimpleExtension namespace/atom "email" "" jid)
+        (.addSimpleExtension namespace/atom "uri" "" jid))
+      (doto entry
+        (.addExtension actor)
+        (.addExtension (show-section user))))))
 
 (defn add-entry
   [feed activity]

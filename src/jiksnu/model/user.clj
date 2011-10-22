@@ -18,8 +18,7 @@
 
 (defn salmon-link
   [user]
-  (str "http://" (config :domain)
-       "/main/salmon/user/" (:_id user)))
+  (str "http://" (:domain user) "/main/salmon/user/" (:_id user)))
 
 (defn get-domain
   [^User user]
@@ -163,7 +162,8 @@
          uri (get-uri user)]
     {:remote_id (str id)
      :id (str (:_id user))
-     :name uri
+     :name (or (:display-name user)
+               (get-uri user false))
      :username username
      :domain domain
      :url (if (local? user)

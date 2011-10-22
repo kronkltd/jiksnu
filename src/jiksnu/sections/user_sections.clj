@@ -18,8 +18,7 @@
                           [domain :as model.domain]
                           [subscription :as model.subscription]
                           [user :as model.user])
-            (jiksnu.templates [user :as templates.user])
-            )
+            (jiksnu.templates [user :as templates.user]))
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -40,36 +39,35 @@
     (str "/" (:username user))
     (str "/users/" (:_id user))))
 
+(defn user->person
+  [user]
+  (let [author-uri (model.user/get-uri user)]
+    (doto (.newAuthor abdera/*abdera-factory*)
+     (.setObjectType namespace/person)
+     (.setId author-uri)
+     (.setName (:first-name user) (:last-name user))
+     (.setDisplayName (:name user))
+     (.addSimpleExtension namespace/atom "email" ""
+                          (or (:email user) (model.user/get-uri user)))
+     (.addSimpleExtension namespace/atom "name" "" (:name user))
+     (.addAvatar (:avatar-url user) "image/jpeg")
+     (.addLink (:avatar-url user) "avatar")
+     (.addSimpleExtension namespace/atom "uri" "" author-uri)
+     (.addSimpleExtension namespace/poco "preferredUsername" "poco" (:username user))
+     (.addSimpleExtension namespace/poco "displayName" "poco" (title user))
+     (-> (.addLink (full-uri user) "alternate")
+         (.setMimeType "text/html"))
+     (-> (.addExtension namespace/status "profile_info" "statusnet")
+         (.setAttributeValue "local_id" (str (:_id user))))
+     (-> (.addExtension namespace/poco "urls" "poco")
+         (doto (.addSimpleExtension namespace/poco "type" "poco" "homepage")
+           (.addSimpleExtension namespace/poco "value" "poco" (full-uri user))
+           (.addSimpleExtension namespace/poco "primary" "poco" "true"))))))
+
 
 (defsection show-section [User :atom]
-  [^User user & options]
-  (let [person nil #_(Person. (abdera/make-object namespace/atom "author" ""))
-        author-uri (full-uri user)]
-    (doto person
-      (.setObjectType namespace/person)
-      (.setId (model.user/get-uri user))
-      (.setName (:first-name user) (:last-name user))
-      (.setDisplayName (:name user))
-      (.addSimpleExtension namespace/atom "email" ""
-                           (or (:email user) (model.user/get-uri user)))
-      (.addSimpleExtension namespace/atom "name" "" (:name user))
-      (.addAvatar (:avatar-url user) "image/jpeg")
-      (.addLink (:avatar-url user) "avatar")
-      (.addSimpleExtension namespace/atom "uri" "" author-uri)
-      (.addSimpleExtension namespace/poco "preferredUsername" "poco" (:username user))
-      (.addSimpleExtension namespace/poco "displayName" "poco" (title user)))
-    (-> person
-        (.addLink author-uri "alternate")
-        (.setMimeType "text/html"))
-    (-> (.addExtension person namespace/status "profile_info" "statusnet")
-        (.setAttributeValue "local_id" (str (:_id user))))
-    (let [urls-element (.addExtension person namespace/poco "urls" "poco")]
-      (doto urls-element
-        (.addSimpleExtension namespace/poco "type" "poco" "homepage")
-        (.addSimpleExtension namespace/poco "value" "poco" (full-uri user))
-        (.addSimpleExtension namespace/poco "primary" "poco" "true")))
-    person))
-
+  [user & _]
+  (user->author user))
 
 (defsection show-section [User :html]
   [user & options]
