@@ -255,7 +255,8 @@
         links (model.webfinger/get-links xrd)
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
-        uri (when (spy feed) (-?> feed .getAuthor .getUri))]
+        author (when feed (.getAuthor feed))
+        uri (when (spy author) (.getUri author))]
     (doseq [link links]
       (add-link user link))
     (-> user

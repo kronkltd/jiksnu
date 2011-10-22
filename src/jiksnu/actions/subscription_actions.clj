@@ -1,10 +1,10 @@
 (ns jiksnu.actions.subscription-actions
-  (:use (ciste [core :only (defaction)]
-               [debug :only (spy)])
+  (:use (ciste [core :only [defaction]]
+               [debug :only [spy]])
         (jiksnu model
-                [session :only (current-user
+                [session :only [current-user
                                 current-user-id
-                                is-admin?)]))
+                                is-admin?]]))
   (:require (jiksnu [namespace :as namespace])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
@@ -47,8 +47,8 @@
   [user]
   (let [actor (current-user)]
     (model.subscription/create
-     {:from (:_id (spy actor))
-      :to (:_id (spy user))
+     {:from (:_id actor)
+      :to (:_id user)
       :pending true})))
 
 (defaction ostatussub-submit
