@@ -1,12 +1,11 @@
 (ns jiksnu.model
   (:use (ciste core
-               [config :only (config environment)]
-               [debug :only (spy)]
-               sections)
+               [config :only [config environment]]
+               [debug :only [spy]]
+               #_sections)
         ciste.sections.default
-        clj-factory.core
-        (karras [entity :only (defembedded
-                                defentity delete-all)])
+        (clj-factory [core :only [factory]])
+        (karras [entity :only [defembedded defentity delete-all]])
         plaza.rdf.core
         plaza.rdf.implementations.jena)
   (:require (aleph [formats :as f]
