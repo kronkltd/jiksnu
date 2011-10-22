@@ -86,6 +86,7 @@
 
 /**
  * @param user
+ * @param subscribers
  */
 {template .subscribersSection}
   {if $user}
@@ -94,7 +95,7 @@
         <a href="/users/{$user.id}/subscribers">Subscribers</a>
       </h3>
       <ul>
-        {foreach $subscriber in $user.subscribers}
+        {foreach $subscriber in $subscribers}
           {call .subscriberLine data="$subscriber" /}
         {/foreach}
       </ul>
@@ -150,6 +151,7 @@
 
 /**
  * @param user
+ * @param subscriptions
  */
 {template .subscriptionsSection}
   {if $user}
@@ -158,7 +160,7 @@
         <a href="/users/{$user.id}/subscriptions">Subscriptions</a>
       </h3>
       <ul>
-        {foreach $subscription in $user.subscriptions}
+        {foreach $subscription in $subscriptions}
           {call .subscriptionsLine data="$subscription" /}
         {/foreach}
       </ul>

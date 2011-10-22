@@ -79,18 +79,20 @@
 
 /**
  * @param authenticated
+ * @param subscribers
+ * @param subscriptions
  */
 {template .leftColumn}
   <aside id="left-column">
     {call .userInfoSection data="all" /}
     {call .streamSection data="all" /}
-    {call jiksnu.templates.subscriptions.subscriptionsSection
-      data="all"}
+    {call jiksnu.templates.subscriptions.subscriptionsSection data="all"}
       {param user: $authenticated /}
+      {param subscriptions: $subscriptions /}
     {/call}
-    {call jiksnu.templates.subscriptions.subscribersSection
-      data="all"}
+    {call jiksnu.templates.subscriptions.subscribersSection data="all"}
       {param user: $authenticated /}
+      {param subscribers: $subscribers /}
     {/call}
     {call .formatList data="all" /}
   </aside>
