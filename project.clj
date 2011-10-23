@@ -27,6 +27,7 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
+                 [org.clojure/core.match "0.2.0-alpha5"]
                  [org.clojure/data.zip "0.1.1-SNAPSHOT"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.deri.any23/any23-core "0.5.0"]

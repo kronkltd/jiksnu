@@ -136,30 +136,6 @@
   [options]
   (model.user/index))
 
-(defn person->user
-  [^Person person]
-  (if person
-    (let [id (.getUri person)
-          email (.getEmail person)
-          name (or (.getSimpleExtension person namespace/poco
-                                        "displayName" "poco" )
-                   (.getName person))
-          username (.getSimpleExtension person namespace/poco
-                                        "preferredUsername" "poco")
-          links (-> person
-                    (.getExtensions (QName. namespace/atom "link"))
-                    (->> (map abdera/parse-link)))
-          params (merge {:domain (.getHost id)}
-                        (when username {:username username})
-                        (when email {:email email})
-                        (when name {:display-name name}))]
-      (let [user (update (merge (find-or-create-by-remote-id
-                                 {:id (str id)} params)
-                                params))]
-        (doseq [link links]
-          (add-link user link))
-        user))))
-
 (defaction profile
   [& _])
 
@@ -207,6 +183,30 @@
              (fn [[k v]] (if (not= v "") [(keyword k) v]))
              params))
       model.user/update))
+
+(defn person->user
+  [^Person person]
+  (if person
+    (let [id (.getUri person)
+          email (.getEmail person)
+          name (or (.getSimpleExtension person namespace/poco
+                                        "displayName" "poco" )
+                   (.getName person))
+          username (.getSimpleExtension person namespace/poco
+                                        "preferredUsername" "poco")
+          links (-> person
+                    (.getExtensions (QName. namespace/atom "link"))
+                    (->> (map abdera/parse-link)))
+          params (merge {:domain (.getHost id)}
+                        (when username {:username username})
+                        (when email {:email email})
+                        (when name {:display-name name}))]
+      (let [user (update (merge (find-or-create-by-remote-id
+                                 {:id (str id)} params)
+                                params))]
+        (doseq [link links]
+          (add-link user link))
+        user))))
 
 (defaction update-hub
   ;; Determine the user's hub link and update the user object

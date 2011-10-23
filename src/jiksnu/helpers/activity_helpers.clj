@@ -3,6 +3,7 @@
                [debug :only (spy)]
                sections)
         ciste.sections.default
+        (clojure.core.match [core :only [match]])
         (jiksnu model session view))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
@@ -67,7 +68,7 @@
   ;; TODO: Do we need to re-fetch here?
   (if-let [user (model.user/fetch-by-id (:_id user))]
     (let [name (:name user)
-          jid  (get-uri user false)
+          jid  (model.user/get-uri user false)
           actor (.addExtension entry namespace/as "actor" "activity")]
       (doto actor
         (.addSimpleExtension namespace/atom "name" "" name)
@@ -118,26 +119,26 @@
   (let [parent-id (.getAttributeValue element "ref")]
     {:parent parent-id}))
 
-;; TODO: This is a job for match
+(defn parse-geo
+  [element]
+  (let [coords (.getText element)
+        [lat long] (string/split coords #" ")]
+    {:lat lat :long long}))
+
 (defn parse-extension-element
   [element]
   (let [qname (.getQName element)
-        name (.getLocalPart qname)
-        namespace (.getNamespaceURI qname)]
-    (if (and (= name "actor")
-             (= namespace namespace/as))
-      (if (and (= name "object")
-               (= namespace namespace/as))
-        (abdera/parse-object-element element)
-        (if (and (= name "in-reply-to")
-                 (= namespace "http://purl.org/syndication/thread/1.0"))
-          (parse-reply-to element)
-          (if (and (= name "point")
-                   (= namespace "http://www.georss.org/georss"))
-            (let [coords (.getText element)
-                  [lat long] (string/split coords #" ")]
-              {:lat lat
-               :long long})))))))
+        qname (element/parse-qname qname)]
+    (condp = (:namespace qname)
+      namespace/as (condp = (:name qname)
+                     "actor" nil
+                     "object" (abdera/parse-object-element element))
+
+      namespace/thr (condp = (:name qname)
+                      "in-reply-to" (parse-reply-to element))
+
+      namespace/geo (condp = (:name qname)
+                      "point" (parse-geo element)))))
 
 
 ;; TODO: What id should be used here?

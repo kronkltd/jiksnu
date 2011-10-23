@@ -67,7 +67,7 @@
 
 (defsection show-section [User :atom]
   [user & _]
-  (user->author user))
+  (user->person user))
 
 (defsection show-section [User :html]
   [user & options]
