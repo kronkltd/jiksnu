@@ -61,10 +61,10 @@
 
 (defaction create
   [options]
-  (let [user (-> options
-                 (assoc :discovered false)
-                 (assoc :local false)
-                 (assoc :updated (sugar/date)))]
+  (let [user (merge {:discovered false
+                     :local false
+                     :updated (sugar/date)}
+                    options)]
     (-> user :domain actions.domain/find-or-create)
     (model.user/create user)))
 
@@ -144,6 +144,8 @@
   (if (and username password)
     (let [user (merge {:username username
                        :domain (config :domain)
+                       :discovered true
+                       :local true
                        ;; TODO: encrypt here
                        :password password}
                       (if email {:email email})

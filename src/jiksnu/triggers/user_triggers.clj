@@ -78,7 +78,14 @@
                (actions.user/update (assoc user :avatar-url (:href link))))
     nil))
 
+(defn register-trigger
+  [action params user]
+  (spy params)
+  (spy user)
+  )
+
 (add-trigger! #'actions.user/add-link      #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
 (add-trigger! #'actions.user/discover      #'discover-user)
 (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
+(add-trigger! #'actions.user/register      #'register-trigger)
