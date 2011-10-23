@@ -108,7 +108,9 @@
 
 (defn get-key-for-user
   [^User user]
-  (get-key-for-user-id (:_id user)))
+  (if (:discovered user)
+    (get-key-for-user-id (:_id user))
+    (throw (RuntimeException. "user is not discovered"))))
 
 (defn set-armored-key
   [^ObjectId user-id

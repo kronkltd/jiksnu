@@ -40,7 +40,7 @@
                  [swank-clojure "1.4.0-SNAPSHOT"]
                  ]
   :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]
-                     [lein-marginalia "0.6.0"]]
+                     [lein-marginalia "0.6.1"]]
   :exclusions [org.apache.abdera/abdera-core
                org.clojure/contrib
                org.clojure/clojure-contrib

@@ -36,8 +36,11 @@
 
 (deffilter #'user-timeline :http
   [action request]
-  (-> request :params :username
-      model.user/show action))
+  (let [{{:keys [id username]} :params} request]
+    (if-let [user (if id
+                    (model.user/fetch-by-id id)
+                    (model.user/show username))]
+      (action user))))
 
 (deffilter #'user-timeline :xmpp
   [action request]

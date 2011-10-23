@@ -14,15 +14,15 @@
 (defn get-key
   [^User author]
   (-?> author
-      model.signature/get-key-for-user
-      model.signature/get-key-from-armored))
+       model.signature/get-key-for-user
+       model.signature/get-key-from-armored))
 
 (defn signature-valid?
   [envelope key]
   #_(->> (.verify default-sig envelope (list key))
-       .getSignatureVerificationResults
-       (map #(.isVerified %))
-       (some identity)))
+         .getSignatureVerificationResults
+         (map #(.isVerified %))
+         (some identity)))
 
 (defn decode-envelope
   [envelope]
@@ -34,6 +34,7 @@
   (-?> envelope
        decode-envelope
        abdera/parse-xml-string
+       spy
        actions.activity/entry->activity))
 
 (defn stream->envelope
@@ -45,10 +46,12 @@
 
 (defaction process
   [stream]
-  (let [envelope (stream->envelope stream)]
-    (if-let [activity (extract-activity envelope)]
+  (let [envelope (stream->envelope (spy stream))]
+    (if-let [activity (extract-activity (spy envelope))]
       (if-let [key (-?> activity
+                        spy
                         helpers.activity/get-author
+                        spy
                         get-key)]
-        (if (signature-valid? envelope key)
+        (if (signature-valid? envelope (spy key))
           (actions.activity/remote-create activity))))))

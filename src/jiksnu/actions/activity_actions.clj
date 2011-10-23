@@ -1,7 +1,8 @@
 (ns jiksnu.actions.activity-actions
   (:use (ciste [core :only (defaction)]
                [debug :only (spy)])
-        ciste.sections.default)
+        ciste.sections.default
+        (clojure.core [incubator :only [-?>]]))
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase])
             (clojure [string :as string])
@@ -18,7 +19,8 @@
                           [domain :as model.domain]
                           [user :as model.user])
             (lamina [core :as l]))
-  (:import jiksnu.model.Activity
+  (:import javax.xml.namespace.QName
+           jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera2.ext.thread.ThreadHelper))
 
@@ -82,6 +84,11 @@ serialization"
              title (.getTitle entry)
              published (.getPublished entry)
              updated (.getUpdated entry)
+             verb (-?> entry
+                      (.getExtension (QName. namespace/as "verb" "activity"))
+                      .getText
+                      spy
+                      )
              user (-> entry
                       (abdera/get-author feed)
                       actions.user/person->user
@@ -104,6 +111,7 @@ serialization"
                          (if (seq irts) {:irts irts})
                          (if (seq links) {:links links})
                          (if (seq tags) {:tags tags})
+                         (when verb {:verb verb})
                          {:id id
                           :author (:_id user)
                           :public true
