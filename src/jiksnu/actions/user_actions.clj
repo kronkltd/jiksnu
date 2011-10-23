@@ -208,15 +208,18 @@
           (add-link user link))
         user))))
 
-(defaction update-hub
-  ;; Determine the user's hub link and update the user object
-  [user]
-  (if-let [hub-link (-?> user
-                         helpers.user/fetch-user-feed
-                         abdera/get-hub-link)]
+(defn update-hub*
+  [user feed]
+  (if-let [hub-link (abdera/get-hub-link feed)]
     (do (entity/update User {:_id (:_id user)}
                        {:$set {:hub hub-link}})
         user)))
+
+(defaction update-hub
+  ;; Determine the user's hub link and update the user object
+  [user]
+  (if-let [feed (helpers.user/fetch-user-feed user)]
+    (update-hub* user feed)))
 
 (defaction update-profile
   [options]
@@ -260,6 +263,7 @@
         feed (helpers.user/fetch-user-feed new-user)
         author (when feed (.getAuthor feed))
         uri (when author (.getUri author))]
+    (update-hub* user feed)
     (update (person->user author))
     (doseq [link links]
       (add-link user link))

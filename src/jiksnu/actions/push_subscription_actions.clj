@@ -47,23 +47,20 @@
 
 (defaction subscribe
   [user]
-  (let [hub-url (:hub user)
-        topic (helpers.user/feed-link-uri user)]
-    (model.push/find-or-create {:topic topic :hub hub-url})
-    (let [subscribe-link
-          (make-subscribe-uri
-           hub-url
-           {:hub.callback "http://beta.jiksnu.com/main/push/callback"
-            :hub.mode "subscribe"
-            :hub.topic topic
-            :hub.verify "async"})]
-
-      (let [response-channel
-            (http/http-request
-             {:method :get
-              :url subscribe-link
-              :auto-transform true})]
-        @response-channel))))
+  (if-let [hub-url (:hub user)]
+    (let [topic (helpers.user/feed-link-uri user)]
+      (model.push/find-or-create {:topic topic :hub hub-url})
+      (let [subscribe-link
+            (make-subscribe-uri
+             hub-url
+             {:hub.callback "http://beta.jiksnu.com/main/push/callback"
+              :hub.mode "subscribe"
+              :hub.topic topic
+              :hub.verify "async"})]
+        (http/sync-http-request
+         {:method :get
+          :url (spy subscribe-link)
+          :auto-transform true})))))
 
 (defn valid?
   "How could this ever go wrong?"
