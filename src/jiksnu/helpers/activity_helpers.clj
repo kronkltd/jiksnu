@@ -132,13 +132,18 @@
     (condp = (:namespace qname)
       namespace/as (condp = (:name qname)
                      "actor" nil
-                     "object" (abdera/parse-object-element element))
+                     "object" (abdera/parse-object-element element)
+                     nil)
 
       namespace/thr (condp = (:name qname)
-                      "in-reply-to" (parse-reply-to element))
+                      "in-reply-to" (parse-reply-to element)
+                      nil)
 
       namespace/geo (condp = (:name qname)
-                      "point" (parse-geo element)))))
+                      "point" (parse-geo element)
+                      nil)
+
+      nil)))
 
 
 ;; TODO: What id should be used here?
