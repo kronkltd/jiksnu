@@ -29,7 +29,7 @@
     (with-context [:http :atom]
       (let [user (actions.user/create (factory User))
             entry (show-section (factory Activity {:author (:_id user)}))]
-        (entry->activity entry) => activity?))))
+        (entry->activity (spy entry)) => activity?))))
 
 (deftest test-prepare-activity
   (fact "should return an activity"

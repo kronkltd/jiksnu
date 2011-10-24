@@ -74,9 +74,8 @@
 
 (defaction discover
   [^User user]
-  user
-
-  )
+  (when (not (:local user))
+    user))
 
 ;; TODO: turn this into a worker
 (defn discover-pending-users
@@ -142,16 +141,16 @@
 (defaction register
   [{:keys [username password email display-name location]}]
   (if (and username password)
-    (let [user (merge {:username username
-                       :domain (config :domain)
-                       :discovered true
-                       :local true
-                       ;; TODO: encrypt here
-                       :password password}
-                      (if email {:email email})
-                      (if display-name {:display-name display-name})
-                      (if location {:location location}))]
-      (create user))))
+    (-> {:username username
+         :domain (config :domain)
+         :discovered true
+         :local true
+         ;; TODO: encrypt here
+         :password password}
+        (merge (when email {:email email})
+               (when display-name {:display-name display-name})
+               (when location {:location location}))
+        create)))
 
 (defaction register-page
   []

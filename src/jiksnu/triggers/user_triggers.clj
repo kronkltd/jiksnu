@@ -80,9 +80,7 @@
 
 (defn register-trigger
   [action params user]
-  (spy params)
-  (spy user)
-  )
+  (model.signature/generate-key-for-user user))
 
 (add-trigger! #'actions.user/add-link      #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)

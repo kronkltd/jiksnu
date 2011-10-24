@@ -9,6 +9,7 @@
   :dependencies [
                  [clj-factory "0.1.0"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
+                 [clj-time "0.3.1"]
                  [clj-webdriver "0.2.14"]
                  [clojure-saxon "0.9.2"]
                  [closure-templates-clj "0.0.3"]
