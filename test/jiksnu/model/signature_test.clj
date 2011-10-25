@@ -50,12 +50,12 @@
 (deftest test-get-key-for-user
   (testing "when the user has a key"
     (fact "should return that key"
-      (let [user (actions.user/create (factory User))
+      (let [user (actions.user/create (factory User {:discovered true}))
             keypair (generate-key-for-user user)]
         (get-key-for-user user) => keypair)))
   (testing "when the user does not have a key"
     (fact "should return nil"
-      (let [user (actions.user/create (factory User))]
+      (let [user (actions.user/create (factory User {:discovered true}))]
         (get-key-for-user user)) => nil)))
 
 (deftest test-set-armored-key)
