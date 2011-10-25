@@ -20,6 +20,7 @@
                  [inflections "0.5.3-SNAPSHOT"]
                  [aleph "0.2.1-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
+                 [joda-time "2.0"]
                  [lamina "0.4.1-SNAPSHOT"]
                  [net.kronkltd/karras "0.7.1-SNAPSHOT"]
                  [midje "1.3-alpha4"]
@@ -27,6 +28,7 @@
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
+                 [org.apache.ant/ant "1.8.2"]
                  [org.clojure/clojure "1.3.0"]
                  [org.clojure/core.match "0.2.0-alpha5"]
                  [org.clojure/data.zip "0.1.1-SNAPSHOT"]
@@ -40,7 +42,7 @@
                  [ring-mock "0.1.1"]
                  [swank-clojure "1.4.0-SNAPSHOT"]
                  ]
-  :dev-dependencies [[org.clojars.rferraz/lein-cuke "1.1.1"]
+  :dev-dependencies [#_[org.clojars.rferraz/lein-cuke "1.1.1"]
                      [lein-marginalia "0.6.1"]]
   :exclusions [org.apache.abdera/abdera-core
                org.clojure/contrib

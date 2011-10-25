@@ -19,11 +19,11 @@
 (deftest test-get-key
   (testing "when the user does not have a key"
     (fact "should return nil"
-      (let [user (actions.user/create (factory User))]
+      (let [user (actions.user/create (factory User {:discovered true}))]
         (get-key user)) => nil #_(partial instance? Key)))
   (testing "when there is a key"
     (fact "should return a key"
-      (let [user (actions.user/create (factory User))]
+      (let [user (actions.user/create (factory User {:discovered true}))]
         (get-key user))) => (partial instance? Key)))
 
 (deftest test-signature-valid?)

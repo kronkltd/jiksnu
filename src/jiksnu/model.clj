@@ -139,7 +139,7 @@
 (defn fetch-resource
   [url]
   (let [response (-> {:method :get
-                      :url (spy url)}
+                      :url url}
                      h/sync-http-request)
         {:keys [body status]} response]
     (when (not (#{404 500} status))
