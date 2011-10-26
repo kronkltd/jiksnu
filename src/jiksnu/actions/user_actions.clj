@@ -263,14 +263,17 @@
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
         author (when feed (.getAuthor feed))
-        uri (when author (.getUri author))]
+        user (merge user (person->user author))
+        avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
+        uri (:uri user)]
     (update-hub* user feed)
-    (update (person->user author))
     (doseq [link links]
       (add-link user link))
-    (-> user
-        (assoc :id (str uri))
-        (assoc :discovered true)
+    (-> (merge
+         user
+         (when avatar-url {:avatar-url avatar-url})
+         {:id (str uri)
+          :discovered true})
         update)))
 
 (defaction user-meta

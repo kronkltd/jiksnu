@@ -25,14 +25,6 @@
            jiksnu.model.Domain
            jiksnu.model.User))
 
-(defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
-                   :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
-
-(defn force-coll
-  [x]
-  (if (coll? x)
-    x (list x)))
-
 (defn fetch-host-meta
   [url]
   (let [hm (-> url fetch-resource s/compile-xml)
@@ -113,7 +105,7 @@
                    fetch-host-meta)]
     (if-let [links (get-links xrd)]
       ;; TODO: These should call actions
-      (do (model.domain/add-links domain (spy links))
+      (do (model.domain/add-links domain links)
           (model.domain/set-discovered domain))
       (log/error "Host meta does not have any links"))
     (log/error

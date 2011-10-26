@@ -37,7 +37,7 @@
 
 (defn fetch-resource
   [uri]
-  (spy (.get (AbderaClient.) uri)))
+  (.get (AbderaClient.) uri))
 
 (defn fetch-document
   [uri]

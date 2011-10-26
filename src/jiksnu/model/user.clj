@@ -145,7 +145,7 @@
         merged-user (merge {:admin false :debug false}
                            old-user new-user)
         user (entity/make User merged-user)]
-    (entity/update User {:_id (:_id old-user)} user)
+    (entity/update User {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
 (defn user-meta-uri

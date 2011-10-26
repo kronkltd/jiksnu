@@ -86,9 +86,7 @@ serialization"
              updated (.getUpdated entry)
              verb (-?> entry
                       (.getExtension (QName. namespace/as "verb" "activity"))
-                      .getText
-                      spy
-                      )
+                      .getText)
              user (-> entry
                       (abdera/get-author feed)
                       actions.user/person->user
@@ -127,9 +125,9 @@ serialization"
 ;; TODO: merge this with h.a/load-activities
 (defaction fetch-remote-feed
   [uri]
-  (let [feed (abdera/fetch-feed (spy uri))]
-    (doseq [activity (get-activities (spy feed))]
-      (create (spy activity)))))
+  (let [feed (abdera/fetch-feed uri)]
+    (doseq [activity (get-activities feed)]
+      (create activity))))
 
 ;; (defaction find-or-create
 ;;   [options]

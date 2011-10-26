@@ -60,7 +60,7 @@
         (let [request (packet/make-request packet)]
           (if (config :print :request)
             request)
-          (if-let [response (main-handler queue request)]
+          (if-let [response (main-handler queue (spy request))]
             (do
               (.setPacketTo response (.getPacketFrom packet))
               (offer-packet queue response))))))))

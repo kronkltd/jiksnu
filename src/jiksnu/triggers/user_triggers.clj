@@ -12,7 +12,8 @@
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
-                          [signature :as model.signature]))
+                          [signature :as model.signature]
+                          [user :as model.user]))
   (:import org.deri.any23.Any23))
 
 (defonce a23 (Any23.))
@@ -33,7 +34,8 @@
   (let [domain (model.domain/show (:domain user))]
     (if (:discovered domain)
       (do (async (discover-user-xmpp user))
-          (async (discover-user-http user)))
+          (async (discover-user-http user))
+          (actions.activity/load-activities (model.user/fetch-by-id (:_id user))))
       (actions.user/enqueue-discover user))))
 
 (defn fetch-updates-http
