@@ -65,9 +65,9 @@
      (reset! server (start port)))))
 
 (After
-  (@server)
+  (@(spy server))
   (w/quit @current-browser)
-  (shutdown-agents))
+  #_(shutdown-agents))
 
 
 (defn fetch-page

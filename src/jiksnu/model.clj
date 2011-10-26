@@ -145,10 +145,10 @@
 
 (defn fetch-resource
   [url]
-  (let [response (client/get url)
-        {:keys [body status]} response]
-    (when (not (#{404 500} status))
-      body)))
+  (if-let [response (try (client/get url) (catch Exception ex))]
+    (let [{:keys [body status]} response]
+      (when (not (#{404 500} status))
+        body))))
 
 (defn fetch-document
   [url]
