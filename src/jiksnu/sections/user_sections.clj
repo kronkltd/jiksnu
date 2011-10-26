@@ -110,14 +110,20 @@
 
 (defsection show-section [User :json]
   [user & options]
-  {:profileUrl (full-uri user)
-   :id (:_id user)
-   :name {:formatted (:name user)
-          :familyName (:last-name user)
-          :givenName (:first-name user)}
-   :photos [{:value (:avatar-url user)
-             :type "thumbnail"}]
-   :displayName (:name user)})
+  (let [{:keys [display-name id avatar-url]} user]
+    (merge {:profileUrl (full-uri user)
+            :id (or id (model.user/get-uri user))
+            :url (full-uri user)
+            ;; :name {:formatted (:display-name user)
+            ;;        :familyName (:last-name user)
+            ;;        :givenName (:first-name user)}
+            }
+           (when avatar-url
+             {:photos [{:value avatar-url
+                        :type "thumbnail"}]})
+           (when display-name
+             {:displayName display-name})
+          )))
 
 
 (defsection show-section [User :xmpp :xmpp]

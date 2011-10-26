@@ -86,14 +86,17 @@
    "updated" (:updated activity)
    "verb" "post"
    "title" (:title activity)
-   "content" (:content activity)
-   "id" (:_id activity)
+   ;; "content" (:content activity)
+   "id" (:id activity)
    "url" (full-uri activity)
    "actor" (show-section (helpers.activity/get-author activity))
    "object"
    (let [object (:object activity)]
-     {"published" (:published object)
-      "updated" (:updated object)})})
+     {"objectType" (:object-type object)
+      "id" (:id object)
+      ;; "published" (:published object)
+      ;; "updated" (:updated object)
+      })})
 
 (register-rdf-ns :aair ns/aair)
 (register-rdf-ns :as ns/as)
