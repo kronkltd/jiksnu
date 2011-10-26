@@ -5,11 +5,13 @@
                sections)
         ciste.sections.default
         (clj-factory [core :only [factory]])
-        (karras [entity :only [defembedded defentity delete-all]])
+        (karras [core :only [MongoMappable]]
+                [entity :only [defembedded defentity delete-all]])
         plaza.rdf.core
         plaza.rdf.implementations.jena)
   (:require (aleph [formats :as f]
                    [http :as h])
+            (clj-http [client :as client])
             (clojure [xml :as xml]
                      [zip :as zip])
             (clojure.data [json :as json])
@@ -26,6 +28,7 @@
            java.net.URL
            lamina.core.channel.Channel
            org.bson.types.ObjectId
+           org.joda.time.DateTime
            org.dom4j.DocumentFactory
            org.dom4j.io.SAXReader
            org.xml.sax.InputSource))
@@ -42,7 +45,11 @@
 
 (defn format-date
   [^Date date]
-  (when date (.format *formatter* date)))
+  (condp = (class date)
+    String (DateTime/parse date)
+    DateTime date
+    Date (.format (SimpleDateFormat. *date-format*) date)
+    date))
 
 (init-jena-framework)
 ;; TODO: Find a better ns for this
@@ -138,15 +145,10 @@
 
 (defn fetch-resource
   [url]
-  (let [response (-> {:method :get
-                      :url url}
-                     h/sync-http-request)
+  (let [response (client/get url)
         {:keys [body status]} response]
     (when (not (#{404 500} status))
-      (f/channel-buffer->string
-       (if (instance? Channel body)
-         (l/wait-for-message body)
-         body)))))
+      body)))
 
 (defn fetch-document
   [url]
@@ -180,3 +182,9 @@
   {:write-json write-json-object-id})
 
 (load-file "factories.clj")
+
+(extend-type DateTime
+   MongoMappable
+   (to-dbo [d] (.toDate d))
+   (to-clj [d] (DateTime/parse d))
+   (to-description [d] (str d)))
