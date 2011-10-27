@@ -15,7 +15,7 @@
 
 (deftemplate subscribers-index
   [subscriptions]
-  {:subscriptions (map model.subscription/format-data (spy subscriptions))})
+  {:subscriptions (map model.subscription/format-data subscriptions)})
 
 (deftemplate subscribers-section
   [user]
@@ -23,7 +23,7 @@
 
 (deftemplate subscriptions-index
   [subscriptions]
-  {:subscriptions (spy (map model.subscription/format-data (spy subscriptions)))})
+  {:subscriptions (map model.subscription/format-data subscriptions)})
 
 (deftemplate subscriptions-section
   [user]
