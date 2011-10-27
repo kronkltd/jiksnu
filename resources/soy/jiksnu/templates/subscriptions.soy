@@ -136,6 +136,19 @@
 
 
 /**
+ * @param from
+ * @param pending
+ */
+{template .subscriberLine}
+  <li>
+    {call jiksnu.templates.user.showMinimal data="$from" /}
+    {if $pending }
+      {sp}(pending)
+    {/if}
+  </li>
+{/template}
+
+/**
  * @param to
  * @param pending
  */
