@@ -1,8 +1,9 @@
 (ns jiksnu.filters.subscription-filters
-  (:use (ciste [debug :only (spy)]
-               [filters :only (deffilter)])
+  (:use (ciste [debug :only [spy]]
+               [filters :only [deffilter]])
+        (clojure.core [incubator :only [-?> -?>>]])
         jiksnu.actions.subscription-actions
-        (jiksnu [session :only (current-user-id)]))
+        (jiksnu [session :only [current-user current-user-id]]))
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.actions [user-actions :as actions.user])
@@ -36,9 +37,8 @@
 
 (deffilter #'subscribe :http
   [action request]
-  (if-let [{{user-id :subscribeto} :params} request]
-    (if-let [user (model.user/fetch-by-id user-id)]
-      (action user))))
+  (-?>> request :params :subscribeto
+        model.user/fetch-by-id (action (current-user))))
 
 (deffilter #'subscribers :http
   [action request]
