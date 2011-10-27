@@ -44,12 +44,11 @@
   [& _])
 
 (defaction subscribe
-  [user]
-  (let [actor (current-user)]
-    (model.subscription/create
-     {:from (:_id actor)
-      :to (:_id user)
-      :pending true})))
+  [actor user]
+  (model.subscription/create
+   {:from (:_id actor)
+    :to (:_id user)
+    :pending true}))
 
 (defaction ostatussub-submit
   [user]

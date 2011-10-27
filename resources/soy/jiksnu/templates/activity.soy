@@ -248,13 +248,16 @@
 
 /**
  * @param activities
+ * @param authenticated
  */
 {template .indexBlock}
   <div id="notices_primary">
     <ol class="activities">
       {foreach $activity in $activities}
         <li>
-          {call .show data="$activity" /}
+          {call .show data="$activity"}
+            {param authenticated: $authenticated /}
+          {/call}
         </li>
       {/foreach}
     </ol>
@@ -499,12 +502,13 @@
 /**
  * @param user
  * @param activities
+ * @param authenticated
  */
 {template .userTimeline}
   <div>
-    {call jiksnu.templates.user.show data="$user" /}
-    {call .indexBlock data="all"}
-      {param activities: $activities /}
+    {call jiksnu.templates.user.show data="$user"}
+      {param authenticated: $authenticated /}
     {/call}
+    {call .indexBlock data="all" /}
   </div>
 {/template}

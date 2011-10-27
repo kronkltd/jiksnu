@@ -1,11 +1,14 @@
 (ns jiksnu.templates.user
   (:use (ciste [debug :only (spy)])
-        (closure.templates [core :only (deftemplate)]))
+        (closure.templates [core :only (deftemplate)])
+        (jiksnu [session :only [current-user]]))
   (:require (jiksnu.model [user :as model.user])))
 
 (deftemplate show
   [user]
-  (model.user/format-data user))
+  (-> user
+      model.user/format-data
+      (assoc :authenticated (model.user/format-data (current-user)))))
 
 (deftemplate register-section
   [request]

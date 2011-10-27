@@ -207,6 +207,7 @@
 
 
 /**
+ * @param authenticated
  * @param users
  */
 {template .indexSection}
@@ -225,7 +226,9 @@
       </thead>
       <tbody>
         {foreach $user in $users}
-          {call .indexLine data="$user" /}
+          {call .indexLine data="$user"}
+            {param authenticated: $authenticated /}
+          {/call}
         {/foreach}
       </tbody>
     </table>
@@ -365,32 +368,41 @@
 
 /**
  * @param display_name
+ * @param domain
  * @param name
  * @param location
+ * @param authenticated
  * @param bio
  * @param local
  * @param hub
  * @param discovered
  * @param updated
- * @param remote_id
+ * @param id
+ * @param username
  * @param url
  * @param links
  */
 {template .show}
   <div class="vcard">
-    <p>{call .displayAvatar data="all" /}</p>
     <p>
-      <span class="nickname">{$display_name}</span>
+      {call .displayAvatar data="all" /}
+      <span class="nickname fn n">{$display_name}</span>
+      {sp}({$username}@{$domain})
     </p>
-    <p class="fn n">{$name}</p>
-    <div class="adr">
-      <p class="locality">{$location ? $location : ''}</p>
-    </div>
-    <p class="note">{$bio ? $bio : ''}</p>
+    {if $location}
+      <div class="adr">
+        <p class="locality">{$location}</p>
+      </div>
+    {/if}
+    {if $bio}
+      <p class="note">{$bio}</p>
+    {/if}
     <p><a class="url" rel="me" href="{$url}">{$url}</a></p>
-    <p>Id: {$remote_id}</p>
+    <p>Id: {$id}</p>
     <p>Local: {$local}</p>
-    <p>Hub: {$hub ? $hub : 'unknown'}</p>
+    {if $hub}
+      <p>Hub: {$hub}</p>
+    {/if}
     <p>Discovered: {$discovered ? 'true' : 'false'}</p>
     <p>Last Updated: {$updated ? $updated : 'never'}</p>
     {call .userActions data="all" /}
@@ -487,6 +499,8 @@
  */
 {template .userActions}
   {if $authenticated}
+    <p>id: {$id}</p>
+    <p>auth id: {$authenticated.id}</p>
     {if $id == $authenticated.id}
       <p>This is you</p>
     {/if}
@@ -497,9 +511,6 @@
     </li>
     <li>
       {call .updateButton data="all" /}
-    </li>
-    <li>
-      {call .subscribeButton data="all" /}
     </li>
     <li>
       {call .subscribeSection data="all" /}

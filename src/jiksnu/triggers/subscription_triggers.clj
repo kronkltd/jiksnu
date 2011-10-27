@@ -44,12 +44,15 @@
         (tigase/deliver-packet! packet)))))
 
 (defn notify-subscribe
-  [action [user] subscription]
+  [action [actor user] subscription]
   (let [domain (model.domain/show (:domain user))]
-    (if (:xmpp domain)
-      (notify-subscribe-xmpp {} subscription)
-      ;; TODO: OStatus case
-      )))
+    (if (:local user)
+      ;; TODO: Verify open subscription
+      (confirm subscription)
+      (if (:xmpp domain)
+       (notify-subscribe-xmpp {} subscription)
+       ;; TODO: OStatus case
+       ))))
 
 (defn notify-unsubscribe
   [action [user] subscription]
