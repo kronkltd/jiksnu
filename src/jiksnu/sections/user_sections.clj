@@ -114,13 +114,14 @@
     (merge {:profileUrl (full-uri user)
             :id (or id (model.user/get-uri user))
             :url (full-uri user)
+            :objectType "person"
             ;; :name {:formatted (:display-name user)
             ;;        :familyName (:last-name user)
             ;;        :givenName (:first-name user)}
             }
            (when avatar-url
-             {:photos [{:value avatar-url
-                        :type "thumbnail"}]})
+             ;; TODO: get image dimensions
+             {:image [{:url avatar-url}]})
            (when display-name
              {:displayName display-name})
           )))

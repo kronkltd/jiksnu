@@ -94,6 +94,7 @@
    (let [object (:object activity)]
      {"objectType" (:object-type object)
       "id" (:id object)
+      "displayName" (:content activity)
       ;; "published" (:published object)
       ;; "updated" (:updated object)
       })})
