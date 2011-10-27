@@ -425,3 +425,11 @@ fieldset {
 .labels {
     margin-left: 15px;
 }
+
+.user-actions {
+    padding: 0;
+}
+
+.user-actions li, .user-actions li form {
+    display: inline;
+}

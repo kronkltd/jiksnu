@@ -499,13 +499,11 @@
  */
 {template .userActions}
   {if $authenticated}
-    <p>id: {$id}</p>
-    <p>auth id: {$authenticated.id}</p>
     {if $id == $authenticated.id}
       <p>This is you</p>
     {/if}
   {/if}
-  <ul>
+  <ul class="user-actions">
     <li>
       {call .discoverButton data="all" /}
     </li>
