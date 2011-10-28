@@ -433,3 +433,8 @@ fieldset {
 .user-actions li, .user-actions li form {
     display: inline;
 }
+
+
+.subscriptions p {
+    display: block;
+}

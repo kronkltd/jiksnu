@@ -253,14 +253,22 @@
  */
 {template .linksList}
   {if $links}
-    <ul>
-      {foreach $link in $links}
-        <li>
-          <p>{$link.href}</p>
-          <p>{$link.rel}</p>
-        </li>
-      {/foreach}
-    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th>rel</th>
+          <th>href</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $link in $links}
+          <tr>
+            <td>{$link.rel}</td>
+            <td>{$link.href}</td>
+          </tr>
+        {/foreach}
+      </tbody>
+    </table>
   {/if}
 {/template}
 

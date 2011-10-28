@@ -34,7 +34,6 @@
   (-?> envelope
        decode-envelope
        abdera/parse-xml-string
-       spy
        actions.activity/entry->activity))
 
 (defn stream->envelope
@@ -46,12 +45,10 @@
 
 (defaction process
   [stream]
-  (let [envelope (stream->envelope (spy stream))]
-    (if-let [activity (extract-activity (spy envelope))]
+  (let [envelope (stream->envelope stream)]
+    (if-let [activity (extract-activity envelope)]
       (if-let [key (-?> activity
-                        spy
                         helpers.activity/get-author
-                        spy
                         get-key)]
-        (if (signature-valid? envelope (spy key))
+        (if (signature-valid? envelope key)
           (actions.activity/remote-create activity))))))
