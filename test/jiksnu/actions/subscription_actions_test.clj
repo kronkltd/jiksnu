@@ -19,7 +19,7 @@
             subscribee (model.user/create (factory User))]
         (model.subscription/drop!)
         (with-user user
-          (subscribe subscribee) => subscription?)))))
+          (subscribe user subscribee) => subscription?)))))
 
 (deftest test-subscribed
   (fact "should return a subscription"

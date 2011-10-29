@@ -64,9 +64,8 @@
                          subscribee user)
                         packet/make-request
                         (assoc :serialization :xmpp))]
-        (session/with-user user (subscribe subscribee))
-        (let [[user2 subscriptions]
-              (filter-action #'subscriptions request)]
+        (session/with-user user (subscribe user subscribee))
+        (let [[user2 subscriptions :as response] (filter-action #'subscriptions request)]
           user2 => user
           subscriptions => seq
           subscriptions => (partial every? model/subscription?))))))
