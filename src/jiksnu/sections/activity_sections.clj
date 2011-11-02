@@ -5,8 +5,7 @@
         ciste.sections.default
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
-  (:require (ciste [html :as html])
-            (jiksnu [abdera :as abdera]
+  (:require (jiksnu [abdera :as abdera]
                     [model :as model]
                     [namespace :as ns]
                     [session :as session]

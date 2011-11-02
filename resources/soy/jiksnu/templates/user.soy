@@ -292,43 +292,74 @@
   <div>
     <h1>Register</h1>
     <form method="post" action="/main/register">
-      <p>
-        <label for="username">Username</label>
-        <input type="text" name="username"
-               value="{if $username}{$username}{/if}" />
-      </p>
-      <p>
-        <label for="password">Password</label>
-        <input type="password" name="password"
-               value="{if $password}{$password}{/if}" />
-      </p>
-      <p>
-        <label for="confirm-password">Confirm Password</label>
-        <input type="password" name="confirm-password"
-               value="{if $confirm_password}{$confirm_password}{/if}" />
-      </p>
-      <p>
-        <label for="email">Email</label>
-        <input type="email" name="email"
-               value=""/>
-      </p>
-      <p>
-        <label for="display-name">Display Name</label>
-        <input type="text" name="display-name"
-               value=""/>
-      </p>
-      <p>
-        <label for="location">Location</label>
-        <input type="text" name="location" value=""/>
-      </p>
-      <p>
-        <input type="checkbox" name="accepted" value="true" />
-        <label for="accepted">I have checked the box</label>
-      </p>
-      </p>
-      <p>
-        <input type="submit" value="Register" />
-      </p>
+      <table>
+        <tr>
+          <td>
+            <label for="username">Username</label>
+          </td>
+          <td>
+            <input type="text" name="username"
+                   value="{if $username}{$username}{/if}" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="password">Password</label>
+          </td>
+          <td>
+            <input type="password" name="password"
+                   value="{if $password}{$password}{/if}" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="confirm-password">Confirm Password</label>
+          </td>
+          <td>
+            <input type="password" name="confirm-password"
+                   value="{if $confirm_password}{$confirm_password}{/if}" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="email">Email</label>
+          </td>
+          <td>
+            <input type="email" name="email"
+                   value=""/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="display-name">Display Name</label>
+          </td>
+          <td>
+            <input type="text" name="display-name"
+                   value=""/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="location">Location</label>
+          </td>
+          <td>
+            <input type="text" name="location" value=""/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="checkbox" name="accepted" value="true" />
+          </td>
+          <td>
+            <label for="accepted">I have checked the box</label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="submit" value="Register" />
+          </td>
+        </tr>
+      </table>
     </form>
   </div>
 {/template}

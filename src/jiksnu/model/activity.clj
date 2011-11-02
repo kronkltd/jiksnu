@@ -107,7 +107,7 @@
      :long (str (:long activity))
      :authenticated (if-let [user (current-user)]
                       (model.user/format-data user))
-     :tags []
+     :tags (:tags activity)
      :uri (:uri activity)
      :recipients []
      :published (-?> activity :published format-date)

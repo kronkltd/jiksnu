@@ -1,7 +1,6 @@
 (ns jiksnu.sections.user-sections
   (:use (ciste [config :only (config)]
                [debug :only (spy)]
-               html
                sections)
         ciste.sections.default
         (clj-gravatar [core :only (gravatar-image)])

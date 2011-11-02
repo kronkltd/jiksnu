@@ -2,7 +2,7 @@
   (:use (ciste [config :only (config)]
                core
                [debug :only (spy)]
-               html sections
+               sections
                [views :only (defview)])
         ciste.sections.default
         jiksnu.actions.activity-actions)
