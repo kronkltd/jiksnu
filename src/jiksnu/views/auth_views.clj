@@ -1,7 +1,7 @@
 (ns jiksnu.views.auth-views
   (:use (ciste core
                [debug :only (spy)]
-               html sections views)
+               sections views)
         ciste.sections.default
         (jiksnu model view)
         jiksnu.actions.auth-actions)

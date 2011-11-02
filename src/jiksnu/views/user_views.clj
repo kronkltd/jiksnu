@@ -1,5 +1,5 @@
 (ns jiksnu.views.user-views
-  (:use (ciste config core html sections views)
+  (:use (ciste config core sections views)
         ciste.sections.default
         (jiksnu model session view)
         jiksnu.actions.user-actions

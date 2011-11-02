@@ -2,7 +2,7 @@
   (:use (ciste core
                [config :only (config)]
                [debug :only (spy)]
-               formats html sections views)
+               formats sections views)
         ciste.sections.default
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase])
