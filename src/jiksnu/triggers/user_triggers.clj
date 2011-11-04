@@ -13,10 +13,7 @@
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]
-                          [user :as model.user]))
-  (:import org.deri.any23.Any23))
-
-(defonce a23 (Any23.))
+                          [user :as model.user])))
 
 (defn discover-user-xmpp
   [user]
