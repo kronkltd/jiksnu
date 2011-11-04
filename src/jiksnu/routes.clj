@@ -4,17 +4,11 @@
         ciste.formats.default
         jiksnu.middleware
         lamina.core
-        (ring.middleware [params :only (wrap-params)]
-                         keyword-params
-                         flash
-                         nested-params
-                         multipart-params
-                         cookies
-                         session))
+        (ring.middleware [flash :only [wrap-flash]]))
   (:require (aleph [http :as http])
             (ciste [middleware :as middleware])
             (compojure [core :as compojure]
-                       handler
+                       [handler :as handler]
                        [route :as route])
             [clojure.string :as string]
             [clojure.java.io :as io]
@@ -272,13 +266,9 @@
        wrap-authentication-handler
        (file/wrap-file "resources/public/")
        file-info/wrap-file-info
-       wrap-keyword-params
-       wrap-nested-params
-       wrap-multipart-params
-       wrap-params
        wrap-flash
        wrap-user-binding
+       handler/site
        middleware/wrap-http-serialization
        wrap-database
-       wrap-session
        stacktrace/wrap-stacktrace)))
