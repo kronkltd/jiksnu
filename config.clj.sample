@@ -4,6 +4,10 @@
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  {
+  :admins
+  [
+                        "admin"
+   ]
   :database
   {
    :host                "localhost"
@@ -11,6 +15,7 @@
   :debug                false
   :print
   {
+   :action              false
    :actions             false
    :matchers            false
    :params              false
@@ -29,6 +34,11 @@
    :thread-count        1
    }
   :use-pipeline         true
+  :xmpp
+  {
+   :cs2                 5222
+   :s2s                 5269
+   }
   }
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
