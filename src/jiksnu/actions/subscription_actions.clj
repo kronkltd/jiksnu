@@ -48,8 +48,8 @@
     :pending true}))
 
 (defaction ostatussub-submit
-  [user]
-  (subscribe user))
+  [actor user]
+  (subscribe actor user))
 
 (defaction subscribed
   [actor user]

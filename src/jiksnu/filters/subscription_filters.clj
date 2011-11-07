@@ -33,7 +33,7 @@
     (if profile
       (let [[username password] (clojure.string/split profile #"@")
             user (actions.user/find-or-create username password)]
-        (action user)))))
+        (action (current-user) user)))))
 
 (deffilter #'subscribe :http
   [action request]
