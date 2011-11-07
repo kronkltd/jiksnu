@@ -20,18 +20,21 @@
   [user]
   (str "http://" (:domain user) "/main/salmon/user/" (:_id user)))
 
+;; TODO: Move this to actions and make it find-or-create
 (defn get-domain
   [^User user]
-  (model.domain/show (:domain user)))
+  (model.domain/fetch-by-id (:domain user)))
 
 (defn get-uri
   ([^User user] (get-uri user true))
   ([^User user use-scheme?]
-     (str (if use-scheme? "acct:") (:username user) "@" (:domain user))))
+     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
 
 (defn local?
   [^User user]
   (or (:local user)
+      (:local (get-domain user))
+      ;; TODO: remove this clause
       (= (:domain user) (config :domain))))
 
 (defn rel-filter
@@ -45,12 +48,12 @@
    returns a vector containing both the username and the domain"
   [uri]
   (let [[_ _ username domain] (re-find #"(.*:)?([^@]+)@([^\?]+)" uri)]
-    (if (and username domain) [username domain])))
+    (when (and username domain) [username domain])))
 
 (defn display-name
   [^User user]
   (or (:display-name user)
-      (if (and (:first-name user) (:last-name user))
+      (when (and (:first-name user) (:last-name user))
         (str (:first-name user) " " (:last-name user)))
       (get-uri user)))
 
@@ -102,21 +105,6 @@
 (defn fetch-by-remote-id
   [uri]
   (entity/fetch-one User {:id uri}))
-
-;; (defn find-or-create
-;;   [username domain]
-;;   (if-let [user (show username domain)]
-;;       user
-;;       (create {:username username :domain domain})))
-
-;; (defn find-or-create-by-remote-id
-;;   [id]
-;;   (or (fetch-by-remote-id id)
-;;       (create {:id id})))
-
-;; (defn find-or-create-by-jid
-;;   [^JID jid]
-;;   (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
 
 ;; TODO: Is this needed?
 (defn subnodes

@@ -45,7 +45,7 @@
 
 (defn notify-subscribe
   [action [actor user] subscription]
-  (let [domain (model.domain/show (:domain user))]
+  (let [domain (model.user/get-domain user)]
     (if (:local user)
       ;; TODO: Verify open subscription
       (confirm subscription)
@@ -56,7 +56,7 @@
 
 (defn notify-unsubscribe
   [action [user] subscription]
-  (let [domain (model.domain/show (:domain user))]
+  (let [domain (model.user/get-domain user)]
     (if (:xmpp domain)
       (notify-unsubscribe-xmpp {} subscription)
       ;; TODO: OStatus case

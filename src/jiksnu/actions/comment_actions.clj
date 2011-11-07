@@ -5,7 +5,8 @@
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain])))
+                          [domain :as model.domain]
+                          [user :as model.user])))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.comment-filters
@@ -37,7 +38,7 @@
 (defaction fetch-comments-remote
   [activity]
   (let [author (helpers.activity/get-author activity)
-        domain (model.domain/show (:domain author))]
-    (if (:xmpp domain)
+        domain (model.user/get-domain author)]
+    (when (:xmpp domain)
       (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
 

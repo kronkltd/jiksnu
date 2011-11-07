@@ -57,19 +57,19 @@
 
 (defaction edit-page
   [id]
-  (model.domain/show id))
+  (model.domain/fetch-by-id id))
 
 (defaction index
   []
   (model.domain/index))
 
 (defaction show
-  [id]
-  (model.domain/show id))
+  [domain]
+  (model.domain/fetch-by-id (:_id domain)))
 
 (defaction find-or-create
   [id]
-  (or (model.domain/show id)
+  (or (model.domain/fetch-by-id id)
       (create {:_id id})))
 
 (defn current-domain

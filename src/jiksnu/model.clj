@@ -114,6 +114,10 @@
   [activity]
   (instance? Activity activity))
 
+(defn domain?
+  [domain]
+  (instance? Domain domain))
+
 (defn subscription?
   [subscription]
   (instance? Subscription subscription))

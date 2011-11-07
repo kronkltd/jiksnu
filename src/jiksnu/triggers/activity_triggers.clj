@@ -43,13 +43,13 @@
 (defn fetch-new-comments
   [action params activity]
   (let [author (helpers.activity/get-author activity)
-        domain (model.domain/show (:domain author))]
+        domain (model.user/get-domain author)]
     (actions.comment/fetch-comments-remote activity)))
 
 (defn fetch-more-comments
   [action params [activity comments]]
   (let [author (helpers.activity/get-author activity)
-        domain (model.domain/show (:domain author))]
+        domain (model.user/get-domain author)]
     (actions.comment/fetch-comments-remote activity)))
 
 (defn post-trigger

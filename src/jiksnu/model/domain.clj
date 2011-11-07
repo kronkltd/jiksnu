@@ -12,7 +12,7 @@
   []
   (entity/delete-all Domain))
 
-(defn show
+(defn fetch-by-id
   [id]
   (entity/fetch-one Domain {:_id id}))
 
@@ -34,15 +34,10 @@
   (entity/save domain))
 
 (defn delete
-  [id]
-  (let [domain (show id)]
+  [domain]
+  (let [domain (fetch-by-id (:_id domain))]
     (entity/delete domain)
     domain))
-
-(defn find-or-create
-  [id]
-  (or (show id)
-      (create {:_id id})))
 
 ;; TODO: add the links to the list
 (defn add-links

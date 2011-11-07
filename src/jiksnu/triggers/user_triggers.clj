@@ -11,8 +11,7 @@
             (jiksnu.actions [activity-actions :as actions.activity]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [domain :as model.domain]
-                          [signature :as model.signature]
+            (jiksnu.model [signature :as model.signature]
                           [user :as model.user])))
 
 (defn discover-user-xmpp
@@ -28,7 +27,7 @@
 
 (defn discover-user
   [action _ user]
-  (let [domain (model.domain/show (:domain user))]
+  (let [domain (model.user/get-domain user)]
     (if (:discovered domain)
       (do (async (discover-user-xmpp user))
           (async (discover-user-http user))
@@ -54,7 +53,7 @@
 
 (defn fetch-updates-trigger
   [action _ user]
-  (let [domain (model.domain/show (:domain user))]
+  (let [domain (model.user/get-domain user)]
     (if (:xmpp domain)
       (fetch-updates-xmpp user)
       (fetch-updates-http user))))

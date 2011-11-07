@@ -18,7 +18,7 @@
 
 (deffilter #'discover :http
   [action request]
-  (-> request :params :* model.domain/show action))
+  (-> request :params :* model.domain/fetch-by-id action))
 
 (deffilter #'find-or-create :http
   [action request]
@@ -35,12 +35,12 @@
 (deffilter #'ping-error :xmpp
   [action request]
   (-> request :from .getDomain
-      model.domain/show action))
+      model.domain/fetch-by-id action))
 
 (deffilter #'ping-response :xmpp
   [action request]
   (-> request :from .getDomain
-      model.domain/show action))
+      model.domain/fetch-by-id action))
 
 (deffilter #'host-meta :http
   [action request]
