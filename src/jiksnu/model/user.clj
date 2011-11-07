@@ -146,7 +146,7 @@
 (defn format-data
   [^User user]
   (let [{id :id
-         :keys [admin domain hub links local username]} user
+         :keys [admin discovered domain hub links local username updated]} user
          uri (get-uri user)]
     {:remote_id (str id)
      :id (str (:_id user))
@@ -154,6 +154,7 @@
                (get-uri user false))
      :username username
      :domain domain
+     :discovered discovered
      :url (if (local? user)
             (str "/" username)
             (if id
@@ -169,7 +170,8 @@
      :imgsrc (or (:avatar-url user)
                  (and (:email user) (gravatar-image (:email user)))
                  (gravatar-image (:jid user))
-                 (gravatar-image uri) "")}))
+                 (gravatar-image uri) "")
+     :updated (format-date updated)}))
 
 (defn vcard-request
   [user]
