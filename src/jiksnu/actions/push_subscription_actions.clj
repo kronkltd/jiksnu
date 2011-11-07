@@ -1,21 +1,24 @@
 (ns jiksnu.actions.push-subscription-actions
-  (:use (ciste [core :only (defaction)]
-               [debug :only (spy)])
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]])
         (jiksnu model session)
-        (karras [entity :only (make)])
-        (lamina core))
+        (karras [entity :only [make]]))
   (:require (aleph [http :as http])
             (clojure [string :as string])
-            (clojure.java [io :as io])
-            (jiksnu [abdera :as abdera]
-                    [namespace :as namespace]
-                    [view :as view])
+            (jiksnu [abdera :as abdera])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.helpers [activity-helpers :as helpers.activity]
                             [user-helpers :as helpers.user])
-            (jiksnu.model [push-subscription :as model.push]))
+            (jiksnu.model [push-subscription :as model.push])
+            (lamina [core :as l]))
   (:import jiksnu.model.Activity
            org.apache.abdera2.model.Entry))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.push-subscription-filters
+                     'jiksnu.views.push-subscription-views]]
+    (require namespace)))
 
 (defaction callback
   [params]
@@ -99,7 +102,7 @@
 
 (defn async-verify-subscribe
   [subscription]
-  (task
+  (l/task
    (sync-verify-subscribe subscription)))
 
 (defn remove-subscription

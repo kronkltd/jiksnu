@@ -1,7 +1,7 @@
 (ns jiksnu.actions.settings-actions
-  (:use (ciste [core :only (defaction)])
-        (jiksnu session)))
+  (:use (ciste [core :only [defaction]]))
+  (:require (jiksnu [session :as session])))
 
 (defaction edit-page
   []
-  (is-admin?))
+  (session/is-admin?))

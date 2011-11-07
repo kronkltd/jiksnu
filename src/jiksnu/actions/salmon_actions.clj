@@ -1,7 +1,8 @@
 (ns jiksnu.actions.salmon-actions
-  (:use (ciste [core :only (defaction)]
-               [debug :only (spy)])
-        clojure.contrib.core)
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]])
+        (clojure.core [incubator :only [-?>]]))
   (:require (jiksnu [abdera :as abdera])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
@@ -10,6 +11,11 @@
             [saxon :as s])
   (:import jiksnu.model.User
            org.apache.commons.codec.binary.Base64))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.salmon-filters
+                     'jiksnu.views.salmon-views]]
+    (require namespace)))
 
 (defn get-key
   [^User author]

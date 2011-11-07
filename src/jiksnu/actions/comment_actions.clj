@@ -1,10 +1,16 @@
 (ns jiksnu.actions.comment-actions
-  (:use (ciste [core :only (defaction)]))
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]))
   (:require (clj-tigase [core :as tigase])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain])))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.comment-filters
+                     'jiksnu.views.comment-views]]
+    (require namespace)))
 
 (defaction new-comment
   [& _])

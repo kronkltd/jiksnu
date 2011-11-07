@@ -1,6 +1,7 @@
 (ns jiksnu.actions.activity-actions
-  (:use (ciste [core :only (defaction)]
-               [debug :only (spy)])
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]])
         ciste.sections.default
         (clojure.core [incubator :only [-?>]]))
   (:require (aleph [http :as http])
@@ -23,6 +24,14 @@
            jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera2.ext.thread.ThreadHelper))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.activity-filters
+                     'jiksnu.helpers.activity-helpers
+                     'jiksnu.sections.activity-sections
+                     'jiksnu.triggers.activity-triggers
+                     'jiksnu.views.activity-views]]
+    (require namespace)))
 
 (defn set-recipients
   [activity]

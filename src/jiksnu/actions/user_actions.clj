@@ -1,8 +1,9 @@
 (ns jiksnu.actions.user-actions
-  (:use (ciste [config :only (config)]
-               [core :only (defaction)]
-               [debug :only (spy)])
-        (clojure.core [incubator :only (-?>)])
+  (:use (ciste [config :only [config definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]])
+        clj-stacktrace.repl
+        (clojure.core [incubator :only [-?>]])
         (jiksnu model
                 [session :only (current-user)]))
   (:require (aleph [http :as http])

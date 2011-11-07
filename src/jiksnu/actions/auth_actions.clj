@@ -1,7 +1,8 @@
 (ns jiksnu.actions.auth-actions
-  (:use (ciste core
-               [debug :only (spy)])
-        (jiksnu model session))
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]])
+        #_(jiksnu model session))
   (:require (clojure.tools [logging :as log])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
@@ -9,6 +10,11 @@
            javax.security.auth.login.LoginException
            jiksnu.model.Activity
            jiksnu.model.User))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.auth-filters
+                     'jiksnu.views.auth-views]]
+    (require namespace)))
 
 (defaction guest-login
   [webid]

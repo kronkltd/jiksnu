@@ -1,18 +1,17 @@
 (ns jiksnu.routes
-  (:use (ciste [debug :only (spy)]
-               predicates routes)
+  (:use (ciste [debug :only [spy]]
+               [routes :only [make-matchers resolve-routes]])
         ciste.formats.default
-        jiksnu.middleware
-        lamina.core
         (ring.middleware [flash :only [wrap-flash]]))
   (:require (aleph [http :as http])
-            (ciste [middleware :as middleware])
+            (ciste [middleware :as middleware]
+                   [predicates :as pred])
+            (clojure [string :as string])
             (compojure [core :as compojure]
                        [handler :as handler]
                        [route :as route])
-            [clojure.string :as string]
-            [clojure.java.io :as io]
-            (jiksnu [namespace :as namespace]
+            (jiksnu [middleware :as jm]
+                    [namespace :as namespace]
                     [session :as session]
                     [view :as view])
             (jiksnu.actions [activity-actions :as activity]
@@ -27,31 +26,11 @@
                             [stream-actions :as stream]
                             [subscription-actions :as sub]
                             [user-actions :as user])
-            (jiksnu.filters activity-filters
-                            auth-filters
-                            comment-filters
-                            domain-filters
-                            push-subscription-filters
-                            salmon-filters
-                            stream-filters
-                            subscription-filters
-                            user-filters)
-            (jiksnu.triggers activity-triggers
-                             domain-triggers
-                             subscription-triggers
-                             user-triggers)
-            (jiksnu.views activity-views
-                          auth-views
-                          comment-views
-                          domain-views
-                          push-subscription-views
-                          stream-views
-                          subscription-views
-                          user-views)
+            (lamina [core :as l])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
-            [ring.util.response :as response])
+            (ring.util [response :as response]))
   (:import javax.security.auth.login.LoginException))
 
 (defn not-found-msg
@@ -233,28 +212,28 @@
       :pubsub false} #'domain/ping-response]]))
 
 (def http-predicates
-  [#'http-serialization?
-   [#'request-method-matches?
-    #'path-matches?]])
+  [#'pred/http-serialization?
+   [#'pred/request-method-matches?
+    #'pred/path-matches?]])
 
 (def xmpp-predicates
-  [#'xmpp-serialization?
-   [#'type-matches?
-    #'node-matches?
-    #'name-matches?
-    #'ns-matches?]])
+  [#'pred/xmpp-serialization?
+   [#'pred/type-matches?
+    #'pred/node-matches?
+    #'pred/name-matches?
+    #'pred/ns-matches?]])
 
 (compojure/defroutes all-routes
   (compojure/GET "/favicon.ico" request
                  (response/file-response "favicon.ico"))
   (compojure/GET "/robots.txt" _
                  (response/file-response "public/robots.txt"))
-  (wrap-authentication-handler
+  (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
                     ((resolve-routes [http-predicates] admin-routes) request)
                     (throw (LoginException. "Must be admin")))))
-  (wrap-log-request
+  (jm/wrap-log-request
    (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/main/events" _
                  (http/wrap-aleph-handler stream/stream-handler))
@@ -263,12 +242,12 @@
 (def app
   (http/wrap-ring-handler
    (-> all-routes
-       wrap-authentication-handler
+       jm/wrap-authentication-handler
        (file/wrap-file "resources/public/")
        file-info/wrap-file-info
        wrap-flash
-       wrap-user-binding
+       jm/wrap-user-binding
        handler/site
        middleware/wrap-http-serialization
-       wrap-database
+       jm/wrap-database
        stacktrace/wrap-stacktrace)))

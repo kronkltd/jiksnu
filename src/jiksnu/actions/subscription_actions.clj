@@ -1,11 +1,8 @@
 (ns jiksnu.actions.subscription-actions
   (:use (ciste [core :only [defaction]]
                [debug :only [spy]])
-        (jiksnu model
-                [session :only [current-user
-                                current-user-id
-                                is-admin?]]))
-  (:require (jiksnu [namespace :as namespace])
+        (jiksnu model))
+  (:require (jiksnu [session :as session])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
   (:import javax.security.sasl.AuthenticationException
@@ -22,7 +19,7 @@
 
 (defaction index
   [& _]
-  (if (is-admin?)
+  (if (session/is-admin?)
     (model.subscription/index)
     (throw (AuthenticationException. "Must be admin"))))
 

@@ -9,6 +9,12 @@
                           [webfinger :as model.webfinger]))
   (:import jiksnu.model.Domain))
 
+(definitializer
+  (doseq [namespace ['jiksnu.filters.domain-filters
+                     'jiksnu.triggers.domain-triggers
+                     'jiksnu.views.domain-views]]
+    (require namespace)))
+
 (defaction check-webfinger
   [domain]
   true)

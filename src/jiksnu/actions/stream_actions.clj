@@ -1,15 +1,15 @@
 (ns jiksnu.actions.stream-actions
-  (:use (ciste [config :only (config)]
-               [core :only (defaction
-                             with-serialization
-                             with-format)]
-               [debug :only (spy)])
+  (:use (ciste [config :only [config]]
+               [core :only [defaction
+                            with-serialization
+                            with-format]]
+               [debug :only [spy]])
         ciste.sections.default
-        (clojure.contrib [core :only (-?>)])
-        (jiksnu model
-                [session :only (current-user)])
+        (clojure.core [incubator :only [-?>]])
+        (jiksnu model)
         jiksnu.actions.stream-actions)
   (:require (hiccup [core :as h])
+            (jiksnu [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
