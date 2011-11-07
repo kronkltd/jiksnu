@@ -189,11 +189,16 @@
 
 (defaction update
   [user params]
-  (-> user
-      (into (map
-             (fn [[k v]] (if (not= v "") [(keyword k) v]))
-             params))
-      model.user/update))
+  (let [options (map (fn [[k v]] (if (not= v "") [(keyword k) v]))
+                     params)
+        merged-options (merge user options)]
+    (try
+      (throw (RuntimeException.))
+      (catch Exception ex
+        (log/info (pst-str ex))))
+    
+    (-> merged-options
+        model.user/update)))
 
 (defn person->user
   [^Person person]

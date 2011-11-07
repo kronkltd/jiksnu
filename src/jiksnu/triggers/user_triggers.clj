@@ -72,7 +72,8 @@
                               key-string)]
                          (model.signature/set-armored-key (:_id user) n e))
     ;; TODO: Fix exstension extraction
-    "avatar" (if (= (first (:extensions link)) "96")
+    "avatar" (when (= (first (:extensions link)) "96")
+               (log/info "setting avatar")
                (actions.user/update (assoc user :avatar-url (:href link))))
     nil))
 
