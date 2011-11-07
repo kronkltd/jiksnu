@@ -38,7 +38,7 @@
                      'jiksnu.triggers.user-triggers
                      'jiksnu.views.user-views
                      ]]
-    (require (spy namespace))))
+    (require namespace)))
 
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
