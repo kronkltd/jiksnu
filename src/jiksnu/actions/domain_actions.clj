@@ -1,8 +1,7 @@
 (ns jiksnu.actions.domain-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
-        (jiksnu [model :only [with-database]]))
+               [debug :only [spy]]))
   (:require (clj-tigase [core :as tigase])
             (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain]
@@ -77,8 +76,7 @@
   (find-or-create (config :domain)))
 
 (definitializer
-  (with-database
-    (current-domain)))
+  (current-domain))
 
 (defaction ping
   [domain]

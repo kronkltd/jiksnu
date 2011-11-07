@@ -1,6 +1,6 @@
 (ns jiksnu.model
   (:use (ciste core
-               [config :only [config environment]]
+               [config :only [config definitializer environment load-config]]
                [debug :only [spy]]
                sections)
         ciste.sections.default
@@ -61,14 +61,9 @@
   (if (coll? x)
     x (list x)))
 
-(defn mongo-database*
-  []
-  (karras/mongo-db (config :database :name)))
-
 (defn mongo-database
   []
-  (or @*mongo-database*
-      (mongo-database*)))
+  (karras/mongo-db (config :database :name)))
 
 (defembedded Person
   [:name])
@@ -104,11 +99,6 @@
 (defentity MagicKeyPair
   [:crt-coefficient :prime-exponent-p :prime-exponent-q
    :prime-p :prime-q :public-exponent :private-exponent :userid])
-
-(defmacro with-database
-  [& body]
-  `(karras/with-mongo-request (mongo-database)
-    ~@body))
 
 (defn activity?
   [activity]
@@ -165,6 +155,10 @@
                   MagicKeyPair]]
     (delete-all entity)))
 
+(defn set-database!
+  []
+  (alter-var-root #'karras/*mongo-db* (fn [_] (mongo-database))))
+
 ;; TODO: Find a good place for this
 
 (defn write-json-date
@@ -192,3 +186,7 @@
    (to-dbo [d] (.toDate d))
    (to-clj [d] (DateTime/parse d))
    (to-description [d] (str d)))
+
+(definitializer
+  (load-config)
+  (set-database!))

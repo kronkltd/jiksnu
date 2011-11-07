@@ -249,5 +249,4 @@
        jm/wrap-user-binding
        handler/site
        middleware/wrap-http-serialization
-       jm/wrap-database
        stacktrace/wrap-stacktrace)))

@@ -1,9 +1,8 @@
 (ns jiksnu.middleware
-  (:use (clojure [pprint :only (pprint)])
-        (ciste [config :only (config)]
-               [debug :only (spy)])
-        (jiksnu [model :only (with-database)]
-                [session :only (with-user-id)]))
+  (:use (clojure [pprint :only [pprint]])
+        (ciste [config :only [config]]
+               [debug :only [spy]])
+        (jiksnu [session :only [with-user-id]]))
   (:require (clojure [stacktrace :as st])
             (clojure.tools [logging :as log]))
   (:import javax.security.auth.login.LoginException))
@@ -29,12 +28,6 @@
         (if (config :print :params)
           (pprint response))
         response))))
-
-(defn wrap-database
-  [handler]
-  (fn [request]
-    (with-database
-      (handler request))))
 
 (defn wrap-authentication-handler
   [handler]

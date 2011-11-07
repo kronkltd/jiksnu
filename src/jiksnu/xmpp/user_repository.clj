@@ -1,7 +1,6 @@
 (ns jiksnu.xmpp.user-repository
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)])
-        (jiksnu [model :only (with-database)]))
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]))
   (:require (clojure [stacktrace :as stacktrace]
                      [string :as string])
             (clojure.tools [logging :as log])
@@ -27,8 +26,7 @@
 
 (defn user-repo
   []
-  (with-database
-    (col/collection "user-repo")))
+  (col/collection "user-repo"))
 
 (defn -addDataList
   "addDataList method adds mode entries to existing data list associated with
@@ -45,16 +43,15 @@
   "This addUser method allows to add new user to repository."
   ([this ^BareJID user]
      (log/info "add user")
-     (with-database
-       (if (spy user)
-         (let [username (.getLocalpart user)
-               domain (.getDomain user)]
-           (if (and (spy username) (spy domain))
-             (actions.user/create (spy {:username username
-                                        :domain domain}))
-             (if (spy domain)
-               (actions.domain/find-or-create domain)
-               (throw (RuntimeException. "Could not find domain"))))))))
+     (if (spy user)
+       (let [username (.getLocalpart user)
+             domain (.getDomain user)]
+         (if (and (spy username) (spy domain))
+           (actions.user/create (spy {:username username
+                                      :domain domain}))
+           (if (spy domain)
+             (actions.domain/find-or-create domain)
+             (throw (RuntimeException. "Could not find domain")))))))
   ([this ^BareJID user ^String password]
      (log/info "addUser")
      (spy user)
@@ -105,11 +102,10 @@ subnode."
   ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
      ;; TODO: implement
      (try
-       (with-database
-         (log/info "get data")
-         (let [user (find-user (spy user-id))
-               ks (key-seq subnode key)]
-           (spy (get-data user (spy ks) def))))
+       (log/info "get data")
+       (let [user (find-user (spy user-id))
+             ks (key-seq subnode key)]
+         (spy (get-data user (spy ks) def)))
        (catch Exception ex
          (log/error ex)
          (stacktrace/print-cause-trace ex)))))
@@ -165,14 +161,12 @@ not exist for given user ID in given node path."
 of registered users"
   ([^UserRepository this]
      ;; TODO: implement
-     (with-database
-       (log/info "get users count")
-       (count (actions.user/index))))
+     (log/info "get users count")
+     (count (actions.user/index)))
   ([^UserRepository this ^String domain]
-     (with-database
-       (log/info "get users count")
-       (count (actions.user/index
-               {:domain (spy domain)})))))
+     (log/info "get users count")
+     (count (actions.user/index
+             {:domain (spy domain)}))))
 
 
 (defn ^long -getUsersUID
@@ -271,5 +265,4 @@ given node path."
   "checks whether the user (or repository top node) exists in the database."
   [this ^BareJID user]
   (log/info "user exists")
-  (with-database
-    (not (nil? (model.user/fetch-by-jid user)))))
+  (not (nil? (model.user/fetch-by-jid user))))
