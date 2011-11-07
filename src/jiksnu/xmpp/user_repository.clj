@@ -89,7 +89,7 @@
   (log/info "default handler")
   (get-in
    (col/fetch-one (user-repo)
-                  {:_id (str (:username user) "@" (:domain user))})
+                  {:_id (model.user/get-uri user false)})
    ks def))
 
 (defn ^String -getData
