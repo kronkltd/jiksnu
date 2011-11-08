@@ -1,5 +1,5 @@
 (ns jiksnu.actions.stream-actions
-  (:use (ciste [config :only [config]]
+  (:use (ciste [config :only [config definitializer]]
                [core :only [defaction
                             with-serialization
                             with-format]]
@@ -14,6 +14,15 @@
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (lamina [core :as l])))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.stream-filters
+                     ;; 'jiksnu.helpers.stream-helpers
+                     ;; 'jiksnu.sections.stream-sections
+                     ;; 'jiksnu.triggers.stream-triggers
+                     'jiksnu.views.stream-views
+                     ]]
+    (require namespace)))
 
 (defaction friends-timeline
   [& _])

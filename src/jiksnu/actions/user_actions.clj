@@ -5,7 +5,7 @@
         clj-stacktrace.repl
         (clojure.core [incubator :only [-?>]])
         (jiksnu model
-                [session :only (current-user)]))
+                [session :only [current-user]]))
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase]
                         [element :as element]
@@ -30,6 +30,15 @@
            org.apache.commons.codec.binary.Base64
            tigase.xml.Element
            tigase.xmpp.JID))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.user-filters
+                     'jiksnu.helpers.user-helpers
+                     'jiksnu.sections.user-sections
+                     'jiksnu.triggers.user-triggers
+                     'jiksnu.views.user-views
+                     ]]
+    (require (spy namespace))))
 
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 

@@ -1,5 +1,6 @@
 (ns jiksnu.actions.subscription-actions
-  (:use (ciste [core :only [defaction]]
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]
                [debug :only [spy]])
         (jiksnu model))
   (:require (jiksnu [session :as session])
@@ -8,6 +9,15 @@
   (:import javax.security.sasl.AuthenticationException
            jiksnu.model.Subscription
            jiksnu.model.User))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.subscription-filters
+                     'jiksnu.helpers.subscription-helpers
+                     ;; 'jiksnu.sections.subscription-sections
+                     'jiksnu.triggers.subscription-triggers
+                     'jiksnu.views.subscription-views
+                     ]]
+    (require namespace)))
 
 (defaction delete
 ;;   "Deletes a subscription.
