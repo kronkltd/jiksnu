@@ -4,13 +4,14 @@
   :repositories {"jiksnu-internal" "http://build.jiksnu.com/repository/internal"
                  "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
                  "any23-repository-external" "http://any23.googlecode.com/svn/repo-ext"
+                 "java-dot-net" "http://download.java.net/maven/2"
                  "any23-repository" "http://any23.googlecode.com/svn/repo"
                  "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
                  [clj-factory "0.1.0"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [clj-time "0.3.1"]
-                 [clj-webdriver "0.2.14"]
+                 [clj-webdriver "0.4.0"]
                  [clojure-saxon "0.9.2"]
                  [closure-templates-clj "0.1.1"]
                  [ciste "0.2.0-SNAPSHOT"]
