@@ -113,9 +113,9 @@
         domain (tigase/get-domain user)]
     (:nodes (show id))))
 
-(defn edit
-  [id]
-  (show id))
+;; (defn edit
+;;   [id]
+;;   (show id))
 
 (defn delete
   [id]
