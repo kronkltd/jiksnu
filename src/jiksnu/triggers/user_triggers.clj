@@ -54,9 +54,9 @@
 (defn fetch-updates-trigger
   [action _ user]
   (let [domain (model.user/get-domain user)]
-    (if (:xmpp domain)
-      (fetch-updates-xmpp user)
-      (fetch-updates-http user))))
+    (when (:xmpp domain)
+      (fetch-updates-xmpp user))
+    (fetch-updates-http user)))
 
 (defn create-trigger
   [action params user]
