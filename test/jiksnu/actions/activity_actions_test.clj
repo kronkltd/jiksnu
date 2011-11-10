@@ -1,15 +1,16 @@
 (ns jiksnu.actions.activity-actions-test
-  (:use (ciste [core :only (with-context)]
-               [debug :only (spy)])
+  (:use (ciste [core :only [with-context]]
+               [debug :only [spy]])
         ciste.sections.default
-        (clj-factory [core :only (factory)])
+        (clj-factory [core :only [factory]])
         clojure.test
         jiksnu.actions.activity-actions
         (jiksnu core-test
-                [model :only (activity?)]
-                [session :only (with-user)])
+                [model :only [activity?]]
+                [session :only [with-user]])
         midje.sweet)
-  (:require (jiksnu.actions [user-actions :as actions.user])
+  (:require (jiksnu [abdera :as abdera])
+            (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections activity-sections))
@@ -24,12 +25,32 @@
       (set-recipients activity) => activity?)))
 
 (deftest test-entry->activity
-  ;; TODO: Load elements from resources
-  (fact "should return an Activity"
-    (with-context [:http :atom]
-      (let [user (actions.user/create (factory User))
-            entry (show-section (factory Activity {:author (:_id user)}))]
-        (entry->activity (spy entry)) => activity?))))
+  (against-background
+    [(around :facts
+       (let [user (actions.user/create (factory User))]
+         ?form))]
+    
+    ;; TODO: Load elements from resources
+    (fact "should return an Activity"
+      (with-context [:http :atom]
+        (let [entry (show-section (factory Activity {:author (:_id user)}))]
+          (entry->activity (spy entry)) => activity?)))
+
+    (testing "when coming from an identi.ca feed"
+      (against-background
+        [(around :facts
+           (let [feed (abdera/load-file "identica-update.xml")
+                 entry (first (abdera/get-entries feed))]
+             ?form))]
+        
+        (fact "should parse the published field"
+          (entry->activity entry) => activity?
+          (provided
+            (.getId entry) => "1"
+            )
+      
+         ))))
+  )
 
 (deftest test-prepare-activity
   (fact "should return an activity"
