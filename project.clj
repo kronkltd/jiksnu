@@ -27,6 +27,7 @@
                  [net.kronkltd/karras "0.7.1-SNAPSHOT"]
                  [midje "1.3-alpha4"]
                  [net.kronkltd/plaza-core "0.0.6-SNAPSHOT"]
+                 [ordered "0.3.0"]
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
