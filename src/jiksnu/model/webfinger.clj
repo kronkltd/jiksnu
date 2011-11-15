@@ -3,18 +3,18 @@
                [debug :only [spy]]
                sections)
         ciste.sections.default
-        (clojure.core [incubator :only [-?>]]))
+        (clojure.core [incubator :only [-?>]])
+        (org.clojars.kyleburton [clj-xpath :only [$x:text*]]))
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
-                          [user :as model.user])
-            [saxon :as s])
+                          [user :as model.user]))
   (:import java.net.URI))
 
 (defn fetch-host-meta
   [url]
-  (if-let [hm (-?> url model/fetch-resource s/compile-xml)]
-    (let [host (s/query "//hm:Host/text()" model/bound-ns hm)]
+  (if-let [hm (-?> url model/fetch-resource)]
+    (let [host ($x:text* "//*[local-name() = 'Host']" hm)]
       ;; (if (= (.getHost (URI. url)) (str host))
       hm
       ;; (throw (RuntimeException. "Hostname does not match"))
