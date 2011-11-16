@@ -65,7 +65,7 @@
 
 (defn parse-xml-string
   "Converts a string to an Abdera entry"
-  [entry-string]
+  [^String entry-string]
   (let [stream (ByteArrayInputStream. (.getBytes entry-string "UTF-8"))
         parsed (parse-stream stream)]
     (.getRoot parsed)))

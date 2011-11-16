@@ -4,14 +4,14 @@
                [debug :only [spy]])
         (clojure.core [incubator :only [-?> -?>>]]))
   (:require (clojure.tools [logging :as log])
-            (jiksnu [abdera :as abdera])
+            (jiksnu [abdera :as abdera]
+                    [model :as model])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [subscription-actions :as actions.subscription]
                             [user-actions :as actions.user])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [user :as model.user]
-                          [signature :as model.signature])
-            [saxon :as s])
+                          [signature :as model.signature]))
   (:import jiksnu.model.User
            org.apache.commons.codec.binary.Base64))
 
@@ -42,11 +42,11 @@
 (defn stream->envelope
   "convert an input stream to an envelope"
   [input-stream]
-  (let [doc (s/compile-xml input-stream)]
-    {:sig (str (s/query "//*[local-name()='sig']/text()" doc))
-     :data (str (s/query "//*[local-name()='data']/text()" doc))
-     :alg (str (s/query "//*[local-name()='alg']/text()" doc))
-     :encoding (str (s/query "//*[local-name()='encoding']/text()" doc))}))
+  (let [doc (model/compile-xml input-stream)]
+    {:sig (.getValue (first (model/query "//*[local-name()='sig']/text()" doc)))
+     :data (.getValue (first (model/query "//*[local-name()='data']/text()" doc)))
+     :alg (.getValue (first (model/query "//*[local-name()='alg']/text()" doc)))
+     :encoding (.getValue (first (model/query "//*[local-name()='encoding']/text()" doc)))}))
 
 (defaction process
   [user envelope]

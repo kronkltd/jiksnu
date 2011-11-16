@@ -45,7 +45,7 @@
                  [ring/ring-devel "0.3.11"]
                  [ring-mock "0.1.1"]
                  [swank-clojure "1.4.0-SNAPSHOT"]
-                 [xml-picker-seq "0.0.2-SNAPSHOT"]
+                 [xml-picker-seq "0.0.2"]
                  ]
   :dev-dependencies [#_[org.clojars.rferraz/lein-cuke "1.1.1"]
                      [lein-marginalia "0.6.1"]]

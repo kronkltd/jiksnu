@@ -102,6 +102,6 @@ vPgogIDxsaW5rIHJlbD0iYXZhdGFyIiB0eXBlPSJpbWFnZS9wbmciIG1lZGlhOndpZHRoPSIyNCIgbWV
           (model.signature/set-armored-key (:_id user) n e)
           (process envelope) => truthy
           (provided
-            (actions.activity/remote-create anything) => nil :called 1)))))
+            (actions.activity/remote-create anything) => truthy :called 1)))))
   (testing "with an invalid signature"
     (future-fact "should reject the message")))

@@ -4,7 +4,6 @@
         (jiksnu model session view)
         jiksnu.actions.user-actions
         jiksnu.sections.user-sections
-        plaza.rdf.core
         plaza.rdf.vocabularies.foaf)
   (:require (clj-tigase [element :as element])
             (hiccup [core :as h])
@@ -15,7 +14,8 @@
                           [user :as model.user]
                           [webfinger :as model.webfinger])
             (jiksnu.templates [activity :as templates.activity]
-                              [user :as templates.user]))
+                              [user :as templates.user])
+            (plaza.rdf [core :as rdf]))
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -84,17 +84,17 @@
   [request user]
   {:body
    (let [rdf-model
-         (defmodel (model-add-triples
+         (rdf/defmodel (rdf/model-add-triples
                     (with-format :rdf
                       (show-section user))))]
-     (with-out-str (model-to-format rdf-model :n3)))
+     (with-out-str (rdf/model-to-format rdf-model :n3)))
    :template :false})
 
 (defview #'show :rdf
   [request user]
   {:body
-   (let [rdf-model (defmodel (model-add-triples (show-section user)))]
-     (with-out-str (model-to-format rdf-model :xml)))
+   (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
+     (with-out-str (rdf/model-to-format rdf-model :xml)))
    :template :false})
 
 (defview #'show :xmpp

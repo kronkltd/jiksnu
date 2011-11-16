@@ -6,9 +6,7 @@
         ciste.sections.default
         (clj-factory [core :only [factory]])
         (karras [core :only [MongoMappable]]
-                [entity :only [defembedded defentity delete-all]])
-        plaza.rdf.core
-        plaza.rdf.implementations.jena)
+                [entity :only [defembedded defentity delete-all]]))
   (:require (aleph [formats :as f]
                    [http :as h])
             (clj-http [client :as client])
@@ -19,17 +17,22 @@
             (jiksnu [namespace :as ns])
             (karras [core :as karras]
                     [sugar :as sugar])
-            (lamina [core :as l]))
+            (lamina [core :as l])
+            (plaza.rdf [core :as rdf])
+            (plaza.rdf.implementations [jena :as jena]))
   (:import java.io.InputStream
+           java.io.FileNotFoundException
            java.io.PrintWriter
            java.io.StringReader
            java.text.SimpleDateFormat
            java.util.Date
            java.net.URL
            lamina.core.channel.Channel
+           nu.xom.Builder
            org.bson.types.ObjectId
            org.joda.time.DateTime
            org.dom4j.DocumentFactory
+           org.dom4j.xpath.DefaultXPath
            org.dom4j.io.SAXReader
            org.xml.sax.InputSource))
 
@@ -51,10 +54,10 @@
     Date (.format (SimpleDateFormat. *date-format*) date)
     date))
 
-(init-jena-framework)
+(jena/init-jena-framework)
 ;; TODO: Find a better ns for this
-(register-rdf-ns :dc ns/dc)
-(register-rdf-ns :foaf ns/foaf)
+(rdf/register-rdf-ns :dc ns/dc)
+(rdf/register-rdf-ns :foaf ns/foaf)
 
 (defn force-coll
   [x]
@@ -148,6 +151,25 @@
   [url]
   (.read xml-reader (URL. url)))
 
+(defn xml-doc
+  [url]
+  (try
+    (let [parser (Builder.)]
+      (.build parser (.openStream (URL. url))))
+    (catch FileNotFoundException ex nil)))
+
+(defn query
+  [path doc]
+  (let [nodes (.query doc path)]
+    (map
+     #(.get nodes %)
+     (range (.size nodes)))))
+
+(defn compile-xml
+  [^InputStream stream]
+  (let [parser (Builder.)]
+    (.build parser stream)))
+
 (defn drop-all!
   []
   (doseq [entity [Activity Like Subscription
@@ -190,3 +212,4 @@
 (definitializer
   (load-config)
   (set-database!))
+

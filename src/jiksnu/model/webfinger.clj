@@ -3,8 +3,7 @@
                [debug :only [spy]]
                sections)
         ciste.sections.default
-        (clojure.core [incubator :only [-?>]])
-        (org.clojars.kyleburton [clj-xpath :only [$x:text*]]))
+        (clojure.core [incubator :only [-?>]]))
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
@@ -13,13 +12,9 @@
 
 (defn fetch-host-meta
   [url]
-  (if-let [hm (-?> url model/fetch-resource)]
-    (let [host ($x:text* "//*[local-name() = 'Host']" hm)]
-      ;; (if (= (.getHost (URI. url)) (str host))
-      hm
-      ;; (throw (RuntimeException. "Hostname does not match"))
-      ;; )
-      )))
+  (if-let [doc (model/xml-doc url)]
+    (if-let [host (seq (model/query  "//*[local-name() = 'Host']" doc))]
+      doc)))
 
 (defn host-meta
   [domain]
@@ -88,11 +83,11 @@
 
 (defn get-links
   [xrd]
-  (let [links (model/force-coll (s/query "//xrd:Link" model/bound-ns xrd))]
+  (let [links (model/force-coll (model/query "//xrd:Link" xrd))]
     (map
      (fn [link]
-       {:rel (s/query "string(@rel)" model/bound-ns link)
-        :template (s/query "string(@template)" model/bound-ns link)
-        :href (s/query "string(@href)" model/bound-ns link)
-        :lang (s/query "string(@lang)" model/bound-ns link)})
+       {:rel (model/query "string(@rel)" link)
+        :template (model/query "string(@template)" link)
+        :href (model/query "string(@href)" link)
+        :lang (model/query "string(@lang)" link)})
      links)))

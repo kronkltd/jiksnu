@@ -5,7 +5,6 @@
         ciste.sections.default
         (clj-gravatar [core :only (gravatar-image)])
         (jiksnu model session view)
-        (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
             (hiccup [form-helpers :as f])
@@ -17,7 +16,8 @@
                           [domain :as model.domain]
                           [subscription :as model.subscription]
                           [user :as model.user])
-            (jiksnu.templates [user :as templates.user]))
+            (jiksnu.templates [user :as templates.user])
+            (plaza.rdf [core :as rdf]))
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -79,33 +79,33 @@
 
 (defsection show-section [User :rdf]
   [user & _]
-  (with-rdf-ns ""
+  (rdf/with-rdf-ns ""
     [[(str (full-uri user) ".rdf")
-      [rdf:type                    foaf:PersonalProfileDocument
+      [rdf/rdf:type                    foaf:PersonalProfileDocument
        [foaf :maker]               (full-uri user)
-       foaf:primaryTopic           (rdf-resource
+       foaf:primaryTopic           (rdf/rdf-resource
                                     (model.user/get-uri user))]]
-     [(rdf-resource (model.user/get-uri user))
-      [rdf:type                    [foaf :Person]
-       [foaf :name]                (l (:name user))
-       foaf:nick                   (l (:username user))
-       foaf:name                   (l (:name user))
-       foaf:mbox                   (rdf-resource
+     [(rdf/rdf-resource (model.user/get-uri user))
+      [rdf/rdf:type                    [foaf :Person]
+       [foaf :name]                (rdf/l (:name user))
+       foaf:nick                   (rdf/l (:username user))
+       foaf:name                   (rdf/l (:name user))
+       foaf:mbox                   (rdf/rdf-resource
                                     (str "mailto:" (:email user)))
-       foaf:givenName              (l (:first-name user))
-       foaf:familyName             (l (:last-name user))
-       foaf:homepage               (rdf-resource (:url user))
-       foaf:weblog                 (rdf-resource (full-uri user))
+       foaf:givenName              (rdf/l (:first-name user))
+       foaf:familyName             (rdf/l (:last-name user))
+       foaf:homepage               (rdf/rdf-resource (:url user))
+       foaf:weblog                 (rdf/rdf-resource (full-uri user))
        foaf:img                    (:avatar-url user)
-       foaf:account                (rdf-resource
+       foaf:account                (rdf/rdf-resource
                                     (str (full-uri user) "#acct"))]]
-     [(rdf-resource (str (full-uri user) "#acct"))
-      [rdf:type                    foaf:OnlineAccount
-       foaf:accountServiceHomepage (rdf-resource (full-uri user))
-       foaf:accountName            (l (:username user))
-       [foaf "accountProfilePage"] (rdf-resource (full-uri user))
-       [namespace/sioc "account_of"]         (rdf-resource
-                                    (model.user/get-uri user))]]]))
+     [(rdf/rdf-resource (str (full-uri user) "#acct"))
+      [rdf/rdf:type                    foaf:OnlineAccount
+       foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
+       foaf:accountName            (rdf/l (:username user))
+       [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
+       [namespace/sioc "account_of"]         (rdf/rdf-resource
+                                              (model.user/get-uri user))]]]))
 
 (defsection show-section [User :json]
   [user & options]

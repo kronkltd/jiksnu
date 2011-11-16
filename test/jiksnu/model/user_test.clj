@@ -139,10 +139,10 @@
       (let [domain (actions.domain/create
                     (factory Domain
                              {:links [{:rel "lrdd"
-                                       :template "{uri}"}]}))
+                                       :template "http://example.com/main/xrd?uri={uri}"}]}))
             user (actions.user/create
                   (factory User {:domain (:_id domain)}))]
-        (user-meta-uri user) => (get-uri user)))))
+        (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
 (deftest test-format-data)
 
