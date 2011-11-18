@@ -1,27 +1,34 @@
-(ns jiksnu.views.site-views)
+(ns jiksnu.views.site-views
+  (:use (ciste [config :only [config]]
+               [views :only [defview]])
+        jiksnu.actions.site-actions)
+  (:require (hiccup [core :as h])
+            (jiksnu [namespace :as ns])))
 
 (defview #'rsd :html
   [request _]
-  {:body
-   [:rsd {:version "1.0"
-          :xmlns "http://archipelago.phrasewise.com/rsd"}
-    [:service
-     [:engineName "Jiksnu"]
-     [:engineLink "http://jiksnu.org/"]
-     [:apis
-      [:api {:name "Twitter"
-             :preferred "true"
-             :apiLink (str "http://" (config :domain) "/api/")
-             :blogId ""}
-       [:settings
-        [:docs "http://status.net/wiki/TwitterCompatibleAPI"]
-        [:setting {:name "OAuth"}
-         ;; TODO: Make this true
-         "false"]]]
-      [:api {:name "Atom"
-             :preferred "false"
-             :apiLink (str "http://" (config :domain) "/api/statusnet/app/service.xml")
-             :blogId ""}]]]]})
+  {:template false
+   :headers {"Content-Type" "application/xml"}
+   :body
+   (h/html [:rsd {:version "1.0"
+           :xmlns "http://archipelago.phrasewise.com/rsd"}
+     [:service
+      [:engineName "Jiksnu"]
+      [:engineLink "http://jiksnu.org/"]
+      [:apis
+       [:api {:name "Twitter"
+              :preferred "true"
+              :apiLink (str "http://" (config :domain) "/api/")
+              :blogId ""}
+        [:settings
+         [:docs "http://status.net/wiki/TwitterCompatibleAPI"]
+         [:setting {:name "OAuth"}
+          ;; TODO: Make this true
+          "false"]]]
+       [:api {:name "Atom"
+              :preferred "false"
+              :apiLink (str "http://" (config :domain) "/api/statusnet/app/service.xml")
+              :blogId ""}]]]])})
 
 (defview #'service :html
   [request user]

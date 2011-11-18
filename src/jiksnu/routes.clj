@@ -18,11 +18,14 @@
                             [auth-actions :as auth]
                             [comment-actions :as comment]
                             [domain-actions :as domain]
+                            [favorite-actions :as favorite]
+                            [group-actions :as group]
                             [inbox-actions :as inbox]
                             [like-actions :as like]
                             [push-subscription-actions :as push]
                             [salmon-actions :as salmon]
-                            [settings-actions :as settings]
+                            [setting-actions :as setting]
+                            [site-actions :as site]
                             [stream-actions :as stream]
                             [subscription-actions :as sub]
                             [user-actions :as user])
@@ -48,16 +51,26 @@
     [[:get "/admin/push/subscriptions"]                #'push/index]
     [[:post "/admin/users"]                            #'user/create]
     [[:get "/admin/users"]                             #'user/index]
-    [[:get "/admin/settings"]                          #'settings/edit-page]]))
+    [[:get "/admin/settings"]                          #'setting/edit-page]]))
+
+(def authenticated-routes
+  (make-matchers
+   [
+    [[:get "/api/statusnet/app/service.xml"]               #'site/service]
+    [[:get "/api/statusnet/app/subscriptions/:id.:format"] #'sub/subscriptions]
+    [[:get "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]
+    [[:get "/api/statusnet/app/memberships/:id.:format"]   #'group/user-list]
+    ]))
 
 (def http-routes
   (make-matchers
-   [[[:get  "/"]                                       #'stream/index]
+   [[[:get "/"]                                        #'stream/index]
+    [[:get "/rsd.xml"]                                 #'site/rsd]
     [[:get "/.well-known/host-meta"]                   #'domain/host-meta]
     [[:get "/api/people/@me/@all"]                     #'user/index]
     [[:get "/api/people/@me/@all/:id"]                 #'user/show]
     [[:get "/api/statuses/public_timeline.:format"]    #'stream/index]
-    [[:get  "/api/statuses/user_timeline/:id.:format"] #'stream/user-timeline]
+    [[:get "/api/statuses/user_timeline/:id.:format"]  #'stream/user-timeline]
     [[:get "/main/domains"]                            #'domain/index]
     [[:get "/main/domains/*"]                          #'domain/show]
     [[:delete "/main/domains/*"]                       #'domain/delete]

@@ -64,6 +64,7 @@
       model.activity/create))
 
 (defaction delete
+  "delete it"
   [activity]
   (let [actor-id (session/current-user-id)
         author (:author activity)]

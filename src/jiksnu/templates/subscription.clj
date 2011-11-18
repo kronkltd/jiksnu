@@ -1,4 +1,4 @@
-(ns jiksnu.templates.subscriptions
+(ns jiksnu.templates.subscription
   (:use (ciste [debug :only [spy]])
         closure.templates.core)
   (:require [jiksnu.session :as session]

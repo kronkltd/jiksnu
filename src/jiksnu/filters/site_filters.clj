@@ -1,4 +1,7 @@
-(ns jiksnu.filters.site-filters)
+(ns jiksnu.filters.site-filters
+  (:use (ciste [filters :only [deffilter]])
+        (jiksnu [session :only [current-user-id]])
+        jiksnu.actions.site-actions))
 
 (deffilter #'rsd :http
   [action request]
@@ -6,6 +9,5 @@
 
 (deffilter #'service :http
   [action request]
-  (action (current-user-id))
-  )
+  (action (current-user-id)))
 

@@ -36,10 +36,10 @@
         (let [entry (show-section (factory Activity {:author (:_id user)}))]
           (entry->activity (spy entry)) => activity?)))
 
-    (testing "when coming from an identi.ca feed"
+    #_(testing "when coming from an identi.ca feed"
       (against-background
         [(around :facts
-           (let [feed (abdera/load-file "identica-update.xml")
+           (let [feed nil #_(abdera/load-file "identica-update.xml")
                  entry (first (abdera/get-entries feed))]
              ?form))]
         

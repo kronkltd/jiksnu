@@ -1,4 +1,6 @@
-(ns jiksnu.actions.site-actions)
+(ns jiksnu.actions.site-actions
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]])))
 
 (defaction service
   [id]

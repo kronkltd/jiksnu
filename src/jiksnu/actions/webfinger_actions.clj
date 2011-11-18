@@ -111,3 +111,9 @@
     (log/error
      (str "Could not find host meta for domain: " (:_id domain)))))
 
+(definitializer
+  (doseq [namespace ['jiksnu.filters.webfinger-filters
+                     'jiksnu.views.webfinger-views
+                     ]]
+    (require namespace)))
+
