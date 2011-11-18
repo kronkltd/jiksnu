@@ -2,7 +2,7 @@
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]])
-        clj-stacktrace.repl
+        (clj-stacktrace [repl :only [pst+]])
         (clojure.core [incubator :only [-?>]])
         (jiksnu model
                 [session :only [current-user]]))
@@ -52,13 +52,17 @@
   [^User user]
   (-> user :domain actions.domain/find-or-create))
 
-(defaction add-link
+(defaction add-link*
+  [user link]
+  (entity/update User {:_id (:_id user)}
+                 {:$addToSet {:links link}})
+  user)
+
+(defn add-link
   [user link]
   (if-let [existing-link (model.user/get-link user (:rel link))]
     user
-    (do (entity/update User {:_id (:_id user)}
-                       {:$addToSet {:links link}})
-        user)))
+    (add-link* user link)))
 
 (defaction create
   [options]
@@ -173,8 +177,8 @@
     (create user options)))
 
 (defaction show
-  ;;   "This action just returns the passed user.
-  ;; The user needs to be retreived in the filter."
+  "This action just returns the passed user.
+   The user needs to be retreived in the filter."
   [user]
   (model.user/fetch-by-id (:_id user)))
 
@@ -202,9 +206,10 @@
                         (when username {:username username})
                         (when email {:email email})
                         (when name {:display-name name}))]
-      (let [user (update (merge (find-or-create-by-remote-id
-                                 {:id (str id)} params)
-                                params))]
+      (let [user (-> {:id (str id)}
+                     (find-or-create-by-remote-id params)
+                     (merge params)
+                     update)]
         (doseq [link links]
           (add-link user link))
         user))))
@@ -217,7 +222,7 @@
         user)))
 
 (defaction update-hub
-  ;; Determine the user's hub link and update the user object
+  "Determine the user's hub link and update the user object"
   [user]
   (if-let [feed (helpers.user/fetch-user-feed user)]
     (update-hub* user feed)))
@@ -229,7 +234,7 @@
 
 (defn user-for-uri
   "Returns a user with the passed account uri,
-  or creates one if it does not exist."
+   or creates one if it does not exist."
   [uri]
   (->> uri model.user/split-uri
       (apply find-or-create)))
@@ -267,7 +272,7 @@
         avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
         uri (:uri user)]
     (update-hub* user feed)
-    (doseq [link links]
+    #_(doseq [link links]
       (add-link user link))
     (-> (merge
          user

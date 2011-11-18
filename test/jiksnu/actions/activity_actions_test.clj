@@ -34,7 +34,7 @@
     (fact "should return an Activity"
       (with-context [:http :atom]
         (let [entry (show-section (factory Activity {:author (:_id user)}))]
-          (entry->activity (spy entry)) => activity?)))
+          (entry->activity entry) => activity?)))
 
     #_(testing "when coming from an identi.ca feed"
       (against-background

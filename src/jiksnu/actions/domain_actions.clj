@@ -38,15 +38,10 @@
           ;; TODO: These should call actions
           (do (model.domain/add-links domain links)
               (model.domain/set-discovered domain))
-          (log/error "Host meta does not have any links"))
+          (throw (RuntimeException. "Host meta does not have any links")))
         xrd)
-    (log/error
-     (str "Could not find host meta for domain: " (:_id domain)))))
-
-(defaction discover
-  [domain]
-  (discover-onesocialweb domain)
-  (spy (discover-webfinger domain)))
+    (throw (RuntimeException.
+            (str "Could not find host meta for domain: " (:_id domain))))))
 
 (defaction edit-page
   [id]
@@ -69,9 +64,6 @@
   []
   (find-or-create (config :domain)))
 
-(definitializer
-  (current-domain))
-
 (defaction ping
   [domain]
   true)
@@ -92,6 +84,17 @@
 (defaction set-xmpp
   [domain value]
   (model.domain/set-field domain :xmpp false))
+
+(defaction set-discovered!
+  "marks the domain as having been discovered"
+  [domain]
+  (model.domain/set-field domain :discovered true))
+
+(defaction discover
+  [domain]
+  (discover-onesocialweb domain)
+  (discover-webfinger domain)
+  (set-discovered! domain))
 
 (defn get-user-meta-uri
   [domain username]

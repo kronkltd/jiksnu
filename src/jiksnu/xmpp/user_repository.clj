@@ -43,20 +43,18 @@
   "This addUser method allows to add new user to repository."
   ([this ^BareJID user]
      (log/info "add user")
-     (if (spy user)
-       (let [username (.getLocalpart user)
-             domain (.getDomain user)]
-         (if (and (spy username) (spy domain))
-           (actions.user/create (spy {:username username
-                                      :domain domain}))
-           (if (spy domain)
-             (actions.domain/find-or-create domain)
-             (throw (RuntimeException. "Could not find domain")))))))
+     (let [username (.getLocalpart user)
+           domain (.getDomain user)]
+       (if (and username domain)
+         (actions.user/create {:username username :domain domain})
+         (if domain
+           (when-not (#{"vhost-manager"} domain)
+             (actions.domain/find-or-create domain))
+           (throw (RuntimeException. "Could not find domain"))))))
   ([this ^BareJID user ^String password]
      (log/info "addUser")
      (spy user)
-     (spy password)
-     ))
+     (spy password)))
 
 (defn -digestAuth
   [^AuthRepository this ^BareJID user ^String digest
@@ -72,10 +70,11 @@
     ks))
 
 (defn find-user
-  [jid]
-  (or (model.user/fetch-by-jid jid)
-      (throw (UserNotFoundException.
-              (str "Could not find user for " jid)))))
+  [^BareJID jid]
+  (when (not= (.getDomain jid) "vhost-manager")
+    (or (model.user/fetch-by-jid jid)
+        (throw (UserNotFoundException.
+                (str "Could not find user for " jid))))))
 
 (defmulti get-data (fn [user ks def] ks))
 
@@ -103,9 +102,9 @@ subnode."
      ;; TODO: implement
      (try
        (log/info "get data")
-       (let [user (find-user (spy user-id))
+       (let [user (find-user user-id)
              ks (key-seq subnode key)]
-         (spy (get-data user (spy ks) def)))
+         (get-data user ks def))
        (catch Exception ex
          (log/error ex)
          (stacktrace/print-cause-trace ex)))))
