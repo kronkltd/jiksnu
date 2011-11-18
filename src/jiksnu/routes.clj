@@ -57,7 +57,7 @@
   (make-matchers
    [
     [[:get "/api/statusnet/app/service.xml"]               #'site/service]
-    [[:get "/api/statusnet/app/subscriptions/:id.:format"] #'sub/subscriptions]
+    [[:get "/api/statusnet/app/subscriptions/:id.:format"] #'sub/get-subscriptions]
     [[:get "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]
     [[:get "/api/statusnet/app/memberships/:id.:format"]   #'group/user-list]
     ]))
@@ -113,8 +113,8 @@
     [[:delete "/users/:id"]                            #'user/delete]
     [[:get "/users/:id"]                               #'stream/remote-profile]
     [[:post "/users/:id/discover"]                     #'user/discover]
-    [[:get "/users/:id/subscribers"]                   #'sub/subscribers]
-    [[:get "/users/:id/subscriptions"]                 #'sub/subscriptions]
+    [[:get "/users/:id/subscribers"]                   #'sub/get-subscribers]
+    [[:get "/users/:id/subscriptions"]                 #'sub/get-subscriptions]
     [[:post "/users/:id/update"]                       #'user/fetch-updates]
     [[:post "/users/:id/update-hub"]                   #'user/update-hub]
     [[:post "/users/:id/push/subscribe"]               #'push/subscribe]
@@ -124,8 +124,8 @@
     ;; FIXME: Updating the user should probably post to a different uri
     [[:post "/:username"]                              #'user/update]
     [[:get "/:username/all"]                           #'stream/index]
-    [[:get "/:username/subscribers"]                   #'sub/subscribers]
-    [[:get "/:username/subscriptions"]                 #'sub/subscriptions]]))
+    [[:get "/:username/subscribers"]                   #'sub/get-subscribers]
+    [[:get "/:username/subscriptions"]                 #'sub/get-subscriptions]]))
 
 (def xmpp-routes
   (map
@@ -182,7 +182,7 @@
 
     [{:method :get
       :name "subscriptions"}
-     #'sub/subscriptions]
+     #'sub/get-subscriptions]
 
     [{:method :set
       :name "subscribe"
@@ -196,7 +196,7 @@
 
     [{:method :get
       :name "subscribers"}
-     #'sub/subscribers]
+     #'sub/get-subscribers]
 
     [{:method :set
       :name "subscribers"}

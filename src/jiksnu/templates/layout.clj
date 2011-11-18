@@ -18,7 +18,7 @@
     :development (= @*environment* :development)}
    (if-let [user (current-user)]
      {:authenticated (model.user/format-data user)
-      :subscriptions (->> user actions.subscription/subscriptions
+      :subscriptions (->> user actions.subscription/get-subscriptions
                           second (map model.subscription/format-data))
-      :subscribers (->> user actions.subscription/subscribers
+      :subscribers (->> user actions.subscription/get-subscribers
                         second (map model.subscription/format-data))})))

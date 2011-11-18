@@ -42,11 +42,11 @@
    :template false
    :headers {"Location" "/"}})
 
-(defview #'subscribers :html
+(defview #'get-subscribers :html
   [request [user subscribers]]
   {:body (templates.subscription/subscribers-index subscribers)})
 
-(defview #'subscriptions :html
+(defview #'get-subscriptions :html
   [request [user subscriptions]]
   {:title "Subscriptions"
    :formats [{:href (str (uri user) "/subscriptions.json")
@@ -81,12 +81,12 @@
   (tigase/result-packet
    request (helpers.subscription/subscriptions-response [subscription])))
 
-(defview #'subscribers :xmpp
+(defview #'get-subscribers :xmpp
   [request subscribers]
   (tigase/result-packet
    request (helpers.subscription/subscribers-response subscribers)))
 
-(defview #'subscriptions :xmpp
+(defview #'get-subscriptions :xmpp
   [request [user subscriptions]]
   (tigase/result-packet
    request (helpers.subscription/subscriptions-response subscriptions)))

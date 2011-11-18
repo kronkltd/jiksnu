@@ -77,22 +77,6 @@
   [id]
   (model.user/delete id))
 
-(defaction discover
-  [^User user]
-  (when (not (:local user))
-    user))
-
-;; TODO: turn this into a worker
-(defn discover-pending-users
-  [domain]
-  (if-let [user (pop-user! domain)]
-    (do
-      (log/info "Discovering: " user)
-      (discover user))
-    (do (log/info "sleeping")
-        #_(Thread/sleep 3000)))
-  #_(recur domain))
-
 (defn fetch-by-jid
   [jid]
   (model.user/show (.getLocalpart jid) (.getDomain jid)))
@@ -101,21 +85,16 @@
   [uri]
   (model.user/fetch-by-uri uri))
 
-(declare request-vcard!)
+(defaction index
+  [options]
+  (model.user/index))
 
-(defaction fetch-remote
-  [user]
-  (let [domain (:domain user)]
-    (if (:xmpp domain)
-      (request-vcard! user))))
+(defaction profile
+  [& _])
 
 (defaction fetch-updates
   [user]
   user)
-
-(defaction find-hub
-  [user]
-  (get-domain user))
 
 (defaction find-or-create
   [username domain]
@@ -129,58 +108,35 @@
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
   ([user params]
-     (or (entity/fetch-one User {:id (:id user)} )
+     (or (model.user/fetch-by-remote-id (:id user))
          (create (merge user params)))))
 
 (defn find-or-create-by-uri
   [uri]
   (apply find-or-create (model.user/split-uri uri)))
 
-(defaction index
-  [options]
-  (model.user/index))
+(defn update-hub*
+  [user feed]
+  (when-let [hub-link (abdera/get-hub-link feed)]
+    (model.user/set-field user :hub hub-link)
+    user))
 
-(defaction profile
-  [& _])
+(defaction update-hub
+  "Determine the user's hub link and update the user object"
+  [user]
+  (if-let [feed (helpers.user/fetch-user-feed user)]
+    (update-hub* user feed)))
 
-(defaction register
-  [{:keys [username password email display-name location]}]
-  (if (and username password)
-    (-> {:username username
-         :domain (config :domain)
-         :discovered true
-         :local true
-         ;; TODO: encrypt here
-         :password password}
-        (merge (when email {:email email})
-               (when display-name {:display-name display-name})
-               (when location {:location location}))
-        create)))
-
-(defaction register-page
-  []
-  true)
-
-(declare vcard-request)
+(defaction user-meta
+  [uri]
+  (->> uri
+       model.user/split-uri
+       (apply model.user/show )))
 
 (defn request-vcard!
   [user]
   (let [packet (model.user/vcard-request user)]
     (tigase/deliver-packet! packet)))
-
-(defaction remote-create
-  [user options]
-  (let [user (merge user
-                    {:updated (sugar/date)
-                     :discovered true}
-                    options)]
-    (create user options)))
-
-(defaction show
-  "This action just returns the passed user.
-   The user needs to be retreived in the filter."
-  [user]
-  (model.user/fetch-by-id (:_id user)))
 
 (defaction update
   [user params]
@@ -207,25 +163,111 @@
                         (when email {:email email})
                         (when name {:display-name name}))]
       (let [user (-> {:id (str id)}
-                     (find-or-create-by-remote-id params)
-                     (merge params)
-                     update)]
+                     #_(find-or-create-by-remote-id params)
+                     (merge params))]
         (doseq [link links]
           (add-link user link))
-        user))))
+        (entity/make User user)))))
 
-(defn update-hub*
-  [user feed]
-  (if-let [hub-link (abdera/get-hub-link feed)]
-    (do (entity/update User {:_id (:_id user)}
-                       {:$set {:hub hub-link}})
-        user)))
 
-(defaction update-hub
-  "Determine the user's hub link and update the user object"
+
+
+;; TODO: Collect all changes and update the user once.
+(defaction update-usermeta
   [user]
-  (if-let [feed (helpers.user/fetch-user-feed user)]
-    (update-hub* user feed)))
+  (let [xrd (helpers.user/fetch-user-meta user)
+        links (model.webfinger/get-links xrd)
+        new-user (assoc user :links links)
+        feed (helpers.user/fetch-user-feed new-user)
+        author (when feed (.getAuthor feed))
+        user (merge user (person->user author))
+        avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
+        uri (:uri user)]
+    (update-hub* user feed)
+    (doseq [link links]
+      (add-link user link))
+    (-> (merge
+         user
+         (when avatar-url {:avatar-url avatar-url})
+         {:id (str uri)
+          :discovered true})
+        update)))
+
+
+
+(defaction discover-user-xmpp
+  [user]
+  (log/info "discover xmpp")
+  (request-vcard! user))
+
+(defaction discover-user-http
+  [user]
+  (log/info "discovering http")
+  (update-usermeta user))
+
+(defaction discover
+  [^User user]
+  (when (not (:local user))
+    (let [domain (model.user/get-domain user)]
+      (if (:discovered domain)
+        (do (discover-user-xmpp user)
+            (discover-user-http user))
+        (enqueue-discover user))))
+  (model.user/set-field user :discovered true)
+  user)
+
+;; TODO: turn this into a worker
+(defn discover-pending-users
+  [domain]
+  (if-let [user (pop-user! domain)]
+    (do
+      (log/info "Discovering: " user)
+      (discover user))
+    (do (log/info "sleeping")
+        #_(Thread/sleep 3000)))
+  #_(recur domain))
+
+(defaction fetch-remote
+  [user]
+  (let [domain (:domain user)]
+    (if (:xmpp domain)
+      (request-vcard! user))))
+
+(defaction find-hub
+  [user]
+  (get-domain user))
+
+(defaction register
+  [{:keys [username password email display-name location]}]
+  (if (and username password)
+    (-> {:username username
+         :domain (config :domain)
+         :discovered true
+         :local true
+         ;; TODO: encrypt here
+         :password password}
+        (merge (when email {:email email})
+               (when display-name {:display-name display-name})
+               (when location {:location location}))
+        create)))
+
+(defaction register-page
+  []
+  true)
+
+(defaction remote-create
+  [user options]
+  (let [user (merge user
+                    {:updated (sugar/date)
+                     :discovered true}
+                    options)]
+    (create user options)))
+
+(defaction show
+  "This action just returns the passed user.
+   The user needs to be retreived in the filter."
+  [user]
+  (model.user/fetch-by-id (:_id user)))
 
 (defaction update-profile
   [options]
@@ -252,40 +294,6 @@
         domain (get-domain user)]
     (or (:user-meta-uri user)
         (actions.domain/get-user-meta-uri (:_id domain) username))))
-
-(defn fetch-user-meta
-  "returns a user meta document"
-  [^User user]
-  (-?> user
-      model.user/user-meta-uri
-      model.webfinger/fetch-host-meta))
-
-;; TODO: Collect all changes and update the user once.
-(defaction update-usermeta
-  [user]
-  (let [xrd (fetch-user-meta user)
-        links (model.webfinger/get-links xrd)
-        new-user (assoc user :links links)
-        feed (helpers.user/fetch-user-feed new-user)
-        author (when feed (.getAuthor feed))
-        user (merge user (person->user author))
-        avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
-        uri (:uri user)]
-    (update-hub* user feed)
-    #_(doseq [link links]
-      (add-link user link))
-    (-> (merge
-         user
-         (when avatar-url {:avatar-url avatar-url})
-         {:id (str uri)
-          :discovered true})
-        update)))
-
-(defaction user-meta
-  [uri]
-  (->> uri
-       model.user/split-uri
-       (apply model.user/show )))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.user-filters

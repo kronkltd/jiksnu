@@ -1,6 +1,6 @@
 (ns jiksnu.triggers.user-triggers
   (:use (ciste config
-               [debug :only (spy)]
+               [debug :only [spy]]
                triggers)
         (jiksnu view)
         lamina.core)
@@ -14,25 +14,9 @@
             (jiksnu.model [signature :as model.signature]
                           [user :as model.user])))
 
-(defn discover-user-xmpp
-  [user]
-  (log/info "discover xmpp")
-  (actions.user/request-vcard! user))
-
-(defn discover-user-http
-  [user]
-  (log/info "discovering http")
-  (actions.user/update-usermeta user)
-  #_(request-hcard user))
-
-(defn discover-user
+(defn discover-trigger
   [action _ user]
-  (let [domain (model.user/get-domain user)]
-    (if (:discovered domain)
-      (do (async (discover-user-xmpp user))
-          (async (discover-user-http user))
-          (actions.activity/load-activities (model.user/fetch-by-id (:_id user))))
-      (actions.user/enqueue-discover user))))
+  (actions.activity/load-activities (model.user/fetch-by-id (:_id user))))
 
 (defn fetch-updates-http
   [user]
@@ -83,6 +67,6 @@
 
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
-(add-trigger! #'actions.user/discover      #'discover-user)
+(add-trigger! #'actions.user/discover      #'discover-trigger)
 (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
 (add-trigger! #'actions.user/register      #'register-trigger)

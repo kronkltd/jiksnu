@@ -40,13 +40,13 @@
   (-?>> request :params :subscribeto
         model.user/fetch-by-id (action (current-user))))
 
-(deffilter #'subscribers :http
+(deffilter #'get-subscribers :http
   [action request]
   (let [{{id :id} :params} request
         user (model.user/fetch-by-id id)]
     (action user)))
 
-(deffilter #'subscriptions :http
+(deffilter #'get-subscriptions :http
   [action request]
   (let [{{id :id} :params} request
         user (model.user/fetch-by-id id)]
@@ -82,12 +82,12 @@
         subscribee (actions.user/fetch-by-jid (:to request))]
     (action subscriber subscribee)))
 
-(deffilter #'subscribers :xmpp
+(deffilter #'get-subscribers :xmpp
   [action request]
   (if-let [user (actions.user/fetch-by-jid (:to request))]
     (action user)))
 
-(deffilter #'subscriptions :xmpp
+(deffilter #'get-subscriptions :xmpp
   [action request]
   (let [user (actions.user/fetch-by-jid (:to request))]
     (action user)))

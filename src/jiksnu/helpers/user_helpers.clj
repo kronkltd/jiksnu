@@ -1,9 +1,9 @@
 (ns jiksnu.helpers.user-helpers
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
                sections)
         ciste.sections.default
-        (clojure.contrib [core :only (-?>)])
+        (clojure.contrib [core :only [-?>]])
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
@@ -14,7 +14,8 @@
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user]
-                          [subscription :as model.subscription])
+                          [subscription :as model.subscription]
+                          [webfinger :as model.webfinger])
             (karras [sugar :as sugar]))
   (:import javax.xml.namespace.QName
            jiksnu.model.User
@@ -66,3 +67,9 @@
      :to from
      :type :get}))
 
+(defn fetch-user-meta
+  "returns a user meta document"
+  [^User user]
+  (-?> user
+      model.user/user-meta-uri
+      model.webfinger/fetch-host-meta))

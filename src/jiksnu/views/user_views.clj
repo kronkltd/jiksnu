@@ -46,7 +46,7 @@
 
 (defview #'fetch-remote :xmpp
   [request user]
-  (vcard-request request user))
+  (helpers.user/vcard-request request user))
 
 (defview #'fetch-updates :html
   [request user]

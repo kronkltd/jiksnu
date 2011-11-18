@@ -3,11 +3,12 @@
                [core :only [defaction]]
                [debug :only [spy]])
         ciste.sections.default
-        (clojure.core [incubator :only [-?>]]))
+        (clojure.core [incubator :only [-?> -?>>]]))
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase])
             (clojure [string :as string])
             (clojure.java [io :as io])
+            (clojure.tools [logging :as log])
             (hiccup [core :as hiccup])
             (jiksnu [abdera :as abdera]
                     [model :as model]
@@ -87,7 +88,9 @@ serialization"
            updated (.getUpdated entry)
            verb (-?> entry
                      (.getExtension (QName. namespace/as "verb" "activity"))
-                     .getText)
+                     .getText
+                     (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+                     (string/replace #"http://ostatus.org/schema/1.0/" ""))
            user (-> entry
                     (abdera/get-author feed)
                     actions.user/person->user
@@ -99,10 +102,23 @@ serialization"
            recipients (->> (ThreadHelper/getInReplyTos entry)
                            (map helpers.activity/parse-link)
                            (filter identity))
+           content (.getContent entry)
            links (abdera/parse-links entry)
            tags (abdera/parse-tags entry)
+           object (if-let [obj-elt (-?>> (QName. namespace/as "object" "activity")
+                                         (.getExtension entry))]
+                    (let [object-type (-?> (-?>> (QName. namespace/as "object-type" "activity")
+                                                 (.getExtension obj-elt))
+                                           .getText
+                                           (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+                                           (string/replace #"http://ostatus.org/schema/1.0/" ""))
+                          id (.getSimpleExtension obj-elt namespace/atom "id" "")]
+                      {:object-type object-type
+                       :id id}))
            opts (apply merge
                        (if published {:published published})
+                       (when content {:content content})
+                       (when object {:object object})
                        (if updated {:updated updated})
                        (if (seq recipients)
                          {:recipients (string/join ", " recipients)})

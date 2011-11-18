@@ -1,7 +1,7 @@
 (ns jiksnu.model.user
   (:use (ciste config
-               [debug :only (spy)])
-        [clj-gravatar.core :only (gravatar-image)]
+               [debug :only [spy]])
+        [clj-gravatar.core :only [gravatar-image]]
         jiksnu.model)
   (:require (jiksnu [abdera :as abdera]
                     [namespace :as namespace])
@@ -97,6 +97,13 @@
   [jid]
   (show (.getLocalpart jid)
         (.getDomain jid)))
+
+(defn set-field
+  [user field value]
+  (entity/find-and-modify
+   User
+   {:_id (:_id user)}
+   {:$set {field value}}))
 
 (defn fetch-by-uri
   [uri]

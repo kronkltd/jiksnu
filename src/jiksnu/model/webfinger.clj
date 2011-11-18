@@ -1,9 +1,9 @@
 (ns jiksnu.model.webfinger
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
                sections)
         ciste.sections.default
-        (clojure.core [incubator :only (-?>)]))
+        (clojure.core [incubator :only [-?>]]))
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
@@ -15,7 +15,7 @@
   [url]
   (if-let [hm (-?> url model/fetch-resource s/compile-xml)]
     (let [host (s/query "//hm:Host/text()" model/bound-ns hm)]
-      ;; (if (= (.getHost (URI. (spy url))) (str (spy host)))
+      ;; (if (= (.getHost (URI. url)) (str host))
       hm
       ;; (throw (RuntimeException. "Hostname does not match"))
       ;; )

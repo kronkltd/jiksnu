@@ -1,5 +1,5 @@
 (ns jiksnu.model.signature
-  (:use (ciste [debug :only (spy)]))
+  (:use (ciste [debug :only [spy]]))
   (:require jiksnu.model
             [karras.entity :as entity])
   (:import java.net.URI
@@ -9,6 +9,9 @@
            java.security.KeyFactory
            java.security.KeyPair
            java.security.KeyPairGenerator
+           java.security.PrivateKey
+           java.security.PublicKey
+           java.security.Signature
            java.security.spec.RSAPrivateKeySpec
            java.security.spec.RSAPublicKeySpec
            jiksnu.model.MagicKeyPair
@@ -22,11 +25,13 @@
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
 
-(defn generate-key
+(defn ^KeyPair generate-key
+  "Generates a new RSA keypair"
   []
   (.genKeyPair keypair-generator))
 
-(defn public-key
+(defn ^PublicKey public-key
+  "Extracts the public key from the keypair"
   [^KeyPair keypair]
   (.getPublic keypair))
 
@@ -63,15 +68,19 @@
                 start-dst (- (/ adjusted-bitlen 8) biglen2)
                 new-size (/ adjusted-bitlen 8)
                 resized-bytes (byte-array new-size)]
-            (println (class bigbytes))
             (System/arraycopy
              bigbytes start-src resized-bytes
              start-dst biglen2)
             resized-bytes))))))
 
-(defn encode
-  [byte-array]
+(defn ^String encode
+  "encodes the byte array as a url-safe base-64 string"
+  [^"[B" byte-array]
   (Base64/encodeBase64URLSafeString byte-array))
+
+(defn ^"[B" decode
+  [^String data]
+  (Base64/decodeBase64 data))
 
 (defn magic-key-string
   [^MagicKeyPair keypair]
@@ -131,70 +140,87 @@
   []
   (entity/delete-all MagicKeyPair))
 
-(defn get-key
-  "The magic key must have 3 segments"
-  [key]
-  #_(MagicKey. (.getBytes key "UTF-8")))
+;; (defn ^MagicKeyPair get-key
+;;   "The magic key must have 3 segments"
+;;   [^String key]
+;;   #_(MagicKey. (.getBytes key "UTF-8")))
 
-(defn get-key-from-armored
+(defn ^BigInteger armored->big-int
+  "converts an armored string to a BigInteger"
+  [^String armored]
+  (-> armored decode BigInteger.))
+
+(defn ^PublicKey get-key-from-armored
   [key-pair]
-  #_(MagicKey. "RSA" (:armored-n key-pair)
-             (:armored-e key-pair)))
+  (let [big-n (-> key-pair :armored-n armored->big-int)
+        big-e (-> key-pair :armored-e armored->big-int)
+        key-factory (KeyFactory/getInstance "RSA")
+        key-spec (RSAPublicKeySpec. big-n big-e)]
+    (.generatePublic key-factory key-spec)))
 
-(defn sign-and-deliver
-  "entry is an atom entry"
-  [entry key user]
-  #_(try
-    (.signAndDeliver
-     salmon
-     (.getBytes entry "UTF-8")
-     key
-     user)
-    (catch Exception e
-      (.printStackTrace e))))
+;; (defn sign-and-deliver
+;;   "entry is an atom entry"
+;;   [entry key user]
+;;   #_(try
+;;     (.signAndDeliver
+;;      salmon
+;;      (.getBytes entry "UTF-8")
+;;      key
+;;      user)
+;;     (catch Exception e
+;;       (.printStackTrace e))))
 
-(defn get-envelope
-  "data is the xml signature"
-  [^String data]
-  #_(let [me (MagicEnvelope.)]
-      (.setData me data)
-      me))
+;; (defn get-envelope
+;;   "data is the xml signature"
+;;   [^String data]
+;;   #_(let [me (MagicEnvelope.)]
+;;       (.setData me data)
+;;       me))
 
-(defn serialize
-  "Returns an XML string representing the envelope"
-  [envelope]
-  #_(let [serializer (XMLMagicEnvelopeSerializer.)
-        os (ByteArrayOutputStream.)]
-    (.serialize serializer envelope os)
-    (.toString os "UTF-8")))
+;; (defn serialize
+;;   "Returns an XML string representing the envelope"
+;;   [envelope]
+;;   #_(let [serializer (XMLMagicEnvelopeSerializer.)
+;;         os (ByteArrayOutputStream.)]
+;;     (.serialize serializer envelope os)
+;;     (.toString os "UTF-8")))
 
-(defn get-endpoint
-  [uri]
+;; (defn get-endpoint
+;;   [uri]
   
-  )
+;;   )
 
-(defn discover
-  [^String url]
-  #_(.discover *discovery-manager* (URI. url)))
+;; (defn discover
+;;   [^String url]
+;;   #_(.discover *discovery-manager* (URI. url)))
 
-#_(defn get-deserializer
-  []
-  #_(-> (MagicEnvelopeSerializationProvider/getDefault)
-      (.getDeserializer MagicSigConstants/MEDIA_TYPE_MAGIC_ENV_XML)))
+;; (defn deserialize
+;;   [^InputStream input-stream]
+;;   ;; TODO: Implement
+;;   )
 
-(defn deserialize
-  [^InputStream input-stream]
-  ;; TODO: Implement
-  )
+(defn sign
+  "Signs the data with the private key and returns the result"
+  [ ^"[B" data ^PrivateKey priv-key]
+  (let [^Signature sig (Signature/getInstance "SHA256withRSA")]
+    (doto sig
+      (.initSign priv-key)
+      (.update data))
+    (.sign sig)))
 
-(defn verify
-  [msg]
-  ;; TODO: implement
-  )
+(defn verified?
+  "Returns true if the signature is valid for the data and public key"
+  [^"[B" data ^"[B" signature ^PublicKey key]
+  ;; TODO: assert key is RSA
+  (let [^Signature sig (Signature/getInstance "SHA256withRSA")]
+    (doto sig
+      (.initVerify key)
+      (.update data))
+    (.verify sig signature)))
 
-(defn get-verified-data
-  [envelope]
-  (let [is (ByteArrayInputStream. (.getBytes envelope "UTF-8"))
-        m (deserialize is)
-        verified-data (verify m)]
-    (String. verified-data "UTF-8")))
+;; (defn get-verified-data
+;;   [envelope]
+;;   (let [is (ByteArrayInputStream. (.getBytes envelope "UTF-8"))
+;;         m (deserialize is)
+;;         verified-data (verify m)]
+;;     (String. verified-data "UTF-8")))

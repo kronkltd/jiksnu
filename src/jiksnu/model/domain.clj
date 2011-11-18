@@ -1,6 +1,6 @@
 (ns jiksnu.model.domain
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)])
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]])
         jiksnu.model)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])

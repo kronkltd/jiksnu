@@ -3,7 +3,8 @@
                [core :only [defaction]]
                [debug :only [spy]])
         (jiksnu model))
-  (:require (jiksnu [session :as session])
+  (:require (clojure.tools [logging :as log])
+            (jiksnu [session :as session])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
   (:import javax.security.sasl.AuthenticationException
@@ -11,10 +12,10 @@
            jiksnu.model.User))
 
 (defaction delete
-;;   "Deletes a subscription.
+  "Deletes a subscription.
 
-;; This action is primarily for the admin console.
-;; In most cases, use the user-specific versions. (unsubscribe)"
+   This action is primarily for the admin console.
+   In most cases, use the user-specific versions. (unsubscribe)"
   [id]
   (model.subscription/delete id))
 
@@ -48,6 +49,14 @@
     :to (:_id user)
     :pending true}))
 
+(defaction unsubscribed
+  [actor user]
+  (let [subscription (model.subscription/find-record
+                      {:from (:_id actor)
+                       :to (:_id user)})]
+    (model.subscription/delete subscription)
+    subscription))
+
 (defaction ostatussub-submit
   [actor user]
   (subscribe actor user))
@@ -58,11 +67,11 @@
    {:from (:_id actor)
     :to (:_id user)}))
 
-(defaction subscribers
+(defn get-subscribers
   [user]
   [user (model.subscription/subscribers user)])
 
-(defaction subscriptions
+(defn get-subscriptions
   [user]
   [user (model.subscription/subscriptions user)])
 
@@ -80,7 +89,7 @@
   [args]
   (model.subscription/find-record args))
 
-(defn confirm
+(defaction confirm
   [subscription]
   (model.subscription/confirm subscription))
 

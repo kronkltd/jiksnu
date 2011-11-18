@@ -180,17 +180,6 @@
                   (factory User {:user-meta-uri user-meta-uri}))]
         (get-user-meta-uri user) => user-meta-uri))))
 
-(deftest test-fetch-user-meta
-  (fact "should return an xml stream"
-    (let [user (actions.user/update (assoc user :domain "kronkltd.net"))
-          domain (get-domain user)]
-      (actions.domain/update
-       (assoc domain :links
-              [{:rel "lrdd"
-                :template (str "http://" (:_id domain)
-                               "/main/xrd?uri={uri}")}]))
-      (fetch-user-meta user)) => nil))
-
 (deftest test-user-meta
   (testing "when the url matches a known user"
     (fact "should return a XRD object"
