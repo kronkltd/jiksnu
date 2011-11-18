@@ -31,15 +31,6 @@
            tigase.xml.Element
            tigase.xmpp.JID))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.user-filters
-                     'jiksnu.helpers.user-helpers
-                     'jiksnu.sections.user-sections
-                     'jiksnu.triggers.user-triggers
-                     'jiksnu.views.user-views
-                     ]]
-    (require namespace)))
-
 (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
 (defn enqueue-discover
@@ -290,3 +281,12 @@
   (->> uri
        model.user/split-uri
        (apply model.user/show )))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.user-filters
+                     'jiksnu.helpers.user-helpers
+                     'jiksnu.sections.user-sections
+                     'jiksnu.triggers.user-triggers
+                     'jiksnu.views.user-views
+                     ]]
+    (require namespace)))

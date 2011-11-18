@@ -11,11 +11,6 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.auth-filters
-                     'jiksnu.views.auth-views]]
-    (require namespace)))
-
 (defaction guest-login
   [webid]
   (actions.user/find-or-create-by-uri webid))
@@ -44,3 +39,8 @@
   [request]
   (let [{{id :pending-id} :session} request]
     (model.user/fetch-by-id id)))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.auth-filters
+                     'jiksnu.views.auth-views]]
+    (require namespace)))

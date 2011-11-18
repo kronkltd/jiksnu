@@ -10,15 +10,6 @@
            jiksnu.model.Subscription
            jiksnu.model.User))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.subscription-filters
-                     'jiksnu.helpers.subscription-helpers
-                     ;; 'jiksnu.sections.subscription-sections
-                     'jiksnu.triggers.subscription-triggers
-                     'jiksnu.views.subscription-views
-                     ]]
-    (require namespace)))
-
 (defaction delete
 ;;   "Deletes a subscription.
 
@@ -92,3 +83,12 @@
 (defn confirm
   [subscription]
   (model.subscription/confirm subscription))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.subscription-filters
+                     'jiksnu.helpers.subscription-helpers
+                     ;; 'jiksnu.sections.subscription-sections
+                     'jiksnu.triggers.subscription-triggers
+                     'jiksnu.views.subscription-views
+                     ]]
+    (require namespace)))

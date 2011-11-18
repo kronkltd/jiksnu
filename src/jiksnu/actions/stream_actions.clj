@@ -15,15 +15,6 @@
                           [user :as model.user])
             (lamina [core :as l])))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.stream-filters
-                     ;; 'jiksnu.helpers.stream-helpers
-                     ;; 'jiksnu.sections.stream-sections
-                     ;; 'jiksnu.triggers.stream-triggers
-                     'jiksnu.views.stream-views
-                     ]]
-    (require namespace)))
-
 (defaction friends-timeline
   [& _])
 
@@ -66,3 +57,12 @@
   [user]
   (if user
     [user (model.activity/find-by-user user)]))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.stream-filters
+                     ;; 'jiksnu.helpers.stream-helpers
+                     ;; 'jiksnu.sections.stream-sections
+                     ;; 'jiksnu.triggers.stream-triggers
+                     'jiksnu.views.stream-views
+                     ]]
+    (require namespace)))

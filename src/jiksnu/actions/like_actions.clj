@@ -5,10 +5,6 @@
   (:require (jiksnu.model [like :as model.like]))
   (:import jiksnu.model.Like))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.like-filters]]
-    (require namespace)))
-
 (defn admin-index
   [request]
   {:body
@@ -20,3 +16,7 @@
 (defaction like-activity
   [& _])
 
+(definitializer
+  (doseq [namespace ['jiksnu.filters.like-filters
+                     'jiksnu.views.like-views]]
+    (require namespace)))

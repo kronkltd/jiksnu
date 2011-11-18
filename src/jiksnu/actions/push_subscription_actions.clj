@@ -15,11 +15,6 @@
   (:import jiksnu.model.Activity
            org.apache.abdera2.model.Entry))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.push-subscription-filters
-                     'jiksnu.views.push-subscription-views]]
-    (require namespace)))
-
 (defaction callback
   [params]
   (let [{{challenge :hub.challenge
@@ -144,3 +139,8 @@
 (defaction hub-publish
   [params]
   (hub-dispatch params))
+
+(definitializer
+  (doseq [namespace ['jiksnu.filters.push-subscription-filters
+                     'jiksnu.views.push-subscription-views]]
+    (require namespace)))

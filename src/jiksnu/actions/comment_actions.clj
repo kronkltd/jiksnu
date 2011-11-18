@@ -8,11 +8,6 @@
                           [domain :as model.domain]
                           [user :as model.user])))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.comment-filters
-                     'jiksnu.views.comment-views]]
-    (require namespace)))
-
 (defaction new-comment
   [& _])
 
@@ -42,3 +37,7 @@
     (when (:xmpp domain)
       (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
 
+(definitializer
+  (doseq [namespace ['jiksnu.filters.comment-filters
+                     'jiksnu.views.comment-views]]
+    (require namespace)))

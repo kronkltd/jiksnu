@@ -25,14 +25,6 @@
            jiksnu.model.User
            org.apache.abdera2.ext.thread.ThreadHelper))
 
-(definitializer
-  (doseq [namespace ['jiksnu.filters.activity-filters
-                     'jiksnu.helpers.activity-helpers
-                     'jiksnu.sections.activity-sections
-                     'jiksnu.triggers.activity-triggers
-                     'jiksnu.views.activity-views]]
-    (require namespace)))
-
 (defn set-recipients
   [activity]
   (let [recipients (filter identity (:recipients activity))]
@@ -182,3 +174,10 @@ serialization"
     (doseq [activity (get-activities feed)]
       (create activity))))
 
+(definitializer
+  (doseq [namespace ['jiksnu.filters.activity-filters
+                     'jiksnu.helpers.activity-helpers
+                     'jiksnu.sections.activity-sections
+                     'jiksnu.triggers.activity-triggers
+                     'jiksnu.views.activity-views]]
+    (require namespace)))

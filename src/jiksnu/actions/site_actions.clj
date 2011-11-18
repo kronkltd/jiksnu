@@ -10,3 +10,7 @@
   true
   )
 
+(definitializer
+  (doseq [namespace ['jiksnu.filters.site-filters
+                     'jiksnu.views.site-views]]
+    (require namespace)))
