@@ -12,9 +12,10 @@
 
 (defn fetch-host-meta
   [url]
-  (if-let [doc (model/xml-doc url)]
+  (when-let [doc (model/xml-doc url)]
     (if-let [host (seq (model/query  "//*[local-name() = 'Host']" doc))]
-      doc)))
+      doc)
+    doc))
 
 (defn host-meta
   [domain]
@@ -83,11 +84,11 @@
 
 (defn get-links
   [xrd]
-  (let [links (model/force-coll (model/query "//xrd:Link" xrd))]
+  (let [links (model/force-coll (model/query "//*[local-name() = 'Link']" xrd))]
     (map
      (fn [link]
-       {:rel (model/query "string(@rel)" link)
-        :template (model/query "string(@template)" link)
-        :href (model/query "string(@href)" link)
-        :lang (model/query "string(@lang)" link)})
+       {:rel (.getAttributeValue link "rel")
+        :template (.getAttributeValue link "template")
+        :href (.getAttributeValue link "href")
+        :lang (.getAttributeValue link "lang")})
      links)))

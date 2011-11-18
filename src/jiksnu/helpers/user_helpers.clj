@@ -71,5 +71,5 @@
   "returns a user meta document"
   [^User user]
   (-?> user
-      model.user/user-meta-uri
-      model.webfinger/fetch-host-meta))
+       model.user/user-meta-uri
+       model.webfinger/fetch-host-meta))

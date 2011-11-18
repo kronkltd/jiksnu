@@ -5,6 +5,7 @@
                sections)
         ciste.sections.default
         (clj-factory [core :only [factory]])
+        (clojure.core [incubator :only [-?>]])
         (karras [core :only [MongoMappable]]
                 [entity :only [defembedded defentity delete-all]]))
   (:require (aleph [formats :as f]
@@ -29,6 +30,8 @@
            java.net.URL
            lamina.core.channel.Channel
            nu.xom.Builder
+           nu.xom.Document
+           nu.xom.Node
            org.bson.types.ObjectId
            org.joda.time.DateTime
            org.dom4j.DocumentFactory
@@ -136,9 +139,13 @@
   [s]
   (zip/xml-zip (parse-str s)))
 
-(defn stream->document
+(defn ^Document stream->document
   [^InputStream input-stream]
-  (.read xml-reader input-stream))
+  (.build (Builder.) input-stream))
+
+(defn ^Document string->document
+  [^String xml]
+  (.build (Builder.) xml ""))
 
 (defn fetch-resource
   [url]
@@ -148,18 +155,18 @@
         body))))
 
 (defn fetch-document
-  [url]
-  (.read xml-reader (URL. url)))
-
-(defn xml-doc
-  [url]
+  [^String url]
   (try
     (let [parser (Builder.)]
       (.build parser (.openStream (URL. url))))
     (catch FileNotFoundException ex nil)))
 
+(defn xml-doc
+  [^String url]
+  (-?> url fetch-resource string->document))
+
 (defn query
-  [path doc]
+  [^String path ^Node doc]
   (let [nodes (.query doc path)]
     (map
      #(.get nodes %)
@@ -184,14 +191,14 @@
 ;; TODO: Find a good place for this
 
 (defn write-json-date
-  ([date out]
+  ([^Date date ^PrintWriter out]
      (write-json-date date out false))
   ([^Date date ^PrintWriter out escape-unicode?]
      (let [formatted-date (.format (SimpleDateFormat. *date-format*) date)]
        (.print out (str "\"" formatted-date "\"")))))
 
 (defn write-json-object-id
-  ([id out]
+  ([id ^PrintWriter out]
      (write-json-object-id id out false))
   ([id ^PrintWriter out escape-unicode]
      (.print out (str "\"" id "\""))))
