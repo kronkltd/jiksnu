@@ -77,35 +77,42 @@
   (templates.user/show user))
 
 
+;; (defsection show-section [User :n3]
+;;   [user & options]
+;;   (with-format :rdf
+;;     (apply show-section user options)))
+
 (defsection show-section [User :rdf]
   [user & _]
-  (rdf/with-rdf-ns ""
-    [[(str (full-uri user) ".rdf")
-      [rdf/rdf:type                    foaf:PersonalProfileDocument
-       [foaf :maker]               (full-uri user)
-       foaf:primaryTopic           (rdf/rdf-resource
-                                    (model.user/get-uri user))]]
-     [(rdf/rdf-resource (model.user/get-uri user))
-      [rdf/rdf:type                    [foaf :Person]
-       [foaf :name]                (rdf/l (:name user))
-       foaf:nick                   (rdf/l (:username user))
-       foaf:name                   (rdf/l (:name user))
-       foaf:mbox                   (rdf/rdf-resource
-                                    (str "mailto:" (:email user)))
-       foaf:givenName              (rdf/l (:first-name user))
-       foaf:familyName             (rdf/l (:last-name user))
-       foaf:homepage               (rdf/rdf-resource (:url user))
-       foaf:weblog                 (rdf/rdf-resource (full-uri user))
-       foaf:img                    (:avatar-url user)
-       foaf:account                (rdf/rdf-resource
-                                    (str (full-uri user) "#acct"))]]
-     [(rdf/rdf-resource (str (full-uri user) "#acct"))
-      [rdf/rdf:type                    foaf:OnlineAccount
-       foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
-       foaf:accountName            (rdf/l (:username user))
-       [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
-       [namespace/sioc "account_of"]         (rdf/rdf-resource
-                                              (model.user/get-uri user))]]]))
+  (let [{:keys [url display-name avatar-url first-name last-name username name email]} user]
+    (rdf/with-rdf-ns ""
+      [
+       [(str (full-uri (spy user)) ".rdf")
+          [rdf/rdf:type                    foaf:PersonalProfileDocument
+           [foaf :maker]               (full-uri user)
+           foaf:primaryTopic           (rdf/rdf-resource
+                                        (model.user/get-uri user))]]
+       
+       [(rdf/rdf-resource (model.user/get-uri user))
+        (concat [rdf/rdf:type                    [foaf :Person]
+                 foaf:weblog                 (rdf/rdf-resource (full-uri user))
+                 foaf:account                (rdf/rdf-resource
+                                              (str (full-uri user) "#acct"))]
+                (when username [foaf:nick (rdf/l username)])
+                (when name [foaf:name (rdf/l name)])
+                (when url [foaf:homepage (rdf/rdf-resource url)])
+                (when avatar-url [foaf:img avatar-url])
+                (when email [foaf:mbox (rdf/rdf-resource (str "mailto:" email))])
+                (when display-name [[foaf :name] (rdf/l display-name)])
+                (when first-name [foaf:givenName (rdf/l first-name)])
+                (when last-name [foaf:familyName (rdf/l last-name)]))]
+       [(rdf/rdf-resource (str (full-uri user) "#acct"))
+          [rdf/rdf:type                    foaf:OnlineAccount
+           foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
+           foaf:accountName            (rdf/l (:username user))
+           [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
+           [namespace/sioc "account_of"]         (rdf/rdf-resource
+                                                  (model.user/get-uri user))]]])))
 
 (defsection show-section [User :json]
   [user & options]

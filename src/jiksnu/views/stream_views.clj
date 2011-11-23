@@ -6,6 +6,7 @@
                [views :only (apply-view
                              defview)])
         ciste.sections.default
+        (clj-stacktrace [repl :only [pst+]])
         jiksnu.actions.stream-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
@@ -21,7 +22,7 @@
             (jiksnu.sections [activity-sections :as sections.activity])
             (jiksnu.templates [activity :as templates.activity])
             (jiksnu.xmpp [element :as xmpp.element])
-            (plaza.rdf [core :as plaza])
+            (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])
             (ring.util [response :as response])))
 
@@ -59,27 +60,27 @@
 
 (defview #'index :n3
   [request activities]
-  {:body (-> activities
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model-to-format :n3)
-             with-out-str)
-   :template :false})
+  (let [triples (with-format :rdf (index-section activities))]
+    {:body (-> triples
+              rdf/model-add-triples
+              rdf/defmodel
+              (rdf/model-to-format :n3)
+              with-out-str)
+    :template :false}))
 
 (defview #'index :rdf
   [request activities]
-  (let [model (plaza/build-model)]
-    (.setNsPrefix (plaza/to-java model) "activity" namespace/as)
-    (plaza/with-model model
+  (let [model (rdf/build-model)]
+    (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
+    (rdf/with-model model
       (-> activities
           index-section
           ;; first
-          plaza/make-triples
+          rdf/make-triples
           spy
-          plaza/model-add-triples)
+          rdf/model-add-triples)
       {:body (with-out-str
-               (plaza/model-to-format model :xml))
+               (rdf/model-to-format model :xml))
       :template :false})))
 
 (defview #'index :xmpp
@@ -172,3 +173,33 @@
 (defview #'user-timeline :xmpp
   [request [user  activities]]
   (tigase/result-packet request (index-section activities)))
+
+
+(defview #'user-timeline :n3
+  [request [user activities]]
+  (let [triples (with-format :rdf (show-section user))]
+    {:body
+     (-> triples
+         spy 
+        rdf/model-add-triples
+        rdf/defmodel
+        (rdf/model-to-format :n3)
+        with-out-str
+        )
+    :template false
+    })
+  )
+
+(defview #'user-timeline :rdf
+  [request [user activities]]
+  {:body
+   (try (let [rdf-model (rdf/defmodel (rdf/model-add-triples (spy (show-section (spy user)))))]
+          (with-out-str (rdf/model-to-format rdf-model :xml)))
+        (catch Exception ex
+          (clojure.stacktrace/print-stack-trace ex)
+          (pst+ ex)
+          (throw ex)
+          )
+        )
+   :template :false}
+  )
