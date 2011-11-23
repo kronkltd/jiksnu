@@ -98,11 +98,13 @@
      :local (:local activity)
      :public (:public activity)
      :content (or (-> activity :object :content)
-                  (-> activity :content)
-                  (-> activity :title))
+                  (-> activity :title)
+                  (-> activity :content))
      :title (or (-> activity :object :content)
+                (:title activity)
                 (:content activity)
-                (:title activity))
+                
+                )
      :lat (str (:lat activity))
      :long (str (:long activity))
      :authenticated (if-let [user (current-user)]
