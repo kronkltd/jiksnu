@@ -19,7 +19,7 @@
                  [dom4j "1.6.1"]
                  [hiccup "0.3.6"]
                  [inflections "0.6.3"]
-                 [aleph "0.2.1-SNAPSHOT"]
+                 [net.kronkltd/aleph "0.2.1-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.0.1"]
                  [joda-time "2.0"]
                  [lamina "0.4.1-SNAPSHOT"]
