@@ -193,7 +193,8 @@ of registered users"
 (defn -queryAuth
   [this props]
   (log/info "query auth")
-  (.queryAuth @auth-repository props))
+  (.put props "result" (into-array String ["PLAIN"]))
+  #_(.queryAuth (spy @auth-repository) (spy props)))
 
 (defn -removeData
   "removes pair (key, value) from user repository in given subnode."
