@@ -26,9 +26,7 @@
           {/if}
           {if $parent_id }
             <li class="hidden">
-              <input type="hidden"
-                     name="parent"
-                     value="{$parent_id}" />
+              <input type="hidden" name="parent" value="{$parent_id}" />
             </li>
           {/if}
           <li>
@@ -361,7 +359,7 @@
   <span class="{css posted}">
     {if $published}
       <time datetime="{$published}">
-        <a href="/notice/{$id}">
+        <a href="/notice/{$id}" property="dc:published" content="{$published}">
           {$published_formatted}
         </a>
       </time>
@@ -427,9 +425,9 @@
       </header>
       <section class="{css entry-content}">
         {if $title and $title != $content}
-          <h1 class="{css entry-title}">{$title}</h1>
+          <h1 class="{css entry-title}" property="dc:title">{$title}</h1>
         {/if}
-        <p>
+        <p property="sioc:content">
           {$content}
         </p>
       </section>
