@@ -63,6 +63,21 @@
   ;; TODO: implement
   [group []])
 
+(defaction user-list
+  []
+  
+  )
+
+(defaction add
+  [options]
+  
+  )
+
+(defaction add-stream-page
+  []
+  
+  )
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
                      ;; 'jiksnu.helpers.stream-helpers
