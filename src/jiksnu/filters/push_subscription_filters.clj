@@ -9,10 +9,6 @@
   [action request]
   (action request))
 
-(deffilter #'callback-publish :http
-  [action request]
-  (action request))
-
 (deffilter #'admin-index :http
   [action request]
   (action))

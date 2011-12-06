@@ -93,7 +93,7 @@
     [[:get    "/main/push/hub"]                           #'push/hub]
     [[:post   "/main/push/hub"]                           #'push/hub-publish]
     [[:get    "/main/push/callback"]                      #'push/callback]
-    [[:post   "/main/push/callback"]                      #'push/callback-publish]
+    [[:post   "/main/push/callback"]                      #'stream/callback-publish]
     [[:get    "/main/register"]                           #'user/register-page]
     [[:post   "/main/register"]                           #'user/register]
     [[:post   "/main/salmon/user/:id"]                    #'salmon/process]

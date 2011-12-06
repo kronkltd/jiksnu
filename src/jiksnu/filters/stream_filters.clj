@@ -46,3 +46,8 @@
   [action request]
   (-> request :to
       actions.user/fetch-by-jid action))
+
+(deffilter #'callback-publish :http
+  [action request]
+  (action request))
+
