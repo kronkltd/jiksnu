@@ -54,7 +54,7 @@
 (defn -process
   [this ^Packet packet session
    repo queue settings]
-  (if (not (.getPacketFrom packet))
+  (if (or true (not (.getPacketFrom packet)))
     (if-let [to (.getStanzaTo packet)]
       (if-let [bare-to (.getBareJID to)]
         (let [request (packet/make-request packet)]
