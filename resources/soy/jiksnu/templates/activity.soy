@@ -336,14 +336,17 @@
 
 /**
  * @param buttonable
+ * @param authenticated
  */
 {template .postActions}
   <ul class="{css buttons}">
-    <li>{call .likeButton data="all" /}</li>
-    {if $buttonable}
-      <li>{call .updateButton data="all" /}</li>
-      <li>{call .editButton data="all" /}</li>
-      <li>{call .deleteButton data="all" /}</li>
+    {if $authenticated }
+      <li>{call .likeButton data="all" /}</li>
+      {if $buttonable}
+        <li>{call .updateButton data="all" /}</li>
+        <li>{call .editButton data="all" /}</li>
+        <li>{call .deleteButton data="all" /}</li>
+      {/if}
     {/if}
   </ul>
 {/template}

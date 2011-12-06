@@ -1,7 +1,8 @@
 (ns jiksnu.model.like
   (:use (ciste [debug :only [spy]])
         jiksnu.model)
-  (:require (karras [entity :as entity]
+  (:require (jiksnu.model [user :as model.user])
+            (karras [entity :as entity]
                     [sugar :as sugar]))
   (:import jiksnu.model.Like))
 

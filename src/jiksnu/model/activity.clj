@@ -7,7 +7,8 @@
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
             (jiksnu.actions [like-actions :as actions.like])
-            (jiksnu.model [user :as model.user])
+            (jiksnu.model [like :as model.like]
+                          [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
   (:import com.ocpsoft.pretty.time.PrettyTime
@@ -108,7 +109,7 @@
      :long (str (:long activity))
      :likes (->> activity
                  actions.like/get-likes
-                 (map model.like/format-date))
+                 (map model.like/format-data))
      :authenticated (if-let [user (current-user)]
                       (model.user/format-data user))
      :tags (:tags activity)
