@@ -78,6 +78,15 @@
   
   )
 
+(defaction callback-publish
+  [params]
+  (let [document (abdera/parse-stream (:body params))
+        feed (.getRoot document)
+        entries (.getEntries feed)]
+    (doseq [entry entries]
+      (let [activity (actions.activity/entry->activity entry feed)]
+        (actions.activity/create activity)))))
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
                      ;; 'jiksnu.helpers.stream-helpers

@@ -21,15 +21,6 @@
           topic :hub.topic} :params} params]
     challenge))
 
-(defaction callback-publish
-  [params]
-  (let [document (abdera/parse-stream (:body params))
-        feed (.getRoot document)
-        entries (.getEntries feed)]
-    (doseq [entry entries]
-      (let [activity (actions.activity/entry->activity entry feed)]
-        (actions.activity/create activity)))))
-
 (defaction admin-index
   [options]
   (model.push/index))
