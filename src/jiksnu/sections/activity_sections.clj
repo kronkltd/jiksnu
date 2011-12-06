@@ -108,9 +108,9 @@
   (with-rdf-ns ""
     (let [uri (full-uri activity)]
       [
-       [uri [:rdf :type]      [:as :activity]]
+       [uri [:rdf :type]      [:sioc :Post]]
        [uri [:as  :verb]      (l "post")]
-       [uri [:as  :content]   (l (:content activity))]
+       [uri [:sioc  :content]   (l (:content activity))]
        [uri [:as  :author]    (rdf-resource
                                (let [user (get-author activity)]
                                  (or (:id user)

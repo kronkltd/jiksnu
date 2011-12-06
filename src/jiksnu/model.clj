@@ -61,6 +61,7 @@
 ;; TODO: Find a better ns for this
 (rdf/register-rdf-ns :dc ns/dc)
 (rdf/register-rdf-ns :foaf ns/foaf)
+(rdf/register-rdf-ns :sioc ns/sioc)
 
 (defn force-coll
   [x]

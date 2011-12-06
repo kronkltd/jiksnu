@@ -1,10 +1,9 @@
 (ns jiksnu.views.stream-views
-  (:use (ciste [config :only (config)]
+  (:use (ciste [config :only [config]]
                core
-               [debug :only (spy)]
+               [debug :only [spy]]
                sections
-               [views :only (apply-view
-                             defview)])
+               [views :only [apply-view defview]])
         ciste.sections.default
         (clj-stacktrace [repl :only [pst+]])
         jiksnu.actions.stream-actions)
@@ -72,12 +71,12 @@
   [request activities]
   (let [model (rdf/build-model)]
     (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
+    (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
     (rdf/with-model model
       (-> activities
           index-section
           ;; first
           rdf/make-triples
-          spy
           rdf/model-add-triples)
       {:body (with-out-str
                (rdf/model-to-format model :xml))
