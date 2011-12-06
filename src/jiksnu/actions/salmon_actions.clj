@@ -34,7 +34,10 @@
     (model.signature/verified?
      (.getBytes
       (spy (model.signature/get-base-string
-        data datatype encoding alg)))
+            data
+            (model.signature/encode (.getBytes datatype))
+            (model.signature/encode (.getBytes encoding))
+            (model.signature/encode (.getBytes alg)))))
      sig pub-key)))
 
 (defn decode-envelope
@@ -53,7 +56,6 @@
   "convert an input stream to an envelope"
   [input-stream]
   (let [doc (model/compile-xml input-stream)]
-    (spy (.toXML doc))
     (let [data-tag (first (model/query "//*[local-name()='data']" doc))]
       {:sig (.getValue (first (model/query "//*[local-name()='sig']" doc)))
        :datatype (.getAttributeValue data-tag "type")

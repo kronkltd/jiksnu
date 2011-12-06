@@ -129,7 +129,7 @@
             sig (sign data priv-key)]
         (verified? data sig pub-key))))
   (testing "when the signature is valid"
-    (future-fact "should return a valid result"
+    (fact "should return a valid result"
       (let [envelope (actions.salmon/stream->envelope (valid-envelope-stream))
             public-key (get-key-from-armored {:armored-n armored-n
                                               :armored-e armored-e})

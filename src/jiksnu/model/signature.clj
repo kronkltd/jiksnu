@@ -224,7 +224,7 @@
     (doto sig
       (.initVerify key)
       (.update data))
-    (.verify (spy sig) (spy signature))))
+    (.verify sig signature)))
 
 ;; (defn get-verified-data
 ;;   [envelope]
