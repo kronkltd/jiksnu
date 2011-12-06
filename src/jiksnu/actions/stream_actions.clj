@@ -9,7 +9,8 @@
         (jiksnu model)
         jiksnu.actions.stream-actions)
   (:require (hiccup [core :as h])
-            (jiksnu [session :as session])
+            (jiksnu [abdera :as abdera]
+                    [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
