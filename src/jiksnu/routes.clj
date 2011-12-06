@@ -221,7 +221,7 @@
       :node (escape-route namespace/inbox)}
      #'inbox/index]
 
-    [{:method :result
+    #_[{:method :result
       :pubsub false} #'domain/ping-response]]))
 
 (def http-predicates
