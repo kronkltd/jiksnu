@@ -41,6 +41,9 @@
               {$content ? $content : ''}
             </textarea>
           </li>
+          {call .pictureSection data="all" /}
+          {call .locationSection data="all" /}
+          {call .tagSection data="all" /}
           <li>
             <fieldset class="add-buttons">
               <legend>Add:</legend>
@@ -63,9 +66,6 @@
               </ul>
             </fieldset>
           </li>
-          {call .pictureSection data="all" /}
-          {call .locationSection data="all" /}
-          {call .tagSection data="all" /}
           <li class="privacy-line">
             <select name="privacy">
               <option value="public">Public</option>

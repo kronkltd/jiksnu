@@ -413,10 +413,10 @@ fieldset {
     display: none;
 }
 
-.location-line, .tag-line, .location-line,
-.pictures-line, .title-line {
-    display: none;
-}
+/* .location-line, .tag-line, .location-line, */
+/* .pictures-line, .title-line { */
+/*     display: none; */
+/* } */
 
 .vcard, .labels {
     float: left;
