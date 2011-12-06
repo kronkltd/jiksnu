@@ -13,7 +13,7 @@
                  [clj-time "0.3.1"]
                  [clj-webdriver "0.4.0"]
                  ;; [clojure-saxon "0.9.2"]
-                 [closure-templates-clj "0.1.1"]
+                 [closure-templates-clj "0.1.2-SNAPSHOT"]
                  [ciste "0.2.0-SNAPSHOT"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [compojure "0.6.5"]
