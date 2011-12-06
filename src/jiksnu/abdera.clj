@@ -183,7 +183,7 @@
 
 (defn parse-link
   [link]
-  (let [mime-type (str (.getMimeType link))
+  (let [mime-type (try (str (.getMimeType link)) (catch Exception ex))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
