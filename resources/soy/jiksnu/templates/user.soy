@@ -539,19 +539,22 @@
  */
 {template .userActions}
   {if $authenticated}
+    {$authenticated}
     {if $id == $authenticated.id}
       <p>This is you</p>
     {/if}
+    <ul class="user-actions">
+      <li>
+        {call .discoverButton data="all" /}
+      </li>
+      <li>
+        {call .updateButton data="all" /}
+      </li>
+      {if $id != $authenticated.id}
+        <li>
+          {call .subscribeSection data="all" /}
+        </li>
+      {/if}
+    </ul>
   {/if}
-  <ul class="user-actions">
-    <li>
-      {call .discoverButton data="all" /}
-    </li>
-    <li>
-      {call .updateButton data="all" /}
-    </li>
-    <li>
-      {call .subscribeSection data="all" /}
-    </li>
-  </ul>
 {/template}

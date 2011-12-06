@@ -223,5 +223,3 @@
   (if (= (:title activity) "")
     (dissoc activity :title)
     activity))
-
-
