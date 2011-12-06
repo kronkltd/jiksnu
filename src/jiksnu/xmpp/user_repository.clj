@@ -31,12 +31,13 @@
 (defn -addDataList
   "addDataList method adds mode entries to existing data list associated with
    given key in repository under given node path."
-  [this ^BareJID user ^String subnodes list]
+  [this ^BareJID user ^String subnodes list foo]
   ;; TODO: implement
   (log/info "add data list")
-  ;; (spy user)
-  ;; (spy subnodes)
-  ;; (spy list)
+  (spy user)
+  (spy subnodes)
+  (spy list)
+  (spy foo)
   )
 
 (defn -addUser
