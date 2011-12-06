@@ -69,9 +69,9 @@
           object-element (.addExtension entry ns/as "object" "activity")]
       #_(.setObjectType object-element ns/status)
       (if-let [object-updated (:updated object)]
-        (.setUpdated object-element object-updated))
+        (.addSimpleExtension object-element ns/atom "updated" "" (str object-updated)))
       (if-let [object-published (:published object)]
-        (.setPublished object-element object-published))
+        (.addSimpleExtension object-element ns/atom "published" "" (str object-published)))
       #_(if-let [object-id (:id object)]
         (.setId object-element object-id))
       #_(.setContentAsHtml object-element (:content activity)))
