@@ -1,19 +1,15 @@
 (ns jiksnu.actions.push-subscription-actions
-  (:use (ciste [config :only [definitializer]]
+  (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]])
         (jiksnu model session)
         (karras [entity :only [make]]))
   (:require (aleph [http :as http])
             (clojure [string :as string])
-            (jiksnu [abdera :as abdera])
-            (jiksnu.actions [activity-actions :as actions.activity])
-            (jiksnu.helpers [activity-helpers :as helpers.activity]
-                            [user-helpers :as helpers.user])
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [push-subscription :as model.push])
             (lamina [core :as l]))
-  (:import jiksnu.model.Activity
-           org.apache.abdera2.model.Entry))
+  (:import org.apache.abdera2.model.Entry))
 
 (defaction callback
   [params]
@@ -42,7 +38,7 @@
       (let [subscribe-link
             (make-subscribe-uri
              hub-url
-             {:hub.callback "http://beta.jiksnu.com/main/push/callback"
+             {:hub.callback (str "http://" (config :domain) "/main/push/callback")
               :hub.mode "subscribe"
               :hub.topic topic
               :hub.verify "async"})]
