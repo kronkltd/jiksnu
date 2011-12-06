@@ -307,16 +307,16 @@ article footer {
     display: inline-block;
 }
 
-.delete-button {
-    background: url(/public/silk/delete.png) no-repeat center top;
-    width: 16px;
-    height: 16px;
-    text-indent: -1000em;
-    border: 0;
-    padding: 0;
-    /* position: absolute; */
-    overflow: hidden;
-}
+/* .delete-button { */
+/*     background: url(/public/silk/delete.png) no-repeat center top; */
+/*     width: 16px; */
+/*     height: 16px; */
+/*     text-indent: -1000em; */
+/*     border: 0; */
+/*     padding: 0; */
+/*     /\* position: absolute; *\/ */
+/*     overflow: hidden; */
+/* } */
 
 .like-button {
     background: url(/public/open_star.png) no-repeat center top;

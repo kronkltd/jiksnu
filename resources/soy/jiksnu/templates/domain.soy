@@ -67,6 +67,9 @@
 {template .indexLine}
   <tr>
     <td>
+      <img src="http://{$id}/favicon.ico" />
+    </td>
+    <td>
       <a href="/main/domains/{$id}">{$id}</a>
     </td>
     <td>{$xmpp}</td>
@@ -80,7 +83,7 @@
         <input type="submit" value="Discover" />
       </form>
     </td>
-    <td>{call .editButton data="all" /}</td>
+    /* <td>{call .editButton data="all" /}</td> */
     <td>{call .deleteButton data="all" /}</td>
   </tr>
 {/template}
@@ -101,13 +104,14 @@
     <p>index domains</p>
     <table class="domains">
       <tr>
+        <th></th>
         <th>Name</th>
         <th>XMPP?</th>
         <th>Discovered</th>
         <th>Host-Meta</th>
-        <th>Link Count</th>
+        <th># Links</th>
         <th>Discover</th>
-        <th>Edit</th>
+        /* <th>Edit</th> */
         <th>Delete</th>
       </tr>
       {foreach $domain in $domains}
