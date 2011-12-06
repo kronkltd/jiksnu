@@ -72,6 +72,8 @@
   (let [model (rdf/build-model)]
     (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
     (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
+    (.setNsPrefix (rdf/to-java model) "foaf" namespace/foaf)
+    
     (rdf/with-model model
       (-> activities
           index-section
@@ -192,16 +194,22 @@
 (defview #'user-timeline :rdf
   [request [user activities]]
   {:body
-   (try (let [rdf-model (rdf/defmodel (rdf/model-add-triples (spy (show-section (spy user)))))]
-          (with-out-str (rdf/model-to-format rdf-model :xml)))
-        (catch Exception ex
+   (try
+     (let [model (rdf/build-model)
+           triples (show-section (spy user))]
+       (doto (rdf/to-java model)
+         (.setNsPrefix "activity" namespace/as)
+         (.setNsPrefix "sioc" namespace/sioc)
+         (.setNsPrefix "cert" namespace/cert)
+         (.setNsPrefix "foaf" namespace/foaf))
+       (rdf/with-model model
+         (rdf/model-add-triples (spy triples))
+         (with-out-str (rdf/model-to-format (spy model) :xml))))
+     (catch Exception ex
           (clojure.stacktrace/print-stack-trace ex)
           (pst+ ex)
-          (throw ex)
-          )
-        )
-   :template :false}
-  )
+          (throw ex)))
+   :template :false})
 
 (defview #'callback-publish :html
   [request params]

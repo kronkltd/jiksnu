@@ -9,11 +9,12 @@
   (:require (clj-tigase [element :as element])
             (hiccup [form-helpers :as f])
             (jiksnu [abdera :as abdera]
-                    [namespace :as namespace])
+                    [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
+                          [signature :as model.signature]
                           [subscription :as model.subscription]
                           [user :as model.user])
             (jiksnu.templates [user :as templates.user])
@@ -42,30 +43,30 @@
   [user]
   (let [author-uri (model.user/get-uri user)]
     (doto (.newAuthor abdera/*abdera-factory*)
-      (.addSimpleExtension namespace/as "object-type" "activity" namespace/person)
-      (.addSimpleExtension namespace/atom "id" "" author-uri)
+      (.addSimpleExtension ns/as "object-type" "activity" ns/person)
+      (.addSimpleExtension ns/atom "id" "" author-uri)
       (.setName (or (:name user)
                     (:display-name user)
                     (str (:first-name user) " " (:last-name user))))
-      (.addSimpleExtension namespace/atom "email" ""
+      (.addSimpleExtension ns/atom "email" ""
                            (or (:email user) (model.user/get-uri user)))
       (.addExtension (doto (.newLink abdera/*abdera-factory*)
                        (.setHref (:avatar-url user))
                        (.setRel "avatar")
                        (.setMimeType "image/jpeg")))
-      (.addSimpleExtension namespace/atom "uri" "" author-uri)
-      (.addSimpleExtension namespace/poco "preferredUsername" "poco" (:username user))
-      (.addSimpleExtension namespace/poco "displayName" "poco" (title user))
+      (.addSimpleExtension ns/atom "uri" "" author-uri)
+      (.addSimpleExtension ns/poco "preferredUsername" "poco" (:username user))
+      (.addSimpleExtension ns/poco "displayName" "poco" (title user))
       (.addExtension (doto (.newLink abdera/*abdera-factory*)
                        (.setHref (full-uri user))
                        (.setRel "alternate")
                        (.setMimeType "text/html")))
-      (-> (.addExtension namespace/status "profile_info" "statusnet")
+      (-> (.addExtension ns/status "profile_info" "statusnet")
           (.setAttributeValue "local_id" (str (:_id user))))
-      (-> (.addExtension namespace/poco "urls" "poco")
-          (doto (.addSimpleExtension namespace/poco "type" "poco" "homepage")
-            (.addSimpleExtension namespace/poco "value" "poco" (full-uri user))
-            (.addSimpleExtension namespace/poco "primary" "poco" "true"))))))
+      (-> (.addExtension ns/poco "urls" "poco")
+          (doto (.addSimpleExtension ns/poco "type" "poco" "homepage")
+            (.addSimpleExtension ns/poco "value" "poco" (full-uri user))
+            (.addSimpleExtension ns/poco "primary" "poco" "true"))))))
 
 
 (defsection show-section [User :atom]
@@ -87,32 +88,56 @@
   (let [{:keys [url display-name avatar-url first-name last-name username name email]} user]
     (rdf/with-rdf-ns ""
       [
+       ;; About the document
        [(str (full-uri (spy user)) ".rdf")
           [rdf/rdf:type                    foaf:PersonalProfileDocument
-           [foaf :maker]               (full-uri user)
-           foaf:primaryTopic           (rdf/rdf-resource
-                                        (model.user/get-uri user))]]
+           [foaf :maker]               (rdf/rdf-resource (str (full-uri user) "#me"))
+           foaf:primaryTopic           (rdf/rdf-resource (str (full-uri user) "#me"))]]
        
-       [(rdf/rdf-resource (model.user/get-uri user))
+
+       ;; About the User
+       [(rdf/rdf-resource (str (full-uri user) "#me"))
         (concat [rdf/rdf:type                    [foaf :Person]
-                 foaf:weblog                 (rdf/rdf-resource (full-uri user))
-                 foaf:account                (rdf/rdf-resource
-                                              (str (full-uri user) "#acct"))]
-                (when username [foaf:nick (rdf/l username)])
-                (when name [foaf:name (rdf/l name)])
-                (when url [foaf:homepage (rdf/rdf-resource url)])
-                (when avatar-url [foaf:img avatar-url])
-                (when email [foaf:mbox (rdf/rdf-resource (str "mailto:" email))])
-                (when display-name [[foaf :name] (rdf/l display-name)])
-                (when first-name [foaf:givenName (rdf/l first-name)])
-                (when last-name [foaf:familyName (rdf/l last-name)]))]
-       [(rdf/rdf-resource (str (full-uri user) "#acct"))
-          [rdf/rdf:type                    foaf:OnlineAccount
+                 foaf:weblog                     (rdf/rdf-resource (full-uri user))
+                 [ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))
+                 
+
+                 ]
+                (let [mkp (model.signature/get-key-for-user user)]
+                  [(rdf/rdf-resource (str ns/cert "key"))
+                   [
+                    rdf/rdf:type        [foaf :Person]
+                    #_(rdf/l (str ns/cert "RSAPublicKey"))
+                    ;; (rdf/rdf-resource (str ns/cert "modulus")) (rdf/l (or (:armored-n (spy mkp)) " "))
+                    ;; (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
+                    ]
+                   
+                   ]
+                   )
+                (when username     [foaf:nick       (rdf/l username)])
+                (when name         [foaf:name       (rdf/l name)])
+                (when url          [foaf:homepage   (rdf/rdf-resource url)])
+                (when avatar-url   [foaf:img        avatar-url])
+                (when email        [foaf:mbox       (rdf/rdf-resource (str "mailto:" email))])
+                (when display-name [[foaf :name]    (rdf/l display-name)])
+                (when first-name   [foaf:givenName  (rdf/l first-name)])
+                (when last-name    [foaf:familyName (rdf/l last-name)])
+                
+                )
+
+        ]
+
+       ;; About the User's Account
+       [(rdf/rdf-resource (model.user/get-uri user))
+          [rdf/rdf:type                [ns/sioc "UserAccount"]
            foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
            foaf:accountName            (rdf/l (:username user))
            [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
-           [namespace/sioc "account_of"]         (rdf/rdf-resource
-                                                  (model.user/get-uri user))]]])))
+           [ns/sioc "account_of"]         (rdf/rdf-resource
+                                                  (model.user/get-uri user))]]
+
+
+       ])))
 
 (defsection show-section [User :json]
   [user & options]
@@ -137,7 +162,7 @@
   [^User user & options]
   (let [{:keys [name avatar-url]} user]
     (element/make-element
-     "vcard" {"xmlns" namespace/vcard}
+     "vcard" {"xmlns" ns/vcard}
      (if name
        ["fn" {}
         ["text" {} name]])

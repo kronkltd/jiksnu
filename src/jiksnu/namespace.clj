@@ -5,6 +5,7 @@
 (def as            "http://activitystrea.ms/spec/1.0/")
 (def atom          "http://www.w3.org/2005/Atom")
 (def cal           "urn:ietf:params:xml:ns:xcal")
+(def cert          "http://www.w3.org/ns/auth/cert#")
 (def dc            "http://purl.org/dc/elements/1.1/")
 (def dcterms       "http://purl.org/dc/terms/")
 (def event         "http://jabber.org/protocol/pubsub#event")

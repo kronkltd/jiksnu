@@ -62,6 +62,7 @@
 (rdf/register-rdf-ns :dc ns/dc)
 (rdf/register-rdf-ns :foaf ns/foaf)
 (rdf/register-rdf-ns :sioc ns/sioc)
+(rdf/register-rdf-ns :cert ns/cert)
 
 (defn force-coll
   [x]
