@@ -8,11 +8,15 @@
 
 (deftemplate show
   [activity]
-  (model.activity/format-data activity))
+  (let [data (model.activity/format-data activity)]
+    (if-let [current (current-user)]
+      (assoc data :authenticated (model.user/format-data current))
+      data)))
 
 (deftemplate index-block
   [activities]
-  {:activities (map model.activity/format-data activities)})
+  {:activities (map model.activity/format-data activities)
+   :authenticated (-?> (current-user) model.user/format-data )})
 
 (deftemplate user-timeline
   [user activities]
