@@ -1,5 +1,5 @@
 (ns jiksnu.templates.layout
-  (:use (ciste [config :only [*environment*]]
+  (:use (ciste [config :only [config *environment*]]
                [debug :only [spy]])
         (closure.templates [core :only [deftemplate]])
         (jiksnu [session :only [current-user]]))
@@ -14,6 +14,7 @@
   (merge
    {:body (hiccup/html (:body response))
     :flash (:flash response)
+    :config {:site {:name (config :site :name)}}
     :formats (:formats response)
     :development (= @*environment* :development)}
    (if-let [user (current-user)]

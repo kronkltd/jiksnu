@@ -8,6 +8,7 @@
  * @param? links
  * @param? flash
  * @param? title
+ * @param config
  */
 {template .layout}
   <html xmlns:sioc="http://rdfs.org/sioc/ns#"
@@ -21,7 +22,7 @@
                 dcterms: http://purl.org/dc/terms/"
 >
     <head>
-      <title>{if $title}{$title} - {/if}Jiksnu</title>
+      <title>{if $title}{$title} - {/if}{$config.site.name}</title>
       {if $formats}
         {foreach $format in $formats}
           <link type="{$format.type}"
