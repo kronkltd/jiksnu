@@ -12,8 +12,14 @@
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [user :as model.user]
                           [signature :as model.signature]))
-  (:import jiksnu.model.User
+  (:import java.security.PublicKey
+           jiksnu.model.User
            org.apache.commons.codec.binary.Base64))
+
+(defn normalize-user-id
+  [s]
+  s
+  )
 
 (defn get-key
   [^User author]
@@ -22,15 +28,19 @@
        model.signature/get-key-from-armored))
 
 (defn signature-valid?
-  [envelope pub-key]
-  (let [data (-> envelope :data model.signature/decode)
+  [envelope ^PublicKey pub-key]
+  (let [{:keys [data datatype encoding alg]} envelope
         sig (-> envelope :sig model.signature/decode)]
-    (model.signature/verified? data sig pub-key)))
+    (model.signature/verified?
+     (.getBytes
+      (spy (model.signature/get-base-string
+        data datatype encoding alg)))
+     sig pub-key)))
 
 (defn decode-envelope
   [envelope]
   (let [data (:data envelope)]
-    (String. (Base64/decodeBase64 data))))
+    (String. (Base64/decodeBase64 data) "UTF-8")))
 
 (defn extract-activity
   [envelope]
@@ -43,14 +53,17 @@
   "convert an input stream to an envelope"
   [input-stream]
   (let [doc (model/compile-xml input-stream)]
-    {:sig (.getValue (first (model/query "//*[local-name()='sig']/text()" doc)))
-     :data (.getValue (first (model/query "//*[local-name()='data']/text()" doc)))
-     :alg (.getValue (first (model/query "//*[local-name()='alg']/text()" doc)))
-     :encoding (.getValue (first (model/query "//*[local-name()='encoding']/text()" doc)))}))
+    (spy (.toXML doc))
+    (let [data-tag (first (model/query "//*[local-name()='data']" doc))]
+      {:sig (.getValue (first (model/query "//*[local-name()='sig']" doc)))
+       :datatype (.getAttributeValue data-tag "type")
+       :data (.getValue data-tag)
+       :alg (.getValue (first (model/query "//*[local-name()='alg']" doc)))
+       :encoding (.getValue (first (model/query "//*[local-name()='encoding']" doc)))})))
 
 (defaction process
   [user envelope]
-  (if-let [activity (extract-activity envelope)]
+  (if-let [activity (extract-activity (spy envelope))]
     (if-let [actor (helpers.activity/get-author activity)]
       (if-let [pub-key (get-key actor)]
         (if (or (signature-valid? envelope pub-key)

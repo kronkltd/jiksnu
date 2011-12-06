@@ -47,6 +47,14 @@
   [^KeyPair keypair]
   (.getKeySpec key-factory (private-key keypair) RSAPrivateKeySpec))
 
+(defn get-base-string
+  [^String armored-data
+   ^String datatype
+   ^String encoding
+   ^String alg
+   ]
+  (str armored-data "." datatype "." encoding "." alg))
+
 (defn get-bytes
   [^BigInteger bigint]
   (let [bitlen (.bitLength bigint)
@@ -216,7 +224,7 @@
     (doto sig
       (.initVerify key)
       (.update data))
-    (.verify sig signature)))
+    (.verify (spy sig) (spy signature))))
 
 ;; (defn get-verified-data
 ;;   [envelope]
