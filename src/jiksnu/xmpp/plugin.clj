@@ -54,12 +54,13 @@
 (defn -process
   [this ^Packet packet session
    repo queue settings]
-  (if-let [to (.getStanzaTo packet)]
-    (if-let [bare-to (.getBareJID to)]
-      (let [request (packet/make-request packet)]
-        (if (config :print :request)
-          request)
-        (if-let [response (main-handler queue (spy request))]
-          (do
-            (.setPacketTo response (.getPacketFrom packet))
-            (offer-packet queue response)))))))
+  (if (not (.getPacketFrom packet))
+    (if-let [to (.getStanzaTo packet)]
+      (if-let [bare-to (.getBareJID to)]
+        (let [request (packet/make-request packet)]
+          (if (config :print :request)
+            request)
+          (if-let [response (main-handler queue request)]
+            (do
+              (.setPacketTo response (.getPacketFrom packet))
+              (offer-packet queue response))))))))
