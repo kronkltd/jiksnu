@@ -3,7 +3,7 @@
                [core :only [defaction]]
                [debug :only [spy]])
         (clj-stacktrace [repl :only [pst+]])
-        (clojure.core [incubator :only [-?>]])
+        (clojure.core [incubator :only [-?> -?>>]])
         (jiksnu model
                 [session :only [current-user]]))
   (:require (aleph [http :as http])
@@ -175,24 +175,18 @@
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
-  (let [xrd (helpers.user/fetch-user-meta user)
-        links (model.webfinger/get-links xrd)
-        new-user (assoc user :links links)
-        feed (helpers.user/fetch-user-feed new-user)
-        author (when feed (.getAuthor feed))
-        user (merge user (person->user author))
-        avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
-        uri (:uri user)]
-    (update-hub* user feed)
-    (doseq [link links]
-      (add-link user link))
-    (-> (merge
-         user
-         (when avatar-url {:avatar-url avatar-url})
-         {:id (str uri)
-          :discovered true})
-        update)))
-
+  (if-let [xrd (helpers.user/fetch-user-meta user)]
+    (let [links (model.webfinger/get-links xrd)
+          new-user (assoc user :links links)
+          feed (helpers.user/fetch-user-feed new-user)
+          user (-?>> feed .getAuthor person->user (merge user))
+          avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)]
+      (update-hub* user feed)
+      (doseq [link links]
+        (add-link user link))
+      (-> user
+          (merge (when avatar-url {:avatar-url avatar-url}))
+          update))))
 
 
 (defaction discover-user-xmpp
