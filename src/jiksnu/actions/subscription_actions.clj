@@ -5,6 +5,7 @@
         (jiksnu model))
   (:require (clojure.tools [logging :as log])
             (jiksnu [session :as session])
+            (jiksnu.actions [push-subscription-actions :as actions.push])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
   (:import javax.security.sasl.AuthenticationException
@@ -44,6 +45,7 @@
 
 (defaction subscribe
   [actor user]
+  (actions.push/subscribe user)
   (model.subscription/create
    {:from (:_id actor)
     :to (:_id user)
