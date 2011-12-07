@@ -6,6 +6,7 @@
   (:require (clojure [string :as string])
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
+            (jiksnu.actions [like-actions :as actions.like])
             (jiksnu.model [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
@@ -102,11 +103,12 @@
                   (-> activity :content))
      :title (or (-> activity :object :content)
                 (:title activity)
-                (:content activity)
-                
-                )
+                (:content activity))
      :lat (str (:lat activity))
      :long (str (:long activity))
+     :likes (->> activity
+                 actions.like/get-likes
+                 (map model.like/format-date))
      :authenticated (if-let [user (current-user)]
                       (model.user/format-data user))
      :tags (:tags activity)

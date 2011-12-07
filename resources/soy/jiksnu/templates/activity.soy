@@ -334,14 +334,13 @@
   {/if}
 {/template}
 
-
 /**
  * @param buttonable
  */
 {template .postActions}
   <ul class="{css buttons}">
+    <li>{call .likeButton data="all" /}</li>
     {if $buttonable}
-      <li>{call .likeButton data="all" /}</li>
       <li>{call .updateButton data="all" /}</li>
       <li>{call .editButton data="all" /}</li>
       <li>{call .deleteButton data="all" /}</li>
@@ -434,6 +433,7 @@
       <footer>
         {call .recipientsSection data="all" /}
         {call .linkSection data="all" /}
+        {call .likesSection data="all" /}
         {call .mapsSection data="all" /}
         {call .tagsSection data="all" /}
         {call .postedLink data="all" /}
@@ -445,6 +445,21 @@
   </article>
 {/template}
 
+
+/**
+ * @param likes
+ */
+{template .likesSection}
+  <section>
+    <ul>
+      {foreach $like in $likes}
+        <li>
+          {$like}
+        </li>
+      {/foreach}
+    </ul>
+  </section>
+{/template}
 
 /**
  * @param author

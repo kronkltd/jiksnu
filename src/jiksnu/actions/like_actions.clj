@@ -2,7 +2,9 @@
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]])
         (jiksnu model session))
-  (:require (jiksnu.model [like :as model.like]))
+  (:require (jiksnu.model [like :as model.like])
+            (karras [entity :as entity]
+                    [sugar :as sugar]))
   (:import jiksnu.model.Like))
 
 (defn admin-index
@@ -14,7 +16,15 @@
 
 
 (defaction like-activity
-  [& _])
+  [activity-id user-id]
+  (model.like/create
+   {:user user-id
+    :activity activity-id
+    :created (sugar/date)}))
+
+(defn get-likes
+  [activity]
+  (entity/fetch Like {:activity (:_id activity)}))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.like-filters
