@@ -106,6 +106,9 @@
   [:crt-coefficient :prime-exponent-p :prime-exponent-q
    :prime-p :prime-q :public-exponent :private-exponent :userid])
 
+(defentity Group
+  [:name])
+
 (defn activity?
   [activity]
   (instance? Activity activity))

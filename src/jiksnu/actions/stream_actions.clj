@@ -58,6 +58,11 @@
   (if user
     [user (model.activity/find-by-user user)]))
 
+(defaction group-timeline
+  [group]
+  ;; TODO: implement
+  [group []])
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
                      ;; 'jiksnu.helpers.stream-helpers
