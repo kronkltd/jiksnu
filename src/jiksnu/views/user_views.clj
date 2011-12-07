@@ -58,6 +58,10 @@
   [request users]
   {:body (templates.user/index-section users)})
 
+(defview #'admin-index :html
+  [request users]
+  {:body (templates.user/index-section users)})
+
 (defview #'profile :html
   [request user]
   {:body (templates.user/edit-form user)})

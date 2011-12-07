@@ -3,7 +3,7 @@
                [core :only [defaction]]))
   (:require (jiksnu [session :as session])))
 
-(defaction edit-page
+(defaction admin-edit-page
   []
   (session/is-admin?))
 

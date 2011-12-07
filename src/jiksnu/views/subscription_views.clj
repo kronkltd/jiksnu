@@ -16,7 +16,7 @@
    :template false
    :headers {"Location" "/admin/subscriptions"}})
 
-(defview #'index :html
+(defview #'admin-index :html
   [request subscriptions]
   {:body (templates.subscription/index-section subscriptions)})
 

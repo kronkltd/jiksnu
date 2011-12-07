@@ -14,7 +14,7 @@
   (let [{{id :id} :params} request]
     (action id)))
 
-(deffilter #'index :http
+(deffilter #'admin-index :http
   [action request]
   (action))
 

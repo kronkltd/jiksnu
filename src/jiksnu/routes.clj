@@ -47,11 +47,11 @@
 (def admin-routes
   (make-matchers
    [
-    [[:get  "/admin/subscriptions"]                     #'sub/index]
-    [[:get  "/admin/push/subscriptions"]                #'push/index]
-    [[:post "/admin/users"]                             #'user/create]
-    [[:get  "/admin/users"]                             #'user/index]
-    [[:get  "/admin/settings"]                          #'setting/edit-page]]))
+    [[:get  "/admin/subscriptions"]                     #'sub/admin-index]
+    [[:get  "/admin/push/subscriptions"]                #'push/admin-index]
+    [[:post "/admin/users"]                             #'user/admin-create]
+    [[:get  "/admin/users"]                             #'user/admin-index]
+    [[:get  "/admin/settings"]                          #'setting/admin-edit-page]]))
 
 (def authenticated-routes
   (make-matchers

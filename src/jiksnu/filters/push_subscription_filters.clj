@@ -13,7 +13,7 @@
   [action request]
   (action request))
 
-(deffilter #'index :http
+(deffilter #'admin-index :http
   [action request]
   (action))
 

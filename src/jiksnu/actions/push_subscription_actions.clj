@@ -30,7 +30,7 @@
       (let [activity (actions.activity/entry->activity entry feed)]
         (actions.activity/create activity)))))
 
-(defaction index
+(defaction admin-index
   [options]
   (model.push/index))
 

@@ -19,7 +19,7 @@
   [id]
   (model.subscription/delete id))
 
-(defaction index
+(defaction admin-index
   [& _]
   (if (session/is-admin?)
     (model.subscription/index)

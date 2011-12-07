@@ -23,7 +23,7 @@
   {:body params
    :template false})
 
-(defview #'index :html
+(defview #'admin-index :html
   [request subscriptions]
   {:body (index-section subscriptions)})
 

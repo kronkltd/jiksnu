@@ -4,6 +4,6 @@
   (:require [hiccup.form-helpers :as f]
             (jiksnu.templates [setting :as templates.setting])))
 
-(defview #'edit-page :html
+(defview #'admin-edit-page :html
   [request _]
   {:body (templates.setting/edit-page)})

@@ -73,6 +73,11 @@
     (-> user :domain actions.domain/find-or-create)
     (model.user/create user)))
 
+(defaction admin-create
+  [options]
+  (create options)
+  )
+
 (defaction delete
   [id]
   (model.user/delete id))
@@ -84,6 +89,10 @@
 (defn fetch-by-uri
   [uri]
   (model.user/fetch-by-uri uri))
+
+(defaction admin-index
+  [options]
+  (model.user/index))
 
 (defaction index
   [options]
