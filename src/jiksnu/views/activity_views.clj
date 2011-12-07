@@ -1,9 +1,9 @@
 (ns jiksnu.views.activity-views
-  (:use (ciste [config :only (config)]
+  (:use (ciste [config :only [config]]
                core
-               [debug :only (spy)]
+               [debug :only [spy]]
                sections
-               [views :only (defview)])
+               [views :only [defview]])
         ciste.sections.default
         jiksnu.actions.activity-actions)
   (:require (clj-tigase [core :as tigase]

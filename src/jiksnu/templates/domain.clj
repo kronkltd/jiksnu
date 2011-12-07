@@ -1,5 +1,5 @@
 (ns jiksnu.templates.domain
-  (:use (ciste [debug :only (spy)])
+  (:use (ciste [debug :only [spy]])
         closure.templates.core))
 
 (defn format-data

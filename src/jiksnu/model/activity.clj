@@ -1,8 +1,8 @@
 (ns jiksnu.model.activity
-  (:use (ciste [debug :only (spy)])
-        (clojure.contrib [core :only (-?> -?>>)])
+  (:use (ciste [debug :only [spy]])
+        (clojure.contrib [core :only [-?> -?>>]])
         jiksnu.model
-        [jiksnu.session :only (current-user current-user-id is-admin?)])
+        [jiksnu.session :only [current-user current-user-id is-admin?]])
   (:require (clojure [string :as string])
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
