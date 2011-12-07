@@ -49,7 +49,11 @@
 (defview #'get-subscriptions :html
   [request [user subscriptions]]
   {:title "Subscriptions"
-   :formats [{:href (str (uri user) "/subscriptions.json")
+   :formats [{:href (str (uri user) "/subscriptions.atom")
+              :label "Atom"
+              :type "application/atom+xml"
+              }
+             {:href (str (uri user) "/subscriptions.json")
               :label "JSON"
               :type "application/json"}]
    :body

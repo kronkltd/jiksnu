@@ -69,13 +69,14 @@
  * @param id
  * @param name
  * @param imgsrc
+ * @param size
  */
 {template .displayAvatar}
   <a href="/users/{$id}"
      title="{$name}">
     <img class="avatar photo"
-         width="48"
-         height="48"
+         width="{$size ? $size : '48'}"
+         height="{$size ? $size : '48'}"
          alt=""
          src="{$imgsrc}" />
   </a>

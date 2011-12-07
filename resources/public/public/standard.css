@@ -413,10 +413,10 @@ fieldset {
     display: none;
 }
 
-/* .location-line, .tag-line, .location-line, */
-/* .pictures-line, .title-line { */
-/*     display: none; */
-/* } */
+.location-line, .tag-line, .location-line,
+.pictures-line, .title-line {
+    display: none;
+}
 
 .vcard, .labels {
     float: left;
@@ -434,6 +434,14 @@ fieldset {
     display: inline;
 }
 
+.subscriptions ul {
+    padding: 0;
+}
+
+.subscriptions li {
+    display: inline;
+    margin-right: 5px;
+}
 
 .subscriptions p {
     display: block;

@@ -20,14 +20,14 @@
         {foreach $subscription in $subscriptions}
           <tr>
             <td>
-/* {call .linkTo data="all" /} */
-</td>
+              /* {call .linkTo data="all" /} */
+            </td>
             <td>{call jiksnu.templates.user.linkTo data="$subscription.from" /}</td>
             <td>{call jiksnu.templates.user.linkTo data="$subscription.to" /}</td>
             <td>{$subscription.pending}</td>
             <td>{$subscription.created}
-/* {call .deleteButton data="all" /} */
-</td>
+                /* {call .deleteButton data="all" /} */
+            </td>
           </tr>
         {/foreach}
       </tbody>
@@ -92,7 +92,7 @@
   {if $user}
     <div class="subscribers">
       <h3>
-        <a href="/users/{$user.id}/subscribers">Subscribers</a>
+        <a href="/{$user.username}/subscribers">Subscribers</a>
       </h3>
       <ul>
         {foreach $subscriber in $subscribers}
@@ -137,27 +137,23 @@
 
 /**
  * @param from
- * @param pending
  */
 {template .subscriberLine}
   <li>
-    {call jiksnu.templates.user.showMinimal data="$from" /}
-    {if $pending }
-      {sp}(pending)
-    {/if}
+    {call jiksnu.templates.user.displayAvatar data="$from"}
+      {param size: '24' /}
+    {/call}
   </li>
 {/template}
 
 /**
  * @param to
- * @param pending
  */
 {template .subscriptionsLine}
   <li>
-    {call jiksnu.templates.user.showMinimal data="$to" /}
-    {if $pending }
-      {sp}(pending)
-    {/if}
+    {call jiksnu.templates.user.displayAvatar data="$to"}
+      {param size: '24'/}
+    {/call}
   </li>
 {/template}
 
@@ -170,7 +166,7 @@
   {if $user}
     <div class="subscriptions">
       <h3>
-        <a href="/users/{$user.id}/subscriptions">Subscriptions</a>
+        <a href="/{$user.username}/subscriptions">Subscriptions</a>
       </h3>
       <ul>
         {foreach $subscription in $subscriptions}
