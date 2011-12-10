@@ -31,8 +31,6 @@
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.apache.ant/ant "1.8.2"]
                  [org.clojure/clojure "1.3.0"]
-                 [org.clojure/core.match "0.2.0-alpha5"]
-                 [org.clojure/data.zip "0.1.1-SNAPSHOT"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.slf4j/slf4j-api "1.6.1"]
                  [org.slf4j/slf4j-simple "1.6.1"]

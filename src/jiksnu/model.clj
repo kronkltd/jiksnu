@@ -14,7 +14,6 @@
             (clojure [xml :as xml]
                      [zip :as zip])
             (clojure.data [json :as json])
-            (clojure.data.zip [xml :as xf])
             (jiksnu [namespace :as ns])
             (karras [core :as karras]
                     [sugar :as sugar])
