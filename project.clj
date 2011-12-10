@@ -8,7 +8,7 @@
                  "any23-repository" "http://any23.googlecode.com/svn/repo"
                  "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
-                 [clj-factory "0.1.0"]
+                 [clj-factory "0.2.0-SNAPSHOT"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [clj-time "0.3.1"]
                  [clj-webdriver "0.4.0"]
