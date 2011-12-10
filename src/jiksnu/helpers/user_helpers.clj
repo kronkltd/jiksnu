@@ -3,7 +3,7 @@
                [debug :only [spy]]
                sections)
         ciste.sections.default
-        (clojure.contrib [core :only [-?>]])
+        (clojure.core [incubator :only [-?>]])
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
