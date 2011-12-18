@@ -11,19 +11,20 @@
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [user :as model.user])
-            [saxon :as s])
+            ;; [saxon :as s]
+            )
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
            jiksnu.model.User))
 
-(defn fetch-host-meta
-  [url]
-  (let [hm (-> url fetch-resource s/compile-xml)
-        host (s/query "//hm:Host/text()" bound-ns hm)]
-    (if (= (.getHost (URI. url)) (str host))
-      hm
-      (throw (RuntimeException. "Hostname does not match")))))
+;; (defn fetch-host-meta
+;;   [url]
+;;   (let [hm (-> url fetch-resource s/compile-xml)
+;;         host (s/query "//hm:Host/text()" bound-ns hm)]
+;;     (if (= (.getHost (URI. url)) (str host))
+;;       hm
+;;       (throw (RuntimeException. "Hostname does not match")))))
 
 (defaction host-meta
   []
@@ -55,7 +56,7 @@
 
 (defn get-links
   [xrd]
-  (let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
+  #_(let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
     (map
      (fn [link]
        {:rel (s/query "string(@rel)" bound-ns link)
@@ -108,4 +109,3 @@
                      'jiksnu.views.webfinger-views
                      ]]
     (require namespace)))
-

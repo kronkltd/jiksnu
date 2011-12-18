@@ -33,17 +33,11 @@
            nu.xom.Node
            org.bson.types.ObjectId
            org.joda.time.DateTime
-           org.dom4j.DocumentFactory
-           org.dom4j.xpath.DefaultXPath
-           org.dom4j.io.SAXReader
            org.xml.sax.InputSource))
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 
 (def ^:dynamic *mongo-database* (ref nil))
-(defonce xml-reader (SAXReader.))
-(defonce ^:dynamic *formatter*
-  (SimpleDateFormat. *date-format*))
 
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
                    :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
