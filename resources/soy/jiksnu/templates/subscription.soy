@@ -20,6 +20,7 @@
         {foreach $subscription in $subscriptions}
           <tr>
             <td>
+              {$subscription.id}
               /* {call .linkTo data="all" /} */
             </td>
             <td>{call jiksnu.templates.user.linkTo data="$subscription.from" /}</td>
