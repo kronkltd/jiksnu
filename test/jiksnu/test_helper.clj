@@ -3,15 +3,18 @@
                [triggers :only [*thread-pool*]])
         midje.sweet
         (jiksnu [model :only [drop-all!]]))
-  (:require (karras [entity :as entity])))
+  (:require (clojure.tools [logging :as log])
+            (karras [entity :as entity])))
 
 (defmacro test-environment-fixture
   []
-  `(background
-    (around :facts
-      (do (load-config)
-          (with-environment :test
-            (print ".")
-            (drop-all!)
-            ?form
-            #_(.shutdown @*thread-pool*))))))
+  `(do
+     (log/info (str "Testing " *ns*))
+     (background
+      (around :facts
+              (do (load-config)
+                  (with-environment :test
+                    (print ".")
+                    (drop-all!)
+                    ?form
+                    (.shutdown @*thread-pool*)))))))
