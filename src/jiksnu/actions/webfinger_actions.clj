@@ -2,7 +2,7 @@
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]])
-        (clojure.contrib [core :only [-?>]])
+        (clojure.core [incubator :only [-?>]])
         (jiksnu model))
   (:require (clojure.tools [logging :as log])
             (jiksnu.model [webfinger :as model.webfinger])
