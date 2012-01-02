@@ -6,7 +6,7 @@
 
 ;; (deftest index-http-route-test)
 
-(fact "when the serialization is :http"
+(future-fact "when the serialization is :http"
   (fact "and there are no activities"
     (let [ch (channel)]
       (r/app ch (mock/request :get "/" ))

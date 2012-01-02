@@ -2,7 +2,8 @@
   (:use clj-factory.core
         clojure.test
         jiksnu.test-helper
-        jiksnu.triggers.subscription-triggers)
+        jiksnu.triggers.subscription-triggers
+        midje.sweet)
   (:require [clj-tigase.packet :as packet]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])

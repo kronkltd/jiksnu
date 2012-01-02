@@ -78,6 +78,7 @@
     ;; TODO: all collections should be emptied in background
     (drop!)
     (index) => empty?))
+
 (fact "when there are users"
   (fact "should not be empty"
     (actions.user/create (factory User))
@@ -95,6 +96,7 @@
       (actions.user/create (factory User {:username username
                                           :domain (:_id domain)}))
       (show username (:_id domain)) => user?)))
+
 (fact "when the user is not found"
   (fact "should return nil"
     (drop!)
@@ -147,6 +149,7 @@
   (fact "should return nil"
     (let [user (actions.user/create (factory User))]
       (user-meta-uri user) => nil)))
+
 (fact "when the user's domain has a lrdd link"
   (fact "should insert the user's uri into the template"
     (let [domain (actions.domain/create

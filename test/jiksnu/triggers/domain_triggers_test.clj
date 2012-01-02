@@ -10,4 +10,4 @@
 
 (test-environment-fixture)
 
-(deftest test-create-trigger)
+;; (deftest test-create-trigger)

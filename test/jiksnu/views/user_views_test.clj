@@ -83,7 +83,7 @@
 
 ;; (deftest apply-view-test "#'remote-create :xmpp")
 
-(fact "should return a query results packet map"
+(future-fact "should return a query results packet map"
   (with-format :xmpp
     (with-serialization :xmpp
       (let [user (model.user/create (factory User))

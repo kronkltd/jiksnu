@@ -19,24 +19,22 @@
 
 (fact "when the user is not authenticated"
   (fact "and the activity does not exist"
-    (fact
-      (let [author (actions.user/create (factory User))
-            ch (channel)
-            activity (factory Activity)]
-        (session/with-user author
-          (let [path (str "/notice/" (:_id activity))]
-            (r/app ch (mock/request :get path))
-            (let [response (wait-for-message ch 5000)]
-              response => (contains {:status 404})))))))
+    (let [author (actions.user/create (factory User))
+          ch (channel)
+          activity (factory Activity)]
+      (session/with-user author
+        (let [path (str "/notice/" (:_id activity))]
+          (r/app ch (mock/request :get path))
+          (let [response (wait-for-message ch 5000)]
+            response => (contains {:status 404}))))))
 
   (fact "and there are activities"
-    (fact
-      (let [author (actions.user/create (factory User))
-            ch (channel)
-            activity (factory Activity)
-            created-activity (session/with-user author
-                               (actions.activity/post activity))
-            path (str "/notice/" (:_id created-activity))]
-        (r/app ch (mock/request :get path))
-        (let [response (wait-for-message ch 5000)]
-          response => (contains {:status 200}))))))
+    (let [author (actions.user/create (factory User))
+          ch (channel)
+          activity (factory Activity)
+          created-activity (session/with-user author
+                             (actions.activity/post activity))
+          path (str "/notice/" (:_id created-activity))]
+      (r/app ch (mock/request :get path))
+      (let [response (wait-for-message ch 5000)]
+        response => (contains {:status 200})))))

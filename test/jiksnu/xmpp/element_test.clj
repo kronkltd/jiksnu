@@ -5,7 +5,8 @@
         [clojure.test :only [deftest is]]
         (jiksnu test-helper model session view)
         jiksnu.xmpp.element
-        [karras.entity :only (make)])
+        [karras.entity :only (make)]
+        midje.sweet)
   (:require [clj-tigase.element :as element]
             (jiksnu [namespace :as namespace])
             jiksnu.sections.activity-sections)

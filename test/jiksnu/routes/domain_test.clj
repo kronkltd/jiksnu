@@ -13,10 +13,11 @@
 
 (test-environment-fixture)
 
-(deftest webfinger-host-meta-test
-  (fact "should return a XRD document"
-    (let [ch (l/channel)]
-      (app ch (request :get "/.well-known/host-meta"))
-      (let [{:keys [body] :as response} (l/wait-for-message ch 5000)]
-        response => (contains {:status 200})
-        body => #"<XRD.*"))))
+;; (deftest webfinger-host-meta-test)
+
+(fact "should return a XRD document"
+  (let [ch (l/channel)]
+    (app ch (request :get "/.well-known/host-meta"))
+    (let [{:keys [body] :as response} (l/wait-for-message ch 5000)]
+      response => (contains {:status 200})
+      body => #"<XRD.*")))

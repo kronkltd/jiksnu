@@ -39,6 +39,8 @@
 
 (fact "when the user is not logged in"
   (fact "should raise an exception"))
+
+
 (fact "when the user is logged in"
   (fact "and the subscription doesn't exist"
     (fact "should return a Subscription"
@@ -58,6 +60,7 @@
       (subscribe actor user)
       (let [response (subscribing? actor user)]
         (is response)))))
+
 (fact "when the user is not subscribed"
   (fact "should return a false value"
     (let [actor (model.user/create (factory User))
@@ -74,6 +77,7 @@
       (subscribe user actor)
       (let [response (subscribed? actor user)]
         (is response)))))
+
 (fact "when the user is not subscribed"
   (fact "should return a false value"
     (let [actor (model.user/create (factory User))
