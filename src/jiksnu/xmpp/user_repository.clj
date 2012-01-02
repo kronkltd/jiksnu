@@ -102,7 +102,7 @@ subnode."
   ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
      ;; TODO: implement
      (try
-       (log/info "get data")
+       (log/info "get data - " key)
        (let [user (find-user user-id)
              ks (key-seq subnode key)]
          (get-data user ks def))
@@ -238,7 +238,7 @@ associates it with given key."
      (.setData this user nil key value))
   ([this ^BareJID user ^String subnode ^String key ^String value]
      ;; TODO: implement
-     (log/info "set data")
+     (log/info "set data - (" user ") " key " = " value)
      ;; (spy user)
      ;; (spy subnode)
      ;; (spy key)
