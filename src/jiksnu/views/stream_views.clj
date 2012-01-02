@@ -96,6 +96,26 @@
        (assoc :action #'user-timeline))
    user))
 
+(defview #'remote-profile :rdf
+  [request [user activities]]
+  {:body
+   (try
+     (let [model (rdf/build-model)
+           triples (show-section user)]
+       (doto (rdf/to-java model)
+         (.setNsPrefix "activity" namespace/as)
+         (.setNsPrefix "sioc" namespace/sioc)
+         (.setNsPrefix "cert" namespace/cert)
+         (.setNsPrefix "foaf" namespace/foaf))
+       (rdf/with-model model
+         (rdf/model-add-triples triples)
+         (with-out-str (rdf/model-to-format model :xml-abbrev))))
+     (catch Exception ex
+          (clojure.stacktrace/print-stack-trace ex)
+          (pst+ ex)
+          (throw ex)))
+   :template :false})
+
 (defview #'remote-user :html
   [request user]
   (apply-view
@@ -178,14 +198,8 @@
 
 (defview #'user-timeline :n3
   [request [user activities]]
-  (let [triples (with-format :rdf (show-section user))]
-    {:body
-     (-> triples
-         rdf/model-add-triples
-         rdf/defmodel
-         (rdf/model-to-format :n3)
-         with-out-str)
-     :template false}))
+  {:body (with-format :rdf (show-section user))
+   :template false})
 
 (defview #'user-timeline :rdf
   [request [user activities]]

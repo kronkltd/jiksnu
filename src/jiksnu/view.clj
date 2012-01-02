@@ -9,7 +9,9 @@
             (jiksnu [namespace :ads namespace]
                     [xmpp :as xmpp])
             (jiksnu.templates [layout :as templates.layout])
-            (jiksnu.xmpp [element :as element])))
+            (jiksnu.xmpp [element :as element])
+                        (plaza.rdf [core :as rdf])
+            (plaza.rdf.vocabularies [foaf :as foaf])))
 
 (defsection link-to :default
   [record & options]
@@ -39,6 +41,19 @@
 
 (defmethod apply-view-by-format :atom
   [request response])
+
+
+(defmethod format-as :n3
+  [request format response]
+  (-> (spy response) 
+      (assoc :body (-> response :body
+                       rdf/model-add-triples
+                       rdf/defmodel
+                       (rdf/model-to-format :n3)
+                       with-out-str))
+      (assoc-in [:headers "Content-Type"] "text/plain")))
+
+
 
 (defmethod serialize-as :http
   [serialization response-map]
