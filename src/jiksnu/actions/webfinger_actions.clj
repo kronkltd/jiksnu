@@ -1,5 +1,5 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use (ciste [config :only [config]]
+  (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]])
         (clojure.contrib [core :only [-?>]])
@@ -18,13 +18,13 @@
            jiksnu.model.Domain
            jiksnu.model.User))
 
-;; (defn fetch-host-meta
-;;   [url]
-;;   (let [hm (-> url fetch-resource s/compile-xml)
-;;         host (s/query "//hm:Host/text()" bound-ns hm)]
-;;     (if (= (.getHost (URI. url)) (str host))
-;;       hm
-;;       (throw (RuntimeException. "Hostname does not match")))))
+(defn fetch-host-meta
+  [url]
+  #_(let [hm (-> url fetch-resource s/compile-xml)
+        host (s/query "//hm:Host/text()" bound-ns hm)]
+    (if (= (.getHost (URI. url)) (str host))
+      hm
+      (throw (RuntimeException. "Hostname does not match")))))
 
 (defaction host-meta
   []
