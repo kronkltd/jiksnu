@@ -90,6 +90,7 @@
   (fact "user-meta-uri"
     (fact "when the user's domain does not have a lrdd link"
       (fact "should return nil"
+        (model.domain/drop!)
         (let [user (actions.user/create (factory User))]
           (user-meta-uri user) => nil)))
 
