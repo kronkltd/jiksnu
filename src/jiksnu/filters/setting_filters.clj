@@ -1,4 +1,4 @@
-(ns jiksnu.filters.settings-filters
+(ns jiksnu.filters.setting-filters
   (:use (ciste [debug :only (spy)]
                filters)
         jiksnu.actions.setting-actions))
