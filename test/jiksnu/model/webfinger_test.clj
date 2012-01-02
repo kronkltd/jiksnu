@@ -13,21 +13,20 @@
 
 (against-background
  [(around :facts
-           (let [user (actions.user/create (factory User))
-                 options {}]
-             ?form))]
+    (let [user (actions.user/create (factory User))
+          options {}]
+      ?form))]
 
  ;; (deftest test-fetch-host-meta)
 
  (fact "when the url points to a valid XRD document"
-   (fact
-     (let [url "http://kronkltd.net/.well-known/host-meta"]
-       (fetch-host-meta url) => (partial instance? Document))))
+   (let [url "http://kronkltd.net/.well-known/host-meta"]
+     (fetch-host-meta url) => (partial instance? Document)))
 
  (fact "when the url does not point to a valid XRD document"
    (future-fact "should raise an exception"
-                (let [url "http://example.com/.well-known/host-meta"]
-                  (fetch-host-meta url) => nil)))
+     (let [url "http://example.com/.well-known/host-meta"]
+       (fetch-host-meta url) => nil)))
 
  ;; (deftest test-get-links
  ;;   (future-fact
