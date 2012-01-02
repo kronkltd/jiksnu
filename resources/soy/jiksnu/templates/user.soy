@@ -413,14 +413,9 @@
  * @param location
  * @param authenticated
  * @param bio
- * @param local
- * @param hub
- * @param discovered
- * @param updated
  * @param id
  * @param username
  * @param url
- * @param links
  */
 {template .show}
   <div class="vcard">
@@ -438,15 +433,15 @@
       <p class="note">{$bio}</p>
     {/if}
     <p><a class="url" rel="me" href="{$url}">{$url}</a></p>
-    <p>Id: {$id}</p>
-    <p>Local: {$local}</p>
-    {if $hub}
-      <p>Hub: {$hub}</p>
-    {/if}
-    <p>Discovered: {$discovered ? 'true' : 'false'}</p>
-    <p>Last Updated: {$updated ? $updated : 'never'}</p>
+    /* <p>Id: {$id}</p> */
+    /* <p>Local: {$local}</p> */
+    /* {if $hub} */
+    /*   <p>Hub: {$hub}</p> */
+    /* {/if} */
+    /* <p>Discovered: {$discovered ? 'true' : 'false'}</p> */
+    /* <p>Last Updated: {$updated ? $updated : 'never'}</p> */
     {call .userActions data="all" /}
-    {call .linksList data="all" /}
+    /* {call .linksList data="all" /} */
   </div>
 {/template}
 
@@ -539,7 +534,6 @@
  */
 {template .userActions}
   {if $authenticated}
-    {$authenticated}
     {if $id == $authenticated.id}
       <p>This is you</p>
     {/if}
