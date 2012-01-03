@@ -228,6 +228,7 @@
 /**
  * @param username
  * @param domain
+ * @param authenticated
  */
 {template .indexLine}
   <tr>
@@ -242,10 +243,17 @@
         {param id: $domain /}
       {/call}
     </td>
-    <td>{call .discoverButton data="all" /}</td>
-    <td>{call .updateButton data="all" /}</td>
-    <td>{call .editButton data="all" /}</td>
-    <td>{call .deleteButton data="all" /}</td>
+    <td>{call .subscribeButton data="all" /}</td>
+    {if $authenticated}
+      <td>{call .discoverButton data="all" /}</td>
+      <td>{call .updateButton data="all" /}</td>
+      <td>{call .editButton data="all" /}</td>
+      <td>
+        {if $authenticated.admin}
+          {call .deleteButton data="all" /}
+        {/if}
+      </td>
+    {/if}
   </tr>
 {/template}
 
