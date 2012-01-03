@@ -226,3 +226,11 @@
   {:body params
    :template false})
 
+(defview #'group-timeline :html
+  [request activities]
+  {:body
+   [:section
+    [:h1 "Group"]
+    ]
+   }
+  )

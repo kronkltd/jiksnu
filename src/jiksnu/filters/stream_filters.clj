@@ -51,3 +51,6 @@
   [action request]
   (action request))
 
+(deffilter #'group-timeline :http
+  [action {{:keys [name]} :params}]
+  (action name))
