@@ -2,7 +2,8 @@
   (:use (ciste [debug :only [spy]]
                [filters :only [deffilter]])
         jiksnu.actions.salmon-actions)
-  (:require (jiksnu.model [user :as model.user])))
+  (:require (clojure.tools [logging :as log])
+            (jiksnu.model [user :as model.user])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; salmon
@@ -12,5 +13,7 @@
   [action request]
   (let [envelope (-> request :body stream->envelope)
         user (-> request :params :id model.user/fetch-by-id)]
-   (action user envelope)))
+    (try (action user envelope)
+         (catch RuntimeException ex
+           (log/error (.getMessage ex))))))
 
