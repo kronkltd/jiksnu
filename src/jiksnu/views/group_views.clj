@@ -1,7 +1,8 @@
 (ns jiksnu.views.group-views
   (:use (ciste [views :only [defview]])
         ciste.sections.default
-        jiksnu.actions.group-actions))
+        jiksnu.actions.group-actions)
+  (:require (jiksnu.templates group)))
 
 (defview #'index :html
   [request groups]
@@ -16,7 +17,6 @@
           [:p
            [:a.url.entry-title {:href (str "/group/" (:name group))}
             [:img {:src (:avatar-url group) }]
-            
             [:span.nickname (:name group)]]]
           [:a.url {:href (:homepage group)} (:homepage group)]
           [:p.note (:description group)]]])
@@ -26,8 +26,7 @@
 
 (defview #'user-list :html
   [request user]
-  {:body "user list"}
-  )
+  {:body "user list"})
 
 (defview #'new-page :html
   [request _]
