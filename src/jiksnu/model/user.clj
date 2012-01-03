@@ -155,6 +155,14 @@
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user))))))
 
+(defn image-link
+  [user]
+  (or (:avatar-url user)
+                 (and (:email user) (gravatar-image (:email user)))
+                 (gravatar-image (:jid user))
+                 (gravatar-image (get-uri user)) "")
+  )
+
 (defn format-data
   [^User user]
   (let [{id :id
@@ -169,9 +177,7 @@
      :discovered discovered
      :url (if (local? user)
             (str "/" username)
-            (if id
-              id
-              (str "/users/" (str (:_id user)))))
+            (or id (str "/users/" (str (:_id user)))))
      :local local
      :hub hub
      :admin admin
@@ -179,10 +185,7 @@
      :subscriptions []
      :subscribers []
      :display-name (display-name user)
-     :imgsrc (or (:avatar-url user)
-                 (and (:email user) (gravatar-image (:email user)))
-                 (gravatar-image (:jid user))
-                 (gravatar-image uri) "")
+     :imgsrc (image-link user)
      :updated (format-date updated)}))
 
 (defn vcard-request

@@ -129,7 +129,8 @@
 
 (defsection show-section [User :json]
   [user & options]
-  (let [{:keys [display-name id avatar-url]} user]
+  (let [{:keys [display-name id avatar-url]} user
+        avatar-url (or avatar-url (model.user/image-link user))]
     (merge {:profileUrl (full-uri user)
             :id (or id (model.user/get-uri user))
             :url (full-uri user)
