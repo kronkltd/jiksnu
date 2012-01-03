@@ -95,6 +95,7 @@
  * @param authenticated
  * @param subscribers
  * @param subscriptions
+ * @param groups
  */
 {template .leftColumn}
   <aside id="left-column">
@@ -107,6 +108,10 @@
     {call jiksnu.templates.subscription.subscribersSection data="all"}
       {param user: $authenticated /}
       {param subscribers: $subscribers /}
+    {/call}
+    {call jiksnu.templates.group.userGroups data="all"}
+      {param user: $authenticated /}
+      {param groups: $groups /}
     {/call}
     {call .formatList data="all" /}
   </aside>
