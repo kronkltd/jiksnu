@@ -29,6 +29,7 @@
                             [stream-actions :as stream]
                             [subscription-actions :as sub]
                             [user-actions :as user])
+            (jiksnu.actions.admin [activity-actions :as admin.activity])
             (lamina [core :as l])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
@@ -47,6 +48,7 @@
 (def admin-routes
   (make-matchers
    [
+    [[:get  "/admin/notices"]                           #'admin.activity/index]
     [[:get  "/admin/subscriptions"]                     #'sub/admin-index]
     [[:get  "/admin/push/subscriptions"]                #'push/admin-index]
     [[:post "/admin/users"]                             #'user/admin-create]
