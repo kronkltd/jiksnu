@@ -4,7 +4,7 @@
                sections)
         ciste.sections.default
         (clj-gravatar [core :only (gravatar-image)])
-        (jiksnu model session view)
+        (jiksnu model session)
         (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
             (hiccup [form-helpers :as f])

@@ -1,7 +1,7 @@
 (ns jiksnu.view
   (:use (ciste core
-               [config :only (config)]
-               [debug :only (spy)]
+               [config :only [config]]
+               [debug :only [spy]]
                formats sections views)
         ciste.sections.default
         (jiksnu model session))
