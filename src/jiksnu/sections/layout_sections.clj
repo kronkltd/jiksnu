@@ -1,6 +1,9 @@
 (ns jiksnu.sections.layout-sections
-  (:use (jiksnu [session :only [is-admin?]]))
-  )
+  (:use (ciste.sections [default :only [link-to]])
+        (jiksnu [session :only [is-admin?]]))
+  (:require (jiksnu.sections [group-sections :as sections.group]
+                             [subscription-sections :as sections.subscription]
+                             [user-sections :as sections.user])))
 
 (defn navigation-section
   [authenticated]
@@ -18,8 +21,7 @@
                      ["/admin/settings"           "Settings"]
                      ["/admin/pshb-subscriptions" "PubSub"]
                      ["/admin/users"              "Users"]
-                     ["/admin/subscriptions"      "Subscriptions"]])))
-               )]
+                     ["/admin/subscriptions"      "Subscriptions"]]))))]
     [:nav
      [:ul.nav
       (map
@@ -41,12 +43,9 @@
   [authenticated subscribers subscriptions groups]
   [:aside#left-column.sidebar
    (user-info-section)
-   (sections.subscriptions/subscriptions-section)
-   (sections.subscriptions/subscribers-section)
-   (sections.groups/user-groups)
-   ]
-
-  )
+   (sections.subscription/subscriptions-section)
+   (sections.subscription/subscribers-section)
+   (sections.group/user-groups)])
 
 (defn devel-warning
   [development]

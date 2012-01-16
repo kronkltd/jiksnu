@@ -168,7 +168,7 @@
        {:width size
         :height size
         :alt ""
-        :src (avatar-url user)}]]))
+        :src (model.user/image-link user)}]]))
 
 
   ;; (defsection show-section-minimal [User :xmpp :xmpp]
