@@ -12,6 +12,10 @@
   
   )
 
+(defn avatar-page
+  [user]
+  {:user user})
+
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.setting-filters

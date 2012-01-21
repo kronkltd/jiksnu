@@ -125,6 +125,7 @@
     [[:get    "/remote-user/*"]                           #'stream/remote-user]
     ;; [[:get    "/search/group"]                            #'group/search-page]
     ;; [[:post   "/search/group"]                            #'group/search]
+    [[:get    "/settings/avatar"]                         #'setting/avatar-page]
     [[:get    "/settings/profile"]                        #'user/profile]
     [[:post   "/settings/profile"]                        #'user/update-profile]
     [[:get    "/settings/oauthapps"]                      #'setting/oauth-apps]
