@@ -19,7 +19,9 @@
                           [user :as model.user])
             (jiksnu.templates [user :as templates.user])
             (plaza.rdf [core :as rdf]))
-  (:import java.net.URI
+  (:import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
+           java.math.BigInteger
+           java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
@@ -102,16 +104,7 @@
         (concat [rdf/rdf:type                    [foaf :Person]
                  foaf:weblog                     (rdf/rdf-resource (full-uri user))
                  [ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))]
-                (when mkp
-                  [(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))])
-                
-                #_(let [mkp (model.signature/get-key-for-user user)]
-                  [
-                   [rdf/rdf:type        [foaf :Person]
-                    #_(rdf/l (str ns/cert "RSAPublicKey"))
-                    ;; (rdf/rdf-resource (str ns/cert "modulus")) (rdf/l (or (:armored-n mkp) " "))
-                    ;; (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
-                    ]])
+                (when mkp          [(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))])
                 (when username     [foaf:nick       (rdf/l username)])
                 (when name         [foaf:name       (rdf/l name)])
                 (when url          [foaf:homepage   (rdf/rdf-resource url)])
@@ -124,9 +117,14 @@
        (when mkp
          [(rdf/rdf-resource (str (full-uri user) "#key"))
           [rdf/rdf:type (rdf/rdf-resource (str ns/cert "RSAPublicKey"))
+           (rdf/rdf-resource (str ns/cert "identity")) (rdf/rdf-resource (str (full-uri user) "#me"))
            (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
-           (rdf/rdf-resource (str ns/cert "modulus")) (rdf/rdf-typed-literal (model.signature/encode
-                                                                              (.getBytes (:modulus mkp))))]])
+           (rdf/rdf-resource (str ns/cert "modulus")) (rdf/rdf-typed-literal
+                                                       (str  (model.signature/encode
+                                                              (model.signature/get-bytes
+                                                               (BigInteger.
+                                                                (:modulus mkp)))))
+                                                       (str ns/xsd "#hexBinary"))]])
 
        ;; About the User's Account
        [(rdf/rdf-resource (model.user/get-uri user))

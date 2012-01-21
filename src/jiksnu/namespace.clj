@@ -31,3 +31,4 @@
 (def vcard-query   "http://onesocialweb.org/spec/1.0/vcard4#query")
 (def view          "http://onesocialweb.org/spec/1.0/acl/action/view")
 (def xrd           "http://docs.oasis-open.org/ns/xri/xrd-1.0")
+(def xsd           "http://www.w3.org/2001/XMLSchema")
