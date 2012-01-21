@@ -133,7 +133,51 @@
 
 (defview #'register-page :html
   [request _]
-  {:body (templates.user/register-section request)})
+  {:body
+   [:section
+    [:form {:method "post" :action "/main/register"}
+     [:fieldset
+      [:legend "Register"]
+
+      [:div.clearfix
+       [:label {:for "username"} "Username"]
+       [:div.input
+        [:input {:type "text" :name "username"}]]]
+
+      [:div.clearfix
+       [:label {:for "password"} "Password"]
+       [:div.input
+        [:input {:type "password" :name "password"}]]]
+
+      [:div.clearfix
+       [:label {:for "confirm-password"} "Confirm Password"]
+       [:div.input
+        [:input {:type "password" :name "confirm-password"}]]]
+
+      [:div.clearfix
+       [:label {:for "email"} "Email"]
+       [:div.input
+        [:input {:type "email" :name "email"}]]]
+
+      [:div.clearfix
+       [:label {:for "display-name"} "Display Name"]
+       [:div.input
+        [:input {:type "text" :name "display-name"}]]]
+
+      [:div.clearfix
+       [:label {:for "location"} "Location"]
+       [:div.input
+        [:input {:type "text" :name "location"}]]]
+
+      [:div.clearfix
+       [:label {:for "accepted"} "I have checked the box"]
+       [:div.input
+        [:input {:type "checkbox" :name "accepted"}]]]
+
+
+      [:div.actions
+       [:input.btn.primary {:type "submit" :value "Register"}]]
+      ]]]})
 
 (defview #'remote-create :xmpp
   [request user]
