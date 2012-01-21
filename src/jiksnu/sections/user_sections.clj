@@ -85,12 +85,14 @@
 
 (defsection show-section [User :rdf]
   [user & _]
-  (let [{:keys [url display-name avatar-url first-name last-name username name email]} user]
+  (let [{:keys [url display-name avatar-url first-name last-name username name email]} user
+        mk (model.signature/get-key-for-user user)]
     (rdf/with-rdf-ns ""
       [
        ;; About the document
        [(str (full-uri (spy user)) ".rdf")
-          [rdf/rdf:type                    foaf:PersonalProfileDocument
+        [rdf/rdf:type                    foaf:PersonalProfileDocument
+         [foaf :title]                 (rdf/l (str display-name "'s Profile"))
            [foaf :maker]               (rdf/rdf-resource (str (full-uri user) "#me"))
            foaf:primaryTopic           (rdf/rdf-resource (str (full-uri user) "#me"))]]
        
@@ -100,14 +102,16 @@
         (concat [rdf/rdf:type                    [foaf :Person]
                  foaf:weblog                     (rdf/rdf-resource (full-uri user))
                  [ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))]
+                (when mkp
+                  [(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))])
+                
                 #_(let [mkp (model.signature/get-key-for-user user)]
-                    [(rdf/rdf-resource (str ns/cert "key"))
-                     [
-                      rdf/rdf:type        [foaf :Person]
-                      #_(rdf/l (str ns/cert "RSAPublicKey"))
-                      ;; (rdf/rdf-resource (str ns/cert "modulus")) (rdf/l (or (:armored-n (spy mkp)) " "))
-                      ;; (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
-                      ]])
+                  [
+                   [rdf/rdf:type        [foaf :Person]
+                    #_(rdf/l (str ns/cert "RSAPublicKey"))
+                    ;; (rdf/rdf-resource (str ns/cert "modulus")) (rdf/l (or (:armored-n mkp) " "))
+                    ;; (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
+                    ]])
                 (when username     [foaf:nick       (rdf/l username)])
                 (when name         [foaf:name       (rdf/l name)])
                 (when url          [foaf:homepage   (rdf/rdf-resource url)])
@@ -115,8 +119,14 @@
                 (when email        [foaf:mbox       (rdf/rdf-resource (str "mailto:" email))])
                 (when display-name [[foaf :name]    (rdf/l display-name)])
                 (when first-name   [foaf:givenName  (rdf/l first-name)])
-                (when last-name    [foaf:familyName (rdf/l last-name)])
-                )]
+                (when last-name    [foaf:familyName (rdf/l last-name)]))]
+
+       (when mkp
+         [(rdf/rdf-resource (str (full-uri user) "#key"))
+          [rdf/rdf:type (rdf/rdf-resource (str ns/cert "RSAPublicKey"))
+           (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
+           (rdf/rdf-resource (str ns/cert "modulus")) (rdf/rdf-typed-literal (model.signature/encode
+                                                                              (.getBytes (:modulus mkp))))]])
 
        ;; About the User's Account
        [(rdf/rdf-resource (model.user/get-uri user))
@@ -125,7 +135,7 @@
            foaf:accountName            (rdf/l (:username user))
            [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
            [ns/sioc "account_of"]         (rdf/rdf-resource
-                                                  (model.user/get-uri user))]]])))
+                                                  (str (full-uri user) "#me"))]]])))
 
 (defsection show-section [User :json]
   [user & options]
