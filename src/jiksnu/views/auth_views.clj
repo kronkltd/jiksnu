@@ -27,7 +27,32 @@
 (defview #'login-page :html
   [request _]
   {:title "Login"
-   :body (templates.auth/login-form)})
+   :body
+   [:div
+    [:div
+     [:form {:method "post" :action "/main/login"}
+      [:fieldset
+       [:legend "Login"]
+       [:div.clearfix
+        [:label {:for "username"} "Username"]
+        [:div.input
+         [:input {:type "text" :name "username"}]]]
+       [:div.clearfix
+        [:label {:for "password"} "Password"]
+        [:div.input
+         [:input {:type "password" :name "password"}]]]
+       [:div.actions
+        [:input.btn.primary {:type "submit" :value "Login"}]]]]]
+    [:div
+     [:form {:method "post" :action "/main/guest-login"}
+      [:fieldset
+       [:legend "Guest Login"]
+       [:div.clearfix
+        [:label {:for "webid"} "Web Id"]
+        [:div.input
+         [:input {:type "text" :name "webid"}]]]
+       [:div.actions
+        [:input.btn.primary {:type "submit" :value "Login"}]]]]]]})
 
 (defview #'logout :html
   [request successful]
