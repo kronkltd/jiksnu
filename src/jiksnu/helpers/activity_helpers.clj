@@ -124,6 +124,13 @@
         [lat long] (string/split coords #" ")]
     {:lat lat :long long}))
 
+(defn parse-notice-info
+  [^Element element]
+  (let [source (.getAttributeValue element "source")
+        local-id (.getAttributeValue element "local_id")]
+    {:source source
+     :local-id local-id}))
+
 (defn parse-extension-element
   [element]
   (let [qname (.getQName element)
@@ -133,6 +140,10 @@
                      "actor" nil
                      "object" (abdera/parse-object-element element)
                      nil)
+
+      namespace/statusnet (condp = (:name qname)
+                            "notice_info" (parse-notice-info element)  
+                            nil)
 
       namespace/thr (condp = (:name qname)
                       "in-reply-to" (parse-reply-to element)

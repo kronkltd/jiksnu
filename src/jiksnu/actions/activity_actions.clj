@@ -105,28 +105,26 @@ serialization"
            content (.getContent entry)
            links (abdera/parse-links entry)
            tags (abdera/parse-tags entry)
-           object (if-let [obj-elt (-?>> (QName. namespace/as "object" "activity")
-                                         (.getExtension entry))]
-                    (let [object-type (-?> (-?>> (QName. namespace/as "object-type" "activity")
-                                                 (.getExtension obj-elt))
+           object-element (.getExtension entry (QName. namespace/as "object" "activity"))
+           object (when object-element
+                    (let [object-type (-?> (.getExtension object-element (QName. namespace/as "object-type" "activity"))
                                            .getText
                                            (string/replace #"http://activitystrea.ms/schema/1.0/" "")
                                            (string/replace #"http://ostatus.org/schema/1.0/" ""))
-                          id (.getSimpleExtension obj-elt namespace/atom "id" "")]
+                          id (.getSimpleExtension object-element namespace/atom "id" "")]
                       {:object-type object-type
                        :id id}))
            opts (apply merge
-                       (if published {:published published})
-                       (when content {:content content})
-                       (when object {:object object})
-                       (if updated {:updated updated})
-                       (if (seq recipients)
-                         {:recipients (string/join ", " recipients)})
-                       (if title {:title title})
-                       (if (seq irts) {:irts irts})
-                       (if (seq links) {:links links})
-                       (if (seq tags) {:tags tags})
-                       (when verb {:verb verb})
+                       (when published        {:published published})
+                       (when content          {:content content})
+                       (when object           {:object object})
+                       (when updated          {:updated updated})
+                       (when (seq recipients) {:recipients (string/join ", " recipients)})
+                       (when title            {:title title})
+                       (when (seq irts)       {:irts irts})
+                       (when (seq links)      {:links links})
+                       (when (seq tags)       {:tags tags})
+                       (when verb             {:verb verb})
                        {:id id
                         :author (:_id user)
                         :public true
