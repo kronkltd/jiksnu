@@ -1,13 +1,15 @@
 (ns jiksnu.sections.layout-sections
-  (:use (ciste.sections [default :only [link-to]])
-        (jiksnu [session :only [is-admin?]]))
+  (:use (ciste [config :only [environment]])
+        (ciste.sections [default :only [link-to]])
+        (jiksnu [session :only [current-user is-admin?]]))
   (:require (jiksnu.sections [group-sections :as sections.group]
                              [subscription-sections :as sections.subscription]
                              [user-sections :as sections.user])))
 
 (defn navigation-section
-  [authenticated]
-  (let [links (concat
+  [response]
+  (let [authenticated (current-user)
+        links (concat
                [["/"                         "Public"]
                 ["/users"                    "Users"]
                 ["/main/domains"             "Domains"]
@@ -42,15 +44,16 @@
 (defn left-column-section
   [authenticated subscribers subscriptions groups]
   [:aside#left-column.sidebar
-   (user-info-section)
-   (sections.subscription/subscriptions-section)
-   (sections.subscription/subscribers-section)
-   (sections.group/user-groups)])
+   (user-info-section (current-user))
+   (sections.subscription/subscriptions-section (current-user) [])
+   (sections.subscription/subscribers-section (current-user) [])
+   (sections.group/user-groups (current-user))])
 
 (defn devel-warning
-  [development]
-  (when development
-    [:div.important.devel-section.alert-message.warning
-     "This site is running in development mode.
+  [response]
+  (let [development (= :development (environment))]
+    (when development
+      [:div.important.devel-section.alert-message.warning
+       "This site is running in development mode.
  No guarantees are made about the accuracy or security of information on this site.
- Use at your own risk."]))
+ Use at your own risk."])))
