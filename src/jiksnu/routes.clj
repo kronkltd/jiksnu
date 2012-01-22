@@ -74,7 +74,7 @@
 
 (def http-routes
   (make-matchers
-   [[[:get    "/"]                                        #'stream/index]
+   [[[:get    "/"]                                        #'stream/public-timeline]
     [[:get    "/rsd.xml"]                                 #'site/rsd]
     [[:get    "/.well-known/host-meta"]                   #'domain/host-meta]
     [[:get    "/api/friendships/exists.:format"]          #'user/exists?]
@@ -83,7 +83,7 @@
     [[:get    "/api/statuses/friends_timeline.:format"]   #'stream/home-timeline]
     [[:get    "/api/statuses/home_timeline.:format"]      #'stream/home-timeline]
     [[:get    "/api/mentions"]                            #'stream/mention-timeline]
-    [[:get    "/api/statuses/public_timeline.:format"]    #'stream/index]
+    [[:get    "/api/statuses/public_timeline.:format"]    #'stream/public-timeline]
     [[:get    "/api/statuses/show/:id.:format"]           #'activity/show]
     [[:get    "/api/statuses/user_timeline/:id.:format"]  #'stream/user-timeline]
     [[:get    "/group"]                                   #'group/index]
@@ -140,7 +140,7 @@
     [[:post   "/users/:id/push/subscribe"]                #'push/subscribe]
     [[:get    "/:username"]                               #'stream/user-timeline]
     [[:get    "/:username.:format"]                       #'stream/user-timeline]
-    [[:get    "/:username/all"]                           #'stream/index]
+    [[:get    "/:username/all"]                           #'stream/home-timeline]
     [[:get    "/:username/groups"]                        #'group/user-list]
     [[:get    "/:username/streams"]                       #'stream/user-list]
     [[:get    "/:username/subscribers"]                   #'sub/get-subscribers]

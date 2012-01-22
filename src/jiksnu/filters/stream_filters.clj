@@ -16,11 +16,11 @@
   [action request]
   (action))
 
-(deffilter #'index :http
+(deffilter #'public-timeline :http
   [action request]
   (action))
 
-(deffilter #'index :xmpp
+(deffilter #'public-timeline :xmpp
   [action request]
   (action))
 

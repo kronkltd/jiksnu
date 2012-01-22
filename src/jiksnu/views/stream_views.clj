@@ -25,7 +25,7 @@
             (plaza.rdf.vocabularies [foaf :as foaf])
             (ring.util [response :as response])))
 
-(defview #'index :atom
+(defview #'public-timeline :atom
   [request activities]
   (let [self (str "http://"
                   (config :domain)
@@ -45,19 +45,19 @@
              :updated (:updated (first activities))
              :entries (map show-section activities)})}))
 
-(defview #'index :html
+(defview #'public-timeline :html
   [request activities]
   {:formats (helpers.activity/index-formats activities)
    :body (templates.activity/index-block activities)})
 
-(defview #'index :json
+(defview #'public-timeline :json
   [request activities]
   (with-format :json
     {:body
      {:items
       (map show-section activities)}}))
 
-(defview #'index :n3
+(defview #'public-timeline :n3
   [request activities]
   (let [triples (with-format :rdf (index-section activities))]
     {:body (-> triples
@@ -67,7 +67,7 @@
               with-out-str)
     :template :false}))
 
-(defview #'index :rdf
+(defview #'public-timeline :rdf
   [request activities]
   (let [model (rdf/build-model)]
     (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
@@ -84,7 +84,7 @@
                (rdf/model-to-format model :xml-abbrev))
       :template :false})))
 
-(defview #'index :xmpp
+(defview #'public-timeline :xmpp
   [request activities]
   (tigase/result-packet request (index-section activities)))
 

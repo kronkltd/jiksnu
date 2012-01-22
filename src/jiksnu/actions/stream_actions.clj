@@ -22,7 +22,7 @@
 (defaction inbox
   [& _])
 
-(defaction index
+(defaction public-timeline
   [& options]
   (model.activity/index))
 
