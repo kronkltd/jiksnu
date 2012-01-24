@@ -182,14 +182,22 @@ body {
 /*     float: left; */
 /* } */
 
-/* article { */
-/*     display: block; */
-/*     position: relative; */
-/*     border-bottom: 1px solid black; */
-/*     padding-bottom: 20px; */
-/*     margin-bottom: 20px; */
+article {
+    display: block;
+    position: relative;
+    border-bottom: 1px solid black;
+    padding-left: 60px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 /*     width: 100%; */
-/* } */
+}
+
+article .photo
+{
+    position: absolute;
+    top: 3px;
+    left: 0px;
+}
 
 /* article section.content { */
 /*     margin-left: 60px; */
@@ -451,3 +459,9 @@ body {
 /* .subscriptions p { */
 /*     display: block; */
 /* } */
+
+.labels
+{
+    display: inline-block;
+    margin-left: 15px;
+}

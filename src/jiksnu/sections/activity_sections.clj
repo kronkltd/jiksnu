@@ -282,6 +282,7 @@
 (defn posted-link-section
   [activity]
   [:span.posted
+   "posted "
    [:time {:datetime (:published activity)
            :title (:published activity)}
     [:a {:href (uri activity)
@@ -297,35 +298,35 @@
 (defsection show-section [Activity :html]
   [activity & _]
   (let [user (get-author activity)]
-    [:div.hentry.notice.row
+    [:article.hentry.notice
      {:id (:id activity)
       :about (uri activity)
       :typeof "sioc:Post"}
-     [:div.avatar-section.span2
-      (sections.user/display-avatar user)]
-     [:div.span10
-      [:div.row
-       (link-to user)
-       [:div.labels
-        [:span.label (-> activity :object :object-type)]
-        (when-not (:local activity)
-          [:span.label "Remote"])
-        (when-not (:public activity)
-          [:span.label "Private"])]
-       (post-actions activity)]
-      [:div.entry-content.row
-       #_(when (:title activity)
-           [:h1.entry-title {:property "dc:title"} (:title activity)])
-       [:p {:property "sioc:content"}
-        (:content activity)]]
-      [:div.row
-       (recipients-section activity)
-       (links-section activity)
-       (likes-section activity)
-       (maps-section activity)
-       (tags-section activity)
-       (posted-link-section activity)
-       (comments-section activity)]]]))
+     [:header
+      ;; TODO: merge into the same link
+      (sections.user/display-avatar user)
+      (link-to user)
+      [:div.labels
+       [:span.label (-> activity :object :object-type)]
+       (when-not (:local activity)
+         [:span.label
+          [:a {:href (:id activity)} "Remote"]])
+       (when-not (:public activity)
+         [:span.label "Private"])]]
+     (post-actions activity)
+     [:div.entry-content
+      #_(when (:title activity)
+          [:h1.entry-title {:property "dc:title"} (:title activity)])
+      [:p {:property "sioc:content"}
+       (:content activity)]]
+     [:div
+      (recipients-section activity)
+      (links-section activity)
+      (likes-section activity)
+      (maps-section activity)
+      (tags-section activity)
+      (posted-link-section activity)
+      (comments-section activity)]]))
 
 (defsection show-section [Activity :json]
   [activity & _]
