@@ -10,6 +10,7 @@
             (hiccup [core :as h])
             (jiksnu [namespace :as ns]
                     [xmpp :as xmpp])
+            (jiksnu.sections [auth-sections :as sections.auth])
             (jiksnu.templates [layout :as templates.layout])
             (jiksnu.xmpp [element :as element])
             (plaza.rdf [core :as rdf])
@@ -24,6 +25,11 @@
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))
 
+(defn include-script
+  [src]
+  [:script {:type "text/javascript"
+            :src src}])
+
 (defn page-template-content
   [response]
   {:headers {"Content-Type" "text/html; charset=utf-8"}
@@ -32,10 +38,19 @@
     "<!doctype html>\n"
     (h/html
      [:html
-      {:xmlns:sioc ns/sioc}
+      {:xmlns:sioc ns/sioc
+       :xmlns:dc ns/dc
+       :xmlns:foaf ns/foaf
+       :xmlns:dcterms ns/dcterms
+       :prefix "foaf: http://xmlns.com/foaf/0.1/
+                dc: http://purl.org/dc/elements/1.1/
+                sioc: http://rdfs.org/sioc/ns#
+                dcterms: http://purl.org/dc/terms/"}
       [:head
        [:meta {:charset "utf-8"}]
-       [:title (when title (str title " - "))
+       [:title
+        (when (:title response)
+          (str (:title response) " - "))
         (config :site :name)]
        [:link {:type "text/css"
                :href "/bootstrap/bootstrap.css"
@@ -50,7 +65,8 @@
         [:div.topbar-inner
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
-          (navigation-section response)]]]
+          (navigation-section response)
+          (sections.auth/login-section response)]]]
        [:div#wrap.container
         [:div#notification-area.row
          (when (:flash response)
@@ -60,7 +76,14 @@
          [:div.span3
           (left-column-section response nil nil nil)]
          [:div#content.span13
-          (:body response)]]]]]))})
+          (:body response)]]
+        [:footer.row
+         [:p "Copyright © 2011 KRONK Ltd."]]]
+       (include-script "/cljs/bootstrap.js")
+       (include-script "http://code.jquery.com/jquery-1.5.2.min.js")
+       (include-script "/bootstrap/js/bootstrap-dropdown.js")
+       [:script {:type "text/javascript"}
+        "goog.require('jiksnu.core');"]]]))})
 
 (defmethod apply-template :html
   [request response]
