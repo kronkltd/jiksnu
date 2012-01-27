@@ -3,8 +3,8 @@
             [goog.dom :as dom]
             [goog.net.XhrIo :as xhrio]
             [goog.net.WebSocket :as ws]
-            [pinot.html :as html]
-            [pinot.dom :as dom]))
+    
+           ))
 
 (defn greet
   [n]
@@ -59,12 +59,6 @@
 (defn -main
   []
   (console/log "starting application")
-  
-  (when-let [content (dom/query "#content")]
-    (let [x (html/html [:p [:em "hello"]])]
-      (dom/css x {:color :blue})
-      (dom/attr x {:class "para"})
-      (dom/append content x)))
   (add-handler do-delete-activity (dom/query "#delete-button"))
   (add-handler do-like-button (dom/query "#like-button")))
 

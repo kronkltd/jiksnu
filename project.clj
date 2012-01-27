@@ -1,10 +1,8 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
   :description "distributed social network"
   :url "http://github.com/duck1123/jiksnu"
-  :repositories {"any23-repository-external" "http://any23.googlecode.com/svn/repo-ext"
-                 "java-dot-net" "http://download.java.net/maven/2"
-                 "any23-repository" "http://any23.googlecode.com/svn/repo"
-                 "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
+  ;; :repositories {"java-dot-net" "http://download.java.net/maven/2"
+  ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
                  [clj-factory "0.2.0-SNAPSHOT"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
@@ -15,6 +13,7 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [compojure "0.6.5"]
                  ;; [dom4j "1.6.1"]
+                 ;; [domina "0.1.0"]
                  [hiccup "0.3.7"]
                  [aleph "0.2.1-SNAPSHOT"]
                  [org.clojars.liquidz/clj-gravatar "0.0.1"]
@@ -30,7 +29,7 @@
                  [org.clojure/tools.logging "0.1.2"]
                  [org.slf4j/slf4j-api "1.6.1"]
                  [org.slf4j/slf4j-log4j12 "1.6.1"]
-                 [pinot "0.1.1-SNAPSHOT"]
+                 ;; [pinot "0.1.1-SNAPSHOT"]
                  [potemkin "0.1.1-SNAPSHOT"]
                  [ring "1.0.0-RC5"]
                  [swank-clojure "1.3.3"]
