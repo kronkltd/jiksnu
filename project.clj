@@ -39,6 +39,7 @@
                      ;; [org.clojars.rferraz/lein-cuke "1.1.1"]
                      [midje "1.3.0" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
+                     [lein-cljsbuild "0.0.9"]
                      [lein-marginalia "0.6.1"]
                      ]
   :exclusions [
@@ -53,6 +54,17 @@
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
+  :cljsbuild {
+              :source-path "src-cljs"
+              :compiler {
+                          
+                          :output-to "resources/public/cljs/bootstrap.js"
+
+
+                          
+                          :optimizations :whitespace
+                          :pretty-print true}
+              }
   :main jiksnu.core
   :newrelic true
   :warn-on-reflection false

@@ -1,10 +1,14 @@
 (ns jiksnu.core
-  (:require [goog.events :as events]
-            [goog.dom :as dom]
-            [goog.net.XhrIo :as xhrio]
-            [goog.net.WebSocket :as ws]
+  (:require
+   [goog.events :as events]
+   [goog.dom :as dom]
+   ;; [goog.dom.query :as query]
+   [goog.net.XhrIo :as xhrio]
+   ;; [goog.net.WebSocket :as ws]
     
-           ))
+   )
+
+  )
 
 (defn greet
   [n]
@@ -25,7 +29,7 @@
   [x]
   (console/log "Delete button clicked")
   (console/log x)
-  (if-let [article (find-parent-article (.target x))]
+  (if-let [article (find-parent-article (. x (target)))]
     (let [id (.getAttribute article "id")
           url (str "/notice/" id)]
       (xhrio/send
@@ -59,7 +63,9 @@
 (defn -main
   []
   (console/log "starting application")
-  (add-handler do-delete-activity (dom/query "#delete-button"))
-  (add-handler do-like-button (dom/query "#like-button")))
+  ;; (add-handler do-delete-activity (dom/query "#delete-button"))
+  ;; (add-handler do-like-button (dom/query "#like-button"))
+
+  )
 
 (-main)
