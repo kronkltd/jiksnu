@@ -20,3 +20,5 @@ logs
 newrelic
 resources/public/cljs
 target
+.clojurescript-output
+newrelic
