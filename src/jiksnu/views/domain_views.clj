@@ -36,7 +36,7 @@
 
 (defview #'index :html
   [request domains]
-  {:body (templates.domain/index-block domains)})
+  {:body (sections.domain/index-block domains)})
 
 (defview #'ping :xmpp
   [request domain]

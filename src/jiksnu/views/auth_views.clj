@@ -6,7 +6,7 @@
         ciste.sections.default
         (jiksnu model view)
         jiksnu.actions.auth-actions)
-  (:require (jiksnu.sections [auth :as sections.auth])
+  (:require (jiksnu.sections [auth-sections :as sections.auth])
             (ring.util [response :as response]))
   (:import jiksnu.model.User))
 

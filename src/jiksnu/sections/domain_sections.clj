@@ -1,5 +1,9 @@
 (ns jiksnu.sections.domain-sections
-  (:require (jiksnu.sections [link-sections :as sections.link])))
+  (:use (ciste [sections :only [defsection]] )
+        (ciste.sections [default :only [link-to link-to-format]]))
+  #_(:require (jiksnu.sections [link-sections :as sections.link]))
+  (:import jiksnu.model.Domain)
+  )
 
 (defn add-form
   []
@@ -15,20 +19,20 @@
 
 
 (defn delete-button
-  []
+  [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/discover")}
    [:input {:type "hidden" :name "_method" :value "DELETE"}]
    [:input.btn.delete-button {:type "submit" :value "Delete"}]])
 
 (defn discover-button
-  []
+  [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/discover")}
    [:input.btn.discover-button {:type "submit" :value "Discover"}]])
 
 (defn edit-button
-  []
+  [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/edit")}
    [:input.btn.edit-button {:type "submit" :value "Edit"}]])
