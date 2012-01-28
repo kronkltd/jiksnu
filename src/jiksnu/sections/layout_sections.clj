@@ -15,15 +15,7 @@
                 ["/main/domains"             "Domains"]
                 ["/groups"                   "Groups"]]
                (when authenticated
-                 (concat
-                  [["/settings/profile"         "Profile"]]
-                  (when (is-admin?)
-                    [["/admin"                    "Admin"]
-                     ["/admin/activities"         "Activities"]
-                     ["/admin/settings"           "Settings"]
-                     ["/admin/pshb-subscriptions" "PubSub"]
-                     ["/admin/users"              "Users"]
-                     ["/admin/subscriptions"      "Subscriptions"]]))))]
+                 [["/settings/profile"         "Profile"]]))]
     [:nav
      [:ul.nav
       (map
@@ -40,11 +32,32 @@
      (sections.user/display-avatar user)
      (link-to user)]))
 
+(defn side-navigation
+  []
+  (let [links (when (is-admin?)
+                [["/admin"                    "Admin"]
+                 ["/admin/activities"         "Activities"]
+                 ["/admin/settings"           "Settings"]
+                 ["/admin/pshb-subscriptions" "PubSub"]
+                 ["/admin/users"              "Users"]
+                 ["/admin/subscriptions"      "Subscriptions"]])]
+    [:nav
+     [:ul.unstyled
+      (map
+       (fn [[link title]]
+         [:li.active
+          [:a {:href link} title]])
+       links)]]
+
+    )
+  )
+
 
 (defn left-column-section
   [authenticated subscribers subscriptions groups]
   [:aside#left-column.sidebar
    (user-info-section (current-user))
+   (side-navigation)
    (sections.subscription/subscriptions-section (current-user) [])
    (sections.subscription/subscribers-section (current-user) [])
    (sections.group/user-groups (current-user))])
