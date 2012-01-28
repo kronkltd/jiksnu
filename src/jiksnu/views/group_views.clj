@@ -1,8 +1,7 @@
 (ns jiksnu.views.group-views
   (:use (ciste [views :only [defview]])
         ciste.sections.default
-        jiksnu.actions.group-actions)
-  (:require (jiksnu.templates group)))
+        jiksnu.actions.group-actions))
 
 (defview #'index :html
   [request groups]
