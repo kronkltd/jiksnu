@@ -1,11 +1,37 @@
 (ns jiksnu.sections.domain-sections
   (:require (jiksnu.sections [link-sections :as sections.link])))
 
+(defn add-form
+  []
+  [:form {:method "post" :actions "/main/domains"}
+   [:fieldset
+    [:legend "Add Domain"]
+    [:div.clearfix
+     [:label {:for "domain"} "Domain"]
+     [:div.input
+      [:input {:type "test" :name "domain"}]]]
+    [:div.actions
+     [:div.btn.primary {:type "submit" :value "Add"}]]]])
+
+
+(defn delete-button
+  []
+  [:form {:method "post"
+          :action (str "/main/domains/" (:_id domain) "/discover")}
+   [:input {:type "hidden" :name "_method" :value "DELETE"}]
+   [:input.btn.delete-button {:type "submit" :value "Delete"}]])
+
 (defn discover-button
   []
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/discover")}
    [:input.btn.discover-button {:type "submit" :value "Discover"}]])
+
+(defn edit-button
+  []
+  [:form {:method "post"
+          :action (str "/main/domains/" (:_id domain) "/edit")}
+   [:input.btn.edit-button {:type "submit" :value "Edit"}]])
 
 (defn show-section
   [domain]
@@ -13,7 +39,7 @@
    [:p "Id: " [:span.domain-id (:id domain)]]
    [:p "XMPP: " (:xmpp domain)]
    [:p "Discovered: " (:discovered domain)]
-   (sections.link/index-section (:links domain))
+   #_(sections.link/index-section (:links domain))
    (discover-button domain)])
 
 (defn index-line
