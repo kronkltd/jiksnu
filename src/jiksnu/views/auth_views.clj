@@ -1,11 +1,12 @@
 (ns jiksnu.views.auth-views
   (:use (ciste core
-               [debug :only (spy)]
-               sections views)
+               [debug :only [spy]]
+               sections
+               [views :only [defview]])
         ciste.sections.default
         (jiksnu model view)
         jiksnu.actions.auth-actions)
-  (:require (jiksnu.templates [auth :as templates.auth])
+  (:require (jiksnu.sections [auth :as sections.auth])
             (ring.util [response :as response]))
   (:import jiksnu.model.User))
 
@@ -64,7 +65,7 @@
 
 (defview #'password-page :html
   [request user]
-  {:body (templates.auth/password-page user)})
+  {:body (sections.auth/password-page user)})
 
 (defview #'verify-credentials :json
   [request _]

@@ -27,3 +27,16 @@
       (if authenticated
         (logout-button authenticated)
         (login-button))]]))
+
+(defn password-page
+  [user]
+  [:form {:method "post" :action "/main/login"}
+   [:fieldset
+    [:legend "Enter PAssword"]
+    [:input {:type "hidden" :name "username" :value (:username user)}]
+    [:div.clearfix
+     [:label {:for "password"} "Password"]
+     [:div.input
+      [:input {:type "password" :name "password"}]]]
+    [:div.actions
+     [:input {:type "submit" :value "Login"}]]]])
