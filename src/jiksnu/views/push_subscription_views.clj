@@ -1,17 +1,13 @@
 (ns jiksnu.views.push-subscription-views
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
                sections
-               [views :only (defview)])
+               [views :only [defview]])
         ciste.sections.default
         jiksnu.actions.push-subscription-actions
         (jiksnu model session view))
-  (:require (jiksnu [namespace :as namespace])
-            (jiksnu.model [push-subscription :as model.push-subscription]
-                          [user :as model.user]))
-  (:import jiksnu.model.PushSubscription
-           jiksnu.model.User))
-
+  (:require (jiksnu.model [push-subscription :as model.push-subscription]
+                          [user :as model.user])))
 
 (defview #'callback :html
   [request params]
@@ -34,4 +30,3 @@
 (defview #'subscribe :html
   [request _]
   {:template :false})
-
