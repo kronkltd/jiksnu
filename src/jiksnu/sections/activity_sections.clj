@@ -104,6 +104,66 @@
     [:option {:value "event"}    "Event"]
     [:option {:value "bookmark"} "Bookmark"]]])
 
+(defn post-actions
+  [activity]
+  
+  )
+
+(defn recipients-section
+  [activity]
+  
+  )
+
+(defn links-section
+  [activity]
+  
+  )
+
+(defn maps-section
+  [activity]
+  
+  )
+
+(defn likes-section
+  [activity]
+  (when (:likes activity)
+    [:section
+     [:span "Liked by"]
+     [:ul
+      (map
+       (fn [user]
+         [:li (link-to user)])
+       (:likes activity))]]))
+
+(defn tags-section
+  [activity]
+  (when (:tags activity)
+    [:div.tags
+     [:span "Tags: "]
+     [:ul.tags
+      (map
+       (fn [tag]
+         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+       (:tags activity))]]))
+
+(defn posted-link-section
+  [activity]
+  [:span.posted
+   "posted "
+   [:time {:datetime (:published activity)
+           :title (:published activity)}
+    [:a {:href (uri activity)
+         :property "dc:published"
+         :content (:published activity)}
+     (-> activity :published model.activity/prettyify-time)]]])
+
+(defn comments-section
+  [activity]
+  [:section.comments
+   [:h4.hidden "Comments"]
+   ]
+  )
+
 (defn activity-form
   [activity]
   (let [{:keys [id parent-id content]} activity]
@@ -236,64 +296,6 @@
       #_(.setContentAsHtml object-element (:content activity)))
     entry))
 
-
-(defn post-actions
-  [activity]
-  
-  )
-
-(defn recipients-section
-  [activity]
-  
-  )
-
-(defn links-section
-  [activity]
-  
-  )
-
-(defn maps-section
-  [activity]
-  
-  )
-
-(defn likes-section
-  [activity]
-  (when (:likes activity)
-    [:section
-     [:span "Liked by"]
-     [:ul
-      (map
-       (fn [user]
-         [:li (link-to user)])
-       (:likes activity))]]))
-
-(defn tags-section
-  [activity]
-  (when (:tags activity)
-    [:div.tags
-     "Tags: "
-     [:ul.tags
-      (map
-       (fn [tag]
-         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
-       (:tags activity))]]))
-
-(defn posted-link-section
-  [activity]
-  [:span.posted
-   "posted "
-   [:time {:datetime (:published activity)
-           :title (:published activity)}
-    [:a {:href (uri activity)
-         :property "dc:published"
-         :content (:published activity)}
-     (-> activity :published model.activity/prettyify-time)]]])
-
-(defn comments-section
-  [activity]
-  
-  )
 
 (defsection show-section [Activity :html]
   [activity & _]
