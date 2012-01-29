@@ -33,11 +33,11 @@
         sig (-> envelope :sig model.signature/decode)]
     (model.signature/verified?
      (.getBytes
-      (spy (model.signature/get-base-string
-            data
-            (model.signature/encode (.getBytes datatype))
-            (model.signature/encode (.getBytes encoding))
-            (model.signature/encode (.getBytes alg)))))
+      (model.signature/get-base-string
+       data
+       (model.signature/encode (.getBytes datatype))
+       (model.signature/encode (.getBytes encoding))
+       (model.signature/encode (.getBytes alg))))
      sig pub-key)))
 
 (defn decode-envelope
@@ -65,7 +65,7 @@
 
 (defaction process
   [user envelope]
-  (if-let [activity (extract-activity (spy envelope))]
+  (if-let [activity (extract-activity envelope)]
     (if-let [actor (helpers.activity/get-author activity)]
       (if-let [pub-key (get-key actor)]
         (if (or (signature-valid? envelope pub-key)

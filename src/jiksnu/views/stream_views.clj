@@ -181,30 +181,26 @@
   (let [triples (with-format :rdf (show-section user))]
     {:body
      (-> triples
-         spy 
-        rdf/model-add-triples
-        rdf/defmodel
-        (rdf/model-to-format :n3)
-        with-out-str
-        )
-    :template false
-    })
-  )
+         rdf/model-add-triples
+         rdf/defmodel
+         (rdf/model-to-format :n3)
+         with-out-str)
+     :template false}))
 
 (defview #'user-timeline :rdf
   [request [user activities]]
   {:body
    (try
      (let [model (rdf/build-model)
-           triples (show-section (spy user))]
+           triples (show-section user)]
        (doto (rdf/to-java model)
          (.setNsPrefix "activity" namespace/as)
          (.setNsPrefix "sioc" namespace/sioc)
          (.setNsPrefix "cert" namespace/cert)
          (.setNsPrefix "foaf" namespace/foaf))
        (rdf/with-model model
-         (rdf/model-add-triples (spy triples))
-         (with-out-str (rdf/model-to-format (spy model) :xml))))
+         (rdf/model-add-triples triples)
+         (with-out-str (rdf/model-to-format model :xml))))
      (catch Exception ex
           (clojure.stacktrace/print-stack-trace ex)
           (pst+ ex)
