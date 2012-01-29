@@ -29,13 +29,29 @@
  * @param users
  */
 {template .adminIndex}
-  <table>
-    {foreach $user in $users}
-      <tr>
-
-      </tr>
-    {/foreach}
-  </table>
+  <div>
+    <table class="users">
+      <thead>
+        <tr>
+          <th></th>
+          <th>User</th>
+          <th>Domain</th>
+          <th>Discover</th>
+          <th>Update</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $user in $users}
+          {call .adminIndexLine data="$user"}
+            {param authenticated: $authenticated /}
+          {/call}
+        {/foreach}
+      </tbody>
+    </table>
+    {call .addForm data="all" /}
+  </div>
 {/template}
 
 /**
@@ -186,6 +202,31 @@
  * @param username
  * @param domain
  */
+{template .adminIndexLine}
+  <tr>
+    <td>{call .displayAvatar data="all" /}</td>
+    <td>
+      {call .linkTo data="all"}
+        {param display_name: $username /}
+      {/call}
+    </td>
+    <td>
+      {call jiksnu.templates.domain.linkTo}
+        {param id: $domain /}
+      {/call}
+    </td>
+    <td>{call .discoverButton data="all" /}</td>
+    <td>{call .updateButton data="all" /}</td>
+    <td>{call .editButton data="all" /}</td>
+    <td>{call .deleteButton data="all" /}</td>
+  </tr>
+{/template}
+
+
+/**
+ * @param username
+ * @param domain
+ */
 {template .indexLine}
   <tr>
     <td>{call .displayAvatar data="all" /}</td>
@@ -213,27 +254,13 @@
  */
 {template .indexSection}
   <div>
-    <table class="users">
-      <thead>
-        <tr>
-          <th></th>
-          <th>User</th>
-          <th>Domain</th>
-          <th>Discover</th>
-          <th>Update</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {foreach $user in $users}
-          {call .indexLine data="$user"}
-            {param authenticated: $authenticated /}
-          {/call}
-        {/foreach}
-      </tbody>
-    </table>
-    {call .addForm data="all" /}
+    <ul class="users">
+      {foreach $user in $users}
+        {call .indexLine data="$user"}
+          {param authenticated: $authenticated /}
+        {/call}
+      {/foreach}
+    </ul>
   </div>
 {/template}
 

@@ -64,7 +64,7 @@
 
 (defview #'admin-index :html
   [request users]
-  {:body (templates.user/index-section users)})
+  {:body (templates.user/admin-index users)})
 
 (defview #'profile :html
   [request user]
