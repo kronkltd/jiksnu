@@ -44,7 +44,7 @@
               :hub.verify "async"})]
         (http/sync-http-request
          {:method :get
-          :url (spy subscribe-link)
+          :url subscribe-link
           :auto-transform true})))))
 
 (defn valid?
