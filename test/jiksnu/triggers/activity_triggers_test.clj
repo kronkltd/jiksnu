@@ -1,14 +1,13 @@
 (ns jiksnu.triggers.activity-triggers-test
-  (:use ciste.core
-        ciste.debug
-        ciste.views
+  (:use (ciste core debug views)
         clj-factory.core
         clojure.test
         jiksnu.test-helper
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers
-        jiksnu.views.activity-views)
+        jiksnu.views.activity-views
+        midje.sweet)
   (require [clj-tigase.packet :as packet]
            [jiksnu.model.activity :as model.activity]
            [jiksnu.model.user :as model.user])
