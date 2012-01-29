@@ -53,18 +53,15 @@
   :cljsbuild {
               :source-path "src-cljs"
               :compiler {
-                          
-                          :output-to "resources/public/cljs/bootstrap.js"
-
-
-                          
-                          :optimizations :whitespace
-                          :pretty-print true}
-              }
+                         :output-to "resources/public/cljs/bootstrap.js"
+                         :optimizations :whitespace
+                         :pretty-print true
+                         }}
   :main jiksnu.core
   :newrelic true
   :warn-on-reflection false
-  :jvm-opts ["-server"
+  :jvm-opts [
+             "-server"
              "-XX:MaxPermSize=1024m"
              "-javaagent:/home/duck/projects/jiksnu/newrelic/newrelic.jar"
              "-Dfile.encoding=UTF-8"
