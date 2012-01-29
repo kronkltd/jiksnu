@@ -1,5 +1,6 @@
 (ns jiksnu.views.stream-views-test
-  (:use (ciste core sections views)
+  (:use (ciste [config :only [with-environment]]
+               core sections views)
         clj-factory.core
         clojure.test
         (jiksnu test-helper model session view)
@@ -12,14 +13,13 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
-(test-environment-fixture)
+(with-environment :test
+  (test-environment-fixture)
 
-;; (deftest apply-view-test)
-
-(fact "#'index :atom"
-  (fact "should be a map"
-    (with-serialization :http
-      (with-format :atom
-        (with-user (model.user/create (factory User))
-          (let [activity (model.activity/create (factory Activity))]
-            (apply-view {:action #'index :format :atom} [activity]) => map?))))))
+  (future-fact "apply-view #'index :atom"
+    (fact "should be a map"
+      (with-serialization :http
+        (with-format :atom
+          (with-user (model.user/create (factory User))
+            (let [activity (model.activity/create (factory Activity))]
+              (apply-view {:action #'index :format :atom} [activity]) => map?)))))))

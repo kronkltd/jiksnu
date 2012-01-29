@@ -1,5 +1,6 @@
 (ns jiksnu.model.webfinger-test
-  (:use (ciste [debug :only (spy)])
+  (:use (ciste [config :only [with-environment]]
+               [debug :only (spy)])
         (clj-factory [core :only (factory)])
         clojure.test
         midje.sweet
@@ -9,33 +10,35 @@
   (:import jiksnu.model.User
            nu.xom.Document))
 
-(test-environment-fixture)
+(with-environment :test
 
-(against-background
- [(around :facts
-    (let [user (actions.user/create (factory User))
-          options {}]
-      ?form))]
+  (test-environment-fixture)
 
- ;; (deftest test-fetch-host-meta)
+  (against-background
+    [(around :facts
+             (let [user (actions.user/create (factory User))
+                   options {}]
+               ?form))]
 
- (fact "when the url points to a valid XRD document"
-   (let [url "http://kronkltd.net/.well-known/host-meta"]
-     (fetch-host-meta url) => (partial instance? Document)))
+    (fact "fetch-host-meta"
 
- (fact "when the url does not point to a valid XRD document"
-   (future-fact "should raise an exception"
-     (let [url "http://example.com/.well-known/host-meta"]
-       (fetch-host-meta url) => nil)))
+      (fact "when the url points to a valid XRD document"
+        (let [url "http://kronkltd.net/.well-known/host-meta"]
+          (fetch-host-meta url) => (partial instance? Document)))
 
- ;; (deftest test-get-links
- ;;   (future-fact
- ;;     (let [xrd nil]
- ;;       (get-links xrd)) => seq?))
+      (fact "when the url does not point to a valid XRD document"
+        (future-fact "should raise an exception"
+          (let [url "http://example.com/.well-known/host-meta"]
+            (fetch-host-meta url) => nil))))
 
- ;; (deftest test-get-keys-from-xrd
- ;;   (future-fact "should return a sequence of keys for the uri"
- ;;     (let [uri "acct:duck@kronkltd.net"]
- ;;       (get-keys uri)) => seq?))
+    ;; (deftest test-get-links
+    ;;   (future-fact
+    ;;     (let [xrd nil]
+    ;;       (get-links xrd)) => seq?))
 
-)
+    ;; (deftest test-get-keys-from-xrd
+    ;;   (future-fact "should return a sequence of keys for the uri"
+    ;;     (let [uri "acct:duck@kronkltd.net"]
+    ;;       (get-keys uri)) => seq?))
+
+    ))

@@ -11,7 +11,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(test-environment-fixture)
+;; (test-environment-fixture)
 
 ;; (deftest index-test)
 

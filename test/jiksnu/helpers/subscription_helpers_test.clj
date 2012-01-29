@@ -1,5 +1,6 @@
 (ns jiksnu.helpers.subscription-helpers-test
-  (:use clj-factory.core
+  (:use (ciste [config :only [with-environment]])
+        clj-factory.core
         clojure.test
         jiksnu.test-helper
         jiksnu.helpers.subscription-helpers
@@ -9,26 +10,25 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
-(test-environment-fixture)
+(with-environment :test
+  (test-environment-fixture)
 
-;; (deftest subscriber-response-element-test)
+  (fact "subscriber-response-element"
+    (fact "should"
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            subscription (model.subscription/subscribe
+                          (:_id user) (:_id subscribee))]
+        (let [response (subscriber-response-element subscription)]
+          (is (or (vector? response)
+                  (element/element? response)))))))
 
-(fact "should"
-  (let [user (model.user/create (factory User))
-        subscribee (model.user/create (factory User))
-        subscription (model.subscription/subscribe
-                      (:_id user) (:_id subscribee))]
-    (let [response (subscriber-response-element subscription)]
-      (is (or (vector? response)
-              (element/element? response))))))
-
-;; (deftest subscribe-request-test)
-
-(fact "should"
-  (let [user (model.user/create (factory User))
-        subscribee (model.user/create (factory User))
-        subscription (model.subscription/subscribe
-                      (:_id user) (:_id subscribee))]
-    (let [response (subscribe-request subscription)]
-      (is (or (vector? response)
-              (element/element? response))))))
+  (fact "subscribe-request"
+    (fact "should"
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            subscription (model.subscription/subscribe
+                          (:_id user) (:_id subscribee))]
+        (let [response (subscribe-request subscription)]
+          (is (or (vector? response)
+                  (element/element? response))))))))

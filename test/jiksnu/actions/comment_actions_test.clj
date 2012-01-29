@@ -1,5 +1,6 @@
 (ns jiksnu.actions.comment-actions-test
-  (:use (clj-factory [core :only (factory)])
+  (:use (ciste [config :only [with-environment]])
+        (clj-factory [core :only [factory]])
         clojure.test
         midje.sweet
         (jiksnu test-helper
@@ -10,15 +11,17 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(test-environment-fixture)
 
-;; (deftest fetch-comments-test)
+(with-environment :test
+  (test-environment-fixture)
+  ;; (deftest fetch-comments-test)
 
-(fact "when the activity exists"
-  (fact "and there are no comments"
-    (fact "should return an empty sequence"
-      (let [actor (model.user/create (factory User))]
-        (with-user actor
-          (let [activity (actions.activity/create (factory Activity))
-                [_ comments] (fetch-comments activity)]
-            comments => empty?))))))
+ (fact "when the activity exists"
+   (fact "and there are no comments"
+     (fact "should return an empty sequence"
+       (let [actor (model.user/create (factory User))]
+         (with-user actor
+           (let [activity (actions.activity/create (factory Activity))
+                 [_ comments] (fetch-comments activity)]
+             comments => empty?))))))
+)

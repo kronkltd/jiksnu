@@ -11,10 +11,10 @@
   `(do
      (log/info (str "Testing " *ns*))
      (background
-      (around :facts
-              (do (load-config)
-                  (with-environment :test
-                    (print ".")
-                    (drop-all!)
-                    ?form
-                    (.shutdown @*thread-pool*)))))))
+      (around :contents
+              (do
+                (load-config)
+                (print ".")
+                ;; (drop-all!)
+                ?form
+                (.shutdown @*thread-pool*))))))

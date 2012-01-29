@@ -1,5 +1,6 @@
 (ns jiksnu.xmpp.element-test
-  (:use (ciste core debug sections)
+  (:use (ciste [config :only [with-environment]]
+               core debug sections)
         ciste.sections.default
         [clj-factory.core :only [factory]]
         [clojure.test :only [deftest is]]
@@ -12,14 +13,11 @@
             jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity))
 
-(test-environment-fixture)
+(with-environment :test
+  (test-environment-fixture)
 
-;; (deftest abdera-to-tigase-element-test)
-
-(fact "should return a tigase element"
-  (with-serialization :xmpp
-    (with-format :atom
-      (let [activity (factory Activity)
-            abdera-element (show-section activity)
-            response (abdera-to-tigase-element abdera-element)]
-        (is (element/element? response))))))
+  (fact "abdera-to-tigase-element"
+    (fact "should return a tigase element"
+      (with-context [:xmpp :atom]
+        (let [element (show-section (factory Activity))]
+          (abdera-to-tigase-element element) => element/element?)))))

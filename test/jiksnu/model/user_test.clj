@@ -1,7 +1,7 @@
 (ns jiksnu.model.user-test
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)])
-        (clj-factory [core :only (factory fseq)])
+  (:use (ciste [config :only [config with-environment]]
+               [debug :only [spy]])
+        (clj-factory [core :only [factory fseq]])
         clojure.test
         (jiksnu test-helper model)
         jiksnu.model.user
@@ -13,158 +13,97 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
-(test-environment-fixture)
 
-;; (deftest test-get-domain)
+(with-environment :test
+  (test-environment-fixture)
 
-(facts
- (let [domain (actions.domain/create (factory Domain))
-       user (actions.user/create (factory User {:domain (:_id domain)}))]
-   (get-domain nil) => nil
-   (get-domain user) => domain))
+  (fact "get-domain"
+    (let [domain (actions.domain/create (factory Domain))
+          user (actions.user/create (factory User {:domain (:_id domain)}))]
+      (get-domain nil) => nil
+      (get-domain user) => domain))
 
-;; (deftest test-get-uri)
+  (fact "local?"
+    (fact "when there is a user"
+      (fact "and it's domain is the same as the current domain"
+        (fact "should be true"
+          (let [domain (config :domain)
+                user (factory User {:domain domain})]
+            (local? user) => truthy)))
+      (fact "and it's domain is different from the current domain"
+        (fact "should be false"
+          (let [domain (fseq :domain)
+                user (factory User {:domain domain})]
+            (local? user) => falsey)))))
 
-;; (deftest test-local?)
+  (fact "rel-filter"
+    (let [links [{:rel "alternate"}
+                 {:rel "contains"}]]
+      (rel-filter "alternate" links) => [{:rel "alternate"}]
+      (rel-filter "foo" links) => []))
 
-(fact "when there is a user"
-  (fact "and it's domain is the same as the current domain"
-    (fact "should be true"
-      (let [domain (config :domain)
-            user (factory User {:domain domain})]
-        (local? user) => truthy)))
-  (fact "and it's domain is different from the current domain"
-    (fact "should be false"
-      (let [domain (fseq :domain)
-            user (factory User {:domain domain})]
-        (local? user) => falsey))))
+  (fact "split-uri"
+    (split-uri "bob@example.com") => ["bob" "example.com"]
+    (split-uri "acct:bob@example.com") => ["bob" "example.com"]
+    (split-uri "http://example.com/bob") => nil)
 
-;; (deftest test-rel-filter)
+  (fact "display-name"
+    (display-name .user.) => string?)
 
-(facts
- (let [links [{:rel "alternate"}
-              {:rel "contains"}]]
-   (rel-filter "alternate" links) => [{:rel "alternate"}]
-   (rel-filter "foo" links) => []))
+  (fact "get-link"
+    (let [user (factory User {:links [{:rel "foo" :href "bar"}]})]
+      (get-link user "foo") => (contains {:href "bar"})
+      (get-link user "baz") => nil))
 
-;; (deftest test-split-uri)
+  ;; TODO: This is a better test for actions
+  (fact "index"
+    (fact "when there are no users"
+      (fact "should be empty"
+        ;; TODO: all collections should be emptied in background
+        (drop!)
+        (index) => empty?))
 
-(facts
- (split-uri "bob@example.com") => ["bob" "example.com"]
- (split-uri "acct:bob@example.com") => ["bob" "example.com"]
- (split-uri "http://example.com/bob") => nil)
+    (fact "when there are users"
+      (fact "should not be empty"
+        (actions.user/create (factory User))
+        (index) => seq?)
+      (fact "should return a seq of users"
+        (actions.user/create (factory User))
+        (index) => (partial every? user?))))
 
-;; (deftest test-display-name)
+  (fact "show"
+    (fact "when the user is found"
+      (fact "should return a user"
+        (let [username (fseq :id)
+              domain (actions.domain/create (factory Domain))]
+          (actions.user/create (factory User {:username username
+                                              :domain (:_id domain)}))
+          (show username (:_id domain)) => user?)))
 
-(facts
- (display-name .user.) => string?)
+    (fact "when the user is not found"
+      (fact "should return nil"
+        (drop!)
+        (let [username (fseq :id)
+              domain (actions.domain/create (factory Domain))]
+          (show username (:_id domain)) => nil))))
 
-;; (deftest test-get-link)
+  (fact "user-meta-uri"
+    (fact "when the user's domain does not have a lrdd link"
+      (fact "should return nil"
+        (let [user (actions.user/create (factory User))]
+          (user-meta-uri user) => nil)))
 
-(fact
-  (let [user (factory User {:links [{:rel "foo" :href "bar"}]})]
-    (get-link user "foo") => (contains {:href "bar"})
-    (get-link user "baz") => nil))
+    (fact "when the user's domain has a lrdd link"
+      (fact "should insert the user's uri into the template"
+        (let [domain (actions.domain/create
+                      (factory Domain
+                               {:links [{:rel "lrdd"
+                                         :template "http://example.com/main/xrd?uri={uri}"}]}))
+              user (actions.user/create
+                    (factory User {:domain (:_id domain)}))]
+          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
-;; (deftest test-drop!)
-
-;; (deftest test-create)
-
-;; TODO: This is a better test for actions
-;; (deftest test-index)
-
-(fact "when there are no users"
-  (fact "should be empty"
-    ;; TODO: all collections should be emptied in background
-    (drop!)
-    (index) => empty?))
-
-(fact "when there are users"
-  (fact "should not be empty"
-    (actions.user/create (factory User))
-    (index) => seq?)
-  (fact "should return a seq of users"
-    (actions.user/create (factory User))
-    (index) => (partial every? user?)))
-
-;; (deftest test-show)
-
-(fact "when the user is found"
-  (fact "should return a user"
-    (let [username (fseq :id)
-          domain (actions.domain/create (factory Domain))]
-      (actions.user/create (factory User {:username username
-                                          :domain (:_id domain)}))
-      (show username (:_id domain)) => user?)))
-
-(fact "when the user is not found"
-  (fact "should return nil"
-    (drop!)
-    (let [username (fseq :id)
-          domain (actions.domain/create (factory Domain))]
-      (show username (:_id domain)) => nil)))
-
-;; (deftest test-fetch-by-id)
-
-;; (deftest test-fetch-by-jid)
-
-;; (deftest test-fetch-by-uri)
-
-;; (deftest test-fetch-by-remote-id)
-
-;; (deftest test-find-or-create)
-
-;; (deftest test-find-or-create-by-uri)
-
-;; (deftest test-find-or-create-by-remote-id)
-
-;; (deftest test-find-or-create-by-jid)
-
-;; (deftest test-subnodes)
-
-;; (deftest edit-test)
-
-(fact "when the user is found"
-  (future-fact "should return a user"))
-
-(fact "when the user is not found"
-  (future-fact "should return nil"))
-
-;; (deftest delete-test)
-
-(fact "when the user exists"
-  (future-fact "should be deleted"))
-
-;; (deftest test-add-node)
-
-;; (deftest update-test)
-
-(fact "when the request is valid"
-  (future-fact "should return a user"
-               (let [request {:params {"id" (fseq :word)}}])))
-
-;; (deftest test-user-meta-uri)
-
-(fact "when the user's domain does not have a lrdd link"
-  (fact "should return nil"
+  (fact "vcard-request"
     (let [user (actions.user/create (factory User))]
-      (user-meta-uri user) => nil)))
-
-(fact "when the user's domain has a lrdd link"
-  (fact "should insert the user's uri into the template"
-    (let [domain (actions.domain/create
-                  (factory Domain
-                           {:links [{:rel "lrdd"
-                                     :template "http://example.com/main/xrd?uri={uri}"}]}))
-          user (actions.user/create
-                (factory User {:domain (:_id domain)}))]
-      (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
-
-;; (deftest test-format-data)
-
-;; (deftest test-vcard-request)
-
-(fact
-  (let [user (actions.user/create (factory User))]
-    (vcard-request user) => packet/packet?))
+      (vcard-request user) => packet/packet?)))
 

@@ -1,5 +1,6 @@
 (ns jiksnu.actions.domain-actions-test
-  (:use (clj-factory [core :only [factory fseq]])
+  (:use (ciste [config :only [with-environment]])
+        (clj-factory [core :only [factory fseq]])
         clojure.test
         (jiksnu model test-helper)
         jiksnu.actions.domain-actions
@@ -8,43 +9,43 @@
             (jiksnu.model [domain :as model.domain]))
   (:import jiksnu.model.Domain))
 
-(test-environment-fixture)
+(with-environment :test
 
-;; (deftest test-create)
+  (test-environment-fixture)
 
-(fact "should create the domain"
-  (let [options {:_id (fseq :domain)}]
-    (create options) => domain?))
+  (fact "create"
+    (fact "should create the domain"
+    (let [options {:_id (fseq :domain)}]
+      (create options) => domain?)))
 
-;; (deftest test-delete)
+  (fact "delete"
+    (fact "when the domain does not exist"
+      (fact "should return nil"
+        (let [domain (factory Domain)]
+          (delete domain) => nil?)))
 
-(fact "when the domain does not exist"
-  (fact "should return nil"
-    (let [domain (factory Domain)]
-      (delete domain) => nil?)))
+    (future-fact "when the domain exists"
+                 (against-background
+                   [(around :facts
+                            (let [domain (create (factory Domain))]
+                              ?form))]
+                   (fact "should return the deleted domain"
+                     (delete domain) => domain)
+                   
+                   (fact "should delete the domain"
+                     (delete domain)
+                     (show domain) => nil?))))
 
-#_(fact "when the domain exists"
-  (against-background
-   [(around :facts
-            (let [domain (create (factory Domain))]
-              ?form))]
-   (fact "should return the deleted domain"
-     (delete domain) => domain)
-   
-   (fact "should delete the domain"
-     (delete domain)
-     (show domain) => nil?)))
+ ;; (deftest test-discover-onesocialweb)
 
-;; (deftest test-discover-onesocialweb)
+ (fact "should send a packet to that domain"
+   (let [action #'discover
+         domain (create (factory Domain))
+         id (:_id domain)]
+     (discover-onesocialweb domain) => packet/packet?))
 
-(fact "should send a packet to that domain"
-  (let [action #'discover
-        domain (create (factory Domain))
-        id (:_id domain)]
-    (discover-onesocialweb domain) => packet/packet?))
+ ;; (deftest test-host-meta)
 
-;; (deftest test-host-meta)
-
-(fact "should return a XRD object"
-  (host-meta) => map?)
+ (fact "should return a XRD object"
+   (host-meta) => map?))
 

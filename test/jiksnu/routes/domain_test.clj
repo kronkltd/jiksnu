@@ -1,5 +1,6 @@
 (ns jiksnu.routes.domain-test
-  (use (ciste [debug :only [spy]])
+  (use (ciste [config :only [with-environment]]
+              [debug :only [spy]])
        (clojure [test :only [deftest]])
        (jiksnu [test-helper :only [test-environment-fixture]]
                [routes :only [app]])
@@ -11,13 +12,14 @@
             (lamina [core :as l])))
 
 
-(test-environment-fixture)
+(with-environment :test
+  (test-environment-fixture)
 
-;; (deftest webfinger-host-meta-test)
+  ;; (deftest webfinger-host-meta-test)
 
-(fact "should return a XRD document"
-  (let [ch (l/channel)]
-    (app ch (request :get "/.well-known/host-meta"))
-    (let [{:keys [body] :as response} (l/wait-for-message ch 5000)]
-      response => (contains {:status 200})
-      body => #"<XRD.*")))
+  (fact "should return a XRD document"
+    (let [ch (l/channel)]
+      (app ch (request :get "/.well-known/host-meta"))
+      (let [{:keys [body] :as response} (l/wait-for-message ch 5000)]
+        response => (contains {:status 200})
+        body => #"<XRD.*"))))

@@ -1,13 +1,19 @@
 (ns jiksnu.filters.activity-filters-test
-  (:use clj-factory.core
-        (ciste core debug filters sections)
-        ciste.sections.default
-        clojure.test
+  (:use (clj-factory [core :only [factory]])
+        (ciste [config :only [with-environment]]
+               core
+               [debug :only [spy]]
+               filters
+               sections
+               )
+        ;; ciste.sections.default
+        ;; clojure.test
         (jiksnu test-helper
-                model
+                [model :only [activity?]]
                 [routes :only (app)]
-                session
-                view)
+                [session :only [with-user]]
+                ;; view
+                )
         jiksnu.filters.activity-filters
         jiksnu.xmpp.element
         lamina.core
@@ -23,48 +29,45 @@
             [ring.mock.request :as mock])
   (:import (jiksnu.model Activity User)))
 
-(test-environment-fixture)
 
-;; (deftest filter-action "#'actions.activity/create :xmpp")
+(with-environment :test
 
-;; (fact "when the user is logged in"
-;;   (fact "and it is a valid activity"
-;;     (fact "should return that activity"
-;;       (with-serialization :xmpp
-;;         (with-format :xmpp
-;;           (let [user (model.user/create (factory User))]
-;;             (with-user user
-;;               (let [activity (factory Activity)
-;;                     element (element/make-element
-;;                              (index-section [activity]))
-;;                     packet (tigase/make-packet
-;;                             {:to (tigase/make-jid user)
-;;                              :from (tigase/make-jid user)
-;;                              :type :set
-;;                              :body element})
-;;                     request (assoc (packet/make-request packet)
-;;                               :serialization :xmpp)]
-;;                 (filter-action #'actions.activity/create request) => activity?))))))))
+  (test-environment-fixture)
 
-;; (deftest show-filter-test
-;;   (fact "#'show :xmpp"
-;;     (fact "when the activity exists"
-;;       (fact "should return that activity"))))
+  (future-fact "#'actions.activity/create :xmpp"
+    (fact "when the user is logged in"
+      (fact "and it is a valid activity"
+        (fact "should return that activity"
+          (with-serialization :xmpp
+            (with-format :xmpp
+              (let [user (model.user/create (factory User))]
+                (with-user user
+                  (let [activity (factory Activity)
+                        element (element/make-element
+                                 (index-section [activity]))
+                        packet (tigase/make-packet
+                                {:to (tigase/make-jid user)
+                                 :from (tigase/make-jid user)
+                                 :type :set
+                                 :body element})
+                        request (assoc (packet/make-request packet)
+                                  :serialization :xmpp)]
+                    (filter-action #'actions.activity/create request) => activity?)))))))))
 
-(fact
-  (let [author (model.user/create (factory User))]
-   (with-user author
-     (let [activity (model.activity/create (factory Activity))
-           packet-map {:from (tigase/make-jid author)
-                       :to (tigase/make-jid author)
-                       :type :get
-                       :id "JIKSNU1"
-                       :body (element/make-element
-                              ["pubsub" {"xmlns" namespace/pubsub}
-                               ["items" {"node" namespace/microblog}
-                                ["item" {"id" (:_id activity)}]]])}
-           packet (tigase/make-packet packet-map)
-           request (assoc (packet/make-request packet)
-                     :serialization :xmpp)
-           response (filter-action #'actions.activity/show request)]
-       response => activity?))))
+  (fact "show-filter"
+    (let [author (model.user/create (factory User))]
+      (with-user author
+        (let [activity (model.activity/create (factory Activity))
+              packet-map {:from (tigase/make-jid author)
+                          :to (tigase/make-jid author)
+                          :type :get
+                          :id "JIKSNU1"
+                          :body (element/make-element
+                                 ["pubsub" {"xmlns" namespace/pubsub}
+                                  ["items" {"node" namespace/microblog}
+                                   ["item" {"id" (:_id activity)}]]])}
+              packet (tigase/make-packet packet-map)
+              request (assoc (packet/make-request packet)
+                        :serialization :xmpp)
+              response (filter-action #'actions.activity/show request)]
+          response => activity?)))))
