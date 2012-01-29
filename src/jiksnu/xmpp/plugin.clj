@@ -7,7 +7,8 @@
                 routes
                 view
                 xmpp))
-  (:require (clj-tigase [packet :as packet])
+  (:require (clj-tigase [core :as tigase]
+                        [packet :as packet])
             (clojure.tools [logging :as log])
             (jiksnu [namespace :as namespace]))
   (:import java.util.Queue
@@ -54,13 +55,17 @@
 (defn -process
   [this ^Packet packet session
    repo queue settings]
+  (if (config :print :request)
+    (spy packet))
   (if (or true (not (.getPacketFrom packet)))
-    (if-let [to (.getStanzaTo packet)]
-      (if-let [bare-to (.getBareJID to)]
-        (let [request (packet/make-request packet)]
-          (if (config :print :request)
-            request)
-          (if-let [response (main-handler queue request)]
-            (do
-              (.setPacketTo response (.getPacketFrom packet))
-              (offer-packet queue response))))))))
+    (let [packet-to (.getPacketTo packet)]
+      (if-not (#{"sess-man"} (.getLocalpart packet-to))
+        (if-let [to (.getStanzaTo packet)]
+          (if-let [bare-to (.getBareJID to)]
+            (let [request (packet/make-request packet)]
+              (if-let [response (main-handler queue request)]
+                (do
+                  (.setPacketTo response (.getPacketFrom packet))
+                  (offer-packet queue response))))))
+        ;; (offer-packet queue packet)
+        ))))

@@ -29,8 +29,8 @@
           message-text (:summary activity)
           ele (element/make-element
                ["body" {}
-                (model.user/get-uri author false) ": "
-                (:content activity)]
+                (str (model.user/get-uri author false) ":  "
+                     (:content activity))]
                #_["event" {"xmlns" namespace/event}
                   (index-block [activity])])
           message (tigase/make-packet {:to recipient-jid
