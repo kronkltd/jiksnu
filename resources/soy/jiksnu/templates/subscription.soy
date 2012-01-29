@@ -1,6 +1,20 @@
 {namespace jiksnu.templates.subscription}
 
 /**
+ * @param id
+ */
+{template .deleteButton}
+  <form method="post"
+        action="/main/subscriptions/{$id}">
+    <input type="hidden" name="_method" value="DELETE"
+    <input type="submit"
+           value="Delete"
+           class="delete-button">
+  </form>
+{/template}
+
+
+/**
  * @param subscriptions
  */
 {template .indexSection}
@@ -27,8 +41,9 @@
             <td>{call jiksnu.templates.user.linkTo data="$subscription.from" /}</td>
             <td>{call jiksnu.templates.user.linkTo data="$subscription.to" /}</td>
             <td>{$subscription.pending}</td>
-            <td>{$subscription.created}
-                /* {call .deleteButton data="all" /} */
+            <td>{$subscription.created}</td>
+            <td>
+              {call .deleteButton data="$subscription" /}
             </td>
           </tr>
         {/foreach}
