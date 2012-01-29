@@ -38,7 +38,7 @@
                  ]
   :dev-dependencies [
                      ;; [org.clojars.rferraz/lein-cuke "1.1.1"]
-                     [midje "1.3-alpha6" :exclusions [org.clojure/clojure]]
+                     [midje "1.3.0" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
                      [lein-marginalia "0.6.1"]
                      ]
