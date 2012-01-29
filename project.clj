@@ -14,7 +14,7 @@
                  [compojure "0.6.5"]
                  [hiccup "0.3.7"]
                  [aleph "0.2.1-SNAPSHOT"]
-                 [org.clojars.liquidz/clj-gravatar "0.0.1"]
+                 [net.kronkltd/clj-gravatar "0.0.1"]
                  [joda-time "2.0"]
                  [lamina "0.4.1-SNAPSHOT"]
                  [karras "0.9.0"]
