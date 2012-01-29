@@ -1,6 +1,7 @@
 (ns jiksnu.triggers.activity-triggers
   (:use (ciste core
-               [debug :only (spy)]
+               [config :only [config]]
+               [debug :only [spy]]
                triggers)
         ciste.sections.default
         jiksnu.actions.activity-actions
@@ -23,14 +24,18 @@
 (defn notify-activity
   [recipient ^Activity activity]
   (with-context [:xmpp :xmpp]
-    (let [recipient-jid (tigase/make-jid recipient)
+    (let [recipient-jid (tigase/make-jid (:username recipient) (:domain recipient))
           author (helpers.activity/get-author activity)
           message-text (:summary activity)
-          ele (element/make-element ["event" {"xmlns" namespace/event}
-                                     (index-block [activity])])
+          ele (element/make-element
+               ["body" {}
+                (model.user/get-uri author false) ": "
+                (:content activity)]
+               #_["event" {"xmlns" namespace/event}
+                  (index-block [activity])])
           message (tigase/make-packet {:to recipient-jid
-                                       :from (tigase/make-jid author)
-                                       :type :headline
+                                       :from (tigase/make-jid "updates" (config :domain))
+                                       :type :chat
                                        ;; FIXME: generate an id for this case
                                        :id "JIKSNU1"
                                        :body ele})]
@@ -56,8 +61,9 @@
   [action params activity]
   (let [user (helpers.activity/get-author activity)
         subscribers (model.subscription/subscribers user)
-        subscriber-users (map (comp model.user/fetch-by-id :from)
-                              subscribers)]
+        subscriber-users (filter identity
+                                 (map (comp model.user/fetch-by-id :from)
+                                      subscribers))]
     (model.item/push user activity)
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
@@ -65,4 +71,4 @@
       (notify-activity user activity))))
 
 (add-trigger! #'actions.comment/fetch-comments #'fetch-more-comments)
-(add-trigger! #'post #'post-trigger)
+(add-trigger! #'create #'post-trigger)
