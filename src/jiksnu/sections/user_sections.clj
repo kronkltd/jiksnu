@@ -99,21 +99,15 @@
        [(rdf/rdf-resource (str (full-uri user) "#me"))
         (concat [rdf/rdf:type                    [foaf :Person]
                  foaf:weblog                     (rdf/rdf-resource (full-uri user))
-                 [ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))
-                 
-
-                 ]
+                 [ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))]
                 #_(let [mkp (model.signature/get-key-for-user user)]
-                  [(rdf/rdf-resource (str ns/cert "key"))
-                   [
-                    rdf/rdf:type        [foaf :Person]
-                    #_(rdf/l (str ns/cert "RSAPublicKey"))
-                    ;; (rdf/rdf-resource (str ns/cert "modulus")) (rdf/l (or (:armored-n (spy mkp)) " "))
-                    ;; (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
-                    ]
-                   
-                   ]
-                   )
+                    [(rdf/rdf-resource (str ns/cert "key"))
+                     [
+                      rdf/rdf:type        [foaf :Person]
+                      #_(rdf/l (str ns/cert "RSAPublicKey"))
+                      ;; (rdf/rdf-resource (str ns/cert "modulus")) (rdf/l (or (:armored-n (spy mkp)) " "))
+                      ;; (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
+                      ]])
                 (when username     [foaf:nick       (rdf/l username)])
                 (when name         [foaf:name       (rdf/l name)])
                 (when url          [foaf:homepage   (rdf/rdf-resource url)])
