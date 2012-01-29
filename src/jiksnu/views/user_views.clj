@@ -58,6 +58,10 @@
   [request users]
   {:body (templates.user/index-section users)})
 
+(defview #'index :json
+  [request users]
+  {:body (index-section users)})
+
 (defview #'admin-index :html
   [request users]
   {:body (templates.user/index-section users)})
