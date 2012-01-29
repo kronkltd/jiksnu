@@ -106,18 +106,18 @@
 (defsection show-section [Activity :rdf]
   [activity & _]
   (with-rdf-ns ""
-    (let [uri (full-uri activity)]
-      [
-       [uri [:rdf :type]      [:sioc :Post]]
-       [uri [:as  :verb]      (l "post")]
-       [uri [:sioc  :content]   (l (:content activity))]
-       [uri [:as  :author]    (rdf-resource
-                               (let [user (get-author activity)]
-                                 (or (:id user)
-                                     (model.user/get-uri user))))]
-       [uri [:dc  :published] (date (:published activity))]
-       ])))
-
+    (let [{:keys [content id published]} activity
+          uri (full-uri activity)
+          user (get-author activity)]
+      (concat [
+               [uri [:rdf :type]      [:sioc :Post]]
+               [uri [:as  :verb]      (l "post")]
+               [uri [:sioc  :content] (l content)]
+               [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
+               [uri [:dc  :published] (date published)]
+               ]
+              #_(show-section user)
+              ))))
 
 
 (defsection index-block [Activity :xmpp :xmpp]

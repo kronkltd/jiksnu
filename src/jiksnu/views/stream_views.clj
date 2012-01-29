@@ -81,7 +81,7 @@
           rdf/make-triples
           rdf/model-add-triples)
       {:body (with-out-str
-               (rdf/model-to-format model :xml))
+               (rdf/model-to-format model :xml-abbrev))
       :template :false})))
 
 (defview #'index :xmpp
@@ -200,7 +200,7 @@
          (.setNsPrefix "foaf" namespace/foaf))
        (rdf/with-model model
          (rdf/model-add-triples triples)
-         (with-out-str (rdf/model-to-format model :xml))))
+         (with-out-str (rdf/model-to-format model :xml-abbrev))))
      (catch Exception ex
           (clojure.stacktrace/print-stack-trace ex)
           (pst+ ex)

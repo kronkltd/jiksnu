@@ -103,7 +103,7 @@
                  
 
                  ]
-                (let [mkp (model.signature/get-key-for-user user)]
+                #_(let [mkp (model.signature/get-key-for-user user)]
                   [(rdf/rdf-resource (str ns/cert "key"))
                    [
                     rdf/rdf:type        [foaf :Person]

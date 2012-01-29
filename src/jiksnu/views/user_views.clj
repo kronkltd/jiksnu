@@ -102,7 +102,7 @@
   [request user]
   {:body
    (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
-     (with-out-str (rdf/model-to-format rdf-model :xml)))
+     (with-out-str (rdf/model-to-format rdf-model :xml-abbrev)))
    :template :false})
 
 (defview #'show :xmpp
