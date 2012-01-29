@@ -92,8 +92,8 @@
 
 (defaction discover
   [domain]
-  (discover-onesocialweb domain)
-  (discover-webfinger domain)
+  (future (discover-onesocialweb domain))
+  (future (discover-webfinger domain))
   (set-discovered! domain))
 
 (defn get-user-meta-uri
