@@ -4,20 +4,12 @@
                [debug :only [spy]])
         (clojure.contrib [core :only [-?>]])
         (jiksnu model))
-  (:require (aleph [formats :as f]
-                   [http :as h])
-            (clojure [string :as string]
-                     [xml :as xml]
-                     [zip :as zip])
-            (clojure.data.zip [xml :as xf])
-            (clojure.tools [logging :as log])
-            (jiksnu [namespace :as namespace])
+  (:require (clojure.tools [logging :as log])
             (jiksnu.model [webfinger :as model.webfinger])
             (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
-                          [signature :as model.signature]
                           [user :as model.user])
             [saxon :as s])
   (:import java.net.URI
