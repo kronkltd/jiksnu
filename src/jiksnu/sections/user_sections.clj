@@ -122,10 +122,7 @@
                 (when display-name [[foaf :name]    (rdf/l display-name)])
                 (when first-name   [foaf:givenName  (rdf/l first-name)])
                 (when last-name    [foaf:familyName (rdf/l last-name)])
-                
-                )
-
-        ]
+                )]
 
        ;; About the User's Account
        [(rdf/rdf-resource (model.user/get-uri user))
@@ -134,10 +131,7 @@
            foaf:accountName            (rdf/l (:username user))
            [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
            [ns/sioc "account_of"]         (rdf/rdf-resource
-                                                  (model.user/get-uri user))]]
-
-
-       ])))
+                                                  (model.user/get-uri user))]]])))
 
 (defsection show-section [User :json]
   [user & options]
@@ -154,8 +148,7 @@
              ;; TODO: get image dimensions
              {:image [{:url avatar-url}]})
            (when display-name
-             {:displayName display-name})
-          )))
+             {:displayName display-name}))))
 
 
 (defsection show-section [User :xmpp :xmpp]
