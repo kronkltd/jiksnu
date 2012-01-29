@@ -3,7 +3,7 @@
         clj-factory.core
         clojure.test
         lamina.core
-        jiksnu.core-test
+        jiksnu.test-helper
         midje.sweet)
   (:require (jiksnu [routes :as r]
                     [session :as session])
@@ -13,28 +13,30 @@
             (ring.mock [request :as mock]))
   (:import (jiksnu.model Activity User)))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
-(deftest show-http-route-test
-  (testing "when the user is not authenticated"
-    (testing "and the activity does not exist"
-      (fact
-        (let [author (actions.user/create (factory User))
-              ch (channel)
-              activity (factory Activity)]
-          (session/with-user author
-            (let [path (str "/notice/" (:_id activity))]
-              (r/app ch (mock/request :get path))
-              (let [response (wait-for-message ch 5000)]
-                response => (contains {:status 404})))))))
-    (testing "and there are activities"
-      (fact
-        (let [author (actions.user/create (factory User))
-              ch (channel)
-              activity (factory Activity)
-              created-activity (session/with-user author
-                                 (actions.activity/post activity))
-              path (str "/notice/" (:_id created-activity))]
-          (r/app ch (mock/request :get path))
-          (let [response (wait-for-message ch 5000)]
-            response => (contains {:status 200})))))))
+;; (deftest show-http-route-test)
+
+(fact "when the user is not authenticated"
+  (fact "and the activity does not exist"
+    (fact
+      (let [author (actions.user/create (factory User))
+            ch (channel)
+            activity (factory Activity)]
+        (session/with-user author
+          (let [path (str "/notice/" (:_id activity))]
+            (r/app ch (mock/request :get path))
+            (let [response (wait-for-message ch 5000)]
+              response => (contains {:status 404})))))))
+
+  (fact "and there are activities"
+    (fact
+      (let [author (actions.user/create (factory User))
+            ch (channel)
+            activity (factory Activity)
+            created-activity (session/with-user author
+                               (actions.activity/post activity))
+            path (str "/notice/" (:_id created-activity))]
+        (r/app ch (mock/request :get path))
+        (let [response (wait-for-message ch 5000)]
+          response => (contains {:status 200}))))))

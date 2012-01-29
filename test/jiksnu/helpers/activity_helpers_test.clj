@@ -6,7 +6,7 @@
         clj-factory.core
         clj-tigase.core
         clojure.test
-        (jiksnu core-test model session view)
+        (jiksnu test-helper model session view)
         jiksnu.helpers.activity-helpers
         [karras.entity :only (make)]
         midje.sweet)
@@ -15,19 +15,20 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
-(background
- (around :facts
-   (let [actor (factory User)]
-     ?form)))
+;; (background
+;;  (around :facts
+;;    (let [actor (factory User)]
+;;      ?form)))
 
-;; (deftest to-json-test
-;;   (testing "should not be nil"
-;;     (with-serialization :http
-;;       (with-format :atom
-;;         (let [activity (factory Activity)
-;;               entry (show-section activity)
-;;               response (to-json entry)]
-;;           (is (not (nil? response))))))))
+;; (deftest to-json-test)
+
+;; (fact "should not be nil"
+;;   (with-serialization :http
+;;     (with-format :atom
+;;       (let [activity (factory Activity)
+;;             entry (show-section activity)
+;;             response (to-json entry)]
+;;         (is (not (nil? response)))))))
 

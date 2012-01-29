@@ -2,7 +2,7 @@
   (:use (ciste core sections views)
         clj-factory.core
         clojure.test
-        (jiksnu core-test model session view)
+        (jiksnu test-helper model session view)
         jiksnu.actions.stream-actions
         jiksnu.views.stream-views
         midje.sweet)
@@ -12,15 +12,14 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
-(deftest apply-view-test
-  (testing "#'index :atom"
-    (testing "should be a map"
-      (with-serialization :http
-        (with-format :atom
-          (with-user (model.user/create (factory User))
-            (let [activity (model.activity/create (factory Activity))
-                  response (apply-view {:action #'index
-                                        :format :atom} [activity])]
-              (is (map? response)))))))))
+;; (deftest apply-view-test)
+
+(fact "#'index :atom"
+  (fact "should be a map"
+    (with-serialization :http
+      (with-format :atom
+        (with-user (model.user/create (factory User))
+          (let [activity (model.activity/create (factory Activity))]
+            (apply-view {:action #'index :format :atom} [activity]) => map?))))))

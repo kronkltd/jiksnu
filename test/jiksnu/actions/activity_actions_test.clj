@@ -5,7 +5,7 @@
         (clj-factory [core :only [factory]])
         clojure.test
         jiksnu.actions.activity-actions
-        (jiksnu core-test
+        (jiksnu test-helper
                 [model :only [activity?]]
                 [session :only [with-user]])
         midje.sweet)
@@ -17,131 +17,132 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
-(deftest test-set-recipients
-  (fact "should return an activity with the recipients added"
+;; (deftest test-set-recipients)
+
+(fact "should return an activity with the recipients added"
+  (let [activity (factory Activity)]
+    (set-recipients activity) => activity?))
+
+;; (deftest test-entry->activity)
+
+#_(against-background
+ [(around :facts
+          (let [user (actions.user/create (factory User))]
+            ?form))]
+ 
+ ;; TODO: Load elements from resources
+ (fact "should return an Activity"
+   (with-context [:http :atom]
+     (let [entry (show-section (factory Activity {:author (:_id user)}))]
+       (entry->activity entry) => activity?)))
+ 
+ (fact "when coming from an identi.ca feed"
+   (fact "should parse the published field"
+     (let [feed nil #_(abdera/load-file "identica-update.xml")
+           entry (first (abdera/get-entries feed))]
+       (entry->activity entry) => activity?
+       #_(provided
+        (.getId entry) => "1")))))
+  
+
+;; (deftest test-prepare-activity)
+
+(fact "should return an activity"
+  (let [user (model.user/create (factory User))]
+    (with-user user
+      (let [args (factory Activity)]
+        (prepare-activity args) => activity?))))
+
+;; (deftest test-create)
+
+(fact "when the user is logged in"
+  (fact "and it is a valid activity"
+    (fact "should return that activity"
+      (let [user (actions.user/create (factory User))]
+        (with-user user
+          (let [activity (factory Activity)]
+            (create activity) => activity?))))))
+
+;; (deftest test-post)
+;; TODO: Move this to 'post'
+  
+
+(fact "when the user is not logged in"
+  (fact "should return nil"
     (let [activity (factory Activity)]
-      (set-recipients activity) => activity?)))
+      (post activity) => nil)))
 
-(deftest test-entry->activity
-  (against-background
-    [(around :facts
-       (let [user (actions.user/create (factory User))]
-         ?form))]
-    
-    ;; TODO: Load elements from resources
-    (fact "should return an Activity"
-      (with-context [:http :atom]
-        (let [entry (show-section (factory Activity {:author (:_id user)}))]
-          (entry->activity entry) => activity?)))
+;; (deftest test-delete)
 
-    #_(testing "when coming from an identi.ca feed"
-      (against-background
-        [(around :facts
-           (let [feed nil #_(abdera/load-file "identica-update.xml")
-                 entry (first (abdera/get-entries feed))]
-             ?form))]
-        
-        (fact "should parse the published field"
-          (entry->activity entry) => activity?
-          (provided
-            (.getId entry) => "1"
-            )
-      
-         ))))
-  )
-
-(deftest test-prepare-activity
-  (fact "should return an activity"
-    (let [user (model.user/create (factory User))]
-      (with-user user
-        (let [args (factory Activity)]
-          (prepare-activity args) => activity?)))))
-
-(deftest test-create
-  (testing "when the user is logged in"
-    (testing "and it is a valid activity"
-     (fact "should return that activity"
-       (let [user (actions.user/create (factory User))]
-         (with-user user
-           (let [activity (factory Activity)]
-             (create activity) => activity?)))))))
-
-(deftest test-post
-  ;; TODO: Move this to 'post'
-  (testing "when the user is not logged in"
-    (facts "should return nil"
-      (let [activity (factory Activity)]
-        (post activity) => nil))))
-
-(deftest test-delete
-  (testing "when the activity exists"
-    (testing "and the user owns the activity"
-      (fact "should delete that activity"
-        (let [user (model.user/create (factory User))]
-          (with-user user
-            (let [activity (create (factory Activity {:author (:_id user)}))]
-              (delete activity)
-              (model.activity/fetch-by-id (:_id activity)) => nil)))))
-    (testing "and the user does not own the activity"
-      (fact "should not delete that activity"
-        (let [user1 (model.user/create (factory User))
-              user2 (model.user/create (factory User))
-              activity (with-user user1
-                         (model.activity/create (factory Activity)))]
-          (with-user user2
+(fact "when the activity exists"
+  (fact "and the user owns the activity"
+    (fact "should delete that activity"
+      (let [user (model.user/create (factory User))]
+        (with-user user
+          (let [activity (create (factory Activity {:author (:_id user)}))]
             (delete activity)
-            (model.activity/fetch-by-id (:_id activity)) => activity?))))))
+            (model.activity/fetch-by-id (:_id activity)) => nil)))))
+  (fact "and the user does not own the activity"
+    (fact "should not delete that activity"
+      (let [user1 (model.user/create (factory User))
+            user2 (model.user/create (factory User))
+            activity (with-user user1
+                       (model.activity/create (factory Activity)))]
+        (with-user user2
+          (delete activity)
+          (model.activity/fetch-by-id (:_id activity)) => activity?)))))
 
-(deftest test-edit)
+;; (deftest test-edit)
 
-(deftest test-new)
+;; (deftest test-new)
 
-(deftest test-show
-  (testing "when the record exists"
-    (testing "and the user is not logged in"
-      (testing "and the record is public"
-        (facts "should return the activity"
-          (let [author (model.user/create (factory User))
-                activity (with-user author
-                           (create (factory Activity)))]
-            (show (:_id activity)) => activity?)))
-      (testing "and the record is not public"
-        (facts "should return nil"
-          (let [author (model.user/create (factory User))
-                activity (with-user author
-                           (create (factory Activity {:public false})))]
-            (show (:_id activity)) => nil?))))
-    (testing "and the user is logged in"
-      (testing "and is the author"
-        (facts "should return the activity"
-          (let [user (model.user/create (factory User))]
-            (with-user user
-              (let [activity (create (factory Activity))]
-                (show (:_id activity)) => activity?)))))
-      (testing "and is not the author"
-        (testing "and is not on the access list"
-          (testing "and is an admin"
-            (facts "should return the activity"
-              (let [user (model.user/create (factory User {:admin true}))
-                    author (model.user/create (factory User))]
-                (let [activity (with-user author
-                                 (create (factory Activity {:public false})))]
-                  (with-user user
-                    (show (:_id activity)) => activity?)))))
-          (testing "and is not an admin"
-            (facts "should return nil"
-              (let [user (model.user/create (factory User))
-                    author (model.user/create (factory User))
-                    activity (with-user author
-                               (create (factory Activity {:public false})))]
-                (with-user user
-                  (show (:_id activity)) => nil?)))))))
-    (testing "and the record is not public"
-      (testing "and the user is not logged in"
-        (facts "should return nil"
-          (let [activity (create (factory Activity {:public false}))]
-            (show (:_id activity)) => nil))))))
+;; (deftest test-show)
 
-(deftest test-update)
+(fact "when the record exists"
+  (fact "and the user is not logged in"
+    (fact "and the record is public"
+      (facts "should return the activity"
+             (let [author (model.user/create (factory User))
+                   activity (with-user author
+                              (create (factory Activity)))]
+               (show (:_id activity)) => activity?)))
+    (fact "and the record is not public"
+      (facts "should return nil"
+             (let [author (model.user/create (factory User))
+                   activity (with-user author
+                              (create (factory Activity {:public false})))]
+               (show (:_id activity)) => nil?))))
+  (fact "and the user is logged in"
+    (fact "and is the author"
+      (facts "should return the activity"
+             (let [user (model.user/create (factory User))]
+               (with-user user
+                 (let [activity (create (factory Activity))]
+                   (show (:_id activity)) => activity?)))))
+    (fact "and is not the author"
+      (fact "and is not on the access list"
+        (fact "and is an admin"
+          (facts "should return the activity"
+                 (let [user (model.user/create (factory User {:admin true}))
+                       author (model.user/create (factory User))]
+                   (let [activity (with-user author
+                                    (create (factory Activity {:public false})))]
+                     (with-user user
+                       (show (:_id activity)) => activity?)))))
+        (fact "and is not an admin"
+          (facts "should return nil"
+                 (let [user (model.user/create (factory User))
+                       author (model.user/create (factory User))
+                       activity (with-user author
+                                  (create (factory Activity {:public false})))]
+                   (with-user user
+                     (show (:_id activity)) => nil?)))))))
+  (fact "and the record is not public"
+    (fact "and the user is not logged in"
+      (facts "should return nil"
+             (let [activity (create (factory Activity {:public false}))]
+               (show (:_id activity)) => nil)))))
+
+;; (deftest test-update)

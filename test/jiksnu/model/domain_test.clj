@@ -4,12 +4,12 @@
                     [packet :only (packet?)])
         clojure.test
         midje.sweet
-        (jiksnu core-test)
+        (jiksnu test-helper)
         jiksnu.model.domain)
   (:require (jiksnu.actions [domain-actions :as actions.domain]))
   (:import jiksnu.model.Domain))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
 (deftest test-drop!)
 

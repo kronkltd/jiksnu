@@ -2,14 +2,14 @@
   (:use clj-factory.core
         clojure.test
         midje.sweet
-        (jiksnu core-test model)
+        (jiksnu test-helper model)
         jiksnu.helpers.user-helpers)
   (:require (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
   (:import jiksnu.model.User))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
 (background
  (around :facts

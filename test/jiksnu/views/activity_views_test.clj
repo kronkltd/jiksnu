@@ -5,7 +5,7 @@
         clj-factory.core
         clj-tigase.core
         clojure.test
-        jiksnu.core-test
+        jiksnu.test-helper
         jiksnu.actions.activity-actions
         jiksnu.model
         jiksnu.session
@@ -17,5 +17,5 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 

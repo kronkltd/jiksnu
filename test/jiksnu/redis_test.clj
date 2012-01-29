@@ -3,9 +3,9 @@
         clojure.test
         midje.sweet
         clj-factory.core
-        (jiksnu core-test model redis)))
+        (jiksnu test-helper model redis)))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
 (deftest test-sadd
   (fact "should add the value to the set at the key"

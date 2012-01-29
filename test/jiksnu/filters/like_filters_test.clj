@@ -1,3 +1,1 @@
-(ns jiksnu.filters.like-filters-test
-  
-  )
+(ns jiksnu.filters.like-filters-test)

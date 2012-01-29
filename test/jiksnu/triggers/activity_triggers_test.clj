@@ -4,7 +4,7 @@
         ciste.views
         clj-factory.core
         clojure.test
-        jiksnu.core-test
+        jiksnu.test-helper
         jiksnu.model
         jiksnu.session
         jiksnu.triggers.activity-triggers
@@ -15,14 +15,15 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
-(deftest notify-activity-test
-  (testing "should return a packet"
-    (let [user (model.user/create (factory User))]
-      (with-user user
-        (let [activity (model.activity/create
-                        (factory Activity
-                                 {:author (:_id user)}))
-              response (notify-activity user activity)]
-          (is (packet/packet? response)))))))
+;; (deftest notify-activity-test)
+
+(fact "should return a packet"
+  (let [user (model.user/create (factory User))]
+    (with-user user
+      (let [activity (model.activity/create
+                      (factory Activity
+                               {:author (:_id user)}))
+            response (notify-activity user activity)]
+        (is (packet/packet? response))))))

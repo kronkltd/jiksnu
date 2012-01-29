@@ -1,7 +1,7 @@
 (ns jiksnu.routes.domain-test
   (use (ciste [debug :only [spy]])
-       (clojure [test :only [deftest use-fixtures]])
-       (jiksnu [core-test :only [test-environment-fixture]]
+       (clojure [test :only [deftest]])
+       (jiksnu [test-helper :only [test-environment-fixture]]
                [routes :only [app]])
        midje.sweet
        (ring.mock [request :only [request]]))
@@ -11,7 +11,7 @@
             (lamina [core :as l])))
 
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
 (deftest webfinger-host-meta-test
   (fact "should return a XRD document"

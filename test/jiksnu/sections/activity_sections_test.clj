@@ -3,7 +3,7 @@
         ciste.sections.default
         (clj-factory [core :only (factory)])
         clojure.test
-        (jiksnu core-test model session)
+        (jiksnu test-helper model session)
         jiksnu.sections.activity-sections
         midje.sweet)
   (:require (clj-tigase [element :as element])
@@ -21,7 +21,7 @@
            org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
 (deftest test-uri "Activity"
   (facts "should be a string"

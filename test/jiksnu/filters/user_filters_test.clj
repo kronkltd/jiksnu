@@ -4,7 +4,7 @@
         (ciste [config :only (config)]
                [debug :only (spy)])
         clojure.test
-        (jiksnu core-test
+        (jiksnu test-helper
                 model
                 [routes :only (app)]
                 session
@@ -16,5 +16,5 @@
             (ring.mock [request :as mock]))
   (:import (jiksnu.model Activity User)))
 
-(use-fixtures :once test-environment-fixture)
+(test-environment-fixture)
 
