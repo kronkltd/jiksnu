@@ -4,6 +4,10 @@
         (jiksnu [session :only [current-user]]))
   (:require (jiksnu.model [user :as model.user])))
 
+(deftemplate admin-index
+  [users]
+  {:users (map model.user/format-data users)})
+
 (deftemplate show
   [user]
   (let [data (model.user/format-data user)]

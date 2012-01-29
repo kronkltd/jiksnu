@@ -26,6 +26,7 @@
 
 
 /**
+ * @param authenticated
  * @param users
  */
 {template .adminIndex}
@@ -53,6 +54,32 @@
     {call .addForm data="all" /}
   </div>
 {/template}
+
+
+/**
+ * @param username
+ * @param domain
+ */
+{template .adminIndexLine}
+  <tr>
+    <td>{call .displayAvatar data="all" /}</td>
+    <td>
+      {call .linkTo data="all"}
+        {param display_name: $username /}
+      {/call}
+    </td>
+    <td>
+      {call jiksnu.templates.domain.linkTo}
+        {param id: $domain /}
+      {/call}
+    </td>
+    <td>{call .discoverButton data="all" /}</td>
+    <td>{call .updateButton data="all" /}</td>
+    <td>{call .editButton data="all" /}</td>
+    <td>{call .deleteButton data="all" /}</td>
+  </tr>
+{/template}
+
 
 /**
  * @param id
@@ -108,6 +135,7 @@
     <input type="submit" value="Edit" />
   </form>
 {/template}
+
 
 /**
  * @param username
@@ -196,32 +224,6 @@
     {/if}
   {/if}
 {/template}
-
-
-/**
- * @param username
- * @param domain
- */
-{template .adminIndexLine}
-  <tr>
-    <td>{call .displayAvatar data="all" /}</td>
-    <td>
-      {call .linkTo data="all"}
-        {param display_name: $username /}
-      {/call}
-    </td>
-    <td>
-      {call jiksnu.templates.domain.linkTo}
-        {param id: $domain /}
-      {/call}
-    </td>
-    <td>{call .discoverButton data="all" /}</td>
-    <td>{call .updateButton data="all" /}</td>
-    <td>{call .editButton data="all" /}</td>
-    <td>{call .deleteButton data="all" /}</td>
-  </tr>
-{/template}
-
 
 /**
  * @param username
