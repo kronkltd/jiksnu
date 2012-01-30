@@ -11,7 +11,6 @@
             (jiksnu [namespace :as ns]
                     [xmpp :as xmpp])
             (jiksnu.sections [auth-sections :as sections.auth])
-            (jiksnu.templates [layout :as templates.layout])
             (jiksnu.xmpp [element :as element])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
