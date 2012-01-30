@@ -14,7 +14,7 @@
     [:div.subscribers
      [:h3
       ;; subscribers link
-      [:a {:href (str "/" (:username user) "/subscribers")}]]
+      [:a {:href (str "/" (:username user) "/subscribers")} "Subscribers"]]
      [:ul.unstyled
       [:li (map subscriber-line subscriptions)]]]))
 
