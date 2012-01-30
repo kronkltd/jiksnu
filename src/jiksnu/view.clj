@@ -75,6 +75,8 @@
          [:div.span3
           (left-column-section response nil nil nil)]
          [:div#content.span13
+          (when (:title response)
+            [:h1 (:title response)])
           (:body response)]]
         [:footer.row
          [:p "Copyright © 2011 KRONK Ltd."]]]
@@ -96,7 +98,6 @@
 (defmethod apply-view-by-format :atom
   [request response])
 
-
 (defmethod format-as :n3
   [request format response]
   (-> response 
@@ -106,8 +107,6 @@
                        (rdf/model-to-format :n3)
                        with-out-str))
       (assoc-in [:headers "Content-Type"] "text/n3; charset=utf-8")))
-
-
 
 (defmethod serialize-as :http
   [serialization response-map]

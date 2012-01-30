@@ -12,7 +12,7 @@
         links (concat
                [["/"                         "Public"]
                 ["/users"                    "Users"]
-                ["/main/domains"             "Domains"]
+                #_["/main/domains"             "Domains"]
                 ["/groups"                   "Groups"]]
                (when authenticated
                  [["/settings/profile"         "Profile"]]))]
@@ -47,10 +47,7 @@
        (fn [[link title]]
          [:li.active
           [:a {:href link} title]])
-       links)]]
-
-    )
-  )
+       links)]]))
 
 
 (defn left-column-section

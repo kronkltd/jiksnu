@@ -5,23 +5,23 @@
 
 (defview #'index :html
   [request groups]
-  {:body
+  {:title "Groups"
+   :body
    [:section.groups
-    [:h1 "Groups"]
     [:ul.profiles
      (map
       (fn [group]
         [:li
          [:section.profile.hentry.vcard
           [:p
-           [:a.url.entry-title {:href (str "/group/" (:name group))}
+           [:a.url.entry-title {:href (str "/groups/" (:name group))}
             [:img {:src (:avatar-url group) }]
             [:span.nickname (:name group)]]]
           [:a.url {:href (:homepage group)} (:homepage group)]
           [:p.note (:description group)]]])
       groups)]
     [:p
-     [:a {:href "/group/new"} "Create a new group"]]]})
+     [:a {:href "/groups/new"} "Create a new group"]]]})
 
 (defview #'user-list :html
   [request user]
