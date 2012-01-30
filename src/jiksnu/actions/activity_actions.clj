@@ -87,7 +87,7 @@
 serialization"
   ([entry] (entry->activity entry nil))
   ([entry feed]
-     (let [id (str (.getId entry))
+     (let [id (str (.getId (spy entry)))
            original-activity (model.activity/fetch-by-remote-id id)
            title (.getTitle entry)
            published (.getPublished entry)

@@ -70,11 +70,11 @@
         [:div#notification-area.row
          (when (:flash response)
            [:div#flash (:flash response)])]
-        (devel-warning response)
         [:div#site-main.row
          [:div.span3
           (left-column-section response nil nil nil)]
          [:div#content.span13
+          (devel-warning response)
           (when (:title response)
             [:h1 (:title response)])
           (:body response)]]

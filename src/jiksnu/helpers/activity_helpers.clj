@@ -128,8 +128,8 @@
   [^Element element]
   (let [source (.getAttributeValue element "source")
         local-id (.getAttributeValue element "local_id")]
-    {:source source
-     :local-id local-id}))
+    (spy {:source source
+      :local-id local-id})))
 
 (defn parse-extension-element
   [element]

@@ -159,10 +159,9 @@
 
 (defn comments-section
   [activity]
-  [:section.comments
-   [:h4.hidden "Comments"]
-   ]
-  )
+  (when (> (:comment-count activity) 0)
+    [:section.comments
+     [:h4.hidden "Comments"]]))
 
 (defn activity-form
   [activity]
@@ -328,6 +327,9 @@
       (maps-section activity)
       (tags-section activity)
       (posted-link-section activity)
+      (when (:source activity)
+        (str " from " (:source activity))
+        )
       (comments-section activity)]]))
 
 (defsection show-section [Activity :json]

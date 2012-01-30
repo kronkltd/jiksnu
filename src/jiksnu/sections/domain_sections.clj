@@ -1,5 +1,6 @@
 (ns jiksnu.sections.domain-sections
-  (:use (ciste [sections :only [defsection]] )
+  (:use (ciste [debug :only [spy]]
+               [sections :only [defsection]] )
         (ciste.sections [default :only [link-to link-to-format]]))
   #_(:require (jiksnu.sections [link-sections :as sections.link]))
   (:import jiksnu.model.Domain)
@@ -79,4 +80,4 @@
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a {:href (str "/main/domain/" (:_id domain))}])
+  [:a {:href (str "/main/domain/" (:_id domain))} (:_id domain)])
