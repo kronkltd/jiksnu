@@ -47,6 +47,7 @@
 (defview #'public-timeline :html
   [request activities]
   {:formats (helpers.activity/index-formats activities)
+   :aside '([:p "foo"])
    :body (index-block activities)})
 
 (defview #'public-timeline :json

@@ -57,15 +57,28 @@
    [:ul
     [:li [:a {:href "#"} "#"]]]])
 
+(defn formats-section
+  [response]
+  [:div
+   [:h3 "Formats"]
+   [:ul
+    (map
+     (fn [format]
+       [:li
+        [:a {:href (:href format)} (:label format)]])
+     (:formats response))]])
+
 (defn left-column-section
-  [authenticated subscribers subscriptions groups]
+  [response authenticated subscribers subscriptions groups]
   [:aside#left-column.sidebar
    (user-info-section (current-user))
    (side-navigation)
    (top-users)
+   (:aside response)
    (sections.subscription/subscriptions-section (current-user) [])
    (sections.subscription/subscribers-section (current-user) [])
-   (sections.group/user-groups (current-user))])
+   (sections.group/user-groups (current-user))
+   (formats-section response)])
 
 (defn devel-warning
   [response]

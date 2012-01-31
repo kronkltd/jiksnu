@@ -72,7 +72,7 @@
            [:div#flash (:flash response)])]
         [:div#site-main.row
          [:div.span3
-          (left-column-section response nil nil nil)]
+          (left-column-section response nil nil nil nil)]
          [:div#content.span13
           (devel-warning response)
           (when (:title response)
