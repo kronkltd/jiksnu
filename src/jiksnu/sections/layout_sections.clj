@@ -13,7 +13,8 @@
                [["/"                         "Public"]
                 ["/users"                    "Users"]
                 #_["/main/domains"             "Domains"]
-                ["/groups"                   "Groups"]]
+                ["/groups"                   "Groups"]
+                ["/tags"                     "Tags"]]
                (when authenticated
                  [["/settings/profile"         "Profile"]]))]
     [:nav
