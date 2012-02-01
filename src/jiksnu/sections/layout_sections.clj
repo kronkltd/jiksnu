@@ -2,7 +2,7 @@
   (:use (ciste [config :only [environment]])
         (ciste.sections [default :only [link-to]])
         (jiksnu [session :only [current-user is-admin?]]))
-  (:require (jiksnu.actions [subscription-sections :as sections.subscription])
+  (:require (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.sections [group-sections :as sections.group]
                              [subscription-sections :as sections.subscription]
                              [user-sections :as sections.user])))
