@@ -171,7 +171,8 @@
 
 (defn comments-section
   [activity]
-  (when (> (:comment-count activity) 0)
+  (when (and (:comment-count activity)
+             (> (:comment-count activity) 0))
     [:section.comments
      [:h4.hidden "Comments"]]))
 
