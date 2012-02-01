@@ -6,7 +6,7 @@
   [user]
   [:ul.nav.secondary-nav
    [:li.dropdown
-    [:a.dropdown-toggle {:href "#"} (:display-name (spy user))]
+    [:a.dropdown-toggle {:href "#"} (:display-name user)]
     [:ul.dropdown-menu
      [:li
       [:a {:href "/main/logout"} "Logout"]]]]])
