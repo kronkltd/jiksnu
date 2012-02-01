@@ -344,6 +344,11 @@
       (when (:source activity)
         (str " from " (:source activity))
         )
+      (when (:conversation activity)
+        (list
+         " "
+         [:a {:href (:conversation activity)}
+          "in context"]))
       (comments-section activity)]]))
 
 (defsection show-section [Activity :json]

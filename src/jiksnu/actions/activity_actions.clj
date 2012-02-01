@@ -109,6 +109,9 @@ serialization"
                            (filter identity))
            content (.getContent entry)
            links (abdera/parse-links entry)
+           conversation (-?> entry 
+                        (.getLink "ostatus:conversation")
+                        .getHref)
            tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object" "activity"))
            ;; object-type 
@@ -128,6 +131,7 @@ serialization"
                        (when title            {:title title})
                        (when (seq irts)       {:irts irts})
                        (when (seq links)      {:links links})
+                       (when conversation     {:conversation conversation})
                        (when (seq tags)       {:tags tags})
                        (when verb             {:verb verb})
                        {:id id
