@@ -106,8 +106,11 @@
 
 (defn post-actions
   [activity]
-  
-  )
+  [:ul.buttons.post-actions.unstyled
+   [:li (like-button activity)]
+   [:li (update-button activity)]
+   [:li (edit-button activity)]
+   [:li (delete-button activity)]])
 
 (defn recipients-section
   [activity]
@@ -121,8 +124,17 @@
 
 (defn maps-section
   [activity]
-  
-  )
+  (if (and (:lat activity)
+           (:long activity))
+    [:div
+     [:img.map
+      {:src
+       (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
+            (:lat activity)
+            ","
+            (:long activity))}]
+     #_[:p "Lat: " (:lat activity)]
+     #_[:p "Long: " (:long activity)]]))
 
 (defn likes-section
   [activity]
@@ -299,7 +311,7 @@
 (defsection show-section [Activity :html]
   [activity & _]
   (let [user (get-author activity)]
-    [:article.hentry.notice
+    [:article.hentry.notice.clearfix
      {:id (:id activity)
       :about (uri activity)
       :typeof "sioc:Post"}

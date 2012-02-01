@@ -159,23 +159,6 @@
 
 
 /**
- * @param lat
- * @param long
- */
-{template .mapsSection}
-  {if $lat and $long}
-    <div>
-      {call .displayMap data="all" /}
-      <p>
-        <span>Lat: {$lat}</span>
-        {sp}
-        <span>Long: {$long}</span>
-      </p>
-    </div>
-  {/if}
-{/template}
-
-/**
  * @param buttonable
  * @param authenticated
  */

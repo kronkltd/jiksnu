@@ -10,6 +10,15 @@ body {
 
 }
 
+.post-actions {
+    float: right;
+}
+
+.post-actions li form {
+    margin: 0;
+}
+
+
 #wrap {
 /*     margin: 0 auto; */
 /*     overflow: hidden; */
@@ -315,10 +324,10 @@ article .photo
 /*     float: right; */
 /* } */
 
-/* .buttons > li { */
-/*     /\* width: 30px; *\/ */
-/*     display: inline-block; */
-/* } */
+.buttons > li {
+    /* width: 30px; */
+    display: inline-block;
+}
 
 /* /\* .delete-button { *\/ */
 /* /\*     background: url(/silk/delete.png) no-repeat center top; *\/ */
