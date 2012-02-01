@@ -28,6 +28,7 @@
                  [org.slf4j/slf4j-log4j12 "1.6.1"]
                  [potemkin "0.1.1-SNAPSHOT"]
                  [ring "1.0.0-RC5"]
+                 [ring-basic-authentication "0.0.1"]
                  [swank-clojure "1.3.3"]
                  [xml-picker-seq "0.0.2"]
                  ]
