@@ -17,7 +17,10 @@
                 ["/groups"                   "Groups"]
                 ["/tags"                     "Tags"]]
                (when authenticated
-                 [["/settings/profile"         "Profile"]]))]
+                 [["/settings/profile"         "Profile"]
+                  [(str "/" (:username authenticated) "/inbox") "Inbox"]
+                  [(str "/" (:username authenticated) "/outbox") "Outbox"]
+                  ]))]
     [:nav
      [:ul.nav
       (map

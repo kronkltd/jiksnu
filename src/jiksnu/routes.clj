@@ -24,11 +24,13 @@
                             [inbox-actions :as inbox]
                             [like-actions :as like]
                             [push-subscription-actions :as push]
+                            [message-actions :as message]
                             [salmon-actions :as salmon]
                             [setting-actions :as setting]
                             [site-actions :as site]
                             [stream-actions :as stream]
                             [subscription-actions :as sub]
+                            [tag-actions :as tag]
                             [user-actions :as user])
             (jiksnu.actions.admin [activity-actions :as admin.activity])
             (lamina [core :as l])
@@ -135,6 +137,8 @@
     [[:post   "/settings/profile"]                        #'user/update-profile]
     [[:get    "/settings/oauthapps"]                      #'setting/oauth-apps]
     [[:delete "/subscriptions/:id"]                       #'sub/delete]
+    [[:get    "/tags"]                                    #'tag/index]
+    [[:get    "/tags/:name"]                              #'tag/show]
     [[:get    "/users"]                                   #'user/index]
     [[:delete "/users/:id"]                               #'user/delete]
     [[:get    "/users/:id"]                               #'stream/remote-profile]
@@ -146,8 +150,11 @@
     [[:get    "/:username"]                               #'stream/user-timeline]
     [[:get    "/:username.:format"]                       #'stream/user-timeline]
     [[:get    "/:username/all"]                           #'stream/home-timeline]
+    [[:get    "/:username/inbox"]                         #'message/inbox-page]
     [[:get    "/:username/groups"]                        #'group/user-list]
+    [[:get    "/:username/outbox"]                        #'message/outbox-page]
     [[:get    "/:username/streams"]                       #'stream/user-list]
+    
     [[:get    "/:username/subscribers"]                   #'sub/get-subscribers]
     [[:get    "/:username/subscribers.:format"]           #'sub/get-subscribers]
     [[:get    "/:username/subscriptions"]                 #'sub/get-subscriptions]

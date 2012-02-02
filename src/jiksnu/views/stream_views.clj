@@ -261,9 +261,22 @@
   [request data]
   {:body data})
 
+(defview #'home-timeline :html
+  [request activities]
+  {:title "Home Timeline"
+   :body [:div
+          (index-section activities)
+          ]
+   }
+  )
+
 (defview #'home-timeline :json
   [request data]
   {:body data})
+
+(defview #'home-timeline :xml
+  [request activities]
+  {:body (index-section (spy activities))})
 
 
 (defview #'twitter-public-timeline :json
