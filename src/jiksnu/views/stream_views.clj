@@ -25,11 +25,15 @@
             (ring.util [response :as response]))
   (:import java.text.SimpleDateFormat))
 
+(def rdf-prefixes
+  [["activity" namespace/as]
+   ["sioc" namespace/sioc]
+   ["cert" namespace/cert]
+   ["foaf" namespace/foaf]])
+
 (defview #'public-timeline :atom
   [request activities]
-  (let [self (str "http://"
-                  (config :domain)
-                  "/api/statuses/public_timeline.atom")]
+  (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
      :body (abdera/make-feed
@@ -47,7 +51,8 @@
 
 (defview #'public-timeline :html
   [request activities]
-  {:formats (helpers.activity/index-formats activities)
+  {:title "Public Timeline"
+   :formats (helpers.activity/index-formats activities)
    :aside '([:p "foo"])
    :body (index-block activities)})
 
@@ -148,27 +153,21 @@
            :generator {:uri "http://jiksnu.com/"
                        :name "Jiksnu"
                        :version "0.1.0-SNAPSHOT"}
-           :subtitle (str "Updates from " (:username user)
-                          " on " (:domain user))
-           :id (str "http://" (config :domain)
-                    "/api/statuses/user_timeline/" (:_id user) ".atom")
+           :subtitle (str "Updates from " (:username user) " on " (:domain user))
+           :id (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
            :links [{:href (full-uri user)
                     :rel "alternate"
                     :type "text/html"}
-                   {:href (str "http://" (config :domain)
-                               "/api/statuses/user_timeline/" (:_id user) ".atom")
+                   {:href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
                     :rel "self"
                     :type "application/atom+xml"}
                    {:href (str "http://" (config :domain) "/main/push/hub")
                     :rel "hub"}
-                   {:href (str "http://" (config :domain)
-                               "/main/salmon/user/" (:_id user))
+                   {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
                     :rel "salmon"}
-                   {:href (str "http://" (config :domain)
-                               "/main/salmon/user/" (:_id user))
+                   {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
                     :rel "http://salmon-protocol.org/ns/salmon-replies"}
-                   {:href (str "http://" (config :domain)
-                               "/main/salmon/user/" (:_id user))
+                   {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
                     :rel "http://salmon-protocol.org/ns/salmon-mention"}]
            :author (show-section user)
            :updated (:updated (first activities))
@@ -176,7 +175,8 @@
 
 (defview #'user-timeline :html
   [request [user activities]]
-  {:body [:div
+  {:title (:display-name user)
+   :body [:div
           (show-section user)
           (index-section activities)]
    :formats (helpers.activity/timeline-formats user)})
@@ -230,9 +230,10 @@
 
 (defview #'group-timeline :html
   [request [group activities]]
-  {:body
+  {:title (str group " group")
+   :body
    [:section
-    [:h1 (:name group)]]})
+    [:ul (map index-line activities)]]})
 
 (defview #'direct-message-timeline :json
   [request data]
