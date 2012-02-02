@@ -5,7 +5,8 @@
         ciste.sections.default
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
-  (:require (jiksnu [abdera :as abdera]
+  (:require (hiccup [core :as h])
+            (jiksnu [abdera :as abdera]
                     [model :as model]
                     [namespace :as ns]
                     [session :as session]
@@ -16,7 +17,8 @@
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])
-            (jiksnu.xmpp [element :as element]))
+            (jiksnu.xmpp [element :as element])
+            (ring.util [codec :as codec]))
   (:import com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
            javax.xml.namespace.QName
@@ -230,8 +232,8 @@
 
 (defsection index-block [Activity :xml]
   [activities & _]
-  {:tag :statuses
-   :content (map index-line activities)})
+  [:statuses {:type "array"}
+   (map index-line activities)])
 
 (defsection index-block [Activity :xmpp]
   [activities & options]
@@ -378,41 +380,32 @@
 
 (defsection show-section [Activity :xml]
   [activity & _]
-  #_["status"
-     ["created_at"  (:created activity)]
-     ["id" (:_id activity)]
-     ["text" (:content activity)]
-     ["source"
-      ;; TODO: generator info
-      ]
-     ["truncated" "false"]
-     ["in_reply_to_status_id"]
-     ["in_reply_to_user_id"]
-     ["favorited"
-      ;; (liked? (current-user) activity)
-      ]
-     ["in_reply_to_screen_name"]
-     (show-section (get-author activity))
-     ["geo"]
-     ["coordinates"]
-     ["place"]
-     ["contributors"]
-     ["entities"
-      ["user_mentions"
-       ;; TODO: list mentions
-       ]
-      ["urls"
-       ;; TODO: list urls
-       ]
-      ["hashtags"
-       ;; TODO: list hashtags
-       ]]]
-  {:tag :status
-   :content
-   [{:tag :text
-     :content [(:content activity)]}
-    {:tag :created_at
-     :content [(str (:published activity))]}]})
+  [:status
+   [:text (h/escape-html (or (:title activity)
+                             (:content activity)))]
+   [:truncated "false"]
+   [:created_at  (:created activity)]
+   [:source (:source activity)]
+   [:id (:_id activity)]
+   [:in_reply_to_status_id]
+   [:in_reply_to_user_id]
+   [:favorited "false" #_(liked? (current-user) activity)]
+   [:in_reply_to_screen_name]
+   (show-section (get-author activity))
+   [:geo]
+   [:coordinates]
+   [:place]
+   [:contributors]
+   [:entities
+    [:user_mentions
+     ;; TODO: list mentions
+     ]
+    [:urls
+     ;; TODO: list urls
+     ]
+    [:hashtags
+     ;; TODO: list hashtags
+     ]]])
 
 (defsection show-section [Activity :rdf]
   [activity & _]

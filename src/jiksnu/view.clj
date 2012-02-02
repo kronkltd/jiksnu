@@ -108,6 +108,12 @@
                        with-out-str))
       (assoc-in [:headers "Content-Type"] "text/n3; charset=utf-8")))
 
+(defmethod format-as :xml
+  [format request response]
+  (-> response
+      (assoc-in [:headers "Content-Type"] "application/xml")
+      (assoc :body (h/html (:body response)))))
+
 (defmethod serialize-as :http
   [serialization response-map]
   (assoc-in

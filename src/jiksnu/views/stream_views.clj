@@ -31,6 +31,9 @@
    ["cert" namespace/cert]
    ["foaf" namespace/foaf]])
 
+
+
+
 (defview #'public-timeline :atom
   [request activities]
   (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
@@ -93,6 +96,11 @@
   [request activities]
   (tigase/result-packet request (index-section activities)))
 
+
+
+
+
+
 (defview #'remote-profile :html
   [request user]
   (apply-view
@@ -121,6 +129,12 @@
           (throw ex)))
    :template :false})
 
+
+
+
+
+
+
 (defview #'remote-user :html
   [request user]
   (apply-view
@@ -142,6 +156,8 @@
   [request response-fn]
   {:body response-fn
    :template false})
+
+
 
 (defview #'user-timeline :atom
   [request [user activities]]
@@ -223,10 +239,15 @@
           (throw ex)))
    :template :false})
 
+
+
+
 (defview #'callback-publish :html
   [request params]
   {:body params
    :template false})
+
+
 
 (defview #'group-timeline :html
   [request [group activities]]
@@ -234,6 +255,7 @@
    :body
    [:section
     [:ul (map index-line activities)]]})
+
 
 (defview #'direct-message-timeline :json
   [request data]
@@ -271,3 +293,7 @@
        :statusnet_html (:content activity)
        :statusnet_conversation_id nil})
     activities)})
+
+(defview #'twitter-public-timeline :xml
+  [request activities]
+  {:body (index-section activities)})

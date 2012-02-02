@@ -13,7 +13,8 @@
         (jiksnu session)
         (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
-            (hiccup [form-helpers :as f])
+            (hiccup [core :as h]
+                    [form-helpers :as f])
             (jiksnu [abdera :as abdera]
                     [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription]
@@ -24,7 +25,8 @@
                           [signature :as model.signature]
                           [subscription :as model.subscription]
                           [user :as model.user])
-            (plaza.rdf [core :as rdf]))
+            (plaza.rdf [core :as rdf])
+            (ring.util [codec :as codec]))
   (:import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
            java.math.BigInteger
            java.net.URI
@@ -145,6 +147,18 @@
       [:li (update-button user)]
       (when (not= (:_id user) (:_id authenticated))
         [:li (subscribe-button user)])]]))
+
+(defsection show-section [User :xml]
+  [user & options]
+  [:user
+   [:id (:_id user)]
+   [:name (:display-name user)]
+   [:screen_name (:username user)]
+   [:location (:location user)]
+   [:description (:bio user)]
+   [:profile_image_url (h/escape-html (:avatar-url user))]
+   [:url (:url user)]
+   [:protected "false"]])
 
 (defsection show-section [User :html]
   [user & options]
