@@ -38,7 +38,8 @@
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
             (ring.util [response :as response]))
-  (:import javax.security.auth.login.LoginException))
+  (:import com.newrelic.api.agent.NewRelic
+           javax.security.auth.login.LoginException))
 
 (defn not-found-msg
   []
@@ -90,7 +91,7 @@
     [[:get    "/api/statuses/home_timeline.:format"]      #'stream/home-timeline]
     [[:get    "/api/statuses/mentions.:format"]           #'stream/mentions-timeline]
     [[:get    "/api/statusnet/config.:format"]            #'setting/config-output]
-    [[:get    "/api/mentions"]                            #'stream/mention-timeline]
+    [[:get    "/api/mentions"]                            #'stream/mentions-timeline]
     [[:get    "/api/statuses/public_timeline.:format"]    #'stream/twitter-public-timeline]
     [[:get    "/api/statuses/show/:id.:format"]           #'activity/show]
     [[:get    "/api/statuses/user_timeline/:id.:format"]  #'stream/user-timeline]
@@ -298,4 +299,5 @@
        jm/wrap-user-binding
        handler/site
        middleware/wrap-http-serialization
+       jm/newrelic-report
        stacktrace/wrap-stacktrace)))

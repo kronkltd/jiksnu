@@ -311,10 +311,25 @@
   [request activities]
   {:body (index-section activities)})
 
+(defview #'twitter-public-timeline :rdf
+  [request activities]
+  {:body nil}
+  )
+
+
+
 (defview #'mentions-timeline :xml
   [request activities]
   {:body
    [:statuses {:type "array"} (map index-line (index-section activities))]})
+
+(defview #'direct-message-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"} (map index-line (index-section activities))]}
+  )
+
+
 
 ;; (defview #'mentions-timeline :atom
 ;;   [request activities]

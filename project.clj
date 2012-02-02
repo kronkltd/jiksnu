@@ -1,14 +1,17 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
   :description "distributed social network"
   :url "http://github.com/duck1123/jiksnu"
-  ;; :repositories {"java-dot-net" "http://download.java.net/maven/2"
-  ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
+  :repositories {"java-dot-net" "http://download.java.net/maven/2"
+                 "jiksnu-internal" "http://build.jiksnu.com/repository/internal"
+                 "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
+                 "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
                  [clj-factory "0.2.0-SNAPSHOT"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [clj-time "0.3.3"]
                  [clj-webdriver "0.4.0"]
                  [ciste "0.2.0-SNAPSHOT"]
+                 [com.newrelic/newrelic-api "1.3.0"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [compojure "0.6.5"]
                  [hiccup "0.3.7"]
