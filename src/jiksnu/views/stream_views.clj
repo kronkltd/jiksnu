@@ -309,3 +309,14 @@
 (defview #'twitter-public-timeline :xml
   [request activities]
   {:body (index-section activities)})
+
+(defview #'mentions-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"} (map index-line (index-section activities))]})
+
+;; (defview #'mentions-timeline :atom
+;;   [request activities]
+;;   {:body
+;;    [:statuses (map index-line activities)]}
+;;   )

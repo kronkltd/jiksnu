@@ -132,14 +132,24 @@
    [:button.btn {:type "submit"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
+(defn author?
+  [activity user]
+  (= (:author activity) (:_id user)))
+
 (defn post-actions
   [activity]
-  [:div.pull-right
-   [:ul.post-actions.unstyled.buttons
-    [:li (like-button activity)]
-    [:li (update-button activity)]
-    [:li (edit-button activity)]
-    [:li (delete-button activity)]]])
+  (let [authenticated (session/current-user)]
+    [:div.pull-right
+     [:ul.post-actions.unstyled.buttons
+      (when authenticated
+        (list [:li (like-button activity)]
+              [:li [:a.btn {:href "#"} [:i.icon-comment] [:span.button-text "Comment"]]]))
+      (when (or (author? activity authenticated)
+                (session/is-admin?))
+        (list [:li (edit-button activity)]
+              [:li (delete-button activity)]))
+      (when (session/is-admin?)
+        [:li (update-button activity)])]]))
 
 (defn recipients-section
   [activity]
@@ -153,9 +163,10 @@
 
 (defn maps-section
   [activity]
-  (if (and (:lat activity)
-           (:long activity))
-    [:div
+  
+  (if (and (seq (:lat activity))
+           (seq (:long activity)))
+    [:div.map-section
      [:img.map
       {:src
        (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
@@ -371,13 +382,18 @@
       (tags-section activity)
       (posted-link-section activity)
       (when (:source activity)
-        (str " from " (:source activity))
-        )
+        (str " from " (:source activity)))
       (when (:conversation activity)
         (list
          " "
          [:a {:href (:conversation activity)}
           "in context"]))
+      (when (and (seq (:lat activity))
+                 (seq (:long activity)))
+        (list " at "
+              [:a {:href "#"}
+               (:lat activity) ", "
+               (:long activity)]))
       (comments-section activity)]]))
 
 (defsection show-section [Activity :json]

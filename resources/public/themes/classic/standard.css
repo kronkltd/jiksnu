@@ -175,9 +175,9 @@ h1 {
 /*     margin-left: 5px; */
 /* } */
 
-/* .map { */
-/*     display: none; */
-/* } */
+.map-section {
+    display: none;
+}
 
 /* .activities { */
 /*     padding-left: 0px; */

@@ -40,21 +40,22 @@
 
 (defn side-navigation
   []
-  (let [links (when (is-admin?)
-                [
-                 #_["/admin"                    "Admin"]
-                 ["/admin/activities"         "Activities"]
-                 ["/admin/settings"           "Settings"]
-                 ["/admin/pshb-subscriptions" "PubSub"]
-                 ["/admin/users"              "Users"]
-                 ["/admin/subscriptions"      "Subscriptions"]])]
-    [:ul.nav.nav-list
-     [:li.nav-header "Admin"]
-     (map
-      (fn [[link title]]
-        [:li
-         [:a {:href link} title]])
-      links)]))
+  [:ul.nav.nav-list
+   (when (is-admin?)
+      (let [links 
+            [
+             #_["/admin"                    "Admin"]
+             ["/admin/activities"         "Activities"]
+             ["/admin/settings"           "Settings"]
+             ["/admin/pshb-subscriptions" "PubSub"]
+             ["/admin/users"              "Users"]
+             ["/admin/subscriptions"      "Subscriptions"]]]
+        (list [:li.nav-header "Admin"]
+              (map
+               (fn [[link title]]
+                 [:li
+                  [:a {:href link} title]])
+               links))))])
 
 
 (defn top-users
@@ -66,14 +67,15 @@
 
 (defn formats-section
   [response]
-  [:div
-   [:h3 "Formats"]
-   [:ul
-    (map
-     (fn [format]
-       [:li
-        [:a {:href (:href format)} (:label format)]])
-     (:formats response))]])
+  (when (:formats response)
+    [:div
+     [:h3 "Formats"]
+     [:ul.unstyled
+      (map
+       (fn [format]
+         [:li
+          [:a {:href (:href format)} (:label format)]])
+       (:formats response))]]))
 
 (defn left-column-section
   [response authenticated subscribers subscriptions groups]
@@ -81,11 +83,12 @@
     [:aside#left-column.sidebar
      (user-info-section user)
      (side-navigation)
-     (top-users)
-     (:aside response)
-     (sections.subscription/subscriptions-section user (model.subscription/subscriptions user))
-     (sections.subscription/subscribers-section user (model.subscription/subscribers user))
+     #_(top-users)
+     (:aside response) " "
+     (sections.subscription/subscriptions-section (or (:user response) user))
+     (sections.subscription/subscribers-section (or (:user response) user))
      (sections.group/user-groups user)
+     [:hr]
      (formats-section response)]))
 
 (defn devel-warning
@@ -93,6 +96,8 @@
   (let [development (= :development (environment))]
     (when development
       [:div.devel-section.alert-block.alert
-       "This site is running in development mode.
- No guarantees are made about the accuracy or security of information on this site.
- Use at your own risk."])))
+       [:a.close "&times;"]
+       [:h4.alert-heading "Development Mode"]
+       [:p "This application is running in the " [:code ":development"] " environment. Data contained on this site may be deleted at any time and without notice. Any data provided to this application, (including user and login information) should be considered potentially at risk. " [:strong "Do not transmit sensitive information. Authentication mechanisms may become compromised."]]
+       [:p "Veryify your configuration settings and restart this application with the environment variable set to "
+        [:code ":production"] " to continue."]])))

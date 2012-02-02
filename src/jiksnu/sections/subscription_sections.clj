@@ -1,5 +1,6 @@
 (ns jiksnu.sections.subscription-sections
-  (:require (jiksnu.model [user :as model.user])
+  (:require (jiksnu.model [subscription :as model.subscription]
+                          [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])))
 
 (defn subscriber-line
@@ -17,23 +18,25 @@
 
 
 (defn subscribers-section
-  [user subscriptions]
+  [user]
   (when user
-    [:div.subscribers
-     [:h3
-      ;; subscribers link
-      [:a {:href (str "/" (:username user) "/subscribers")} "Subscribers"]]
-     [:ul.unstyled
-      [:li (map subscriber-line subscriptions)]]]))
+    (let [subscriptions (model.subscription/subscribers user)] [:div.subscribers
+      [:h3
+       ;; subscribers link
+       [:a {:href (str "/" (:username user) "/subscribers")} "Subscribers"]]
+      [:ul.unstyled
+       [:li (map subscriber-line subscriptions)]]])))
 
 (defn subscriptions-section
-  [user subscriptions]
-  [:div.subscriptions
-   [:h3
-    [:a {:href (str "/" (:username user) "/subscriptions")} "Subscriptions"]]
-   [:ul (map subscriptions-line subscriptions)]
-   [:p
-    [:a {:href "/main/ostatussub"} "Add Remote"]]])
+  [user]
+  (when user
+    (let [subscriptions (model.subscription/subscriptions user)]
+     [:div.subscriptions
+      [:h3
+       [:a {:href (str "/" (:username user) "/subscriptions")} "Subscriptions"]]
+      [:ul (map subscriptions-line subscriptions)]
+      [:p
+       [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
 (defn ostatus-sub-form
   []

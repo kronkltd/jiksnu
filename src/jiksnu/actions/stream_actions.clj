@@ -85,7 +85,7 @@
   []
   [])
 
-(defaction mention-timeline
+(defaction mentions-timeline
   []
   []
   )

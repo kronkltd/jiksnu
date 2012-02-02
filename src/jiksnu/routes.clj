@@ -88,6 +88,7 @@
     [[:get    "/api/people/@me/@all/:id"]                 #'user/show]
     [[:get    "/api/statuses/friends_timeline.:format"]   #'stream/home-timeline]
     [[:get    "/api/statuses/home_timeline.:format"]      #'stream/home-timeline]
+    [[:get    "/api/statuses/mentions.:format"]           #'stream/mentions-timeline]
     [[:get    "/api/statusnet/config.:format"]            #'setting/config-output]
     [[:get    "/api/mentions"]                            #'stream/mention-timeline]
     [[:get    "/api/statuses/public_timeline.:format"]    #'stream/twitter-public-timeline]

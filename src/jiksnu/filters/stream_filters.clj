@@ -66,3 +66,7 @@
 (deffilter #'home-timeline :http
   [action request]
   (action))
+
+(deffilter #'mentions-timeline :http
+  [action request]
+  (action))
