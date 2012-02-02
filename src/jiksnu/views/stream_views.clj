@@ -56,7 +56,7 @@
   [request activities]
   {:title "Public Timeline"
    :formats (helpers.activity/index-formats activities)
-   :aside '([:p "foo"])
+   ;; :aside '([:p "foo"])
    :body (index-block activities)})
 
 (defview #'public-timeline :json

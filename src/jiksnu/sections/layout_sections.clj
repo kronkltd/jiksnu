@@ -16,7 +16,7 @@
                 ["/users"                    "Users"]
                 #_["/main/domains"             "Domains"]
                 ["/groups"                   "Groups"]
-                ["/tags"                     "Tags"]]
+                #_["/tags"                     "Tags"]]
                (when authenticated
                  [["/settings/profile"         "Profile"]
                   [(str "/" (:username authenticated) "/inbox") "Inbox"]

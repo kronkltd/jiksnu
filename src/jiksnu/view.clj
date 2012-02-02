@@ -96,7 +96,7 @@ Suspendisse lobortis mi a lorem interdum nec faucibus magna suscipit. Praesent s
        (include-script "/cljs/bootstrap.js")
        (include-script "http://code.jquery.com/jquery-1.5.2.min.js")
        (include-script "/bootstrap/js/bootstrap.js")
-       [:script {:type "text/javascript"}
+       #_[:script {:type "text/javascript"}
         "goog.require('jiksnu.core');"]]]))})
 
 (defmethod apply-template :html

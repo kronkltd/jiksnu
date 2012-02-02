@@ -37,7 +37,7 @@
 
 (defn discover-button
   [user]
-  [:form {:method "post" :action (str "/users/" (:id user) "/discover")}
+  [:form {:method "post" :action (str "/users/" (:_id user) "/discover")}
    [:input.btn.discover-button {:type "submit" :value "Discover"}]])
 
 (defn display-avatar
@@ -53,7 +53,7 @@
 
 (defn edit-button
   [user]
-  [:form {:method "post" :action (str "/users/" (:id user) "/edit")}
+  [:form {:method "post" :action (str "/users/" (:_id user) "/edit")}
    [:input.btn.edit-button {:type "submit" :value "Edit"}]])
 
 (defn following-section
@@ -74,7 +74,7 @@
 
 (defn subscribe-button
   [user]
-  [:form {:method "post" :action (str "/users/" (:id user) "/subscribe")}
+  [:form {:method "post" :action (str "/users/" (:_id user) "/subscribe")}
    [:input.btn.subscribe-button {:type "submit" :value "Subscribe"}]])
 
 (defn admin-index-line
@@ -262,7 +262,7 @@
 
 (defsection delete-button [User :html]
   [user & _]
-  [:form {:method "post" :action (str "/users/" (:id user) "/delete")}
+  [:form {:method "post" :action (str "/users/" (:_id user) "/delete")}
    [:input.btn.delete-button {:type "submit" :value "Delete"}]])
 
 (defn add-form
@@ -294,7 +294,7 @@
   [:li
    [:p (display-avatar user)]
    [:p (link-to user)]
-   [:ul
+   [:ul.buttons
     [:li (subscribe-button user)]
     [:li (discover-button user)]
     [:li (update-button user)]
@@ -302,7 +302,7 @@
 
 (defn index-section
   [users]
-  [:ul.users
+  [:ul.users.unstyled
    (map index-line users)])
 
 (defn push-subscribe-button
