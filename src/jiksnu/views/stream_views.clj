@@ -191,7 +191,8 @@
 
 (defview #'user-timeline :html
   [request [user activities]]
-  {:title (:display-name user)
+  {:user user
+   :title (:display-name user)
    :body [:div
           (show-section user)
           (index-section activities)]

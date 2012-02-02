@@ -81,7 +81,7 @@
   [response authenticated subscribers subscriptions groups]
   (let [user (current-user)]
     [:aside#left-column.sidebar
-     (user-info-section user)
+     (user-info-section (or (:user response) user))
      (side-navigation)
      #_(top-users)
      (:aside response) " "

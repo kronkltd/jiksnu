@@ -69,7 +69,7 @@
 
 (defn update-button
   [user]
-  [:form {:method "post" :action (str "/users/" (:id user) "/update")}
+  [:form {:method "post" :action (str "/users/" (:_id user) "/update")}
    [:input.btn.update-button {:type "submit" :value "Update"}]])
 
 (defn subscribe-button
@@ -142,7 +142,7 @@
     [:div
      (when (= (:_id user) (:_id authenticated))
        [:p "This is you"])
-     [:ul.user-actions
+     [:ul.user-actions.buttons
       [:li (discover-button user)]
       [:li (update-button user)]
       (when (not= (:_id user) (:_id authenticated))
