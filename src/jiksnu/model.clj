@@ -50,6 +50,12 @@
     Date (.format (SimpleDateFormat. *date-format*) date)
     date))
 
+(defn date->twitter
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
 (jena/init-jena-framework)
 ;; TODO: Find a better ns for this
 (rdf/register-rdf-ns :dc ns/dc)

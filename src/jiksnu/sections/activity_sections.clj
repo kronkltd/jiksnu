@@ -1,8 +1,9 @@
 (ns jiksnu.sections.activity-sections
-  (:use (ciste [core :only (with-format)]
-               [debug :only (spy)]
-               [sections :only (defsection)])
+  (:use (ciste [core :only [with-format]]
+               [debug :only [spy]]
+               [sections :only [defsection]])
         ciste.sections.default
+        (clojure.core [incubator :only [-?>]])
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
   (:require (hiccup [core :as h])
@@ -384,7 +385,7 @@
    [:text (h/escape-html (or (:title activity)
                              (:content activity)))]
    [:truncated "false"]
-   [:created_at  (:created activity)]
+   [:created_at (-?> activity :published model/date->twitter)]
    [:source (:source activity)]
    [:id (:_id activity)]
    [:in_reply_to_status_id]

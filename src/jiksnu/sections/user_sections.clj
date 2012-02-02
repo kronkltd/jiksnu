@@ -186,7 +186,7 @@
     (rdf/with-rdf-ns ""
       [
        ;; About the document
-       [(str (full-uri (spy user)) ".rdf")
+       [(str (full-uri user) ".rdf")
         [rdf/rdf:type                    foaf:PersonalProfileDocument
          [foaf :title]                 (rdf/l (str display-name "'s Profile"))
            [foaf :maker]               (rdf/rdf-resource (str (full-uri user) "#me"))

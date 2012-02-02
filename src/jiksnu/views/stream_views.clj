@@ -265,6 +265,7 @@
   [request data]
   {:body data})
 
+
 (defview #'twitter-public-timeline :json
   [request activities]
   {:body
@@ -272,9 +273,7 @@
     (fn [activity]
       {:text (:title activity)
        :truncated false
-       :created_at (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
-                     (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
-                     (.format formatter (:published activity)))
+       :created_at (model/date->twitter (:published activity))
        :in_reply_to_status_id nil
        :source (:source activity)
        :id (:_id activity)
