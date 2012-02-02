@@ -62,7 +62,7 @@
   [request users]
   {:body
    [:div
-    [:table.users
+    [:table.users.table
      [:thead
       [:tr
        [:th]

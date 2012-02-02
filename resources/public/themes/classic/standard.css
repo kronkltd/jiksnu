@@ -5,6 +5,10 @@ body {
     /* margin: 0; */
 }
 
+h1 {
+    margin-bottom: 15px !important;
+}
+
 .container, .container-fluid {
     width: 940px;
 
@@ -16,6 +20,10 @@ body {
 
 .post-actions li form {
     margin: 0;
+}
+
+.button-text {
+    display: none;
 }
 
 

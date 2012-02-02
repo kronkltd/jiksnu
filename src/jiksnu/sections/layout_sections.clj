@@ -36,24 +36,26 @@
   (when user
     [:div#user-info
      (sections.user/display-avatar user)
-     (link-to user)]))
+     [:div (link-to user)]]))
 
 (defn side-navigation
   []
   (let [links (when (is-admin?)
-                [["/admin"                    "Admin"]
+                [
+                 #_["/admin"                    "Admin"]
                  ["/admin/activities"         "Activities"]
                  ["/admin/settings"           "Settings"]
                  ["/admin/pshb-subscriptions" "PubSub"]
                  ["/admin/users"              "Users"]
                  ["/admin/subscriptions"      "Subscriptions"]])]
-    [:nav
-     [:ul.unstyled
-      (map
-       (fn [[link title]]
-         [:li.active
-          [:a {:href link} title]])
-       links)]]))
+    [:ul.nav.nav-list
+     [:li.nav-header "Admin"]
+     (map
+      (fn [[link title]]
+        [:li
+         [:a {:href link} title]])
+      links)]))
+
 
 (defn top-users
   []
@@ -90,7 +92,7 @@
   [response]
   (let [development (= :development (environment))]
     (when development
-      [:div.important.devel-section.alert-message.warning
+      [:div.devel-section.alert-block.alert
        "This site is running in development mode.
  No guarantees are made about the accuracy or security of information on this site.
  Use at your own risk."])))

@@ -107,13 +107,39 @@
     [:option {:value "event"}    "Event"]
     [:option {:value "bookmark"} "Bookmark"]]])
 
+(defn like-button
+  [activity]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/like")}
+   [:button.btn {:type "submit"}
+    [:i.icon-heart] [:span.button-text "like"]]])
+
+(defn update-button
+  [activity]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
+   [:button.btn {:type "submit"}
+    [:i.icon-refresh] [:span.button-text "update"]]])
+
+(defn edit-button
+  [activity]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
+   [:button.btn {:type "submit"}
+    [:i.icon-edit] [:span.button-text "edit"]]])
+
+(defsection delete-button [Activity :html]
+  [activity & _]
+  [:form {:method "post" :action (str "/notice/" (:_id activity))}
+   [:input {:type "hidden" :name "_method" :value "DELETE"}]
+   [:button.btn {:type "submit"}
+    [:i.icon-trash] [:span.button-text "Delete"]]])
+
 (defn post-actions
   [activity]
-  [:ul.buttons.post-actions.unstyled
-   [:li (like-button activity)]
-   [:li (update-button activity)]
-   [:li (edit-button activity)]
-   [:li (delete-button activity)]])
+  [:div.pull-right
+   [:ul.post-actions.unstyled.buttons
+    [:li (like-button activity)]
+    [:li (update-button activity)]
+    [:li (edit-button activity)]
+    [:li (delete-button activity)]]])
 
 (defn recipients-section
   [activity]
