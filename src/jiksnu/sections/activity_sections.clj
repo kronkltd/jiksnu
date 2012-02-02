@@ -300,8 +300,12 @@
 
 (defsection index-section [Activity :html]
   [activities & _]
-  [:ul.unstyled
-   (map index-line activities)])
+  (list
+   [:ul.unstyled
+    (map index-line activities)]
+   [:ul.pager
+    [:li.previous [:a {:href "#"} "&larr; Newer"]]
+    [:li.next [:a {:href "#"} "Older &rarr;"]]]))
 
 (defsection index-section [Activity :rdf]
   [activities & _]
