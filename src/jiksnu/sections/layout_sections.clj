@@ -3,6 +3,7 @@
         (ciste.sections [default :only [link-to]])
         (jiksnu [session :only [current-user is-admin?]]))
   (:require (jiksnu.actions [subscription-actions :as actions.subscription])
+            (jiksnu.model [subscription :as model.subscription])
             (jiksnu.sections [group-sections :as sections.group]
                              [subscription-sections :as sections.subscription]
                              [user-sections :as sections.user])))
@@ -74,15 +75,16 @@
 
 (defn left-column-section
   [response authenticated subscribers subscriptions groups]
-  [:aside#left-column.sidebar
-   (user-info-section (current-user))
-   (side-navigation)
-   (top-users)
-   (:aside response)
-   (sections.subscription/subscriptions-section (current-user) [])
-   (sections.subscription/subscribers-section (current-user) [])
-   (sections.group/user-groups (current-user))
-   (formats-section response)])
+  (let [user (current-user)]
+    [:aside#left-column.sidebar
+     (user-info-section user)
+     (side-navigation)
+     (top-users)
+     (:aside response)
+     (sections.subscription/subscriptions-section user (model.subscription/subscriptions user))
+     (sections.subscription/subscribers-section user (model.subscription/subscribers user))
+     (sections.group/user-groups user)
+     (formats-section response)]))
 
 (defn devel-warning
   [response]

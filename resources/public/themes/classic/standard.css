@@ -1,7 +1,7 @@
 body {
     /* font-color: black; */
     /* background-color: #4444ee; */
-    padding-top: 40px;
+    padding-top: 50px;
     /* margin: 0; */
 }
 
@@ -456,18 +456,19 @@ article .photo
 /*     display: inline; */
 /* } */
 
-/* .subscriptions ul { */
-/*     padding: 0; */
-/* } */
+.subscriptions ul {
+    padding: 0;
+    margin: 0;
+}
 
-/* .subscriptions li { */
-/*     display: inline; */
-/*     margin-right: 5px; */
-/* } */
+.subscriptions li {
+    display: inline;
+    margin-right: 5px;
+}
 
-/* .subscriptions p { */
-/*     display: block; */
-/* } */
+.subscriptions p {
+    display: block;
+}
 
 .labels
 {
