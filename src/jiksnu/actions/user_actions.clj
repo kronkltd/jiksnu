@@ -13,8 +13,7 @@
             (clojure [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
-                    [namespace :as namespace]
-                    [redis :as redis])
+                    [namespace :as namespace])
             (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
@@ -31,22 +30,22 @@
            tigase.xml.Element
            tigase.xmpp.JID))
 
-(defonce ^:dynamic *pending-discover-tasks* (ref {}))
+;; (defonce ^:dynamic *pending-discover-tasks* (ref {}))
 
-(defn enqueue-discover
-  "Queues the user to be discoverd once discovery of the domain has been completed."
-  [user]
-  (let [domain (:domain user)
-        id (:_id user)]
-    1
-    #_(redis/sadd (model.domain/pending-domains-key domain) id)))
+;; (defn enqueue-discover
+;;   "Queues the user to be discoverd once discovery of the domain has been completed."
+;;   [user]
+;;   (let [domain (:domain user)
+;;         id (:_id user)]
+;;     1
+;;     #_(redis/sadd (model.domain/pending-domains-key domain) id)))
 
-(defn pop-user!
-  [domain]
-  (-?> domain
-       model.domain/pending-domains-key
-       redis/spop
-       model.user/fetch-by-id))
+;; (defn pop-user!
+;;   [domain]
+;;   (-?> domain
+;;        model.domain/pending-domains-key
+;;        redis/spop
+;;        model.user/fetch-by-id))
 
 (defn get-domain
   [^User user]
@@ -219,14 +218,14 @@
       (if (:discovered domain)
         (do (discover-user-xmpp user)
             (discover-user-http user))
-        (enqueue-discover user))))
+        #_(enqueue-discover user))))
   (model.user/set-field user :discovered true)
   user)
 
 ;; TODO: turn this into a worker
 (defn discover-pending-users
   [domain]
-  (if-let [user (pop-user! domain)]
+  #_(if-let [user (pop-user! domain)]
     (do
       (log/info "Discovering: " user)
       (discover user))
