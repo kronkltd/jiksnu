@@ -1,6 +1,6 @@
 (ns jiksnu.helpers.activity-helpers
-  (:use (ciste config
-               [debug :only (spy)]
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
                sections)
         ciste.sections.default
         (jiksnu model session view))
@@ -24,41 +24,45 @@
 (defn timeline-formats
   [user]
   [{:label "FOAF"
-     :href (str (uri user) ".rdf")
-     :type "application/rdf+xml"}
-    {:label "N3"
-     :href (str (uri user) ".n3")
-     :type "text/n3"}
-    {:label "Atom"
-     :href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user) ".atom")
-     :type "application/atom+xml"}
-    {:label "JSON"
-     :href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user) ".json")
-     :type "application/json"}
-    {:label "XML"
-     :href (str "http://" (:domain user)
-                     "/api/statuses/user_timeline/" (:_id user) ".xml")
-     :type "application/xml"}])
+    :href (str (uri user) ".rdf")
+    :type "application/rdf+xml"}
+   {:label "N3"
+    :href (str (uri user) ".n3")
+    :type "text/n3"}
+   {:label "Atom"
+    :icon "feed-icon-14x14.png"
+    :href (str "http://" (:domain user)
+               "/api/statuses/user_timeline/" (:_id user) ".atom")
+    :type "application/atom+xml"}
+   {:label "JSON"
+    :href (str "http://" (:domain user)
+               "/api/statuses/user_timeline/" (:_id user) ".json")
+    :type "application/json"}
+   {:label "XML"
+    :href (str "http://" (:domain user)
+               "/api/statuses/user_timeline/" (:_id user) ".xml")
+    :type "application/xml"}])
 
 (defn index-formats
   [activities]
   [{:label "Atom"
-     :href "/api/statuses/public_timeline.atom"
-     :type "application/atom+xml"}
-    {:label "JSON"
-     :href "/api/statuses/public_timeline.json"
-     :type "application/json"}
-    #_{:label "XML"
-     :href "/api/statuses/public_timeline.xml"
-     :type "application/xml"}
-    {:label "RDF"
-     :href "/api/statuses/public_timeline.rdf"
-     :type "application/rdf+xml"}
-    {:label "N3"
-     :href "/api/statuses/public_timeline.n3"
-     :type "text/n3"}])
+    :href "/api/statuses/public_timeline.atom"
+    :icon "feed-icon-14x14.png"
+    :type "application/atom+xml"}
+   {:label "JSON"
+    :href "/api/statuses/public_timeline.json"
+    :icon "as-bw-14x14.png"
+    :type "application/json"}
+   #_{:label "XML"
+      :href "/api/statuses/public_timeline.xml"
+      :type "application/xml"}
+   {:label "RDF"
+    :href "/api/statuses/public_timeline.rdf"
+    :icon "foafTiny.gif"
+    :type "application/rdf+xml"}
+   {:label "N3"
+    :href "/api/statuses/public_timeline.n3"
+    :type "text/n3"}])
 
 ;; TODO: Move this to user
 (defn add-author
@@ -128,8 +132,8 @@
   [^Element element]
   (let [source (.getAttributeValue element "source")
         local-id (.getAttributeValue element "local_id")]
-    (spy {:source source
-      :local-id local-id})))
+    {:source source
+     :local-id local-id}))
 
 (defn parse-extension-element
   [element]

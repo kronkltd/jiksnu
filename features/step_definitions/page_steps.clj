@@ -1,8 +1,9 @@
 (use 'aleph.http)
 (use 'aleph.formats)
-(use '[ciste.debug :only (spy)])
+(use '[ciste.debug :only [spy]])
 (use 'ciste.sections.default)
-(use '[clj-factory.core :only (factory)])
+(use '[clj-factory.core :only [factory]])
+(use '[clojure.core.incubator :only [-?>]])
 (use 'clojure.test)
 (use 'jiksnu.http)
 (use 'jiksnu.model)
@@ -26,7 +27,7 @@
 (def current-page (ref nil))
 (def current-browser (ref nil))
 (def domain "localhost")
-(def port 8085)
+(def port 8175)
 (def that-activity (ref nil))
 (def that-domain (ref nil))
 (def that-user (ref nil))
@@ -54,20 +55,20 @@
    "domain index"       "/main/domains"})
 
 (Before
-  (let [browser (w/new-driver :firefox)]
-    (c/load-config)
-    (c/set-environment! :test)
-    (with-database
-      (model/drop-all!))
-
-    (dosync
-     (ref-set current-browser browser)
-     (reset! server (start port)))))
+ (let [browser (w/new-driver {:browser :firefox})]
+   (c/load-config)
+   (c/set-environment! :test)
+   
+   (model/drop-all!)
+   
+   (dosync
+    (ref-set current-browser browser)
+    (reset! server (start port)))))
 
 (After
-  (@(spy server))
-  (w/quit @current-browser)
-  #_(shutdown-agents))
+ (@server)
+ (w/quit @current-browser)
+ #_(shutdown-agents))
 
 
 (defn fetch-page
@@ -84,20 +85,18 @@
 
 (defn a-domain-exists
   []
-  (with-database
-    (let [domain (actions.domain/create (factory Domain))]
-      (dosync
-       (ref-set that-domain domain)))))
+  (let [domain (actions.domain/create (factory Domain))]
+    (dosync
+     (ref-set that-domain domain))))
 
 (defn a-user-exists
   []
-  (with-database
-    (let [domain (actions.domain/current-domain)
-          user (actions.user/create
-                (factory User {:domain (:_id domain)
-                               :password "hunter2"}))]
-      (dosync
-       (ref-set that-user user)))))
+  (let [domain (actions.domain/current-domain)
+        user (actions.user/create
+              (factory User {:domain (:_id domain)
+                             :password "hunter2"}))]
+    (dosync
+     (ref-set that-user user))))
 
 (defn do-login
   []
@@ -121,13 +120,12 @@
 
 (defn an-admin-is-logged-in
   []
-  (with-database
-    (a-user-exists)
-    (-> @that-user
-        (assoc :admin true)
-        actions.user/update
-        session/set-authenticated-user!)
-    (do-login)))
+  (a-user-exists)
+  (-> @that-user
+      (assoc :admin true)
+      actions.user/update
+      session/set-authenticated-user!)
+  (do-login))
 
 (defn get-body
   []
@@ -142,7 +140,7 @@
 (Given #"a user exists with the password \"hunter2\"" a-user-exists)
 
 (Given #"I am not logged in"
-  (fn []))
+       (fn []))
 
 (Given #"I am logged in" a-normal-user-is-logged-in)
 
@@ -152,225 +150,221 @@
 
 
 (Given #"there is a (.+) activity"
-  (fn [modifier]
-    (core/with-context [:html :http]
-      (with-database
-        (let [activity (actions.activity/create
-                        (factory Activity
-                                 {:public (= modifier "public")}))]
-          (dosync
-           (ref-set that-activity activity)))))))
+       (fn [modifier]
+         (core/with-context [:html :http]
+           (let [activity (actions.activity/create
+                           (factory Activity
+                                    {:public (= modifier "public")}))]
+             (dosync
+              (ref-set that-activity activity))))))
 
 (Given #"I am at the (.+) page"
-  (fn [page-name]
-    (let [path (get page-names page-name)]
-      (fetch-page-browser :get path))))
+       (fn [page-name]
+         (let [path (get page-names page-name)]
+           (fetch-page-browser :get path))))
 
 ;; When
 
 (When #"I go to the (.+) page"
-  (fn [page-name]
-    (if-let [path (get page-names page-name)]
-      (fetch-page-browser :get path)
-      (throw (RuntimeException. (str "No path defined for " page-name))))))
+      (fn [page-name]
+        (if-let [path (get page-names page-name)]
+          (fetch-page-browser :get path)
+          (throw (RuntimeException. (str "No path defined for " page-name))))))
 
 (When #"I go to the page for that activity"
-  (fn []
-    (core/with-context [:html :http]
-      (let [path (uri @that-activity)]
-        (fetch-page-browser :get path)))))
+      (fn []
+        (core/with-context [:html :http]
+          (let [path (uri @that-activity)]
+            (fetch-page-browser :get path)))))
 
 (When #"I go to the page for that domain"
-  (fn []
-    (core/with-context [:html :http]
-      (let [path (str "/main/domains/" (:_id @that-domain))]
-        (fetch-page-browser :get path)))))
+      (fn []
+        (core/with-context [:html :http]
+          (let [path (str "/main/domains/" (:_id @that-domain))]
+            (fetch-page-browser :get path)))))
 
 (When #"I request the host-meta page with a client"
-  (fn []
-    (fetch-page :get "/.well-known/host-meta")))
+      (fn []
+        (fetch-page :get "/.well-known/host-meta")))
 
 (When #"I request the user-meta page for that user"
-  (fn []
-    (fetch-page-browser :get
-                (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
+      (fn []
+        (fetch-page-browser :get
+                            (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
 
 (When #"I request the user-meta page for that user with a client"
-  (fn []
-    (fetch-page :get
-                (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
+      (fn []
+        (fetch-page :get
+                    (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
 
 (When #"I click \"([^\"]*)\""
-  (fn [value]
-    (-> @current-browser
-        (w/find-it {:value value})
-        w/click)))
+      (fn [value]
+        (-> @current-browser
+            (w/find-it {:value value})
+            w/click)))
 
 (When #"I click the \"([^\"]*)\" button"
-  (fn [value]
-    (-> @current-browser
-        (w/find-it {:value value})
-        w/click)))
+      (fn [value]
+        (-> @current-browser
+            (w/find-it {:value value})
+            w/click)))
 
 (When #"I click the \"([^\"]*)\" button for that domain"
-  (fn [value]
-    (-> @current-browser
-        (w/find-it {:value value})
-        w/click)))
+      (fn [value]
+        (-> @current-browser
+            (w/find-it {:value value})
+            w/click)))
 
 (When #"I type \"(.*)\" into the \"(.*)\" field"
-  (fn [value field-name]
-    (-> @current-browser
-        (w/find-it {:name field-name})
-        (w/send-keys value))))
+      (fn [value field-name]
+        (-> @current-browser
+            (w/find-it {:name field-name})
+            (w/send-keys value))))
 
 (When #"I put my username in the \"username\" field"
-  (fn []
-    (let [field-name "username"
-          value (:username @that-user)]
-      (-> @current-browser
-          (w/find-it {:name field-name})
-          (w/send-keys value)))))
+      (fn []
+        (let [field-name "username"
+              value (:username @that-user)]
+          (-?> @current-browser
+               (w/find-it {:name field-name})
+               (w/send-keys value)))))
 
 (When #"I put my password in the \"password\" field"
-  (fn []
-    (let [field-name "password"
-          ;; TODO: Get password from somewhere
-          value "hunter2"]
-      (-> @current-browser
-          (w/find-it {:name field-name})
-          (w/send-keys value)))))
+      (fn []
+        (let [field-name "password"
+              ;; TODO: Get password from somewhere
+              value "hunter2"]
+          (-> @current-browser
+              (w/find-it {:name field-name})
+              (w/send-keys value)))))
 
 ;; Then
 
 (Then #"I should be an admin"
-  (fn []
-    (check-response
-     (with-database
-       (session/current-user) => (contains {:admin true})))))
+      (fn []
+        (check-response
+         (session/current-user) => (contains {:admin true}))))
 
 (Then #"I should see an activity"
-  (fn []
-    (check-response
-     (w/find-it @current-browser {:class "activities"}) => truthy)))
+      (fn []
+        (check-response
+         (w/find-it @current-browser {:class "activities"}) => truthy)))
 
 (Then #"I should see that activity"
-  (fn []
-    (check-response
-     (w/find-it @current-browser
-                :article {:id (str (:_id @that-activity))}) => w/visible?)))
+      (fn []
+        (check-response
+         (println "then")
+         (w/find-it @current-browser
+                    :article #_{:id (str (:_id @that-activity))}) => w/visible?)))
 
 (Then #"I should see a list of (.*)"
-  (fn [class-name]
-    (check-response
-     (w/find-it @current-browser {:class class-name}) => truthy)))
+      (fn [class-name]
+        (check-response
+         (w/find-it @current-browser {:class class-name}) => truthy)))
 
 (Then #"I should see a subscription list"
-  (fn []
-    (check-response
-     (get-body)) => #".*subscriptions"))
+      (fn []
+        (check-response
+         (get-body)) => #".*subscriptions"))
 
 (Then #"the response is sucsessful"
-  (fn []
-    (check-response
-      (:status @current-page) => 200)))
+      (fn []
+        (check-response
+         (:status @current-page) => 200)))
 
 (Then #"the response is a redirect"
-  (fn []
-    (check-response
-      (:status @current-page) => #(<= 300 %)
-      (:status @current-page) => #(> 400 %))))
+      (fn []
+        (check-response
+         (:status @current-page) => #(<= 300 %)
+         (:status @current-page) => #(> 400 %))))
 
 (Then #"the content-type is \"([^\"]+)\""
-  (fn [type]
-    (check-response
-      (get-in @current-page [:headers "content-type"]) => type)))
+      (fn [type]
+        (check-response
+         (get-in @current-page [:headers "content-type"]) => type)))
 
 (Then #"I should be at the (.+) page"
-  (fn [page-name]
-    (check-response
-     (let [path (get page-names page-name)]
-       (w/current-url @current-browser) => (re-pattern
-                                            (str ".*" (expand-url path)
-                                                 ".*"))))))
+      (fn [page-name]
+        (check-response
+         (let [path (get page-names page-name)]
+           (w/current-url @current-browser) => (re-pattern
+                                                (str ".*" (expand-url path)
+                                                     ".*"))))))
 
 (Then #"the host field matches the current domain"
-  (fn []
-    (check-response
-      (let [domain (c/config :domain)
-            pattern (re-pattern (str ".*" domain ".*"))]
-        (get-body) => pattern))))
+      (fn []
+        (check-response
+         (let [domain (c/config :domain)
+               pattern (re-pattern (str ".*" domain ".*"))]
+           (get-body) => pattern))))
 
 (Then #"the alias field matches that user's uri"
-  (fn []
-    (check-response
-     (let [uri (model.user/get-uri @that-user)
-           pattern (re-pattern (str ".*" uri ".*"))]
-       (get-body) => pattern))))
+      (fn []
+        (check-response
+         (let [uri (model.user/get-uri @that-user)
+               pattern (re-pattern (str ".*" uri ".*"))]
+           (get-body) => pattern))))
 
 (Then #"it should have a \"([^\"]+)\" field"
-  (fn [field-name]
-    (check-response
-     (w/find-it @current-browser {:name field-name})) => w/visible?))
+      (fn [field-name]
+        (check-response
+         (w/find-it @current-browser {:name field-name})) => w/visible?))
 
 (Then #"I should see a form"
-  (fn []
-    (check-response
-     (w/find-it @current-browser :form) => w/visible?)))
+      (fn []
+        (check-response
+         (w/find-it @current-browser :form) => w/visible?)))
 
 (Then #"I should see a domain named \"(.*)\""
-  (fn [name]
-    (check-response
-     (w/find-it @current-browser :a {:href (str "/main/domains/" name)}) => w/visible?)))
+      (fn [name]
+        (check-response
+         (w/find-it @current-browser :a #_{:href (str "/main/domains/" name)}) => w/visible?)))
 
 (Then #"I should see that domain"
-  (fn []
-    (check-response
-     (-> @current-browser
-         (w/find-it {:class "domain-id"})
-         .getText) => (:_id @that-domain))))
+      (fn []
+        (check-response
+         (-> @current-browser
+             (w/find-it {:class "domain-id"})
+             .getText) => (:_id @that-domain))))
 
 (Then #"I should get a not found error"
-  (fn []
-    (check-response
-     (w/page-source @current-browser) => #"Not Found")))
+      (fn []
+        (check-response
+         (w/page-source @current-browser) => #"Not Found")))
 
 (Then #"I should be logged in"
-  (fn []
-    (check-response
-     (w/find-it @current-browser {:class "authenticated"}) => w/visible?)))
+      (fn []
+        (check-response
+         (w/find-it @current-browser {:class "authenticated"}) => w/visible?)))
 
 (Then #"I should not be logged in"
-  (fn []
-    (check-response
-     (w/find-it @current-browser {:class "unauthenticated"}) => w/visible?)))
+      (fn []
+        (check-response
+         (w/find-it @current-browser {:class "unauthenticated"}) => w/visible?)))
 
 (Then #"that user's name should be \"(.*)\""
-  (fn [display-name]
-    (check-response
-     (with-database
-       (actions.user/show @that-user)) =>
-       (contains {:display-name display-name}))))
+      (fn [display-name]
+        (check-response
+         (actions.user/show @that-user) => (contains {:display-name display-name}))))
 
 (Then #"I should not see the class \"(.*)\""
-  (fn [class-name]
-    (check-response
-     (w/find-it @current-browser
-                {:class class-name}) => (throws NoSuchElementException))))
+      (fn [class-name]
+        (check-response
+         (w/find-it @current-browser
+                    {:class class-name}) => (throws NoSuchElementException))))
 
 (Then #"that domain should be discovered"
-  (fn []
-    (check-response
-     @that-domain => (contains {:discovered true}))))
+      (fn []
+        (check-response
+         @that-domain => (contains {:discovered true}))))
 
 (Then #"that domain should be deleted"
-  (fn []
-    (check-response
-     (with-database
-       (actions.domain/show @that-domain) => nil))))
+      (fn []
+        (check-response
+         (actions.domain/show @that-domain) => nil)))
 
 (Then #"I should be at the page for that domain"
-  (fn []
-    (check-response
-     (let [url (:_id @that-domain)]
-       (w/find-it @current-browser url) => w/visible?))))
+      (fn []
+        (check-response
+         (let [url (:_id @that-domain)]
+           (w/find-it @current-browser url) => w/visible?))))

@@ -65,7 +65,7 @@
    {:items
     (map show-section activities)}})
 
-(defview #'public-timeline :n3
+(defview #'twitter-public-timeline :n3
   [request activities]
   (let [triples (with-format :rdf (index-section activities))]
     {:body (-> triples
@@ -75,7 +75,7 @@
               with-out-str)
     :template :false}))
 
-(defview #'public-timeline :rdf
+(defview #'twitter-public-timeline :rdf
   [request activities]
   (let [model (rdf/build-model)]
     (.setNsPrefix (rdf/to-java model) "activity" namespace/as)

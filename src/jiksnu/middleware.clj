@@ -29,21 +29,13 @@
   [handler]
   (fn [request]
     (try
-      ;; (NewRelic/incrementCounter "/requests")
-      (NewRelic/setTransactionName "requests" (:uri request))
-      (with-time
-        (fn [m]
-          (spy (class (:elapsed m)))
-          (NewRelic/recordMetric
-           (spy (:uri request)) (spy (float (:elapsed m)))
-           )
-          )
-        (handler request))
+      ;; (NewRelic/setTransactionName "requests" (:uri request))
+      ;; (with-time
+      ;;   (fn [m]
+      ;;     (NewRelic/recordMetric
+      ;;      (:uri request) (float (:elapsed m))))
+        (handler request)
+        ;; )
       (catch Exception ex
-        (println "noticing error")
         (NewRelic/noticeError ex)
-        (throw ex)
-        )
-      )
-    )
-  )
+        (throw ex)))))

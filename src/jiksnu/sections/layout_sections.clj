@@ -74,7 +74,10 @@
       (map
        (fn [format]
          [:li
-          [:a {:href (:href format)} (:label format)]])
+          [:a {:href (:href format)}
+           (when (:icon format)
+             [:img {:src (str "/themes/classic/" (:icon format))}])
+           (:label format)]])
        (:formats response))]]))
 
 (defn left-column-section
