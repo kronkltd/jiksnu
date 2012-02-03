@@ -20,12 +20,6 @@
   [id]
   (model.subscription/delete id))
 
-(defaction admin-index
-  [& _]
-  (if (session/is-admin?)
-    (model.subscription/index)
-    (throw (AuthenticationException. "Must be admin"))))
-
 (defaction ostatus
   [& _]
   true)

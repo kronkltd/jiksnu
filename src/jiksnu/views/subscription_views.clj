@@ -16,10 +16,6 @@
    :template false
    :headers {"Location" "/admin/subscriptions"}})
 
-(defview #'admin-index :html
-  [request subscriptions]
-  {:body (sections.subscription/index-section subscriptions)})
-
 (defview #'ostatus :html
   [request arg]
   {:body ""

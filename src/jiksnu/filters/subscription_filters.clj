@@ -14,10 +14,6 @@
   (let [{{id :id} :params} request]
     (action id)))
 
-(deffilter #'admin-index :http
-  [action request]
-  (action))
-
 (deffilter #'ostatus :http
   [action request]
   (action))

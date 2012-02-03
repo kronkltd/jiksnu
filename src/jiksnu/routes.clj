@@ -32,7 +32,8 @@
                             [subscription-actions :as sub]
                             [tag-actions :as tag]
                             [user-actions :as user])
-            (jiksnu.actions.admin [activity-actions :as admin.activity])
+            (jiksnu.actions.admin [activity-actions :as admin.activity]
+                                  [subscription-actions :as admin.sub])
             (lamina [core :as l])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
@@ -54,7 +55,7 @@
    [
     [[:get  "/admin"]                                   #'admin/index]
     [[:get  "/admin/activities"]                        #'admin.activity/index]
-    [[:get  "/admin/subscriptions"]                     #'sub/admin-index]
+    [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
     [[:get  "/admin/push/subscriptions"]                #'push/admin-index]
     [[:post "/admin/users"]                             #'user/admin-create]
     [[:get  "/admin/users"]                             #'user/admin-index]
