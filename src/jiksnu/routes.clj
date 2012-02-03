@@ -53,7 +53,7 @@
   (make-matchers
    [
     [[:get  "/admin"]                                   #'admin/index]
-    [[:get  "/admin/notices"]                           #'admin.activity/index]
+    [[:get  "/admin/activities"]                        #'admin.activity/index]
     [[:get  "/admin/subscriptions"]                     #'sub/admin-index]
     [[:get  "/admin/push/subscriptions"]                #'push/admin-index]
     [[:post "/admin/users"]                             #'user/admin-create]
