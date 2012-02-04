@@ -65,3 +65,9 @@
 (defview #'password-page :html
   [request user]
   {:body (templates.auth/password-page user)})
+
+(defview #'verify-credentials :json
+  [request _]
+  {:body {:error "Could not authenticate you"
+           :request (:uri request)}
+   :template false})

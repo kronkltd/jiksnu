@@ -40,6 +40,10 @@
   (let [{{id :pending-id} :session} request]
     (model.user/fetch-by-id id)))
 
+(defaction verify-credentials
+  []
+  true)
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.auth-filters
                      'jiksnu.views.auth-views]]

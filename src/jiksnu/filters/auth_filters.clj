@@ -25,3 +25,7 @@
 (deffilter #'password-page :http
   [action request]
   (-> request :session :pending-id action))
+
+(deffilter #'verify-credentials :http
+  [action request]
+  (action))

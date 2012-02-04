@@ -77,6 +77,7 @@
    [[[:get    "/"]                                        #'stream/public-timeline]
     [[:get    "/rsd.xml"]                                 #'site/rsd]
     [[:get    "/.well-known/host-meta"]                   #'domain/host-meta]
+    [[:get    "/api/account/verify_credentials.:format"]     #'auth/verify-credentials]
     [[:get    "/api/friendships/exists.:format"]          #'user/exists?]
     [[:get    "/api/people/@me/@all"]                     #'user/index]
     [[:get    "/api/people/@me/@all/:id"]                 #'user/show]
