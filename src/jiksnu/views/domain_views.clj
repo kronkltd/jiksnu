@@ -67,6 +67,7 @@
       ["XRD" {"xmlns" ns/xrd
               "xmlns:hm" ns/host-meta}
        ["hm:Host" domain]
+       ["Subject" domain] 
        (map
         (fn [{:keys [title rel href template] :as link}]
           [:Link (merge {}
