@@ -16,15 +16,27 @@
                           [user :as model.user])
             (lamina [core :as l])))
 
+
+(defaction direct-message-timeline
+  [& _]
+  [])
+
+
 (defaction friends-timeline
-  [& _])
+  [& _]
+  [])
 
 (defaction inbox
-  [& _])
+  [& _]
+  [])
 
 (defaction public-timeline
   [& options]
   (model.activity/index))
+
+(defaction twitter-public-timeline
+  [& options]
+  (apply public-timeline options))
 
 (declare user-timeline)
 
@@ -37,6 +49,7 @@
   (user-timeline user))
 
 (defaction stream
+  []
   [])
 
 (defn stream-handler
@@ -66,17 +79,15 @@
 
 (defaction user-list
   []
-  
-  )
+  [])
 
 (defaction home-timeline
   []
-  
-  )
+  [])
 
 (defaction mention-timeline
   []
-  
+  []
   )
 
 

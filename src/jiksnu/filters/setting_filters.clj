@@ -11,3 +11,7 @@
 (deffilter #'avatar-page :http
   [action request]
   (action (current-user)))
+
+(deffilter #'config-output :http
+  [action request]
+  (action))

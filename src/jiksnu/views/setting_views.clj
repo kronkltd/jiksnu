@@ -21,3 +21,7 @@
        [:input {:type "file" :name "avatar"}]]]
      [:div.actions
       [:input {:type "submit" :value "Submit"}]]]]})
+
+(defview #'config-output :json
+  [request data]
+  {:body data})

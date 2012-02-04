@@ -24,6 +24,10 @@
   [action request]
   (action))
 
+(deffilter #'twitter-public-timeline :http
+  [action request]
+  (action))
+
 (deffilter #'remote-profile :http
   [action request]
   (-> request :params :id 
@@ -54,3 +58,11 @@
 (deffilter #'group-timeline :http
   [action {{:keys [name]} :params}]
   (action name))
+
+(deffilter #'direct-message-timeline :http
+  [action request]
+  (action))
+
+(deffilter #'home-timeline :http
+  [action request]
+  (action))

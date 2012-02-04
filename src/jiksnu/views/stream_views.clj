@@ -22,7 +22,8 @@
             (jiksnu.xmpp [element :as xmpp.element])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])
-            (ring.util [response :as response])))
+            (ring.util [response :as response]))
+  (:import java.text.SimpleDateFormat))
 
 (defview #'public-timeline :atom
   [request activities]
@@ -52,10 +53,9 @@
 
 (defview #'public-timeline :json
   [request activities]
-  (with-format :json
-    {:body
-     {:items
-      (map show-section activities)}}))
+  {:body
+   {:items
+    (map show-section activities)}})
 
 (defview #'public-timeline :n3
   [request activities]
@@ -232,7 +232,41 @@
   [request [group activities]]
   {:body
    [:section
-    [:h1 (:name group)]
-    ]
-   }
-  )
+    [:h1 (:name group)]]})
+
+(defview #'direct-message-timeline :json
+  [request data]
+  {:body data})
+
+(defview #'home-timeline :json
+  [request data]
+  {:body data})
+
+(defview #'twitter-public-timeline :json
+  [request activities]
+  {:body
+   (map
+    (fn [activity]
+      {:text (:title activity)
+       :truncated false
+       :created_at (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
+                     (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+                     (.format formatter (:published activity)))
+       :in_reply_to_status_id nil
+       :source (:source activity)
+       :id (:_id activity)
+       :in_reply_to_user_id nil
+       :in_reply_to_screen_name nil
+       :favorited false
+       :attachments []
+       :user
+       (let [user (helpers.activity/get-author activity)]
+         {:name (:display-name user)
+          :id (:_id user)
+          :screen_name (:username user)
+          :url (:url user)
+          :profile_image_url (:avatar-url user)
+          :protected false})
+       :statusnet_html (:content activity)
+       :statusnet_conversation_id nil})
+    activities)})
