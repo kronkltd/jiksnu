@@ -318,7 +318,7 @@
       #_(when (:title activity)
           [:h1.entry-title {:property "dc:title"} (:title activity)])
       [:p {:property "sioc:content"}
-       (:content activity)]]
+       (:title activity)]]
      [:div
       (recipients-section activity)
       (links-section activity)
