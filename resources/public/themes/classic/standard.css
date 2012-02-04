@@ -82,39 +82,6 @@ h1 {
 
 /* } */
 
-/* #notification-area { */
-/*     clear: both; */
-/* } */
-
-/* .devel-section { */
-/*     color: orange; */
-/*     background-color: #1c3044; */
-/*     border: 2px solid black; */
-/*     padding: 2px; */
-/*     text-align: center; */
-/* } */
-
-/* #site-main, #wrap footer { */
-/*     padding: 3px; */
-/*     background-color: white; */
-/* } */
-
-/* #left-column { */
-/*     float: left; */
-/*     width: 190px; */
-/* } */
-
-/* #content { */
-/*     background-color: white; */
-/*     /\* padding-left: 15px; *\/ */
-/*     /\* float: left; *\/ */
-/*     margin-left: 200px; */
-/* } */
-
-/* #content { */
-/*     width: 730px; */
-/* } */
-
 /* .post-activity { */
 /*     border-color: black; */
 /*     border-width: 1px; */
@@ -176,7 +143,7 @@ h1 {
 /* } */
 
 .map-section {
-    display: none;
+    /* display: none; */
 }
 
 /* .activities { */
