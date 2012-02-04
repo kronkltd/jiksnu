@@ -20,12 +20,13 @@
 (defn subscribers-section
   [user]
   (when user
-    (let [subscriptions (model.subscription/subscribers user)] [:div.subscribers
-      [:h3
-       ;; subscribers link
-       [:a {:href (str "/" (:username user) "/subscribers")} "Subscribers"]]
-      [:ul.unstyled
-       [:li (map subscriber-line subscriptions)]]])))
+    (let [subscriptions (model.subscription/subscribers user)]
+      [:div.subscribers
+       [:h3
+        ;; subscribers link
+        [:a {:href (str "/" (:username user) "/subscribers")} "Subscribers"]]
+       [:ul.unstyled
+        [:li (map subscriber-line subscriptions)]]])))
 
 (defn subscriptions-section
   [user]
