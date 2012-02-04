@@ -76,6 +76,12 @@
   [id]
   (model.activity/fetch-by-id id))
 
+(defn strip-namespaces
+  [val]
+  (-?> val
+       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+       (string/replace #"http://ostatus.org/schema/1.0/" "")))
+
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
@@ -89,8 +95,7 @@ serialization"
            verb (-?> entry
                      (.getExtension (QName. namespace/as "verb" "activity"))
                      .getText
-                     (string/replace #"http://activitystrea.ms/schema/1.0/" "")
-                     (string/replace #"http://ostatus.org/schema/1.0/" ""))
+                     strip-namespaces)
            user (-> entry
                     (abdera/get-author feed)
                     actions.user/person->user
@@ -104,13 +109,13 @@ serialization"
                            (filter identity))
            content (.getContent entry)
            links (abdera/parse-links entry)
-           tags (abdera/parse-tags entry)
+           tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object" "activity"))
+           object-type 
            object (when object-element
                     (let [object-type (-?> (.getExtension object-element (QName. namespace/as "object-type" "activity"))
                                            .getText
-                                           (string/replace #"http://activitystrea.ms/schema/1.0/" "")
-                                           (string/replace #"http://ostatus.org/schema/1.0/" ""))
+                                           strip-namespaces)
                           id (.getSimpleExtension object-element namespace/atom "id" "")]
                       {:object-type object-type
                        :id id}))
