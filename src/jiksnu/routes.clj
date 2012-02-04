@@ -249,15 +249,15 @@
 
 (def http-predicates
   [#'pred/http-serialization?
-   [#'pred/request-method-matches?
-    #'pred/path-matches?]])
+   #'pred/request-method-matches?
+   #'pred/path-matches?])
 
 (def xmpp-predicates
   [#'pred/xmpp-serialization?
-   [#'pred/type-matches?
-    #'pred/node-matches?
-    #'pred/name-matches?
-    #'pred/ns-matches?]])
+   #'pred/type-matches?
+   #'pred/node-matches?
+   #'pred/name-matches?
+   #'pred/ns-matches?])
 
 (compojure/defroutes all-routes
   (compojure/GET "/favicon.ico" request
@@ -269,7 +269,7 @@
                   (if (session/is-admin?)
                     ((resolve-routes [http-predicates] admin-routes) request)
                     (throw (LoginException. "Must be admin")))))
-  (jm/wrap-log-request
+  (middleware/wrap-log-request
    (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/main/events" _
                  (http/wrap-aleph-handler stream/stream-handler))
