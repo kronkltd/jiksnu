@@ -187,13 +187,13 @@
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
-        title (.getTitle link)]
-    (merge {:href (str (.getHref link))
-            :rel (.getRel link)}
-           (if (and title (not= title ""))
-             {:title title})
-           (if (seq extensions) {:extensions extensions})
-           (if mime-type {:mime-type (str mime-type)}))))
+        title (.getTitle link)
+        rel (.getRel link)]
+    (merge {:href (str (.getHref link))}
+           (when (seq rel) {:rel rel})
+           (when (seq title) {:title title})
+           (when (seq extensions) {:extensions extensions})
+           (when (seq mime-type) {:mime-type (str mime-type)}))))
 
 (defn parse-links
   [entry]
