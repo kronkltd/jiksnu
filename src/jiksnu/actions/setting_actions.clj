@@ -7,6 +7,12 @@
   []
   (session/is-admin?))
 
+(defaction oauth-apps
+  []
+  
+  )
+
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.setting-filters
                      'jiksnu.views.setting-views]]

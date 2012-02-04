@@ -82,6 +82,10 @@
   [id]
   (model.user/delete id))
 
+(defaction exists?
+  [user]
+  (model.user/find-record user))
+
 (defn fetch-by-jid
   [jid]
   (model.user/show (.getLocalpart jid) (.getDomain jid)))
