@@ -168,7 +168,7 @@
 (defsection show-section [User :rdf]
   [user & _]
   (let [{:keys [url display-name avatar-url first-name last-name username name email]} user
-        mk (model.signature/get-key-for-user user)]
+        mkp (model.signature/get-key-for-user user)]
     (rdf/with-rdf-ns ""
       [
        ;; About the document
@@ -290,3 +290,13 @@
   [users]
   [:ul.users
    (map index-line users)])
+
+(defn push-subscribe-button
+  [user]
+  [:a.url {:href (:url user) :rel "contact"}
+   [:span.fn.n (:display-name user)]])
+
+(defn remote-warning
+  [user]
+  (when-not (:local user)
+    [:p "This is a cached copy of information for a user on a different system"]))

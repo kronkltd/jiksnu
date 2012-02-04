@@ -38,10 +38,6 @@
    :template false
    :headers {"Location" (uri user)}})
 
-;; (defview #'edit :html
-;;   [request user]
-;;   {:body (templates.user/edit-form user)})
-
 (defview #'fetch-remote :xmpp
   [request user]
   (helpers.user/vcard-request request user))

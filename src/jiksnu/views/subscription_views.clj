@@ -7,8 +7,7 @@
         (jiksnu model session view))
   (:require (clj-tigase [core :as tigase])
             (jiksnu.helpers [subscription-helpers :as helpers.subscription]
-                            [user-helpers :as helpers.user])
-            (jiksnu.templates [subscription :as templates.subscription])))
+                            [user-helpers :as helpers.user])))
 
 (defview #'delete :html
   [request _]
@@ -18,7 +17,7 @@
 
 (defview #'admin-index :html
   [request subscriptions]
-  {:body (templates.subscription/index-section subscriptions)})
+  {:body "" #_(templates.subscription/index-section subscriptions)})
 
 (defview #'ostatus :html
   [request arg]
@@ -27,7 +26,7 @@
 
 (defview #'ostatussub :html
   [request arg]
-  {:body (templates.subscription/ostatus-sub)})
+  {:body "" #_(templates.subscription/ostatus-sub)})
 
 (defview #'ostatussub-submit :html
   [request subscription]
@@ -44,7 +43,7 @@
 
 (defview #'get-subscribers :html
   [request [user subscribers]]
-  {:body (templates.subscription/subscribers-index subscribers)})
+  {:body "" #_(templates.subscription/subscribers-index subscribers)})
 
 (defview #'get-subscriptions :html
   [request [user subscriptions]]
@@ -56,8 +55,8 @@
              {:href (str (uri user) "/subscriptions.json")
               :label "JSON"
               :type "application/json"}]
-   :body
-   (templates.subscription/subscriptions-index subscriptions)})
+   :body ""
+   #_(templates.subscription/subscriptions-index subscriptions)})
 
 (defview #'unsubscribe :html
   [request subscription]

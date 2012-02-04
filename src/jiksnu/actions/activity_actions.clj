@@ -111,7 +111,7 @@ serialization"
            links (abdera/parse-links entry)
            tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object" "activity"))
-           object-type 
+           ;; object-type 
            object (when object-element
                     (let [object-type (-?> (.getExtension object-element (QName. namespace/as "object-type" "activity"))
                                            .getText

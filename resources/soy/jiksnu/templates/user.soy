@@ -1,46 +1,6 @@
 {namespace jiksnu.templates.user}
 
 /**
- * @param id
- */
-{template .discoverButton}
-  <form method="post"
-        action="/users/{$id}/discover">
-    <input type="submit" value="Discover" class="discover-button" />
-  </form>
-{/template}
-
-
-/**
- * @param id
- * @param name
- * @param imgsrc
- * @param size
- */
-{template .displayAvatar}
-  <a href="/users/{$id}"
-     title="{$name}">
-    <img class="avatar photo"
-         width="{$size ? $size : '48'}"
-         height="{$size ? $size : '48'}"
-         alt=""
-         src="{$imgsrc}" />
-  </a>
-{/template}
-
-
-/**
- * @param id
- */
-{template .editButton}
-  <form method="post"
-        action="/users/{$id}/edit">
-    <input type="submit" value="Edit" />
-  </form>
-{/template}
-
-
-/**
  * @param url
  * @param name
  */
@@ -48,16 +8,6 @@
   <a class="url" href="{$url}" rel="contact">
     <span class="fn n">{$name}</span>
   </a>
-{/template}
-
-
-/**
- * @param push_subscribe_link
- */
-{template .pushSubscribeButton}
-  <form method="post" action="{$push_subscribe_link}">
-    <input type="submit" value="PuSh subscribe" />
-  </form>
 {/template}
 
 
@@ -87,17 +37,6 @@
       </fieldset>
     </form>
   </div>
-{/template}
-
-
-/**
- * @param local
- */
-{template .remoteWarning}
-  {if not $local}
-    <p>This is a cached copy of information for a user on a different
-    system</p>
-  {/if}
 {/template}
 
 
