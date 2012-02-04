@@ -153,8 +153,11 @@
 
 (defn recipients-section
   [activity]
-  (when (:mentioned-uri activity)
-    [:p "mentioned: " (:mentioned-uri activity)]))
+  (list
+   (when (:irts activity)
+     [:p "In reply to: " (:irts activity)])
+   (when (:mentioned-uri activity)
+     [:p "mentioned: " (:mentioned-uri activity)])))
 
 (defn links-section
   [activity]

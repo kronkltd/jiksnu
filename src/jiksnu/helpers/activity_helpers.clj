@@ -178,10 +178,7 @@
 
 (defn parse-irt
   [irt]
-  (->> irt
-       .getHref
-       str
-       (re-find #"node=")))
+  (->> irt .getHref str))
 
 (defn parse-irts
   [entry]
