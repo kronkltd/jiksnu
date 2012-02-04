@@ -18,6 +18,7 @@
             (karras [core :as karras]
                     [sugar :as sugar])
             (lamina [core :as l])
+            (net.cgrand [enlive-html :as enlive])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.implementations [jena :as jena]))
   (:import java.io.InputStream
@@ -180,6 +181,19 @@
   [^InputStream stream]
   (let [parser (Builder.)]
     (.build parser stream)))
+
+
+(defn extract-atom-link
+  [url]
+  (-> url
+      fetch-resource
+      StringReader.
+      enlive/html-resource
+      (enlive/select [:link])
+      (->> (filter #(= "alternate" (:rel (:attrs %))))
+           (filter #(= "application/atom+xml" (:type (:attrs %))))
+           (map #(-> % :attrs :href)))
+      first))
 
 (defn drop-all!
   []
