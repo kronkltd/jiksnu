@@ -290,24 +290,6 @@
 
 
 /**
- * @param likes
- */
-{template .likesSection}
-  {if $likes and length($likes) > 0}
-    <section>
-      <span>Liked by: </span>
-      <ul>
-        {foreach $like in $likes}
-          <li>
-            {$like}
-          </li>
-        {/foreach}
-      </ul>
-    </section>
-  {/if}
-{/template}
-
-/**
  * @param author
  * @param content
  * @param published_formatted

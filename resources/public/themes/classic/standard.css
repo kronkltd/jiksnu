@@ -221,16 +221,17 @@ body {
 /*     top: 0px; */
 /* } */
 
-/* .tags ul { */
-/*     display: inline; */
-/*     padding: 0px; */
-/* } */
+.tags ul {
+    display: inline;
+    padding: 0px;
+    margin: 0px;
+}
 
-/* .tags li { */
-/*     list-style-type: none; */
-/*     display: inline; */
-/*     margin-left: 1em; */
-/* } */
+.tags li {
+    list-style-type: none;
+    display: inline;
+    /* margin-left: 1em; */
+}
 
 /* .comments { */
 /*     margin-top: 5px; */

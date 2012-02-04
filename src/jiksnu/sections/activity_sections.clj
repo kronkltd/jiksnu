@@ -257,10 +257,27 @@
   
   )
 
+(defn likes-section
+  [activity]
+  (when (:likes activity)
+    [:section
+     [:span "Liked by"]
+     [:ul
+      (map
+       (fn [user]
+         [:li (link-to user)])
+       (:likes activity))]]))
+
 (defn tags-section
   [activity]
-  
-  )
+  (when (:tags activity)
+    [:div.tags
+     "Tags: "
+     [:ul.tags
+      (map
+       (fn [tag]
+         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+       (:tags activity))]]))
 
 (defn posted-link-section
   [activity]
