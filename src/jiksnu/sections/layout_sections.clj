@@ -11,10 +11,11 @@
 (defn user-info-section
   [user]
   (when user
-    (show-section user)
-    #_[:div#user-info
-     (sections.user/display-avatar user)
-     [:div (link-to user)]]))
+    (list
+     (show-section user)
+     (sections.subscription/subscriptions-section user)
+     (sections.subscription/subscribers-section user)
+     (sections.group/user-groups user))))
 
 (defn side-navigation
   []
@@ -77,12 +78,10 @@
 
 (defn right-column-section
   [response]
-  (let [user (current-user)]
+  (let [user (or (:user response)
+                 (current-user))]
     (list
-     (user-info-section (or (:user response) user))
-     (sections.subscription/subscriptions-section (or (:user response) user))
-     (sections.subscription/subscribers-section (or (:user response) user))
-     (sections.group/user-groups user)
+     (user-info-section user)
      (:aside response))))
 
 (defn devel-warning

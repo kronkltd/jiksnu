@@ -1,4 +1,5 @@
-(ns jiksnu.sections.setting-sections)
+(ns jiksnu.sections.setting-sections
+  (:use (ciste [config :only [config]])))
 
 (defn edit-form
   []
@@ -8,7 +9,7 @@
     [:div.clearfix
      [:label {:for "site.name"} "Site Name"]
      [:div.input
-      [:input {:type "text" :name "site.name"}]]]
+      [:input {:type "text" :name "site.name" :value (config :site :name)}]]]
     [:div.clearfix
      [:label {:for "print.actions"} "Print Actions"]
      [:div.input
