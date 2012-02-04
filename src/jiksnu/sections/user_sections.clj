@@ -38,7 +38,8 @@
 (defn discover-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/discover")}
-   [:input.btn.discover-button {:type "submit" :value "Discover"}]])
+   [:button.btn.discover-button {:type "submit"}
+    [:i.icon-search] [:span.button-text "Discover"]]])
 
 (defn display-avatar
   ([user] (display-avatar user 48))
@@ -70,7 +71,8 @@
 (defn update-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/update")}
-   [:input.btn.update-button {:type "submit" :value "Update"}]])
+   [:button.btn.update-button {:type "submit" :title "Update"}
+    [:i.icon-refresh] [:span.button-text "Update"]]])
 
 (defn subscribe-button
   [user]
