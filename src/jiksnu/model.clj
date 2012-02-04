@@ -11,7 +11,8 @@
   (:require (aleph [formats :as f]
                    [http :as h])
             (clj-http [client :as client])
-            (clojure [xml :as xml]
+            (clojure [string :as string]
+                     [xml :as xml]
                      [zip :as zip])
             (clojure.data [json :as json])
             (jiksnu [namespace :as ns])
@@ -194,6 +195,12 @@
            (filter #(= "application/atom+xml" (:type (:attrs %))))
            (map #(-> % :attrs :href)))
       first))
+
+(defn strip-namespaces
+  [val]
+  (-?> val
+       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+       (string/replace #"http://ostatus.org/schema/1.0/" "")))
 
 (defn drop-all!
   []

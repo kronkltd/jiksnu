@@ -34,33 +34,10 @@
         (assoc activity :recipients users))
       (dissoc activity :recipients))))
 
-(defn prepare-activity
-  [activity]
-  (-> activity
-      model.activity/set-id
-      model.activity/set-title
-      model.activity/set-object-id
-      model.activity/set-public
-      model.activity/set-remote
-      model.activity/set-tags
-      set-recipients
-      model.activity/set-object-type
-      model.activity/set-parent))
-
-(defn prepare-post
-  [activity]
-  (-> activity
-      model.activity/set-local
-      model.activity/set-updated-time
-      model.activity/set-object-updated
-      model.activity/set-object-published
-      model.activity/set-published-time
-      model.activity/set-actor))
-
 (defaction create
   [params]
   (-> params
-      prepare-activity
+      model.activity/prepare-activity
       model.activity/make-activity
       model.activity/create))
 
@@ -76,12 +53,6 @@
   [id]
   (model.activity/fetch-by-id id))
 
-(defn strip-namespaces
-  [val]
-  (-?> val
-       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
-       (string/replace #"http://ostatus.org/schema/1.0/" "")))
-
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
@@ -95,7 +66,7 @@ serialization"
            verb (-?> entry
                      (.getExtension (QName. namespace/as "verb" "activity"))
                      .getText
-                     strip-namespaces)
+                     model/strip-namespaces)
            user (-> entry
                     (abdera/get-author feed)
                     actions.user/person->user
@@ -104,9 +75,9 @@ serialization"
                                (map helpers.activity/parse-extension-element)
                                doall)
            irts (helpers.activity/parse-irts entry)
-           recipients (->> (ThreadHelper/getInReplyTos entry)
-                           (map helpers.activity/parse-link)
-                           (filter identity))
+           ;; recipients (->> (ThreadHelper/getInReplyTos entry)
+           ;;                 (map helpers.activity/parse-link)
+           ;;                 (filter identity))
            content (.getContent entry)
            links (abdera/parse-links entry)
            mentioned-uri (-?> entry
@@ -117,20 +88,16 @@ serialization"
                              .getHref str)
            tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object" "activity"))
-           ;; object-type 
-           object (when object-element
-                    (let [object-type (-?> (.getExtension object-element (QName. namespace/as "object-type" "activity"))
-                                           .getText
-                                           strip-namespaces)
-                          id (.getSimpleExtension object-element namespace/atom "id" "")]
-                      {:object-type object-type
-                       :id id}))
+           object-type (-?> object-element
+                            (.getExtension (QName. namespace/as "object-type"))
+                            .getText model/strip-namespaces)
+           object-id (-?> object-element
+                          (.getSimpleExtension object-element namespace/atom "id" ""))
            opts (apply merge
                        (when published        {:published published})
                        (when content          {:content content})
-                       (when object           {:object object})
                        (when updated          {:updated updated})
-                       (when (seq recipients) {:recipients (string/join ", " recipients)})
+                       ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
                        (when title            {:title title})
                        (when (seq irts)       {:irts irts})
                        (when (seq links)      {:links links})
@@ -141,6 +108,8 @@ serialization"
                        {:id id
                         :author (:_id user)
                         :public true
+                        :object (merge (when object-type {:type object-type})
+                                       (when object-id {:id object-id}))
                         :comment-count (abdera/get-comment-count entry)}
                        extension-maps)]
        (model.activity/make-activity opts))))
@@ -169,7 +138,7 @@ serialization"
   [activity]
   ;; TODO: validate user
   (when-let [prepared-post (-> activity
-                               prepare-post
+                               model.activity/prepare-post
                                (dissoc :pictures))]
     (-> activity :pictures model.activity/parse-pictures)
     (create prepared-post)))

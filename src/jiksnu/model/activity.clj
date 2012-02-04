@@ -194,3 +194,26 @@
   (if (= (:title activity) "")
     (dissoc activity :title)
     activity))
+
+(defn prepare-post
+  [activity]
+  (-> activity
+      set-local
+      set-updated-time
+      set-object-updated
+      set-object-published
+      set-published-time
+      set-actor))
+
+(defn prepare-activity
+  [activity]
+  (-> activity
+      set-id
+      set-title
+      set-object-id
+      set-public
+      set-remote
+      set-tags
+      set-object-type
+      set-parent))
+
