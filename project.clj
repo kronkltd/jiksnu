@@ -55,6 +55,10 @@
         jiksnu.xmpp.user-repository
         ]
   :main jiksnu.core
+  :newrelic true
   :warn-on-reflection false
   :jvm-opts ["-server"
-             "-XX:MaxPermSize=1024m"])
+             "-XX:MaxPermSize=1024m"
+             "-javaagent:/home/duck/projects/jiksnu/newrelic/newrelic.jar"
+             "-Dfile.encoding=UTF-8"
+             ])
