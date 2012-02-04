@@ -1,103 +1,6 @@
 {namespace jiksnu.templates.user}
 
 /**
- *
- */
-{template .addForm}
-  <div>
-    <form method="post" action="/admin/users">
-      <fieldset>
-        <legend>Add User</legend>
-        <ul>
-          <li>
-            <input type="text" name="username" />
-          </li>
-          <li>
-            <input type="text" name="domain" />
-          </li>
-          <li>
-            <input type="submit" value="Add User" />
-          </li>
-        </ul>
-      </fieldset>
-    </form>
-  </div>
-{/template}
-
-
-/**
- * @param authenticated
- * @param users
- */
-{template .adminIndex}
-  <div>
-    <table class="users">
-      <thead>
-        <tr>
-          <th></th>
-          <th>User</th>
-          <th>Domain</th>
-          <th>Discover</th>
-          <th>Update</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {foreach $user in $users}
-          {call .adminIndexLine data="$user"}
-            {param authenticated: $authenticated /}
-          {/call}
-        {/foreach}
-      </tbody>
-    </table>
-    {call .addForm data="all" /}
-  </div>
-{/template}
-
-
-/**
- * @param username
- * @param domain
- */
-{template .adminIndexLine}
-  <tr>
-    <td>{call .displayAvatar data="all" /}</td>
-    <td>
-      {call .linkTo data="all"}
-        {param display_name: $username /}
-      {/call}
-    </td>
-    <td>
-      {call jiksnu.templates.domain.linkTo}
-        {param id: $domain /}
-      {/call}
-    </td>
-    <td>{call .discoverButton data="all" /}</td>
-    <td>{call .updateButton data="all" /}</td>
-    <td>{call .editButton data="all" /}</td>
-    <td>{call .deleteButton data="all" /}</td>
-  </tr>
-{/template}
-
-
-/**
- * @param id
- */
-{template .deleteButton}
-  <form method="post"
-        action="/users/{$id}">
-    <input type="hidden"
-           name="_method"
-           value="DELETE" />
-    <input type="submit"
-           value="Delete"
-           class="delete-button" />
-  </form>
-{/template}
-
-
-/**
  * @param id
  */
 {template .discoverButton}
@@ -138,72 +41,6 @@
 
 
 /**
- * @param authenticated
- * @param following
- * @param followed
- */
-{template .followingSection}
-  {if $authenticated}
-    {if $following}
-      <p>This user follows you</p>
-    {/if}
-    {if $followed}
-      <p>You follow this user</p>
-    {/if}
-  {/if}
-{/template}
-
-/**
- * @param username
- * @param domain
- * @param authenticated
- */
-{template .indexLine}
-  <tr>
-    <td>{call .displayAvatar data="all" /}</td>
-    <td>
-      {call .linkTo data="all"}
-        {param display_name: $username /}
-      {/call}
-    </td>
-    <td>
-      {call jiksnu.templates.domain.linkTo}
-        {param id: $domain /}
-      {/call}
-    </td>
-    <td>{call .subscribeButton data="all" /}</td>
-    {if $authenticated}
-      <td>{call .discoverButton data="all" /}</td>
-      <td>{call .updateButton data="all" /}</td>
-      <td>{call .editButton data="all" /}</td>
-      <td>
-        {if $authenticated.admin}
-          {call .deleteButton data="all" /}
-        {/if}
-      </td>
-    {/if}
-  </tr>
-{/template}
-
-
-/**
- * @param authenticated
- * @param users
- */
-{template .indexSection}
-  <div>
-    <ul class="users">
-      {foreach $user in $users}
-        {call .indexLine data="$user"}
-          {param authenticated: $authenticated /}
-        {/call}
-      {/foreach}
-    </ul>
-  </div>
-{/template}
-
-
-/**
  * @param url
  * @param name
  */
@@ -211,31 +48,6 @@
   <a class="url" href="{$url}" rel="contact">
     <span class="fn n">{$name}</span>
   </a>
-{/template}
-
-
-/**
- * @param links
- */
-{template .linksList}
-  {if $links}
-    <table>
-      <thead>
-        <tr>
-          <th>rel</th>
-          <th>href</th>
-        </tr>
-      </thead>
-      <tbody>
-        {foreach $link in $links}
-          <tr>
-            <td>{$link.rel}</td>
-            <td>{$link.href}</td>
-          </tr>
-        {/foreach}
-      </tbody>
-    </table>
-  {/if}
 {/template}
 
 
@@ -303,7 +115,7 @@
 {template .show}
   <div class="vcard">
     <p>
-      {call .displayAvatar data="all" /}
+      /* {call .displayAvatar data="all" /} */
       <span class="nickname fn n">{$display_name}</span>
       {sp}({$username}@{$domain})
     </p>

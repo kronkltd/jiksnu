@@ -89,7 +89,7 @@
     <tbody>
       {foreach $subscription in $subscriptions}
         <tr>
-          <td>{call jiksnu.templates.user.displayAvatar data="$subscription.from" /}</td>
+          /* <td>{call jiksnu.templates.user.displayAvatar data="$subscription.from" /}</td> */
           <td>{call jiksnu.templates.user.linkTo data="$subscription.from" /}</td>
           <td>{$subscription.pending}</td>
           <td>{$subscription.created}</td>
@@ -139,8 +139,8 @@
     <tbody>
       {foreach $subscription in $subscriptions}
         <tr>
-          <td>{call jiksnu.templates.user.displayAvatar data="$subscription.to" /}</td>
-          <td>{call jiksnu.templates.user.linkTo data="$subscription.to" /}</td>
+          /* <td>{call jiksnu.templates.user.displayAvatar data="$subscription.to" /}</td> */
+          /* <td>{call jiksnu.templates.user.linkTo data="$subscription.to" /}</td> */
           <td>{$subscription.pending}</td>
           <td>{$subscription.created}</td>
           /* <td>{call .subscribeButton data="all" /}</td> */
@@ -153,24 +153,22 @@
 
 
 /**
- * @param from
  */
 {template .subscriberLine}
   <li>
-    {call jiksnu.templates.user.displayAvatar data="$from"}
-      {param size: '24' /}
-    {/call}
+    /* {call jiksnu.templates.user.displayAvatar data="$from"} */
+    /*   {param size: '24' /} */
+    /* {/call} */
   </li>
 {/template}
 
 /**
- * @param to
  */
 {template .subscriptionsLine}
   <li>
-    {call jiksnu.templates.user.displayAvatar data="$to"}
-      {param size: '24'/}
-    {/call}
+    /* {call jiksnu.templates.user.displayAvatar data="$to"} */
+    /*   {param size: '24'/} */
+    /* {/call} */
   </li>
 {/template}
 

@@ -1,9 +1,8 @@
 (ns jiksnu.views.user-views
   (:use (ciste config core sections views)
-        ciste.sections.default
-        (jiksnu model session view)
+        (ciste.sections [default :only [uri index-section show-section]])
+        (jiksnu session view)
         jiksnu.actions.user-actions
-        jiksnu.sections.user-sections
         plaza.rdf.vocabularies.foaf)
   (:require (clj-tigase [element :as element])
             (hiccup [core :as h])
@@ -13,8 +12,8 @@
                           [subscription :as model.subscription]
                           [user :as model.user]
                           [webfinger :as model.webfinger])
-            (jiksnu.templates [activity :as templates.activity]
-                              [user :as templates.user])
+            (jiksnu.sections [user-sections :as sections.user])
+            (jiksnu.templates [activity :as templates.activity])
             (plaza.rdf [core :as rdf]))
   (:import java.net.URI
            javax.xml.namespace.QName
@@ -56,7 +55,7 @@
 
 (defview #'index :html
   [request users]
-  {:body (templates.user/index-section users)})
+  {:body (sections.user/index-section users)})
 
 (defview #'index :json
   [request users]
@@ -65,7 +64,20 @@
 
 (defview #'admin-index :html
   [request users]
-  {:body (templates.user/admin-index users)})
+  {:body
+   [:div
+    [:table.users
+     [:thead
+      [:tr
+       [:th]
+       [:th "User"]
+       [:th "Domain"]
+       [:th "Discover"]
+       [:th "Update"]
+       [:th "Edit"]
+       [:th "Delete"]]]
+     [:tbody
+      (map sections.user/admin-index-line users)]]]})
 
 (defview #'profile :html
   [request user]

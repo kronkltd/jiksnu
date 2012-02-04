@@ -1,163 +1,6 @@
 {namespace jiksnu.templates.activity}
 
 /**
- * @param? uri
- * @param? parent_id
- * @param? title
- * @param? id
- * @param? content
- * @param? tags
- * @param? pictures
- * @param? lat
- * @param? long
- */
-{template .activityForm}
-  <div class="post-form">
-    <form method="post"
-          action="{$uri ? $uri : '/notice/new'}"
-          enctype="multipart/form-data">
-      <fieldset>
-        <legend>Post an Activity</legend>
-        {if $id}
-          <div class="clearfix">
-            <input type="hidden" name="_id" value="{$id}" />
-          </div>
-        {/if}
-        {if $parent_id }
-          <div class="clearfix">
-            <input type="hidden" name="parent" value="{$parent_id}" />
-          </div>
-        {/if}
-        <div class="clearfix">
-          <label for="title" class="hidden">Title</label>
-          <div class="input">
-            <input type="text" name="title" value="{$title ? $title : ''}" />
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="content" class="hidden">Content</label>
-          <div class="input">
-            <textarea name="content">
-              {$content ? $content : ''}
-            </textarea>
-          </div>
-        </div>
-        {call .pictureSection data="all" /}
-        {call .locationSection data="all" /}
-        {call .tagSection data="all" /}
-        <fieldset class="add-buttons">
-          <legend>Add:</legend>
-          <ul>
-            <li class="hidden add-tags">
-              <a href="#">Tags</a>
-            </li>
-            <li class="hidden add-recipients">
-              <a href="#">Recipients</a>
-            </li>
-            <li class="hidden add-location">
-              <a href="#">Location</a>
-            </li>
-            <li class="hidden add-links">
-              <a href="#">Links</a>
-            </li>
-            <li class="hidden add-pictures">
-              <a href="#">Pictures</a>
-            </li>
-          </ul>
-        </fieldset>
-        <div class="privacy-line">
-          <select name="privacy">
-            <option value="public">Public</option>
-            <option value="group">Group</option>
-            <option value="custom">Custom</option>
-            <option value="private">Private</option>
-          </select>
-        </div>
-        <div class="type-line">
-          <select name="type">
-            <option>Note</option>
-            <option>Status</option>
-            <option>Checkin</option>
-            <option>Picture</option>
-            <option>Event</option>
-          </select>
-        </div>
-        <div class="actions">
-          <input class="btn" type="submit" value="Post" />
-        </div>
-      </fieldset>
-    </form>
-  </div>
-{/template}
-
-/**
- * @param? pictures
- */
-{template .pictureSection}
-  <div class="pictures-line clearfix">
-    <label for="pictures">Pictures</label>
-    <div class="input">
-      <input type="file" name="pictures" value="{$pictures ? $pictures : ''}" />
-    </div>
-  </li>
-{/template}
-
-/**
- * @param? tags
- */
-{template .tagSection}
-  <li class="tag-line">
-    <fieldset>
-      <legend>Tags</legend>
-      <ul>
-        <li>
-          <input type="text" name="tags" value="{$tags ? $tags : ''}" />
-        </li>
-        <li>
-          <a class="btn" href="#">Add Tag</a>
-        </li>
-      </ul>
-    </fieldset>
-  </li>
-{/template}
-
-/**
- * @param? lat
- * @param? long
- */
-{template .locationSection}
-  <div class="location-line clearfix">
-    <fieldset>
-      <legend>Location</legend>
-      <div class="clearfix">
-        <label for="lat">Latitude</label>
-        <div class="input">
-          <input type="text" name="lat" value="{$lat ? $lat : ''}" />
-        </div>
-      </div>
-      <div>
-        <label for="long">Longitude</label>
-        <div class="input">
-          <input type="text" name="long" value="{$long ? $long : ''}" />
-        </div>
-      </div>
-    </fieldset>
-  </div>
-{/template}
-
-/**
- * @param authenticated
- */
-{template .addForm}
-  <div>
-    {if $authenticated}
-      {call .activityForm data="all" /}
-    {/if}
-  </div>
-{/template}
-
-
-/**
  * @param id
  */
 {template .commentLink}
@@ -185,7 +28,7 @@
  * @param authenticated
  */
 {template .commentsSection}
-  <section class="{css comments}">
+  <section class="comments">
     <h4 class="hidden">Comments</h4>
     {call .commentList data="all" /}
     {if $authenticated}
@@ -291,9 +134,9 @@
  * @param links
  * @param object_type
  */
-{template .linkSection }
+{template .linkSection}
   {if $links}
-    <div class="{css links}">
+    <div class="links">
       <h>Links</h>
       <ul>
         {foreach $link in $links}
@@ -337,7 +180,7 @@
  * @param authenticated
  */
 {template .postActions}
-  <ul class="{css buttons}">
+  <ul class="buttons">
     {if $authenticated }
       <li>{call .likeButton data="all" /}</li>
       {if $buttonable}
@@ -356,7 +199,7 @@
  * @param published_formatted
  */
 {template .postedLink}
-  <span class="{css posted}">
+  <span class="posted">
     {if $published}
       <time datetime="{$published}">
         <a href="/notice/{$id}" property="dc:published" content="{$published}">
@@ -375,7 +218,7 @@
  */
 {template .recipientsSection}
   {if $recipients and length($recipients) > 0}
-    <div class="{css recipients}">
+    <div class="recipients">
       <h>Recipients:</h>
       <ul>
         {foreach $recipient in $recipients}
@@ -392,7 +235,6 @@
 /**
  * Display an activity
  * @param id
- * @param author
  * @param content
  * @param object_type
  * @param local
@@ -409,11 +251,11 @@
            about="/notice/{$id}"
            typeof="sioc:Post">
     <div class="avatar-section span2">
-      {call jiksnu.templates.user.displayAvatar data="$author" /}
+      /* {call jiksnu.templates.user.displayAvatar data="$author" /} */
     </div>
     <div class="span10">
       <div class="row">
-        {call jiksnu.templates.user.showMinimal data="$author" /}
+        /* {call jiksnu.templates.user.showMinimal data="$author" /} */
         {if $object_type != 'comment'}
           <div class="labels">
             <span class="label">{$object_type}</span>
@@ -425,7 +267,7 @@
       </div>
       <div class="entry-content row">
         {if $title and $title != $content}
-          <h1 class="{css entry-title}" property="dc:title">{$title}</h1>
+          <h1 class="entry-title" property="dc:title">{$title}</h1>
         {/if}
         <p property="sioc:content">
           {$content}
@@ -473,7 +315,7 @@
 {template .showComment}
   <article class="comment">
     <header>
-      {call jiksnu.templates.user.displayAvatar data="$author" /}
+      /* {call jiksnu.templates.user.displayAvatar data="$author" /} */
     </header>
     <section class="comment-body">
       {call jiksnu.templates.user.linkTo data="$author" /}
@@ -492,7 +334,7 @@
  */
 {template .tagsSection}
   {if $tags and length($tags) > 0}
-    <div class="{css tags}">
+    <div class="tags">
       <h>Tags:</h>
       <ul>
         {foreach $tag in $tags}

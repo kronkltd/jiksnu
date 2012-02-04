@@ -43,8 +43,105 @@
   [activity & opts]
   (apply show-section activity opts))
 
+(defn pictures-section
+  [activity]
+  [:div.pictures-line.clearfix
+   [:label {:for "pictures"} "Pictures"]
+   [:div.input
+    [:input {:type "file" :name "pictures"}]]])
+
+(defn tag-section
+  [activity]
+  [:div.clearfix
+   [:label {:for "tags"} "Tags"]
+   [:div.input
+    [:input {:type "text" :name "tags"}]
+    [:a.btn {:href "#"} "Add Tags"]]])
+
+(defn location-section
+  []
+  [:div.location-line.clearfix
+   [:fieldset
+    [:legend "Location"]
+    [:div.clearfix
+     [:label {:for "lat"} "Latitude"]
+     [:div.input
+      [:input {:type "text" :name "lat"}]]]
+    [:div.clearfix
+     [:label {:for "long"} "Longitude"]
+     [:div.input
+      [:input {:type "text" :name "lat"}]]]]])
 
 
+(defn add-button-section
+  [activity]
+  [:fieldset.add-buttons
+   [:legend "Add:"]
+   [:ul
+    [:li [:a {:href "#"} "Tags"]]
+
+    [:li [:a {:href "#"} "Recipients"]]
+
+    [:li [:a {:href "#"} "Location"]]
+
+    [:li [:a {:href "#"} "Links"]]
+
+    [:li [:a {:href "#"} "Pictures"]]]])
+
+(defn privacy-line
+  [activity]
+  [:div.privacy-line
+   [:select {:name "privacy"}
+    [:option {:value "public"} "Public"]
+    [:option {:value "group"} "Group"]
+    [:option {:value "custom"} "Custom"]
+    [:option {:value "private"} "Private"]]])
+
+(defn type-line
+  [activity]
+  [:div.type-line
+   [:select {:name "type"}
+    [:option {:value "note"}     "Note"]
+    [:option {:value "status"}   "Status"]
+    [:option {:value "checkin"}  "Checkin"]
+    [:option {:value "picture"}  "Picture"]
+    [:option {:value "event"}    "Event"]
+    [:option {:value "bookmark"} "Bookmark"]]])
+
+(defn activity-form
+  [activity]
+  (let [{:keys [id parent-id content]} activity]
+    [:div.post-form
+     [:form {:method "post"
+             :action "/notices/new"
+             :enctype "multipart/form-data"}
+      [:fieldset
+       [:legend "Post an activity"]
+       (when (:id activity)
+         [:div.clearfix
+          [:input {:type "hidden" :name "_id" :value id}]])
+       (when parent-id
+         [:div.clearfix
+          [:input {:type "hidden" :name "parent" :value parent-id}]])
+
+       [:div.clearfix
+        [:label {:for "title"} "Title"]
+        [:div.input
+         [:input {:type "text" :name "title" :value title}]]]
+
+       [:div.clearfix
+        [:label {:for "content"} "Content"]
+        [:div.input
+         [:textarea {:name "content"} content]]]
+
+       (pictures-section activity)
+       (location-section activity)
+       (tag-section activity)
+       (add-button-section activity)
+       (privacy-line activity)
+       (type-line activity)
+       [:div.actions
+        [:input.btn.primary {:type "submit" :value "post"}]]]]]))
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
@@ -73,7 +170,7 @@
       (if-let [object-published (:published object)]
         (.addSimpleExtension object-element ns/atom "published" "" (str object-published)))
       #_(if-let [object-id (:id object)]
-        (.setId object-element object-id))
+          (.setId object-element object-id))
       #_(.setContentAsHtml object-element (:content activity)))
     entry))
 
@@ -116,9 +213,7 @@
                [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
                [uri [:dc  :published] (date published)]
                ]
-              #_(show-section user)
-              ))))
-
+              #_(show-section user)))))
 
 (defsection index-block [Activity :xmpp :xmpp]
   [activities & options]
@@ -161,40 +256,37 @@
 (defsection show-section [Activity :xml]
   [activity & _]
   #_["status"
-   ["created_at"  (:created activity)]
-   ["id" (:_id activity)]
-   ["text" (:content activity)]
-   ["source"
-    ;; TODO: generator info
-    ]
-   ["truncated" "false"]
-   ["in_reply_to_status_id"]
-   ["in_reply_to_user_id"]
-   ["favorited"
-    ;; (liked? (current-user) activity)
-    ]
-   ["in_reply_to_screen_name"]
-   (show-section (get-author activity))
-   ["geo"]
-   ["coordinates"]
-   ["place"]
-   ["contributors"]
-   ["entities"
-    ["user_mentions"
-     ;; TODO: list mentions
-     ]
-    ["urls"
-     ;; TODO: list urls
-     ]
-    ["hashtags"
-     ;; TODO: list hashtags
-     ]
-    ]
-   ]
+     ["created_at"  (:created activity)]
+     ["id" (:_id activity)]
+     ["text" (:content activity)]
+     ["source"
+      ;; TODO: generator info
+      ]
+     ["truncated" "false"]
+     ["in_reply_to_status_id"]
+     ["in_reply_to_user_id"]
+     ["favorited"
+      ;; (liked? (current-user) activity)
+      ]
+     ["in_reply_to_screen_name"]
+     (show-section (get-author activity))
+     ["geo"]
+     ["coordinates"]
+     ["place"]
+     ["contributors"]
+     ["entities"
+      ["user_mentions"
+       ;; TODO: list mentions
+       ]
+      ["urls"
+       ;; TODO: list urls
+       ]
+      ["hashtags"
+       ;; TODO: list hashtags
+       ]]]
   {:tag :status
    :content
    [{:tag :text
      :content [(:content activity)]}
     {:tag :created_at
-     :content [(str (:published activity))]
-     }]})
+     :content [(str (:published activity))]}]})

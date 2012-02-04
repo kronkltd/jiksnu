@@ -1,23 +1,29 @@
 (ns jiksnu.sections.user-sections
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
                sections)
-        ciste.sections.default
-        (clj-gravatar [core :only (gravatar-image)])
-        (jiksnu model session)
+        (ciste.sections [default :only [title    title-type
+                                        uri      uri-type
+                                        full-uri full-uri-type
+                                        show-section-format show-section-serialization
+                                        delete-button delete-button-format
+                                        link-to
+                                        ]])
+        (clj-gravatar [core :only [gravatar-image]])
+        (jiksnu session)
         (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
             (hiccup [form-helpers :as f])
             (jiksnu [abdera :as abdera]
                     [namespace :as ns])
-            (jiksnu.actions [subscription-actions :as actions.subscription])
+            (jiksnu.actions [subscription-actions :as actions.subscription]
+                            [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [signature :as model.signature]
                           [subscription :as model.subscription]
                           [user :as model.user])
-            (jiksnu.templates [user :as templates.user])
             (plaza.rdf [core :as rdf]))
   (:import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
            java.math.BigInteger
@@ -27,6 +33,59 @@
            jiksnu.model.User
            org.apache.abdera2.model.Entry))
 
+(defn discover-button
+  [user]
+  [:form {:method "post" :action (str "/users/" (:id user) "/discover")}
+   [:input.btn.discover-button {:type "submit" :value "Discover"}]])
+
+(defn display-avatar
+  ([user] (display-avatar user 48))
+  ([user size]
+     [:a {:href (str "/users/" (:_id user))
+          :title (:name user)}
+      [:img.avatar.photo
+       {:width size
+        :height size
+        :alt ""
+        :src (model.user/image-link user)}]]))
+
+(defn edit-button
+  [user]
+  [:form {:method "post" :action (str "/users/" (:id user) "/edit")}
+   [:input.btn.edit-button {:type "submit" :value "Edit"}]])
+
+(defn following-section
+  [user]
+  (let [authenticated (current-user)]
+    (list
+     (when (model.subscription/subscribing? user authenticated)
+       [:p "This user follows you"])
+     (when (model.subscription/subscribed? user authenticated)
+       [:p "You follow this user"]))))
+
+
+
+(defn update-button
+  [user]
+  [:form {:method "post" :action (str "/users/" (:id user) "/update")}
+   [:input.btn.update-button {:type "submit" :value "Update"}]])
+
+(defn subscribe-button
+  [user]
+  [:form {:method "post" :action (str "/users/" (:id user) "/subscribe")}
+   [:input.btn.subscribe-button {:type "submit" :value "Subscribe"}]])
+
+(defn admin-index-line
+  [user]
+  (let [domain (actions.user/get-domain user)]
+    [:tr
+     [:td (display-avatar user)]
+     [:td (link-to user)]
+     [:td (link-to domain)]
+     [:td (discover-button user)]
+     [:td (update-button user)]
+     [:td (edit-button user)]
+     [:td (delete-button user)]]))
 
 (defsection title [User]
   [user & options]
@@ -75,9 +134,30 @@
   [user & _]
   (user->person user))
 
+(defn user-actions
+  [user]
+  (if-let [authenticated (current-user)]
+    [:div
+     (when (= (:_id user) (:_id authenticated))
+       [:p "This is you"])
+     [:ul.user-actions
+      [:li (discover-button user)]
+      [:li (update-button user)]
+      (when (not= (:_id user) (:_id authenticated))
+        [:li (subscribe-button user)])]]))
+
 (defsection show-section [User :html]
   [user & options]
-  (templates.user/show user))
+  [:div.vcard
+   [:p
+    (display-avatar user)
+    [:span.nickname.fn.n (:display-name user)]
+    " (" (:username user) "@" (:domain user) ")"]
+   [:div.adr
+    [:p.locality (:location user)]]
+   [:p.note (:bio user)]
+   [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
+   (user-actions user)])
 
 
 ;; (defsection show-section [User :n3]
@@ -167,16 +247,26 @@
        ["photo" {}
         ["uri" {} avatar-url]]))))
 
-(defn display-avatar
-  ([user] (display-avatar user 48))
-  ([user size]
-     [:a {:href (str "/users/" (:_id user))
-          :title (:name user)}
-      [:img.avatar.photo
-       {:width size
-        :height size
-        :alt ""
-        :src (model.user/image-link user)}]]))
+(defsection delete-button [User :html]
+  [user & _]
+  [:form {:method "post" :action (str "/users/" (:id user) "/delete")}
+   [:input.btn.delete-button {:type "submit" :value "Delete"}]])
+
+(defn add-form
+  []
+  [:form {:method "post" :action "/admin/users"}
+   [:fieldset
+    [:legend "Add User"]
+    [:div.clearfix
+     [:label {:type "username"} "Username"]
+     [:div.input
+      [:input {:type "text" :name "username"}]]]
+    [:div.clearfix
+     [:label {:for "domain"} "Domain"]
+     [:div.input
+      [:input {:type "text" :name "domain"}]]]
+    [:div.actions
+     [:input.btn.primary {:type "submit" :value "Add User"}]]]])
 
 
   ;; (defsection show-section-minimal [User :xmpp :xmpp]
@@ -184,3 +274,20 @@
   ;;   (element/make-element
   ;;    (:key property) {}
   ;;    [(:type property) {} (:value property)]))
+
+
+(defn index-line
+  [user]
+  [:li
+   [:p (display-avatar user)]
+   [:p (link-to user)]
+   [:ul
+    [:li (subscribe-button user)]
+    [:li (discover-button user)]
+    [:li (update-button user)]
+    [:li (edit-button user)]]])
+
+(defn index-section
+  [users]
+  [:ul.users
+   (map index-line users)])
