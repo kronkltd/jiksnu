@@ -40,22 +40,30 @@
 
 (defn side-navigation
   []
-  [:ul.nav.nav-list
-   (when (is-admin?)
-      (let [links 
-            [
-             #_["/admin"                    "Admin"]
-             ["/admin/activities"         "Activities"]
-             ["/admin/settings"           "Settings"]
-             ["/admin/pshb-subscriptions" "PubSub"]
-             ["/admin/users"              "Users"]
-             ["/admin/subscriptions"      "Subscriptions"]]]
-        (list [:li.nav-header "Admin"]
-              (map
-               (fn [[link title]]
-                 [:li
-                  [:a {:href link} title]])
-               links))))])
+  [:ul.nav.nav-list.well
+   (let [nav-info
+         [["Home"
+           [["/"                         "Public"]
+            ["/users"                    "Users"]
+            ["/groups"                   "Groups"]]]
+          
+          (when (is-admin?)
+            ["Admin"
+             [["/admin/activities"         "Activities"]
+              ["/admin/settings"           "Settings"]
+              ["/admin/pshb-subscriptions" "PubSub"]
+              ["/admin/users"              "Users"]
+              ["/admin/subscriptions"      "Subscriptions"]]])]]
+     (reduce concat
+             (map
+              (fn [[header links]]
+                (concat [[:li.nav-header header]]
+                        (map
+                         (fn [[url label]]
+                           [:li
+                            [:a {:href url} label]])
+                         links)))
+              nav-info)))])
 
 
 (defn top-users
