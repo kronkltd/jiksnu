@@ -60,7 +60,8 @@
 
 (defview #'index :json
   [request users]
-  {:body (index-section users)})
+  {:body
+   {:items [(index-section users)]}})
 
 (defview #'admin-index :html
   [request users]

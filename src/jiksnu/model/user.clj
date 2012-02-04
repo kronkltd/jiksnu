@@ -25,6 +25,11 @@
   [^User user]
   (model.domain/fetch-by-id (:domain user)))
 
+(defn find-record
+  [options]
+  
+  )
+
 (defn get-uri
   ([^User user] (get-uri user true))
   ([^User user use-scheme?]

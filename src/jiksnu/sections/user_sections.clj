@@ -134,6 +134,7 @@
             :id (or id (model.user/get-uri user))
             :url (full-uri user)
             :objectType "person"
+            :published (:updated user)
             ;; :name {:formatted (:display-name user)
             ;;        :familyName (:last-name user)
             ;;        :givenName (:first-name user)}
