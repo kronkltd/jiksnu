@@ -18,73 +18,73 @@
           enctype="multipart/form-data">
       <fieldset>
         <legend>Post an Activity</legend>
-        <ul>
-          {if $id}
-            <li.hidden>
-              <input type="hidden" name="_id" value="{$id}" />
-            </li>
-          {/if}
-          {if $parent_id }
-            <li class="hidden">
-              <input type="hidden" name="parent" value="{$parent_id}" />
-            </li>
-          {/if}
-          <li>
-            <label for="title" class="hidden">Title</label>
+        {if $id}
+          <div class="clearfix">
+            <input type="hidden" name="_id" value="{$id}" />
+          </div>
+        {/if}
+        {if $parent_id }
+          <div class="clearfix">
+            <input type="hidden" name="parent" value="{$parent_id}" />
+          </div>
+        {/if}
+        <div class="clearfix">
+          <label for="title" class="hidden">Title</label>
+          <div class="input">
             <input type="text" name="title" value="{$title ? $title : ''}" />
-          </li>
-          <li>
-            <label for="content" class="hidden">Content</label>
+          </div>
+        </div>
+        <div class="clearfix">
+          <label for="content" class="hidden">Content</label>
+          <div class="input">
             <textarea name="content">
               {$content ? $content : ''}
             </textarea>
-          </li>
-          {call .pictureSection data="all" /}
-          {call .locationSection data="all" /}
-          {call .tagSection data="all" /}
-          <li>
-            <fieldset class="add-buttons">
-              <legend>Add:</legend>
-              <ul>
-                <li class="hidden add-tags">
-                  <a href="#">Tags</a>
-                </li>
-                <li class="hidden add-recipients">
-                  <a href="#">Recipients</a>
-                </li>
-                <li class="hidden add-location">
-                  <a href="#">Location</a>
-                </li>
-                <li class="hidden add-links">
-                  <a href="#">Links</a>
-                </li>
-                <li class="hidden add-pictures">
-                  <a href="#">Pictures</a>
-                </li>
-              </ul>
-            </fieldset>
-          </li>
-          <li class="privacy-line">
-            <select name="privacy">
-              <option value="public">Public</option>
-              <option value="group">Group</option>
-              <option value="custom">Custom</option>
-              <option value="private">Private</option>
-            </select>
-          </li>
-          <li class="type-line">
-            <select name="type">
-              <option>Note</option>
-              <option>Status</option>
-              <option>Checkin</option>
-              <option>Picture</option>
-              <option>Event</option>
-            </select>
-          </li>
-          <li>
-            <input type="submit" value="Post" />
-          </li>
-        </ul>
+          </div>
+        </div>
+        {call .pictureSection data="all" /}
+        {call .locationSection data="all" /}
+        {call .tagSection data="all" /}
+        <fieldset class="add-buttons">
+          <legend>Add:</legend>
+          <ul>
+            <li class="hidden add-tags">
+              <a href="#">Tags</a>
+            </li>
+            <li class="hidden add-recipients">
+              <a href="#">Recipients</a>
+            </li>
+            <li class="hidden add-location">
+              <a href="#">Location</a>
+            </li>
+            <li class="hidden add-links">
+              <a href="#">Links</a>
+            </li>
+            <li class="hidden add-pictures">
+              <a href="#">Pictures</a>
+            </li>
+          </ul>
+        </fieldset>
+        <div class="privacy-line">
+          <select name="privacy">
+            <option value="public">Public</option>
+            <option value="group">Group</option>
+            <option value="custom">Custom</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+        <div class="type-line">
+          <select name="type">
+            <option>Note</option>
+            <option>Status</option>
+            <option>Checkin</option>
+            <option>Picture</option>
+            <option>Event</option>
+          </select>
+        </div>
+        <div class="actions">
+          <input class="btn" type="submit" value="Post" />
+        </div>
       </fieldset>
     </form>
   </div>
@@ -94,9 +94,11 @@
  * @param? pictures
  */
 {template .pictureSection}
-  <li class="pictures-line">
+  <div class="pictures-line clearfix">
     <label for="pictures">Pictures</label>
-    <input type="file" name="pictures" value="{$pictures ? $pictures : ''}" />
+    <div class="input">
+      <input type="file" name="pictures" value="{$pictures ? $pictures : ''}" />
+    </div>
   </li>
 {/template}
 
@@ -112,7 +114,7 @@
           <input type="text" name="tags" value="{$tags ? $tags : ''}" />
         </li>
         <li>
-          <a href="#">Add Tag</a>
+          <a class="btn" href="#">Add Tag</a>
         </li>
       </ul>
     </fieldset>
@@ -124,21 +126,23 @@
  * @param? long
  */
 {template .locationSection}
-  <li class="location-line">
+  <div class="location-line clearfix">
     <fieldset>
       <legend>Location</legend>
-      <ul>
-        <li>
-          <label for="lat">Latitude</label>
+      <div class="clearfix">
+        <label for="lat">Latitude</label>
+        <div class="input">
           <input type="text" name="lat" value="{$lat ? $lat : ''}" />
-        </li>
-        <li>
-          <label for="long">Longitude</label>
+        </div>
+      </div>
+      <div>
+        <label for="long">Longitude</label>
+        <div class="input">
           <input type="text" name="long" value="{$long ? $long : ''}" />
-        </li>
-      </ul>
+        </div>
+      </div>
     </fieldset>
-  </li>
+  </div>
 {/template}
 
 /**
@@ -182,7 +186,7 @@
  */
 {template .commentsSection}
   <section class="{css comments}">
-    <h1 class="hidden">Comments</h1>
+    <h4 class="hidden">Comments</h4>
     {call .commentList data="all" /}
     {if $authenticated}
       <div>
@@ -249,16 +253,12 @@
  * @param authenticated
  */
 {template .indexBlock}
-  <div id="notices_primary">
-    <ol class="activities">
-      {foreach $activity in $activities}
-        <li>
-          {call .show data="$activity"}
-            {param authenticated: $authenticated /}
-          {/call}
-        </li>
-      {/foreach}
-    </ol>
+  <div class="span12">
+    {foreach $activity in $activities}
+      {call .show data="$activity"}
+        {param authenticated: $authenticated /}
+      {/call}
+    {/foreach}
   </div>
 {/template}
 
@@ -404,34 +404,34 @@
  * @param buttonable
  */
 {template .show}
-  <article class="{css hentry} {css notice}"
+  <div class="hentry notice row"
            id="{$id}"
            about="/notice/{$id}"
            typeof="sioc:Post">
-    <header class="{css avatar-section}">
+    <div class="avatar-section span2">
       {call jiksnu.templates.user.displayAvatar data="$author" /}
-    </header>
-    <section class="{css content}">
-      <header>
+    </div>
+    <div class="span10">
+      <div class="row">
         {call jiksnu.templates.user.showMinimal data="$author" /}
         {if $object_type != 'comment'}
-          <div class="{css labels}">
-            {$object_type}
-            <span class="{css local}">{if not $local} remote{/if}</span>
-            <span class="{css privacy}">{if not $public} private{/if}</span>
+          <div class="labels">
+            <span class="label">{$object_type}</span>
+            <span class="label local">{if not $local} remote{/if}</span>
+            <span class="label privacy">{if not $public} private{/if}</span>
           </div>
         {/if}
         {call .postActions data="all" /}
-      </header>
-      <section class="{css entry-content}">
+      </div>
+      <div class="entry-content row">
         {if $title and $title != $content}
           <h1 class="{css entry-title}" property="dc:title">{$title}</h1>
         {/if}
         <p property="sioc:content">
           {$content}
         </p>
-      </section>
-      <footer>
+      </div>
+      <div class="row">
         {call .recipientsSection data="all" /}
         {call .linkSection data="all" /}
         {call .likesSection data="all" /}
@@ -441,9 +441,9 @@
         {call .commentsSection data="all"}
           {param parent_id: $id /}
         {/call}
-      </footer>
-    </section>
-  </article>
+      </div>
+    </div>
+  </div>
 {/template}
 
 
@@ -451,16 +451,18 @@
  * @param likes
  */
 {template .likesSection}
-  <section>
-    <span>Liked by: </span>
-    <ul>
-      {foreach $like in $likes}
-        <li>
-          {$like}
-        </li>
-      {/foreach}
-    </ul>
-  </section>
+  {if $likes and length($likes) > 0}
+    <section>
+      <span>Liked by: </span>
+      <ul>
+        {foreach $like in $likes}
+          <li>
+            {$like}
+          </li>
+        {/foreach}
+      </ul>
+    </section>
+  {/if}
 {/template}
 
 /**

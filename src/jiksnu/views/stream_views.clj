@@ -227,10 +227,10 @@
    :template false})
 
 (defview #'group-timeline :html
-  [request activities]
+  [request [group activities]]
   {:body
    [:section
-    [:h1 "Group"]
+    [:h1 (:name group)]
     ]
    }
   )

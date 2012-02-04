@@ -62,7 +62,7 @@
 (defaction group-timeline
   [group]
   ;; TODO: implement
-  [group []])
+  (spy [group []]))
 
 (defaction user-list
   []

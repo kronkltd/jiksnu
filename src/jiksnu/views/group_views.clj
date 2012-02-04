@@ -32,28 +32,35 @@
   [request _]
   {:body
    [:section
-    [:h1 "add group"]
     [:form {:method "post" :action "/group"}
-     [:ul
-      [:li
+     [:fieldset
+      [:legend "add group"]
+      [:div.clearfix
        [:label {:for "nickname"} "Nickname:"]
-       [:input {:type "text" :name "nickname"}]]
-      [:li
+       [:div.input
+        [:input {:type "text" :name "nickname"}]]]
+      [:div.clearfix
        [:label {:for "fullname"} "Fullname:"]
-       [:input {:type "text" :name "fullname"}]]
-      [:li
+       [:div.input
+        [:input {:type "text" :name "fullname"}]]]
+      [:div.clearfix
        [:label {:for "homepage"} "Homepage:"]
-       [:input {:type "text" :name "homepage"}]]
-      [:li
+       [:div.input
+        [:input {:type "text" :name "homepage"}]]]
+      [:div.clearfix
        [:label {:for "description"} "Description:"]
-       [:textarea {:name "description"}]]
-      [:li
+       [:div.input
+        [:textarea {:name "description"}]]]
+      [:div.clearfix
        [:label {:for "location"} "Location:"]
-       [:input {:type "text" :name "location"}]]
-      [:li
+       [:div.input
+        [:input {:type "text" :name "location"}]]]
+      [:div.clearfix
        [:label {:for "aliases"} "Aliases:"]
-       [:input {:type "text" :name "aliases"}]]]
-     [:input {:type "submit" :value "Add"}]]]})
+       [:div.input
+        [:input {:type "text" :name "aliases"}]]]
+      [:div.actions
+       [:input.btn.primary {:type "submit" :value "Add"}]]]]]})
 
 (defview #'add :html
   [request group]

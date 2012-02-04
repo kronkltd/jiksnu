@@ -9,6 +9,7 @@
  * @param? flash
  * @param? title
  * @param config
+ @ @param nav
  */
 {template .layout}
   <html xmlns:sioc="http://rdfs.org/sioc/ns#"
@@ -22,6 +23,7 @@
                 dcterms: http://purl.org/dc/terms/"
 >
     <head>
+      <meta charset="utf-8">
       <title>{if $title}{$title} - {/if}{$config.site.name}</title>
       {if $formats}
         {foreach $format in $formats}
@@ -40,53 +42,74 @@
         {/foreach}
       {/if}
       <link type="text/css"
+              href="/bootstrap/bootstrap.css"
+              rel="stylesheet"
+              media="screen" />
+      <link type="text/css"
               href="/themes/classic/standard.css"
               rel="stylesheet"
               media="screen" />
     </head>
     <body>
-      <div id="wrap">
-        <header id="site-header">
-          <section id="session-menu">
-            {call jiksnu.templates.auth.loginSection data="all" /}
-          </section>
-          <section id="site-banner">
-            <address id="site_contact" class="vcard">
-              <a class="url home bookmark" href="/">
-                <img class="logo photo" src="/logo.png" />
-                /* <span class="fn org hidden">Jiksnu</span> */
-              </a>
-            </address>
-            {call .navigationSection data="all" /}
-          </section>
-          <div class="clear"></div>
-        </header>
-        <div id="notification-area">
+      <header id="site-header" class="topbar">
+        <div class="topbar-inner">
+          <div class="container">
+            <a class="brand home" href="/">Jiksnu</a>
+            {$nav|noAutoescape}
+            /* {call .navigationSection data="all" /} */
+            <section id="session-menu" class="pull-right">
+              {call jiksnu.templates.auth.loginSection data="all" /}
+            </section>
+        /* <section id="site-banner"> */
+        /*   <address id="site_contact" class="vcard"> */
+        /*     <a class="url home bookmark" href="/"> */
+        /*         /\* <img class="logo photo" src="/logo.png" /> *\/ */
+        /*         <span class="fn org hidden">Jiksnu</span> */
+        /*     </a> */
+        /*   </address> */
+        /* </section> */
+        /*   <div class="clear"></div> */
+          </div>
+        </div>
+      </header>
+      <div id="wrap" class="container">
+        <div id="notification-area" class="row">
           {if $flash }
             <div id="flash">{$flash}</div>
           {/if}
           {call .develWarning data="all" /}
         </div>
-        <section id="site-main">
-          {call .leftColumn data="all" /}
-          <div id="content">
-            {if $authenticated}
-              {call jiksnu.templates.activity.activityForm data="all" /}
-            {/if}
-            {$body|noAutoescape}
+        <div id="site-main" class="row">
+          <div class="span3">
+            {call .leftColumn data="all" /}
           </div>
-          <div class="clear"></div>
-        </section>
-        <footer>
+          <div id="content" class="span13">
+            {if $authenticated}
+              <div class="row">
+                {call jiksnu.templates.activity.activityForm data="all" /}
+              </div>
+            {/if}
+            <div class="row">
+              {$body|noAutoescape}
+            </div>
+          </div>
+        </div>
+        <footer class="row">
           <p>Copyright © 2011 KRONK Ltd.</p>
         </footer>
       </div>
-       {call .includeScript}
-        {param src}/cljs/bootstrap.js{/param}
+      /* {call .includeScript} */
+      /*   {param src}/cljs/bootstrap.js{/param} */
+      /* {/call} */
+      {call .includeScript}
+        {param src}http://code.jquery.com/jquery-1.5.2.min.js{/param}
       {/call}
-      <script type="text/javascript">
-        goog.require('jiksnu.core');
-      </script>
+      {call .includeScript}
+        {param src}/bootstrap/js/bootstrap-dropdown.js{/param}
+      {/call}
+      /* <script type="text/javascript"> */
+      /*   goog.require('jiksnu.core'); */
+      /* </script> */
     </body>
   </html>
 {/template}
@@ -98,7 +121,7 @@
  * @param groups
  */
 {template .leftColumn}
-  <aside id="left-column">
+  <aside id="left-column" class="sidebar">
     {call .userInfoSection data="all" /}
     /* {call .streamSection data="all" /} */
     {call jiksnu.templates.subscription.subscriptionsSection data="all"}
@@ -134,7 +157,7 @@
  */
 {template .streamSection}
   <div>
-    <h1>Streams</h1>
+    <h3>Streams</h3>
     <ul>
       <li>All</li>
       <li>Stream 1</li>
@@ -149,7 +172,7 @@
 {template .formatList}
   {if $formats}
     <div class="formats">
-      <h1>Formats</h1>
+      <h3>Formats</h3>
       <ul>
         {foreach $format in $formats}
           <li>
@@ -176,7 +199,7 @@
  */
 {template .develWarning}
   {if $development}
-    <div class="important devel-section">
+    <div class="important devel-section alert-message warning">
       This site is running in development mode.
       No guarantees are made about the accuracy or security of
       information on this site. Use at your own risk.
@@ -190,49 +213,4 @@
  */
 {template .postActivityForm}
 
-{/template}
-
-
-/**
- * @param authenticated
- */
-{template .navigationSection}
-  <nav>
-    <ul>
-      <li>
-        <a href="/">Public</a>
-      </li>
-      <li>
-        <a href="/users">Users</a>
-      </li>
-      <li>
-        <a href="/main/domains">Domains</a>
-      </li>
-      <li>
-        <a href="/group">Groups</a>
-      </li>
-      {if $authenticated}
-        <li>
-          <a href="/settings/profile">Profile</a>
-        </li>
-        {if $authenticated.admin }
-          <li>
-            <a href="/admin/notices">Notices</a>
-          </li>
-          <li>
-            <a href="/admin/settings">Settings</a>
-          </li>
-          <li>
-            <a href="/admin/push/subscriptions">Pubsubhubub</a>
-          </li>
-          <li>
-            <a href="/admin/users">Users</a>
-          </li>
-          <li>
-            <a href="/admin/subscriptions">Subscriptions</a>
-          </li>
-        {/if}
-      {/if}
-    </ul>
-  </nav>
 {/template}

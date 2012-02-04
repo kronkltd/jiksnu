@@ -15,6 +15,7 @@
                     [session :as session]
                     [view :as view])
             (jiksnu.actions [activity-actions :as activity]
+                            [admin-actions :as admin]
                             [auth-actions :as auth]
                             [comment-actions :as comment]
                             [domain-actions :as domain]
@@ -48,6 +49,7 @@
 (def admin-routes
   (make-matchers
    [
+    [[:get  "/admin"]                                   #'admin/index]
     [[:get  "/admin/notices"]                           #'admin.activity/index]
     [[:get  "/admin/subscriptions"]                     #'sub/admin-index]
     [[:get  "/admin/push/subscriptions"]                #'push/admin-index]

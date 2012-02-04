@@ -9,19 +9,21 @@
       <form method="post" action="/main/login">
         <fieldset>
           <legend>Login</legend>
-          <ul>
-            <li>
-              <label for="username">Username</label>
+          <div class="clearfix">
+            <label for="username">Username</label>
+            <div class="input">
               <input type="text" name="username" />
-            </li>
-            <li>
-              <label for="password">Password</label>
+            </div>
+          </div>
+          <div class="clearfix">
+            <label for="password">Password</label>
+            <div class="input">
               <input type="password" name="password" />
-            </li>
-            <li>
-              <input type="submit" value="Login" />
-            </li>
-          </ul>
+            </div>
+          </div>
+          <div class="actions">
+            <input type="submit" value="Login" />
+          </div>
         </fieldset>
       </form>
     </div>
@@ -29,15 +31,15 @@
       <form method="post" action="/main/guest-login">
         <fieldset>
           <legend>Guest Login</legend>
-          <ul>
-            <li>
-              <label for="webid">Web Id</label>
+          <div class="clearfix">
+            <label for="webid">Web Id</label>
+            <div class="input">
               <input type="text" name="webid" />
-            </li>
-            <li>
-              <input type="submit" value="Login" />
-            </li>
-          </ul>
+            </div>
+          </div>
+          <div class="actions">
+            <input type="submit" value="Login" />
+          </div>
         </fieldset>
       </form>
     </div>
@@ -49,14 +51,21 @@
  * @param authenticated
  */
 {template .logoutButton}
-  <div>
-    <span>{call jiksnu.templates.user.linkTo data="$authenticated" /}</span>
-    <span>
-      <form method="post" action="/main/logout">
-        <input type="submit" value="Log out" />
-      </form>
-    </span>
-  </div>
+  <ul class="nav secondary-nav">
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle">
+        {$authenticated.name}
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href="/main/logout">Log out</a>
+          /* <form method="post" action="/main/logout"> */
+          /*   <input type="submit" value="Log out" /> */
+          /* </form> */
+        </li>
+      </ul>
+    </li>
+  </ul>
 {/template}
 
 /**

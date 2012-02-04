@@ -7,6 +7,7 @@
                             [user-actions :as actions.user])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user])
+            (jiksnu.sections [layout-sections :as sections.layout])
             [hiccup.core :as hiccup]))
 
 (deftemplate layout
@@ -16,6 +17,7 @@
     :flash (:flash response)
     :config {:site {:name (config :site :name)}}
     :formats (:formats response)
+    :nav (hiccup/html (sections.layout/navigation-section (current-user)))
     :development (= @*environment* :development)}
    (if-let [user (current-user)]
      {:authenticated (model.user/format-data user)
