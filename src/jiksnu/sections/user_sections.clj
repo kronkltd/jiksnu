@@ -159,8 +159,20 @@
        ["photo" {}
         ["uri" {} avatar-url]]))))
 
-;; (defsection show-section-minimal [User :xmpp :xmpp]
-;;   [property & options]
-;;   (element/make-element
-;;    (:key property) {}
-;;    [(:type property) {} (:value property)]))
+(defn display-avatar
+  ([user] (display-avatar user 48))
+  ([user size]
+     [:a {:href (str "/users/" (:_id user))
+          :title (:name user)}
+      [:img.avatar.photo
+       {:width size
+        :height size
+        :alt ""
+        :src (avatar-url user)}]]))
+
+
+  ;; (defsection show-section-minimal [User :xmpp :xmpp]
+  ;;   [property & options]
+  ;;   (element/make-element
+  ;;    (:key property) {}
+  ;;    [(:type property) {} (:value property)]))
