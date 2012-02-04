@@ -23,6 +23,7 @@
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
                  [org.clojure/tools.logging "0.1.2"]
+                 [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.6.1"]
                  [org.slf4j/slf4j-log4j12 "1.6.1"]
                  [potemkin "0.1.1-SNAPSHOT"]
