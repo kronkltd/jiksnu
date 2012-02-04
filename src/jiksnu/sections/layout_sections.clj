@@ -49,12 +49,19 @@
           [:a {:href link} title]])
        links)]]))
 
+(defn top-users
+  []
+  [:div
+   [:p "Users with most posts"]
+   [:ul
+    [:li [:a {:href "#"} "#"]]]])
 
 (defn left-column-section
   [authenticated subscribers subscriptions groups]
   [:aside#left-column.sidebar
    (user-info-section (current-user))
    (side-navigation)
+   (top-users)
    (sections.subscription/subscriptions-section (current-user) [])
    (sections.subscription/subscribers-section (current-user) [])
    (sections.group/user-groups (current-user))])
