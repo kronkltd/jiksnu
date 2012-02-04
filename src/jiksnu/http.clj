@@ -11,6 +11,5 @@
      (start-http-server
       #'routes/app
       {:port port
-       :websocket true
-       :cljsc {:optimizations :simple}
+       ;; :websocket true
        :join? false})))
