@@ -358,18 +358,3 @@
     <input type="submit" value="Update" />
   </form>
 {/template}
-
-
-/**
- * @param user
- * @param activities
- * @param authenticated
- */
-{template .userTimeline}
-  <div>
-    {call jiksnu.templates.user.show data="$user"}
-      {param authenticated: $authenticated /}
-    {/call}
-    {call .indexBlock data="all" /}
-  </div>
-{/template}

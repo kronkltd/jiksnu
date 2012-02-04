@@ -15,8 +15,7 @@
                             [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
-            jiksnu.sections.user-sections
-            (jiksnu.templates [activity :as template.activity])
+            (jiksnu.sections [user-sections :as sections.user])
             (jiksnu.xmpp [element :as element]))
   (:import com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
@@ -25,23 +24,20 @@
            org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
+;; TODO: Move to common area
+(register-rdf-ns :aair ns/aair)
+(register-rdf-ns :as ns/as)
+(register-rdf-ns :dc ns/dc)
+
+;; model?
 (defn get-author
   [activity]
   (-> activity
       :author
       model.user/fetch-by-id))
 
-(defsection title [Activity]
-  [activity & options]
-  (:title activity))
 
-(defsection uri [Activity]
-  [activity & options]
-  (str "/notice/" (:_id activity)))
-
-(defsection index-line [Activity]
-  [activity & opts]
-  (apply show-section activity opts))
+;; specific sections
 
 (defn pictures-section
   [activity]
@@ -143,6 +139,72 @@
        [:div.actions
         [:input.btn.primary {:type "submit" :value "post"}]]]]]))
 
+;; dynamic sections
+
+
+(defsection title [Activity]
+  [activity & options]
+  (:title activity))
+
+(defsection uri [Activity]
+  [activity & options]
+  (str "/notice/" (:_id activity)))
+
+
+
+(defsection index-block [Activity :html]
+  [activities & _]
+  (index-section activities))
+
+(defsection index-block [Activity :xml]
+  [activities & _]
+  {:tag :statuses
+   :content (map index-line activities)})
+
+(defsection index-block [Activity :xmpp]
+  [activities & options]
+  ["items" {"node" ns/microblog}
+   (map index-line activities)])
+
+
+
+
+
+(defsection index-line [Activity]
+  [activity & opts]
+  (apply show-section activity opts))
+
+(defsection index-line [Activity :html]
+  [activity & opts]
+  [:li (apply show-section activity opts)])
+
+(defsection index-line [Activity :xmpp]
+  [^Activity activity & options]
+  ["item" {"id" (:_id activity)}
+   (show-section activity)])
+
+
+
+
+(defsection index-section [Activity :html]
+  [activities & _]
+  [:ul.unstyled
+   (map index-line activities)])
+
+(defsection index-section [Activity :rdf]
+  [activities & _]
+  (vector (reduce concat (index-block activities))))
+
+(defsection index-section [Activity :xmpp]
+  [activities & options]
+  ["pubsub" {} (index-block activities)])
+
+
+
+
+
+
+
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
   (let [entry (abdera/new-entry)]
@@ -175,6 +237,78 @@
     entry))
 
 
+(defn post-actions
+  [activity]
+  
+  )
+
+(defn recipients-section
+  [activity]
+  
+  )
+
+(defn links-section
+  [activity]
+  
+  )
+
+(defn maps-section
+  [activity]
+  
+  )
+
+(defn tags-section
+  [activity]
+  
+  )
+
+(defn posted-link-section
+  [activity]
+  [:span.posted
+   [:time {:datetime (:published activity)
+           :title (:published activity)}
+    [:a {:href (uri activity)
+         :property "dc:published"
+         :content (:published activity)}
+     (-> activity :published model.activity/prettyify-time)]]])
+
+(defn comments-section
+  [activity]
+  
+  )
+
+(defsection show-section [Activity :html]
+  [activity & _]
+  (let [user (get-author activity)]
+    [:div.hentry.notice.row
+     {:id (:id activity)
+      :about (uri activity)
+      :typeof "sioc:Post"}
+     [:div.avatar-section.span2
+      (sections.user/display-avatar user)]
+     [:div.span10
+      [:div.row
+       (link-to user)
+       [:div.labels
+        [:span.label (-> activity :object :object-type)]
+        (when-not (:local activity)
+          [:span.label "Remote"])
+        (when-not (:public activity)
+          [:span.label "Private"])]
+       (post-actions activity)]
+      [:div.entry-content.row
+       #_(when (:title activity)
+           [:h1.entry-title {:property "dc:title"} (:title activity)])
+       [:p {:property "sioc:content"}
+        (:content activity)]]
+      [:div.row
+       (recipients-section activity)
+       (links-section activity)
+       (likes-section activity)
+       (maps-section activity)
+       (tags-section activity)
+       (posted-link-section activity)
+       (comments-section activity)]]]))
 
 (defsection show-section [Activity :json]
   [activity & _]
@@ -195,63 +329,11 @@
       ;; "updated" (:updated object)
       })})
 
-(register-rdf-ns :aair ns/aair)
-(register-rdf-ns :as ns/as)
-(register-rdf-ns :dc ns/dc)
-
-
-(defsection show-section [Activity :rdf]
-  [activity & _]
-  (with-rdf-ns ""
-    (let [{:keys [content id published]} activity
-          uri (full-uri activity)
-          user (get-author activity)]
-      (concat [
-               [uri [:rdf :type]      [:sioc :Post]]
-               [uri [:as  :verb]      (l "post")]
-               [uri [:sioc  :content] (l content)]
-               [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
-               [uri [:dc  :published] (date published)]
-               ]
-              #_(show-section user)))))
-
-(defsection index-block [Activity :xmpp :xmpp]
-  [activities & options]
-  ["items" {"node" ns/microblog}
-   (map index-line activities)])
-
-(defsection index-line [Activity :xmpp :xmpp]
-  [^Activity activity & options]
-  ["item" {"id" (:_id activity)}
-   (show-section activity)])
-
-(defsection index-section [Activity :rdf]
-  [activities & _]
-  (vector (reduce concat (index-block activities))))
-
-(defsection index-section [Activity :xmpp :xmpp]
-  [activities & options]
-  ["pubsub" {} (index-block activities)])
-
-(defsection show-section [Activity :xmpp :xmpp]
+(defsection show-section [Activity :xmpp]
   [^Activity activity & options]
   (element/abdera-to-tigase-element
    (with-format :atom
      (show-section activity))))
-
-
-
-
-
-
-
-
-
-
-(defsection index-block [Activity :xml]
-  [activities & _]
-  {:tag :statuses
-   :content (map index-line activities)})
 
 (defsection show-section [Activity :xml]
   [activity & _]
@@ -290,3 +372,18 @@
      :content [(:content activity)]}
     {:tag :created_at
      :content [(str (:published activity))]}]})
+
+(defsection show-section [Activity :rdf]
+  [activity & _]
+  (with-rdf-ns ""
+    (let [{:keys [content id published]} activity
+          uri (full-uri activity)
+          user (get-author activity)]
+      (concat [
+               [uri [:rdf :type]      [:sioc :Post]]
+               [uri [:as  :verb]      (l "post")]
+               [uri [:sioc  :content] (l content)]
+               [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
+               [uri [:dc  :published] (date published)]
+               ]
+              #_(show-section user)))))

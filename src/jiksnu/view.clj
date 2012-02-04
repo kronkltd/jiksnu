@@ -12,7 +12,7 @@
                     [xmpp :as xmpp])
             (jiksnu.templates [layout :as templates.layout])
             (jiksnu.xmpp [element :as element])
-                        (plaza.rdf [core :as rdf])
+            (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
 
 (defsection link-to :default
@@ -23,11 +23,6 @@
      [:span {:about (uri record)
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))
-
-(defn nav-section
-  [response]
-  
-  )
 
 (defn page-template-content
   [response]

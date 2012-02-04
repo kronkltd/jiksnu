@@ -19,7 +19,6 @@
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity])
-            (jiksnu.templates [activity :as templates.activity])
             (jiksnu.xmpp [element :as xmpp.element])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])
@@ -48,7 +47,7 @@
 (defview #'public-timeline :html
   [request activities]
   {:formats (helpers.activity/index-formats activities)
-   :body (templates.activity/index-block activities)})
+   :body (index-block activities)})
 
 (defview #'public-timeline :json
   [request activities]
@@ -176,7 +175,9 @@
 
 (defview #'user-timeline :html
   [request [user activities]]
-  {:body (templates.activity/user-timeline user activities)
+  {:body [:div
+          (show-section user)
+          (index-section activities)]
    :formats (helpers.activity/timeline-formats user)})
 
 (defview #'user-timeline :json

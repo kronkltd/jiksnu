@@ -89,6 +89,10 @@
                  (sugar/eq :_id (:_id parent))
                  (sugar/push :comments (:_id comment))))
 
+(defn prettyify-time
+  [date]
+  (-?>> date (.format (PrettyTime.))))
+
 (defn format-data
   [activity]
   (let [comments (map format-data (get-comments activity))
@@ -116,7 +120,7 @@
      :uri (:uri activity)
      :recipients []
      :published (-?> activity :published format-date)
-     :published-formatted (-?>> activity :published (.format (PrettyTime.)))
+     :published-formatted (-?>> activity :published prettyify-time)
      :buttonable (and actor
                       (or (:admin actor)
                           (some #(= % (:authors activity)) actor)))

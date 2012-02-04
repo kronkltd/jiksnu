@@ -18,7 +18,6 @@
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity])
-            (jiksnu.templates [activity :as templates.activity])
             (jiksnu.xmpp [element :as xmpp.element])
             (plaza.rdf [core :as plaza])
             (plaza.rdf.vocabularies [foaf :as foaf])
@@ -51,7 +50,7 @@
 
 (defview #'show :html
   [request activity]
-  {:body (templates.activity/show activity)})
+  {:body (show-section activity)})
 
 (defview #'show :n3
   [request activity]

@@ -13,7 +13,6 @@
                           [user :as model.user]
                           [webfinger :as model.webfinger])
             (jiksnu.sections [user-sections :as sections.user])
-            (jiksnu.templates [activity :as templates.activity])
             (plaza.rdf [core :as rdf]))
   (:import java.net.URI
            javax.xml.namespace.QName
