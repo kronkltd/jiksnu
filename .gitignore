@@ -15,3 +15,8 @@ target
 .classpath
 .project
 .settings
+gems
+docs
+.clojurescript-output
+newrelic
+.lein-deps-sum
