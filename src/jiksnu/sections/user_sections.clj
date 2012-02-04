@@ -200,10 +200,9 @@
            (rdf/rdf-resource (str ns/cert "identity")) (rdf/rdf-resource (str (full-uri user) "#me"))
            (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
            (rdf/rdf-resource (str ns/cert "modulus")) (rdf/rdf-typed-literal
-                                                       (str  (model.signature/encode
-                                                              (model.signature/get-bytes
-                                                               (BigInteger.
-                                                                (:modulus mkp)))))
+                                                       (.toString
+                                                        (BigInteger.
+                                                         (:modulus mkp)) 16)
                                                        (str ns/xsd "#hexBinary"))]])
 
        ;; About the User's Account

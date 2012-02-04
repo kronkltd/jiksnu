@@ -83,7 +83,7 @@
                        rdf/defmodel
                        (rdf/model-to-format :n3)
                        with-out-str))
-      (assoc-in [:headers "Content-Type"] "text/plain")))
+      (assoc-in [:headers "Content-Type"] "text/n3; charset=utf-8")))
 
 
 
