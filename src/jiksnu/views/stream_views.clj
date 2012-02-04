@@ -33,6 +33,71 @@
 
 
 
+(defview #'callback-publish :html
+  [request params]
+  {:body params
+   :template false})
+
+
+
+
+
+(defview #'direct-message-timeline :json
+  [request data]
+  {:body data})
+
+(defview #'direct-message-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"}
+    (map index-line (index-section activities))]})
+
+
+
+
+
+(defview #'group-timeline :html
+  [request [group activities]]
+  {:title (str group " group")
+   :body
+   [:section
+    [:ul (map index-line activities)]]})
+
+
+
+
+
+(defview #'home-timeline :html
+  [request activities]
+  {:title "Home Timeline"
+   :body [:div
+          (index-section activities)]})
+
+(defview #'home-timeline :json
+  [request data]
+  {:body data})
+
+(defview #'home-timeline :xml
+  [request activities]
+  {:body (index-section activities)})
+
+
+
+
+
+;; (defview #'mentions-timeline :atom
+;;   [request activities]
+;;   {:body
+;;    [:statuses (map index-line activities)]})
+
+(defview #'mentions-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"} (map index-line (index-section activities))]})
+
+
+
+
 
 (defview #'public-timeline :atom
   [request activities]
@@ -65,37 +130,9 @@
    {:items
     (map show-section activities)}})
 
-(defview #'twitter-public-timeline :n3
-  [request activities]
-  (let [triples (with-format :rdf (index-section activities))]
-    {:body (-> triples
-              rdf/model-add-triples
-              rdf/defmodel
-              (rdf/model-to-format :n3)
-              with-out-str)
-    :template :false}))
-
-(defview #'twitter-public-timeline :rdf
-  [request activities]
-  (let [model (rdf/build-model)]
-    (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
-    (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
-    (.setNsPrefix (rdf/to-java model) "foaf" namespace/foaf)
-    
-    (rdf/with-model model
-      (-> activities
-          index-section
-          ;; first
-          rdf/make-triples
-          rdf/model-add-triples)
-      {:body (with-out-str
-               (rdf/model-to-format model :xml-abbrev))
-      :template :false})))
-
 (defview #'public-timeline :xmpp
   [request activities]
   (tigase/result-packet request (index-section activities)))
-
 
 
 
@@ -132,9 +169,6 @@
 
 
 
-
-
-
 (defview #'remote-user :html
   [request user]
   (apply-view
@@ -142,6 +176,9 @@
        (assoc :format :html)
        (assoc :action #'user-timeline))
    user))
+
+
+
 
 ;; (defview #'show :html
 ;;   [request user]
@@ -152,10 +189,80 @@
 ;;         (assoc :action #'user-timeline))
 ;;     user)})
 
+
+
+
 (defview #'stream :html
   [request response-fn]
   {:body response-fn
    :template false})
+
+
+
+
+(defview #'twitter-public-timeline :json
+  [request activities]
+  {:body
+   (map
+    (fn [activity]
+      {:text (:title activity)
+       :truncated false
+       :created_at (model/date->twitter (:published activity))
+       :in_reply_to_status_id nil
+       :source (:source activity)
+       :id (:_id activity)
+       :in_reply_to_user_id nil
+       :in_reply_to_screen_name nil
+       :favorited false
+       :attachments []
+       :user
+       (let [user (helpers.activity/get-author activity)]
+         {:name (:display-name user)
+          :id (:_id user)
+          :screen_name (:username user)
+          :url (:url user)
+          :profile_image_url (:avatar-url user)
+          :protected false})
+       :statusnet_html (:content activity)
+       :statusnet_conversation_id nil})
+    activities)})
+
+(defview #'twitter-public-timeline :n3
+  [request activities]
+  (let [triples (with-format :rdf (index-section activities))]
+    {:body (-> triples
+              rdf/model-add-triples
+              rdf/defmodel
+              (rdf/model-to-format :n3)
+              with-out-str)
+    :template :false}))
+
+(defview #'twitter-public-timeline :rdf
+  [request activities]
+  (let [model (rdf/build-model)]
+    (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
+    (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
+    (.setNsPrefix (rdf/to-java model) "foaf" namespace/foaf)
+    
+    (rdf/with-model model
+      (-> activities
+          index-section
+          ;; first
+          rdf/make-triples
+          rdf/model-add-triples)
+      {:body (with-out-str
+               (rdf/model-to-format model :xml-abbrev))
+      :template :false})))
+
+;; (defview #'twitter-public-timeline :rdf
+;;   [request activities]
+;;   {:body nil})
+
+(defview #'twitter-public-timeline :xml
+  [request activities]
+  {:body (index-section activities)})
+
+
 
 
 
@@ -205,16 +312,6 @@
     (fn [activity] (show-section activity))
     activities)})
 
-(defview #'user-timeline :xml
-  [request [user activities]]
-  {:body (index-block activities)
-   :template :false})
-
-(defview #'user-timeline :xmpp
-  [request [user  activities]]
-  (tigase/result-packet request (index-section activities)))
-
-
 (defview #'user-timeline :n3
   [request [user activities]]
   {:body (with-format :rdf (show-section user))
@@ -240,96 +337,12 @@
           (throw ex)))
    :template :false})
 
+(defview #'user-timeline :xml
+  [request [user activities]]
+  {:body (index-block activities)
+   :template :false})
 
+(defview #'user-timeline :xmpp
+  [request [user  activities]]
+  (tigase/result-packet request (index-section activities)))
 
-
-(defview #'callback-publish :html
-  [request params]
-  {:body params
-   :template false})
-
-
-
-(defview #'group-timeline :html
-  [request [group activities]]
-  {:title (str group " group")
-   :body
-   [:section
-    [:ul (map index-line activities)]]})
-
-
-(defview #'direct-message-timeline :json
-  [request data]
-  {:body data})
-
-(defview #'home-timeline :html
-  [request activities]
-  {:title "Home Timeline"
-   :body [:div
-          (index-section activities)]})
-
-(defview #'home-timeline :json
-  [request data]
-  {:body data})
-
-(defview #'home-timeline :xml
-  [request activities]
-  {:body (index-section activities)})
-
-
-(defview #'twitter-public-timeline :json
-  [request activities]
-  {:body
-   (map
-    (fn [activity]
-      {:text (:title activity)
-       :truncated false
-       :created_at (model/date->twitter (:published activity))
-       :in_reply_to_status_id nil
-       :source (:source activity)
-       :id (:_id activity)
-       :in_reply_to_user_id nil
-       :in_reply_to_screen_name nil
-       :favorited false
-       :attachments []
-       :user
-       (let [user (helpers.activity/get-author activity)]
-         {:name (:display-name user)
-          :id (:_id user)
-          :screen_name (:username user)
-          :url (:url user)
-          :profile_image_url (:avatar-url user)
-          :protected false})
-       :statusnet_html (:content activity)
-       :statusnet_conversation_id nil})
-    activities)})
-
-(defview #'twitter-public-timeline :xml
-  [request activities]
-  {:body (index-section activities)})
-
-(defview #'twitter-public-timeline :rdf
-  [request activities]
-  {:body nil}
-  )
-
-
-
-(defview #'mentions-timeline :xml
-  [request activities]
-  {:body
-   [:statuses {:type "array"} (map index-line (index-section activities))]})
-
-(defview #'direct-message-timeline :xml
-  [request activities]
-  {:body
-   [:statuses {:type "array"} (map index-line (index-section activities))]}
-  )
-
-
-
-;; (defview #'mentions-timeline :atom
-;;   [request activities]
-;;   {:body
-;;    [:statuses (map index-line activities)]}
-;;   )

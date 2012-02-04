@@ -1,6 +1,6 @@
 (ns jiksnu.sections.layout-sections
   (:use (ciste [config :only [environment]])
-        (ciste.sections [default :only [link-to]])
+        (ciste.sections [default :only [link-to show-section]])
         (jiksnu [session :only [current-user is-admin?]]))
   (:require (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.model [subscription :as model.subscription])
@@ -11,7 +11,8 @@
 (defn user-info-section
   [user]
   (when user
-    [:div#user-info
+    (show-section user)
+    #_[:div#user-info
      (sections.user/display-avatar user)
      [:div (link-to user)]]))
 
