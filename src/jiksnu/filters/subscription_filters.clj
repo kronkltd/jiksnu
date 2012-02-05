@@ -39,13 +39,13 @@
 (deffilter #'get-subscribers :http
   [action request]
   (let [{{username :username} :params} request
-        user (model.user/show username)]
+        user (model.user/get-user username)]
     (action user)))
 
 (deffilter #'get-subscriptions :http
   [action request]
   (let [{{username :username} :params} request
-        user (model.user/show username)]
+        user (model.user/get-user username)]
     (action user)))
 
 (deffilter #'unsubscribe :http

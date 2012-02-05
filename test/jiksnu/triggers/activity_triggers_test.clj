@@ -18,7 +18,7 @@
 (with-environment :test
   (test-environment-fixture)
 
-  (fact "notify-activity"
+  (fact "#'notify-activity"
     (fact "should return a packet"
       (let [user (model.user/create (factory User))]
         (with-user user

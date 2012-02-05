@@ -26,9 +26,10 @@
 
 (defaction ostatussub
   [profile]
+  ;; TODO: Allow for http uri's
   (if profile
-    (let [[username password] (clojure.string/split profile #"@")]
-      (model.user/show username password))
+    (let [[username domain] (clojure.string/split profile #"@")]
+      (model.user/get-user username domain))
     (User.)))
 
 (defaction remote-subscribe

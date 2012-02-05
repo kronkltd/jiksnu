@@ -20,14 +20,13 @@
                    options {}]
                ?form))]
 
-    (fact "fetch-host-meta"
-
+    (fact "#'fetch-host-meta"
       (fact "when the url points to a valid XRD document"
         (let [url "http://kronkltd.net/.well-known/host-meta"]
           (fetch-host-meta url) => (partial instance? Document)))
 
-      (fact "when the url does not point to a valid XRD document"
-        (future-fact "should raise an exception"
+      (future-fact "when the url does not point to a valid XRD document"
+        (fact "should raise an exception"
           (let [url "http://example.com/.well-known/host-meta"]
             (fetch-host-meta url) => nil))))
 

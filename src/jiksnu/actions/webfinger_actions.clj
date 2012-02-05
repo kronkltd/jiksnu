@@ -39,7 +39,7 @@
   [uri]
   (->> uri
        model.user/split-uri
-       (apply model.user/show )))
+       (apply model.user/get-user )))
 
 (defn get-user-meta-uri
   [user]

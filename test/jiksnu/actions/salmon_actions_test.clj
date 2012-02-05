@@ -98,76 +98,66 @@ vPgogIDxsaW5rIHJlbD0iYXZhdGFyIiB0eXBlPSJpbWFnZS9wbmciIG1lZGlhOndpZHRoPSIyNCIgbWV
 
 
   ;; Taken from the python tests
-  ;; (deftest test-normalize-user-id)
-
-  (let [id1 "http://example.com"
-        id2 "https://www.example.org/bob"
-        id3 "acct:bob@example.org"
-        em3 "bob@example.org"]
-    (fact "http urls are unaltered"
-      (normalize-user-id id1) => id1)
-    (fact "https urls are unaltered"
-      (normalize-user-id id2) => id2)
-    (fact "acct uris are unaltered"
-      (normalize-user-id id3) => id3)
-    (future-fact "email addresses have the acct scheme appended"
-                 (normalize-user-id em3) => id3))
-
+  (fact "#'normalize-user-id"
+    (let [id1 "http://example.com"
+          id2 "https://www.example.org/bob"
+          id3 "acct:bob@example.org"
+          em3 "bob@example.org"]
+      (fact "http urls are unaltered"
+        (normalize-user-id id1) => id1)
+      (fact "https urls are unaltered"
+        (normalize-user-id id2) => id2)
+      (fact "acct uris are unaltered"
+        (normalize-user-id id3) => id3)
+      (future-fact "email addresses have the acct scheme appended"
+        (normalize-user-id em3) => id3)))
 
 
+  (fact "#'get-key"
+    (fact "when the user does not have a key"
+      (fact "should return nil"
+        (let [user (actions.user/create (factory User {:discovered true}))]
+          (get-key user)) => nil))
+    
+    (future-fact "when there is a key"
+      (fact "should return a key"
+        (let [user (actions.user/create (factory User {:discovered true}))]
+          (get-key user) => (partial instance? Key)))))
 
+  (future-fact "#'signature-valid?"
+    (fact "when it is valid"
+      (fact "should return truthy"
+        (let [envelope val-env #_(stream->envelope (valid-envelope-stream))
+              key (model.signature/get-key-from-armored
+                   {:armored-n armored-n
+                    :armored-e armored-e})]
+          (signature-valid? (spy envelope) (spy key)) => truthy))))
 
-  ;; (deftest test-get-key)
+  (fact "#'decode-envelope"
+    (fact "should return a string"
+      (let [envelope (stream->envelope (valid-envelope-stream))]
+        (decode-envelope envelope) => string?)))
 
-  (fact "when the user does not have a key"
-    (fact "should return nil"
-      (let [user (actions.user/create (factory User {:discovered true}))]
-        (get-key user)) => nil))
+  (fact "#'extract-activity"
+    (fact "should return an activity"
+      (let [envelope (stream->envelope (valid-envelope-stream))]
+        (extract-activity envelope)) => model/activity?))
 
-  (fact "when there is a key"
-    (future-fact "should return a key"
-                 (let [user (actions.user/create (factory User {:discovered true}))]
-                   (get-key user) => (partial instance? Key))))
+  (fact "#'stream->envelope"
+    (fact "should return an envelope"
+      (stream->envelope (valid-envelope-stream)) => map?))
 
-  ;; (deftest test-signature-valid?)
-
-  (fact "when it is valid"
-    (future-fact "should return truthy"
-                 (let [envelope val-env #_(stream->envelope (valid-envelope-stream))
-                       key (model.signature/get-key-from-armored
-                            {:armored-n armored-n
-                             :armored-e armored-e})]
-                   (signature-valid? (spy envelope) (spy key)) => truthy)))
-
-  ;; (deftest test-decode-envelope)
-
-  (fact "should return a string"
-    (let [envelope (stream->envelope (valid-envelope-stream))]
-      (decode-envelope envelope) => string?))
-
-  ;; (deftest test-extract-activity)
-
-  (fact "should return an activity"
-    (let [envelope (stream->envelope (valid-envelope-stream))]
-      (extract-activity envelope)) => model/activity?)
-
-  ;; (deftest test-stream->envelope)
-
-  (fact "should return an envelope"
-    (stream->envelope (valid-envelope-stream)) => map?)
-
-  ;; (deftest test-process)
-
-  (fact "with a valid signature"
-    (fact "should create the message"
-      (let [envelope (-> (valid-envelope-stream) stream->envelope)
-            user (-> envelope extract-activity
-                     helpers.activity/get-author)]
-        (actions.user/discover user)
-        (let [sig (:sig envelope)
-              n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0="
-              e "AQAB"]
-          (model.signature/set-armored-key (:_id user) n e)
-          (process user envelope) => truthy
-          (provided
-            (actions.activity/remote-create anything) => truthy :called 1))))))
+  (fact "#'process"
+    (fact "with a valid signature"
+      (fact "should create the message"
+        (let [envelope (-> (valid-envelope-stream) stream->envelope)
+              user (-> envelope extract-activity
+                       helpers.activity/get-author)]
+          (actions.user/discover user)
+          (let [sig (:sig envelope)
+                n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0="
+                e "AQAB"]
+            (model.signature/set-armored-key (:_id user) n e)
+            (process user envelope) => truthy
+            (provided
+              (actions.activity/remote-create anything) => truthy :called 1)))))))

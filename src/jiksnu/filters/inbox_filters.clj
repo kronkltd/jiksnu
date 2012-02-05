@@ -5,5 +5,5 @@
 
 (deffilter #'index :http
   [action request]
-  (let [user (model.user/show (:username (:params request)))]
+  (let [user (model.user/get-user (:username (:params request)))]
     (action user)))

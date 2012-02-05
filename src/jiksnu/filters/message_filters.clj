@@ -5,8 +5,8 @@
 
 (deffilter #'inbox-page :http
   [action request]
-  (-> request :params :username model.user/show action))
+  (-> request :params :username model.user/get-user action))
 
 (deffilter #'outbox-page :http
   [action request]
-  (-> request :params :username model.user/show action))
+  (-> request :params :username model.user/get-user action))

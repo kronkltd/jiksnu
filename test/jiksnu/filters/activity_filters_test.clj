@@ -31,10 +31,9 @@
 
 
 (with-environment :test
-
   (test-environment-fixture)
 
-  (future-fact "#'actions.activity/create :xmpp"
+  (future-fact "filter-action #'actions.activity/create :xmpp"
     (fact "when the user is logged in"
       (fact "and it is a valid activity"
         (fact "should return that activity"
@@ -54,7 +53,7 @@
                                   :serialization :xmpp)]
                     (filter-action #'actions.activity/create request) => activity?)))))))))
 
-  (fact "show-filter"
+  (fact "filter-action #'actions.activity/show :xmpp"
     (let [author (model.user/create (factory User))]
       (with-user author
         (let [activity (model.activity/create (factory Activity))

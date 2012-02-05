@@ -1,17 +1,13 @@
 (ns jiksnu.sections.activity-sections-test
   (:use (ciste [config :only [with-environment]]
-               core sections views)
+               [core :only [with-context]])
         ciste.sections.default
         (clj-factory [core :only [factory]])
-        clojure.test
-        (jiksnu test-helper model session)
+        (jiksnu test-helper session)
         jiksnu.sections.activity-sections
         midje.sweet)
   (:require (clj-tigase [element :as element])
-            [hiccup.form-helpers :as f]
-            (jiksnu [model :as model]
-                    [namespace :as namespace])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
+            (jiksnu [model :as model])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.xmpp [element :as xmpp.element]))
@@ -25,19 +21,18 @@
 (with-environment :test
   (test-environment-fixture)
 
-  (fact "uri Activity"
+  (fact "#'uri Activity"
     (facts "should be a string"
       (uri activity) => string?
       (against-background
         (around
          :facts
-         (with-serialization :http
-           (with-format :html
-             (with-user (model.user/create (factory User))
-               (let [activity (model.activity/create (factory Activity))]
-                 ?form))))))))
+         (with-context [::http :html]                                        
+           (with-user (model.user/create (factory User))
+             (let [activity (model.activity/create (factory Activity))]
+               ?form)))))))
 
-  (fact "show-section Activity :atom"
+  (fact "#'show-section Activity :atom"
     (facts "should return an abdera entry"
       (let [response (show-section activity)]
         (instance? Entry response) => truthy
@@ -47,21 +42,18 @@
       (against-background
         (around
          :facts
-         (with-serialization :http
-           (with-format :atom
-             (let [author-map {:authors
-                               [(:_id (model.user/create (factory User)))]}
-                   activity (factory Activity author-map)]
-               ?form)))))))
+         (with-context [:http :atom]
+           (let [author-map {:authors [(:_id (model.user/create (factory User)))]}
+                 activity (factory Activity author-map)]
+             ?form))))))
 
-  (fact "show-section Activity :xmpp :xmpp"
+  (fact "#'show-section Activity :xmpp"
     (facts "should return an element"
       (show-section entry) => element/element?
       (against-background
         (around
          :facts
-         (with-serialization :xmpp
-           (with-format :xmpp
-             (with-user (model.user/create (factory User))
-               (let [entry (model.activity/create (factory Activity))]
-                 ?form)))))))))
+         (with-context [:xmpp :xmpp]
+           (with-user (model.user/create (factory User))
+             (let [entry (model.activity/create (factory Activity))]
+               ?form))))))))
