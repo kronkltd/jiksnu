@@ -1,11 +1,14 @@
 (ns jiksnu.actions.domain-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]]))
+               [debug :only [spy]])
+        (clojure.core [incubator :only [-?>>]]))
   (:require (clj-tigase [core :as tigase])
+            (clojure [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain]
-                          [webfinger :as model.webfinger]))
+                          [webfinger :as model.webfinger])
+            (ring.util [codec :as codec]))
   (:import java.net.URL
            jiksnu.model.Domain))
 
@@ -103,10 +106,13 @@
   (future (discover-webfinger domain))
   (set-discovered! domain))
 
-(defn get-user-meta-uri
-  [domain username]
-  ;; TODO: find the template and insert the username
-  "")
+(defn get-user-meta-url
+  [domain user-uri]
+  (-?>> domain
+       :links
+       (filter #(= (:rel %) "lrdd"))
+       (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
+       first))
 
 (defaction update
   [domain]

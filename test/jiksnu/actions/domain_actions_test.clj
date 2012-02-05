@@ -43,6 +43,11 @@
             id (:_id domain)]
         (discover-onesocialweb domain) => packet/packet?)))
 
+  (fact "#'get-user-meta-url"
+    (fact "when the domain doesn't exist"
+      (fact "should return nil"
+        (get-user-meta-url nil "acct:foo@example.com") => nil?)))
+  
   (fact "host-meta"
     (fact "should return a XRD object"
       (host-meta) => map?)))
