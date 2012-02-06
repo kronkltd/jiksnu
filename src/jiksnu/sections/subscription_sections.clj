@@ -1,7 +1,14 @@
 (ns jiksnu.sections.subscription-sections
+  (:use (ciste [debug :only [spy]]
+               [sections :only [defsection]]
+               )
+        (ciste.sections [default :ony [delete-button-format]])
+        )
   (:require (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user])
-            (jiksnu.sections [user-sections :as sections.user])))
+            (jiksnu.sections [user-sections :as sections.user]))
+  (:import jiksnu.model.Subscription)
+  )
 
 (defn show-minimal
   [user]
@@ -20,6 +27,12 @@
   [:li (let [user (-> subscription :to model.user/fetch-by-id)]
          (show-minimal user))])
 
+(defsection delete-button [Subscription :html]
+  [activity & _]
+  [:form {:method "post" :action (str "/main/subscriptions/" (:_id activity))}
+   [:input {:type "hidden" :name "_method" :value "DELETE"}]
+   [:button.btn {:type "submit"}
+    [:i.icon-trash] [:span.button-text "Delete"]]])
 
 
 (defn subscribers-section
@@ -37,12 +50,12 @@
   [user]
   (when user
     (let [subscriptions (model.subscription/subscriptions user)]
-     [:div.subscriptions
-      [:h3
-       [:a {:href (str "/" (:username user) "/subscriptions")} "Subscriptions"]]
-      [:ul (map subscriptions-line subscriptions)]
-      [:p
-       [:a {:href "/main/ostatussub"} "Add Remote"]]])))
+      [:div.subscriptions
+       [:h3
+        [:a {:href (str "/" (:username user) "/subscriptions")} "Subscriptions"]]
+       [:ul (map subscriptions-line subscriptions)]
+       [:p
+        [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
 (defn ostatus-sub-form
   []
@@ -55,10 +68,10 @@
    [:div.actions
     [:input.btn.primary {:type "submit" :value "Submit"}]]])
 
-(defn index-section
-  [subscriptions]
-  
-  )
+;; (defn index-section
+;;   [subscriptions]
+
+;;   )
 
 (defn subscribers-index
   [subscriptions]
@@ -67,5 +80,31 @@
 
 (defn subscriptions-index
   [subscriptions]
+  
+  )
+
+
+(defn admin-index-section
+  [subscriptions]
+  [:table.table
+   [:thead
+    [:tr
+     [:th "actor"]
+     [:th "target"]
+     [:th "Created"]
+     [:th "pending"]
+     [:th "Delete"]
+     ]]
+   [:tbody
+    (map
+     (fn [subscription]
+       [:tr
+        [:td (-> subscription spy model.subscription/get-actor :username)]
+        [:td (-> subscription model.subscription/get-target :username)]
+        [:td (:created subscription)]
+        [:td (:pending subscription)]
+        [:td (delete-button subscription)]
+        ])
+     subscriptions)]]
   
   )

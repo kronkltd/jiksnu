@@ -70,6 +70,16 @@
   [actor user]
   (show :from user :to actor))
 
+(defn get-actor
+  [subscription]
+  (-> subscription
+      :from model.user/fetch-by-id))
+
+(defn get-target
+  [subscription]
+  (-> subscription
+      :to model.user/fetch-by-id))
+
 (defn subscribers
   [user]
   (index :to (:_id user)))

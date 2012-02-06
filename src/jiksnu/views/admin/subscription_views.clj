@@ -1,7 +1,11 @@
 (ns jiksnu.views.admin.subscription-views
-  (:use (ciste [views :only [defview]])
-        jiksnu.actions.admin.subscription-actions)
-  (:require (jiksnu.helpers [subscription-helpers :as helpers.subscription])))
+  (:use (ciste [debug :only [spy]]
+               [views :only [defview]])
+        jiksnu.actions.admin.subscription-actions
+        jiksnu.sections.subscription-sections)
+  (:require (jiksnu.helpers [activity-helpers :as helpers.activity]
+                            [subscription-helpers :as helpers.subscription])
+            (jiksnu.model [subscription :as model.subscription])))
 
 ;; (defview #'admin-index :html
 ;;   [request subscriptions]
@@ -9,25 +13,6 @@
 
 (defview #'index :html
   [request subscriptions]
-  {:title "Supscriptions"
-   :body
-   [:table.table
-    [:thead
-     [:tr
-      [:th "actor"]
-      [:th "target"]
-      ]
-     ]
-    [:tbody
-     (map
-      (fn [subscription]
-        [:tr
-         [:td "actor" #_(-> activity helpers.activity/get-author :username)]
-         [:td "target" #_(:title activity)]
-         ]
-        )
-      subscriptions)
-     ]
-    ]
-   }
-  )
+  {:title "Subscriptions"
+   :single true
+   :body (admin-index-section subscriptions)})
