@@ -106,8 +106,29 @@
   [:hub :verify-token :secret :created :updated :topic])
 
 (defentity MagicKeyPair
-  [:crt-coefficient :prime-exponent-p :prime-exponent-q
-   :prime-p :prime-q :public-exponent :private-exponent :userid])
+  [:userid
+
+   :crt-coefficient
+   :armored-crt-coefficient
+
+   :prime-exponent-p
+   :armored-prime-exponent-p
+   
+   :prime-exponent-q
+   :armored-prime-exponent-q
+
+   :prime-p
+   :armored-prime-p
+   
+   :prime-q
+   :armored-prime-q
+
+   :public-exponent
+   :armored-public-exponent
+
+   :private-exponent
+   :armored-private-exponent
+   ])
 
 (defentity Group
   [:name])

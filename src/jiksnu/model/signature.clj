@@ -25,6 +25,8 @@
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
 
+;; Crypto functions
+
 (defn ^KeyPair generate-key
   "Generates a new RSA keypair"
   []
@@ -35,7 +37,7 @@
   [^KeyPair keypair]
   (.getPublic keypair))
 
-(defn private-key
+(defn ^PrivateKey private-key
   [^KeyPair keypair]
   (.getPrivate keypair))
 
@@ -47,15 +49,27 @@
   [^KeyPair keypair]
   (.getKeySpec key-factory (private-key keypair) RSAPrivateKeySpec))
 
-(defn get-base-string
-  [^String armored-data
-   ^String datatype
-   ^String encoding
-   ^String alg
-   ]
-  (str armored-data "." datatype "." encoding "." alg))
 
-(defn get-bytes
+;; Base64 functions
+
+
+(defn ^String encode
+  "Encode the byte array as a url-safe base-64 string"
+  [^"[B" byte-array]
+  (Base64/encodeBase64URLSafeString byte-array))
+
+(defn ^"[B" decode
+  "Decode the base64 string into a byte array."
+  [^String data]
+  (Base64/decodeBase64 data))
+
+(defn ^BigInteger armored->big-int
+  "converts an armored string to a BigInteger"
+  [^String armored]
+  (-> armored decode BigInteger.))
+
+(defn ^"[B" get-bytes
+  "Adapted from the java-salmon implementation"
   [^BigInteger bigint]
   (let [bitlen (.bitLength bigint)
         adjusted-bitlen (-> bitlen
@@ -81,16 +95,27 @@
              start-dst biglen2)
             resized-bytes))))))
 
-(defn ^String encode
-  "encodes the byte array as a url-safe base-64 string"
-  [^"[B" byte-array]
-  (Base64/encodeBase64URLSafeString byte-array))
 
-(defn ^"[B" decode
-  [^String data]
-  (Base64/decodeBase64 data))
+
+
+
+
+
+
+
+
+
+(defn get-base-string
+  "Generate a signature base string"
+  [^String armored-data
+   ^String datatype
+   ^String encoding
+   ^String alg
+   ]
+  (str armored-data "." datatype "." encoding "." alg))
 
 (defn magic-key-string
+  "Format keypair as a key string for use in webfinger."
   [^MagicKeyPair keypair]
   (if keypair
     (str
@@ -99,20 +124,45 @@
      "."
      (-> keypair :public-exponent (BigInteger.) get-bytes encode str))))
 
+
+;; MagicKepPair functions
+
+
+;; TODO: Actually convert this
 (defn pair-hash
+  "Convert keypair to a MagicKeyPair"
   [^KeyPair keypair]
   (let [public-key (public-key keypair)
         private-key (private-key keypair)]
-    {:crt-coefficient  (str (.getCrtCoefficient private-key))
-     :modulus          (str (.getModulus private-key))
-     :prime-exponent-p (str (.getPrimeExponentP private-key))
-     :prime-exponent-q (str (.getPrimeExponentQ private-key))
-     :prime-p          (str (.getPrimeP private-key))
-     :prime-q          (str (.getPrimeQ private-key))
-     :private-exponent (str (.getPrivateExponent private-key))
-     :public-exponent  (str (.getPublicExponent private-key))}))
+    {
+     :crt-coefficient          (str (.getCrtCoefficient private-key))
+     :armored-crt-coefficient  (encode (get-bytes (.getCrtCoefficient private-key)))
+     
+     :prime-exponent-p         (str (.getPrimeExponentP private-key))
+     :armored-prime-exponent-p (encode (get-bytes (.getPrimeExponentP private-key)))
+     
+     :prime-exponent-q         (str (.getPrimeExponentQ private-key))
+     :armored-prime-exponent-q (encode (get-bytes (.getPrimeExponentQ private-key)))
+     
+     :prime-p                  (str (.getPrimeP private-key))
+     :armored-prime-p          (encode (get-bytes (.getPrimeP private-key)))
+     
+     :prime-q                  (str (.getPrimeQ private-key))
+     :armored-prime-q          (encode (get-bytes (.getPrimeQ private-key)))
+     
+     :private-exponent         (str (.getPrivateExponent private-key))
+     :armored-private-exponent (encode (get-bytes (.getPrivateExponent private-key)))
+     
+     :modulus                  (str (.getModulus private-key))
+     :armored-n                (encode (get-bytes (.getModulus private-key)))
 
+     :public-exponent          (str (.getPublicExponent private-key))
+     :armored-e                (encode (get-bytes (.getPublicExponent private-key)))
+     }))
+
+;; Make this an action
 (defn generate-key-for-user
+  "Generate key for the user and store the result."
   [^User user]
   (entity/create
    MagicKeyPair
@@ -120,6 +170,7 @@
      :userid (:_id user))))
 
 (defn get-key-for-user-id
+  "Fetch keypair by user id"
   [^ObjectId id]
   (entity/fetch-one MagicKeyPair {:userid id}))
 
@@ -129,7 +180,9 @@
     (get-key-for-user-id (:_id user))
     (throw (RuntimeException. "user is not discovered"))))
 
+;; TODO: this should accept a keypair hash
 (defn set-armored-key
+  "Update keypair with new values"
   [^ObjectId user-id
    ^String n
    ^String e]
@@ -145,18 +198,11 @@
       :userid user-id})))
 
 (defn drop!
+  "Drop all keypairs"
   []
   (entity/delete-all MagicKeyPair))
 
-;; (defn ^MagicKeyPair get-key
-;;   "The magic key must have 3 segments"
-;;   [^String key]
-;;   #_(MagicKey. (.getBytes key "UTF-8")))
 
-(defn ^BigInteger armored->big-int
-  "converts an armored string to a BigInteger"
-  [^String armored]
-  (-> armored decode BigInteger.))
 
 (defn ^PublicKey get-key-from-armored
   [key-pair]
@@ -165,47 +211,6 @@
         key-factory (KeyFactory/getInstance "RSA")
         key-spec (RSAPublicKeySpec. big-n big-e)]
     (.generatePublic key-factory key-spec)))
-
-;; (defn sign-and-deliver
-;;   "entry is an atom entry"
-;;   [entry key user]
-;;   #_(try
-;;     (.signAndDeliver
-;;      salmon
-;;      (.getBytes entry "UTF-8")
-;;      key
-;;      user)
-;;     (catch Exception e
-;;       (.printStackTrace e))))
-
-;; (defn get-envelope
-;;   "data is the xml signature"
-;;   [^String data]
-;;   #_(let [me (MagicEnvelope.)]
-;;       (.setData me data)
-;;       me))
-
-;; (defn serialize
-;;   "Returns an XML string representing the envelope"
-;;   [envelope]
-;;   #_(let [serializer (XMLMagicEnvelopeSerializer.)
-;;         os (ByteArrayOutputStream.)]
-;;     (.serialize serializer envelope os)
-;;     (.toString os "UTF-8")))
-
-;; (defn get-endpoint
-;;   [uri]
-  
-;;   )
-
-;; (defn discover
-;;   [^String url]
-;;   #_(.discover *discovery-manager* (URI. url)))
-
-;; (defn deserialize
-;;   [^InputStream input-stream]
-;;   ;; TODO: Implement
-;;   )
 
 (defn sign
   "Signs the data with the private key and returns the result"
@@ -225,10 +230,3 @@
       (.initVerify key)
       (.update data))
     (.verify sig signature)))
-
-;; (defn get-verified-data
-;;   [envelope]
-;;   (let [is (ByteArrayInputStream. (.getBytes envelope "UTF-8"))
-;;         m (deserialize is)
-;;         verified-data (verify m)]
-;;     (String. verified-data "UTF-8")))
