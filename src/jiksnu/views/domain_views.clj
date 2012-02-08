@@ -37,6 +37,7 @@
 (defview #'index :html
   [request domains]
   {:title "Domains"
+   :single true
    :body (sections.domain/index-block domains)})
 
 (defview #'ping :xmpp

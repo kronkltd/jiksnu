@@ -57,6 +57,7 @@
     [:img {:src (str "http://" (:_id domain) "/favicon.ico")}]]
    [:td (link-to domain)]
    [:td (:xmpp domain)]
+   [:td (:discovered domain)]
    [:td
     [:a {:href (str "http://" (:_id domain) "/.well-known/host-meta")}
      "Host-Meta"]]

@@ -29,6 +29,7 @@
           (when (is-admin?)
             ["Admin"
              [["/admin/activities"         "Activities"]
+              ["/main/domains"             "Domains"]
               ["/admin/settings"           "Settings"]
               ["/admin/pshb-subscriptions" "PubSub"]
               ["/admin/users"              "Users"]
