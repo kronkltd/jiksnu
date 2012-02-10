@@ -6,15 +6,15 @@
   (:require (clojure.tools [logging :as log])
             (karras [entity :as entity])))
 
-(load-config)
-
 (defmacro test-environment-fixture
   [& body]
   `(do
-     (log/info "****************************************************************************")
-     (log/info (str "Testing " *ns*))
-     (log/info "****************************************************************************")
-     (log/info " ")
+     (println "****************************************************************************")
+     (println (str "Testing " *ns*))
+     (println "****************************************************************************")
+     (println " ")
+     (load-config)
+
      (with-environment :test
        #_(background
         (around :contents
