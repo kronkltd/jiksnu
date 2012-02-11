@@ -64,7 +64,6 @@
         [:div.navbar-inner
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
-          (navigation-section response)
           (sections.auth/login-section response)]]]
        [:div#wrap.container
         #_[:div.subnav.subnav-fixed

@@ -8,29 +8,6 @@
                              [subscription-sections :as sections.subscription]
                              [user-sections :as sections.user])))
 
-(defn navigation-section
-  [response]
-  (let [authenticated (current-user)
-        links (concat
-               [["/"                         "Public"]
-                ["/users"                    "Users"]
-                #_["/main/domains"             "Domains"]
-                ["/groups"                   "Groups"]
-                #_["/tags"                     "Tags"]]
-               (when authenticated
-                 [["/settings/profile"         "Profile"]
-                  [(str "/" (:username authenticated) "/inbox") "Inbox"]
-                  [(str "/" (:username authenticated) "/outbox") "Outbox"]
-                  ]))]
-    [:nav
-     [:ul.nav
-      (map
-       (fn [[link title]]
-         [:li.active
-          [:a {:href link} title]])
-       links)]]))
-
-
 (defn user-info-section
   [user]
   (when user
