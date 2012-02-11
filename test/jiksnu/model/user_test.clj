@@ -16,14 +16,19 @@
 
 (test-environment-fixture
 
-  (fact "get-domain"
-    (let [domain (actions.domain/create (factory Domain))
-          user (actions.user/create (factory User {:domain (:_id domain)}))]
-      (get-domain nil) => nil
-      (get-domain user) => domain))
+ (def domain-a (model.domain/create (factory Domain)))
+ (def user-a (create (factory User {:domain (:_id domain-a)})))
+ 
+ (fact "get-domain"
+   (fact "when passed nil"
+     (fact "should return nil"
+       (get-domain nil) => nil))
+   (fact "when passed a user"
+     (fact "should return that user's domain"
+       (get-domain user-a) => domain-a)))
 
   (fact "local?"
-    (fact "when there is a user"
+    (fact "when passed a user user"
       (fact "and it's domain is the same as the current domain"
         (fact "should be true"
           (let [domain (config :domain)
@@ -55,27 +60,27 @@
       (get-link user "baz") => nil))
 
   ;; TODO: This is a better test for actions
-  (fact "index"
+  (fact "#'fetch-all"
     (fact "when there are no users"
       (fact "should be empty"
         ;; TODO: all collections should be emptied in background
         (drop!)
-        (index) => empty?))
+        (fetch-all) => empty?))
 
     (fact "when there are users"
       (fact "should not be empty"
-        (actions.user/create (factory User))
-        (index) => seq?)
+        (create (factory User))
+        (fetch-all) => seq?)
       (fact "should return a seq of users"
-        (actions.user/create (factory User))
-        (index) => (partial every? user?))))
+        (create (factory User))
+        (fetch-all) => (partial every? user?))))
 
   (fact "#'get-user"
     (fact "when the user is found"
       (fact "should return a user"
         (let [username (fseq :id)
-              domain (actions.domain/create (factory Domain))]
-          (actions.user/create (factory User {:username username
+              domain (model.domain/create (factory Domain))]
+          (create (factory User {:username username
                                               :domain (:_id domain)}))
           (get-user username (:_id domain)) => user?)))
 
@@ -83,27 +88,27 @@
       (fact "should return nil"
         (drop!)
         (let [username (fseq :id)
-              domain (actions.domain/create (factory Domain))]
+              domain (model.domain/create (factory Domain))]
           (get-user username (:_id domain)) => nil))))
 
   (fact "user-meta-uri"
     (fact "when the user's domain does not have a lrdd link"
       (fact "should return nil"
         (model.domain/drop!)
-        (let [user (actions.user/create (factory User))]
+        (let [user (create (factory User))]
           (user-meta-uri user) => nil)))
 
     (fact "when the user's domain has a lrdd link"
       (fact "should insert the user's uri into the template"
-        (let [domain (actions.domain/create
+        (let [domain (model.domain/create
                       (factory Domain
                                {:links [{:rel "lrdd"
                                          :template "http://example.com/main/xrd?uri={uri}"}]}))
-              user (actions.user/create
+              user (create
                     (factory User {:domain (:_id domain)}))]
           (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
   (fact "vcard-request"
-    (let [user (actions.user/create (factory User))]
+    (let [user (create (factory User))]
       (vcard-request user) => packet/packet?)))
 

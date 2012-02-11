@@ -87,10 +87,13 @@
   (entity/fetch-all User))
 
 (defn fetch-all
-  [& options]
-  (apply entity/fetch User options))
+  "Fetch all users"
+  ([] (fetch-all {}))
+  ([params & options]
+     (apply entity/fetch User params options))) 
 
 (defn get-user
+  "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
      (entity/fetch-one
@@ -99,6 +102,7 @@
        :domain domain})))
 
 (defn fetch-by-id
+  "Fetch a user by it's object id"
   [id]
   (when id
     (try
@@ -107,6 +111,8 @@
         ;; Invalid ObjectID simply returning nil
         ))))
 
+;; deprecated
+;; TODO: Split the jid into it's parts and fetch.
 (defn fetch-by-jid
   [jid]
   (get-user (.getLocalpart jid)
