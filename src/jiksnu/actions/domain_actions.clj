@@ -37,7 +37,9 @@
   ;; TODO: check https first
   (if-let [xrd (-> domain
                    model.domain/host-meta-link
-                   model.webfinger/fetch-host-meta)]
+                   spy
+                   model.webfinger/fetch-host-meta
+                   spy)]
     (do (if-let [links (model.webfinger/get-links xrd)]
           ;; TODO: These should call actions
           (do (model.domain/add-links domain links)

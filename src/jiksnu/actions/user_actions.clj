@@ -107,7 +107,7 @@
   (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
 
 (defn find-or-create-by-remote-id
-  ([user] (find-or-create-by-remote-id user {}))
+  ([user] (find-or-create-by-remote-id (spy user) {}))
   ([user params]
      (or (model.user/fetch-by-remote-id (:id user))
          (create (merge user params)))))
