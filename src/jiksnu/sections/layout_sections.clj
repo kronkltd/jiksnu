@@ -92,15 +92,20 @@
   [response authenticated subscribers subscriptions groups]
   (let [user (current-user)]
     [:aside#left-column.sidebar
-     (user-info-section (or (:user response) user))
      (side-navigation)
      #_(top-users)
-     (:aside response) " "
+     [:hr]
+     (formats-section response)]))
+
+(defn right-column-section
+  [response]
+  (let [user (current-user)]
+    (list
+     (user-info-section (or (:user response) user))
      (sections.subscription/subscriptions-section (or (:user response) user))
      (sections.subscription/subscribers-section (or (:user response) user))
      (sections.group/user-groups user)
-     [:hr]
-     (formats-section response)]))
+     (:aside response))))
 
 (defn devel-warning
   [response]
