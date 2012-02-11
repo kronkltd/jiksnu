@@ -12,30 +12,27 @@
 
 (test-environment-fixture
 
-  (against-background
-    [(around :facts
-             (let [user (actions.user/create (factory User))
-                   options {}]
-               ?form))]
+ ;; TODO: Mock these, don't actually request
+ (fact "#'fetch-host-meta"
+   (fact "when the url points to a valid XRD document"
+     ;; TODO: pick a random domain
+     (let [url "http://kronkltd.net/.well-known/host-meta"]
+       (fetch-host-meta url) => (partial instance? Document)))
+   
+   (future-fact "when the url does not point to a valid XRD document"
+     (fact "should raise an exception"
+       (let [url "http://example.com/.well-known/host-meta"]
+         (fetch-host-meta url) => nil))))
+ 
+ (future-fact "#'get-links"
+   (fact "When it has links"
+     (fact "should return the sequence of links"
+       (let [xrd nil]
+         (get-links xrd)))) => seq?)
 
-    (fact "#'fetch-host-meta"
-      (fact "when the url points to a valid XRD document"
-        (let [url "http://kronkltd.net/.well-known/host-meta"]
-          (fetch-host-meta url) => (partial instance? Document)))
+ (future-fact "#'get-keys-from-xrd"
+   (fact "should return a sequence of keys for the uri"
+     (let [uri "acct:duck@kronkltd.net"]
+       (get-keys uri)) => seq?))
 
-      (future-fact "when the url does not point to a valid XRD document"
-        (fact "should raise an exception"
-          (let [url "http://example.com/.well-known/host-meta"]
-            (fetch-host-meta url) => nil))))
-
-    ;; (deftest test-get-links
-    ;;   (future-fact
-    ;;     (let [xrd nil]
-    ;;       (get-links xrd)) => seq?))
-
-    ;; (deftest test-get-keys-from-xrd
-    ;;   (future-fact "should return a sequence of keys for the uri"
-    ;;     (let [uri "acct:duck@kronkltd.net"]
-    ;;       (get-keys uri)) => seq?))
-
-    ))
+ )
