@@ -68,14 +68,15 @@
   (let [user (merge {:discovered false
                      :local false
                      :updated (sugar/date)}
-                    options)]
-    (-> user :domain actions.domain/find-or-create)
+                    options)
+        ;; This has the side effect of ensuring that the domain is
+        ;; created. This should probably be explicitly done elsewhere.
+        domain (get-domain user)]
     (model.user/create user)))
 
 (defaction admin-create
   [options]
-  (create options)
-  )
+  (create options))
 
 (defaction delete
   [id]
@@ -87,19 +88,15 @@
 
 (defn fetch-by-jid
   [jid]
-  (model.user/show (.getLocalpart jid) (.getDomain jid)))
-
-(defn fetch-by-uri
-  [uri]
-  (model.user/fetch-by-uri uri))
+  (model.user/get-user (.getLocalpart jid) (.getDomain jid)))
 
 (defaction admin-index
   [options]
-  (model.user/index))
+  (model.user/fetch-all))
 
 (defaction index
   [options]
-  (model.user/index))
+  (model.user/fetch-all))
 
 (defaction profile
   [& _])
@@ -110,7 +107,7 @@
 
 (defaction find-or-create
   [username domain]
-  (or (model.user/show username domain)
+  (or (model.user/get-user username domain)
       (create {:username username :domain domain})))
 
 (defn find-or-create-by-jid
@@ -143,7 +140,7 @@
   [uri]
   (->> uri
        model.user/split-uri
-       (apply model.user/show )))
+       (apply model.user/get-user)))
 
 (defn request-vcard!
   [user]

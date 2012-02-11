@@ -81,12 +81,17 @@
                 "Users must contain both a username and a domain"))))
     (throw (IllegalArgumentException. "Can not create nil users"))))
 
+;; deprecated
 (defn index
   [& opts]
   (entity/fetch-all User))
 
-(defn show
-  ([username] (show username (config :domain)))
+(defn fetch-all
+  [& options]
+  (apply entity/fetch-all User options)) 
+
+(defn get-user
+  ([username] (get-user username (config :domain)))
   ([username domain]
      (entity/fetch-one
       User
@@ -100,7 +105,7 @@
 
 (defn fetch-by-jid
   [jid]
-  (show (.getLocalpart jid)
+  (get-user (.getLocalpart jid)
         (.getDomain jid)))
 
 (defn set-field
@@ -112,7 +117,7 @@
 
 (defn fetch-by-uri
   [uri]
-  (apply show (split-uri uri)))
+  (apply get-user (split-uri uri)))
 
 (defn fetch-by-remote-id
   [uri]
@@ -123,11 +128,7 @@
   [^BareJID user subnode]
   (let [id (tigase/get-id user)
         domain (tigase/get-domain user)]
-    (:nodes (show id))))
-
-;; (defn edit
-;;   [id]
-;;   (show id))
+    (:nodes (get-user id))))
 
 (defn delete
   [id]
@@ -141,7 +142,7 @@
 
 (defn update
   [^User new-user]
-  (let [old-user (show (:username new-user) (:domain new-user))
+  (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false :debug false}
                            old-user new-user)
         user (entity/make User merged-user)]
