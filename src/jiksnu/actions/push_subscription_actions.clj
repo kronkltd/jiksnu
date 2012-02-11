@@ -92,31 +92,34 @@
 
 (defn hub-dispatch
   [params]
-  (let [{mode :hub.mode
-         callback :hub.callback
-         challenge :hub.challenge
-         lease-seconds :hub.lease_seconds
-         verify :hub.verify
-         verify-token :hub.verify_token
-         secret :hub.secret
-         topic :hub.topic} params]
-    (if (= mode "subscribe")
-      (let [push-subscription
-            (model.push/find-or-create {:topic topic
-                                        :callback callback})
-            merged-subscription (merge push-subscription
-                                       {:mode mode
-                                        :challenge challenge
-                                        :verify-token verify-token
-                                        :lease-seconds lease-seconds})]
-        (if (= verify "async")
-          (async-verify-subscribe merged-subscription)
-          (sync-verify-subscribe merged-subscription)))
-      (if (= mode "unsubscribe")
-        (if-let [subscription (model.push/fetch {:topic topic
-                                                 :callback callback})]
-          (remove-subscription subscription)
-          (subscription-not-found-error))))))
+  (let [mode (or (get params :hub.mode) (get params "hub.mode"))
+         callback (or (get params :hub.callback) (get params "hub.callback"))
+         challenge (or (get params :hub.challenge) (get params "hub.challenge"))
+         lease-seconds (or (get params :hub.lease_seconds) (get params "hub.lease_seconds"))
+         verify (or (get params :hub.verify) (get params "hub.verify"))
+         verify-token (or (get params :hub.verify_token) (get params "hub.verify_token"))
+         secret (or (get params :hub.secret) (get params "hub.secret"))
+        topic (or (get params :hub.topic) (get params "hub.topic"))]
+    (condp = mode
+       "subscribe" (let [push-subscription
+                         (model.push/find-or-create {:topic topic
+                                                     :callback callback})
+                         merged-subscription (merge push-subscription
+                                                    {:mode mode
+                                                     :challenge challenge
+                                                     :verify-token verify-token
+                                                     :lease-seconds lease-seconds})]
+                     (if (= verify "async")
+                       (async-verify-subscribe merged-subscription)
+                       (sync-verify-subscribe merged-subscription)))
+
+       
+       "unsubscribe" (if-let [subscription (model.push/fetch {:topic topic
+                                                              :callback callback})]
+                       (remove-subscription subscription)
+                       (subscription-not-found-error))
+       
+       nil)))
 
 
 (defaction hub
