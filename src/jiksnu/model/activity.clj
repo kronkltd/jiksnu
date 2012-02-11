@@ -93,40 +93,6 @@
   [date]
   (-?>> date (.format (PrettyTime.))))
 
-(defn format-data
-  [activity]
-  (let [comments (map format-data (get-comments activity))
-        actor (current-user)]
-    {:id (str (:_id activity))
-     :author (-> activity :author model.user/fetch-by-id
-                 model.user/format-data)
-     :object-type (-> activity :object :object-type)
-     :local (:local activity)
-     :public (:public activity)
-     :content (or (-> activity :object :content)
-                  (-> activity :title)
-                  (-> activity :content))
-     :title (or (-> activity :object :content)
-                (:title activity)
-                (:content activity))
-     :lat (str (:lat activity))
-     :long (str (:long activity))
-     :likes (->> activity
-                 actions.like/get-likes
-                 (map model.like/format-data))
-     :authenticated (if-let [user (current-user)]
-                      (model.user/format-data user))
-     :tags (:tags activity)
-     :uri (:uri activity)
-     :recipients []
-     :published (-?> activity :published format-date)
-     :published-formatted (-?>> activity :published prettyify-time)
-     :buttonable (and actor
-                      (or (:admin actor)
-                          (some #(= % (:authors activity)) actor)))
-     :comment-count (str (count comments))
-     :comments comments}))
-
 (defn set-id
   [activity]
   (if (and (:id activity) (not= (:id activity) ""))

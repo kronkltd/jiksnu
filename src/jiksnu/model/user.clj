@@ -162,31 +162,6 @@
       (gravatar-image (:jid user))
       (gravatar-image (get-uri user)) ""))
 
-(defn format-data
-  [^User user]
-  (let [{id :id
-         :keys [admin discovered domain hub links local username updated]} user
-         uri (get-uri user)]
-    {:remote_id (str id)
-     :id (str (:_id user))
-     :name (or (:display-name user)
-               (get-uri user false))
-     :username username
-     :domain domain
-     :discovered discovered
-     :url (if (local? user)
-            (str "/" username)
-            (or id (str "/users/" (str (:_id user)))))
-     :local local
-     :hub hub
-     :admin admin
-     :links links
-     :subscriptions []
-     :subscribers []
-     :display-name (display-name user)
-     :imgsrc (image-link user)
-     :updated (format-date updated)}))
-
 (defn vcard-request
   [user]
   (let [body (element/make-element

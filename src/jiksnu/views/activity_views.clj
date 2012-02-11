@@ -46,7 +46,7 @@
 
 (defview #'show :clj
   [request activity]
-  {:body (model.activity/format-data activity)})
+  {:body activity})
 
 (defview #'show :html
   [request activity]
