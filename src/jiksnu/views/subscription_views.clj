@@ -8,6 +8,7 @@
   (:require (clj-tigase [core :as tigase])
             (jiksnu.helpers [subscription-helpers :as helpers.subscription]
                             [user-helpers :as helpers.user])
+            (jiksnu.model [subscription :as model.subscription])
             (jiksnu.sections [subscription-sections :as sections.subscription])))
 
 (defview #'delete :html
@@ -92,5 +93,8 @@
 
 (defview #'unsubscribe :xmpp
   [request subscription]
-  (tigase/result-packet
-   request (helpers.subscription/subscriptions-response [subscription])))
+  {:to (-> subscription model.subscription/get-target tigase/make-jid)
+   :from (-> subscription model.subscription/get-actor tigase/make-jid)
+   :type :result
+   :body (helpers.subscription/subscriptions-response [subscription])
+   :id (:id request)})

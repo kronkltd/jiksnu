@@ -1,14 +1,9 @@
 (ns jiksnu.views.subscription-views-test
-  (:use (ciste [config :only [with-environment]]
-               core
-               [debug :only (spy)]
-               views)
+  (:use (ciste [debug :only [spy]]
+               [views :only [apply-view]])
         (clj-factory [core :only (factory)])
-        clojure.test
-        (jiksnu test-helper view)
-        jiksnu.helpers.subscription-helpers
+        (jiksnu [test-helper :only [test-environment-fixture]])
         jiksnu.views.subscription-views
-        jiksnu.xmpp.element
         midje.sweet)
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
@@ -17,26 +12,29 @@
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user])
             (jiksnu.actions [subscription-actions :as actions.subscription]))
-  (:import jiksnu.model.User))
+  (:import jiksnu.model.Subscription
+           jiksnu.model.User))
 
 (test-environment-fixture
 
   (fact "apply-view #'unsubscribe :xmpp"
-    (fact "when there is no subscription"
-      (fact "should return a packet map"
-        (let [user (model.user/create (factory User))
-              subscribee (model.user/create (factory User))
-              element (element/make-element
-                       ["pubsub" {"xmlns" namespace/pubsub}
-                        ["unsubscribe" {"node" namespace/microblog}]])
-              packet (tigase/make-packet
-                      {:to (tigase/make-jid subscribee)
-                       :from (tigase/make-jid user)
-                       :type :set
-                       :body element})
-              request (merge (packet/make-request packet)
-                             {:action #'actions.subscription/unsubscribe
-                              :format :xmpp})
-              record (actions.subscription/unsubscribe (:_id user)
-                                                       (:_id subscribee))]
-          (apply-view request record) => map?)))))
+
+    ;; TODO: this should be an error packet
+    (future-fact "when there is not a subscription"
+      (fact "should return an error packet"))
+
+    (fact "when there is a subscription"
+      (let [user (model.user/create (factory User))
+            subscribee (model.user/create (factory User))
+            record (factory Subscription {:from (:_id user)
+                                          :to (:_id subscribee)})
+            request {:action #'actions.subscription/unsubscribe
+                     :format :xmpp
+                     :id "Foo"}
+            response (apply-view request record)]
+
+        (fact "should return a packet map"
+          response => map?)
+
+        (fact "should have an id"
+          (:id response) => truthy)))))

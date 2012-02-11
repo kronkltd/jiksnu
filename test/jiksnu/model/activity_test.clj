@@ -1,22 +1,20 @@
 (ns jiksnu.model.activity-test
-  (:use (ciste [config :only [with-environment]]
-               [debug :only [spy]])
+  (:use (ciste [debug :only [spy]])
         (clj-factory [core :only [factory]])
-        (jiksnu test-helper
+        (jiksnu [test-helper :only [test-environment-fixture]]
                 [model :only [activity?]]
-                [session :only [with-user]]
-                )
+                [session :only [with-user]])
         jiksnu.model.activity
         midje.sweet)
-  (:require (jiksnu.actions [user-actions :as actions.user]))
+  (:require (jiksnu.model [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
 (test-environment-fixture
-
- (fact "prepare-activity"
+ 
+ (fact "#'prepare-activity"
    (fact "should return an activity"
-     (let [user (actions.user/create (factory User))]
+     (let [user (model.user/create (factory User))]
        (with-user user
          (let [args (factory Activity)]
            (prepare-activity args) => activity?)))))

@@ -224,7 +224,7 @@
 
 (defn set-database!
   []
-  (log/info (str "setting database for " (environment)))
+  (log/debug (str "setting database for " (environment)))
   (alter-var-root #'karras/*mongo-db* (fn [_] (mongo-database))))
 
 ;; TODO: Find a good place for this
