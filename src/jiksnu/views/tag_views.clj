@@ -1,10 +1,9 @@
 (ns jiksnu.views.tag-views
   (:use (ciste [views :only [defview]])
-        jiksnu.actions.tag-actions)
-  )
+        ciste.sections.default
+        jiksnu.actions.tag-actions))
 
 (defview #'show :html
-  [request tags]
-  {:title "tag"
-   :body ""}
-  )
+  [request [tag activities]]
+  {:title (str "Notices tagged with " tag)
+   :body (index-section activities)})
