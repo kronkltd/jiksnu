@@ -53,6 +53,10 @@
                   :sort [(sugar/desc :published)]
                   :limit 20)))
 
+(defn fetch-all
+  [& options]
+  (apply entity/fetch Activity options))
+
 (defn fetch-by-id
   [id]
   (entity/fetch-by-id Activity id))
