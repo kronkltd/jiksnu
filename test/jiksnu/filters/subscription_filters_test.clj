@@ -30,7 +30,7 @@
                  ?form))]
 
 
-    (fact "filter-action #'subscribe :html :http"
+    (future-fact "filter-action #'subscribe :html :http"
       (fact "when the user is not already subscribed"
         (fact "should return a subscription"
           (let [user (actions.user/create (factory User))
@@ -58,7 +58,7 @@
     ;; (deftest filter-action-test "#'get-subscriptions :xmpp"
     ;;   (fact "when there are subscriptions"))
 
-    (fact "should return a sequence of subscriptions"
+    (future-fact "should return a sequence of subscriptions"
       (let [user (actions.user/create (factory User))
             subscribee (actions.user/create (factory User))
             request (-> (model.subscription/subscriptions-request

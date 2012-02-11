@@ -113,20 +113,18 @@ vPgogIDxsaW5rIHJlbD0iYXZhdGFyIiB0eXBlPSJpbWFnZS9wbmciIG1lZGlhOndpZHRoPSIyNCIgbWV
        (normalize-user-id em3) => id3)))
 
  (fact "#'get-key"
-   #_(fact "when the user does not have a key"
+   (future-fact "when the user does not have a key"
        (fact "should return nil"
          (let [user (actions.user/create (factory User {:discovered true}))]
            (get-key user)) => nil))
    
    (fact "when there is a key"
      (fact "should return a key"
-       (let [user (actions.user/register (spy (factory User {:discovered true
-                                                             :password "hunter2"
-                                                             }
-                                                       )))]
+       ;; TODO: explicitly assign key
+       (let [user (actions.user/register
+                   (factory User {:discovered true :password "hunter2"}))]
          (Thread/sleep 2000)
-         (get-key user) => (partial instance? Key))
-       )))
+         (get-key user) => (partial instance? Key)))))
 
  (fact "#'signature-valid?"
    (fact "when it is valid"
@@ -135,7 +133,7 @@ vPgogIDxsaW5rIHJlbD0iYXZhdGFyIiB0eXBlPSJpbWFnZS9wbmciIG1lZGlhOndpZHRoPSIyNCIgbWV
              key (model.signature/get-key-from-armored
                   {:armored-n armored-n
                    :armored-e armored-e})]
-         (signature-valid? (spy envelope) (spy key)) => truthy))))
+         (signature-valid? envelope key) => truthy))))
 
  (fact "#'decode-envelope"
    (fact "should return a string"
@@ -151,7 +149,7 @@ vPgogIDxsaW5rIHJlbD0iYXZhdGFyIiB0eXBlPSJpbWFnZS9wbmciIG1lZGlhOndpZHRoPSIyNCIgbWV
    (fact "should return an envelope"
      (stream->envelope (valid-envelope-stream)) => map?))
 
- (fact "#'process"
+ (future-fact "#'process"
    (fact "with a valid signature"
      (fact "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)
