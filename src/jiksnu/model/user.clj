@@ -96,7 +96,7 @@
 (defn fetch-by-id
   [id]
   (if id
-   (entity/fetch-by-id User id)))
+    (entity/fetch-by-id User id)))
 
 (defn fetch-by-jid
   [jid]
@@ -137,7 +137,7 @@
 (defn add-node
   [^User user name]
   (entity/update User
-          {:_id (tigase/get-id user)}))
+                 {:_id (tigase/get-id user)}))
 
 (defn update
   [^User new-user]
@@ -158,10 +158,9 @@
 (defn image-link
   [user]
   (or (:avatar-url user)
-                 (and (:email user) (gravatar-image (:email user)))
-                 (gravatar-image (:jid user))
-                 (gravatar-image (get-uri user)) "")
-  )
+      (and (:email user) (gravatar-image (:email user)))
+      (gravatar-image (:jid user))
+      (gravatar-image (get-uri user)) ""))
 
 (defn format-data
   [^User user]

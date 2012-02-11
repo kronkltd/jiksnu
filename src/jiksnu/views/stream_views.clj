@@ -266,10 +266,7 @@
   [request activities]
   {:title "Home Timeline"
    :body [:div
-          (index-section activities)
-          ]
-   }
-  )
+          (index-section activities)]})
 
 (defview #'home-timeline :json
   [request data]
@@ -277,7 +274,7 @@
 
 (defview #'home-timeline :xml
   [request activities]
-  {:body (index-section (spy activities))})
+  {:body (index-section activities)})
 
 
 (defview #'twitter-public-timeline :json
