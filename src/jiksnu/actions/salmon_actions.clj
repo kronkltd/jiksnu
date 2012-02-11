@@ -3,7 +3,8 @@
                [core :only [defaction]]
                [debug :only [spy]])
         (clojure.core [incubator :only [-?> -?>>]]))
-  (:require (clojure.tools [logging :as log])
+  (:require (clojure [string :as string])
+            (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [model :as model])
             (jiksnu.actions [activity-actions :as actions.activity]
@@ -13,13 +14,17 @@
             (jiksnu.model [user :as model.user]
                           [signature :as model.signature]))
   (:import java.security.PublicKey
+           java.net.URI
            jiksnu.model.User
            org.apache.commons.codec.binary.Base64))
 
+;; Can match be used here?
 (defn normalize-user-id
   [s]
-  s
-  )
+  (or (if-let [m (re-matches #"(acct:)?(.+@.+)" s)]
+        (when (empty? (second m))
+          (str "acct:" s)))
+      s))
 
 (defn ^PublicKey get-key
   [^User author]
@@ -30,16 +35,15 @@
 (defn signature-valid?
   "Tests if the signature is valid for the key"
   [envelope ^PublicKey pub-key]
-  (let [{:keys [data datatype encoding alg]} envelope
-        sig (-> envelope :sig model.signature/decode)]
-    (model.signature/verified?
-     (.getBytes
-      (model.signature/get-base-string
-       data
-       (model.signature/encode (.getBytes datatype "UTF-8"))
-       (model.signature/encode (.getBytes encoding "UTF-8"))
-       (model.signature/encode (.getBytes alg "UTF-8"))))
-     sig pub-key)))
+  (let [{:keys [data datatype encoding alg]} (spy envelope)
+        sig (-> envelope :sig model.signature/decode)
+        bytes (.getBytes
+               (model.signature/get-base-string
+                data
+                (model.signature/encode (.getBytes datatype "UTF-8"))
+                (model.signature/encode (.getBytes encoding "UTF-8"))
+                (model.signature/encode (.getBytes alg "UTF-8"))))]
+    (model.signature/verified? bytes sig pub-key)))
 
 (defn ^String decode-envelope
   [envelope]
