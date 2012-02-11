@@ -67,9 +67,10 @@
                                  (map (comp model.user/fetch-by-id :from)
                                       subscribers))]
     (model.item/push user activity)
+
     (when-let [mentioned-uri (:mentioned-uri activity)]
       (log/info (str "parsing link " mentioned-uri))
-      (let [mentioned-user (actions.user/find-or-create-by-uri mentioned-uri)]
+      (let [mentioned-user (actions.user/find-or-create-by-remote-id mentioned-uri)]
         mentioned-user))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
