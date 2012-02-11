@@ -72,7 +72,6 @@
         [:div.navbar-inner
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
-          (navigation-section response)
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
        [:div.container
         [:div.row
