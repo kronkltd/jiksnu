@@ -191,8 +191,7 @@
 
 (defn parse-link
   [link]
-  (let [href (str (.getHref link))]
-    (if href
-      (if (re-find #"^.+@.+$" href)
-        (if (not (re-find #"node=" href))
-          href)))))
+  (if-let [href (str (.getHref link))]
+    (when (and (re-find #"^.+@.+$" href)
+               (not (re-find #"node=" href)))
+      href)))

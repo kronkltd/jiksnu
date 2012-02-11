@@ -109,9 +109,12 @@ serialization"
                            (filter identity))
            content (.getContent entry)
            links (abdera/parse-links entry)
+           mentioned-uri (-?> entry
+                              (.getLink "mentioned")
+                              .getHref str)
            conversation (-?> entry 
-                        (.getLink "ostatus:conversation")
-                        .getHref str)
+                             (.getLink "ostatus:conversation")
+                             .getHref str)
            tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object" "activity"))
            ;; object-type 
@@ -132,6 +135,7 @@ serialization"
                        (when (seq irts)       {:irts irts})
                        (when (seq links)      {:links links})
                        (when conversation     {:conversation conversation})
+                       (when mentioned-uri    {:mentioned-uri mentioned-uri})
                        (when (seq tags)       {:tags tags})
                        (when verb             {:verb verb})
                        {:id id
