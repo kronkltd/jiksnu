@@ -6,7 +6,8 @@
             (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain]
                           [webfinger :as model.webfinger]))
-  (:import jiksnu.model.Domain))
+  (:import java.net.URL
+           jiksnu.model.Domain))
 
 (defaction check-webfinger
   [domain]
@@ -59,6 +60,12 @@
   [id]
   (or (model.domain/fetch-by-id id)
       (create {:_id id})))
+
+(defn find-or-create-for-url
+  "Return a domain object that matche the domain of the provided url"
+  [url]
+  (let [url-obj (URL. url)]
+    (find-or-create (.getHost url-obj))))
 
 (defn current-domain
   []
