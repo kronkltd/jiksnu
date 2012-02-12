@@ -78,11 +78,14 @@
           ;; set user id
           )
         (do 
-          (let [mentioned-domain (.getDomain (URI. mentioned-uri))
+          (let [mentioned-domain (.getHost (URI. mentioned-uri))
                 link (model/extract-atom-link mentioned-uri)
                 ;; mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})
                 ]
-            (actions.activity/fetch-remote-feed link)))))
+            (let [feed (abdera/fetch-feed link)]
+              (.getAuthor feed)
+
+              )))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (doseq [user subscriber-users]
