@@ -56,7 +56,7 @@
 (defn formats-section
   [response]
   (when (:formats response)
-    [:div
+    [:div.well
      [:h3 "Formats"]
      [:ul.unstyled
       (map
