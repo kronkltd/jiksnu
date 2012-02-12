@@ -128,6 +128,10 @@
       (assoc-in [:headers "Content-Type"] "application/xml")
       (assoc :body (h/html (:body response)))))
 
+(defmethod format-as :as
+  [format request response]
+  (format-as :json request response))
+
 (defmethod serialize-as :http
   [serialization response-map]
   (assoc-in

@@ -49,11 +49,16 @@
     :href "/api/statuses/public_timeline.atom"
     :icon "feed-icon-14x14.png"
     :type "application/atom+xml"}
-   {:label "JSON"
-    :href "/api/statuses/public_timeline.json"
+   {:label "Activity Streams"
+    :href "/api/statuses/public_timeline.as"
     :icon "as-bw-14x14.png"
     :type "application/json"}
+   {:label "JSON"
+    :href "/api/statuses/public_timeline.json"
+    :icon "json.png"
+    :type "application/json"}
    {:label "XML"
+    :icon "file_xml.png"
     :href "/api/statuses/public_timeline.xml"
     :type "application/xml"}
    {:label "RDF"
@@ -61,6 +66,7 @@
     :icon "foafTiny.gif"
     :type "application/rdf+xml"}
    {:label "N3"
+    :icon "chart_organisation.png"
     :href "/api/statuses/public_timeline.n3"
     :type "text/n3"}])
 

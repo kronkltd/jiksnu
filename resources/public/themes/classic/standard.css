@@ -85,3 +85,22 @@ article .photo
     display: inline-block;
     margin-left: 15px;
 }
+
+.format-line {
+    position: relative;
+    padding-left: 30px;
+}
+
+.format-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    display: block-inline;
+}
+
+/* this isn't working */
+.format-icon img {
+    margin: 0 auto;
+}
+

@@ -61,11 +61,12 @@
      [:ul.unstyled
       (map
        (fn [format]
-         [:li
+         [:li.format-line
           [:a {:href (:href format)}
            (when (:icon format)
-             [:img {:src (str "/themes/classic/" (:icon format))}])
-           (:label format)]])
+             [:span.format-icon
+              [:img {:src (str "/themes/classic/" (:icon format))}]])
+           [:span.format-label (:label format)]]])
        (:formats response))]]))
 
 (defn left-column-section
