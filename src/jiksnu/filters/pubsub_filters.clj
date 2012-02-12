@@ -1,9 +1,8 @@
-(ns jiksnu.filters.push-subscription-filters
-  (:use (ciste [debug :only (spy)]
-               [filters :only (deffilter)])
+(ns jiksnu.filters.pubsub-filters
+  (:use (ciste [debug :only [spy]]
+               [filters :only [deffilter]])
         jiksnu.actions.push-subscription-actions)
-  (:require (jiksnu [abdera :as abdera])
-            (jiksnu.model [user :as model.user])))
+  (:require (jiksnu.model [user :as model.user])))
 
 (deffilter #'callback :http
   [action request]
@@ -13,11 +12,8 @@
   [action request]
   (action))
 
-(deffilter #'hub :http
-  [action request]
-  (action (:params request)))
-
-(deffilter #'hub-publish :http
+;; TODO: extract hub params
+(deffilter #'hub-dispatch :http
   [action request]
   (action (:params request)))
 

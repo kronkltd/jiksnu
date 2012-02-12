@@ -105,7 +105,10 @@
 (defentity Domain
   [:osw :ostatus])
 
-(defentity PushSubscription
+(defentity FeedSource
+  [:hub :verify-token :secret :created :updated :topic])
+
+(defentity FeedSubscriber
   [:hub :verify-token :secret :created :updated :topic])
 
 (defentity MagicKeyPair
@@ -153,6 +156,14 @@
 (defn user?
   [user] (instance? User user))
 
+(defn drop-all!
+  "Drop all collections"
+  []
+  (doseq [entity [Activity Like Subscription
+                  User Item Domain FeedSource
+                  MagicKeyPair]]
+    (delete-all entity)))
+
 
 
 
@@ -180,13 +191,6 @@
   [^String xml]
   (.build (Builder.) xml ""))
 
-;; (defn compile-xml
-;;   [^InputStream stream]
-;;   (let [parser (Builder.)]
-;;     (.build parser stream)))
-
-
-
 (defn ^String fetch-resource
   "Fetch the url, return the string"
   [^String url]
@@ -195,15 +199,7 @@
       (when (not (#{404 500} status))
         body))))
 
-
-;; (defn fetch-document
-;;   [^String url]
-;;   (try
-;;     (let [parser (Builder.)]
-;;       (.build parser (.openStream (URL. url))))
-;;     (catch FileNotFoundException ex nil)))
-
-(defn xml-doc
+(defn ^Document fetch-document
   "Fetch the url and return it as a XOM document"
   [^String url]
   (-?> url fetch-resource string->document))
@@ -220,6 +216,7 @@
 
 
 (defn extract-atom-link
+  "Find the atom link in the page identified by url"
   [url]
   (-> url
       fetch-resource
@@ -234,14 +231,8 @@
 
 ;; Database functions
 
-(defn drop-all!
-  []
-  (doseq [entity [Activity Like Subscription
-                  User Item Domain PushSubscription
-                  MagicKeyPair]]
-    (delete-all entity)))
-
 (defn set-database!
+  "Set the connection for mongo"
   []
   (log/debug (str "setting database for " (environment)))
   (alter-var-root #'karras/*mongo-db* (fn [_] (mongo-database))))
@@ -266,8 +257,6 @@
 (extend ObjectId json/Write-JSON
   {:write-json write-json-object-id})
 
-(load-file "factories.clj")
-
 (extend-type DateTime
    MongoMappable
    (to-dbo [d] (.toDate d))
@@ -275,6 +264,7 @@
    (to-description [d] (str d)))
 
 (definitializer
-  (load-config)
+  ;; Factory specific support in Ciste?
+  (load-file "factories.clj")
   (set-database!))
 
