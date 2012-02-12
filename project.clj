@@ -1,10 +1,11 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
   :description "distributed social network"
   :url "http://github.com/duck1123/jiksnu"
-  :repositories {"java-dot-net" "http://download.java.net/maven/2"
-                 "jiksnu-internal" "http://build.jiksnu.com/repository/internal"
-                 "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
-                 "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
+  ;; :repositories {
+  ;;                "java-dot-net" "http://download.java.net/maven/2"
+  ;;                "jiksnu-internal" "http://build.jiksnu.com/repository/internal"
+  ;;                "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
+  ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
                  ;; [aleph "0.2.1-SNAPSHOT"]
                  [ciste "0.3.0-SNAPSHOT"]
@@ -40,10 +41,10 @@
   :dev-dependencies [
                      ;; [org.clojars.ptillemans/lein-cuke "0.0.6"]
                      [midje "1.3.1" :exclusions [org.clojure/clojure]]
-                     [ring-mock "0.1.1"]
+                     ;; [ring-mock "0.1.1"]
                      [lein-cljsbuild "0.0.9"]
                      [clj-webdriver "0.5.0-alpha5"]
-                     [info.cukes/cucumber-core "1.0.0.RC11"]
+                     ;; [info.cukes/cucumber-core "1.0.0.RC11"]
                      ;; [lein-marginalia "0.7.0-SNAPSHOT"]
                      ]
   :exclusions [
