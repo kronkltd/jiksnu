@@ -2,17 +2,26 @@
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
                [debug :only [spy]]))
-  (:require (clojure.tools [logging :as log])))
+  (:require (aleph [http :as http])
+            (clojure [string :as string])
+            (clojure.tools [logging :as log])
+            (lamina [core :as l])
+            (jiksnu.model [push-subscription :as model.push])))
+
+;; TODO: I'm sure this exists somewhere else
+(defn make-subscribe-uri
+  [url options]
+  (str url "?"
+       (string/join
+        "&"
+        (map
+         (fn [[k v]] (str (name k) "=" v))
+         options))))
 
 ;; TODO: break into components and actually perform validation
 (defn valid?
   "How could this ever go wrong?"
   [_] true)
-
-(defaction verify-subscription-async
-  [subscription]
-  (l/task
-   (sync-verify-subscribe subscription)))
 
 (defn verify-subscribe-sync
   "Verify subscription request in this thread"
@@ -35,6 +44,11 @@
           {:status 204}
           {:status 404})))
     (subscription-not-valid-error)))
+
+(defaction verify-subscription-async
+  [subscription]
+  (l/task
+   (verify-subscribe-sync subscription)))
 
 ;; TODO: move to sections
 (defn subscription-not-valid-error
@@ -64,10 +78,9 @@
     (condp = mode
       "subscribe"
       ;; set up feed subscriber
-      (let [push-subscription
-            (model.push/find-or-create {:topic topic
-                                        :callback callback})
-            merged-subscription (merge push-subscription
+      (let [feed-source (model.feed-source/find-or-create {:topic topic
+                                                                 :callback callback})
+            merged-subscription (merge feed-source
                                        {:mode mode
                                         :challenge challenge
                                         :verify-token verify-token

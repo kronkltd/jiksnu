@@ -7,7 +7,7 @@
   (:require (aleph [http :as http])
             (clojure [string :as string])
             (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [push-subscription :as model.push])
+            (jiksnu.model [feed-source :as model.feed-source])
             (lamina [core :as l])))
 
 (defaction callback
@@ -18,16 +18,7 @@
 
 (defaction admin-index
   [options]
-  (model.push/index))
-
-(defn make-subscribe-uri
-  [url options]
-  (str url "?"
-       (string/join
-        "&"
-        (map
-         (fn [[k v]] (str (name k) "=" v))
-         options))))
+  (model.feed-source/index))
 
 
 ;; TODO: special case local subscriptions
@@ -36,7 +27,7 @@
   [user]
   (if-let [hub-url (:hub user)]
     (let [topic (helpers.user/feed-link-uri user)]
-      (model.push/find-or-create {:topic topic :hub hub-url})
+      (model.feed-source/find-or-create {:topic topic :hub hub-url})
       (let [subscribe-link
             (make-subscribe-uri
              hub-url
@@ -61,6 +52,6 @@
   (hub-dispatch params))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.push-subscription-filters
-                     'jiksnu.views.push-subscription-views]]
+  (doseq [namespace ['jiksnu.filters.feed-source-filters
+                     'jiksnu.views.feed-source-views]]
     (require namespace)))
