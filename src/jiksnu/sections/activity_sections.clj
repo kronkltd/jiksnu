@@ -2,7 +2,8 @@
   (:use (ciste [core :only [with-format]]
                [debug :only [spy]]
                [sections :only [defsection]])
-        (ciste.sections [default :only [index-section]])
+        (ciste.sections [default :only [index-section show-section delete-button
+                                        link-to uri]])
         (clojure.core [incubator :only [-?>]])
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
@@ -37,14 +38,14 @@
 (defn acl-link
   [entry activity]
   (if (:public activity)
-    (let [rule-element (.addExtension entry namespace/osw "acl-rule" "")]
+    (let [rule-element (.addExtension entry ns/osw "acl-rule" "")]
       (let [action-element
-            (.addSimpleExtension rule-element namespace/osw
-                                 "acl-action" "" namespace/view)]
-        (.setAttributeValue action-element "permission" namespace/grant))
+            (.addSimpleExtension rule-element ns/osw
+                                 "acl-action" "" ns/view)]
+        (.setAttributeValue action-element "permission" ns/grant))
       (let [subject-element
-            (.addExtension rule-element namespace/osw "acl-subject" "")]
-        (.setAttributeValue subject-element "type" namespace/everyone)))))
+            (.addExtension rule-element ns/osw "acl-subject" "")]
+        (.setAttributeValue subject-element "type" ns/everyone)))))
 
 (defn comment-link-item
   [entry activity]
@@ -86,27 +87,27 @@
   [user]
   [{:label "Atom"
     :icon "feed-icon-14x14.png"
-    :href (user-timeline-link user "atom")
+    :href (sections.user/user-timeline-link user "atom")
     :type "application/atom+xml"}
    {:label "Activity Streams"
-    :href (user-timeline-link user "as")
+    :href (sections.user/user-timeline-link user "as")
     :icon "as-bw-14x14.png"
     :type "application/json"}
    {:label "JSON"
     :icon "json.png"
-    :href (user-timeline-link user "json")
+    :href (sections.user/user-timeline-link user "json")
     :type "application/json"}
    {:label "RDF/XML"
-    :href (user-timeline-link user "rdf")
+    :href (sections.user/user-timeline-link user "rdf")
     :icon "foafTiny.gif"
     :type "application/rdf+xml"}
    {:label "N3"
     :icon "chart_organisation.png"
-    :href (user-timeline-link user "n3")
+    :href (sections.user/user-timeline-link user "n3")
     :type "text/n3"}
    {:label "XML"
     :icon "file_xml.png"
-    :href (user-timeline-link user "xml")
+    :href (sections.user/user-timeline-link user "xml")
     :type "application/xml"}])
 
 (defn add-entry

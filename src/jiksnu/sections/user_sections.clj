@@ -5,7 +5,7 @@
         (ciste.sections [default :only [title    title-type
                                         uri      uri-type
                                         full-uri full-uri-type
-                                        show-section-format show-section-serialization
+                                        show-section show-section-format show-section-serialization
                                         delete-button delete-button-format
                                         link-to
                                         index-section index-section-type index-section-format]])
@@ -48,11 +48,11 @@
   (if-let [user (model.user/fetch-by-id (:_id user))]
     (let [name (:name user)
           jid  (model.user/get-uri user false)
-          actor (.addExtension entry namespace/as "actor" "activity")]
+          actor (.addExtension entry ns/as "actor" "activity")]
       (doto actor
-        (.addSimpleExtension namespace/atom "name" "" name)
-        (.addSimpleExtension namespace/atom "email" "" jid)
-        (.addSimpleExtension namespace/atom "uri" "" jid))
+        (.addSimpleExtension ns/atom "name" "" name)
+        (.addSimpleExtension ns/atom "email" "" jid)
+        (.addSimpleExtension ns/atom "uri" "" jid))
       (doto entry
         (.addExtension actor)
         (.addExtension (show-section user))))))

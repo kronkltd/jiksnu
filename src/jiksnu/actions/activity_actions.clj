@@ -5,7 +5,8 @@
         ciste.sections.default
         (clojure.core [incubator :only [-?> -?>>]]))
   (:require (aleph [http :as http])
-            (clj-tigase [core :as tigase])
+            (clj-tigase [core :as tigase]
+                        [element :as element])
             (clojure [string :as string])
             (clojure.java [io :as io])
             (clojure.tools [logging :as log])
@@ -23,7 +24,8 @@
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera2.ext.thread.ThreadHelper))
+           org.apache.abdera2.ext.thread.ThreadHelper
+           org.apache.abdera2.model.Element))
 
 (def ^QName activity-object-type (QName. namespace/as "object-type"))
 
