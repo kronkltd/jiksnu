@@ -59,17 +59,15 @@
 
 (defn location-section
   [activity]
-  [:div.location-line.clearfix
-   [:fieldset
-    [:legend "Location"]
-    [:div.clearfix
-     [:label {:for "lat"} "Latitude"]
-     [:div.input
-      [:input {:type "text" :name "lat"}]]]
-    [:div.clearfix
-     [:label {:for "long"} "Longitude"]
-     [:div.input
-      [:input {:type "text" :name "lat"}]]]]])
+  [:div.control-group
+   [:label.control-label "Location"]
+   [:div.controols
+    [:label {:for "lat"} "Latitude"]
+    [:div.input
+     [:input {:type "text" :name "lat"}]]
+    [:label {:for "long"} "Longitude"]
+    [:div.input
+     [:input {:type "text" :name "lat"}]]]])
 
 
 (defn add-button-section
@@ -87,25 +85,50 @@
 
     [:li [:a {:href "#"} "Pictures"]]]])
 
-(defn privacy-line
+(defn privacy-select
   [activity]
-  [:div.privacy-line
-   [:select {:name "privacy"}
-    [:option {:value "public"} "Public"]
-    [:option {:value "group"} "Group"]
-    [:option {:value "custom"} "Custom"]
-    [:option {:value "private"} "Private"]]])
+  [:select {:name "privacy"}
+   [:option {:value "public"} "Public"]
+   [:option {:value "group"} "Group"]
+   [:option {:value "custom"} "Custom"]
+   [:option {:value "private"} "Private"]])
 
 (defn type-line
   [activity]
   [:div.type-line
-   [:select {:name "type"}
-    [:option {:value "note"}     "Note"]
-    [:option {:value "status"}   "Status"]
-    [:option {:value "checkin"}  "Checkin"]
-    [:option {:value "picture"}  "Picture"]
-    [:option {:value "event"}    "Event"]
-    [:option {:value "bookmark"} "Bookmark"]]])
+   [:ul.nav.nav-tabs
+    [:li
+     [:a {:href "#note" :data-toggle "tab"} "Note"]
+     ]
+    ;; [:li
+    ;;  [:a {:href "#status" :data-toggle "tab"} "Status"]
+    ;;  ]
+    ;; [:li
+    ;;  [:a {:href "#checkin" :data-toggle "tab"} "Checkin"]
+    ;;  ]
+    ;; [:li
+    ;;  [:a {:href "#picture" :data-toggle "tab"} "Picture"]
+    ;;  ]
+    ;; [:li
+    ;;  [:a {:href "#event" :data-toggle "tab"} "Event"]
+    ;;  ]
+    ;; [:li
+    ;;  [:a {:href "#bookmark" :data-toggle "tab"} "Bookmark"]
+    ;;  ]
+    [:li
+     [:a {:href "#question" :data-toggle "tab"} "Question"]
+     ]
+
+
+    
+    ;; [:option {:value "note"}     "Note"]
+    ;; [:option {:value "status"}   "Status"]
+    ;; [:option {:value "checkin"}  "Checkin"]
+    ;; [:option {:value "picture"}  "Picture"]
+    ;; [:option {:value "event"}    "Event"]
+    ;; [:option {:value "bookmark"} "Bookmark"]
+
+    ]])
 
 (defn like-button
   [activity]
@@ -219,6 +242,11 @@
     [:section.comments
      [:h4.hidden "Comments"]]))
 
+(defn question-form
+  [activity]
+  
+  )
+
 (defn activity-form
   ([] (activity-form (Activity.)))
   ([activity]
@@ -236,23 +264,22 @@
             [:div.control-group
              [:input {:type "hidden" :name "parent" :value parent-id}]])
           (type-line activity)
-          #_[:div.control-group
-           [:label {:for "title"} "Title"]
-           [:div.input
-            [:input {:type "text" :name "title" :value title}]]]
-
           [:div.control-group
-           [:label {:for "content"} "Content"]
-           [:div.input
-            [:textarea {:name "content"} content]]]
+           [:label.control-label {:for "title"} "Title"]
+           [:div.controls
+            [:input {:type "text" :name "title" :value title}]]]
+          [:div.control-group
+           [:label.control-label {:for "content"} "Content"]
+           [:div.controls
+            [:textarea.span6 {:name "content" :rows "3"} content]]]
 
-          #_(pictures-section activity)
-          #_(location-section activity)
-          #_(tag-section activity)
-          #_(add-button-section activity)
-          (privacy-line activity)
+          (pictures-section activity)
+          (location-section activity)
+          (tag-section activity)
+          (add-button-section activity)
           [:div.actions
-           [:input.btn.btn-primary {:type "submit" :value "post"}]]]]])))
+           (privacy-select activity)
+           [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])))
 
 ;; dynamic sections
 

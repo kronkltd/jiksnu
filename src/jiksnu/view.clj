@@ -37,13 +37,14 @@
 
 (defn main-content
   [response]
-  (list (when (:title response)
-          [:h1 (:title response)])
-        (when (:flash response)
-          [:div#flash (:flash response)])
-        (when (current-user)
-          (sections.activity/activity-form))
-        (:body response)))
+  (list
+   (when (:flash response)
+     [:div#flash (:flash response)])
+   (when (current-user)
+     (sections.activity/activity-form))
+   (when (:title response)
+     [:h1 (:title response)])
+   (:body response)))
 
 (defn page-template-content
   [response]
