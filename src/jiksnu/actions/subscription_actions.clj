@@ -5,7 +5,9 @@
   (:require (clojure.tools [logging :as log])
             (jiksnu [model :as model]
                     [session :as session])
-            (jiksnu.actions [pubsub-actions :as actions.pubsub])
+            (jiksnu.actions [feed-source-actions :as actions.feed-source]
+                            [pubsub-actions :as actions.pubsub])
+            
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
   (:import javax.security.sasl.AuthenticationException
@@ -41,7 +43,7 @@
 (defaction subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed
-  (actions.pubsub/subscribe user)
+  (actions.feed-source/subscribe user)
   (model.subscription/create
    {:from (:_id actor)
     :to (:_id user)

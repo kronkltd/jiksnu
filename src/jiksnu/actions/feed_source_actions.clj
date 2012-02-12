@@ -2,10 +2,10 @@
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]])
-        (jiksnu model session)
         (karras [entity :only [make]]))
   (:require (aleph [http :as http])
             (clojure [string :as string])
+            (jiksnu [model :as model])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [feed-source :as model.feed-source])
             (lamina [core :as l])))
@@ -29,7 +29,7 @@
     (let [topic (helpers.user/feed-link-uri user)]
       (model.feed-source/find-or-create {:topic topic :hub hub-url})
       (let [subscribe-link
-            (make-subscribe-uri
+            (model/make-subscribe-uri
              hub-url
              {:hub.callback (str "http://" (config :domain) "/main/push/callback")
               :hub.mode "subscribe"
@@ -42,14 +42,6 @@
 
 (defn remove-subscription
   [subscription])
-
-(defaction hub
-  [params]
-  (hub-dispatch params))
-
-(defaction hub-publish
-  [params]
-  (hub-dispatch params))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.feed-source-filters

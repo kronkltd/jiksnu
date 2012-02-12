@@ -28,6 +28,80 @@
 
 (def ^QName activity-object-type (QName. namespace/as "object-type"))
 
+(defn get-author
+  [activity]
+  (model.user/fetch-by-id (:author activity)))
+
+(defn parse-reply-to
+  [element]
+  (let [parent-id (.getAttributeValue element "ref")]
+    {:parent parent-id}))
+
+(defn parse-geo
+  [element]
+  (let [coords (.getText element)
+        [lat long] (string/split coords #" ")]
+    {:lat lat :long long}))
+
+(defn parse-notice-info
+  [^Element element]
+  (let [source (.getAttributeValue element "source")
+        local-id (.getAttributeValue element "local_id")]
+    {:source source
+     :local-id local-id}))
+
+(defn parse-irt
+  [irt]
+  (->> irt .getHref str))
+
+(defn parse-irts
+  [entry]
+  (->> (ThreadHelper/getInReplyTos entry)
+       (map parse-irt)
+       (filter identity)))
+
+(defn parse-link
+  [link]
+  (if-let [href (str (.getHref link))]
+    (when (and (re-find #"^.+@.+$" href)
+               (not (re-find #"node=" href)))
+      href)))
+
+(defn parse-extension-element
+  [element]
+  (let [qname (.getQName element)
+        qname (element/parse-qname qname)]
+    (condp = (:namespace qname)
+      namespace/as (condp = (:name qname)
+                     "actor" nil
+                     "object" (abdera/parse-object-element element)
+                     nil)
+
+      namespace/statusnet (condp = (:name qname)
+                            "notice_info" (parse-notice-info element)  
+                            nil)
+
+      namespace/thr (condp = (:name qname)
+                      "in-reply-to" (parse-reply-to element)
+                      nil)
+
+      namespace/geo (condp = (:name qname)
+                      "point" (parse-geo element)
+                      nil)
+
+      nil)))
+
+
+;; TODO: What id should be used here?
+(defn comment-node-uri
+  [{id :id :as activity}]
+  (str namespace/microblog ":replies:item=" id))
+
+
+
+
+
+
 (defn set-recipients
   [activity]
   (let [recipients (filter identity (:recipients activity))]

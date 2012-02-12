@@ -61,6 +61,20 @@
     (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
     (.format formatter date)))
 
+;; TODO: I'm sure this exists somewhere else
+(defn make-subscribe-uri
+  [url options]
+  (str url "?"
+       (string/join
+        "&"
+        (map
+         (fn [[k v]] (str (name k) "=" v))
+         options))))
+
+
+
+
+
 (jena/init-jena-framework)
 ;; TODO: Find a better ns for this
 (rdf/register-rdf-ns :dc ns/dc)

@@ -6,49 +6,14 @@
             (clojure [string :as string])
             (clojure.tools [logging :as log])
             (lamina [core :as l])
-            (jiksnu.model [push-subscription :as model.push])))
-
-;; TODO: I'm sure this exists somewhere else
-(defn make-subscribe-uri
-  [url options]
-  (str url "?"
-       (string/join
-        "&"
-        (map
-         (fn [[k v]] (str (name k) "=" v))
-         options))))
+            (jiksnu [model :as model])
+            (jiksnu.actions [feed-source-actions :as actions.feed-source])
+            (jiksnu.model [feed-source :as model.feed-source])))
 
 ;; TODO: break into components and actually perform validation
 (defn valid?
   "How could this ever go wrong?"
   [_] true)
-
-(defn verify-subscribe-sync
-  "Verify subscription request in this thread"
-  [subscription]
-  (if (and (valid? (:topic subscription))
-           (valid? (:callback subscription)))
-    ;; sending verification request
-    (let [params (merge {:hub.mode (:mode subscription)
-                         :hub.topic (:topic subscription)
-                         :hub.lease_seconds (:lease-seconds subscription)
-                         :hub.verify_token (:verify-token subscription)}
-                        (if (:challenge subscription)
-                          {:hub.challenge (:challenge subscription)}))
-          url (make-subscribe-uri (:callback subscription) params)
-          response-channel (http/http-request {:method :get
-                                               :url url
-                                               :auto-transform true})]
-      (let [response @response-channel]
-        (if (= 200 (:status response))
-          {:status 204}
-          {:status 404})))
-    (subscription-not-valid-error)))
-
-(defaction verify-subscription-async
-  [subscription]
-  (l/task
-   (verify-subscribe-sync subscription)))
 
 ;; TODO: move to sections
 (defn subscription-not-valid-error
@@ -64,6 +29,42 @@
    :message "not found"})
 
 
+
+
+
+
+
+
+
+
+
+(defn verify-subscribe-sync
+  "Verify subscription request in this thread"
+  [subscription]
+  (if (and (valid? (:topic subscription))
+           (valid? (:callback subscription)))
+    ;; sending verification request
+    (let [params (merge {:hub.mode (:mode subscription)
+                         :hub.topic (:topic subscription)
+                         :hub.lease_seconds (:lease-seconds subscription)
+                         :hub.verify_token (:verify-token subscription)}
+                        (if (:challenge subscription)
+                          {:hub.challenge (:challenge subscription)}))
+          url (model/make-subscribe-uri (:callback subscription) params)
+          response-channel (http/http-request {:method :get
+                                               :url url
+                                               :auto-transform true})]
+      (let [response @response-channel]
+        (if (= 200 (:status response))
+          {:status 204}
+          {:status 404})))
+    (subscription-not-valid-error)))
+
+(defaction verify-subscription-async
+  [subscription]
+  (l/task
+   (verify-subscribe-sync subscription)))
+
 ;; TODO: extract hub params in filter
 (defaction hub-dispatch
   [params]
@@ -78,23 +79,22 @@
     (condp = mode
       "subscribe"
       ;; set up feed subscriber
-      (let [feed-source (model.feed-source/find-or-create {:topic topic
-                                                                 :callback callback})
+      (let [feed-source (model.feed-source/find-or-create {:topic topic :callback callback})
             merged-subscription (merge feed-source
                                        {:mode mode
                                         :challenge challenge
                                         :verify-token verify-token
                                         :lease-seconds lease-seconds})]
         (if (= verify "async")
-          (async-verify-subscribe merged-subscription)
-          (sync-verify-subscribe merged-subscription)))
+          (verify-subscription-async merged-subscription)
+          (verify-subscribe-sync merged-subscription)))
 
       
       "unsubscribe"
       ;; remove feed subscriber
-      (if-let [subscription (model.push/fetch {:topic topic
-                                               :callback callback})]
-        (remove-subscription subscription)
+      (if-let [subscription (model.feed-source/fetch {:topic topic
+                                                      :callback callback})]
+        (actions.feed-source/remove-subscription subscription)
         (subscription-not-found-error))
       
       nil)))

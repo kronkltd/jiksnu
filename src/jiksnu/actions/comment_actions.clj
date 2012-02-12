@@ -29,13 +29,24 @@
   [activity
    (map model.activity/show (:comments activity))])
 
+(defn comment-request
+  [activity]
+  (tigase/make-packet
+   {:type :get
+    :from (tigase/make-jid "" (config :domain))
+    :to (tigase/make-jid (get-author activity))
+    :body
+    (element/make-element
+     ["pubsub" {"xmlns" namespace/pubsub}
+      ["items" {"node" (comment-node-uri activity)}]])}))
+
 ;; This should be a trigger
 (defaction fetch-comments-remote
   [activity]
   (let [author (helpers.activity/get-author activity)
         domain (model.user/get-domain author)]
     (when (:xmpp domain)
-      (tigase/deliver-packet! (helpers.activity/comment-request activity)))))
+      (tigase/deliver-packet! (comment-request activity)))))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.comment-filters

@@ -10,11 +10,8 @@
             (jiksnu [abdera :as abdera]
                     [model :as model]
                     [namespace :as ns]
-                    [session :as session]
-                    [view :as view])
-            (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.helpers [activity-helpers :as helpers.activity]
-                            [user-helpers :as helpers.user])
+                    [session :as session])
+            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])
@@ -37,6 +34,85 @@
       :author
       model.user/fetch-by-id))
 
+
+(defn acl-link
+  [entry activity]
+  (if (:public activity)
+    (let [rule-element (.addExtension entry namespace/osw "acl-rule" "")]
+      (let [action-element
+            (.addSimpleExtension rule-element namespace/osw
+                                 "acl-action" "" namespace/view)]
+        (.setAttributeValue action-element "permission" namespace/grant))
+      (let [subject-element
+            (.addExtension rule-element namespace/osw "acl-subject" "")]
+        (.setAttributeValue subject-element "type" namespace/everyone)))))
+
+(defn comment-link-item
+  [entry activity]
+  (if (:comments activity)
+    (let [comment-count (count (:comments activity))]
+      (abdera/add-link entry {:rel "replies"
+                              :type "application/atom+xml"
+                              :attributes [{:name "count"
+                                            :value (str comment-count)}]}))))
+
+(defn index-formats
+  [activities]
+  [{:label "Atom"
+    :href "/api/statuses/public_timeline.atom"
+    :icon "feed-icon-14x14.png"
+    :type "application/atom+xml"}
+   {:label "Activity Streams"
+    :href "/api/statuses/public_timeline.as"
+    :icon "as-bw-14x14.png"
+    :type "application/json"}
+   {:label "JSON"
+    :href "/api/statuses/public_timeline.json"
+    :icon "json.png"
+    :type "application/json"}
+   {:label "XML"
+    :icon "file_xml.png"
+    :href "/api/statuses/public_timeline.xml"
+    :type "application/xml"}
+   {:label "RDF/XML"
+    :href "/api/statuses/public_timeline.rdf"
+    :icon "foafTiny.gif"
+    :type "application/rdf+xml"}
+   {:label "N3"
+    :icon "chart_organisation.png"
+    :href "/api/statuses/public_timeline.n3"
+    :type "text/n3"}])
+
+(defn timeline-formats
+  [user]
+  [{:label "Atom"
+    :icon "feed-icon-14x14.png"
+    :href (user-timeline-link user "atom")
+    :type "application/atom+xml"}
+   {:label "Activity Streams"
+    :href (user-timeline-link user "as")
+    :icon "as-bw-14x14.png"
+    :type "application/json"}
+   {:label "JSON"
+    :icon "json.png"
+    :href (user-timeline-link user "json")
+    :type "application/json"}
+   {:label "RDF/XML"
+    :href (user-timeline-link user "rdf")
+    :icon "foafTiny.gif"
+    :type "application/rdf+xml"}
+   {:label "N3"
+    :icon "chart_organisation.png"
+    :href (user-timeline-link user "n3")
+    :type "text/n3"}
+   {:label "XML"
+    :icon "file_xml.png"
+    :href (user-timeline-link user "xml")
+    :type "application/xml"}])
+
+(defn add-entry
+  [feed activity]
+  (.addEntry feed (show-section activity)))
 
 ;; specific sections
 

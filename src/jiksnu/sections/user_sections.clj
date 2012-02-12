@@ -35,6 +35,28 @@
            jiksnu.model.User
            org.apache.abdera2.model.Entry))
 
+(defn user-timeline-link
+  [user format]
+  (str "http://" (:domain user)
+       "/api/statuses/user_timeline/" (:_id user) "." format))
+
+;; TODO: Move this to user
+(defn add-author
+  "Adds the supplied user to the atom entry"
+  [^Entry entry ^User user]
+  ;; TODO: Do we need to re-fetch here?
+  (if-let [user (model.user/fetch-by-id (:_id user))]
+    (let [name (:name user)
+          jid  (model.user/get-uri user false)
+          actor (.addExtension entry namespace/as "actor" "activity")]
+      (doto actor
+        (.addSimpleExtension namespace/atom "name" "" name)
+        (.addSimpleExtension namespace/atom "email" "" jid)
+        (.addSimpleExtension namespace/atom "uri" "" jid))
+      (doto entry
+        (.addExtension actor)
+        (.addExtension (show-section user))))))
+
 (defn discover-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/discover")}
