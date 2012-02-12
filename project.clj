@@ -65,7 +65,7 @@
                          :optimizations :whitespace
                          :pretty-print true
                          }}
-  :main jiksnu.core
+  :main ciste.runner
   :newrelic true
   :warn-on-reflection false
   :jvm-opts [
