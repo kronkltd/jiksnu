@@ -21,26 +21,36 @@
            org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
+(defn user-timeline-link
+  [user format]
+  (str "http://" (:domain user)
+       "/api/statuses/user_timeline/" (:_id user) "." format))
+
 (defn timeline-formats
   [user]
-  [{:label "FOAF"
-    :href (str (uri user) ".rdf")
+  [{:label "Atom"
+    :icon "feed-icon-14x14.png"
+    :href (user-timeline-link user "atom")
+    :type "application/atom+xml"}
+   {:label "Activity Streams"
+    :href (user-timeline-link user "as")
+    :icon "as-bw-14x14.png"
+    :type "application/json"}
+   {:label "JSON"
+    :icon "json.png"
+    :href (user-timeline-link user "json")
+    :type "application/json"}
+   {:label "RDF/XML"
+    :href (user-timeline-link user "rdf")
+    :icon "foafTiny.gif"
     :type "application/rdf+xml"}
    {:label "N3"
-    :href (str (uri user) ".n3")
+    :icon "chart_organisation.png"
+    :href (user-timeline-link user "n3")
     :type "text/n3"}
-   {:label "Atom"
-    :icon "feed-icon-14x14.png"
-    :href (str "http://" (:domain user)
-               "/api/statuses/user_timeline/" (:_id user) ".atom")
-    :type "application/atom+xml"}
-   {:label "JSON"
-    :href (str "http://" (:domain user)
-               "/api/statuses/user_timeline/" (:_id user) ".json")
-    :type "application/json"}
    {:label "XML"
-    :href (str "http://" (:domain user)
-               "/api/statuses/user_timeline/" (:_id user) ".xml")
+    :icon "file_xml.png"
+    :href (user-timeline-link user "xml")
     :type "application/xml"}])
 
 (defn index-formats
@@ -61,7 +71,7 @@
     :icon "file_xml.png"
     :href "/api/statuses/public_timeline.xml"
     :type "application/xml"}
-   {:label "RDF"
+   {:label "RDF/XML"
     :href "/api/statuses/public_timeline.rdf"
     :icon "foafTiny.gif"
     :type "application/rdf+xml"}
