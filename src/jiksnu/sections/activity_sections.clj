@@ -11,7 +11,6 @@
                     [model :as model]
                     [namespace :as ns]
                     [session :as session])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])
@@ -416,7 +415,7 @@
    ;; "content" (:content activity)
    "id" (:id activity)
    "url" (full-uri activity)
-   "actor" (show-section (helpers.activity/get-author activity))
+   "actor" (show-section (actions.activity/get-author activity))
    "object"
    (let [object (:object activity)]
      {"objectType" (:object-type object)
@@ -436,15 +435,15 @@
       (.setTitle (or (and (not= (:title activity) "")
                           (:title activity))
                      (:content activity)))
-      #_(helpers.activity/add-author activity)
+      #_(actions.activity/add-author activity)
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
       (.addSimpleExtension
        ns/as "object-type" "activity" ns/status)
       (.addSimpleExtension
        ns/as "verb" "activity" ns/post)
-      #_(helpers.activity/comment-link-item activity)
-      (helpers.activity/acl-link activity))
+      #_(actions.activity/comment-link-item activity)
+      (actions.activity/acl-link activity))
     (let [object (:object activity)
           object-element (.addExtension entry ns/as "object" "activity")]
       #_(.setObjectType object-element ns/status)
@@ -470,7 +469,7 @@
    :favorited false
    :attachments []
    :user
-   (let [user (helpers.activity/get-author activity)]
+   (let [user (actions.activity/get-author activity)]
      {:name (:display-name user)
       :id (:_id user)
       :screen_name (:username user)

@@ -114,6 +114,14 @@
 
   )
 
+(defn load-activities
+  [^User user]
+  (when user
+    (if-let [feed (helpers.user/fetch-user-feed user)]
+      (doseq [activity (actions.activity/get-activities feed)]
+        (actions.activity/create activity)))))
+
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
                      ;; 'jiksnu.helpers.stream-helpers

@@ -15,8 +15,7 @@
                     [namespace :as namespace]
                     [session :as session])
             (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.helpers [activity-helpers :as helpers.activity]
-                            [user-helpers :as helpers.user])
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user])
@@ -148,12 +147,9 @@ serialization"
                     actions.user/person->user
                     actions.user/find-or-create-by-remote-id)
            extension-maps (->> (.getExtensions entry)
-                               (map helpers.activity/parse-extension-element)
+                               (map parse-extension-element)
                                doall)
-           irts (helpers.activity/parse-irts entry)
-           ;; recipients (->> (ThreadHelper/getInReplyTos entry)
-           ;;                 (map helpers.activity/parse-link)
-           ;;                 (filter identity))
+           irts (parse-irts entry)
            content (.getContent entry)
            links (abdera/parse-links entry)
            mentioned-uri (-?> entry
@@ -240,16 +236,8 @@ serialization"
                   {:public true})))]
     (model.activity/update (dissoc opts :picture))))
 
-(defn load-activities
-  [^User user]
-  (when user
-    (if-let [feed (helpers.user/fetch-user-feed user)]
-      (doseq [activity (get-activities feed)]
-        (create activity)))))
-
 (definitializer
   (doseq [namespace ['jiksnu.filters.activity-filters
-                     'jiksnu.helpers.activity-helpers
                      'jiksnu.sections.activity-sections
                      'jiksnu.triggers.activity-triggers
                      'jiksnu.views.activity-views]]

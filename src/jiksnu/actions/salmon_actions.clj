@@ -10,7 +10,6 @@
             (jiksnu.actions [activity-actions :as actions.activity]
                             [subscription-actions :as actions.subscription]
                             [user-actions :as actions.user])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [user :as model.user]
                           [signature :as model.signature]))
   (:import java.security.PublicKey
@@ -71,7 +70,7 @@
 (defaction process
   [user envelope]
   (if-let [activity (extract-activity envelope)]
-    (if-let [actor (helpers.activity/get-author activity)]
+    (if-let [actor (actions.activity/get-author activity)]
       (if-let [pub-key (get-key actor)]
         (if (or (signature-valid? envelope pub-key)
                 (when (not (config :salmon :verify))

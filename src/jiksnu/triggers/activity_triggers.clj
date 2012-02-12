@@ -16,7 +16,6 @@
                             [comment-actions :as actions.comment]
                             [stream-actions :as actions.stream]
                             [user-actions :as actions.user])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [item :as model.item]
@@ -30,7 +29,7 @@
   [recipient ^Activity activity]
   (with-context [:xmpp :xmpp]
     (let [recipient-jid (tigase/make-jid (:username recipient) (:domain recipient))
-          author (helpers.activity/get-author activity)
+          author (actions.activity/get-author activity)
           message-text (:summary activity)
           ele (element/make-element
                ["body" {}
@@ -52,19 +51,19 @@
 
 (defn fetch-new-comments
   [action params activity]
-  (let [author (helpers.activity/get-author activity)
+  (let [author (actions.activity/get-author activity)
         domain (model.user/get-domain author)]
     (actions.comment/fetch-comments-remote activity)))
 
 (defn fetch-more-comments
   [action params [activity comments]]
-  (let [author (helpers.activity/get-author activity)
+  (let [author (actions.activity/get-author activity)
         domain (model.user/get-domain author)]
     (actions.comment/fetch-comments-remote activity)))
 
 (defn post-trigger
   [action params activity]
-  (let [user (helpers.activity/get-author activity)
+  (let [user (actions.activity/get-author activity)
         subscribers (model.subscription/subscribers user)
         subscriber-users (filter identity
                                  (map (comp model.user/fetch-by-id :from)

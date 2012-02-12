@@ -15,7 +15,6 @@
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.activity-filters
-                     'jiksnu.helpers.activity-helpers
                      'jiksnu.sections.activity-sections
                      'jiksnu.triggers.activity-triggers
                      'jiksnu.views.activity-views]]

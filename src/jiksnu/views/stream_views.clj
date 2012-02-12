@@ -15,7 +15,6 @@
                     [namespace :as namespace]
                     [session :as session]
                     [view :as view])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity])
@@ -169,7 +168,7 @@
 (defview #'public-timeline :html
   [request activities]
   {:title "Public Timeline"
-   :formats (helpers.activity/index-formats activities)
+   :formats (sections.activity/index-formats activities)
    ;; :aside '([:p "foo"])
    :body (index-block activities)})
 
@@ -208,7 +207,7 @@
   {:user user
    :title (:display-name user)
    :body (index-section activities)
-   :formats (helpers.activity/timeline-formats user)})
+   :formats (sections.activity/timeline-formats user)})
 
 
 

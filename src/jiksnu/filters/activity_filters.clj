@@ -11,7 +11,6 @@
             (clojure.java [io :as io])
             (jiksnu [abdera :as abdera])
             (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.sections [activity-sections :as sections.activity])
             (jiksnu.model [activity :as model.activity]
                           [like :as model.like]

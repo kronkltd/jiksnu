@@ -14,7 +14,6 @@
                     [namespace :as namespace]
                     [session :as session]
                     [view :as view])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity])

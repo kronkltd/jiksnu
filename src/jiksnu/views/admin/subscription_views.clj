@@ -3,9 +3,7 @@
                [views :only [defview]])
         jiksnu.actions.admin.subscription-actions
         jiksnu.sections.subscription-sections)
-  (:require (jiksnu.helpers [activity-helpers :as helpers.activity]
-                            [subscription-helpers :as helpers.subscription])
-            (jiksnu.model [subscription :as model.subscription])))
+  (:require (jiksnu.model [subscription :as model.subscription])))
 
 ;; (defview #'admin-index :html
 ;;   [request subscriptions]

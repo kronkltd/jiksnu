@@ -3,7 +3,6 @@
                [core :only [defaction]]))
   (:require (clj-tigase [core :as tigase])
             (jiksnu.actions [activity-actions :as actions.activity])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user])))
@@ -43,7 +42,7 @@
 ;; This should be a trigger
 (defaction fetch-comments-remote
   [activity]
-  (let [author (helpers.activity/get-author activity)
+  (let [author (actions.activity/get-author activity)
         domain (model.user/get-domain author)]
     (when (:xmpp domain)
       (tigase/deliver-packet! (comment-request activity)))))
