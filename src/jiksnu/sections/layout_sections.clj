@@ -31,7 +31,8 @@
              [["/admin/activities"         "Activities"]
               ["/main/domains"             "Domains"]
               ["/admin/settings"           "Settings"]
-              ["/admin/push/subscriptions" "PubSub"]
+              ["/admin/feed-sources"       "Feed Sources"]
+              ["/admin/feed-subscriptions" "Feed Subscriptions"]
               ["/admin/users"              "Users"]
               ["/admin/subscriptions"      "Subscriptions"]]])]]
      (reduce concat

@@ -40,7 +40,8 @@
   (list
    (when (:flash response)
      [:div#flash (:flash response)])
-   (when (current-user)
+   (when (and (:post-form response)
+              (current-user))
      (sections.activity/activity-form))
    (when (:title response)
      [:h1 (:title response)])
