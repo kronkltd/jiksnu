@@ -58,7 +58,7 @@ article .photo
 .tags li {
     list-style-type: none;
     display: inline;
-    /* margin-left: 1em; */
+    margin-left: 1em;
 }
 
 .buttons > li {
