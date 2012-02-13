@@ -107,3 +107,7 @@ article .photo
 .post-form legend {
     display: none;
 }
+
+.hidden {
+    display: none;
+}

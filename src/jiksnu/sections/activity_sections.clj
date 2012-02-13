@@ -119,14 +119,14 @@
 
 (defn pictures-section
   [activity]
-  [:div.pictures-line.control-group
+  [:div.pictures-line.control-group.hidden
    [:label.control-label {:for "pictures"} "Pictures"]
    [:div.controls
     [:input {:type "file" :name "pictures"}]]])
 
 (defn tag-section
   [activity]
-  [:div.control-group
+  [:div.control-group.hidden
    [:label.control-label {:for "tags"} "Tags"]
    [:div.controls
     [:input {:type "text" :name "tags"}]
@@ -134,7 +134,7 @@
 
 (defn location-section
   [activity]
-  [:div.control-group
+  [:div.control-group.hidden
    [:label.control-label "Location"]
    [:div.controols
     [:label {:for "lat"} "Latitude"]
@@ -149,16 +149,21 @@
   [activity]
   [:fieldset.add-buttons
    [:legend "Add:"]
-   [:ul.btn-group
-    [:li [:a.btn {:href "#"} "Tags"]]
+   [:div.btn-group
+    [:a.btn {:href "#"}
+     [:i.icon-tag] [:span.button-text "Tags"]]
 
-    [:li [:a.btn {:href "#"} "Recipients"]]
+    [:a.btn {:href "#"}
+     [:i.icon-user] [:span.button-text "Recipients"]]
 
-    [:li [:a.btn {:href "#"} "Location"]]
+    [:a.btn {:href "#"}
+     [:i.icon-map-marker] [:span.button-text "Location"]]
 
-    [:li [:a.btn {:href "#"} "Links"]]
+    [:a.btn {:href "#"}
+     [:.icon-bookmark] [:span.button-text "Links"]]
 
-    [:li [:a.btn {:href "#"} "Pictures"]]]])
+    [:a.btn {:href "#"}
+     [:i.icon-picture] [:span.button-text "Pictures"]]]])
 
 (defn privacy-select
   [activity]
@@ -322,11 +327,10 @@
            [:label.control-label {:for "content"} "Content"]
            [:div.controls
             [:textarea.span6 {:name "content" :rows "3"} content]]]
-
+          (add-button-section activity)
           (pictures-section activity)
           (location-section activity)
           (tag-section activity)
-          (add-button-section activity)
           [:div.actions
            (privacy-select activity)
            [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])))
