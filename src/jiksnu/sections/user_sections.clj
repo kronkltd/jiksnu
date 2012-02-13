@@ -102,7 +102,7 @@
 (defn subscribe-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/subscribe")}
-   [:button.btn.subscribe-button {:type "submit"}
+   [:button.btn.subscribe-button {:type "submit" :title "Subscribe"}
     [:i.icon-eye-open] [:span.button-text "Subscribe"]]])
 
 (defn admin-index-line
@@ -195,21 +195,27 @@
 ;; TODO: make defsection
 (defn index-line
   [user]
-  [:tr
-   [:td (display-avatar user)]
-   [:td
-    [:p (link-to user)]
-    [:p (:username user) "@" (:domain user)]
-    [:p (:url user)]
-    [:p (:bio user)]
-    ]
-   [:td [:ul.buttons
-         [:li (subscribe-button user)]
-         #_[:li (discover-button user)]
-         [:li (update-button user)]
-         [:li (edit-button user)]
-         [:li (delete-button user)]
-         ]]])
+  (let [authenticated (current-user)]
+    [:tr
+     [:td (display-avatar user)]
+     [:td
+      [:p (link-to user)]
+      [:p (:username user) "@" (:domain user)]
+      [:p (:url user)]
+      [:p (:bio user)]
+      ]
+     [:td
+      [:ul.buttons
+       [:li (subscribe-button user)]
+       (when authenticated
+         (list
+          [:li (discover-button user)]
+          [:li (update-button user)])
+         (when (is-admin?)
+           (list
+            [:li (edit-button user)]
+            [:li (delete-button user)])))
+      ]]]))
 
 (defsection index-section [User :html]
   [users & _]
