@@ -122,7 +122,7 @@
 (defentity FeedSource
   [:hub :verify-token :secret :created :updated :topic])
 
-(defentity FeedSubscriber
+(defentity FeedSubscription
   [:hub :verify-token :secret :created :updated :topic])
 
 (defentity MagicKeyPair

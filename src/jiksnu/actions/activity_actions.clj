@@ -93,11 +93,6 @@
       nil)))
 
 
-;; TODO: What id should be used here?
-(defn comment-node-uri
-  [{id :id :as activity}]
-  (str namespace/microblog ":replies:item=" id))
-
 
 
 

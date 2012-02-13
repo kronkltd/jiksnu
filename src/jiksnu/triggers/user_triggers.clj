@@ -9,6 +9,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [namespace :as namespace])
             (jiksnu.actions [activity-actions :as actions.activity]
+                            [stream-actions :as actions.stream]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [signature :as model.signature]
@@ -18,7 +19,7 @@
   [action _ user]
   (-?> user :_id
        model.user/fetch-by-id
-       actions.activity/load-activities))
+       actions.stream/load-activities))
 
 (defn fetch-updates-http
   [user]

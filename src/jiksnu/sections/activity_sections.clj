@@ -2,8 +2,8 @@
   (:use (ciste [core :only [with-format]]
                [debug :only [spy]]
                [sections :only [defsection]])
-        (ciste.sections [default :only [index-section show-section delete-button
-                                        link-to uri]])
+        (ciste.sections [default :only [index-section show-section delete-button full-uri
+                                        link-to uri title index-block index-line]])
         (clojure.core [incubator :only [-?>]])
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
@@ -12,6 +12,7 @@
                     [model :as model]
                     [namespace :as ns]
                     [session :as session])
+            (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])
@@ -444,7 +445,7 @@
       (.addSimpleExtension
        ns/as "verb" "activity" ns/post)
       #_(actions.activity/comment-link-item activity)
-      (actions.activity/acl-link activity))
+      (acl-link activity))
     (let [object (:object activity)
           object-element (.addExtension entry ns/as "object" "activity")]
       #_(.setObjectType object-element ns/status)

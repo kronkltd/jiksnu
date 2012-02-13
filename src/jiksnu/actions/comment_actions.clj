@@ -1,11 +1,18 @@
 (ns jiksnu.actions.comment-actions
-  (:use (ciste [config :only [definitializer]]
+  (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]))
-  (:require (clj-tigase [core :as tigase])
+  (:require (clj-tigase [core :as tigase]
+                        [element :as element])
+            (jiksnu [namespace :as ns])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [user :as model.user])))
+
+;; TODO: What id should be used here?
+(defn comment-node-uri
+  [{id :id :as activity}]
+  (str ns/microblog ":replies:item=" id))
 
 (defaction new-comment
   [& _])
@@ -33,10 +40,10 @@
   (tigase/make-packet
    {:type :get
     :from (tigase/make-jid "" (config :domain))
-    :to (tigase/make-jid (get-author activity))
+    :to (tigase/make-jid (actions.activity/get-author activity))
     :body
     (element/make-element
-     ["pubsub" {"xmlns" namespace/pubsub}
+     ["pubsub" {"xmlns" ns/pubsub}
       ["items" {"node" (comment-node-uri activity)}]])}))
 
 ;; This should be a trigger

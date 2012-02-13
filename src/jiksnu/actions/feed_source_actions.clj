@@ -10,7 +10,7 @@
             (jiksnu.model [feed-source :as model.feed-source])
             (lamina [core :as l])))
 
-(defaction callback
+(defaction process-updates
   [params]
   (let [{{challenge :hub.challenge
           topic :hub.topic} :params} params]
@@ -44,6 +44,8 @@
   [subscription])
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.feed-source-filters
-                     'jiksnu.views.feed-source-views]]
+  (doseq [namespace [
+                     ;; 'jiksnu.filters.feed-source-filters
+                     ;; 'jiksnu.views.feed-source-views
+                     ]]
     (require namespace)))

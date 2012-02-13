@@ -10,7 +10,6 @@
             (jiksnu [model :as model])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [user-actions :as actions.user])
-            (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [signature :as model.signature]
                           [user :as model.user]
                           ))
@@ -124,7 +123,7 @@
      (fact "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)
              user (-> envelope extract-activity
-                      helpers.activity/get-author)]
+                      actions.activity/get-author)]
          (actions.user/discover user)
          (let [sig (:sig envelope)
                n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0="

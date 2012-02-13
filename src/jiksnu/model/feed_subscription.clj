@@ -1,4 +1,4 @@
-(ns jiksnu.model.push-subscription
+(ns jiksnu.model.feed-subscription
   (:use (ciste [debug :only [spy]]))
   (:require (clojure [string :as string])
             (karras [entity :as entity]

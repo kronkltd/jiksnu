@@ -20,6 +20,7 @@
                             [comment-actions :as comment]
                             [domain-actions :as domain]
                             [favorite-actions :as favorite]
+                            [feed-source-actions :as feed-source]
                             [group-actions :as group]
                             [inbox-actions :as inbox]
                             [like-actions :as like]
@@ -57,8 +58,8 @@
     [[:get  "/admin"]                                   #'admin/index]
     [[:get  "/admin/activities"]                        #'admin.activity/index]
     [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
-    [[:get  "/admin/feed-sources"]                      #'admin.feed-source/index]
-    [[:get  "/admin/feed-subscribers"]                  #'admin.feed-subscriber/index]
+    ;; [[:get  "/admin/feed-sources"]                      #'admin.feed-source/index]
+    ;; [[:get  "/admin/feed-subscribers"]                  #'admin.feed-subscriber/index]
     [[:post "/admin/users"]                             #'admin.user/create]
     [[:get  "/admin/users"]                             #'admin.user/index]
     [[:get  "/admin/settings"]                          #'setting/admin-edit-page]]))

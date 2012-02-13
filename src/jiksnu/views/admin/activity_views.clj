@@ -1,6 +1,8 @@
 (ns jiksnu.views.admin.activity-views
   (:use (ciste [views :only [defview]])
-        jiksnu.actions.admin.activity-actions))
+        jiksnu.actions.admin.activity-actions)
+  (:require (jiksnu.actions [activity-actions :as actions.activity]))
+  )
 
 
 ;; TODO: This page should use a single column
@@ -18,6 +20,6 @@
      (map
       (fn [activity]
         [:tr
-         [:td (-> activity get-author :username)]
+         [:td (-> activity actions.activity/get-author :username)]
          [:td (:title activity)]])
       activities)]]})

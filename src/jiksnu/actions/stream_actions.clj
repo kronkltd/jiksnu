@@ -12,9 +12,12 @@
             (jiksnu [abdera :as abdera]
                     [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity])
+            (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
-            (lamina [core :as l])))
+            (lamina [core :as l]))
+  (:import jiksnu.model.User)
+  )
 
 
 (defaction direct-message-timeline
