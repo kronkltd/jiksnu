@@ -1,7 +1,7 @@
 {:environment :development
  :services
  [
-  "jiksnu.swank"
+  "ciste.service.swank"
   "jiksnu.http"
   "jiksnu.xmpp"
   ]}
