@@ -75,7 +75,15 @@
        [:link {:type "text/css"
                :href "/themes/classic/standard.css"
                :rel "stylesheet"
-               :media "screen"}]]
+               :media "screen"}]
+       (map
+        (fn [format]
+          [:link {:type (:type format)
+                  :href (:href format)
+                  :rel (or (:rel format) "alternate")
+                  :title (:title format)}])
+        (concat (:formats response)
+                (:links response)))]
       [:body
        [:div.navbar.navbar-fixed-top
         [:div.navbar-inner
