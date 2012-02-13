@@ -231,11 +231,11 @@
 
 (defn recipients-section
   [activity]
-  (list
-   (when (:irts activity)
-     [:p "In reply to: " (:irts activity)])
-   (when (:mentioned-uri activity)
-     [:p "mentioned: " (:mentioned-uri activity)])))
+  (when-let [mentioned-uri (:mentioned-uri activity)]
+    [:p [:i.icon-chevron-right]
+     (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
+       (link-to mentioned-user)
+       [:a {:href mentioned-uri :rel "nofollow"} mentioned-uri])]))
 
 (defn links-section
   [activity]
@@ -502,7 +502,8 @@
          [:span.label
           [:a {:href (:id activity)} "Remote"]])
        (when-not (:public activity)
-         [:span.label "Private"])]]
+         [:span.label "Private"])]
+      (recipients-section activity)]
      (post-actions activity)
      [:div.entry-content
       #_(when (:title activity)
@@ -511,7 +512,6 @@
        (or (:title activity)
            (:content activity))]]
      [:div
-      (recipients-section activity)
       (links-section activity)
       (likes-section activity)
       (maps-section activity)

@@ -82,9 +82,7 @@
                 ;; mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})
                 ]
             (let [feed (abdera/fetch-feed link)]
-              (.getAuthor feed)
-
-              )))))
+              (actions.user/person->user (.getAuthor feed)))))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (doseq [user subscriber-users]
