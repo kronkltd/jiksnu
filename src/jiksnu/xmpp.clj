@@ -1,8 +1,23 @@
 (ns jiksnu.xmpp
-  (:use (ciste [config :only [config definitializer]]
+  (:use (ciste [config :only [config describe-config]]
                [debug :only [spy]])
         clj-tigase.core)
   (:require (clojure [string :as string])))
+
+
+;; TODO: Pull this list from a UserRole collection
+(describe-config [:admins]
+  :list
+  "A list of usernames that are considered admins of the system.")
+
+(describe-config [:xmpp :c2s]
+  :number
+  "The client to server port for the xmpp service")
+
+(describe-config [:xmpp :s2s]
+  :number
+  "The server to server port for the xmpp service")
+
 
 (def ^:dynamic *initial-config*
     "" #_(str
@@ -21,13 +36,19 @@
                               ;; TODO: ensure user created
                               (str username "@" (config :domain))))
                        (string/join "," ))
+
+       ;; Make these configable
        "--auth-db" "jiksnu.xmpp.user_repository"
        "--user-db" "jiksnu.xmpp.user_repository"
        "--debug" "server"
+
+       ;; [:xmpp :plugins] perhaps?
        "--sm-plugins" "jiksnu,message"
        "--c2s-ports" (str (config :xmpp :c2s))
        "--s2s" (str (config :xmpp :s2s))
        "--virt-hosts" (config :domain)
+
+       ;; TODO: Register xmpp components and dynamically generate
        "--comp-name-1" "channels"
        "--comp-class-1" "jiksnu.xmpp.channels"]))
 
