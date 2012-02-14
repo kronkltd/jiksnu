@@ -18,4 +18,4 @@
 
 (deffilter #'add :http
   [action request]
-  (-> request :params :name action))
+  (-> request :params action))

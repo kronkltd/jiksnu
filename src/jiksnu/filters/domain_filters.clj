@@ -1,6 +1,6 @@
 (ns jiksnu.filters.domain-filters
-  (:use (ciste [debug :only (spy)]
-               [filters :only (deffilter)])
+  (:use (ciste [debug :only [spy]]
+               [filters :only [deffilter]])
         jiksnu.actions.domain-actions)
   (:require (jiksnu.model [domain :as model.domain])))
 
@@ -14,11 +14,11 @@
 
 (deffilter #'delete :http
   [action request]
-  (-> request :params :* action))
+  (-> request :params :id action))
 
 (deffilter #'discover :http
   [action request]
-  (-> request :params :* model.domain/fetch-by-id action))
+  (-> request :params :id model.domain/fetch-by-id action))
 
 (deffilter #'find-or-create :http
   [action request]
@@ -30,7 +30,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :* action))
+  (-> request :params :id action))
 
 (deffilter #'ping-error :xmpp
   [action request]

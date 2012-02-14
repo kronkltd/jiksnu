@@ -17,8 +17,8 @@
   [])
 
 (defaction add
-  [name]
-  (model.group/create {:name name}))
+  [params]
+  (model.group/create params))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.group-filters

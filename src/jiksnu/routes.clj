@@ -68,6 +68,11 @@
 (def authenticated-routes
   (make-matchers
    [
+    ]))
+
+(def http-routes
+  (make-matchers
+   [
     [[:get "/api/statusnet/app/service.xml"]               #'site/service]
     [[:get "/api/statusnet/app/subscriptions/:id.:format"] #'sub/get-subscriptions]
     [[:get "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]
@@ -78,11 +83,12 @@
     [[:post   "/:username"]                                #'user/update]
     [[:post   "/:username/streams"]                        #'stream/add]
     [[:get    "/:username/streams/new"]                    #'stream/add-stream-page]
-    ]))
 
-(def http-routes
-  (make-matchers
-   [[[:get    "/"]                                        #'stream/public-timeline]
+
+
+
+
+    [[:get    "/"]                                        #'stream/public-timeline]
     [[:get    "/rsd.xml"]                                 #'site/rsd]
     [[:get    "/.well-known/host-meta"]                   #'domain/host-meta]
     [[:get    "/api/account/verify_credentials.:format"]  #'auth/verify-credentials]
@@ -104,9 +110,9 @@
     [[:get    "/groups/new"]                              #'group/new-page]
     [[:get    "/groups/:name"]                            #'stream/group-timeline]
     [[:get    "/main/domains"]                            #'domain/index]
-    [[:get    "/main/domains/*"]                          #'domain/show]
-    [[:post   "/main/domains/*/discover"]                 #'domain/discover]
-    [[:post   "/main/domains/*/edit"]                     #'domain/edit-page]
+    [[:get    "/main/domains/:id"]                        #'domain/show]
+    [[:post   "/main/domains/:id/discover"]                 #'domain/discover]
+    [[:post   "/main/domains/:id/edit"]                     #'domain/edit-page]
     [[:post   "/main/domains"]                            #'domain/find-or-create]
     [[:post   "/main/guest-login"]                        #'auth/guest-login]
     [[:get    "/main/login"]                              #'auth/login-page]
@@ -136,7 +142,7 @@
     [[:post   "/notice/new"]                              #'activity/post]
     [[:post   "/notice/:id"]                              #'activity/update]
     [[:delete "/notice/:id"]                              #'activity/delete]
-    [[:get    "/remote-user/*"]                           #'stream/remote-user]
+    [[:get    "/remote-user/:id"]                           #'stream/remote-user]
     ;; [[:get    "/search/group"]                            #'group/search-page]
     ;; [[:post   "/search/group"]                            #'group/search]
     [[:get    "/settings/avatar"]                         #'setting/avatar-page]

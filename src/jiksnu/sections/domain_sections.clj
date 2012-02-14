@@ -84,4 +84,4 @@
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a {:href (str "/main/domain/" (:_id domain))} (:_id domain)])
+  [:a {:href (str "/main/domains/" (:_id domain))} (:_id domain)])
