@@ -12,7 +12,7 @@
    :body
    (list 
     (index-section sources)
-    (add-form (FeedSource.))
+    #_(add-form (FeedSource.))
     )
 
    })

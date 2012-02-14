@@ -42,11 +42,13 @@
                      ;; [org.clojars.ptillemans/lein-cuke "0.0.6"]
                      [midje "1.3.1" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
+                     ;; [lein-javac "1.2.1-SNAPSHOT"]
                      ;; [lein-cljsbuild "0.0.9"]
                      ;; [clj-webdriver "0.5.0-alpha5"]
                      ;; [info.cukes/cucumber-core "1.0.0.RC11"]
                      ;; [lein-marginalia "0.7.0-SNAPSHOT"]
                      ]
+  :java-source-path "src"
   :exclusions [
                com.rabbitmq/amqp-client
                org.apache.abdera/abdera-core
