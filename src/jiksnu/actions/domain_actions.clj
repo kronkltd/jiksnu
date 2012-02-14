@@ -42,7 +42,7 @@
       ;; TODO: These should call actions
       (do (model.domain/add-links domain links)
           (model.domain/set-discovered domain)
-          xrd)
+          domain)
       (throw (RuntimeException. "Host meta does not have any links")))
     (throw (RuntimeException.
             (str "Could not find host meta for domain: " (:_id domain))))))

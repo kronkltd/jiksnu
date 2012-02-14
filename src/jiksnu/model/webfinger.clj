@@ -12,6 +12,7 @@
 
 (defn fetch-host-meta
   [url]
+  (println "fetching host meta")
   (when-let [doc (model/fetch-document url)]
     (if-let [host (seq (model/query  "//*[local-name() = 'Host']" doc))]
       doc)
