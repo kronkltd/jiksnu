@@ -1,5 +1,6 @@
 (ns jiksnu.actions.admin.feed-source-actions
-  (:use (ciste [config :only [definitializer]]))
+  (:use (ciste [core :only [defaction]]
+               [config :only [definitializer]]))
   (:require (jiksnu [model :as model])))
 
 (defn index
