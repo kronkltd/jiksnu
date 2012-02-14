@@ -99,9 +99,9 @@
 (defn parse-tags
   [^Entry entry]
   (let [categories (.getCategories entry)]
-   (map
-    (fn [category] (.getTerm category))
-    categories)))
+    (map
+     (fn [category] (.getTerm category))
+     categories)))
 
 ;; (defn get-author-id
 ;;   [author]
@@ -202,12 +202,12 @@
 (defn parse-object-element
   [element]
   #_(let [object (make-object element)]
-    {:object {:object-type (str (.getObjectType object))
-              :links (parse-links object)}
-     :id (str (.getId object))
-     :updated (.getUpdated object)
-     :published (.getPublished object)
-     :content (.getContent object)}))
+      {:object {:object-type (str (.getObjectType object))
+                :links (parse-links object)}
+       :id (str (.getId object))
+       :updated (.getUpdated object)
+       :published (.getPublished object)
+       :content (.getContent object)}))
 
 (defn parse-json-element
   "Takes a json object representing an Abdera element and converts it to

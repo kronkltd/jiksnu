@@ -34,7 +34,7 @@
 (defmacro with-admin
   [& body]
   `(binding [*admin-mode* true]
-    ~@body))
+     ~@body))
 
 (defn set-authenticated-user!
   [user]

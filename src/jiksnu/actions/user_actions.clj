@@ -200,11 +200,11 @@
 (defn discover-pending-users
   [domain]
   #_(if-let [user (pop-user! domain)]
-    (do
-      (log/info "Discovering: " user)
-      (discover user))
-    (do (log/info "sleeping")
-        #_(Thread/sleep 3000)))
+      (do
+        (log/info "Discovering: " user)
+        (discover user))
+      (do (log/info "sleeping")
+          #_(Thread/sleep 3000)))
   #_(recur domain))
 
 (defaction fetch-remote
@@ -261,7 +261,7 @@
    or creates one if it does not exist."
   [uri]
   (->> uri model.user/split-uri
-      (apply find-or-create)))
+       (apply find-or-create)))
 
 (defaction xmpp-service-unavailable
   [user]

@@ -18,8 +18,8 @@
   [user]
   (doall
    (filter identity (map
-     #(-> % :activity model.activity/fetch-by-id)
-     (index user)))))
+                     #(-> % :activity model.activity/fetch-by-id)
+                     (index user)))))
 
 (defn push
   [user activity]

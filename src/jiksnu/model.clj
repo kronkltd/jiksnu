@@ -268,15 +268,15 @@
      (.print out (str "\"" id "\""))))
 
 (extend Date json/Write-JSON
-  {:write-json write-json-date})
+        {:write-json write-json-date})
 (extend ObjectId json/Write-JSON
-  {:write-json write-json-object-id})
+        {:write-json write-json-object-id})
 
 (extend-type DateTime
-   MongoMappable
-   (to-dbo [d] (.toDate d))
-   (to-clj [d] (DateTime/parse d))
-   (to-description [d] (str d)))
+  MongoMappable
+  (to-dbo [d] (.toDate d))
+  (to-clj [d] (DateTime/parse d))
+  (to-description [d] (str d)))
 
 ;; Factory specific support in Ciste?
 (load-file "factories.clj")

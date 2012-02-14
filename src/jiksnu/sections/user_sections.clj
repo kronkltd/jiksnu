@@ -215,7 +215,7 @@
            (list
             [:li (edit-button user)]
             [:li (delete-button user)])))
-      ]]]))
+       ]]]))
 
 (defsection index-section [User :html]
   [users & _]
@@ -297,8 +297,8 @@
        [(str (full-uri user) ".rdf")
         [rdf/rdf:type                    foaf:PersonalProfileDocument
          [foaf :title]                 (rdf/l (str display-name "'s Profile"))
-           [foaf :maker]               (rdf/rdf-resource (str (full-uri user) "#me"))
-           foaf:primaryTopic           (rdf/rdf-resource (str (full-uri user) "#me"))]]
+         [foaf :maker]               (rdf/rdf-resource (str (full-uri user) "#me"))
+         foaf:primaryTopic           (rdf/rdf-resource (str (full-uri user) "#me"))]]
        
 
        ;; About the User
@@ -329,12 +329,12 @@
 
        ;; About the User's Account
        [(rdf/rdf-resource (model.user/get-uri user))
-          [rdf/rdf:type                [ns/sioc "UserAccount"]
-           foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
-           foaf:accountName            (rdf/l (:username user))
-           [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
-           [ns/sioc "account_of"]         (rdf/rdf-resource
-                                                  (str (full-uri user) "#me"))]]])))
+        [rdf/rdf:type                [ns/sioc "UserAccount"]
+         foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
+         foaf:accountName            (rdf/l (:username user))
+         [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
+         [ns/sioc "account_of"]         (rdf/rdf-resource
+                                         (str (full-uri user) "#me"))]]])))
 
 (defsection show-section [User :xmpp]
   [^User user & options]

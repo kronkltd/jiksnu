@@ -49,11 +49,11 @@
       ;; TODO: Verify open subscription
       (confirm subscription)
       (if (:xmpp domain)
-       (notify-subscribe-xmpp {} subscription)
-       ;; TODO: OStatus case
-       (log/info "sending ostatus subscribe")
-       
-       ))))
+        (notify-subscribe-xmpp {} subscription)
+        ;; TODO: OStatus case
+        (log/info "sending ostatus subscribe")
+        
+        ))))
 
 (defn unsubscribe-trigger
   [action [user] subscription]

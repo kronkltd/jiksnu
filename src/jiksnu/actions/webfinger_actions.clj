@@ -21,10 +21,10 @@
 (defn fetch-host-meta
   [url]
   #_(let [hm (-> url fetch-resource s/compile-xml)
-        host (s/query "//hm:Host/text()" bound-ns hm)]
-    (if (= (.getHost (URI. url)) (str host))
-      hm
-      (throw (RuntimeException. "Hostname does not match")))))
+          host (s/query "//hm:Host/text()" bound-ns hm)]
+      (if (= (.getHost (URI. url)) (str host))
+        hm
+        (throw (RuntimeException. "Hostname does not match")))))
 
 (defaction host-meta
   []
@@ -56,13 +56,13 @@
 (defn get-links
   [xrd]
   #_(let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
-    (map
-     (fn [link]
-       {:rel (s/query "string(@rel)" bound-ns link)
-        :template (s/query "string(@template)" bound-ns link)
-        :href (s/query "string(@href)" bound-ns link)
-        :lang (s/query "string(@lang)" bound-ns link)})
-     links)))
+      (map
+       (fn [link]
+         {:rel (s/query "string(@rel)" bound-ns link)
+          :template (s/query "string(@template)" bound-ns link)
+          :href (s/query "string(@href)" bound-ns link)
+          :lang (s/query "string(@lang)" bound-ns link)})
+       links)))
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta

@@ -64,4 +64,4 @@
           items (map (comp first element/children) (:items request))]
       (action (map #(entry->activity
                      (abdera/parse-xml-string (str %)))
-            items)))))
+                   items)))))

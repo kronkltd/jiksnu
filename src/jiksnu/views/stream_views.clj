@@ -254,7 +254,7 @@
           rdf/model-add-triples)
       {:body (with-out-str
                (rdf/model-to-format model :xml-abbrev))
-      :template :false})))
+       :template :false})))
 
 (defview #'remote-profile :rdf
   [request [user activities]]

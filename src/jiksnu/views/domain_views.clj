@@ -50,8 +50,8 @@
 (defview #'ping-response :xmpp
   [request domain]
   #_{:status 303
-   :template false
-   :headers {"Location" "/main/domains"}})
+     :template false
+     :headers {"Location" "/main/domains"}})
 
 (defview #'show :html
   [request domain]

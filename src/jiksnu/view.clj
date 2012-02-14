@@ -111,7 +111,7 @@
        (include-script "/bootstrap/js/bootstrap.js")
        (include-script "https://browserid.org/include.js")
        #_[:script {:type "text/javascript"}
-        "goog.require('jiksnu.core');"]]]))})
+          "goog.require('jiksnu.core');"]]]))})
 
 (defmethod apply-template :html
   [request response]

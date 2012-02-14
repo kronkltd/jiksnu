@@ -18,6 +18,6 @@
                      ;; 'jiksnu.triggers.admin.activity-triggers
                      'jiksnu.views.admin.activity-views
                      ]]
-      (require namespace))
-    ;; (catch Exception ex))
+    (require namespace))
+  ;; (catch Exception ex))
   )

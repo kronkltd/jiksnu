@@ -23,6 +23,6 @@
                      ;; 'jiksnu.triggers.admin.feed-source-triggers
                      'jiksnu.views.admin.feed-source-views
                      ]]
-      (require namespace))
-    ;; (catch Exception ex))
+    (require namespace))
+  ;; (catch Exception ex))
   )

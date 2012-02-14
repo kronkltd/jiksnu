@@ -272,7 +272,7 @@
      #'inbox/index]
 
     #_[{:method :result
-      :pubsub false} #'domain/ping-response]]))
+        :pubsub false} #'domain/ping-response]]))
 
 (def http-predicates
   [#'pred/request-method-matches?

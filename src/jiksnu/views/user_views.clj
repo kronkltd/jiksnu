@@ -182,8 +182,8 @@
   {:body
    (let [rdf-model
          (rdf/defmodel (rdf/model-add-triples
-                    (with-format :rdf
-                      (show-section user))))]
+                        (with-format :rdf
+                          (show-section user))))]
      (with-out-str (rdf/model-to-format rdf-model :n3)))
    :template :false})
 

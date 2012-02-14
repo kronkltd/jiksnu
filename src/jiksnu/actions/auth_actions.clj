@@ -1,15 +1,12 @@
 (ns jiksnu.actions.auth-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
-        #_(jiksnu model session))
+               [debug :only [spy]]))
   (:require (clojure.tools [logging :as log])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
   (:import javax.security.auth.login.AccountNotFoundException
-           javax.security.auth.login.LoginException
-           jiksnu.model.Activity
-           jiksnu.model.User))
+           javax.security.auth.login.LoginException))
 
 (defaction guest-login
   [webid]

@@ -34,8 +34,8 @@
       ;;   (fn [m]
       ;;     (NewRelic/recordMetric
       ;;      (:uri request) (float (:elapsed m))))
-        (handler request)
-        ;; )
+      (handler request)
+      ;; )
       (catch Exception ex
         (NewRelic/noticeError ex)
         (throw ex)))))
