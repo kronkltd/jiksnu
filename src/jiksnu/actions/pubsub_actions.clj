@@ -68,7 +68,7 @@
 ;; TODO: extract hub params in filter
 (defaction hub-dispatch
   [params]
-  (let [mode (or (get params :hub.mode) (get params "hub.mode"))
+  (let [mode (or (get (spy params) :hub.mode) (get params "hub.mode"))
         callback (or (get params :hub.callback) (get params "hub.callback"))
         challenge (or (get params :hub.challenge) (get params "hub.challenge"))
         lease-seconds (or (get params :hub.lease_seconds) (get params "hub.lease_seconds"))
@@ -79,21 +79,19 @@
     (condp = mode
       "subscribe"
       ;; set up feed subscriber
-      (let [feed-source (model.feed-source/find-or-create {:topic topic :callback callback})
-            merged-subscription (merge feed-source
-                                       {:mode mode
-                                        :challenge challenge
-                                        :verify-token verify-token
-                                        :lease-seconds lease-seconds})]
+      (let [source (model.feed-source/find-or-create
+                    {:topic topic :callback callback}
+                    {:mode mode :challenge challenge
+                     :verify-token verify-token
+                     :lease-seconds lease-seconds})]
         (if (= verify "async")
-          (verify-subscription-async merged-subscription)
-          (verify-subscribe-sync merged-subscription)))
+          (verify-subscription-async source)
+          (verify-subscribe-sync source)))
 
       
       "unsubscribe"
       ;; remove feed subscriber
-      (if-let [subscription (model.feed-source/fetch {:topic topic
-                                                      :callback callback})]
+      (if-let [subscription (model.feed-source/fetch {:topic topic :callback callback})]
         (actions.feed-source/remove-subscription subscription)
         (subscription-not-found-error))
       

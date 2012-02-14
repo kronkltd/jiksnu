@@ -8,6 +8,11 @@
   []
   )
 
+(defaction show
+  [source]
+  ;; TODO: look up the source
+  true)
+
 (definitializer
   ;; (try
   (doseq [namespace [
