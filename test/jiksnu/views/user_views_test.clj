@@ -10,7 +10,6 @@
         jiksnu.test-helper
         jiksnu.model
         jiksnu.helpers.user-helpers
-        jiksnu.view
         jiksnu.views.user-views
         jiksnu.xmpp.element
         midje.sweet)

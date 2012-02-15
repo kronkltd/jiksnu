@@ -1,10 +1,8 @@
 (ns jiksnu.views.subscription-views
-  (:use (ciste [debug :only (spy)]
-               sections
-               [views :only (defview)])
+  (:use (ciste [debug :only [spy]]
+               [views :only [defview]])
         ciste.sections.default
-        jiksnu.actions.subscription-actions
-        (jiksnu model session view))
+        jiksnu.actions.subscription-actions)
   (:require (clj-tigase [core :as tigase])
             (jiksnu.helpers [subscription-helpers :as helpers.subscription]
                             [user-helpers :as helpers.user])

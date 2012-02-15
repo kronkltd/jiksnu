@@ -1,8 +1,7 @@
 (ns jiksnu.views.stream-views
   (:use (ciste [config :only [config]]
-               core
+               [core :only [with-format]]
                [debug :only [spy]]
-               sections
                [views :only [apply-view defview]])
         ciste.sections.default
         (clj-stacktrace [repl :only [pst+]])
@@ -14,7 +13,7 @@
                     [model :as model]
                     [namespace :as namespace]
                     [session :as session]
-                    [view :as view])
+                    [views :as views])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity])

@@ -1,5 +1,5 @@
 (ns jiksnu.filters.inbox-filters
-  (:use (ciste [filters :only (deffilter)])
+  (:use (ciste [filters :only [deffilter]])
         jiksnu.actions.inbox-actions)
   (:require (jiksnu.model [user :as model.user])))
 

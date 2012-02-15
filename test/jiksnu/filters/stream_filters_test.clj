@@ -1,14 +1,12 @@
 (ns jiksnu.filters.stream-filters-test
   (:use clj-factory.core
         (ciste [config :only [config with-environment]]
-               [debug :only (spy)]
-               [filters :only (filter-action)])
+               [debug :only [spy]]
+               [filters :only [filter-action]])
         clojure.test
         (jiksnu test-helper
                 model
-                [routes :only (app)]
-                session
-                view)
+                [routes :only [app]])
         lamina.core
         midje.sweet)
   (:require (clj-tigase [core :as tigase]

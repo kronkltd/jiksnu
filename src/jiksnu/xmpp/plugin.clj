@@ -1,11 +1,10 @@
 (ns jiksnu.xmpp.plugin
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
                routes)
-        (clojure [pprint :only (pprint)])
+        (clojure [pprint :only [pprint]])
         (jiksnu model
                 routes
-                view
                 xmpp))
   (:require (clj-tigase [core :as tigase]
                         [packet :as packet])

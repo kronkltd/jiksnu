@@ -5,7 +5,7 @@
                [views :only [defview]])
         ciste.sections.default
         jiksnu.actions.pubsub-actions
-        (jiksnu model session view))
+        (jiksnu model session))
   (:require (jiksnu.model [user :as model.user])))
 
 ;; (defview #'callback :html

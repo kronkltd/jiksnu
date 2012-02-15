@@ -1,7 +1,6 @@
 (ns jiksnu.views.inbox-views
-  (:use ciste.sections
+  (:use (ciste [views :only [defview]])
         ciste.sections.default
-        ciste.views
         jiksnu.actions.inbox-actions))
 
 (defview #'index :html

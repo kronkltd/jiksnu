@@ -2,8 +2,7 @@
   (:use (ciste [config :only [with-environment]]
                core sections views)
         clj-factory.core
-        clojure.test
-        (jiksnu test-helper model session view)
+        (jiksnu test-helper)
         jiksnu.actions.stream-actions
         jiksnu.views.stream-views
         midje.sweet)

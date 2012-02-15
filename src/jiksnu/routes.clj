@@ -13,7 +13,7 @@
             (jiksnu [middleware :as jm]
                     [namespace :as namespace]
                     [session :as session]
-                    [view :as view])
+                    [views :as views])
             (jiksnu.actions [activity-actions :as activity]
                             [admin-actions :as admin]
                             [auth-actions :as auth]
@@ -37,7 +37,6 @@
                                   [feed-source-actions :as admin.feed-source]
                                   [subscription-actions :as admin.sub]
                                   [user-actions :as admin.user])
-            (lamina [core :as l])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])

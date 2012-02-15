@@ -3,8 +3,7 @@
                [debug :only [spy]]
                filters)
         (clj-factory [core :only [factory fseq]])
-        ;; clojure.test
-        jiksnu.test-helper
+        (jiksnu test-helper)
         jiksnu.actions.subscription-actions
         jiksnu.filters.subscription-filters
         midje.sweet)
@@ -13,8 +12,7 @@
                         [packet :as packet])
             (jiksnu [model :as model]
                     [namespace :as namespace]
-                    [session :as session]
-                    [view :as view])
+                    [session :as session])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
@@ -33,8 +31,8 @@
     (future-fact "filter-action #'subscribe :html :http"
       (fact "when the user is not already subscribed"
         (fact "should return a subscription"
-          (let [user (actions.user/create (factory User))
-                subscribee (actions.user/create (factory User))]
+          (let [user (model.user/create (factory User))
+                subscribee (model.user/create (factory User))]
             (model.subscription/drop!)
             (session/with-user user
               (let [request {:params {:subscribeto (str (:_id user))}

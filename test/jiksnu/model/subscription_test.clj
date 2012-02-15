@@ -1,12 +1,11 @@
 (ns jiksnu.model.subscription-test
   (:use (ciste [config :only [with-environment]])
         clj-factory.core
-        clojure.test
-        jiksnu.test-helper
-        jiksnu.model
+        (jiksnu test-helper
+                model)
+        
         jiksnu.model.subscription
         jiksnu.session
-        jiksnu.view
         jiksnu.xmpp.plugin
         karras.core
         midje.sweet)
@@ -24,17 +23,15 @@
         (with-user (:_id actor)
           (subscribe (current-user-id) (:_id user))))
       (drop!)
-      (is (empty? (index)))))
+      (index) => empty?))
 
   ;; (deftest index-test)
 
   (fact "when there are no subscriptions"
     (fact "should be empty"
-      (let [results (index)]
-        (empty? results)))
+      (index) => empty?)
     (fact "should return a seq"
-      (let [results (index)]
-        (seq? results))))
+      (index) => seq?))
 
   ;; (deftest subscribe-test)
 
@@ -48,9 +45,8 @@
         (drop!)
         (let [actor (model.user/create (factory User))
               user (model.user/create (factory User))]
-          (with-user actor
-            (let [response (subscribe (current-user-id) (:_id user))]
-              (is (subscription? response))))))))
+          (let [response (subscribe (:_id actor) (:_id user))]
+            response => subscription?)))))
 
   ;; (deftest subscribing?-test)
 
@@ -60,14 +56,14 @@
             user (model.user/create (factory User))]
         (subscribe actor user)
         (let [response (subscribing? actor user)]
-          (is response)))))
+          response => truthy))))
 
   (fact "when the user is not subscribed"
     (fact "should return a false value"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (let [response (subscribing? actor user)]
-          (is (not response))))))
+          response =not=> truthy))))
 
   ;; (deftest subscribed?-test)
 
@@ -77,11 +73,11 @@
             user (model.user/create (factory User))]
         (subscribe user actor)
         (let [response (subscribed? actor user)]
-          (is response)))))
+          response => truthy))))
 
   (fact "when the user is not subscribed"
     (fact "should return a false value"
       (let [actor (model.user/create (factory User))
             user (model.user/create (factory User))]
         (let [response (subscribed? actor user)]
-          (is (not response)))))))
+          response =not=> truthy)))))

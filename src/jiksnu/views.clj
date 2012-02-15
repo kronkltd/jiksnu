@@ -1,4 +1,4 @@
-(ns jiksnu.view
+(ns jiksnu.views
   (:use (ciste core
                [config :only [config]]
                [debug :only [spy]]

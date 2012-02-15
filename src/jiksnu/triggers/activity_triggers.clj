@@ -4,8 +4,7 @@
                [debug :only [spy]]
                triggers)
         ciste.sections.default
-        jiksnu.actions.activity-actions
-        (jiksnu model session view))
+        jiksnu.actions.activity-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
             (clojure.tools [logging :as log])

@@ -1,10 +1,9 @@
 (ns jiksnu.views.auth-views
   (:use (ciste core
                [debug :only [spy]]
-               sections
                [views :only [defview]])
         ciste.sections.default
-        (jiksnu model view)
+        jiksnu.model
         jiksnu.actions.auth-actions)
   (:require (jiksnu.sections [auth-sections :as sections.auth])
             (ring.util [response :as response]))

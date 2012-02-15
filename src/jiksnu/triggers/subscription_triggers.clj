@@ -1,11 +1,9 @@
 (ns jiksnu.triggers.subscription-triggers
-  (:use (ciste [config :only (config)]
-               core
-               [debug :only (spy)]
-               triggers
-               sections)
+  (:use (ciste [config :only [config]]
+               [core :only [with-context]]
+               [debug :only [spy]]
+               triggers)
         ciste.sections.default
-        (jiksnu view)
         jiksnu.actions.subscription-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])

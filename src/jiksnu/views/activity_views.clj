@@ -12,8 +12,7 @@
             (jiksnu [abdera :as abdera]
                     [model :as model]
                     [namespace :as namespace]
-                    [session :as session]
-                    [view :as view])
+                    [session :as session])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity])

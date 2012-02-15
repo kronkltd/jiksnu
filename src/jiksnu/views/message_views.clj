@@ -4,10 +4,8 @@
 
 (defview #'inbox-page :html
   [request messages]
-  {:title "Inbox"}
-  )
+  {:title "Inbox"})
 
 (defview #'outbox-page :html
   [request messages]
-  {:title "Oubox"}
-  )
+  {:title "Oubox"})

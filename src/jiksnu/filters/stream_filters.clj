@@ -1,6 +1,6 @@
 (ns jiksnu.filters.stream-filters
-  (:use (ciste [debug :only (spy)]
-               [filters :only (deffilter)])
+  (:use (ciste [debug :only [spy]]
+               [filters :only [deffilter]])
         (clojure.core [incubator :only [-?>]])
         jiksnu.actions.stream-actions)
   (:require (jiksnu.actions [user-actions :as actions.user])

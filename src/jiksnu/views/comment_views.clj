@@ -1,8 +1,7 @@
 (ns jiksnu.views.comment-views
-  (:use (ciste [views :only (defview)])
+  (:use (ciste [views :only [defview]])
         ciste.sections.default
-        jiksnu.actions.comment-actions
-        jiksnu.views.comment-views)
+        jiksnu.actions.comment-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])

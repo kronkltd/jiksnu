@@ -1,13 +1,13 @@
 (println "user filters")
 (ns jiksnu.filters.user-filters
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
-               [filters :only (deffilter)])
-        (jiksnu session view)
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
+               [filters :only [deffilter]])
         jiksnu.actions.user-actions)
   (:require (clj-tigase [element :as element])
             (clojure.tools [logging :as log])
-            (jiksnu [abdera :as abdera])
+            (jiksnu [abdera :as abdera]
+                    [session :as session])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [subscription :as model.subscription]
@@ -66,7 +66,7 @@
 
 (deffilter #'profile :http
   [action request]
-  (if-let [user (current-user)]
+  (if-let [user (session/current-user)]
     user (log/error "no user")))
 
 (deffilter #'register :http

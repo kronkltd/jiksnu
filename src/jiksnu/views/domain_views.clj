@@ -1,9 +1,7 @@
 (ns jiksnu.views.domain-views
-  (:use (ciste core
-               [debug :only [spy]]
+  (:use (ciste [debug :only [spy]]
                [views :only [defview]])
-        jiksnu.actions.domain-actions
-        (jiksnu model session view))
+        jiksnu.actions.domain-actions)
   (:require (hiccup [core :as h])
             (jiksnu [namespace :as ns])
             (jiksnu.model [domain :as model.domain])

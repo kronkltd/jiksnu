@@ -1,5 +1,5 @@
 (ns jiksnu.filters.comment-filters
-  (:use (ciste [filters :only (deffilter)])
+  (:use (ciste [filters :only [deffilter]])
         jiksnu.actions.comment-actions)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])

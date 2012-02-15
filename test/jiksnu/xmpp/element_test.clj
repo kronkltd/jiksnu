@@ -1,10 +1,9 @@
 (ns jiksnu.xmpp.element-test
   (:use (ciste [config :only [with-environment]]
-               core debug sections)
+               core debug)
         ciste.sections.default
         [clj-factory.core :only [factory]]
-        [clojure.test :only [deftest is]]
-        (jiksnu test-helper model session view)
+        (jiksnu test-helper model session)
         jiksnu.xmpp.element
         [karras.entity :only (make)]
         midje.sweet)

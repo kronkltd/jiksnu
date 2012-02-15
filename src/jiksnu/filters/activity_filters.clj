@@ -1,15 +1,14 @@
 (ns jiksnu.filters.activity-filters
-  (:use (ciste [config :only (config)]
-               [debug :only (spy)]
-               [filters :only (deffilter)])
-        (jiksnu model session)
-        jiksnu.actions.activity-actions
-        lamina.core)
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
+               [filters :only [deffilter]])
+        jiksnu.actions.activity-actions)
   (:require (aleph [http :as http])
             (clj-tigase [core :as tigase]
                         [element :as element])
             (clojure.java [io :as io])
-            (jiksnu [abdera :as abdera])
+            (jiksnu [abdera :as abdera]
+                    [model :as model])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.sections [activity-sections :as sections.activity])
             (jiksnu.model [activity :as model.activity]
@@ -31,7 +30,7 @@
 (deffilter #'show :http
   [action request]
   (-> request :params :id
-      make-id action))
+      model/make-id action))
 
 (deffilter #'update :http
   [action request]
@@ -54,7 +53,7 @@
   (let [{:keys [items]} request
         ids (map #(.getAttribute % "id") items)
         id (first ids)]
-    (action (make-id id))))
+    (action (model/make-id id))))
 
 (deffilter #'remote-create :xmpp
   [action request]

@@ -1,12 +1,14 @@
 (ns jiksnu.views.user-views
-  (:use (ciste config core sections views)
+  (:use (ciste config
+               [core :only [with-format]]
+               [views :only [defview]])
         (ciste.sections [default :only [uri index-section show-section]])
-        (jiksnu session view)
         jiksnu.actions.user-actions
         plaza.rdf.vocabularies.foaf)
   (:require (clj-tigase [element :as element])
             (hiccup [core :as h])
-            (jiksnu [namespace :as namespace])
+            (jiksnu [model :as model]
+                    [namespace :as namespace])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [activity :as model.activity]
                           [subscription :as model.subscription]
