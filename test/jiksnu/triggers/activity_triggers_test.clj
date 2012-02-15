@@ -1,11 +1,10 @@
 (ns jiksnu.triggers.activity-triggers-test
   (:use (ciste [config :only [with-environment]]
-               core debug views)
-        clj-factory.core
-        clojure.test
-        jiksnu.test-helper
-        jiksnu.model
-        jiksnu.session
+               [debug :only [spy]])
+        (clj-factory [core :only [factory]])
+        (jiksnu test-helper
+                model
+                [session :only with-user])
         jiksnu.triggers.activity-triggers
         jiksnu.views.activity-views
         midje.sweet)
@@ -17,11 +16,11 @@
 
 (test-environment-fixture
 
-  (fact "#'notify-activity"
-    (fact "should return a packet"
-      (let [user (model.user/create (factory User))]
-        (with-user user
-          (let [activity (model.activity/create
-                          (factory Activity
-                                   {:author (:_id user)}))]
-            (notify-activity user activity) => packet/packet?))))))
+ (fact "#'notify-activity"
+   (fact "should return a packet"
+     (let [user (model.user/create (factory User))]
+       (with-user user
+         (let [activity (model.activity/create
+                         (factory Activity
+                                  {:author (:_id user)}))]
+           (notify-activity user activity) => packet/packet?))))))

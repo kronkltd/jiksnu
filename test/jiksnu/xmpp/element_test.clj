@@ -1,11 +1,12 @@
 (ns jiksnu.xmpp.element-test
   (:use (ciste [config :only [with-environment]]
-               core debug)
+               core
+               [debug :only [spy]])
         ciste.sections.default
         [clj-factory.core :only [factory]]
         (jiksnu test-helper model session)
         jiksnu.xmpp.element
-        [karras.entity :only (make)]
+        [karras.entity :only [make]]
         midje.sweet)
   (:require [clj-tigase.element :as element]
             (jiksnu [namespace :as namespace])

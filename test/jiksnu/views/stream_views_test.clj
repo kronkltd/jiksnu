@@ -14,10 +14,9 @@
 
 (test-environment-fixture
 
-  (future-fact "apply-view #'index :atom"
-    (fact "should be a map"
-      (with-serialization :http
-        (with-format :atom
-          (with-user (model.user/create (factory User))
-            (let [activity (model.activity/create (factory Activity))]
-              (apply-view {:action #'index :format :atom} [activity]) => map?)))))))
+ (future-fact "apply-view #'index :atom"
+   (fact "should be a map"
+     (with-context [:http :atom]
+       (with-user (model.user/create (factory User))
+         (let [activity (model.activity/create (factory Activity))]
+           (apply-view {:action #'index :format :atom} [activity]) => map?))))))

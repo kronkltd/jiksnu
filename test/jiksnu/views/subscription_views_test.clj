@@ -17,24 +17,24 @@
 
 (test-environment-fixture
 
-  (fact "apply-view #'unsubscribe :xmpp"
+ (fact "apply-view #'unsubscribe :xmpp"
 
-    ;; TODO: this should be an error packet
-    (future-fact "when there is not a subscription"
-      (fact "should return an error packet"))
+   ;; TODO: this should be an error packet
+   (future-fact "when there is not a subscription"
+     (fact "should return an error packet"))
 
-    (fact "when there is a subscription"
-      (let [user (model.user/create (factory User))
-            subscribee (model.user/create (factory User))
-            record (factory Subscription {:from (:_id user)
-                                          :to (:_id subscribee)})
-            request {:action #'actions.subscription/unsubscribe
-                     :format :xmpp
-                     :id "Foo"}
-            response (apply-view request record)]
+   (fact "when there is a subscription"
+     (let [user (model.user/create (factory User))
+           subscribee (model.user/create (factory User))
+           record (factory Subscription {:from (:_id user)
+                                         :to (:_id subscribee)})
+           request {:action #'actions.subscription/unsubscribe
+                    :format :xmpp
+                    :id "Foo"}
+           response (apply-view request record)]
 
-        (fact "should return a packet map"
-          response => map?)
+       (fact "should return a packet map"
+         response => map?)
 
-        (fact "should have an id"
-          (:id response) => truthy)))))
+       (fact "should have an id"
+         (:id response) => truthy)))))
