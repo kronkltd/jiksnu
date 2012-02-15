@@ -12,15 +12,15 @@
 
 
 (test-environment-fixture
-  
-  (fact "ping-request"
-    (fact "should return a ping packet"
-      (let [domain (create (factory Domain))]
-        (ping-request domain) => (contains {:body element?}))))
+ 
+ (fact "ping-request"
+   (fact "should return a ping packet"
+     (let [domain (create (factory Domain))]
+       (ping-request domain) => (contains {:body element?}))))
 
-  (fact "pending-domains-key"
-    (fact "should return a key name"
-      (let [domain (create (factory Domain))]
-        (pending-domains-key domain) => string?)))
+ (fact "pending-domains-key"
+   (fact "should return a key name"
+     (let [domain (create (factory Domain))]
+       (pending-domains-key domain) => string?)))
 
-  )
+ )

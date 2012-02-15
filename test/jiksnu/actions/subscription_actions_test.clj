@@ -14,43 +14,43 @@
 
 (test-environment-fixture
 
-  (against-background
-    [(around :facts
-             (let [user (model.user/create (factory User))] ?form))]
-    
-    (fact "subscribe"
-      (fact "when the user is not already subscribed"
+ (against-background
+   [(around :facts
+            (let [user (model.user/create (factory User))] ?form))]
+   
+   (fact "subscribe"
+     (fact "when the user is not already subscribed"
        (fact "should return a subscription"
          (let [subscribee (model.user/create (factory User))]
            (model.subscription/drop!)
            (with-user user
              (subscribe user subscribee) => subscription?)))))
-    
-    (fact "subscribed"
-      (fact "should return a subscription"
+   
+   (fact "subscribed"
+     (fact "should return a subscription"
        (let [subscribee (model.user/create (factory User))]
          (subscribed user subscribee) => subscription?)))
 
-    (fact "subscribers"
-      (fact "when there are subscribers"
-      (fact "should not be empty"
-        (let [subscriber (model.user/create (factory User))
-              subscription (model.subscription/create
-                            (factory Subscription
-                                     {:from (:_id subscriber)
-                                      :to (:_id user)}))
-              [_ subscriptions] (get-subscribers user)]
-          subscriptions => seq?
-          subscriptions => (partial every? (partial instance? Subscription))))))
+   (fact "subscribers"
+     (fact "when there are subscribers"
+       (fact "should not be empty"
+         (let [subscriber (model.user/create (factory User))
+               subscription (model.subscription/create
+                             (factory Subscription
+                                      {:from (:_id subscriber)
+                                       :to (:_id user)}))
+               [_ subscriptions] (get-subscribers user)]
+           subscriptions => seq?
+           subscriptions => (partial every? (partial instance? Subscription))))))
 
-    (fact "get-subscriptions"
-      (fact "when there are subscriptions"
-      (fact "should return a sequence of subscriptions"
-        (let [subscribee (model.user/create (factory User))
-              subscription (model.subscription/create
-                            (factory Subscription
-                                     {:from (:_id user)
-                                      :to (:_id subscribee)}))
-              [user subscriptions] (get-subscriptions user)]
-          subscriptions => (comp not empty?)
-          subscriptions => (partial every? (partial instance? Subscription))))))))
+   (fact "get-subscriptions"
+     (fact "when there are subscriptions"
+       (fact "should return a sequence of subscriptions"
+         (let [subscribee (model.user/create (factory User))
+               subscription (model.subscription/create
+                             (factory Subscription
+                                      {:from (:_id user)
+                                       :to (:_id subscribee)}))
+               [user subscriptions] (get-subscriptions user)]
+           subscriptions => (comp not empty?)
+           subscriptions => (partial every? (partial instance? Subscription))))))))

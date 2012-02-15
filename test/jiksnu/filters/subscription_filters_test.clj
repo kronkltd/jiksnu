@@ -21,51 +21,51 @@
 
 (test-environment-fixture
 
-  (against-background
-    [(around :facts
-             (do (model.user/drop!)
-                 (model.subscription/drop!)
-                 ?form))]
+ (against-background
+   [(around :facts
+            (do (model.user/drop!)
+                (model.subscription/drop!)
+                ?form))]
 
 
-    (future-fact "filter-action #'subscribe :html :http"
-      (fact "when the user is not already subscribed"
-        (fact "should return a subscription"
-          (let [user (model.user/create (factory User))
-                subscribee (model.user/create (factory User))]
-            (model.subscription/drop!)
-            (session/with-user user
-              (let [request {:params {:subscribeto (str (:_id user))}
-                             :serialization :http}]
-                (filter-action #'subscribe request) => model/subscription?))))))
+   (future-fact "filter-action #'subscribe :html :http"
+     (fact "when the user is not already subscribed"
+       (fact "should return a subscription"
+         (let [user (model.user/create (factory User))
+               subscribee (model.user/create (factory User))]
+           (model.subscription/drop!)
+           (session/with-user user
+             (let [request {:params {:subscribeto (str (:_id user))}
+                            :serialization :http}]
+               (filter-action #'subscribe request) => model/subscription?))))))
 
-    (future-fact "filter-action #'get-subscribers :xmpp"
-      (fact "when there are subscribers"
-        (fact "should not be empty"
-          (let [user (actions.user/create (factory User))
-                subscriber (actions.user/create (factory User))
-                request (-> (model.subscription/subscribers-request
-                             user subscriber)
-                            packet/make-request
-                            (assoc :serialization :xmpp))]
-            (session/with-user subscriber (subscribe user))
-            (let [[user subscribers] (filter-action #'get-subscribers request)]
-              subscribers =not=> empty?
-              subscribers => (partial every? model/subscription?))))))
+   (future-fact "filter-action #'get-subscribers :xmpp"
+     (fact "when there are subscribers"
+       (fact "should not be empty"
+         (let [user (actions.user/create (factory User))
+               subscriber (actions.user/create (factory User))
+               request (-> (model.subscription/subscribers-request
+                            user subscriber)
+                           packet/make-request
+                           (assoc :serialization :xmpp))]
+           (session/with-user subscriber (subscribe user))
+           (let [[user subscribers] (filter-action #'get-subscribers request)]
+             subscribers =not=> empty?
+             subscribers => (partial every? model/subscription?))))))
 
-    ;; (deftest filter-action-test "#'get-subscriptions :xmpp"
-    ;;   (fact "when there are subscriptions"))
+   ;; (deftest filter-action-test "#'get-subscriptions :xmpp"
+   ;;   (fact "when there are subscriptions"))
 
-    (future-fact "should return a sequence of subscriptions"
-      (let [user (actions.user/create (factory User))
-            subscribee (actions.user/create (factory User))
-            request (-> (model.subscription/subscriptions-request
-                         subscribee user)
-                        packet/make-request
-                        (assoc :serialization :xmpp))]
-        (session/with-user user (subscribe user subscribee))
-        (let [[user2 subscriptions :as response]
-              (filter-action #'get-subscriptions request)]
-          user2 => user
-          subscriptions =not=> empty?
-          subscriptions => (partial every? model/subscription?))))))
+   (future-fact "should return a sequence of subscriptions"
+     (let [user (actions.user/create (factory User))
+           subscribee (actions.user/create (factory User))
+           request (-> (model.subscription/subscriptions-request
+                        subscribee user)
+                       packet/make-request
+                       (assoc :serialization :xmpp))]
+       (session/with-user user (subscribe user subscribee))
+       (let [[user2 subscriptions :as response]
+             (filter-action #'get-subscriptions request)]
+         user2 => user
+         subscriptions =not=> empty?
+         subscriptions => (partial every? model/subscription?))))))

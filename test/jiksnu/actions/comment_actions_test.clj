@@ -14,13 +14,13 @@
 
 (test-environment-fixture
 
-  (fact "#'fetch-comments"
-    (fact "when the activity exists"
-      (fact "and there are no comments"
-        (fact "should return an empty sequence"
-          (let [actor (model.user/create (factory User))]
-            (with-user actor
-              (let [activity (actions.activity/create (factory Activity))
-                    [_ comments] (fetch-comments activity)]
-                comments => empty?)))))))
-)
+ (fact "#'fetch-comments"
+   (fact "when the activity exists"
+     (fact "and there are no comments"
+       (fact "should return an empty sequence"
+         (let [actor (model.user/create (factory User))]
+           (with-user actor
+             (let [activity (actions.activity/create (factory Activity))
+                   [_ comments] (fetch-comments activity)]
+               comments => empty?)))))))
+ )

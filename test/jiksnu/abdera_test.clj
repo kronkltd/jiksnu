@@ -2,7 +2,6 @@
   (:use (ciste [config :only [with-environment]]
                [debug :only [spy]])
         (clj-factory [core :only [fseq]])
-        clojure.test
         (jiksnu abdera test-helper)
         midje.sweet)
   (:require (jiksnu [namespace :as namespace]))
