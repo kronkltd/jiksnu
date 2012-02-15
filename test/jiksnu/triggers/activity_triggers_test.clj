@@ -4,7 +4,7 @@
         (clj-factory [core :only [factory]])
         (jiksnu test-helper
                 model
-                [session :only with-user])
+                [session :only [with-user]])
         jiksnu.triggers.activity-triggers
         jiksnu.views.activity-views
         midje.sweet)
