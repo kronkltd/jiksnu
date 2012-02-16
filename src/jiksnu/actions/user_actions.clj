@@ -1,4 +1,3 @@
-(println "reading user actions")
 (ns jiksnu.actions.user-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
