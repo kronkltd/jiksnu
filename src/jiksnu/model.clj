@@ -279,7 +279,7 @@
   (to-description [d] (str d)))
 
 ;; Factory specific support in Ciste?
-(load-file "factories.clj")
+;; (load-file "factories.clj")
 
 (definitializer
   (set-database!))

@@ -277,7 +277,6 @@
         (actions.domain/get-user-meta-url domain (:id user)))))
 
 (definitializer
-  (println "running user action initializer")
   (doseq [namespace ['jiksnu.filters.user-filters
                      'jiksnu.helpers.user-helpers
                      'jiksnu.sections.user-sections

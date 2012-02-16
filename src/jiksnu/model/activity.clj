@@ -20,7 +20,9 @@
 
 (defn create
   [activity]
-  (entity/create Activity activity))
+  (if (:author activity)
+    (entity/create Activity activity)
+    (throw (RuntimeException. "Activities must include an author"))))
 
 (defn get-comments
   [activity]
@@ -42,6 +44,7 @@
 (defn index
   "Return all the activities in the database as abdera entries"
   [& opts]
+  ;; TODO: move all this to action
   (let [user (current-user)
         option-map (apply hash-map opts)
         merged-options

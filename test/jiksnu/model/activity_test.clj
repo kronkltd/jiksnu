@@ -11,12 +11,16 @@
            jiksnu.model.User))
 
 (test-environment-fixture
+
+ (fact "#'create"
+   (fact "should create the activity"
+     (create (factory :activity)) => activity?))
  
- (fact "#'prepare-activity"
-   (fact "should return an activity"
-     (let [user (model.user/create (factory User))]
-       (with-user user
-         (let [args (factory Activity)]
-           (prepare-activity args) => activity?)))))
+ ;; (fact "#'prepare-activity"
+ ;;   (fact "should return an activity"
+ ;;     (let [user (model.user/create (factory User))]
+ ;;       (with-user user
+ ;;         (let [args (factory Activity)]
+ ;;           (prepare-activity args) => activity?)))))
 
  )

@@ -10,7 +10,6 @@
                 [session :only [with-user]])
         midje.sweet)
   (:require (jiksnu [abdera :as abdera])
-            (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.sections activity-sections))
@@ -26,7 +25,7 @@
        (set-recipients activity) => activity?)))
 
  (fact "entry->activity"
-   (let [user (actions.user/create (factory User))]
+   (let [user (model.user/create (factory User))]
      
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
@@ -46,7 +45,7 @@
    (fact "when the user is logged in"
      (fact "and it is a valid activity"
        (fact "should return that activity"
-         (let [user (actions.user/create (factory User))]
+         (let [user (model.user/create (factory User))]
            (with-user user
              (let [activity (factory Activity)]
                (create activity) => activity?)))))))

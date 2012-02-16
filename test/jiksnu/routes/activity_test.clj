@@ -1,28 +1,17 @@
 (ns jiksnu.routes.activity-test
   (:use (ciste [config :only [with-environment]]
                [debug :only [spy]])
-        clj-factory.core
-        clojure.test
-        lamina.core
-        jiksnu.test-helper
+        (clj-factory [core :only [factory]])
+        (jiksnu [routes-helper :only [response-for]]
+                [test-helper :only [test-environment-fixture]])
         midje.sweet)
-  (:require (jiksnu [routes :as r]
-                    [session :as session])
-            (jiksnu.model [activity :as model.activity]
+  (:require (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [user-actions :as actions.user])
             (ring.mock [request :as mock]))
   (:import (jiksnu.model Activity User)))
 
-
-(defn response-for
-  "Run a request against the main handler and wait for the response"
-  ([request] (response-for request 5000))
-  ([request timeout]
-     (let [ch (channel)]
-       (r/app ch request)
-       (wait-for-message ch timeout))))
 
 (test-environment-fixture
 

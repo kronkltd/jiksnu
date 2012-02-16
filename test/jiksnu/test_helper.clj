@@ -4,6 +4,7 @@
         midje.sweet
         (jiksnu [model :only [drop-all!]]))
   (:require (clojure.tools [logging :as log])
+            jiksnu.factory
             (karras [entity :as entity])))
 
 (defmacro test-environment-fixture
