@@ -18,7 +18,7 @@
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (let [response (subscriber-response-element subscription)]
-         response => element/element?))))
+         response => vector?))))
 
  (fact "subscribe-request"
    (fact "should"
@@ -27,4 +27,4 @@
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (let [response (subscribe-request subscription)]
-         response => element/element?)))))
+         response => vector?)))))
