@@ -28,8 +28,7 @@
 
 (defn get-text
   [^Element element]
-  (if element
-    (.getText element)))
+  (.getText element))
 
 (defn ^Entry new-entry
   []
@@ -77,8 +76,7 @@
 
 (defn find-children
   [element path]
-  (if element
-    (.findChild element path)))
+  (.findChild element path))
 
 (defn get-qname
   "Returns a map representing the QName of the given element"
@@ -155,10 +153,10 @@
   [feed link]
   (let [{:keys [href rel type attributes]} link
         link-element (.newLink *abdera-factory*)]
-    (if href (.setHref link-element href))
-    (if rel (.setRel link-element rel))
-    (if type (.setMimeType link-element type))
-    (if attributes
+    (when href (.setHref link-element href))
+    (when rel (.setRel link-element rel))
+    (when type (.setMimeType link-element type))
+    (when attributes
       (doseq [{:keys [name value]} attributes]
         (.setAttributeValue link-element name value)))
     (.addLink feed link-element)))
@@ -166,14 +164,14 @@
 (defn make-feed
   [{:keys [author title subtitle links entries updated id generator]}]
   (let [feed (.newFeed *abdera*)]
-    (if title (.setTitle feed title))
-    (if subtitle (.setSubtitle feed subtitle))
-    (if generator
+    (when title (.setTitle feed title))
+    (when subtitle (.setSubtitle feed subtitle))
+    (when generator
       (let [{:keys [uri name version]} generator]
         (.setGenerator feed uri name version)))
-    (if id (.setId feed id))
-    (if updated (.setUpdated feed updated))
-    (if author (.addExtension feed author))
+    (when id (.setId feed id))
+    (when updated (.setUpdated feed updated))
+    (when author (.addExtension feed author))
     (doseq [link links]
       (add-link feed link))
     (doseq [entry entries]
@@ -227,6 +225,6 @@ an Element"
        (doseq [child children]
          (if (map? child)
            (.addExtension element (parse-json-element child xmlns))
-           (if (string? child)
+           (when (string? child)
              (.setText element child))))
        element)))

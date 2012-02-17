@@ -5,6 +5,7 @@
         [jiksnu.session :only [current-user current-user-id is-admin?]])
   (:require (clojure [string :as string])
             (clojure.java [io :as io])
+            (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera])
             (jiksnu.actions [like-actions :as actions.like])
             (jiksnu.model [like :as model.like]
@@ -18,11 +19,92 @@
   [options]
   (entity/make Activity options))
 
+
+;; TODO: This operation should be performed on local posts. Remote
+;; posts without an id should be rejected
+(defn set-id
+  [activity]
+  (if (and (:id activity) (not= (:id activity) ""))
+    activity
+    (assoc activity :id (abdera/new-id))))
+
+(defn set-title
+  [activity]
+  (if (= (:title activity) "")
+    (dissoc activity :title)
+    activity))
+
+(defn set-object-id
+  [activity]
+  (if (:id (:object activity))
+    activity
+    (assoc-in activity [:object :id] (abdera/new-id))))
+
+(defn set-public
+  [activity]
+  (if (false? (:public activity))
+    activity
+    (assoc activity :public true)))
+
+(defn set-remote
+  [activity]
+  (if (:local activity)
+    activity
+    (assoc activity :local false)))
+
+(defn set-tags
+  [activity]
+  (let [tags (:tags activity )]
+    (if (string? tags)
+      (if (and tags (not= tags ""))
+        (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
+          (assoc activity :tags tag-seq)
+          (dissoc activity :tags))
+        (dissoc activity :tags))
+      (if (coll? tags)
+        activity
+        (dissoc activity :tags)))))
+
+(defn set-object-type
+  [activity]
+  (assoc-in
+   activity [:object :object-type]
+   (if-let [object-type (:object-type (:object activity))]
+     (-> object-type
+         ;; strip namespaces
+         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+     "note")))
+
+(defn set-parent
+  [activity]
+  (if (= (:parent activity) "")
+    (dissoc activity :parent)
+    activity))
+
+
+(defn prepare-activity
+  [activity]
+  (-> activity
+      set-id
+      set-title
+      set-object-id
+      set-public
+      set-remote
+      set-tags
+      set-object-type
+      set-parent
+      ))
+
 (defn create
   [activity]
-  (if (:author activity)
-    (entity/create Activity activity)
-    (throw (RuntimeException. "Activities must include an author"))))
+  (->> activity
+       prepare-activity
+       ;; make-activity
+       ((fn [a]
+          (log/debugf "Creating activity: %s" a)
+           a))
+       (entity/create Activity)))
 
 (defn get-comments
   [activity]
@@ -100,18 +182,6 @@
   [date]
   (-?>> date (.format (PrettyTime.))))
 
-(defn set-id
-  [activity]
-  (if (and (:id activity) (not= (:id activity) ""))
-    activity
-    (assoc activity :id (abdera/new-id))))
-
-(defn set-object-id
-  [activity]
-  (if (:id (:object activity))
-    activity
-    (assoc-in activity [:object :id] (abdera/new-id))))
-
 (defn set-updated-time
   [activity]
   (if (:updated activity)
@@ -141,50 +211,9 @@
   (if-let [author (current-user-id)]
     (assoc activity :author author)))
 
-(defn set-public
-  [activity]
-  (if (false? (:public activity))
-    activity
-    (assoc activity :public true)))
-
-(defn set-tags
-  [activity]
-  (let [tags (:tags activity )]
-    (if (string? tags)
-      (if (and tags (not= tags ""))
-        (if-let [tag-seq (filter #(not= % "") (string/split tags #",\s*"))]
-          (assoc activity :tags tag-seq)
-          (dissoc activity :tags))
-        (dissoc activity :tags))
-      (if (coll? tags)
-        activity
-        (dissoc activity :tags)))))
-
-(defn set-parent
-  [activity]
-  (if (= (:parent activity) "")
-    (dissoc activity :parent)
-    activity))
-
-(defn set-object-type
-  [activity]
-  (assoc-in
-   activity [:object :object-type]
-   (if-let [object-type (:object-type (:object activity))]
-     (-> object-type
-         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
-         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
-     "note")))
-
 (defn set-local
   [activity]
   (assoc activity :local true))
-
-(defn set-remote
-  [activity]
-  (if (:local activity)
-    activity
-    (assoc activity :local false)))
 
 (defn parse-pictures
   [picture]
@@ -196,12 +225,6 @@
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
 
-(defn set-title
-  [activity]
-  (if (= (:title activity) "")
-    (dissoc activity :title)
-    activity))
-
 (defn prepare-post
   [activity]
   (-> activity
@@ -211,16 +234,4 @@
       set-object-published
       set-published-time
       set-actor))
-
-(defn prepare-activity
-  [activity]
-  (-> activity
-      set-id
-      set-title
-      set-object-id
-      set-public
-      set-remote
-      set-tags
-      set-object-type
-      set-parent))
 

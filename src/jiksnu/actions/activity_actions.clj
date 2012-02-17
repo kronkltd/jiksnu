@@ -92,12 +92,6 @@
 
       nil)))
 
-
-
-
-
-
-
 (defn set-recipients
   [activity]
   (let [recipients (filter identity (:recipients activity))]
@@ -108,10 +102,7 @@
 
 (defaction create
   [params]
-  (-> params
-      model.activity/prepare-activity
-      model.activity/make-activity
-      model.activity/create))
+  (model.activity/create params))
 
 (defaction delete
   "delete it"
@@ -229,7 +220,7 @@ serialization"
         (model.activity/make-activity
          (merge original-activity
                 activity
-                (if (= (get activity :public) "public")
+                (when (= (get activity :public) "public")
                   {:public true})))]
     (model.activity/update (dissoc opts :picture))))
 
