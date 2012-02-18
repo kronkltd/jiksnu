@@ -35,6 +35,7 @@
 
 (defaction public-timeline
   [& options]
+  ;; TODO: This should pull from the public-timeline collection
   (model.activity/index))
 
 (declare user-timeline)
