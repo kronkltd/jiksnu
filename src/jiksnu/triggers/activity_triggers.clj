@@ -1,8 +1,7 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use (ciste core
-               [config :only [config]]
+  (:use (ciste [config :only [config]]
                [debug :only [spy]]
-               triggers)
+               [triggers :only [add-trigger!]])
         ciste.sections.default
         jiksnu.actions.activity-actions)
   (:require (clj-tigase [core :as tigase]
@@ -13,7 +12,6 @@
                     [namespace :as namespace])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [comment-actions :as actions.comment]
-                            [stream-actions :as actions.stream]
                             [user-actions :as actions.user])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
@@ -53,7 +51,7 @@
   (let [mentioned-domain (.getHost (URI. uri))
         link (model/extract-atom-link uri)
         mentioned-user-params (-> link
-                                  fetch-feed
+                                  abdera/fetch-feed
                                   .getAuthor
                                   actions.user/person->user)]
     ;; TODO: This couldn't be any more wrong!
