@@ -96,10 +96,7 @@
             w/click)))
 
 (When #"I click the \"([^\"]*)\" button"
-      (fn [value]
-        (-> @current-browser
-            (w/find-it {:value value})
-            w/click)))
+      click-the-button)
 
 (When #"I click the \"([^\"]*)\" button for that domain"
       (fn [value]

@@ -19,7 +19,8 @@
             (jiksnu.actions [activity-actions :as actions.activity]
                             [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
-            (jiksnu.model [domain :as model.domain]
+            (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
                           [user :as model.user]))
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
@@ -65,7 +66,7 @@
 (defmacro check-response
   [& body]
   `(and (not (fact ~@body))
-        #_(throw (RuntimeException. "failed"))))
+        (throw (RuntimeException. "failed"))))
 
 (defn expand-url
   [path]
@@ -174,3 +175,9 @@
   (fetch-page-browser
    :get
    (str "/main/xrd?uri=" (model.user/get-uri @that-user))))
+
+(defn click-the-button
+  [value]
+  (-> @current-browser
+      (w/find-it {:value value})
+      w/click))
