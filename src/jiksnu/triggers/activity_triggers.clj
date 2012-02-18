@@ -26,65 +26,59 @@
 
 (defn notify-activity
   [recipient ^Activity activity]
-  (with-context [:xmpp :xmpp]
-    (let [recipient-jid (tigase/make-jid (:username recipient) (:domain recipient))
-          author (actions.activity/get-author activity)
-          message-text (:summary activity)
-          ele (element/make-element
-               ["body" {}
-                (str (model.user/get-uri author false) ":  "
-                     (:content activity))]
-               #_["event" {"xmlns" namespace/event}
-                  (index-block [activity])])
-          message (tigase/make-packet {:to recipient-jid
-                                       :from (tigase/make-jid "updates" (config :domain))
-                                       :type :chat
-                                       ;; FIXME: generate an id for this case
-                                       :id "JIKSNU1"
-                                       :body ele})]
-      (tigase/deliver-packet! message))))
+  (let [author (actions.activity/get-author activity)
+        ele (element/make-element
+             ["body" {}
+              (str (model.user/get-uri author false) ":  "
+                   (:title activity))])
+        message (tigase/make-packet {:to (tigase/make-jid (:username recipient) (:domain recipient))
+                                     :from (tigase/make-jid "updates" (config :domain))
+                                     :type :chat
+                                     ;; FIXME: generate an id for this case
+                                     :id "JIKSNU1"
+                                     :body ele})]
+    (tigase/deliver-packet! message)))
 
-(defn show-trigger
-  [action params activity]
-  (println "show trigger"))
-
+;; deprecated
 (defn fetch-new-comments
   [action params activity]
-  (let [author (actions.activity/get-author activity)
-        domain (model.user/get-domain author)]
-    (actions.comment/fetch-comments-remote activity)))
+  (actions.comment/fetch-comments-remote activity))
 
 (defn fetch-more-comments
   [action params [activity comments]]
-  (let [author (actions.activity/get-author activity)
-        domain (model.user/get-domain author)]
-    (actions.comment/fetch-comments-remote activity)))
+  (actions.comment/fetch-comments-remote activity))
+
+(defn parse-unknown-mention
+  [uri]
+  (let [mentioned-domain (.getHost (URI. uri))
+        link (model/extract-atom-link uri)
+        mentioned-user-params (-> link
+                                  fetch-feed
+                                  .getAuthor
+                                  actions.user/person->user)]
+    ;; TODO: This couldn't be any more wrong!
+    ;; it does the right thing, but it feels wrong.
+    (actions.user/find-or-create-by-remote-id
+          mentioned-user-params mentioned-user-params)))
 
 (defn post-trigger
   [action params activity]
-  (let [user (actions.activity/get-author activity)
-        subscribers (model.subscription/subscribers user)
-        subscriber-users (filter identity
-                                 (map (comp model.user/fetch-by-id :from)
-                                      subscribers))]
+  (let [user (actions.activity/get-author activity)]
     (model.item/push user activity)
     (when-let [mentioned-uri (:mentioned-uri activity)]
-      (log/info (str "parsing link " mentioned-uri))
+      (log/infof "parsing link: %s" mentioned-uri)
       (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
         (do
           (spy mentioned-user)
           ;; set user id
           )
-        (let [mentioned-domain (.getHost (URI. mentioned-uri))
-              link (model/extract-atom-link mentioned-uri)
-              feed (abdera/fetch-feed link)
-              mentioned-user-params (actions.user/person->user (.getAuthor feed))]
-          ;; TODO: This couldn't be any more wrong!
-          (actions.user/find-or-create-by-remote-id
-           mentioned-user-params mentioned-user-params))))
+        (parse-unknown-mention mentioned-uri)))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
-    (doseq [user subscriber-users]
+    (doseq [user (->> user
+                      model.subscription/subscribers
+                      (map (comp model.user/fetch-by-id :from))
+                      (filter identity))]
       (notify-activity user activity))))
 
 (add-trigger! #'actions.comment/fetch-comments #'fetch-more-comments)
