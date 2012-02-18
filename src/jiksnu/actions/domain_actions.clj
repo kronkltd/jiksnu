@@ -55,7 +55,7 @@
   [domain]
   (model.domain/fetch-by-id (:_id domain)))
 
-(defaction find-or-create
+(defn find-or-create
   [id]
   (or (model.domain/fetch-by-id id)
       (create {:_id id})))

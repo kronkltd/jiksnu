@@ -16,3 +16,11 @@ Scenario: Editing profile
   # TODO: This is based on localized text, bad!
   And I click the "submit" button
   Then that user's name should be "John Smith"
+
+Scenario: Fetchin a User Meta document
+  Given I am not logged in
+  And a user exists
+  When I request the user-meta page for that user with a client
+  Then the alias field matches that user's uri
+  And the content-type is "application/xrds+xml"
+  And the response is sucsessful
