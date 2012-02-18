@@ -5,6 +5,7 @@
 (use '[clj-factory.core :only [factory]])
 (use '[clojure.core.incubator :only [-?>]])
 (use 'clojure.test)
+(use 'jiksnu.features-helper)
 (use 'jiksnu.http)
 (use 'jiksnu.model)
 (use 'midje.sweet)
@@ -12,151 +13,47 @@
 (require '[ciste.config :as c])
 (require '[ciste.core :as core])
 (require '[clj-webdriver.core :as w])
+(require '[clojure.tools.logging :as log])
 (require '[jiksnu.model :as model])
-(require '[jiksnu.session :as session])
-(require '[jiksnu.actions.activity-actions :as actions.activity])
-(require '[jiksnu.actions.domain-actions :as actions.domain])
-(require '[jiksnu.actions.user-actions :as actions.user])
 (require '[jiksnu.model.user :as model.user])
+(require '[jiksnu.session :as session])
 (import 'jiksnu.model.Activity)
 (import 'jiksnu.model.Domain)
 (import 'jiksnu.model.User)
 (import 'org.openqa.selenium.NoSuchElementException)
 
-(def server (atom nil))
-(def current-page (ref nil))
-(def current-browser (ref nil))
-(def domain "localhost")
-(def port 8175)
-(def that-activity (ref nil))
-(def that-domain (ref nil))
-(def that-user (ref nil))
-
-(defmacro check-response
-  [& body]
-  `(and (not (fact ~@body))
-        (throw (RuntimeException. "failed"))))
-
-(defn expand-url
-  [path]
-  (str "http://" domain
-       (if-not (= port 80)
-         (str ":" port)) path))
-
-(def page-names
-  {
-   "home"               "/"
-   "login"              "/main/login"
-   "ostatus sub"        "/main/ostatussub"
-   "host-meta"          "/.well-known/host-meta"
-   "subscription index" "/admin/subscriptions"
-   "edit profile"       "/settings/profile"
-   "user admin"         "/admin/users"
-   "domain index"       "/main/domains"})
-
 (Before
- (let [browser (w/new-driver {:browser :firefox})]
-   (c/load-config)
-   (c/set-environment! :test)
-   
-   (model/drop-all!)
-   
-   (dosync
-    (ref-set current-browser browser)
-    (reset! server (start port)))))
+ (before-hook))
 
 (After
- (@server)
- (w/quit @current-browser)
- #_(shutdown-agents))
+ (after-hook))
 
-
-(defn fetch-page
-  [method path]
-  (let [request {:method method
-                 :url (expand-url path)}
-        response (sync-http-request request)]
-    (dosync
-     (ref-set current-page response))))
-
-(defn fetch-page-browser
-  [method path]
-  (w/get-url @current-browser (expand-url path)))
-
-(defn a-domain-exists
-  []
-  (let [domain (actions.domain/create (factory Domain))]
-    (dosync
-     (ref-set that-domain domain))))
-
-(defn a-user-exists
-  []
-  (let [domain (actions.domain/current-domain)
-        user (actions.user/create
-              (factory User {:domain (:_id domain)
-                             :password "hunter2"}))]
-    (dosync
-     (ref-set that-user user))))
-
-(defn do-login
-  []
-  (-> @current-browser
-      (w/to (expand-url "/main/login")))
-  (-> @current-browser
-      (w/find-it {:name "username"})
-      (w/input-text (-> @that-user :username)))
-  (-> @current-browser
-      (w/find-it {:name "password"})
-      (w/input-text (-> @that-user :password)))
-  (-> @current-browser
-      (w/find-it {:value "Login"})
-      w/click)
-  (session/set-authenticated-user! @that-user))
-
-(defn a-normal-user-is-logged-in
-  []
-  (a-user-exists)
-  (do-login))
-
-(defn an-admin-is-logged-in
-  []
-  (a-user-exists)
-  (-> @that-user
-      (assoc :admin true)
-      actions.user/update
-      session/set-authenticated-user!)
-  (do-login))
-
-(defn get-body
-  []
-  (-> @current-page :body channel-buffer->string))
 
 ;; Given
 
-(Given #"a domain exists" a-domain-exists)
+(Given #"a domain exists"
+       a-domain-exists)
 
-(Given #"an? user exists" a-user-exists)
+(Given #"an? user exists"
+       a-user-exists)
 
-(Given #"a user exists with the password \"hunter2\"" a-user-exists)
+(Given #"a user exists with the password \"hunter2\""
+       a-user-exists)
 
 (Given #"I am not logged in"
        (fn []))
 
-(Given #"I am logged in" a-normal-user-is-logged-in)
+(Given #"I am logged in"
+       a-normal-user-is-logged-in)
 
-(Given #"a normal user is logged in" a-normal-user-is-logged-in)
+(Given #"a normal user is logged in"
+       a-normal-user-is-logged-in)
 
-(Given #"I am logged in as an admin" an-admin-is-logged-in)
-
+(Given #"I am logged in as an admin"
+       an-admin-is-logged-in)
 
 (Given #"there is a (.+) activity"
-       (fn [modifier]
-         (core/with-context [:html :http]
-           (let [activity (actions.activity/create
-                           (factory Activity
-                                    {:public (= modifier "public")}))]
-             (dosync
-              (ref-set that-activity activity))))))
+       there-is-an-activity)
 
 (Given #"I am at the (.+) page"
        (fn [page-name]
@@ -166,10 +63,7 @@
 ;; When
 
 (When #"I go to the (.+) page"
-      (fn [page-name]
-        (if-let [path (get page-names page-name)]
-          (fetch-page-browser :get path)
-          (throw (RuntimeException. (str "No path defined for " page-name))))))
+      go-to-the-page)
 
 (When #"I go to the page for that activity"
       (fn []
@@ -188,9 +82,7 @@
         (fetch-page :get "/.well-known/host-meta")))
 
 (When #"I request the user-meta page for that user"
-      (fn []
-        (fetch-page-browser :get
-                            (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
+      fetch-user-meta-for-user)
 
 (When #"I request the user-meta page for that user with a client"
       (fn []
@@ -343,9 +235,7 @@
          (w/find-it @current-browser {:class "unauthenticated"}) => w/visible?)))
 
 (Then #"that user's name should be \"(.*)\""
-      (fn [display-name]
-        (check-response
-         (actions.user/show @that-user) => (contains {:display-name display-name}))))
+      name-should-be)
 
 (Then #"I should not see the class \"(.*)\""
       (fn [class-name]
@@ -359,9 +249,7 @@
          @that-domain => (contains {:discovered true}))))
 
 (Then #"that domain should be deleted"
-      (fn []
-        (check-response
-         (actions.domain/show @that-domain) => nil)))
+      domain-should-be-deleted)
 
 (Then #"I should be at the page for that domain"
       (fn []
