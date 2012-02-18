@@ -13,6 +13,8 @@
 (test-environment-fixture
 
  (fact "#'create"
+   ()
+
    (fact "should create the domain"
      (let [options {:_id (fseq :domain)}]
        (create options) => model/domain?)))

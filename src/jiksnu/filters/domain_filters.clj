@@ -4,10 +4,6 @@
         jiksnu.actions.domain-actions)
   (:require (jiksnu.model [domain :as model.domain])))
 
-(deffilter #'check-webfinger :http
-  [action request]
-  (action))
-
 (deffilter #'create :http
   [action {{:keys [domain]} :params}]
   (action {:_id domain}))

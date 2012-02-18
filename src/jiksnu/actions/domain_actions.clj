@@ -12,10 +12,6 @@
   (:import java.net.URL
            jiksnu.model.Domain))
 
-(defaction check-webfinger
-  [domain]
-  true)
-
 (defaction create
   [options]
   (let [prepared-domain (assoc options :discovered false)]
@@ -84,21 +80,21 @@
   (model.domain/set-field domain :xmpp false)
   false)
 
-(defaction ping-response
+(defaction set-discovered!
+  "marks the domain as having been discovered"
   [domain]
-  (-> domain
-      (assoc :xmpp true)
-      (assoc :discovered true)
-      model.domain/update))
+  (model.domain/set-field domain :discovered true))
 
 (defaction set-xmpp
   [domain value]
   (model.domain/set-field domain :xmpp false))
 
-(defaction set-discovered!
-  "marks the domain as having been discovered"
+(defaction ping-response
   [domain]
-  (model.domain/set-field domain :discovered true))
+  (-> domain
+      (assoc :xmpp true)
+      set-discovered!
+      model.domain/update))
 
 (defaction discover
   [domain]

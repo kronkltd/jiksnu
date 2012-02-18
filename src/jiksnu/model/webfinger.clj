@@ -4,7 +4,7 @@
                sections)
         ciste.sections.default
         (clojure.core [incubator :only [-?>]]))
-  (:require (jiksnu [model :as model]
+  (:require (clojure.tools [logging :as log]) (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
                           [user :as model.user]))
@@ -12,7 +12,7 @@
 
 (defn fetch-host-meta
   [url]
-  (println "fetching host meta")
+  (log/infof "fetching host meta: %s" url)
   (when-let [doc (model/fetch-document url)]
     (if-let [host (seq (model/query  "//*[local-name() = 'Host']" doc))]
       doc)

@@ -189,8 +189,10 @@
     (when (not (:local user))
       (let [domain (model.user/get-domain user)]
         (if (:discovered domain)
-          (do (discover-user-xmpp user)
-              (discover-user-http user))
+          (do
+            (when (:xmpp domain)
+              (discover-user-xmpp user))
+            (discover-user-http user))
           #_(enqueue-discover user))))
     (model.user/set-field user :discovered true)
     user))

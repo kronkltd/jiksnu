@@ -208,7 +208,7 @@
 (defn ^String fetch-resource
   "Fetch the url, return the string"
   [^String url]
-  (println "fetching resource")
+  (log/infof "fetching resource: %s" url)
   (if-let [response (try (client/get url) (catch Exception ex))]
     (let [{:keys [body status]} response]
       (when (not (#{404 500} status))

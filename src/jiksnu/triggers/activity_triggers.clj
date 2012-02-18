@@ -68,20 +68,20 @@
                                  (map (comp model.user/fetch-by-id :from)
                                       subscribers))]
     (model.item/push user activity)
-
     (when-let [mentioned-uri (:mentioned-uri activity)]
       (log/info (str "parsing link " mentioned-uri))
-      (if-let [mentioned-user (spy (model.user/fetch-by-remote-id mentioned-uri))]
+      (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
         (do
+          (spy mentioned-user)
           ;; set user id
           )
-        (do 
-          (let [mentioned-domain (.getHost (URI. mentioned-uri))
-                link (model/extract-atom-link mentioned-uri)
-                ;; mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})
-                ]
-            (let [feed (abdera/fetch-feed link)]
-              (actions.user/person->user (.getAuthor feed)))))))
+        (let [mentioned-domain (.getHost (URI. mentioned-uri))
+              link (model/extract-atom-link mentioned-uri)
+              feed (abdera/fetch-feed link)
+              mentioned-user-params (actions.user/person->user (.getAuthor feed))]
+          ;; TODO: This couldn't be any more wrong!
+          (actions.user/find-or-create-by-remote-id
+           mentioned-user-params mentioned-user-params))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (doseq [user subscriber-users]
