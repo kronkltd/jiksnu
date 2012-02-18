@@ -13,5 +13,6 @@ Scenario: Editing profile
   Given I am logged in
   When I go to the edit profile page
   And I type "John Smith" into the "display-name" field
-  And I click the "Submit" button
+  # TODO: This is based on localized text, bad!
+  And I click the "submit" button
   Then that user's name should be "John Smith"

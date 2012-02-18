@@ -253,3 +253,6 @@
         (check-response
          (let [url (:_id @that-domain)]
            (w/find-it @current-browser url) => w/visible?))))
+
+(Then #"I should wait"
+      (fn [] (Thread/sleep 5000)))
