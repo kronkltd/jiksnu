@@ -87,14 +87,14 @@
 (defn fetch-page
   [method path]
   (let [request {:method method
-                 :url (spy (expand-url path))}
+                 :url (expand-url path)}
         response (sync-http-request request)]
     (dosync
      (ref-set current-page response))))
 
 (defn fetch-page-browser
   [method path]
-  (w/get-url @current-browser (spy (expand-url path))))
+  (w/get-url @current-browser (expand-url path)))
 
 (defn a-domain-exists
   []
@@ -107,6 +107,7 @@
   (let [domain (actions.domain/current-domain)
         user (model.user/create
               (factory User {:domain (:_id domain)
+                             :discovered true
                              :password "hunter2"}))]
     (dosync
      (ref-set that-user user))))

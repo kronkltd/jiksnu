@@ -489,7 +489,7 @@
   [activity & _]
   (let [user (get-author activity)]
     [:article.hentry.notice
-     {:id (:id activity)
+     {:id (:_id activity)
       :about (uri activity)
       :typeof "sioc:Post"}
      [:header

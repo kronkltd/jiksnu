@@ -92,7 +92,7 @@
 (When #"I click \"([^\"]*)\""
       (fn [value]
         (-> @current-browser
-            (w/find-it {:value value})
+            (w/find-element {:value value})
             w/click)))
 
 (When #"I click the \"([^\"]*)\" button"
@@ -101,19 +101,19 @@
 (When #"I click the button with class \"([^\"]*)\""
       (fn [class-name]
         (-> @current-browser
-            (w/find-it {:class class-name})
+            (w/find-element {:class class-name})
             w/click)))
 
 (When #"I click the \"([^\"]*)\" button for that domain"
       (fn [value]
         (-> @current-browser
-            (w/find-it {:value value})
+            (w/find-element {:value value})
             w/click)))
 
 (When #"I type \"(.*)\" into the \"(.*)\" field"
       (fn [value field-name]
         (-> @current-browser
-            (w/find-it {:name field-name})
+            (w/find-element {:name field-name})
             (w/send-keys value))))
 
 (When #"I put my username in the \"username\" field"
@@ -121,7 +121,7 @@
         (let [field-name "username"
               value (:username @that-user)]
           (-?> @current-browser
-               (w/find-it {:name field-name})
+               (w/find-element {:name field-name})
                (w/send-keys value)))))
 
 (When #"I put my password in the \"password\" field"
@@ -130,7 +130,7 @@
               ;; TODO: Get password from somewhere
               value "hunter2"]
           (-> @current-browser
-              (w/find-it {:name field-name})
+              (w/find-element {:name field-name})
               (w/send-keys value)))))
 
 ;; Then
@@ -143,19 +143,20 @@
 (Then #"I should see an activity"
       (fn []
         (check-response
-         (w/find-it @current-browser {:class "activities"}) => truthy)))
+         (w/find-element @current-browser {:class "activities"}) => truthy)))
 
 (Then #"I should see that activity"
       (fn []
         (check-response
          (println "then")
-         (w/find-it @current-browser
-                    :article #_{:id (str (:_id @that-activity))}) => w/visible?)))
+         (w/find-element @current-browser
+                         {:tag :article
+                          :id (str (:_id @that-activity))}) => w/exists?)))
 
 (Then #"I should see a list of (.*)"
       (fn [class-name]
         (check-response
-         (w/find-it @current-browser {:class class-name}) => truthy)))
+         (w/find-element @current-browser {:class class-name}) => truthy)))
 
 (Then #"I should see a subscription list"
       (fn []
@@ -206,23 +207,23 @@
 (Then #"it should have a \"([^\"]+)\" field"
       (fn [field-name]
         (check-response
-         (w/find-it @current-browser {:name field-name})) => w/visible?))
+         (w/find-element @current-browser {:name field-name})) => w/exists?))
 
 (Then #"I should see a form"
       (fn []
         (check-response
-         (w/find-it @current-browser {:name "form"}) => w/visible?)))
+         (w/find-element @current-browser {:tag :form}) => w/exists?)))
 
 (Then #"I should see a domain named \"(.*)\""
       (fn [name]
         (check-response
-         (w/find-it @current-browser :a #_{:href (str "/main/domains/" name)}) => w/visible?)))
+         (w/find-element @current-browser {:tag  :a :href (str "/main/domains/" name)}) => w/exists?)))
 
 (Then #"I should see that domain"
       (fn []
         (check-response
          (-> @current-browser
-             (w/find-it {:class "domain-id"})
+             (w/find-element {:class "domain-id"})
              .getText) => (:_id @that-domain))))
 
 (Then #"I should get a not found error"
@@ -233,12 +234,12 @@
 (Then #"I should be logged in"
       (fn []
         (check-response
-         (w/find-it @current-browser {:class "authenticated"}) => w/visible?)))
+         (w/find-element @current-browser {:class "authenticated"}) => w/exists?)))
 
 (Then #"I should not be logged in"
       (fn []
         (check-response
-         (w/find-it @current-browser {:class "unauthenticated"}) => w/visible?)))
+         (w/find-element @current-browser {:class "unauthenticated"}) => w/exists?)))
 
 (Then #"that user's name should be \"(.*)\""
       name-should-be)
@@ -246,8 +247,9 @@
 (Then #"I should not see the class \"(.*)\""
       (fn [class-name]
         (check-response
-         (w/find-it @current-browser
-                    {:class class-name}) => (throws NoSuchElementException))))
+         (w/find-element @current-browser
+                         {:class class-name}) =not=> w/exists?
+                         #_(throws NoSuchElementException))))
 
 (Then #"that domain should be discovered"
       (fn []
@@ -261,7 +263,11 @@
       (fn []
         (check-response
          (let [url (:_id @that-domain)]
-           (w/find-it @current-browser url) => w/visible?))))
+           (w/find-element @current-browser url) => w/exists?))))
 
 (Then #"I should wait"
       (fn [] (Thread/sleep 5000)))
+
+(Then #"I should wait forever"
+      (fn [] @(promise)))
+
