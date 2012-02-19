@@ -26,7 +26,7 @@ Feature: Domains
     Given I am logged in as an admin
     And a domain exists
     And I am at the domain index page
-    When I click the "Discover" button
+    When I click the button with class "discover-button"
     Then I should be at the page for that domain
     And that domain should be discovered
     
@@ -34,7 +34,7 @@ Feature: Domains
     Given I am logged in as an admin
     And I am at the domain index page
     When I type "example.com" into the "domain" field
-    And I click the "Add" button
+    And I click the button with class "add-button"
     Then I should be at the domain index page
     And I should see a domain named "example.com"
     

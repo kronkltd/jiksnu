@@ -98,6 +98,12 @@
 (When #"I click the \"([^\"]*)\" button"
       click-the-button)
 
+(When #"I click the button with class \"([^\"]*)\""
+      (fn [class-name]
+        (-> @current-browser
+            (w/find-it {:class class-name})
+            w/click)))
+
 (When #"I click the \"([^\"]*)\" button for that domain"
       (fn [value]
         (-> @current-browser
@@ -180,6 +186,9 @@
                                                 (str ".*" (expand-url path)
                                                      ".*"))))))
 
+(Then #"log the response"
+      (fn [] (-> @current-page :body channel-buffer->string spy)))
+
 (Then #"the host field matches the current domain"
       (fn []
         (check-response
@@ -202,7 +211,7 @@
 (Then #"I should see a form"
       (fn []
         (check-response
-         (w/find-it @current-browser :form) => w/visible?)))
+         (w/find-it @current-browser {:name "form"}) => w/visible?)))
 
 (Then #"I should see a domain named \"(.*)\""
       (fn [name]

@@ -15,7 +15,7 @@
      [:div.input
       [:input {:type "test" :name "domain"}]]]
     [:div.actions
-     [:button.btn.primary {:type "submit"}
+     [:button.btn.primary.add-button {:type "submit"}
       "Add"]]]])
 
 

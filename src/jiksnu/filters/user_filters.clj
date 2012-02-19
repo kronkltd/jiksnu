@@ -1,4 +1,3 @@
-(println "user filters")
 (ns jiksnu.filters.user-filters
   (:use (ciste [config :only [config]]
                [debug :only [spy]]

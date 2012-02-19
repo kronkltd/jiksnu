@@ -39,7 +39,6 @@
 (defn before-hook
   []
   (try
-    (log/info "before hook")
     (let [browser (w/new-driver {:browser :firefox})]
       (c/load-config)
 
@@ -88,14 +87,14 @@
 (defn fetch-page
   [method path]
   (let [request {:method method
-                 :url (expand-url path)}
+                 :url (spy (expand-url path))}
         response (sync-http-request request)]
     (dosync
      (ref-set current-page response))))
 
 (defn fetch-page-browser
   [method path]
-  (w/get-url @current-browser (expand-url path)))
+  (w/get-url @current-browser (spy (expand-url path))))
 
 (defn a-domain-exists
   []
