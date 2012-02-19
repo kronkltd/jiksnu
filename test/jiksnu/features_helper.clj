@@ -116,13 +116,13 @@
   (-> @current-browser
       (w/to (expand-url "/main/login")))
   (-> @current-browser
-      (w/find-it {:name "username"})
+      (w/find-element {:name "username"})
       (w/input-text (-> @that-user :username)))
   (-> @current-browser
-      (w/find-it {:name "password"})
+      (w/find-element {:name "password"})
       (w/input-text (-> @that-user :password)))
   (-> @current-browser
-      (w/find-it {:value "Login"})
+      (w/find-element {:value "Login"})
       w/click)
   (session/set-authenticated-user! @that-user))
 
@@ -178,5 +178,5 @@
 (defn click-the-button
   [value]
   (-> @current-browser
-      (w/find-it {:value value})
+      (w/find-element {:value value})
       w/click))
