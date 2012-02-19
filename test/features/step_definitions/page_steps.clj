@@ -73,9 +73,8 @@
 
 (When #"I go to the page for that domain"
       (fn []
-        (core/with-context [:html :http]
-          (let [path (str "/main/domains/" (:_id @that-domain))]
-            (fetch-page-browser :get path)))))
+        (let [path (str "/main/domains/" (:_id @that-domain))]
+          (fetch-page-browser :get path))))
 
 (When #"I request the host-meta page with a client"
       (fn []
