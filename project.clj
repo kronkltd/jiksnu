@@ -40,8 +40,8 @@
   :dev-dependencies [
                      [midje "1.3.1" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
-                     ;; [lein-cljsbuild "0.0.9"]
-                     [clj-webdriver "0.5.0"]
+                     [lein-cljsbuild "0.0.9"]
+                     [clj-webdriver "0.6.0-SNAPSHOT"]
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
                      ]
   :java-source-path "src"
