@@ -62,60 +62,7 @@
 
 (defview #'profile :html
   [request user]
-  {:body
-   [:div
-    [:form {:method "post" :action "/settings/profile"}
-     [:fieldset
-      [:legend "Edit User"]
-
-      [:div.clearfix
-       [:label {:for "username"} "Username"]
-       [:div.input
-        [:input {:type "text" :name "username" :value (:username user)}]]]
-
-      [:div.clearfix
-       [:label {:for "domain"} "Domain"]
-       [:div.input
-        [:input {:type "text" :name "domain" :value (:domain user)}]]]
-      
-      [:div.clearfix
-       [:label {:for "display-name"} "Display Name"]
-       [:div.input
-        [:input {:type "text" :name "display-name" :value (:display-name user)}]]]
-      
-      [:div.clearfix
-       [:label {:for "first-name"} "First Name:"]
-       [:div.input
-        [:input {:type "text" :name "first-name" :value (:first-name user) }]]]
-      
-      [:div.clearfix
-       [:label {:for "last-name"} "Last Name"]
-       [:div.input
-        [:input {:type "text" :name "last-name" :vaue (:last-name user)}]]]
-
-      [:div.clearfix
-       [:label {:for "email"} "Email"]
-       [:div.input
-        [:input {:type "email" :name "email" :value (:email user)}]]]
-
-      [:div.clearfix
-       [:label {:for "bio"} "Bio"]
-       [:div.input
-        [:textarea {:name "bio"}
-         (:bio user)]]]
-
-      [:div.clearfix
-       [:label {:for "location"} "Location"]
-       [:div.input
-        [:input {:type "text" :name "location" :value (:location user)}]]]
-
-      [:div.clearfix
-       [:label {:for "url"} "Url"]
-       [:div.input
-        [:input {:type "text" :name "url" :value (:url user)}]]]
-
-      [:div.actions
-       [:input.btn.primary {:type "submit" :value "submit"}]]]]]})
+  {:body [:div (edit-form user)]})
 
 (defview #'register :html
   [request user]
@@ -125,52 +72,9 @@
    :headers {"Location" (uri user)}})
 
 (defview #'register-page :html
-  [request _]
+  [request user]
   {:body
-   [:section
-    [:form {:method "post" :action "/main/register"}
-     [:fieldset
-      [:legend "Register"]
-
-      [:div.clearfix
-       [:label {:for "username"} "Username"]
-       [:div.input
-        [:input {:type "text" :name "username"}]]]
-
-      [:div.clearfix
-       [:label {:for "password"} "Password"]
-       [:div.input
-        [:input {:type "password" :name "password"}]]]
-
-      [:div.clearfix
-       [:label {:for "confirm-password"} "Confirm Password"]
-       [:div.input
-        [:input {:type "password" :name "confirm-password"}]]]
-
-      [:div.clearfix
-       [:label {:for "email"} "Email"]
-       [:div.input
-        [:input {:type "email" :name "email"}]]]
-
-      [:div.clearfix
-       [:label {:for "display-name"} "Display Name"]
-       [:div.input
-        [:input {:type "text" :name "display-name"}]]]
-
-      [:div.clearfix
-       [:label {:for "location"} "Location"]
-       [:div.input
-        [:input {:type "text" :name "location"}]]]
-
-      [:div.clearfix
-       [:label {:for "accepted"} "I have checked the box"]
-       [:div.input
-        [:input {:type "checkbox" :name "accepted"}]]]
-
-
-      [:div.actions
-       [:input.btn.primary {:type "submit" :value "Register"}]]
-      ]]]})
+   [:section (register-form user)]})
 
 (defview #'remote-create :xmpp
   [request user]
