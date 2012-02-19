@@ -19,7 +19,6 @@ gems
 lib
 logs
 newrelic
+pom.xml
 resources/public/cljs
 target
-.clojurescript-output
-newrelic
