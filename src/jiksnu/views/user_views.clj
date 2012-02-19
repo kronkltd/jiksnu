@@ -62,7 +62,7 @@
 
 (defview #'profile :html
   [request user]
-  {:body [:div (edit-form user)]})
+  {:body [:div (sections.user/edit-form user)]})
 
 (defview #'register :html
   [request user]
@@ -74,7 +74,7 @@
 (defview #'register-page :html
   [request user]
   {:body
-   [:section (register-form user)]})
+   [:section (sections.user/register-form user)]})
 
 (defview #'remote-create :xmpp
   [request user]
