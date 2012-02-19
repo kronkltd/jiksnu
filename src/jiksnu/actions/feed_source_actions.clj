@@ -16,14 +16,8 @@
           topic :hub.topic} :params} params]
     challenge))
 
-(defaction admin-index
-  [options]
-  (model.feed-source/index))
-
-
 ;; TODO: special case local subscriptions
 (defaction subscribe
-  
   [user]
   (if-let [hub-url (:hub user)]
     (let [topic (helpers.user/feed-link-uri user)]

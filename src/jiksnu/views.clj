@@ -4,15 +4,11 @@
                [debug :only [spy]]
                formats sections views)
         ciste.sections.default
-        (jiksnu model session)
-        jiksnu.sections.layout-sections)
+        (jiksnu model session))
   (:require (clj-tigase [core :as tigase])
             (hiccup [core :as h])
             (jiksnu [namespace :as ns]
                     [xmpp :as xmpp])
-            (jiksnu.sections [auth-sections :as sections.auth]
-                             [activity-sections :as sections.activity])
-            (jiksnu.xmpp [element :as element])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
 
@@ -42,94 +38,11 @@
   [:script {:type "text/javascript"
             :src src}])
 
-(defn main-content
-  [response]
-  (list
-   (when (:flash response)
-     [:div#flash (:flash response)])
-   (when (and (:post-form response)
-              (current-user))
-     (sections.activity/activity-form))
-   (when (:title response)
-     [:h1 (:title response)])
-   (:body response)))
+;; (defmethod apply-view-by-format :atom
+;;   [request response])
 
-(defn page-template-content
-  [response]
-  {:headers {"Content-Type" "text/html; charset=utf-8"}
-   :body
-   (str
-    "<!doctype html>\n"
-    (h/html
-     [:html
-      {:xmlns:sioc ns/sioc
-       :xmlns:dc ns/dc
-       :xmlns:foaf ns/foaf
-       :xmlns:dcterms ns/dcterms
-       :prefix "foaf: http://xmlns.com/foaf/0.1/
-                dc: http://purl.org/dc/elements/1.1/
-                sioc: http://rdfs.org/sioc/ns#
-                dcterms: http://purl.org/dc/terms/"}
-      [:head
-       [:meta {:charset "utf-8"}]
-       [:title
-        (when (:title response)
-          (str (:title response) " - "))
-        (config :site :name)]
-       [:link {:type "text/css"
-               :href "/bootstrap/css/bootstrap.css"
-               :rel "stylesheet"
-               :media "screen"}]
-       [:link {:type "text/css"
-               :href "/themes/classic/standard.css"
-               :rel "stylesheet"
-               :media "screen"}]
-       (map
-        (fn [format]
-          [:link {:type (:type format)
-                  :href (:href format)
-                  :rel (or (:rel format) "alternate")
-                  :title (:title format)}])
-        (concat (:formats response)
-                (:links response)))]
-      [:body
-       [:div.navbar.navbar-fixed-top
-        [:div.navbar-inner
-         [:div.container
-          [:a.brand.home {:href "/"} (config :site :name)]
-          [:ul.nav.pull-right (sections.auth/login-section response)]]]]
-       [:div.container
-        [:div.row
-         [:div.span2 (left-column-section response)]
-         [:div#content.span10
-          [:div#notification-area.row
-           [:div.span10 (devel-warning response)]]
-          [:div.row
-           (if-not (:single response)
-             (list [:div.span7 (main-content response)]
-                   [:div.span3 (right-column-section response)])
-             [:div.span10 (main-content response)])]]]
-        [:footer.row
-         [:p "Copyright © 2011 KRONK Ltd."]
-         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]
-         ]]
-       ;; (include-script "/cljs/bootstrap.js")
-       (include-script "http://code.jquery.com/jquery-1.7.1.js")
-       (include-script "/bootstrap/js/bootstrap.js")
-       #_[:script {:type "text/javascript"}
-          "goog.require('jiksnu.core');"]]]))})
 
-(defmethod apply-template :html
-  [request response]
-  (merge response
-         (if (not= (:template response) false)
-           (page-template-content
-            (if (:flash request)
-              (assoc response :flash (:flash request))
-              response)))))
 
-(defmethod apply-view-by-format :atom
-  [request response])
 
 (defmethod format-as :n3
   [request format response]
@@ -151,6 +64,9 @@
   [format request response]
   (format-as :json request response))
 
+
+
+
 (defmethod serialize-as :http
   [serialization response-map]
   (assoc-in
@@ -161,5 +77,5 @@
 
 (defmethod serialize-as :xmpp
   [serialization response]
-  (if response
+  (when response
     (tigase/make-packet response)))

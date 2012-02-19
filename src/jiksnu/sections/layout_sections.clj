@@ -1,10 +1,16 @@
 (ns jiksnu.sections.layout-sections
-  (:use (ciste [config :only [environment]])
+  (:use (ciste [core :only [apply-template]]
+               [config :only [config environment]])
         (ciste.sections [default :only [link-to show-section]])
-        (jiksnu [session :only [current-user is-admin?]]))
-  (:require (jiksnu.actions [subscription-actions :as actions.subscription])
+        (jiksnu [session :only [current-user is-admin?]]
+                [views :only [include-script]]))
+  (:require (hiccup [core :as h])
+            (jiksnu [namespace :as ns])
+            (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.model [subscription :as model.subscription])
-            (jiksnu.sections [group-sections :as sections.group]
+            (jiksnu.sections [activity-sections :as sections.activity]
+                             [auth-sections :as sections.auth]
+                             [group-sections :as sections.group]
                              [subscription-sections :as sections.subscription]
                              [user-sections :as sections.user])))
 
@@ -19,22 +25,22 @@
 
 (defn side-navigation
   []
-  [:ul.nav.nav-list.well
-   (let [nav-info
-         [["Home"
-           [["/"                         "Public"]
-            ["/users"                    "Users"]
-            ["/groups"                   "Groups"]]]
-          
-          (when (is-admin?)
-            ["Admin"
-             [["/admin/activities"         "Activities"]
-              ["/main/domains"             "Domains"]
-              ["/admin/settings"           "Settings"]
-              ["/admin/feed-sources"       "Feed Sources"]
-              ["/admin/feed-subscriptions" "Feed Subscriptions"]
-              ["/admin/users"              "Users"]
-              ["/admin/subscriptions"      "Subscriptions"]]])]]
+  (let [nav-info
+        [["Home"
+          [["/"                         "Public"]
+           ["/users"                    "Users"]
+           ["/groups"                   "Groups"]]]
+         
+         (when (is-admin?)
+           ["Admin"
+            [["/admin/activities"         "Activities"]
+             ["/main/domains"             "Domains"]
+             ["/admin/settings"           "Settings"]
+             ["/admin/feed-sources"       "Feed Sources"]
+             ["/admin/feed-subscriptions" "Feed Subscriptions"]
+             ["/admin/users"              "Users"]
+             ["/admin/subscriptions"      "Subscriptions"]]])]]
+    [:ul.nav.nav-list.well
      (reduce concat
              (map
               (fn [[header links]]
@@ -44,9 +50,9 @@
                            [:li
                             [:a {:href url} label]])
                          links)))
-              nav-info)))])
+              nav-info))]))
 
-
+;; TODO: this will be dynamically included
 (defn top-users
   []
   [:div
@@ -96,3 +102,90 @@
        [:p "This application is running in the " [:code ":development"] " environment. Data contained on this site may be deleted at any time and without notice. Any data provided to this application, (including user and login information) should be considered potentially at risk. " [:strong "Do not transmit sensitive information. Authentication mechanisms may become compromised."]]
        [:p "Veryify your configuration settings and restart this application with the environment variable set to "
         [:code ":production"] " to continue."]])))
+
+(defn main-content
+  [response]
+  (list
+   (when (:flash response)
+     [:div#flash (:flash response)])
+   (when (and (:post-form response)
+              (current-user))
+     (sections.activity/activity-form))
+   (when (:title response)
+     [:h1 (:title response)])
+   (:body response)))
+
+(defn page-template-content
+  [response]
+  {:headers {"Content-Type" "text/html; charset=utf-8"}
+   :body
+   (str
+    "<!doctype html>\n"
+    (h/html
+     [:html
+      {:xmlns:sioc ns/sioc
+       :xmlns:dc ns/dc
+       :xmlns:foaf ns/foaf
+       :xmlns:dcterms ns/dcterms
+       :prefix "foaf: http://xmlns.com/foaf/0.1/
+                dc: http://purl.org/dc/elements/1.1/
+                sioc: http://rdfs.org/sioc/ns#
+                dcterms: http://purl.org/dc/terms/"}
+      [:head
+       [:meta {:charset "utf-8"}]
+       [:title
+        (when (:title response)
+          (str (:title response) " - "))
+        (config :site :name)]
+       [:link {:type "text/css"
+               :href "/bootstrap/css/bootstrap.css"
+               :rel "stylesheet"
+               :media "screen"}]
+       [:link {:type "text/css"
+               :href "/themes/classic/standard.css"
+               :rel "stylesheet"
+               :media "screen"}]
+       (map
+        (fn [format]
+          [:link {:type (:type format)
+                  :href (:href format)
+                  :rel (or (:rel format) "alternate")
+                  :title (:title format)}])
+        (concat (:formats response)
+                (:links response)))]
+      [:body
+       [:div.navbar.navbar-fixed-top
+        [:div.navbar-inner
+         [:div.container
+          [:a.brand.home {:href "/"} (config :site :name)]
+          [:ul.nav.pull-right (sections.auth/login-section response)]]]]
+       [:div.container
+        [:div.row
+         [:div.span2 (left-column-section response)]
+         [:div#content.span10
+          [:div#notification-area.row
+           [:div.span10 (devel-warning response)]]
+          [:div.row
+           (if-not (:single response)
+             (list [:div.span7 (main-content response)]
+                   [:div.span3 (right-column-section response)])
+             [:div.span10 (main-content response)])]]]
+        [:footer.row
+         [:p "Copyright © 2011 KRONK Ltd."]
+         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]
+         ]]
+       ;; (include-script "/cljs/bootstrap.js")
+       (include-script "http://code.jquery.com/jquery-1.7.1.js")
+       (include-script "/bootstrap/js/bootstrap.js")
+       #_[:script {:type "text/javascript"}
+          "goog.require('jiksnu.core');"]]]))})
+
+
+(defmethod apply-template :html
+  [request response]
+  (merge response
+         (if (not= (:template response) false)
+           (page-template-content
+            (if (:flash request)
+              (assoc response :flash (:flash request))
+              response)))))

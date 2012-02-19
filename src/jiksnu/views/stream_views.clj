@@ -157,16 +157,19 @@
 (defview #'group-timeline :html
   [request [group activities]]
   {:title (str group " group")
+   :post-form true
    :body (index-section activities)})
 
 (defview #'home-timeline :html
   [request activities]
   {:title "Home Timeline"
+   :post-form true
    :body (index-section activities)})
 
 (defview #'public-timeline :html
   [request activities]
   {:title "Public Timeline"
+   :post-form true
    :formats (sections.activity/index-formats activities)
    ;; :aside '([:p "foo"])
    :body (index-block activities)})
@@ -205,6 +208,7 @@
   [request [user activities]]
   {:user user
    :title (:display-name user)
+   :post-form true
    :body (index-section activities)
    :formats (sections.activity/timeline-formats user)})
 

@@ -1,7 +1,7 @@
 (ns jiksnu.actions.admin.feed-source-actions-test
   (:use (jiksnu [test-helper :only [test-environment-fixture]])
         jiksnu.actions.admin.feed-source-actions
-        midje.swee))
+        midje.sweet))
 
 (test-environment-fixture
 

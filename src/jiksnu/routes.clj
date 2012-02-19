@@ -37,6 +37,7 @@
                                   [feed-source-actions :as admin.feed-source]
                                   [subscription-actions :as admin.sub]
                                   [user-actions :as admin.user])
+            jiksnu.sections.layout-sections
             (ring.middleware [file :as file]
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
