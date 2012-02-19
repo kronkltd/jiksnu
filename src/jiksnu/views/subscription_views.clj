@@ -53,6 +53,12 @@
               :type "application/json"}]
    :body (sections.subscription/subscriptions-index subscriptions)})
 
+(defview #'get-subscriptions :json
+  [request [user subscriptions]]
+  {:body (sections.subscription/subscriptions-index-json subscriptions)})
+
+
+
 (defview #'unsubscribe :html
   [request subscription]
   {:status 302
