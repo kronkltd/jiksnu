@@ -24,3 +24,15 @@ Scenario: Ostatus subscription page
   Given I am not logged in
   When I go to the ostatus sub page
   Then I should see a form
+
+Scenario: User subscriptions, default
+  Given I am not logged in
+  And a user exists
+  When I go to that user's subscriptions page
+  Then I should get a HTML document
+
+Scenario: User subscriptions, JSON
+  Given I am not logged in
+  And a user exists
+  When I go to that user's subscriptions page with a "JSON" format
+  Then I should get a JSON document
