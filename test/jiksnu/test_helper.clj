@@ -17,11 +17,4 @@
      (load-config)
 
      (with-environment :test
-       #_(background
-        (around :contents
-                (do
-                  ?form
-                  #_(.shutdown @*thread-pool*))))
-
-       ~@body
-       )))
+       ~@body)))
