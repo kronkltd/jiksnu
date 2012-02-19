@@ -4,10 +4,8 @@
 (use 'ciste.sections.default)
 (use '[clj-factory.core :only [factory]])
 (use '[clojure.core.incubator :only [-?>]])
-(use 'clojure.test)
 (use 'jiksnu.features-helper)
 (use 'jiksnu.http)
-(use 'jiksnu.model)
 (use 'midje.sweet)
 (use 'ring.mock.request)
 (require '[ciste.config :as c])
@@ -17,10 +15,6 @@
 (require '[jiksnu.model :as model])
 (require '[jiksnu.model.user :as model.user])
 (require '[jiksnu.session :as session])
-(import 'jiksnu.model.Activity)
-(import 'jiksnu.model.Domain)
-(import 'jiksnu.model.User)
-(import 'org.openqa.selenium.NoSuchElementException)
 
 (Before
  (before-hook))
@@ -31,29 +25,16 @@
 
 ;; Given
 
-(Given #"a domain exists"
-       a-domain-exists)
-
-(Given #"an? user exists"
-       a-user-exists)
-
-(Given #"a user exists with the password \"hunter2\""
-       a-user-exists)
+(Given #"a domain exists"                             a-domain-exists)
+(Given #"a user exists"                               a-user-exists)
+(Given #"a user exists with the password \"hunter2\"" a-user-exists)
+(Given #"I am logged in"                              a-normal-user-is-logged-in)
+(Given #"I am logged in as an admin"                  an-admin-is-logged-in)
+(Given #"a normal user is logged in"                  a-normal-user-is-logged-in)
+(Given #"there is a (.+) activity"                    there-is-an-activity)
 
 (Given #"I am not logged in"
        (fn []))
-
-(Given #"I am logged in"
-       a-normal-user-is-logged-in)
-
-(Given #"a normal user is logged in"
-       a-normal-user-is-logged-in)
-
-(Given #"I am logged in as an admin"
-       an-admin-is-logged-in)
-
-(Given #"there is a (.+) activity"
-       there-is-an-activity)
 
 (Given #"I am at the (.+) page"
        (fn [page-name]
@@ -62,8 +43,7 @@
 
 ;; When
 
-(When #"I go to the (.+) page"
-      go-to-the-page)
+(When #"I go to the (.+) page"                        go-to-the-page)
 
 (When #"I go to the page for that activity"
       (fn []
@@ -133,6 +113,10 @@
               (w/send-keys value)))))
 
 ;; Then
+
+(Then #"that domain should be deleted" domain-should-be-deleted)
+
+
 
 (Then #"I should be an admin"
       (fn []
@@ -247,16 +231,12 @@
       (fn [class-name]
         (check-response
          (w/find-element @current-browser
-                         {:class class-name}) =not=> w/exists?
-                         #_(throws NoSuchElementException))))
+                         {:class class-name}) =not=> w/exists?)))
 
 (Then #"that domain should be discovered"
       (fn []
         (check-response
          @that-domain => (contains {:discovered true}))))
-
-(Then #"that domain should be deleted"
-      domain-should-be-deleted)
 
 (Then #"I should be at the page for that domain"
       (fn []
