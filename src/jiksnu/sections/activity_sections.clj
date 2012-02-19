@@ -174,25 +174,6 @@
    [:option {:value "custom"} "Custom"]
    [:option {:value "private"} "Private"]])
 
-(defn type-line
-  [activity]
-  [:div.type-line
-   [:ul.nav.nav-tabs
-    [:li
-     [:a {:href "#note" :data-toggle "tab"} "Note"]]
-    [:li
-     [:a {:href "#status" :data-toggle "tab"} "Status"]]
-    [:li
-     [:a {:href "#checkin" :data-toggle "tab"} "Checkin"]]
-    [:li
-     [:a {:href "#picture" :data-toggle "tab"} "Picture"]]
-    [:li
-     [:a {:href "#event" :data-toggle "tab"} "Event"]]
-    [:li
-     [:a {:href "#bookmark" :data-toggle "tab"} "Bookmark"]]
-    [:li
-     [:a {:href "#question" :data-toggle "tab"} "Question"]]]])
-
 (defn like-button
   [activity]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/like")}
@@ -298,40 +279,102 @@
     [:section.comments
      [:h4.hidden "Comments"]]))
 
-(defn question-form
+(defn poll-form
+  [activity]
+  (list
+   [:legend "Post a question"]
+   (control-line "Question" "question" "text")
+   (control-line "Answer" "answer[0]" "text")
+   (control-line "Answer" "answer[1]" "text")
+   (control-line "Answer" "answer[2]" "text")
+   (control-line "Answer" "answer[3]" "text")
+   (control-line "Answer" "answer[4]" "text")))
+
+(defn note-form
+  [activity]
+  (let [{:keys [id parent-id content title]} activity]
+    (list
+     [:legend "Post an activity"]
+     (when (:id activity)
+       [:div.control-group
+        [:input {:type "hidden" :name "_id" :value id}]])
+     (when parent-id
+       [:div.control-group
+        [:input {:type "hidden" :name "parent" :value parent-id}]])
+     (control-line "Title" "title" "text")
+     [:div.control-group
+      [:label.control-label {:for "content"} "Content"]
+      [:div.controls
+       [:textarea.span6 {:name "content" :rows "3"} content]]]
+     (add-button-section activity)
+     (pictures-section activity)
+     (location-section activity)
+     (tag-section activity))))
+
+(defn status-form
   [activity]
   
   )
 
+(defn event-form
+  [activity]
+  (list
+   [:legend "Post an event"]
+   (control-line "Title" "title" "type")))
+
+(defn type-line
+  [activity]
+  [:div.type-line
+   [:ul.nav.nav-tabs
+    [:li
+     [:a {:href "#post-note" :data-toggle "tab"} "Note"]]
+
+    [:li
+     [:a {:href "#post-status" :data-toggle "tab"} "Status"]]
+
+    ;; [:li
+    ;;  [:a {:href "#post-checkin" :data-toggle "tab"} "Checkin"]]
+
+    ;; [:li
+    ;;  [:a {:href "#post-picture" :data-toggle "tab"} "Picture"]]
+
+    [:li
+     [:a {:href "#post-event" :data-toggle "tab"} "Event"]]
+
+    ;; [:li
+    ;;  [:a {:href "#post-bookmark" :data-toggle "tab"} "Bookmark"]]
+
+    [:li
+     [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]
+
+    ]])
+
 (defn activity-form
   ([] (activity-form (Activity.)))
   ([activity]
-     (let [{:keys [id parent-id content title]} activity]
-       [:div.post-form
-        [:form {:method "post"
-                :action "/notice/new"
-                :enctype "multipart/form-data"}
-         [:fieldset
-          [:legend "Post an activity"]
-          (when (:id activity)
-            [:div.control-group
-             [:input {:type "hidden" :name "_id" :value id}]])
-          (when parent-id
-            [:div.control-group
-             [:input {:type "hidden" :name "parent" :value parent-id}]])
-          (type-line activity)
-          (control-line "Title" "title" "text")
-          [:div.control-group
-           [:label.control-label {:for "content"} "Content"]
-           [:div.controls
-            [:textarea.span6 {:name "content" :rows "3"} content]]]
-          (add-button-section activity)
-          (pictures-section activity)
-          (location-section activity)
-          (tag-section activity)
-          [:div.actions
-           (privacy-select activity)
-           [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])))
+     [:div.post-form
+      (type-line activity)
+      [:form {:method "post"
+              :action "/notice/new"
+              :enctype "multipart/form-data"}
+       [:fieldset
+        [:div.tab-content
+         [:div#post-note.tab-pane.active
+          (note-form activity)]
+         
+         [:div#post-status.tab-pane
+          (status-form activity)]
+         
+         [:div#post-poll.tab-pane
+          (poll-form activity)]
+
+         [:div#post-event.tab-pane
+          (event-form activity)]
+         
+         ]
+        [:div.actions
+         (privacy-select activity)
+         [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]]))
 
 ;; dynamic sections
 
@@ -414,7 +457,7 @@
   [activity & _]
   {"published" (:published activity)
    "updated" (:updated activity)
-   "verb" "post"
+   "verb" (or (:verb activity) "post")
    "title" (:title activity)
    ;; "content" (:content activity)
    "id" (:id activity)
