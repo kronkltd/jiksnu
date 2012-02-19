@@ -224,7 +224,7 @@
         (check-response
          (-> @current-browser
              (w/find-element {:class "domain-id"})
-             .getText) => (:_id @that-domain))))
+             w/text) => (:_id @that-domain))))
 
 (Then #"I should get a not found error"
       (fn []
