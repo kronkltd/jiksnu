@@ -179,7 +179,9 @@
        (include-script "http://code.jquery.com/jquery-1.7.1.js")
        (include-script "/bootstrap/js/bootstrap.js")
        #_[:script {:type "text/javascript"}
-          "goog.require('jiksnu.core');"]]]))})
+          "goog.require('jiksnu.core');"]
+
+       ]]))})
 
 
 (defmethod apply-template :html

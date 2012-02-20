@@ -311,5 +311,5 @@
        jm/wrap-user-binding
        handler/site
        middleware/wrap-http-serialization
-       jm/newrelic-report
+       ;; jm/newrelic-report
        stacktrace/wrap-stacktrace)))

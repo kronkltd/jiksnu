@@ -72,4 +72,5 @@
              "-XX:MaxPermSize=1024m"
              "-javaagent:/home/duck/projects/jiksnu/newrelic/newrelic.jar"
              "-Dfile.encoding=UTF-8"
-             ])
+             ]
+  )

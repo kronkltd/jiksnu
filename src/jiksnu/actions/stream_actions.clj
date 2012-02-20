@@ -1,14 +1,14 @@
 (ns jiksnu.actions.stream-actions
   (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction
-                            with-serialization
-                            with-format]]
+               [core :only [defaction with-context]]
                [debug :only [spy]])
         ciste.sections.default
         (clojure.core [incubator :only [-?>]])
         (jiksnu model)
         jiksnu.actions.stream-actions)
-  (:require (hiccup [core :as h])
+  (:require (clojure.data [json :as json])
+            (clojure.tools [logging :as log])
+            (hiccup [core :as h])
             (jiksnu [abdera :as abdera]
                     [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity])
@@ -16,8 +16,7 @@
             (jiksnu.model [activity :as model.activity]
                           [user :as model.user])
             (lamina [core :as l]))
-  (:import jiksnu.model.User)
-  )
+  (:import jiksnu.model.User))
 
 
 (defaction direct-message-timeline
@@ -52,20 +51,30 @@
   []
   [])
 
+(defn format-message
+  [message]
+  (if-let [records (:records message)]
+    (with-context [:http :json]
+      (->> records
+           ;; pr-str spy
+           show-section
+           json/json-str
+           ))))
+
 (defn stream-handler
   [ch request]
-  (l/siphon
-   (->> ciste.core/*actions*
-        (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
-        (l/map*
-         (fn [message]
-           (if-let [records (:records message)]
-             (->> records
-                  index-line-minimal
-                  h/html
-                  (with-serialization :http)
-                  (with-format :html))))))
-   ch))
+  (log/info "Openening connection stream")
+  (let [stream (l/channel)]
+    (future
+     (l/siphon
+      (->> ciste.core/*actions*
+           (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
+           (l/map* format-message)
+           (l/map* (fn [m] (str (spy m) "\r\n"))))
+      stream))
+    (l/enqueue ch {:status 200
+                   :headers {"content-type" "application/json"}
+                   :body stream})))
 
 (defaction user-timeline
   [user]
