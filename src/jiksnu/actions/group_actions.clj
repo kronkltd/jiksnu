@@ -1,11 +1,12 @@
 (ns jiksnu.actions.group-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]))
-  (:require (jiksnu.model [group :as model.group])))
+  (:require (jiksnu.model [group :as model.group]))
+  (:import jiksnu.model.Group))
 
 (defaction new-page
   []
-  true)
+  (Group.))
 
 (defaction index
   []

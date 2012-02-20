@@ -36,6 +36,11 @@
       :author
       model.user/fetch-by-id))
 
+(defn like-button
+  [activity]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/like")}
+   [:button.btn {:type "submit"}
+    [:i.icon-heart] [:span.button-text "like"]]])
 
 (defn acl-link
   [entry activity]
@@ -173,24 +178,6 @@
    [:option {:value "group"} "Group"]
    [:option {:value "custom"} "Custom"]
    [:option {:value "private"} "Private"]])
-
-(defn like-button
-  [activity]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/like")}
-   [:button.btn {:type "submit"}
-    [:i.icon-heart] [:span.button-text "like"]]])
-
-(defn update-button
-  [activity]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
-   [:button.btn {:type "submit"}
-    [:i.icon-refresh] [:span.button-text "update"]]])
-
-(defn edit-button
-  [activity]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
-   [:button.btn {:type "submit"}
-    [:i.icon-edit] [:span.button-text "edit"]]])
 
 (defn author?
   [activity user]
@@ -349,39 +336,42 @@
 
     ]])
 
-(defn activity-form
-  ([] (activity-form (Activity.)))
-  ([activity]
-     [:div.post-form
-      (type-line activity)
-      [:form {:method "post"
-              :action "/notice/new"
-              :enctype "multipart/form-data"}
-       [:fieldset
-        [:div.tab-content
-         [:div#post-note.tab-pane.active
-          (note-form activity)]
-         
-         [:div#post-status.tab-pane
-          (status-form activity)]
-         
-         [:div#post-poll.tab-pane
-          (poll-form activity)]
-
-         [:div#post-event.tab-pane
-          (event-form activity)]
-         
-         ]
-        [:div.actions
-         (privacy-select activity)
-         [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]]))
-
 ;; dynamic sections
 
+(defsection add-form [Activity :html]
+  [activity]
+  [:div.post-form
+   (type-line activity)
+   [:form {:method "post"
+           :action "/notice/new"
+           :enctype "multipart/form-data"}
+    [:fieldset
+     [:div.tab-content
+      [:div#post-note.tab-pane.active
+       (note-form activity)]
+      
+      [:div#post-status.tab-pane
+       (status-form activity)]
+      
+      [:div#post-poll.tab-pane
+       (poll-form activity)]
 
-(defsection title [Activity]
-  [activity & options]
-  (:title activity))
+      [:div#post-event.tab-pane
+       (event-form activity)]
+      
+      ]
+     [:div.actions
+      (privacy-select activity)
+      [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
+
+(defsection edit-button [Activity :html]
+  [activity]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
+   [:button.btn {:type "submit"}
+    [:i.icon-edit] [:span.button-text "edit"]]])
+
+
+
 
 (defsection uri [Activity]
   [activity & options]
@@ -446,7 +436,6 @@
 (defsection index-section [Activity :xmpp]
   [activities & options]
   ["pubsub" {} (index-block activities)])
-
 
 
 
@@ -622,3 +611,21 @@
     [:hashtags
      ;; TODO: list hashtags
      ]]])
+
+
+
+(defsection title [Activity]
+  [activity & options]
+  (:title activity))
+
+
+
+
+
+(defsection update-button [Activity :html]
+  [activity]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
+   [:button.btn {:type "submit"}
+    [:i.icon-refresh] [:span.button-text "update"]]])
+
+

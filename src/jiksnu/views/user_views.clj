@@ -22,31 +22,33 @@
            tigase.xml.Element
            org.apache.abdera2.model.Entry))
 
+
+
 (defview #'create :html
   [request user]
-  {:status 303,
+  {:status 303
+   :flash "user has been created"
    :template false
    :headers {"Location" (uri user)}})
 
 (defview #'delete :html
   [request _]
   {:status 303
+   :flash "user has been deleted"
    :template false
    :headers {"Location" "/admin/users"}})
 
 (defview #'discover :html
   [request user]
   {:status 303
+   :flash "discovering user"
    :template false
    :headers {"Location" (uri user)}})
-
-(defview #'fetch-remote :xmpp
-  [request user]
-  (helpers.user/vcard-request request user))
 
 (defview #'fetch-updates :html
   [request user]
   {:status 303
+   :flash "fetching updates"
    :template false
    :headers {"Location" (uri user)}})
 
@@ -55,14 +57,10 @@
   {:title "Users"
    :body (index-section users)})
 
-(defview #'index :json
-  [request users]
-  {:body
-   {:items [(index-section users)]}})
-
 (defview #'profile :html
   [request user]
-  {:body [:div (sections.user/edit-form user)]})
+  {:title "Edit Profile"
+   :body [:div (sections.user/edit-form user)]})
 
 (defview #'register :html
   [request user]
@@ -73,15 +71,51 @@
 
 (defview #'register-page :html
   [request user]
-  {:body
-   [:section (sections.user/register-form user)]})
+  {:title "Register"
+   :body (sections.user/register-form user)})
 
-(defview #'remote-create :xmpp
+(defview #'update :html
   [request user]
-  (let [{:keys [to from]} request]
-    {:from to
-     :to from
-     :type :result}))
+  {:status 302
+   :template false
+   :flash "User updated"
+   :headers {"Location" (uri user)}})
+
+(defview #'update-hub :html
+  [request user]
+  {:status 302
+   :flash "updating hub"
+   :template false
+   :headers {"Location" (uri user)}})
+
+(defview #'update-profile :html
+  [request user]
+  {:status 303
+   :template false
+   :flash "Profile updated"
+   :headers {"Location" "/settings/profile"}})
+
+(defview #'user-meta :html
+  [request user]
+  {:template false
+   :headers {"Content-Type" "application/xrds+xml"
+             "Access-Control-Allow-Origin" "*"}
+   :body (h/html (model.webfinger/user-meta user))})
+
+
+
+
+
+
+(defview #'index :json
+  [request users]
+  {:body
+   {:items [(index-section users)]}})
+
+
+
+
+
 
 (defview #'show :n3
   [request user]
@@ -93,12 +127,33 @@
      (with-out-str (rdf/model-to-format rdf-model :n3)))
    :template :false})
 
+
+
+
+
 (defview #'show :rdf
   [request user]
   {:body
    (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
      (with-out-str (rdf/model-to-format rdf-model :xml-abbrev)))
    :template :false})
+
+
+
+
+
+
+
+(defview #'fetch-remote :xmpp
+  [request user]
+  (helpers.user/vcard-request request user))
+
+(defview #'remote-create :xmpp
+  [request user]
+  (let [{:keys [to from]} request]
+    {:from to
+     :to from
+     :type :result}))
 
 (defview #'show :xmpp
   [request user]
@@ -111,31 +166,6 @@
      :from to
      :to from}))
 
-(defview #'update :html
-  [request user]
-  {:status 302
-   :template false
-   :headers {"Location" (uri user)}})
-
-(defview #'update-hub :html
-  [request user]
-  {:status 302
-   :template false
-   :headers {"Location" (uri user)}})
-
-(defview #'update-profile :html
-  [request user]
-  {:status 303
-   :template false
-   :flash "Profile updated"
-   :headers {"Location" "/settings/profile"}})
-
 (defview #'xmpp-service-unavailable :xmpp
   [request _])
 
-(defview #'user-meta :html
-  [request user]
-  {:template false
-   :headers {"Content-Type" "application/xrds+xml"
-             "Access-Control-Allow-Origin" "*"}
-   :body (h/html (model.webfinger/user-meta user))})

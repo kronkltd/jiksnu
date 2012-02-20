@@ -12,18 +12,21 @@
   [request domain]
   {:status 303
    :template false
+   :flash "Domain has been created"
    :headers {"Location" "/main/domains"}})
 
 (defview #'delete :html
   [request domain]
   {:status 303
    :template false
+   :flash "Domain has been deleted"
    :headers {"Location" "/main/domains"}})
 
 (defview #'discover :html
   [request domain]
   {:status 303
    :template false
+   :flash "Discovering domain"
    :headers {"Location" "/main/domains"}})
 
 (defview #'find-or-create :html
@@ -37,19 +40,6 @@
   {:title "Domains"
    :single true
    :body (sections.domain/index-block domains)})
-
-(defview #'ping :xmpp
-  [request domain]
-  (model.domain/ping-request domain))
-
-(defview #'ping-error :xmpp
-  [request _])
-
-(defview #'ping-response :xmpp
-  [request domain]
-  #_{:status 303
-     :template false
-     :headers {"Location" "/main/domains"}})
 
 (defview #'show :html
   [request domain]
@@ -76,4 +66,21 @@
            (if title
              [:Title title])])
         (:links xrd))])}))
+
+
+
+
+
+(defview #'ping :xmpp
+  [request domain]
+  (model.domain/ping-request domain))
+
+(defview #'ping-error :xmpp
+  [request _])
+
+(defview #'ping-response :xmpp
+  [request domain]
+  #_{:status 303
+     :template false
+     :headers {"Location" "/main/domains"}})
 

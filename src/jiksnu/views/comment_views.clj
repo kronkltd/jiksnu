@@ -18,14 +18,18 @@
   (-> (response/redirect-after-post "/")
       (assoc :template false)))
 
-(defview #'comment-response :xmpp
-  [request activity])
-
 (defview #'fetch-comments :html
   [request [activity comments]]
   (-> (response/redirect-after-post (uri activity))
       (assoc :template false)
       (assoc :flash "comments are being fetched")))
+
+
+
+
+
+(defview #'comment-response :xmpp
+  [request activity])
 
 (defview #'fetch-comments :xmpp
   [request [activity comments]]
@@ -35,6 +39,6 @@
   [request activity]
   {:type :get
    :body
-   (element/make-element (packet/pubsub-items
-                          (str namespace/microblog ":replies:item=" (:id activity))))})
+   (element/make-element
+    (packet/pubsub-items (str namespace/microblog ":replies:item=" (:id activity))))})
 
