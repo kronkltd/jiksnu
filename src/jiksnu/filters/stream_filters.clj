@@ -10,7 +10,7 @@
 
 (deffilter #'friends-timeline :http
   [action request]
-  (-> request :params :id model.user/show action))
+  (-> request :params :id model.user/get-user action))
 
 (deffilter #'inbox :http
   [action request]
@@ -43,7 +43,7 @@
   (let [{{:keys [id username]} :params} request]
     (if-let [user (if id
                     (model.user/fetch-by-id id)
-                    (model.user/show username))]
+                    (model.user/get-user username))]
       (action user))))
 
 (deffilter #'user-timeline :xmpp

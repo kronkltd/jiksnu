@@ -18,7 +18,7 @@
 (defaction login
   [username password]
   ;; TODO: fix this
-  (if-let [user (model.user/show username)]
+  (if-let [user (model.user/get-user username)]
     ;; TODO: encrypt
     (if (= password (:password user))
       user
