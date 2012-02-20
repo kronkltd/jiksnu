@@ -88,7 +88,7 @@
 
 (defn fetch-all
   [& options]
-  (apply entity/fetch-all User options)) 
+  (apply entity/fetch User options))
 
 (defn get-user
   ([username] (get-user username (config :domain)))

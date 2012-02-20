@@ -8,7 +8,7 @@
                                         show-section-format show-section-serialization
                                         delete-button delete-button-format
                                         link-to
-                                        ]])
+                                        index-section index-section-type index-section-format]])
         (clj-gravatar [core :only [gravatar-image]])
         (jiksnu session)
         (plaza.rdf.vocabularies foaf))
@@ -300,21 +300,27 @@
 
 (defn index-line
   [user]
-  [:li
-   [:p (display-avatar user)]
-   [:p (link-to user)]
-   [:ul.buttons
-    [:li (subscribe-button user)]
-    #_[:li (discover-button user)]
-    [:li (update-button user)]
-    [:li (edit-button user)]
-    [:li (delete-button user)]
-    ]])
+  [:tr
+   [:td (display-avatar user)]
+   [:td
+    [:p (link-to user)]
+    [:p (:username user) "@" (:domain user)]
+    [:p (:url user)]
+    [:p (:bio user)]]
+   [:td
+    [:ul.buttons
+     [:li (subscribe-button user)]
+     #_[:li (discover-button user)]
+     [:li (update-button user)]
+     [:li (edit-button user)]
+     [:li (delete-button user)]]]])
 
-(defn index-section
-  [users]
-  [:ul.users.unstyled
-   (map index-line users)])
+(defsection index-section [User :html]
+  [users & _]
+  [:table.table.users
+   [:thead]
+   [:tbody
+    (map index-line users)]])
 
 (defn push-subscribe-button
   [user]

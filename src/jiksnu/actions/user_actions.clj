@@ -88,7 +88,7 @@
 
 (defaction index
   [options]
-  (model.user/fetch-all))
+  (model.user/fetch-all {} :sort [(sugar/asc :username)]))
 
 (defaction profile
   [& _])

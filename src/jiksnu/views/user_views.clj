@@ -51,7 +51,7 @@
 (defview #'index :html
   [request users]
   {:title "Users"
-   :body (sections.user/index-section users)})
+   :body (index-section users)})
 
 (defview #'index :json
   [request users]
