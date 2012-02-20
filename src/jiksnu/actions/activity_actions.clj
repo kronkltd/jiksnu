@@ -53,6 +53,8 @@
   [id]
   (model.activity/fetch-by-id id))
 
+(def ^QName activity-object-type (QName. namespace/as "object-type"))
+
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
@@ -87,12 +89,11 @@ serialization"
                              (.getLink "ostatus:conversation")
                              .getHref str)
            tags (filter (complement #{""}) (abdera/parse-tags entry))
-           object-element (.getExtension entry (QName. namespace/as "object" "activity"))
-           object-type (-?> object-element
-                            (.getExtension (QName. namespace/as "object-type"))
+           object-element (.getExtension entry (QName. namespace/as "object"))
+           object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
+                                (-?> entry (.getExtension activity-object-type)))
                             .getText model/strip-namespaces)
-           object-id (-?> object-element
-                          (.getSimpleExtension object-element namespace/atom "id" ""))
+           object-id (-?> object-element (.getFirstChild (QName. namespace/atom "id")))
            opts (apply merge
                        (when published        {:published published})
                        (when content          {:content content})
@@ -108,7 +109,7 @@ serialization"
                        {:id id
                         :author (:_id user)
                         :public true
-                        :object (merge (when object-type {:type object-type})
+                        :object (merge (when object-type {:object-type object-type})
                                        (when object-id {:id object-id}))
                         :comment-count (abdera/get-comment-count entry)}
                        extension-maps)]
