@@ -1,8 +1,8 @@
 (ns jiksnu.sections.domain-sections
   (:use (ciste [debug :only [spy]]
                [sections :only [defsection]] )
-        (ciste.sections [default :only [link-to link-to-format]]))
-  #_(:require (jiksnu.sections [link-sections :as sections.link]))
+        (ciste.sections [default :only [link-to link-to-format]])
+        (jiksnu [views :only [control-line]]))
   (:import jiksnu.model.Domain))
 
 (defn add-form
@@ -10,10 +10,7 @@
   [:form.well {:method "post" :actions "/main/domains"}
    [:fieldset
     [:legend "Add Domain"]
-    [:div.clearfix
-     [:label {:for "domain"} "Domain"]
-     [:div.input
-      [:input {:type "test" :name "domain"}]]]
+    (control-line "Domain" "domain" "text")
     [:div.actions
      [:button.btn.primary.add-button {:type "submit"}
       "Add"]]]])

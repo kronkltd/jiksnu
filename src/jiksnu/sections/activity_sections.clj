@@ -5,6 +5,7 @@
         (ciste.sections [default :only [index-section show-section delete-button full-uri
                                         link-to uri title index-block index-line]])
         (clojure.core [incubator :only [-?>]])
+        (jiksnu [views :only [control-line]])
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
   (:require (hiccup [core :as h])
@@ -319,10 +320,7 @@
             [:div.control-group
              [:input {:type "hidden" :name "parent" :value parent-id}]])
           (type-line activity)
-          [:div.control-group
-           [:label.control-label {:for "title"} "Title"]
-           [:div.controls
-            [:input {:type "text" :name "title" :value title}]]]
+          (control-line "Title" "title" "text")
           [:div.control-group
            [:label.control-label {:for "content"} "Content"]
            [:div.controls

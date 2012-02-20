@@ -1,15 +1,14 @@
 (ns jiksnu.sections.feed-source-sections
-  (:use (ciste [sections :only [defsection]])
-        (ciste.sections [default :only [add-form show-section]]))
+  (:use (ciste [debug :only [spy]]
+               [sections :only [defsection]])
+        (ciste.sections [default :only [add-form show-section index-line index-section link-to]])
+        (jiksnu [views :only [control-line]]))
   (:import jiksnu.model.FeedSource))
 
-(defn control-line
-  [label name type & options]
-  [:div.control-group
-   [:label.control-label {:for name} label]
-   [:div.controls
-    [:input {:type "text" :name name}]]])
-
+(defsection link-to [FeedSource :html]
+  [source & _]
+  [:a {:href (str "/admin/feed-sources/" (:_id source))}
+   (:topic source)])
 
 (defsection add-form [FeedSource :html]
   [source & options]
@@ -30,11 +29,31 @@
 (defsection show-section [FeedSource :html]
   [source & options]
   (let [{:keys [topic callback challenge mode
-                verify-token lease-seconds]} source]
+                verify-token lease-seconds created updated]} (spy source)]
     [:div
+     [:p "Id: " (:_id source)]
      [:p "Topic: " topic]
      [:p "Callback: " callback]
      [:p "Challenge: " challenge]
-     [:p "Mode: " mode]
+     [:p "Mode: " (or mode "unknown")]
      [:p "Verify Token: " verify-token]
+     [:p "Created: " created]
+     [:p "Updated: " updated]
      [:p "Lease Seconds: " lease-seconds]]))
+
+(defsection index-line [FeedSource :html]
+  [source & _]
+  [:tr
+   [:td]
+   [:td (link-to source)]
+   [:td (:mode source)]])
+
+(defsection index-section [FeedSource :html]
+  [sources & _]
+  [:table.table
+   [:thead
+    [:tr
+     [:th]
+     [:th "Topic"]
+     [:th "Mode"]]]
+   [:tbody (map index-line sources)]])

@@ -16,6 +16,13 @@
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
 
+(defn control-line
+  [label name type & options]
+  [:div.control-group
+   [:label.control-label {:for name} label]
+   [:div.controls
+    [:input {:type type :name name}]]])
+
 (defsection full-uri :default
   [record & options]
   (str "http://" (config :domain)
@@ -109,7 +116,6 @@
        ;; (include-script "/cljs/bootstrap.js")
        (include-script "http://code.jquery.com/jquery-1.7.1.js")
        (include-script "/bootstrap/js/bootstrap.js")
-       (include-script "https://browserid.org/include.js")
        #_[:script {:type "text/javascript"}
           "goog.require('jiksnu.core');"]]]))})
 

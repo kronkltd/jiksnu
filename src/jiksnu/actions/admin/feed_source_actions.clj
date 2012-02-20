@@ -1,18 +1,22 @@
 (ns jiksnu.actions.admin.feed-source-actions
   (:use (ciste [core :only [defaction]]
                [config :only [definitializer]]))
-  (:require (jiksnu [model :as model])))
+  (:require (jiksnu [model :as model])
+            (jiksnu.model [feed-source :as model.feed-source])))
 
-(defn index
+(defaction index
+  "List feed sources
+
+for admin use"
   []
-  
-  []
-  )
+  (model.feed-source/fetch-all
+   {}
+   ;; TODO: hardcoded configurable value
+   :limit 20))
 
 (defaction show
   [source]
-  ;; TODO: look up the source
-  true)
+  source)
 
 (definitializer
   ;; (try

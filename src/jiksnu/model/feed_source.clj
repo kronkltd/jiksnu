@@ -17,14 +17,18 @@
       options))))
 
 (defn fetch
-  [options]
-  (entity/fetch-one FeedSource options))
+  [options & args]
+  (apply entity/fetch-one FeedSource options args))
 
 (defn find-or-create
   [options]
   (or (fetch options)
       (create options)))
 
-(defn index
-  []
-  (entity/fetch FeedSource {}))
+(defn fetch-all
+  [options & args]
+  (apply entity/fetch FeedSource options args))
+
+(defn fetch-by-id
+  [id]
+  (entity/fetch-by-id FeedSource id))

@@ -59,6 +59,7 @@
     [[:get  "/admin/activities"]                        #'admin.activity/index]
     [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
     [[:get  "/admin/feed-sources"]                      #'admin.feed-source/index]
+    [[:get  "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
     ;; [[:get  "/admin/feed-subscribers"]                  #'admin.feed-subscriber/index]
     [[:post "/admin/users"]                             #'admin.user/create]
     [[:get  "/admin/users"]                             #'admin.user/index]
