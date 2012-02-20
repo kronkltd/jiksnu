@@ -58,10 +58,6 @@
   (let [{params :params} request]
     (action params)))
 
-(deffilter #'admin-index :http
-  [action request]
-  (action)
-  )
 
 (deffilter #'index :xmpp
   [action request]

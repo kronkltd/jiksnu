@@ -33,7 +33,8 @@
                             [tag-actions :as tag]
                             [user-actions :as user])
             (jiksnu.actions.admin [activity-actions :as admin.activity]
-                                  [subscription-actions :as admin.sub])
+                                  [subscription-actions :as admin.sub]
+                                  [user-actions :as admin.user])
             (lamina [core :as l])
             (ring.middleware [file :as file]
                              [file-info :as file-info]
@@ -57,8 +58,8 @@
     [[:get  "/admin/activities"]                        #'admin.activity/index]
     [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
     [[:get  "/admin/push/subscriptions"]                #'push/admin-index]
-    [[:post "/admin/users"]                             #'user/admin-create]
-    [[:get  "/admin/users"]                             #'user/admin-index]
+    [[:post "/admin/users"]                             #'admin.user/create]
+    [[:get  "/admin/users"]                             #'admin.user/index]
     [[:get  "/admin/settings"]                          #'setting/admin-edit-page]]))
 
 (def authenticated-routes

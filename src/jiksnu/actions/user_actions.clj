@@ -74,10 +74,6 @@
         domain (get-domain user)]
     (model.user/create user)))
 
-(defaction admin-create
-  [options]
-  (create options))
-
 (defaction delete
   [id]
   (model.user/delete id))
@@ -89,10 +85,6 @@
 (defn fetch-by-jid
   [jid]
   (model.user/get-user (.getLocalpart jid) (.getDomain jid)))
-
-(defaction admin-index
-  [options]
-  (model.user/fetch-all))
 
 (defaction index
   [options]
