@@ -2,8 +2,9 @@
   (:use (ciste [core :only [with-format]]
                [debug :only [spy]]
                [sections :only [defsection]])
-        (ciste.sections [default :only [index-section show-section delete-button full-uri
-                                        link-to uri title index-block index-line]])
+        (ciste.sections [default :only [add-form edit-button index-section show-section
+                                        delete-button full-uri link-to uri title
+                                        index-block index-line update-button]])
         (clojure.core [incubator :only [-?>]])
         (jiksnu [views :only [control-line]])
         (plaza.rdf core)
@@ -339,7 +340,7 @@
 ;; dynamic sections
 
 (defsection add-form [Activity :html]
-  [activity]
+  [activity & _]
   [:div.post-form
    (type-line activity)
    [:form {:method "post"
@@ -365,7 +366,7 @@
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
 
 (defsection edit-button [Activity :html]
-  [activity]
+  [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
    [:button.btn {:type "submit"}
     [:i.icon-edit] [:span.button-text "edit"]]])
@@ -623,7 +624,7 @@
 
 
 (defsection update-button [Activity :html]
-  [activity]
+  [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
    [:button.btn {:type "submit"}
     [:i.icon-refresh] [:span.button-text "update"]]])

@@ -1,7 +1,7 @@
 (ns jiksnu.sections.layout-sections
   (:use (ciste [core :only [apply-template]]
                [config :only [config environment]])
-        (ciste.sections [default :only [link-to show-section]])
+        (ciste.sections [default :only [add-form link-to show-section]])
         (jiksnu [session :only [current-user is-admin?]]
                 [views :only [include-script]]))
   (:require (hiccup [core :as h])
@@ -12,7 +12,8 @@
                              [auth-sections :as sections.auth]
                              [group-sections :as sections.group]
                              [subscription-sections :as sections.subscription]
-                             [user-sections :as sections.user])))
+                             [user-sections :as sections.user]))
+  (:import jiksnu.model.Activity))
 
 (defn user-info-section
   [user]
@@ -110,7 +111,7 @@
      [:div#flash (:flash response)])
    (when (and (:post-form response)
               (current-user))
-     (sections.activity/activity-form))
+     (add-form (Activity.)))
    (when (:title response)
      [:h1 (:title response)])
    (:body response)))

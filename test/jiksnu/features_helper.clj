@@ -58,6 +58,7 @@
   (try
     (@server)
     (w/quit @current-browser)
+    (println " ")
     #_(shutdown-agents)
     (catch Exception ex
       (log/error ex))))
@@ -75,14 +76,17 @@
 
 (def page-names
   {
-   "home"               "/"
-   "login"              "/main/login"
-   "ostatus sub"        "/main/ostatussub"
-   "host-meta"          "/.well-known/host-meta"
-   "subscription index" "/admin/subscriptions"
-   "edit profile"       "/settings/profile"
-   "user admin"         "/admin/users"
-   "domain index"       "/main/domains"})
+   "home"                           "/"
+   "login"                          "/main/login"
+   "ostatus sub"                    "/main/ostatussub"
+   "host-meta"                      "/.well-known/host-meta"
+   "subscription index"             "/admin/subscriptions"
+   "edit profile"                   "/settings/profile"
+   "user admin"                     "/admin/users"
+   "domain index"                   "/main/domains"
+   "feed source admin index"        "/admin/feed-sources"
+   "feed subscriptions admin index" "/admin/feed-subscriptions"
+   })
 
 (defn fetch-page
   [method path]

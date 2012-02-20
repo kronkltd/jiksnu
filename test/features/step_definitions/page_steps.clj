@@ -131,7 +131,6 @@
 (Then #"I should see that activity"
       (fn []
         (check-response
-         (println "then")
          (w/find-element @current-browser
                          {:tag :article
                           :id (str (:_id @that-activity))}) => w/exists?)))
