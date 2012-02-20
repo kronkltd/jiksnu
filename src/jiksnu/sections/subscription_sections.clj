@@ -3,17 +3,22 @@
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])))
 
+(defn show-minimal
+  [user]
+  [:span.vcard
+   (sections.user/display-avatar user 24)
+   [:span.fn.n.minimal-text (:display-name user)]])
+
+
 (defn subscriber-line
   [subscription]
-  [:li
-   (sections.user/display-avatar
-    (-> subscription :from model.user/fetch-by-id) 24)])
+  [:li (let [user (-> subscription :from model.user/fetch-by-id)]
+         (show-minimal user))])
 
 (defn subscriptions-line
   [subscription]
-  [:li
-   (sections.user/display-avatar
-    (-> subscription :to model.user/fetch-by-id) 24)])
+  [:li (let [user (-> subscription :to model.user/fetch-by-id)]
+         (show-minimal user))])
 
 
 

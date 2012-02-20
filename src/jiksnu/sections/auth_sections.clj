@@ -1,32 +1,30 @@
 (ns jiksnu.sections.auth-sections
   (:use (ciste [debug :only [spy]])
-        (jiksnu [session :only [current-user]])))
+        (jiksnu [session :only [current-user]])
+        (jiksnu.sections [user-sections :only [display-avatar-img]])))
 
 (defn logout-button
   [user]
-  [:ul.nav.secondary-nav
-   [:li.dropdown
-    [:a.dropdown-toggle {:href "#"} (:display-name user)]
-    [:ul.dropdown-menu
-     [:li
-      [:a {:href "/main/logout"} "Logout"]]]]])
+  [:li.dropdown
+   [:a.dropdown-toggle {:href "#" :data-toggle "dropdown"}
+    #_(display-avatar-img user 18)
+    (:display-name user) [:b.caret]]
+   [:ul.dropdown-menu
+    [:li
+     [:a {:href "#" #_"/main/logout"} "Logout"]]]])
 
 (defn login-button
   []
-  [:span
-   [:a {:href "/main/login"} "Login"]
-   " or "
-   [:a {:href "/main/register"} "Register"]])
+  (list
+   [:li [:a {:href "/main/login"} "Login"]]
+   [:li.divider-vertical]
+   [:li [:a {:href "/main/register"} "Register"]]))
 
 (defn login-section
   [response]
-  (let [authenticated (current-user)]
-    [:section#session-menu.pull-right
-     [:div#login-section
-      {:class (if authenticated "authenticated" "unauthenticated")}
-      (if authenticated
-        (logout-button authenticated)
-        (login-button))]]))
+  (if-let [authenticated (current-user)]
+    (logout-button authenticated)
+    (login-button)))
 
 (defn password-page
   [user]

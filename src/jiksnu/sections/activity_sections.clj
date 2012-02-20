@@ -359,7 +359,7 @@
 (defsection show-section [Activity :html]
   [activity & _]
   (let [user (get-author activity)]
-    [:article.hentry.notice.clearfix
+    [:article.hentry.notice
      {:id (:id activity)
       :about (uri activity)
       :typeof "sioc:Post"}
@@ -378,7 +378,7 @@
      [:div.entry-content
       #_(when (:title activity)
           [:h1.entry-title {:property "dc:title"} (:title activity)])
-      [:p {:property "sioc:content"}
+      [:p {:property "dc:title"}
        (or (:title activity)
            (:content activity))]]
      [:div

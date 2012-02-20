@@ -46,7 +46,7 @@
         option-map (apply hash-map opts)
         merged-options
         (merge
-         {"object.object-type" {:$ne "comment"}}
+         ;; {"object.object-type" {:$ne "comment"}}
          (privacy-filter user)
          option-map)]
     (entity/fetch Activity merged-options

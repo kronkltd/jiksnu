@@ -301,7 +301,7 @@
   {:user user
    :title (:display-name user)
    :body [:div
-          (show-section user)
+          ;; (show-section user)
           (index-section activities)]
    :formats (helpers.activity/timeline-formats user)})
 

@@ -58,23 +58,6 @@
   {:body
    {:items [(index-section users)]}})
 
-(defview #'admin-index :html
-  [request users]
-  {:body
-   [:div
-    [:table.users.table
-     [:thead
-      [:tr
-       [:th]
-       [:th "User"]
-       [:th "Domain"]
-       [:th "Discover"]
-       [:th "Update"]
-       [:th "Edit"]
-       [:th "Delete"]]]
-     [:tbody
-      (map sections.user/admin-index-line users)]]]})
-
 (defview #'profile :html
   [request user]
   {:body

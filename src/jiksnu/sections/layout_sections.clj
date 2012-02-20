@@ -68,11 +68,10 @@
        (:formats response))]]))
 
 (defn left-column-section
-  [response authenticated subscribers subscriptions groups]
+  [response]
   (let [user (current-user)]
     [:aside#left-column.sidebar
      (side-navigation)
-     #_(top-users)
      [:hr]
      (formats-section response)]))
 

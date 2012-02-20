@@ -41,21 +41,26 @@
    [:button.btn.discover-button {:type "submit"}
     [:i.icon-search] [:span.button-text "Discover"]]])
 
+(defn display-avatar-img
+  [user size]
+  [:img.avatar.photo
+   {:width size
+    :height size
+    :alt ""
+    :src (model.user/image-link user)}])
+
 (defn display-avatar
   ([user] (display-avatar user 48))
   ([user size]
-     [:a {:href (str "/users/" (:_id user))
-          :title (:name user)}
-      [:img.avatar.photo
-       {:width size
-        :height size
-        :alt ""
-        :src (model.user/image-link user)}]]))
+     [:a.url {:href (str "/users/" (:_id user))
+              :title (:name user)}
+      (display-avatar-img user size)]))
 
 (defn edit-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/edit")}
-   [:input.btn.edit-button {:type "submit" :value "Edit"}]])
+   [:button.btn.edit-button {:type "submit"}
+    [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defn following-section
   [user]
@@ -66,8 +71,6 @@
      (when (model.subscription/subscribed? user authenticated)
        [:p "You follow this user"]))))
 
-
-
 (defn update-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/update")}
@@ -77,7 +80,8 @@
 (defn subscribe-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/subscribe")}
-   [:input.btn.subscribe-button {:type "submit" :value "Subscribe"}]])
+   [:button.btn.subscribe-button {:type "submit"}
+    [:i.icon-eye-open] [:span.button-text "Subscribe"]]])
 
 (defn admin-index-line
   [user]
@@ -145,10 +149,12 @@
      (when (= (:_id user) (:_id authenticated))
        [:p "This is you"])
      [:ul.user-actions.buttons
-      [:li (discover-button user)]
+      #_[:li (discover-button user)]
       [:li (update-button user)]
       (when (not= (:_id user) (:_id authenticated))
-        [:li (subscribe-button user)])]]))
+        [:li (subscribe-button user)])
+      (when (is-admin?)
+        [:li (delete-button user)])]]))
 
 (defsection show-section [User :xml]
   [user & options]
@@ -265,7 +271,8 @@
 (defsection delete-button [User :html]
   [user & _]
   [:form {:method "post" :action (str "/users/" (:_id user) "/delete")}
-   [:input.btn.delete-button {:type "submit" :value "Delete"}]])
+   [:button.btn.delete-button {:type "submit" :title "Delete"}
+    [:i.icon-trash] [:span.button-text "Delete"]]])
 
 (defn add-form
   []
@@ -298,9 +305,11 @@
    [:p (link-to user)]
    [:ul.buttons
     [:li (subscribe-button user)]
-    [:li (discover-button user)]
+    #_[:li (discover-button user)]
     [:li (update-button user)]
-    [:li (edit-button user)]]])
+    [:li (edit-button user)]
+    [:li (delete-button user)]
+    ]])
 
 (defn index-section
   [users]

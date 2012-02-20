@@ -8,24 +8,17 @@
 (defview #'index :html
   [request activities]
   {:title "Activities"
+   :single true
    :body
    [:table.table
     [:thead
      [:tr
       [:th "user"]
-      [:th "title"]
-      ]
-     ]
+      [:th "title"]]]
     [:tbody
      (map
       (fn [activity]
         [:tr
          [:td (-> activity helpers.activity/get-author :username)]
-         [:td (:title activity)]
-         ]
-        )
-      activities)
-     ]
-    ]
-   }
-  )
+         [:td (:title activity)]])
+      activities)]]})
