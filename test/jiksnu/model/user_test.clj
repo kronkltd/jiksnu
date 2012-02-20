@@ -71,21 +71,21 @@
         (actions.user/create (factory User))
         (index) => (partial every? user?))))
 
-  (fact "show"
+  (fact "#'get-user"
     (fact "when the user is found"
       (fact "should return a user"
         (let [username (fseq :id)
               domain (actions.domain/create (factory Domain))]
           (actions.user/create (factory User {:username username
                                               :domain (:_id domain)}))
-          (show username (:_id domain)) => user?)))
+          (get-user username (:_id domain)) => user?)))
 
     (fact "when the user is not found"
       (fact "should return nil"
         (drop!)
         (let [username (fseq :id)
               domain (actions.domain/create (factory Domain))]
-          (show username (:_id domain)) => nil))))
+          (get-user username (:_id domain)) => nil))))
 
   (fact "user-meta-uri"
     (fact "when the user's domain does not have a lrdd link"

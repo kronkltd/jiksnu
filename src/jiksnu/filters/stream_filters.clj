@@ -36,7 +36,7 @@
 (deffilter #'remote-user :http
   [action request]
   (-> request :params :*
-      actions.user/fetch-by-uri action))
+      model.user/fetch-by-uri action))
 
 (deffilter #'user-timeline :http
   [action request]

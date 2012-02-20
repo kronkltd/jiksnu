@@ -46,15 +46,6 @@
             (entry->activity entry) => activity?
             #_(provided
                 (.getId entry) => "1"))))))
-  
-
-  (fact "prepare-activity"
-
-    (fact "should return an activity"
-      (let [user (model.user/create (factory User))]
-        (with-user user
-          (let [args (factory Activity)]
-            (prepare-activity args) => activity?)))))
 
   (fact "create"
 
