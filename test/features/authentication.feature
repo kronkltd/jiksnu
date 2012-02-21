@@ -15,7 +15,7 @@ Scenario: Logging in
   And a user exists with the password "hunter2"
   When I put my username in the "username" field
   And I put my password in the "password" field
-  And I click "Login"
+  And I click the "login" link
   Then I should be at the "public timeline" page
   And I should wait
   And I should be logged in

@@ -51,7 +51,7 @@
          (ref-set current-browser browser)
          (reset! server srv))))
     (catch Exception ex
-        (log/error ex))))
+      (log/error ex))))
 
 (defn after-hook
   []
@@ -123,13 +123,12 @@
   (do-login))
 
 (defn a-user-exists
-  ([] (a-user-exists {:domain (:_id domain)
-                      :discovered true
+  ([] (a-user-exists {:discovered true
                       :password "hunter2"}))
   ([opts]
      (let [domain (actions.domain/current-domain)
            user (model.user/create
-                 (factory User opts))]
+                 (factory :local-user opts))]
        (dosync
         (ref-set that-user user)))))
 
@@ -211,3 +210,82 @@
                              {:public (= modifier "public")}))]
       (dosync
        (ref-set that-activity activity)))))
+
+(defn should-get-a-document-of-type
+  [type]
+
+  )
+
+(defn domain-should-be-discovered
+  []
+  (check-response
+   @that-domain => (contains {:discovered true})))
+
+(defn do-wait
+  []
+  (Thread/sleep 5000))
+
+(defn do-wait-forever
+  []
+  @(promise)
+  )
+
+(defn should-not-see-class
+  [class-name]
+  (check-response
+   (w/find-element @current-browser
+                   {:class class-name}) =not=> w/exists?))
+
+
+(defn be-at-the-page-for-domain
+  [page-name]
+  (condp = page-name
+    "show"
+    (check-response
+     (let [url (:_id @that-domain)]
+       (w/find-element @current-browser url) => w/exists?)))
+  )
+
+(defn should-be-logged-in
+  []
+  (check-response
+   (w/find-element @current-browser {:class "authenticated"}) => w/exists?))
+
+(defn should-not-be-logged-in
+  []
+  (check-response
+   (w/find-element @current-browser {:class "unauthenticated"}) => w/exists?))
+
+(defn get-not-found-error
+  []
+  (check-response
+   (w/page-source @current-browser) => #"Not Found"))
+
+(defn should-see-domain
+  []
+  (check-response
+   (-> @current-browser
+       (w/find-element {:class "domain-id"})
+       w/text) => (:_id @that-domain))
+
+  )
+
+(defn should-see-domain-named
+  [domain-name]
+  (check-response
+   (w/find-element @current-browser {:tag  :a :href (str "/main/domains/" domain-name)}) => w/exists?))
+
+(defn should-see-form
+  []
+  (check-response
+   (w/find-element @current-browser {:tag :form}) => w/exists?))
+
+(defn go-to-page-for-domain
+  []
+  (let [path (str "/main/domains/" (:_id @that-domain))]
+    (fetch-page-browser :get path)))
+
+(defn request-stream
+  [stream-name]
+  
+  )

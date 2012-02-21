@@ -17,9 +17,9 @@
 (defn login-button
   []
   (list
-   [:li.unauthenticated [:a {:href "/main/login"} "Login"]]
+   [:li.unauthenticated [:a.login-link {:href "/main/login"} "Login"]]
    [:li.divider-vertical]
-   [:li [:a {:href "/main/register"} "Register"]]))
+   [:li [:a.register-link {:href "/main/register"} "Register"]]))
 
 (defn login-section
   [response]

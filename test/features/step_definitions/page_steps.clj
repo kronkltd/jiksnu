@@ -52,25 +52,15 @@
 
 (When #"I go to the (.+) page"                        go-to-the-page)
 (When #"I go to the page for that activity"           go-to-the-page-for-activity)
-
-(When #"I go to the page for that domain"
-      (fn []
-        (let [path (str "/main/domains/" (:_id @that-domain))]
-          (fetch-page-browser :get path))))
-
-(When #"I request the host-meta page with a client" fetch-user-meta-for-user-with-client)
-
-(When #"I request the user-meta page for that user" fetch-user-meta-for-user)
-
+(When #"I go to the page for that domain"             go-to-the-page-for-domain)
+(When #"I request the host-meta page with a client"   fetch-user-meta-for-user-with-client)
+(When #"I request the user-meta page for that user"   fetch-user-meta-for-user)
 (When #"I request the user-meta page for that user with a client"
       (fn []
         (fetch-page :get
                     (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
 
-(When #"^I request the \"([^\"]*)\" stream$"
-  (fn [arg1]
-    ;; ' Express the Regexp above with the code you wish you had
-    ))
+(When #"^I request the \"([^\"]*)\" stream$" request-stream)
 
 (When #"I click \"([^\"]*)\""
       (fn [value]
@@ -78,8 +68,7 @@
             (w/find-element {:value value})
             w/click)))
 
-(When #"I click the \"([^\"]*)\" button"
-      click-the-button)
+(When #"I click the \"([^\"]*)\" button" click-the-button)
 
 (When #"I click the button with class \"([^\"]*)\""
       (fn [class-name]
@@ -87,10 +76,10 @@
             (w/find-element {:class class-name})
             w/click)))
 
-(When #"I click the \"([^\"]*)\" button for that domain"
-      (fn [value]
+(When #"I click the button for that domain with class \"([^\"]*)\""
+      (fn [class-name]
         (-> @current-browser
-            (w/find-element {:value value})
+            (w/find-element {:class class-name})
             w/click)))
 
 (When #"I type \"(.*)\" into the \"(.*)\" field"
@@ -122,11 +111,6 @@
     ))
 
 (When #"^a new activity gets posted$"
-  (fn []
-    ;; ' Express the Regexp above with the code you wish you had
-    ))
-
-(Then #"^I should receive a message from the stream$"
   (fn []
     ;; ' Express the Regexp above with the code you wish you had
     ))
@@ -165,6 +149,11 @@
          (w/find-element @current-browser
                          {:tag :article
                           :id (str (:_id @that-activity))}) => w/exists?)))
+
+(Then #"^I should receive a message from the stream$"
+  (fn []
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
 
 (Then #"I should see a list of (.*)"
       (fn [class-name]
@@ -222,63 +211,22 @@
         (check-response
          (w/find-element @current-browser {:name field-name})) => w/exists?))
 
-(Then #"I should see a form"
-      (fn []
-        (check-response
-         (w/find-element @current-browser {:tag :form}) => w/exists?)))
 
-(Then #"I should see a domain named \"(.*)\""
-      (fn [name]
-        (check-response
-         (w/find-element @current-browser {:tag  :a :href (str "/main/domains/" name)}) => w/exists?)))
+(Then #"^I should not be logged in$"                       should-not-be-logged-in)
+(Then #"^I should be at the \"([^\"]+)\" for that domain$" be-at-the-page-for-domain)
+(Then #"^I should be logged in$"                           should-be-logged-in)
+(Then #"^I should not see the class \"(.*)\"$"             should-not-see-class)
+(Then #"^I should get a \"([^\"]*)\" document$"            should-get-a-document-of-type)
+(Then #"^I should get a not found error$"                  get-not-found-error)
+(Then #"^I should see a domain named \"(.*)\"$"            should-see-domain-named)
+(Then #"^I should see a form$"                             should-see-form)
+(Then #"^I should see that domain$"                        should-see-domain)
+(Then #"^I should wait$"                                   do-wait)
+(Then #"^I should wait forever$"                           do-wait-forever)
+(Then #"^that domain should be discovered$"                domain-should-be-discovered)
+(Then #"^that user's name should be \"(.*)\"$"             name-should-be)
 
-(Then #"I should see that domain"
-      (fn []
-        (check-response
-         (-> @current-browser
-             (w/find-element {:class "domain-id"})
-             w/text) => (:_id @that-domain))))
 
-(Then #"I should get a not found error"
-      (fn []
-        (check-response
-         (w/page-source @current-browser) => #"Not Found")))
-
-(Then #"I should be logged in"
-      (fn []
-        (check-response
-         (w/find-element @current-browser {:class "authenticated"}) => w/exists?)))
-
-(Then #"I should not be logged in"
-      (fn []
-        (check-response
-         (w/find-element @current-browser {:class "unauthenticated"}) => w/exists?)))
-
-(Then #"that user's name should be \"(.*)\""
-      name-should-be)
-
-(Then #"I should not see the class \"(.*)\""
-      (fn [class-name]
-        (check-response
-         (w/find-element @current-browser
-                         {:class class-name}) =not=> w/exists?)))
-
-(Then #"that domain should be discovered"
-      (fn []
-        (check-response
-         @that-domain => (contains {:discovered true}))))
-
-(Then #"I should be at the page for that domain"
-      (fn []
-        (check-response
-         (let [url (:_id @that-domain)]
-           (w/find-element @current-browser url) => w/exists?))))
-
-(Then #"I should wait"
-      (fn [] (Thread/sleep 5000)))
-
-(Then #"I should wait forever"
-      (fn [] @(promise)))
 
 
 

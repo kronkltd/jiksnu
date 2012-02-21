@@ -1,5 +1,6 @@
 (ns jiksnu.factory
-  (:use (ciste [debug :only [spy]])
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]])
         clj-factory.core)
   (:require (jiksnu [abdera :as abdera])
             (jiksnu.model [user :as model.user])
@@ -54,6 +55,9 @@
      :last-name (fseq :word)
      :password password
      :confirm-password password}))
+
+(deffactory :local-user
+  (factory User {:domain (config :domain)}))
 
 (deffactory :user
   (factory User))
