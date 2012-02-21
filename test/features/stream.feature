@@ -5,6 +5,6 @@ Feature: Streams
 
   Scenario: Firehose
     Given I am not logged in
-    When I connect to the "firehose" stream
+    When I request the "firehose" stream
     And a new activity gets posted
     Then I should receive a message from the stream

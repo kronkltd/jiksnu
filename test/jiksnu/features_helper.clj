@@ -100,21 +100,57 @@
   [method path]
   (w/get-url @current-browser (expand-url path)))
 
+
+
+
+
+
+
+(declare a-user-exists do-login)
+
+
+
+
 (defn a-domain-exists
   []
   (let [domain (model.domain/create (factory Domain))]
     (dosync
      (ref-set that-domain domain))))
 
-(defn a-user-exists
+(defn a-normal-user-is-logged-in
   []
-  (let [domain (actions.domain/current-domain)
-        user (model.user/create
-              (factory User {:domain (:_id domain)
-                             :discovered true
-                             :password "hunter2"}))]
-    (dosync
-     (ref-set that-user user))))
+  (a-user-exists)
+  (do-login))
+
+(defn a-user-exists
+  ([] (a-user-exists {:domain (:_id domain)
+                      :discovered true
+                      :password "hunter2"}))
+  ([opts]
+     (let [domain (actions.domain/current-domain)
+           user (model.user/create
+                 (factory User opts))]
+       (dosync
+        (ref-set that-user user)))))
+
+(defn a-user-exists-with-password
+  [password]
+  (a-user-exists {:password password}))
+
+(defn an-admin-is-logged-in
+  []
+  (a-user-exists)
+  (-> @that-user
+      (assoc :admin true)
+      model.user/update
+      session/set-authenticated-user!)
+  (do-login))
+
+(defn click-the-button
+  [value]
+  (-> @current-browser
+      (w/find-element {:value value})
+      w/click))
 
 (defn do-login
   []
@@ -131,44 +167,6 @@
       w/click)
   (session/set-authenticated-user! @that-user))
 
-(defn a-normal-user-is-logged-in
-  []
-  (a-user-exists)
-  (do-login))
-
-(defn an-admin-is-logged-in
-  []
-  (a-user-exists)
-  (-> @that-user
-      (assoc :admin true)
-      model.user/update
-      session/set-authenticated-user!)
-  (do-login))
-
-(defn get-body
-  []
-  (-> @current-page :body channel-buffer->string))
-
-(defn there-is-an-activity
-  [modifier]
-  (core/with-context [:html :http]
-    (let [activity (model.activity/create
-                    (factory Activity
-                             {:public (= modifier "public")}))]
-      (dosync
-       (ref-set that-activity activity)))))
-
-(defn go-to-the-page
-  [page-name]
-  (if-let [path (get page-names page-name)]
-    (fetch-page-browser :get path)
-    (throw (RuntimeException. (str "No path defined for " page-name)))))
-
-(defn name-should-be
-  [display-name]
-  (check-response
-   (actions.user/show @that-user) => (contains {:display-name display-name})))
-
 (defn domain-should-be-deleted
   []
   (check-response
@@ -180,8 +178,36 @@
    :get
    (str "/main/xrd?uri=" (model.user/get-uri @that-user))))
 
-(defn click-the-button
-  [value]
-  (-> @current-browser
-      (w/find-element {:value value})
-      w/click))
+(defn fetch-user-meta-for-user-with-client
+  []
+  (fetch-page :get "/.well-known/host-meta"))
+
+(defn get-body
+  []
+  (-> @current-page :body channel-buffer->string))
+
+(defn go-to-the-page
+  [page-name]
+  (if-let [path (get page-names page-name)]
+    (fetch-page-browser :get path)
+    (throw (RuntimeException. (str "No path defined for " page-name)))))
+
+(defn go-to-the-page-for-activity
+  []
+  (core/with-context [:html :http]
+    (let [path (uri @that-activity)]
+      (fetch-page-browser :get path))))
+
+(defn name-should-be
+  [display-name]
+  (check-response
+   (actions.user/show @that-user) => (contains {:display-name display-name})))
+
+(defn there-is-an-activity
+  [modifier]
+  (core/with-context [:html :http]
+    (let [activity (model.activity/create
+                    (factory Activity
+                             {:public (= modifier "public")}))]
+      (dosync
+       (ref-set that-activity activity)))))

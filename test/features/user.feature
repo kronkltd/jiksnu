@@ -24,3 +24,10 @@ Scenario: Fetchin a User Meta document
   Then the alias field matches that user's uri
   And the content-type is "application/xrds+xml"
   And the response is sucsessful
+
+Scenario: User timeline, HTML, unauthenticated
+  Given I am not logged in
+  And a user exists
+  And that user posts an activity
+  When I go to the "user timeline" page for that user
+  Then I should see that activity

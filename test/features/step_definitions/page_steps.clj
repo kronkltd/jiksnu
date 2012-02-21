@@ -25,14 +25,12 @@
 
 ;; Given
 
-(Given #"a domain exists"                             a-domain-exists)
-(Given #"a user exists"                               a-user-exists)
-(Given #"a user exists with the password \"hunter2\"" a-user-exists)
-(Given #"I am logged in"                              a-normal-user-is-logged-in)
-(Given #"I am logged in as an admin"                  an-admin-is-logged-in)
-(Given #"a normal user is logged in"                  a-normal-user-is-logged-in)
-(Given #"there is a (.+) activity"                    there-is-an-activity)
-
+(Given #"a domain exists"                              a-domain-exists)
+(Given #"a normal user is logged in"                   a-normal-user-is-logged-in)
+(Given #"a user exists"                                a-user-exists)
+(Given #"a user exists with the password \"([^\"]+)\"" a-user-exists-with-password)
+(Given #"I am logged in"                               a-normal-user-is-logged-in)
+(Given #"I am logged in as an admin"                   an-admin-is-logged-in)
 (Given #"I am not logged in"
        (fn []))
 
@@ -41,32 +39,38 @@
          (let [path (get page-names page-name)]
            (fetch-page-browser :get path))))
 
+(Given #"there is a (.+) activity"                    there-is-an-activity)
+
+(Given #"^that user posts an activity$"
+  (fn []
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
+
+
+
 ;; When
 
 (When #"I go to the (.+) page"                        go-to-the-page)
-
-(When #"I go to the page for that activity"
-      (fn []
-        (core/with-context [:html :http]
-          (let [path (uri @that-activity)]
-            (fetch-page-browser :get path)))))
+(When #"I go to the page for that activity"           go-to-the-page-for-activity)
 
 (When #"I go to the page for that domain"
       (fn []
         (let [path (str "/main/domains/" (:_id @that-domain))]
           (fetch-page-browser :get path))))
 
-(When #"I request the host-meta page with a client"
-      (fn []
-        (fetch-page :get "/.well-known/host-meta")))
+(When #"I request the host-meta page with a client" fetch-user-meta-for-user-with-client)
 
-(When #"I request the user-meta page for that user"
-      fetch-user-meta-for-user)
+(When #"I request the user-meta page for that user" fetch-user-meta-for-user)
 
 (When #"I request the user-meta page for that user with a client"
       (fn []
         (fetch-page :get
                     (str "/main/xrd?uri=" (model.user/get-uri @that-user)))))
+
+(When #"^I request the \"([^\"]*)\" stream$"
+  (fn [arg1]
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
 
 (When #"I click \"([^\"]*)\""
       (fn [value]
@@ -111,6 +115,33 @@
           (-> @current-browser
               (w/find-element {:name field-name})
               (w/send-keys value)))))
+
+(When #"^I go to the \"([^\"]*)\" page for that user$"
+  (fn [arg1]
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
+
+(When #"^a new activity gets posted$"
+  (fn []
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
+
+(Then #"^I should receive a message from the stream$"
+  (fn []
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
+
+(When #"^I request the oembed resource for that activity$"
+  (fn []
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
+
+
+
+
+
+
+
 
 ;; Then
 
@@ -248,4 +279,11 @@
 
 (Then #"I should wait forever"
       (fn [] @(promise)))
+
+
+
+(Then #"^I should receive an oEmbed document$"
+  (fn []
+    ;; ' Express the Regexp above with the code you wish you had
+    ))
 
