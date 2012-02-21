@@ -286,10 +286,10 @@
    #'pred/ns-matches?])
 
 (compojure/defroutes all-routes
-  (compojure/GET "/favicon.ico" request
-                 (response/file-response "favicon.ico"))
-  (compojure/GET "/robots.txt" _
-                 (response/file-response "public/robots.txt"))
+  ;; (compojure/GET "/favicon.ico" request
+  ;;                (response/file-response "favicon.ico"))
+  ;; (compojure/GET "/robots.txt" _
+  ;;                (response/file-response "public/robots.txt"))
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
@@ -306,6 +306,7 @@
    (-> all-routes
        jm/wrap-authentication-handler
        (file/wrap-file "resources/public/")
+       ;; (filewrap-file "/")
        file-info/wrap-file-info
        wrap-flash
        jm/wrap-user-binding

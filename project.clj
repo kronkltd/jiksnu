@@ -7,7 +7,7 @@
   ;;                "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
   ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
-                 ;; [aleph "0.2.1-SNAPSHOT"]
+                 [aleph "0.2.1-alpha2-SNAPSHOT"]
                  [ciste "0.3.0-SNAPSHOT"]
                  [clj-factory "0.2.0"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
@@ -15,8 +15,11 @@
                  [com.newrelic/newrelic-api "1.3.0"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [compojure "1.0.1"]
+                 ;; [crate "0.1.0-SNAPSHOT"]
                  [enlive "1.0.0"]
+                 ;; [fetch "0.1.0-SNAPSHOT"]
                  [hiccup "0.3.8"]
+                 [jayq "0.1.0-SNAPSHOT"]
                  ;; [joda-time "2.0"]
                  ;; [lamina "0.4.1-SNAPSHOT"]
                  [karras "0.9.0"]
@@ -28,10 +31,14 @@
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
                  [org.clojure/core.cache "0.5.0"]
+                 [org.clojure/google-closure-library "0.0-1589"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.6.1"]
                  [org.slf4j/slf4j-log4j12 "1.6.1"]
+
+                 ;; [pinot "0.1.1-SNAPSHOT"]
+
                  [ring "1.0.2"]
                  [ring-basic-authentication "0.0.1"]
                  [swank-clojure "1.4.0"]
@@ -40,11 +47,12 @@
   :dev-dependencies [
                      [midje "1.3.1" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
-                     [lein-cljsbuild "0.0.9" :exclusions [org.apache.ant/ant]]
+                     [lein-cljsbuild "0.0.13" :exclusions [org.apache.ant/ant]]
                      [clj-webdriver "0.6.0-alpha2"]
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
                      ]
   :java-source-path "src"
+  :checksum-deps false
   :exclusions [
                com.rabbitmq/amqp-client
                org.apache.abdera/abdera-core
@@ -52,6 +60,7 @@
                org.clojure/clojure-contrib
                ring/ring-jetty-adapter
                ]
+  :hooks [leiningen.cljsbuild]
   :aot [
         jiksnu.xmpp.plugin
         jiksnu.xmpp.channels
@@ -61,6 +70,7 @@
               :source-path "src-cljs"
               :compiler {
                          :output-to "resources/public/cljs/bootstrap.js"
+                         :output-dir "resources/public/cljs"
                          :optimizations :whitespace
                          :pretty-print true
                          }}

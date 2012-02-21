@@ -160,6 +160,7 @@
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
+       [:span#interface]
        [:div.container
         [:div.row
          [:div.span2 (left-column-section response)]
@@ -175,10 +176,10 @@
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]
          ]]
-       ;; (include-script "/cljs/bootstrap.js")
-       (include-script "http://code.jquery.com/jquery-1.7.1.js")
-       (include-script "/bootstrap/js/bootstrap.js")
-       #_[:script {:type "text/javascript"}
+       (include-script "/cljs/bootstrap.js")
+       ;; (include-script "http://code.jquery.com/jquery-1.7.1.js")
+       ;; (include-script "/bootstrap/js/bootstrap.js")
+       [:script {:type "text/javascript"}
           "goog.require('jiksnu.core');"]
 
        ]]))})
