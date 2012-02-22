@@ -176,9 +176,9 @@
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]
          ]]
+       (include-script "http://code.jquery.com/jquery-1.7.1.js")
        (include-script "/cljs/bootstrap.js")
-       ;; (include-script "http://code.jquery.com/jquery-1.7.1.js")
-       ;; (include-script "/bootstrap/js/bootstrap.js")
+       (include-script "/bootstrap/js/bootstrap.js")
        [:script {:type "text/javascript"}
           "goog.require('jiksnu.core');"]
 

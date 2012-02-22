@@ -40,7 +40,7 @@
 (defn like-button
   [activity]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/like")}
-   [:button.btn {:type "submit"}
+   [:button.btn.like-button {:type "submit"}
     [:i.icon-heart] [:span.button-text "like"]]])
 
 (defn acl-link
@@ -382,7 +382,7 @@
   [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity))}
    [:input {:type "hidden" :name "_method" :value "DELETE"}]
-   [:button.btn {:type "submit"}
+   [:button.btn.delete-button {:type "submit"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
 
@@ -626,7 +626,7 @@
 (defsection update-button [Activity :html]
   [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
-   [:button.btn {:type "submit"}
+   [:button.btn.update-button {:type "submit"}
     [:i.icon-refresh] [:span.button-text "update"]]])
 
 
