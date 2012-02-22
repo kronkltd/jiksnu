@@ -51,8 +51,9 @@
   [x]
   (console/log "like button clicked")
   
-  (. x (stopPropagation))
-  (. x (preventDefault)))
+  ;; (. x (stopPropagation))
+  ;; (. x (preventDefault))
+  )
 
 (defn add-handler
   [handler elements]
