@@ -9,10 +9,7 @@
 
 (defn admin-index
   [request]
-  {:body
-   [:div
-    
-    ]})
+  (model.like/fetch-all {} :limit 20))
 
 
 (defaction like-activity

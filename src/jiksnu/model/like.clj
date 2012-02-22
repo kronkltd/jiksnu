@@ -1,7 +1,8 @@
 (ns jiksnu.model.like
   (:use (ciste [debug :only [spy]])
         jiksnu.model)
-  (:require (jiksnu.model [user :as model.user])
+  (:require (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
   (:import jiksnu.model.Like))
@@ -26,6 +27,23 @@
 (defn find-or-create
   [activity user]
   (create activity))
+
+(defn fetch-all
+  ([] (fetch-all {}))
+  ([params & opts]
+     (apply entity/fetch Like params opts)))
+
+(defn get-activity
+  [like]
+  (-> like :activity model.activity/fetch-by-id))
+
+(defn get-actor
+  [like]
+  (-> like :user model.user/fetch-by-id))
+
+(defn get-likes
+  [activity]
+  (fetch-all {:activity (:_id activity)}))
 
 (defn format-data
   "format a like for display in templates"

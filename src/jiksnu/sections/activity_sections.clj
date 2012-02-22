@@ -16,6 +16,7 @@
                     [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity]
+                          [like :as model.like]
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user])
             (jiksnu.xmpp [element :as element])
@@ -229,14 +230,14 @@
 
 (defn likes-section
   [activity]
-  (when (:likes activity)
+  (when-let [likes (model.like/get-likes activity)]
     [:section
      [:span "Liked by"]
      [:ul
       (map
-       (fn [user]
-         [:li (link-to user)])
-       (:likes activity))]]))
+       (fn [like]
+         [:li (link-to (model.like/get-actor like))])
+       likes)]]))
 
 (defn tags-section
   [activity]

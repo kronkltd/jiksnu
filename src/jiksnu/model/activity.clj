@@ -8,8 +8,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera])
             (jiksnu.actions [like-actions :as actions.like])
-            (jiksnu.model [like :as model.like]
-                          [user :as model.user])
+            (jiksnu.model [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))
   (:import com.ocpsoft.pretty.time.PrettyTime
