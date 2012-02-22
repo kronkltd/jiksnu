@@ -12,7 +12,9 @@
 
 (defaction index
   [options]
-  (model.user/fetch-all))
+  (model.user/fetch-all {}
+                        :limit 20
+                        ))
 
 (definitializer
   ;; (try

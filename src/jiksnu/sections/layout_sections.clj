@@ -4,7 +4,9 @@
         (ciste.sections [default :only [add-form link-to show-section]])
         (jiksnu [session :only [current-user is-admin?]]
                 [views :only [include-script]]))
-  (:require (hiccup [core :as h])
+  (:require (hiccup [core :as h]
+                    [page-helpers :as p]
+                    )
             (jiksnu [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.model [subscription :as model.subscription])
@@ -124,6 +126,7 @@
     "<!doctype html>\n"
     (h/html
      [:html
+      ;; TODO: Read the list of declared namespaces
       {:xmlns:sioc ns/sioc
        :xmlns:dc ns/dc
        :xmlns:foaf ns/foaf
@@ -138,14 +141,8 @@
         (when (:title response)
           (str (:title response) " - "))
         (config :site :name)]
-       [:link {:type "text/css"
-               :href "/bootstrap/css/bootstrap.css"
-               :rel "stylesheet"
-               :media "screen"}]
-       [:link {:type "text/css"
-               :href "/themes/classic/standard.css"
-               :rel "stylesheet"
-               :media "screen"}]
+       (p/include-css "/bootstrap/css/bootstrap.css"
+                      "/themes/classic/standard.css")
        (map
         (fn [format]
           [:link {:type (:type format)
@@ -159,6 +156,7 @@
         [:div.navbar-inner
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
+          ;; TODO: put a search bar here
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
        [:span#interface]
        [:div.container
@@ -166,23 +164,28 @@
          [:div.span2 (left-column-section response)]
          [:div#content.span10
           [:div#notification-area.row
+           [:div#flash]
            [:div.span10 (devel-warning response)]]
           [:div.row
            (if-not (:single response)
              (list [:div.span7 (main-content response)]
                    [:div.span3 (right-column-section response)])
              [:div.span10 (main-content response)])]]]
-        [:footer.row
+        [:footer.row.page-footer
          [:p "Copyright © 2011 KRONK Ltd."]
-         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]
-         ]]
-       (include-script "http://code.jquery.com/jquery-1.7.1.js")
-       (include-script "/cljs/bootstrap.js")
-       (include-script "/bootstrap/js/bootstrap.js")
+         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
+       ;; NB: This is to take care of the deps.js problem in
+       ;; whitespace-only mode
        [:script {:type "text/javascript"}
-          "goog.require('jiksnu.core');"]
-
-       ]]))})
+        "var CLOSURE_NO_DEPS = true;"]
+       (include-script "http://code.jquery.com/jquery-1.7.1.js")
+       ;; (include-script                        ;; "/js/main.js"
+;; )
+       (include-script                        "/cljs/bootstrap.js"
+)
+       (include-script                        "/bootstrap/js/bootstrap.js")
+       [:script {:type "text/javascript"}
+          "goog.require('jiksnu.core');"]]]))})
 
 
 (defmethod apply-template :html

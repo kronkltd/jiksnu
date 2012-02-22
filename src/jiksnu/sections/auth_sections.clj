@@ -12,7 +12,7 @@
     (:display-name user) [:b.caret]]
    [:ul.dropdown-menu
     [:li
-     [:a {:href #_"#" "/main/logout"} "Logout"]]]])
+     [:a.logout-link {:href #_"#" "/main/logout"} "Logout"]]]])
 
 (defn login-button
   []
@@ -31,7 +31,7 @@
   [user]
   [:form {:method "post" :action "/main/login"}
    [:fieldset
-    [:legend "Enter PAssword"]
+    [:legend "Enter Password"]
     [:input {:type "hidden" :name "username" :value (:username user)}]
     (control-line "Password" "password" "password")
     [:div.actions
