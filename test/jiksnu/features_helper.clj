@@ -166,13 +166,20 @@
      (let [url (:_id @that-domain)]
        (w/find-element @current-browser url) => w/exists?))))
 
-(defn click-the-button
-  [value]
+(defn do-click-button
+  [class-name]
   (-> @current-browser
-      (w/find-element {:value value})
+      (w/find-element {:class class-name})
       w/click))
 
-(defn do-click
+(defn do-click-button-for-domain
+  [class-name]
+  (implement)
+  (-> @current-browser
+      (w/find-element {:class class-name})
+      w/click))
+
+(defn do-click-link
   [value]
   (-> @current-browser
       (w/find-element {:value value})
@@ -353,9 +360,10 @@
    (w/find-element @current-browser {:tag :form}) => w/exists?))
 
 (defn go-to-the-page-for-domain
-  []
-  (let [path (str "/main/domains/" (:_id @that-domain))]
-    (fetch-page-browser :get path)))
+  [page-name]
+  (condp = page-name
+    "show" (let [path (str "/main/domains/" (:_id @that-domain))]
+             (fetch-page-browser :get path))))
 
 (defn request-stream
   [stream-name]
@@ -393,3 +401,63 @@
 
 
   )
+
+(defn log-response
+  []
+  (-> @current-page :body channel-buffer->string spy))
+
+(defn host-field-should-match-domain
+  []
+  (check-response
+   (let [domain (c/config :domain)
+         pattern (re-pattern (str ".*" domain ".*"))]
+     (get-body) => pattern)))
+
+(defn alias-should-match-uri
+  []
+  (check-response
+   (let [uri (model.user/get-uri @that-user)
+         pattern (re-pattern (str ".*" uri ".*"))]
+     (get-body) => pattern))
+
+  )
+
+(defn should-have-field
+  [field-name]
+  (check-response
+   (w/find-element @current-browser {:name field-name})) => w/exists?
+
+  )
+
+(defn should-see-subscription-list
+  []
+  (check-response
+   (get-body)) => #".*subscriptions")
+
+(defn response-should-be-redirect
+  []
+  (check-response
+   (:status @current-page) => #(<= 300 %)
+   (:status @current-page) => #(> 400 %)))
+
+(defn should-have-content-type
+  [type]
+  (check-response
+   (get-in @current-page [:headers "content-type"]) => type))
+
+(defn should-be-at-page
+  [page-name]
+  (check-response
+   (let [path (get page-names page-name)]
+     (w/current-url @current-browser) => (re-pattern
+                                          (str ".*" (expand-url path)
+                                               ".*")))))
+
+(defn user-posts-activity
+  []
+  (implement))
+
+(defn am-not-logged-in
+  []
+  nil)
+
