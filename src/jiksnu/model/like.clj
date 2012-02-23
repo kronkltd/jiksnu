@@ -16,8 +16,8 @@
   (entity/fetch-by-id Like id))
 
 (defn delete
-  [id]
-  (entity/delete (fetch-by-id id)))
+  [like]
+  (entity/delete (fetch-by-id (:_id like))))
 
 (defn create
   [options]
@@ -32,6 +32,10 @@
   ([] (fetch-all {}))
   ([params & opts]
      (apply entity/fetch Like params opts)))
+
+(defn fetch-by-user
+  [user]
+  (fetch-all {:user (:_id user)}))
 
 (defn get-activity
   [like]

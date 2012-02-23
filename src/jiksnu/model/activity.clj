@@ -7,7 +7,6 @@
             (clojure.java [io :as io])
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera])
-            (jiksnu.actions [like-actions :as actions.like])
             (jiksnu.model [user :as model.user])
             (karras [entity :as entity]
                     [sugar :as sugar]))

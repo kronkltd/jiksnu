@@ -51,6 +51,7 @@
                       :exclusions [org.apache.ant/ant]
                       ]
                      [clj-webdriver "0.6.0-alpha2"]
+                     ;; [lein-cucumber "0.1.0"]
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
                      ]
   :java-source-path "src"

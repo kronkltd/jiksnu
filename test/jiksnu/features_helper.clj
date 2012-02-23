@@ -280,7 +280,7 @@
   (check-response
    (w/find-element @current-browser {:tag :form}) => w/exists?))
 
-(defn go-to-page-for-domain
+(defn go-to-the-page-for-domain
   []
   (let [path (str "/main/domains/" (:_id @that-domain))]
     (fetch-page-browser :get path)))
