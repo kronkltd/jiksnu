@@ -7,19 +7,19 @@ Feature: Activities
 Scenario: Viewing a public activity, unauthenticated
   Given I am not logged in
   And there is a public activity
-  When I go to the page for that activity
+  When I go to the "show" page for that activity
   Then I should see that activity
 
 Scenario: Viewing a private activity, unauthenticated
   Given I am not logged in
   And there is a private activity
-  When I go to the page for that activity
+  When I go to the "show" page for that activity
   Then I should get a not found error
 
 Scenario: Viewing a private activity, not authorized
   Given I am logged in
   And there is a private activity
-  When I go to the page for that activity
+  When I go to the "show" for that activity
   Then I should get a not found error
 
 # Scenario: Viewing a private activity, authorized
@@ -31,7 +31,7 @@ Scenario: Viewing a private activity, not authorized
 
 Scenario: Posting an activity, unauthenticated
   Given I am not logged in
-  When I go to the home page
+  When I go to the "home" page
   Then I should not see the class "post-form"
 
 # Scenario: Posting an activity, normal user

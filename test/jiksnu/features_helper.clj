@@ -36,6 +36,10 @@
 (def that-domain (ref nil))
 (def that-user (ref nil))
 
+(defn implement
+  []
+  (throw (RuntimeException. "not implemented")))
+
 (defn before-hook
   []
   (try
@@ -136,6 +140,10 @@
   [password]
   (a-user-exists {:password password}))
 
+(defn activity-gets-posted
+  []
+  (implement))
+
 (defn an-admin-is-logged-in
   []
   (a-user-exists)
@@ -145,11 +153,39 @@
       session/set-authenticated-user!)
   (do-login))
 
+(defn be-at-the-page
+  [page-name]
+  (let [path (get page-names page-name)]
+    (fetch-page-browser :get path)))
+
+(defn be-at-the-page-for-domain
+  [page-name]
+  (condp = page-name
+    "show"
+    (check-response
+     (let [url (:_id @that-domain)]
+       (w/find-element @current-browser url) => w/exists?))))
+
 (defn click-the-button
   [value]
   (-> @current-browser
       (w/find-element {:value value})
       w/click))
+
+(defn do-click
+  [value]
+  (-> @current-browser
+      (w/find-element {:value value})
+      w/click))
+
+(defn do-enter-password
+  []
+  (let [field-name "password"
+        ;; TODO: Get password from somewhere
+        value "hunter2"]
+    (-> @current-browser
+        (w/find-element {:name field-name})
+        (w/send-keys value))))
 
 (defn do-login
   []
@@ -166,10 +202,23 @@
       w/click)
   (session/set-authenticated-user! @that-user))
 
+(defn do-wait
+  []
+  (Thread/sleep 5000))
+
+(defn do-wait-forever
+  []
+  @(promise))
+
 (defn domain-should-be-deleted
   []
   (check-response
    (actions.domain/show @that-domain) => nil))
+
+(defn domain-should-be-discovered
+  []
+  (check-response
+   @that-domain => (contains {:discovered true})))
 
 (defn fetch-user-meta-for-user
   []
@@ -197,10 +246,50 @@
     (let [path (uri @that-activity)]
       (fetch-page-browser :get path))))
 
+(defn go-to-the-page-for-user
+  [page-name]
+  (implement))
+
 (defn name-should-be
   [display-name]
   (check-response
    (actions.user/show @that-user) => (contains {:display-name display-name})))
+
+(defn request-oembed-resource
+  []
+  (implement))
+
+(defn should-be-admin
+  []
+  (check-response
+   (session/current-user) => (contains {:admin true})))
+
+(defn should-see-a-activity
+  []
+  (check-response
+   (w/find-element @current-browser {:class "activities"}) => truthy))
+
+
+(defn should-get-a-document-of-type
+  [type]
+  (implement)
+  )
+
+(defn should-receive-activity
+  []
+  (implement))
+
+(defn should-see-activity
+  []
+  (check-response
+   (w/find-element @current-browser
+                   {:tag :article
+                    :id (str (:_id @that-activity))}) => w/exists?))
+
+(defn should-see-list
+  [class-name]
+  (check-response
+   (w/find-element @current-browser {:class class-name}) => truthy))
 
 (defn there-is-an-activity
   [modifier]
@@ -211,24 +300,16 @@
       (dosync
        (ref-set that-activity activity)))))
 
-(defn should-get-a-document-of-type
-  [type]
 
-  )
 
-(defn domain-should-be-discovered
-  []
-  (check-response
-   @that-domain => (contains {:discovered true})))
 
-(defn do-wait
-  []
-  (Thread/sleep 5000))
 
-(defn do-wait-forever
-  []
-  @(promise)
-  )
+
+
+
+
+
+
 
 (defn should-not-see-class
   [class-name]
@@ -236,15 +317,6 @@
    (w/find-element @current-browser
                    {:class class-name}) =not=> w/exists?))
 
-
-(defn be-at-the-page-for-domain
-  [page-name]
-  (condp = page-name
-    "show"
-    (check-response
-     (let [url (:_id @that-domain)]
-       (w/find-element @current-browser url) => w/exists?)))
-  )
 
 (defn should-be-logged-in
   []
@@ -287,5 +359,37 @@
 
 (defn request-stream
   [stream-name]
-  
+  (implement))
+
+
+(defn request-user-meta
+  []
+  (fetch-page :get
+              (str "/main/xrd?uri=" (model.user/get-uri @that-user))))
+
+(defn do-enter-username
+  []
+  (let [field-name "username"
+        value (:username @that-user)]
+    (-?> @current-browser
+         (w/find-element {:name field-name})
+         (w/send-keys value))))
+
+(defn do-enter-field
+  [value field-name]
+  (-> @current-browser
+      (w/find-element {:name field-name})
+      (w/send-keys value)))
+
+(defn should-receive-oembed
+  []
+  (implement)
+  )
+
+(defn response-should-be-sucsessful
+  []
+  (check-response
+   (:status @current-page) => 200)
+
+
   )

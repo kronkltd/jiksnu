@@ -5,6 +5,6 @@ Feature: Feed Source Admin
 
 Scenario: Index Feed Sources, admin
   Given I am logged in as an admin
-  When I go to the feed source admin index page
+  When I go to the "feed source admin index" page
   Then I should see a list of feed sources
 
