@@ -169,7 +169,7 @@
 (defn do-click-button
   [class-name]
   (-> @current-browser
-      (w/find-element {:class class-name})
+      (w/find-element {:class (str class-name "-button")})
       w/click))
 
 (defn do-click-button-for-domain
