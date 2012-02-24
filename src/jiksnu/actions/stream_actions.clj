@@ -66,12 +66,12 @@
   (log/info "Openening connection stream")
   (let [stream (l/channel)]
     (future
-     (l/siphon
-      (->> ciste.core/*actions*
-           (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
-           (l/map* format-message)
-           (l/map* (fn [m] (str (spy m) "\r\n"))))
-      stream))
+      (l/siphon
+       (->> ciste.core/*actions*
+            (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
+            (l/map* format-message)
+            (l/map* (fn [m] (str (spy m) "\r\n"))))
+       stream))
     (l/enqueue ch {:status 200
                    :headers {"content-type" "application/json"}
                    :body stream})))
@@ -116,7 +116,7 @@
         feed (.getRoot document)
         entries (.getEntries feed)]
     (doseq [entry entries]
-      (let [activity (actions.activity/entry->activity entry feed)]
+      (let [activity (actions.activity/entry->activity entry (spy feed))]
         (actions.activity/create activity)))))
 
 (defaction user-microsummary
