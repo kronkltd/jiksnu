@@ -384,7 +384,7 @@
 
 (defsection show-section [User :html]
   [user & options]
-  [:div.vcard
+  [:div.vcard.user-full
    [:p
     (display-avatar user)
     [:span.nickname.fn.n (:display-name user)]

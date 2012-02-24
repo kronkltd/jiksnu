@@ -24,7 +24,10 @@
   (:import com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
            javax.xml.namespace.QName
-           jiksnu.model.Activity))
+           jiksnu.model.Activity
+           org.apache.abdera2.model.Entry
+           org.apache.abdera2.model.ExtensibleElement
+           ))
 
 ;; TODO: Move to common area
 (register-rdf-ns :aair ns/aair)
@@ -45,14 +48,14 @@
     [:i.icon-heart] [:span.button-text "like"]]])
 
 (defn acl-link
-  [entry activity]
+  [^Entry entry activity]
   (if (:public activity)
-    (let [rule-element (.addExtension entry ns/osw "acl-rule" "")]
-      (let [action-element
+    (let [^ExtensibleElement rule-element (.addExtension entry ns/osw "acl-rule" "")]
+      (let [^ExtensibleElement action-element
             (.addSimpleExtension rule-element ns/osw
                                  "acl-action" "" ns/view)]
         (.setAttributeValue action-element "permission" ns/grant))
-      (let [subject-element
+      (let [^ExtensibleElement subject-element
             (.addExtension rule-element ns/osw "acl-subject" "")]
         (.setAttributeValue subject-element "type" ns/everyone)))))
 
@@ -144,7 +147,7 @@
   [activity]
   [:div.control-group.hidden
    [:label.control-label "Location"]
-   [:div.controols
+   [:div.controls
     [:label {:for "lat"} "Latitude"]
     [:div.input
      [:input {:type "text" :name "lat"}]]
@@ -181,6 +184,7 @@
    [:option {:value "custom"} "Custom"]
    [:option {:value "private"} "Private"]])
 
+;; move to model
 (defn author?
   [activity user]
   (= (:author activity) (:_id user)))
@@ -290,7 +294,7 @@
      (when parent-id
        [:div.control-group
         [:input {:type "hidden" :name "parent" :value parent-id}]])
-     (control-line "Title" "title" "text")
+     #_(control-line "Title" "title" "text")
      [:div.control-group
       [:label.control-label {:for "content"} "Content"]
       [:div.controls
@@ -425,7 +429,7 @@
 (defsection index-section [Activity :html]
   [activities & _]
   (list
-   [:ul.unstyled
+   [:ul.unstyled.activities
     (map index-line activities)]
    [:ul.pager
     [:li.previous [:a {:href "#"} "&larr; Newer"]]

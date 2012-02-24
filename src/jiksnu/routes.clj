@@ -286,10 +286,6 @@
    #'pred/ns-matches?])
 
 (compojure/defroutes all-routes
-  ;; (compojure/GET "/favicon.ico" request
-  ;;                (response/file-response "favicon.ico"))
-  ;; (compojure/GET "/robots.txt" _
-  ;;                (response/file-response "public/robots.txt"))
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
@@ -297,6 +293,8 @@
                     (throw (LoginException. "Must be admin")))))
   (middleware/wrap-log-request
    (resolve-routes [http-predicates] http-routes))
+  (compojure/GET "/websocket" _
+                 (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/main/events" _
                  (http/wrap-aleph-handler stream/stream-handler))
   (route/not-found (not-found-msg)))

@@ -18,11 +18,10 @@
      (events/listen socket websocket-event/OPENED opened)
      (events/listen socket websocket-event/MESSAGE
                     (fn [ev]
-                      (.info js/console ev)
                       (let [payload (. ev -message)
-                           [_ cmd body] (re-matches #"/([^ ]+) (.*)" payload)]
-                       (.debug js/console "websocket" (str "R: " payload))
-                       (message cmd body))))
+                            [_ cmd body] (re-matches #"/([^ ]+) (.*)" payload)]
+                        (.debug js/console "<< " payload)
+                        (message payload))))
 
      (when error
        (events/listen socket websocket-event/ERROR error))
@@ -36,12 +35,10 @@
   "Connects WebSocket"
   [socket url]
   (try
-    (.log js/console (str "connecting to " url))
     (.open socket url)
     socket
     (catch js/Error e
-      (.error js/console e)
-      (.warn js/console "websocket" "No WebSocket supported, get a decent browser."))))
+      (.error js/console "No WebSocket supported, get a decent browser."))))
 
 (defn close!
   "Closes WebSocket"
@@ -54,5 +51,5 @@
      (emit! socket cmd nil))
   ([socket cmd msg]
      (let [packet (str "/" cmd (when msg (str " " msg)))]
-       (.debug js/console "websocket" (str "T: " packet))
+       (.debug js/console ">> " packet)
        (.send socket packet))))

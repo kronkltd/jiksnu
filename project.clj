@@ -52,6 +52,7 @@
                       ]
                      [clj-webdriver "0.6.0-alpha2"]
                      ;; [lein-cucumber "0.1.0"]
+                     ;; [com.stuartsierra/lazytest "2.0.0-SNAPSHOT"]
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
                      ]
   :java-source-path "src"

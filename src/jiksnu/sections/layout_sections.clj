@@ -160,11 +160,18 @@
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
           ;; TODO: put a search bar here
+          [:form.navbar-search.pull-left
+           {:action "/main/search" :method "post"}
+           [:input.search-query.span3
+            {:type "text" :placeholder "Search" :name "q"}
+            ]
+           ]
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
-       [:span#interface]
        [:div.container
         [:div.row
-         [:div.span2 (left-column-section response)]
+         [:div.span2
+          [:span#interface]
+          (left-column-section response)]
          [:div#content.span10
           [:div#notification-area.row
            [:div#flash]

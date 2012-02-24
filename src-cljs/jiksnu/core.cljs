@@ -1,19 +1,24 @@
 (ns jiksnu.core
-  (:use [jayq.core :only [$ css inner]])
+  (:use [jayq.core :only [$ css inner prepend]])
   (:require [goog.events :as events]
             [goog.dom :as dom]
             ;; [goog.dom.query :as query]
             ;; [goog.net :as net]
             [goog.net.XhrIo :as xhrio]
-            [jiksnu.websocket :as ws]
-            ))
+            [jiksnu.websocket :as ws]))
 
-(def socket (atom nil))
+(def default-connection (atom nil))
 (def $interface ($ :#interface))
 
 (defn greet
   [n]
   (str "Hello " n))
+
+(defn set-state
+  [state]
+  (-> $interface
+      (css {:background "red"})
+      (inner state)))
 
 (defn find-parent-article
   [element]
@@ -62,10 +67,6 @@
       (events/listen element "click" handler)
       (events/listen element goog.events.EventType/SUBMIT handler))))
 
-(defn find-element
-  [selector]
-  (dom/getElementsByClass selector))
-
 (defn do-logout-link
   [event]
   (console/log "Logging out")
@@ -75,29 +76,45 @@
 
 (defn ws-opened
   [socket]
-  (.info js/console "Opening")
+  (set-state "opening")
   (fn [event]
-    (.info js/console "Opened")
+    (.debug js/console "Websocket Connection Opened")
+    (set-state "connected")
     (ws/emit! socket "connect")))
 
 (defn ws-message
-  [m]
-  (.info js/console "receiving message")
-  (.log js/console m))
+  [jm]
+  ;; (.info js/console jm)
+  (try
+    (let [j (JSON/parse jm)]
+      ;; (.debug js/console j)
+
+      (let [body (. j -body)]
+        (prepend ($ :.activities) body
+                
+                ))
+
+      
+      )
+    (catch js/Error ex
+        (.exception js/console ex)
+        )
+
+    )
+  )
 
 (defn ws-error
   [e]
-  (.error js/console "Error"))
+  (.error js/console "Error")
+  (set-state "error"))
+
+(defn ws-closed
+  [ev]
+  (set-state "closed"))
 
 (defn send-command
   [command & args]
-  (ws/emit! @socket (apply str command ": " args)))
-
-(defn set-loading-indicator
-  []
-  (-> $interface
-      (css {:background "red"})
-      (inner "Loading!!")))
+  (ws/emit! @default-connection (apply str command " " args)))
 
 (defn initialize-websockets
   [url]
@@ -105,11 +122,13 @@
     (if-let [socket (-> socket
                         (ws/configure (ws-opened socket)
                                       ws-message
-                                      ws-error)
+                                      ws-error
+                                      ws-closed
+                                      )
                         (ws/connect! url))]
       (do
         (.info js/console "initialized")
-        (.info js/console (. socket (isOpen)))))))
+        (reset! default-connection socket)))))
 
 (defn main
   []
@@ -119,8 +138,6 @@
   (add-handler do-logout-link ($ :.logout-link))
 
   ;; (set-loading-indicator)
-  (initialize-websockets "ws://renfer.name:8082/websocket")
-
-  )
+  (initialize-websockets "ws://renfer.name:8082/websocket"))
 
 (main)

@@ -61,20 +61,14 @@
            json/json-str
            ))))
 
-(defn stream-handler
-  [ch request]
-  (log/info "Openening connection stream")
-  (let [stream (l/channel)]
-    (future
-      (l/siphon
-       (->> ciste.core/*actions*
-            (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
-            (l/map* format-message)
-            (l/map* (fn [m] (str (spy m) "\r\n"))))
-       stream))
-    (l/enqueue ch {:status 200
-                   :headers {"content-type" "application/json"}
-                   :body stream})))
+(defn format-message-html
+  [message]
+  (if-let [records (:records message)]
+    (with-context [:http :html]
+      (->> records
+           ;; pr-str spy
+           show-section
+           h/html))))
 
 (defaction user-timeline
   [user]
@@ -134,6 +128,42 @@
       (doseq [activity (actions.activity/get-activities feed)]
         (actions.activity/create activity)))))
 
+(defn stream-handler
+  [ch request]
+  (log/info "Openening connection stream")
+  (let [stream (l/channel)]
+    (future
+      (l/siphon
+       (->> ciste.core/*actions*
+            (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
+            (l/map* format-message)
+            (l/map* (fn [m] (str (spy m) "\r\n"))))
+       stream))
+    (l/enqueue ch {:status 200
+                   :headers {"content-type" "application/json"}
+                   :body stream})))
+
+(defn websocket-handler
+  [ch request]
+  (log/info "Websocket Handler")
+  (l/siphon (->> ciste.core/*actions*
+                 l/fork
+                 (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
+                 (l/map* (fn [m]
+                           (str (json/json-str
+                                 {:body (format-message-html m)
+                                  :event "stream-add"
+                                  :stream "public"})
+                                "\r\n"))))
+            ch)
+  #_(let [c (atom 0)]
+    (->> (fn [m]
+           (l/enqueue ch (str "foo #" @c))
+           (dosync
+            (swap! c inc))
+           (spy m)
+           (spy c))
+         (l/receive-all ch))))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
