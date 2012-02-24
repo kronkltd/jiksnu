@@ -38,9 +38,12 @@
            ["Admin"
             [["/admin/activities"         "Activities"]
              ["/main/domains"             "Domains"]
+             ["/admin/groups"             "Groups"]
              ["/admin/settings"           "Settings"]
              ["/admin/feed-sources"       "Feed Sources"]
              ["/admin/feed-subscriptions" "Feed Subscriptions"]
+             ["/admin/keys"               "Keys"]
+             ["/admin/likes"              "Likes"]
              ["/admin/users"              "Users"]
              ["/admin/subscriptions"      "Subscriptions"]]])]]
     [:ul.nav.nav-list.well
@@ -174,16 +177,13 @@
         [:footer.row.page-footer
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
-       ;; NB: This is to take care of the deps.js problem in
-       ;; whitespace-only mode
        [:script {:type "text/javascript"}
-        "var CLOSURE_NO_DEPS = true;"]
-       (include-script "http://code.jquery.com/jquery-1.7.1.js")
-       ;; (include-script                        ;; "/js/main.js"
-;; )
-       (include-script                        "/cljs/bootstrap.js"
-)
-       (include-script                        "/bootstrap/js/bootstrap.js")
+        "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';
+         var CLOSURE_NO_DEPS = true;"]
+       (p/include-js "http://code.jquery.com/jquery-1.7.1.js"
+                     ;; "/js/main.js"
+                     "/cljs/bootstrap.js"
+                     "/bootstrap/js/bootstrap.js")
        [:script {:type "text/javascript"}
           "goog.require('jiksnu.core');"]]]))})
 

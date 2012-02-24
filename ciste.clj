@@ -3,5 +3,5 @@
  [
   "ciste.service.swank"
   "jiksnu.http"
-  "jiksnu.xmpp"
+  ;; "jiksnu.xmpp"
   ]}

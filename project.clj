@@ -78,12 +78,12 @@
                          :pretty-print true
                          }}
   :main ciste.runner
-  :newrelic true
-  :warn-on-reflection false
+  ;; :newrelic true
+  :warn-on-reflection true
   :jvm-opts [
              "-server"
              "-XX:MaxPermSize=1024m"
-             "-javaagent:/home/duck/projects/jiksnu/newrelic/newrelic.jar"
+             ;; "-javaagent:/home/duck/projects/jiksnu/newrelic/newrelic.jar"
              "-Dfile.encoding=UTF-8"
              ]
   )

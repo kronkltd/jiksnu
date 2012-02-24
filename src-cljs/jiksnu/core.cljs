@@ -5,7 +5,9 @@
             ;; [goog.dom.query :as query]
             ;; [goog.net :as net]
             [goog.net.XhrIo :as xhrio]
-            [goog.net.WebSocket :as ws]))
+            [goog.net.WebSocket :as ws]
+            [jiksnu.websocket :as ws]
+            ))
 
 (def $interface ($ :#interface))
 
