@@ -180,10 +180,13 @@
        [:script {:type "text/javascript"}
         "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';
          var CLOSURE_NO_DEPS = true;"]
-       (p/include-js "http://code.jquery.com/jquery-1.7.1.js"
-                     ;; "/js/main.js"
-                     "/cljs/bootstrap.js"
-                     "/bootstrap/js/bootstrap.js")
+       (p/include-js
+        "/web-socket-js/swfobject.js"
+        "/web-socket-js/web_socket.js"
+        "http://code.jquery.com/jquery-1.7.1.js"
+        ;; "/js/main.js"
+        "/cljs/bootstrap.js"
+        "/bootstrap/js/bootstrap.js")
        [:script {:type "text/javascript"}
           "goog.require('jiksnu.core');"]]]))})
 

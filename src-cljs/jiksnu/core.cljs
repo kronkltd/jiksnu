@@ -5,13 +5,11 @@
             ;; [goog.dom.query :as query]
             ;; [goog.net :as net]
             [goog.net.XhrIo :as xhrio]
-            [goog.net.WebSocket :as ws]
             [jiksnu.websocket :as ws]
             ))
 
+(def socket (atom nil))
 (def $interface ($ :#interface))
-
-
 
 (defn greet
   [n]
@@ -75,6 +73,44 @@
   (halt event)
   )
 
+(defn ws-opened
+  [socket]
+  (.info js/console "Opening")
+  (fn [event]
+    (.info js/console "Opened")
+    (ws/emit! socket "connect")))
+
+(defn ws-message
+  [m]
+  (.info js/console "receiving message")
+  (.log js/console m))
+
+(defn ws-error
+  [e]
+  (.error js/console "Error"))
+
+(defn send-command
+  [command & args]
+  (ws/emit! @socket (apply str command ": " args)))
+
+(defn set-loading-indicator
+  []
+  (-> $interface
+      (css {:background "red"})
+      (inner "Loading!!")))
+
+(defn initialize-websockets
+  [url]
+  (let [socket (ws/create)]
+    (if-let [socket (-> socket
+                        (ws/configure (ws-opened socket)
+                                      ws-message
+                                      ws-error)
+                        (ws/connect! url))]
+      (do
+        (.info js/console "initialized")
+        (.info js/console (. socket (isOpen)))))))
+
 (defn main
   []
   (.log js/console "starting application")
@@ -82,12 +118,9 @@
   (add-handler do-like-button ($ :.like-button))
   (add-handler do-logout-link ($ :.logout-link))
 
-  #_(-> $interface
-        (css {:background "blue"})
-        (inner "Loading!!"))
+  ;; (set-loading-indicator)
+  (initialize-websockets "ws://renfer.name:8082/websocket")
 
-  
-  ;; "truew"
   )
 
 (main)
