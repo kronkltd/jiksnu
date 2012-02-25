@@ -75,6 +75,10 @@
                         :limit 20
                         ))
 
+(defn local-index
+  []
+  [])
+
 (defaction profile
   [& _])
 
