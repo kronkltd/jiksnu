@@ -333,10 +333,15 @@
 
 (defsection index-section [User :html]
   [users & _]
-  [:table.table.users
-   [:thead]
-   [:tbody
-    (map index-line users)]])
+  (list
+   [:table.table.users
+    [:thead]
+    [:tbody
+     (map index-line users)]]
+   [:ul.pager
+    [:li.previous [:a {:href "#"} "&larr; Previous"]]
+    [:li.next [:a {:href "#"} "Next &rarr;"]]])
+  )
 
 
 (defsection title [User]
@@ -353,8 +358,11 @@
         avatar-url (or avatar-url (model.user/image-link user))]
     (merge {:profileUrl (full-uri user)
             :id (or id (model.user/get-uri user))
-            :url (full-uri user)
+            :url (or (:url user)
+                     (full-uri user))
             :objectType "person"
+            :username (:username user)
+            :domain (:domain user)
             :published (:updated user)
             ;; :name {:formatted (:display-name user)
             ;;        :familyName (:last-name user)

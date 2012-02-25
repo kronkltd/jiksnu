@@ -42,7 +42,7 @@
       [:div.subscribers
        [:h3
         ;; subscribers link
-        [:a {:href (str "/" (:username user) "/subscribers")} "Subscribers"]]
+        [:a {:href (str (full-uri user) "/subscribers")} "Subscribers"]]
        [:ul.unstyled
         [:li (map subscriber-line subscriptions)]]])))
 
@@ -52,7 +52,7 @@
     (let [subscriptions (model.subscription/subscriptions user)]
       [:div.subscriptions
        [:h3
-        [:a {:href (str "/" (:username user) "/subscriptions")} "Subscriptions"]]
+        [:a {:href (str (full-uri user) "/subscriptions")} "Subscriptions"]]
        [:ul (map subscriptions-line subscriptions)]
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
@@ -75,12 +75,19 @@
 
 (defn subscribers-index
   [subscriptions]
+  (index-section
+   (map model.subscription/get-target
+        subscriptions))
+
   
   )
 
 (defn subscriptions-index
   [subscriptions]
-  
+  (index-section
+   (map model.subscription/get-target
+        subscriptions))
+
   )
 
 (defn subscriptions-index-json
@@ -111,4 +118,15 @@
         ])
      subscriptions)]]
   
+  )
+
+
+(defsection index-line [Subscription :as]
+  [subscription & _]
+  (let [actor (model.subscription/get-actor subscription)
+        target (model.subscription/get-target subscription)]
+    {:verb "follow"
+     :actor (show-section actor)
+     :target (show-section target)
+    })
   )

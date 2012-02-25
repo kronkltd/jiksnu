@@ -79,7 +79,7 @@
     (condp = mode
       "subscribe"
       ;; set up feed subscriber
-      (let [source (model.feed-source/find-or-create
+      (let [source (actions.feed-source/find-or-create
                     {:topic topic :callback callback}
                     {:mode mode :challenge challenge
                      :verify-token verify-token
@@ -95,4 +95,4 @@
         (actions.feed-source/remove-subscription subscription)
         (subscription-not-found-error))
       
-      nil)))
+      (throw (RuntimeException. "Unknown mode type")))))

@@ -9,6 +9,33 @@
             (jiksnu.model [subscription :as model.subscription])
             (jiksnu.sections [subscription-sections :as sections.subscription])))
 
+(defview #'get-subscriptions :as
+  [request [user subscriptions]]
+  {:template false
+   :body {:items (index-section subscriptions)}
+
+   }
+
+  )
+
+
+(defn subscription-formats
+  [user]
+   [{:href (str (uri user) "/subscriptions.atom")
+     :label "Atom"
+     :type "application/atom+xml"}
+    {:href (str (uri user) "/subscriptions.as")
+     :label "Activity Streams"
+     :type "application/atom+xml"}
+    
+    {:href (str (uri user) "/subscriptions.json")
+     :label "JSON"
+     :type "application/json"}]
+  )
+
+
+
+
 (defview #'delete :html
   [request _]
   {:status 302
@@ -45,12 +72,7 @@
 (defview #'get-subscriptions :html
   [request [user subscriptions]]
   {:title "Subscriptions"
-   :formats [{:href (str (uri user) "/subscriptions.atom")
-              :label "Atom"
-              :type "application/atom+xml"}
-             {:href (str (uri user) "/subscriptions.json")
-              :label "JSON"
-              :type "application/json"}]
+   :formats (subscription-formats user)
    :body (sections.subscription/subscriptions-index subscriptions)})
 
 (defview #'get-subscriptions :json

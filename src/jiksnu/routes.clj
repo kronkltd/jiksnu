@@ -159,6 +159,8 @@
     [[:get    "/users/:id"]                               #'stream/remote-profile]
     [[:post   "/users/:id/discover"]                      #'user/discover]
     [[:post   "/users/:subscribeto/subscribe"]            #'sub/subscribe]
+    [[:post   "/users/:id/subscriptions"]                 #'sub/get-subscriptions]
+    [[:post   "/users/:id/subscribers"]                   #'sub/get-subscribers]
     [[:post   "/users/:id/update"]                        #'user/fetch-updates]
     [[:post   "/users/:id/update-hub"]                    #'user/update-hub]
     ;; [[:post   "/users/:id/push/subscribe"]                #'push/subscribe]

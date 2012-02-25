@@ -67,13 +67,13 @@
    {:from (:_id actor)
     :to (:_id user)}))
 
-(defn get-subscribers
+(defaction get-subscribers
   [user]
   [user (model.subscription/subscribers user)])
 
-(defn get-subscriptions
+(defaction get-subscriptions
   [user]
-  [user (model.subscription/subscriptions user)])
+  [user (spy (model.subscription/subscriptions user))])
 
 
 (defaction unsubscribe

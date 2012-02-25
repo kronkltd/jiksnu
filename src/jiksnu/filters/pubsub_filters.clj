@@ -4,10 +4,6 @@
         jiksnu.actions.pubsub-actions)
   (:require (jiksnu.model [user :as model.user])))
 
-;; (deffilter #'callback :http
-;;   [action request]
-;;   (action request))
-
 ;; (deffilter #'admin-index :http
 ;;   [action request]
 ;;   (action))

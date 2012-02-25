@@ -41,6 +41,7 @@
 
                  [ring "1.0.2"]
                  [ring-basic-authentication "0.0.1"]
+                 [solrclj "0.1.2"]
                  [swank-clojure "1.4.0"]
                  [xml-picker-seq "0.0.2"]
                  ]

@@ -16,12 +16,17 @@
           topic :hub.topic} :params} params]
     challenge))
 
+(defn find-or-create
+  [search-params update-params]
+  (model.feed-source/find-or-create search-params update-params))
+
+
 ;; TODO: special case local subscriptions
 (defaction subscribe
   [user]
   (if-let [hub-url (:hub user)]
     (let [topic (helpers.user/feed-link-uri user)]
-      (model.feed-source/find-or-create {:topic topic :hub hub-url})
+      (find-or-create {:topic topic :hub hub-url})
       (let [subscribe-link
             (model/make-subscribe-uri
              hub-url
@@ -36,6 +41,8 @@
 
 (defn remove-subscription
   [subscription])
+
+
 
 (definitializer
   (doseq [namespace [

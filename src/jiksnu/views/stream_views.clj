@@ -172,7 +172,7 @@
    :post-form true
    :formats (sections.activity/index-formats activities)
    ;; :aside '([:p "foo"])
-   :body (index-block activities)})
+   :body (index-section activities)})
 
 (defview #'remote-profile :html
   [request user]
