@@ -14,7 +14,9 @@
                     [model :as model]
                     [namespace :as ns]
                     [session :as session])
-            (jiksnu.actions [activity-actions :as actions.activity])
+            (jiksnu.actions [activity-actions :as actions.activity]
+                            [comment-actions :as actions.comment]
+                            )
             (jiksnu.model [activity :as model.activity]
                           [like :as model.like]
                           [user :as model.user])
@@ -267,8 +269,7 @@
 
 (defn comments-section
   [activity]
-  (when (and (:comment-count activity)
-             (> (:comment-count activity) 0))
+  (if-let [comments (actions.comment/fetch-comments activity)]
     [:section.comments
      [:h4.hidden "Comments"]]))
 

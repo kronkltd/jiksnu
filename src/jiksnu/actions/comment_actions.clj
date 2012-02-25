@@ -33,7 +33,12 @@
 (defaction fetch-comments
   [activity]
   [activity
-   (map model.activity/show (:comments activity))])
+   (map model.activity/show
+        (concat (:comments activity)
+                (model.activity/fetch-all
+                 {:id (:id activity)}
+                 )
+                ))])
 
 (defn comment-request
   [activity]
