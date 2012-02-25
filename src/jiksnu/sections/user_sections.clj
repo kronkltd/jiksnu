@@ -412,7 +412,7 @@
 (defsection show-section [User :rdf]
   [user & _]
   (let [{:keys [url display-name avatar-url first-name last-name username name email]} user
-        mkp (model.signature/get-key-for-user user)]
+        mkp (model.signature/get-key-for-user (spy user))]
     (rdf/with-rdf-ns ""
       [
        ;; About the document

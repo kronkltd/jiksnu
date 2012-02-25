@@ -245,35 +245,18 @@
 
 (defview #'public-timeline :rdf
   [request activities]
-  (let [model (rdf/build-model)]
-    (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
-    (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
-    (.setNsPrefix (rdf/to-java model) "foaf" namespace/foaf)
-    
-    (rdf/with-model model
-      (-> activities
-          index-section
-          ;; first
-          rdf/make-triples
-          rdf/model-add-triples)
-      {:body (with-out-str
-               (rdf/model-to-format model :xml-abbrev))
-       :template :false})))
+  {:body (index-section activities)
+   :template :false})
 
 (defview #'remote-profile :rdf
   [request [user activities]]
-  {:body
-   (try
-     (let [model (triples->model (show-section user))]
-       (with-out-str (rdf/model-to-format model :xml-abbrev))))
+  {:body (show-section user)
    :template :false})
 
 (defview #'user-timeline :rdf
   [request [user activities]]
-  {:body (-> user show-section
-             triples->model
-             (rdf/model-to-format :xml-abbrev)
-             with-out-str)
+  {:body (concat (show-section user)
+                 (index-section activities))
    :template :false})
 
 

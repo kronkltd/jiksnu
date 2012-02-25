@@ -187,7 +187,7 @@
        [:script {:type "text/javascript"}
         (str "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
              "WEBSOCKET_PATH = "
-             "ws://" (config :domain) ":" (config :http :port) "/websocket"
+             "'ws://" (config :domain) ":" (config :http :port) "/websocket'"
              ";"
              "var CLOSURE_NO_DEPS = true;"
 

@@ -36,15 +36,30 @@
 ;; (defmethod apply-view-by-format :atom
 ;;   [request response])
 
+(defn format-triples
+  [triples format]
+  (let [model (rdf/build-model)]
+    (.setNsPrefix (rdf/to-java model) "activity" ns/as)
+    (.setNsPrefix (rdf/to-java model) "sioc" ns/sioc)
+    (.setNsPrefix (rdf/to-java model) "foaf" ns/foaf)
+    (.setNsPrefix (rdf/to-java model) "dc" ns/dc)
+    (.setNsPrefix (rdf/to-java model) "xsd" (str ns/xsd "#"))
+    (.setNsPrefix (rdf/to-java model) "notice" (str "http://" (config :domain) "/notice/"))
+    (.setNsPrefix (rdf/to-java model) "cert" ns/cert)
+    
+    (rdf/with-model model (rdf/model-add-triples triples))
+    (with-out-str (rdf/model-to-format model format))))
+
+(defmethod format-as :rdf
+  [request format response]
+  (-> response
+      (assoc :body (format-triples (:body response) :xml-abbrev))
+      (assoc-in [:headers "Content-Type"] "application/rdf+xml; charset=utf-8")))
 
 (defmethod format-as :n3
   [request format response]
   (-> response 
-      (assoc :body (-> response :body
-                       rdf/model-add-triples
-                       rdf/defmodel
-                       (rdf/model-to-format :n3)
-                       with-out-str))
+      (assoc :body (format-triples (:body response) :n3))
       (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
 
 (defmethod format-as :xml

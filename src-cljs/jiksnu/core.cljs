@@ -138,7 +138,7 @@
   (add-handler do-logout-link ($ :.logout-link))
 
   ;; (set-loading-indicator)
-  (initialize-websockets WEBSOCKET_PATH
+  (initialize-websockets js/WEBSOCKET_PATH
                          ;; "ws://renfer.name:8082/websocket"
                          ))
 
