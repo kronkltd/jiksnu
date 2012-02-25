@@ -33,15 +33,8 @@
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))
 
-(defn include-script
-  [src]
-  [:script {:type "text/javascript"
-            :src src}])
-
 ;; (defmethod apply-view-by-format :atom
 ;;   [request response])
-
-
 
 
 (defmethod format-as :n3
@@ -52,7 +45,7 @@
                        rdf/defmodel
                        (rdf/model-to-format :n3)
                        with-out-str))
-      (assoc-in [:headers "Content-Type"] "text/n3; charset=utf-8")))
+      (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
 
 (defmethod format-as :xml
   [format request response]

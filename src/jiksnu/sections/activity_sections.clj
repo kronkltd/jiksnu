@@ -573,13 +573,16 @@
   (with-rdf-ns ""
     (let [{:keys [content id published]} activity
           uri (full-uri activity)
-          user (get-author activity)]
+          user (get-author activity)
+          user-res (rdf-resource (or (:id user) (model.user/get-uri user)))]
       (concat [
-               [uri [:rdf :type]      [:sioc :Post]]
-               [uri [:as  :verb]      (l "post")]
-               [uri [:sioc  :content] (l content)]
-               [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
-               [uri [:dc  :published] (date published)]
+               [uri [:rdf :type]         [:sioc :Post]]
+               [uri [:as  :verb]         (l "post")]
+               [uri [:sioc  :content]    (l content)]
+               [uri [:sioc :has_creator] user-res]
+               [uri [:sioc :has_owner] user-res]
+               [uri [:as  :author]       user-res]
+               [uri [:dc  :published]    (date published)]
                ]
               #_(show-section user)))))
 

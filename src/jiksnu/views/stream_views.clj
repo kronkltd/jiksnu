@@ -222,7 +222,8 @@
 
 (defview #'public-timeline :n3
   [request activities]
-  {:body (with-format :rdf (index-section activities))
+  {:body
+   (with-format :rdf (index-section activities))
    :template :false})
 
 (defview #'remote-profile :n3
