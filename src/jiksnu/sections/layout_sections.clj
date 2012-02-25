@@ -185,8 +185,13 @@
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
        [:script {:type "text/javascript"}
-        "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';
-         var CLOSURE_NO_DEPS = true;"]
+        (str "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
+             "WEBSOCKET_PATH = "
+             "ws://" (config :domain) ":" (config :http :port) "/websocket"
+             ";"
+             "var CLOSURE_NO_DEPS = true;"
+
+             )]
        (p/include-js
         "/web-socket-js/swfobject.js"
         "/web-socket-js/web_socket.js"
