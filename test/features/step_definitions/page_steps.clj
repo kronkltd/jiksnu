@@ -30,6 +30,7 @@
 (When #"^I go to the \"([^\"]+)\" page for that activity$"          go-to-the-page-for-activity)
 (When #"^I go to the \"([^\"]+)\" page for that domain$"            go-to-the-page-for-domain)
 (When #"^I go to the \"([^\"]+)\" page for that user$"              go-to-the-page-for-user)
+(When #"^I go to the \"([^\"]+)\" page for that user with a \"([^\"]+)\" format$" go-to-the-page-for-user-with-format)
 (When #"^I put my password in the \"password\" field$"              do-enter-password)
 (When #"^I put my username in the \"username\" field$"              do-enter-username)
 (When #"^I request the host-meta page with a client$"               fetch-user-meta-for-user-with-client)

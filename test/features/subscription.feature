@@ -11,7 +11,7 @@ Scenario: Admin page, unauthenticated
 Scenario: Admin page, user
   Given a normal user is logged in
   When I go to the "subscription index" page
-  Then I should be at the login page
+  Then I should be at the "login" page
   # And the response is a redirect
 
 Scenario: Admin page, user
@@ -28,11 +28,11 @@ Scenario: Ostatus subscription page
 Scenario: User subscriptions, default
   Given I am not logged in
   And a user exists
-  When I go to the "subscriptions" page for that user.
+  When I go to the "subscriptions" page for that user
   Then I should get a "HTML" document
 
 Scenario: User subscriptions, JSON
   Given I am not logged in
   And a user exists
-  When I go to that user's subscriptions page with a "JSON" format
+  When I go to the "subscriptions" page for that user with a "JSON" format
   Then I should get a "JSON" document

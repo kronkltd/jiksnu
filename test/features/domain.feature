@@ -12,7 +12,7 @@ Feature: Domains
     Given I am logged in as an admin
     And a domain exists
     When I go to the "show" page for that domain
-    Then I should wait forever
+    # Then I should wait forever
     Then I should see that domain
     
   Scenario: Deleting a domain

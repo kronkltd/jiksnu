@@ -36,6 +36,9 @@
 (def that-domain (ref nil))
 (def that-user (ref nil))
 
+
+;; (spy cucumber.runtime.clojure.ClojureBackend/instance)
+
 (defn implement
   []
   (throw (RuntimeException. "not implemented")))
@@ -104,6 +107,9 @@
   [method path]
   (w/get-url @current-browser (expand-url path)))
 
+(defn get-body
+  []
+  (-> @current-page :body channel-buffer->string))
 
 
 
@@ -185,9 +191,9 @@
 
 (defn do-click-button-for-domain
   [class-name]
-  (implement)
+  ;; TODO: find domain first
   (-> @current-browser
-      (w/find-element {:class class-name})
+      (w/find-element (str class-name "-button"))
       w/click))
 
 (defn do-click-link
@@ -262,10 +268,6 @@
   []
   (fetch-page :get "/.well-known/host-meta"))
 
-(defn get-body
-  []
-  (-> @current-page :body channel-buffer->string))
-
 (defn get-not-found-error
   []
   (check-response
@@ -291,6 +293,10 @@
              (fetch-page-browser :get path))))
 
 (defn go-to-the-page-for-user
+  [page-name]
+  (implement))
+
+(defn go-to-the-page-for-user-with-format
   [page-name]
   (implement))
 
