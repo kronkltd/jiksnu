@@ -297,7 +297,7 @@
   (implement))
 
 (defn go-to-the-page-for-user-with-format
-  [page-name]
+  [page-name format]
   (implement))
 
 (defn host-field-should-match-domain
