@@ -22,6 +22,12 @@
   ([args]
      (entity/fetch Domain args)))
 
+(defn fetch-all
+  ([]
+     (fetch-all {}))
+  ([params & opts]
+     (apply entity/fetch Domain params opts)))
+
 (defn create
   [domain]
   (if (:_id domain)

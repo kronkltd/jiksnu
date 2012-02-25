@@ -8,6 +8,7 @@
             (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain]
                           [webfinger :as model.webfinger])
+            (karras [sugar :as sugar])
             (ring.util [codec :as codec]))
   (:import java.net.URL
            jiksnu.model.Domain))
@@ -49,7 +50,11 @@
 
 (defaction index
   []
-  (model.domain/index))
+  (model.domain/fetch-all
+   {} :sort [(sugar/asc :_id)]
+   :limit 20
+
+   ))
 
 (defaction show
   [domain]
