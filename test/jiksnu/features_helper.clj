@@ -248,10 +248,11 @@
     (throw (RuntimeException. (str "No path defined for " page-name)))))
 
 (defn go-to-the-page-for-activity
-  []
-  (core/with-context [:html :http]
-    (let [path (uri @that-activity)]
-      (fetch-page-browser :get path))))
+  [page-name]
+  (condp = page-name
+    "show" (core/with-context [:html :http]
+             (let [path (uri @that-activity)]
+               (fetch-page-browser :get path)))))
 
 (defn go-to-the-page-for-user
   [page-name]

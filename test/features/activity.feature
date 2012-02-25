@@ -19,7 +19,7 @@ Scenario: Viewing a private activity, unauthenticated
 Scenario: Viewing a private activity, not authorized
   Given I am logged in
   And there is a private activity
-  When I go to the "show" for that activity
+  When I go to the "show" page for that activity
   Then I should get a not found error
 
 # Scenario: Viewing a private activity, authorized
