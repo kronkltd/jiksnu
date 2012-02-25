@@ -81,7 +81,7 @@
                          }}
   :main ciste.runner
   ;; :newrelic true
-  :warn-on-reflection true
+  :warn-on-reflection false
   :jvm-opts [
              "-server"
              "-XX:MaxPermSize=1024m"

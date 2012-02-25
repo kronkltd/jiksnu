@@ -18,6 +18,10 @@
   [n]
   (str "user" n))
 
+(defseq :name
+  [n]
+  "Alice")
+
 (defseq :password
   [n]
   (str "hunter" n))
@@ -51,6 +55,7 @@
     {:username (fseq :word)
      :domain (fseq :domain)
      :name (fseq :word)
+     :display-name (fseq :name)
      :first-name (fseq :word)
      :last-name (fseq :word)
      :password password
