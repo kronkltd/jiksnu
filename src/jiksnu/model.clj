@@ -11,6 +11,7 @@
                      [xml :as xml]
                      [zip :as zip])
             (clojure.data [json :as json])
+            (clojure.tools [logging :as log])
             (jiksnu [namespace :as ns])
             (karras [core :as karras]
                     [sugar :as sugar])
@@ -223,7 +224,7 @@
 
 (defn set-database!
   []
-  (println "setting database for " (environment))
+  (log/info (str "setting database for " (environment)))
   (alter-var-root #'karras/*mongo-db* (fn [_] (mongo-database))))
 
 ;; TODO: Find a good place for this
