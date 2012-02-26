@@ -264,13 +264,11 @@
       :pubsub false} #'domain/ping-response]]))
 
 (def http-predicates
-  [#'pred/http-serialization?
-   #'pred/request-method-matches?
+  [#'pred/request-method-matches?
    #'pred/path-matches?])
 
 (def xmpp-predicates
-  [#'pred/xmpp-serialization?
-   #'pred/type-matches?
+  [#'pred/type-matches?
    #'pred/node-matches?
    #'pred/name-matches?
    #'pred/ns-matches?])
