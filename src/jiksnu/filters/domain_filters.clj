@@ -26,7 +26,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id action))
+  (-> request :params :id model.domain/fetch-by-id action))
 
 (deffilter #'ping-error :xmpp
   [action request]

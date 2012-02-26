@@ -41,7 +41,7 @@
 (defn show-section
   [domain]
   [:div
-   [:p "Id: " [:span.domain-id (:id domain)]]
+   [:p "Id: " [:span.domain-id (:_id domain)]]
    [:p "XMPP: " (:xmpp domain)]
    [:p "Discovered: " (:discovered domain)]
    #_(sections.link/index-section (:links domain))

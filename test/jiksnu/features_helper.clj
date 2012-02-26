@@ -49,7 +49,10 @@
 (defn before-hook
   []
   (try
-    (let [browser (w/new-driver {:browser :htmlunit})]
+    (let [browser (w/new-driver {:browser
+                                 :htmlunit
+                                 ;; :firefox
+                                 })]
       (c/load-config)
 
       (c/set-environment! :test)
