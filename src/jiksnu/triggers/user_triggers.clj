@@ -16,7 +16,8 @@
 
 (defn discover-trigger
   [action _ user]
-  (actions.activity/load-activities (spy (model.user/fetch-by-id (:_id user)))))
+  (actions.activity/load-activities
+   (model.user/fetch-by-id (:_id user))))
 
 (defn fetch-updates-http
   [user]
