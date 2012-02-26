@@ -106,7 +106,7 @@
 (defn fetch-by-jid
   [jid]
   (get-user (.getLocalpart jid)
-        (.getDomain jid)))
+            (.getDomain jid)))
 
 (defn set-field
   [user field value]
