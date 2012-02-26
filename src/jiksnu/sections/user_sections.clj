@@ -355,7 +355,7 @@
     [:p.locality (:location user)]]
    [:p.note (:bio user)]
    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-   (show-section (model.signature/get-key-for-user (spy user)))
+   (show-section (model.signature/get-key-for-user user))
    (user-actions user)])
 
 
@@ -368,7 +368,7 @@
   [user & _]
   (let [{:keys [url display-name avatar-url first-name
                 last-name username name email]} user
-                mkp (model.signature/get-key-for-user (spy user))]
+                mkp (model.signature/get-key-for-user user)]
     (rdf/with-rdf-ns ""
       [
        ;; About the document
