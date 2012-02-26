@@ -238,6 +238,7 @@
     (-> {:username username
          :domain (config :domain)
          :discovered true
+         :id (str "acct:" username "@" (config :domain))
          :local true
          ;; TODO: encrypt here
          :password password}
