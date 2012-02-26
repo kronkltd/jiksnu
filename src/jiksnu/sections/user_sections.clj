@@ -2,15 +2,11 @@
   (:use (ciste [config :only [config]]
                [debug :only [spy]]
                sections)
-        (ciste.sections [default :only [title    title-type
-                                        uri      uri-type
-                                        full-uri full-uri-type
-                                        show-section show-section-format show-section-serialization
-                                        delete-button delete-button-format
-                                        link-to
-                                        index-section index-section-type index-section-format]])
+        (ciste.sections [default :only [title uri full-uri show-section
+                                        delete-button link-to index-section]])
         (clj-gravatar [core :only [gravatar-image]])
-        (jiksnu session)
+        (jiksnu session
+                [views :only [control-line]])
         (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
             (hiccup [core :as h]
