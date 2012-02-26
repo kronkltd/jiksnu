@@ -530,9 +530,10 @@
       :about (uri activity)
       :typeof "sioc:Post"}
      [:header
-      ;; TODO: merge into the same link
-      (sections.user/display-avatar user)
-      (link-to user)
+      [:div.vcard
+       ;; TODO: merge into the same link
+       (sections.user/display-avatar user)
+       [:span.fn.n (link-to user)]]
       [:div.labels
        [:span.label (-> activity :object :object-type)]
        (when-not (:local activity)

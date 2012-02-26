@@ -17,6 +17,14 @@
 
 (defsection show-section [MagicKeyPair :html]
   [key & _]
+  [:div
+   [:p (:armored-n key)]
+   [:p (:armored-e key)]
+   ]
+  )
+
+(defsection show-section [MagicKeyPair :rdf]
+  [key & _]
   (let [user (model.key/get-user key)]
     [(rdf/rdf-resource (str (full-uri user) "#key"))
      [rdf/rdf:type (rdf/rdf-resource (str ns/cert "RSAPublicKey"))

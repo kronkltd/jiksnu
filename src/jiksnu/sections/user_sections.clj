@@ -77,7 +77,7 @@
 (defn edit-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/edit")}
-   [:button.btn.edit-button {:type "submit"}
+   [:button.btn.edit-button {:type "submit" :title "Edit"}
     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defn register-form
@@ -355,6 +355,7 @@
     [:p.locality (:location user)]]
    [:p.note (:bio user)]
    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
+   (show-section (model.signature/get-key-for-user (spy user)))
    (user-actions user)])
 
 
