@@ -15,6 +15,11 @@
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
 
+(defsection full-uri :default
+  [record & options]
+  (str "http://" (config :domain)
+       (apply uri record options)))
+
 (defsection link-to :default
   [record & options]
   (let [options-map (apply hash-map options)]

@@ -1,16 +1,12 @@
 (ns jiksnu.model
   (:use (ciste core
                [config :only [config definitializer environment load-config]]
-               [debug :only [spy]]
-               sections)
-        ciste.sections.default
+               [debug :only [spy]])
         (clj-factory [core :only [factory]])
         (clojure.core [incubator :only [-?>]])
         (karras [core :only [MongoMappable]]
                 [entity :only [defembedded defentity delete-all]]))
-  (:require (aleph [formats :as f]
-                   [http :as h])
-            (clj-http [client :as client])
+  (:require (clj-http [client :as client])
             (clojure [string :as string]
                      [xml :as xml]
                      [zip :as zip])
@@ -151,11 +147,6 @@
 (defn make-id
   [^String id]
   (ObjectId. id))
-
-(defsection full-uri :default
-  [record & options]
-  (str "http://" (config :domain)
-       (apply uri record options)))
 
 (defn parse-str
   [s]
