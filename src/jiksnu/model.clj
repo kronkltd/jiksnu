@@ -263,8 +263,9 @@
    (to-clj [d] (DateTime/parse d))
    (to-description [d] (str d)))
 
+;; Factory specific support in Ciste?
+(load-file "factories.clj")
+
 (definitializer
-  ;; Factory specific support in Ciste?
-  (load-file "factories.clj")
   (set-database!))
 

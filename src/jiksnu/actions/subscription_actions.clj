@@ -1,11 +1,11 @@
 (ns jiksnu.actions.subscription-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
-        (jiksnu model))
+               [debug :only [spy]]))
   (:require (clojure.tools [logging :as log])
-            (jiksnu [session :as session])
-            (jiksnu.actions [push-subscription-actions :as actions.push])
+            (jiksnu [model :as model]
+                    [session :as session])
+            (jiksnu.actions [pubsub-actions :as actions.pubsub])
             (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user]))
   (:import javax.security.sasl.AuthenticationException
@@ -40,7 +40,8 @@
 
 (defaction subscribe
   [actor user]
-  (actions.push/subscribe user)
+  ;; Set up a feed source to that user's public feed
+  (actions.pubsub/subscribe user)
   (model.subscription/create
    {:from (:_id actor)
     :to (:_id user)

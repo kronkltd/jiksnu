@@ -12,11 +12,13 @@
 
 (defn fetch-host-meta
   [url]
-  (when-let [doc (model/xml-doc url)]
+  (when-let [doc (model/fetch-document url)]
     (if-let [host (seq (model/query  "//*[local-name() = 'Host']" doc))]
       doc)
     doc))
 
+;; This function is a little too view-y. The proper representation of
+;; a xrd document should be a hash with all this data.
 (defn host-meta
   [domain]
   ["XRD" {"xmlns" namespace/xrd
@@ -34,6 +36,8 @@
    ["Subject" {} (model.user/get-uri user)]
    ["Alias" {} (full-uri user)]
 
+   ;; Pull the links from a global ref that various plugins can write to
+   
    ["Link" {"rel" "http://webfinger.net/rel/profile-page"
             "type" "text/html"
             "href" (full-uri user)}]
