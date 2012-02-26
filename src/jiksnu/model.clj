@@ -49,6 +49,12 @@
     Date (.format (SimpleDateFormat. *date-format*) date)
     date))
 
+(defn strip-namespaces
+  [val]
+  (-?> val
+       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+       (string/replace #"http://ostatus.org/schema/1.0/" "")))
+
 (defn date->twitter
   [date]
   (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
@@ -130,6 +136,8 @@
 (defentity Group
   [:name])
 
+;; Entity predicates
+
 (defn activity?
   [activity]
   (instance? Activity activity))
@@ -145,56 +153,70 @@
 (defn user?
   [user] (instance? User user))
 
-(defn make-id
+
+
+
+
+
+
+(defn ^ObjectId make-id
+  "Create an object id from the provided string"
   [^String id]
   (ObjectId. id))
 
-(defn parse-str
-  [s]
-  (-> s StringReader. InputSource.
+(defn string->zip
+  "parse xml string as a zipper sequence"
+  [^String xml]
+  (-> xml StringReader. InputSource.
       xml/parse zip/xml-zip))
 
-(defn str->zip
-  [s]
-  (zip/xml-zip (parse-str s)))
-
 (defn ^Document stream->document
+  "Read an input stream into a XOM document"
   [^InputStream input-stream]
   (.build (Builder.) input-stream))
 
 (defn ^Document string->document
+  "Read a string into a XOM document"
   [^String xml]
   (.build (Builder.) xml ""))
 
-(defn fetch-resource
-  [url]
+;; (defn compile-xml
+;;   [^InputStream stream]
+;;   (let [parser (Builder.)]
+;;     (.build parser stream)))
+
+
+
+(defn ^String fetch-resource
+  "Fetch the url, return the string"
+  [^String url]
   (if-let [response (try (client/get url) (catch Exception ex))]
     (let [{:keys [body status]} response]
       (when (not (#{404 500} status))
         body))))
 
-(defn fetch-document
-  [^String url]
-  (try
-    (let [parser (Builder.)]
-      (.build parser (.openStream (URL. url))))
-    (catch FileNotFoundException ex nil)))
+
+;; (defn fetch-document
+;;   [^String url]
+;;   (try
+;;     (let [parser (Builder.)]
+;;       (.build parser (.openStream (URL. url))))
+;;     (catch FileNotFoundException ex nil)))
 
 (defn xml-doc
+  "Fetch the url and return it as a XOM document"
   [^String url]
   (-?> url fetch-resource string->document))
 
+
+;; TODO: reverse order
 (defn query
+  "Return the sequence of nodes that match the xpath expression"
   [^String path ^Node doc]
   (let [nodes (.query doc path)]
     (map
      #(.get nodes %)
      (range (.size nodes)))))
-
-(defn compile-xml
-  [^InputStream stream]
-  (let [parser (Builder.)]
-    (.build parser stream)))
 
 
 (defn extract-atom-link
@@ -209,11 +231,8 @@
            (map #(-> % :attrs :href)))
       first))
 
-(defn strip-namespaces
-  [val]
-  (-?> val
-       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
-       (string/replace #"http://ostatus.org/schema/1.0/" "")))
+
+;; Database functions
 
 (defn drop-all!
   []

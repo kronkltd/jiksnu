@@ -60,7 +60,7 @@
 (defn stream->envelope
   "convert an input stream to an envelope"
   [input-stream]
-  (let [doc (model/compile-xml input-stream)]
+  (let [doc (model/stream->document input-stream)]
     (let [data-tag (first (model/query "//*[local-name()='data']" doc))]
       {:sig (.getValue (first (model/query "//*[local-name()='sig']" doc)))
        :datatype (.getAttributeValue data-tag "type")
