@@ -549,6 +549,7 @@
        (or (:title activity)
            (:content activity))]]
      [:div
+      (:irts activity)
       (links-section activity)
       (likes-section activity)
       (maps-section activity)

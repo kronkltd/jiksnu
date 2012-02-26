@@ -5,6 +5,7 @@
 (defaction service
   [id]
   ;; get user
+  true
   )
 
 (defaction rsd

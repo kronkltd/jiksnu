@@ -1,6 +1,7 @@
 (ns jiksnu.actions.comment-actions
   (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]))
+               [core :only [defaction]]
+               [debug :only [spy]]))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
             (jiksnu [model :as model]
@@ -36,8 +37,8 @@
   [activity
    (map model.activity/show
         (concat (:comments activity)
-                (model.activity/fetch-all
-                 {:id (:id activity)})))])
+                (if-let [irt (first (:irts activity))]
+                  (model.activity/fetch-all {:id irt}))))])
 
 (defn comment-request
   [activity]

@@ -183,7 +183,13 @@
                   MagicKeyPair]]
     (delete-all entity)))
 
-
+(defn parse-http-link
+  [url]
+  (let [[_ href remainder] (re-matches #"<([^>]+)>; (.*)" url)]
+    (->> (string/split remainder #"; ")
+         (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
+         (into {})
+         (merge {"href" href}))))
 
 
 
