@@ -19,7 +19,7 @@
 (defaction create
   [options]
   (let [prepared-domain (assoc options :discovered false)]
-    (model.domain/create options)))
+    (model.domain/create prepared-domain)))
 
 (defaction delete
   [id]
