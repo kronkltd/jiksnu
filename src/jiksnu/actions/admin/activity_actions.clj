@@ -10,11 +10,14 @@
   (model.activity/index))
 
 (definitializer
-  (try
-    (doseq [namespace ['jiksnu.filters.admin.activity-filters
-                       'jiksnu.helpers.admin.activity-helpers
-                       'jiksnu.sections.admin.activity-sections
-                       'jiksnu.triggers.admin.activity-triggers
-                       'jiksnu.views.admin.activity-views]]
+  ;; (try
+  (doseq [namespace [
+                     'jiksnu.filters.admin.activity-filters
+                     ;; 'jiksnu.helpers.admin.activity-helpers
+                     ;; 'jiksnu.sections.admin.activity-sections
+                     ;; 'jiksnu.triggers.admin.activity-triggers
+                     'jiksnu.views.admin.activity-views
+                     ]]
       (require namespace))
-    (catch Exception ex)))
+    ;; (catch Exception ex))
+  )
