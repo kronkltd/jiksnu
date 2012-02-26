@@ -3,12 +3,11 @@
                [sections :only [defsection]] )
         (ciste.sections [default :only [link-to link-to-format]]))
   #_(:require (jiksnu.sections [link-sections :as sections.link]))
-  (:import jiksnu.model.Domain)
-  )
+  (:import jiksnu.model.Domain))
 
 (defn add-form
   []
-  [:form {:method "post" :actions "/main/domains"}
+  [:form.well {:method "post" :actions "/main/domains"}
    [:fieldset
     [:legend "Add Domain"]
     [:div.clearfix
@@ -16,27 +15,31 @@
      [:div.input
       [:input {:type "test" :name "domain"}]]]
     [:div.actions
-     [:div.btn.primary {:type "submit" :value "Add"}]]]])
+     [:button.btn.primary {:type "submit"}
+      "Add"]]]])
 
 
 (defn delete-button
   [domain]
   [:form {:method "post"
-          :action (str "/main/domains/" (:_id domain) "/discover")}
+          :action (str "/main/domains/" (:_id domain))}
    [:input {:type "hidden" :name "_method" :value "DELETE"}]
-   [:input.btn.delete-button {:type "submit" :value "Delete"}]])
+   [:button.btn.delete-button {:type "submit"}
+    [:i.icon-trash] [:span.button-text "Delete"]]])
 
 (defn discover-button
   [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/discover")}
-   [:input.btn.discover-button {:type "submit" :value "Discover"}]])
+   [:button.btn.discover-button {:type "submit"}
+    [:i.icon-search] [:span.button-text "Discover"]]])
 
 (defn edit-button
   [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/edit")}
-   [:input.btn.edit-button {:type "submit" :value "Edit"}]])
+   [:button.btn.edit-button {:type "submit"}
+    [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defn show-section
   [domain]
@@ -64,7 +67,7 @@
 
 (defn index-block
   [domains]
-  [:table.domains
+  [:table.domains.table
    [:thead
     [:tr
      [:th ]
