@@ -75,8 +75,8 @@
     (model.user/create user)))
 
 (defaction delete
-  [id]
-  (model.user/delete id))
+  [^User user]
+  (model.user/delete (:_id user)))
 
 (defaction exists?
   [user]
