@@ -12,6 +12,7 @@
   (:require (ciste [config :as c]
                    [core :as core])
             [clj-webdriver.core :as w]
+            (clojure [string :as string])
             [clojure.tools.logging :as log]
             (jiksnu [model :as model]
                     factory
@@ -46,7 +47,7 @@
 (defn before-hook
   []
   (try
-    (let [browser (w/new-driver {:browser :firefox})]
+    (let [browser (w/new-driver {:browser :htmlunit})]
       (c/load-config)
 
       (c/set-environment! :test)
@@ -298,7 +299,11 @@
 
 (defn go-to-the-page-for-user-with-format
   [page-name format]
-  (implement))
+  (condp = page-name
+    "show" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "." (string/lower-case format)))
+    "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscriptions." (string/lower-case format)))
+    "subscribers" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscribers." (string/lower-case format)))
+    (implement)))
 
 (defn host-field-should-match-domain
   []

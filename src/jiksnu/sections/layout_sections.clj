@@ -2,11 +2,9 @@
   (:use (ciste [core :only [apply-template]]
                [config :only [config environment]])
         (ciste.sections [default :only [add-form link-to show-section]])
-        (jiksnu [session :only [current-user is-admin?]]
-                [views :only [include-script]]))
+        (jiksnu [session :only [current-user is-admin?]]))
   (:require (hiccup [core :as h]
-                    [page-helpers :as p]
-                    )
+                    [page-helpers :as p])
             (jiksnu [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.model [subscription :as model.subscription])
@@ -200,7 +198,7 @@
         "/cljs/bootstrap.js"
         "/bootstrap/js/bootstrap.js")
        [:script {:type "text/javascript"}
-          "goog.require('jiksnu.core');"]]]))})
+        "goog.require('jiksnu.core');"]]]))})
 
 
 (defmethod apply-template :html
