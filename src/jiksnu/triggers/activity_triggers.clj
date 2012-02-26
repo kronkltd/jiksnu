@@ -12,7 +12,8 @@
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace])
             (jiksnu.actions [comment-actions :as actions.comment]
-                            [stream-actions :as actions.stream])
+                            [stream-actions :as actions.stream]
+                            [user-actions :as actions.user])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]

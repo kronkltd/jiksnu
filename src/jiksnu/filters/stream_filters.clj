@@ -8,12 +8,31 @@
                           [user :as model.user])))
 
 
+(deffilter #'callback-publish :http
+  [action request]
+  (action request))
+
+(deffilter #'direct-message-timeline :http
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
 (deffilter #'friends-timeline :http
   [action request]
   (-> request :params :id model.user/get-user action))
 
+(deffilter #'group-timeline :http
+  [action {{:keys [name]} :params}]
+  (action name))
+
+(deffilter #'home-timeline :http
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
 (deffilter #'inbox :http
   [action request]
+  ;; TODO: fetch user
   (action))
 
 (deffilter #'public-timeline :http
@@ -24,8 +43,9 @@
   [action request]
   (action))
 
-(deffilter #'twitter-public-timeline :http
+(deffilter #'mentions-timeline :http
   [action request]
+  ;; TODO: fetch user
   (action))
 
 (deffilter #'remote-profile :http
@@ -50,23 +70,3 @@
   [action request]
   (-> request :to
       actions.user/fetch-by-jid action))
-
-(deffilter #'callback-publish :http
-  [action request]
-  (action request))
-
-(deffilter #'group-timeline :http
-  [action {{:keys [name]} :params}]
-  (action name))
-
-(deffilter #'direct-message-timeline :http
-  [action request]
-  (action))
-
-(deffilter #'home-timeline :http
-  [action request]
-  (action))
-
-(deffilter #'mentions-timeline :http
-  [action request]
-  (action))

@@ -99,6 +99,12 @@
 
 
 
+(defview #'public-timeline :as
+  [request activities]
+  {:body
+   {:items
+    (map show-section activities)}})
+
 (defview #'public-timeline :atom
   [request activities]
   (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
@@ -117,6 +123,33 @@
              :updated (:updated (first activities))
              :entries (map show-section activities)})}))
 
+(defview #'public-timeline :json
+  [request activities]
+  {:body
+   (map
+    (fn [activity]
+      {:text (:title activity)
+       :truncated false
+       :created_at (model/date->twitter (:published activity))
+       :in_reply_to_status_id nil
+       :source (:source activity)
+       :id (:_id activity)
+       :in_reply_to_user_id nil
+       :in_reply_to_screen_name nil
+       :favorited false
+       :attachments []
+       :user
+       (let [user (helpers.activity/get-author activity)]
+         {:name (:display-name user)
+          :id (:_id user)
+          :screen_name (:username user)
+          :url (:url user)
+          :profile_image_url (:avatar-url user)
+          :protected false})
+       :statusnet_html (:content activity)
+       :statusnet_conversation_id nil})
+    activities)})
+
 (defview #'public-timeline :html
   [request activities]
   {:title "Public Timeline"
@@ -124,15 +157,41 @@
    ;; :aside '([:p "foo"])
    :body (index-block activities)})
 
-(defview #'public-timeline :json
+(defview #'public-timeline :n3
   [request activities]
-  {:body
-   {:items
-    (map show-section activities)}})
+  (let [triples (with-format :rdf (index-section activities))]
+    {:body (-> triples
+              rdf/model-add-triples
+              rdf/defmodel
+              (rdf/model-to-format :n3)
+              with-out-str)
+    :template :false}))
+
+(defview #'public-timeline :rdf
+  [request activities]
+  (let [model (rdf/build-model)]
+    (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
+    (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
+    (.setNsPrefix (rdf/to-java model) "foaf" namespace/foaf)
+    
+    (rdf/with-model model
+      (-> activities
+          index-section
+          ;; first
+          rdf/make-triples
+          rdf/model-add-triples)
+      {:body (with-out-str
+               (rdf/model-to-format model :xml-abbrev))
+      :template :false})))
+
+(defview #'public-timeline :xml
+  [request activities]
+  {:body (index-section activities)})
 
 (defview #'public-timeline :xmpp
   [request activities]
   (tigase/result-packet request (index-section activities)))
+
 
 
 
@@ -196,72 +255,6 @@
   [request response-fn]
   {:body response-fn
    :template false})
-
-
-
-
-(defview #'twitter-public-timeline :json
-  [request activities]
-  {:body
-   (map
-    (fn [activity]
-      {:text (:title activity)
-       :truncated false
-       :created_at (model/date->twitter (:published activity))
-       :in_reply_to_status_id nil
-       :source (:source activity)
-       :id (:_id activity)
-       :in_reply_to_user_id nil
-       :in_reply_to_screen_name nil
-       :favorited false
-       :attachments []
-       :user
-       (let [user (helpers.activity/get-author activity)]
-         {:name (:display-name user)
-          :id (:_id user)
-          :screen_name (:username user)
-          :url (:url user)
-          :profile_image_url (:avatar-url user)
-          :protected false})
-       :statusnet_html (:content activity)
-       :statusnet_conversation_id nil})
-    activities)})
-
-(defview #'twitter-public-timeline :n3
-  [request activities]
-  (let [triples (with-format :rdf (index-section activities))]
-    {:body (-> triples
-              rdf/model-add-triples
-              rdf/defmodel
-              (rdf/model-to-format :n3)
-              with-out-str)
-    :template :false}))
-
-(defview #'twitter-public-timeline :rdf
-  [request activities]
-  (let [model (rdf/build-model)]
-    (.setNsPrefix (rdf/to-java model) "activity" namespace/as)
-    (.setNsPrefix (rdf/to-java model) "sioc" namespace/sioc)
-    (.setNsPrefix (rdf/to-java model) "foaf" namespace/foaf)
-    
-    (rdf/with-model model
-      (-> activities
-          index-section
-          ;; first
-          rdf/make-triples
-          rdf/model-add-triples)
-      {:body (with-out-str
-               (rdf/model-to-format model :xml-abbrev))
-      :template :false})))
-
-;; (defview #'twitter-public-timeline :rdf
-;;   [request activities]
-;;   {:body nil})
-
-(defview #'twitter-public-timeline :xml
-  [request activities]
-  {:body (index-section activities)})
-
 
 
 

@@ -34,10 +34,6 @@
   [& options]
   (model.activity/index))
 
-(defaction twitter-public-timeline
-  [& options]
-  (apply public-timeline options))
-
 (declare user-timeline)
 
 (defaction remote-profile

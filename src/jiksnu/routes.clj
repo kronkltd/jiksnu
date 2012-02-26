@@ -94,7 +94,7 @@
     [[:get    "/api/statuses/mentions.:format"]           #'stream/mentions-timeline]
     [[:get    "/api/statusnet/config.:format"]            #'setting/config-output]
     ;; [[:get    "/api/mentions"]                            #'stream/mentions-timeline]
-    [[:get    "/api/statuses/public_timeline.:format"]    #'stream/twitter-public-timeline]
+    [[:get    "/api/statuses/public_timeline.:format"]    #'stream/public-timeline]
     [[:get    "/api/statuses/show/:id.:format"]           #'activity/show]
     [[:get    "/api/statuses/user_timeline/:id.:format"]  #'stream/user-timeline]
     [[:get    "/groups"]                                  #'group/index]
