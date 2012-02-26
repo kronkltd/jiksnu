@@ -100,8 +100,12 @@
 
 (defn fetch-by-id
   [id]
-  (if id
-    (entity/fetch-by-id User id)))
+  (when id
+    (try
+      (entity/fetch-by-id User id)
+      (catch IllegalArgumentException ex
+        ;; Invalid ObjectID simply returning nil
+        ))))
 
 (defn fetch-by-jid
   [jid]
