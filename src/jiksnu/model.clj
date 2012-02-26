@@ -34,6 +34,11 @@
            org.joda.time.DateTime
            org.xml.sax.InputSource))
 
+(defmacro implement
+  "Throws an exception saying that this function has not been implemented"
+  []
+  `(throw (UnsupportedOperationException. "Not implemented yet")))
+
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 
 (def ^:dynamic *mongo-database* (ref nil))

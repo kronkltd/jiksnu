@@ -3,7 +3,8 @@
                [core :only [defaction]]))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
-            (jiksnu [namespace :as ns])
+            (jiksnu [model :as model]
+                    [namespace :as ns])
             (jiksnu.actions [activity-actions :as actions.activity])
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
@@ -36,9 +37,7 @@
    (map model.activity/show
         (concat (:comments activity)
                 (model.activity/fetch-all
-                 {:id (:id activity)}
-                 )
-                ))])
+                 {:id (:id activity)})))])
 
 (defn comment-request
   [activity]
@@ -50,6 +49,10 @@
     (element/make-element
      ["pubsub" {"xmlns" ns/pubsub}
       ["items" {"node" (comment-node-uri activity)}]])}))
+
+(defn fetch-comments-onesocialweb
+  [activity]
+  (model/implement))
 
 ;; This should be a trigger
 (defaction fetch-comments-remote
