@@ -40,10 +40,6 @@
   (str "http://" (:domain user)
        "/api/statuses/user_timeline/" (:_id user) "." format))
 
-(defn user->person)
-
-
-
 ;; TODO: Move this to user
 (defn add-author
   "Adds the supplied user to the atom entry"
@@ -64,7 +60,7 @@
 (defn discover-button
   [user]
   [:form {:method "post" :action (str "/users/" (:_id user) "/discover")}
-   [:button.btn.discover-button {:type "submit"}
+   [:button.btn.discover-button {:type "submit" :title "Discover"}
     [:i.icon-search] [:span.button-text "Discover"]]])
 
 (defn display-avatar-img
@@ -94,49 +90,16 @@
    [:fieldset
     [:legend "Register"]
 
-    [:div.clearfix
-     [:label {:for "username"} "Username"]
-     [:div.input
-      [:input {:type "text" :name "username"}]]]
-
-    [:div.clearfix
-     [:label {:for "password"} "Password"]
-     [:div.input
-      [:input {:type "password" :name "password"}]]]
-
-    [:div.clearfix
-     [:label {:for "confirm-password"} "Confirm Password"]
-     [:div.input
-      [:input {:type "password" :name "confirm-password"}]]]
-
-    [:div.clearfix
-     [:label {:for "email"} "Email"]
-     [:div.input
-      [:input {:type "email" :name "email"}]]]
-
-    [:div.clearfix
-     [:label {:for "display-name"} "Display Name"]
-     [:div.input
-      [:input {:type "text" :name "display-name"}]]]
-
-    [:div.clearfix
-     [:label {:for "location"} "Location"]
-     [:div.input
-      [:input {:type "text" :name "location"}]]]
-
-    [:div.clearfix
-     [:label {:for "accepted"} "I have checked the box"]
-     [:div.input
-      [:input {:type "checkbox" :name "accepted"}]]]
-
+    (control-line "Username" "username" "text")
+    (control-line "Password" "password" "password")
+    (control-line "Confirm Password" "confirm-password" "password")
+    (control-line "Email" "email" "email")
+    (control-line "Display Name" "display-name" "text")
+    (control-line "Location" "location" "text")
+    (control-line "I have checked the box" "accepted" "checkbox")
 
     [:div.actions
-     [:input.btn.primary {:type "submit" :value "Register"}]]
-    ]]
-
-  )
-
-
+     [:input.btn.primary {:type "submit" :value "Register"}]]]])
 
 (defn edit-form
   [user]
@@ -194,7 +157,6 @@
      [:input.btn.primary {:type "submit" :value "submit"}]]]]
   
   )
-
 
 
 
@@ -279,14 +241,8 @@
   [:form {:method "post" :action "/admin/users"}
    [:fieldset
     [:legend "Add User"]
-    [:div.clearfix
-     [:label {:type "username"} "Username"]
-     [:div.input
-      [:input {:type "text" :name "username"}]]]
-    [:div.clearfix
-     [:label {:for "domain"} "Domain"]
-     [:div.input
-      [:input {:type "text" :name "domain"}]]]
+    (control-line "Username" "username" "text")
+    (control-line "Domain" "domain" "text")
     [:div.actions
      [:input.btn.primary {:type "submit" :value "Add User"}]]]])
 
@@ -331,6 +287,12 @@
             [:li (delete-button user)])))
        ]]]))
 
+(defn pagination-links
+  []
+  [:ul.pager
+   [:li.previous [:a {:href "#"} "&larr; Previous"]]
+   [:li.next [:a {:href "#"} "Next &rarr;"]]])
+
 (defsection index-section [User :html]
   [users & _]
   (list
@@ -338,11 +300,7 @@
     [:thead]
     [:tbody
      (map index-line users)]]
-   [:ul.pager
-    [:li.previous [:a {:href "#"} "&larr; Previous"]]
-    [:li.next [:a {:href "#"} "Next &rarr;"]]])
-  )
-
+   (pagination-links)))
 
 (defsection title [User]
   [user & options]
@@ -411,8 +369,9 @@
 
 (defsection show-section [User :rdf]
   [user & _]
-  (let [{:keys [url display-name avatar-url first-name last-name username name email]} user
-        mkp (model.signature/get-key-for-user (spy user))]
+  (let [{:keys [url display-name avatar-url first-name
+                last-name username name email]} user
+                mkp (model.signature/get-key-for-user (spy user))]
     (rdf/with-rdf-ns ""
       [
        ;; About the document
@@ -438,16 +397,7 @@
                 (when first-name   [foaf:givenName  (rdf/l first-name)])
                 (when last-name    [foaf:familyName (rdf/l last-name)]))]
 
-       (when mkp
-         [(rdf/rdf-resource (str (full-uri user) "#key"))
-          [rdf/rdf:type (rdf/rdf-resource (str ns/cert "RSAPublicKey"))
-           (rdf/rdf-resource (str ns/cert "identity")) (rdf/rdf-resource (str (full-uri user) "#me"))
-           (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent mkp))
-           (rdf/rdf-resource (str ns/cert "modulus")) (rdf/rdf-typed-literal
-                                                       (.toString
-                                                        (BigInteger.
-                                                         (:modulus mkp)) 16)
-                                                       (str ns/xsd "#hexBinary"))]])
+       (when mkp (show-section mkp))
 
        ;; About the User's Account
        [(rdf/rdf-resource (model.user/get-uri user))
@@ -456,7 +406,9 @@
          foaf:accountName            (rdf/l (:username user))
          [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
          [ns/sioc "account_of"]         (rdf/rdf-resource
-                                         (str (full-uri user) "#me"))]]])))
+                                         (str (full-uri user) "#me"))]]
+
+       ])))
 
 (defsection show-section [User :xmpp]
   [^User user & options]
