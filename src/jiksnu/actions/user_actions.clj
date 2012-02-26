@@ -245,7 +245,8 @@
         (merge (when email {:email email})
                (when display-name {:display-name display-name})
                (when location {:location location}))
-        create)))
+        create)
+    (throw (IllegalArgumentException. "Missing required params"))))
 
 (defaction register-page
   []

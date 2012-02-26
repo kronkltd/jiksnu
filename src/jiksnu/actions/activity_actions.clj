@@ -26,6 +26,8 @@
            jiksnu.model.User
            org.apache.abdera2.ext.thread.ThreadHelper))
 
+(def ^QName activity-object-type (QName. namespace/as "object-type"))
+
 (defn set-recipients
   [activity]
   (let [recipients (filter identity (:recipients activity))]
@@ -52,8 +54,6 @@
 (defaction edit-page
   [id]
   (model.activity/fetch-by-id id))
-
-(def ^QName activity-object-type (QName. namespace/as "object-type"))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json

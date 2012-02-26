@@ -324,6 +324,25 @@
 
 
 
+(defsection show-section [Activity :as]
+  [activity & _]
+  {"published" (:published activity)
+   "updated" (:updated activity)
+   "verb" "post"
+   "title" (:title activity)
+   ;; "content" (:content activity)
+   "id" (:id activity)
+   "url" (full-uri activity)
+   "actor" (show-section (helpers.activity/get-author activity))
+   "object"
+   (let [object (:object activity)]
+     {"objectType" (:object-type object)
+      "id" (:id object)
+      "displayName" (:content activity)
+      ;; "published" (:published object)
+      ;; "updated" (:updated object)
+      })})
+
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
   (let [entry (abdera/new-entry)]
@@ -403,24 +422,20 @@
                (:long activity)]))
       (comments-section activity)]]))
 
-(defsection show-section [Activity :json]
+(defsection show-section [Activity :rdf]
   [activity & _]
-  {"published" (:published activity)
-   "updated" (:updated activity)
-   "verb" "post"
-   "title" (:title activity)
-   ;; "content" (:content activity)
-   "id" (:id activity)
-   "url" (full-uri activity)
-   "actor" (show-section (helpers.activity/get-author activity))
-   "object"
-   (let [object (:object activity)]
-     {"objectType" (:object-type object)
-      "id" (:id object)
-      "displayName" (:content activity)
-      ;; "published" (:published object)
-      ;; "updated" (:updated object)
-      })})
+  (with-rdf-ns ""
+    (let [{:keys [content id published]} activity
+          uri (full-uri activity)
+          user (get-author activity)]
+      (concat [
+               [uri [:rdf :type]      [:sioc :Post]]
+               [uri [:as  :verb]      (l "post")]
+               [uri [:sioc  :content] (l content)]
+               [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
+               [uri [:dc  :published] (date published)]
+               ]
+              #_(show-section user)))))
 
 (defsection show-section [Activity :xmpp]
   [^Activity activity & options]
@@ -456,18 +471,3 @@
     [:hashtags
      ;; TODO: list hashtags
      ]]])
-
-(defsection show-section [Activity :rdf]
-  [activity & _]
-  (with-rdf-ns ""
-    (let [{:keys [content id published]} activity
-          uri (full-uri activity)
-          user (get-author activity)]
-      (concat [
-               [uri [:rdf :type]      [:sioc :Post]]
-               [uri [:as  :verb]      (l "post")]
-               [uri [:sioc  :content] (l content)]
-               [uri [:as  :author]    (rdf-resource (or id (model.user/get-uri user)))]
-               [uri [:dc  :published] (date published)]
-               ]
-              #_(show-section user)))))

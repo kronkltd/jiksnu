@@ -95,19 +95,6 @@
      [:td (edit-button user)]
      [:td (delete-button user)]]))
 
-(defsection title [User]
-  [user & options]
-  (or (:name user)
-      (:display-name user)
-      (:first-name user)
-      (model.user/get-uri user)))
-
-(defsection uri [User]
-  [user & options]
-  (if (model.user/local? user)
-    (str "/" (:username user))
-    (str "/users/" (:_id user))))
-
 (defn user->person
   [user]
   (let [author-uri (model.user/get-uri user)]
@@ -137,11 +124,6 @@
             (.addSimpleExtension ns/poco "value" "poco" (full-uri user))
             (.addSimpleExtension ns/poco "primary" "poco" "true"))))))
 
-
-(defsection show-section [User :atom]
-  [user & _]
-  (user->person user))
-
 (defn user-actions
   [user]
   (if-let [authenticated (current-user)]
@@ -155,6 +137,96 @@
         [:li (subscribe-button user)])
       (when (is-admin?)
         [:li (delete-button user)])]]))
+
+(defn add-form
+  []
+  [:form {:method "post" :action "/admin/users"}
+   [:fieldset
+    [:legend "Add User"]
+    [:div.clearfix
+     [:label {:type "username"} "Username"]
+     [:div.input
+      [:input {:type "text" :name "username"}]]]
+    [:div.clearfix
+     [:label {:for "domain"} "Domain"]
+     [:div.input
+      [:input {:type "text" :name "domain"}]]]
+    [:div.actions
+     [:input.btn.primary {:type "submit" :value "Add User"}]]]])
+
+(defn push-subscribe-button
+  [user]
+  [:a.url {:href (:url user) :rel "contact"}
+   [:span.fn.n (:display-name user)]])
+
+(defn remote-warning
+  [user]
+  (when-not (:local user)
+    [:p "This is a cached copy of information for a user on a different system"]))
+
+
+
+
+
+
+
+;; TODO: make defsection
+(defn index-line
+  [user]
+  [:tr
+   [:td (display-avatar user)]
+   [:td
+    [:p (link-to user)]
+    [:p (:username user) "@" (:domain user)]
+    [:p (:url user)]
+    [:p (:bio user)]
+    ]
+   [:td [:ul.buttons
+         [:li (subscribe-button user)]
+         #_[:li (discover-button user)]
+         [:li (update-button user)]
+         [:li (edit-button user)]
+         [:li (delete-button user)]
+         ]]])
+
+(defsection index-section [User :html]
+  [users & _]
+  [:table.table.users
+   [:thead]
+   [:tbody
+    (map index-line users)]])
+
+
+(defsection title [User]
+  [user & options]
+  (or (:name user)
+      (:display-name user)
+      (:first-name user)
+      (model.user/get-uri user)))
+
+
+(defsection show-section [User :as]
+  [user & options]
+  (let [{:keys [display-name id avatar-url]} user
+        avatar-url (or avatar-url (model.user/image-link user))]
+    (merge {:profileUrl (full-uri user)
+            :id (or id (model.user/get-uri user))
+            :url (full-uri user)
+            :objectType "person"
+            :published (:updated user)
+            ;; :name {:formatted (:display-name user)
+            ;;        :familyName (:last-name user)
+            ;;        :givenName (:first-name user)}
+            }
+           (when avatar-url
+             ;; TODO: get image dimensions
+             {:image [{:url avatar-url}]})
+           (when display-name
+             {:displayName display-name}))))
+
+(defsection show-section [User :atom]
+  [user & _]
+  (user->person user))
 
 (defsection show-section [User :xml]
   [user & options]
@@ -236,27 +308,7 @@
            [ns/sioc "account_of"]         (rdf/rdf-resource
                                                   (str (full-uri user) "#me"))]]])))
 
-(defsection show-section [User :json]
-  [user & options]
-  (let [{:keys [display-name id avatar-url]} user
-        avatar-url (or avatar-url (model.user/image-link user))]
-    (merge {:profileUrl (full-uri user)
-            :id (or id (model.user/get-uri user))
-            :url (full-uri user)
-            :objectType "person"
-            :published (:updated user)
-            ;; :name {:formatted (:display-name user)
-            ;;        :familyName (:last-name user)
-            ;;        :givenName (:first-name user)}
-            }
-           (when avatar-url
-             ;; TODO: get image dimensions
-             {:image [{:url avatar-url}]})
-           (when display-name
-             {:displayName display-name}))))
-
-
-(defsection show-section [User :xmpp :xmpp]
+(defsection show-section [User :xmpp]
   [^User user & options]
   (let [{:keys [name avatar-url]} user]
     (element/make-element
@@ -274,60 +326,10 @@
    [:button.btn.delete-button {:type "submit" :title "Delete"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
-(defn add-form
-  []
-  [:form {:method "post" :action "/admin/users"}
-   [:fieldset
-    [:legend "Add User"]
-    [:div.clearfix
-     [:label {:type "username"} "Username"]
-     [:div.input
-      [:input {:type "text" :name "username"}]]]
-    [:div.clearfix
-     [:label {:for "domain"} "Domain"]
-     [:div.input
-      [:input {:type "text" :name "domain"}]]]
-    [:div.actions
-     [:input.btn.primary {:type "submit" :value "Add User"}]]]])
 
+(defsection uri [User]
+  [user & options]
+  (if (model.user/local? user)
+    (str "/" (:username user))
+    (str "/users/" (:_id user))))
 
-  ;; (defsection show-section-minimal [User :xmpp :xmpp]
-  ;;   [property & options]
-  ;;   (element/make-element
-  ;;    (:key property) {}
-  ;;    [(:type property) {} (:value property)]))
-
-
-(defn index-line
-  [user]
-  [:tr
-   [:td (display-avatar user)]
-   [:td
-    [:p (link-to user)]
-    [:p (:username user) "@" (:domain user)]
-    [:p (:url user)]
-    [:p (:bio user)]]
-   [:td
-    [:ul.buttons
-     [:li (subscribe-button user)]
-     #_[:li (discover-button user)]
-     [:li (update-button user)]
-     [:li (edit-button user)]
-     [:li (delete-button user)]]]])
-
-(defsection index-section [User :html]
-  [users & _]
-  [:table.table.users
-   [:thead]
-   [:tbody
-    (map index-line users)]])
-
-(defn push-subscribe-button
-  [user]
-  [:a.url {:href (:url user) :rel "contact"}
-   [:span.fn.n (:display-name user)]])
-
-(defn remote-warning
-  [user]
-  (when-not (:local user)
-    [:p "This is a cached copy of information for a user on a different system"]))
