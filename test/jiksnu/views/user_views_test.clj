@@ -21,9 +21,7 @@
             [jiksnu.actions.user-actions :as actions.user])
   (:import jiksnu.model.User))
 
-(with-environment :test
-
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "uri User :html :http"
     (fact "should return a link to that user"

@@ -6,8 +6,7 @@
   (:require (jiksnu [routes :as r])
             (ring.mock [request :as mock])))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
   
   (future-fact "index-http-route"
     (fact "when the serialization is :http"

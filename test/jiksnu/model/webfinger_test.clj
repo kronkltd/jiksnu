@@ -10,9 +10,7 @@
   (:import jiksnu.model.User
            nu.xom.Document))
 
-(with-environment :test
-
-  (test-environment-fixture)
+(test-environment-fixture
 
   (against-background
     [(around :facts

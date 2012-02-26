@@ -11,8 +11,7 @@
   (:import jiksnu.model.Domain))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
   
   (fact "ping-request"
     (fact "should return a ping packet"
@@ -23,4 +22,3 @@
     (fact "should return a key name"
       (let [domain (actions.domain/create (factory Domain))]
         (pending-domains-key domain) => string?))))
-

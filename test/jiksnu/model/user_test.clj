@@ -14,8 +14,7 @@
            jiksnu.model.User))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "get-domain"
     (let [domain (actions.domain/create (factory Domain))

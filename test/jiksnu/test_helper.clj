@@ -9,11 +9,18 @@
 (load-config)
 
 (defmacro test-environment-fixture
-  []
+  [& body]
   `(do
+     (log/info "****************************************************************************")
      (log/info (str "Testing " *ns*))
-     (background
-      (around :contents
-              (do
-                ?form
-                (.shutdown @*thread-pool*))))))
+     (log/info "****************************************************************************")
+     (log/info " ")
+     (with-environment :test
+       #_(background
+        (around :contents
+                (do
+                  ?form
+                  #_(.shutdown @*thread-pool*))))
+
+       ~@body
+       )))

@@ -10,8 +10,7 @@
             (jiksnu.model [user :as model.user]))
   (:import jiksnu.model.User))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (background
    (around :facts

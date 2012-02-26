@@ -18,8 +18,7 @@
            org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "#'uri Activity"
     (facts "should be a string"

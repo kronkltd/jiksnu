@@ -19,10 +19,8 @@
            jiksnu.model.User))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
   
-
   (fact "set-recipients"
     (fact "should return an activity with the recipients added"
       (let [activity (factory Activity)]

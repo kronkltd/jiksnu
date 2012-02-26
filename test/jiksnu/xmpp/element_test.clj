@@ -13,8 +13,7 @@
             jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "abdera-to-tigase-element"
     (fact "should return a tigase element"

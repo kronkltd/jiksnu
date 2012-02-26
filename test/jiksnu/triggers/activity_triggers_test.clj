@@ -15,8 +15,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "#'notify-activity"
     (fact "should return a packet"

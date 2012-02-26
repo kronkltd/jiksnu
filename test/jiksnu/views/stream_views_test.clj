@@ -13,8 +13,7 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (future-fact "apply-view #'index :atom"
     (fact "should be a map"

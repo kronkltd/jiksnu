@@ -9,9 +9,7 @@
             (jiksnu.model [domain :as model.domain]))
   (:import jiksnu.model.Domain))
 
-(with-environment :test
-
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "#'create"
     (fact "should create the domain"

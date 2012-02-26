@@ -30,8 +30,7 @@
   (:import (jiksnu.model Activity User)))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (future-fact "filter-action #'actions.activity/create :xmpp"
     (fact "when the user is logged in"

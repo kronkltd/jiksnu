@@ -12,8 +12,7 @@
            jiksnu.model.User))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "#'fetch-comments"
     (fact "when the activity exists"

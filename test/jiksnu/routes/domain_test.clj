@@ -12,8 +12,7 @@
             (lamina [core :as l])))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "#'webfinger-host-meta"
     (fact "should return a XRD document"

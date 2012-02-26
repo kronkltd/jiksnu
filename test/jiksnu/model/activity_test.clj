@@ -10,21 +10,15 @@
         midje.sweet)
   (:require (jiksnu.actions [user-actions :as actions.user]))
   (:import jiksnu.model.Activity
-           jiksnu.model.User)
-  )
+           jiksnu.model.User))
 
-(with-environment :test
-  (test-environment-fixture)
-  
-  (fact "prepare-activity"
+(test-environment-fixture
 
-    (fact "should return an activity"
-      (let [user (actions.user/create (factory User))]
-        (with-user user
-          (let [args (factory Activity)]
-            (prepare-activity args) => activity?)))))
+ (fact "prepare-activity"
+   (fact "should return an activity"
+     (let [user (actions.user/create (factory User))]
+       (with-user user
+         (let [args (factory Activity)]
+           (prepare-activity args) => activity?)))))
 
-
-
-
-  )
+ )

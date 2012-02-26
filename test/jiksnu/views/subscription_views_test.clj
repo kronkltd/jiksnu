@@ -19,8 +19,7 @@
             (jiksnu.actions [subscription-actions :as actions.subscription]))
   (:import jiksnu.model.User))
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (fact "apply-view #'unsubscribe :xmpp"
     (fact "when there is no subscription"

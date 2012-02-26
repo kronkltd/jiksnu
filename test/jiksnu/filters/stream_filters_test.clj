@@ -23,9 +23,7 @@
             (ring.mock [request :as mock]))
   (:import (jiksnu.model Activity User)))
 
-(with-environment :test
-
-  (test-environment-fixture)
+(test-environment-fixture
 
   (future-fact "filter-action #'actions.stream/show :http"
     (fact "and the user exists"

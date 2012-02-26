@@ -12,8 +12,7 @@
            jiksnu.model.User))
 
 
-(with-environment :test
-  (test-environment-fixture)
+(test-environment-fixture
 
   (against-background
     [(around :facts
