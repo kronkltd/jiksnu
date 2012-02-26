@@ -202,14 +202,15 @@
 
 (defaction discover
   [^User user]
-  (when (not (:local user))
-    (let [domain (model.user/get-domain user)]
-      (if (:discovered domain)
-        (do (discover-user-xmpp user)
-            (discover-user-http user))
-        #_(enqueue-discover user))))
-  (model.user/set-field user :discovered true)
-  user)
+  (when user
+    (when (not (:local user))
+      (let [domain (model.user/get-domain user)]
+        (if (:discovered domain)
+          (do (discover-user-xmpp user)
+              (discover-user-http user))
+          #_(enqueue-discover user))))
+    (model.user/set-field user :discovered true)
+    user))
 
 ;; TODO: turn this into a worker
 (defn discover-pending-users
