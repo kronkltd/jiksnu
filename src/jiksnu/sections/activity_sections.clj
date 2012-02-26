@@ -2,7 +2,7 @@
   (:use (ciste [core :only [with-format]]
                [debug :only [spy]]
                [sections :only [defsection]])
-        ciste.sections.default
+        (ciste.sections [default :only [index-section]])
         (clojure.core [incubator :only [-?>]])
         (plaza.rdf core)
         (plaza.rdf.vocabularies foaf))
@@ -23,9 +23,7 @@
   (:import com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
            javax.xml.namespace.QName
-           jiksnu.model.Activity
-           org.apache.abdera2.model.Entry
-           tigase.xml.Element))
+           jiksnu.model.Activity))
 
 ;; TODO: Move to common area
 (register-rdf-ns :aair ns/aair)
@@ -44,16 +42,16 @@
 
 (defn pictures-section
   [activity]
-  [:div.pictures-line.clearfix
-   [:label {:for "pictures"} "Pictures"]
-   [:div.input
+  [:div.pictures-line.control-group
+   [:label.control-label {:for "pictures"} "Pictures"]
+   [:div.controls
     [:input {:type "file" :name "pictures"}]]])
 
 (defn tag-section
   [activity]
-  [:div.clearfix
-   [:label {:for "tags"} "Tags"]
-   [:div.input
+  [:div.control-group
+   [:label.control-label {:for "tags"} "Tags"]
+   [:div.controls
     [:input {:type "text" :name "tags"}]
     [:a.btn {:href "#"} "Add Tags"]]])
 
@@ -74,16 +72,16 @@
   [activity]
   [:fieldset.add-buttons
    [:legend "Add:"]
-   [:ul
-    [:li [:a {:href "#"} "Tags"]]
+   [:ul.btn-group
+    [:li [:a.btn {:href "#"} "Tags"]]
 
-    [:li [:a {:href "#"} "Recipients"]]
+    [:li [:a.btn {:href "#"} "Recipients"]]
 
-    [:li [:a {:href "#"} "Location"]]
+    [:li [:a.btn {:href "#"} "Location"]]
 
-    [:li [:a {:href "#"} "Links"]]
+    [:li [:a.btn {:href "#"} "Links"]]
 
-    [:li [:a {:href "#"} "Pictures"]]]])
+    [:li [:a.btn {:href "#"} "Pictures"]]]])
 
 (defn privacy-select
   [activity]
@@ -98,37 +96,19 @@
   [:div.type-line
    [:ul.nav.nav-tabs
     [:li
-     [:a {:href "#note" :data-toggle "tab"} "Note"]
-     ]
-    ;; [:li
-    ;;  [:a {:href "#status" :data-toggle "tab"} "Status"]
-    ;;  ]
-    ;; [:li
-    ;;  [:a {:href "#checkin" :data-toggle "tab"} "Checkin"]
-    ;;  ]
-    ;; [:li
-    ;;  [:a {:href "#picture" :data-toggle "tab"} "Picture"]
-    ;;  ]
-    ;; [:li
-    ;;  [:a {:href "#event" :data-toggle "tab"} "Event"]
-    ;;  ]
-    ;; [:li
-    ;;  [:a {:href "#bookmark" :data-toggle "tab"} "Bookmark"]
-    ;;  ]
+     [:a {:href "#note" :data-toggle "tab"} "Note"]]
     [:li
-     [:a {:href "#question" :data-toggle "tab"} "Question"]
-     ]
-
-
-    
-    ;; [:option {:value "note"}     "Note"]
-    ;; [:option {:value "status"}   "Status"]
-    ;; [:option {:value "checkin"}  "Checkin"]
-    ;; [:option {:value "picture"}  "Picture"]
-    ;; [:option {:value "event"}    "Event"]
-    ;; [:option {:value "bookmark"} "Bookmark"]
-
-    ]])
+     [:a {:href "#status" :data-toggle "tab"} "Status"]]
+    [:li
+     [:a {:href "#checkin" :data-toggle "tab"} "Checkin"]]
+    [:li
+     [:a {:href "#picture" :data-toggle "tab"} "Picture"]]
+    [:li
+     [:a {:href "#event" :data-toggle "tab"} "Event"]]
+    [:li
+     [:a {:href "#bookmark" :data-toggle "tab"} "Bookmark"]]
+    [:li
+     [:a {:href "#question" :data-toggle "tab"} "Question"]]]])
 
 (defn like-button
   [activity]
@@ -147,13 +127,6 @@
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
    [:button.btn {:type "submit"}
     [:i.icon-edit] [:span.button-text "edit"]]])
-
-(defsection delete-button [Activity :html]
-  [activity & _]
-  [:form {:method "post" :action (str "/notice/" (:_id activity))}
-   [:input {:type "hidden" :name "_method" :value "DELETE"}]
-   [:button.btn {:type "submit"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
 
 (defn author?
   [activity user]
@@ -291,6 +264,13 @@
 (defsection uri [Activity]
   [activity & options]
   (str "/notice/" (:_id activity)))
+
+(defsection delete-button [Activity :html]
+  [activity & _]
+  [:form {:method "post" :action (str "/notice/" (:_id activity))}
+   [:input {:type "hidden" :name "_method" :value "DELETE"}]
+   [:button.btn {:type "submit"}
+    [:i.icon-trash] [:span.button-text "Delete"]]])
 
 
 
