@@ -10,7 +10,8 @@
             (hiccup [core :as h])
             (jiksnu [namespace :as ns]
                     [xmpp :as xmpp])
-            (jiksnu.sections [auth-sections :as sections.auth])
+            (jiksnu.sections [auth-sections :as sections.auth]
+                             [activity-sections :as sections.activity])
             (jiksnu.xmpp [element :as element])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
@@ -40,6 +41,8 @@
           [:h1 (:title response)])
         (when (:flash response)
           [:div#flash (:flash response)])
+        (when (current-user)
+          (sections.activity/activity-form))
         (:body response)))
 
 (defn page-template-content

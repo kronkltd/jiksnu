@@ -104,3 +104,6 @@ article .photo
     margin: 0 auto;
 }
 
+.post-form legend {
+    display: none;
+}

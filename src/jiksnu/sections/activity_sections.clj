@@ -58,7 +58,7 @@
     [:a.btn {:href "#"} "Add Tags"]]])
 
 (defn location-section
-  []
+  [activity]
   [:div.location-line.clearfix
    [:fieldset
     [:legend "Location"]
@@ -220,39 +220,39 @@
      [:h4.hidden "Comments"]]))
 
 (defn activity-form
-  [activity]
-  (let [{:keys [id parent-id content]} activity]
-    [:div.post-form
-     [:form {:method "post"
-             :action "/notices/new"
-             :enctype "multipart/form-data"}
-      [:fieldset
-       [:legend "Post an activity"]
-       (when (:id activity)
-         [:div.clearfix
-          [:input {:type "hidden" :name "_id" :value id}]])
-       (when parent-id
-         [:div.clearfix
-          [:input {:type "hidden" :name "parent" :value parent-id}]])
+  ([] (activity-form (Activity.)))
+  ([activity]
+     (let [{:keys [id parent-id content title]} activity]
+       [:div.post-form
+        [:form {:method "post"
+                :action "/notice/new"
+                :enctype "multipart/form-data"}
+         [:fieldset
+          [:legend "Post an activity"]
+          (when (:id activity)
+            [:div.control-group
+             [:input {:type "hidden" :name "_id" :value id}]])
+          (when parent-id
+            [:div.control-group
+             [:input {:type "hidden" :name "parent" :value parent-id}]])
+          (type-line activity)
+          #_[:div.control-group
+           [:label {:for "title"} "Title"]
+           [:div.input
+            [:input {:type "text" :name "title" :value title}]]]
 
-       [:div.clearfix
-        [:label {:for "title"} "Title"]
-        [:div.input
-         [:input {:type "text" :name "title" :value title}]]]
+          [:div.control-group
+           [:label {:for "content"} "Content"]
+           [:div.input
+            [:textarea {:name "content"} content]]]
 
-       [:div.clearfix
-        [:label {:for "content"} "Content"]
-        [:div.input
-         [:textarea {:name "content"} content]]]
-
-       (pictures-section activity)
-       (location-section activity)
-       (tag-section activity)
-       (add-button-section activity)
-       (privacy-line activity)
-       (type-line activity)
-       [:div.actions
-        [:input.btn.primary {:type "submit" :value "post"}]]]]]))
+          #_(pictures-section activity)
+          #_(location-section activity)
+          #_(tag-section activity)
+          #_(add-button-section activity)
+          (privacy-line activity)
+          [:div.actions
+           [:input.btn.btn-primary {:type "submit" :value "post"}]]]]])))
 
 ;; dynamic sections
 
