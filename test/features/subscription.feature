@@ -25,14 +25,14 @@ Scenario: Ostatus subscription page
   When I go to the "ostatus sub" page
   Then I should see a form
 
-Scenario: User subscriptions, default
-  Given I am not logged in
-  And a user exists
-  When I go to the "subscriptions" page for that user
-  Then I should get a "HTML" document
+# Scenario: User subscriptions, default
+#   Given I am not logged in
+#   And a user exists
+#   When I go to the "subscriptions" page for that user
+#   Then I should get a "HTML" document
 
-Scenario: User subscriptions, JSON
-  Given I am not logged in
-  And a user exists
-  When I go to the "subscriptions" page for that user with a "JSON" format
-  Then I should get a "JSON" document
+# Scenario: User subscriptions, JSON
+#   Given I am not logged in
+#   And a user exists
+#   When I go to the "subscriptions" page for that user with a "JSON" format
+#   Then I should get a "JSON" document

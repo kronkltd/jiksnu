@@ -6,7 +6,9 @@
         (clj-factory [core :only [factory]])
         [clojure.core.incubator :only [-?>]]
         jiksnu.features-helper
-        (jiksnu http)
+        (jiksnu http
+                [model :only [implement]]
+                )
         midje.sweet
         ring.mock.request)
   (:require (ciste [config :as c]
@@ -40,9 +42,9 @@
 
 ;; (spy cucumber.runtime.clojure.ClojureBackend/instance)
 
-(defn implement
-  []
-  (throw (RuntimeException. "not implemented")))
+;; (defn implement
+;;   []
+;;   (throw (RuntimeException. "not implemented")))
 
 (defn before-hook
   []
@@ -291,7 +293,9 @@
   [page-name]
   (condp = page-name
     "show" (let [path (str "/main/domains/" (:_id @that-domain))]
-             (fetch-page-browser :get path))))
+             (fetch-page-browser :get path))
+    (model/implement)
+    ))
 
 (defn go-to-the-page-for-user
   [page-name]
