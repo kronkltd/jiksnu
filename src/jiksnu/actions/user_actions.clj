@@ -30,23 +30,6 @@
            tigase.xml.Element
            tigase.xmpp.JID))
 
-;; (defonce ^:dynamic *pending-discover-tasks* (ref {}))
-
-;; (defn enqueue-discover
-;;   "Queues the user to be discoverd once discovery of the domain has been completed."
-;;   [user]
-;;   (let [domain (:domain user)
-;;         id (:_id user)]
-;;     1
-;;     #_(redis/sadd (model.domain/pending-domains-key domain) id)))
-
-;; (defn pop-user!
-;;   [domain]
-;;   (-?> domain
-;;        model.domain/pending-domains-key
-;;        redis/spop
-;;        model.user/fetch-by-id))
-
 (defn get-domain
   [^User user]
   (-> user :domain actions.domain/find-or-create))
