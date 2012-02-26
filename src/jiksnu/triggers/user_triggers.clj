@@ -1,8 +1,8 @@
 (ns jiksnu.triggers.user-triggers
-  (:use (ciste config
+  (:use (ciste [config :only [config]]
                [debug :only [spy]]
-               triggers)
-        (jiksnu view)
+               [triggers :only [add-trigger!]])
+        (clojure.core [incubator :only [-?>]])
         lamina.core)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
@@ -16,8 +16,9 @@
 
 (defn discover-trigger
   [action _ user]
-  (actions.activity/load-activities
-   (model.user/fetch-by-id (:_id user))))
+  (-?> user :_id
+       model.user/fetch-by-id
+       actions.activity/load-activities))
 
 (defn fetch-updates-http
   [user]
