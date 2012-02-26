@@ -8,6 +8,7 @@
         (jiksnu model session view))
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
+            (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace])
             (jiksnu.actions [comment-actions :as actions.comment]
