@@ -110,8 +110,7 @@
   [^String armored-data
    ^String datatype
    ^String encoding
-   ^String alg
-   ]
+   ^String alg]
   (str armored-data "." datatype "." encoding "." alg))
 
 (defn magic-key-string

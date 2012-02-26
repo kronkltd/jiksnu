@@ -119,12 +119,12 @@ vPgogIDxsaW5rIHJlbD0iYXZhdGFyIiB0eXBlPSJpbWFnZS9wbmciIG1lZGlhOndpZHRoPSIyNCIgbWV
         (let [user (actions.user/create (factory User {:discovered true}))]
           (get-key user)) => nil))
     
-    (future-fact "when there is a key"
+    (fact "when there is a key"
       (fact "should return a key"
         (let [user (actions.user/create (factory User {:discovered true}))]
           (get-key user) => (partial instance? Key)))))
 
-  (future-fact "#'signature-valid?"
+  (fact "#'signature-valid?"
     (fact "when it is valid"
       (fact "should return truthy"
         (let [envelope val-env #_(stream->envelope (valid-envelope-stream))

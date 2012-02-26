@@ -21,13 +21,14 @@
   s
   )
 
-(defn get-key
+(defn ^PublicKey get-key
   [^User author]
   (-?> author
        model.signature/get-key-for-user
        model.signature/get-key-from-armored))
 
 (defn signature-valid?
+  "Tests if the signature is valid for the key"
   [envelope ^PublicKey pub-key]
   (let [{:keys [data datatype encoding alg]} envelope
         sig (-> envelope :sig model.signature/decode)]
@@ -35,12 +36,12 @@
      (.getBytes
       (model.signature/get-base-string
        data
-       (model.signature/encode (.getBytes datatype))
-       (model.signature/encode (.getBytes encoding))
-       (model.signature/encode (.getBytes alg))))
+       (model.signature/encode (.getBytes datatype "UTF-8"))
+       (model.signature/encode (.getBytes encoding "UTF-8"))
+       (model.signature/encode (.getBytes alg "UTF-8"))))
      sig pub-key)))
 
-(defn decode-envelope
+(defn ^String decode-envelope
   [envelope]
   (let [data (:data envelope)]
     (String. (Base64/decodeBase64 data) "UTF-8")))

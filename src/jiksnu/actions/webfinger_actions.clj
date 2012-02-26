@@ -64,12 +64,6 @@
         :lang (s/query "string(@lang)" bound-ns link)})
      links)))
 
-;; (defn get-keys-from-xrd
-;;   [uri]
-;;   (let [host-meta (HostMeta/getDefault)
-;;         key-finder (MagicPKIKeyFinder. host-meta)]
-;;     (seq (.findKeys key-finder (URI. uri)))))
-
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
@@ -77,7 +71,7 @@
         links (get-links xrd)
         new-user (assoc user :links links)
         feed (helpers.user/fetch-user-feed new-user)
-        uri (if feed (-?> feed .getAuthor .getUri))]
+        uri (-?> feed .getAuthor .getUri)]
     (doseq [link links]
       (actions.user/add-link user link))
     (-> user
