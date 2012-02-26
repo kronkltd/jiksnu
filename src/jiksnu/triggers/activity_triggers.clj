@@ -37,16 +37,8 @@
                                      :body ele})]
     (tigase/deliver-packet! message)))
 
-;; deprecated
-(defn fetch-new-comments
-  [action params activity]
-  (actions.comment/fetch-comments-remote activity))
-
-(defn fetch-more-comments
-  [action params [activity comments]]
-  (actions.comment/fetch-comments-remote activity))
-
 (defn parse-unknown-mention
+  "Create a user representing the unknown user uri"
   [uri]
   (let [mentioned-domain (.getHost (URI. uri))
         link (model/extract-atom-link uri)
@@ -79,5 +71,4 @@
                       (filter identity))]
       (notify-activity user activity))))
 
-(add-trigger! #'actions.comment/fetch-comments #'fetch-more-comments)
 (add-trigger! #'create #'post-trigger)
