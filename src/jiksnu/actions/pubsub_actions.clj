@@ -1,4 +1,8 @@
-(ns jiksnu.actions.pubsub-actions)
+(ns jiksnu.actions.pubsub-actions
+  (:use (ciste [config :only [definitializer]]
+               [core :only [defaction]]
+               [debug :only [spy]]))
+  (:require (clojure.tools [logging :as log])))
 
 ;; TODO: break into components and actually perform validation
 (defn valid?
