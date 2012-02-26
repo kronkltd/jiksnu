@@ -34,8 +34,8 @@
                  [org.clojure/google-closure-library "0.0-1589"]
                  [org.clojure/tools.logging "0.1.2"]
                  [org.mindrot/jbcrypt "0.3m"]
-                 [org.slf4j/slf4j-api "1.6.1"]
-                 [org.slf4j/slf4j-log4j12 "1.6.1"]
+                 ;; [org.slf4j/slf4j-api "1.6.1"]
+                 ;; [org.slf4j/slf4j-log4j12 "1.6.1"]
 
                  ;; [pinot "0.1.1-SNAPSHOT"]
 
