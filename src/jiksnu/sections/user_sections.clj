@@ -149,7 +149,7 @@
      (when (= (:_id user) (:_id authenticated))
        [:p "This is you"])
      [:ul.user-actions.buttons
-      #_[:li (discover-button user)]
+      [:li (discover-button user)]
       [:li (update-button user)]
       (when (not= (:_id user) (:_id authenticated))
         [:li (subscribe-button user)])
