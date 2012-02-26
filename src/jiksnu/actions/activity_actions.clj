@@ -168,9 +168,10 @@ serialization"
 
 (defn load-activities
   [^User user]
-  (let [feed (helpers.user/fetch-user-feed user)]
-    (doseq [activity (get-activities feed)]
-      (create activity))))
+  (when user
+    (if-let [feed (helpers.user/fetch-user-feed user)]
+      (doseq [activity (get-activities feed)]
+        (create activity)))))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.activity-filters
