@@ -73,8 +73,16 @@
 
     (when-let [mentioned-uri (:mentioned-uri activity)]
       (log/info (str "parsing link " mentioned-uri))
-      (let [mentioned-user (actions.user/find-or-create-by-remote-id mentioned-uri)]
-        mentioned-user))
+      (if-let [mentioned-user (spy (model.user/fetch-by-remote-id mentioned-uri))]
+        (do
+          ;; set user id
+          )
+        (do 
+          (let [mentioned-domain (.getDomain (URI. mentioned-uri))
+                link (model/extract-atom-link mentioned-uri)
+                ;; mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})
+                ]
+            (actions.activity/fetch-remote-feed link)))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (doseq [user subscriber-users]
