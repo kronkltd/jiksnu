@@ -1,11 +1,14 @@
 (ns jiksnu.routes.stream-test
   (:use (ciste [config :only [with-environment]])
-        midje.sweet
-        lamina.core)
+        (jiksnu [test-helper :only [test-environment-fixture]])
+        lamina.core
+        midje.sweet)
   (:require (jiksnu [routes :as r])
             (ring.mock [request :as mock])))
 
 (with-environment :test
+  (test-environment-fixture)
+  
   (future-fact "index-http-route"
     (fact "when the serialization is :http"
       (fact "and there are no activities"

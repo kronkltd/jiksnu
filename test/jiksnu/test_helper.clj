@@ -11,7 +11,7 @@
 (defmacro test-environment-fixture
   []
   `(do
-     ;; (log/info (str "Testing " *ns*))
+     (log/info (str "Testing " *ns*))
      (background
       (around :contents
               (do

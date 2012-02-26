@@ -14,7 +14,8 @@
   )
 
 (with-environment :test
-
+  (test-environment-fixture)
+  
   (fact "prepare-activity"
 
     (fact "should return an activity"

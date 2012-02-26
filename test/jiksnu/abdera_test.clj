@@ -11,6 +11,8 @@
            org.apache.abdera2.model.Entry))
 
 (with-environment :test
+  (test-environment-fixture)
+
   (fact "new-id"
    (fact "should return a string"
      (new-id) => string?))
