@@ -53,9 +53,9 @@
     :href "/api/statuses/public_timeline.json"
     :icon "as-bw-14x14.png"
     :type "application/json"}
-   #_{:label "XML"
-      :href "/api/statuses/public_timeline.xml"
-      :type "application/xml"}
+   {:label "XML"
+    :href "/api/statuses/public_timeline.xml"
+    :type "application/xml"}
    {:label "RDF"
     :href "/api/statuses/public_timeline.rdf"
     :icon "foafTiny.gif"
