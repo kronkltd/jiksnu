@@ -37,15 +37,13 @@
   ;; TODO: check https first
   (if-let [xrd (-> domain
                    model.domain/host-meta-link
-                   spy
-                   model.webfinger/fetch-host-meta
-                   spy)]
-    (do (if-let [links (model.webfinger/get-links xrd)]
-          ;; TODO: These should call actions
-          (do (model.domain/add-links domain links)
-              (model.domain/set-discovered domain))
-          (throw (RuntimeException. "Host meta does not have any links")))
-        xrd)
+                   model.webfinger/fetch-host-meta)]
+    (if-let [links (model.webfinger/get-links xrd)]
+      ;; TODO: These should call actions
+      (do (model.domain/add-links domain links)
+          (model.domain/set-discovered domain)
+          xrd)
+      (throw (RuntimeException. "Host meta does not have any links")))
     (throw (RuntimeException.
             (str "Could not find host meta for domain: " (:_id domain))))))
 
