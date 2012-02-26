@@ -285,10 +285,9 @@
 
 (defn get-user-meta-uri
   [user]
-  (let [username (:username user)
-        domain (get-domain user)]
+  (let [domain (get-domain user)]
     (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-uri (:_id domain) username))))
+        (actions.domain/get-user-meta-url domain (:id user)))))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.user-filters

@@ -43,10 +43,9 @@
 
 (defn get-user-meta-uri
   [user]
-  (let [username (:username user)
-        domain (model.user/get-domain user)]
+  (let [domain (model.user/get-domain user)]
     (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-uri domain username))))
+        (actions.domain/get-user-meta-url domain (:id user)))))
 
 (defn fetch-user-meta
   [^User user]
