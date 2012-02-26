@@ -156,6 +156,7 @@
     [[:get    "/:username/all"]                           #'stream/home-timeline]
     [[:get    "/:username/inbox"]                         #'message/inbox-page]
     [[:get    "/:username/groups"]                        #'group/user-list]
+    [[:get    "/:username/microsummary"]                  #'stream/user-microsummary]
     [[:get    "/:username/outbox"]                        #'message/outbox-page]
     [[:get    "/:username/streams"]                       #'stream/user-list]
     

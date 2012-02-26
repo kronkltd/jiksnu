@@ -106,6 +106,14 @@
       (let [activity (actions.activity/entry->activity entry feed)]
         (actions.activity/create activity)))))
 
+(defaction user-microsummary
+  [user]
+  [user
+   ;; TODO: get most recent activity
+   nil]
+
+  )
+
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
                      ;; 'jiksnu.helpers.stream-helpers
