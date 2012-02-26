@@ -10,8 +10,10 @@
                         [element :as element])
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
+                    [model :as model]
                     [namespace :as namespace])
-            (jiksnu.actions [comment-actions :as actions.comment]
+            (jiksnu.actions [activity-actions :as actions.activity]
+                            [comment-actions :as actions.comment]
                             [stream-actions :as actions.stream]
                             [user-actions :as actions.user])
             (jiksnu.helpers [activity-helpers :as helpers.activity])
@@ -20,7 +22,8 @@
                           [item :as model.item]
                           [subscription :as model.subscription]
                           [user :as model.user]))
-  (:import jiksnu.model.Activity
+  (:import java.net.URI
+           jiksnu.model.Activity
            jiksnu.model.User))
 
 (defn notify-activity
