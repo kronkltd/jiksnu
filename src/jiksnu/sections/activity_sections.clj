@@ -374,6 +374,28 @@
       #_(.setContentAsHtml object-element (:content activity)))
     entry))
 
+(defsection show-section [Activity :json]
+  [activity & _]
+  {:text (:title activity)
+   :truncated false
+   :created_at (model/date->twitter (:published activity))
+   :in_reply_to_status_id nil
+   :source (:source activity)
+   :id (:_id activity)
+   :in_reply_to_user_id nil
+   :in_reply_to_screen_name nil
+   :favorited false
+   :attachments []
+   :user
+   (let [user (helpers.activity/get-author activity)]
+     {:name (:display-name user)
+      :id (:_id user)
+      :screen_name (:username user)
+      :url (:url user)
+      :profile_image_url (:avatar-url user)
+      :protected false})
+   :statusnet_html (:content activity)
+   :statusnet_conversation_id nil})
 
 (defsection show-section [Activity :html]
   [activity & _]
