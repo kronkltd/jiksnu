@@ -211,6 +211,7 @@
 
 (defn set-database!
   []
+  (println "setting database for " (environment))
   (alter-var-root #'karras/*mongo-db* (fn [_] (mongo-database))))
 
 ;; TODO: Find a good place for this
