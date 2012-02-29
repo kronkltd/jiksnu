@@ -40,12 +40,6 @@
 (def that-user (ref nil))
 
 
-;; (spy cucumber.runtime.clojure.ClojureBackend/instance)
-
-;; (defn implement
-;;   []
-;;   (throw (RuntimeException. "not implemented")))
-
 (defn before-hook
   []
   (try
@@ -302,7 +296,11 @@
 
 (defn go-to-the-page-for-user
   [page-name]
-  (implement))
+  (condp = page-name
+    "show" (fetch-page-browser :get (str "/main/users/" (:_id @that-user)))
+    "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscriptions"))
+    "subscribers" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscribers"))
+    (implement)))
 
 (defn go-to-the-page-for-user-with-format
   [page-name format]
