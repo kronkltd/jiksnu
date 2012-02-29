@@ -75,7 +75,7 @@
 (def http-routes
   (make-matchers
    [
-    [[:get "/api/statusnet/app/service.xml"]               #'site/service]
+    [[:get "/api/statusnet/app/service.:format"]           #'site/service]
     [[:get "/api/statusnet/app/subscriptions/:id.:format"] #'sub/get-subscriptions]
     [[:get "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]
     [[:get "/api/statusnet/app/memberships/:id.:format"]   #'group/user-list]
@@ -147,6 +147,8 @@
     [[:post   "/notice/new"]                              #'activity/post]
     [[:post   "/notice/:id"]                              #'activity/update]
     [[:delete "/notice/:id"]                              #'activity/delete]
+    [[:get    "/opensearch/people"]                       #'search/os-people]
+    [[:get    "/opensearch/notices"]                      #'search/os-notice]
     [[:get    "/remote-user/:id"]                           #'stream/remote-user]
     ;; [[:get    "/search/group"]                            #'group/search-page]
     ;; [[:post   "/search/group"]                            #'group/search]

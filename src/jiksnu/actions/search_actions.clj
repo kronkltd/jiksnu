@@ -8,3 +8,12 @@
   [options]
   [options []])
 
+(defaction os-people
+  []
+  true
+  )
+
+(defaction os-notice
+  []
+  true
+  )

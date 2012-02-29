@@ -30,43 +30,45 @@
                      :apiLink (str "http://" (config :domain) "/api/statusnet/app/service.xml")
                      :blogId ""}]]]])})
 
-(defview #'service :html
+(defview #'service :xml
   [request user]
-  {:body
-   [:service {:xmlns "http://www.w3.org/2007/app"
-              :xmlns:atom "http://www.w3.org/2005/Atom"
-              :xmlns:activity ns/as}
+  {:template false
+   :body
+   (h/html
+    [:service {:xmlns "http://www.w3.org/2007/app"
+               :xmlns:atom "http://www.w3.org/2005/Atom"
+               :xmlns:activity ns/as}
 
-    [:workspace
-     [:atom:title "Main"]
+     [:workspace
+      [:atom:title "Main"]
 
-     [:collection {:href (str "http://" (config :domain)
-                              "/api/statuses/user_timeline/"
-                              (:_id user) ".atom")}
-      [:atom:title (str (:username user) " timeline")]
-      [:accept "application/atom+xml;type=entry"]
-      [:activity:verb "http://activitystrea.ms/schema/1.0/post"]]
+      [:collection {:href (str "http://" (config :domain)
+                               "/api/statuses/user_timeline/"
+                               (:_id user) ".atom")}
+       [:atom:title (str (:username user) " timeline")]
+       [:accept "application/atom+xml;type=entry"]
+       [:activity:verb "http://activitystrea.ms/schema/1.0/post"]]
 
      
-     [:collection {:href (str "http://" (config :domain)
-                              "/api/statusnet/app/subscriptions/"
-                              (:_id user) ".atom")}
-      [:atom:title (str (:username user) " subscriptions")]
-      [:accept "application/atom+xml;type=entry"]
-      [:activity:verb "http://activitystrea.ms/schema/1.0/follow"]]
+      [:collection {:href (str "http://" (config :domain)
+                               "/api/statusnet/app/subscriptions/"
+                               (:_id user) ".atom")}
+       [:atom:title (str (:username user) " subscriptions")]
+       [:accept "application/atom+xml;type=entry"]
+       [:activity:verb "http://activitystrea.ms/schema/1.0/follow"]]
 
 
-     [:collection {:href (str "http://" (config :domain)
-                              "/api/statusnet/app/favorites/"
-                              (:_id user) ".atom")}
-      [:atom:title (str (:username user) " favorites")]
-      [:accept "application/atom+xml;type=entry"]
-      [:activity:verb "http://activitystrea.ms/schema/1.0/favorite"]]
+      [:collection {:href (str "http://" (config :domain)
+                               "/api/statusnet/app/favorites/"
+                               (:_id user) ".atom")}
+       [:atom:title (str (:username user) " favorites")]
+       [:accept "application/atom+xml;type=entry"]
+       [:activity:verb "http://activitystrea.ms/schema/1.0/favorite"]]
 
-     [:collection {:href (str "http://" (config :domain)
-                              "/api/statusnet/app/memberships/"
-                              (:_id user) ".atom")}
-      [:atom:title (str (:username user) " memberships")]
-      [:accept "application/atom+xml;type=entry"]
-      [:activity:verb "http://activitystrea.ms/schema/1.0/join"]]]]})
+      [:collection {:href (str "http://" (config :domain)
+                               "/api/statusnet/app/memberships/"
+                               (:_id user) ".atom")}
+       [:atom:title (str (:username user) " memberships")]
+       [:accept "application/atom+xml;type=entry"]
+       [:activity:verb "http://activitystrea.ms/schema/1.0/join"]]]])})
 

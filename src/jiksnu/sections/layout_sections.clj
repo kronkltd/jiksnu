@@ -151,6 +151,22 @@
         (config :site :name)]
        (p/include-css "/bootstrap/css/bootstrap.css"
                       "/themes/classic/standard.css")
+       [:link {:href (str "http://" (config :domain) "/favicon.ico")
+               :rel "shortcut icon"}]
+       [:link {:href "/opensearch/people"
+               :title "People Search"
+               :type "application/opensearchdescription+xml"
+               :rel "search"
+               }]
+       [:link {:href "/opensearch/notices"
+               :title "Notice Search"
+               :type "application/opensearchdescription+xml"
+               :rel "search"
+               }]
+       [:link {:href "/rsd.xml"
+               :type "application/rsd+xml"
+               :rel "EditURI"
+               }]
        (map
         (fn [format]
           [:link {:type (:type format)
