@@ -27,8 +27,7 @@
 (defsection link-to :default
   [record & options]
   (let [options-map (apply hash-map options)]
-    [:a
-     (apply merge {:href (uri record)} options-map)
+    [:a {:href (uri record)}
      [:span {:about (uri record)
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))

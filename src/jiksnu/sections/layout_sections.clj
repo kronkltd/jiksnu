@@ -52,7 +52,7 @@
                         (map
                          (fn [[url label]]
                            [:li
-                            [:a {:href url} label]])
+                            [:a {:href url :alt ""} label]])
                          links)))
               nav-info))]))
 
@@ -124,21 +124,28 @@
   {:headers {"Content-Type" "text/html; charset=utf-8"}
    :body
    (str
-    "<!doctype html>\n"
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"
+          \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">"
     (h/html
      [:html
       ;; TODO: Read the list of declared namespaces
-      {:xmlns:sioc ns/sioc
+      {
+       :xmlns:sioc ns/sioc
        :xmlns:dc ns/dc
        :xmlns:foaf ns/foaf
        :xmlns:dcterms ns/dcterms
-       :prefix "foaf: http://xmlns.com/foaf/0.1/
-                dc: http://purl.org/dc/elements/1.1/
-                sioc: http://rdfs.org/sioc/ns#
-                dcterms: http://purl.org/dc/terms/"}
+       ;; :version "HTML+RDFa 1.1"
+       :lang "en"
+       :xml:lang "en"
+       ;; :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
+       }
       [:head
-       [:meta {:charset "utf-8"}]
-       [:title
+       {
+       :profile "http://www.w3.org/profile/rdfa-1.1 http://www.w3.org/profile/html-rdfa-1.1"
+
+        }
+       [:meta {:charset "UTF-8"}]
+       [:title {:property "dc:title"}
         (when (:title response)
           (str (:title response) " - "))
         (config :site :name)]
