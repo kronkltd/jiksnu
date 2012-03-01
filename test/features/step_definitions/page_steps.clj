@@ -37,6 +37,7 @@
 (When #"^I request the oembed resource for that activity$"          request-oembed-resource)
 (When #"^I request the user-meta page for that user$"               fetch-user-meta-for-user)
 (When #"^I request the user-meta page for that user with a client$" request-user-meta)
+(When #"^I request the \"([^\"]+)\" page for that user with a \"([^\"]+)\" format$" request-page-for-user)
 (When #"^I request the \"([^\"]*)\" stream$"                        request-stream)
 (When #"^I type \"(.*)\" into the \"(.*)\" field$"                  do-enter-field)
 

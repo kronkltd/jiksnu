@@ -334,6 +334,19 @@
   [stream-name]
   (implement))
 
+(defn request-page-for-user
+  ([page-name] (request-page-for-user page-name nil))
+  ([page-name format]
+     (condp = page-name
+       "subscriptions"
+       (fetch-page :get
+                   (str "/users/" (:_id @that-user) "/subscriptions"
+                        (when format
+                          (str "." (string/lower-case format)))))
+       "user-meta"
+       (fetch-page :get
+                   (str "/main/xrd?uri=" (model.user/get-uri @that-user))))))
+
 (defn request-user-meta
   []
   (fetch-page :get
@@ -373,14 +386,16 @@
   (check-response
    (w/find-element @current-browser {:class "activities"}) => truthy))
 
-(defn should-get-a-document-of-type
-  [type]
-  (implement))
-
 (defn should-have-content-type
   [type]
   (check-response
    (get-in @current-page [:headers "content-type"]) => type))
+
+(defn should-get-a-document-of-type
+  [type]
+  (condp = type
+    "as" (should-have-content-type "application/json")
+    "JSON" (should-have-content-type "application/json")))
 
 (defn should-have-field
   [field-name]

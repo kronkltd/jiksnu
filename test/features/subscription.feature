@@ -32,8 +32,8 @@ Scenario: User subscriptions, default
   Then I should see a list of subscriptions
   # And I should get a "HTML" document
 
-Scenario: User subscriptions, JSON
+Scenario: User subscriptions, activity streams
   Given I am not logged in
   And a user exists
-  When I go to the "subscriptions" page for that user with a "JSON" format
-  Then I should get a "JSON" document
+  When I request the "subscriptions" page for that user with a "as" format
+  Then I should get a "as" document

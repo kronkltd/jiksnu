@@ -51,7 +51,7 @@
                      [lein-cljsbuild "0.0.13"
                       :exclusions [org.apache.ant/ant]
                       ]
-                     [clj-webdriver "0.6.0-alpha2"]
+                     [clj-webdriver "0.6.0-alpha4"]
                      ;; [lein-cucumber "0.1.0"]
                      ;; [com.stuartsierra/lazytest "2.0.0-SNAPSHOT"]
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
