@@ -47,7 +47,7 @@
 
 (defn get-likes
   [activity]
-  (fetch-all {:activity (:_id activity)}))
+  (seq (fetch-all {:activity (:_id activity)})))
 
 (defn format-data
   "format a like for display in templates"

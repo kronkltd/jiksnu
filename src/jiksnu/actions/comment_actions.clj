@@ -34,10 +34,10 @@
 ;; TODO: fetch all in 1 request
 (defaction fetch-comments
   [activity]
-  [activity
-   (spy (concat (map model.activity/fetch-by-id (:comments activity))
-                (if-let [irt (first (:irts activity))]
-                  (model.activity/fetch-all {:id irt}))))])
+  (let [comments (concat (map model.activity/fetch-by-id (:comments activity))
+                         (if-let [irt (first (:irts activity))]
+                           (model.activity/fetch-all {:id irt})))]
+    [activity (spy comments)]))
 
 (defn comment-request
   [activity]

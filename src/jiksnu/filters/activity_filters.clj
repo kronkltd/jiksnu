@@ -19,9 +19,9 @@
   [action request]
   (-> request :params :id show action))
 
-(deffilter #'new :http
-  [action request]
-  (action))
+;; (deffilter #'new :http
+;;   [action request]
+;;   (action))
 
 (deffilter #'post :http
   [action request]

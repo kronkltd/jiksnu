@@ -149,7 +149,7 @@
     [[:delete "/notice/:id"]                              #'activity/delete]
     [[:get    "/opensearch/people"]                       #'search/os-people]
     [[:get    "/opensearch/notices"]                      #'search/os-notice]
-    [[:get    "/remote-user/:id"]                           #'stream/remote-user]
+    [[:get    "/remote-user/*"]                           #'stream/remote-user]
     ;; [[:get    "/search/group"]                            #'group/search-page]
     ;; [[:post   "/search/group"]                            #'group/search]
     [[:get    "/settings/avatar"]                         #'setting/avatar-page]

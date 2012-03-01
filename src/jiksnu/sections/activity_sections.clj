@@ -417,7 +417,7 @@
 
 (defsection index-line [Activity :html]
   [activity & opts]
-  [:li (apply show-section activity opts)])
+  (apply show-section activity opts))
 
 (defsection index-line [Activity :xmpp]
   [^Activity activity & options]
@@ -430,7 +430,7 @@
 (defsection index-section [Activity :html]
   [activities & _]
   (list
-   [:ul.unstyled.activities
+   [:div.activities
     (map index-line activities)]
    [:ul.pager
     [:li.previous [:a {:href "#"} "&larr; Newer"]]

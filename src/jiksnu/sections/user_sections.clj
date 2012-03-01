@@ -355,7 +355,10 @@
     [:p.locality (:location user)]]
    [:p.note (:bio user)]
    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-   (show-section (model.signature/get-key-for-user user))
+   (when (:discovered user)
+     (show-section (model.signature/get-key-for-user user))
+        
+        )
    (user-actions user)])
 
 
@@ -430,5 +433,5 @@
   [user & options]
   (if (model.user/local? user)
     (str "/" (:username user))
-    (str "/users/" (:_id user))))
+    (str "/remote-user/" (:username user) "@" (:domain user))))
 

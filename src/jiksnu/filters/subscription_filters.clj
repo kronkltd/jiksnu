@@ -39,19 +39,18 @@
 (deffilter #'get-subscribers :http
   [action request]
   (let [{{username :username
-          id :id} :params} (spy request)
-          user (or (when (spy username) (model.user/get-user username))
-                   (when (spy id) (model.user/fetch-by-id id)))]
-    (action (spy user))))
+          id :id} :params} request
+          user (or (when username (model.user/get-user username))
+                   (when id (model.user/fetch-by-id id)))]
+    (action user)))
 
 (deffilter #'get-subscriptions :http
   [action request]
   (let [{{username :username
           id :id} :params} request
-          user (or (when username (model.user/get-user (spy username)))
-                   (when id (model.user/fetch-by-id id))
-                   )]
-    (action (spy user))))
+          user (or (when username (model.user/get-user username))
+                   (when id (model.user/fetch-by-id id)))]
+    (action user)))
 
 (deffilter #'unsubscribe :http
   [action request]
