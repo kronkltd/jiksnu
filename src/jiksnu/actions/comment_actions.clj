@@ -35,8 +35,7 @@
 (defaction fetch-comments
   [activity]
   [activity
-   (map model.activity/show
-        (concat (:comments activity)
+   (spy (concat (map model.activity/fetch-by-id (:comments activity))
                 (if-let [irt (first (:irts activity))]
                   (model.activity/fetch-all {:id irt}))))])
 

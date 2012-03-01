@@ -30,21 +30,28 @@
 (def ^QName activity-object-type (QName. namespace/as "object-type"))
 
 (defn get-author
+  "Fetch the author of the activity"
   [activity]
   (model.user/fetch-by-id (:author activity)))
 
 (defn parse-reply-to
+  "extract the ref value of a link and set that as a parent id
+
+This is a byproduct of OneSocialWeb's incorrect use of the ref value
+"
   [element]
   (let [parent-id (.getAttributeValue element "ref")]
     {:parent parent-id}))
 
 (defn parse-geo
+  "extract the lat and long components from a geo element"
   [element]
   (let [coords (.getText element)
         [lat long] (string/split coords #" ")]
     {:lat lat :long long}))
 
 (defn parse-notice-info
+  "extract the notice info from a statusnet element"
   [^Element element]
   (let [source (.getAttributeValue element "source")
         local-id (.getAttributeValue element "local_id")]
@@ -52,16 +59,22 @@
      :local-id local-id}))
 
 (defn parse-irt
+  "get the href from a link as a string"
   [irt]
   (->> irt .getHref str))
 
 (defn parse-irts
+  "Get the in-reply-to uris"
   [entry]
   (->> (ThreadHelper/getInReplyTos entry)
        (map parse-irt)
        (filter identity)))
 
 (defn parse-link
+  "extract the node element from links
+
+this is for OSW
+"
   [link]
   (if-let [href (str (.getHref link))]
     (when (and (re-find #"^.+@.+$" href)
@@ -69,6 +82,7 @@
       href)))
 
 (defn parse-extension-element
+  "parse atom extensions"
   [element]
   (let [qname (.getQName element)
         qname (element/parse-qname qname)]
@@ -93,6 +107,7 @@
       nil)))
 
 (defn set-recipients
+  "attempt to resolve the recipients"
   [activity]
   (let [recipients (filter identity (:recipients activity))]
     (if (not (empty? recipients))
@@ -101,11 +116,14 @@
       (dissoc activity :recipients))))
 
 (defaction create
+  "create an activity"
   [params]
-  (model.activity/create params))
+  (if-let [original-activity (spy (model.activity/fetch-by-remote-id (:id params)))]
+    (throw (RuntimeException. "Activity already exists"))
+    (model.activity/create params)))
 
 (defaction delete
-  "delete it"
+  "delete an activity"
   [activity]
   (let [actor-id (session/current-user-id)
         author (:author activity)]
@@ -113,7 +131,9 @@
       (model.activity/delete activity))))
 
 (defaction edit-page
+  "Edit page for an activity"
   [id]
+  ;; TODO: must be owner or admin
   (model.activity/fetch-by-id id))
 
 (defn ^Activity entry->activity
@@ -174,26 +194,21 @@ serialization"
        (model.activity/make-activity opts))))
 
 (defn get-activities
+  "extract the activities from a feed"
   [feed]
   (map #(entry->activity % feed)
        (.getEntries feed)))
 
 ;; TODO: merge this with h.a/load-activities
 (defaction fetch-remote-feed
+  "fetch a feed and create it's activities"
   [uri]
   (let [feed (abdera/fetch-feed uri)]
     (doseq [activity (get-activities feed)]
       (create activity))))
 
-;; (defaction find-or-create
-;;   [options]
-;;   (model.activity/find-or-create options))
-
-(defaction new
-  [action request]
-  (Activity.))
-
 (defaction post
+  "Post a new activity"
   [activity]
   ;; TODO: validate user
   (when-let [prepared-post (-> activity
@@ -203,12 +218,14 @@ serialization"
     (create prepared-post)))
 
 (defaction remote-create
+  "Create all the activities. (multi-create)"
   [activities]
   (doseq [activity activities]
     (create activity))
   true)
 
 (defaction show
+  "Show an activity"
   [id]
   (model.activity/show id))
 

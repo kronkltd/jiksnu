@@ -36,8 +36,16 @@
 
 (defmacro implement
   "Throws an exception saying that this function has not been implemented"
-  []
-  `(throw (UnsupportedOperationException. "Not implemented yet")))
+  ([]
+     `(throw (UnsupportedOperationException. "Not implemented yet")))
+  ([& body]
+     `(do
+        (log/warn "Not implemented yet")
+        ~@body
+
+       )
+     )
+  )
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
 

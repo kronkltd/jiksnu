@@ -51,7 +51,7 @@
     (actions.user/find-or-create-by-remote-id
           mentioned-user-params mentioned-user-params)))
 
-(defn post-trigger
+(defn create-trigger
   [action params activity]
   (let [user (actions.activity/get-author activity)]
     (model.item/push user activity)
@@ -65,10 +65,18 @@
         (parse-unknown-mention mentioned-uri)))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
+    (when (seq (:irts activity))
+      (let [activities (map model.activity/fetch-by-remote-id (:irts activity))]
+        (doseq [parent activities]
+          (model.activity/add-comment parent activity)
+
+            )
+        )
+      )
     (doseq [user (->> user
                       model.subscription/subscribers
                       (map (comp model.user/fetch-by-id :from))
                       (filter identity))]
       (notify-activity user activity))))
 
-(add-trigger! #'create #'post-trigger)
+(add-trigger! #'create #'create-trigger)
