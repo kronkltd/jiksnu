@@ -226,7 +226,8 @@
            (seq (:long activity)))
     [:div.map-section
      [:img.map
-      {:src
+      {:alt ""
+       :src
        (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
             (:lat activity)
             ","
@@ -260,11 +261,15 @@
   [activity]
   [:span.posted
    "posted "
-   [:time {:datetime (:published activity)
-           :title (:published activity)}
-    [:a {:href (uri activity)
+   [:time {:datetime (model/format-date (:published activity))
+           :title (model/format-date (:published activity))
          :property "dc:published"
-         :content (:published activity)}
+         ;; :content (model/format-date (:published activity))
+
+           }
+    [:a {:href (uri activity)
+
+         }
      (-> activity :published model.activity/prettyify-time)]]])
 
 (defn comments-section

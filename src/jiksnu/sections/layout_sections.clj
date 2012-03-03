@@ -52,7 +52,7 @@
                         (map
                          (fn [[url label]]
                            [:li
-                            [:a {:href url :alt ""} label]])
+                            [:a {:href url} label]])
                          links)))
               nav-info))]))
 
@@ -76,7 +76,8 @@
           [:a {:href (:href format)}
            (when (:icon format)
              [:span.format-icon
-              [:img {:src (str "/themes/classic/" (:icon format))}]])
+              [:img {:alt ""
+                     :src (str "/themes/classic/" (:icon format))}]])
            [:span.format-label (:label format)]]])
        (:formats response))]]))
 
@@ -124,26 +125,29 @@
   {:headers {"Content-Type" "text/html; charset=utf-8"}
    :body
    (str
-    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"
-          \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">"
+    "<!DOCTYPE html"
+
+    ;; " PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"
+    ;;       \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\""
+    ">"
     (h/html
      [:html
       ;; TODO: Read the list of declared namespaces
       {
-       :xmlns:sioc ns/sioc
-       :xmlns:dc ns/dc
-       :xmlns:foaf ns/foaf
-       :xmlns:dcterms ns/dcterms
+       ;; :xmlns:sioc ns/sioc
+       ;; :xmlns:dc ns/dc
+       ;; :xmlns:foaf ns/foaf
+       ;; :xmlns:dcterms ns/dcterms
        ;; :version "HTML+RDFa 1.1"
        :lang "en"
        :xml:lang "en"
        ;; :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
        }
       [:head
-       {
-       :profile "http://www.w3.org/profile/rdfa-1.1 http://www.w3.org/profile/html-rdfa-1.1"
+       ;; {
+       ;; :profile "http://www.w3.org/profile/rdfa-1.1 http://www.w3.org/profile/html-rdfa-1.1"
 
-        }
+       ;;  }
        [:meta {:charset "UTF-8"}]
        [:title {:property "dc:title"}
         (when (:title response)

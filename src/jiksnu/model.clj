@@ -47,7 +47,7 @@
      )
   )
 
-(def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ssZ")
+(def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ss'Z'")
 
 (def ^:dynamic *mongo-database* (ref nil))
 
@@ -56,10 +56,12 @@
 
 (defn format-date
   [^Date date]
-  (condp = (class date)
+  (condp = (spy (class date))
     String (DateTime/parse date)
     DateTime date
-    Date (.format (SimpleDateFormat. *date-format*) date)
+    Date (let [formatter (SimpleDateFormat. *date-format*)]
+           (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+           (.format formatter  date))
     date))
 
 (defn strip-namespaces

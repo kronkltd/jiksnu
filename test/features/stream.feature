@@ -3,8 +3,8 @@ Feature: Streams
   As a consumer
   I want to have activities pushed to me
 
-  # Scenario: Firehose
-  #   Given I am not logged in
-  #   When I request the "firehose" stream
-  #   And a new activity gets posted
-  #   Then I should receive a message from the stream
+  Scenario: Firehose
+    Given I am not logged in
+    When I request the "firehose" stream
+    And a new activity gets posted
+    Then I should receive a message from the stream
