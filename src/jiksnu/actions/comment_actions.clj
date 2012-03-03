@@ -32,12 +32,12 @@
   (actions.activity/remote-create activities))
 
 ;; TODO: fetch all in 1 request
-(defaction fetch-comments
+(defn fetch-comments
   [activity]
   (let [comments (concat (map model.activity/fetch-by-id (:comments activity))
                          (if-let [irt (first (:irts activity))]
                            (model.activity/fetch-all {:id irt})))]
-    [activity (spy comments)]))
+    [activity comments]))
 
 (defn comment-request
   [activity]

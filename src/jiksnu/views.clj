@@ -4,6 +4,7 @@
                [debug :only [spy]]
                formats sections views)
         ciste.sections.default
+        ciste.views.default
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase])
             (hiccup [core :as h])

@@ -54,20 +54,17 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   "extract the notice info from a statusnet element"
   [^Element element]
   (let [source (.getAttributeValue element "source")
-        local-id (.getAttributeValue element "local_id")]
+        local-id (.getAttributeValue element "local_id")
+        source-link (.getAttributeValue element "source_link")]
     {:source source
+     :source-link source-link
      :local-id local-id}))
-
-(defn parse-irt
-  "get the href from a link as a string"
-  [irt]
-  (->> irt .getHref str))
 
 (defn parse-irts
   "Get the in-reply-to uris"
   [entry]
   (->> (ThreadHelper/getInReplyTos entry)
-       (map parse-irt)
+       (map #(str (.getHref %)))
        (filter identity)))
 
 (defn parse-link
@@ -76,7 +73,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 this is for OSW
 "
   [link]
-  (if-let [href (str (.getHref link))]
+  (if-let [href (abdera/get-href link)]
     (when (and (re-find #"^.+@.+$" href)
                (not (re-find #"node=" href)))
       href)))
@@ -157,15 +154,23 @@ serialization"
            extension-maps (->> (.getExtensions entry)
                                (map parse-extension-element)
                                doall)
-           irts (parse-irts entry)
            content (.getContent entry)
            links (abdera/parse-links entry)
-           mentioned-uri (-?> entry
-                              (.getLink "mentioned")
-                              .getHref str)
-           conversation (-?> entry 
-                             (.getLink "ostatus:conversation")
-                             .getHref str)
+
+           irts (parse-irts entry)
+
+           ;; TODO: Extract this pattern
+           mentioned-uris (-?> (.getLinks entry "mentioned")
+                               (->> (map abdera/get-href)))
+
+           conversation-uris (-?> entry 
+                                  (.getLinks "ostatus:conversation")
+                                  (->> (map abdera/get-href)))
+
+           enclosures (-?> entry
+                           (.getLinks "enclosure")
+                           (->> (map abdera/get-href)))
+           
            tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object"))
            object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
@@ -173,17 +178,21 @@ serialization"
                             .getText model/strip-namespaces)
            object-id (-?> object-element (.getFirstChild (QName. namespace/atom "id")))
            opts (apply merge
-                       (when published        {:published published})
-                       (when content          {:content content})
-                       (when updated          {:updated updated})
+                       (when published         {:published published})
+                       (when content           {:content content})
+                       (when updated           {:updated updated})
                        ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
-                       (when title            {:title title})
-                       (when (seq irts)       {:irts irts})
-                       (when (seq links)      {:links links})
-                       (when conversation     {:conversation conversation})
-                       (when mentioned-uri    {:mentioned-uri mentioned-uri})
-                       (when (seq tags)       {:tags tags})
-                       (when verb             {:verb verb})
+                       (when title             {:title title})
+                       (when (seq irts)        {:irts irts})
+
+                       (when (seq links)       {:links links})
+
+                       (when conversation-uris {:conversation conversation-uris})
+                       (when mentioned-uris    {:mentioned-uris mentioned-uris})
+                       (when (seq enclosures)) {:enclosure enclosures}
+
+                       (when (seq tags)        {:tags tags})
+                       (when verb              {:verb verb})
                        {:id id
                         :author (:_id user)
                         :public true

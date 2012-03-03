@@ -12,6 +12,7 @@
            org.apache.abdera2.model.Element
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Feed
+           org.apache.abdera2.model.Link
            org.apache.abdera2.protocol.client.AbderaClient
            org.apache.axiom.util.UIDGenerator))
 
@@ -49,6 +50,11 @@
 (defn get-entries
   [^Feed feed]
   (-> feed .getEntries seq))
+
+(defn get-href
+  "get the href from a link as a string"
+  [^Link link]
+  (->> link .getHref str))
 
 ;; (defn fetch-entries
 ;;   [uri]
@@ -197,15 +203,15 @@
   [entry]
   (map parse-link (.getLinks entry)))
 
-(defn parse-object-element
-  [element]
-  #_(let [object (make-object element)]
-      {:object {:object-type (str (.getObjectType object))
-                :links (parse-links object)}
-       :id (str (.getId object))
-       :updated (.getUpdated object)
-       :published (.getPublished object)
-       :content (.getContent object)}))
+;; (defn parse-object-element
+;;   [element]
+;;   #_(let [object (make-object element)]
+;;       {:object {:object-type (str (.getObjectType object))
+;;                 :links (parse-links object)}
+;;        :id (str (.getId object))
+;;        :updated (.getUpdated object)
+;;        :published (.getPublished object)
+;;        :content (.getContent object)}))
 
 (defn parse-json-element
   "Takes a json object representing an Abdera element and converts it to

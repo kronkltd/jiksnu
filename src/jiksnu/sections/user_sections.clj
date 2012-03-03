@@ -33,7 +33,7 @@
 
 (defn user-timeline-link
   [user format]
-  (str "http://" (:domain user)
+  (str "http://" (config :domain)
        "/api/statuses/user_timeline/" (:_id user) "." format))
 
 ;; TODO: Move this to user
