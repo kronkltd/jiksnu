@@ -51,12 +51,15 @@
 
 (def ^:dynamic *mongo-database* (ref nil))
 
+;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
                    :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
 
 (defn format-date
+  "This is a dirty little function to get a properly formatted date."
+  ;; TODO: Get more control of passed dates
   [^Date date]
-  (condp = (spy (class date))
+  (condp = (class date)
     String (DateTime/parse date)
     DateTime date
     Date (let [formatter (SimpleDateFormat. *date-format*)]
