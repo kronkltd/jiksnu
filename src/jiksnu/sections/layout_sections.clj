@@ -35,6 +35,7 @@
          (when (is-admin?)
            ["Admin"
             [["/admin/activities"         "Activities"]
+             ["/admin/auth"               "Auth"]
              ["/main/domains"             "Domains"]
              ["/admin/groups"             "Groups"]
              ["/admin/settings"           "Settings"]

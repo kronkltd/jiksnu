@@ -14,6 +14,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [namespace :as ns])
             (karras [core :as karras]
+                    [entity :as entity]
                     [sugar :as sugar])
             (lamina [core :as l])
             (net.cgrand [enlive-html :as enlive])
@@ -116,6 +117,9 @@
   [:id
    :actor
    :title])
+
+(defentity AuthenticationMechanism
+  [:type])
 
 (defentity Like
   [:id :user :activity :created])

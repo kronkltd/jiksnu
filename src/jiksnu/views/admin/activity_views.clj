@@ -1,5 +1,6 @@
 (ns jiksnu.views.admin.activity-views
   (:use (ciste [views :only [defview]])
+        (ciste.sections [default :only [link-to]])
         jiksnu.actions.admin.activity-actions)
   (:require (jiksnu.actions [activity-actions :as actions.activity]))
   )
@@ -20,6 +21,6 @@
      (map
       (fn [activity]
         [:tr
-         [:td (-> activity actions.activity/get-author :username)]
+         [:td (-> activity actions.activity/get-author link-to)]
          [:td (:title activity)]])
       activities)]]})

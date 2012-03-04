@@ -35,6 +35,7 @@
                             [tag-actions :as tag]
                             [user-actions :as user])
             (jiksnu.actions.admin [activity-actions :as admin.activity]
+                                  [auth-actions :as admin.auth]
                                   [feed-source-actions :as admin.feed-source]
                                   [subscription-actions :as admin.sub]
                                   [user-actions :as admin.user])
@@ -43,7 +44,8 @@
                              [file-info :as file-info]
                              [stacktrace :as stacktrace])
             (ring.util [response :as response]))
-  (:import com.newrelic.api.agent.NewRelic
+  (:import
+   ;; com.newrelic.api.agent.NewRelic
            javax.security.auth.login.LoginException))
 
 (defn not-found-msg
@@ -59,6 +61,7 @@
    [
     [[:get  "/admin"]                                   #'admin/index]
     [[:get  "/admin/activities"]                        #'admin.activity/index]
+    [[:get  "/admin/auth"]                              #'admin.auth/index]
     [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
     [[:get  "/admin/feed-sources"]                      #'admin.feed-source/index]
     [[:get  "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
@@ -305,6 +308,7 @@
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
                     ((resolve-routes [http-predicates] admin-routes) request)
+                    ;; TODO: move this somewhere else
                     (throw (LoginException. "Must be admin")))))
   (middleware/wrap-log-request
    (resolve-routes [http-predicates] http-routes))

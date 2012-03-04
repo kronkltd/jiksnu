@@ -1,8 +1,11 @@
 (ns jiksnu.sections.auth-sections
-  (:use (ciste [debug :only [spy]])
+  (:use (ciste [debug :only [spy]]
+               [sections :only [defsection]])
+        ciste.sections.default
         (jiksnu [session :only [current-user]]
                 [views :only [control-line]])
-        (jiksnu.sections [user-sections :only [display-avatar-img]])))
+        (jiksnu.sections [user-sections :only [display-avatar-img]]))
+  (:import jiksnu.model.AuthenticationMechanism))
 
 (defn logout-button
   [user]
@@ -29,10 +32,20 @@
 
 (defn password-page
   [user]
-  [:form {:method "post" :action "/main/login"}
+  [:form.well {:method "post" :action "/main/login"}
    [:fieldset
     [:legend "Enter Password"]
     [:input {:type "hidden" :name "username" :value (:username user)}]
     (control-line "Password" "password" "password")
     [:div.actions
-     [:input {:type "submit" :value "Login"}]]]])
+     [:input.btn.btn-primary {:type "submit" :value "Login"}]]]])
+
+(defsection add-form [AuthenticationMechanism :html]
+  [mechanism & _]
+  [:form.well {:method "post" :action "/admin/auth"}
+   [:fieldset
+    [:legend"Add a mechanism"
+     (control-line "Type" "type" "text")
+     (control-line "Value" "value" "text")
+     [:div.actions
+      [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]])
