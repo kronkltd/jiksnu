@@ -208,11 +208,16 @@
 
 (defn recipients-section
   [activity]
-  (when-let [mentioned-uri (:mentioned-uri activity)]
-    [:p [:i.icon-chevron-right]
-     (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
-       (link-to mentioned-user)
-       [:a {:href mentioned-uri :rel "nofollow"} mentioned-uri])]))
+  (when-let [mentioned-uris (seq (:mentioned-uris activity))]
+    [:ul
+     (map
+      (fn [mentioned-uri]
+        [:li
+         [:i.icon-chevron-right]
+         (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
+           (link-to mentioned-user)
+           [:a {:href mentioned-uri :rel "nofollow"} mentioned-uri])])
+      mentioned-uris)]))
 
 (defn links-section
   [activity]
@@ -263,13 +268,10 @@
    "posted "
    [:time {:datetime (model/format-date (:published activity))
            :title (model/format-date (:published activity))
-         :property "dc:published"
-         ;; :content (model/format-date (:published activity))
-
+           :property "dc:published"
+           ;; :content (model/format-date (:published activity))
            }
-    [:a {:href (uri activity)
-
-         }
+    [:a {:href (uri activity)}
      (-> activity :published model.activity/prettyify-time)]]])
 
 (defn comments-section
@@ -555,7 +557,7 @@
        (or (:title activity)
            (:content activity))]]
      [:div
-      (:irts activity)
+      [:p (:irts activity)]
       (links-section activity)
       (likes-section activity)
       (maps-section activity)
@@ -573,12 +575,12 @@
       (when (:conversation activity)
         (list
          " "
-         [:a {:href (:conversation activity)}
+         [:a {:href (first (:conversation activity))}
           "in context"]))
       (when (and (seq (:lat activity))
                  (seq (:long activity)))
         (list " at "
-              [:a {:href "#"}
+              [:a.geo-link {:href "#"}
                (:lat activity) ", "
                (:long activity)]))
       (comments-section activity)]]))
