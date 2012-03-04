@@ -46,7 +46,7 @@
                  [xml-picker-seq "0.0.2"]
                  ]
   :dev-dependencies [
-                     [midje "1.3.1" :exclusions [org.clojure/clojure]]
+                     [midje "1.3.2-SNAPSHOT" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
                      [lein-cljsbuild "0.0.13"
                       :exclusions [org.apache.ant/ant]
