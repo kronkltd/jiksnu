@@ -1,7 +1,8 @@
 (ns jiksnu.actions.user-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
+               [debug :only [spy]]
+               [model :only [implement]])
         (clj-stacktrace [repl :only [pst+]])
         (clojure.core [incubator :only [-?> -?>>]])
         (jiksnu model
@@ -14,7 +15,8 @@
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace])
-            (jiksnu.actions [domain-actions :as actions.domain])
+            (jiksnu.actions [auth-actions :as actions.auth]
+                            [domain-actions :as actions.domain])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]
@@ -192,16 +194,31 @@
 (defaction discover
   [^User user]
   (when user
-    (when (not (:local user))
-      (let [domain (model.user/get-domain user)]
+    (if (:local user)
+      user
+
+      ;; Get domain should, in theory, always return a domain, or else error
+      (let [domain (get-domain user)]
         (if (:discovered domain)
           (do
-            (when (:xmpp domain)
-              (discover-user-xmpp user))
-            (discover-user-http user))
-          #_(enqueue-discover user))))
-    (model.user/set-field user :discovered true)
-    user))
+            (when (:xmpp domain) (discover-user-xmpp user))
+
+            ;; There should be a similar check here so we're not
+            ;; hitting xmpp-only services.
+            ;; This is really OStatus specific
+            (discover-user-http user)
+
+            ;; TODO: there sould be a different discovered flag for
+            ;; each aspect of a domain, and this flag shouldn't be set
+            ;; till they've all responded
+            (model.user/set-field user :discovered true))
+          (do
+            ;; Domain not yet discovered
+            (actions.domain/discover domain)
+
+            ;; TODO: need to recurse here, but not forever unless the
+            ;; domain is bogus. Perhaps a try counter.
+            #_(enqueue-discover user)))))))
 
 ;; TODO: turn this into a worker
 (defn discover-pending-users
@@ -216,13 +233,14 @@
 
 (defaction fetch-remote
   [user]
-  (let [domain (:domain user)]
+  (let [domain (get-domain user)]
     (if (:xmpp domain)
       (request-vcard! user))))
 
 (defaction find-hub
   [user]
-  (get-domain user))
+  (implement
+   (get-domain user)))
 
 (defaction register
   [{:keys [username password email display-name location bio] :as options}]

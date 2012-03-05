@@ -1,7 +1,8 @@
 (ns jiksnu.actions.auth-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]]))
+               [debug :only [spy]]
+               [model :only [implement]]))
   (:require (clojure.tools [logging :as log])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [user :as model.user]))
@@ -40,6 +41,14 @@
 (defaction verify-credentials
   []
   true)
+
+(defn add-password
+  [user password]
+  (implement
+      ;; Create a new authentication mechanism with the type password
+      ;; that has the crypted password
+      )
+  )
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.auth-filters
