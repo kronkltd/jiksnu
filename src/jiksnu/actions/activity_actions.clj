@@ -107,10 +107,10 @@ this is for OSW
   "attempt to resolve the recipients"
   [activity]
   (let [recipients (filter identity (:recipients activity))]
-    (if (not (empty? recipients))
+    (if (empty? recipients)
+      (dissoc activity :recipients)
       (let [users (map actions.user/user-for-uri recipients)]
-        (assoc activity :recipients users))
-      (dissoc activity :recipients))))
+        (assoc activity :recipients users)))))
 
 (defaction create
   "create an activity"

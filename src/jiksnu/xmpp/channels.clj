@@ -14,6 +14,10 @@
 (def prepend-text "Channel Server")
 (def secure-logging false)
 
+(defn -id
+  [this]
+  prepend-text)
+
 ;; (defn -getDefaults
 ;;   [this params]
 ;;   (let [default-params  (proxy-super params)]

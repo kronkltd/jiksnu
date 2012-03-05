@@ -82,11 +82,11 @@
             biglen (alength bigbytes)
             bitmod  (mod bitlen 8)
             bitdiv (/ bitlen 8)]
-        (if (and (not= 0 bitmod)
-                 (= (+ bitdiv 1) (/ adjusted-bitlen 8)))
+        (if (and (not (zero? 0))
+                 (= (inc bitdiv) (/ adjusted-bitlen 8)))
           bigbytes
-          (let [start-src (if (= bitmod 0) 1 0)
-                biglen2 (if (= bitmod 0) (- biglen 1) biglen)
+          (let [start-src (if (zero? bitmod) 1 0)
+                biglen2 (if (zero? bitmod) (dec biglen) biglen)
                 start-dst (- (/ adjusted-bitlen 8) biglen2)
                 new-size (/ adjusted-bitlen 8)
                 resized-bytes (byte-array new-size)]
