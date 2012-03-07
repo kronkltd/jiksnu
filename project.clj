@@ -34,18 +34,14 @@
                  [ring "1.0.2"]
                  [ring-basic-authentication "0.0.1"]
                  [solrclj "0.1.2"]
-                 [swank-clojure "1.4.0"]
                  [xml-picker-seq "0.0.2"]
                  ]
   :dev-dependencies [
                      [midje "1.3.2-SNAPSHOT" :exclusions [org.clojure/clojure]]
                      [ring-mock "0.1.1"]
-                     [lein-cljsbuild "0.0.13"
-                      :exclusions [org.apache.ant/ant]
-                      ]
+                     [lein-cljsbuild "0.1.2"]
+                     [lein-midje "1.0.8"]
                      [clj-webdriver "0.6.0-alpha4"]
-                     ;; [lein-cucumber "0.1.0"]
-                     ;; [com.stuartsierra/lazytest "2.0.0-SNAPSHOT"]
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
                      ]
   :java-source-path "src"
@@ -55,8 +51,6 @@
                org.apache.abdera/abdera-core
                org.clojure/contrib
                org.clojure/clojure-contrib
-               ;; org.slf4j/slf4j-api
-               ;; org.slf4j/slf4j-log4j12
                org.slf4j/slf4j-nop
                ring/ring-jetty-adapter
                ]
@@ -66,21 +60,19 @@
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
-  :cljsbuild {
-              :source-path "src-cljs"
-              :compiler {
-                         :output-to "resources/public/cljs/bootstrap.js"
-                         :output-dir "resources/public/cljs"
-                         :optimizations :whitespace
-                         :pretty-print true
-                         }}
+  :cljsbuild {:builds [{
+                        :source-path "src-cljs"
+                        :compiler {
+                                   :output-to "resources/public/cljs/bootstrap.js"
+                                   :output-dir "resources/public/cljs"
+                                   :optimizations :whitespace
+                                   :pretty-print true
+                                   }}]}
   :main ciste.runner
-  ;; :newrelic true
   :warn-on-reflection false
   :jvm-opts [
              "-server"
              "-XX:MaxPermSize=1024m"
-             ;; "-javaagent:/home/duck/projects/jiksnu/newrelic/newrelic.jar"
              "-Dfile.encoding=UTF-8"
              ]
   )
