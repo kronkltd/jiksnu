@@ -1,6 +1,7 @@
 (ns jiksnu.actions.domain-actions-test
   (:use (ciste [config :only [with-environment]])
         (clj-factory [core :only [factory fseq]])
+        (clj-tigase [core :only [deliver-packet!]])
         (jiksnu [test-helper :only [test-environment-fixture]])
         jiksnu.actions.domain-actions
         midje.sweet)
@@ -42,7 +43,9 @@
    (fact "should send a packet to that domain"
      (let [action #'discover
            domain (model.domain/create (factory Domain))]
-       (discover-onesocialweb domain) => packet/packet?)))
+       (discover-onesocialweb domain) => domain)
+     (provided
+       (deliver-packet! anything) => nil :times 1)))
 
  (fact "#'discover-webfinger"
    (let [domain (model.domain/create (factory Domain))]

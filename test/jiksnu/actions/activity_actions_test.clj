@@ -83,20 +83,20 @@
            (let [author (model.user/create (factory User))
                  activity (with-user author
                             (create (factory Activity)))]
-             (show (:_id activity)) => activity?)))
+             (show activity) => activity?)))
        (fact "and the record is not public"
          (facts "should return nil"
            (let [author (model.user/create (factory User))
                  activity (with-user author
                             (create (factory Activity {:public false})))]
-             (show (:_id activity)) => nil?))))
+             (show activity) => nil?))))
      (fact "and the user is logged in"
        (fact "and is the author"
          (facts "should return the activity"
            (let [user (model.user/create (factory User))]
              (with-user user
                (let [activity (create (factory Activity))]
-                 (show (:_id activity)) => activity?)))))
+                 (show activity) => activity?)))))
        (fact "and is not the author"
          (fact "and is not on the access list"
            (fact "and is an admin"
@@ -106,7 +106,7 @@
                  (let [activity (with-user author
                                   (create (factory Activity {:public false})))]
                    (with-user user
-                     (show (:_id activity)) => activity?)))))
+                     (show activity) => activity?)))))
            (fact "and is not an admin"
              (facts "should return nil"
                (let [user (model.user/create (factory User))
@@ -114,10 +114,10 @@
                      activity (with-user author
                                 (create (factory Activity {:public false})))]
                  (with-user user
-                   (show (:_id activity)) => nil?)))))))
+                   (show activity) => nil?)))))))
      (fact "and the record is not public"
        (fact "and the user is not logged in"
          (facts "should return nil"
            (let [activity (create (factory Activity {:public false}))]
-             (show (:_id activity)) => nil))))))
+             (show activity) => nil))))))
  )
