@@ -50,7 +50,7 @@
           id :id} :params} request
           user (or (when username (model.user/get-user username))
                    (when id (model.user/fetch-by-id id)))]
-    (action (spy user))))
+    (action user)))
 
 (deffilter #'unsubscribe :http
   [action request]
