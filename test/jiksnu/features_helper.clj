@@ -399,7 +399,7 @@
 (defn should-have-field
   [field-name]
   (check-response
-   (w/find-element @current-browser {:name field-name})) => w/exists?)
+   (w/find-element @current-browser {:name field-name}) => w/exists?))
 
 (defn should-not-be-logged-in
   []
