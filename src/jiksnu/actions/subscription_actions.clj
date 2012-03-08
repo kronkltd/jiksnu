@@ -73,7 +73,7 @@
 
 (defaction get-subscriptions
   [user]
-  [user (spy (model.subscription/subscriptions user))])
+  [user (model.subscription/subscriptions user)])
 
 
 (defaction unsubscribe
