@@ -31,7 +31,7 @@
       (client/post
        hub-url
        {:throw-exceptions false
-        :query-params
+        :form-params
         {"hub.callback" (str "http://" (config :domain) "/main/push/callback")
          "hub.mode" "subscribe"
          "hub.topic" topic
