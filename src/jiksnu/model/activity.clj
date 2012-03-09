@@ -100,7 +100,7 @@
        prepare-activity
        ;; make-activity
        ((fn [a]
-          (log/debugf "Creating activity: %s" a)
+          (log/debugf "Creating activity: %s" (pr-str a))
            a))
        (entity/create Activity)))
 

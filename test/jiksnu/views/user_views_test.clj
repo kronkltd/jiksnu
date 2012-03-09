@@ -34,10 +34,10 @@
          response => string?))))
 
  (fact "show-section User :xmpp :xmpp"
-   (fact "should return an element"
+   (fact "should return a vcard string"
      (with-context [:xmpp :xmpp]
        (let [user (model.user/create (factory User))]
-         (show-section user) => element/element?))))
+         (show-section user) => string?))))
 
  (fact "apply-view #'show :xmpp"
    (fact "should return a query results packet map"
