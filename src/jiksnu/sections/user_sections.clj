@@ -431,15 +431,21 @@
 
 
 
-
+;; TODO: This should be the vcard format
 (defsection show-section [User :xmpp]
   [^User user & options]
   (let [{:keys [name avatar-url]} user]
-    (element/make-element
-     "vcard" {"xmlns" ns/vcard}
-     (if name
-       ["fn" {}
-        ["text" {} name]])
-     (if avatar-url
-       ["photo" {}
-        ["uri" {} avatar-url]]))))
+    (h/html
+     ["vcard"
+      {"xmlns" ns/vcard}
+      ["fn" ["text" (:display-name user)]]
+      [:nickname (:username user)]
+      [:url (:url user)]
+      [:n
+       [:given (:first-name user)]
+       [:family (:last-name user)]
+       [:middle (:middle-name user)]
+       ]
+      (when avatar-url
+         ["photo"
+          ["uri" avatar-url]])])))

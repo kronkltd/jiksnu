@@ -1,6 +1,8 @@
 (ns jiksnu.xmpp.user-repository
   (:use (ciste [config :only [config]]
-               [debug :only [spy]]))
+               [core :only [with-context]]
+               [debug :only [spy]])
+        (ciste.sections [default :only [show-section]]))
   (:require (ciste [model :as cm])
             (clojure [stacktrace :as stacktrace]
                      [string :as string])
@@ -84,6 +86,15 @@
   [user ks def]
   (log/infof "password handler - %s - %s" (pr-str ks) def)
   (:password user))
+
+
+(defmethod get-data [:public :vcard-temp :vCard]
+  [user ks def]
+  (log/info "Vcard handler")
+  (spy (with-context [:xmpp :xmpp]
+         (show-section (spy user))))
+  ;; (spy def)
+  )
 
 (defmethod get-data :default
   [user ks def]
