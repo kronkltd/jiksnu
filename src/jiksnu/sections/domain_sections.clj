@@ -2,7 +2,8 @@
   (:use (ciste [debug :only [spy]]
                [sections :only [defsection]] )
         ciste.sections.default
-        (jiksnu [views :only [control-line]]))
+        (jiksnu [session :only [is-admin?]]
+                [views :only [control-line]]))
   (:require (jiksnu.sections [link-sections :as sections.link]))
   (:import jiksnu.model.Domain))
 
@@ -63,6 +64,9 @@
                    :title (:title license)}
                [:img {:src (:image license)
                       :alt (:title license)}]]])))
+   (when (is-admin?)
+     [:ul.domain-actions.buttons
+      [:li (discover-button domain)]])
    (when (seq (:links domain))
      (sections.link/index-section (:links domain)))
    #_(discover-button domain)])
