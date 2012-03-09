@@ -1,89 +1,57 @@
 {
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  :default
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  {
-  :admins
-  [
-                        "admin"
-   ]
-  :database
-  {
-   :host                "localhost"
-   }
-  :debug                false
-  :print
-  {
-   :action              false
-   :actions             false
-   :matchers            false
-   :params              false
-   :predicates          false
-   :request             false
-   :triggers            false
-   }
-  :registration-enabled true
-  :run-triggers         true
-  :swank
-  {
-   :port                "4005"
-   }
-  :triggers
-  {
-   :thread-count        1
-   }
-  :use-pipeline         true
-  :xmpp
-  {
-   :cs2                 5222
-   :s2s                 5269
-   }
-  }
-
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  :admins ["admin"]
+  :database {:host "localhost"},
+  :debug false,
+  :domain "jiksnu.com",
+  :http {:port 8080, :websocket true, :handler "jiksnu.routes/app"},
+  :print {:actions false,
+          :matchers false,
+          :packet false,
+          :predicates false,
+          :request false,
+          :routes false,
+          :triggers false},
+  :registration-enabled true,
+  :run-triggers true,
+  :salmon {:verify true},
+  :site {:name "Jiksnu",
+         :default {:timezone "+0:00", :language "en-us"},
+         :email "admin@jiksnu.com",
+         :brought-by {:name "Jiksnu", :url "http://jiksnu.org/"},
+         :limit {:text 140, :dupe 60}},
+  :swank {:port "4005"},
+  :triggers {:thread-count 1},
+  :use-pipeline true,
+  :xmpp {:c2s 5222,
+         :s2s 5269,
+         :auth-db "jiksnu.xmpp.user_repository",
+         :user-db "jiksnu.xmpp.user_repository",
+         :plugins ["jiksnu" "message"],
+         :components [{:name "channels", :class "jiksnu.xmpp.channels"}]}
+  },
+ 
  :development
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  {
-  :database
-  {
-   :name                :jiksnu_development
-   }
-  :domain               "beta.jiksnu.com"
-  :print
-  {
-   :actions             true
-   :triggers            true
-   }
-  :http
-  {
-   :port                8082
-   }
-  :registration-enabled false
-  }
-
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  :admins ["daniel"],
+  :database {:name :jiksnu_development},
+  :domain "dev.jiksnu.com",
+  :http {:port 8082},
+  :print {:routes true, :triggers true},
+  :registration-enabled false,
+  :swank {:port "4007"}
+  },
+ 
  :test
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  {
-  :database
-  {
-   :name                :jiksnu_test
-   }
-  :domain               "test.jiksnu.com"
-  :print
-  {
-   :actions             true
-   :initializers        true
-   :triggers            true
-   }
-  :http
-  {
-   :port                8082
-   }
-  :registration-enabled false
-  :run-triggers         false
+  :database {:name :jiksnu_test},
+  :domain "test.jiksnu.com",
+  :http {:port 8175},
+  :run-triggers false
   }
+
  }
