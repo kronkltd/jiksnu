@@ -5,6 +5,7 @@
                  [aleph "0.2.1-alpha2-SNAPSHOT"]
                  [ciste "0.3.0-SNAPSHOT"]
                  [clj-factory "0.2.0"]
+                 [clj-http "0.3.2"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [clj-time "0.3.5"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
