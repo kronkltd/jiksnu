@@ -135,20 +135,16 @@
      [:html
       ;; TODO: Read the list of declared namespaces
       {
-       ;; :xmlns:sioc ns/sioc
-       ;; :xmlns:dc ns/dc
-       ;; :xmlns:foaf ns/foaf
-       ;; :xmlns:dcterms ns/dcterms
+       :xmlns:sioc ns/sioc
+       :xmlns:dc ns/dc
+       :xmlns:foaf ns/foaf
+       :xmlns:dcterms ns/dcterms
        ;; :version "HTML+RDFa 1.1"
        :lang "en"
        :xml:lang "en"
-       ;; :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
+       :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
        }
       [:head
-       ;; {
-       ;; :profile "http://www.w3.org/profile/rdfa-1.1 http://www.w3.org/profile/html-rdfa-1.1"
-
-       ;;  }
        [:meta {:charset "UTF-8"}]
        [:title {:property "dc:title"}
         (when (:title response)
@@ -161,17 +157,14 @@
        [:link {:href "/opensearch/people"
                :title "People Search"
                :type "application/opensearchdescription+xml"
-               :rel "search"
-               }]
+               :rel "search"}]
        [:link {:href "/opensearch/notices"
                :title "Notice Search"
                :type "application/opensearchdescription+xml"
-               :rel "search"
-               }]
+               :rel "search"}]
        [:link {:href "/rsd.xml"
                :type "application/rsd+xml"
-               :rel "EditURI"
-               }]
+               :rel "EditURI"}]
        (map
         (fn [format]
           [:link {:type (:type format)
@@ -185,23 +178,20 @@
         [:div.navbar-inner
          [:div.container
           [:a.brand.home {:href "/"} (config :site :name)]
-          ;; TODO: put a search bar here
-          [:form.navbar-search.pull-left
-           {:action "/main/search" :method "post"}
-           [:input.search-query.span3
-            {:type "text" :placeholder "Search" :name "q"}
-            ]
-           ]
+          ;; [:form.navbar-search.pull-left
+          ;;  {:action "/main/search" :method "post"}
+          ;;  [:input.search-query.span3
+          ;;   {:type "text" :placeholder "Search" :name "q"}]]
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
        [:div.container
         [:div.row
          [:div.span2
-          [:span#interface]
+          #_[:span#interface]
           (left-column-section response)]
          [:div#content.span10
           [:div#notification-area.row
            [:div#flash]
-           [:div.span10 (devel-warning response)]]
+           #_[:div.span10 (devel-warning response)]]
           [:div.row
            (if-not (:single response)
              (list [:div.span7 (main-content response)]
@@ -215,9 +205,7 @@
              "WEBSOCKET_PATH = "
              "'ws://" (config :domain) ":" (config :http :port) "/websocket'"
              ";"
-             "var CLOSURE_NO_DEPS = true;"
-
-             )]
+             "var CLOSURE_NO_DEPS = true;")]
        (p/include-js
         "/web-socket-js/swfobject.js"
         "/web-socket-js/web_socket.js"
