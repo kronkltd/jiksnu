@@ -51,16 +51,26 @@
          "hub.topic" topic
          "hub.verify" "async"}}))))
 
+(defn send-unsubscribe
+  ([hub topic]
+     (send-unsubscribe
+      hub topic
+      (str "http://" (config :domain) "/main/push/callback")))
+  ([hub topic callback]
+     (client/post
+      hub
+      {:throw-exceptions false
+       :form-params
+       {"hub.callback" callback
+        "hub.mode" "unsubscribe"
+        "hub.topic" topic
+        "hub.verify" "async"}})))
+
 (defaction remove-subscription
   [subscription]
-  (client/post
+  (send-unsubscribe
    (:hub subscription)
-   {:throw-exceptions false
-    :form-params
-    {"hub.callback" (str "http://" (config :domain) "/main/push/callback")
-     "hub.mode" "unsubscribe"
-     "hub.topic" (:topic subscription)
-     "hub.verify" "async"}})
+   (:topic subscription))
   true)
 
 (definitializer
