@@ -6,6 +6,13 @@
                     [sugar :as sugar]))
   (:import jiksnu.model.FeedSource))
 
+(defn update-field!
+  [source key value]
+  (entity/find-and-modify
+   FeedSource
+   {:id (:_id source)}
+   {:$set {key value}}))
+
 (defn create
   [options]
   (let [now (sugar/date)]
@@ -13,6 +20,7 @@
      FeedSource
      (merge
       {:created now
+       :status "pending"
        :update now}
       options))))
 

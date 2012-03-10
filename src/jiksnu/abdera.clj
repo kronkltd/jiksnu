@@ -186,8 +186,8 @@
     (str feed)))
 
 (defn parse-link
-  [link]
-  (let [mime-type (try (str (.getMimeType link)) (catch Exception ex))
+  [^Link link]
+  (let [type (try (str (.getMimeType link)) (catch Exception ex))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
@@ -197,7 +197,7 @@
            (when (seq rel) {:rel rel})
            (when (seq title) {:title title})
            (when (seq extensions) {:extensions extensions})
-           (when (seq mime-type) {:mime-type (str mime-type)}))))
+           (when (seq type) {:type (str type)}))))
 
 (defn parse-links
   [entry]

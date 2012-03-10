@@ -13,6 +13,10 @@
             (jiksnu.model [feed-source :as model.feed-source])
             (lamina [core :as l])))
 
+(defaction confirm
+  [source]
+  (model.feed-source/update-field! source :status "confirmed"))
+
 (defaction process-updates
   [params]
   (let [{challenge "hub.challenge"

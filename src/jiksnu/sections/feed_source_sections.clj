@@ -54,6 +54,7 @@
    [:td (link-to source)]
    [:td (:hub source)]
    [:td (:mode source)]
+   [:td (str (:status source))]
    [:td (unsubscribe-button source)]])
 
 (defsection index-section [FeedSource :html]
@@ -65,5 +66,6 @@
      [:th "Topic"]
      [:th "Hub"]
      [:th "Mode"]
+     [:th "Status"]
      [:th "Unsubscribe"]]]
    [:tbody (map index-line sources)]])
