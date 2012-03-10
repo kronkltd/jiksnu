@@ -5,6 +5,12 @@
         (jiksnu [views :only [control-line]]))
   (:import jiksnu.model.FeedSource))
 
+(defn unsubscribe-button
+  [source]
+  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id source) "/unsubscribe")}
+   [:button.btn.delete-button {:type "submit"}
+    [:i.icon-trash] [:span.button-text "Unsubscribe"]]])
+
 (defsection link-to [FeedSource :html]
   [source & _]
   [:a {:href (str "/admin/feed-sources/" (:_id source))}
@@ -47,7 +53,8 @@
    [:td]
    [:td (link-to source)]
    [:td (:hub source)]
-   [:td (:mode source)]])
+   [:td (:mode source)]
+   [:td (unsubscribe-button source)]])
 
 (defsection index-section [FeedSource :html]
   [sources & _]
@@ -57,5 +64,6 @@
      [:th]
      [:th "Topic"]
      [:th "Hub"]
-     [:th "Mode"]]]
+     [:th "Mode"]
+     [:th "Unsubscribe"]]]
    [:tbody (map index-line sources)]])

@@ -2,9 +2,14 @@
   (:use (ciste [debug :only [spy]]
                [filters :only [deffilter]])
         jiksnu.actions.feed-source-actions)
-  (:require (jiksnu.model [user :as model.user])))
+  (:require (jiksnu.model [feed-source :as model.feed-source]
+                          [user :as model.user])))
 
 (deffilter #'process-updates :http
   [action request]
   (-> request :params action))
+
+(deffilter #'remove-subscription :http
+  [action request]
+  (-> request :params :id model.feed-source/fetch-by-id action))
 

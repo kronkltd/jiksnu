@@ -16,6 +16,11 @@
        :update now}
       options))))
 
+(defn delete
+  [source]
+  (entity/delete source)
+  source)
+
 (defn fetch
   [options & args]
   (apply entity/fetch-one FeedSource options args))

@@ -4,8 +4,10 @@
                [debug :only [spy]])
         (karras [entity :only [make]]))
   (:require (aleph [http :as http])
+            (ciste [model :as cm])
             (clj-http [client :as client])
             (clojure [string :as string])
+            (clojure.tools [logging :as log])
             (jiksnu [model :as model])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [feed-source :as model.feed-source])
@@ -14,7 +16,19 @@
 (defaction process-updates
   [params]
   (let [{challenge "hub.challenge"
+         mode "hub.mode"
          topic "hub.topic"} params]
+    (let [sources (model.feed-source/fetch-all {:topic topic})]
+      (condp = mode
+        "subscribe" (do
+                      (cm/implement (log/info "confirming subscription")))
+
+        "unsubscribe" (do
+                        (cm/implement (log/info "confirming subscription removal"))
+                        (doseq [source sources]
+                          (model.feed-source/delete source)))
+       (cm/implement
+        (log/info "Unknown mode"))))
     challenge))
 
 (defn find-or-create
@@ -37,10 +51,17 @@
          "hub.topic" topic
          "hub.verify" "async"}}))))
 
-(defn remove-subscription
-  [subscription])
-
-
+(defaction remove-subscription
+  [subscription]
+  (client/post
+   (:hub subscription)
+   {:throw-exceptions false
+    :form-params
+    {"hub.callback" (str "http://" (config :domain) "/main/push/callback")
+     "hub.mode" "unsubscribe"
+     "hub.topic" (:topic subscription)
+     "hub.verify" "async"}})
+  true)
 
 (definitializer
   (doseq [namespace [
