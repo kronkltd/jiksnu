@@ -110,15 +110,17 @@
     (map
      (fn [subscription]
        [:tr
-        [:td (-> subscription spy model.subscription/get-actor :username)]
-        [:td (-> subscription model.subscription/get-target :username)]
+        [:td (let [user (model.subscription/get-actor subscription)]
+               (list (sections.user/display-avatar user)
+                     (link-to user)))]
+        [:td (let [user (model.subscription/get-target subscription )]
+               (list (sections.user/display-avatar user)
+                     (link-to user)))]
         [:td (:created subscription)]
         [:td (:pending subscription)]
         [:td (delete-button subscription)]
         ])
-     subscriptions)]]
-  
-  )
+     subscriptions)]])
 
 
 (defsection index-line [Subscription :as]
