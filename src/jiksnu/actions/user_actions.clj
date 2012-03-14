@@ -101,8 +101,8 @@
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
   ([user params]
-     (or (model.user/fetch-by-remote-id (:id user))
-         (create (merge user params)))))
+     (or (spy (model.user/fetch-by-remote-id (:id user)))
+         (create (spy (merge user params))))))
 
 (defn find-or-create-by-uri
   [uri]
