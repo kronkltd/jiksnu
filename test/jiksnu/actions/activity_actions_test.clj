@@ -31,7 +31,7 @@
      (fact "should return an Activity"
        (with-context [:http :atom]
          (let [entry (show-section (factory Activity {:author (:_id user)}))]
-           (entry->activity entry) => activity?)))
+           (entry->activity (spy  entry)) => activity?)))
      
      (future-fact "when coming from an identi.ca feed"
        (fact "should parse the published field"

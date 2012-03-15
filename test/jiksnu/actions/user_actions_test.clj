@@ -11,6 +11,6 @@
  (fact "#'create"
    (fact "when the params ar nil"
      (fact "should throw an exception"
-       (create nil) => (throws IllegalArgumentException))))
+       (create nil) => (throws RuntimeException))))
 
  )
