@@ -61,23 +61,23 @@
    ;;   (jiksnu.model.webfinger/fetch-host-meta anything) => "<XRD/>"
    ;;   )
    
-   (let [username (fseq :username)]
+   (let [username (fseq :username)
+         domain-name (fseq :domain)
+         template (str "http://" domain-name "/xrd?uri={uri}")]
      
-     (future-fact "when given a http uri"
-       (do (model/drop-all!)
-           (let [domain (model.domain/create (factory Domain
-                                                      {:links [{:rel "lrdd"
-                                                                :template "http://example.com/xrd?uri={uri}"}]}))
-                uri (str "http://" (:_id domain) "/user/1")
-                response (find-or-create-by-remote-id {:id uri})]
-             response => (partial instance? User))))
-
+     (fact "when given a http uri"
+       (model/drop-all!)
+       (let [domain (model.domain/create (factory Domain
+                                                  {:links [{:rel "lrdd" :template template}]}))
+             uri (str "http://" domain-name "/user/1")]
+         (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
+       (provided
+         (get-username uri) => username))
+     
      (fact "when given an acct uri"
        (model/drop-all!)
        (let [domain (model.domain/create (factory Domain
-                                                  {:links [{:rel "lrdd"
-                                                            :template "http://example.com/xrd?uri={uri}"
-                                                            }]}))
+                                                  {:links [{:rel "lrdd" :template template}]}))
              uri (str "acct:" username "@" (:_id domain))
              response (find-or-create-by-remote-id {:id uri})]
          response => (partial instance? User)))
