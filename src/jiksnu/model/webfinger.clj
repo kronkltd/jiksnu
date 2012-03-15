@@ -14,7 +14,7 @@
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
-  (when-let [doc (spy (cm/fetch-document url))]
+  (when-let [doc (cm/fetch-document url)]
     doc))
 
 ;; This function is a little too view-y. The proper representation of
@@ -76,12 +76,15 @@
                        model.signature/magic-key-string)}]
 
    ["Link" {"rel" "http://ostatus.org/schema/1.0/subscribe"
-            "template" (str "http://"
-                            (config :domain)
-                            "/main/ostatussub?profile={uri}")}]
+            "template" (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}]
 
    ["Link" {"rel" "http://specs.openid.net/auth/2.0/provider"
             "href" (full-uri user)}]
+
+   ["Link" {"rel" "http://apinamespace.org/twitter"
+            "href" (str "http://" (config :domain) "/api/")}
+    ["Property" {"type" "http://apinamespace.org/twitter/username"}
+     (:username user)]]
 
    ["Link" {"rel" "http://onesocialweb.org/rel/service"
             "href" (str "xmpp:" (:username user) "@" (:domain user))}]])
@@ -97,3 +100,10 @@
         :type (.getAttributeValue link "type")
         :lang (.getAttributeValue link "lang")})
      links)))
+
+(defn get-identifiers
+  "returns the values of the subject and it's aliases"
+  [xrd]
+  (->> (concat (model/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
+               (model/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
+       (map #(.getValue %))))

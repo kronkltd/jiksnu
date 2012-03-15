@@ -16,6 +16,40 @@
 
 (test-environment-fixture
 
+ (fact "#'get-domain-name"
+   (fact "when given a http uri"
+     (get-domain-name "http://example.com/users/1") => "example.com")
+
+   (fact "when given an acct uri"
+     (get-domain-name "acct:bob@example.com") => "example.com"))
+
+ (fact "#'get-username"
+   (fact "when given a http uri"
+     (let [username (fseq :username)
+           domain-name (fseq :domain)
+           template (str "http://" domain-name "/xrd?uri={uri}")
+           domain (model.domain/create (factory Domain
+                                                {:_id domain-name
+                                                 :links [{:rel "lrdd" :template template}]}))
+           uri (str "http://" domain-name "/users/1")]
+       (get-username uri) => username)
+     (provided
+       (cm/fetch-resource anything) =>
+       (str "
+<XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
+  <Subject>" uri "</Subject>
+  <Alias>acct:" username "@" domain-name "</Alias>"
+  "</XRD>")))
+
+   (fact "when given an acct uri"
+     (let [domain-name (fseq :domain)
+           template (str "http://" domain-name "/xrd?uri={uri}")
+           domain (model.domain/create (factory Domain
+                                                {:_id domain-name
+                                                 :links [{:rel "lrdd" :template template}]}))
+           uri (str "acct:bob@" domain-name)]
+       (get-username uri) => "bob")))
+ 
  (fact "#'get-domain"
    (fact "when the domain already exists"
 
@@ -57,10 +91,6 @@
        (:domain response) => (:domain user))))
 
  (fact "#'find-or-create-by-remote-id"
-   ;; (provided
-   ;;   (jiksnu.model.webfinger/fetch-host-meta anything) => "<XRD/>"
-   ;;   )
-   
    (let [username (fseq :username)
          domain-name (fseq :domain)
          template (str "http://" domain-name "/xrd?uri={uri}")]
