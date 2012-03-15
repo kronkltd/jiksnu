@@ -6,7 +6,9 @@
         midje.sweet
         (jiksnu [test-helper :only [test-environment-fixture]])
         jiksnu.actions.user-actions)
-  (:require (jiksnu.model [domain :as model.domain]
+  (:require (ciste [model :as cm])
+            (jiksnu [model :as model])
+            (jiksnu.model [domain :as model.domain]
                           [user :as model.user]))
   (:import jiksnu.model.Domain
            jiksnu.model.User
@@ -54,4 +56,30 @@
        (:id response) => (:id user)
        (:domain response) => (:domain user))))
 
+ (fact "#'find-or-create-by-remote-id"
+   ;; (provided
+   ;;   (jiksnu.model.webfinger/fetch-host-meta anything) => "<XRD/>"
+   ;;   )
+   
+   (let [username (fseq :username)]
+     
+     (future-fact "when given a http uri"
+       (do (model/drop-all!)
+           (let [domain (model.domain/create (factory Domain
+                                                      {:links [{:rel "lrdd"
+                                                                :template "http://example.com/xrd?uri={uri}"}]}))
+                uri (str "http://" (:_id domain) "/user/1")
+                response (find-or-create-by-remote-id {:id uri})]
+             response => (partial instance? User))))
+
+     (fact "when given an acct uri"
+       (model/drop-all!)
+       (let [domain (model.domain/create (factory Domain
+                                                  {:links [{:rel "lrdd"
+                                                            :template "http://example.com/xrd?uri={uri}"
+                                                            }]}))
+             uri (str "acct:" username "@" (:_id domain))
+             response (find-or-create-by-remote-id {:id uri})]
+         response => (partial instance? User)))
+     ))
  )

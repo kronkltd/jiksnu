@@ -41,6 +41,23 @@
       (second (model.user/split-uri id))
       (.getHost uri))))
 
+
+(defn get-username
+  [id]
+  (let [uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (second (model.user/split-uri id))
+      (or (.getUserInfo uri)
+          (if-let [domain-name (get-domain-name id)]
+            (let [domain (model.domain/fetch-by-id domain-name)]
+              (if-let [url (actions.domain/get-user-meta-url domain id)]
+                (model.webfinger/fetch-host-meta url)
+                (throw (RuntimeException. "Could not get user meta url"))))
+            (throw (RuntimeException. "Could not determine domain name")))))))
+
+
+
+
 (defn get-domain
   [^User user]
   (if-let [domain-id (or (:domain user)
@@ -115,12 +132,18 @@
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
   ([user params]
-     (if-let [domain (get-domain user)]
-       (or (model.user/fetch-by-remote-id (:id user))
-           (create (merge user
-                          {:domain (:_id domain)}
-                          params)))
-       (throw (RuntimeException. "could not determine domain")))))
+     (if-let [id (:id user)]
+       (if-let [domain (get-domain user)]
+         (or (model.user/fetch-by-remote-id id)
+             (create (merge user
+                            {:domain (:_id domain)}
+                            (if-let [username (or (:username user)
+                                                  (:username params))]
+                              nil
+                              {:username (get-username id)})
+                            params)))
+         (throw (RuntimeException. "could not determine domain")))
+       (throw (RuntimeException. "User does not have an id")))))
 
 (defn find-or-create-by-uri
   [uri]

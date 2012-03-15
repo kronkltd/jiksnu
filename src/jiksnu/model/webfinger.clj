@@ -14,9 +14,7 @@
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
-  (when-let [doc (cm/fetch-document url)]
-    (if-let [host (seq (cm/query  "//*[local-name() = 'Host']" doc))]
-      doc)
+  (when-let [doc (spy (cm/fetch-document url))]
     doc))
 
 ;; This function is a little too view-y. The proper representation of
