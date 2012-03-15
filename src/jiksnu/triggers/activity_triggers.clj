@@ -55,14 +55,15 @@
   [action params activity]
   (let [user (actions.activity/get-author activity)]
     (model.item/push user activity)
-    (when-let [mentioned-uri (:mentioned-uri activity)]
-      (log/infof "parsing link: %s" mentioned-uri)
-      (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
-        (do
-          (spy mentioned-user)
-          ;; set user id
-          )
-        (parse-unknown-mention mentioned-uri)))
+    (when-let [mentioned-uris (:mentioned-uris (spy activity))]
+      (doseq [mentioned-uri mentioned-uris]
+        (log/infof "parsing link: %s" mentioned-uri)
+        (if-let [mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})]
+          (do
+            (spy mentioned-user)
+            ;; set user id
+            )
+          #_(parse-unknown-mention mentioned-uri))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (when (seq (:irts activity))
