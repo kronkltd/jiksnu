@@ -8,6 +8,7 @@
         (jiksnu model
                 [session :only [current-user]]))
   (:require (aleph [http :as http])
+            (ciste [model :as cm])
             (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
@@ -24,7 +25,8 @@
             (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
                     [sugar :as sugar]))
-  (:import javax.xml.namespace.QName
+  (:import java.net.URI
+           javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera2.model.Person
            org.apache.commons.codec.binary.Base64
@@ -33,7 +35,9 @@
 
 (defn get-domain
   [^User user]
-  (-> user :domain actions.domain/find-or-create))
+  (if-let [domain-id (or (:domain user)
+                         (.getHost (URI. (:id user))))]
+    (actions.domain/find-or-create domain-id)))
 
 (defaction add-link*
   [user link]
@@ -83,10 +87,12 @@
   [])
 
 (defaction profile
-  [& _])
+  [& _]
+  (cm/implement))
 
 (defaction fetch-updates
   [user]
+  ;; TODO: stream action?
   user)
 
 (defaction find-or-create
@@ -101,8 +107,12 @@
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
   ([user params]
-     (or (spy (model.user/fetch-by-remote-id (:id user)))
-         (create (spy (merge user params))))))
+     (if-let [domain (get-domain user)]
+       (or (model.user/fetch-by-remote-id (:id user))
+           (create (merge user
+                          {:domain (:_id domain)}
+                          params)))
+       (throw (RuntimeException. "could not determine domain")))))
 
 (defn find-or-create-by-uri
   [uri]
@@ -165,8 +175,6 @@
         (doseq [link links]
           (add-link user link))
         (entity/make User user)))))
-
-
 
 
 ;; TODO: Collect all changes and update the user once.

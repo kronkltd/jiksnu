@@ -71,6 +71,6 @@
 (defn fetch-user-meta
   "returns a user meta document"
   [^User user]
-  (-?> user
-       model.user/user-meta-uri
-       model.webfinger/fetch-host-meta))
+  (if-let [uri (model.user/user-meta-uri user)]
+    (model.webfinger/fetch-host-meta user)
+    (throw (RuntimeException. "Could not determine user-meta link"))))

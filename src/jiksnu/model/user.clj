@@ -164,17 +164,18 @@
 
 (defn user-meta-uri
   [^User user]
-  (let [domain (get-domain user)]
+  (if-let [domain (get-domain user)]
     (if-let [lrdd-link (get-link domain "lrdd" nil)]
       (let [template (:template lrdd-link)]
-        (string/replace template "{uri}" (get-uri user))))))
+        (string/replace template "{uri}" (get-uri user)))
+      (throw (RuntimeException. "could not find lrdd link")))
+    (throw (RuntimeException. "could not determine domain"))))
 
 (defn image-link
   [user]
   (or (:avatar-url user)
-      (and (:email user) (gravatar-image (:email user)))
-      (gravatar-image (:jid user))
-      (gravatar-image (get-uri user)) ""))
+      (when (:email user) (gravatar-image (:email user)))
+      (gravatar-image (get-uri user false))))
 
 (defn vcard-request
   [user]

@@ -92,10 +92,10 @@
 
  (fact "user-meta-uri"
    (fact "when the user's domain does not have a lrdd link"
-     (fact "should return nil"
+     (fact "should throw an error"
        (model.domain/drop!)
        (let [user (create (factory User))]
-         (user-meta-uri user) => nil)))
+         (user-meta-uri user) => (throws RuntimeException))))
 
    (fact "when the user's domain has a lrdd link"
      (fact "should insert the user's uri into the template"
