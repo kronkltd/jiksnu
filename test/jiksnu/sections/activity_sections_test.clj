@@ -9,13 +9,16 @@
   (:require (clj-tigase [element :as element])
             (jiksnu [model :as model])
             (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
                           [user :as model.user])
             (jiksnu.xmpp [element :as xmpp.element]))
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
+           jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera2.model.Entry
+           org.apache.abdera2.model.Person
            tigase.xml.Element))
 
 (test-environment-fixture
@@ -33,18 +36,18 @@
 
  (fact "#'show-section Activity :atom"
    (facts "should return an abdera entry"
-     (let [response (show-section activity)]
-       (instance? Entry response) => truthy
-       (.getId response) => truthy
-       (.getTitle response) => truthy
-       (.getUpdated response) => truthy)
-     (against-background
-       (around
-        :facts
-        (with-context [:http :atom]
-          (let [author-map {:authors [(:_id (model.user/create (factory User)))]}
-                activity (factory Activity author-map)]
-            ?form))))))
+     (with-context [:http :atom]
+       (let [domain (model.domain/create (factory Domain))
+             user (model.user/create (factory User {:domain (:_id domain)}))
+             author-map {:author (:_id user)}
+             activity (model.activity/create (factory Activity author-map))]
+         (let [response (show-section activity)]
+           (instance? Entry response) => truthy
+           (.getId response) => truthy
+           (.getTitle response) => truthy
+           (.getUpdated response) => truthy
+           (.getAuthor response) => (partial instance? Person)
+           )))))
 
  (fact "#'show-section Activity :xmpp"
    (facts "should return an element"

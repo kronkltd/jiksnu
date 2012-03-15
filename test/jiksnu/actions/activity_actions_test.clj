@@ -11,9 +11,11 @@
         midje.sweet)
   (:require (jiksnu [abdera :as abdera])
             (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
                           [user :as model.user])
             (jiksnu.sections activity-sections))
   (:import jiksnu.model.Activity
+           jiksnu.model.Domain
            jiksnu.model.User))
 
 
@@ -25,7 +27,8 @@
        (set-recipients activity) => activity?)))
 
  (fact "entry->activity"
-   (let [user (model.user/create (factory User))]
+   (let [domain (model.domain/create (factory Domain))
+         user (model.user/create (factory User {:domain (:_id domain)}))]
      
      ;; TODO: Load elements from resources
      (fact "should return an Activity"

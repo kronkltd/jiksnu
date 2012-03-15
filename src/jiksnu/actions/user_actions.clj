@@ -33,10 +33,18 @@
            tigase.xml.Element
            tigase.xmpp.JID))
 
+(defn get-domain-name
+  "Takes a string representing a uri and returns the domain"
+  [id]
+  (let [uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (second (model.user/split-uri id))
+      (.getHost uri))))
+
 (defn get-domain
   [^User user]
   (if-let [domain-id (or (:domain user)
-                         (.getHost (URI. (:id user))))]
+                         (get-domain-name (:id user)))]
     (actions.domain/find-or-create domain-id)))
 
 (defaction add-link*
@@ -58,6 +66,7 @@
   (let [user (merge {:discovered false
                      :local false
                      :updated (sugar/date)}
+                    (when-not (:id options) {:id (model.user/get-uri options)})
                     options)
         ;; This has the side effect of ensuring that the domain is
         ;; created. This should probably be explicitly done elsewhere.
@@ -79,8 +88,7 @@
 (defaction index
   [options]
   (model.user/fetch-all {} :sort [(sugar/asc :username)]
-                        :limit 20
-                        ))
+                        :limit 20))
 
 (defn local-index
   []
@@ -163,7 +171,7 @@
           links (-> person
                     (.getExtensions (QName. namespace/atom "link"))
                     (->> (map abdera/parse-link)))
-          params (merge {:domain (.getHost id)}
+          params (merge {:domain (get-domain-name (str id))}
                         (when uri {:uri uri})
                         (when username {:username username})
                         (when note {:bio note})

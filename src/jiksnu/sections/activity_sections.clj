@@ -477,7 +477,8 @@
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
-  (let [entry (abdera/new-entry)]
+  (let [entry (abdera/new-entry)
+        user (get-author activity)]
     (doto entry
       (.setId (or (:id activity) (str (:_id activity))))
       (.setPublished (:published activity))
@@ -485,7 +486,7 @@
       (.setTitle (or (and (not= (:title activity) "")
                           (:title activity))
                      (:content activity)))
-      #_(actions.activity/add-author activity)
+      (.addAuthor (show-section user))
       (.addLink (full-uri activity) "alternate")
       (.setContentAsHtml (:content activity))
       (.addSimpleExtension
