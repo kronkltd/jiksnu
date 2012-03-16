@@ -3,7 +3,7 @@
                [core :only [with-context]]
                [debug :only [spy]])
         ciste.sections.default
-        (clj-factory [core :only [factory]])
+        (clj-factory [core :only [factory fseq]])
         jiksnu.actions.activity-actions
         (jiksnu test-helper
                 [model :only [activity?]]
@@ -27,9 +27,14 @@
        (set-recipients activity) => activity?)))
 
  (fact "entry->activity"
-   (let [domain (model.domain/create (factory Domain))
-         user (model.user/create (factory User {:domain (:_id domain)}))]
-     
+   (let [domain-name (fseq :domain)
+         domain (model.domain/create (factory Domain
+                                              {:discovered true
+                                               :links [{:rel "lrdd"
+                                                        :template (str "http://" domain-name "/lrdd?uri={uri}")}]
+                                               :_id domain-name}))
+         user (model.user/create (factory User {:domain domain-name}))]
+
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
        (with-context [:http :atom]
@@ -42,7 +47,8 @@
                entry (first (abdera/get-entries feed))]
            (entry->activity entry) => activity?
            #_(provided
-               (.getId entry) => "1"))))))
+               (.getId entry) => "1"))))
+     ))
 
  (fact "#'create"
    (fact "when the user is logged in"
