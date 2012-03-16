@@ -50,7 +50,8 @@
   (let [data (:data envelope)]
     (String. (Base64/decodeBase64 data) "UTF-8")))
 
-(defn extract-activity
+(defn ^Activity extract-activity
+  "decode the data of the envelope and return the activity"
   [envelope]
   (-?> envelope
        decode-envelope

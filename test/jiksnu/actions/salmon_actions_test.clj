@@ -38,16 +38,16 @@
 
 (def test-atom
   "<?xml version='1.0' encoding='UTF-8'?>
-    <entry xmlns='http://www.w3.org/2005/Atom'>
-    <id>tag:example.com,2009:cmt-0.44775718</id>
-      <author><name>test@example.com</name><uri>acct:test@example.com</uri>
-      </author>
-      <content>Salmon swim upstream!</content>
-      <title>Salmon swim upstream!</title>
-      <updated>2009-12-18T20:04:03Z</updated>
-    </entry>")
-
-
+   <entry xmlns='http://www.w3.org/2005/Atom'>
+     <id>tag:example.com,2009:cmt-0.44775718</id>
+     <author>
+       <name>test@example.com</name>
+       <uri>acct:test@example.com</uri>
+     </author>
+     <content>Salmon swim upstream!</content>
+     <title>Salmon swim upstream!</title>
+     <updated>2009-12-18T20:04:03Z</updated>
+   </entry>")
 
 (defn valid-envelope-stream
   []
@@ -112,7 +112,7 @@
  (fact "#'extract-activity"
    (fact "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
-       (extract-activity envelope)) => model/activity?))
+       (extract-activity (spy envelope))) => model/activity?))
 
  (fact "#'stream->envelope"
    (fact "should return an envelope"
