@@ -59,9 +59,6 @@
                 (throw (RuntimeException. "Could not get user meta url"))))
             (throw (RuntimeException. "Could not determine domain name")))))))
 
-
-
-
 (defn get-domain
   [^User user]
   (if-let [domain-id (or (:domain user)
