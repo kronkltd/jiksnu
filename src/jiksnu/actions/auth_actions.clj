@@ -5,9 +5,12 @@
                [model :only [implement]]))
   (:require (clojure.tools [logging :as log])
             (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.model [user :as model.user]))
+            (jiksnu.model [authentication-mechanism :as model.authentication-mechanism]
+                          [user :as model.user]))
   (:import javax.security.auth.login.AccountNotFoundException
-           javax.security.auth.login.LoginException))
+           javax.security.auth.login.LoginException
+           org.mindrot.jbcrypt.BCrypt
+           ))
 
 (defaction guest-login
   [webid]
@@ -47,6 +50,14 @@
   (implement
       ;; Create a new authentication mechanism with the type password
       ;; that has the crypted password
+      (let [salt (BCrypt/gensalt)]
+        (model.authentication-mechanism/create
+         {:type "password"
+          :value (BCrypt/hashpw password salt)
+          :user (:_id user)
+         }
+        ))
+
       )
   )
 

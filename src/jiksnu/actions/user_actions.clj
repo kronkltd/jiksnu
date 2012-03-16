@@ -138,14 +138,16 @@
   ([user params]
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
-         (or (model.user/fetch-by-remote-id id)
-             (create (merge user
-                            {:domain (:_id domain)}
-                            (if-let [username (or (:username user)
-                                                  (:username params))]
-                              nil
-                              {:username (get-username id)})
-                            params)))
+         (if (:discovered (spy domain))
+           (or (model.user/fetch-by-remote-id id)
+               (create (merge user
+                              {:domain (:_id domain)}
+                              (if-let [username (or (:username user)
+                                                    (:username params))]
+                                nil
+                                {:username (get-username id)})
+                              params)))
+           (throw (RuntimeException. "domain has not been disovered")))
          (throw (RuntimeException. "could not determine domain")))
        (throw (RuntimeException. "User does not have an id")))))
 

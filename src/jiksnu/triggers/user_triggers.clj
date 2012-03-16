@@ -70,6 +70,6 @@
 
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
-(add-trigger! #'actions.user/discover      #'discover-trigger)
+;; (add-trigger! #'actions.user/discover      #'discover-trigger)
 (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
 (add-trigger! #'actions.user/register      #'register-trigger)

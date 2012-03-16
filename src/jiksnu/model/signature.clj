@@ -10,6 +10,7 @@
            java.security.KeyPair
            java.security.KeyPairGenerator
            java.security.PrivateKey
+           java.security.KeyStore
            java.security.PublicKey
            java.security.Signature
            java.security.spec.RSAPrivateKeySpec
@@ -26,6 +27,10 @@
 (.initialize keypair-generator 1024)
 
 ;; Crypto functions
+
+(defn get-keystore
+  ([] (get-keystore "JKS"))
+  ([type] (KeyStore/getInstance type)))
 
 (defn ^KeyPair generate-key
   "Generates a new RSA keypair"
