@@ -149,9 +149,7 @@ serialization"
                      model/strip-namespaces)
            user (-> entry
                     (abdera/get-author feed)
-                    spy
                     actions.user/person->user
-                    spy
                     actions.user/find-or-create-by-remote-id)
            extension-maps (->> (.getExtensions entry)
                                (map parse-extension-element)
