@@ -138,7 +138,7 @@
   ([user params]
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
-         (if (:discovered (spy domain))
+         (if (:discovered domain)
            (or (model.user/fetch-by-remote-id id)
                (create (merge user
                               {:domain (:_id domain)}

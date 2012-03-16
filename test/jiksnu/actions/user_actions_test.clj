@@ -96,18 +96,22 @@
          template (str "http://" domain-name "/xrd?uri={uri}")]
      
      (fact "when given a http uri"
-       (model/drop-all!)
-       (let [domain (model.domain/create (factory Domain
-                                                  {:links [{:rel "lrdd" :template template}]}))
-             uri (str "http://" domain-name "/user/1")]
-         (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
-       (provided
-         (get-username uri) => username))
+       (fact "when the domain is discovered"
+         (model/drop-all!)
+         (let [domain (model.domain/create (factory Domain
+                                                    {:_id domain-name
+                                                     :links [{:rel "lrdd" :template template}]
+                                                     :discovered true}))
+               uri (str "http://" domain-name "/user/1")]
+           (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
+         (provided
+           (get-username uri) => username)))
      
      (fact "when given an acct uri"
        (model/drop-all!)
        (let [domain (model.domain/create (factory Domain
-                                                  {:links [{:rel "lrdd" :template template}]}))
+                                                  {:links [{:rel "lrdd" :template template}]
+                                                   :discovered true}))
              uri (str "acct:" username "@" (:_id domain))
              response (find-or-create-by-remote-id {:id uri})]
          response => (partial instance? User)))

@@ -55,8 +55,8 @@
          {:type "password"
           :value (BCrypt/hashpw password salt)
           :user (:_id user)
-         }
-        ))
+          }
+         ))
 
       )
   )

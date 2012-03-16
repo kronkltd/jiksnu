@@ -101,7 +101,7 @@
        ;; make-activity
        ((fn [a]
           (log/debugf "Creating activity: %s" (pr-str a))
-           a))
+          a))
        (entity/create Activity)))
 
 (defn get-comments

@@ -49,7 +49,7 @@
     ;; TODO: This couldn't be any more wrong!
     ;; it does the right thing, but it feels wrong.
     (actions.user/find-or-create-by-remote-id
-          mentioned-user-params mentioned-user-params)))
+     mentioned-user-params mentioned-user-params)))
 
 (defn create-trigger
   [action params activity]
@@ -71,7 +71,7 @@
         (doseq [parent activities]
           (model.activity/add-comment parent activity)
 
-            )
+          )
         )
       )
     (doseq [user (->> user
