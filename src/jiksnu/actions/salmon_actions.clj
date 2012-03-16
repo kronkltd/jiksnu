@@ -15,6 +15,7 @@
                           [signature :as model.signature]))
   (:import java.security.PublicKey
            java.net.URI
+           jiksnu.model.Activity
            jiksnu.model.User
            org.apache.commons.codec.binary.Base64))
 
