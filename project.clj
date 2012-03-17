@@ -14,7 +14,7 @@
                  [jayq "0.1.0-SNAPSHOT"]
                  [karras "0.9.0"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/plaza "0.0.6-SNAPSHOT"]
+                 [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"
                   :exclusions [org.eclipse.jetty:jetty-server]]
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
@@ -68,11 +68,12 @@
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"
              ]
-  ;; :repositories {
-  ;;                "java-dot-net"        "http://download.java.net/maven/2"
-  ;;                "jiksnu-internal"     "http://build.jiksnu.com/repository/internal"
-  ;;                "jiksnu-snapshots"    "http://build.jiksnu.com/repository/snapshots"
-  ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"
-  ;;                }
+  :repositories {
+                 "java-dot-net"          "http://download.java.net/maven/2"
+                 ;; "jiksnu-internal"       "http://build.jiksnu.com/repository/internal"
+                 ;; "jiksnu-snapshots"      "http://build.jiksnu.com/repository/snapshots"
+                 ;; "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
+                 "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"
+                 }
   :warn-on-reflection false
   )

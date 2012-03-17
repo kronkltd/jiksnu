@@ -6,7 +6,11 @@
         (clj-stacktrace [repl :only [pst+]])
         (clojure.core [incubator :only [-?> -?>>]])
         (jiksnu model
-                [session :only [current-user]]))
+                [session :only [current-user]])
+        plaza.rdf.core
+        plaza.rdf.sparql
+        plaza.rdf.vocabularies.foaf
+        )
   (:require (aleph [http :as http])
             (ciste [model :as cm])
             (clj-tigase [core :as tigase]
@@ -24,7 +28,9 @@
                           [webfinger :as model.webfinger])
             (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
-                    [sugar :as sugar]))
+                    [sugar :as sugar])
+            (plaza.rdf [core :as rdf])
+            )
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.User
@@ -237,6 +243,41 @@
       (-> user
           (merge (when avatar-url {:avatar-url avatar-url}))
           update))))
+
+(defn foaf-query
+  []
+  (defquery
+    (query-set-vars [:?user :?nick :?name :?bio :?img-url])
+    (query-set-type :select)
+    (query-set-pattern
+     (make-pattern
+      [
+       [:?uri    rdf/rdf:type                     :foaf/Document]
+       [:?uri    :foaf:PrimaryTopic    :?user]
+       (optional [:?user :foaf/nick            :?nick])
+       (optional [:?user :foaf/name            :?name])
+       (optional [:?user :dcterms/descriptions :?bio])
+       (optional [:?user :foaf/depiction :?img-url])
+       
+       ]
+      
+      )
+     )
+    
+    
+                )
+  )
+
+
+(defaction discover-user-rdf
+  [user]
+  (let [uri (:foaf-uri user)
+        model (document-to-model uri :xml)
+        query (foaf-query)]
+    (model-query-triples (spy model) (spy query))
+
+    )
+  )
 
 
 (defaction discover-user-xmpp
