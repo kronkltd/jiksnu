@@ -36,7 +36,7 @@
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
   [id]
-  (let [uri (URI. id)]
+  (let [uri (URI. (spy id))]
     (if (= "acct" (.getScheme uri))
       (second (model.user/split-uri id))
       (.getHost uri))))
@@ -134,7 +134,7 @@
   ([user] (find-or-create-by-remote-id user {}))
   ([user params]
      (if-let [id (:id user)]
-       (if-let [domain (get-domain user)]
+       (if-let [domain (spy (get-domain user))]
          (if (:discovered domain)
            (or (model.user/fetch-by-remote-id id)
                (create (merge user
@@ -185,30 +185,37 @@
 (defn person->user
   [^Person person]
   (if person
-    (let [id (.getUri person)
+    (let [id (str (.getUri person))
+          domain-name (get-domain-name id)
+          domain (actions.domain/find-or-create domain-name)
           email (.getEmail person)
           name (or (.getSimpleExtension person namespace/poco
                                         "displayName" "poco" )
                    (.getName person))
-          username (.getSimpleExtension person namespace/poco
-                                        "preferredUsername" "poco")
+          username (or (.getSimpleExtension person namespace/poco
+                                            "preferredUsername" "poco")
+                       (get-username id)
+                       )
           note (.getSimpleExtension person (QName. namespace/poco "note"))
           uri (str (.getUri person))
           links (-> person
                     (.getExtensions (QName. namespace/atom "link"))
                     (->> (map abdera/parse-link)))
-          params (merge {:domain (get-domain-name (str id))}
+          params (merge {:domain domain-name}
                         (when uri {:uri uri})
                         (when username {:username username})
                         (when note {:bio note})
                         (when email {:email email})
                         (when name {:display-name name}))]
-      (let [user (-> {:id (str id)}
-                     #_(find-or-create-by-remote-id params)
-                     (merge params))]
-        (doseq [link links]
-          (add-link user link))
-        (entity/make User user)))))
+      (if username
+        (let [user (-> {:id id}
+                       #_(find-or-create-by-remote-id params)
+                       (merge params))]
+          (doseq [link links]
+            (add-link user link))
+          (entity/make User user))
+        (throw (RuntimeException. "could not determine user"))
+        ))))
 
 
 ;; TODO: Collect all changes and update the user once.

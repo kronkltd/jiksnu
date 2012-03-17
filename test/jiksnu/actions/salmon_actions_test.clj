@@ -109,7 +109,7 @@
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (decode-envelope envelope) => string?)))
 
- (fact "#'extract-activity"
+ (future-fact "#'extract-activity"
    (fact "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (extract-activity (spy envelope))) => model/activity?))

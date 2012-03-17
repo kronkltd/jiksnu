@@ -51,22 +51,21 @@
    [:button.btn.subscribe-button {:type "submit" :title "Subscribe"}
     [:i.icon-eye-open] [:span.button-text "Subscribe"]]])
 
-;; TODO: Move this to user
-(defn add-author
-  "Adds the supplied user to the atom entry"
-  [^Entry entry ^User user]
-  ;; TODO: Do we need to re-fetch here?
-  (if-let [user (model.user/fetch-by-id (:_id user))]
-    (let [name (:name user)
-          jid  (model.user/get-uri user false)
-          actor (.addExtension entry ns/as "actor" "activity")]
-      (doto actor
-        (.addSimpleExtension ns/atom "name" "" name)
-        (.addSimpleExtension ns/atom "email" "" jid)
-        (.addSimpleExtension ns/atom "uri" "" jid))
-      (doto entry
-        (.addExtension actor)
-        (.addExtension (show-section user))))))
+;; (defn add-author
+;;   "Adds the supplied user to the atom entry"
+;;   [^Entry entry ^User user]
+;;   ;; TODO: Do we need to re-fetch here?
+;;   (if-let [user (model.user/fetch-by-id (:_id user))]
+;;     (let [name (:name user)
+;;           jid  (model.user/get-uri user false)
+;;           actor (.addExtension entry ns/as "actor" "activity")]
+;;       (doto actor
+;;         (.addSimpleExtension ns/atom "name" "" name)
+;;         (.addSimpleExtension ns/atom "email" "" jid)
+;;         (.addSimpleExtension ns/atom "uri" "" jid))
+;;       (doto entry
+;;         (.addExtension actor)
+;;         (.addExtension (show-section user))))))
 
 (defn display-avatar-img
   [user size]
@@ -181,31 +180,42 @@
 (defn user->person
   [user]
   (let [author-uri (model.user/get-uri user)]
-    (doto (.newAuthor abdera/*abdera-factory*)
-      (.addSimpleExtension ns/as "object-type" "activity" ns/person)
-      (.addSimpleExtension ns/atom "id" "" author-uri)
-      (.setName (or (:name user)
-                    (:display-name user)
-                    (str (:first-name user) " " (:last-name user))))
-      (.addSimpleExtension ns/atom "email" ""
-                           (or (:email user) (model.user/get-uri user)))
-      (.addExtension (doto (.newLink abdera/*abdera-factory*)
-                       (.setHref (:avatar-url user))
-                       (.setRel "avatar")
-                       (.setMimeType "image/jpeg")))
-      (.addSimpleExtension ns/atom "uri" "" author-uri)
-      (.addSimpleExtension ns/poco "preferredUsername" "poco" (:username user))
-      (.addSimpleExtension ns/poco "displayName" "poco" (title user))
-      (.addExtension (doto (.newLink abdera/*abdera-factory*)
-                       (.setHref (full-uri user))
-                       (.setRel "alternate")
-                       (.setMimeType "text/html")))
-      (-> (.addExtension ns/status "profile_info" "statusnet")
-          (.setAttributeValue "local_id" (str (:_id user))))
-      (-> (.addExtension ns/poco "urls" "poco")
-          (doto (.addSimpleExtension ns/poco "type" "poco" "homepage")
-            (.addSimpleExtension ns/poco "value" "poco" (full-uri user))
-            (.addSimpleExtension ns/poco "primary" "poco" "true"))))))
+    (let [person (.newAuthor abdera/*abdera-factory*)]
+      (doto person
+       (.addSimpleExtension ns/as "object-type" "activity" ns/person)
+       (.addSimpleExtension ns/atom "id" "" (or (:id user)
+                                                author-uri))
+       (.setName (or (:name user)
+                     (:display-name user)
+                     (str (:first-name user) " " (:last-name user))))
+      
+       (.addExtension (doto (.newLink abdera/*abdera-factory*)
+                        (.setHref (:avatar-url user))
+                        (.setRel "avatar")
+                        (.setMimeType "image/jpeg")))
+       
+       (.addSimpleExtension ns/atom "uri" "" author-uri)
+
+       (.addSimpleExtension ns/poco "preferredUsername" "poco" (:username user))
+       (.addSimpleExtension ns/poco "displayName" "poco" (title user))
+       (.addExtension (doto (.newLink abdera/*abdera-factory*)
+                        (.setHref (full-uri user))
+                        (.setRel "alternate")
+                        (.setMimeType "text/html")))
+       (-> (.addExtension ns/status "profile_info" "statusnet")
+           (.setAttributeValue "local_id" (str (:_id user))))
+       (-> (.addExtension ns/poco "urls" "poco")
+           (doto (.addSimpleExtension ns/poco "type" "poco" "homepage")
+             (.addSimpleExtension ns/poco "value" "poco" (full-uri user))
+             (.addSimpleExtension ns/poco "primary" "poco" "true"))))
+
+      (when (:email user)
+        (.addSimpleExtension person ns/atom "email" "" (:email user)))
+      person
+      )
+    
+    
+    ))
 
 (defn user-actions
   [user]

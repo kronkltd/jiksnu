@@ -23,7 +23,7 @@
 
 (defn fetch-updates-http
   [user]
-  #_(let [uri (helpers.user/feed-link-uri user)]
+  (let [uri (helpers.user/feed-link-uri user)]
       (actions.activity/fetch-remote-feed uri)))
 
 (defn fetch-updates-xmpp
