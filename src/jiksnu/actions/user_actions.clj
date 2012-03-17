@@ -42,7 +42,7 @@
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
   [id]
-  (let [uri (URI. (spy id))]
+  (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
       (second (model.user/split-uri id))
       (.getHost uri))))
@@ -140,7 +140,7 @@
   ([user] (find-or-create-by-remote-id user {}))
   ([user params]
      (if-let [id (:id user)]
-       (if-let [domain (spy (get-domain user))]
+       (if-let [domain (get-domain user)]
          (if (:discovered domain)
            (or (model.user/fetch-by-remote-id id)
                (create (merge user
@@ -257,16 +257,8 @@
        (optional [:?user :foaf/nick            :?nick])
        (optional [:?user :foaf/name            :?name])
        (optional [:?user :dcterms/descriptions :?bio])
-       (optional [:?user :foaf/depiction :?img-url])
-       
-       ]
-      
-      )
-     )
-    
-    
-                )
-  )
+       (optional [:?user :foaf/depiction       :?img-url])
+       ]))))
 
 
 (defaction discover-user-rdf
@@ -274,11 +266,7 @@
   (let [uri (:foaf-uri user)
         model (document-to-model uri :xml)
         query (foaf-query)]
-    (model-query-triples (spy model) (spy query))
-
-    )
-  )
-
+    (model-query-triples model query)))
 
 (defaction discover-user-xmpp
   [user]

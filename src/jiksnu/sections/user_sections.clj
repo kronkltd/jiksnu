@@ -78,7 +78,7 @@
 (defn display-avatar
   ([user] (display-avatar user 48))
   ([user size]
-     [:a.url {:href (str "/users/" (:_id user))
+     [:a.url {:href (full-uri user)
               :title (:name user)}
       (display-avatar-img user size)]))
 

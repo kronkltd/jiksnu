@@ -61,6 +61,14 @@
             (.addExtension rule-element ns/osw "acl-subject" "")]
         (.setAttributeValue subject-element "type" ns/everyone)))))
 
+(defn show-comment
+  [activity]
+  (let [author (get-author activity)]
+    [:div
+     (sections.user/display-avatar author)
+     (link-to author)
+     (:title activity)]))
+
 (defn comment-link-item
   [entry activity]
   (if (:comments activity)
@@ -276,9 +284,13 @@
 
 (defn comments-section
   [activity]
-  (if-let [comments (actions.comment/fetch-comments activity)]
+  [:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
+  (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
     [:section.comments
-     [:h4.hidden "Comments"]]))
+     [:h4 "Comments"]
+     [:ul.unstyled.comments
+      (map (fn [comment] [:li (show-comment comment)])
+           comments)]]))
 
 (defn poll-form
   [activity]

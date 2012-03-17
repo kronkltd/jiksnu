@@ -5,6 +5,7 @@
         ciste.sections.default
         (clojure.core [incubator :only [-?> -?>>]]))
   (:require (aleph [http :as http])
+            (ciste [model :as cm])
             (clj-tigase [core :as tigase]
                         [element :as element])
             (clojure [string :as string])
@@ -29,6 +30,8 @@
 
 (def ^QName activity-object-type (QName. namespace/as "object-type"))
 
+;; Since every activity requires an author, might want to throw an
+;; exception here.
 (defn get-author
   "Fetch the author of the activity"
   [activity]
@@ -48,6 +51,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [element]
   (let [coords (.getText element)
         [lat long] (string/split coords #" ")]
+    ;; TODO: these should have a common geo property
     {:lat lat :long long}))
 
 (defn parse-notice-info
@@ -103,6 +107,7 @@ this is for OSW
 
       nil)))
 
+;; TODO: this type of job should be done via triggers
 (defn set-recipients
   "attempt to resolve the recipients"
   [activity]
@@ -125,7 +130,10 @@ this is for OSW
   (let [actor-id (session/current-user-id)
         author (:author activity)]
     (if (or (session/is-admin?) (= actor-id author))
-      (model.activity/delete activity))))
+      (model.activity/delete activity)
+      ;; TODO: better exception type
+      (throw (RuntimeException. "You are not authorized to delete that activity"))
+      )))
 
 (defaction edit-page
   "Edit page for an activity"
@@ -216,6 +224,7 @@ serialization"
     (doseq [activity (get-activities feed)]
       (create activity))))
 
+;; TODO: rename to publish
 (defaction post
   "Post a new activity"
   [activity]
@@ -226,6 +235,7 @@ serialization"
     (-> activity :pictures model.activity/parse-pictures)
     (create prepared-post)))
 
+;; TODO: use stream update
 (defaction remote-create
   "Create all the activities. (multi-create)"
   [activities]
@@ -249,6 +259,14 @@ serialization"
                 (when (= (get activity :public) "public")
                   {:public true})))]
     (model.activity/update (dissoc opts :picture))))
+
+(defaction find-or-create-by-remote-id
+  [activity]
+  (if-let [activity (model.activity/fetch-by-remote-id (:id activity))]
+    activity
+    (if-let [atom-link (model/extract-atom-link (:id activity))]
+      (fetch-remote-feed atom-link)
+      (throw (RuntimeException. "could not discover atom link")))))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.activity-filters

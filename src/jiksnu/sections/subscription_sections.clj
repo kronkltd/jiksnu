@@ -13,7 +13,7 @@
 (defn show-minimal
   [user]
   [:span.vcard
-   (sections.user/display-avatar user 24)
+   (sections.user/display-avatar user 32)
    [:span.fn.n.minimal-text (:display-name user)]])
 
 

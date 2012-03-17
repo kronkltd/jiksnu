@@ -55,6 +55,10 @@
   [action params activity]
   (let [user (actions.activity/get-author activity)]
     (model.item/push user activity)
+    #_(when-let [conversation-uris (:conversation activity)]
+        (doseq [conversation-uri conversation-uris]
+          (let [atom-link (model/extract-atom-link (spy conversation-uri))]
+            (fetch-remote-feed atom-link))))
     (when-let [mentioned-uris (:mentioned-uris (spy activity))]
       (doseq [mentioned-uri mentioned-uris]
         (log/infof "parsing link: %s" mentioned-uri)
@@ -62,18 +66,16 @@
           (do
             (spy mentioned-user)
             ;; set user id
-            )
-          #_(parse-unknown-mention mentioned-uri))))
+            ))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (when (seq (:irts activity))
-      (let [activities (map model.activity/fetch-by-remote-id (:irts activity))]
-        (doseq [parent activities]
-          (model.activity/add-comment parent activity)
-
-          )
-        )
-      )
+      (try
+        (let [activities (map actions.activity/find-or-create-by-remote-id (:irts activity))]
+          (doseq [parent activities]
+            (model.activity/add-comment parent activity)))
+        (catch RuntimeException ex
+          (log/error ex))))
     (doseq [user (->> user
                       model.subscription/subscribers
                       (map (comp model.user/fetch-by-id :from))

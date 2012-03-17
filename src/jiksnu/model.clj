@@ -198,18 +198,16 @@
   [^String id]
   (ObjectId. id))
 
+;; this could be more generic
 (defn extract-atom-link
   "Find the atom link in the page identified by url"
   [url]
-  (-> url
-      cm/fetch-resource
-      StringReader.
-      enlive/html-resource
-      (enlive/select [:link])
-      (->> (filter #(= "alternate" (:rel (:attrs %))))
-           (filter #(= "application/atom+xml" (:type (:attrs %))))
-           (map #(-> % :attrs :href)))
-      first))
+  (->> url
+       cm/get-links
+       (filter #(= "alternate" (:rel (:attrs %))))
+       (filter #(= "application/atom+xml" (:type (:attrs %))))
+       (map #(-> % :attrs :href))
+       first))
 
 ;; Database functions
 
