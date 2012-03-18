@@ -57,28 +57,28 @@
     (model.item/push user activity)
     #_(when-let [conversation-uris (:conversation activity)]
         (doseq [conversation-uri conversation-uris]
-          (let [atom-link (model/extract-atom-link (spy conversation-uri))]
+          (let [atom-link (model/extract-atom-link conversation-uri)]
             (fetch-remote-feed atom-link))))
-    (when-let [mentioned-uris (:mentioned-uris (spy activity))]
+    (when-let [mentioned-uris (:mentioned-uris activity)]
       (doseq [mentioned-uri mentioned-uris]
         (log/infof "parsing link: %s" mentioned-uri)
         (if-let [mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})]
           (do
-            (spy mentioned-user)
-            ;; set user id
+            mentioned-user
+            
             ))))
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
     (when (seq (:irts activity))
-      (try
-        (let [activities (map actions.activity/find-or-create-by-remote-id (:irts activity))]
-          (doseq [parent activities]
-            (model.activity/add-comment parent activity)))
-        (catch RuntimeException ex
-          (log/error ex))))
+      (doseq [id (:irts activity)]
+        (try
+          (let [parent (actions.activity/find-or-create-by-remote-id id)]
+            (model.activity/add-comment parent activity))
+          (catch RuntimeException ex
+            (log/error ex)))))
     (doseq [user (->> user
                       model.subscription/subscribers
-                      (map (comp model.user/fetch-by-id :from))
+                      (map model.subscription/get-actor)
                       (filter identity))]
       (notify-activity user activity))))
 

@@ -81,7 +81,7 @@
                activity (with-user user1
                           (model.activity/create (factory Activity)))]
            (with-user user2
-             (delete activity)
+             (delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity?))))))
 
  (fact "#'show"

@@ -104,9 +104,7 @@
            (spy response) => (partial instance? User)
            (:username response) => (:username user)
            ;; (:id response) => (:id user)
-           (:domain response) => (:domain user))))
-
-     )
+           (:domain response) => (:domain user)))))
 
    (fact "when the user has an http uri"
      (fact "when the domain is not discovered"
@@ -114,13 +112,9 @@
          (model/drop-all!)
          (let [domain-name (fseq :domain)
                uri (str "http://" domain-name "/users/1")
-               person (.newAuthor abdera/*abdera-factory*)
-
-               ]
+               person (.newAuthor abdera/*abdera-factory*)]
            (doto person
-             (.setUri uri)
-             
-             )
+             (.setUri uri))
            (let [response (person->user (spy person))]
              (spy response) => (partial instance? User)
              (:username response) => "bob" #_(:username user)
@@ -129,16 +123,7 @@
          (provided
            
            
-           )
-
-
-         ))
-     )
-
-   
-
-
-   )
+           )))))
  
  (fact "#'find-or-create-by-remote-id"
    (let [username (fseq :username)
