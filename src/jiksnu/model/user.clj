@@ -156,12 +156,13 @@
 (defn update
   [^User new-user]
   (let [old-user (get-user (:username new-user) (:domain new-user))
-        merged-user (merge {:admin false :debug false}
+        merged-user (merge {:admin false}
                            old-user new-user)
         user (entity/make User merged-user)]
     (entity/update User {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
+;; TODO: move part of this to domains
 (defn user-meta-uri
   [^User user]
   (if-let [domain (get-domain user)]

@@ -341,15 +341,12 @@
                           :domain (config :domain)
                           :discovered true
                           :id (str "acct:" username "@" (config :domain))
-                          :local true
-                          ;; TODO: encrypt here
-                          :password password}
+                          :local true}
                          (merge (when email {:email email})
                                 (when display-name {:display-name display-name})
                                 (when bio {:bio bio})
                                 (when location {:location location}))
                          create)]
-            ;; asign authentication mechanism
             ;; TODO: make a trigger
             ;; (actions.auth/add-password user password)
 
@@ -363,7 +360,7 @@
   "Display the form to reqister a user"
   []
   ;; init an empty user model?
-  true)
+  (User.))
 
 ;; deprecated, nothing should hit this in the future. If anything is,
 ;; I want it drug out into the street and shot

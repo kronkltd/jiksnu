@@ -20,11 +20,14 @@
   [username password]
   ;; TODO: fix this
   (if-let [user (model.user/get-user username)]
-    ;; TODO: encrypt
-    (if (= password (:password user))
-      user
-      (do (log/error "passwords do not match")
-          (throw (LoginException. "passwords do not match"))))
+    (if-let [mechanisms (model.authentication-mechanism/fetch-all
+                      {:user (:_id user)})]
+      (if (some #(BCrypt/checkpw password (:value %))
+                (spy mechanisms))
+        user
+        (do (log/error "passwords do not match")
+            (throw (LoginException. "passwords do not match"))))
+      (throw (LoginException. "No authentication mechanisms found")))
     (do (log/error "user not found")
         (throw (AccountNotFoundException. "user not found")))))
 
