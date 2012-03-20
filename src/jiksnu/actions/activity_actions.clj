@@ -169,7 +169,7 @@ serialization"
 
            enclosures (-?> entry
                            (.getLinks "enclosure")
-                           (->> (map abdera/get-href)))
+                           (->> (map abdera/parse-link)))
            
            tags (filter (complement #{""}) (abdera/parse-tags entry))
            object-element (.getExtension entry (QName. namespace/as "object"))
@@ -189,7 +189,7 @@ serialization"
 
                        (when conversation-uris {:conversation conversation-uris})
                        (when mentioned-uris    {:mentioned-uris mentioned-uris})
-                       (when (seq enclosures)) {:enclosure enclosures}
+                       (when (seq enclosures)) {:enclosures enclosures}
 
                        (when (seq tags)        {:tags tags})
                        (when verb              {:verb verb})

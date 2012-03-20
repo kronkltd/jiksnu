@@ -17,7 +17,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id show action))
+  (-> request :params :id model.activity/fetch-by-id action))
 
 ;; (deffilter #'new :http
 ;;   [action request]

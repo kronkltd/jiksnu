@@ -561,6 +561,13 @@
       (maps-section activity)
       (tags-section activity)
       (posted-link-section activity)
+      (when (seq (:enclosures activity))
+        [:ul
+         (map
+          (fn [enclosure]
+            [:li
+             [:img {:src (:href enclosure) :alt ""} ]])
+          (:enclosures activity))])
       (when (:source activity)
         (str " from " (:source activity)))
       (when (:conversation activity)
