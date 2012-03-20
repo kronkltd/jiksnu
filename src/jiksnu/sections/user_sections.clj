@@ -367,6 +367,7 @@
    [:div.adr
     [:p.locality (:location user)]]
    [:p.note (:bio user)]
+   [:p [:a {:href (:id user)} (:id user)]]
    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
    (when (:discovered user)
      (show-section (model.signature/get-key-for-user user)))
