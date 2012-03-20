@@ -4,8 +4,9 @@
                sections)
         ciste.sections.default
         (clojure.core [incubator :only [-?>]]))
-  (:require (clojure.tools [logging :as log]) (jiksnu [model :as model]
-                    [namespace :as namespace])
+  (:require (ciste [model :as cm])
+            (clojure.tools [logging :as log]) (jiksnu [model :as model]
+                                                      [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
                           [user :as model.user]))
   (:import java.net.URI))
@@ -13,8 +14,8 @@
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
-  (when-let [doc (model/fetch-document url)]
-    (if-let [host (seq (model/query  "//*[local-name() = 'Host']" doc))]
+  (when-let [doc (cm/fetch-document url)]
+    (if-let [host (seq (cm/query  "//*[local-name() = 'Host']" doc))]
       doc)
     doc))
 
@@ -89,7 +90,7 @@
 
 (defn get-links
   [xrd]
-  (let [links (model/force-coll (model/query "//*[local-name() = 'Link']" xrd))]
+  (let [links (model/force-coll (cm/query "//*[local-name() = 'Link']" xrd))]
     (map
      (fn [link]
        {:rel (.getAttributeValue link "rel")

@@ -1,14 +1,13 @@
 (ns jiksnu.features-helper
   (:use (aleph http
                formats)
-        (ciste [debug :only [spy]])
+        (ciste [debug :only [spy]]
+               [model :only [implement]])
         ciste.sections.default
         (clj-factory [core :only [factory]])
         [clojure.core.incubator :only [-?>]]
         jiksnu.features-helper
-        (jiksnu http
-                [model :only [implement]]
-                )
+        jiksnu.http
         midje.sweet
         ring.mock.request)
   (:require (ciste [config :as c]
@@ -291,7 +290,7 @@
   (condp = page-name
     "show" (let [path (str "/main/domains/" (:_id @that-domain))]
              (fetch-page-browser :get path))
-    (model/implement)
+    (implement)
     ))
 
 (defn go-to-the-page-for-user

@@ -4,7 +4,8 @@
         (jiksnu [test-helper :only [test-environment-fixture]])
         jiksnu.actions.domain-actions
         midje.sweet)
-  (:require (clj-tigase [packet :as packet])
+  (:require (ciste [model :as cm])
+            (clj-tigase [packet :as packet])
             (jiksnu [model :as model])
             (jiksnu.model [domain :as model.domain]
                           [webfinger :as model.webfinger]))
@@ -48,7 +49,7 @@
      (discover-webfinger domain) => (contains {:_id (:_id domain)} )
      (provided
        (model.webfinger/fetch-host-meta anything) =>
-       (model/string->document "<XRD/>"))))
+       (cm/string->document "<XRD/>"))))
 
  (fact "#'get-user-meta-url"
    (fact "when the domain doesn't exist"

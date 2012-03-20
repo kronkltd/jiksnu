@@ -3,7 +3,8 @@
                [core :only [defaction]]
                [debug :only [spy]])
         (clojure.core [incubator :only [-?> -?>>]]))
-  (:require (clojure [string :as string])
+  (:require (ciste [model :as cm])
+            (clojure [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [model :as model])
@@ -59,13 +60,13 @@
 (defn stream->envelope
   "convert an input stream to an envelope"
   [input-stream]
-  (let [doc (model/stream->document input-stream)]
-    (let [data-tag (first (model/query "//*[local-name()='data']" doc))]
-      {:sig (.getValue (first (model/query "//*[local-name()='sig']" doc)))
+  (let [doc (cm/stream->document input-stream)]
+    (let [data-tag (first (cm/query "//*[local-name()='data']" doc))]
+      {:sig (.getValue (first (cm/query "//*[local-name()='sig']" doc)))
        :datatype (.getAttributeValue data-tag "type")
        :data (.getValue data-tag)
-       :alg (.getValue (first (model/query "//*[local-name()='alg']" doc)))
-       :encoding (.getValue (first (model/query "//*[local-name()='encoding']" doc)))})))
+       :alg (.getValue (first (cm/query "//*[local-name()='alg']" doc)))
+       :encoding (.getValue (first (cm/query "//*[local-name()='encoding']" doc)))})))
 
 (defaction process
   [user envelope]

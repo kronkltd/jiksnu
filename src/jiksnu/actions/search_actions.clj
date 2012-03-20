@@ -1,20 +1,19 @@
 (ns jiksnu.actions.search-actions
   (:use (ciste [config :only [config]]
                [core :only [defaction]]
-               [debug :only [spy]]
-               ))
-  (:require (jiksnu [model :as model]))
-  )
+               [debug :only [spy]]))
+  (:require (ciste [model :as cm])
+            (jiksnu [model :as model])))
 
 (defaction perform-search
   [options]
-  (model/implement
+  (cm/implement
    [options []]))
 
 (defaction os-people
   []
-  (model/implement))
+  (cm/implement))
 
 (defaction os-notice
   []
-  (model/implement))
+  (cm/implement))

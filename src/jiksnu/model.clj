@@ -6,7 +6,7 @@
         (clojure.core [incubator :only [-?>]])
         (karras [core :only [MongoMappable]]
                 [entity :only [defembedded defentity delete-all]]))
-  (:require (clj-http [client :as client])
+  (:require (ciste [model :as cm])
             (clojure [string :as string]
                      [xml :as xml]
                      [zip :as zip])
@@ -20,33 +20,16 @@
             (net.cgrand [enlive-html :as enlive])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.implementations [jena :as jena]))
-  (:import java.io.InputStream
-           java.io.FileNotFoundException
+  (:import java.io.FileNotFoundException
            java.io.PrintWriter
-           java.io.StringReader
            java.text.SimpleDateFormat
            java.util.Date
            java.net.URL
            lamina.core.channel.Channel
-           nu.xom.Builder
-           nu.xom.Document
-           nu.xom.Node
            org.bson.types.ObjectId
            org.joda.time.DateTime
-           org.xml.sax.InputSource))
-
-(defmacro implement
-  "Throws an exception saying that this function has not been implemented"
-  ([]
-     `(throw (UnsupportedOperationException. "Not implemented yet")))
-  ([& body]
-     `(do
-        (log/warn "Not implemented yet")
-        ~@body
-
-       )
-     )
-  )
+           java.io.StringReader
+           ))
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ss'Z'")
 
@@ -81,6 +64,7 @@
     (.format formatter date)))
 
 ;; TODO: I'm sure this exists somewhere else
+;; all this is really doing is assembling a uri
 (defn make-subscribe-uri
   [url options]
   (str url "?"
@@ -89,9 +73,6 @@
         (map
          (fn [[k v]] (str (name k) "=" v))
          options))))
-
-
-
 
 
 (jena/init-jena-framework)
@@ -208,61 +189,16 @@
          (into {})
          (merge {"href" href}))))
 
-
-
-
-
 (defn ^ObjectId make-id
   "Create an object id from the provided string"
   [^String id]
   (ObjectId. id))
 
-(defn string->zip
-  "parse xml string as a zipper sequence"
-  [^String xml]
-  (-> xml StringReader. InputSource.
-      xml/parse zip/xml-zip))
-
-(defn ^Document stream->document
-  "Read an input stream into a XOM document"
-  [^InputStream input-stream]
-  (.build (Builder.) input-stream))
-
-(defn ^Document string->document
-  "Read a string into a XOM document"
-  [^String xml]
-  (.build (Builder.) xml ""))
-
-(defn ^String fetch-resource
-  "Fetch the url, return the string"
-  [^String url]
-  (log/infof "fetching resource: %s" url)
-  (if-let [response (try (client/get url) (catch Exception ex))]
-    (let [{:keys [body status]} response]
-      (when (not (#{404 500} status))
-        body))))
-
-(defn ^Document fetch-document
-  "Fetch the url and return it as a XOM document"
-  [^String url]
-  (-?> url fetch-resource string->document))
-
-
-;; TODO: reverse order
-(defn query
-  "Return the sequence of nodes that match the xpath expression"
-  [^String path ^Node doc]
-  (let [nodes (.query doc path)]
-    (map
-     #(.get nodes %)
-     (range (.size nodes)))))
-
-
 (defn extract-atom-link
   "Find the atom link in the page identified by url"
   [url]
   (-> url
-      fetch-resource
+      cm/fetch-resource
       StringReader.
       enlive/html-resource
       (enlive/select [:link])
@@ -270,7 +206,6 @@
            (filter #(= "application/atom+xml" (:type (:attrs %))))
            (map #(-> % :attrs :href)))
       first))
-
 
 ;; Database functions
 

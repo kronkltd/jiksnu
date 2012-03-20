@@ -15,7 +15,8 @@
     (:display-name user) [:b.caret]]
    [:ul.dropdown-menu
     [:li
-     [:a.logout-link {:href #_"#" "/main/logout"} "Logout"]]]])
+     ;; TODO: need a better way to do this when there is no javascript
+     [:a.logout-link {:href "/main/logout?_method=POST"} "Logout"]]]])
 
 (defn login-button
   []

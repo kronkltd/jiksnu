@@ -2,7 +2,8 @@
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]]))
-  (:require (clj-tigase [core :as tigase]
+  (:require (ciste [model :as cm])
+            (clj-tigase [core :as tigase]
                         [element :as element])
             (jiksnu [model :as model]
                     [namespace :as ns])
@@ -52,7 +53,7 @@
 
 (defn fetch-comments-onesocialweb
   [activity]
-  (model/implement))
+  (cm/implement))
 
 ;; This should be a trigger
 (defaction fetch-comments-remote

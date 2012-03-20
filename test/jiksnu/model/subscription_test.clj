@@ -32,10 +32,6 @@
 
  (fact "#'subscribe"
 
-   (fact "when the user is not logged in"
-     (fact "should raise an exception"))
-
-
    (fact "when the user is logged in"
      (fact "and the subscription doesn't exist"
        (fact "should return a Subscription"

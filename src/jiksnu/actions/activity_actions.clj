@@ -86,7 +86,7 @@ this is for OSW
     (condp = (:namespace qname)
       namespace/as (condp = (:name qname)
                      "actor" nil
-                     "object" (abdera/parse-object-element element)
+                     ;; "object" (abdera/parse-object-element element)
                      nil)
 
       namespace/statusnet (condp = (:name qname)
