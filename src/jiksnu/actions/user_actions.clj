@@ -15,8 +15,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
                     [namespace :as namespace])
-            (jiksnu.actions [auth-actions :as actions.auth]
-                            [domain-actions :as actions.domain])
+            (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
                           [signature :as model.signature]
@@ -263,7 +262,8 @@
                                     (when location {:location location}))
                              create)]
             ;; asign authentication mechanism
-            (actions.auth/add-password user password)
+            ;; TODO: make a trigger
+            ;; (actions.auth/add-password user password)
 
             ;; return the created user
             user)
