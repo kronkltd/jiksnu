@@ -71,6 +71,7 @@ public class ClassUtil {
         "com.cliqset",
         "com.ctc",
         "com.drew",
+        "com.esotericsoftware",
         "com.gargoylesoftware",
         "com.google",
         "com.hp",
@@ -190,6 +191,7 @@ public class ClassUtil {
         "plaza",
         "potemkin",
 
+        "slingshot",
         "sun",
 
         "rdfa",
