@@ -39,11 +39,11 @@
   [request domains]
   {:title "Domains"
    :single true
-   :body (sections.domain/index-block domains)})
+   :body (index-block domains)})
 
 (defview #'show :html
   [request domain]
-  {:body (sections.domain/show-section domain)})
+  {:body (show-section domain)})
 
 (defview #'host-meta :html
   [request xrd]

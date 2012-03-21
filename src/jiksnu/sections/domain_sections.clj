@@ -1,11 +1,12 @@
 (ns jiksnu.sections.domain-sections
   (:use (ciste [debug :only [spy]]
                [sections :only [defsection]] )
-        (ciste.sections [default :only [link-to link-to-format]])
+        ciste.sections.default
         (jiksnu [views :only [control-line]]))
+  (:require (jiksnu.sections [link-sections :as sections.link]))
   (:import jiksnu.model.Domain))
 
-(defn add-form
+(defsection add-form [Domain :html]
   []
   [:form.well {:method "post" :actions "/main/domains"}
    [:fieldset
@@ -16,7 +17,7 @@
       "Add"]]]])
 
 
-(defn delete-button
+(defsection delete-button [Domain :html]
   [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain))}
@@ -31,23 +32,23 @@
    [:button.btn.discover-button {:type "submit"}
     [:i.icon-search] [:span.button-text "Discover"]]])
 
-(defn edit-button
+(defsection edit-button [Domain :html]
   [domain]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/edit")}
    [:button.btn.edit-button {:type "submit"}
     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
-(defn show-section
+(defsection show-section [Domain :html]
   [domain]
   [:div
    [:p "Id: " [:span.domain-id (:_id domain)]]
    [:p "XMPP: " (:xmpp domain)]
    [:p "Discovered: " (:discovered domain)]
-   #_(sections.link/index-section (:links domain))
+   (sections.link/index-section (:links domain))
    (discover-button domain)])
 
-(defn index-line
+(defsection index-line [Domain :html]
   [domain]
   [:tr
    [:td
@@ -63,7 +64,7 @@
    [:td (edit-button domain)]
    [:td (delete-button domain)]])
 
-(defn index-block
+(defsection index-block [Domain :html]
   [domains]
   [:table.domains.table
    [:thead
