@@ -245,7 +245,7 @@
 (defaction find-hub
   [user]
   (implement
-   (get-domain user)))
+      (get-domain user)))
 
 (defaction register
   [{:keys [username password email display-name location bio] :as options}]
@@ -256,17 +256,17 @@
       (let [user (model.user/get-user username)]
         (if-not user
           (let [user (-> {:username username
-                              :domain (config :domain)
-                              :discovered true
-                              :id (str "acct:" username "@" (config :domain))
-                              :local true
-                              ;; TODO: encrypt here
-                              :password password}
-                             (merge (when email {:email email})
-                                    (when display-name {:display-name display-name})
-                                    (when bio {:bio bio})
-                                    (when location {:location location}))
-                             create)]
+                          :domain (config :domain)
+                          :discovered true
+                          :id (str "acct:" username "@" (config :domain))
+                          :local true
+                          ;; TODO: encrypt here
+                          :password password}
+                         (merge (when email {:email email})
+                                (when display-name {:display-name display-name})
+                                (when bio {:bio bio})
+                                (when location {:location location}))
+                         create)]
             ;; asign authentication mechanism
             ;; TODO: make a trigger
             ;; (actions.auth/add-password user password)

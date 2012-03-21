@@ -19,12 +19,12 @@
 
 (defn subscriber-line
   [subscription]
-  [:li (let [user (-> subscription :from model.user/fetch-by-id)]
+  [:li (let [user (model.subscription/get-actor subscription)]
          (show-minimal user))])
 
 (defn subscriptions-line
   [subscription]
-  [:li (let [user (-> subscription :to model.user/fetch-by-id)]
+  [:li (let [user (model.subscription/get-target subscription)]
          (show-minimal user))])
 
 (defsection delete-button [Subscription :html]
