@@ -45,8 +45,11 @@
 (defn rel-filter
   "returns all the links in the collection where the rel value matches the
    supplied value"
-  [rel links]
-  (filter #(= (:rel %) rel) links))
+  [rel links content-type]
+  (filter (fn [link]
+            (and (= (:rel link) rel)
+                 (= (:type link) content-type)))
+          links))
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and
@@ -63,8 +66,8 @@
       (get-uri user)))
 
 (defn get-link
-  [user rel]
-  (first (rel-filter rel (:links user))))
+  [user rel content-type]
+  (first (rel-filter rel (:links user) content-type)))
 
 (defn drop!
   []
@@ -162,7 +165,7 @@
 (defn user-meta-uri
   [^User user]
   (let [domain (get-domain user)]
-    (if-let [lrdd-link (get-link domain "lrdd")]
+    (if-let [lrdd-link (get-link domain "lrdd" nil)]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user))))))
 

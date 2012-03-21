@@ -43,7 +43,9 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (model.user/get-link user (:rel link))]
+  (if-let [existing-link (model.user/get-link user
+                                              (:rel link)
+                                              (:type link))]
     user
     (add-link* user link)))
 
@@ -170,7 +172,11 @@
     (let [links (model.webfinger/get-links xrd)
           new-user (assoc user :links links)
           feed (helpers.user/fetch-user-feed new-user)
-          user (-?>> feed .getAuthor person->user (merge user))
+          user (merge user
+                      (-?>
+                       (or (-?> feed .getAuthor)
+                           (-?> feed .getEntries first .getAuthor))
+                       person->user))
           avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)]
       (update-hub* user feed)
       (doseq [link links]

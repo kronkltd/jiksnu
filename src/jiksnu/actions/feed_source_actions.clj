@@ -18,7 +18,7 @@
 
 (defn find-or-create
   [search-params update-params]
-  (model.feed-source/find-or-create search-params update-params))
+  (model.feed-source/find-or-create (merge search-params update-params)))
 
 
 ;; TODO: special case local subscriptions
@@ -26,7 +26,7 @@
   [user]
   (if-let [hub-url (:hub user)]
     (let [topic (helpers.user/feed-link-uri user)]
-      (find-or-create {:topic topic :hub hub-url})
+      (find-or-create {:topic topic :hub hub-url} {})
       (let [subscribe-link
             (model/make-subscribe-uri
              hub-url
@@ -36,8 +36,7 @@
               :hub.verify "async"})]
         (http/sync-http-request
          {:method :get
-          :url subscribe-link
-          :auto-transform true})))))
+          :url subscribe-link})))))
 
 (defn remove-subscription
   [subscription])

@@ -46,6 +46,7 @@
   [:tr
    [:td]
    [:td (link-to source)]
+   [:td (:hub source)]
    [:td (:mode source)]])
 
 (defsection index-section [FeedSource :html]
@@ -55,5 +56,6 @@
     [:tr
      [:th]
      [:th "Topic"]
+     [:th "Hub"]
      [:th "Mode"]]]
    [:tbody (map index-line sources)]])

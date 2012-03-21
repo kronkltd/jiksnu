@@ -24,7 +24,7 @@
 
 (defn feed-link-uri
   [^User user]
-  (if-let [link (model.user/get-link user namespace/updates-from)]
+  (if-let [link (model.user/get-link user namespace/updates-from "application/atom+xml")]
     (:href link)))
 
 (defn fetch-user-feed

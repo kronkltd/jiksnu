@@ -96,5 +96,6 @@
        {:rel (.getAttributeValue link "rel")
         :template (.getAttributeValue link "template")
         :href (.getAttributeValue link "href")
+        :type (.getAttributeValue link "type")
         :lang (.getAttributeValue link "lang")})
      links)))
