@@ -9,7 +9,6 @@
                  [clj-stacktrace "0.2.4"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
-                 [enlive "1.0.0"]
                  [hiccup "0.3.8"]
                  [jayq "0.1.0-SNAPSHOT"]
                  [karras "0.9.0"]
