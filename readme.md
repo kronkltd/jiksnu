@@ -5,32 +5,44 @@ Casnu". This translates roughly to "is a social type of interaction"
 
 ## About Jiksnu
 
-Jiksnu is a social network in a box.
+Jiksnu is a federated social network communicating over both HTTP and
+XMPP. Currently, basic interop with Status.net servers is mostly
+working. (Salmon support is not yet complete.) In addition, many other
+standards-based applications work to some extent. The OneSocialWeb
+protocol as well as other XEP-0277 XMPP-based servers are supported,
+however, that code is out of date.
+
+Buddycloud support is pending.
 
 Jiksnu is built on top of the Ciste framework, and makes extensive use
-of it's MVC framework and view and routing helpers.
+of it's Action Routing framework and services.
 
-## Security Warnings
+## Features
 
-This is project is still very much alpha-level software. I would not
-recommend storing any important data until a full security audit can
-be performed.
+* Realtime page updates
+* XMPP notifications
+* Federated user and domain discovery
 
-For example, the passwords are still being stored in plain text and
-authorization is not checked for the various actions.
+## Thanks
+
+I would like to thank the authors of many great open-source or
+open-license software, specifications, and services. Without which,
+none of this would be possible.
 
 ## License
 
-I am reluctantly releasing this under the GPL as I'm using Tigase as
-the XMPP server component.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-## Technologies Used
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-For the HTTP component, I am using Aleph. It's written in Clojure 1.3,
-built with Maven, uses MongoDB and Redis as the datastores, and Abdera for Atom
-generation and parsing.
-
-All code was written in Emacs.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Donate
 
