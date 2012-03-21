@@ -7,4 +7,4 @@ Scenario: Home page visit
   And there is a public activity
   When I go to the "home" page
   Then I should see an activity
-  # And the response is sucsessful
+  And the response is sucsessful
