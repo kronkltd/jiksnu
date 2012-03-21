@@ -1,11 +1,6 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
   :description "distributed social network"
   :url "http://github.com/duck1123/jiksnu"
-  ;; :repositories {
-  ;;                "java-dot-net" "http://download.java.net/maven/2"
-  ;;                "jiksnu-internal" "http://build.jiksnu.com/repository/internal"
-  ;;                "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
-  ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :dependencies [
                  [aleph "0.2.1-alpha2-SNAPSHOT"]
                  [ciste "0.3.0-SNAPSHOT"]
@@ -27,7 +22,7 @@
                  [org.clojure/clojure "1.3.0"]
                  [org.clojure/core.cache "0.5.0"]
                  [org.clojure/google-closure-library "0.0-1589"]
-                 [org.clojure/tools.logging "0.1.2"]
+                 [org.clojure/tools.logging "0.2.3"]
                  [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.6.4"]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
@@ -45,7 +40,7 @@
                      [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
                      ]
   :java-source-path "src"
-  :checksum-deps false
+  ;; :checksum-deps false
   :exclusions [
                com.rabbitmq/amqp-client
                org.apache.abdera/abdera-core
@@ -60,8 +55,7 @@
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
-  :cljsbuild {:builds [{
-                        :source-path "src-cljs"
+  :cljsbuild {:builds [{:source-path "src-cljs"
                         :compiler {
                                    :output-to "resources/public/cljs/bootstrap.js"
                                    :output-dir "resources/public/cljs"
@@ -75,4 +69,9 @@
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"
              ]
+  ;; :repositories {
+  ;;                "java-dot-net" "http://download.java.net/maven/2"
+  ;;                "jiksnu-internal" "http://build.jiksnu.com/repository/internal"
+  ;;                "jiksnu-snapshots" "http://build.jiksnu.com/repository/snapshots"
+  ;;                "sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   )
