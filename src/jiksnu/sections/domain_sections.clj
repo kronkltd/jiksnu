@@ -7,7 +7,7 @@
   (:import jiksnu.model.Domain))
 
 (defsection add-form [Domain :html]
-  []
+  [domain & _]
   [:form.well {:method "post" :actions "/main/domains"}
    [:fieldset
     [:legend "Add Domain"]
@@ -18,7 +18,7 @@
 
 
 (defsection delete-button [Domain :html]
-  [domain]
+  [domain & _]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain))}
    [:input {:type "hidden" :name "_method" :value "DELETE"}]
@@ -33,14 +33,14 @@
     [:i.icon-search] [:span.button-text "Discover"]]])
 
 (defsection edit-button [Domain :html]
-  [domain]
+  [domain & _]
   [:form {:method "post"
           :action (str "/main/domains/" (:_id domain) "/edit")}
    [:button.btn.edit-button {:type "submit"}
     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defsection show-section [Domain :html]
-  [domain]
+  [domain & _]
   [:div
    [:p "Id: " [:span.domain-id (:_id domain)]]
    [:p "XMPP: " (:xmpp domain)]
@@ -49,7 +49,7 @@
    (discover-button domain)])
 
 (defsection index-line [Domain :html]
-  [domain]
+  [domain & _]
   [:tr
    [:td
     [:img {:src (str "http://" (:_id domain) "/favicon.ico")}]]
@@ -65,7 +65,7 @@
    [:td (delete-button domain)]])
 
 (defsection index-block [Domain :html]
-  [domains]
+  [domains & _]
   [:table.domains.table
    [:thead
     [:tr
