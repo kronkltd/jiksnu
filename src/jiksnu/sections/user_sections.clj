@@ -367,48 +367,49 @@
 ;;   (with-format :rdf
 ;;     (apply show-section user options)))
 
+(defn with-subject
+  [s pairs]
+  (map (fn [[p o]] [s p o]) pairs))
+
 (defsection show-section [User :rdf]
   [user & _]
   (let [{:keys [url display-name avatar-url first-name
                 last-name username name email]} user
-                mkp (model.signature/get-key-for-user user)]
+                mkp (try (model.signature/get-key-for-user user)
+                         (catch Exception ex))
+                document-uri (str (full-uri user) ".rdf")
+                user-uri (rdf/rdf-resource (str (full-uri user) "#me"))]
     (rdf/with-rdf-ns ""
-      [
-       ;; About the document
-       [(str (full-uri user) ".rdf")
-        [rdf/rdf:type                    foaf:PersonalProfileDocument
-         [foaf :title]                 (rdf/l (str display-name "'s Profile"))
-         [foaf :maker]               (rdf/rdf-resource (str (full-uri user) "#me"))
-         foaf:primaryTopic           (rdf/rdf-resource (str (full-uri user) "#me"))]]
-       
+      (concat
+       (with-subject document-uri
+         [[rdf/rdf:type                    foaf:PersonalProfileDocument]
+          [[foaf :title]                   (rdf/l (str display-name "'s Profile"))]
+          [[foaf :maker]                   user-uri]
+          [foaf:primaryTopic               user-uri]])
+       (with-subject user-uri
+         (concat [[rdf/rdf:type                    [foaf :Person]]
+                  [foaf:weblog                     (rdf/rdf-resource (full-uri user))]
+                  [[ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))]]
+                 (when mkp          [[(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))]])
+                 (when username     [[foaf:nick       (rdf/l username)]])
+                 (when name         [[foaf:name       (rdf/l name)]])
+                 (when url          [[foaf:homepage   (rdf/rdf-resource url)]])
+                 (when avatar-url   [[foaf:img        avatar-url]])
+                 (when email        [[foaf:mbox       (rdf/rdf-resource (str "mailto:" email))]])
+                 (when display-name [[[foaf :name]    (rdf/l display-name)]])
+                 (when first-name   [[foaf:givenName  (rdf/l first-name)]])
+                 (when last-name    [[foaf:familyName (rdf/l last-name)]]))
 
-       ;; About the User
-       [(rdf/rdf-resource (str (full-uri user) "#me"))
-        (concat [rdf/rdf:type                    [foaf :Person]
-                 foaf:weblog                     (rdf/rdf-resource (full-uri user))
-                 [ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))]
-                (when mkp          [(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))])
-                (when username     [foaf:nick       (rdf/l username)])
-                (when name         [foaf:name       (rdf/l name)])
-                (when url          [foaf:homepage   (rdf/rdf-resource url)])
-                (when avatar-url   [foaf:img        avatar-url])
-                (when email        [foaf:mbox       (rdf/rdf-resource (str "mailto:" email))])
-                (when display-name [[foaf :name]    (rdf/l display-name)])
-                (when first-name   [foaf:givenName  (rdf/l first-name)])
-                (when last-name    [foaf:familyName (rdf/l last-name)]))]
 
+         )
        (when mkp (show-section mkp))
-
-       ;; About the User's Account
-       [(rdf/rdf-resource (model.user/get-uri user))
-        [rdf/rdf:type                [ns/sioc "UserAccount"]
-         foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))
-         foaf:accountName            (rdf/l (:username user))
-         [foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))
-         [ns/sioc "account_of"]         (rdf/rdf-resource
-                                         (str (full-uri user) "#me"))]]
-
-       ])))
+       (with-subject (rdf/rdf-resource (model.user/get-uri user))
+         [[rdf/rdf:type                [ns/sioc "UserAccount"]]
+          [foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))]
+          [foaf:accountName            (rdf/l (:username user))]
+          [[foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))]
+          [[ns/sioc "account_of"]         (rdf/rdf-resource
+                                           (str (full-uri user) "#me"))]])))))
 
 (defsection show-section [User :xmpp]
   [^User user & options]

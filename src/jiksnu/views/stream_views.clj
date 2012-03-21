@@ -239,7 +239,9 @@
 
 (defview #'user-timeline :n3
   [request [user activities]]
-  {:body (with-format :rdf (show-section user))
+  {:body (with-format :rdf
+           (concat (show-section user)
+                   (index-section activities)))
    :template false})
 
 

@@ -42,8 +42,8 @@
  (fact "#'rel-filter"
    (let [links [{:rel "alternate"}
                 {:rel "contains"}]]
-     (rel-filter "alternate" links) => [{:rel "alternate"}]
-     (rel-filter "foo" links) => []))
+     (rel-filter "alternate" links nil) => [{:rel "alternate"}]
+     (rel-filter "foo" links nil) => []))
 
  (fact "split-uri"
    (split-uri "bob@example.com") => ["bob" "example.com"]
@@ -55,8 +55,8 @@
 
  (fact "get-link"
    (let [user (factory User {:links [{:rel "foo" :href "bar"}]})]
-     (get-link user "foo") => (contains {:href "bar"})
-     (get-link user "baz") => nil))
+     (get-link user "foo" nil) => (contains {:href "bar"})
+     (get-link user "baz" nil) => nil))
 
  ;; TODO: This is a better test for actions
  (fact "#'fetch-all"
