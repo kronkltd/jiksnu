@@ -1,10 +1,12 @@
 (ns jiksnu.views.domain-views
   (:use (ciste [debug :only [spy]]
                [views :only [defview]])
+        ciste.sections.default
         jiksnu.actions.domain-actions)
   (:require (hiccup [core :as h])
             (jiksnu [namespace :as ns])
-            (jiksnu.model [domain :as model.domain])
+            (jiksnu.model [domain :as model.domain]
+                          [user :as model.user])
             (jiksnu.sections [domain-sections :as sections.domain]))
   (:import jiksnu.model.Domain))
 
@@ -43,7 +45,11 @@
 
 (defview #'show :html
   [request domain]
-  {:body (show-section domain)})
+  {:title (:_id domain)
+   :single true
+   :body
+   (list (show-section domain)
+         (index-section (model.user/fetch-all {:domain (:_id domain)})))})
 
 (defview #'host-meta :html
   [request xrd]
