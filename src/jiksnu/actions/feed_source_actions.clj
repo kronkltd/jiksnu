@@ -4,6 +4,7 @@
                [debug :only [spy]])
         (karras [entity :only [make]]))
   (:require (aleph [http :as http])
+            (clj-http [client :as client])
             (clojure [string :as string])
             (jiksnu [model :as model])
             (jiksnu.helpers [user-helpers :as helpers.user])
@@ -27,16 +28,14 @@
   (if-let [hub-url (:hub user)]
     (let [topic (helpers.user/feed-link-uri user)]
       (find-or-create {:topic topic :hub hub-url} {})
-      (let [subscribe-link
-            (model/make-subscribe-uri
-             hub-url
-             {:hub.callback (str "http://" (config :domain) "/main/push/callback")
-              :hub.mode "subscribe"
-              :hub.topic topic
-              :hub.verify "async"})]
-        (http/sync-http-request
-         {:method :get
-          :url subscribe-link})))))
+      (client/post
+       hub-url
+       {:throw-exceptions false
+        :query-params
+        {"hub.callback" (str "http://" (config :domain) "/main/push/callback")
+         "hub.mode" "subscribe"
+         "hub.topic" topic
+         "hub.verify" "async"}}))))
 
 (defn remove-subscription
   [subscription])
