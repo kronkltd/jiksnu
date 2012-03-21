@@ -12,12 +12,9 @@
   (model.subscription/index))
 
 (definitializer
-  (try
-    (doseq [namespace ['jiksnu.filters.admin.subscription-filters
-                       ;; 'jiksnu.helpers.admin.subscription-helpers
-                       ;; 'jiksnu.sections.admin.subscription-sections
-                       ;; 'jiksnu.triggers.admin.subscription-triggers
-                       'jiksnu.views.admin.subscription-views]]
-      (require namespace))
-    (catch Exception ex
-      (log/error ex))))
+  (doseq [namespace ['jiksnu.filters.admin.subscription-filters
+                     ;; 'jiksnu.helpers.admin.subscription-helpers
+                     ;; 'jiksnu.sections.admin.subscription-sections
+                     ;; 'jiksnu.triggers.admin.subscription-triggers
+                     'jiksnu.views.admin.subscription-views]]
+    (require namespace)))

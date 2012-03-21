@@ -7,11 +7,12 @@
         (clj-factory [core :only [factory]])
         [clojure.core.incubator :only [-?>]]
         jiksnu.features-helper
-        jiksnu.http
         midje.sweet
         ring.mock.request)
   (:require (ciste [config :as c]
-                   [core :as core])
+                   [core :as core]
+                   [runner :as runner])
+            (ciste.service [aleph :as aleph])
             [clj-webdriver.core :as w]
             (clojure [string :as string])
             [clojure.tools.logging :as log]
@@ -52,7 +53,7 @@
       
       (model/drop-all!)
       
-      (let [srv (start)]
+      (let [srv (aleph/start)]
         (dosync
          (ref-set current-browser browser)
          (reset! server srv))))
