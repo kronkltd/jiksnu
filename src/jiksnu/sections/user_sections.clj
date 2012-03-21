@@ -356,9 +356,7 @@
    [:p.note (:bio user)]
    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
    (when (:discovered user)
-     (show-section (model.signature/get-key-for-user user))
-        
-        )
+     (show-section (model.signature/get-key-for-user user)))
    (user-actions user)])
 
 

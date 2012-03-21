@@ -110,7 +110,7 @@
         feed (.getRoot document)
         entries (.getEntries feed)]
     (doseq [entry entries]
-      (let [activity (actions.activity/entry->activity entry (spy feed))]
+      (let [activity (actions.activity/entry->activity entry feed)]
         (actions.activity/create activity)))))
 
 (defaction user-microsummary
@@ -137,7 +137,7 @@
        (->> ciste.core/*actions*
             (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
             (l/map* format-message)
-            (l/map* (fn [m] (str (spy m) "\r\n"))))
+            (l/map* (fn [m] (str m "\r\n"))))
        stream))
     (l/enqueue ch {:status 200
                    :headers {"content-type" "application/json"}
@@ -155,15 +155,7 @@
                                   :event "stream-add"
                                   :stream "public"})
                                 "\r\n"))))
-            ch)
-  #_(let [c (atom 0)]
-    (->> (fn [m]
-           (l/enqueue ch (str "foo #" @c))
-           (dosync
-            (swap! c inc))
-           (spy m)
-           (spy c))
-         (l/receive-all ch))))
+            ch))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.stream-filters
