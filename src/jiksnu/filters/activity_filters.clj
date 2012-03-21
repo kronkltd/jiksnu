@@ -30,7 +30,7 @@
 (deffilter #'show :http
   [action request]
   (-> request :params :id
-      model/make-id action))
+      model.activity/fetch-by-id action))
 
 (deffilter #'update :http
   [action request]
@@ -53,7 +53,7 @@
   (let [{:keys [items]} request
         ids (map #(.getAttribute % "id") items)
         id (first ids)]
-    (action (model/make-id id))))
+    (action (model.activity/fetch-by-id id))))
 
 (deffilter #'remote-create :xmpp
   [action request]

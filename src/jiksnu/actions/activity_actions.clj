@@ -235,8 +235,8 @@ serialization"
 
 (defaction show
   "Show an activity"
-  [id]
-  (model.activity/show id))
+  [activity]
+  activity)
 
 (defaction update
   [activity]
