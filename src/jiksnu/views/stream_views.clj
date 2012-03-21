@@ -56,6 +56,12 @@
    {:items
     (map show-section activities)}})
 
+(defview #'user-timeline :as
+  [request [user activities]]
+  {:body
+   {:items
+    (map show-section activities)}})
+
 
 
 
