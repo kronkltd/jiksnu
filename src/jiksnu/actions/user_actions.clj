@@ -148,18 +148,22 @@
                    (.getName person))
           username (.getSimpleExtension person namespace/poco
                                         "preferredUsername" "poco")
+          note (.getSimpleExtension person (QName. namespace/poco "note"))
+          uri (str (.getUri person))
           links (-> person
                     (.getExtensions (QName. namespace/atom "link"))
                     (->> (map abdera/parse-link)))
           params (merge {:domain (.getHost id)}
+                        (when uri {:uri uri})
                         (when username {:username username})
+                        (when note {:bio note})
                         (when email {:email email})
                         (when name {:display-name name}))]
       (let [user (-> {:id (str id)}
                      #_(find-or-create-by-remote-id params)
                      (merge params))]
-        #_(doseq [link links]
-            (add-link user link))
+        (doseq [link links]
+          (add-link user link))
         (entity/make User user)))))
 
 

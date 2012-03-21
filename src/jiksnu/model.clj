@@ -74,6 +74,10 @@
          (fn [[k v]] (str (name k) "=" v))
          options))))
 
+(defn with-subject
+  "Inserts the subject into the first position in the sequence of vectors"
+  [s pairs]
+  (map (fn [[p o]] [s p o]) pairs))
 
 (jena/init-jena-framework)
 ;; TODO: Find a better ns for this
