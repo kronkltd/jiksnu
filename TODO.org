@@ -1,0 +1,7 @@
+
+* TODO ensure that admin user exists
+* TODO Deleting a user should delete it's subscriptions
+* TODO Deleting a domain should delete it's users
+* TODO deleting a user should delete it's activities
+* TODO put uploaded images in a different directory
+* TODO A set-format! function that changes the current format.
