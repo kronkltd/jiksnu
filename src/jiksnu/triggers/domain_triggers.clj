@@ -7,8 +7,4 @@
   [action [domain-name] domain]
   (actions.domain/discover domain))
 
-(defn discover-trigger
-  [action [id] domain])
-
 (add-trigger! #'actions.domain/create   #'create-trigger)
-(add-trigger! #'actions.domain/discover #'discover-trigger)
