@@ -115,7 +115,7 @@ this is for OSW
 (defaction create
   "create an activity"
   [params]
-  (if-let [original-activity (spy (model.activity/fetch-by-remote-id (:id params)))]
+  (if-let [original-activity (model.activity/fetch-by-remote-id (:id params))]
     (throw (RuntimeException. "Activity already exists"))
     (model.activity/create params)))
 
