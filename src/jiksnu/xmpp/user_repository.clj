@@ -1,7 +1,8 @@
 (ns jiksnu.xmpp.user-repository
   (:use (ciste [config :only [config]]
                [debug :only [spy]]))
-  (:require (clojure [stacktrace :as stacktrace]
+  (:require (ciste [model :as cm])
+            (clojure [stacktrace :as stacktrace]
                      [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu [model :as model])
@@ -81,12 +82,12 @@
 
 (defmethod get-data [:password]
   [user ks def]
-  (log/info "password handler")
+  (log/infof "password handler - %s - %s" (pr-str ks) def)
   (:password user))
 
 (defmethod get-data :default
   [user ks def]
-  (log/info "default handler")
+  (log/infof "default handler - %s - %s" (pr-str ks) def)
   (get-in
    (col/fetch-one (user-repo)
                   {:_id (model.user/get-uri user false)})
@@ -127,10 +128,9 @@ not exist for given user ID in given node path."
      (.getKeys this user-id nil))
   ([^UserRepository this ^BareJID user ^String subnode]
      ;; TODO: implement
-     (log/info "get keys")
-     ;; (spy user)
-     ;; (spy subnode)
-     nil))
+     (cm/implement
+      (log/info "get keys")
+      nil)))
 
 (defn ^String -getResourceUri
   "Returns a DB connection string or DB connection URI."
@@ -193,8 +193,7 @@ of registered users"
 (defn -queryAuth
   [this props]
   (log/info "query auth")
-  (.put props "result" (into-array String ["PLAIN"]))
-  #_(.queryAuth (spy @auth-repository) (spy props)))
+  (.queryAuth @auth-repository props))
 
 (defn -removeData
   "removes pair (key, value) from user repository in given subnode."
