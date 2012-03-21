@@ -24,12 +24,17 @@
   [id]
   (model.domain/delete id))
 
+(defaction update
+  [domain]
+  (model.domain/update domain))
+
 (defn discover-onesocialweb
   [domain]
   (-> domain
       model.domain/ping-request
       tigase/make-packet
-      tigase/deliver-packet!))
+      tigase/deliver-packet!)
+  domain)
 
 (defn discover-webfinger
   [^Domain domain]
@@ -38,10 +43,9 @@
                    model.domain/host-meta-link
                    model.webfinger/fetch-host-meta)]
     (if-let [links (model.webfinger/get-links xrd)]
-      ;; TODO: These should call actions
-      (do (model.domain/add-links domain links)
-          (model.domain/set-discovered domain)
-          domain)
+      (update (-> domain
+                  (assoc :links links)
+                  (assoc :discovered true)))
       (throw (RuntimeException. "Host meta does not have any links")))
     (throw (RuntimeException.
             (str "Could not find host meta for domain: " (:_id domain))))))
@@ -106,19 +110,16 @@
 (defn fetch-statusnet-config
   ([domain] (fetch-statusnet-config domain ""))
   ([domain context]
-     (json/read-json
-      (cm/fetch-resource (str "http://" (:_id domain) context "/api/statusnet/config.json")))))
-
-(defaction update
-  [domain]
-  (model.domain/update domain))
+     (when-let [doc (cm/fetch-resource (str "http://" (:_id domain) context "/api/statusnet/config.json"))]
+       (json/read-json doc))))
 
 (defaction discover
   [domain]
-  (future (discover-onesocialweb domain))
-  (future (discover-webfinger domain))
-  (update (assoc domain :statusnet-config (fetch-statusnet-config domain)))
-  (set-discovered! domain))
+  (-> domain
+      discover-onesocialweb
+      discover-webfinger
+      (assoc :statusnet-config (fetch-statusnet-config domain))
+      update))
 
 (defn get-user-meta-url
   [domain user-uri]
