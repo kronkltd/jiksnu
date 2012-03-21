@@ -20,9 +20,9 @@ Scenario: Logging in
   And I should wait
   And I should be logged in
 
-# Scenario: Logging out
-#   Given I am logged in
-#   And I am at the "home" page
-#   When I click the "Log out" button
-#   Then I should be at the "home" page
-#   And I should not be logged in
+Scenario: Logging out
+  Given I am logged in
+  And I am at the "home" page
+  When I click the "Log out" button
+  Then I should be at the "home" page
+  And I should not be logged in

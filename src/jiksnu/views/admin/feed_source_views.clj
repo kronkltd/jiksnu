@@ -1,6 +1,6 @@
 (ns jiksnu.views.admin.feed-source-views
   (:use (ciste [views :only [defview]])
-        (ciste.sections [default :only [add-form index-section]])
+        (ciste.sections [default :only [add-form index-section title show-section]])
         jiksnu.actions.admin.feed-source-actions)
   (:require (jiksnu.actions [activity-actions :as actions.activity]))
   (:import jiksnu.model.FeedSource))
@@ -13,3 +13,9 @@
    (list 
     (index-section sources)
     (add-form (FeedSource.)))})
+
+(defview #'show :html
+  [request source]
+  {:title (title source)
+   :single true
+   :body (show-section source)})

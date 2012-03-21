@@ -17,12 +17,6 @@
                         ))
 
 (definitializer
-  ;; (try
   (doseq [namespace ['jiksnu.filters.admin.user-filters
-                     ;; 'jiksnu.helpers.admin.user-helpers
-                     ;; 'jiksnu.sections.admin.user-sections
-                     ;; 'jiksnu.triggers.admin.user-triggers
                      'jiksnu.views.admin.user-views]]
-    (require namespace))
-  ;; (catch Exception ex))
-  )
+    (require namespace)))

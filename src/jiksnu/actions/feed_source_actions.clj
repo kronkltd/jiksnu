@@ -13,8 +13,8 @@
 
 (defaction process-updates
   [params]
-  (let [{{challenge :hub.challenge
-          topic :hub.topic} :params} params]
+  (let [{challenge "hub.challenge"
+         topic "hub.topic"} params]
     challenge))
 
 (defn find-or-create
@@ -44,7 +44,7 @@
 
 (definitializer
   (doseq [namespace [
-                     ;; 'jiksnu.filters.feed-source-filters
-                     ;; 'jiksnu.views.feed-source-views
+                     'jiksnu.filters.feed-source-filters
+                     'jiksnu.views.feed-source-views
                      ]]
     (require namespace)))

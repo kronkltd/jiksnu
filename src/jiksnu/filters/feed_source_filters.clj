@@ -6,5 +6,5 @@
 
 (deffilter #'process-updates :http
   [action request]
-  (action request))
+  (-> request :params action))
 

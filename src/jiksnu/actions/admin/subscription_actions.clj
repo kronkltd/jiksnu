@@ -13,8 +13,5 @@
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.admin.subscription-filters
-                     ;; 'jiksnu.helpers.admin.subscription-helpers
-                     ;; 'jiksnu.sections.admin.subscription-sections
-                     ;; 'jiksnu.triggers.admin.subscription-triggers
                      'jiksnu.views.admin.subscription-views]]
     (require namespace)))

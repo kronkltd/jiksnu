@@ -29,7 +29,7 @@
 (defsection show-section [FeedSource :html]
   [source & options]
   (let [{:keys [topic callback challenge mode
-                verify-token lease-seconds created updated]} (spy source)]
+                verify-token lease-seconds created updated]} source]
     [:div
      [:p "Id: " (:_id source)]
      [:p "Topic: " topic]
