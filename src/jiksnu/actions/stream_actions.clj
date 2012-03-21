@@ -56,17 +56,14 @@
   (if-let [records (:records message)]
     (with-context [:http :json]
       (->> records
-           ;; pr-str spy
            show-section
-           json/json-str
-           ))))
+           json/json-str))))
 
 (defn format-message-html
   [message]
   (if-let [records (:records message)]
     (with-context [:http :html]
       (->> records
-           ;; pr-str spy
            show-section
            h/html))))
 
@@ -78,7 +75,7 @@
 (defaction group-timeline
   [group]
   ;; TODO: implement
-  (spy [group []]))
+  [group []])
 
 (defaction user-list
   []
