@@ -30,13 +30,13 @@
         [["Home"
           [["/"                         "Public"]
            ["/users"                    "Users"]
+           ["/main/domains"             "Domains"]
            ["/groups"                   "Groups"]]]
          
          (when (is-admin?)
            ["Admin"
             [["/admin/activities"         "Activities"]
              ["/admin/auth"               "Auth"]
-             ["/main/domains"             "Domains"]
              ["/admin/groups"             "Groups"]
              ["/admin/settings"           "Settings"]
              ["/admin/feed-sources"       "Feed Sources"]

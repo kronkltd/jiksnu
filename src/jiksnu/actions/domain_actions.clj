@@ -3,8 +3,10 @@
                [core :only [defaction]]
                [debug :only [spy]])
         (clojure.core [incubator :only [-?>>]]))
-  (:require (clj-tigase [core :as tigase])
+  (:require (ciste [model :as cm])
+            (clj-tigase [core :as tigase])
             (clojure [string :as string])
+            (clojure.data [json :as json])
             (clojure.tools [logging :as log])
             (jiksnu.model [domain :as model.domain]
                           [webfinger :as model.webfinger])
@@ -101,10 +103,21 @@
       set-discovered!
       model.domain/update))
 
+(defn fetch-statusnet-config
+  ([domain] (fetch-statusnet-config domain ""))
+  ([domain context]
+     (json/read-json
+      (cm/fetch-resource (str "http://" (:_id domain) context "/api/statusnet/config.json")))))
+
+(defaction update
+  [domain]
+  (model.domain/update domain))
+
 (defaction discover
   [domain]
   (future (discover-onesocialweb domain))
   (future (discover-webfinger domain))
+  (update (assoc domain :statusnet-config (fetch-statusnet-config domain)))
   (set-discovered! domain))
 
 (defn get-user-meta-url
@@ -115,10 +128,6 @@
         (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
         first))
 
-(defaction update
-  [domain]
-  (model.domain/update domain))
-
 
 (defaction host-meta
   []
@@ -128,6 +137,7 @@
      :links [{:template template
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
+
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.domain-filters
