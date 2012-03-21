@@ -4,8 +4,7 @@
                routes)
         (clojure [pprint :only [pprint]])
         (jiksnu model
-                routes
-                xmpp))
+                routes))
   (:require (clj-tigase [core :as tigase]
                         [packet :as packet])
             (clojure.tools [logging :as log])

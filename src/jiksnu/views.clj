@@ -8,8 +8,7 @@
         (jiksnu model session))
   (:require (clj-tigase [core :as tigase])
             (hiccup [core :as h])
-            (jiksnu [namespace :as ns]
-                    [xmpp :as xmpp])
+            (jiksnu [namespace :as ns])
             (plaza.rdf [core :as rdf])
             (plaza.rdf.vocabularies [foaf :as foaf])))
 
