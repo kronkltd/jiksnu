@@ -49,7 +49,7 @@
    :single true
    :body
    (list (show-section domain)
-         (index-section (model.user/fetch-all {:domain (:_id domain)})))})
+         (index-section (model.user/fetch-all {:domain (:_id domain)} :limit 20)))})
 
 (defview #'host-meta :html
   [request xrd]
