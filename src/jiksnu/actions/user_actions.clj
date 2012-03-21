@@ -225,25 +225,42 @@
   (get-domain user))
 
 (defaction register
-  [{:keys [username password email display-name location]}]
-  (if (and username password)
-    (-> {:username username
-         :domain (config :domain)
-         :discovered true
-         :id (str "acct:" username "@" (config :domain))
-         :local true
-         ;; TODO: encrypt here
-         :password password}
-        (merge (when email {:email email})
-               (when display-name {:display-name display-name})
-               (when location {:location location}))
-        create)
-    (throw (IllegalArgumentException. "Missing required params"))))
+  [{:keys [username password email display-name location bio] :as options}]
+
+  ;; verify submission.
+  (if (:accepted options)
+    (if (and username password)
+      (let [user (model.user/get-user username)]
+        (if-not user
+          (let [user (-> {:username username
+                              :domain (config :domain)
+                              :discovered true
+                              :id (str "acct:" username "@" (config :domain))
+                              :local true
+                              ;; TODO: encrypt here
+                              :password password}
+                             (merge (when email {:email email})
+                                    (when display-name {:display-name display-name})
+                                    (when bio {:bio bio})
+                                    (when location {:location location}))
+                             create)]
+            ;; asign authentication mechanism
+            (actions.auth/add-password user password)
+
+            ;; return the created user
+            user)
+          (throw (IllegalArgumentException. "user already exists"))))
+      (throw (IllegalArgumentException. "Missing required params")))
+    (throw (IllegalArgumentException. "you didn't check the box"))))
 
 (defaction register-page
+  "Display the form to reqister a user"
   []
+  ;; init an empty user model?
   true)
 
+;; deprecated, nothing should hit this in the future. If anything is,
+;; I want it drug out into the street and shot
 (defaction remote-create
   [user options]
   (let [user (merge user
@@ -261,8 +278,10 @@
 (defaction update-profile
   [options]
   (let [user (current-user)]
+    ;; TODO: mass assign vulnerability here
     (update user options)))
 
+;; TODO: this applies only for acct: uris
 (defn user-for-uri
   "Returns a user with the passed account uri,
    or creates one if it does not exist."
