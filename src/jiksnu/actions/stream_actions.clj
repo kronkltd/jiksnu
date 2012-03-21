@@ -142,7 +142,6 @@
 
 (defn websocket-handler
   [ch request]
-  (log/info "Websocket Handler")
   (l/siphon (->> ciste.core/*actions*
                  l/fork
                  (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
