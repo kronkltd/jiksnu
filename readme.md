@@ -25,9 +25,11 @@ of it's Action Routing framework and services.
 
 ## Thanks
 
-I would like to thank the authors of many great open-source or
-open-license software, specifications, and services. Without which,
-none of this would be possible.
+I would like to thank the authors of the many great free software,
+specifications and services from which I have used as libraries, used
+as guides or reference implementations, or as inspiration. Without
+their spirit of collaboration, none of this would ever have been
+possible.
 
 ## License
 
