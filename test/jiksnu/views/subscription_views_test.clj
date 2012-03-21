@@ -21,7 +21,10 @@
 
    ;; TODO: this should be an error packet
    (future-fact "when there is not a subscription"
-     (fact "should return an error packet"))
+     (fact "should return an error packet"
+       (apply-view request nil) => packet/packet?
+
+       ))
 
    (fact "when there is a subscription"
      (let [user (model.user/create (factory User))

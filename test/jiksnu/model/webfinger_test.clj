@@ -2,7 +2,6 @@
   (:use (ciste [config :only [with-environment]]
                [debug :only (spy)])
         (clj-factory [core :only (factory)])
-        clojure.test
         midje.sweet
         (jiksnu test-helper model)
         jiksnu.model.webfinger)
@@ -19,20 +18,20 @@
      (let [url "http://kronkltd.net/.well-known/host-meta"]
        (fetch-host-meta url) => (partial instance? Document)))
    
-   (future-fact "when the url does not point to a valid XRD document"
+   (fact "when the url does not point to a valid XRD document"
      (fact "should raise an exception"
        (let [url "http://example.com/.well-known/host-meta"]
          (fetch-host-meta url) => nil))))
  
- (future-fact "#'get-links"
+ (fact "#'get-links"
    (fact "When it has links"
      (fact "should return the sequence of links"
        (let [xrd nil]
          (get-links xrd)))) => seq?)
 
- (future-fact "#'get-keys-from-xrd"
-   (fact "should return a sequence of keys for the uri"
-     (let [uri "acct:duck@kronkltd.net"]
-       (get-keys uri)) => seq?))
+ ;; (fact "#'get-keys-from-xrd"
+ ;;   (fact "should return a sequence of keys for the uri"
+ ;;     (let [uri "acct:duck@kronkltd.net"]
+ ;;       (get-keys uri)) => seq?))
 
  )

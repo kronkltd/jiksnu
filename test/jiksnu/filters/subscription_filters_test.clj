@@ -28,7 +28,7 @@
                 ?form))]
 
 
-   (future-fact "filter-action #'subscribe :html :http"
+   (fact "filter-action #'subscribe :html :http"
      (fact "when the user is not already subscribed"
        (fact "should return a subscription"
          (let [user (model.user/create (factory User))
@@ -39,7 +39,7 @@
                             :serialization :http}]
                (filter-action #'subscribe request) => model/subscription?))))))
 
-   (future-fact "filter-action #'get-subscribers :xmpp"
+   (fact "filter-action #'get-subscribers :xmpp"
      (fact "when there are subscribers"
        (fact "should not be empty"
          (let [user (actions.user/create (factory User))
@@ -56,7 +56,7 @@
    ;; (deftest filter-action-test "#'get-subscriptions :xmpp"
    ;;   (fact "when there are subscriptions"))
 
-   (future-fact "should return a sequence of subscriptions"
+   (fact "should return a sequence of subscriptions"
      (let [user (actions.user/create (factory User))
            subscribee (actions.user/create (factory User))
            request (-> (model.subscription/subscriptions-request

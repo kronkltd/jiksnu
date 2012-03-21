@@ -14,7 +14,7 @@
 
 (test-environment-fixture
 
- (future-fact "apply-view #'index :atom"
+ (fact "apply-view #'index :atom"
    (fact "should be a map"
      (with-context [:http :atom]
        (with-user (model.user/create (factory User))
