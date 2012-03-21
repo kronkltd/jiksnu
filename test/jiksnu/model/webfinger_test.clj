@@ -5,7 +5,8 @@
         midje.sweet
         (jiksnu test-helper model)
         jiksnu.model.webfinger)
-  (:require (jiksnu.actions [user-actions :as actions.user]))
+  (:require (ciste [model :as cm])
+            (jiksnu.actions [user-actions :as actions.user]))
   (:import jiksnu.model.User
            nu.xom.Document))
 
@@ -16,22 +17,26 @@
    (fact "when the url points to a valid XRD document"
      ;; TODO: pick a random domain
      (let [url "http://kronkltd.net/.well-known/host-meta"]
-       (fetch-host-meta url) => (partial instance? Document)))
+       (fetch-host-meta .url.) => (partial instance? Document))
+     (provided
+       (cm/fetch-resource .url.) => "<XRD/>"))
    
    (fact "when the url does not point to a valid XRD document"
      (fact "should raise an exception"
        (let [url "http://example.com/.well-known/host-meta"]
-         (fetch-host-meta url) => nil))))
+         (fetch-host-meta .url.) => (throws Exception))
+       (provided
+         (cm/fetch-resource .url.) => ""))))
  
- (fact "#'get-links"
+ (future-fact "#'get-links"
    (fact "When it has links"
      (fact "should return the sequence of links"
        (let [xrd nil]
-         (get-links xrd)))) => seq?)
+         (get-links xrd)) => seq?)))
 
- ;; (fact "#'get-keys-from-xrd"
- ;;   (fact "should return a sequence of keys for the uri"
- ;;     (let [uri "acct:duck@kronkltd.net"]
- ;;       (get-keys uri)) => seq?))
+ (future-fact "#'get-keys-from-xrd"
+   (fact "should return a sequence of keys for the uri"
+     (let [uri "acct:duck@kronkltd.net"]
+       (get-keys uri)) => seq?))
 
  )

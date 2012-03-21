@@ -1,5 +1,5 @@
 (ns jiksnu.model.subscription
-  (:use (ciste [debug :only (spy)])
+  (:use (ciste [debug :only [spy]])
         jiksnu.model)
   (:require (clj-tigase [core :as tigase]
                         [element :as element])
@@ -16,6 +16,12 @@
 (defn find-record
   [args]
   (entity/fetch-one Subscription args))
+
+(defn fetch-all
+  "Fetch all users"
+  ([] (fetch-all {}))
+  ([params & options]
+     (apply entity/fetch Subscription params options)))
 
 (defn create
   [subscription & options]
@@ -82,11 +88,11 @@
 
 (defn subscribers
   [user]
-  (index :to (:_id user)))
+  (fetch-all {:to (:_id user)}))
 
 (defn subscriptions
   [user]
-  (index :from (:_id user)))
+  (fetch-all {:from (:_id user)}))
 
 (defn create-pending
   [actor user]

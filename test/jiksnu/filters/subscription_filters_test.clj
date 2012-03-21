@@ -1,5 +1,6 @@
 (ns jiksnu.filters.subscription-filters-test
   (:use (ciste [config :only [with-environment]]
+               [core :only [with-context]]
                [debug :only [spy]]
                filters)
         (clj-factory [core :only [factory fseq]])
@@ -42,30 +43,35 @@
    (fact "filter-action #'get-subscribers :xmpp"
      (fact "when there are subscribers"
        (fact "should not be empty"
+         (model/drop-all!)
+         (with-context [:xmpp :xmpp]
+           (let [user (model.user/create (factory User))
+                 subscriber (model.user/create (factory User))
+                 request (-> (model.subscription/subscribers-request
+                              subscriber user)
+                             packet/make-request
+                             (assoc :serialization :xmpp)
+                             (assoc :format :xmpp))]
+             (session/with-user subscriber (subscribed subscriber user))
+            (let [[returned-user subscribers] (filter-action #'get-subscribers request)]
+              returned-user => user
+              subscribers =not=> empty?
+              subscribers => (partial every? model/subscription?)))))))
+
+   (fact "filter-action [#'get-subscriptions :xmpp]"
+     (fact "when there are subscriptions"
+       (fact "should return a sequence of subscriptions"
          (let [user (actions.user/create (factory User))
-               subscriber (actions.user/create (factory User))
-               request (-> (model.subscription/subscribers-request
-                            user subscriber)
+               subscribee (actions.user/create (factory User))
+               request (-> (model.subscription/subscriptions-request
+                            subscribee user)
                            packet/make-request
                            (assoc :serialization :xmpp))]
-           (session/with-user subscriber (subscribe user))
-           (let [[user subscribers] (filter-action #'get-subscribers request)]
-             subscribers =not=> empty?
-             subscribers => (partial every? model/subscription?))))))
+           (session/with-user user (subscribe user subscribee))
+           (let [[user2 subscriptions :as response]
+                 (filter-action #'get-subscriptions request)]
+             user2 => user
+             subscriptions =not=> empty?
+             subscriptions => (partial every? model/subscription?))))))
 
-   ;; (deftest filter-action-test "#'get-subscriptions :xmpp"
-   ;;   (fact "when there are subscriptions"))
-
-   (fact "should return a sequence of subscriptions"
-     (let [user (actions.user/create (factory User))
-           subscribee (actions.user/create (factory User))
-           request (-> (model.subscription/subscriptions-request
-                        subscribee user)
-                       packet/make-request
-                       (assoc :serialization :xmpp))]
-       (session/with-user user (subscribe user subscribee))
-       (let [[user2 subscriptions :as response]
-             (filter-action #'get-subscriptions request)]
-         user2 => user
-         subscriptions =not=> empty?
-         subscriptions => (partial every? model/subscription?))))))
+   ))

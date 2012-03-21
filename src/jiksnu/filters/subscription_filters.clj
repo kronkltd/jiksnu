@@ -7,7 +7,8 @@
   (:require (jiksnu [model :as model]
                     [namespace :as namespace])
             (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.model [user :as model.user])))
+            (jiksnu.model [subscription :as model.subscription]
+                          [user :as model.user])))
 
 (deffilter #'delete :http
   [action request]
@@ -67,7 +68,7 @@
   [action request]
   (let [subscriber (actions.user/fetch-by-jid (:to request))
         subscribee (actions.user/fetch-by-jid (:from request))
-        subscription (find-record
+        subscription (model.subscription/fetch-all
                       {:to (:_id subscribee) :from (:_id subscriber)})]
     (confirm subscription)))
 
@@ -84,7 +85,7 @@
 
 (deffilter #'get-subscribers :xmpp
   [action request]
-  (if-let [user (actions.user/fetch-by-jid (:to request))]
+  (let [user (actions.user/fetch-by-jid (:to request))]
     (action user)))
 
 (deffilter #'get-subscriptions :xmpp

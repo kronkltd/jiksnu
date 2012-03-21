@@ -62,6 +62,7 @@
   (subscribe actor user))
 
 (defaction subscribed
+  
   [actor user]
   (model.subscription/create
    {:from (:_id actor)
@@ -84,10 +85,6 @@
   [user]
   ;; TODO: unmark pending flag
   true)
-
-(defn find-record
-  [args]
-  (model.subscription/find-record args))
 
 (defaction confirm
   [subscription]

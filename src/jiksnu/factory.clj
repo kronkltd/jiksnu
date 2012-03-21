@@ -20,7 +20,17 @@
 
 (defseq :name
   [n]
-  "Alice")
+  (rand-nth
+   ["Alice" "Bob" "Carol"
+    "Dave" "Eve" "Frank"]))
+
+(defseq :surname
+  [n]
+  (rand-nth
+   ["Smith" "Miller" "Johnson"
+    "Doe" "McDuck" "Skywalker"
+    "Attreides"
+    ]))
 
 (defseq :password
   [n]
@@ -51,15 +61,16 @@
    :created #'sugar/date})
 
 (deffactory User
-  (let [password (fseq :word)]
-    {:username (fseq :word)
+  (let [password (fseq :password)
+        first-name (fseq :name)
+        last-name (fseq :surname)
+        display-name (str first-name " " last-name)]
+    {:username (fseq :username)
      :domain (fseq :domain)
-     :name (fseq :word)
-     :display-name (fseq :name)
-     :first-name (fseq :word)
-     :last-name (fseq :word)
-     :password password
-     :confirm-password password}))
+     :name display-name
+     :display-name display-name
+     :first-name first-name
+     :last-name last-name}))
 
 (deffactory :local-user
   (factory User {:domain (config :domain)}))

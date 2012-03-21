@@ -69,7 +69,7 @@
            response => map?
            response => (contains {:type :get}))))))
 
- (fact "apply-view #'remote-create :xmpp"
+ (future-fact "apply-view #'remote-create :xmpp"
    (fact "should return a query results packet map"
      (with-context [:xmpp :xmpp]
        (let [user (model.user/create (factory User))
