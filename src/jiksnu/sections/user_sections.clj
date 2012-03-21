@@ -376,7 +376,8 @@
                 mkp (try (model.signature/get-key-for-user user)
                          (catch Exception ex))
                 document-uri (str (full-uri user) ".rdf")
-                user-uri (rdf/rdf-resource (str (full-uri user) "#me"))]
+                user-uri (rdf/rdf-resource (str (full-uri user) "#me"))
+                acct-uri (rdf/rdf-resource (model.user/get-uri user))]
     (rdf/with-rdf-ns ""
       (concat
        (with-subject document-uri
@@ -387,7 +388,7 @@
        (with-subject user-uri
          (concat [[rdf/rdf:type                    [foaf :Person]]
                   [foaf:weblog                     (rdf/rdf-resource (full-uri user))]
-                  [[ns/foaf "holdsAccount"]        (rdf/rdf-resource (model.user/get-uri user))]]
+                  [[ns/foaf "holdsAccount"]        acct-uri]]
                  (when mkp          [[(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))]])
                  (when username     [[foaf:nick       (rdf/l username)]])
                  (when name         [[foaf:name       (rdf/l name)]])
@@ -401,13 +402,12 @@
 
          )
        (when mkp (show-section mkp))
-       (with-subject (rdf/rdf-resource (model.user/get-uri user))
+       (with-subject acct-uri
          [[rdf/rdf:type                [ns/sioc "UserAccount"]]
           [foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))]
           [foaf:accountName            (rdf/l (:username user))]
           [[foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))]
-          [[ns/sioc "account_of"]         (rdf/rdf-resource
-                                           (str (full-uri user) "#me"))]])))))
+          [[ns/sioc "account_of"]      user-uri]])))))
 
 (defsection show-section [User :xmpp]
   [^User user & options]
