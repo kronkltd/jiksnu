@@ -119,10 +119,10 @@ this is for OSW
 
 (defaction create
   "create an activity"
-  [params]
-  (if-let [original-activity (model.activity/fetch-by-remote-id (:id params))]
-    (throw (RuntimeException. "Activity already exists"))
-    (model.activity/create params)))
+  [{id :id :as params}]
+  (if (or (not id) (model.activity/fetch-by-remote-id id))
+    (model.activity/create params)
+    (throw (RuntimeException. "Activity already exists"))))
 
 (defaction delete
   "delete an activity"
@@ -132,8 +132,7 @@ this is for OSW
     (if (or (session/is-admin?) (= actor-id author))
       (model.activity/delete activity)
       ;; TODO: better exception type
-      (throw (RuntimeException. "You are not authorized to delete that activity"))
-      )))
+      (throw (RuntimeException. "You are not authorized to delete that activity")))))
 
 (defaction edit-page
   "Edit page for an activity"
