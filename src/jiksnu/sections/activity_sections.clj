@@ -590,7 +590,10 @@
        (or (:title activity)
            (:content activity))]]
      [:div
-      [:p (:irts activity)]
+      [:ul.unstyled
+       (map (fn [irt]
+              [:a {:href irt :rel "nofollow"} irt])
+            (:irts activity))]
       (when (seq (:enclosures activity))
         [:ul.unstyled
          (map
