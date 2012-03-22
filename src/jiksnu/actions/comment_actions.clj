@@ -5,6 +5,7 @@
   (:require (ciste [model :as cm])
             (clj-tigase [core :as tigase]
                         [element :as element])
+            (clojure.tools [logging :as log])
             (jiksnu [model :as model]
                     [namespace :as ns])
             (jiksnu.actions [activity-actions :as actions.activity])
@@ -35,9 +36,13 @@
 ;; TODO: fetch all in 1 request
 (defn fetch-comments
   [activity]
-  (let [comments (concat (map model.activity/fetch-by-id (:comments activity))
-                         (if-let [irt (first (:irts activity))]
-                           (model.activity/fetch-all {:id irt})))]
+  (let [comments (apply concat
+                        (map model.activity/fetch-by-id (:comments activity))
+                        (map (fn [irt]
+                               (try
+                                 (actions.activity/find-or-create-by-remote-id {:id irt})
+                                 (catch RuntimeException ex (log/warn ex))))
+                             (:irts activity)))]
     [activity comments]))
 
 (defn comment-request
