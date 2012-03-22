@@ -69,7 +69,7 @@
              ]
   :repositories {
                  "java-dot-net"          "http://download.java.net/maven/2"
-                 ;; "jiksnu-internal"       "http://build.jiksnu.com/repository/internal"
+                 "jiksnu-internal"       "http://build.jiksnu.com/repository/internal"
                  ;; "jiksnu-snapshots"      "http://build.jiksnu.com/repository/snapshots"
                  ;; "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
                  "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"

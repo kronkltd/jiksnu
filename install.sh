@@ -10,7 +10,9 @@
 rm -rf jiksnu
 
 cp -r /vagrant jiksnu
+chown -R vagrant:vagrant jiksnu
 cd jiksnu
+su vagrant
 mvn install:install-file -DgroupId=org.clojure -DartifactId=google-closure-library -Dversion=0.0-1589 -Dpackaging=jar -Dfile=google-closure-library-0.0-1589.jar
 lein deps
 lein run
