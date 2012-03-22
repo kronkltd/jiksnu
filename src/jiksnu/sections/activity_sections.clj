@@ -311,7 +311,7 @@
 
 (defn comments-section
   [activity]
-  (list [:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
+  (list #_[:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
         (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
           [:section.comments
            [:h4 "Comments"]
