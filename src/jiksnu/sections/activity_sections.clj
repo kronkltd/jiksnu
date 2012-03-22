@@ -64,9 +64,9 @@
 (defn show-comment
   [activity]
   (let [author (get-author activity)]
-    [:div
+    [:div.comment
      (sections.user/display-avatar author)
-     (link-to author)
+     (link-to author) ": "
      (:title activity)]))
 
 (defn comment-link-item
@@ -311,13 +311,13 @@
 
 (defn comments-section
   [activity]
-  [:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
-  (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
-    [:section.comments
-     [:h4 "Comments"]
-     [:ul.unstyled.comments
-      (map (fn [comment] [:li (show-comment comment)])
-           comments)]]))
+  (list [:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
+        (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
+          [:section.comments
+           [:h4 "Comments"]
+           [:ul.unstyled.comments
+            (map (fn [comment] [:li (show-comment comment)])
+                 comments)]])))
 
 (defn poll-form
   [activity]

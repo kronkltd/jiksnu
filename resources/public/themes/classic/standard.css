@@ -49,6 +49,16 @@ article .photo
     left: 0px;
 }
 
+.comments {
+    margin-left: -35px;
+}
+
+.comment {
+    display: block;
+    position: relative;
+    padding-left: 60px;
+}
+
 .tags ul {
     display: inline;
     padding: 0px;
