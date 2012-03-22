@@ -217,7 +217,7 @@
 (defn recipients-section
   [activity]
   (when-let [mentioned-uris (seq (:mentioned-uris activity))]
-    [:ul
+    [:ul.unstyled
      (map
       (fn [mentioned-uri]
         [:li
@@ -273,14 +273,41 @@
 (defn posted-link-section
   [activity]
   [:span.posted
-   "posted "
+   "posted a "
+   (-> activity :object :object-type)
+
+   ;; TODO: handle other visibilities
+   (when-not (:public activity)
+     " privately")
+
+   " approximately "
    [:time {:datetime (model/format-date (:published activity))
            :title (model/format-date (:published activity))
-           :property "dc:published"
-           ;; :content (model/format-date (:published activity))
-           }
+           :property "dc:published"}
     [:a {:href (uri activity)}
-     (-> activity :published model.activity/prettyify-time)]]])
+     (-> activity :published model.activity/prettyify-time)]]
+   
+   (when (:source activity)
+     (str " using " (:source activity)))
+
+   ;; TODO: link to the domain
+   (when-not (:local activity)
+     " via a foreign service ")
+      
+   (when (:conversation activity)
+     (list
+      " "
+      [:a {:href (first (:conversation activity))}
+       "in context"]))
+
+   (when (and (seq (:lat activity))
+              (seq (:long activity)))
+     (list " near "
+           [:a.geo-link {:href "#"}
+            (:lat activity) ", "
+            (:long activity)]))
+   
+   ])
 
 (defn comments-section
   [activity]
@@ -550,19 +577,12 @@
       :about (uri activity)
       :typeof "sioc:Post"}
      [:header
+      (post-actions activity)
       [:div.vcard
        ;; TODO: merge into the same link
        (sections.user/display-avatar user)
        [:span.fn.n (link-to user)]]
-      [:div.labels
-       [:span.label (-> activity :object :object-type)]
-       (when-not (:local activity)
-         [:span.label
-          [:a {:href (:id activity)} "Remote"]])
-       (when-not (:public activity)
-         [:span.label "Private"])]
       (recipients-section activity)]
-     (post-actions activity)
      [:div.entry-content
       #_(when (:title activity)
           [:h1.entry-title {:property "dc:title"} (:title activity)])
@@ -583,19 +603,6 @@
       (maps-section activity)
       (tags-section activity)
       (posted-link-section activity)
-      (when (:source activity)
-        (str " from " (:source activity)))
-      (when (:conversation activity)
-        (list
-         " "
-         [:a {:href (first (:conversation activity))}
-          "in context"]))
-      (when (and (seq (:lat activity))
-                 (seq (:long activity)))
-        (list " at "
-              [:a.geo-link {:href "#"}
-               (:lat activity) ", "
-               (:long activity)]))
       (comments-section activity)]]))
 
 (defsection show-section [Activity :rdf]
