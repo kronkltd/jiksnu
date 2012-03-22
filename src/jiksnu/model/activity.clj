@@ -146,7 +146,7 @@
 
 (defn fetch-by-remote-id
   [id]
-  (entity/fetch-one Activity {:remote-id id}))
+  (entity/fetch-one Activity {:id id}))
 
 (defn show
   [id]

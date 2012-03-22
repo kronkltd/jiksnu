@@ -120,7 +120,7 @@ this is for OSW
 (defaction create
   "create an activity"
   [{id :id :as params}]
-  (if (or (not id) (model.activity/fetch-by-remote-id id))
+  (if (or (empty? id) (not (model.activity/fetch-by-remote-id id)))
     (model.activity/create params)
     (throw (RuntimeException. "Activity already exists"))))
 
