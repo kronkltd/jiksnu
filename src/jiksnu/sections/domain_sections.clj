@@ -2,7 +2,7 @@
   (:use (ciste [debug :only [spy]]
                [sections :only [defsection]] )
         ciste.sections.default
-        (jiksnu [session :only [is-admin?]]
+        (jiksnu [session :only [current-user is-admin?]]
                 [views :only [control-line]]))
   (:require (jiksnu.sections [link-sections :as sections.link]))
   (:import jiksnu.model.Domain))
@@ -69,7 +69,7 @@
       [:li (discover-button domain)]])
    (when (seq (:links domain))
      (sections.link/index-section (:links domain)))
-   #_(discover-button domain)])
+   (when (current-user) (discover-button domain))])
 
 (defsection index-line [Domain :html]
   [domain & _]
