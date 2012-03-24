@@ -38,7 +38,8 @@
   [activity]
   (let [comments (apply concat
                         (map model.activity/fetch-by-id (:comments activity))
-                        (map (fn [irt]
+                        []
+                        #_(map (fn [irt]
                                (try
                                  (actions.activity/find-or-create-by-remote-id {:id irt})
                                  (catch RuntimeException ex (log/warn ex))))

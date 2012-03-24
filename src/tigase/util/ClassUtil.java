@@ -308,7 +308,7 @@ public class ClassUtil {
         Set<Class> classes_set = new TreeSet<Class>(new ClassComparator());
         String classpath = System.getProperty("java.class.path");
 
-        System.out.println("classpath: "+classpath);
+        // System.out.println("classpath: "+classpath);
         StringTokenizer stok = new StringTokenizer(classpath, File.pathSeparator, false);
 
         while (stok.hasMoreTokens()) {
@@ -377,7 +377,7 @@ public class ClassUtil {
 
                 if (!skip_class) {
 
-                    System.out.println(new Date() + " - Class name: " + name);
+                    // System.out.println(new Date() + " - Class name: " + name);
                     Class cls = Class.forName(name, false, ClassLoader.getSystemClassLoader());
 
                     classes.add(cls);
@@ -387,7 +387,7 @@ public class ClassUtil {
             } catch (Throwable e) {
                 Throwable cause = e.getCause();
 
-                System.out.println("Class name: " + name);
+                // System.out.println("Class name: " + name);
                 e.printStackTrace();
 
                 if (cause != null) {

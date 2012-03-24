@@ -24,8 +24,12 @@
 
 (defonce auth-repository (ref nil))
 (defonce password-key "password")
-(defonce non-sasl-mechs (into-array String ["password" "digest"]))
-(defonce sasl-mechs (into-array String ["PLAIN" "DIGEST-MD5" "CRAM-MD5"]))
+(defonce non-sasl-mechs (into-array String ["password"
+                                            ;; "digest"
+                                            ]))
+(defonce sasl-mechs (into-array String ["PLAIN"
+                                        ;; "DIGEST-MD5" "CRAM-MD5"
+                                        ]))
 
 (defn user-repo
   []
@@ -85,7 +89,10 @@
 (defmethod get-data [:password]
   [user ks def]
   (log/infof "password handler - %s - %s" (pr-str ks) def)
-  (:password user))
+
+  (:password user)
+
+  )
 
 
 (defmethod get-data [:public :vcard-temp :vCard]
@@ -114,7 +121,7 @@ subnode."
   ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
      ;; TODO: implement
      (try
-       (log/info "get data - " key)
+       (log/infof "get data - %s - %s" subnode key)
        (let [user (find-user user-id)
              ks (key-seq subnode key)]
          (get-data user ks def))
@@ -198,13 +205,23 @@ of registered users"
 
 (defn -otherAuth
   [this props]
-  (log/info "other auth")
-  (.otherAuth @auth-repository props))
+  (let [mech (.get props AuthRepository/MACHANISM_KEY)]
+    (if (= mech "PLAIN")
+      (do (spy mech)
+          (log/info "other auth")
+          (.otherAuth @auth-repository (spy props))))))
 
 (defn -queryAuth
   [this props]
-  (log/info "query auth")
-  (.queryAuth @auth-repository props))
+  (let [protocol (.get props AuthRepository/PROTOCOL_KEY)]
+    (condp = protocol
+
+          AuthRepository/PROTOCOL_VAL_NONSASL (.put props AuthRepository/RESULT_KEY non-sasl-mechs)
+          AuthRepository/PROTOCOL_VAL_SASL    (.put props AuthRepository/RESULT_KEY sasl-mechs)
+          nil
+          )
+    #_(log/info "query auth"))
+  #_(.queryAuth @auth-repository (spy props)))
 
 (defn -removeData
   "removes pair (key, value) from user repository in given subnode."

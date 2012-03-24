@@ -141,7 +141,9 @@
   ([user params]
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
-         (if (:discovered domain)
+         (if-let [discovered-domain (if (:discovered domain)
+                                      domain (actions.domain/discover domain)
+                                      )]
            (or (model.user/fetch-by-remote-id id)
                (create (merge user
                               {:domain (:_id domain)}
@@ -227,8 +229,8 @@
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
-  (if-let [xrd (helpers.user/fetch-user-meta user)]
-    (let [links (model.webfinger/get-links xrd)
+  (if-let [xrd (helpers.user/fetch-user-meta (spy user))]
+    (let [links (model.webfinger/get-links (spy xrd))
           new-user (assoc user :links links)
           feed (helpers.user/fetch-user-feed new-user)
           user (merge user
