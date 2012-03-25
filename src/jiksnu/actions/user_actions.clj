@@ -57,7 +57,7 @@
           (if-let [domain-name (get-domain-name id)]
             (let [domain (model.domain/fetch-by-id domain-name)]
               (if-let [url (actions.domain/get-user-meta-url domain id)]
-                (->> (model.webfinger/fetch-host-meta url)
+                (-?>> (model.webfinger/fetch-host-meta url)
                      model.webfinger/get-identifiers
                      (map #(first (model.user/split-uri %)))
                      (filter identity)
