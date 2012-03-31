@@ -4,13 +4,16 @@
                [debug :only [spy]])
         (ciste.sections [default :only [show-section]]))
   (:require (ciste [model :as cm])
+            (clj-tigase [core :as tigase])
             (clojure [stacktrace :as stacktrace]
                      [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu [model :as model])
-            (jiksnu.actions [domain-actions :as actions.domain]
+            (jiksnu.actions [auth-actions :as actions.auth]
+                            [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
-            (jiksnu.model [user :as model.user])
+            (jiksnu.model [signature :as model.signature]
+                          [user :as model.user])
             (karras [collection :as col]))
   (:import tigase.db.AuthorizationException
            tigase.db.AuthRepository
@@ -28,48 +31,13 @@
                                             ;; "digest"
                                             ]))
 (defonce sasl-mechs (into-array String ["PLAIN"
-                                        ;; "DIGEST-MD5" "CRAM-MD5"
+                                        ;; "DIGEST-MD5"
+                                        ;; "CRAM-MD5"
                                         ]))
 
 (defn user-repo
   []
   (col/collection "user-repo"))
-
-(defn -addDataList
-  "addDataList method adds mode entries to existing data list associated with
-   given key in repository under given node path."
-  [this ^BareJID user ^String subnodes list foo]
-  ;; TODO: implement
-  (log/info "add data list")
-  (spy user)
-  (spy subnodes)
-  (spy list)
-  (spy foo)
-  )
-
-(defn -addUser
-  "This addUser method allows to add new user to repository."
-  ([this ^BareJID user]
-     (log/info "add user")
-     (let [username (.getLocalpart user)
-           domain (.getDomain user)]
-       (if (and username domain)
-         (actions.user/create {:username username :domain domain})
-         (if domain
-           (when-not (#{"vhost-manager"} domain)
-             (actions.domain/find-or-create domain))
-           (throw (RuntimeException. "Could not find domain"))))))
-  ([this ^BareJID user ^String password]
-     (log/info "addUser")
-     (spy user)
-     (spy password)))
-
-(defn -digestAuth
-  [^AuthRepository this ^BareJID user ^String digest
-   ^String id ^String alg]
-  (log/info "digest auth")
-  (.digestAuth
-   @auth-repository user digest id alg))
 
 (defn key-seq
   [subnode key]
@@ -111,68 +79,38 @@
                   {:_id (model.user/get-uri user false)})
    ks def))
 
-(defn ^String -getData
-  "returns a value associated with given key for user repository in default
-subnode."
-  ([^UserRepository this ^BareJID user ^String key]
-     (.getData this user nil key nil))
-  ([^UserRepository this ^BareJID user ^String subnode ^String key]
-     (.getData this user subnode key nil))
-  ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
-     ;; TODO: implement
-     (try
-       (log/infof "get data - %s - %s" subnode key)
-       (let [user (find-user user-id)
-             ks (key-seq subnode key)]
-         (get-data user ks def))
-       (catch Exception ex
-         (log/error ex)
-         (stacktrace/print-cause-trace ex)))))
 
-(defn -getDataList
-  "returns array of values associated with given key or null if given key does
-not exist for given user ID in given node path."
-  [^UserRepository this ^BareJID user ^String subnode ^String key]
-  ;; TODO: implement
-  (log/info "get data list")
-  ;; (spy user)
-  ;; (spy key)
-  ;; (spy subnode)
-  nil)
+;; AuthRepository
 
-(defn -getKeys
-  "returns list of all keys stored in given subnode in user repository."
-  ([^UserRepository this ^BareJID user-id]
-     (.getKeys this user-id nil))
-  ([^UserRepository this ^BareJID user ^String subnode]
-     ;; TODO: implement
-     (cm/implement
-      (log/info "get keys")
-      nil)))
+(defn -addUser
+  "This addUser method allows to add new user to repository."
+  ([this ^BareJID user]
+     (log/info "add user")
+     (let [username (.getLocalpart user)
+           domain (.getDomain user)]
+       (if (and username domain)
+         (actions.user/create {:username username :domain domain})
+         (if domain
+           (when-not (#{"vhost-manager"} domain)
+             (actions.domain/find-or-create domain))
+           (throw (RuntimeException. "Could not find domain"))))))
+  ([this ^BareJID user ^String password]
+     (log/info "addUser")
+     (spy user)
+     (spy password)))
+
+
+(defn -digestAuth
+  [^AuthRepository this ^BareJID user ^String digest
+   ^String id ^String alg]
+  (log/info "digest auth")
+  (.digestAuth @auth-repository user digest id alg))
 
 (defn ^String -getResourceUri
   "Returns a DB connection string or DB connection URI."
   [^UserRepository this]
   (log/info "get resource uri")
-  ;; TODO: implement
-  nil)
-
-(defn -getSubnodes
-  "returns list of all direct subnodes from given node."
-  ([^UserRepository this ^BareJID user-id]
-     (.getSubnodes this user-id nil))
-  ([^UserRepository this ^BareJID user-id ^String subnode]
-     (log/info "get subnodes")
-     ;; (spy user-id)
-     ;; (spy subnode)
-     nil))
-
-(defn -getUsers
-  "This method is only used by the data conversion tools."
-  [^UserRepository this]
-  (log/info "get users")
-  ;; TODO: implement
-  (actions.user/index))
+  (cm/implement))
 
 (defn ^long -getUsersCount
   "This method is only used by the server statistics component to report number
@@ -186,14 +124,6 @@ of registered users"
      (count (actions.user/index
              {:domain (spy domain)}))))
 
-
-(defn ^long -getUsersUID
-  "Returns a user unique ID number within the given repository."
-  [this ^BareJID user]
-  ;; TODO: implement
-  (log/info "get users uid")
-  (spy user))
-
 (defn -initRepository
   "The method is called to initialize the data repository."
   [this ^String resource-uri params]
@@ -203,13 +133,25 @@ of registered users"
     (dosync
      (ref-set auth-repository auth-repo))))
 
+;; logout
+
 (defn -otherAuth
   [this props]
-  (let [mech (.get props AuthRepository/MACHANISM_KEY)]
-    (if (= mech "PLAIN")
-      (do (spy mech)
-          (log/info "other auth")
-          (.otherAuth @auth-repository (spy props))))))
+  (log/info "other auth")
+  (if-let [user (let [mech (.get (spy props) AuthRepository/MACHANISM_KEY)]
+                  (if (= mech "PLAIN")
+                    (let [data (.get props "data")
+                          [_ username password] (string/split (spy (String. (model.signature/decode data) "UTF-8")) #"\u0000")]
+                      (spy (actions.auth/login (spy username) (spy password))))))]
+    (do
+      (.put props "result" nil)
+      (.put props "user-id" (tigase/bare-jid (:username user) (:domain user)))
+      true
+      )
+
+    ))
+
+;; plain auth
 
 (defn -queryAuth
   [this props]
@@ -218,10 +160,103 @@ of registered users"
 
           AuthRepository/PROTOCOL_VAL_NONSASL (.put props AuthRepository/RESULT_KEY non-sasl-mechs)
           AuthRepository/PROTOCOL_VAL_SASL    (.put props AuthRepository/RESULT_KEY sasl-mechs)
+
           nil
-          )
-    #_(log/info "query auth"))
-  #_(.queryAuth @auth-repository (spy props)))
+
+          )))
+
+(defn -removeUser
+  "allows to remove user and all his data from user repository."
+  [this ^BareJID user]
+  ;; TODO: implement
+  (log/info "remove user")
+  (cm/implement))
+
+(defn -updatePassword
+  [user password]
+  (log/info "update password")
+  (cm/implement))
+
+
+
+;; UserRepository
+
+(defn -addDataList
+  "addDataList method adds mode entries to existing data list associated with
+   given key in repository under given node path."
+  [this ^BareJID user ^String subnodes list foo]
+  ;; TODO: implement
+  (log/info "add data list")
+  (spy user)
+  (spy subnodes)
+  (spy list)
+  (spy foo)
+  (cm/implement))
+
+;; addUser
+
+(defn ^String -getData
+  "returns a value associated with given key for user repository in default
+subnode."
+  ([^UserRepository this ^BareJID user ^String key]
+     (.getData this user nil key nil))
+  ([^UserRepository this ^BareJID user ^String subnode ^String key]
+     (.getData this user subnode key nil))
+  ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
+     (try
+       (log/infof "get data - %s - %s" subnode key)
+       (let [user (find-user user-id)
+             ks (key-seq subnode key)]
+         (get-data user ks def))
+       (catch Exception ex
+         (log/error ex)
+         (stacktrace/print-cause-trace ex)))))
+
+(defn -getDataList
+  "returns array of values associated with given key or null if given key does
+not exist for given user ID in given node path."
+  [^UserRepository this ^BareJID user ^String subnode ^String key]
+  (log/info "get data list")
+  (cm/implement))
+
+(defn -getKeys
+  "returns list of all keys stored in given subnode in user repository."
+  ([^UserRepository this ^BareJID user-id]
+     (.getKeys this user-id nil))
+  ([^UserRepository this ^BareJID user ^String subnode]
+     (log/info "get keys")
+     (cm/implement)))
+
+;; getResourceUri
+
+(defn -getSubnodes
+  "returns list of all direct subnodes from given node."
+  ([^UserRepository this ^BareJID user-id]
+     (.getSubnodes this user-id nil))
+  ([^UserRepository this ^BareJID user-id ^String subnode]
+     (log/info "get subnodes")
+     (cm/implement nil)))
+
+(defn ^long -getUsersUID
+  "Returns a user unique ID number within the given repository."
+  [this ^BareJID user]
+  ;; TODO: implement
+  (log/info "get users uid")
+  ;; this should return the :_id
+  (cm/implement
+   (spy user)))
+
+(defn -getUsers
+  "This method is only used by the data conversion tools."
+  [^UserRepository this]
+  (log/info "get users")
+  ;; TODO: implemen
+  ;; Should be get userst
+  (actions.user/index))
+
+;; getUsersCount
+
+;; initRepository
 
 (defn -removeData
   "removes pair (key, value) from user repository in given subnode."
@@ -233,7 +268,7 @@ of registered users"
      ;; (spy user-id)
      ;; (spy key)
      ;; (spy subnode)
-     ))
+     (cm/implement)))
 
 (defn -removeSubnode
   "removes given subnode with all subnodes in this node and all data stored in
@@ -244,19 +279,10 @@ this node and in all subnodes."
   (log/info "remove subnode")
   ;; (spy user)
   ;; (spy subnode)
+  (cm/implement)
   )
 
-(defn -removeUser
-  "allows to remove user and all his data from user repository."
-  [this ^BareJID user]
-  ;; TODO: implement
-  (log/info "remove user")
-  ;; (spy user)
-  )
-
-(declare get-id)
-(declare get-domain)
-(declare set-key)
+;; removeUser
 
 (defn -setData
   "sets data value for given user ID in repository under given node path and
@@ -270,9 +296,8 @@ associates it with given key."
      ;; (spy subnode)
      ;; (spy key)
      ;; (spy value)
-
+     (cm/implement)
      ))
-
 
 (defn -setDataList
   "sets list of values for given user associated given key in repository under
@@ -280,13 +305,7 @@ given node path."
   [this ^BareJID user ^String subnode ^String key list]
   (log/info "set data list")
   ;; TODO: implement
-  )
-
-(defn -updatePassword
-  [user password]
-  (log/info "update password")
-  ;; (spy user)
-  ;; (spy password)
+  (cm/implement)
   )
 
 (defn -userExists
