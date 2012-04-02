@@ -104,7 +104,6 @@
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
   [xrd]
-  (spy (.toXML xrd))
   (->> (concat (model/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
                (model/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))

@@ -99,9 +99,9 @@
          (model/drop-all!)
          (let [user (factory User)
                person (with-context [:http :atom] (show-section user))
-               response (person->user (spy person))]
+               response (person->user person)]
            
-           (spy response) => (partial instance? User)
+           response => (partial instance? User)
            (:username response) => (:username user)
            ;; (:id response) => (:id user)
            (:domain response) => (:domain user)))))
@@ -115,8 +115,8 @@
                person (.newAuthor abdera/*abdera-factory*)]
            (doto person
              (.setUri uri))
-           (let [response (person->user (spy person))]
-             (spy response) => (partial instance? User)
+           (let [response (person->user person)]
+             response => (partial instance? User)
              (:username response) => "bob" #_(:username user)
              (:id response) => uri
              (:domain response) => domain-name))

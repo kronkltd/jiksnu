@@ -2,7 +2,7 @@
   :description "distributed social network"
   :url "https://github.com/duck1123/jiksnu"
   :dependencies [
-                 [aleph "0.2.1-alpha2-SNAPSHOT"]
+                 [aleph "0.2.1-beta2"]
                  [ciste "0.3.0-SNAPSHOT"]
                  [clj-factory "0.2.0"]
                  [clj-http "0.3.2"]
