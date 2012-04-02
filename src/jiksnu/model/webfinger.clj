@@ -25,9 +25,7 @@
           "xmlns:hm" namespace/host-meta}
    ["hm:Host" domain]
    ["Link" {"rel" "lrdd"
-            "template" (str "http://"
-                            domain
-                            "/main/xrd?uri={uri}")}
+            "template" (str "http://" domain "/main/xrd?uri={uri}")}
     ["Title" {} "Resource Descriptor"]]])
 
 (defn user-meta
