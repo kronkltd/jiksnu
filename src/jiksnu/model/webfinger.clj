@@ -5,8 +5,9 @@
         ciste.sections.default
         (clojure.core [incubator :only [-?>]]))
   (:require (ciste [model :as cm])
-            (clojure.tools [logging :as log]) (jiksnu [model :as model]
-                                                      [namespace :as namespace])
+            (clojure.tools [logging :as log])
+            (jiksnu [model :as model]
+                    [namespace :as namespace])
             (jiksnu.model [signature :as model.signature]
                           [user :as model.user]))
   (:import java.net.URI))
