@@ -4,6 +4,7 @@
 .gems
 .lein-deps-sum
 .lein-failures
+.lein-plugins
 .project
 .settings
 .vagrant

@@ -118,20 +118,12 @@
                person (.newAuthor abdera/*abdera-factory*)]
            (doto person
              (.setUri uri))
-           (person->user person) => (partial instance? User)
-           (person->user person) => (contains {:username "bob"})
-           (person->user person) => (contains {:id uri})
-           (person->user person) => (contains {:domain domain-name})
+           ;; (person->user person) => (partial instance? User)
+           (person->user person) => (contains {:id uri
+                                               :domain domain-name
+                                               :username "bob"})
            (provided
-             (get-username anything) => "bob"
-             
-             )
-
-           ))
-       
-       ))
-
-   )
+             (get-username anything) => "bob"))))))
  
  (fact "#'find-or-create-by-remote-id"
    (let [username (fseq :username)

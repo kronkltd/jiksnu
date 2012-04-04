@@ -31,15 +31,6 @@
                  ;; [solrclj "0.1.2"]
                  [xml-picker-seq "0.0.2"]
                  ]
-  :dev-dependencies [
-                     [midje "1.3.2-SNAPSHOT"]
-                     [ring-mock "0.1.1"]
-                     [lein-cljsbuild "0.1.2"]
-                     [lein-midje "1.0.8"]
-                     [clj-webdriver "0.6.0-alpha4"]
-                     [fluentsoftware/lein-cucumber "1.0.0-SNAPSHOT"]
-                     ]
-  :java-source-path "src"
   :exclusions [
                com.rabbitmq/amqp-client
                org.apache.abdera/abdera-core
@@ -48,19 +39,19 @@
                org.slf4j/slf4j-nop
                ring/ring-jetty-adapter
                ]
-  :hooks [leiningen.cljsbuild]
+  ;; :hooks [leiningen.cljsbuild]
   :aot [
         jiksnu.xmpp.plugin
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
-  :cljsbuild {:builds [{:source-path "src-cljs"
-                        :compiler {
-                                   :output-to "resources/public/cljs/bootstrap.js"
-                                   :output-dir "resources/public/cljs"
-                                   :optimizations :whitespace
-                                   :pretty-print true
-                                   }}]}
+  :cljsbuild {:builds
+              [{:source-path "src-cljs"
+                :compiler
+                {:output-to "resources/public/cljs/bootstrap.js"
+                 :output-dir "resources/public/cljs"
+                 :optimizations :whitespace
+                 :pretty-print true}}]}
   :main ciste.runner
   :jvm-opts [
              "-server"
@@ -75,4 +66,35 @@
                  "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"
                  }
   :warn-on-reflection false
+
+  ;; :min-lein-version "2.0.0"
+
+  ;; :dev-dependencies [
+  ;;                    [midje "1.3.2-SNAPSHOT"]
+  ;;                    [ring-mock "0.1.1"]
+  ;;                    ;; [lein-cljsbuild "0.1.2"]
+  ;;                    [lein-midje "1.0.8"]
+  ;;                    [clj-webdriver "0.6.0-alpha4"]
+  ;;                    [lein-cucumber "1.0.0.mva7-SNAPSHOT"]
+  ;;                    ]
+
+  :profiles {:dev
+             {
+              ;; :resource-paths ["test-resources"],
+              :dependencies
+              [[midje "1.3.2-SNAPSHOT"]
+               [ring-mock "0.1.1"]
+               [clj-webdriver "0.6.0-alpha4"]]}}
+
+  :plugins [
+               [lein-cljsbuild "0.1.5"]
+               [rplevy-draker/lein-cucumber "1.0.0.M1-SNAPSHOT"]  
+               [lein-midje "2.0.0-SNAPSHOT"]
+
+            ]
+  ;; :java-source-path "src"
+  ;; :java-source-path ["src"]
+
+  
   )
+
