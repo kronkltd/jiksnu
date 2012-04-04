@@ -104,7 +104,7 @@
                    :armored-e armored-e})]
          (signature-valid? val-env2 key) => truthy))))
 
- (fact "#'decode-envelope"
+ (future-fact "#'decode-envelope"
    (fact "should return a string"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (decode-envelope envelope) => string?)))
@@ -114,7 +114,7 @@
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (extract-activity (spy envelope))) => model/activity?))
 
- (fact "#'stream->envelope"
+ (future-fact "#'stream->envelope"
    (fact "should return an envelope"
      (stream->envelope (valid-envelope-stream)) => map?))
 

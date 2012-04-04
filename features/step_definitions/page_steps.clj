@@ -1,9 +1,9 @@
 (use 'jiksnu.features-helper)
 
-(Before
+(Before []
  (before-hook))
 
-(After
+(After []
  (after-hook))
 
 
