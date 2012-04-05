@@ -44,8 +44,8 @@
   []
   (try
     (let [browser (w/new-driver {:browser
-                                 ;; :htmlunit
-                                 :firefox
+                                 :htmlunit
+                                 ;; :firefox
                                  })]
       (c/load-config)
 

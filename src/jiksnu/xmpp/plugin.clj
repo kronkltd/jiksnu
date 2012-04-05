@@ -55,17 +55,14 @@
    repo queue settings]
   (if (config :print :packet)
     (spy packet))
-  (if (or true (not (.getPacketFrom packet)))
-    (let [packet-to (.getPacketTo packet)]
-      (if-not (#{"sess-man"} (.getLocalpart packet-to))
-        (if-let [to (.getStanzaTo packet)]
-          (if-let [bare-to (.getBareJID to)]
-            (let [request (packet/make-request packet)]
-              (when (config :print :request)
-                (spy request))
-              (if-let [response (main-handler queue request)]
-                (do
-                  (.setPacketTo response (.getPacketFrom packet))
-                  (offer-packet queue response))))))
-        ;; (offer-packet queue packet)
-        ))))
+  (let [packet-to (.getPacketTo packet)]
+    (if-not (#{"sess-man"} (.getLocalpart packet-to))
+      (if-let [to (.getStanzaTo packet)]
+        (if-let [bare-to (.getBareJID to)]
+          (let [request (packet/make-request packet)]
+            (when (config :print :request)
+              (spy request))
+            (if-let [response (main-handler queue request)]
+              (do
+                (.setPacketTo response (.getPacketFrom packet))
+                (offer-packet queue response)))))))))

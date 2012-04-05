@@ -165,8 +165,8 @@
 ;; TODO: move part of this to domains
 (defn user-meta-uri
   [^User user]
-  (if-let [domain (get-domain (spy user))]
-    (if-let [lrdd-link (get-link (spy domain) "lrdd" nil)]
+  (if-let [domain (get-domain user)]
+    (if-let [lrdd-link (get-link domain "lrdd" nil)]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user)))
       (throw (RuntimeException. "could not find lrdd link")))
