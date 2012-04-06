@@ -29,20 +29,41 @@
   (model.domain/update domain))
 
 (defn discover-onesocialweb
-  [domain]
+  [domain url]
   (-> domain
       model.domain/ping-request
       tigase/make-packet
       tigase/deliver-packet!)
   domain)
 
+(defn path-segments
+  [url]
+  (if url
+    (let [url-obj (URL. url)
+          path (.getPath url-obj)
+          ps (string/split path #"/")
+          bare (str "http://" (.getHost url-obj))]
+      (map #(str bare % "/")
+           (reductions (fn [s1 s2] (clojure.string/join "/" [s1 s2]))
+                       (drop-last ps))))
+    []))
+
 (defn discover-webfinger
-  [^Domain domain]
+  [^Domain domain url]
   ;; TODO: check https first
-  (if-let [xrd (-> domain
-                   model.domain/host-meta-link
-                   model.webfinger/fetch-host-meta)]
+  (if-let [xrd (first (keep
+                       (fn [url]
+                         (try
+                           (model.webfinger/fetch-host-meta url)
+                           (catch RuntimeException ex
+                             (log/error "Fetching host meta failed"))))
+                       (cons
+                        (model.domain/host-meta-link domain)
+                        (map
+                         #(str % ".well-known/host-meta")
+                         (rest (path-segments url))))))]
     (if-let [links (model.webfinger/get-links xrd)]
+      ;; TODO: do individual updates
       (update (-> domain
                   (assoc :links links)
                   (assoc :discovered true)))
@@ -57,10 +78,9 @@
 (defaction index
   []
   (model.domain/fetch-all
-   {} :sort [(sugar/asc :_id)]
-   :limit 20
-
-   ))
+   {}
+   :sort [(sugar/asc :_id)]
+   :limit 20))
 
 (defaction show
   [domain]
@@ -108,18 +128,23 @@
       model.domain/update))
 
 (defn fetch-statusnet-config
-  ([domain] (fetch-statusnet-config domain ""))
+  ([domain] (fetch-statusnet-config domain nil))
   ([domain context]
      (when-let [doc (cm/fetch-resource (str "http://" (:_id domain) context "/api/statusnet/config.json"))]
        (json/read-json doc))))
 
-(defaction discover
-  [domain]
+(defn discover-statusnet-config
+  [domain url]
   (-> domain
-      discover-onesocialweb
-      discover-webfinger
       (assoc :statusnet-config (fetch-statusnet-config domain))
       update))
+
+(defaction discover
+  [^Domain domain url]
+  (future (discover-webfinger domain url))
+  (future (discover-onesocialweb domain url))
+  (future (discover-statusnet-config domain url))
+  (model.domain/fetch-by-id (:_id domain)))
 
 (defn get-user-meta-url
   [domain user-uri]

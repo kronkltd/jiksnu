@@ -9,8 +9,7 @@
                 [session :only [current-user]])
         plaza.rdf.core
         plaza.rdf.sparql
-        plaza.rdf.vocabularies.foaf
-        )
+        plaza.rdf.vocabularies.foaf)
   (:require (aleph [http :as http])
             (ciste [model :as cm])
             (clj-tigase [core :as tigase]
@@ -19,6 +18,7 @@
             (clojure [string :as string])
             (clojure.tools [logging :as log])
             (jiksnu [abdera :as abdera]
+                    [model :as model]
                     [namespace :as namespace])
             (jiksnu.actions [domain-actions :as actions.domain])
             (jiksnu.helpers [user-helpers :as helpers.user])
@@ -29,8 +29,7 @@
             (jiksnu.xmpp [element :as xmpp.element])
             (karras [entity :as entity]
                     [sugar :as sugar])
-            (plaza.rdf [core :as rdf])
-            )
+            (plaza.rdf [core :as rdf]))
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.User
@@ -47,7 +46,6 @@
       (second (model.user/split-uri id))
       (.getHost uri))))
 
-
 (defn get-username
   [id]
   (let [uri (URI. id)]
@@ -57,11 +55,15 @@
           (if-let [domain-name (get-domain-name id)]
             (let [domain (model.domain/fetch-by-id domain-name)]
               (if-let [url (actions.domain/get-user-meta-url domain id)]
-                (-?>> (model.webfinger/fetch-host-meta url)
-                     model.webfinger/get-identifiers
-                     (map #(first (model.user/split-uri %)))
-                     (filter identity)
-                     first)
+                (let [user-meta (model.webfinger/fetch-host-meta url)]
+                  (first
+                   (concat (keep #(first (model.user/split-uri %))
+                                 (model.webfinger/get-identifiers user-meta))
+                           (keep #(.getValue %)
+                                 (model/force-coll
+                                  (cm/query
+                                   "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']"
+                                   user-meta))))))
                 (throw (RuntimeException. "Could not get user meta url"))))
             (throw (RuntimeException. "Could not determine domain name")))))))
 
@@ -142,8 +144,7 @@
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
          (if-let [discovered-domain (if (:discovered domain)
-                                      domain (actions.domain/discover domain)
-                                      )]
+                                      domain (actions.domain/discover domain id))]
            (or (model.user/fetch-by-remote-id id)
                (create (merge user
                               {:domain (:_id domain)}
@@ -229,8 +230,8 @@
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
-  (if-let [xrd (helpers.user/fetch-user-meta (spy user))]
-    (let [links (model.webfinger/get-links (spy xrd))
+  (if-let [xrd (helpers.user/fetch-user-meta user)]
+    (let [links (model.webfinger/get-links xrd)
           new-user (assoc user :links links)
           feed (helpers.user/fetch-user-feed new-user)
           user (merge user

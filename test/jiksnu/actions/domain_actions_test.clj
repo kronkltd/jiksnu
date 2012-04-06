@@ -15,8 +15,6 @@
 (test-environment-fixture
 
  (fact "#'create"
-   ()
-
    (fact "should create the domain"
      (let [options {:_id (fseq :domain)}]
        (create options) => model/domain?)))
@@ -40,20 +38,66 @@
          (show domain) => nil?))))
  
  (fact "#'discover-onesocialweb"
-   (fact "should send a packet to that domain"
-     (let [action #'discover
-           domain (model.domain/create (factory Domain))]
-       (discover-onesocialweb domain) => domain)
-     (provided
-       (deliver-packet! anything) => nil :times 1)))
+   (fact "when there is no url context"
+     (fact "should send a packet to that domain"
+       (let [action #'discover
+             domain (model.domain/create (factory Domain))
+             url nil]
+         (discover-onesocialweb domain url) => domain)
+       (provided
+         (deliver-packet! anything) => nil :times 1)))
+   (fact "when there is a url context"
+     (fact "should send a packet to that domain"
+       (let [action #'discover
+             domain (model.domain/create (factory Domain))
+             url (str "http://" (:_id domain) "/status/users/1")]
+         (discover-onesocialweb domain url) => domain)
+       (provided
+         (deliver-packet! anything) => nil :times 1))))
+
+ (fact "#'path-segments"
+   (path-segments "http://example.com/status/users/1") =>
+   '("http://example.com/"
+     "http://example.com/status/"
+     "http://example.com/status/users/"))
 
  (fact "#'discover-webfinger"
-   (let [domain (model.domain/create (factory Domain))]
-     (discover-webfinger domain) => (contains {:_id (:_id domain)} )
-     (provided
-       (model.webfinger/fetch-host-meta anything) =>
-       (cm/string->document "<XRD/>"))))
-
+   (fact "when there is no url context"
+     (let [domain (model.domain/create (factory Domain))
+           url nil]
+       (discover-webfinger domain url) => (contains {:_id (:_id domain)})
+       (provided
+         (model.webfinger/fetch-host-meta anything) => (cm/string->document "<XRD/>"))))
+   (fact "when there is a url context"
+     (fact "and the bare domain has a host-meta"
+       (let [domain (model.domain/create (factory Domain))
+             url (str "http://" (:_id domain) "/status/users/1")]
+         (discover-webfinger domain url) => (contains {:_id (:_id domain)})
+         (provided
+           (model.webfinger/fetch-host-meta anything) => (cm/string->document "<XRD/>"))))
+     (fact "and the bare domain does not have a host meta"
+       (fact "and none of the subpaths have host metas"
+         (fact "should raise an exception"
+           (let [domain (model.domain/create (factory Domain))
+                 url (str "http://" (:_id domain) "/status/users/1")
+                 hm-bare (str "http://" (:_id domain) "/.well-known/host-meta")
+                 hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")]
+             (discover-webfinger domain url) => (throws RuntimeException)
+             (provided
+               (model.webfinger/fetch-host-meta hm-bare) => nil
+               (model.webfinger/fetch-host-meta hm1) => nil))))
+       (fact "and one of the subpaths has a host meta"
+         (fact "should update the host meta path"
+           (let [domain (model.domain/create (factory Domain))
+                 url (str "http://" (:_id domain) "/status/users/1")
+                 hm-bare (str "http://" (:_id domain) "/.well-known/host-meta")
+                 hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")]
+             (discover-webfinger domain url) => (contains {:discovered true
+                                                           :_id (:_id domain)})
+             (provided
+               (model.webfinger/fetch-host-meta hm-bare) => nil
+               (model.webfinger/fetch-host-meta hm1) => (cm/string->document "<XRD/>"))))))))
+ 
  (fact "#'get-user-meta-url"
    (fact "when the domain doesn't exist"
      (fact "should return nil"
