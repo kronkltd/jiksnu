@@ -9,6 +9,7 @@
             (clojure.tools [logging :as log])
             (jiksnu [namespace :as namespace])
             (jiksnu.actions [activity-actions :as actions.activity]
+                            [auth-actions :as actions.auth]
                             [stream-actions :as actions.stream]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
@@ -66,6 +67,7 @@
 
 (defn register-trigger
   [action params user]
+  (actions.auth/add-password user (-> params first :password))
   (model.signature/generate-key-for-user user))
 
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)

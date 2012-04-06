@@ -340,21 +340,16 @@
     (if (and username password)
       (let [user (model.user/get-user username)]
         (if-not user
-          (let [user (-> {:username username
-                          :domain (config :domain)
-                          :discovered true
-                          :id (str "acct:" username "@" (config :domain))
-                          :local true}
-                         (merge (when email {:email email})
-                                (when display-name {:display-name display-name})
-                                (when bio {:bio bio})
-                                (when location {:location location}))
-                         create)]
-            ;; TODO: make a trigger
-            ;; (actions.auth/add-password user password)
-
-            ;; return the created user
-            user)
+          (-> {:username username
+               :domain (config :domain)
+               :discovered true
+               :id (str "acct:" username "@" (config :domain))
+               :local true}
+              (merge (when email {:email email})
+                     (when display-name {:display-name display-name})
+                     (when bio {:bio bio})
+                     (when location {:location location}))
+              create)
           (throw (IllegalArgumentException. "user already exists"))))
       (throw (IllegalArgumentException. "Missing required params")))
     (throw (IllegalArgumentException. "you didn't check the box"))))

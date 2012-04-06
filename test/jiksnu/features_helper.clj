@@ -3,8 +3,9 @@
                formats)
         (ciste [debug :only [spy]]
                [model :only [implement]])
-        ciste.sections.default
-        (clj-factory [core :only [factory]])
+        ;; ciste.sections.default
+        (clj-factory [core :only [factory fseq]])
+        clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
         jiksnu.features-helper
         midje.sweet
@@ -12,12 +13,14 @@
   (:require (ciste [config :as c]
                    [core :as core]
                    [runner :as runner])
+            (ciste.sections [default :as sections])
             (ciste.service [aleph :as aleph])
             [clj-webdriver.core :as w]
             (clojure [string :as string])
             [clojure.tools.logging :as log]
             (jiksnu [model :as model]
                     factory
+                    routes
                     [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity]
                             [domain-actions :as actions.domain]
@@ -38,10 +41,11 @@
 (def that-activity (ref nil))
 (def that-domain (ref nil))
 (def that-user (ref nil))
-
+(def my-password (ref nil))
 
 (defn before-hook
   []
+  (log/info "before")
   (try
     (let [browser (w/new-driver {:browser
                                  :htmlunit
@@ -50,21 +54,25 @@
       (c/load-config)
 
       (c/set-environment! :test)
-      
+      (c/set-config! [:domain] (str domain ":" port))
       (model/drop-all!)
+
+      (set-driver! {:browser :firefox})
       
       (let [srv (aleph/start)]
         (dosync
-         (ref-set current-browser browser)
          (reset! server srv))))
     (catch Exception ex
       (log/error ex))))
 
 (defn after-hook
   []
+  (log/info "after"
+   )
   (try
     (@server)
-    (w/quit @current-browser)
+    (quit)
+    
     (println " ")
     #_(shutdown-agents)
     (catch Exception ex
@@ -105,7 +113,7 @@
 
 (defn fetch-page-browser
   [method path]
-  (w/get-url @current-browser (expand-url path)))
+  (to (expand-url path)))
 
 (defn get-body
   []
@@ -133,13 +141,16 @@
   (do-login))
 
 (defn a-user-exists
-  ([] (a-user-exists {:discovered true
-                      :password "hunter2"}))
-  ([opts]
-     (let [;; domain (actions.domain/current-domain)
-           user (model.user/create
-                 (factory :local-user opts))]
+  ([] (a-user-exists {:discovered true} "hunter2"))
+  ([opts password]
+     (let [user (actions.user/register
+                 {:username (fseq :username)
+                  :password password
+                  :display-name (fseq :name)
+                  :accepted true
+                  })]
        (dosync
+        (ref-set my-password password)
         (ref-set that-user user)))))
 
 (defn a-user-exists-with-password
@@ -166,7 +177,7 @@
   (a-user-exists)
   (-> @that-user
       (assoc :admin true)
-      model.user/update
+      actions.user/update
       session/set-authenticated-user!)
   (do-login))
 
@@ -181,13 +192,12 @@
     "show"
     (check-response
      (let [url (:_id @that-domain)]
-       (w/find-element @current-browser url) => w/exists?))))
+       ;; TODO: Identify the domain link
+       (find-element url) => truthy))))
 
 (defn do-click-button
   [class-name]
-  (-> @current-browser
-      (w/find-element {:class (str class-name "-button")})
-      w/click))
+  (click (str "#" class-name "-button")))
 
 (defn do-click-button-for-domain
   [class-name]
@@ -204,9 +214,7 @@
 
 (defn do-enter-field
   [value field-name]
-  (-> @current-browser
-      (w/find-element {:name field-name})
-      (w/send-keys value)))
+  (input-text (str "input[name='" field-name "']") value))
 
 (defn do-enter-password
   []
@@ -227,17 +235,11 @@
 
 (defn do-login
   []
-  (-> @current-browser
-      (w/to (expand-url "/main/login")))
-  (-> @current-browser
-      (w/find-element {:name "username"})
-      (w/input-text (-> @that-user :username)))
-  (-> @current-browser
-      (w/find-element {:name "password"})
-      (w/input-text (-> @that-user :password)))
-  (-> @current-browser
-      (w/find-element {:value "Login"})
-      w/click)
+  (to (expand-url "/main/login"))
+
+  (input-text "input[name='username']" (:username @that-user))
+  (input-text "input[name='password']" @my-password)
+  (click "input[type='submit']")
   (session/set-authenticated-user! @that-user))
 
 (defn do-wait
@@ -271,7 +273,7 @@
 (defn get-not-found-error
   []
   (check-response
-   (w/page-source @current-browser) => #"Not Found"))
+   (page-source) => #"Not Found"))
 
 (defn go-to-the-page
   [page-name]
@@ -283,7 +285,7 @@
   [page-name]
   (condp = page-name
     "show" (core/with-context [:html :http]
-             (let [path (uri @that-activity)]
+             (let [path (sections/uri @that-activity)]
                (fetch-page-browser :get path)))))
 
 (defn go-to-the-page-for-domain
@@ -372,19 +374,19 @@
   [page-name]
   (check-response
    (let [path (get page-names page-name)]
-     (w/current-url @current-browser) => (re-pattern
-                                          (str ".*" (expand-url path)
-                                               ".*")))))
+     (current-url) => (re-pattern
+                       (str ".*" (expand-url path)
+                            ".*")))))
 
 (defn should-be-logged-in
   []
   (check-response
-   (w/find-element @current-browser {:class "authenticated"}) => w/exists?))
+   (exists? ".authenticated") => truthy))
 
 (defn should-see-a-activity
   []
   (check-response
-   (w/find-element @current-browser {:class "activities"}) => truthy))
+   (exists? ".activities") => truthy))
 
 (defn should-have-content-type
   [type]
@@ -400,18 +402,17 @@
 (defn should-have-field
   [field-name]
   (check-response
-   (w/find-element @current-browser {:name field-name}) => w/exists?))
+   (exists? (str "*[name='" field-name "']")) => truthy))
 
 (defn should-not-be-logged-in
   []
   (check-response
-   (w/find-element @current-browser {:class "unauthenticated"}) => w/exists?))
+   (exists? ".unauthenticated") => truthy))
 
 (defn should-not-see-class
   [class-name]
   (check-response
-   (w/find-element @current-browser
-                   {:class class-name}) =not=> w/exists?))
+   (exists? (str "." class-name)) =not=> truthy))
 
 (defn should-receive-activity
   []
@@ -448,7 +449,7 @@
 (defn should-see-list
   [class-name]
   (check-response
-   (w/find-element @current-browser {:class class-name}) => truthy))
+   (exists? (spy (str "." class-name))) => truthy))
 
 (defn should-see-subscription-list
   []

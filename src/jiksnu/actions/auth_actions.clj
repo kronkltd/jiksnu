@@ -23,7 +23,7 @@
     (if-let [mechanisms (model.authentication-mechanism/fetch-all
                       {:user (:_id user)})]
       (if (some #(BCrypt/checkpw password (:value %))
-                (spy mechanisms))
+                mechanisms)
         user
         (do (log/error "passwords do not match")
             (throw (LoginException. "passwords do not match"))))

@@ -1,4 +1,5 @@
 (use 'jiksnu.features-helper)
+(use '(ciste [debug :only [spy]]))
 
 (Before []
  (before-hook))
