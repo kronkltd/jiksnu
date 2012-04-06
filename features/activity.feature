@@ -3,7 +3,6 @@ Feature: Activities
   As a user
   I want to be able to perform management tasks
 
-@focus
 Scenario: Viewing a public activity, unauthenticated
   Given I am not logged in
   And there is a public activity
