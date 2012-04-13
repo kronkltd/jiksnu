@@ -57,8 +57,10 @@
               (if-let [url (actions.domain/get-user-meta-url domain id)]
                 (let [user-meta (model.webfinger/fetch-host-meta url)]
                   (first
-                   (concat (keep #(first (model.user/split-uri %))
-                                 (model.webfinger/get-identifiers user-meta))
+                   (concat (try (keep #(first (model.user/split-uri %))
+                                      (model.webfinger/get-identifiers user-meta))
+                                (catch RuntimeException ex
+                                  (log/warn "caught error")))
                            (keep #(.getValue %)
                                  (model/force-coll
                                   (cm/query
