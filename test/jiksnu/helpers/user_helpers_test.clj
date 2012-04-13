@@ -6,24 +6,32 @@
         jiksnu.helpers.user-helpers)
   (:require (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
-            (jiksnu.model [user :as model.user]))
-  (:import jiksnu.model.User))
+            (jiksnu.model [domain :as model.domain]
+                          [user :as model.user]
+                          [webfinger :as model.webfinger]))
+  (:import jiksnu.model.Domain
+           jiksnu.model.User))
 
 (test-environment-fixture
 
- (background
-  (around :facts
-          (let [actor (factory User)]
-            ?form)))
-
- (fact "fetch-user-meta"
-   (fact "should return an xml stream"
-     (let [user (actions.user/create (factory User {:domain "kronkltd.net"}))
-           domain (model.user/get-domain user)]
-       (actions.domain/update
-        (assoc domain :links
-               [{:rel "lrdd"
-                 :template (str "http://" (:_id domain)
-                                "/main/xrd?uri={uri}")}]))
-       (fetch-user-meta user)) => nil)))
+ 
+ (fact "#'fetch-user-meta"
+   (fact "when the user has a user meta link"
+    (fact "when the user meta can be found"
+      (fact "should return a xml stream"
+        (fetch-user-meta .user.) => truthy
+        (provided
+          (model.user/user-meta-uri .user.) => .url.
+          (model.webfinger/fetch-host-meta .url.) => truthy)))
+    (fact "when the user meta can not be found"
+      (fact "should return an xml stream"
+        (fetch-user-meta .user.) => nil
+        (provided
+          (model.user/user-meta-uri .user.) => .url.
+          (model.webfinger/fetch-host-meta .url.) => nil))))
+   (fact "when the user does not have a user meta link"
+     (fact "should throw an exception"
+       (fetch-user-meta .user.) => (throws RuntimeException)
+       (provided
+         (model.user/user-meta-uri .user.) => nil)))))
 

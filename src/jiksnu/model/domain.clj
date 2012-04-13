@@ -31,7 +31,9 @@
 (defn create
   [domain]
   (if (:_id domain)
-    (entity/create Domain domain)
+    (do
+      (log/debugf "Creating domain %s" (:_id domain))
+      (entity/create Domain domain))
     (throw (IllegalArgumentException.
             (str "Domain must have id: " domain)))))
 

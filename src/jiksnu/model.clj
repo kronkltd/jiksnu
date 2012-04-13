@@ -195,8 +195,8 @@
 
 (defn ^ObjectId make-id
   "Create an object id from the provided string"
-  [^String id]
-  (ObjectId. id))
+  ([] (ObjectId.))
+  ([^String id] (ObjectId. id)))
 
 ;; this could be more generic
 (defn extract-atom-link

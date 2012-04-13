@@ -141,6 +141,7 @@
 
 (defaction discover
   [^Domain domain url]
+  (log/debugf "discovering domain - %s" (:_id domain))
   (future (discover-webfinger domain url))
   (future (discover-onesocialweb domain url))
   (future (discover-statusnet-config domain url))

@@ -76,10 +76,13 @@
 (defn create
   [user]
   (if user
-    (let [{:keys [username domain]} user]
+    (let [id (make-id)
+          {:keys [username domain]} user]
       (if (and (and username (not= username ""))
                (and domain (not= domain "")))
-        (entity/create User user)
+        (do
+          (log/debugf "Creating user: %s@%s" username domain)
+          (entity/create User (assoc user :_id id)))
         (throw (IllegalArgumentException.
                 "Users must contain both a username and a domain"))))
     (throw (IllegalArgumentException. "Can not create nil users"))))
