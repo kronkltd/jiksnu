@@ -43,6 +43,8 @@
 (def that-user (ref nil))
 (def my-password (ref nil))
 
+(set-driver! {:browser :firefox})
+      
 (defn before-hook
   []
   (log/info "before")
@@ -57,8 +59,6 @@
       (c/set-config! [:domain] (str domain ":" port))
       (model/drop-all!)
 
-      (set-driver! {:browser :firefox})
-      
       (let [srv (aleph/start)]
         (dosync
          (reset! server srv))))
@@ -71,7 +71,7 @@
    )
   (try
     (@server)
-    (quit)
+    ;; (quit)
     
     (println " ")
     #_(shutdown-agents)
