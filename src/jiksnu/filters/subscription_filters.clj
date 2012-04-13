@@ -13,7 +13,8 @@
 (deffilter #'delete :http
   [action request]
   (let [{{id :id} :params} request]
-    (action id)))
+    (if-let [subscription (model.subscription/fetch-by-id id)]
+      (action subscription))))
 
 (deffilter #'ostatus :http
   [action request]
@@ -34,8 +35,9 @@
 
 (deffilter #'subscribe :http
   [action request]
-  (-?>> request :params :subscribeto
-        model.user/fetch-by-id (action (current-user))))
+  (if-let [actor (current-user)]
+    (-?>> request :params :subscribeto
+          model.user/fetch-by-id (action actor))))
 
 (deffilter #'get-subscribers :http
   [action request]
@@ -85,12 +87,12 @@
 
 (deffilter #'get-subscribers :xmpp
   [action request]
-  (let [user (actions.user/fetch-by-jid (:to request))]
+  (if-let [user (actions.user/fetch-by-jid (:to request))]
     (action user)))
 
 (deffilter #'get-subscriptions :xmpp
   [action request]
-  (let [user (actions.user/fetch-by-jid (:to request))]
+  (if-let [user (actions.user/fetch-by-jid (:to request))]
     (action user)))
 
 (deffilter #'unsubscribe :xmpp

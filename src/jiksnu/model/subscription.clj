@@ -17,6 +17,10 @@
   [args]
   (entity/fetch-one Subscription args))
 
+(defn fetch-by-id
+  [id]
+  (entity/fetch-by-id Subscription id))
+
 (defn fetch-all
   "Fetch all users"
   ([] (fetch-all {}))
