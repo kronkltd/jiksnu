@@ -1,5 +1,8 @@
 (use 'jiksnu.features-helper)
 (use '(ciste [debug :only [spy]]))
+(use 'clj-webdriver.taxi)
+
+(set-driver! {:browser :firefox})
 
 (Before []
  (before-hook))

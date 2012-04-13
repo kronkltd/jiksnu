@@ -43,7 +43,6 @@
 (def that-user (ref nil))
 (def my-password (ref nil))
 
-(set-driver! {:browser :firefox})
       
 (defn before-hook
   []
