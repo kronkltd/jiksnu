@@ -44,6 +44,14 @@
   [n]
   (str "http://" (fseq :domain) "/" n))
 
+(defseq :title
+  [n]
+  (str n "th post!"))
+
+(defseq :summary
+  [n]
+  (str n "th post!"))
+
 (defseq :word
   [n]
   (str "word" n))
@@ -80,8 +88,8 @@
 
 (deffactory Activity
   {:id #'abdera/new-id
-   :title (fseq :word)
-   :summary (fseq :word)
+   :title (fseq :title)
+   :summary (fseq :summary)
    :author (:_id (model.user/create (factory :user)))
    :published #'sugar/date
    :verb "post"

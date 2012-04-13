@@ -30,5 +30,4 @@ Scenario: User timeline, HTML, unauthenticated
   And a user exists
   And that user posts an activity
   When I go to the "user timeline" page for that user
-  Then I should wait forever
   Then I should see that activity

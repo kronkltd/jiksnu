@@ -299,6 +299,7 @@
   [page-name]
   (condp = page-name
     "show" (fetch-page-browser :get (str "/main/users/" (:_id @that-user)))
+    "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username @that-user) "@" (:domain @that-user)))
     "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscriptions"))
     "subscribers" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscribers"))
     (implement)))
@@ -424,9 +425,7 @@
 (defn should-see-activity
   []
   (check-response
-   (w/find-element @current-browser
-                   {:tag :article
-                    :id (str (:_id @that-activity))}) => w/exists?))
+   (exists? (str "article[id='" (:_id @that-activity) "']")) => truthy))
 
 (defn should-see-domain
   []
@@ -457,13 +456,14 @@
 
 (defn there-is-an-activity
   [modifier]
-  (core/with-context [:html :http]
-    (let [activity (model.activity/create
-                    (factory Activity
-                             {:public (= modifier "public")}))]
-      (dosync
-       (ref-set that-activity activity)))))
+  (let [activity (actions.activity/create
+                  (factory Activity
+                           {:author (session/current-user-id)
+                            :public (= modifier "public")}))]
+    (dosync
+     (ref-set that-activity activity))))
 
 (defn user-posts-activity
   []
-  (implement))
+  (session/with-user @that-user
+    (there-is-an-activity "public")))
