@@ -2,7 +2,7 @@
   (:use (ciste [config :only [config]]
                [debug :only [spy]]
                sections)
-        ciste.sections.default
+        [ciste.sections.default :only [full-uri]]
         (clojure.core [incubator :only [-?>]]))
   (:require (ciste [model :as cm])
             (clojure.tools [logging :as log])
