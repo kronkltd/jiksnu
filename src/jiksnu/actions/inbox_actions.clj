@@ -1,7 +1,6 @@
 (ns jiksnu.actions.inbox-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]])
-        jiksnu.model)
+               [core :only [defaction]]))
   (:require (jiksnu.model [item :as model.item])))
 
 (defaction index
