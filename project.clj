@@ -3,7 +3,7 @@
   :url "https://github.com/duck1123/jiksnu"
   :min-lein-version "2.0.0"
   :dependencies [
-                 [aleph "0.2.1-beta2"]
+                 [aleph "0.3.0-alpha1"]
                  [ciste "0.3.0-SNAPSHOT"]
                  [clj-factory "0.2.0"]
                  [clj-http "0.3.2"]
