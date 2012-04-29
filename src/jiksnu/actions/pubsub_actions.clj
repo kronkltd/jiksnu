@@ -5,7 +5,8 @@
   (:require (aleph [http :as http])
             (clojure [string :as string])
             (clojure.tools [logging :as log])
-            (lamina [core :as l])
+            (lamina [core :as l]
+                    [executor :as e])
             (jiksnu [model :as model])
             (jiksnu.actions [feed-source-actions :as actions.feed-source])
             (jiksnu.model [feed-source :as model.feed-source])))
@@ -62,7 +63,7 @@
 
 (defaction verify-subscription-async
   [subscription]
-  (l/task
+  (e/task
    (verify-subscribe-sync subscription)))
 
 ;; TODO: extract hub params in filter
