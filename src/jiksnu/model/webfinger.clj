@@ -30,63 +30,27 @@
     ["Title" {} "Resource Descriptor"]]])
 
 (defn user-meta
-  [user]
+  [lrdd]
   ["XRD" {"xmlns" namespace/xrd}
-   ["Subject" {} (model.user/get-uri user)]
-   ["Alias" {} (full-uri user)]
+   ["Subject" {} (:subject lrdd)]
+   ["Alias" {} (:alias lrdd)]
 
    ;; Pull the links from a global ref that various plugins can write to
-   
-   ["Link" {"rel" "http://webfinger.net/rel/profile-page"
-            "type" "text/html"
-            "href" (full-uri user)}]
-
-   ["Link" {"rel" "http://microformats.org/profile/hcard"
-            "type" "text/html"
-            "href" (full-uri user)}]
-
-   ["Link" {"rel" "http://gmpg.org/xfn/11"
-            "type" "text/html"
-            "href" (full-uri user)}]
-
-   ["Link" {"rel" "http://schemas.google.com/g/2010#updates-from"
-            "type" "application/atom+xml"
-            "href" (str "http://" (config :domain)
-                        "/api/statuses/user_timeline/"
-                        (:_id user)
-                        ".atom")}]
-
-   ["Link" {"rel" "describedby"
-            "type" "application/rdf+xml"
-            "href" (str (full-uri user) ".rdf")}]
-
-   ["Link" {"rel" "salmon"
-            "href" (model.user/salmon-link user)}]
-
-   ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-replies"
-            "href" (model.user/salmon-link user)}]
-
-   ["Link" {"rel" "http://salmon-protocol.org/ns/salmon-mention"
-            "href" (model.user/salmon-link user)}]
-
-   ["Link" {"rel" "magic-public-key"
-            "href" (-> user
-                       model.signature/get-key-for-user
-                       model.signature/magic-key-string)}]
-
-   ["Link" {"rel" "http://ostatus.org/schema/1.0/subscribe"
-            "template" (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}]
-
-   ["Link" {"rel" "http://specs.openid.net/auth/2.0/provider"
-            "href" (full-uri user)}]
-
-   ["Link" {"rel" "http://apinamespace.org/twitter"
-            "href" (str "http://" (config :domain) "/api/")}
-    ["Property" {"type" "http://apinamespace.org/twitter/username"}
-     (:username user)]]
-
-   ["Link" {"rel" "http://onesocialweb.org/rel/service"
-            "href" (str "xmpp:" (:username user) "@" (:domain user))}]])
+   (map
+    (fn [link]
+      ["Link"
+       (merge
+        (when (:rel link) {:rel (:rel link)})
+        (when (:type link) {:type (:type link)})
+        (when (:href link) {:href (:href link)}))
+       (map
+        (fn [property]
+          ["Property"
+           (merge
+            (when (:type property) {:type (:type property)}))
+           (:value property)])
+        (:properties link))])
+    (:links lrdd))])
 
 (defn get-links
   [xrd]

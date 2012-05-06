@@ -25,22 +25,29 @@
   [^User user]
   (model.domain/fetch-by-id (:domain user)))
 
-(defn find-record
-  [options]
-  
-  )
-
-(defn get-uri
-  ([^User user] (get-uri user true))
-  ([^User user use-scheme?]
-     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
-
 (defn local?
   [^User user]
   (or (:local user)
       (:local (get-domain user))
       ;; TODO: remove this clause
       (= (:domain user) (config :domain))))
+
+(defn get-uri
+  ([^User user] (get-uri user true))
+  ([^User user use-scheme?]
+     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
+
+(defn uri
+  "returns the relative path to the user's profile page"
+  [user]
+  (if (local? user)
+    (str "/" (:username user))
+    (str "/remote-user/" (get-uri user false))))
+
+(defn full-uri
+  "The fully qualified path to the user's profile page on this site"
+  [user]
+  (str "http://" (config :domain) (uri user)))
 
 (defn rel-filter
   "returns all the links in the collection where the rel value matches the
@@ -87,11 +94,6 @@
                 "Users must contain both a username and a domain"))))
     (throw (IllegalArgumentException. "Can not create nil users"))))
 
-;; deprecated
-(defn index
-  [& opts]
-  (entity/fetch-all User))
-
 (defn fetch-all
   "Fetch all users"
   ([] (fetch-all {}))
@@ -125,6 +127,7 @@
             (.getDomain jid)))
 
 (defn set-field
+  "Updates user's field to value"
   [user field value]
   (entity/find-and-modify
    User
@@ -132,10 +135,12 @@
    {:$set {field value}}))
 
 (defn fetch-by-uri
+  "Fetch user by their acct uri"
   [uri]
   (apply get-user (split-uri uri)))
 
 (defn fetch-by-remote-id
+  "Fetch user by their id value"
   [uri]
   (entity/fetch-one User {:id uri}))
 
@@ -146,6 +151,7 @@
         domain (tigase/get-domain user)]
     (:nodes (get-user id))))
 
+;; TODO: Should accept a user
 (defn delete
   [id]
   (entity/delete (fetch-by-id id)))

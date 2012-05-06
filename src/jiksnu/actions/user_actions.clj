@@ -107,7 +107,7 @@
 
 (defaction exists?
   [user]
-  (model.user/find-record user))
+  (model.user/fetch-by-id (:_id user)))
 
 (defn fetch-by-jid
   [jid]
@@ -176,10 +176,69 @@
     (update-hub* user feed)))
 
 (defaction user-meta
-  [uri]
-  (->> uri
-       model.user/split-uri
-       (apply model.user/get-user)))
+  "returns a user matching the uri"
+  [user]
+  (if (model.user/local? user)
+    (let [full-uri (model.user/full-uri user)]
+      {:subject (model.user/get-uri user)
+       :alias full-uri
+       :links
+       [
+        {:rel "http://webfinger.net/rel/profile-page"
+         :type "text/html"
+         :href full-uri}
+        
+        {:rel "http://microformats.org/profile/hcard"
+         :type "text/html"
+         :href full-uri}
+
+        {:rel "http://gmpg.org/xfn/11"
+         :type "text/html"
+         :href full-uri}
+
+        {:rel "http://schemas.google.com/g/2010#updates-from"
+         :type "application/atom+xml"
+         :href (str "http://" (config :domain)
+                    "/api/statuses/user_timeline/"
+                    (:_id user)
+                    ".atom")}
+
+        {:rel "http://webfinger.net/rel/profile-page"
+         :type "text/html"
+         :href full-uri}
+
+        {:rel "http://onesocialweb.org/rel/service"
+         :href (str "xmpp:" (:username user) "@" (:domain user))}
+        
+        {:rel "describedby"
+         :type "application/rdf+xml"
+         :href (str full-uri ".rdf")}
+
+        {:rel "salmon"
+         :href (model.user/salmon-link user)}
+
+        {:rel "http://salmon-protocol.org/ns/salmon-replies"
+         :href (model.user/salmon-link user)}
+
+        {:rel "http://salmon-protocol.org/ns/salmon-mention"
+         :href (model.user/salmon-link user)}
+
+        {:rel "magic-public-key"
+         :href (-> user
+                   model.signature/get-key-for-user
+                   model.signature/magic-key-string)}
+
+        {:rel "http://ostatus.org/schema/1.0/subscribe"
+         :template (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}
+
+        {:rel "http://specs.openid.net/auth/2.0/provider"
+         :href full-uri}
+
+        {:rel "http://apinamespace.org/twitter"
+         :href (str "http://" (config :domain) "/api/")
+         :property [{:type "http://apinamespace.org/twitter/username"
+                     :value (:username user)}]}]})
+    (throw (RuntimeException. "Not authorative for this resource"))))
 
 (defn request-vcard!
   [user]
