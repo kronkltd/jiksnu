@@ -315,11 +315,10 @@
    (-> all-routes
        jm/wrap-authentication-handler
        (file/wrap-file "resources/public/")
-       ;; (filewrap-file "/")
        file-info/wrap-file-info
        wrap-flash
        jm/wrap-user-binding
        handler/site
        middleware/wrap-http-serialization
-       ;; jm/newrelic-report
        stacktrace/wrap-stacktrace)))
+
