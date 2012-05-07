@@ -175,6 +175,7 @@
   (instance? Subscription subscription))
 
 (defn user?
+  "Is the provided object a user?"
   [user] (instance? User user))
 
 (defn drop-all!
