@@ -21,7 +21,7 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojars.sean_devlin/decorators "0.0.1-SNAPSHOT"]
-                 [info.cukes/cucumber-clojure "1.0.3-SNAPSHOT"]
+                 ;; [info.cukes/cucumber-clojure "1.0.3-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
                  [com.thoughtworks.xstream/xstream "1.4.2"]
                  [org.clojure/core.cache "0.5.0"]
@@ -81,7 +81,8 @@
 
   :plugins [
                [lein-cljsbuild "0.1.5"]
-               [rplevy-draker/lein-cucumber "1.0.0.M1-SNAPSHOT"]  
+               ;; [rplevy-draker/lein-cucumber "1.0.0.M1-SNAPSHOT"]  
+               [lein-cucumber "1.0.0"]  
                [lein-midje "2.0.0-SNAPSHOT"]
 
             ]
