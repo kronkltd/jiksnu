@@ -72,7 +72,7 @@
     (when (seq (:irts activity))
       (doseq [id (:irts activity)]
         (try
-          (let [parent (actions.activity/find-or-create-by-remote-id id)]
+          (let [parent (actions.activity/find-or-create-by-remote-id {:id id})]
             (model.activity/add-comment parent activity))
           (catch RuntimeException ex
             (log/error ex)))))
