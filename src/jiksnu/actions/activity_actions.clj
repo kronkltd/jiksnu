@@ -215,7 +215,6 @@ serialization"
   (map #(entry->activity % feed)
        (.getEntries feed)))
 
-;; TODO: merge this with h.a/load-activities
 (defaction fetch-remote-feed
   "fetch a feed and create it's activities"
   [uri]
