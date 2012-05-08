@@ -284,7 +284,8 @@
             }
            (when avatar-url
              ;; TODO: get image dimensions
-             {:image [{:url avatar-url}]})
+             {:image [{:url avatar-url
+                       :rel "avatar"}]})
            (when display-name
              {:displayName display-name}))))
 

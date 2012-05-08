@@ -16,11 +16,16 @@
     [:thead
      [:tr
       [:th "user"]
+      [:th "type"]
+      [:th "visibility"]
+
       [:th "title"]]]
     [:tbody
      (map
       (fn [activity]
         [:tr
          [:td (-> activity actions.activity/get-author link-to)]
+         [:td (-> activity :object :object-type)]
+         [:td (if (-> activity :public) "public" "private")]
          [:td (:title activity)]])
       activities)]]})

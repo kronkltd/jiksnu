@@ -53,7 +53,11 @@
 (defview #'public-timeline :as
   [request [activities _]]
   {:body
-   {:items
+   ;; TODO: I know that doesn't actually work.
+   {:generator "Jiksnu ${VERSION}"
+    :title "Public Timeline"
+    :totalItems (count activities)
+    :items
     (map show-section activities)}})
 
 (defview #'user-timeline :as

@@ -70,7 +70,7 @@
 
 (defaction user-timeline
   [user]
-  (if user
+  (when user
     [user (model.activity/find-by-user user)]))
 
 (defaction group-timeline

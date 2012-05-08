@@ -57,6 +57,7 @@ article .photo
     display: block;
     position: relative;
     padding-left: 60px;
+    min-height: 50px;
 }
 
 .tags ul {

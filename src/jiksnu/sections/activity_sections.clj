@@ -292,7 +292,14 @@
 
    ;; TODO: link to the domain
    (when-not (:local activity)
-     " via a foreign service ")
+     (list " via a "
+           [:a {:href
+                (->> activity :links
+                     (filter #(= (:rel %) "alternate"))
+                     (filter #(= (:type %) "text/html"))
+                     first :href)}
+            "foreign service"]
+           " "))
       
    (when (:conversation activity)
      (list
@@ -305,9 +312,7 @@
      (list " near "
            [:a.geo-link {:href "#"}
             (:lat activity) ", "
-            (:long activity)]))
-   
-   ])
+            (:long activity)]))])
 
 (defn comments-section
   [activity]
@@ -500,22 +505,37 @@
 
 (defsection show-section [Activity :as]
   [activity & _]
-  {"published" (:published activity)
-   "updated" (:updated activity)
-   "verb" (or (:verb activity) "post")
-   "title" (:title activity)
-   ;; "content" (:content activity)
-   "id" (:id activity)
-   "url" (full-uri activity)
-   "actor" (show-section (actions.activity/get-author activity))
-   "object"
-   (let [object (:object activity)]
-     {"objectType" (:object-type object)
-      "id" (:id object)
-      "displayName" (:content activity)
-      ;; "published" (:published object)
-      ;; "updated" (:updated object)
-      })})
+  (merge {:actor (show-section (actions.activity/get-author activity))
+          :content (:content activity)
+          :id (:id activity)
+          :local-id (:_id activity)
+          :object (let [object (:object activity)]
+                    {:displayName (:title activity)
+                     :id (:id object)
+                     :objectType (:object-type object)
+               :content (:content object)
+                     :url (:id object)
+                     :tags (map
+                            (fn [tag]
+                              {:displayName tag
+                               :objectType "http://activityschema.org/object/hashtag"})
+                            (:tags activity))
+                     ;; "published" (:published object)
+                     ;; "updated" (:updated object)
+                     })
+   
+          "published" (:published activity)
+          
+          "updated" (:updated activity)
+          :verb (:verb activity)
+          "title" (:title activity)
+          :url (full-uri activity)}
+         (when (:conversation activity)
+           {:context {:conversation (first (:conversation activity))}})
+         (when (and (:lat activity) (:long activity))
+           {:location {:objectType "place"
+                       :lat (:lat activity)
+                       :long (:long activity)}})))
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]

@@ -127,10 +127,11 @@
   "Return all the activities in the database as abdera entries"
   [opts]
   ;; TODO: move all this to action
-  (let [page-number (:page opts)
+  (let [page-number (get  opts :page 1)
         user (current-user)
         merged-options
         (merge
+         (:where opts)
          ;; {"object.object-type" {:$ne "comment"}}
          (privacy-filter user))]
     (entity/fetch Activity merged-options
@@ -170,7 +171,7 @@
 
 (defn find-by-user
   [user]
-  (index :author (:_id user)))
+  (index {:where {:author (:_id user)}}))
 
 (defn add-comment
   [parent comment]
@@ -235,3 +236,7 @@
       set-published-time
       set-actor))
 
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (entity/count-instances Activity params)))

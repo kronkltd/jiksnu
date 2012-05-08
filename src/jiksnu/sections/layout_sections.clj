@@ -7,7 +7,10 @@
                     [page :as p])
             (jiksnu [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription])
-            (jiksnu.model [subscription :as model.subscription])
+            (jiksnu.model [activity :as model.activity]
+                          [domain :as model.domain]
+                          [subscription :as model.subscription]
+                          [user :as model.user])
             (jiksnu.sections [activity-sections :as sections.activity]
                              [auth-sections :as sections.auth]
                              [group-sections :as sections.group]
@@ -82,13 +85,21 @@
            [:span.format-label (:label format)]]])
        (:formats response))]]))
 
+(defn statistics-section
+  [response]
+  [:div.well
+   [:p "Activities: " (model.activity/count-records)]
+   [:p "Domains: " (model.domain/count-records)]
+   [:p "Users: " (model.user/count-records)]])
+
 (defn left-column-section
   [response]
   (let [user (current-user)]
     [:aside#left-column.sidebar
      (side-navigation)
      [:hr]
-     (formats-section response)]))
+     (formats-section response)
+     (statistics-section response)]))
 
 (defn right-column-section
   [response]

@@ -2,12 +2,13 @@
     ^{:doc "This is the namespace for the admin pages for activities"}
   jiksnu.actions.admin.activity-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]))
+               [core :only [defaction]]
+               [debug :only [spy]]))
   (:require (jiksnu.model [activity :as model.activity])))
 
 (defaction index
   []
-  (model.activity/index))
+  (model.activity/index {:page 1}))
 
 (definitializer
   ;; (try

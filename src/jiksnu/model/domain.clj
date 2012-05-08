@@ -78,3 +78,7 @@
   [domain]
   (str "http://" (:_id domain) "/.well-known/host-meta"))
 
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (entity/count-instances Domain params)))

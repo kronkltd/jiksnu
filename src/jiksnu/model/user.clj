@@ -197,3 +197,8 @@
                     :type :get
                     :body body}]
     (tigase/make-packet packet-map)))
+
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (entity/count-instances User params)))
