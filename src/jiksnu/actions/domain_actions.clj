@@ -76,11 +76,13 @@
   (model.domain/fetch-by-id id))
 
 (defaction index
-  []
-  (model.domain/fetch-all
-   {}
-   :sort [(sugar/asc :_id)]
-   :limit 20))
+  [& [options & _]]
+  (let [page-number (get options :page 1)]
+    (model.domain/fetch-all
+     (:where options)
+     :sort [(sugar/asc :_id)]
+     :skip (* (dec page-number) 20)
+     :limit 20)))
 
 (defaction show
   [domain]

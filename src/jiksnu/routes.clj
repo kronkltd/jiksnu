@@ -320,5 +320,5 @@
        jm/wrap-user-binding
        handler/site
        middleware/wrap-http-serialization
-       stacktrace/wrap-stacktrace)))
+       #_stacktrace/wrap-stacktrace)))
 

@@ -242,10 +242,10 @@
     [:p "This is a cached copy of information for a user on a different system"]))
 
 (defn pagination-links
-  []
+  [options]
   [:ul.pager
-   [:li.previous [:a {:href "#"} "&larr; Previous"]]
-   [:li.next [:a {:href "#"} "Next &rarr;"]]])
+   [:li.previous [:a {:href (str "?page=" (dec (:page options))) :rel "prev"} "&larr; Previous"]]
+   [:li.next [:a {:href (str "?page=" (inc (:page options))) :rel "next"} "Next &rarr;"]]])
 
 
 
@@ -349,13 +349,14 @@
        ]]]))
 
 (defsection index-section [User :html]
-  [users & _]
+  [users & [options & _]]
   (list
+   [:p "Page " (:page options)]
    [:table.table.users
     [:thead]
     [:tbody
      (map index-line users)]]
-   (pagination-links)))
+   (pagination-links options)))
 
 
 (defsection show-section [User :html]

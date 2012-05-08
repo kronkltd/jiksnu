@@ -47,9 +47,12 @@
   [request domain]
   {:title (:_id domain)
    :single true
+   :links [{:rel "up"
+            :href "/main/domains"
+            :title "Domain Index"}]
    :body
    (list (show-section domain)
-         (index-section (model.user/fetch-all {:domain (:_id domain)} :limit 20)))})
+         (index-section (model.user/fetch-by-domain domain) {:page 1}))})
 
 (defview #'host-meta :html
   [request xrd]

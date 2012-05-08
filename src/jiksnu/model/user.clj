@@ -144,6 +144,12 @@
   [uri]
   (entity/fetch-one User {:id uri}))
 
+(defn fetch-by-domain
+  ([domain] (fetch-by-domain domain {}))
+  ([domain options]
+     (fetch-all {:domain (:_id domain)}
+                :limit 20)))
+
 ;; TODO: Is this needed?
 (defn subnodes
   [^BareJID user subnode]
