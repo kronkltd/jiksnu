@@ -51,7 +51,7 @@
 
 
 (defview #'public-timeline :as
-  [request activities]
+  [request [activities _]]
   {:body
    {:items
     (map show-section activities)}})
@@ -71,7 +71,7 @@
    [:statuses (map index-line activities)]})
 
 (defview #'public-timeline :atom
-  [request activities]
+  [request [activities _]]
   (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
@@ -138,7 +138,7 @@
   {:body data})
 
 (defview #'public-timeline :json
-  [request activities]
+  [request [activities _]]
   {:body (map show-section activities)})
 
 (defview #'user-timeline :json
@@ -231,7 +231,7 @@
 
 
 (defview #'public-timeline :n3
-  [request activities]
+  [request [activities _]]
   {:body
    (with-format :rdf (index-section activities))
    :template :false})
@@ -256,7 +256,7 @@
 
 
 (defview #'public-timeline :rdf
-  [request activities]
+  [request [activities _]]
   {:body (index-section activities)
    :template :false})
 
@@ -295,7 +295,7 @@
    [:statuses {:type "array"} (map index-line (index-section activities))]})
 
 (defview #'public-timeline :xml
-  [request activities]
+  [request [activities _]]
   {:body (index-section activities)})
 
 (defview #'user-timeline :xml
@@ -310,7 +310,7 @@
 
 
 (defview #'public-timeline :xmpp
-  [request activities]
+  [request [activities _]]
   (tigase/result-packet request (index-section activities)))
 
 (defview #'user-timeline :xmpp
