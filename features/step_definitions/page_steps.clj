@@ -26,7 +26,7 @@
 (Given #"^a user exists with the password \"([^\"]+)\"$" [password]
        (a-user-exists-with-password password))
 
-(Given #"^I am at the (.+) page$" [page]
+(Given #"^I am at the \"(.+)\" page$" [page]
        (be-at-the-page page))
 
 (Given #"^I am logged in$" []
@@ -76,6 +76,10 @@
 
 (When #"^I go to the \"([^\"]+)\" page for that user with a \"([^\"]+)\" format$" [page format]
       (go-to-the-page-for-user-with-format page format))
+
+(When #"^I log out$" []
+      (click ".dropdown-toggle")
+      (click ".logout-link"))
 
 (When #"^I put my password in the \"password\" field$" []
       (do-enter-password))

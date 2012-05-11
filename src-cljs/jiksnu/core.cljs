@@ -57,8 +57,7 @@
   [x]
   (console/log "like button clicked")
 
-  ;; (halt x)
-  )
+  #_(halt x))
 
 (defn add-handler
   [handler elements]
@@ -71,8 +70,7 @@
   [event]
   (console/log "Logging out")
   
-  (halt event)
-  )
+  #_(halt event))
 
 (defn ws-opened
   [socket]
@@ -90,18 +88,9 @@
       ;; (.debug js/console j)
 
       (let [body (. j -body)]
-        (prepend ($ :.activities) body
-                
-                ))
-
-      
-      )
+        (prepend ($ :.activities) body)))
     (catch js/Error ex
-        (.exception js/console ex)
-        )
-
-    )
-  )
+        (.exception js/console ex))))
 
 (defn ws-error
   [e]
@@ -123,8 +112,7 @@
                         (ws/configure (ws-opened socket)
                                       ws-message
                                       ws-error
-                                      ws-closed
-                                      )
+                                      ws-closed)
                         (ws/connect! url))]
       (do
         (.info js/console "initialized")
@@ -138,8 +126,6 @@
   (add-handler do-logout-link ($ :.logout-link))
 
   ;; (set-loading-indicator)
-  (initialize-websockets js/WEBSOCKET_PATH
-                         ;; "ws://renfer.name:8082/websocket"
-                         ))
+  (initialize-websockets js/WEBSOCKET_PATH))
 
 (main)

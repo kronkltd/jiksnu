@@ -141,7 +141,7 @@
 
 (defn a-user-exists-with-password
   [password]
-  (a-user-exists {:password password}))
+  (a-user-exists {} password))
 
 (defn activity-gets-posted
   []
@@ -194,9 +194,7 @@
 
 (defn do-click-link
   [value]
-  (-> @current-browser
-      (w/find-element {:value value})
-      w/click))
+  (click (str "*[value='" value "']")))
 
 (defn do-enter-field
   [value field-name]
@@ -204,20 +202,11 @@
 
 (defn do-enter-password
   []
-  (let [field-name "password"
-        ;; TODO: Get password from somewhere
-        value "hunter2"]
-    (-> @current-browser
-        (w/find-element {:name field-name})
-        (w/send-keys value))))
+  (input-text "*[name='password']" (spy @my-password)))
 
 (defn do-enter-username
   []
-  (let [field-name "username"
-        value (:username @that-user)]
-    (-?> @current-browser
-         (w/find-element {:name field-name})
-         (w/send-keys value))))
+  (input-text "*[name='username']" (:username @that-user)))
 
 (defn do-login
   []
@@ -264,7 +253,7 @@
 (defn go-to-the-page
   [page-name]
   (if-let [path (get page-names page-name)]
-    (fetch-page-browser :get path)
+    (fetch-page-browser :get (spy path))
     (throw (RuntimeException. (str "No path defined for " page-name)))))
 
 (defn go-to-the-page-for-activity
@@ -368,7 +357,7 @@
 (defn should-be-logged-in
   []
   (check-response
-   (exists? ".authenticated") => truthy))
+   (exists? ".avatar") => truthy))
 
 (defn should-see-a-activity
   []
@@ -429,7 +418,7 @@
 (defn should-see-form
   []
   (check-response
-   (w/find-element @current-browser {:tag :form}) => w/exists?))
+   (exists? "form" ) => truthy))
 
 (defn should-see-list
   [class-name]

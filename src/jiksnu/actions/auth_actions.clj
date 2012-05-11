@@ -50,19 +50,13 @@
 
 (defn add-password
   [user password]
-  (implement
-      ;; Create a new authentication mechanism with the type password
-      ;; that has the crypted password
-      (let [salt (BCrypt/gensalt)]
-        (model.authentication-mechanism/create
-         {:type "password"
-          :value (BCrypt/hashpw password salt)
-          :user (:_id user)
-          }
-         ))
-
-      )
-  )
+  ;; Create a new authentication mechanism with the type password
+  ;; that has the crypted password
+  (let [salt (BCrypt/gensalt)]
+    (model.authentication-mechanism/create
+     {:type "password"
+      :value (BCrypt/hashpw password salt)
+      :user (:_id user)})))
 
 (definitializer
   (doseq [namespace ['jiksnu.filters.auth-filters

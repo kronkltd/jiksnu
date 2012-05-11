@@ -16,7 +16,7 @@
    [:ul.dropdown-menu
     [:li
      ;; TODO: need a better way to do this when there is no javascript
-     [:a.logout-link {:href "/main/logout?_method=POST"} "Logout"]]]])
+     [:a.logout-link {:href "/main/logout?_method=POST"} "Log out"]]]])
 
 (defn login-button
   []

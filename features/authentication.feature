@@ -10,12 +10,12 @@ Scenario: Login page
   And it should have a "password" field
 
 Scenario: Logging in
-  Given I am not logged in
+  Given a user exists with the password "hunter2"
+  And I am not logged in
   And I am at the "login" page
-  And a user exists with the password "hunter2"
   When I put my username in the "username" field
   And I put my password in the "password" field
-  And I click the "login" link
+  And I click the "Login" link
   Then I should be at the "public timeline" page
   And I should wait
   And I should be logged in
@@ -23,6 +23,6 @@ Scenario: Logging in
 Scenario: Logging out
   Given I am logged in
   And I am at the "home" page
-  When I click the "Log out" button
+  When I log out
   Then I should be at the "home" page
   And I should not be logged in
