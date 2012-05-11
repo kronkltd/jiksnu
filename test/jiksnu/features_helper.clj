@@ -200,7 +200,7 @@
 
 (defn do-enter-field
   [value field-name]
-  (input-text (str "input[name='" field-name "']") value))
+  (input-text (str "*[name='" field-name "']") value))
 
 (defn do-enter-password
   []

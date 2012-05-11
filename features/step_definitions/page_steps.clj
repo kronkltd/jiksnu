@@ -1,6 +1,7 @@
 (use 'jiksnu.features-helper)
 (use '(ciste [debug :only [spy]]))
 (use 'clj-webdriver.taxi)
+(require '[jiksnu.model.activity :as model.activity])
 
 (set-driver! {:browser :firefox})
 
@@ -108,8 +109,7 @@
   (throw (cucumber.runtime.PendingException.)))
 
 (When #"^I submit that form$" []
-  (comment  Express the Regexp above with the code you wish you had  )
-  (throw (cucumber.runtime.PendingException.)))
+  (submit "*[name='content']"))
 
 ;; Then
 
@@ -201,5 +201,5 @@
       (response-should-be-sucsessful))
 
 (Then #"^that activity should be created$" []
-  (comment  Express the Regexp above with the code you wish you had  )
-  (throw (cucumber.runtime.PendingException.)))
+      (check-response
+       (model.activity/count-records) => 1))
