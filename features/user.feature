@@ -13,7 +13,6 @@ Scenario: Editing profile
   Given I am logged in
   When I go to the "edit profile" page
   And I type "John Smith" into the "display-name" field
-  # TODO: This is based on localized text, bad!
   And I submit that form
   Then that user's name should be "John Smith"
 

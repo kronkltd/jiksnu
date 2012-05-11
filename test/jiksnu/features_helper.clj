@@ -35,7 +35,6 @@
 
 (def server (atom nil))
 (def current-page (ref nil))
-(def current-browser (ref nil))
 (def domain "localhost")
 (def port 8175)
 (def that-activity (ref nil))
@@ -67,7 +66,7 @@
 (defmacro check-response
   [& body]
   `(and (not (fact ~@body))
-        #_(throw (RuntimeException. "failed"))))
+        (throw (RuntimeException. "failed"))))
 
 (defn expand-url
   [path]
@@ -188,9 +187,7 @@
 (defn do-click-button-for-domain
   [class-name]
   ;; TODO: find domain first
-  (-> @current-browser
-      (w/find-element (str class-name "-button"))
-      w/click))
+  (click (str "." class-name "-button")))
 
 (defn do-click-link
   [value]
@@ -198,22 +195,24 @@
 
 (defn do-enter-field
   [value field-name]
-  (input-text (str "*[name='" field-name "']") value))
+  (let [selector (str "*[name='" field-name "']")]
+    (clear selector)
+    (input-text selector value)))
 
 (defn do-enter-password
   []
-  (input-text "*[name='password']" (spy @my-password)))
+  (do-enter-field (spy @my-password) "password"))
 
 (defn do-enter-username
   []
-  (input-text "*[name='username']" (:username @that-user)))
+  (do-enter-field (:username @that-user) "username"))
 
 (defn do-login
   []
   (to (expand-url "/main/login"))
 
-  (input-text "input[name='username']" (:username @that-user))
-  (input-text "input[name='password']" @my-password)
+  (do-enter-username)
+  (do-enter-password)
   (click "input[type='submit']")
   (session/set-authenticated-user! @that-user))
 
@@ -406,14 +405,12 @@
 (defn should-see-domain
   []
   (check-response
-   (-> @current-browser
-       (w/find-element {:class "domain-id"})
-       w/text) => (:_id @that-domain)))
+   (text ".domain-id") => (:_id @that-domain)))
 
 (defn should-see-domain-named
   [domain-name]
   (check-response
-   (w/find-element @current-browser {:tag  :a :href (str "/main/domains/" domain-name)}) => w/exists?))
+   (exists? (str "a[href='/main/domains/" domain-name "']")) => truthy))
 
 (defn should-see-form
   []

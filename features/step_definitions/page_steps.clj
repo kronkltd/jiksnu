@@ -113,7 +113,7 @@
   (throw (cucumber.runtime.PendingException.)))
 
 (When #"^I submit that form$" []
-  (submit "*[name='content']"))
+  (submit "form input"))
 
 ;; Then
 
