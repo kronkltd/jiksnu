@@ -21,11 +21,19 @@
 
 (test-environment-fixture
  
- (fact "set-recipients"
+ (fact "#'set-recipients"
    (fact "should return an activity with the recipients added"
      (let [activity (factory Activity)]
        (set-recipients activity) => activity?)))
 
+ (fact "#'oembed->activity"
+   (let [oembed-str (slurp "test-resources/oembed.json")
+         ]
+     ;; TODO: complete
+     (spy oembed-str) => string?
+     )
+   )
+ 
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
          domain (model.domain/create (factory Domain

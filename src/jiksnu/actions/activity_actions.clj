@@ -141,6 +141,15 @@ this is for OSW
   ;; TODO: must be owner or admin
   (model.activity/fetch-by-id id))
 
+(defn oembed->activity
+  "Convert a oEmbed document into an activity"
+  [oembed]
+  (let [author (actions.user/find-or-create-by-remote-id (get oembed "author_url"))]
+    {:author (:_id author)
+     :content (get oembed "html")
+     })
+  )
+
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
