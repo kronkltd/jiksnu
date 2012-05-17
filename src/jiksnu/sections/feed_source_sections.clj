@@ -1,7 +1,7 @@
 (ns jiksnu.sections.feed-source-sections
   (:use [ciste.debug :only [spy]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form show-section index-line index-section link-to]]
+        [ciste.sections.default :only [add-form show-section index-line index-section link-to update-button]]
         [jiksnu.views :only [control-line]])
   (:import jiksnu.model.FeedSource))
 
