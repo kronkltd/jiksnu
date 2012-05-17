@@ -1,16 +1,15 @@
 (ns jiksnu.actions.like-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [runner :only [require-namespaces]]))
-  (:require (jiksnu.model [like :as model.like])
-            (karras [entity :as entity]
-                    [sugar :as sugar]))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.runner :only [require-namespaces]])
+  (:require [jiksnu.model.like :as model.like]
+            [karras.entity :as entity]
+            [karras.sugar :as sugar])
   (:import jiksnu.model.Like))
 
 (defn admin-index
   [request]
   (model.like/fetch-all {} :limit 20))
-
 
 (defaction like-activity
   [activity-id user-id]

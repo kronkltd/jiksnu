@@ -1,23 +1,23 @@
 (ns jiksnu.actions.feed-source-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]])
-        (karras [entity :only [make]]))
-  (:require (aleph [http :as http])
-            (ciste [model :as cm])
-            (clj-http [client :as client])
-            (clojure [string :as string])
-            (clojure.tools [logging :as log])
-            (jiksnu [model :as model])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [feed-source :as model.feed-source])
-            (lamina [core :as l])))
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]]
+        [karras.entity :only [make]])
+  (:require [aleph.http :as http]
+            [ciste.model :as cm]
+            [clj-http.client :as client]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model :as model]
+            [jiksnu.model.feed-source :as model.feed-source]
+            [lamina.core :as l]))
 
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
   [source]
-  (model.feed-source/update-field! source :status "confirmed"))
+  (model.feed-source/update-field! source :subscription-status "confirmed"))
 
 (defaction process-updates
   [params]
@@ -32,10 +32,17 @@
         "unsubscribe" (do
                         (cm/implement (log/info "confirming subscription removal"))
                         (doseq [source sources]
+                          ;; TODO: don't delete, just make
+                          ;; subscription as canceled.
                           (model.feed-source/delete source)))
        (cm/implement
         (log/info "Unknown mode"))))
     challenge))
+
+(defaction create
+  "Create a new feed source record"
+  [params]
+  (model.feed-source/create params))
 
 (defn find-or-create
   [search-params update-params]

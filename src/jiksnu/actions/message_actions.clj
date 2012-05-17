@@ -1,18 +1,18 @@
 (ns jiksnu.actions.message-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [runner :only [require-namespaces]])))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.model :only [implement]]
+        [ciste.runner :only [require-namespaces]]))
 
 (defaction inbox-page
   [user]
-  [user []]
-  )
+  (implement
+      [user []]))
 
 (defaction outbox-page
   [user]
-  [user []]
-
-  )
+  (implement
+      [user []]))
 
 (definitializer
   (require-namespaces
