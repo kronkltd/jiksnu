@@ -92,5 +92,6 @@
 
 (definitializer
   (require-namespaces
-   ["jiksnu.filters.feed-source-filters"
+   [
+    #_"jiksnu.filters.feed-source-filters"
     "jiksnu.views.feed-source-views"]))

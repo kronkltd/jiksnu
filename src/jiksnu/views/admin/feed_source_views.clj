@@ -1,18 +1,20 @@
 (ns jiksnu.views.admin.feed-source-views
-  (:use (ciste [views :only [defview]])
-        (ciste.sections [default :only [add-form index-section title show-section]])
-        jiksnu.actions.admin.feed-source-actions)
-  (:require (jiksnu.actions [activity-actions :as actions.activity]))
+  (:use [ciste.debug :only [spy]]
+        [ciste.sections.default :only [add-form index-section title show-section]]
+        [ciste.views :only [defview]]
+        [jiksnu.actions.admin.feed-source-actions :only [index show]])
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
+            jiksnu.sections.feed-source-sections)
   (:import jiksnu.model.FeedSource))
 
 (defview #'index :html
   [request [sources options]]
-  {:title "Feed Sources"
-   :single true
-   :body
-   (list 
-    (index-section sources)
-    (add-form (FeedSource.)))})
+  (spy {:title "Feed Sources"
+    :single true
+    :body
+    (list 
+     (spy (index-section sources))
+     (add-form (FeedSource.)))}))
 
 (defview #'show :html
   [request source]

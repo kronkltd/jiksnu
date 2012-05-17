@@ -300,8 +300,8 @@
 (compojure/defroutes all-routes
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
-                  (if (session/is-admin?)
-                    ((resolve-routes [http-predicates] admin-routes) request)
+                  (if (spy (session/is-admin?))
+                    (spy ((resolve-routes [http-predicates] admin-routes) request))
                     ;; TODO: move this somewhere else
                     (throw (LoginException. "Must be admin")))))
   (middleware/wrap-log-request

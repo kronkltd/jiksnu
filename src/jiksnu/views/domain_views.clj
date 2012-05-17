@@ -3,7 +3,8 @@
                [views :only [defview]])
         ciste.sections.default
         jiksnu.actions.domain-actions)
-  (:require (hiccup [core :as h])
+  (:require [clojure.tools.logging :as log]
+            (hiccup [core :as h])
             (jiksnu [namespace :as ns])
             (jiksnu.model [domain :as model.domain]
                           [user :as model.user])

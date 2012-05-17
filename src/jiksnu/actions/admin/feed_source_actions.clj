@@ -1,7 +1,8 @@
 (ns jiksnu.actions.admin.feed-source-actions
   (:use [ciste.core :only [defaction]]
         [ciste.config :only [definitializer]]
-        [ciste.debug :only [spy]])
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]))
 
@@ -20,9 +21,8 @@ for admin use"
   source)
 
 (definitializer
-  (doseq [namespace [
-                     'jiksnu.filters.admin.feed-source-filters
-                     'jiksnu.sections.feed-source-sections
-                     'jiksnu.views.admin.feed-source-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   [
+    #_"jiksnu.filters.admin.feed-source-filters"
+    "jiksnu.sections.feed-source-sections"
+    "jiksnu.views.admin.feed-source-views"]))
