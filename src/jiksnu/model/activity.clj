@@ -1,15 +1,14 @@
 (ns jiksnu.model.activity
-  (:use (ciste [debug :only [spy]])
-        (clojure.core [incubator :only [-?> -?>>]])
-        jiksnu.model
+  (:use [ciste.debug :only [spy]]
+        [clojure.core.incubator :only [-?>>]]
         [jiksnu.session :only [current-user current-user-id is-admin?]])
-  (:require (clojure [string :as string])
-            (clojure.java [io :as io])
-            (clojure.tools [logging :as log])
-            (jiksnu [abdera :as abdera])
-            (jiksnu.model [user :as model.user])
-            (karras [entity :as entity]
-                    [sugar :as sugar]))
+  (:require [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
+            [clojure.string :as string]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model.user :as model.user]
+            [karras.entity :as entity]
+            [karras.sugar :as sugar])
   (:import com.ocpsoft.pretty.time.PrettyTime
            jiksnu.model.Activity))
 
@@ -132,7 +131,7 @@
         merged-options
         (merge
          (:where opts)
-         ;; {"object.object-type" {:$ne "comment"}}
+         {"object.object-type" {:$ne "comment"}}
          (privacy-filter user))]
     (entity/fetch Activity merged-options
                   :sort [(sugar/desc :published)]
