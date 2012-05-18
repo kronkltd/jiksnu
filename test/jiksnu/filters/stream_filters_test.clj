@@ -1,25 +1,24 @@
 (ns jiksnu.filters.stream-filters-test
-  (:use clj-factory.core
-        (ciste [config :only [config with-environment]]
-               [debug :only [spy]]
-               [filters :only [filter-action]])
-        clojure.test
-        (jiksnu test-helper
-                model
-                [routes :only [app]])
-        lamina.core
-        midje.sweet)
-  (:require (clj-tigase [core :as tigase]
-                        [packet :as packet])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [domain-actions :as actions.domain]
-                            [stream-actions :as actions.stream]
-                            [user-actions :as actions.user])
+  (:use [clj-factory.core :only [factory]]
+        [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.filters :only [filter-action]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        ;; [jiksnu.model :only []]
+        [lamina.core :only [channel]]
+        [midje.sweet :only [fact]])
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.packet :as packet]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.actions.user-actions :as actions.user]
             jiksnu.filters.stream-filters
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (ring.mock [request :as mock]))
-  (:import (jiksnu.model Activity User)))
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [ring.mock.request :as mock])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 (test-environment-fixture
 

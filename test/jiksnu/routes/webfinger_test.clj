@@ -1,14 +1,16 @@
 (ns jiksnu.routes.webfinger-test
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               [model :only [fetch-resource query string->document]])
-        (jiksnu [model :only [rel-filter]]
-                [routes-helper :only [response-for]]
-                [test-helper :only [test-environment-fixture]])
-        (midje [sweet :only [every-checker fact]]))
-  (:require (clojure.data [json :as json]) (ring.mock [request :as mock])))
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.model :only [fetch-resource query string->document]]
+        [jiksnu.model :only [rel-filter]]
+        [jiksnu.routes-helper :only [response-for]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [midje.sweet :only [every-checker fact]])
+  (:require [clojure.data.json :as json]
+            [ring.mock.request :as mock]))
 
 (test-environment-fixture
+
  (fact "Requesting the host meta"
    (fact "returns the host meta as xml"
      (->> "/.well-known/host-meta"
@@ -17,10 +19,10 @@
           (every-checker
            #(= 200 (:status %))
            #(= "application/xrds+xml" (-> % :headers (get "Content-Type")))
-           #(let [body (spy (string->document (:body %)))]
+           #(let [body (string->document (:body %))]
               (and
                ;; has at least 1 lrdd link
-               (seq (spy (query "//*[local-name() = 'Link'][@rel = 'lrdd']" body))))))))
+               (seq (query "//*[local-name() = 'Link'][@rel = 'lrdd']" body)))))))
 
  (fact "host meta json"
    (->> "/.well-known/host-meta.json"
@@ -40,4 +42,5 @@
 
              ;; has a lrdd link
              (rel-filter "lrdd" (:links body))))))
-   )
+
+ )
