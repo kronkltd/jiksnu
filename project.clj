@@ -3,7 +3,7 @@
   :url "https://github.com/duck1123/jiksnu"
   :min-lein-version "2.0.0"
   :dependencies [
-                 [aleph "0.3.0-alpha1"]
+                 [aleph "0.3.0-alpha2"]
                  [ciste "0.3.0-SNAPSHOT"]
                  [clj-factory "0.2.0"]
                  [clj-http "0.3.2"]
@@ -24,7 +24,6 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  [org.clojars.sean_devlin/decorators "0.0.1-SNAPSHOT"]
-                 ;; [info.cukes/cucumber-clojure "1.0.8-SNAPSHOT"]
                  [org.clojure/clojure "1.3.0"]
                  [org.clojure/core.cache "0.5.0"]
                  [org.clojure/google-closure-library "0.0-1589"]
@@ -34,7 +33,6 @@
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
                  [ring "1.1.0"]
                  [ring-basic-authentication "0.0.1"]
-                 ;; [solrclj "0.1.2"]
                  [xml-picker-seq "0.0.2"]
                  ]
   :exclusions [
@@ -75,7 +73,6 @@
 
   :profiles {:dev
              {
-              ;; :resource-paths ["test-resources"],
               :dependencies
               [[midje "1.4.0"]
                [ring-mock "0.1.1"]
@@ -83,7 +80,6 @@
 
   :plugins [
                [lein-cljsbuild "0.1.5"]
-               ;; [rplevy-draker/lein-cucumber "1.0.0.M1-SNAPSHOT"]  
                [lein-cucumber "1.0.0"]  
                [lein-midje "2.0.0-SNAPSHOT"]
 

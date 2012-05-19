@@ -57,7 +57,7 @@
    [:td (:mode source)]
    [:td (str (:status source))]
    [:td
-    (update-button source)
+    #_(update-button source)
     (unsubscribe-button source)]])
 
 (defsection index-section [FeedSource :html]
