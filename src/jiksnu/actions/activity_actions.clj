@@ -53,7 +53,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   (let [coords (.getText element)
         [lat long] (string/split coords #" ")]
     ;; TODO: these should have a common geo property
-    {:lat lat :long long}))
+    {:geo {:lat lat :long long}}))
 
 (defn parse-notice-info
   "extract the notice info from a statusnet element"
@@ -148,24 +148,27 @@ this is for OSW
   [oembed]
   (let [author (actions.user/find-or-create-by-remote-id (get oembed "author_url"))]
     {:author (:_id author)
-     :content (get oembed "html")
-     })
-  )
+     :content (get oembed "html")}))
+
+(defn get-verb
+  "Returns the verb of the entry"
+  [entry]
+  (-?> entry
+       (.getExtension (QName. namespace/as "verb" "activity"))
+       .getText
+       model/strip-namespaces))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
   ([entry] (entry->activity entry nil))
   ([entry feed]
-     (let [id (str (.getId entry))
+     (let [id (str (.getId (spy entry)))
            original-activity (model.activity/fetch-by-remote-id id)
            title (.getTitle entry)
            published (.getPublished entry)
            updated (.getUpdated entry)
-           verb (-?> entry
-                     (.getExtension (QName. namespace/as "verb" "activity"))
-                     .getText
-                     model/strip-namespaces)
+           verb (get-verb entry)
            user (-> entry
                     (abdera/get-author feed)
                     actions.user/person->user
@@ -174,23 +177,27 @@ serialization"
                                (map parse-extension-element)
                                doall)
            content (.getContent entry)
-           links (abdera/parse-links entry)
+           links (seq (abdera/parse-links entry))
 
-           irts (parse-irts entry)
+           irts (seq (parse-irts entry))
 
            ;; TODO: Extract this pattern
-           mentioned-uris (-?> (.getLinks entry "mentioned")
-                               (->> (map abdera/get-href)))
+           mentioned-uris (-?> (concat (.getLinks entry "mentioned")
+                                       (.getLinks entry "ostatus:attention"))
+                               (->> (map abdera/get-href))
+                               seq)
 
            conversation-uris (-?> entry 
                                   (.getLinks "ostatus:conversation")
-                                  (->> (map abdera/get-href)))
+                                  (->> (map abdera/get-href))
+                                  seq)
 
            enclosures (-?> entry
                            (.getLinks "enclosure")
-                           (->> (map abdera/parse-link)))
+                           (->> (map abdera/parse-link))
+                           seq)
            
-           tags (filter (complement #{""}) (abdera/parse-tags entry))
+           tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
            object-element (.getExtension entry (QName. namespace/as "object"))
            object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
                                 (-?> entry (.getExtension activity-object-type)))
@@ -202,15 +209,15 @@ serialization"
                        (when updated           {:updated updated})
                        ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
                        (when title             {:title title})
-                       (when (seq irts)        {:irts irts})
+                       (when irts        {:irts irts})
 
-                       (when (seq links)       {:links links})
+                       (when links       {:links links})
 
                        (when conversation-uris {:conversations conversation-uris})
                        (when mentioned-uris    {:mentioned-uris mentioned-uris})
-                       (when (seq enclosures)) {:enclosures enclosures}
+                       (when enclosures) {:enclosures enclosures}
 
-                       (when (seq tags)        {:tags tags})
+                       (when tags        {:tags tags})
                        (when verb              {:verb verb})
                        {:id id
                         :author (:_id user)

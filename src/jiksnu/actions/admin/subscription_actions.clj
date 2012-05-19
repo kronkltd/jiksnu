@@ -1,9 +1,10 @@
 (ns jiksnu.actions.admin.subscription-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]))
-  (:require (clojure.tools [logging :as log])
-            (jiksnu [session :as session])
-            (jiksnu.model [subscription :as model.subscription]))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.runner :only [require-namespaces]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.session :as session])
   (:import javax.security.sasl.AuthenticationException))
 
 ;; requires admin
@@ -12,6 +13,6 @@
   (model.subscription/index))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.admin.subscription-filters
-                     'jiksnu.views.admin.subscription-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.admin.subscription-filters"
+    "jiksnu.views.admin.subscription-views"]))

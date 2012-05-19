@@ -1,49 +1,49 @@
 (ns jiksnu.routes
-  (:use (ciste [debug :only [spy]]
-               [routes :only [make-matchers resolve-routes]])
-        ciste.formats.default
-        (ring.middleware [flash :only [wrap-flash]]))
-  (:require (aleph [http :as http])
-            (ciste [middleware :as middleware]
-                   [predicates :as pred])
-            (clojure [string :as string])
-            (compojure [core :as compojure]
-                       [handler :as handler]
-                       [route :as route])
-            (jiksnu [middleware :as jm]
-                    [namespace :as namespace]
-                    [session :as session]
-                    [views :as views])
-            (jiksnu.actions [activity-actions :as activity]
-                            [admin-actions :as admin]
-                            [auth-actions :as auth]
-                            [comment-actions :as comment]
-                            [domain-actions :as domain]
-                            [favorite-actions :as favorite]
-                            [feed-source-actions :as feed-source]
-                            [group-actions :as group]
-                            [inbox-actions :as inbox]
-                            [like-actions :as like]
-                            [pubsub-actions :as pubsub]
-                            [message-actions :as message]
-                            [salmon-actions :as salmon]
-                            [search-actions :as search]
-                            [setting-actions :as setting]
-                            [site-actions :as site]
-                            [stream-actions :as stream]
-                            [subscription-actions :as sub]
-                            [tag-actions :as tag]
-                            [user-actions :as user])
-            (jiksnu.actions.admin [activity-actions :as admin.activity]
-                                  [auth-actions :as admin.auth]
-                                  [feed-source-actions :as admin.feed-source]
-                                  [subscription-actions :as admin.sub]
-                                  [user-actions :as admin.user])
+  (:use [ciste.debug :only [spy]]
+        [ciste.routes :only [make-matchers resolve-routes]]
+        [ring.middleware.flash :only [wrap-flash]])
+  (:require [aleph.http :as http]
+            ciste.formats.default
+            [ciste.middleware :as middleware]
+            [ciste.predicates :as pred]
+            [clojure.string :as string]
+            [compojure.core :as compojure]
+            [compojure.handler :as handler]
+            [compojure.route :as route]
+            [jiksnu.actions.activity-actions :as activity]
+            [jiksnu.actions.admin.activity-actions :as admin.activity]
+            [jiksnu.actions.admin.auth-actions :as admin.auth]
+            [jiksnu.actions.admin.feed-source-actions :as admin.feed-source]
+            [jiksnu.actions.admin.subscription-actions :as admin.sub]
+            [jiksnu.actions.admin.user-actions :as admin.user]
+            [jiksnu.actions.admin-actions :as admin]
+            [jiksnu.actions.auth-actions :as auth]
+            [jiksnu.actions.comment-actions :as comment]
+            [jiksnu.actions.domain-actions :as domain]
+            [jiksnu.actions.favorite-actions :as favorite]
+            [jiksnu.actions.feed-source-actions :as feed-source]
+            [jiksnu.actions.group-actions :as group]
+            [jiksnu.actions.inbox-actions :as inbox]
+            [jiksnu.actions.like-actions :as like]
+            [jiksnu.actions.pubsub-actions :as pubsub]
+            [jiksnu.actions.message-actions :as message]
+            [jiksnu.actions.salmon-actions :as salmon]
+            [jiksnu.actions.search-actions :as search]
+            [jiksnu.actions.setting-actions :as setting]
+            [jiksnu.actions.site-actions :as site]
+            [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.actions.subscription-actions :as sub]
+            [jiksnu.actions.tag-actions :as tag]
+            [jiksnu.actions.user-actions :as user]
+            [jiksnu.middleware :as jm]
+            [jiksnu.namespace :as namespace]
             jiksnu.sections.layout-sections
-            (ring.middleware [file :as file]
-                             [file-info :as file-info]
-                             [stacktrace :as stacktrace])
-            (ring.util [response :as response]))
+            [jiksnu.session :as session]
+            [jiksnu.views :as views]
+            [ring.middleware.file :as file]
+            [ring.middleware.file-info :as file-info]
+            [ring.middleware.stacktrace :as stacktrace]
+            [ring.util.response :as response])
   (:import javax.security.auth.login.LoginException))
 
 (defn not-found-msg
@@ -300,8 +300,8 @@
 (compojure/defroutes all-routes
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
-                  (if (spy (session/is-admin?))
-                    (spy ((resolve-routes [http-predicates] admin-routes) request))
+                  (if (session/is-admin?)
+                    ((resolve-routes [http-predicates] admin-routes) request)
                     ;; TODO: move this somewhere else
                     (throw (LoginException. "Must be admin")))))
   (middleware/wrap-log-request

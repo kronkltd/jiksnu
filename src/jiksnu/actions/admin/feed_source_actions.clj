@@ -22,7 +22,6 @@ for admin use"
 
 (definitializer
   (require-namespaces
-   [
-    "jiksnu.filters.admin.feed-source-filters"
+   ["jiksnu.filters.admin.feed-source-filters"
     "jiksnu.sections.feed-source-sections"
     "jiksnu.views.admin.feed-source-views"]))
