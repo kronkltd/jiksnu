@@ -1,8 +1,10 @@
 (ns jiksnu.actions.group-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [runner :only [require-namespaces]]))
-  (:require (jiksnu.model [group :as model.group]))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.model :only [implement]]
+        [ciste.runner :only [require-namespaces]]
+        [jiksnu.session :only [current-user]])
+  (:require [jiksnu.model.group :as model.group])
   (:import jiksnu.model.Group))
 
 (defaction create

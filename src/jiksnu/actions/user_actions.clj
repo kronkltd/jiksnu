@@ -1,36 +1,36 @@
 (ns jiksnu.actions.user-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [model :only [implement]]
-               [runner :only [require-namespaces]])
-        (clj-stacktrace [repl :only [pst+]])
-        (clojure.core [incubator :only [-?> -?>>]])
-        (jiksnu model
-                [session :only [current-user]])
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
+        [ciste.runner :only [require-namespaces]]
+        [clj-stacktrace.repl :only [pst+]]
+        [clojure.core.incubator :only [-?> -?>>]]
+        jiksnu.model
+        [jiksnu.session :only [current-user]]
         plaza.rdf.core
         plaza.rdf.sparql
         plaza.rdf.vocabularies.foaf)
-  (:require (aleph [http :as http])
-            (ciste [model :as cm])
-            (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (clojure [string :as string])
-            (clojure.tools [logging :as log])
-            (jiksnu [abdera :as abdera]
-                    [model :as model]
-                    [namespace :as namespace])
-            (jiksnu.actions [domain-actions :as actions.domain])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [domain :as model.domain]
-                          [signature :as model.signature]
-                          [user :as model.user]
-                          [webfinger :as model.webfinger])
-            (jiksnu.xmpp [element :as xmpp.element])
-            (karras [entity :as entity]
-                    [sugar :as sugar])
-            (plaza.rdf [core :as rdf]))
+  (:require [aleph.http :as http]
+            [ciste.model :as cm]
+            [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model :as model]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.xmpp.element :as xmpp.element]
+            [karras.entity :as entity]
+            [karras.sugar :as sugar]
+            [plaza.rdf.core :as rdf])
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.User
@@ -283,6 +283,13 @@
        (into user)
        model.user/update))
 
+(defn get-name
+  "Returns the name of the person"
+  [^Person person]
+  (or (.getSimpleExtension person namespace/poco
+                           "displayName" "poco" )
+      (.getName person)))
+
 (defn person->user
   [^Person person]
   ;; TODO: Do we need to nil-check here?
@@ -296,9 +303,7 @@
                        (get-username id))]
       (if (and username domain)
         (let [email (.getEmail person)
-              name (or (.getSimpleExtension person namespace/poco
-                                            "displayName" "poco" )
-                       (.getName person))
+              name (get-name person)
               note (.getSimpleExtension person (QName. namespace/poco "note"))
               uri (str (.getUri person))
               links (-> person
@@ -314,7 +319,7 @@
               user (-> {:id id}
                        #_(find-or-create-by-remote-id params)
                        (merge params))]
-          (doseq [link links]
+          #_(doseq [link links]
             (add-link user link))
           (entity/make User user))
         (throw (RuntimeException. "could not determine user"))))))

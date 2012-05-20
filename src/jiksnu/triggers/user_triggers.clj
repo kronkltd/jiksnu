@@ -50,19 +50,24 @@
   [action params user]
   (actions.user/discover user))
 
+(defn parse-magic-public-key
+  [user link]
+  (let [key-string (:href link)
+        [_ n e] (re-matches
+                 #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+                 key-string)]
+    (model.signature/set-armored-key (:_id user) n e)))
+
+(defn parse-avatar
+  [user link]
+  (when (= (first (:extensions link)) "96")
+    (actions.user/update (assoc user :avatar-url (:href link)))))
+
 (defn add-link-trigger
   [action [user link] _]
   (condp = (:rel link)
-    "magic-public-key" (let [key-string (:href link)
-                             [_ n e]
-                             (re-matches
-                              #"data:application/magic-public-key,RSA.(.+)\.(.+)"
-                              key-string)]
-                         (model.signature/set-armored-key (:_id user) n e))
-    ;; TODO: Fix exstension extraction
-    "avatar" (when (= (first (:extensions link)) "96")
-               (log/info "setting avatar")
-               (actions.user/update (assoc user :avatar-url (:href link))))
+    "magic-public-key" (parse-magic-public-key user link)
+    "avatar" (parse-avatar user link)
     nil))
 
 (defn register-trigger
