@@ -1,45 +1,33 @@
 (ns jiksnu.sections.activity-sections
-  (:use (ciste [core :only [with-format]]
-               [debug :only [spy]]
-               [sections :only [defsection]])
-        (ciste.sections [default :only [add-form edit-button index-section show-section
-                                        delete-button full-uri link-to uri title
-                                        index-block index-line update-button]])
-        (clojure.core [incubator :only [-?>]])
-        (jiksnu [views :only [control-line]])
-        (plaza.rdf core)
-        (plaza.rdf.vocabularies foaf))
-  (:require (hiccup [core :as h])
-            (jiksnu [abdera :as abdera]
-                    [model :as model]
-                    [namespace :as ns]
-                    [session :as session])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [comment-actions :as actions.comment])
-            (jiksnu.model [activity :as model.activity]
-                          [like :as model.like]
-                          [user :as model.user])
-            (jiksnu.sections [user-sections :as sections.user])
-            (jiksnu.xmpp [element :as element])
-            (ring.util [codec :as codec]))
+  (:use [ciste.core :only [with-format]]
+        [ciste.debug :only [spy]]
+        [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [add-form edit-button index-section show-section
+                                       delete-button full-uri link-to uri title
+                                       index-block index-line update-button]]
+        [clojure.core.incubator :only [-?>]]
+        [jiksnu.views :only [control-line]]
+        [plaza.rdf.core]
+        [plaza.rdf.vocabularies.foaf])
+  (:require [hiccup.core :as h]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.comment-actions :as actions.comment]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.like :as model.like]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as ns]
+            [jiksnu.sections.user-sections :as sections.user]
+            [jiksnu.session :as session]
+            [jiksnu.xmpp.element :as element]
+            [ring.util.codec :as codec])
   (:import com.ocpsoft.pretty.time.PrettyTime
            java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.ExtensibleElement))
-
-;; TODO: Move to common area
-(register-rdf-ns :aair ns/aair)
-(register-rdf-ns :as ns/as)
-(register-rdf-ns :dc ns/dc)
-
-;; model?
-(defn get-author
-  [activity]
-  (-> activity
-      :author
-      model.user/fetch-by-id))
 
 (defn like-button
   [activity]
@@ -130,9 +118,9 @@
     :href (sections.user/user-timeline-link user "xml")
     :type "application/xml"}])
 
-(defn add-entry
-  [feed activity]
-  (.addEntry feed (show-section activity)))
+;; (defn add-entry
+;;   [feed activity]
+;;   (.addEntry feed (show-section activity)))
 
 ;; specific sections
 
@@ -156,12 +144,12 @@
   [:div.control-group.hidden
    [:label.control-label "Location"]
    [:div.controls
-    [:label {:for "lat"} "Latitude"]
+    [:label {:for "geo.lat"} "Latitude"]
     [:div.input
-     [:input {:type "text" :name "lat"}]]
-    [:label {:for "long"} "Longitude"]
+     [:input {:type "text" :name "geo.lat"}]]
+    [:label {:for "geo.long"} "Longitude"]
     [:div.input
-     [:input {:type "text" :name "lat"}]]]])
+     [:input {:type "text" :name "geo.lat"}]]]])
 
 
 (defn add-button-section
@@ -193,9 +181,6 @@
    [:option {:value "private"} "Private"]])
 
 ;; move to model
-(defn author?
-  [activity user]
-  (= (:author activity) (:_id user)))
 
 (defn post-actions
   [activity]
@@ -204,13 +189,13 @@
      [:ul.post-actions.unstyled.buttons
       (when authenticated
         (list [:li (like-button activity)]
-              [:li [:a.btn {:href "#"} [:i.icon-comment] [:span.button-text "Comment"]]]))
-      (when (or (author? activity authenticated)
-                (session/is-admin?))
-        (list [:li (edit-button activity)]
-              [:li (delete-button activity)]))
-      (when (session/is-admin?)
-        [:li (update-button activity)])]]))
+              [:li [:a.btn {:href "#"} [:i.icon-comment] [:span.button-text "Comment"]]]
+              (when (or (author? activity authenticated)
+                        (session/is-admin?))
+                (list [:li (edit-button activity)]
+                      [:li (delete-button activity)]))
+              (when (session/is-admin?)
+                [:li (update-button activity)])))]]))
 
 (defn recipients-section
   [activity]
@@ -227,24 +212,22 @@
 
 (defn links-section
   [activity]
-  
-  )
+  (implement))
 
 (defn maps-section
   [activity]
   
-  (if (and (seq (:lat activity))
-           (seq (:long activity)))
+  (if-let [geo (:geo activity)]
     [:div.map-section
      [:img.map
       {:alt ""
        :src
        (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-            (:lat activity)
+            (:lat geo)
             ","
-            (:long activity))}]
-     #_[:p "Lat: " (:lat activity)]
-     #_[:p "Long: " (:long activity)]]))
+            (:long geo))}]
+     #_[:p "Lat: " (:lat geo)]
+     #_[:p "Long: " (:long geo)]]))
 
 (defn likes-section
   [activity]
@@ -259,14 +242,14 @@
 
 (defn tags-section
   [activity]
-  (when (:tags activity)
+  (when-let [tags (:tags activity)]
     [:div.tags
      [:span "Tags: "]
      [:ul.tags
       (map
        (fn [tag]
          [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
-       (:tags activity))]]))
+       tags)]]))
 
 (defn posted-link-section
   [activity]
@@ -305,12 +288,11 @@
       [:a {:href (first (:conversations activity))}
        "in context"]))
 
-   (when (and (seq (:lat activity))
-              (seq (:long activity)))
+   (when-let [geo (:geo activity)]
      (list " near "
            [:a.geo-link {:href "#"}
-            (:lat activity) ", "
-            (:long activity)]))])
+            (:lat geo) ", "
+            (:long geo)]))])
 
 (defn comments-section
   [activity]
@@ -356,8 +338,7 @@
 
 (defn status-form
   [activity]
-  
-  )
+  (implement))
 
 (defn event-form
   [activity]
@@ -534,10 +515,10 @@
           :url (full-uri activity)}
          (when (:conversations activity)
            {:context {:conversations (first (:conversations activity))}})
-         (when (and (:lat activity) (:long activity))
+         (if-let [geo (:geo activity)]
            {:location {:objectType "place"
-                       :lat (:lat activity)
-                       :long (:long activity)}})))
+                       :lat (:lat geo)
+                       :long (:long geo)}})))
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
@@ -677,9 +658,10 @@
    [:favorited "false" #_(liked? (current-user) activity)]
    [:in_reply_to_screen_name]
    (show-section (get-author activity))
-   [:geo]
-   [:coordinates]
-   [:place]
+   (when (:geo activity)
+     (list [:geo]
+           [:coordinates]
+           [:place]))
    [:contributors]
    [:entities
     [:user_mentions
@@ -697,8 +679,6 @@
 (defsection title [Activity]
   [activity & options]
   (:title activity))
-
-
 
 
 

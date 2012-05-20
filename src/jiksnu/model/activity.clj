@@ -92,8 +92,7 @@
       set-remote
       set-tags
       set-object-type
-      set-parent
-      ))
+      set-parent))
 
 (defn create
   [activity]
@@ -109,6 +108,16 @@
   [activity]
   (entity/fetch Activity {:parent (:_id activity)}
                 :sort [(sugar/asc :published)]))
+
+(defn get-author
+  [activity]
+  (-> activity
+      :author
+      model.user/fetch-by-id))
+
+(defn author?
+  [activity user]
+  (= (:author activity) (:_id user)))
 
 (defn update
   [activity]

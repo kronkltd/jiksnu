@@ -1,28 +1,28 @@
 (ns jiksnu.actions.activity-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]])
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]]
         ciste.sections.default
-        (clojure.core [incubator :only [-?> -?>>]]))
-  (:require (aleph [http :as http])
-            (ciste [model :as cm])
-            (clj-tigase [core :as tigase]
-                        [element :as element])
-            (clojure [string :as string])
-            (clojure.java [io :as io])
-            (clojure.tools [logging :as log])
-            (hiccup [core :as hiccup])
-            (jiksnu [abdera :as abdera]
-                    [model :as model]
-                    [namespace :as namespace]
-                    [session :as session])
-            (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [user :as model.user])
-            (lamina [core :as l]))
+        [clojure.core.incubator :only [-?> -?>>]])
+  (:require [aleph.http :as http]
+            [ciste.model :as cm]
+            [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.string :as string]
+            [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
+            [hiccup.core :as hiccup]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.session :as session]
+            [lamina.core :as l])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User

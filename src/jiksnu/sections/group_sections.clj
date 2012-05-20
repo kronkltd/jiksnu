@@ -1,13 +1,13 @@
 (ns jiksnu.sections.group-sections
-  (:use (ciste [debug :only [spy]]
-               [sections :only [defsection]])
-        (ciste.sections [default :only [add-form index-section index-line]])
-        (jiksnu [views :only [control-line]]))
+  (:use [ciste.debug :only [spy]]
+        [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [add-form index-section index-line]]
+        [jiksnu.views :only [control-line]])
   (:import jiksnu.model.Group))
 
 (defsection add-form [Group :html]
   [group & _]
-  [:form.well {:method "post" :action "/group"}
+  [:form.well.form-horizontal {:method "post" :action "/group"}
    [:fieldset
     [:legend "Add a Group"]
     (control-line "Nickname" "nickname" "text")

@@ -95,6 +95,8 @@
 (rdf/register-rdf-ns :foaf ns/foaf)
 (rdf/register-rdf-ns :sioc ns/sioc)
 (rdf/register-rdf-ns :cert ns/cert)
+(rdf/register-rdf-ns :aair ns/aair)
+(rdf/register-rdf-ns :as ns/as)
 
 (defn force-coll
   [x]
