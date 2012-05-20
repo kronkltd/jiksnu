@@ -5,7 +5,7 @@
 (defn edit-form
   []
   [:form.well.form-horizontal
-   {:method "post" :action "/main/settings"}
+   {:method "post" :action "/admin/settings"}
    [:fieldset
     [:legend "Settings Page"]
     (control-line "Site Name"
@@ -23,7 +23,10 @@
     (control-line "Print Request"
                   "print.request" "checkbox"
                   :checked (config :print :request))
-    (control-line "Registration Enabled"
+    (control-line "Print Routes"
+                  "print.routes" "checkbox"
+                  :checked (config :print :routes))
+    (control-line "Allow registration?"
                   "registration-enabled" "checkbox"
                   :checked (config :registration-enabled))
     [:div.actions

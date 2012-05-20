@@ -9,12 +9,12 @@
 
 (defview #'index :html
   [request [sources options]]
-  (spy {:title "Feed Sources"
-    :single true
-    :body
-    (list 
-     (spy (index-section sources))
-     (add-form (FeedSource.)))}))
+  {:title "Feed Sources"
+   :single true
+   :body
+   (list 
+    (index-section sources)
+    (add-form (FeedSource.)))})
 
 (defview #'show :html
   [request source]

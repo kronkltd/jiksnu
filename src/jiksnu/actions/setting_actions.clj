@@ -1,12 +1,17 @@
 (ns jiksnu.actions.setting-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config definitializer set-config! write-config!]]
         [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.session :as session]))
 
 (defaction admin-edit-page
   []
-  (session/is-admin?))
+  
+  (session/is-admin?)
+
+
+  )
 
 (defaction oauth-apps
   []
@@ -75,6 +80,24 @@
 (defn avatar-page
   [user]
   {:user user})
+
+(defaction update-settings
+  [params]
+  (let [site-name (get params "site.name")
+        domain (:domain params)
+        admin-email (get params "site-email")
+        print-actions (= "on" (get params "print.actions"))
+        registration-enabled (= "on" (get params "registration-enabled"))
+        ]
+    (set-config! [:site :name] site-name)
+    (set-config! [:domain] domain)
+    (set-config! [:site :email] admin-email)
+    (set-config! [:print :actions] print-actions)
+    (set-config! [:print :request] (= "on" (get params "print.request")))
+    (set-config! [:print :routes] (= "on" (get params "print.routes")))
+    (set-config! [:registration-enabled] registration-enabled)
+    (write-config!)
+    (spy params)))
 
 
 (definitializer

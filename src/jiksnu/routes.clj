@@ -68,7 +68,7 @@
     [[:post "/admin/users"]                             #'admin.user/create]
     [[:get  "/admin/users"]                             #'admin.user/index]
     [[:get  "/admin/settings"]                          #'setting/admin-edit-page]
-    ]))
+    [[:post "/admin/settings"]                          #'setting/update-settings]]))
 
 (def http-routes
   (make-matchers

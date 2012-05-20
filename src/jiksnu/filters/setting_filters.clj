@@ -15,3 +15,7 @@
 (deffilter #'config-output :http
   [action request]
   (action))
+
+(deffilter #'update-settings :http
+  [action request]
+  (action (:params request)))

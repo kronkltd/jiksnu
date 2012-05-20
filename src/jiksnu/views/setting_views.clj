@@ -25,3 +25,10 @@
 (defview #'config-output :json
   [request data]
   {:body data})
+
+(defview #'update-settings :html
+  [request data]
+  {:flash "Settings updated"
+   :status 303
+   :template false
+   :headers {"Location" "/admin/settings"}})
