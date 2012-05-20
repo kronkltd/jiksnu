@@ -1,11 +1,7 @@
 (ns jiksnu.test-helper
-  (:use (ciste [config :only [load-config with-environment]]
-               [triggers :only [*thread-pool*]])
-        midje.sweet
-        (jiksnu [model :only [drop-all!]]))
-  (:require (clojure.tools [logging :as log])
-            jiksnu.factory
-            (karras [entity :as entity])))
+  (:use [ciste.runner :only [load-site-config start-application! stop-application!]])
+  (:require [clojure.tools.logging :as log]
+            jiksnu.factory))
 
 (defmacro test-environment-fixture
   [& body]
@@ -14,7 +10,7 @@
      (println (str "Testing " *ns*))
      (println "****************************************************************************")
      (println " ")
-     (load-config)
-
-     (with-environment :test
-       ~@body)))
+     (load-site-config)
+     (start-application! :test)
+     ~@body
+     (stop-application!)))

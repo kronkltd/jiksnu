@@ -6,7 +6,7 @@
         [jiksnu.test-helper :only [test-environment-fixture]]
         ;; [jiksnu.model :only []]
         [lamina.core :only [channel]]
-        [midje.sweet :only [fact]])
+        [midje.sweet :only [fact future-fact]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [jiksnu.actions.activity-actions :as actions.activity]
