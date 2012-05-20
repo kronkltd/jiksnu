@@ -63,12 +63,16 @@
   [subscription]
   (entity/save (assoc subscription :pending false)))
 
+(defn find-by-users
+  [actor target]
+  (entity/fetch-one Subscription {:from (:_id actor) :to (:_id target)}))
+
 (defn unsubscribe
   [actor user]
-  (if-let [subscription (entity/fetch-one Subscription {:from actor :to user})]
+  (if-let [subscription (find-by-users actor user)]
     (do (entity/delete subscription)
         subscription)
-    (entity/make Subscription {:from actor :to user :created (sugar/date)})))
+    #_(entity/make Subscription {:from actor :to user :created (sugar/date)})))
 
 (defn subscribing?
   "Does the actor have a subscription to the user"

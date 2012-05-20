@@ -1,6 +1,7 @@
 (ns jiksnu.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form edit-button index-section show-section
                                        delete-button full-uri link-to uri title
@@ -47,13 +48,16 @@
             (.addExtension rule-element ns/osw "acl-subject" "")]
         (.setAttributeValue subject-element "type" ns/everyone)))))
 
+(declare posted-link-section)
+
 (defn show-comment
   [activity]
-  (let [author (get-author activity)]
+  (let [author (model.activity/get-author activity)]
     [:div.comment
      (sections.user/display-avatar author)
      (link-to author) ": "
-     (h/h (:title activity))]))
+     (h/h (:title activity))
+     (posted-link-section activity)]))
 
 (defn comment-link-item
   [entry activity]
@@ -190,7 +194,7 @@
       (when authenticated
         (list [:li (like-button activity)]
               [:li [:a.btn {:href "#"} [:i.icon-comment] [:span.button-text "Comment"]]]
-              (when (or (author? activity authenticated)
+              (when (or (model.activity/author? activity authenticated)
                         (session/is-admin?))
                 (list [:li (edit-button activity)]
                       [:li (delete-button activity)]))
@@ -387,7 +391,7 @@
       [:div#post-note.tab-pane.active
        (note-form activity)]
       
-      [:div#post-status.tab-pane
+      #_[:div#post-status.tab-pane
        (status-form activity)]
       
       [:div#post-poll.tab-pane
@@ -488,7 +492,7 @@
 
 (defsection show-section [Activity :as]
   [activity & _]
-  (merge {:actor (show-section (actions.activity/get-author activity))
+  (merge {:actor (show-section (model.activity/get-author activity))
           :content (:content activity)
           :id (:id activity)
           :local-id (:_id activity)
@@ -523,7 +527,7 @@
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
   (let [entry (abdera/new-entry)
-        user (get-author activity)]
+        user (model.activity/get-author activity)]
     (doto entry
       (.setId (or (:id activity) (str (:_id activity))))
       (.setPublished (:published activity))
@@ -583,7 +587,7 @@
 
 (defsection show-section [Activity :html]
   [activity & _]
-  (let [user (get-author activity)]
+  (let [user (model.activity/get-author activity)]
     [:article.hentry.notice
      {:id (:_id activity)
       :about (uri activity)
@@ -613,7 +617,7 @@
             [:li
              [:img {:src (:href enclosure) :alt ""} ]])
           (:enclosures activity))])
-      (links-section activity)
+      #_(links-section activity)
       (likes-section activity)
       (maps-section activity)
       (tags-section activity)
@@ -625,7 +629,7 @@
   (with-rdf-ns ""
     (let [{:keys [content id published]} activity
           uri (full-uri activity)
-          user (get-author activity)
+          user (model.activity/get-author activity)
           user-res (rdf-resource (or (:id user) (model.user/get-uri user)))]
       (concat [
                [uri [:rdf :type]         [:sioc :Post]]
@@ -657,7 +661,7 @@
    [:in_reply_to_user_id]
    [:favorited "false" #_(liked? (current-user) activity)]
    [:in_reply_to_screen_name]
-   (show-section (get-author activity))
+   (show-section (model.activity/get-author activity))
    (when (:geo activity)
      (list [:geo]
            [:coordinates]

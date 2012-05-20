@@ -50,6 +50,13 @@
    [:button.btn.subscribe-button {:type "submit" :title "Subscribe"}
     [:i.icon-eye-open] [:span.button-text "Subscribe"]]])
 
+(defn unsubscribe-button
+  [user]
+  [:form {:method "post" :action (str "/users/" (:_id user) "/unsubscribe")}
+   [:button.btn.unsubscribe-button {:type "submit" :title "Unsubscribe"}
+    [:i.icon-eye-close] [:span.button-text "Unsubscribe"]]])
+
+
 ;; (defn add-author
 ;;   "Adds the supplied user to the atom entry"
 ;;   [^Entry entry ^User user]
@@ -207,11 +214,7 @@
 
       (when (:email user)
         (.addSimpleExtension person ns/atom "email" "" (:email user)))
-      person
-      )
-    
-    
-    ))
+      person)))
 
 (defn user-actions
   [user]
@@ -223,7 +226,9 @@
       [:li (discover-button user)]
       [:li (update-button user)]
       (when (not= (:_id user) (:_id authenticated))
-        [:li (subscribe-button user)])
+        (list
+         [:li (subscribe-button user)]
+         [:li (unsubscribe-button user)]))
       (when (is-admin?)
         [:li (delete-button user)])]]))
 
@@ -363,7 +368,7 @@
    [:p
     (display-avatar user)
     [:span.nickname.fn.n (:display-name user)]
-    " (" (:username user) "@" (:domain user) ")"]
+    " (" (:username user) "@" (link-to (actions.user/get-domain user)) ")"]
    [:div.adr
     [:p.locality (:location user)]]
    [:p.note (:bio user)]

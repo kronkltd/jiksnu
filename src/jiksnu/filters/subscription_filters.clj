@@ -57,14 +57,13 @@
 
 (deffilter #'unsubscribe :http
   [action request]
-  (if-let [actor (current-user-id)]
-    (if-let [{{user :unsubscribeto} :params} request]
-      (action actor (model/make-id user)))))
-
-
-
-
-
+  (if-let [actor (current-user)]
+    (let [params {:params request}]
+      (if-let [id (or (:unsubscribeto params)
+                      (:id params))]
+        (if-let [user (model.user/fetch-by-id id)]
+          (action actor (model/make-id id))
+          (throw (RuntimeException. "User not found")))))))
 
 (deffilter #'remote-subscribe-confirm :xmpp
   [action request]

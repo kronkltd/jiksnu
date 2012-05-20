@@ -168,6 +168,7 @@
     [[:get    "/users/:id/subscriptions"]                     #'sub/get-subscriptions]
     [[:get    "/users/:id/subscribers.:format"]               #'sub/get-subscribers]
     [[:get    "/users/:id/subscribers"]                       #'sub/get-subscribers]
+    [[:post   "/users/:id/unsubscribe"]                       #'sub/unsubscribe]
     [[:post   "/users/:id/update.:format"]                    #'user/fetch-updates]
     [[:post   "/users/:id/update"]                            #'user/fetch-updates]
     [[:post   "/users/:id/update-hub"]                        #'user/update-hub]

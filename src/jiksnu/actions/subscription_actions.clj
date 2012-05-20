@@ -2,7 +2,8 @@
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
                [debug :only [spy]]
-               [runner :only [require-namespaces]]))
+               [runner :only [require-namespaces]])
+        [ciste.model :only [implement]])
   (:require (clojure.tools [logging :as log])
             (jiksnu [model :as model]
                     [session :as session])
@@ -25,7 +26,7 @@
 
 (defaction ostatus
   [& _]
-  true)
+  (implement))
 
 (defaction ostatussub
   [profile]
@@ -36,19 +37,25 @@
     (User.)))
 
 (defaction remote-subscribe
-  [& _])
+  [& _]
+  (implement))
 
 (defaction remote-subscribe-confirm
-  [& _])
+  [& _]
+  (implement))
+
+(defaction create
+  [params & options]
+  (model.subscription/create params))
 
 (defaction subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed
   (actions.feed-source/subscribe user)
-  (model.subscription/create
-   {:from (:_id actor)
-    :to (:_id user)
-    :pending true}))
+  (-> {:from (:_id actor)
+       :to (:_id user)
+       :pending true}
+      create))
 
 (defaction unsubscribed
   [actor user]
@@ -79,13 +86,16 @@
 
 
 (defaction unsubscribe
-  [actor-id user-id]
-  (model.subscription/unsubscribe actor-id user-id))
+  "User unsubscribes from another user"
+  [actor target]
+  (if-let [subscription (model.subscription/find-by-users actor target)]
+    (model.subscription/unsubscribe actor target)
+    (throw (RuntimeException. "Subscription not found"))))
 
 (defaction subscribe-confirm
   [user]
   ;; TODO: unmark pending flag
-  true)
+  (implement))
 
 (defaction confirm
   [subscription]

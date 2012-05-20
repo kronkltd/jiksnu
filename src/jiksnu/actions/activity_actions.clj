@@ -163,7 +163,7 @@ this is for OSW
 serialization"
   ([entry] (entry->activity entry nil))
   ([entry feed]
-     (let [id (str (.getId (spy entry)))
+     (let [id (str (.getId entry))
            original-activity (model.activity/fetch-by-remote-id id)
            title (.getTitle entry)
            published (.getPublished entry)
@@ -182,20 +182,18 @@ serialization"
            irts (seq (parse-irts entry))
 
            ;; TODO: Extract this pattern
-           mentioned-uris (-?> (concat (.getLinks entry "mentioned")
+           mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
                                        (.getLinks entry "ostatus:attention"))
-                               (->> (map abdera/get-href))
-                               seq)
+                                (map abdera/get-href)
+                                (into #{}))
 
-           conversation-uris (-?> entry 
-                                  (.getLinks "ostatus:conversation")
-                                  (->> (map abdera/get-href))
-                                  seq)
+           conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
+                                   (map abdera/get-href)
+                                   (into #{}))
 
-           enclosures (-?> entry
-                           (.getLinks "enclosure")
+           enclosures (-?> (.getLinks entry "enclosure")
                            (->> (map abdera/parse-link))
-                           seq)
+                           (into #{}))
            
            tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
            object-element (.getExtension entry (QName. namespace/as "object"))
@@ -211,16 +209,20 @@ serialization"
                        (when title             {:title title})
                        (when irts        {:irts irts})
 
-                       (when links       {:links links})
-
-                       (when conversation-uris {:conversations conversation-uris})
-                       (when mentioned-uris    {:mentioned-uris mentioned-uris})
-                       (when enclosures) {:enclosures enclosures}
-
-                       (when tags        {:tags tags})
+                       (when (seq links)
+                         {:links links})
+                       (when (seq conversation-uris)
+                         {:conversations conversation-uris})
+                       (when (seq mentioned-uris)
+                         {:mentioned-uris mentioned-uris})
+                       (when (seq enclosures)
+                         {:enclosures enclosures})
+                       (when (seq tags)
+                         {:tags tags})
                        (when verb              {:verb verb})
                        {:id id
                         :author (:_id user)
+                        ;; TODO: try to read
                         :public true
                         :object (merge (when object-type {:object-type object-type})
                                        (when object-id {:id object-id}))
