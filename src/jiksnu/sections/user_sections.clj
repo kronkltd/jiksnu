@@ -1,31 +1,30 @@
 (ns jiksnu.sections.user-sections
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               sections)
-        (ciste.sections [default :only [title uri full-uri show-section add-form edit-button
+  (:use  [ciste.config :only [config]]
+         [ciste.debug :only [spy]]
+         ciste.sections
+         [ciste.sections.default :only [title uri full-uri show-section add-form edit-button
                                         delete-button link-to index-line
-                                        update-button
-                                        index-section]])
-        (clj-gravatar [core :only [gravatar-image]])
-        (jiksnu [model :only [with-subject]]
-                session
-                [views :only [control-line]])
-        (plaza.rdf.vocabularies foaf))
-  (:require (clj-tigase [element :as element])
-            (hiccup [core :as h]
-                    [form :as f])
-            (jiksnu [abdera :as abdera]
-                    [namespace :as ns])
-            (jiksnu.actions [subscription-actions :as actions.subscription]
-                            [user-actions :as actions.user])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [signature :as model.signature]
-                          [subscription :as model.subscription]
-                          [user :as model.user])
-            (plaza.rdf [core :as rdf])
-            (ring.util [codec :as codec]))
+                                        update-button index-section]]
+         [clj-gravatar.core :only [gravatar-image]]
+         [jiksnu.model :only [with-subject]]
+         jiksnu.session
+         [jiksnu.views :only [control-line]]
+         plaza.rdf.vocabularies.foaf)
+  (:require [clj-tigase.element :as element]
+            [hiccup.core :as h]
+            [hiccup.form :as f]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.namespace :as ns]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [plaza.rdf.core :as rdf]
+            [ring.util.codec :as codec])
   (:import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
            java.math.BigInteger
            java.net.URI
@@ -104,16 +103,13 @@
   [:form {:method "post" :action "/settings/profile"}
    [:fieldset
     [:legend "Edit User"]
+    (control-line "Username"
+                  "username" "text"
+                  :value (:username user))
 
-    [:div.clearfix
-     [:label {:for "username"} "Username"]
-     [:div.input
-      [:input {:type "text" :name "username" :value (:username user)}]]]
-
-    [:div.clearfix
-     [:label {:for "domain"} "Domain"]
-     [:div.input
-      [:input {:type "text" :name "domain" :value (:domain user)}]]]
+    (control-line "Domain"
+                  "domain" "text"
+                  :value (:domain user))
     
     [:div.clearfix
      [:label {:for "display-name"} "Display Name"]

@@ -1,26 +1,30 @@
 (ns jiksnu.sections.setting-sections
-  (:use (ciste [config :only [config]])))
+  (:use [ciste.config :only [config]]
+        [jiksnu.views :only [control-line]]))
 
 (defn edit-form
   []
-  [:form {:method "post" :action "/main/settings"}
+  [:form.well.form-horizontal
+   {:method "post" :action "/main/settings"}
    [:fieldset
     [:legend "Settings Page"]
-    [:div.clearfix
-     [:label {:for "site.name"} "Site Name"]
-     [:div.input
-      [:input {:type "text" :name "site.name" :value (config :site :name)}]]]
-    [:div.clearfix
-     [:label {:for "print.actions"} "Print Actions"]
-     [:div.input
-      [:input {:type "checkbox" :name "print.actions"}]]]
-    [:div.clearfix
-     [:label {:for "print.request"} "Print Request"]
-     [:div.input
-      [:input {:type "checkbox" :name "print.request"}]]]
-    [:div.clearfix
-     [:label {:for "registration-enabled"} "Registration Enabled"]
-     [:div.input
-      [:input {:type "checkbox" :name "registration-enabled"}]]]
+    (control-line "Site Name"
+                  "site.name" "text"
+                  :value (config :site :name))
+    (control-line "Domain"
+                  "domain" "text"
+                  :value (config :domain))
+    (control-line "Admin Email"
+                  "site.email" "text"
+                  :value (config :site :email))
+    (control-line "Print Actions"
+                  "print.actions" "checkbox"
+                  :checked (config :print :actions))
+    (control-line "Print Request"
+                  "print.request" "checkbox"
+                  :checked (config :print :request))
+    (control-line "Registration Enabled"
+                  "registration-enabled" "checkbox"
+                  :checked (config :registration-enabled))
     [:div.actions
      [:input {:type "submit"}]]]])

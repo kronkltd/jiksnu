@@ -1,23 +1,30 @@
 (ns jiksnu.views
-  (:use (ciste core
-               [config :only [config]]
-               [debug :only [spy]]
-               formats sections views)
+  (:use [ciste.core]
+        [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        ciste.formats
+        ciste.sections
+        ciste.views
         ciste.sections.default
         ciste.views.default
-        (jiksnu model session))
-  (:require (clj-tigase [core :as tigase])
-            (hiccup [core :as h])
-            (jiksnu [namespace :as ns])
-            (plaza.rdf [core :as rdf])
-            (plaza.rdf.vocabularies [foaf :as foaf])))
+        jiksnu.model
+        jiksnu.session)
+  (:require [clj-tigase.core :as tigase]
+            [hiccup.core :as h]
+            [jiksnu.namespace :as ns]
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.vocabularies.foaf :as foaf]))
 
 (defn control-line
-  [label name type & options]
-  [:div.control-group
-   [:label.control-label {:for name} label]
-   [:div.controls
-    [:input {:type type :name name}]]])
+  [label name type & {:as options}]
+  (let [value (:value options)]
+    [:div.control-group
+     [:label.control-label {:for name} label]
+     [:div.controls
+      [:input
+       (merge {:type type :name name}
+              (when value
+                {:value value}))]]]))
 
 (defsection full-uri :default
   [record & options]
