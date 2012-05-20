@@ -33,6 +33,7 @@
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
                  [ring "1.1.0"]
                  [ring-basic-authentication "0.0.1"]
+                 [slingshot "0.10.2"]
                  [xml-picker-seq "0.0.2"]
                  ]
   :exclusions [

@@ -1,16 +1,16 @@
 (ns jiksnu.actions.webfinger-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]])
-        (clojure.core [incubator :only [-?>]]))
-  (:require (clojure.tools [logging :as log])
-            (jiksnu.model [webfinger :as model.webfinger])
-            (jiksnu.actions [domain-actions :as actions.domain]
-                            [user-actions :as actions.user])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [domain :as model.domain]
-                          [user :as model.user]))
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]]
+        [clojure.core.incubator :only [-?>]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.model.webfinger :as model.webfinger])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain

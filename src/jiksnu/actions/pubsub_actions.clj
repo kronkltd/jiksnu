@@ -1,16 +1,16 @@
 (ns jiksnu.actions.pubsub-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]]))
-  (:require (aleph [http :as http])
-            (clojure [string :as string])
-            (clojure.tools [logging :as log])
-            (lamina [core :as l]
-                    [executor :as e])
-            (jiksnu [model :as model])
-            (jiksnu.actions [feed-source-actions :as actions.feed-source])
-            (jiksnu.model [feed-source :as model.feed-source])))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]])
+  (:require [aleph.http :as http]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [lamina.core :as l]
+            [lamina.executor :as e]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.model :as model]
+            [jiksnu.model.feed-source :as model.feed-source]))
 
 ;; TODO: break into components and actually perform validation
 (defn valid?

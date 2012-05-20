@@ -1,7 +1,7 @@
 (ns jiksnu.actions.site-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [runner :only [require-namespaces]])))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.runner :only [require-namespaces]]))
 
 (defaction service
   [id]

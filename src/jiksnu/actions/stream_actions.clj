@@ -1,24 +1,23 @@
 (ns jiksnu.actions.stream-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction with-context]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]])
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction with-context]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]]
         ciste.sections.default
-        (clojure.core [incubator :only [-?>]])
-        (jiksnu model)
-        jiksnu.actions.stream-actions)
-  (:require (clojure.data [json :as json])
-            (clojure.tools [logging :as log])
-            (hiccup [core :as h])
-            (jiksnu [abdera :as abdera]
-                    [session :as session])
-            (jiksnu.actions [activity-actions :as actions.activity])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (lamina [core :as l]))
+        [clojure.core.incubator :only [-?>]]
+        jiksnu.actions.stream-actions
+        jiksnu.model)
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
+            [hiccup.core :as h]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session]
+            [lamina.core :as l])
   (:import jiksnu.model.User))
-
 
 (defaction direct-message-timeline
   [& _]

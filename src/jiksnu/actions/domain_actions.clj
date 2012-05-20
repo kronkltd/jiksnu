@@ -1,18 +1,18 @@
 (ns jiksnu.actions.domain-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]])
-        (clojure.core [incubator :only [-?>>]]))
-  (:require (ciste [model :as cm])
-            (clj-tigase [core :as tigase])
-            (clojure [string :as string])
-            (clojure.data [json :as json])
-            (clojure.tools [logging :as log])
-            (jiksnu.model [domain :as model.domain]
-                          [webfinger :as model.webfinger])
-            (karras [sugar :as sugar])
-            (ring.util [codec :as codec]))
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]]
+        [clojure.core.incubator :only [-?>>]])
+  (:require [ciste.model :as cm]
+            [clj-tigase.core :as tigase]
+            [clojure.data.json :as json]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.webfinger :as model.webfinger]
+            [karras.sugar :as sugar]
+            [ring.util.codec :as codec])
   (:import java.net.URL
            jiksnu.model.Domain))
 

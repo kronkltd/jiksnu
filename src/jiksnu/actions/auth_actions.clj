@@ -1,17 +1,16 @@
 (ns jiksnu.actions.auth-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [model :only [implement]]
-               [runner :only [require-namespaces]]))
-  (:require (clojure.tools [logging :as log])
-            (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.model [authentication-mechanism :as model.authentication-mechanism]
-                          [user :as model.user]))
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
+        [ciste.runner :only [require-namespaces]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
+            [jiksnu.model.user :as model.user])
   (:import javax.security.auth.login.AccountNotFoundException
            javax.security.auth.login.LoginException
-           org.mindrot.jbcrypt.BCrypt
-           ))
+           org.mindrot.jbcrypt.BCrypt))
 
 (defaction guest-login
   [webid]

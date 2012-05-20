@@ -1,8 +1,8 @@
 (ns jiksnu.actions.setting-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]
-               [runner :only [require-namespaces]]))
-  (:require (jiksnu [session :as session])))
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.runner :only [require-namespaces]])
+  (:require [jiksnu.session :as session]))
 
 (defaction admin-edit-page
   []

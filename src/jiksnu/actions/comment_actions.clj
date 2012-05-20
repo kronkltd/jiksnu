@@ -1,18 +1,18 @@
 (ns jiksnu.actions.comment-actions
-  (:use (ciste [config :only [config definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]]))
-  (:require (ciste [model :as cm])
-            (clj-tigase [core :as tigase]
-                        [element :as element])
-            (clojure.tools [logging :as log])
-            (jiksnu [model :as model]
-                    [namespace :as ns])
-            (jiksnu.actions [activity-actions :as actions.activity])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [user :as model.user])))
+  (:use [ciste.config :only [config definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]])
+  (:require [ciste.model :as cm]
+            [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as ns]))
 
 ;; TODO: What id should be used here?
 (defn comment-node-uri

@@ -1,17 +1,16 @@
 (ns jiksnu.actions.subscription-actions
-  (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]
-               [debug :only [spy]]
-               [runner :only [require-namespaces]])
+  (:use [ciste.config :only [definitializer]]
+        [ciste.core :only [defaction]]
+        [ciste.debug :only [spy]]
+        [ciste.runner :only [require-namespaces]]
         [ciste.model :only [implement]])
-  (:require (clojure.tools [logging :as log])
-            (jiksnu [model :as model]
-                    [session :as session])
-            (jiksnu.actions [feed-source-actions :as actions.feed-source]
-                            [pubsub-actions :as actions.pubsub])
-            
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.pubsub-actions :as actions.pubsub]
+            [jiksnu.model :as model]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session])
   (:import javax.security.sasl.AuthenticationException
            jiksnu.model.Subscription
            jiksnu.model.User))

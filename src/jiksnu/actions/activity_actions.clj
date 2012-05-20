@@ -4,7 +4,8 @@
         [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
         ciste.sections.default
-        [clojure.core.incubator :only [-?> -?>>]])
+        [clojure.core.incubator :only [-?> -?>>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -124,8 +125,8 @@ this is for OSW
   (if (seq id)
     (if-not (model.activity/fetch-by-remote-id id)
       (model.activity/create params)
-      (throw (RuntimeException. (str "Activity already exists. id = " id))))
-    (throw (RuntimeException. "id must not be empty"))))
+      (throw+ {:msg (str "Activity already exists. id = " id)}))
+    (throw+ {:msg "id must not be empty"})))
 
 (defaction delete
   "delete an activity"
@@ -135,7 +136,8 @@ this is for OSW
     (if (or (session/is-admin?) (= actor-id author))
       (model.activity/delete activity)
       ;; TODO: better exception type
-      (throw (RuntimeException. "You are not authorized to delete that activity")))))
+      (throw+ {:type :authorization
+               :msg "You are not authorized to delete that activity"}))))
 
 (defaction edit-page
   "Edit page for an activity"
@@ -288,7 +290,7 @@ serialization"
     activity
     (if-let [atom-link (model/extract-atom-link (:id activity))]
       (fetch-remote-feed atom-link)
-      (throw (RuntimeException. "could not discover atom link")))))
+      (throw+ {:msg "could not discover atom link"}))))
 
 (definitializer
   (require-namespaces
