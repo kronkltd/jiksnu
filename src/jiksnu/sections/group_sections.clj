@@ -7,7 +7,7 @@
 
 (defsection add-form [Group :html]
   [group & _]
-  [:form.well.form-horizontal {:method "post" :action "/group"}
+  [:form.well.form-horizontal {:method "post" :action "/groups"}
    [:fieldset
     [:legend "Add a Group"]
     (control-line "Nickname" "nickname" "text")

@@ -25,5 +25,6 @@
 (defview #'add :html
   [request group]
   {:status 303
-   :headers {"Location" "/group"}
+   :headers {"Location" "/groups"}
+   :flash "Group added"
    :template false})
