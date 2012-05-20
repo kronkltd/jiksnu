@@ -1,33 +1,33 @@
 (ns jiksnu.features-helper
-  (:use (aleph http
-               formats)
-        (ciste [debug :only [spy]]
-               [model :only [implement]])
+  (:use aleph.http
+        aleph.formats
+        [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
         ;; ciste.sections.default
-        (clj-factory [core :only [factory fseq]])
+        [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
         jiksnu.features-helper
         midje.sweet
         ring.mock.request)
-  (:require (ciste [config :as c]
-                   [core :as core]
-                   [runner :as runner])
-            (ciste.sections [default :as sections])
-            (ciste.service [aleph :as aleph])
+  (:require [ciste.config :as c]
+            [ciste.core :as core]
+            [ciste.runner :as runner]
+            [ciste.sections.default :as sections]
+            [ciste.service.aleph :as aleph]
             [clj-webdriver.core :as w]
-            (clojure [string :as string])
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
-            (jiksnu [model :as model]
-                    factory
-                    routes
-                    [session :as session])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [domain-actions :as actions.domain]
-                            [user-actions :as actions.user])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [user :as model.user]))
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.user-actions :as actions.user]
+            jiksnu.factory
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            jiksnu.routes
+            [jiksnu.session :as session])
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User
@@ -46,14 +46,17 @@
 (defn before-hook
   []
   (log/info "before")
-  (let [site-config (ciste.runner/load-site-config)]
-    (ciste.runner/init-services site-config :test)
-
-    (c/set-config! [:domain] (str domain ":" port))
-    (log/info "dropping")
-    (model/drop-all!)
-
-    (ciste.runner/start-services! site-config)))
+  (try (let [site-config (ciste.runner/load-site-config)]
+         
+         (ciste.runner/start-application! :test)
+         
+         (c/set-config! [:domain] (str domain ":" port))
+         ;; (log/info "dropping")
+         ;; (Thread/sleep 6000)
+         (model/drop-all!))
+       (catch Exception ex
+         (.printStackTrace ex)
+         (System/exit 0))))
 
 (defn after-hook
   []
