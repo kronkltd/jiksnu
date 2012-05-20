@@ -168,7 +168,9 @@
   [request [group activities]]
   {:title (str group " group")
    :post-form true
-   :body (index-section activities)})
+   :body (list
+          (show-section (spy group))
+          (index-section activities))})
 
 (defview #'home-timeline :html
   [request activities]

@@ -1,11 +1,12 @@
 (ns jiksnu.filters.stream-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
-        (clojure.core [incubator :only [-?>]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
+        [clojure.core.incubator :only [-?>]]
         jiksnu.actions.stream-actions)
-  (:require (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])))
+  (:require [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.group :as model.group]
+            [jiksnu.model.user :as model.user]))
 
 
 (deffilter #'callback-publish :http
@@ -23,7 +24,7 @@
 
 (deffilter #'group-timeline :http
   [action {{:keys [name]} :params}]
-  (action name))
+  (action (model.group/fetch-by-name name)))
 
 (deffilter #'home-timeline :http
   [action request]

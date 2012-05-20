@@ -1,8 +1,9 @@
 (ns jiksnu.sections.group-sections
   (:use [ciste.debug :only [spy]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form index-section index-line]]
+        [ciste.sections.default :only [add-form link-to index-section index-line show-section]]
         [jiksnu.views :only [control-line]])
+  (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Group))
 
 (defsection add-form [Group :html]
@@ -38,6 +39,23 @@
   [:ul.profiles
    (map index-line groups)])
 
+
+(defsection show-section [Group :html]
+  [group & _]
+  [:div
+   [:p (:title group)]
+   [:div
+    [:p "Admins " (count (:admins group))]
+    [:ul
+     (map
+      (fn [admin]
+        (link-to (model.user/fetch-by-id))
+        )
+      (:admins group))
+     ]
+    ]
+   ]
+  )
 
 (defn user-groups
   [user]

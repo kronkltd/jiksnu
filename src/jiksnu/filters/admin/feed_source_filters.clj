@@ -6,7 +6,7 @@
 
 (deffilter #'index :http
   [action request]
-  (spy (action)))
+  (action))
 
 (deffilter #'show :http
   [action request]

@@ -54,10 +54,10 @@
   [activity]
   (let [author (model.activity/get-author activity)]
     [:div.comment
-     (sections.user/display-avatar author)
-     (link-to author) ": "
-     (h/h (:title activity))
-     (posted-link-section activity)]))
+     [:p (sections.user/display-avatar author)
+      (link-to author) ": "
+      (h/h (:title activity))]
+     [:p (posted-link-section activity)]]))
 
 (defn comment-link-item
   [entry activity]

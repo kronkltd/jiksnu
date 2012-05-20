@@ -165,11 +165,11 @@
                       "/themes/classic/standard.css")
        [:link {:href (str "http://" (config :domain) "/favicon.ico")
                :rel "shortcut icon"}]
-       [:link {:href "/opensearch/people"
+       #_[:link {:href "/opensearch/people"
                :title "People Search"
                :type "application/opensearchdescription+xml"
                :rel "search"}]
-       [:link {:href "/opensearch/notices"
+       #_[:link {:href "/opensearch/notices"
                :title "Notice Search"
                :type "application/opensearchdescription+xml"
                :rel "search"}]

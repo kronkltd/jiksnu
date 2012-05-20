@@ -10,3 +10,8 @@
   []
   (entity/fetch-all Group)
   )
+
+(defn fetch-by-name
+  [name]
+  (entity/fetch-one Group {:nickname name})
+  )

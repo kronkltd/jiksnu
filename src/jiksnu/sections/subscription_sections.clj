@@ -40,7 +40,7 @@
       [:div.subscribers
        [:h3
         ;; subscribers link
-        [:a {:href (str (full-uri user) "/subscribers")} "Subscribers"]]
+        [:a {:href (str (full-uri user) "/subscribers")} "Followers"]]
        [:ul.unstyled
         [:li (map subscriber-line subscriptions)]]])))
 
@@ -50,7 +50,7 @@
     (let [subscriptions (model.subscription/subscriptions user)]
       [:div.subscriptions
        [:h3
-        [:a {:href (str (full-uri user) "/subscriptions")} "Subscriptions"]]
+        [:a {:href (str (full-uri user) "/subscriptions")} "Following"]]
        [:ul (map subscriptions-line subscriptions)]
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))

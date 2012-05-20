@@ -1,22 +1,22 @@
 (ns jiksnu.views.user-views
-  (:use (ciste config
-               [core :only [with-format]]
-               [debug :only [spy]]
-               [views :only [defview]])
-        (ciste.sections [default :only [uri index-section show-section]])
+  (:use ciste.config
+        [ciste.core :only [with-format]]
+        [ciste.debug :only [spy]]
+        [ciste.views :only [defview]]
+        [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.user-actions
         plaza.rdf.vocabularies.foaf)
-  (:require (clj-tigase [element :as element])
-            (hiccup [core :as h])
-            (jiksnu [model :as model]
-                    [namespace :as namespace])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [activity :as model.activity]
-                          [subscription :as model.subscription]
-                          [user :as model.user]
-                          [webfinger :as model.webfinger])
-            (jiksnu.sections [user-sections :as sections.user])
-            (plaza.rdf [core :as rdf]))
+  (:require [clj-tigase.element :as element]
+            [hiccup.core :as h]
+            [jiksnu.model :as model]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.sections.user-sections :as sections.user]
+            [plaza.rdf.core :as rdf])
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.Activity
