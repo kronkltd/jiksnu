@@ -38,6 +38,10 @@
         (throw (RuntimeException. "Could not create group"))))
     (throw (RuntimeException. "authenticate"))))
 
+(defaction edit-page
+  [group]
+  group)
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.group-filters"

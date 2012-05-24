@@ -94,7 +94,7 @@
   {:status 303
    :template false
    :flash "Profile updated"
-   :headers {"Location" "/settings/profile"}})
+   :headers {"Location" "/main/profile"}})
 
 (defview #'user-meta :html
   [request user]

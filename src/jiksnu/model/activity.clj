@@ -140,7 +140,8 @@
         merged-options
         (merge
          (:where opts)
-         {"object.object-type" {:$ne "comment"}}
+         {:tags {:$ne "nsfw"}}
+         ;; {"object.object-type" {:$ne "comment"}}
          (privacy-filter user))]
     (entity/fetch Activity merged-options
                   :sort [(sugar/desc :published)]

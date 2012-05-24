@@ -41,14 +41,16 @@
 
 (defaction create
   "Create a new feed source record"
-  [params]
+  [params options]
+  (spy options)
   (model.feed-source/create params))
 
 (defn find-or-create
-  [search-params update-params]
-  ;; FIXME: no find or creates in model
-  (model.feed-source/find-or-create (merge search-params update-params)))
-
+  [params options]
+  (if-let [source (or (and (:_id params) (model.feed-source/fetch-by-id (:_id params)))
+                      (model.feed-source/fetch-by-topic {:topic params}))]
+    source
+    (create params options)))
 
 ;; TODO: special case local subscriptions
 ;; TODO: should take a source

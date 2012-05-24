@@ -107,7 +107,7 @@
 
 (defn edit-form
   [user]
-  [:form {:method "post" :action "/settings/profile"}
+  [:form.well.form-horizontal {:method "post" :action "/main/profile"}
    [:fieldset
     [:legend "Edit User"]
     (control-line "Username"
@@ -117,26 +117,22 @@
     (control-line "Domain"
                   "domain" "text"
                   :value (:domain user))
-    
-    [:div.clearfix
-     [:label {:for "display-name"} "Display Name"]
-     [:div.input
-      [:input {:type "text" :name "display-name" :value (:display-name user)}]]]
-    
-    [:div.clearfix
-     [:label {:for "first-name"} "First Name:"]
-     [:div.input
-      [:input {:type "text" :name "first-name" :value (:first-name user) }]]]
-    
-    [:div.clearfix
-     [:label {:for "last-name"} "Last Name"]
-     [:div.input
-      [:input {:type "text" :name "last-name" :vaue (:last-name user)}]]]
 
-    [:div.clearfix
-     [:label {:for "email"} "Email"]
-     [:div.input
-      [:input {:type "email" :name "email" :value (:email user)}]]]
+    (control-line "Display Name" 
+                  "display-name" "text"
+                  :value (:display-name user))
+    
+    (control-line "First Name:"
+                  "first-name" "text"
+                  :value (:first-name user) )
+    
+    (control-line "Last Name"
+                  "last-name" "text"
+                  :vaue (:last-name user))
+
+    (control-line "Email"
+                  "email" "email"
+                  :value (:email user))
 
     [:div.clearfix
      [:label {:for "bio"} "Bio"]

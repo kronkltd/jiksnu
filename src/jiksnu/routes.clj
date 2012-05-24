@@ -100,6 +100,7 @@
     [[:post   "/groups"]                                       #'group/add]
     [[:get    "/groups/new"]                                  #'group/new-page]
     [[:get    "/groups/:name"]                                #'stream/group-timeline]
+    [[:get    "/groups/:name/edit"]                           #'group/edit-page]
     [[:get    "/main/domains"]                                #'domain/index]
     [[:get    "/main/domains/:id.:format"]                    #'domain/show]
     [[:get    "/main/domains/:id"]                            #'domain/show]
@@ -299,6 +300,7 @@
    #'pred/ns-matches?])
 
 (compojure/defroutes all-routes
+  (compojure/GET "/api/help/test.json" _ "OK")
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)

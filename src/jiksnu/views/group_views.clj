@@ -1,7 +1,8 @@
 (ns jiksnu.views.group-views
-  (:use (ciste [views :only [defview]])
-        (ciste.sections [default :only [index-section add-form]])
-        (jiksnu [views :only [control-line]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.views :only [defview]]
+        [ciste.sections.default :only [index-section add-form]]
+        [jiksnu.views :only [control-line]]
         jiksnu.actions.group-actions))
 
 (defview #'index :html
@@ -28,3 +29,13 @@
    :headers {"Location" "/groups"}
    :flash "Group added"
    :template false})
+
+(defview #'edit-page :html
+  [request group]
+  {:title (:nickname (spy group))
+   :body
+   [:div
+
+    ]
+   }
+  )

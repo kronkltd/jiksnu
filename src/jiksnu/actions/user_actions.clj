@@ -319,7 +319,7 @@
               user (-> {:id id}
                        #_(find-or-create-by-remote-id params)
                        (merge params))]
-          #_(doseq [link links]
+          (doseq [link links]
             (add-link user link))
           (entity/make User user))
         (throw (RuntimeException. "could not determine user"))))))

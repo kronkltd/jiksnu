@@ -109,7 +109,8 @@
         entries (.getEntries feed)]
     (doseq [entry entries]
       (let [activity (actions.activity/entry->activity entry feed)]
-        (actions.activity/create activity)))))
+        (actions.activity/create activity))))
+  true)
 
 (defaction user-microsummary
   [user]

@@ -161,7 +161,7 @@
 
 (defview #'callback-publish :html
   [request params]
-  {:body params
+  {:status 200
    :template false})
 
 (defview #'group-timeline :html
