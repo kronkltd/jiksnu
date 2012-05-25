@@ -230,10 +230,10 @@
       :ns namespace/vcard}
      #'user/create]
 
-    [{:method :result
-      :name "query"
-      :ns namespace/vcard-query}
-     #'user/remote-create]
+    ;; [{:method :result
+    ;;   :name "query"
+    ;;   :ns namespace/vcard-query}
+    ;;  #'user/remote-create]
 
     [{:method :error
       :name "error"}
@@ -273,13 +273,13 @@
      #'sub/remote-subscribe-confirm]
 
     ;; FIXME: This is way too general
-    [{:method :headline}
-     #'activity/remote-create]
+    ;; [{:method :headline}
+    ;;  #'activity/remote-create]
 
-    [{:method :result
-      :pubsub true
-      :node namespace/microblog}
-     #'activity/remote-create]
+    ;; [{:method :result
+    ;;   :pubsub true
+    ;;   :node namespace/microblog}
+    ;;  #'activity/remote-create]
 
     [{:method :get
       :pubsub true

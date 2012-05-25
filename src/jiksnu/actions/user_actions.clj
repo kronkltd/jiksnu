@@ -475,13 +475,13 @@
 
 ;; deprecated, nothing should hit this in the future. If anything is,
 ;; I want it drug out into the street and shot
-(defaction remote-create
-  [user options]
-  (let [user (merge user
-                    {:updated (sugar/date)
-                     :discovered true}
-                    options)]
-    (create user options)))
+;; (defaction remote-create
+;;   [user options]
+;;   (let [user (merge user
+;;                     {:updated (sugar/date)
+;;                      :discovered true}
+;;                     options)]
+;;     (create user options)))
 
 (defaction show
   "This action just returns the passed user.

@@ -78,31 +78,33 @@
   [action request]
   (action))
 
-(deffilter #'remote-create :xmpp
-  [action request]
-  (let [{:keys [to from payload]} request
-        user (fetch-by-jid from)]
-    (let [vcard (first (element/children payload))
+;; TODO: extract vcard->user
 
-          avatar-url-element (abdera/find-children vcard "/vcard/photo/uri")
-          first-name-element (abdera/find-children vcard "/vcard/n/given/text")
-          gender-element     (abdera/find-children vcard "/vcard/gender")
-          last-name-element  (abdera/find-children vcard "/vcard/n/surname/text")
-          name-element       (abdera/find-children vcard "/vcard/fn/text")
-          url-element        (abdera/find-children vcard "/vcard/url/uri")
+;; (deffilter #'remote-create :xmpp
+;;   [action request]
+;;   (let [{:keys [to from payload]} request
+;;         user (fetch-by-jid from)]
+;;     (let [vcard (first (element/children payload))
 
-          avatar-url (abdera/get-text avatar-url-element)
-          first-name (abdera/get-text first-name-element)
-          gender     (abdera/get-text gender-element)
-          last-name  (abdera/get-text last-name-element)
-          name       (abdera/get-text name-element)
-          url        (abdera/get-text url-element)]
-      (action user {:gender gender
-                    :name name
-                    :first-name first-name
-                    :last-name last-name
-                    :url url
-                    :avatar-url avatar-url}))))
+;;           avatar-url-element (abdera/find-children vcard "/vcard/photo/uri")
+;;           first-name-element (abdera/find-children vcard "/vcard/n/given/text")
+;;           gender-element     (abdera/find-children vcard "/vcard/gender")
+;;           last-name-element  (abdera/find-children vcard "/vcard/n/surname/text")
+;;           name-element       (abdera/find-children vcard "/vcard/fn/text")
+;;           url-element        (abdera/find-children vcard "/vcard/url/uri")
+
+;;           avatar-url (abdera/get-text avatar-url-element)
+;;           first-name (abdera/get-text first-name-element)
+;;           gender     (abdera/get-text gender-element)
+;;           last-name  (abdera/get-text last-name-element)
+;;           name       (abdera/get-text name-element)
+;;           url        (abdera/get-text url-element)]
+;;       (action user {:gender gender
+;;                     :name name
+;;                     :first-name first-name
+;;                     :last-name last-name
+;;                     :url url
+;;                     :avatar-url avatar-url}))))
 
 (deffilter #'show :http
   [action request]

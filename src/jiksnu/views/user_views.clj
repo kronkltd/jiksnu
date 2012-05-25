@@ -149,12 +149,12 @@
   [request user]
   (helpers.user/vcard-request request user))
 
-(defview #'remote-create :xmpp
-  [request user]
-  (let [{:keys [to from]} request]
-    {:from to
-     :to from
-     :type :result}))
+;; (defview #'remote-create :xmpp
+;;   [request user]
+;;   (let [{:keys [to from]} request]
+;;     {:from to
+;;      :to from
+;;      :type :result}))
 
 (defview #'show :xmpp
   [request user]
