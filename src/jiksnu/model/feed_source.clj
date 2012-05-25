@@ -8,12 +8,12 @@
   (:import jiksnu.model.FeedSource))
 
 ;; TODO: generalize this and move it to model
-(defn update-field!
+(defn set-field!
   "atomically set a field"
   [source key value]
   (entity/find-and-modify
    FeedSource
-   {:id (:_id source)}
+   {:topic (:topic source)}
    {:$set {key value}}))
 
 (defn create

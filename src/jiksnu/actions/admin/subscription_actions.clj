@@ -9,8 +9,8 @@
 
 ;; requires admin
 (defaction index
-  [& opts]
-  (model.subscription/index))
+  [options]
+  [(model.subscription/index) options])
 
 (definitializer
   (require-namespaces

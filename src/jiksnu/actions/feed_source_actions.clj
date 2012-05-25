@@ -2,6 +2,7 @@
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
         [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         [karras.entity :only [make]])
   (:require [aleph.http :as http]
@@ -13,16 +14,22 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [lamina.core :as l]))
+            [karras.sugar :as sugar]
+            [lamina.core :as l])
+  (:import jiksnu.model.FeedSource))
 
 (defonce
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
+(defn mark-updated
+  [source]
+  (model.feed-source/set-field! source :updated (sugar/date)))
+
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
   [source]
-  (model.feed-source/update-field! source :subscription-status "confirmed"))
+  (model.feed-source/set-field! source :subscription-status "confirmed"))
 
 (defaction process-updates
   "Handler for PuSh subscription"
@@ -33,10 +40,10 @@
     (let [source (model.feed-source/fetch-by-topic topic)]
       (condp = mode
         "subscribe" (do
-                      (cm/implement (log/info "confirming subscription")))
+                      (implement (log/info "confirming subscription")))
 
         "unsubscribe" (do
-                        (cm/implement (log/info "confirming subscription removal"))
+                        (implement (log/info "confirming subscription removal"))
                         ;; TODO: don't delete, just make
                         ;; subscription as canceled.
                         (model.feed-source/delete source))
@@ -106,6 +113,7 @@
   (let [{:keys [topic]} source]
     (log/debug (str "Fetching feed: " topic))
     (let [feed (abdera/fetch-feed topic)]
+      (mark-updated source)
       feed)))
 
 (definitializer

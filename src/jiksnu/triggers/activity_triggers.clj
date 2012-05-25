@@ -1,18 +1,18 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               [triggers :only [add-trigger!]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.triggers :only [add-trigger!]]
         ciste.sections.default
         jiksnu.actions.activity-actions)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element])
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
             (clojure.tools [logging :as log])
-            (jiksnu [abdera :as abdera]
-                    [model :as model]
-                    [namespace :as namespace])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [comment-actions :as actions.comment]
-                            [user-actions :as actions.user])
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model :as model]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.comment-actions :as actions.comment]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
@@ -42,6 +42,9 @@
 (defn parse-unknown-mention
   "Create a user representing the unknown user uri"
   [uri]
+  ;; uri here is a page, potentially containing information about a user
+  
+  
   (let [mentioned-domain (.getHost (URI. uri))
         link (model/extract-atom-link uri)
         mentioned-user-params (-> link

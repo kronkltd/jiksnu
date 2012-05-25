@@ -6,7 +6,7 @@
 
 (defaction index
   [& options]
-  (model.authentication-mechanism/fetch-all options))
+  [(model.authentication-mechanism/fetch-all options) options])
 
 (definitializer
   (require-namespaces

@@ -7,7 +7,7 @@
   (:require [jiksnu.model.activity :as model.activity]))
 
 (defaction index
-  []
+  [options]
   (model.activity/index {:page 1}))
 
 (definitializer

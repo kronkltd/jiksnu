@@ -78,6 +78,7 @@
    [:td (:hub source)]
    [:td (:mode source)]
    [:td (str (:status source))]
+   [:td (:updated source)]
    [:td
     #_(update-button source)
     (unsubscribe-button source)]])
@@ -93,6 +94,7 @@
      [:th "Hub"]
      [:th "Mode"]
      [:th "Status"]
+     [:th "Updated"]
      [:th "Actions"]]]
    [:tbody (map index-line sources)]])
 

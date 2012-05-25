@@ -190,7 +190,7 @@
 (defn update-hub*
   [user feed]
   (when-let [hub-link (abdera/get-hub-link feed)]
-    (model.user/set-field user :hub hub-link)
+    (model.user/set-field! user :hub hub-link)
     user))
 
 (defaction update-hub
@@ -272,25 +272,31 @@
     (throw (RuntimeException. "Not authorative for this resource"))))
 
 (defn request-vcard!
+  "Send a vcard request to the xmpp endpoint of the user"
   [user]
   (let [packet (model.user/vcard-request user)]
     (tigase/deliver-packet! packet)))
 
 (defaction update
+  "Update fields in the user"
   [user params]
+  ;; TODO: injection attack
   (->> params
        (map (fn [[k v]] (if (not= v "") [(keyword k) v])))
        (into user)
        model.user/update))
 
 (defn get-name
-  "Returns the name of the person"
+  "Returns the name of the Atom person"
   [^Person person]
   (or (.getSimpleExtension person namespace/poco
                            "displayName" "poco" )
       (.getName person)))
 
+
+;; TODO: This function should be called at most once per user, per feed
 (defn person->user
+  "Extract user information from atom element"
   [^Person person]
   ;; TODO: Do we need to nil-check here?
   (when person
@@ -327,7 +333,9 @@
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
+  "Retreive user information from webfinger"
   [user]
+  ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (helpers.user/fetch-user-meta user)]
     (let [links (model.webfinger/get-links xrd)
           new-user (assoc user :links links)
@@ -347,6 +355,7 @@
 
 ;; FIXME: This does not work yet
 (defn foaf-query
+  "Extract user information from a foaf document"
   []
   (defquery
     (query-set-vars [:?user :?nick :?name :?bio :?img-url])
@@ -364,6 +373,7 @@
 
 
 (defaction discover-user-rdf
+  "Discover user information from their rdf feeds"
   [user]
   ;; TODO: alternately, check user meta
   (let [uri (:foaf-uri user)
@@ -382,6 +392,7 @@
   (update-usermeta user))
 
 (defaction discover
+  "perform a discovery on the user"
   [^User user]
   (when user
     (if (:local user)
@@ -401,7 +412,7 @@
             ;; TODO: there sould be a different discovered flag for
             ;; each aspect of a domain, and this flag shouldn't be set
             ;; till they've all responded
-            (model.user/set-field user :discovered true))
+            (model.user/set-field! user :discovered true))
           (do
             ;; Domain not yet discovered
             (actions.domain/discover domain)
@@ -410,6 +421,7 @@
             ;; domain is bogus. Perhaps a try counter.
             #_(enqueue-discover user)))))))
 
+;; TODO: This will be back
 ;; TODO: turn this into a worker
 ;; (defn discover-pending-users
 ;;   [domain]
@@ -427,14 +439,16 @@
     (if (:xmpp domain)
       (request-vcard! user))))
 
+;; TODO: hub functionality is moving to sources
 (defaction find-hub
   [user]
   (implement
       (get-domain user)))
 
 (defaction register
+  "Register a new user"
   [{:keys [username password email display-name location bio] :as options}]
-
+  ;; TODO: should we check reg-enabled here?
   ;; verify submission.
   (if (:accepted options)
     (if (and username password)
@@ -457,7 +471,6 @@
 (defaction register-page
   "Display the form to reqister a user"
   []
-  ;; init an empty user model?
   (User.))
 
 ;; deprecated, nothing should hit this in the future. If anything is,
@@ -483,6 +496,7 @@
     (update user options)))
 
 ;; TODO: this applies only for acct: uris
+;; TODO: use find-or-create
 (defn user-for-uri
   "Returns a user with the passed account uri,
    or creates one if it does not exist."
@@ -491,6 +505,7 @@
        (apply find-or-create)))
 
 (defaction xmpp-service-unavailable
+  "Error callback when user doesn't support xmpp"
   [user]
   (let [domain-name (:domain user)
         domain (actions.domain/find-or-create domain-name)]

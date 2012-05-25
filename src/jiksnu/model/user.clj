@@ -117,7 +117,7 @@
   (get-user (.getLocalpart jid)
             (.getDomain jid)))
 
-(defn set-field
+(defn set-field!
   "Updates user's field to value"
   [user field value]
   (entity/find-and-modify
