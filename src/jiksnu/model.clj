@@ -1,25 +1,22 @@
 (ns jiksnu.model
-  (:use (ciste core
-               [config :only [config definitializer environment load-config]]
-               [debug :only [spy]])
-        (clj-factory [core :only [factory]])
-        (clojure.core [incubator :only [-?>]])
-        (karras [core :only [MongoMappable]]
-                [entity :only [defembedded defentity delete-all]]))
-  (:require (ciste [model :as cm])
-            (clojure [string :as string]
-                     [xml :as xml]
-                     [zip :as zip])
-            (clojure.data [json :as json])
-            (clojure.tools [logging :as log])
-            (jiksnu [namespace :as ns])
-            (karras [core :as karras]
-                    [entity :as entity]
-                    [sugar :as sugar])
-            (lamina [core :as l])
-            (net.cgrand [enlive-html :as enlive])
-            (plaza.rdf [core :as rdf])
-            (plaza.rdf.implementations [jena :as jena]))
+  (:use ciste.core
+        [ciste.config :only [config definitializer environment load-config]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory]]
+        [clojure.core.incubator :only [-?>]]
+        [karras.core :only [MongoMappable]]
+        [karras.entity :only [defembedded defentity delete-all]])
+  (:require [ciste.model :as cm]
+            [clojure.string :as string]
+            [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
+            [jiksnu.namespace :as ns]
+            [karras.core :as karras]
+            [karras.entity :as entity]
+            [karras.sugar :as sugar]
+            [lamina.core :as l]
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.implementations.jena :as jena])
   (:import java.io.FileNotFoundException
            java.io.PrintWriter
            java.text.SimpleDateFormat
@@ -28,8 +25,7 @@
            lamina.core.channel.Channel
            org.bson.types.ObjectId
            org.joda.time.DateTime
-           java.io.StringReader
-           ))
+           java.io.StringReader))
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ss'Z'")
 

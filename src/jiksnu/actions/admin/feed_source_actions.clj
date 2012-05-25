@@ -14,7 +14,8 @@ for admin use"
   [(model.feed-source/fetch-all
     {}
     ;; TODO: hardcoded configurable value
-    :limit 20) options])
+    ;; :limit 20
+    ) options])
 
 (defaction show
   [source]

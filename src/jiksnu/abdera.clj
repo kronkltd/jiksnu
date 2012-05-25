@@ -56,10 +56,6 @@
   [^Link link]
   (->> link .getHref str))
 
-;; (defn fetch-entries
-;;   [uri]
-;;   (seq (.getEntries (fetch-feed uri))))
-
 (defn parse-stream
   [stream]
   (try
@@ -128,9 +124,11 @@
        (= (.getRel link) rel))
      (.getLinks feed))))
 
-(defn author-uri
+(defn ^URI author-uri
+  "Returns the uri of the author"
   [^Entry entry]
   (let [author (.getAuthor entry)]
+    ;; TODO: This is wasteful, why am I doing this?
     (let [uri (.getUri author)]
       (URI. (.toString uri)))))
 

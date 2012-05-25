@@ -13,6 +13,7 @@
             (jiksnu.actions [activity-actions :as actions.activity]
                             [comment-actions :as actions.comment]
                             [user-actions :as actions.user])
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             (jiksnu.model [activity :as model.activity]
                           [domain :as model.domain]
                           [item :as model.item]
@@ -66,8 +67,10 @@
 
     ;; Discover conversation
     (doseq [conversation-uri (:conversations activity)]
-      (let [atom-link (model/extract-atom-link conversation-uri)]
-        (fetch-remote-feed atom-link)))
+      (let [atom-link (model/extract-atom-link conversation-uri)
+            source (actions.feed-source/find-or-create {:topic atom-link} {})
+            ]
+        (fetch-remote-feed source)))
     
     ;; Add as a comment to parent posts
     ;; TODO: deprecated

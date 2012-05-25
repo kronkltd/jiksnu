@@ -9,10 +9,15 @@
             [clj-http.client :as client]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.abdera :as abdera]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [lamina.core :as l]))
+
+(defonce
+  ^{:doc "Channel containing list of sources to be updated"}
+  pending-updates (l/permanent-channel))
 
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
@@ -20,23 +25,23 @@
   (model.feed-source/update-field! source :subscription-status "confirmed"))
 
 (defaction process-updates
+  "Handler for PuSh subscription"
   [params]
   (let [{challenge "hub.challenge"
          mode "hub.mode"
          topic "hub.topic"} params]
-    (let [sources (model.feed-source/fetch-all {:topic topic})]
+    (let [source (model.feed-source/fetch-by-topic topic)]
       (condp = mode
         "subscribe" (do
                       (cm/implement (log/info "confirming subscription")))
 
         "unsubscribe" (do
                         (cm/implement (log/info "confirming subscription removal"))
-                        (doseq [source sources]
-                          ;; TODO: don't delete, just make
-                          ;; subscription as canceled.
-                          (model.feed-source/delete source)))
+                        ;; TODO: don't delete, just make
+                        ;; subscription as canceled.
+                        (model.feed-source/delete source))
        (cm/implement
-        (log/info "Unknown mode"))))
+        (log/warn "Unknown mode"))))
     challenge))
 
 (defaction create
@@ -70,9 +75,11 @@
          "hub.verify" "async"}}))))
 
 (defn send-unsubscribe
+  "Send an unsubscription request to the source's hub"
   ([hub topic]
      (send-unsubscribe
       hub topic
+      ;; TODO: This should be a per-source callback url
       (str "http://" (config :domain) "/main/push/callback")))
   ([hub topic callback]
      (client/post
@@ -86,11 +93,20 @@
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
+  "Action if user makes action to unsubscribe from remote source"
   [subscription]
   (send-unsubscribe
    (:hub subscription)
    (:topic subscription))
   true)
+
+(defaction fetch-updates
+  "Fetch updates for the source"
+  [source]
+  (let [{:keys [topic]} source]
+    (log/debug (str "Fetching feed: " topic))
+    (let [feed (abdera/fetch-feed topic)]
+      feed)))
 
 (definitializer
   (require-namespaces
