@@ -510,6 +510,7 @@
                      ;; "published" (:published object)
                      ;; "updated" (:updated object)
                      })
+         
    
           "published" (:published activity)
           
@@ -517,6 +518,10 @@
           :verb (:verb activity)
           "title" (:title activity)
           :url (full-uri activity)}
+         (when (:links activity)
+           ;; TODO: Some of these links don't make sense in the
+           ;; context of an AS stream
+           {:links (:links activity)})
          (when (:conversations activity)
            {:context {:conversations (first (:conversations activity))}})
          (if-let [geo (:geo activity)]

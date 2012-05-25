@@ -50,10 +50,10 @@ This will generally not be called"
   (apply entity/fetch-one FeedSource options args))
 
 ;; DEPRICATED
-(defn find-or-create
-  [options]
-  (or (fetch options)
-      (create options)))
+;; (defn find-or-create
+;;   [options]
+;;   (or (fetch options)
+;;       (create options)))
 
 (defn fetch-all
   [options & args]

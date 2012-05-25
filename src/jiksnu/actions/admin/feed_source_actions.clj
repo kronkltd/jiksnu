@@ -3,7 +3,8 @@
         [ciste.config :only [definitializer]]
         [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.model :as model]
+  (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]))
 
 (defaction index
@@ -16,6 +17,10 @@ for admin use"
     ;; TODO: hardcoded configurable value
     ;; :limit 20
     ) options])
+
+(defn delete
+  [source]
+  (actions.feed-source/delete source))
 
 (defaction show
   [source]

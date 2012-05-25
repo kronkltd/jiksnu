@@ -36,7 +36,7 @@
 
 (defsection add-form [FeedSource :html]
   [source & options]
-  [:form.well {:method "post" :action "/admin/feed-sources"}
+  [:form.well.form-horizontal {:method "post" :action "/admin/feed-sources"}
    [:fieldset
     [:legend "Add Source"]
     (control-line "Topic"  "topic" "text")
@@ -72,27 +72,30 @@
 (defsection index-line [FeedSource :html]
   [source & _]
   [:tr
-   [:td]
+   [:td (:title source)]
    [:td (:domain source)]
    [:td (link-to source)]
-   [:td (:hub source)]
-   [:td (:mode source)]
+   #_[:td (:hub source)]
+   #_[:td (:mode source)]
    [:td (str (:status source))]
    [:td (:updated source)]
    [:td
-    #_(update-button source)
-    (unsubscribe-button source)]])
+    (update-button source)
+    (subscribe-button source)
+    (unsubscribe-button source)
+    (delete-button source)
+    ]])
 
 (defsection index-section [FeedSource :html]
   [sources & _]
   [:table.table
    [:thead
     [:tr
-     [:th]
-     [:td "Domain"]
+     [:th "Title"]
+     [:th "Domain"]
      [:th "Topic"]
-     [:th "Hub"]
-     [:th "Mode"]
+     #_[:th "Hub"]
+     #_[:th "Mode"]
      [:th "Status"]
      [:th "Updated"]
      [:th "Actions"]]]
@@ -100,13 +103,13 @@
 
 (defsection update-button [FeedSource :html]
   [activity & _]
-  [:form {:method "post" :action (str "/admin/feed-source/" (:_id activity) "/update")}
+  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id activity) "/update")}
    [:button.btn.update-button {:type "submit"}
     [:i.icon-refresh] [:span.button-text "update"]]])
 
 (defsection delete-button [FeedSource :html]
   [user & _]
-  [:form {:method "post" :action (str "/admin/feed-source/" (:_id user) "/delete")}
+  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id user) "/delete")}
    [:button.btn.delete-button {:type "submit" :title "Delete"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 

@@ -4,19 +4,22 @@
         [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
-        [karras.entity :only [make]])
+        [karras.entity :only [make]]
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-http.client :as client]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [karras.sugar :as sugar]
             [lamina.core :as l])
-  (:import jiksnu.model.FeedSource))
+  (:import java.net.URI
+           jiksnu.model.FeedSource))
 
 (defonce
   ^{:doc "Channel containing list of sources to be updated"}
@@ -25,6 +28,10 @@
 (defn mark-updated
   [source]
   (model.feed-source/set-field! source :updated (sugar/date)))
+
+(defaction delete
+  [source]
+  (model.feed-source/delete source))
 
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
@@ -55,7 +62,12 @@
   "Create a new feed source record"
   [params options]
   (spy options)
-  (model.feed-source/create params))
+  (if-let [topic (:topic params)]
+    (let [uri (URI. topic)
+          domain (actions.domain/find-or-create (.getHost uri))]
+      (model.feed-source/create (assoc params
+                                  :domain (:_id domain))))
+    (throw+ "Must contain a topic")))
 
 (defn find-or-create
   [params options]
@@ -112,7 +124,11 @@
   [source]
   (let [{:keys [topic]} source]
     (log/debug (str "Fetching feed: " topic))
-    (let [feed (abdera/fetch-feed topic)]
+    (let [feed (abdera/fetch-feed topic)
+          feed-title (spy (.getTitle feed))
+          ]
+      (when-not (= feed-title (:title source))
+        (model.feed-source/set-field! source :title feed-title))
       (mark-updated source)
       feed)))
 

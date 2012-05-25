@@ -17,3 +17,8 @@
   [request params]
   (-> (response/redirect-after-post "/admin/feed-sources")
         (assoc :template false)))
+
+(defview #'fetch-updates :html
+  [request params]
+  (-> (response/redirect-after-post "/admin/feed-sources")
+        (assoc :template false)))
