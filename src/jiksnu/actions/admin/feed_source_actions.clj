@@ -15,7 +15,7 @@ for admin use"
   [(model.feed-source/fetch-all
     {}
     ;; TODO: hardcoded configurable value
-    ;; :limit 20
+    :limit 20
     ) options])
 
 (defn delete
