@@ -1,7 +1,7 @@
 (ns jiksnu.filters.inbox-filters
-  (:use (ciste [filters :only [deffilter]])
+  (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.inbox-actions)
-  (:require (jiksnu.model [user :as model.user])))
+  (:require [jiksnu.model.user :as model.user]))
 
 (deffilter #'index :http
   [action request]

@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.feed-subscriber-actions
+(ns jiksnu.actions.admin.like-actions
   (:use [ciste.core :only [defaction]]
         [ciste.model :only [implement]]))
 

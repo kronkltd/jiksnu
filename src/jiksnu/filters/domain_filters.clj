@@ -1,8 +1,8 @@
 (ns jiksnu.filters.domain-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
         jiksnu.actions.domain-actions)
-  (:require (jiksnu.model [domain :as model.domain])))
+  (:require [jiksnu.model.domain :as model.domain]))
 
 (deffilter #'create :http
   [action {{:keys [domain]} :params}]

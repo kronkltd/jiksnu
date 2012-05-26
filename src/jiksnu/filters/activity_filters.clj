@@ -1,19 +1,19 @@
 (ns jiksnu.filters.activity-filters
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               [filters :only [deffilter]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
         jiksnu.actions.activity-actions)
-  (:require (aleph [http :as http])
-            (clj-tigase [core :as tigase]
-                        [element :as element])
-            (clojure.java [io :as io])
-            (jiksnu [abdera :as abdera]
-                    [model :as model])
-            (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.sections [activity-sections :as sections.activity])
-            (jiksnu.model [activity :as model.activity]
-                          [like :as model.like]
-                          [user :as model.user])))
+  (:require [aleph.http :as http]
+            [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.java.io :as io]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.like :as model.like]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.sections.activity-sections :as sections.activity]))
 
 (deffilter #'delete :http
   [action request]

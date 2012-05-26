@@ -132,6 +132,16 @@
       (mark-updated source)
       feed)))
 
+(defaction add-watcher
+  [source user]
+  (implement)
+  )
+
+(defaction remove-watcher
+  [source user]
+  (implement)
+  )
+
 (definitializer
   (require-namespaces
    [

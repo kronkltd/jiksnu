@@ -1,9 +1,9 @@
 (ns jiksnu.filters.salmon-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
         jiksnu.actions.salmon-actions)
-  (:require (clojure.tools [logging :as log])
-            (jiksnu.model [user :as model.user])))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; salmon

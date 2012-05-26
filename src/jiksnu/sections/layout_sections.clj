@@ -1,21 +1,21 @@
 (ns jiksnu.sections.layout-sections
-  (:use (ciste [core :only [apply-template]]
-               [config :only [config environment]])
-        (ciste.sections [default :only [add-form link-to show-section]])
-        (jiksnu [session :only [current-user is-admin?]]))
-  (:require (hiccup [core :as h]
-                    [page :as p])
-            (jiksnu [namespace :as ns])
-            (jiksnu.actions [subscription-actions :as actions.subscription])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [subscription :as model.subscription]
-                          [user :as model.user])
-            (jiksnu.sections [activity-sections :as sections.activity]
-                             [auth-sections :as sections.auth]
-                             [group-sections :as sections.group]
-                             [subscription-sections :as sections.subscription]
-                             [user-sections :as sections.user]))
+  (:use [ciste.core :only [apply-template]]
+        [ciste.config :only [config environment]]
+        [ciste.sections.default :only [add-form link-to show-section]]
+        [jiksnu.session :only [current-user is-admin?]])
+  (:require [hiccup.core :as h]
+            [hiccup.page :as p]
+            [jiksnu.namespace :as ns]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.sections.activity-sections :as sections.activity]
+            [jiksnu.sections.auth-sections :as sections.auth]
+            [jiksnu.sections.group-sections :as sections.group]
+            [jiksnu.sections.subscription-sections :as sections.subscription]
+            [jiksnu.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity))
 
 (defn user-info-section
@@ -195,11 +195,10 @@
           ;;   {:type "text" :placeholder "Search" :name "q"}]]
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
        [:div.container
-        #_[:a {:href "http://github.com/duck1123/jiksnu"}
+        [:a {:href "http://github.com/duck1123/jiksnu"}
          [:img {:style "position: absolute; top: 43px; right: 0; border: 0;"
                 :src "https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
-                :alt "Fork me on GitHub"}]
-         ]
+                :alt "Fork me on GitHub"}]]
         [:div.row
          [:div.span2
           #_[:span#interface]

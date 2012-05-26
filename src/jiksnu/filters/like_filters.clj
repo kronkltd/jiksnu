@@ -1,11 +1,11 @@
 (ns jiksnu.filters.like-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
-        (clojure.core [incubator :only [-?>]])
-        (jiksnu [session :only [current-user-id]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
+        [clojure.core.incubator :only [-?>]]
+        [jiksnu.session :only [current-user-id]]
         jiksnu.actions.like-actions)
-  (:require (jiksnu.actions [activity-actions :as actions.activity])
-            (jiksnu.model [activity :as model.activity])))
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.model.activity :as model.activity]))
 
 (deffilter #'like-activity :http
   [action request]

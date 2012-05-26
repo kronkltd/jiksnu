@@ -132,7 +132,7 @@
   [:user :activity :created])
 
 (defentity Domain
-  [:osw :ostatus])
+  [:_id :discovered :updated])
 
 (defentity FeedSource
   [:hub :verify-token :secret :created :updated :topic])

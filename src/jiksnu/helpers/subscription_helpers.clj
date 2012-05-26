@@ -1,10 +1,10 @@
 (ns jiksnu.helpers.subscription-helpers
-  (:use (ciste [debug :only [spy]])
+  (:use [ciste.debug :only [spy]]
         ciste.sections.default
         clj-tigase.core
-        (jiksnu [model :only [format-date]]))
-  (:require (jiksnu [namespace :as ns])
-            (jiksnu.model [user :as model.user])))
+        [jiksnu.model :only [format-date]])
+  (:require [jiksnu.namespace :as ns]
+            [jiksnu.model.user :as model.user]))
 
 (defn subscriber-response-element
   [subscription]

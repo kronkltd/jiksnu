@@ -1,11 +1,11 @@
 (ns jiksnu.filters.feed-source-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
-        (jiksnu.actions [feed-source-actions :only [process-updates
-                                                    fetch-updates
-                                                    remove-subscription]]))
-  (:require (jiksnu.model [feed-source :as model.feed-source]
-                          [user :as model.user])))
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
+        [jiksnu.actions.feed-source-actions :only [process-updates
+                                                   fetch-updates
+                                                   remove-subscription]])
+  (:require [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.user :as model.user]))
 
 (deffilter #'process-updates :http
   [action request]

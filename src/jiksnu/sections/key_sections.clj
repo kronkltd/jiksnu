@@ -1,27 +1,19 @@
 (ns jiksnu.sections.key-sections
-  (:use (ciste [sections :only [defsection]])
-        (ciste.sections [default :only [full-uri show-section]])
-        )
-  (:require
-            (jiksnu [abdera :as abdera]
-                    [namespace :as ns])
-            (jiksnu.model [key :as model.key])
-            (plaza.rdf [core :as rdf])
-
-            )
+  (:use [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [full-uri show-section]])
+  (:require [jiksnu.abdera :as abdera]
+            [jiksnu.namespace :as ns]
+            [jiksnu.model.key :as model.key]
+            [plaza.rdf.core :as rdf])
   (:import java.math.BigInteger
-           jiksnu.model.MagicKeyPair
-
-           )
-  )
+           jiksnu.model.MagicKeyPair))
 
 (defsection show-section [MagicKeyPair :html]
   [key & _]
+  ;; TODO: Rdfa
   [:div
    [:p (:armored-n key)]
-   [:p (:armored-e key)]
-   ]
-  )
+   [:p (:armored-e key)]])
 
 (defsection show-section [MagicKeyPair :rdf]
   [key & _]

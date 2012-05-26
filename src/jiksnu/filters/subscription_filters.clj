@@ -1,14 +1,14 @@
 (ns jiksnu.filters.subscription-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
-        (clojure.core [incubator :only [-?> -?>>]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
+        [clojure.core.incubator :only [-?> -?>>]]
         jiksnu.actions.subscription-actions
-        (jiksnu [session :only [current-user current-user-id]]))
-  (:require (jiksnu [model :as model]
-                    [namespace :as namespace])
-            (jiksnu.actions [user-actions :as actions.user])
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user])))
+        [jiksnu.session :only [current-user current-user-id]])
+  (:require [jiksnu.model :as model]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]))
 
 (deffilter #'delete :http
   [action request]

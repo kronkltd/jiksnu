@@ -1,5 +1,5 @@
 (ns jiksnu.filters.tag-filters
-  (:use (ciste [filters :only [deffilter]])
+  (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.tag-actions))
 
 (deffilter #'show :http

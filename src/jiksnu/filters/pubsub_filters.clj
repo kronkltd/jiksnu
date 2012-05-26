@@ -1,8 +1,8 @@
 (ns jiksnu.filters.pubsub-filters
-  (:use (ciste [debug :only [spy]]
-               [filters :only [deffilter]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
         jiksnu.actions.pubsub-actions)
-  (:require (jiksnu.model [user :as model.user])))
+  (:require [jiksnu.model.user :as model.user]))
 
 ;; (deffilter #'admin-index :http
 ;;   [action request]

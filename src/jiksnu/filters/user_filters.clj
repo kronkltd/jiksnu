@@ -1,16 +1,16 @@
 (ns jiksnu.filters.user-filters
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               [filters :only [deffilter]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.filters :only [deffilter]]
         jiksnu.actions.user-actions)
-  (:require (clj-tigase [element :as element])
-            (clojure.tools [logging :as log])
-            (jiksnu [abdera :as abdera]
-                    [session :as session])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [activity :as model.activity]
-                          [subscription :as model.subscription]
-                          [user :as model.user]))
+  (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session])
   (:import tigase.xml.Element))
 
 (deffilter #'create :http

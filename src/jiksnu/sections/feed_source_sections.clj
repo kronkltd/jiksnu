@@ -3,6 +3,7 @@
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line index-section link-to update-button]]
         [jiksnu.views :only [control-line]])
+  (:require [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSource))
 
 (defn subscribe-button
@@ -75,15 +76,17 @@
    [:td (:title source)]
    [:td (:domain source)]
    [:td (link-to source)]
-   #_[:td (:hub source)]
+   [:td (when (:hub source) "*")]
    #_[:td (:mode source)]
    [:td (str (:status source))]
+   [:td (count (:watchers source))]
    [:td (:updated source)]
    [:td
-    (update-button source)
-    (subscribe-button source)
-    (unsubscribe-button source)
-    (delete-button source)
+    (actions-section source)
+    ;; (update-button source)
+    ;; (subscribe-button source)
+    ;; (unsubscribe-button source)
+    ;; (delete-button source)
     ]])
 
 (defsection index-section [FeedSource :html]
@@ -94,9 +97,10 @@
      [:th "Title"]
      [:th "Domain"]
      [:th "Topic"]
-     #_[:th "Hub"]
+     [:th "Hub"]
      #_[:th "Mode"]
      [:th "Status"]
+     [:th "Watchers"]
      [:th "Updated"]
      [:th "Actions"]]]
    [:tbody (map index-line sources)]])
@@ -114,4 +118,26 @@
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
 
+(defn index-watchers
+  [source]
+  [:div.watchers
+   [:h3 "Watchers " (count (:watchers source))]
+   [:ul
+    (map
+     (fn [id]
+       [:li
+        (link-to
+         (model.user/fetch-by-id id))])
+     (:watchers source))]])
 
+(defn add-watcher-form
+  [source]
+  [:form.well.form-horizontal
+   [:fieldset
+    [:legend "Add Watcher"]
+    (control-line "Acct id"
+                  :user_id "text")
+    [:input {:type "submit"}]
+    ]
+   ]
+  )

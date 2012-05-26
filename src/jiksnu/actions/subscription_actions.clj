@@ -47,6 +47,10 @@
   [params & options]
   (model.subscription/create params))
 
+(defaction update
+  [subscription]
+  (implement))
+
 (defaction subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed

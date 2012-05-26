@@ -1,11 +1,13 @@
 (ns jiksnu.sections.subscription-sections
-  (:use (ciste [debug :only [spy]]
-               [sections :only [defsection]])
-        (ciste.sections [default :ony [delete-button]]))
-  (:require (ciste [model :as cm])
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user])
-            (jiksnu.sections [user-sections :as sections.user]))
+  (:use [ciste.debug :only [spy]]
+        [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [delete-button full-uri uri title index-line
+                                       index-section link-to show-section]]
+        [jiksnu.views :only [control-line]])
+  (:require [ciste.model :as cm]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription))
 
 (defn show-minimal
@@ -31,7 +33,6 @@
    [:input {:type "hidden" :name "_method" :value "DELETE"}]
    [:button.btn {:type "submit"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
-
 
 (defn subscribers-section
   [user]
@@ -59,10 +60,8 @@
   []
   [:form {:method "post"
           :action "/main/ostatussub"}
-   [:div.clearfix
-    [:label {:for "profile"} "Username"]
-    [:div.input
-     [:input {:name "profile" :type "text"}]]]
+   (control-line "Username"
+                 "profile" "text")
    [:div.actions
     [:input.btn.primary {:type "submit" :value "Submit"}]]])
 
@@ -85,36 +84,43 @@
 
 (defn subscriptions-index-json
   [subscriptions]
-  (cm/implement)
-  )
+  (cm/implement))
 
 (defn admin-index-section
   [subscriptions]
   [:table.table
    [:thead
     [:tr
+     [:th "id"]
      [:th "actor"]
      [:th "target"]
      [:th "Created"]
      [:th "pending"]
+     [:th "local"]
      [:th "Delete"]
      ]]
    [:tbody
     (map
      (fn [subscription]
        [:tr
+        [:td (link-to subscription)]
         [:td (let [user (model.subscription/get-actor subscription)]
-               (list (sections.user/display-avatar user)
-                     (link-to user)))]
+               (link-to user))]
         [:td (let [user (model.subscription/get-target subscription )]
-               (list (sections.user/display-avatar user)
-                     (link-to user)))]
+               (link-to user))]
         [:td (:created subscription)]
         [:td (:pending subscription)]
-        [:td (delete-button subscription)]
-        ])
+        [:td (:local subscription)]
+        [:td (delete-button subscription)]])
      subscriptions)]])
 
+(defsection uri [Subscription]
+  [subscription & _]
+  (str "/admin/feed-sources/" (:_id subscription)))
+
+(defsection title [Subscription]
+  [subscription & _]
+  (str (:_id subscription)))
 
 (defsection index-line [Subscription :as]
   [subscription & _]
@@ -122,6 +128,4 @@
         target (model.subscription/get-target subscription)]
     {:verb "follow"
      :actor (show-section actor)
-     :target (show-section target)
-    })
-  )
+     :target (show-section target)}))

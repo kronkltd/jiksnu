@@ -2,9 +2,10 @@
   (:use [ciste.debug :only [spy]]
         [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.actions.admin.feed-source-actions :only [index show]])
-  (:require [jiksnu.actions.activity-actions :as actions.activity]
-            jiksnu.sections.feed-source-sections)
+        [jiksnu.actions.admin.feed-source-actions :only [index show]]
+        [jiksnu.sections.feed-source-sections :only [add-watcher-form
+                                                     index-watchers]])
+  (:require [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.FeedSource))
 
 (defview #'index :html
@@ -20,4 +21,7 @@
   [request source]
   {:title (title source)
    :single true
-   :body (show-section source)})
+   :body (list (show-section source)
+               (index-watchers source)
+               (add-watcher-form source)
+               )})

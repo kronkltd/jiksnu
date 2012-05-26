@@ -10,7 +10,7 @@
 ;;   {:body (sections.subscription/index-section subscriptions)})
 
 (defview #'index :html
-  [request subscriptions]
+  [request [subscriptions options]]
   {:title "Subscriptions"
    :single true
    :body (admin-index-section subscriptions)})

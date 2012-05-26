@@ -1,23 +1,22 @@
 (ns jiksnu.helpers.user-helpers
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               sections)
-        ;; (ciste.sections [default :only []])
-        (clojure.core [incubator :only [-?>]])
-        (jiksnu model
-                [session :only [current-user]]))
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (clojure [string :as string])
-            (jiksnu [abdera :as abdera]
-                    [namespace :as namespace])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [user :as model.user]
-                          [subscription :as model.subscription]
-                          [webfinger :as model.webfinger])
-            (karras [sugar :as sugar]))
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        ciste.sections
+        [clojure.core.incubator :only [-?>]]
+        jiksnu.model
+        [jiksnu.session :only [current-user]])
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [clojure.string :as string]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.webfinger :as model.webfinger]
+            [karras.sugar :as sugar])
   (:import javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera2.model.Entry
@@ -37,7 +36,7 @@
        abdera/fetch-feed))
 
 (defn rule-map
-  [rule]
+  [^Element rule]
   (let [^Element action-element (.getChild rule "acl-action")
         ^Element subject-element (.getChild rule "acl-subject")]
     {:subject (.getAttribute subject-element "type")
@@ -45,7 +44,7 @@
      :action (.getCData action-element)}))
 
 (defn property-map
-  [user property]
+  [user ^Element property]
   (let [child-elements (element/children property)
         rule-elements (filter abdera/rule-element? child-elements)
         type-element (first (filter (comp not abdera/rule-element?)
@@ -57,7 +56,7 @@
      :user user}))
 
 (defn process-vcard-element
-  [element]
+  [^Element element]
   (fn [vcard-element]
     (map (partial property-map (current-user))
          (element/children vcard-element))))
