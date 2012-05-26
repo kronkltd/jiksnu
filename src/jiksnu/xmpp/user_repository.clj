@@ -1,20 +1,20 @@
 (ns jiksnu.xmpp.user-repository
-  (:use (ciste [config :only [config]]
-               [core :only [with-context]]
-               [debug :only [spy]])
-        (ciste.sections [default :only [show-section]]))
-  (:require (ciste [model :as cm])
-            (clj-tigase [core :as tigase])
-            (clojure [stacktrace :as stacktrace]
-                     [string :as string])
-            (clojure.tools [logging :as log])
-            (jiksnu [model :as model])
-            (jiksnu.actions [auth-actions :as actions.auth]
-                            [domain-actions :as actions.domain]
-                            [user-actions :as actions.user])
-            (jiksnu.model [signature :as model.signature]
-                          [user :as model.user])
-            (karras [collection :as col]))
+  (:use [ciste.config :only [config]]
+        [ciste.core :only [with-context]]
+        [ciste.debug :only [spy]]
+        [ciste.sections.default :only [show-section]])
+  (:require [ciste.model :as cm]
+            [clj-tigase.core :as tigase]
+            [clojure.stacktrace :as stacktrace]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
+            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.user :as model.user]
+            [karras.collection :as col])
   (:import tigase.db.AuthorizationException
            tigase.db.AuthRepository
            tigase.db.AuthRepositoryImpl
@@ -27,13 +27,8 @@
 
 (defonce auth-repository (ref nil))
 (defonce password-key "password")
-(defonce non-sasl-mechs (into-array String ["password"
-                                            ;; "digest"
-                                            ]))
-(defonce sasl-mechs (into-array String ["PLAIN"
-                                        ;; "DIGEST-MD5"
-                                        ;; "CRAM-MD5"
-                                        ]))
+(defonce non-sasl-mechs (into-array String ["password"]))
+(defonce sasl-mechs (into-array String ["PLAIN"]))
 
 (defn user-repo
   []
@@ -57,19 +52,14 @@
 (defmethod get-data [:password]
   [user ks def]
   (log/infof "password handler - %s - %s" (pr-str ks) def)
-
-  (:password user)
-
-  )
+  (:password user))
 
 
 (defmethod get-data [:public :vcard-temp :vCard]
   [user ks def]
   (log/info "Vcard handler")
   (spy (with-context [:xmpp :xmpp]
-         (show-section (spy user))))
-  ;; (spy def)
-  )
+         (show-section (spy user)))))
 
 (defmethod get-data :default
   [user ks def]
@@ -146,10 +136,7 @@ of registered users"
     (do
       (.put props "result" nil)
       (.put props "user-id" (tigase/bare-jid (:username user) (:domain user)))
-      true
-      )
-
-    ))
+      true)))
 
 ;; plain auth
 
@@ -161,9 +148,7 @@ of registered users"
           AuthRepository/PROTOCOL_VAL_NONSASL (.put props AuthRepository/RESULT_KEY non-sasl-mechs)
           AuthRepository/PROTOCOL_VAL_SASL    (.put props AuthRepository/RESULT_KEY sasl-mechs)
 
-          nil
-
-          )))
+          nil)))
 
 (defn -removeUser
   "allows to remove user and all his data from user repository."
@@ -279,8 +264,7 @@ this node and in all subnodes."
   (log/info "remove subnode")
   ;; (spy user)
   ;; (spy subnode)
-  (cm/implement)
-  )
+  (cm/implement))
 
 ;; removeUser
 
@@ -296,8 +280,7 @@ associates it with given key."
      ;; (spy subnode)
      ;; (spy key)
      ;; (spy value)
-     (cm/implement)
-     ))
+     (cm/implement)))
 
 (defn -setDataList
   "sets list of values for given user associated given key in repository under
@@ -305,8 +288,7 @@ given node path."
   [this ^BareJID user ^String subnode ^String key list]
   (log/info "set data list")
   ;; TODO: implement
-  (cm/implement)
-  )
+  (cm/implement))
 
 (defn -userExists
   "checks whether the user (or repository top node) exists in the database."

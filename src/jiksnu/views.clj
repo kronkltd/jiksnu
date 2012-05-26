@@ -3,7 +3,7 @@
         [ciste.config :only [config]]
         [ciste.debug :only [spy]]
         ciste.formats
-        ciste.sections
+        [ciste.sections :only [defsection]]
         ciste.views
         ciste.sections.default
         ciste.views.default

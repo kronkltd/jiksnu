@@ -1,23 +1,18 @@
 (ns jiksnu.views.subscription-views
-  (:use (ciste [debug :only [spy]]
-               [views :only [defview]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.subscription-actions)
-  (:require (clj-tigase [core :as tigase])
-            (jiksnu.helpers [subscription-helpers :as helpers.subscription]
-                            [user-helpers :as helpers.user])
-            (jiksnu.model [subscription :as model.subscription])
-            (jiksnu.sections [subscription-sections :as sections.subscription])))
+  (:require [clj-tigase.core :as tigase]
+            [jiksnu.helpers.subscription-helpers :as helpers.subscription]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.sections.subscription-sections :as sections.subscription]))
 
 (defview #'get-subscriptions :as
   [request [user subscriptions]]
   {:template false
-   :body {:items (index-section subscriptions)}
-
-   }
-
-  )
-
+   :body {:items (index-section subscriptions)}})
 
 (defn subscription-formats
   [user]
@@ -30,11 +25,7 @@
     
     {:href (str (uri user) "/subscriptions.json")
      :label "JSON"
-     :type "application/json"}]
-  )
-
-
-
+     :type "application/json"}])
 
 (defview #'delete :html
   [request _]

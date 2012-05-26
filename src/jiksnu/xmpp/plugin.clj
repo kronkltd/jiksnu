@@ -1,14 +1,14 @@
 (ns jiksnu.xmpp.plugin
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               routes)
-        (clojure [pprint :only [pprint]])
-        (jiksnu model
-                routes))
-  (:require (clj-tigase [core :as tigase]
-                        [packet :as packet])
-            (clojure.tools [logging :as log])
-            (jiksnu [namespace :as namespace]))
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        ciste.routes
+        [clojure.pprint :only [pprint]]
+        jiksnu.model
+        jiksnu.routes)
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
+            [jiksnu.namespace :as namespace])
   (:import java.util.Queue
            tigase.server.Packet
            tigase.xmpp.JID

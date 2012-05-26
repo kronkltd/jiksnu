@@ -1,5 +1,5 @@
 (ns jiksnu.views.inbox-views
-  (:use (ciste [views :only [defview]])
+  (:use [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.inbox-actions))
 

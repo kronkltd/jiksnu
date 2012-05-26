@@ -1,20 +1,20 @@
 (ns jiksnu.triggers.user-triggers
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               [triggers :only [add-trigger!]])
-        (clojure.core [incubator :only [-?>]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.triggers :only [add-trigger!]]
+        [clojure.core.incubator :only [-?>]]
         lamina.core)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element])
-            (clojure.tools [logging :as log])
-            (jiksnu [namespace :as namespace])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [auth-actions :as actions.auth]
-                            [stream-actions :as actions.stream]
-                            [user-actions :as actions.user])
-            (jiksnu.helpers [user-helpers :as helpers.user])
-            (jiksnu.model [signature :as model.signature]
-                          [user :as model.user])))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.user :as model.user]))
 
 (defn discover-trigger
   [action _ user]

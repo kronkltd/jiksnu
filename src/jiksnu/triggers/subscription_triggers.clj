@@ -1,18 +1,18 @@
 (ns jiksnu.triggers.subscription-triggers
-  (:use (ciste [config :only [config]]
-               [core :only [with-context]]
-               [debug :only [spy]]
-               triggers)
+  (:use [ciste.config :only [config]]
+        [ciste.core :only [with-context]]
+        [ciste.debug :only [spy]]
+        ciste.triggers
         ciste.sections.default
         jiksnu.actions.subscription-actions)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element])
-            (clojure.tools [logging :as log])
-            (jiksnu [namespace :as namespace])
-            (jiksnu.model [domain :as model.domain]
-                          [user :as model.user])
-            (jiksnu.helpers [subscription-helpers :as helpers.subscription]
-                            [user-helpers :as helpers.user])))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.helpers.subscription-helpers :as helpers.subscription]
+            [jiksnu.helpers.user-helpers :as helpers.user]))
 
 (defn notify-subscribe-xmpp
   [request subscription]
@@ -49,9 +49,7 @@
       (if (:xmpp domain)
         (notify-subscribe-xmpp {} subscription)
         ;; TODO: OStatus case
-        (log/info "sending ostatus subscribe")
-        
-        ))))
+        (log/info "sending ostatus subscribe")))))
 
 (defn unsubscribe-trigger
   [action [user] subscription]
@@ -59,8 +57,7 @@
     (if (:xmpp domain)
       (notify-unsubscribe-xmpp {} subscription)
       ;; TODO: OStatus case
-      (log/info "sending ostatus unsubscribe")
-      )))
+      (log/info "sending ostatus unsubscribe"))))
 
 (defn subscribed-trigger
   [action [actor user] subscription]

@@ -1,8 +1,8 @@
 (ns jiksnu.views.setting-views
-  (:use (ciste [views :only [defview]])
+  (:use [ciste.views :only [defview]]
         jiksnu.actions.setting-actions)
-  (:require (hiccup [form :as f])
-            (jiksnu.sections [setting-sections :as sections.setting])))
+  (:require [hiccup.form :as f]
+            [jiksnu.sections.setting-sections :as sections.setting]))
 
 (defview #'admin-edit-page :html
   [request _]

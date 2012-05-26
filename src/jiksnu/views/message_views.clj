@@ -1,5 +1,5 @@
 (ns jiksnu.views.message-views
-  (:use (ciste [views :only [defview]])
+  (:use [ciste.views :only [defview]]
         jiksnu.actions.message-actions))
 
 (defview #'inbox-page :html

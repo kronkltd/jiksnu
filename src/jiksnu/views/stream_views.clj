@@ -1,26 +1,26 @@
 (ns jiksnu.views.stream-views
-  (:use (ciste [config :only [config]]
-               [core :only [with-format]]
-               [debug :only [spy]]
-               [views :only [apply-view defview]])
+  (:use [ciste.config :only [config]]
+        [ciste.core :only [with-format]]
+        [ciste.debug :only [spy]]
+        [ciste.views :only [apply-view defview]]
         ciste.sections.default
-        (clj-stacktrace [repl :only [pst+]])
+        [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (jiksnu [abdera :as abdera]
-                    [model :as model]
-                    [namespace :as namespace]
-                    [session :as session]
-                    [views :as views])
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (jiksnu.sections [activity-sections :as sections.activity])
-            (jiksnu.xmpp [element :as xmpp.element])
-            (plaza.rdf [core :as rdf])
-            (plaza.rdf.vocabularies [foaf :as foaf])
-            (ring.util [response :as response]))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.sections.activity-sections :as sections.activity]
+            [jiksnu.session :as session]
+            [jiksnu.views :as views]
+            [jiksnu.xmpp.element :as xmpp.element]
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.vocabularies.foaf :as foaf]
+            [ring.util.response :as response])
   (:import java.text.SimpleDateFormat))
 
 (def rdf-prefixes

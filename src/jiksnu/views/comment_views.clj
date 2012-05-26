@@ -1,12 +1,12 @@
 (ns jiksnu.views.comment-views
-  (:use (ciste [views :only [defview]])
+  (:use [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.comment-actions)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (jiksnu [namespace :as namespace])
-            (ring.util [response :as response])))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.namespace :as namespace]
+            [ring.util.response :as response]))
 
 (defview #'add-comment :html
   [request activity]

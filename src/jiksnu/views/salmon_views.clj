@@ -1,6 +1,6 @@
 (ns jiksnu.views.salmon-views
-  (:use ciste.views
-        jiksnu.actions.salmon-actions))
+  (:use [ciste.views :only [defview]]
+        [jiksnu.actions.salmon-actions :only [process]]))
 
 (defview #'process :html
   [request _]

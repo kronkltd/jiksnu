@@ -1,25 +1,23 @@
 (ns jiksnu.views.activity-views
-  (:use (ciste [config :only [config]]
-               core
-               [debug :only [spy]]
-               sections
-               [views :only [defview]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.activity-actions)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (jiksnu [abdera :as abdera]
-                    [model :as model]
-                    [namespace :as namespace]
-                    [session :as session])
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (jiksnu.sections [activity-sections :as sections.activity])
-            (jiksnu.xmpp [element :as xmpp.element])
-            (plaza.rdf [core :as plaza])
-            (plaza.rdf.vocabularies [foaf :as foaf])
-            (ring.util [response :as response])))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.sections.activity-sections :as sections.activity]
+            [jiksnu.session :as session]
+            [jiksnu.xmpp.element :as xmpp.element]
+            [plaza.rdf.core :as plaza]
+            [plaza.rdf.vocabularies.foaf :as foaf]
+            [ring.util.response :as response]))
 
 (defview #'delete :html
   [request activity]

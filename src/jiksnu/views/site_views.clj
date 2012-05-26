@@ -1,9 +1,9 @@
 (ns jiksnu.views.site-views
-  (:use (ciste [config :only [config]]
-               [views :only [defview]])
+  (:use [ciste.config :only [config]]
+        [ciste.views :only [defview]]
         jiksnu.actions.site-actions)
-  (:require (hiccup [core :as h])
-            (jiksnu [namespace :as ns])))
+  (:require [hiccup.core :as h]
+            [jiksnu.namespace :as ns]))
 
 (defview #'rsd :html
   [request _]

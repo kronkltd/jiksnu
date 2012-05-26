@@ -1,12 +1,13 @@
 (ns jiksnu.views.pubsub-views
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               sections
-               [views :only [defview]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        ciste.sections
+        [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.pubsub-actions
-        (jiksnu model session))
-  (:require (jiksnu.model [user :as model.user])))
+        jiksnu.model
+        jiksnu.session)
+  (:require [jiksnu.model.user :as model.user]))
 
 ;; (defview #'callback :html
 ;;   [request params]

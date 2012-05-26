@@ -34,8 +34,4 @@
   [request group]
   {:title (:nickname (spy group))
    :body
-   [:div
-
-    ]
-   }
-  )
+   [:div]})

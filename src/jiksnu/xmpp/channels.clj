@@ -1,9 +1,7 @@
 (ns jiksnu.xmpp.channels
-  (:use (ciste [debug :only (spy)]))
+  (:use [ciste.debug :only [spy]])
   (:gen-class
-   :extends tigase.server.AbstractMessageReceiver
-   )
-  )
+   :extends tigase.server.AbstractMessageReceiver))
 
 (def packet-types-key "packet-types")
 (def prepend-text-key "log-prepend")

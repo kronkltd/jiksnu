@@ -1,14 +1,14 @@
 (ns jiksnu.views.domain-views
-  (:use (ciste [debug :only [spy]]
-               [views :only [defview]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.domain-actions)
   (:require [clojure.tools.logging :as log]
-            (hiccup [core :as h])
-            (jiksnu [namespace :as ns])
-            (jiksnu.model [domain :as model.domain]
-                          [user :as model.user])
-            (jiksnu.sections [domain-sections :as sections.domain]))
+            [hiccup.core :as h]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as ns]
+            [jiksnu.sections.domain-sections :as sections.domain])
   (:import jiksnu.model.Domain))
 
 (defview #'create :html
