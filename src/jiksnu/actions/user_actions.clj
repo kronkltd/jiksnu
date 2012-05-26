@@ -4,13 +4,8 @@
         [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
-        [clj-stacktrace.repl :only [pst+]]
         [clojure.core.incubator :only [-?> -?>>]]
-        jiksnu.model
-        [jiksnu.session :only [current-user]]
-        plaza.rdf.core
-        plaza.rdf.sparql
-        plaza.rdf.vocabularies.foaf)
+        [jiksnu.session :only [current-user]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -19,18 +14,19 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
-            [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.signature :as model.signature]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.namespace :as ns]
             [jiksnu.xmpp.element :as xmpp.element]
             [karras.entity :as entity]
             [karras.sugar :as sugar]
-            [plaza.rdf.core :as rdf])
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.sparql :as sp])
   (:import java.net.URI
            javax.xml.namespace.QName
            jiksnu.model.User
@@ -208,64 +204,53 @@
        :alias full-uri
        :links
        [
-        {:rel "http://webfinger.net/rel/profile-page"
+        {:rel ns/wf-profile 
          :type "text/html"
          :href full-uri}
         
-        {:rel "http://microformats.org/profile/hcard"
+        {:rel ns/hcard
          :type "text/html"
          :href full-uri}
 
-        {:rel "http://gmpg.org/xfn/11"
+        {:rel ns/xfn 
          :type "text/html"
          :href full-uri}
 
-        {:rel "http://schemas.google.com/g/2010#updates-from"
+        {:rel ns/updates-from
          :type "application/atom+xml"
          :href (str "http://" (config :domain)
                     "/api/statuses/user_timeline/"
                     (:_id user)
                     ".atom")}
 
-        {:rel "http://schemas.google.com/g/2010#updates-from"
+        {:rel ns/updates-from
          :type "application/json"
          :href (str "http://" (config :domain)
                     "/api/statuses/user_timeline/"
                     (:_id user)
                     ".json")}
 
-        {:rel "http://webfinger.net/rel/profile-page"
-         :type "text/html"
-         :href full-uri}
-
-        {:rel "http://onesocialweb.org/rel/service"
-         :href (str "xmpp:" (:username user) "@" (:domain user))}
-        
         {:rel "describedby"
          :type "application/rdf+xml"
          :href (str full-uri ".rdf")}
 
-        {:rel "salmon"
-         :href (model.user/salmon-link user)}
-
-        {:rel "http://salmon-protocol.org/ns/salmon-replies"
-         :href (model.user/salmon-link user)}
-
-        {:rel "http://salmon-protocol.org/ns/salmon-mention"
-         :href (model.user/salmon-link user)}
+        {:rel "salmon"          :href (model.user/salmon-link user)}
+        {:rel ns/salmon-replies :href (model.user/salmon-link user)}
+        {:rel ns/salmon-mention :href (model.user/salmon-link user)}
+        {:rel ns/oid-provider   :href full-uri}
+        {:rel ns/osw-service    :href (str "xmpp:" (:username user) "@" (:domain user))}
+        
 
         {:rel "magic-public-key"
          :href (-> user
                    model.signature/get-key-for-user
                    model.signature/magic-key-string)}
 
-        {:rel "http://ostatus.org/schema/1.0/subscribe"
+        {:rel ns/ostatus-subscribe 
          :template (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}
 
-        {:rel "http://specs.openid.net/auth/2.0/provider"
-         :href full-uri}
 
-        {:rel "http://apinamespace.org/twitter"
+        {:rel ns/twitter-username 
          :href (str "http://" (config :domain) "/api/")
          :property [{:type "http://apinamespace.org/twitter/username"
                      :value (:username user)}]}]})
@@ -289,7 +274,7 @@
 (defn get-name
   "Returns the name of the Atom person"
   [^Person person]
-  (or (.getSimpleExtension person namespace/poco
+  (or (.getSimpleExtension person ns/poco
                            "displayName" "poco" )
       (.getName person)))
 
@@ -304,16 +289,16 @@
           ;; TODO: check for custom domain field first?
           domain-name (get-domain-name id)
           domain (actions.domain/find-or-create domain-name)
-          username (or (.getSimpleExtension person namespace/poco
+          username (or (.getSimpleExtension person ns/poco
                                             "preferredUsername" "poco")
                        (get-username id))]
       (if (and username domain)
         (let [email (.getEmail person)
               name (get-name person)
-              note (.getSimpleExtension person (QName. namespace/poco "note"))
+              note (.getSimpleExtension person (QName. ns/poco "note"))
               uri (str (.getUri person))
               links (-> person
-                        (.getExtensions (QName. namespace/atom "link"))
+                        (.getExtensions (QName. ns/atom "link"))
                         (->> (map abdera/parse-link)))
               params (merge {:domain domain-name}
                             (when uri {:uri uri})
@@ -340,11 +325,10 @@
     (let [links (model.webfinger/get-links xrd)
           new-user (assoc user :links links)
           feed (helpers.user/fetch-user-feed new-user)
+          first-entry (-?> feed .getEntries first)
           user (merge user
-                      (-?>
-                       (or (-?> feed .getAuthor)
-                           (-?> feed .getEntries first .getAuthor))
-                       person->user))
+                      (-?> (abdera/get-author first-entry feed)
+                           person->user))
           avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)]
       (update-hub* user feed)
       (doseq [link links]
@@ -357,18 +341,18 @@
 (defn foaf-query
   "Extract user information from a foaf document"
   []
-  (defquery
-    (query-set-vars [:?user :?nick :?name :?bio :?img-url])
-    (query-set-type :select)
-    (query-set-pattern
-     (make-pattern
+  (sp/defquery
+    (sp/query-set-vars [:?user :?nick :?name :?bio :?img-url])
+    (sp/query-set-type :select)
+    (sp/query-set-pattern
+     (sp/make-pattern
       [
        [:?uri    rdf/rdf:type                     :foaf/Document]
        [:?uri    :foaf:PrimaryTopic    :?user]
-       (optional [:?user :foaf/nick            :?nick])
-       (optional [:?user :foaf/name            :?name])
-       (optional [:?user :dcterms/descriptions :?bio])
-       (optional [:?user :foaf/depiction       :?img-url])
+       (rdf/optional [:?user :foaf/nick            :?nick])
+       (rdf/optional [:?user :foaf/name            :?name])
+       (rdf/optional [:?user :dcterms/descriptions :?bio])
+       (rdf/optional [:?user :foaf/depiction       :?img-url])
        ]))))
 
 
@@ -377,9 +361,9 @@
   [user]
   ;; TODO: alternately, check user meta
   (let [uri (:foaf-uri user)
-        model (document-to-model uri :xml)
+        model (rdf/document-to-model uri :xml)
         query (foaf-query)]
-    (model-query-triples model query)))
+    (sp/model-query-triples model query)))
 
 (defaction discover-user-xmpp
   [user]
@@ -421,18 +405,6 @@
             ;; domain is bogus. Perhaps a try counter.
             #_(enqueue-discover user)))))))
 
-;; TODO: This will be back
-;; TODO: turn this into a worker
-;; (defn discover-pending-users
-;;   [domain]
-;;   #_(if-let [user (pop-user! domain)]
-;;       (do
-;;         (log/info "Discovering: " user)
-;;         (discover user))
-;;       (do (log/info "sleeping")
-;;           #_(Thread/sleep 3000)))
-;;   #_(recur domain))
-
 (defaction fetch-remote
   [user]
   (let [domain (get-domain user)]
@@ -473,27 +445,17 @@
   []
   (User.))
 
-;; deprecated, nothing should hit this in the future. If anything is,
-;; I want it drug out into the street and shot
-;; (defaction remote-create
-;;   [user options]
-;;   (let [user (merge user
-;;                     {:updated (sugar/date)
-;;                      :discovered true}
-;;                     options)]
-;;     (create user options)))
-
 (defaction show
   "This action just returns the passed user.
    The user needs to be retreived in the filter."
   [user]
-  (model.user/fetch-by-id (:_id user)))
+  user)
 
 (defaction update-profile
   [options]
   (let [user (current-user)]
     ;; TODO: mass assign vulnerability here
-    (update user options)))
+    (update user (spy options))))
 
 ;; TODO: this applies only for acct: uris
 ;; TODO: use find-or-create

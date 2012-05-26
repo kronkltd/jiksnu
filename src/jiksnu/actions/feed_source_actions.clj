@@ -101,14 +101,14 @@
       ;; TODO: This should be a per-source callback url
       (str "http://" (config :domain) "/main/push/callback")))
   ([hub topic callback]
-     (client/post
-      hub
-      {:throw-exceptions false
-       :form-params
-       {"hub.callback" callback
-        "hub.mode" "unsubscribe"
-        "hub.topic" topic
-        "hub.verify" "async"}})))
+     (spy (client/post
+       hub
+       (spy {:throw-exceptions false
+             :form-params
+             {"hub.callback" callback
+              "hub.mode" "unsubscribe"
+              "hub.topic" topic
+              "hub.verify" "async"}})))))
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription

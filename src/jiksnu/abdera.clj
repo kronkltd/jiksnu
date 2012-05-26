@@ -153,8 +153,9 @@
    (if-let [source (.getSource entry)]
      (first (.getAuthors source)))))
 
-(defn add-link
-  [feed link]
+(defn ^Link make-link
+  "Convert a map to an abdera link"
+  [link]
   (let [{:keys [href rel type attributes]} link
         link-element (.newLink *abdera-factory*)]
     (when href (.setHref link-element href))
@@ -163,9 +164,15 @@
     (when attributes
       (doseq [{:keys [name value]} attributes]
         (.setAttributeValue link-element name value)))
-    (.addLink feed link-element)))
+    link-element))
 
+(defn add-link
+  [feed link]
+  (.addLink feed (make-link link)))
+
+;; TODO: should return the actual map
 (defn make-feed
+  "Returns the string representation of a feed from a feed map"
   [{:keys [author title subtitle links entries updated id generator]}]
   (let [feed (.newFeed *abdera*)]
     (when title (.setTitle feed title))
@@ -190,12 +197,13 @@
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
         title (.getTitle link)
+        href (str (.getHref link))
         rel (.getRel link)]
-    (merge {:href (str (.getHref link))}
-           (when (seq rel) {:rel rel})
-           (when (seq title) {:title title})
+    (merge (when (seq href)       {:href href})
+           (when (seq rel)        {:rel rel})
+           (when (seq title)      {:title title})
            (when (seq extensions) {:extensions extensions})
-           (when (seq type) {:type (str type)}))))
+           (when (seq type)       {:type (str type)}))))
 
 (defn parse-links
   [entry]
@@ -211,6 +219,7 @@
 ;;        :published (.getPublished object)
 ;;        :content (.getContent object)}))
 
+;; Deprecated
 (defn parse-json-element
   "Takes a json object representing an Abdera element and converts it to
 an Element"

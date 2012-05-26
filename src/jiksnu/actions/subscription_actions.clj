@@ -57,6 +57,7 @@
   (actions.feed-source/subscribe user)
   (-> {:from (:_id actor)
        :to (:_id user)
+       :local true
        :pending true}
       create))
 
@@ -73,11 +74,11 @@
   (subscribe actor user))
 
 (defaction subscribed
-  
   [actor user]
   (model.subscription/create
    {:from (:_id actor)
-    :to (:_id user)}))
+    :to (:_id user)
+    :local false}))
 
 (defaction get-subscribers
   [user]
