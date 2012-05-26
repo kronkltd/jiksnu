@@ -12,8 +12,10 @@
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [lamina.core :as l])
@@ -105,11 +107,20 @@
 (defaction callback-publish
   [params]
   (let [document (abdera/parse-stream (:body params))
-        feed (.getRoot document)
-        entries (.getEntries feed)]
-    (doseq [entry entries]
-      (let [activity (actions.activity/entry->activity entry feed)]
-        (actions.activity/create activity))))
+        feed (.getRoot document)]
+    ;; (log/debug (.toString feed))
+    (let [topic (-?> feed
+                     (abdera/rel-filter-feed "self")
+                     first .getHref str)]
+      (if-let [source (spy (model.feed-source/fetch-by-topic (spy topic)))]
+        (if (seq (:watchers source))
+          (do (actions.feed-source/mark-updated source)
+              (doseq [entry (.getEntries feed)]
+                (let [activity (actions.activity/entry->activity entry feed)]
+                  (actions.activity/create activity))))
+          (do (log/warnf "no watchers for %s" topic)
+              (actions.feed-source/remove-subscription source)))
+        (log/warn "unknown source"))))
   true)
 
 (defaction user-microsummary
