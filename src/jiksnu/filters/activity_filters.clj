@@ -13,7 +13,8 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.activity-sections :as sections.activity]))
+            [jiksnu.sections.activity-sections :as sections.activity])
+  (:import tigase.xml.Element))
 
 (deffilter #'delete :http
   [action request]
@@ -51,7 +52,7 @@
 (deffilter #'show :xmpp
   [action request]
   (let [{:keys [items]} request
-        ids (map #(.getAttribute % "id") items)
+        ids (map #(.getAttribute ^Element % "id") items)
         id (first ids)]
     (action (model.activity/fetch-by-id id))))
 

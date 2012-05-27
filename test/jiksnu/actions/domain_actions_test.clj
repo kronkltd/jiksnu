@@ -1,15 +1,15 @@
 (ns jiksnu.actions.domain-actions-test
-  (:use (ciste [config :only [with-environment]])
-        (clj-factory [core :only [factory fseq]])
-        (clj-tigase [core :only [deliver-packet!]])
-        (jiksnu [test-helper :only [test-environment-fixture]])
+  (:use [ciste.config :only [with-environment]]
+        [clj-factory.core :only [factory fseq]]
+        [clj-tigase.core :only [deliver-packet!]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.domain-actions
         midje.sweet)
-  (:require (ciste [model :as cm])
-            (clj-tigase [packet :as packet])
-            (jiksnu [model :as model])
-            (jiksnu.model [domain :as model.domain]
-                          [webfinger :as model.webfinger]))
+  (:require [ciste.model :as cm]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model :as model]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.webfinger :as model.webfinger])
   (:import jiksnu.model.Domain))
 
 (test-environment-fixture

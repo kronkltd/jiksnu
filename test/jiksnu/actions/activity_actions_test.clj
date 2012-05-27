@@ -1,19 +1,19 @@
 (ns jiksnu.actions.activity-actions-test
-  (:use (ciste [config :only [with-environment]]
-               [core :only [with-context]]
-               [debug :only [spy]])
+  (:use [ciste.config :only [with-environment]]
+        [ciste.core :only [with-context]]
+        [ciste.debug :only [spy]]
         ciste.sections.default
-        (clj-factory [core :only [factory fseq]])
+        [clj-factory.core :only [factory fseq]]
         jiksnu.actions.activity-actions
-        (jiksnu test-helper
-                [model :only [activity?]]
-                [session :only [with-user]])
+        jiksnu.test-helper
+        [jiksnu.model :only [activity?]]
+        [jiksnu.session :only [with-user]]
         midje.sweet)
-  (:require (jiksnu [abdera :as abdera])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [user :as model.user])
-            (jiksnu.sections activity-sections))
+  (:require [jiksnu.abdera :as abdera]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            jiksnu.sections.activity-sections)
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User))
@@ -27,12 +27,9 @@
        (set-recipients activity) => activity?)))
 
  (fact "#'oembed->activity"
-   (let [oembed-str (slurp "test-resources/oembed.json")
-         ]
+   (let [oembed-str (slurp "test-resources/oembed.json")]
      ;; TODO: complete
-     (spy oembed-str) => string?
-     )
-   )
+     (spy oembed-str) => string?))
  
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
@@ -55,8 +52,7 @@
                entry (first (abdera/get-entries feed))]
            (entry->activity entry) => activity?
            #_(provided
-               (.getId entry) => "1"))))
-     ))
+               (.getId entry) => "1"))))))
 
  (fact "#'create"
    (fact "when the user is logged in"

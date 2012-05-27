@@ -1,8 +1,12 @@
 (ns jiksnu.views.domain-views
   (:use [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
         [ciste.views :only [defview]]
-        ciste.sections.default
-        jiksnu.actions.domain-actions)
+        [ciste.sections.default :only [index-section
+                                       show-section]]
+        [jiksnu.actions.domain-actions :only [create delete discover find-or-create
+                                              index show host-meta ping ping-response
+                                              ping-error]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.domain :as model.domain]
@@ -12,40 +16,40 @@
   (:import jiksnu.model.Domain))
 
 (defview #'create :html
-  [request domain]
+  [_request _domain]
   {:status 303
    :template false
    :flash "Domain has been created"
    :headers {"Location" "/main/domains"}})
 
 (defview #'delete :html
-  [request domain]
+  [_request _domain]
   {:status 303
    :template false
    :flash "Domain has been deleted"
    :headers {"Location" "/main/domains"}})
 
 (defview #'discover :html
-  [request domain]
+  [_request _domain]
   {:status 303
    :template false
    :flash "Discovering domain"
    :headers {"Location" "/main/domains"}})
 
 (defview #'find-or-create :html
-  [request domain]
+  [_request _domain]
   {:status 303
    :template false
    :headers {"Location" "/main/domains"}})
 
 (defview #'index :html
-  [request domains]
+  [_request domains]
   {:title "Domains"
    :single true
    :body (index-section domains)})
 
 (defview #'show :html
-  [request domain]
+  [_request domain]
   {:title (:_id domain)
    :single true
    :links [{:rel "up"
@@ -56,7 +60,7 @@
          (index-section (model.user/fetch-by-domain domain) {:page 1}))})
 
 (defview #'host-meta :html
-  [request xrd]
+  [_request xrd]
   (let [domain (:host xrd)]
     {:template false
      :headers {"Content-Type" "application/xrds+xml"
@@ -80,21 +84,21 @@
 
 
 (defview #'host-meta :json
-  [request xrd]
+  [_request xrd]
   {:template false
    :body xrd})
 
-
-
 (defview #'ping :xmpp
-  [request domain]
+  [_request domain]
   (model.domain/ping-request domain))
 
 (defview #'ping-error :xmpp
-  [request _])
+  [_request _]
+  (implement))
 
 (defview #'ping-response :xmpp
-  [request domain]
+  [_request _domain]
+  (implement)
   #_{:status 303
      :template false
      :headers {"Location" "/main/domains"}})

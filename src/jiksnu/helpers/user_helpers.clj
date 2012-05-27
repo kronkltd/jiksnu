@@ -1,31 +1,22 @@
 (ns jiksnu.helpers.user-helpers
-  (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
-        ciste.sections
+  (:use [ciste.debug :only [spy]]
         [clojure.core.incubator :only [-?>]]
-        jiksnu.model
         [jiksnu.session :only [current-user]])
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
-            [clojure.string :as string]
+  (:require [clj-tigase.element :as element]
             [jiksnu.abdera :as abdera]
-            [jiksnu.namespace :as namespace]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.namespace :as ns]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [karras.sugar :as sugar])
+            [jiksnu.model.webfinger :as model.webfinger])
   (:import javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera2.model.Entry
            tigase.xml.Element))
 
+;; TODO: This should check for an associated source
 (defn feed-link-uri
   [^User user]
-  (if-let [link (or (model.user/get-link user namespace/updates-from "application/atom+xml")
-                    (model.user/get-link user namespace/updates-from nil))]
+  (if-let [link (or (model.user/get-link user ns/updates-from "application/atom+xml")
+                    (model.user/get-link user ns/updates-from nil))]
     (:href link)))
 
 (defn fetch-user-feed
@@ -47,7 +38,7 @@
   [user ^Element property]
   (let [child-elements (element/children property)
         rule-elements (filter abdera/rule-element? child-elements)
-        type-element (first (filter (comp not abdera/rule-element?)
+        ^Element type-element (first (filter (comp not abdera/rule-element?)
                                     child-elements))]
     {:key (.getName property)
      :type (.getName type-element)
@@ -55,8 +46,9 @@
      :rules (map rule-map rule-elements)
      :user user}))
 
+;; TODO: why is this returning a function?
 (defn process-vcard-element
-  [^Element element]
+  [^Element _element]
   (fn [vcard-element]
     (map (partial property-map (current-user))
          (element/children vcard-element))))

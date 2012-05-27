@@ -2,7 +2,8 @@
   (:use [ciste.debug :only [spy]]
         [ciste.filters :only [deffilter]]
         jiksnu.actions.domain-actions)
-  (:require [jiksnu.model.domain :as model.domain]))
+  (:require [jiksnu.model.domain :as model.domain])
+  (:import tigase.xml.Element))
 
 (deffilter #'create :http
   [action {{:keys [domain]} :params}]

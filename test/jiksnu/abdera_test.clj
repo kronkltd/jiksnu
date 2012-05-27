@@ -1,12 +1,12 @@
 (ns jiksnu.abdera-test
-  (:use (ciste [config :only [with-environment]]
-               [debug :only [spy]])
-        (clj-factory [core :only [fseq]])
-        (jiksnu abdera test-helper)
+  (:use [ciste.config :only [with-environment]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [fseq]]
+        jiksnu.abdera
+        jiksnu.test-helper
         midje.sweet)
-  (:require (jiksnu [namespace :as namespace]))
+  (:require [jiksnu.namespace :as namespace])
   (:import javax.xml.namespace.QName
-           ;; org.apache.abdera.model.Element
            org.apache.abdera2.model.Entry))
 
 (test-environment-fixture

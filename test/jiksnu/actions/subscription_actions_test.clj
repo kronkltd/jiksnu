@@ -1,13 +1,12 @@
 (ns jiksnu.actions.subscription-actions-test
-  (:use (ciste [config :only [with-environment]])
-        [clj-factory.core :only [factory]]
-        clojure.test
+  (:use [clj-factory.core :only [factory]]
         jiksnu.actions.subscription-actions
-        (jiksnu test-helper model
-                [session :only (with-user)])
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        jiksnu.model
+        [jiksnu.session :only [with-user]]
         midje.sweet)
-  (:require (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user]))
+  (:require [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 

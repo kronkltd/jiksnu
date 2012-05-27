@@ -21,7 +21,9 @@
             [plaza.rdf.core :as rdf]
             [plaza.rdf.vocabularies.foaf :as foaf]
             [ring.util.response :as response])
-  (:import java.text.SimpleDateFormat))
+  (:import java.text.SimpleDateFormat
+           plaza.rdf.core.RDFModel
+           com.hp.hpl.jena.rdf.model.Model))
 
 (def rdf-prefixes
   [["activity" namespace/as]
@@ -33,7 +35,7 @@
   [triples]
   (try
     (let [model (rdf/build-model)]
-      (doto (rdf/to-java model)
+      (doto ^Model (rdf/to-java model)
         (.setNsPrefix "activity" namespace/as)
         (.setNsPrefix "sioc" namespace/sioc)
         (.setNsPrefix "cert" namespace/cert)

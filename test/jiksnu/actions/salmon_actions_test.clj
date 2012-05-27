@@ -1,18 +1,16 @@
 (ns jiksnu.actions.salmon-actions-test
-  (:use (ciste [config :only [with-environment]]
-               [debug :only [spy]])
-        (clj-factory [core :only [factory]])
-        (clojure [test :only [deftest]])
+  (:use [ciste.config :only [with-environment]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory]]
         midje.sweet
-        (jiksnu [test-helper :only [test-environment-fixture]])
+        [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]
-            (jiksnu [model :as model])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [user-actions :as actions.user])
-            (jiksnu.model [signature :as model.signature]
-                          [user :as model.user]
-                          ))
+            [jiksnu.model :as model]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.user :as model.user])
   (:import java.security.Key
            jiksnu.model.User))
 
