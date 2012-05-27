@@ -73,9 +73,19 @@
   "User requests a subscription to a uri"
   [uri]
   (if-let [actor (current-user)]
-    (if-let [user (actions.user/find-or-create-by-remote-id uri)]
+    (if-let [user  (if (re-matches #".*@.*" uri)
+                     ;; uri is an acct uri
+                     (spy (actions.user/find-or-create-by-uri uri))
+                     
+                     ;; uri is a http uri
+                     (spy (actions.user/find-or-create-by-remote-id {:id (spy uri)}))
+
+                     )]
       (subscribe actor user)
-      (throw+ "Could not determine user"))
+      (throw+ "Could not determine user")
+
+
+      )
     (throw+ "must be logged in")))
 
 (defaction subscribed

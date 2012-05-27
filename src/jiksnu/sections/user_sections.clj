@@ -166,7 +166,7 @@
 
 (defn admin-index-line
   [user]
-  (let [domain (actions.user/get-domain user)]
+  (let [domain (actions.user/get-domain (spy user))]
     [:tr
      [:td (display-avatar user)]
      [:td (link-to user)]
@@ -337,8 +337,7 @@
       [:p (link-to user)]
       [:p (:username user) "@" (:domain user)]
       [:p (:url user)]
-      [:p (:bio user)]
-      ]
+      [:p (:bio user)]]
      [:td
       [:ul.buttons
        [:li (subscribe-button user)]
@@ -349,8 +348,7 @@
           (when (is-admin?)
             (list
              [:li (edit-button user)]
-             [:li (delete-button user)]))))
-       ]]]))
+             [:li (delete-button user)]))))]]]))
 
 (defsection index-section [User :html]
   [users & [options & _]]

@@ -12,7 +12,7 @@
 
 (defaction index
   [options]
-  [(model.user/fetch-all {} :limit 20) options])
+  (actions.user/index options))
 
 (definitializer
   (require-namespaces

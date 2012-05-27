@@ -16,6 +16,22 @@
   [id]
   (entity/fetch-one Domain {:_id id}))
 
+(defn delete
+  [domain]
+  (let [domain (fetch-by-id (:_id domain))]
+    (entity/delete domain)
+    domain))
+
+(defn create
+  [domain]
+  (if (:_id domain)
+    (do
+      (log/debugf "Creating domain %s" (:_id domain))
+      (entity/create Domain domain))
+    (throw (IllegalArgumentException.
+            (str "Domain must have id: " domain)))))
+
+;; TODO: deprecated
 (defn index
   ([]
      (index {}))
@@ -28,24 +44,10 @@
   ([params opts]
      (apply entity/fetch-all Domain params opts)))
 
-(defn create
-  [domain]
-  (if (:_id domain)
-    (do
-      (log/debugf "Creating domain %s" (:_id domain))
-      (entity/create Domain domain))
-    (throw (IllegalArgumentException.
-            (str "Domain must have id: " domain)))))
-
+;; TODO: don't use
 (defn update
   [domain]
   (entity/save domain))
-
-(defn delete
-  [domain]
-  (let [domain (fetch-by-id (:_id domain))]
-    (entity/delete domain)
-    domain))
 
 ;; TODO: add the links to the list
 (defn add-links

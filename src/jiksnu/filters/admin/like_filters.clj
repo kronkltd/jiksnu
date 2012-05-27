@@ -4,4 +4,4 @@
 
 (deffilter #'index :http
   [action request]
-  (action))
+  (-> request :params action))

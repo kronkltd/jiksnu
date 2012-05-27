@@ -2,14 +2,17 @@
   (:use [ciste.debug :only [spy]]
         [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.session :only [current-user-id]]
+        [jiksnu.session :only [current-user]]
         jiksnu.actions.like-actions)
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]))
 
 (deffilter #'like-activity :http
   [action request]
-  (let [user-id (current-user-id)
-        activity-id (-?>  request :params :id
-                          model.activity/fetch-by-id :_id)]
-    (action activity-id user-id)))
+  (let [actor (current-user)
+        activity (-?> request :params :id model.activity/fetch-by-id)]
+    (action activity actor)))
+
+(deffilter #'index :http
+  [action request]
+  (-> request :params action))

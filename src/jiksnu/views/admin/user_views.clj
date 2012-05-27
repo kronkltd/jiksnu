@@ -5,7 +5,7 @@
             (jiksnu.helpers [user-helpers :as helpers.user])))
 
 (defview #'index :html
-  [request users]
+  [request {:keys [items]}]
   {:single true
    :title "Users"
    :body
@@ -21,5 +21,5 @@
        [:th "Edit"]
        [:th "Delete"]]]
      [:tbody
-      (map sections.user/admin-index-line users)]]]})
+      (map sections.user/admin-index-line items)]]]})
 
