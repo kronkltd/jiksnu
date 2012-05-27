@@ -11,3 +11,7 @@
 (deffilter #'show :http
   [action request]
   (-> request :params :id model.feed-source/fetch-by-id action))
+
+(deffilter #'delete :http
+  [action request]
+  (-> request :params :id model.feed-source/fetch-by-id action))

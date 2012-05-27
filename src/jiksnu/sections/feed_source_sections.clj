@@ -78,7 +78,7 @@
    [:td (link-to source)]
    [:td (when (:hub source) "*")]
    #_[:td (:mode source)]
-   [:td (str (:status source))]
+   [:td (str (:subscription-status source))]
    [:td (count (:watchers source))]
    [:td (:updated source)]
    [:td

@@ -2,6 +2,7 @@
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction with-context]]
         [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         ciste.sections.default
         [clojure.core.incubator :only [-?>]]
@@ -23,16 +24,16 @@
 
 (defaction direct-message-timeline
   [& _]
-  [])
+  (implement))
 
 
 (defaction friends-timeline
   [& _]
-  [])
+  (implement))
 
 (defaction inbox
   [& _]
-  [])
+  (implement))
 
 (defaction public-timeline
   [& {:as options}]
@@ -52,7 +53,7 @@
 
 (defaction stream
   []
-  [])
+  (implement))
 
 (defn format-message
   [message]
@@ -82,27 +83,24 @@
 
 (defaction user-list
   []
-  [])
+  (implement))
 
 (defaction home-timeline
   []
-  [])
+  (implement))
 
 (defaction mentions-timeline
   []
-  []
-  )
+  (implement))
 
 
 (defaction add
   [options]
-  
-  )
+  (implement))
 
 (defaction add-stream-page
   []
-  
-  )
+  (implement))
 
 (defaction callback-publish
   [params]
@@ -127,9 +125,7 @@
   [user]
   [user
    ;; TODO: get most recent activity
-   nil]
-
-  )
+   (implement nil)])
 
 (defn load-activities
   [^User user]

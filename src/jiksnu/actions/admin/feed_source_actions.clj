@@ -5,7 +5,8 @@
         [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]))
+            [jiksnu.model.feed-source :as model.feed-source]
+            [karras.sugar :as sugar]))
 
 (defaction index
   "List feed sources
@@ -16,6 +17,7 @@ for admin use"
     {}
     ;; TODO: hardcoded configurable value
     :limit 20
+    :sort [(sugar/desc :updated)]
     ) options])
 
 (defn delete

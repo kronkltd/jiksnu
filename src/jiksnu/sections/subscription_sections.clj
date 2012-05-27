@@ -26,9 +26,9 @@
   [:li (-> subscription model.subscription/get-target show-minimal)])
 
 (defsection delete-button [Subscription :html]
-  [activity & _]
-  [:form {:method "post" :action (str "/main/subscriptions/" (:_id activity))}
-   [:input {:type "hidden" :name "_method" :value "DELETE"}]
+  [subscription & _]
+  [:form {:method "post"
+          :action (str "/main/subscriptions/" (:_id subscription) "/delete")}
    [:button.btn {:type "submit"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
@@ -106,7 +106,7 @@
 
 (defsection uri [Subscription]
   [subscription & _]
-  (str "/admin/feed-sources/" (:_id subscription)))
+  (str "/admin/subscriptions/" (:_id subscription)))
 
 (defsection title [Subscription]
   [subscription & _]

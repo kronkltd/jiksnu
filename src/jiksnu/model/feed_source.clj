@@ -56,8 +56,8 @@ This will generally not be called"
 ;;       (create options)))
 
 (defn fetch-all
-  [options & args]
-  (apply entity/fetch FeedSource options args))
+  [& args]
+  (apply entity/fetch FeedSource args))
 
 (defn fetch-by-id
   [id]
@@ -67,3 +67,8 @@ This will generally not be called"
   "Fetch a single source by it's topic id"
   [topic]
   (fetch {:topic topic}))
+
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (entity/count-instances FeedSource params)))

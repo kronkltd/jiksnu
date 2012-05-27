@@ -1,9 +1,10 @@
 (ns jiksnu.views.admin.subscription-views
-  (:use (ciste [debug :only [spy]]
-               [views :only [defview]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.sections.default :only [show-section]]
+        [ciste.views :only [defview]]
         jiksnu.actions.admin.subscription-actions
         jiksnu.sections.subscription-sections)
-  (:require (jiksnu.model [subscription :as model.subscription])))
+  (:require [jiksnu.model.subscription :as model.subscription]))
 
 ;; (defview #'admin-index :html
 ;;   [request subscriptions]
@@ -14,3 +15,8 @@
   {:title "Subscriptions"
    :single true
    :body (admin-index-section subscriptions)})
+
+(defview #'show :html
+  [request subscription]
+  {:title "Subscription"
+   :body (show-section subscription)})

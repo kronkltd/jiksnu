@@ -16,6 +16,7 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [karras.entity :as entity]
             [karras.sugar :as sugar]
             [lamina.core :as l])
   (:import java.net.URI
@@ -46,14 +47,12 @@
          topic "hub.topic"} params]
     (let [source (model.feed-source/fetch-by-topic topic)]
       (condp = mode
-        "subscribe" (do
-                      (implement (log/info "confirming subscription")))
+        "subscribe" (confirm source)
 
         "unsubscribe" (do
-                        (implement (log/info "confirming subscription removal"))
-                        ;; TODO: don't delete, just make
-                        ;; subscription as canceled.
-                        (model.feed-source/delete source))
+                        (log/info "confirming subscription removal")
+                        (model.feed-source/set-field! source :subscription-status "none")
+                        #_(model.feed-source/delete source))
        (cm/implement
         (log/warn "Unknown mode"))))
     challenge))
@@ -101,32 +100,32 @@
       ;; TODO: This should be a per-source callback url
       (str "http://" (config :domain) "/main/push/callback")))
   ([hub topic callback]
-     (spy (client/post
-       hub
-       (spy {:throw-exceptions false
-             :form-params
-             {"hub.callback" callback
-              "hub.mode" "unsubscribe"
-              "hub.topic" topic
-              "hub.verify" "async"}})))))
+     (log/debugf "Sending unsubscribe to %s" topic)
+     (client/post
+      hub
+      {:throw-exceptions false
+       :form-params
+       {"hub.callback" callback
+        "hub.mode" "unsubscribe"
+        "hub.topic" topic
+        "hub.verify" "async"}})))
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
   "Action if user makes action to unsubscribe from remote source"
-  [subscription]
+  [source]
   (send-unsubscribe
-   (:hub subscription)
-   (:topic subscription))
+   (:hub source)
+   (:topic source))
   true)
 
 (defaction fetch-updates
   "Fetch updates for the source"
   [source]
   (let [{:keys [topic]} source]
-    (log/debug (str "Fetching feed: " topic))
+    (log/debugf "Fetching feed: %s" topic)
     (let [feed (abdera/fetch-feed topic)
-          feed-title (spy (.getTitle feed))
-          ]
+          feed-title (.getTitle feed)]
       (when-not (= feed-title (:title source))
         (model.feed-source/set-field! source :title feed-title))
       (mark-updated source)
@@ -134,13 +133,14 @@
 
 (defaction add-watcher
   [source user]
-  (implement)
-  )
+  (entity/update
+   FeedSource
+   {:_id (:_id source)}
+   {:$addToSet {:watchers (:_id user)}}))
 
 (defaction remove-watcher
   [source user]
-  (implement)
-  )
+  (implement))
 
 (definitializer
   (require-namespaces
