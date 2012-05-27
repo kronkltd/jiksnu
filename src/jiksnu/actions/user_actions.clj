@@ -148,8 +148,17 @@
 (defaction index
   "List all of the users"
   [options]
-  (model.user/fetch-all {} :sort [(sugar/asc :username)]
-                        :limit 20))
+  (let [page (get options :page 1)
+        page-size 20
+        criteria {:sort [(sugar/asc :username)]
+                  :limit 20}
+        record-count (apply model.user/count-records {})
+        records (apply model.user/fetch-all {} criteria)]
+    {:items records
+     :page page
+     :page-size page-size
+     :total-records record-count
+     :args options}))
 
 (defn local-index
   []

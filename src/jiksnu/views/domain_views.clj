@@ -43,10 +43,10 @@
    :headers {"Location" "/main/domains"}})
 
 (defview #'index :html
-  [_request domains]
+  [_request {:keys [items] :as options}]
   {:title "Domains"
    :single true
-   :body (index-section domains)})
+   :body (index-section items options)})
 
 (defview #'show :html
   [_request domain]

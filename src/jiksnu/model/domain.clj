@@ -1,11 +1,11 @@
 (ns jiksnu.model.domain
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
         jiksnu.model)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element])
-            (clojure.tools [logging :as log])
-            (karras [entity :as entity]))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [karras.entity :as entity])
   (:import jiksnu.model.Domain))
 
 (defn drop!
@@ -25,8 +25,8 @@
 (defn fetch-all
   ([]
      (fetch-all {}))
-  ([params & opts]
-     (apply entity/fetch Domain params opts)))
+  ([params opts]
+     (apply entity/fetch-all Domain params opts)))
 
 (defn create
   [domain]

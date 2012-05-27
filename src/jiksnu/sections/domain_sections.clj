@@ -1,10 +1,10 @@
 (ns jiksnu.sections.domain-sections
-  (:use (ciste [debug :only [spy]]
-               [sections :only [defsection]] )
+  (:use [ciste.debug :only [spy]]
+        [ciste.sections :only [defsection]]
         ciste.sections.default
-        (jiksnu [session :only [current-user is-admin?]]
-                [views :only [control-line]]))
-  (:require (jiksnu.sections [link-sections :as sections.link]))
+        [jiksnu.session :only [current-user is-admin?]]
+        [jiksnu.views :only [control-line]])
+  (:require [jiksnu.sections.link-sections :as sections.link])
   (:import jiksnu.model.Domain))
 
 (defn favicon-link
@@ -105,19 +105,28 @@
      ]]
    [:tbody (map index-line domains)]])
 
+(defn pagination-links
+  [options]
+  ;; TODO: page should always be there from now on
+  (let [page-number (get options :page 1)
+        page-size (get options :page-size 20)
+        ;; If no total, no pagination
+        total (get options :total-records 0)]
+    [:ul.pager
+     (when (> page-number 1)
+       [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
+     (when (< (* page-number page-size) total)
+       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
+
+
 (defsection index-section [Domain :html]
-  [domains & options]
-  (let [page-number (get options :page 1)]
-    [:div
-     [:div
-      (when (< 1 page-number)
-        [:a {:href (str "?page=" (dec page-number))
-             :rel "prev"}
-         "Prev"])
-      [:a {:href (str "?page=" (inc page-number))
-           :rel "next"}
-       "Next"]]
-     (index-block domains options)]))
+  [domains & [options & _]]
+  (let [{:keys [page total-records]} options]
+    (list
+     [:p "Page: " page]
+     [:p "Total Records: " total-records]
+     (index-block domains options)
+     (pagination-links options))))
 
 (defsection link-to [Domain :html]
   [domain & _]

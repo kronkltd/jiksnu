@@ -113,6 +113,7 @@
     [[:get    "/groups/new"]                                  #'group/new-page]
     [[:get    "/groups/:name"]                                #'stream/group-timeline]
     [[:get    "/groups/:name/edit"]                           #'group/edit-page]
+    [[:get    "/main/domains.:format"]                        #'domain/index]
     [[:get    "/main/domains"]                                #'domain/index]
     [[:get    "/main/domains/:id.:format"]                    #'domain/show]
     [[:get    "/main/domains/:id"]                            #'domain/show]

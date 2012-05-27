@@ -78,12 +78,18 @@
 
 (defaction index
   [& [options & _]]
-  (let [page-number (Integer/parseInt (get options :page "1"))]
-    (model.domain/fetch-all
-     (:where options)
-     :sort [(sugar/asc :_id)]
-     :skip (* (dec page-number) 20)
-     :limit 20)))
+  (let [page (Integer/parseInt (get options :page "1"))
+        page-size 20
+        criteria {:sort [(sugar/asc :_id)]
+                  :skip (* (dec page) page-size)
+                  :limit page-size}
+        total-records (model.domain/count-records {})
+        records (model.domain/fetch-all (:where options) criteria)]
+    {:items records
+     :page page
+     :page-size page-size
+     :total-records total-records
+     :args options}))
 
 (defaction show
   [domain]

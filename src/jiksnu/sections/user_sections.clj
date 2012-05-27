@@ -90,7 +90,7 @@
 
 (defn register-form
   [user]
-  [:form {:method "post" :action "/main/register"}
+  [:form.well.form-horizontal {:method "post" :action "/main/register"}
    [:fieldset
     [:legend "Register"]
 
@@ -240,11 +240,16 @@
 
 (defn pagination-links
   [options]
-  (let [page-number (get options :page 1)]
+  ;; TODO: page should always be there from now on
+  (let [page-number (get options :page 1)
+        page-size (get options :page-size 20)
+        ;; If no total, no pagination
+        total (get options :total-records 0)]
     [:ul.pager
      (when (> page-number 1)
-      [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
-     [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]]]))
+       [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
+     (when (< (* page-number page-size) total)
+       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
 
 
 
@@ -349,13 +354,15 @@
 
 (defsection index-section [User :html]
   [users & [options & _]]
-  (list
-   [:p "Page " (get options :page 1)]
-   [:table.table.users
-    [:thead]
-    [:tbody
-     (map index-line users)]]
-   (pagination-links options)))
+  (let [{:keys [page total-records]} options]
+    (list
+     [:p "Page " page]
+     [:p "Total Records: " total-records]
+     [:table.table.users
+      [:thead]
+      [:tbody
+       (map index-line users)]]
+     (pagination-links options))))
 
 
 (defsection show-section [User :html]

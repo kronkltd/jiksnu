@@ -1,6 +1,5 @@
 (ns jiksnu.views.user-views
-  (:use ciste.config
-        [ciste.core :only [with-format]]
+  (:use [ciste.core :only [with-format]]
         [ciste.debug :only [spy]]
         [ciste.views :only [defview]]
         [ciste.sections.default :only [uri index-section show-section]]
@@ -8,22 +7,11 @@
         plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
             [hiccup.core :as h]
-            [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.sections.user-sections :as sections.user]
-            [plaza.rdf.core :as rdf])
-  (:import java.net.URI
-           javax.xml.namespace.QName
-           jiksnu.model.Activity
-           tigase.xml.Element
-           org.apache.abdera2.model.Entry))
-
-
+            [plaza.rdf.core :as rdf]))
 
 (defview #'create :html
   [request user]
@@ -54,9 +42,9 @@
    :headers {"Location" (uri user)}})
 
 (defview #'index :html
-  [request users]
+  [request {:keys [items] :as options}]
   {:title "Users"
-   :body (index-section users)})
+   :body (index-section items options)})
 
 (defview #'profile :html
   [request user]
@@ -109,9 +97,9 @@
 
 
 (defview #'index :json
-  [request users]
+  [request {:keys [items] :as options}]
   {:body
-   {:items [(index-section users)]}})
+   {:items (index-section items options)}})
 
 
 
@@ -160,7 +148,7 @@
   [request user]
   (let [{:keys [id to from]} request]
     {:body (element/make-element
-            "query" {"xmlns" namespace/vcard-query}
+            "query" {"xmlns" ns/vcard-query}
             (show-section user))
      :type :result
      :id id
