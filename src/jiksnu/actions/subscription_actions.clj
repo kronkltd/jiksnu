@@ -3,14 +3,14 @@
         [ciste.core :only [defaction]]
         [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
-        [ciste.model :only [implement]])
+        [ciste.model :only [implement]]
+        [jiksnu.session :only [current-user]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.actions.pubsub-actions :as actions.pubsub]
-            [jiksnu.model :as model]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session])
+            [jiksnu.model.user :as model.user])
   (:import javax.security.sasl.AuthenticationException
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -20,8 +20,8 @@
 
    This action is primarily for the admin console.
    In most cases, use the user-specific versions. (unsubscribe)"
-  [id]
-  (model.subscription/delete id))
+  [subscription]
+  (model.subscription/delete subscription))
 
 (defaction ostatus
   [& _]
@@ -70,8 +70,13 @@
     subscription))
 
 (defaction ostatussub-submit
-  [actor user]
-  (subscribe actor user))
+  "User requests a subscription to a uri"
+  [uri]
+  (if-let [actor (current-user)]
+    (if-let [user (actions.user/find-or-create-by-remote-id uri)]
+      (subscribe actor user)
+      (throw+ "Could not determine user"))
+    (throw+ "must be logged in")))
 
 (defaction subscribed
   [actor user]

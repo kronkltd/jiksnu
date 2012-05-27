@@ -12,9 +12,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id :id} :params} request]
-    (if-let [subscription (model.subscription/fetch-by-id id)]
-      (action subscription))))
+  (-?> request :params :id model.subscription/fetch-by-id action))
 
 (deffilter #'ostatus :http
   [action request]
@@ -27,11 +25,7 @@
 
 (deffilter #'ostatussub-submit :http
   [action request]
-  (let [{{profile :profile} :params} request]
-    (if profile
-      (let [[username password] (clojure.string/split profile #"@")
-            user (actions.user/find-or-create username password)]
-        (action (current-user) user)))))
+  (-> request :params :profile action))
 
 (deffilter #'subscribe :http
   [action request]

@@ -43,21 +43,35 @@
       (second (model.user/split-uri id))
       (.getHost uri))))
 
+
+(defn get-username-from-atom-property
+  [user-meta]
+  (try
+    (->> user-meta
+         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
+         model/force-coll
+         (keep #(.getValue %)))
+    (catch RuntimeException ex
+      (log/error "caught error" ex))))
+
+(defn get-username-from-identifiers
+  [user-meta]
+  (try
+    (->> user-meta
+         model.webfinger/get-identifiers
+         (keep (comp first model.user/split-uri)))
+    (catch RuntimeException ex
+      (log/error "caught error" ex))))
+
+;; takes a document
 (defn get-username-from-user-meta
   "return the username component of the user meta"
   [user-meta]
   (first
    ;; TODO: is this lazy enough?
    (concat
-    (try (keep #(first (model.user/split-uri %))
-               (model.webfinger/get-identifiers user-meta))
-         (catch RuntimeException ex
-           (log/warn "caught error")))
-    (keep #(.getValue %)
-          (model/force-coll
-           (cm/query
-            "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']"
-            user-meta))))))
+    (get-username-from-identifiers user-meta)
+    (get-username-from-atom-property user-meta))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
@@ -139,11 +153,11 @@
 
 (defn local-index
   []
-  [])
+  (implement))
 
 (defaction profile
   [& _]
-  (cm/implement))
+  (implement))
 
 (defaction fetch-updates
   [user]
@@ -167,13 +181,10 @@
          (if-let [discovered-domain (if (:discovered domain)
                                       domain (actions.domain/discover domain id))]
            (or (model.user/fetch-by-remote-id id)
-               (if-let [username (or (:username user)
-                                     (:username params)
-                                     (get-username id))]
+               (if-let [username (or (:username user) (get-username id))]
                  (create (merge user
                                 {:domain (:_id domain)
-                                 :username username}
-                                params))
+                                 :username username}))
                  (log/warn (str "Could not determine username for: " id))))
            (throw (RuntimeException. "domain has not been disovered")))
          (throw (RuntimeException. "could not determine domain")))
@@ -218,17 +229,11 @@
 
         {:rel ns/updates-from
          :type "application/atom+xml"
-         :href (str "http://" (config :domain)
-                    "/api/statuses/user_timeline/"
-                    (:_id user)
-                    ".atom")}
+         :href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")}
 
         {:rel ns/updates-from
          :type "application/json"
-         :href (str "http://" (config :domain)
-                    "/api/statuses/user_timeline/"
-                    (:_id user)
-                    ".json")}
+         :href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".json")}
 
         {:rel "describedby"
          :type "application/rdf+xml"
@@ -455,7 +460,7 @@
   [options]
   (let [user (current-user)]
     ;; TODO: mass assign vulnerability here
-    (update user (spy options))))
+    (update user options)))
 
 ;; TODO: this applies only for acct: uris
 ;; TODO: use find-or-create
