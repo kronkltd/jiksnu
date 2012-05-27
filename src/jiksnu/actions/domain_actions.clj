@@ -22,8 +22,8 @@
     (model.domain/create prepared-domain)))
 
 (defaction delete
-  [id]
-  (model.domain/delete id))
+  [domain]
+  (model.domain/delete domain))
 
 (defaction update
   [domain]
@@ -72,9 +72,13 @@
     (throw (RuntimeException.
             (str "Could not find host meta for domain: " (:_id domain))))))
 
+(defaction show
+  [domain]
+  domain)
+
 (defaction edit-page
-  [id]
-  (model.domain/fetch-by-id id))
+  [domain]
+  domain)
 
 (defaction index
   [& [options & _]]
@@ -90,10 +94,6 @@
      :page-size page-size
      :total-records total-records
      :args options}))
-
-(defaction show
-  [domain]
-  domain)
 
 (defn find-or-create
   [id]
