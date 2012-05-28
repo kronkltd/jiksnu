@@ -42,8 +42,9 @@
 
 (defn fetch-all
   ([] (fetch-all {} {}))
+  ([params] (fetch-all params {}))
   ([params opts]
-     (apply entity/fetch-all Like params opts)))
+     (entity/fetch-all Like params opts)))
 
 ;; TODO: use index to get pagination
 (defn fetch-by-user

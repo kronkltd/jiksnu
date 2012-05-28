@@ -18,7 +18,7 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
@@ -257,8 +257,8 @@
 
         {:rel "magic-public-key"
          :href (-> user
-                   model.signature/get-key-for-user
-                   model.signature/magic-key-string)}
+                   model.key/get-key-for-user
+                   model.key/magic-key-string)}
 
         {:rel ns/ostatus-subscribe 
          :template (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}

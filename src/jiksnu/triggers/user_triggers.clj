@@ -10,10 +10,11 @@
             [jiksnu.namespace :as namespace]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]))
 
 (defn discover-trigger
@@ -56,7 +57,7 @@
         [_ n e] (re-matches
                  #"data:application/magic-public-key,RSA.(.+)\.(.+)"
                  key-string)]
-    (model.signature/set-armored-key (:_id user) n e)))
+    (model.key/set-armored-key (:_id user) n e)))
 
 (defn parse-avatar
   [user link]
@@ -73,7 +74,7 @@
 (defn register-trigger
   [action params user]
   (actions.auth/add-password user (-> params first :password))
-  (model.signature/generate-key-for-user user))
+  (actions.key/generate-key-for-user user))
 
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)

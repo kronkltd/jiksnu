@@ -8,8 +8,9 @@
   (:require [clojure.java.io :as io]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.security.Key
            jiksnu.model.User))
@@ -88,7 +89,7 @@
            (get-key user) => nil))
        
        (fact "and it has a key assigned"
-         (model.signature/generate-key-for-user user)
+         (actions.key/generate-key-for-user user)
 
          (fact "should return a key"
            ;; TODO: specify a public key?
@@ -97,7 +98,7 @@
  (future-fact "#'signature-valid?"
    (fact "when it is valid"
      (fact "should return truthy"
-       (let [key (model.signature/get-key-from-armored
+       (let [key (model.key/get-key-from-armored
                   {:armored-n armored-n
                    :armored-e armored-e})]
          (signature-valid? val-env2 key) => truthy))))
@@ -126,7 +127,7 @@
          (let [sig (:sig envelope)
                n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0="
                e "AQAB"]
-           (model.signature/set-armored-key (:_id user) n e)
+           (model.key/set-armored-key (:_id user) n e)
            (process user envelope) => truthy
            (provided
              (actions.activity/remote-create anything) => truthy :called 1))))))

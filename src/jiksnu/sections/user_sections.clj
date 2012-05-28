@@ -20,7 +20,7 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [plaza.rdf.core :as rdf]
@@ -376,7 +376,7 @@
    [:p [:a {:href (:id user)} (:id user)]]
    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
    (when (:discovered user)
-     (show-section (model.signature/get-key-for-user user)))
+     (show-section (model.key/get-key-for-user user)))
    (user-actions user)])
 
 (defsection update-button [User :html]
@@ -393,7 +393,7 @@
   [user & _]
   (let [{:keys [url display-name avatar-url first-name
                 last-name username name email]} user
-                mkp (try (model.signature/get-key-for-user user)
+                mkp (try (model.key/get-key-for-user user)
                          (catch Exception ex))
                 document-uri (str (full-uri user) ".rdf")
                 user-uri (rdf/rdf-resource (str (full-uri user) "#me"))

@@ -1,6 +1,6 @@
 (ns jiksnu.test-helper
   (:use [ciste.runner :only [load-site-config start-application!
-                             stop-application!]])
+                             stop-application! process-requires]])
   (:require [clojure.tools.logging :as log]
             jiksnu.factory))
 
@@ -13,5 +13,7 @@
      (println " ")
      (load-site-config)
      (start-application! :test)
+     (process-requires)
+     ;; (Thread/sleep 6000)
      ~@body
      (stop-application!)))

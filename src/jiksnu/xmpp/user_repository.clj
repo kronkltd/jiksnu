@@ -12,7 +12,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
-            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
             [karras.collection :as col])
   (:import tigase.db.AuthorizationException
@@ -131,7 +131,7 @@ of registered users"
   (if-let [user (let [mech (.get (spy props) AuthRepository/MACHANISM_KEY)]
                   (if (= mech "PLAIN")
                     (let [data (.get props "data")
-                          [_ username password] (string/split (spy (String. (model.signature/decode data) "UTF-8")) #"\u0000")]
+                          [_ username password] (string/split (spy (String. (model.key/decode data) "UTF-8")) #"\u0000")]
                       (spy (actions.auth/login (spy username) (spy password))))))]
     (do
       (.put props "result" nil)

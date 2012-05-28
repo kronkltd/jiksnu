@@ -1,15 +1,15 @@
 (ns jiksnu.model.webfinger
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]]
-               sections)
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
+        ciste.sections
         [ciste.sections.default :only [full-uri]]
-        (clojure.core [incubator :only [-?>]]))
-  (:require (ciste [model :as cm])
-            (clojure.tools [logging :as log])
-            (jiksnu [model :as model]
-                    [namespace :as namespace])
-            (jiksnu.model [signature :as model.signature]
-                          [user :as model.user]))
+        [clojure.core.incubator :only [-?>]])
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.model.key :as model.key]
+            [jiksnu.model.user :as model.user])
   (:import java.net.URI))
 
 (defn fetch-host-meta

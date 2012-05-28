@@ -12,7 +12,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
-            [jiksnu.model.signature :as model.signature]
+            [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.net.URI
            java.security.PublicKey
@@ -39,21 +39,21 @@
   "Fetch the key for the user as a PublicKey"
   [^User author]
   (-?> author
-       model.signature/get-key-for-user
-       model.signature/get-key-from-armored))
+       model.key/get-key-for-user
+       model.key/get-key-from-armored))
 
 (defn signature-valid?
   "Tests if the signature is valid for the key"
   [envelope ^PublicKey pub-key]
   (let [{:keys [data datatype encoding alg]} envelope
-        sig (-> envelope :sig model.signature/decode)
+        sig (-> envelope :sig model.key/decode)
         bytes (.getBytes
-               (model.signature/get-base-string
+               (model.key/get-base-string
                 data
-                (model.signature/encode (.getBytes datatype "UTF-8"))
-                (model.signature/encode (.getBytes encoding "UTF-8"))
-                (model.signature/encode (.getBytes alg "UTF-8"))))]
-    (model.signature/verified? bytes sig pub-key)))
+                (model.key/encode (.getBytes datatype "UTF-8"))
+                (model.key/encode (.getBytes encoding "UTF-8"))
+                (model.key/encode (.getBytes alg "UTF-8"))))]
+    (model.key/verified? bytes sig pub-key)))
 
 (defn ^Activity extract-activity
   "decode the data of the envelope and return the activity"

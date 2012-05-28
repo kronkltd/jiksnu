@@ -6,16 +6,16 @@
             [jiksnu.model.key :as model.key]
             [plaza.rdf.core :as rdf])
   (:import java.math.BigInteger
-           jiksnu.model.MagicKeyPair))
+           jiksnu.model.Key))
 
-(defsection show-section [MagicKeyPair :html]
+(defsection show-section [Key :html]
   [key & _]
   ;; TODO: Rdfa
   [:div
    [:p (:armored-n key)]
    [:p (:armored-e key)]])
 
-(defsection show-section [MagicKeyPair :rdf]
+(defsection show-section [Key :rdf]
   [key & _]
   (let [user (model.key/get-user key)]
     [(rdf/rdf-resource (str (full-uri user) "#key"))
