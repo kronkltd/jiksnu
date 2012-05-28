@@ -1,6 +1,6 @@
 (ns jiksnu.routes-helper
-  (:use (lamina [core :only [channel wait-for-message]]))
-  (:require (jiksnu [routes :as r])))
+  (:use [lamina.core :only [channel wait-for-message]])
+  (:require [jiksnu.routes :as r]))
 
 (defn response-for
   "Run a request against the main handler and wait for the response"

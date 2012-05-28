@@ -1,10 +1,10 @@
 (ns jiksnu.triggers.activity-triggers-test
-  (:use (ciste [config :only [with-environment]]
-               [debug :only [spy]])
-        (clj-factory [core :only [factory]])
-        (jiksnu test-helper
-                model
-                [session :only [with-user]])
+  (:use [ciste.config :only [with-environment]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory]]
+        jiksnu.test-helper
+        jiksnu.model
+        [jiksnu.session :only [with-user]]
         jiksnu.triggers.activity-triggers
         jiksnu.views.activity-views
         midje.sweet)

@@ -1,21 +1,21 @@
 (ns jiksnu.views.user-views-test
-  (:use (ciste [config :only [with-environment]]
-               core
-               views)
+  (:use [ciste.config :only [with-environment]]
+        ciste.core
+        ciste.views
         ciste.sections.default
         clj-factory.core
         clj-tigase.core
-        (jiksnu test-helper
-                model)
+        jiksnu.test-helper
+        jiksnu.model
         jiksnu.helpers.user-helpers
         jiksnu.views.user-views
         jiksnu.xmpp.element
         midje.sweet)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (jiksnu.model [user :as model.user])
-            (jiksnu.actions [user-actions :as actions.user]))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.actions.user-actions :as actions.user])
   (:import jiksnu.model.User))
 
 (test-environment-fixture

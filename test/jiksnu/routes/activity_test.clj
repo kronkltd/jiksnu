@@ -1,16 +1,17 @@
 (ns jiksnu.routes.activity-test
-  (:use (ciste [config :only [with-environment]]
-               [debug :only [spy]])
-        (clj-factory [core :only [factory]])
-        (jiksnu [routes-helper :only [response-for]]
-                [test-helper :only [test-environment-fixture]])
+  (:use [ciste.config :only [with-environment]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory]]
+        [jiksnu.routes-helper :only [response-for]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         midje.sweet)
-  (:require (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [user-actions :as actions.user])
-            (ring.mock [request :as mock]))
-  (:import (jiksnu.model Activity User)))
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
+            [ring.mock.request :as mock])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 
 (test-environment-fixture

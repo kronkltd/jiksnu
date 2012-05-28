@@ -1,14 +1,14 @@
 (ns jiksnu.routes.domain-test
-  (use (ciste [config :only [with-environment]]
-              [debug :only [spy]])
-       (jiksnu [test-helper :only [test-environment-fixture]]
-               [routes :only [app]])
+  (use [ciste.config :only [with-environment]]
+       [ciste.debug :only [spy]]
+       [jiksnu.test-helper :only [test-environment-fixture]]
+       [jiksnu.routes :only [app]]
        midje.sweet
-       (ring.mock [request :only [request]]))
-  (:require (jiksnu [model :as model]
-                    [session :as session])
-            (jiksnu.model [activity :as model.activity])
-            (lamina [core :as l])))
+       [ring.mock.request :only [request]])
+  (:require [jiksnu.model :as model]
+            [jiksnu.session :as session]
+            [jiksnu.model.activity :as model.activity]
+            [lamina.core :as l]))
 
 (test-environment-fixture
 

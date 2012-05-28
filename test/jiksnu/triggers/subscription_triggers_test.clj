@@ -1,12 +1,12 @@
 (ns jiksnu.triggers.subscription-triggers-test
-  (:use (ciste [config :only [with-environment]])
+  (:use [ciste.config :only [with-environment]]
         clj-factory.core
         jiksnu.test-helper
         jiksnu.triggers.subscription-triggers
         midje.sweet)
-  (:require (clj-tigase [packet :as packet])
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user]))
+  (:require [clj-tigase.packet :as packet]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
 
 (test-environment-fixture

@@ -1,5 +1,5 @@
 (ns jiksnu.helpers.subscription-helpers-test
-  (:use (ciste [config :only [with-environment]])
+  (:use [ciste.config :only [with-environment]]
         clj-factory.core
         jiksnu.test-helper
         jiksnu.helpers.subscription-helpers

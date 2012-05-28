@@ -5,9 +5,9 @@
         jiksnu.model
         jiksnu.session
         jiksnu.actions.stream-actions
-        (clj-factory [core :only [factory]]))
-  (:require (jiksnu.model [activity :as model.activity]
-                          [user :as model.user]))
+        [clj-factory.core :only [factory]])
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

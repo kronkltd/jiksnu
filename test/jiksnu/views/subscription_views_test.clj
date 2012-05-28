@@ -1,17 +1,17 @@
 (ns jiksnu.views.subscription-views-test
-  (:use (ciste [debug :only [spy]]
-               [views :only [apply-view]])
-        (clj-factory [core :only (factory)])
-        (jiksnu [test-helper :only [test-environment-fixture]])
+  (:use [ciste.debug :only [spy]]
+        [ciste.views :only [apply-view]]
+        [clj-factory.core :only [factory]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.views.subscription-views
         midje.sweet)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (jiksnu [namespace :as namespace])
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user])
-            (jiksnu.actions [subscription-actions :as actions.subscription]))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.namespace :as namespace]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.actions.subscription-actions :as actions.subscription])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 

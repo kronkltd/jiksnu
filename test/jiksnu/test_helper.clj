@@ -1,5 +1,6 @@
 (ns jiksnu.test-helper
-  (:use [ciste.runner :only [load-site-config start-application! stop-application!]])
+  (:use [ciste.runner :only [load-site-config start-application!
+                             stop-application!]])
   (:require [clojure.tools.logging :as log]
             jiksnu.factory))
 

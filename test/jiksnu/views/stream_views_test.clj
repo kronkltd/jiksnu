@@ -1,19 +1,20 @@
 (ns jiksnu.views.stream-views-test
-  (:use (ciste [config :only [with-environment]]
-               core
-               [debug :only [spy]]
-               sections views)
+  (:use [ciste.config :only [with-environment]]
+        ciste.core
+        [ciste.debug :only [spy]]
+        ciste.sections
+        ciste.views
         clj-factory.core
-        (jiksnu [session :only [with-user]]
-                test-helper)
+        [jiksnu.session :only [with-user]]
+        jiksnu.test-helper
         jiksnu.actions.stream-actions
         jiksnu.views.stream-views
         midje.sweet)
-  (:require (clojure [string :as string])
-            (hiccup [core :as h])
-            (jiksnu [abdera :as abdera])
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user]))
+  (:require [clojure.string :as string]
+            [hiccup.core :as h]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
   (:import org.apache.abdera2.model.Entry
            jiksnu.model.Activity
            jiksnu.model.User))

@@ -1,12 +1,12 @@
 (ns jiksnu.routes.stream-test
-  (:use (ciste [config :only [with-environment]])
-        (clj-factory [core :only [factory]])
-        (jiksnu [test-helper :only [test-environment-fixture]]
-                [routes-helper :only [response-for]])
+  (:use [ciste.config :only [with-environment]]
+        [clj-factory.core :only [factory]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.routes-helper :only [response-for]]
         midje.sweet)
-  (:require (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (ring.mock [request :as mock])))
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [ring.mock.request :as mock]))
 
 (test-environment-fixture
  

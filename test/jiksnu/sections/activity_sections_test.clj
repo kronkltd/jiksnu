@@ -1,17 +1,17 @@
 (ns jiksnu.sections.activity-sections-test
-  (:use (ciste [config :only [with-environment]]
-               [core :only [with-context]])
+  (:use [ciste.config :only [with-environment]]
+        [ciste.core :only [with-context]]
         ciste.sections.default
-        (clj-factory [core :only [factory]])
-        (jiksnu test-helper session)
+        [clj-factory.core :only [factory]]
+        jiksnu.test-helper jiksnu.session
         jiksnu.sections.activity-sections
         midje.sweet)
-  (:require (clj-tigase [element :as element])
-            (jiksnu [model :as model])
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [user :as model.user])
-            (jiksnu.xmpp [element :as xmpp.element]))
+  (:require [clj-tigase.element :as element]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.xmpp.element :as xmpp.element])
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity

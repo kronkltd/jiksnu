@@ -1,30 +1,28 @@
 (ns jiksnu.filters.activity-filters-test
-  (:use (clj-factory [core :only [factory]])
-        (ciste [config :only [with-environment]]
-               core
-               [debug :only [spy]]
-               filters
-               )
-        (jiksnu test-helper
-                [model :only [activity?]]
-                [routes :only (app)]
-                [session :only [with-user]]
-                ;; view
-                )
+  (:use [clj-factory.core :only [factory]]
+        [ciste.config :only [with-environment]]
+        ciste.core
+        [ciste.debug :only [spy]]
+        ciste.filters
+        jiksnu.test-helper
+        [jiksnu.model :only [activity?]]
+        [jiksnu.routes :only [app]]
+        [jiksnu.session :only [with-user]]
         jiksnu.filters.activity-filters
         jiksnu.xmpp.element
         lamina.core
         midje.sweet)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element]
-                        [packet :as packet])
-            (jiksnu [namespace :as namespace])
-            (jiksnu.actions [activity-actions :as actions.activity]
-                            [user-actions :as actions.user])
-            (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (ring.mock [request :as mock]))
-  (:import (jiksnu.model Activity User)))
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [jiksnu.namespace :as ns]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [ring.mock.request :as mock])
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 
 (test-environment-fixture
@@ -58,8 +56,8 @@
                          :type :get
                          :id "JIKSNU1"
                          :body (element/make-element
-                                ["pubsub" {"xmlns" namespace/pubsub}
-                                 ["items" {"node" namespace/microblog}
+                                ["pubsub" {"xmlns" ns/pubsub}
+                                 ["items" {"node" ns/microblog}
                                   ["item" {"id" (:_id activity)}]]])}
              packet (tigase/make-packet packet-map)
              request (assoc (packet/make-request packet)

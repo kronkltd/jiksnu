@@ -1,12 +1,13 @@
 (ns jiksnu.model.webfinger-test
-  (:use (ciste [config :only [with-environment]]
-               [debug :only (spy)])
-        (clj-factory [core :only (factory)])
+  (:use [ciste.config :only [with-environment]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory]]
         midje.sweet
-        (jiksnu test-helper model)
+        jiksnu.test-helper
+        jiksnu.model
         jiksnu.model.webfinger)
-  (:require (ciste [model :as cm])
-            (jiksnu.actions [user-actions :as actions.user]))
+  (:require [ciste.model :as cm]
+            [jiksnu.actions.user-actions :as actions.user])
   (:import jiksnu.model.User
            nu.xom.Document))
 

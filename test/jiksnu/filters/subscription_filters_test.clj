@@ -1,16 +1,16 @@
 (ns jiksnu.filters.subscription-filters-test
-  (:use (ciste [core :only [with-serialization]]
-               [debug :only [spy]]
-               [filters :only [filter-action]])
-        (jiksnu test-helper)
+  (:use [ciste.core :only [with-serialization]]
+        [ciste.debug :only [spy]]
+        [ciste.filters :only [filter-action]]
+        jiksnu.test-helper
         jiksnu.actions.subscription-actions
         midje.sweet)
-  (:require (jiksnu [model :as model]
-                    [session :as session])
-            (jiksnu.actions [user-actions :as actions.user])
+  (:require [jiksnu.model :as model]
+            [jiksnu.session :as session]
+            [jiksnu.actions.user-actions :as actions.user]
             jiksnu.filters.subscription-filters
-            (jiksnu.model [subscription :as model.subscription]
-                          [user :as model.user])))
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 
