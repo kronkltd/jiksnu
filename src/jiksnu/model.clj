@@ -168,6 +168,8 @@
 (defentity Group
   [:name])
 
+(defentity Conversation [])
+
 ;; Entity predicates
 
 (defn activity?

@@ -11,6 +11,13 @@
   [domain]
   [:img {:src (str "http://" (:_id domain) "/favicon.ico")}])
 
+(defsection uri [Domain]
+  [domain & _]
+  (str "/main/domains/" (:_id domain)))
+
+;; (defsection title [Domain])
+
+
 (defsection add-form [Domain :html]
   [domain & _]
   [:form.well {:method "post" :actions "/main/domains"}
@@ -22,13 +29,12 @@
       "Add"]]]])
 
 
-(defsection delete-button [Domain :html]
-  [domain & _]
-  [:form {:method "post"
-          :action (str "/main/domains/" (:_id domain))}
-   [:input {:type "hidden" :name "_method" :value "DELETE"}]
-   [:button.btn.delete-button {:type "submit"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
+;; (defsection delete-button [Domain :html]
+;;   [record & _]
+;;   [:form {:method "post"
+;;           :action (str (uri record) "/delete")}
+;;    [:button.btn.delete-button {:type "submit"}
+;;     [:i.icon-trash] [:span.button-text "Delete"]]])
 
 (defn discover-button
   [domain]
@@ -37,12 +43,12 @@
    [:button.btn.discover-button {:type "submit"}
     [:i.icon-search] [:span.button-text "Discover"]]])
 
-(defsection edit-button [Domain :html]
-  [domain & _]
-  [:form {:method "post"
-          :action (str "/main/domains/" (:_id domain) "/edit")}
-   [:button.btn.edit-button {:type "submit"}
-    [:i.icon-pencil] [:span.button-text "Edit"]]])
+;; (defsection edit-button [Domain :html]
+;;   [domain & _]
+;;   [:form {:method "post"
+;;           :action (str "/main/domains/" (:_id domain) "/edit")}
+;;    [:button.btn.edit-button {:type "submit"}
+;;     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defsection show-section [Domain :html]
   [domain & _]
@@ -105,29 +111,29 @@
      ]]
    [:tbody (map index-line domains)]])
 
-(defn pagination-links
-  [options]
-  ;; TODO: page should always be there from now on
-  (let [page-number (get options :page 1)
-        page-size (get options :page-size 20)
-        ;; If no total, no pagination
-        total (get options :total-records 0)]
-    [:ul.pager
-     (when (> page-number 1)
-       [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
-     (when (< (* page-number page-size) total)
-       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
+;; (defn pagination-links
+;;   [options]
+;;   ;; TODO: page should always be there from now on
+;;   (let [page-number (get options :page 1)
+;;         page-size (get options :page-size 20)
+;;         ;; If no total, no pagination
+;;         total (get options :total-records 0)]
+;;     [:ul.pager
+;;      (when (> page-number 1)
+;;        [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
+;;      (when (< (* page-number page-size) total)
+;;        [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
 
 
-(defsection index-section [Domain :html]
-  [domains & [options & _]]
-  (let [{:keys [page total-records]} options]
-    (list
-     [:p "Page: " page]
-     [:p "Total Records: " total-records]
-     (index-block domains options)
-     (pagination-links options))))
+;; (defsection index-section [Domain :html]
+;;   [domains & [options & _]]
+;;   (let [{:keys [page total-records]} options]
+;;     (list
+;;      [:p "Page: " page]
+;;      [:p "Total Records: " total-records]
+;;      (index-block domains options)
+;;      (pagination-links options))))
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a {:href (str "/main/domains/" (:_id domain))} (:_id domain)])
+  [:a {:href (uri domain)} (:_id domain)])

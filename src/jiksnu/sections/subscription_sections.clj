@@ -10,6 +10,10 @@
             [jiksnu.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription))
 
+;; (defsection title [Subscription]
+;;   [subscription & _]
+;;   (str (:_id subscription)))
+
 (defn show-minimal
   [user]
   [:span.vcard
@@ -25,12 +29,16 @@
   [subscription]
   [:li (-> subscription model.subscription/get-target show-minimal)])
 
-(defsection delete-button [Subscription :html]
+(defsection uri [Subscription]
   [subscription & _]
-  [:form {:method "post"
-          :action (str "/main/subscriptions/" (:_id subscription) "/delete")}
-   [:button.btn {:type "submit"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
+  (str "/admin/subscriptions/" (:_id subscription)))
+
+;; (defsection delete-button [Subscription :html]
+;;   [subscription & _]
+;;   [:form {:method "post"
+;;           :action (str "/main/subscriptions/" (:_id subscription) "/delete")}
+;;    [:button.btn {:type "submit"}
+;;     [:i.icon-trash] [:span.button-text "Delete"]]])
 
 (defn subscribers-section
   [user]
@@ -103,14 +111,6 @@
         [:td (:local subscription)]
         [:td (delete-button subscription)]])
      subscriptions)]])
-
-(defsection uri [Subscription]
-  [subscription & _]
-  (str "/admin/subscriptions/" (:_id subscription)))
-
-(defsection title [Subscription]
-  [subscription & _]
-  (str (:_id subscription)))
 
 (defsection index-line [Subscription :as]
   [subscription & _]

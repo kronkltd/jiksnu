@@ -5,9 +5,25 @@
         [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.actions.conversation-actions :as actions.conversation]))
 
+(defaction create
+  [options]
+  (actions.conversation/create options))
+
+(defaction delete
+  [options]
+  (actions.conversation/delete options))
+
+(defaction show
+  [options]
+  (actions.conversation/show options))
+
 (defaction index
   [options]
   (actions.conversation/index options))
+
+(defaction fetch-updates
+  [params]
+  (implement))
 
 (definitializer
   (require-namespaces

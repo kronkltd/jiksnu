@@ -41,6 +41,7 @@
            ["Admin"
             [["/admin/activities"         "Activities"]
              ["/admin/auth"               "Auth"]
+             ["/admin/conversations"      "Conversations"]
              ["/admin/groups"             "Groups"]
              ["/admin/settings"           "Settings"]
              ["/admin/feed-sources"       "Feed Sources"]

@@ -49,13 +49,8 @@
     [:ul
      (map
       (fn [admin]
-        (link-to (model.user/fetch-by-id))
-        )
-      (:admins group))
-     ]
-    ]
-   ]
-  )
+        (link-to (model.user/fetch-by-id)))
+      (:admins group))]]])
 
 (defn user-groups
   [user]
