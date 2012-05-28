@@ -1,11 +1,12 @@
 (ns jiksnu.factory
-  (:use (ciste [config :only [config]]
-               [debug :only [spy]])
+  (:use [ciste.config :only [config]]
+        [ciste.debug :only [spy]]
         clj-factory.core)
-  (:require (jiksnu [abdera :as abdera])
-            (jiksnu.model [user :as model.user])
-            (karras [sugar :as sugar]))
+  (:require [jiksnu.abdera :as abdera]
+            [jiksnu.model.user :as model.user]
+            [karras.sugar :as sugar])
   (:import jiksnu.model.Activity
+           jiksnu.model.Conversation
            jiksnu.model.Domain
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -85,6 +86,14 @@
 
 (deffactory :user
   (factory User))
+
+(deffactory Conversation
+  {:items []
+   :local true}
+  )
+
+(deffactory :conversation
+  (factory Conversation))
 
 (deffactory Activity
   {:id #'abdera/new-id

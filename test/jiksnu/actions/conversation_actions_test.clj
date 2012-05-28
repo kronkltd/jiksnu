@@ -1,8 +1,10 @@
 (ns jiksnu.actions.conversation-actions-test
-  (:use [ciste.debug :only [spy]]
-        [jiksnu.actions.conversation-actions :only [index]]
+  (:use [clj-factory.core :only [factory]]
+        [ciste.debug :only [spy]]
+        [jiksnu.actions.conversation-actions :only [index create delete show]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact =>]])
+  (:require [jiksnu.model.conversation :as model.conversation])
   )
 
 (test-environment-fixture
@@ -10,5 +12,20 @@
    (fact "should return a page structure"
      (index) => map?
      )
+   )
+
+ (fact "#'create"
+   (create (factory :conversation)) => map?
+   )
+
+ (fact "#'delete"
+   (let [conversation (create (factory :conversation))]
+     (delete conversation) => map?
+     (model.conversation/fetch-by-id (:_id conversation)) => nil
+     )
+   )
+
+ (fact "#'show"
+   (show .conversation.) => .conversation.
    )
  )

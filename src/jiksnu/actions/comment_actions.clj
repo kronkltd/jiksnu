@@ -2,25 +2,24 @@
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
         [ciste.debug :only [spy]]
+        [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
-  (:require [ciste.model :as cm]
-            [clj-tigase.core :as tigase]
+  (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]))
 
 ;; TODO: What id should be used here?
 (defn comment-node-uri
-  [{id :id :as activity}]
+  [{id :id}]
   (str ns/microblog ":replies:item=" id))
 
 (defaction new-comment
-  [& _])
+  [& _]
+  (implement))
 
 (defaction add-comment
   [params]
@@ -60,7 +59,7 @@
 
 (defn fetch-comments-onesocialweb
   [activity]
-  (cm/implement))
+  (implement))
 
 ;; This should be a trigger
 (defaction fetch-comments-remote
