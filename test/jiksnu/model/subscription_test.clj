@@ -1,9 +1,9 @@
 (ns jiksnu.model.subscription-test
-  (:use (ciste [config :only [with-environment]])
+  (:use [ciste.config :only [with-environment]]
         clj-factory.core
-        (jiksnu test-helper
-                model
-                session)
+        jiksnu.test-helper
+        jiksnu.model
+        jiksnu.session
         jiksnu.model.subscription
         jiksnu.xmpp.plugin
         karras.core

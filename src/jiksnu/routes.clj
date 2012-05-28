@@ -17,6 +17,7 @@
             [jiksnu.actions.admin.feed-source-actions :as admin.feed-source]
             [jiksnu.actions.admin.feed-subscriber-actions :as admin.feed-subscriber]
             [jiksnu.actions.admin.like-actions :as admin.like]
+            [jiksnu.actions.admin.key-actions :as admin.key]
             [jiksnu.actions.admin.subscription-actions :as admin.sub]
             [jiksnu.actions.admin.user-actions :as admin.user]
             [jiksnu.actions.admin-actions :as admin]
@@ -71,6 +72,16 @@
     [[:get  "/admin/conversations/:id.:format"]         #'admin.conversation/show]
     [[:post "/admin/conversations/:id/update"]          #'admin.conversation/fetch-updates]
     [[:post "/admin/conversations/:id/delete"]          #'admin.conversation/delete]
+
+    [[:get  "/admin/keys"]                              #'admin.key/index]
+    [[:get  "/admin/keys.:format"]                      #'admin.key/index]
+    [[:post "/admin/keys"]                              #'admin.key/create]
+    [[:get  "/admin/keys/:id"]                          #'admin.key/show]
+    [[:get  "/admin/keys/:id.:format"]                  #'admin.key/show]
+    [[:post "/admin/keys/:id/delete"]                   #'admin.key/delete]
+
+
+
     
     [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
     [[:post "/admin/subscriptions"]                     #'admin.sub/create]

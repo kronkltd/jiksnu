@@ -1,14 +1,15 @@
 (ns jiksnu.model.user-test
-  (:use (ciste [config :only [config with-environment]]
-               [debug :only [spy]])
-        (clj-factory [core :only [factory fseq]])
-        (jiksnu test-helper model)
+  (:use [ciste.config :only [config with-environment]]
+        [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory fseq]]
+        jiksnu.test-helper
+        jiksnu.model
         jiksnu.model.user
         midje.sweet)
-  (:require (clj-tigase [packet :as packet])
-            (jiksnu.actions [domain-actions :as actions.domain]
-                            [user-actions :as actions.user])
-            (jiksnu.model [domain :as model.domain]))
+  (:require [clj-tigase.packet :as packet]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model.domain :as model.domain])
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 

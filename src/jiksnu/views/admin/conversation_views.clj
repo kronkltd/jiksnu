@@ -7,10 +7,11 @@
   (:require [jiksnu.model.conversation :as model.conversation]))
 
 (defview #'index :html
-  [request [conversations options]]
+  [request page]
+  (spy page)
   {:title "Conversations"
    :single true
-   :body (admin-index-section conversations)})
+   :body (admin-index-section page)})
 
 (defview #'show :html
   [request conversation]

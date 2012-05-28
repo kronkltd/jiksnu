@@ -9,9 +9,6 @@
   (:import jiksnu.model.Conversation))
 
 (defn admin-index-section
-  [records]
-  (index-section records))
+  [page]
+  (index-section (:items page) page))
 
-(defsection index-section [Conversation :html]
-
-  )

@@ -1,13 +1,11 @@
 (ns jiksnu.model.domain-test
-  (:use (ciste [config :only [with-environment]])
-        clj-factory.core
-        (clj-tigase [element :only (element?)]
-                    [packet :only (packet?)])
-        clojure.test
+  (:use clj-factory.core
+        [clj-tigase.element :only [element?]]
+        [clj-tigase.packet :only [packet?]]
         midje.sweet
-        (jiksnu test-helper)
+        jiksnu.test-helper
         jiksnu.model.domain)
-  (:require (jiksnu.actions [domain-actions :as actions.domain]))
+  (:require [jiksnu.actions.domain-actions :as actions.domain])
   (:import jiksnu.model.Domain))
 
 

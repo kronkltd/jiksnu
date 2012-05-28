@@ -140,7 +140,7 @@
 (defentity FeedSubscription
   [:hub :verify-token :secret :created :updated :topic])
 
-(defentity MagicKeyPair
+(defentity Key
   [:userid
 
    :crt-coefficient
@@ -193,7 +193,7 @@
   []
   (doseq [entity [Activity Like Subscription
                   User Item Domain FeedSource
-                  MagicKeyPair]]
+                  Key]]
     (delete-all entity)))
 
 (defn parse-http-link

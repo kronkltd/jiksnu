@@ -1,9 +1,9 @@
 (ns jiksnu.model.activity-test
-  (:use (ciste [debug :only [spy]])
-        (clj-factory [core :only [factory]])
-        (jiksnu [test-helper :only [test-environment-fixture]]
-                [model :only [activity?]]
-                [session :only [with-user]])
+  (:use [ciste.debug :only [spy]]
+        [clj-factory.core :only [factory]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.model :only [activity?]]
+        [jiksnu.session :only [with-user]]
         jiksnu.model.activity
         midje.sweet)
   (:require (jiksnu.model [user :as model.user]))
