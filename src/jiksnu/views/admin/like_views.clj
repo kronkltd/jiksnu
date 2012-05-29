@@ -5,7 +5,7 @@
   (:require [jiksnu.sections.like-sections :as sections.like]))
 
 (defview #'index :html
-  [request {:keys [items]}]
+  [request {:keys [items] :as page}]
   {:single true
    :title "Likes"
-   :body (index-section items)})
+   :body (index-section items page)})
