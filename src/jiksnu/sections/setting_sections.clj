@@ -26,6 +26,9 @@
     (control-line "Print Routes"
                   "print.routes" "checkbox"
                   :checked (config :print :routes))
+    (control-line "Print Triggers"
+                  "print.triggers" "checkbox"
+                  :checked (config :print :triggers))
     (control-line "Allow registration?"
                   "registration-enabled" "checkbox"
                   :checked (config :registration-enabled))

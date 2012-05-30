@@ -5,7 +5,8 @@
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.session :only [current-user]])
+        [jiksnu.session :only [current-user]]
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -345,11 +346,14 @@
                            person->user))
           avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)]
       (update-hub* user feed)
-      (doseq [link links]
-        (add-link user link))
+      (if (seq links)
+        (doseq [link links]
+          (add-link user link))
+        (log/warn "usermeta has no links"))
       (-> user
           (merge (when avatar-url {:avatar-url avatar-url}))
-          update))))
+          update))
+    (throw+ "Could not fetch user-meta")))
 
 ;; FIXME: This does not work yet
 (defn foaf-query
@@ -366,9 +370,7 @@
        (rdf/optional [:?user :foaf/nick            :?nick])
        (rdf/optional [:?user :foaf/name            :?name])
        (rdf/optional [:?user :dcterms/descriptions :?bio])
-       (rdf/optional [:?user :foaf/depiction       :?img-url])
-       ]))))
-
+       (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
 
 (defaction discover-user-rdf
   "Discover user information from their rdf feeds"
@@ -391,33 +393,31 @@
 
 (defaction discover
   "perform a discovery on the user"
-  [^User user]
-  (when user
-    (if (:local user)
-      user
-
-      ;; Get domain should, in theory, always return a domain, or else error
-      (let [domain (get-domain user)]
-        (if (:discovered domain)
-          (do
-            (when (:xmpp domain) (discover-user-xmpp user))
-
-            ;; There should be a similar check here so we're not
-            ;; hitting xmpp-only services.
-            ;; This is really OStatus specific
-            (discover-user-http user)
-
-            ;; TODO: there sould be a different discovered flag for
-            ;; each aspect of a domain, and this flag shouldn't be set
-            ;; till they've all responded
-            (model.user/set-field! user :discovered true))
-          (do
-            ;; Domain not yet discovered
-            (actions.domain/discover domain)
-
-            ;; TODO: need to recurse here, but not forever unless the
-            ;; domain is bogus. Perhaps a try counter.
-            #_(enqueue-discover user)))))))
+  [^User user & [options & _]]
+  (loop [try-count (get options :try-count 1)]
+    (when (< (spy try-count) 5)
+      (if (:local user)
+        user
+        ;; Get domain should, in theory, always return a domain, or else error
+        (let [domain (get-domain user)]
+          (if (:discovered domain)
+            (do
+              (when (:xmpp domain) (discover-user-xmpp user))
+              ;; There should be a similar check here so we're not
+              ;; hitting xmpp-only services.
+              ;; This is really OStatus specific
+              (discover-user-http user)
+              ;; TODO: there sould be a different discovered flag for
+              ;; each aspect of a domain, and this flag shouldn't be set
+              ;; till they've all responded
+              (model.user/set-field! user :discovered true))
+            (do
+              ;; Domain not yet discovered
+              (actions.domain/discover domain)
+              ;; TODO: need to recurse here, but not forever unless the
+              ;; domain is bogus. Perhaps a try counter.
+              #_(enqueue-discover user)
+              (recur (inc try-count)))))))))
 
 (defaction fetch-remote
   [user]

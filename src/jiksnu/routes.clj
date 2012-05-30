@@ -199,6 +199,7 @@
     [[:get    "/users/:id.:format"]                           #'stream/remote-profile]
     [[:delete "/users/:id"]                                   #'user/delete]
     [[:get    "/users/:id"]                                   #'stream/remote-profile]
+    [[:post   "/users/:id/delete"]                            #'user/delete]
     [[:post   "/users/:id/discover.:format"]                  #'user/discover]
     [[:post   "/users/:id/discover"]                          #'user/discover]
     [[:post   "/users/:subscribeto/subscribe.:format"]        #'sub/subscribe]
@@ -365,5 +366,5 @@
        handler/site
        middleware/wrap-http-serialization
        #_middleware/wrap-log-request
-       #_stacktrace/wrap-stacktrace)))
+       stacktrace/wrap-stacktrace)))
 

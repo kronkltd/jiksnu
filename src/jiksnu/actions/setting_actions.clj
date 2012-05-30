@@ -25,23 +25,23 @@
     :name (config :site :name)
     :server (config :domain)
     ;; TODO: theme name
-    :theme "classic"
+    :theme (config :site :theme)
     ;; TODO: logo
     :logo ""
     :fancy "1"
     ;; TODO: default language
-    :language "en"
+    :language (config :site :default :language)
     ;; TODO: email
-    :email "admin@domain.com"
-    :broughtby "Jiksnu"
-    :broughtbyurl "http://jiksnu.org/"
-    :timezone "UTC"
-    :closed "0"
-    :inviteonly "0"
-    :private "0"
-    :textlimit "140"
+    :email (config :site :email)
+    :broughtby (config :site :brought-by :name)
+    :broughtbyurl (config :site :brought-by :url)
+    :timezone (config :site :default :timezone)
+    :closed (config :site :closed)
+    :inviteonly (config :site :invite-only)
+    :private (config :site :private)
+    :textlimit (config :site :limit :text)
     :ssl "sometimes"
-    :sslserver "renfer.name"
+    :sslserver (config :site :domain)
     :shorturllength 30
     }
    :license {
@@ -87,17 +87,20 @@
         domain (:domain params)
         admin-email (get params "site-email")
         print-actions (= "on" (get params "print.actions"))
-        registration-enabled (= "on" (get params "registration-enabled"))
-        ]
+        print-triggers (= "on" (get params "print.triggers"))
+        print-request (= "on" (get params "print.request"))
+        print-routes (= "on" (get params "print.routes"))
+        registration-enabled (= "on" (get params "registration-enabled"))]
     (set-config! [:site :name] site-name)
     (set-config! [:domain] domain)
     (set-config! [:site :email] admin-email)
     (set-config! [:print :actions] print-actions)
-    (set-config! [:print :request] (= "on" (get params "print.request")))
-    (set-config! [:print :routes] (= "on" (get params "print.routes")))
+    (set-config! [:print :request] print-request)
+    (set-config! [:print :routes] print-routes)
+    (set-config! [:print :triggers] print-triggers)
     (set-config! [:registration-enabled] registration-enabled)
     (write-config!)
-    (spy params)))
+    params))
 
 
 (definitializer

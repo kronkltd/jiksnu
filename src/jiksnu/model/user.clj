@@ -161,6 +161,7 @@
 
 (defn update
   [^User new-user]
+  (log/info "updating user")
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)

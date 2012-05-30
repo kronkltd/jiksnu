@@ -29,8 +29,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (let [{{id :id} :params} request]
-    (action id)))
+  (-> request :params :id model.user/fetch-by-id action))
 
 (deffilter #'delete :xmpp
   [action request]

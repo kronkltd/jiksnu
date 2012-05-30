@@ -57,11 +57,16 @@
   (let [links (model/force-coll (cm/query "//*[local-name() = 'Link']" xrd))]
     (map
      (fn [link]
-       {:rel (.getAttributeValue link "rel")
-        :template (.getAttributeValue link "template")
-        :href (.getAttributeValue link "href")
-        :type (.getAttributeValue link "type")
-        :lang (.getAttributeValue link "lang")})
+       (let [rel (.getAttributeValue link "rel")
+             template (.getAttributeValue link "template")
+             href (.getAttributeValue link "href")
+             type (.getAttributeValue link "type")
+             lang (.getAttributeValue link "lang")]
+         (merge (when rel      {:rel rel})
+                (when template {:template template})
+                (when href     {:href href})
+                (when type     {:type type})
+                (when lang     {:lang lang}))))
      links)))
 
 (defn get-identifiers

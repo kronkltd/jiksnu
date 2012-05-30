@@ -3,9 +3,9 @@
         [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?> -?>>]]
         jiksnu.actions.subscription-actions
-        [jiksnu.session :only [current-user current-user-id]])
-  (:require [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace]
+        [jiksnu.session :only [current-user current-user-id]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [jiksnu.namespace :as namespace]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
@@ -27,12 +27,6 @@
   [action request]
   (-> request :params :profile action))
 
-(deffilter #'subscribe :http
-  [action request]
-  (if-let [actor (current-user)]
-    (-?>> request :params :subscribeto
-          model.user/fetch-by-id (action actor))))
-
 (deffilter #'get-subscribers :http
   [action request]
   (let [{{username :username
@@ -49,15 +43,25 @@
                    (when id (model.user/fetch-by-id id)))]
     (action user)))
 
+(deffilter #'subscribe :http
+  [action request]
+  (if-let [actor (current-user)]
+    (let [params (:params request)]
+      (if-let [target (-?> (or (:id params) (:subscribeto params))
+                           model.user/fetch-by-id)]
+        (action actor target)
+        (throw+ "User not found")))
+    (throw+ "Must be logged in")))
+
 (deffilter #'unsubscribe :http
   [action request]
   (if-let [actor (current-user)]
-    (let [params {:params request}]
-      (if-let [id (or (:unsubscribeto params)
-                      (:id params))]
-        (if-let [user (model.user/fetch-by-id id)]
-          (action actor (model/make-id id))
-          (throw (RuntimeException. "User not found")))))))
+    (let [params (:params request)]
+      (if-let [target (-?> (or (:id params) (:unsubscribeto params))
+                           model.user/fetch-by-id)]
+        (action actor target)
+        (throw+ "User not found")))
+    (throw+ "Must be logged in")))
 
 (deffilter #'remote-subscribe-confirm :xmpp
   [action request]
