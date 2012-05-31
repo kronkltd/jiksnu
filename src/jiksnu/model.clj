@@ -63,6 +63,16 @@
     (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
     (.format formatter date)))
 
+(defn rel-filter
+  "returns all the links in the collection where the rel value matches the
+   supplied value"
+  ([rel links] (rel-filter rel links nil))
+  ([rel links content-type]
+     (filter (fn [link]
+               (and (= (:rel link) rel)
+                    (or (not content-type) (= (:type link) content-type))))
+             links)))
+
 ;; TODO: I'm sure this exists somewhere else
 ;; all this is really doing is assembling a uri
 (defn make-subscribe-uri

@@ -2,7 +2,7 @@
   (:use (ciste config
                [debug :only [spy]])
         [clj-gravatar.core :only [gravatar-image]]
-        jiksnu.model)
+        [jiksnu.model :only [make-id rel-filter]])
   (:require (jiksnu [abdera :as abdera]
                     [namespace :as namespace])
             [clojure.string :as string]
@@ -48,15 +48,6 @@
   "The fully qualified path to the user's profile page on this site"
   [user]
   (str "http://" (config :domain) (uri user)))
-
-(defn rel-filter
-  "returns all the links in the collection where the rel value matches the
-   supplied value"
-  [rel links content-type]
-  (filter (fn [link]
-            (and (= (:rel link) rel)
-                 (= (:type link) content-type)))
-          links))
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and
