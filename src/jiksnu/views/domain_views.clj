@@ -78,6 +78,11 @@
 
 
 
+(defview #'host-meta :json
+  [request xrd]
+  {:template false
+   :body xrd})
+
 
 
 (defview #'ping :xmpp

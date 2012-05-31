@@ -75,6 +75,7 @@
    [
     [[:get    "/"]                                            #'stream/public-timeline]
     [[:get    "/.well-known/host-meta"]                       #'domain/host-meta]
+    [[:get    "/.well-known/host-meta.:format"]               #'domain/host-meta]
     [[:get    "/api/account/verify_credentials.:format"]      #'auth/verify-credentials]
     [[:get    "/api/direct_messages.:format"]                 #'stream/direct-message-timeline]
     ;; FIXME: identicurse sends a post. seems wrong to me.
