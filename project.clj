@@ -1,6 +1,7 @@
 (defproject net.kronkltd/jiksnu "0.1.0-SNAPSHOT"
   :description "distributed social network"
   :url "https://github.com/duck1123/jiksnu"
+  :min-lein-version "2.0.0"
   :dependencies [
                  [aleph "0.2.1-beta2"]
                  [ciste "0.3.0-SNAPSHOT"]
@@ -12,6 +13,7 @@
                  [hiccup "0.3.8"]
                  [jayq "0.1.0-SNAPSHOT"]
                  [karras "0.9.0"]
+                 [lamina "0.5.0-alpha3"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"
@@ -69,22 +71,11 @@
                  }
   :warn-on-reflection false
 
-  ;; :min-lein-version "2.0.0"
-
-  ;; :dev-dependencies [
-  ;;                    [midje "1.3.2-SNAPSHOT"]
-  ;;                    [ring-mock "0.1.1"]
-  ;;                    ;; [lein-cljsbuild "0.1.2"]
-  ;;                    [lein-midje "1.0.8"]
-  ;;                    [clj-webdriver "0.6.0-alpha4"]
-  ;;                    [lein-cucumber "1.0.0.mva7-SNAPSHOT"]
-  ;;                    ]
-
   :profiles {:dev
              {
               ;; :resource-paths ["test-resources"],
               :dependencies
-              [[midje "1.3.2-SNAPSHOT"]
+              [[midje "1.4.0"]
                [ring-mock "0.1.1"]
                [clj-webdriver "0.6.0-alpha7"]]}}
 
@@ -94,9 +85,4 @@
                [lein-midje "2.0.0-SNAPSHOT"]
 
             ]
-  ;; :java-source-path "src"
-  ;; :java-source-path ["src"]
-
-  
   )
-
