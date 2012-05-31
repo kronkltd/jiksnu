@@ -48,20 +48,26 @@
   []
   (log/info "before")
   (let [site-config (ciste.runner/load-site-config)]
-    (ciste.runner/init-services site-config :integration)
+    (ciste.runner/init-services site-config :test)
+
     (c/set-config! [:domain] (str domain ":" port))
+    (log/info "dropping")
     (model/drop-all!)
 
     (ciste.runner/start-services! site-config)))
 
 (defn after-hook
   []
-  (ciste.runner/stop-application!))
+  (try
+    (log/info "after")
+    (ciste.runner/stop-application!)
+    (catch Exception ex
+      (log/error ex))))
 
 (defmacro check-response
   [& body]
   `(and (not (fact ~@body))
-        (throw (RuntimeException. "failed"))))
+        #_(throw (RuntimeException. "failed"))))
 
 (defn expand-url
   [path]
