@@ -4,7 +4,7 @@
         (ciste.sections [default :only [add-form link-to show-section]])
         (jiksnu [session :only [current-user is-admin?]]))
   (:require (hiccup [core :as h]
-                    [page-helpers :as p])
+                    [page :as p])
             (jiksnu [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription])
             (jiksnu.model [subscription :as model.subscription])

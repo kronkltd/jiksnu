@@ -13,7 +13,7 @@
         (plaza.rdf.vocabularies foaf))
   (:require (clj-tigase [element :as element])
             (hiccup [core :as h]
-                    [form-helpers :as f])
+                    [form :as f])
             (jiksnu [abdera :as abdera]
                     [namespace :as ns])
             (jiksnu.actions [subscription-actions :as actions.subscription]
@@ -435,7 +435,7 @@
    [:screen_name (:username user)]
    [:location (:location user)]
    [:description (:bio user)]
-   [:profile_image_url (h/escape-html (:avatar-url user))]
+   [:profile_image_url (h/h (:avatar-url user))]
    [:url (:url user)]
    [:protected "false"]])
 

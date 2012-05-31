@@ -641,7 +641,7 @@
 (defsection show-section [Activity :xml]
   [activity & _]
   [:status
-   [:text (h/escape-html (or (:title activity)
+   [:text (h/h (or (:title activity)
                              (:content activity)))]
    [:truncated "false"]
    [:created_at (-?> activity :published model/date->twitter)]

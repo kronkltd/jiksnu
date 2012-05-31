@@ -10,7 +10,7 @@
                  [clj-stacktrace "0.2.4"]
                  [clj-tigase "0.1.0-SNAPSHOT"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
-                 [hiccup "0.3.8"]
+                 [hiccup "1.0.0"]
                  [jayq "0.1.0-SNAPSHOT"]
                  [karras "0.9.0"]
                  [lamina "0.5.0-alpha3"]
@@ -30,7 +30,7 @@
                  [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.6.4"]
                  [org.slf4j/slf4j-log4j12 "1.6.4"]
-                 [ring "1.0.2"]
+                 [ring "1.1.0"]
                  [ring-basic-authentication "0.0.1"]
                  ;; [solrclj "0.1.2"]
                  [xml-picker-seq "0.0.2"]
@@ -77,7 +77,7 @@
               :dependencies
               [[midje "1.4.0"]
                [ring-mock "0.1.1"]
-               [clj-webdriver "0.6.0-alpha7"]]}}
+               [clj-webdriver "0.6.0-alpha8"]]}}
 
   :plugins [
                [lein-cljsbuild "0.1.5"]
