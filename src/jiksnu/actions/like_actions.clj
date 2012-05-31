@@ -1,6 +1,7 @@
 (ns jiksnu.actions.like-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]])
+               [core :only [defaction]]
+               [runner :only [require-namespaces]])
         (jiksnu model session))
   (:require (jiksnu.model [like :as model.like])
             (karras [entity :as entity]
@@ -24,6 +25,6 @@
   (entity/fetch Like {:activity (:_id activity)}))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.like-filters
-                     'jiksnu.views.like-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.like-filters"
+    "jiksnu.views.like-views"]))

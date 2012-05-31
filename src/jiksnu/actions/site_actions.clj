@@ -1,6 +1,7 @@
 (ns jiksnu.actions.site-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]])))
+               [core :only [defaction]]
+               [runner :only [require-namespaces]])))
 
 (defaction service
   [id]
@@ -14,6 +15,6 @@
   )
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.site-filters
-                     'jiksnu.views.site-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.site-filters"
+    "jiksnu.views.site-views"]))

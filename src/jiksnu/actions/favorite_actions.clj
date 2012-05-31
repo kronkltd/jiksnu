@@ -1,6 +1,7 @@
 (ns jiksnu.actions.favorite-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]])))
+               [core :only [defaction]]
+               [runner :only [require-namespaces]])))
 
 (defaction user-list
   [user]
@@ -8,10 +9,6 @@
   [])
 
 (definitializer
-  (doseq [namespace [
-                     'jiksnu.filters.favorite-filters
-                     ;; 'jiksnu.helpers.favorite-helpers
-                     ;; 'jiksnu.sections.favorite-sections
-                     ;; 'jiksnu.triggers.favorite-triggers
-                     'jiksnu.views.favorite-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.favorite-filters"
+    "jiksnu.views.favorite-views"]))

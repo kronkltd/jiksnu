@@ -1,7 +1,8 @@
 (ns jiksnu.actions.subscription-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]]))
+               [debug :only [spy]]
+               [runner :only [require-namespaces]]))
   (:require (clojure.tools [logging :as log])
             (jiksnu [model :as model]
                     [session :as session])
@@ -91,10 +92,8 @@
   (model.subscription/confirm subscription))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.subscription-filters
-                     'jiksnu.helpers.subscription-helpers
-                     ;; 'jiksnu.sections.subscription-sections
-                     'jiksnu.triggers.subscription-triggers
-                     'jiksnu.views.subscription-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.subscription-filters"
+    "jiksnu.helpers.subscription-helpers"
+    "jiksnu.triggers.subscription-triggers"
+    "jiksnu.views.subscription-views"]))

@@ -1,6 +1,7 @@
 (ns jiksnu.actions.group-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]))
+               [core :only [defaction]]
+               [runner :only [require-namespaces]]))
   (:require (jiksnu.model [group :as model.group]))
   (:import jiksnu.model.Group))
 
@@ -22,7 +23,6 @@
   (model.group/create params))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.group-filters
-                     ;; 'jiksnu.helpers.group-helpers
-                     'jiksnu.views.group-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.group-filters"
+    "jiksnu.views.group-views"]))

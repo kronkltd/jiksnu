@@ -1,6 +1,7 @@
 (ns jiksnu.actions.message-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]])))
+               [core :only [defaction]]
+               [runner :only [require-namespaces]])))
 
 (defaction inbox-page
   [user]
@@ -14,8 +15,8 @@
   )
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.activity-filters
-                     'jiksnu.sections.activity-sections
-                     'jiksnu.triggers.activity-triggers
-                     'jiksnu.views.activity-views]]
-    (try (require namespace))))
+  (require-namespaces
+   ["jiksnu.filters.activity-filters"
+    "jiksnu.sections.activity-sections"
+    "jiksnu.triggers.activity-triggers"
+    "jiksnu.views.activity-views"]))

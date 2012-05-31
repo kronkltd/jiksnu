@@ -1,7 +1,8 @@
 (ns jiksnu.actions.activity-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
+               [debug :only [spy]]
+               [runner :only [require-namespaces]])
         ciste.sections.default
         (clojure.core [incubator :only [-?> -?>>]]))
   (:require (aleph [http :as http])
@@ -267,8 +268,8 @@ serialization"
       (throw (RuntimeException. "could not discover atom link")))))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.activity-filters
-                     'jiksnu.sections.activity-sections
-                     'jiksnu.triggers.activity-triggers
-                     'jiksnu.views.activity-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.activity-filters"
+    "jiksnu.sections.activity-sections"
+    "jiksnu.triggers.activity-triggers"
+    "jiksnu.views.activity-views"]))

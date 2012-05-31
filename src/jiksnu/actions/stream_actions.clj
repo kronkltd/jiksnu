@@ -1,7 +1,8 @@
 (ns jiksnu.actions.stream-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction with-context]]
-               [debug :only [spy]])
+               [debug :only [spy]]
+               [runner :only [require-namespaces]])
         ciste.sections.default
         (clojure.core [incubator :only [-?>]])
         (jiksnu model)
@@ -155,10 +156,6 @@
             ch))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.stream-filters
-                     ;; 'jiksnu.helpers.stream-helpers
-                     ;; 'jiksnu.sections.stream-sections
-                     ;; 'jiksnu.triggers.stream-triggers
-                     'jiksnu.views.stream-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.stream-filters"
+    "jiksnu.views.stream-views"]))

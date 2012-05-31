@@ -1,7 +1,8 @@
 (ns jiksnu.actions.salmon-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
+               [debug :only [spy]]
+               [runner :only [require-namespaces]])
         (clojure.core [incubator :only [-?> -?>>]]))
   (:require (ciste [model :as cm])
             (clojure [string :as string])
@@ -92,6 +93,6 @@
     (throw (RuntimeException. "Could not extract activity"))))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.salmon-filters
-                     'jiksnu.views.salmon-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.salmon-filters"
+    "jiksnu.views.salmon-views"]))

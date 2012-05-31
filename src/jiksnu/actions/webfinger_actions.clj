@@ -1,18 +1,16 @@
 (ns jiksnu.actions.webfinger-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
-        (clojure.core [incubator :only [-?>]])
-        (jiksnu model))
+               [debug :only [spy]]
+               [runner :only [require-namespaces]])
+        (clojure.core [incubator :only [-?>]]))
   (:require (clojure.tools [logging :as log])
             (jiksnu.model [webfinger :as model.webfinger])
             (jiksnu.actions [domain-actions :as actions.domain]
                             [user-actions :as actions.user])
             (jiksnu.helpers [user-helpers :as helpers.user])
             (jiksnu.model [domain :as model.domain]
-                          [user :as model.user])
-            ;; [saxon :as s]
-            )
+                          [user :as model.user]))
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
@@ -98,7 +96,6 @@
      (str "Could not find host meta for domain: " (:_id domain)))))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.webfinger-filters
-                     'jiksnu.views.webfinger-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.webfinger-filters"
+    "jiksnu.views.webfinger-views"]))

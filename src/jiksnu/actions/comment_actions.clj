@@ -1,7 +1,8 @@
 (ns jiksnu.actions.comment-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]]))
+               [debug :only [spy]]
+               [runner :only [require-namespaces]]))
   (:require (ciste [model :as cm])
             (clj-tigase [core :as tigase]
                         [element :as element])
@@ -70,6 +71,6 @@
       (tigase/deliver-packet! (comment-request activity)))))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.comment-filters
-                     'jiksnu.views.comment-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.comment-filters"
+    "jiksnu.views.comment-views"]))

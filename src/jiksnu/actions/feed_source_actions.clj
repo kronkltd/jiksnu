@@ -1,7 +1,8 @@
 (ns jiksnu.actions.feed-source-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
+               [debug :only [spy]]
+               [runner :only [require-namespaces]])
         (karras [entity :only [make]]))
   (:require (aleph [http :as http])
             (ciste [model :as cm])
@@ -78,8 +79,6 @@
   true)
 
 (definitializer
-  (doseq [namespace [
-                     'jiksnu.filters.feed-source-filters
-                     'jiksnu.views.feed-source-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.feed-source-filters"
+    "jiksnu.views.feed-source-views"]))

@@ -1,6 +1,7 @@
 (ns jiksnu.actions.tag-actions
   (:use (ciste [config :only [definitializer]]
-               [core :only [defaction]]))
+               [core :only [defaction]]
+               [runner :only [require-namespaces]]))
   (:require (jiksnu.model [activity :as model.activity])
             (karras [collection :as coll]
                     [core :as karras]
@@ -20,10 +21,6 @@
     :sort [(sugar/desc :published)])])
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.tag-filters
-                     ;; 'jiksnu.helpers.tag-helpers
-                     ;; 'jiksnu.sections.tag-sections
-                     ;; 'jiksnu.triggers.tag-triggers
-                     'jiksnu.views.tag-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.tag-filters"
+    "jiksnu.views.tag-views"]))

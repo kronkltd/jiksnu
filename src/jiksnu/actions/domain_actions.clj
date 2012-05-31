@@ -1,7 +1,8 @@
 (ns jiksnu.actions.domain-actions
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]])
+               [debug :only [spy]]
+               [runner :only [require-namespaces]])
         (clojure.core [incubator :only [-?>>]]))
   (:require (ciste [model :as cm])
             (clj-tigase [core :as tigase])
@@ -169,7 +170,7 @@
 
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.domain-filters
-                     'jiksnu.triggers.domain-triggers
-                     'jiksnu.views.domain-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.domain-filters"
+    "jiksnu.triggers.domain-triggers"
+    "jiksnu.views.domain-views"]))

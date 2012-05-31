@@ -2,7 +2,8 @@
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
                [debug :only [spy]]
-               [model :only [implement]]))
+               [model :only [implement]]
+               [runner :only [require-namespaces]]))
   (:require (clojure.tools [logging :as log])
             (jiksnu.actions [user-actions :as actions.user])
             (jiksnu.model [authentication-mechanism :as model.authentication-mechanism]
@@ -59,6 +60,6 @@
       :user (:_id user)})))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.auth-filters
-                     'jiksnu.views.auth-views]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.auth-filters"
+    "jiksnu.views.auth-views"]))

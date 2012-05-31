@@ -1,7 +1,8 @@
 (ns jiksnu.actions.pubsub-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [debug :only [spy]]))
+               [debug :only [spy]]
+               [runner :only [require-namespaces]]))
   (:require (aleph [http :as http])
             (clojure [string :as string])
             (clojure.tools [logging :as log])

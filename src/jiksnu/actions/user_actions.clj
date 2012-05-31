@@ -2,7 +2,8 @@
   (:use (ciste [config :only [config definitializer]]
                [core :only [defaction]]
                [debug :only [spy]]
-               [model :only [implement]])
+               [model :only [implement]]
+               [runner :only [require-namespaces]])
         (clj-stacktrace [repl :only [pst+]])
         (clojure.core [incubator :only [-?> -?>>]])
         (jiksnu model
@@ -465,10 +466,9 @@
         (actions.domain/get-user-meta-url domain (:id user)))))
 
 (definitializer
-  (doseq [namespace ['jiksnu.filters.user-filters
-                     'jiksnu.helpers.user-helpers
-                     'jiksnu.sections.user-sections
-                     'jiksnu.triggers.user-triggers
-                     'jiksnu.views.user-views
-                     ]]
-    (require namespace)))
+  (require-namespaces
+   ["jiksnu.filters.user-filters"
+    "jiksnu.helpers.user-helpers"
+    "jiksnu.sections.user-sections"
+    "jiksnu.triggers.user-triggers"
+    "jiksnu.views.user-views"]))
