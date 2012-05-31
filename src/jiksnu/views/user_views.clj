@@ -1,6 +1,7 @@
 (ns jiksnu.views.user-views
   (:use (ciste config
                [core :only [with-format]]
+               [debug :only [spy]]
                [views :only [defview]])
         (ciste.sections [default :only [uri index-section show-section]])
         jiksnu.actions.user-actions

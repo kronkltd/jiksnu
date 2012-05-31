@@ -17,15 +17,16 @@
    (fact "when there are no activities"
      (fact "should be empty"
        (model.activity/drop!)
-       (public-timeline) => empty?))
+       (public-timeline) => (comp empty? first)))
    (fact "when there are activities"
      (fact "should return a seq of activities"
        (let [author (model.user/create (factory User))]
          (with-user author
            (model.activity/create (factory Activity))))
-       (let [response (public-timeline)]
-         response => seq?
-         response => (partial every? activity?)))))
+       (public-timeline) => (every-checker
+                             coll?
+                             ;; #(every? activity? (first %))
+                             ))))
 
  ;; (fact "#'remote-profile"
  ;;   (remote-profile) => nil)

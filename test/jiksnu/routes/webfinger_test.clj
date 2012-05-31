@@ -1,9 +1,43 @@
 (ns jiksnu.routes.webfinger-test
-  (:use (ciste [model :only [fetch-resource]])
-        (midje [sweet :only [fact]])))
+  (:use (ciste [config :only [config]]
+               [debug :only [spy]]
+               [model :only [fetch-resource query string->document]])
+        (jiksnu [model :only [rel-filter]]
+                [routes-helper :only [response-for]]
+                [test-helper :only [test-environment-fixture]])
+        (midje [sweet :only [every-checker fact]]))
+  (:require (clojure.data [json :as json]) (ring.mock [request :as mock])))
 
-(fact "Requesting the host meta"
-  (fact "returns the host meta as xml"
-    (fetch-resource "/.well-known/host-meta") => nil
-    )
-  )
+(test-environment-fixture
+ (fact "Requesting the host meta"
+   (fact "returns the host meta as xml"
+     (->> "/.well-known/host-meta"
+          (mock/request :get)
+          response-for) =>
+          (every-checker
+           #(= 200 (:status %))
+           #(= "application/xrds+xml" (-> % :headers (get "Content-Type")))
+           #(let [body (spy (string->document (:body %)))]
+              (and
+               ;; has at least 1 lrdd link
+               (seq (spy (query "//*[local-name() = 'Link'][@rel = 'lrdd']" body))))))))
+
+ (fact "host meta json"
+   (->> "/.well-known/host-meta.json"
+        (mock/request :get)
+        response-for) =>
+        (every-checker
+         #(= 200 (:status %))
+         #(= "application/json" (-> % :headers (get "Content-Type")))
+         #(let [body (json/read-json (:body %))]
+            (and
+             ;; has at least 1 link
+             (>= 1 (count (:links body)))
+
+             ;; host property matches domain
+             ;; NB: this will probably be removed
+             (= (config :domain) (:host body))
+
+             ;; has a lrdd link
+             (rel-filter "lrdd" (:links body))))))
+   )
