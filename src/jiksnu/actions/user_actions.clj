@@ -71,6 +71,7 @@
             (throw (RuntimeException. "Could not determine domain name")))))))
 
 (defn get-domain
+  "Return the domain of the user"
   [^User user]
   (if-let [domain-id (or (:domain user)
                          (get-domain-name (:id user)))]
@@ -82,6 +83,7 @@
                  {:$addToSet {:links link}})
   user)
 
+;; FIXME: this is always hitting the else branch
 (defn add-link
   [user link]
   (if-let [existing-link (model.user/get-link user
@@ -108,13 +110,16 @@
 
 (defaction exists?
   [user]
+  ;; TODO: No need to actually fetch the record
   (model.user/fetch-by-id (:_id user)))
 
+;; DEPRICATED
 (defn fetch-by-jid
   [jid]
   (model.user/get-user (.getLocalpart jid) (.getDomain jid)))
 
 (defaction index
+  "List all of the users"
   [options]
   (model.user/fetch-all {} :sort [(sugar/asc :username)]
                         :limit 20))
@@ -285,8 +290,7 @@
           (doseq [link links]
             (add-link user link))
           (entity/make User user))
-        (throw (RuntimeException. "could not determine user"))
-        ))))
+        (throw (RuntimeException. "could not determine user"))))))
 
 
 ;; TODO: Collect all changes and update the user once.
@@ -309,6 +313,7 @@
           (merge (when avatar-url {:avatar-url avatar-url}))
           update))))
 
+;; FIXME: This does not work yet
 (defn foaf-query
   []
   (defquery
@@ -328,6 +333,7 @@
 
 (defaction discover-user-rdf
   [user]
+  ;; TODO: alternately, check user meta
   (let [uri (:foaf-uri user)
         model (document-to-model uri :xml)
         query (foaf-query)]

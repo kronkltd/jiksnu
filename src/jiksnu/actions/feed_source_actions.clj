@@ -15,6 +15,7 @@
             (lamina [core :as l])))
 
 (defaction confirm
+  "Callback for when a remote subscription has been confirmed"
   [source]
   (model.feed-source/update-field! source :status "confirmed"))
 
@@ -38,11 +39,14 @@
 
 (defn find-or-create
   [search-params update-params]
+  ;; FIXME: no find or creates in model
   (model.feed-source/find-or-create (merge search-params update-params)))
 
 
 ;; TODO: special case local subscriptions
+;; TODO: should take a source
 (defaction subscribe
+  "Send a subscription request to the feed"
   [user]
   (if-let [hub-url (:hub user)]
     (let [topic (helpers.user/feed-link-uri user)]
@@ -71,6 +75,7 @@
         "hub.topic" topic
         "hub.verify" "async"}})))
 
+;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
   [subscription]
   (send-unsubscribe
