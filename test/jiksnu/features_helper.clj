@@ -47,35 +47,16 @@
 (defn before-hook
   []
   (log/info "before")
-  (try
-    (let [browser (w/new-driver {:browser
-                                 :htmlunit
-                                 ;; :firefox
-                                 })]
-      (c/load-config)
+  (let [site-config (ciste.runner/load-site-config)]
+    (ciste.runner/init-services site-config :integration)
+    (c/set-config! [:domain] (str domain ":" port))
+    (model/drop-all!)
 
-      (c/set-environment! :test)
-      (c/set-config! [:domain] (str domain ":" port))
-      (model/drop-all!)
-
-      (let [srv (aleph/start)]
-        (dosync
-         (reset! server srv))))
-    (catch Exception ex
-      (log/error ex))))
+    (ciste.runner/start-services! site-config)))
 
 (defn after-hook
   []
-  (log/info "after"
-   )
-  (try
-    (@server)
-    ;; (quit)
-    
-    (println " ")
-    #_(shutdown-agents)
-    (catch Exception ex
-      (log/error ex))))
+  (ciste.runner/stop-application!))
 
 (defmacro check-response
   [& body]

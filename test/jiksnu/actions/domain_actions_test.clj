@@ -81,21 +81,25 @@
            (let [domain (model.domain/create (factory Domain))
                  url (str "http://" (:_id domain) "/status/users/1")
                  hm-bare (str "http://" (:_id domain) "/.well-known/host-meta")
-                 hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")]
+                 hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")
+                 hm2 (str "http://" (:_id domain) "/status/users/.well-known/host-meta")]
              (discover-webfinger domain url) => (throws RuntimeException)
              (provided
                (model.webfinger/fetch-host-meta hm-bare) => nil
-               (model.webfinger/fetch-host-meta hm1) => nil))))
+               (model.webfinger/fetch-host-meta hm1) => nil
+               (model.webfinger/fetch-host-meta hm2) => nil))))
        (fact "and one of the subpaths has a host meta"
          (fact "should update the host meta path"
            (let [domain (model.domain/create (factory Domain))
                  url (str "http://" (:_id domain) "/status/users/1")
                  hm-bare (str "http://" (:_id domain) "/.well-known/host-meta")
-                 hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")]
+                 hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")
+                 hm2 (str "http://" (:_id domain) "/status/users/.well-known/host-meta")]
              (discover-webfinger domain url) => (contains {:discovered true
                                                            :_id (:_id domain)})
              (provided
                (model.webfinger/fetch-host-meta hm-bare) => nil
+               ;; (model.webfinger/fetch-host-meta hm2) => nil
                (model.webfinger/fetch-host-meta hm1) => (cm/string->document "<XRD/>"))))))))
  
  (fact "#'get-user-meta-url"

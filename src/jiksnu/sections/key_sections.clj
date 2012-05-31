@@ -33,5 +33,5 @@
       (rdf/rdf-resource (str ns/cert "modulus"))  (rdf/rdf-typed-literal
                                                    (.toString
                                                     (BigInteger.
-                                                     (:modulus key)) 16)
+                                                     ^String (:modulus key)) 16)
                                                    (str ns/xsd "#hexBinary"))]]))
