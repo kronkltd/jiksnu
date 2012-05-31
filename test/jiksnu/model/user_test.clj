@@ -12,11 +12,16 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
-
 (test-environment-fixture
 
  (def domain-a (model.domain/create (factory Domain)))
  (def user-a (create (factory User {:domain (:_id domain-a)})))
+
+ ;; (fact "#'salmon-link"
+ ;;   (salmon-link .user.) => string?
+ ;;   (provided
+ ;;     (:domain .user.) => ""
+ ;;     (:_id .user.) => ""))
  
  (fact "#'get-domain"
    (fact "when passed nil"

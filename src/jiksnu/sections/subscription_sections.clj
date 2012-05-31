@@ -1,14 +1,12 @@
 (ns jiksnu.sections.subscription-sections
   (:use (ciste [debug :only [spy]]
-               [sections :only [defsection]]
-               )
-        (ciste.sections [default :ony [delete-button-format]])
-        )
-  (:require (jiksnu.model [subscription :as model.subscription]
+               [sections :only [defsection]])
+        (ciste.sections [default :ony [delete-button]]))
+  (:require (ciste [model :as cm])
+            (jiksnu.model [subscription :as model.subscription]
                           [user :as model.user])
             (jiksnu.sections [user-sections :as sections.user]))
-  (:import jiksnu.model.Subscription)
-  )
+  (:import jiksnu.model.Subscription))
 
 (defn show-minimal
   [user]
@@ -77,22 +75,17 @@
   [subscriptions]
   (index-section
    (map model.subscription/get-target
-        subscriptions))
-
-  
-  )
+        subscriptions)))
 
 (defn subscriptions-index
   [subscriptions]
   (index-section
    (map model.subscription/get-target
-        subscriptions))
-
-  )
+        subscriptions)))
 
 (defn subscriptions-index-json
   [subscriptions]
-  
+  (cm/implement)
   )
 
 (defn admin-index-section

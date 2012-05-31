@@ -1,10 +1,8 @@
 (ns jiksnu.model.item
-  (:use jiksnu.model)
-  (:require [karras.entity :as entity]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Item
-           jiksnu.model.Activity))
+  (:require (jiksnu.model [activity :as model.activity]
+                          [user :as model.user])
+            (karras [entity :as entity]))
+  (:import (jiksnu.model Activity Item)))
 
 (defn drop!
   []

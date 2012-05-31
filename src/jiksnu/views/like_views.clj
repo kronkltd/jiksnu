@@ -3,7 +3,8 @@
         jiksnu.actions.like-actions))
 
 (defview #'like-activity :html
-  [request like]
+  [_request _like]
   {:status 303
+   ;; TODO: redirect to redirect url
    :headers {"Location" "/"}
    :template false})

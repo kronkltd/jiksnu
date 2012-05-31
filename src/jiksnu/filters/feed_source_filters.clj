@@ -1,7 +1,8 @@
 (ns jiksnu.filters.feed-source-filters
   (:use (ciste [debug :only [spy]]
                [filters :only [deffilter]])
-        jiksnu.actions.feed-source-actions)
+        (jiksnu.actions [feed-source-actions :only [process-updates
+                                                    remove-subscription]]))
   (:require (jiksnu.model [feed-source :as model.feed-source]
                           [user :as model.user])))
 

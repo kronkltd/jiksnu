@@ -2,9 +2,10 @@
   (:use (ciste [config :only [config]]
                [debug :only [spy]]
                sections)
-        ciste.sections.default
+        ;; (ciste.sections [default :only []])
         (clojure.core [incubator :only [-?>]])
-        (jiksnu model session))
+        (jiksnu model
+                [session :only [current-user]]))
   (:require (clj-tigase [core :as tigase]
                         [element :as element]
                         [packet :as packet])
