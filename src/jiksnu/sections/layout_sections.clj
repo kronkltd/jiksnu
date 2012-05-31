@@ -177,7 +177,7 @@
        [:div.navbar.navbar-fixed-top
         [:div.navbar-inner
          [:div.container
-          [:a.brand.home {:href "/"} (config :site :name)]
+          [:a.brand.home {:href "/" :rel "top"} (config :site :name)]
           ;; [:form.navbar-search.pull-left
           ;;  {:action "/main/search" :method "post"}
           ;;  [:input.search-query.span3
