@@ -15,8 +15,7 @@
                     [namespace :as ns]
                     [session :as session])
             (jiksnu.actions [activity-actions :as actions.activity]
-                            [comment-actions :as actions.comment]
-                            )
+                            [comment-actions :as actions.comment])
             (jiksnu.model [activity :as model.activity]
                           [like :as model.like]
                           [user :as model.user])
@@ -28,8 +27,7 @@
            javax.xml.namespace.QName
            jiksnu.model.Activity
            org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.ExtensibleElement
-           ))
+           org.apache.abdera2.model.ExtensibleElement))
 
 ;; TODO: Move to common area
 (register-rdf-ns :aair ns/aair)
@@ -67,7 +65,7 @@
     [:div.comment
      (sections.user/display-avatar author)
      (link-to author) ": "
-     (:title activity)]))
+     (h/h (:title activity))]))
 
 (defn comment-link-item
   [entry activity]
@@ -301,10 +299,10 @@
             "foreign service"]
            " "))
       
-   (when (:conversation activity)
+   (when (:conversations activity)
      (list
       " "
-      [:a {:href (first (:conversation activity))}
+      [:a {:href (first (:conversations activity))}
        "in context"]))
 
    (when (and (seq (:lat activity))
@@ -316,7 +314,7 @@
 
 (defn comments-section
   [activity]
-  (list #_[:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
+  (list [:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
         (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
           [:section.comments
            [:h4 "Comments"]
@@ -483,6 +481,8 @@
   (let [page-number (get options :page 1)]
     (list
      [:div.activities
+      {:role "region"
+       :aria-live "polite"}
       [:p "page: " page-number]
       (map index-line activities)]
      [:ul.pager
@@ -532,8 +532,8 @@
           :verb (:verb activity)
           "title" (:title activity)
           :url (full-uri activity)}
-         (when (:conversation activity)
-           {:context {:conversation (first (:conversation activity))}})
+         (when (:conversations activity)
+           {:context {:conversations (first (:conversations activity))}})
          (when (and (:lat activity) (:long activity))
            {:location {:objectType "place"
                        :lat (:lat activity)
@@ -593,7 +593,7 @@
        :profile_image_url (:avatar-url user)
        :protected false})
     :statusnet_html (:content activity)}
-   (when-let [conversation (first (:conversation activity))]
+   (when-let [conversation (first (:conversations activity))]
      {:statusnet_conversation_id conversation})
    (when-let [irt (first (:irts activity))]
      {:in_reply_to_status_id irt})
@@ -618,7 +618,7 @@
       #_(when (:title activity)
           [:h1.entry-title {:property "dc:title"} (:title activity)])
       [:p {:property "dc:title"}
-       (or (:title activity)
+       (or #_(:title activity)
            (:content activity))]]
      [:div
       [:ul.unstyled

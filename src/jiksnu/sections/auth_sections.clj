@@ -15,6 +15,8 @@
     (:display-name user) [:b.caret]]
    [:ul.dropdown-menu
     [:li
+     [:a.settings-link {:href "/main/settings"} "Settings"]
+     [:a.profile-link {:href "/main/profile"} "Profile"]
      ;; TODO: need a better way to do this when there is no javascript
      [:a.logout-link {:href "/main/logout?_method=POST"} "Log out"]]]])
 

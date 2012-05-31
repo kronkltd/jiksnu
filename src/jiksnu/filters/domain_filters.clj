@@ -22,7 +22,7 @@
 
 (deffilter #'index :http
   [action request]
-  (action))
+  (action (:params request)))
 
 (deffilter #'show :http
   [action request]

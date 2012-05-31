@@ -47,7 +47,24 @@
       (second (model.user/split-uri id))
       (.getHost uri))))
 
+(defn get-username-from-user-meta
+  "return the username component of the user meta"
+  [user-meta]
+  (first
+   ;; TODO: is this lazy enough?
+   (concat
+    (try (keep #(first (model.user/split-uri %))
+               (model.webfinger/get-identifiers user-meta))
+         (catch RuntimeException ex
+           (log/warn "caught error")))
+    (keep #(.getValue %)
+          (model/force-coll
+           (cm/query
+            "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']"
+            user-meta))))))
+
 (defn get-username
+  "Given a url, try to determine the username of the owning user"
   [id]
   (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
@@ -55,19 +72,11 @@
       (or (.getUserInfo uri)
           (if-let [domain-name (get-domain-name id)]
             (let [domain (model.domain/fetch-by-id domain-name)]
-              (if-let [url (actions.domain/get-user-meta-url domain id)]
-                (let [user-meta (model.webfinger/fetch-host-meta url)]
-                  (first
-                   (concat (try (keep #(first (model.user/split-uri %))
-                                      (model.webfinger/get-identifiers user-meta))
-                                (catch RuntimeException ex
-                                  (log/warn "caught error")))
-                           (keep #(.getValue %)
-                                 (model/force-coll
-                                  (cm/query
-                                   "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']"
-                                   user-meta))))))
-                (throw (RuntimeException. "Could not get user meta url"))))
+              (or
+               ;; Try getting the username from user-meta
+               (-?>> (actions.domain/get-user-meta-url domain id)
+                     model.webfinger/fetch-host-meta
+                     get-username-from-user-meta)))
             (throw (RuntimeException. "Could not determine domain name")))))))
 
 (defn get-domain
@@ -76,6 +85,12 @@
   (if-let [domain-id (or (:domain user)
                          (get-domain-name (:id user)))]
     (actions.domain/find-or-create domain-id)))
+
+(defn get-user-meta-uri
+  [user]
+  (let [domain (get-domain user)]
+    (or (:user-meta-uri user)
+        (actions.domain/get-user-meta-url domain (:id user)))))
 
 (defaction add-link*
   [user link]
@@ -98,13 +113,15 @@
                      :local false
                      :updated (sugar/date)}
                     (when-not (:id options) {:id (model.user/get-uri options)})
-                    options)
-        ;; This has the side effect of ensuring that the domain is
-        ;; created. This should probably be explicitly done elsewhere.
-        domain (get-domain user)]
-    (model.user/create user)))
+                    options)]
+    ;; This has the side effect of ensuring that the domain is
+    ;; created. This should probably be explicitly done elsewhere.
+    (if-let [domain (get-domain user)]
+      (model.user/create user)
+      (throw (RuntimeException. "Could not determine domain for user")))))
 
 (defaction delete
+  "Delete the user"
   [^User user]
   (model.user/delete (:_id user)))
 
@@ -154,13 +171,14 @@
          (if-let [discovered-domain (if (:discovered domain)
                                       domain (actions.domain/discover domain id))]
            (or (model.user/fetch-by-remote-id id)
-               (create (merge user
-                              {:domain (:_id domain)}
-                              (if-let [username (or (:username user)
-                                                    (:username params))]
-                                nil
-                                {:username (get-username id)})
-                              params)))
+               (if-let [username (or (:username user)
+                                     (:username params)
+                                     (get-username id))]
+                 (create (merge user
+                                {:domain (:_id domain)
+                                 :username username}
+                                params))
+                 (log/warn (str "Could not determine username for: " id))))
            (throw (RuntimeException. "domain has not been disovered")))
          (throw (RuntimeException. "could not determine domain")))
        (throw (RuntimeException. "User does not have an id")))))
@@ -208,6 +226,13 @@
                     "/api/statuses/user_timeline/"
                     (:_id user)
                     ".atom")}
+
+        {:rel "http://schemas.google.com/g/2010#updates-from"
+         :type "application/json"
+         :href (str "http://" (config :domain)
+                    "/api/statuses/user_timeline/"
+                    (:_id user)
+                    ".json")}
 
         {:rel "http://webfinger.net/rel/profile-page"
          :type "text/html"
@@ -260,31 +285,33 @@
 
 (defn person->user
   [^Person person]
-  (if person
+  ;; TODO: Do we need to nil-check here?
+  (when person
     (let [id (str (.getUri person))
+          ;; TODO: check for custom domain field first?
           domain-name (get-domain-name id)
           domain (actions.domain/find-or-create domain-name)
-          email (.getEmail person)
-          name (or (.getSimpleExtension person namespace/poco
-                                        "displayName" "poco" )
-                   (.getName person))
           username (or (.getSimpleExtension person namespace/poco
                                             "preferredUsername" "poco")
-                       (get-username id)
-                       )
-          note (.getSimpleExtension person (QName. namespace/poco "note"))
-          uri (str (.getUri person))
-          links (-> person
-                    (.getExtensions (QName. namespace/atom "link"))
-                    (->> (map abdera/parse-link)))
-          params (merge {:domain domain-name}
-                        (when uri {:uri uri})
-                        (when username {:username username})
-                        (when note {:bio note})
-                        (when email {:email email})
-                        (when name {:display-name name}))]
-      (if username
-        (let [user (-> {:id id}
+                       (get-username id))]
+      (if (and username domain)
+        (let [email (.getEmail person)
+              name (or (.getSimpleExtension person namespace/poco
+                                            "displayName" "poco" )
+                       (.getName person))
+              note (.getSimpleExtension person (QName. namespace/poco "note"))
+              uri (str (.getUri person))
+              links (-> person
+                        (.getExtensions (QName. namespace/atom "link"))
+                        (->> (map abdera/parse-link)))
+              params (merge {:domain domain-name}
+                            (when uri {:uri uri})
+                            (when username {:username username})
+                            (when note {:bio note})
+                            (when email {:email email})
+                            (when name {:display-name name}))
+              
+              user (-> {:id id}
                        #_(find-or-create-by-remote-id params)
                        (merge params))]
           (doseq [link links]
@@ -464,12 +491,6 @@
         domain (actions.domain/find-or-create domain-name)]
     (actions.domain/set-xmpp domain false)
     user))
-
-(defn get-user-meta-uri
-  [user]
-  (let [domain (get-domain user)]
-    (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-url domain (:id user)))))
 
 (definitializer
   (require-namespaces

@@ -24,6 +24,7 @@
 
 (defn notify-activity
   [recipient ^Activity activity]
+  (log/info (str "Sending notice to: " (model.user/get-uri recipient false)))
   (let [author (actions.activity/get-author activity)
         ele (element/make-element
              ["body" {}
@@ -46,40 +47,43 @@
                                   abdera/fetch-feed
                                   .getAuthor
                                   actions.user/person->user)]
-    ;; TODO: This couldn't be any more wrong!
-    ;; it does the right thing, but it feels wrong.
-    (actions.user/find-or-create-by-remote-id
-     mentioned-user-params mentioned-user-params)))
+    (actions.user/find-or-create-by-remote-id {:id uri} {})))
 
 (defn create-trigger
   [action params activity]
-  (let [user (actions.activity/get-author activity)]
-    (model.item/push user activity)
-    #_(when-let [conversation-uris (:conversation activity)]
-        (doseq [conversation-uri conversation-uris]
-          (let [atom-link (model/extract-atom-link conversation-uri)]
-            (fetch-remote-feed atom-link))))
-    (when-let [mentioned-uris (:mentioned-uris activity)]
-      (doseq [mentioned-uri mentioned-uris]
-        (log/infof "parsing link: %s" mentioned-uri)
-        (if-let [mentioned-user (actions.user/find-or-create-by-remote-id {:id mentioned-uri})]
-          (do
-            mentioned-user
-            
-            ))))
+  (let [author (actions.activity/get-author activity)
+        mentioned-users (map #(actions.user/find-or-create-by-remote-id {:id %})
+                             (:mentioned-uris activity))
+        parent-activities (map #(actions.activity/find-or-create-by-remote-id {:id %})
+                               (:irts activity))
+        subscribers (map model.subscription/get-actor
+                         (model.subscription/subscribers author))
+        to-notify (->> (concat subscribers mentioned-users)
+                       (filter :local)
+                       (into #{}))]
+    ;; Add item to author's stream
+    (model.item/push author activity)
+
+    ;; Discover conversation
+    (doseq [conversation-uri (:conversations activity)]
+      (let [atom-link (model/extract-atom-link conversation-uri)]
+        (fetch-remote-feed atom-link)))
+    
+    ;; Add as a comment to parent posts
+    ;; TODO: deprecated
     (if-let [parent (model.activity/show (:parent activity))]
       (model.activity/add-comment parent activity))
-    (when (seq (:irts activity))
-      (doseq [id (:irts activity)]
-        (try
-          (let [parent (actions.activity/find-or-create-by-remote-id {:id id})]
-            (model.activity/add-comment parent activity))
-          (catch RuntimeException ex
-            (log/error ex)))))
-    (doseq [user (->> user
-                      model.subscription/subscribers
-                      (map model.subscription/get-actor)
-                      (filter identity))]
-      (notify-activity user activity))))
+
+    ;; Add as comment to irts
+    (doseq [parent parent-activities]
+      (model.activity/add-comment parent activity))
+
+    ;; notify users
+    (doseq [user to-notify]
+      (notify-activity user activity))
+
+    ;; TODO: ping feed subscriptions
+
+    ))
 
 (add-trigger! #'create #'create-trigger)

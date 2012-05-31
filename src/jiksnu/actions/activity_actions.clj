@@ -121,9 +121,11 @@ this is for OSW
 (defaction create
   "create an activity"
   [{id :id :as params}]
-  (if (or (empty? id) (not (model.activity/fetch-by-remote-id id)))
-    (model.activity/create params)
-    (throw (RuntimeException. "Activity already exists"))))
+  (if (seq id)
+    (if-not (model.activity/fetch-by-remote-id id)
+      (model.activity/create params)
+      (throw (RuntimeException. (str "Activity already exists. id = " id))))
+    (throw (RuntimeException. "id must not be empty"))))
 
 (defaction delete
   "delete an activity"
@@ -204,7 +206,7 @@ serialization"
 
                        (when (seq links)       {:links links})
 
-                       (when conversation-uris {:conversation conversation-uris})
+                       (when conversation-uris {:conversations conversation-uris})
                        (when mentioned-uris    {:mentioned-uris mentioned-uris})
                        (when (seq enclosures)) {:enclosures enclosures}
 
@@ -228,9 +230,12 @@ serialization"
 (defaction fetch-remote-feed
   "fetch a feed and create it's activities"
   [uri]
+  (log/debug (str "Fetching feed: " uri))
   (let [feed (abdera/fetch-feed uri)]
     (doseq [activity (get-activities feed)]
-      (create activity))))
+      (try (create activity)
+           (catch Exception ex
+             (log/error ex))))))
 
 ;; TODO: rename to publish
 (defaction post

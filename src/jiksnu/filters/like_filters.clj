@@ -10,5 +10,6 @@
 (deffilter #'like-activity :http
   [action request]
   (let [user-id (current-user-id)
-        activity-id (-?>  request :params spy :id model.activity/fetch-by-id spy :_id)]
+        activity-id (-?>  request :params :id
+                          model.activity/fetch-by-id :_id)]
     (action activity-id user-id)))

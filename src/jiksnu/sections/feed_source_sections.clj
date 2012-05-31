@@ -1,8 +1,8 @@
 (ns jiksnu.sections.feed-source-sections
-  (:use (ciste [debug :only [spy]]
-               [sections :only [defsection]])
-        (ciste.sections [default :only [add-form show-section index-line index-section link-to]])
-        (jiksnu [views :only [control-line]]))
+  (:use [ciste.debug :only [spy]]
+        [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [add-form show-section index-line index-section link-to]]
+        [jiksnu.views :only [control-line]])
   (:import jiksnu.model.FeedSource))
 
 (defn unsubscribe-button
@@ -51,11 +51,14 @@
   [source & _]
   [:tr
    [:td]
+   [:td (:domain source)]
    [:td (link-to source)]
    [:td (:hub source)]
    [:td (:mode source)]
    [:td (str (:status source))]
-   [:td (unsubscribe-button source)]])
+   [:td
+    (update-button source)
+    (unsubscribe-button source)]])
 
 (defsection index-section [FeedSource :html]
   [sources & _]
@@ -63,9 +66,10 @@
    [:thead
     [:tr
      [:th]
+     [:td "Domain"]
      [:th "Topic"]
      [:th "Hub"]
      [:th "Mode"]
      [:th "Status"]
-     [:th "Unsubscribe"]]]
+     [:th "Actions"]]]
    [:tbody (map index-line sources)]])

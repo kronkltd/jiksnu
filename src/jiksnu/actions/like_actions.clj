@@ -1,8 +1,7 @@
 (ns jiksnu.actions.like-actions
   (:use (ciste [config :only [definitializer]]
                [core :only [defaction]]
-               [runner :only [require-namespaces]])
-        (jiksnu model session))
+               [runner :only [require-namespaces]]))
   (:require (jiksnu.model [like :as model.like])
             (karras [entity :as entity]
                     [sugar :as sugar]))
