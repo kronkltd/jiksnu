@@ -78,7 +78,7 @@
 
 (defaction index
   [& [options & _]]
-  (let [page-number (get options :page 1)]
+  (let [page-number (Integer/parseInt (get options :page "1"))]
     (model.domain/fetch-all
      (:where options)
      :sort [(sugar/asc :_id)]

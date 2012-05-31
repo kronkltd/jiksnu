@@ -41,7 +41,7 @@
   [request domains]
   {:title "Domains"
    :single true
-   :body (index-block domains)})
+   :body (index-section domains)})
 
 (defview #'show :html
   [request domain]

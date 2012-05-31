@@ -105,6 +105,20 @@
      ]]
    [:tbody (map index-line domains)]])
 
+(defsection index-section [Domain :html]
+  [domains & options]
+  (let [page-number (get options :page 1)]
+    [:div
+     [:div
+      (when (< 1 page-number)
+        [:a {:href (str "?page=" (dec page-number))
+             :rel "prev"}
+         "Prev"])
+      [:a {:href (str "?page=" (inc page-number))
+           :rel "next"}
+       "Next"]]
+     (index-block domains options)]))
+
 (defsection link-to [Domain :html]
   [domain & _]
   [:a {:href (str "/main/domains/" (:_id domain))} (:_id domain)])

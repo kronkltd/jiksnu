@@ -6,7 +6,7 @@
   (:import jiksnu.model.FeedSource))
 
 (defview #'index :html
-  [request sources]
+  [request [sources options]]
   {:title "Feed Sources"
    :single true
    :body
