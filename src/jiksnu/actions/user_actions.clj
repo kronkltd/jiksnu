@@ -372,15 +372,15 @@
             #_(enqueue-discover user)))))))
 
 ;; TODO: turn this into a worker
-(defn discover-pending-users
-  [domain]
-  #_(if-let [user (pop-user! domain)]
-      (do
-        (log/info "Discovering: " user)
-        (discover user))
-      (do (log/info "sleeping")
-          #_(Thread/sleep 3000)))
-  #_(recur domain))
+;; (defn discover-pending-users
+;;   [domain]
+;;   #_(if-let [user (pop-user! domain)]
+;;       (do
+;;         (log/info "Discovering: " user)
+;;         (discover user))
+;;       (do (log/info "sleeping")
+;;           #_(Thread/sleep 3000)))
+;;   #_(recur domain))
 
 (defaction fetch-remote
   [user]
