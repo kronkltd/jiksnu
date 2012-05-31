@@ -13,6 +13,8 @@
   (:import com.ocpsoft.pretty.time.PrettyTime
            jiksnu.model.Activity))
 
+(defonce page-size 20)
+
 (defn make-activity
   [options]
   (entity/make Activity options))
@@ -123,18 +125,18 @@
 
 (defn index
   "Return all the activities in the database as abdera entries"
-  [& opts]
+  [opts]
   ;; TODO: move all this to action
-  (let [user (current-user)
-        option-map (apply hash-map opts)
+  (let [page-number (:page opts)
+        user (current-user)
         merged-options
         (merge
          ;; {"object.object-type" {:$ne "comment"}}
-         (privacy-filter user)
-         option-map)]
+         (privacy-filter user))]
     (entity/fetch Activity merged-options
                   :sort [(sugar/desc :published)]
-                  :limit 20)))
+                  :skip (* (dec page-number) page-size)
+                  :limit page-size)))
 
 (defn fetch-all
   [& options]

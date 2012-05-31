@@ -173,12 +173,16 @@
    :body (index-section activities)})
 
 (defview #'public-timeline :html
-  [request activities]
+  [request [activities options]]
   {:title "Public Timeline"
    :post-form true
+   :links [{:rel "next"
+            :href "?page=2"
+            :title "Next Page"
+            :type "text/html"}]
    :formats (sections.activity/index-formats activities)
    ;; :aside '([:p "foo"])
-   :body (index-section activities)})
+   :body (index-section activities options)})
 
 (defview #'remote-profile :html
   [request user]

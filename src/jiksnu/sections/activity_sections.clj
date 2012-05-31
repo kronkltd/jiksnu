@@ -474,13 +474,16 @@
 
 
 (defsection index-section [Activity :html]
-  [activities & _]
-  (list
-   [:div.activities
-    (map index-line activities)]
-   [:ul.pager
-    [:li.previous [:a {:href "#"} "&larr; Newer"]]
-    [:li.next [:a {:href "#"} "Older &rarr;"]]]))
+  [activities & [options & _]]
+  (let [page-number (get options :page 1)]
+    (list
+     [:div.activities
+      [:p "page: " page-number]
+      (map index-line activities)]
+     [:ul.pager
+      (when (> page-number 1) [:li.previous [:a {:href (str "?page=" (dec page-number))} "&larr; Newer"]])
+      [:li.next [:a {:href (str "?page=" (inc page-number))}
+                 "Older &rarr;"]]])))
 
 (defsection index-section [Activity :rdf]
   [activities & _]
