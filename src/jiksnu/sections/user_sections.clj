@@ -243,9 +243,11 @@
 
 (defn pagination-links
   [options]
-  [:ul.pager
-   [:li.previous [:a {:href (str "?page=" (dec (:page options))) :rel "prev"} "&larr; Previous"]]
-   [:li.next [:a {:href (str "?page=" (inc (:page options))) :rel "next"} "Next &rarr;"]]])
+  (let [page-number (get options :page 1)]
+    [:ul.pager
+     (when (> page-number 1)
+      [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
+     [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]]]))
 
 
 
@@ -351,7 +353,7 @@
 (defsection index-section [User :html]
   [users & [options & _]]
   (list
-   [:p "Page " (:page options)]
+   [:p "Page " (get options :page 1)]
    [:table.table.users
     [:thead]
     [:tbody

@@ -486,8 +486,10 @@
       [:p "page: " page-number]
       (map index-line activities)]
      [:ul.pager
-      (when (> page-number 1) [:li.previous [:a {:href (str "?page=" (dec page-number))} "&larr; Newer"]])
-      [:li.next [:a {:href (str "?page=" (inc page-number))}
+      (when (> page-number 1)
+        [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "next"}
+                       "&larr; Newer"]])
+      [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "prev"}
                  "Older &rarr;"]]])))
 
 (defsection index-section [Activity :rdf]
