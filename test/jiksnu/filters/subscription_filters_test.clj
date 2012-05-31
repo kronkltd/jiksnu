@@ -47,7 +47,7 @@
        (filter-action
         #'subscribe
         {:serialization :http
-         :params {:subscribeto .id.}}) => nil
+         :params {:subscribeto .id.}}) => (throws RuntimeException)
          (provided
            (session/current-user) => .actor.
            (model.user/fetch-by-id .id.) => nil
@@ -56,7 +56,7 @@
      (filter-action
       #'subscribe
       {:serialization :http
-       :params {:subscribeto .id.}}) => nil
+       :params {:subscribeto .id.}}) => (throws RuntimeException)
        (provided
          (session/current-user) => nil
          (subscribe .actor. .target.) => nil :times 0)))
