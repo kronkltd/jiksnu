@@ -28,9 +28,9 @@ Scenario: Ostatus subscription page
 Scenario: User subscriptions, default
   Given I am not logged in
   And a user exists
+  And that user has a subscription
   When I go to the "subscriptions" page for that user
-  Then I should see a list of subscriptions
-  # And I should get a "HTML" document
+  Then I should see that subscription
 
 Scenario: User subscriptions, activity streams
   Given I am not logged in

@@ -275,8 +275,8 @@
   (condp = page-name
     "show" (fetch-page-browser :get (str "/main/users/" (:_id @that-user)))
     "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username @that-user) "@" (:domain @that-user)))
-    "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscriptions"))
-    "subscribers" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscribers"))
+    "subscriptions" (fetch-page-browser :get (str "/" (:username @that-user) "/subscriptions"))
+    "subscribers" (fetch-page-browser :get (str "/" (:username @that-user) "/subscribers"))
     (implement)))
 
 (defn go-to-the-page-for-user-with-format
