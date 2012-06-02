@@ -110,7 +110,7 @@
     (let [topic (-?> feed
                      (abdera/rel-filter-feed "self")
                      first .getHref str)]
-      (if-let [source (spy (model.feed-source/fetch-by-topic (spy topic)))]
+      (if-let [source (spy (actions.feed-source/find-or-create {:topic  (spy topic)}))]
         (if (seq (:watchers source))
           (do (actions.feed-source/mark-updated source)
               (doseq [entry (.getEntries feed)]
