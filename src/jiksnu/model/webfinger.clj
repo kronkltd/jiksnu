@@ -1,7 +1,5 @@
 (ns jiksnu.model.webfinger
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
-        ciste.sections
         [ciste.sections.default :only [full-uri]]
         [clojure.core.incubator :only [-?>]])
   (:require [ciste.model :as cm]

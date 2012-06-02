@@ -1,17 +1,18 @@
 (ns jiksnu.model.group
-  (:require (karras [entity :as entity]))
+  (:require [monger.collection :as mc]
+            [monger.core :as mg])
   (:import jiksnu.model.Group))
 
 (defn create
   [options]
-  (entity/create Group options))
+  (mc/insert "groups" options))
 
 (defn index
   []
-  (entity/fetch-all Group)
-  )
+  (map
+   ->Group
+   (mc/find-maps "groups")))
 
 (defn fetch-by-name
   [name]
-  (entity/fetch-one Group {:nickname name})
-  )
+  (->Group (mc/find-one-as-map "groups"{:nickname name})))

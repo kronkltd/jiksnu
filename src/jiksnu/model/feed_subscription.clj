@@ -1,29 +1,22 @@
 (ns jiksnu.model.feed-subscription
-  (:use (ciste [debug :only [spy]]))
-  (:require (clojure [string :as string])
-            (karras [entity :as entity]
-                    [sugar :as sugar]))
+  (:require [clj-time.core :as time]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [monger.collection :as mc]
+            [monger.core :as mg])
   (:import jiksnu.model.FeedSubscription))
+
+(def collection-name "feed_subscriptions")
 
 (defn create
   [options]
-  (let [now (sugar/date)]
-    (entity/create
-     FeedSubscription
-     (merge
-      {:created now
-       :update now}
-      options))))
+  (let [now (time/now)]
+    (mc/insert collection-name
+               (merge
+                {:created now
+                 :update now}
+                options))))
 
 (defn fetch
   [options]
-  (entity/fetch-one FeedSubscription options))
-
-(defn find-or-create
-  [options]
-  (or (fetch options)
-      (create options)))
-
-(defn index
-  []
-  (entity/fetch FeedSubscription {}))
+  (->FeedSubscription (mc/find-one-as-map collection-name options)))

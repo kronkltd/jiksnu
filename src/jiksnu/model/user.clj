@@ -1,16 +1,17 @@
 (ns jiksnu.model.user
-  (:use (ciste config
-               [debug :only [spy]])
+  #_(:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
         [jiksnu.model :only [make-id rel-filter]])
-  (:require (jiksnu [abdera :as abdera]
-                    [namespace :as namespace])
-            [clojure.string :as string]
-            (clojure.tools [logging :as log])
-            (clj-tigase [core :as tigase]
-                        [element :as element])
-            [karras.entity :as entity]
-            [jiksnu.model.domain :as model.domain])
+  (:require
+   ;; [jiksnu.abdera :as abdera]
+   ;; [jiksnu.namespace :as namespace]
+   ;; [clojure.string :as string]
+   ;; [clojure.tools.logging :as log]
+   ;; [clj-tigase.core :as tigase]
+   ;; [clj-tigase.element :as element]
+   [jiksnu.model.domain :as model.domain]
+
+            )
   (:import jiksnu.model.Domain
            jiksnu.model.User
            tigase.xmpp.BareJID
@@ -69,7 +70,7 @@
 
 (defn drop!
   []
-  (entity/delete-all User))
+  (mc/remove collection-name))
 
 (defn create
   [user]
@@ -80,7 +81,7 @@
                (and domain (not= domain "")))
         (do
           (log/debugf "Creating user: %s@%s" username domain)
-          (entity/create User (assoc user :_id id)))
+          (mc/insert collection-name (assoc user :_id id)))
         (throw (IllegalArgumentException.
                 "Users must contain both a username and a domain"))))
     (throw (IllegalArgumentException. "Can not create nil users"))))
@@ -89,23 +90,22 @@
   "Fetch all users"
   ([] (fetch-all {}))
   ([params & options]
-     (apply entity/fetch User params options))) 
+     (mc/find-maps collection-name params))) 
 
 (defn get-user
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
-     (entity/fetch-one
-      User
-      {:username username
-       :domain domain})))
+     (mc/find-one-as-map collection-name
+                         {:username username
+                          :domain domain})))
 
 (defn fetch-by-id
   "Fetch a user by it's object id"
   [id]
   (when id
     (try
-      (entity/fetch-by-id User id)
+      (mc/find-map-by-id collection-name id)
       (catch IllegalArgumentException ex
         ;; Invalid ObjectID simply returning nil
         ))))
@@ -120,10 +120,9 @@
 (defn set-field!
   "Updates user's field to value"
   [user field value]
-  (entity/find-and-modify
-   User
-   {:_id (:_id user)}
-   {:$set {field value}}))
+  (mc/update collection-name
+             {:_id (:_id user)}
+             {:$set {field value}}))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
@@ -133,7 +132,7 @@
 (defn fetch-by-remote-id
   "Fetch user by their id value"
   [uri]
-  (entity/fetch-one User {:id uri}))
+  (mc/find-one-as-map collection-name {:id uri}))
 
 (defn fetch-by-domain
   ([domain] (fetch-by-domain domain {}))
@@ -151,13 +150,13 @@
 ;; TODO: Should accept a user
 (defn delete
   [id]
-  (entity/delete (fetch-by-id id)))
+  (mc/remove-by-id id))
 
 ;; TODO: Is this needed?
-(defn add-node
-  [^User user name]
-  (entity/update User
-                 {:_id (tigase/get-id user)}))
+;; (defn add-node
+;;   [^User user name]
+;;   (entity/update User
+;;                  {:_id (tigase/get-id user)}))
 
 (defn update
   [^User new-user]
@@ -165,8 +164,8 @@
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)
-        user (entity/make User merged-user)]
-    (entity/update User {:_id (:_id old-user)} (dissoc user :_id))
+        user (->User merged-user)]
+    (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
 ;; TODO: move part of this to domains

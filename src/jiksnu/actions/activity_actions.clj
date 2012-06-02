@@ -1,9 +1,8 @@
 (ns jiksnu.actions.activity-actions
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
-        ciste.sections.default
+        ;; ciste.sections.default
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]

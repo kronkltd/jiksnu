@@ -4,11 +4,11 @@
         [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
-        [karras.entity :only [make]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-http.client :as client]
+            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -16,8 +16,6 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.FeedSource))
@@ -28,7 +26,7 @@
 
 (defn mark-updated
   [source]
-  (model.feed-source/set-field! source :updated (sugar/date)))
+  (model.feed-source/set-field! source :updated (time/now)))
 
 (defaction delete
   [source]
@@ -133,7 +131,7 @@
 
 (defaction add-watcher
   [source user]
-  (entity/update
+  #_(entity/update
    FeedSource
    {:_id (:_id source)}
    {:$addToSet {:watchers (:_id user)}}))

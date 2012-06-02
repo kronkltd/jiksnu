@@ -11,7 +11,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
-            [karras.sugar :as sugar]
             [ring.util.codec :as codec])
   (:import java.net.URL
            jiksnu.model.Domain))
@@ -84,7 +83,7 @@
   [& [options & _]]
   (let [page (Integer/parseInt (get options :page "1"))
         page-size 20
-        criteria {:sort [(sugar/asc :_id)]
+        criteria {:sort [{:_id 1}]
                   :skip (* (dec page) page-size)
                   :limit page-size}
         total-records (model.domain/count-records {})

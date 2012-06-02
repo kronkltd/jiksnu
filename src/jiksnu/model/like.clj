@@ -1,26 +1,26 @@
 (ns jiksnu.model.like
-  (:use [ciste.debug :only [spy]]
-        jiksnu.model
+  (:use jiksnu.model
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar])
+            [monger.collection :as mc])
   (:import jiksnu.model.Like))
+
+(def collection-name "likes")
 
 (defn drop!
   []
-  (entity/delete-all Like))
+  (mc/remove collection-name))
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-by-id Like id))
+  (->Like (mc/find-map-by-id collection-name id)))
 
 (defn delete
   [like]
   (let [like (fetch-by-id (:_id like))]
-    (entity/delete like)
+    (mc/remove-by-id (:_id like))
     like))
 
 (defn create
@@ -29,7 +29,7 @@
     (if (:activity options)
       (do
         (log/debug "Creating like")
-        (entity/create Like options))
+        (mc/insert collection-name options))
       (throw+ "Must contain an activity"))
     (throw+ "Must contain a user")))
 
@@ -44,7 +44,7 @@
   ([] (fetch-all {} {}))
   ([params] (fetch-all params {}))
   ([params opts]
-     (entity/fetch-all Like params opts)))
+     (mc/find-maps collection-name params)))
 
 ;; TODO: use index to get pagination
 (defn fetch-by-user
@@ -67,7 +67,7 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
-     (entity/count-instances Like params)))
+     (mc/count collection-name)))
 
 ;; TODO: deprecated
 (defn format-data

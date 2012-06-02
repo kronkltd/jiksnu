@@ -1,20 +1,17 @@
 (ns jiksnu.model
   (:use ciste.core
-        [ciste.config :only [config definitializer environment load-config]]
-        [ciste.debug :only [spy]]
+        [ciste.config :only [config definitializer environment]]
         [clj-factory.core :only [factory]]
-        [clojure.core.incubator :only [-?>]]
-        [karras.core :only [MongoMappable]]
-        [karras.entity :only [defembedded defentity delete-all]])
+        [clojure.core.incubator :only [-?>]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [karras.core :as karras]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar]
             [lamina.core :as l]
+            [monger.core :as mg]
+            monger.joda-time
+            monger.json
             [plaza.rdf.core :as rdf]
             [plaza.rdf.implementations.jena :as jena])
   (:import java.io.FileNotFoundException
@@ -99,76 +96,68 @@
   (if (coll? x)
     x (list x)))
 
-(defn mongo-database
-  []
-  (karras/mongo-db (config :database :name)))
+(defrecord Activity
+  [id actor title])
 
-(defembedded Person
-  [:name])
+(defrecord AuthenticationMechanism
+  [type])
 
-(defentity Activity
-  [:id
-   :actor
-   :title])
+(defrecord Like
+  [id user activity created])
 
-(defentity AuthenticationMechanism
-  [:type])
+(defrecord Subscription
+  [to from created])
 
-(defentity Like
-  [:id :user :activity :created])
+(defrecord User
+  [_id
+   username
+   created
+   updated
+   domain
+   subnodes])
 
-(defentity Subscription
-  [:to :from :created])
+(defrecord Item
+  [user activity :created])
 
-(defentity User
-  [:_id
-   :username
-   :created
-   :updated
-   :domain
-   :subnodes])
+(defrecord Domain
+  [_id discovered updated])
 
-(defentity Item
-  [:user :activity :created])
+(defrecord FeedSource
+  [hub verify-token secret created updated topic])
 
-(defentity Domain
-  [:_id :discovered :updated])
+(defrecord FeedSubscription
+  [hub verify-token secret created updated topic])
 
-(defentity FeedSource
-  [:hub :verify-token :secret :created :updated :topic])
+(defrecord Key
+    [
+   ;;   :userid
 
-(defentity FeedSubscription
-  [:hub :verify-token :secret :created :updated :topic])
+   ;; :crt-coefficient
+   ;; :armored-crt-coefficient
 
-(defentity Key
-  [:userid
-
-   :crt-coefficient
-   :armored-crt-coefficient
-
-   :prime-exponent-p
-   :armored-prime-exponent-p
+   ;; :prime-exponent-p
+   ;; :armored-prime-exponent-p
    
-   :prime-exponent-q
-   :armored-prime-exponent-q
+   ;; :prime-exponent-q
+   ;; :armored-prime-exponent-q
 
-   :prime-p
-   :armored-prime-p
+   ;; :prime-p
+   ;; :armored-prime-p
    
-   :prime-q
-   :armored-prime-q
+   ;; :prime-q
+   ;; :armored-prime-q
 
-   :public-exponent
-   :armored-public-exponent
+   ;; :public-exponent
+   ;; :armored-public-exponent
 
-   :private-exponent
-   :armored-private-exponent
+   ;; :private-exponent
+   ;; :armored-private-exponent
    ])
 
-(defentity Group
-  [:name])
+(defrecord Group
+  [name])
 
-(defentity Conversation [])
+(defrecord Conversation [])
 
 ;; Entity predicates
 
@@ -188,13 +177,17 @@
   "Is the provided object a user?"
   [user] (instance? User user))
 
+(defn drop-collection
+  [klass]
+  (mg/remove (lower-case (str klass))))
+
 (defn drop-all!
   "Drop all collections"
   []
   (doseq [entity [Activity Like Subscription
                   User Item Domain FeedSource
                   Key]]
-    (delete-all entity)))
+    (drop-collection entity)))
 
 (defn parse-http-link
   [url]
@@ -226,7 +219,9 @@
   "Set the connection for mongo"
   []
   (log/debug (str "setting database for " (environment)))
-  (alter-var-root #'karras/*mongo-db* (fn [_] (mongo-database))))
+  ;; TODO: pass connection options
+  (mg/connect!)
+  (mg/set-db! (mg/get-db (config :database :name))))
 
 ;; TODO: Find a good place for this
 
@@ -248,11 +243,11 @@
 (extend ObjectId json/Write-JSON
         {:write-json write-json-object-id})
 
-(extend-type DateTime
-  MongoMappable
-  (to-dbo [d] (.toDate d))
-  (to-clj [d] (DateTime/parse d))
-  (to-description [d] (str d)))
+;; (extend-type DateTime
+;;   MongoMappable
+;;   (to-dbo [d] (.toDate d))
+;;   (to-clj [d] (DateTime/parse d))
+;;   (to-description [d] (str d)))
 
 ;; Factory specific support in Ciste?
 ;; (load-file "factories.clj")

@@ -1,11 +1,15 @@
 (ns jiksnu.model.authentication-mechanism
-  (:require (karras [entity :as entity]))
+  (:require [monger.core :as mg]
+            [monger.collection :as mc])
   (:import jiksnu.model.AuthenticationMechanism))
+
+(def collection-name "authentication_mechanisms")
 
 (defn create
   [options]
-  (entity/create AuthenticationMechanism options))
+  (mc/insert collection-name options))
 
 (defn fetch-all
   [& options]
-  (apply entity/fetch AuthenticationMechanism options))
+  (map ->AuthenticationMechanism
+       (mc/find-maps collection-name options)))

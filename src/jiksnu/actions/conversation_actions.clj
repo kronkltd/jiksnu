@@ -1,18 +1,16 @@
 (ns jiksnu.actions.conversation-actions
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.model.conversation :as model.conversation]
-            [karras.sugar :as sugar]))
+            [jiksnu.model.conversation :as model.conversation]))
 
 (defaction index
     [& [options & _]]
   (let [page (Integer/parseInt (get options :page "1"))
         page-size 20
-        criteria {:sort [(sugar/asc :_id)]
+        criteria {:sort [{:_id 1}]
                   :skip (* (dec page) page-size)
                   :limit page-size}
         total-records (model.conversation/count-records {})

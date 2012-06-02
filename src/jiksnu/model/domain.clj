@@ -1,63 +1,71 @@
 (ns jiksnu.model.domain
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
-        jiksnu.model)
+        [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [presence-of valid? validation-set]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [karras.entity :as entity])
+            [monger.collection :as mc]
+            [monger.core :as mg])
   (:import jiksnu.model.Domain))
+
+(def collection-name "domains")
+
+(def create-validators
+  (validation-set
+   (presence-of :_id)))
 
 (defn drop!
   []
-  (entity/delete-all Domain))
+  (mc/remove collection-name))
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-one Domain {:_id id}))
+  (mc/find-map-by-id collection-name id))
 
 (defn delete
   [domain]
   (let [domain (fetch-by-id (:_id domain))]
-    (entity/delete domain)
+    (mc/remove-by-id collection-name (:_id domain))
     domain))
 
 (defn create
   [domain]
-  (if (:_id domain)
-    (do
-      (log/debugf "Creating domain %s" (:_id domain))
-      (entity/create Domain domain))
-    (throw (IllegalArgumentException.
-            (str "Domain must have id: " domain)))))
+  (let [[passed errors] (valid? create-validators domain)] 
+    (if passed
+      (do
+        (log/debugf "Creating domain %s" (:_id domain))
+        (mc/insert collection-name domain))
+      (throw+ {:type :validation
+               :errors errors}))))
 
 ;; TODO: deprecated
 (defn index
   ([]
      (index {}))
   ([args]
-     (entity/fetch Domain args)))
+     (mc/find-maps collection-name args)))
 
 (defn fetch-all
   ([]
      (fetch-all {}))
   ([params opts]
-     (apply entity/fetch-all Domain params opts)))
+     (mc/find-maps collection-name params)))
 
 ;; TODO: don't use
 (defn update
   [domain]
-  (entity/save domain))
+  (mc/save collection-name domain))
 
 ;; TODO: add the links to the list
 (defn add-links
   [domain links]
-  (update (assoc domain :links links)))
+  ;; TODO: This should push only if the link is not yet there
+  (mc/update collection-name {:$pushAll {:links links}}))
 
 (defn set-field
   [domain field value]
-  (entity/find-and-modify
-   Domain
+  (mc/update collection-name
    {:_id (:_id domain)}
    {:$set {field value}}))
 
@@ -83,4 +91,4 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
-     (entity/count-instances Domain params)))
+     (mc/count collection-name params)))

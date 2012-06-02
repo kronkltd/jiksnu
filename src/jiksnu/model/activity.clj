@@ -1,14 +1,12 @@
 (ns jiksnu.model.activity
-  (:use [ciste.debug :only [spy]]
-        [clojure.core.incubator :only [-?>>]]
+  (:use [clojure.core.incubator :only [-?>>]]
         [jiksnu.session :only [current-user current-user-id is-admin?]])
-  (:require [clojure.java.io :as io]
+  (:require [clj-time.core :as time]
+            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
-            [jiksnu.model.user :as model.user]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar])
+            [jiksnu.model.user :as model.user])
   (:import com.ocpsoft.pretty.time.PrettyTime
            jiksnu.model.Activity))
 
@@ -16,7 +14,7 @@
 
 (defn make-activity
   [options]
-  (entity/make Activity options))
+  (->Activity options))
 
 
 ;; TODO: This operation should be performed on local posts. Remote
@@ -94,6 +92,14 @@
       set-object-type
       set-parent))
 
+(defn fetch-all
+  [& options]
+  (map ->Activity (mc/find-maps collection-name options)))
+
+(defn fetch-by-id
+  [id]
+  (->Activity (mc/find-map-by-id collection-name id)))
+
 (defn create
   [activity]
   (->> activity
@@ -102,12 +108,12 @@
        ((fn [a]
           ;; (log/debugf "Creating activity: %s" (pr-str a))
           a))
-       (entity/create Activity)))
+       (mc/insert collection-name)))
 
 (defn get-comments
   [activity]
-  (entity/fetch Activity {:parent (:_id activity)}
-                :sort [(sugar/asc :published)]))
+  (fetch-all {:parent (:_id activity)}
+             {:sort [{:published 1}]}))
 
 (defn get-author
   [activity]
@@ -121,7 +127,7 @@
 
 (defn update
   [activity]
-  (entity/save activity))
+  (mc/save collection-name activity))
 
 (defn privacy-filter
   [user]
@@ -143,22 +149,15 @@
          {:tags {:$ne "nsfw"}}
          ;; {"object.object-type" {:$ne "comment"}}
          (privacy-filter user))]
-    (entity/fetch Activity merged-options
-                  :sort [(sugar/desc :published)]
+    (mc/find-maps collection-name
+                  merged-options
+                  :sort [{:published 1}]
                   :skip (* (dec page-number) page-size)
                   :limit page-size)))
 
-(defn fetch-all
-  [& options]
-  (apply entity/fetch Activity options))
-
-(defn fetch-by-id
-  [id]
-  (entity/fetch-by-id Activity id))
-
 (defn fetch-by-remote-id
   [id]
-  (entity/fetch-one Activity {:id id}))
+  (->Activity (mc/find-one-as-map collection-name {:id id})))
 
 (defn show
   [id]
@@ -167,15 +166,16 @@
         (merge
          {:_id id}
          (privacy-filter user))]
-    (entity/fetch-one Activity options)))
+    (->Activity
+     (mc/find-one-as-map options))))
 
 (defn drop!
   []
-  (entity/delete-all Activity))
+  (mc/remove collection-name))
 
 (defn delete
   [activity]
-  (entity/delete activity)
+  (mc/remove-by-id collection-name (:_id activity))
   activity)
 
 (defn find-by-user
@@ -184,9 +184,9 @@
 
 (defn add-comment
   [parent comment]
-  (entity/update Activity
-                 (sugar/eq :_id (:_id parent))
-                 (sugar/push :comments (:_id comment))))
+  (mc/update collection-name
+             {:_id (:_id parent)}
+             {:$push {:comments (:_id comment)}}))
 
 (defn prettyify-time
   [date]
@@ -196,25 +196,25 @@
   [activity]
   (if (:updated activity)
     activity
-    (assoc activity :updated (sugar/date))))
+    (assoc activity :updated (time/now))))
 
 (defn set-object-updated
   [activity]
   (if (:updated (:object activity))
     activity
-    (assoc-in activity [:object :updated] (sugar/date))))
+    (assoc-in activity [:object :updated] (time/now))))
 
 (defn set-published-time
   [activity]
   (if (:published activity)
     activity
-    (assoc activity :published (sugar/date))))
+    (assoc activity :published (time/now))))
 
 (defn set-object-published
   [activity]
   (if (:published (:object activity))
     activity
-    (assoc-in activity [:object :published] (sugar/date))))
+    (assoc-in activity [:object :published] (time/now))))
 
 (defn set-actor
   [activity]
@@ -248,4 +248,4 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
-     (entity/count-instances Activity params)))
+     (mc/count collection-name params)))

@@ -1,8 +1,7 @@
 (ns jiksnu.abdera
-  (:use (ciste [debug :only [spy]])
-        (clojure.core [incubator :only [-?>]]))
-  (:require (clj-tigase [element :as element])
-            (clojure.tools [logging :as log]))
+  (:use [clojure.core.incubator :only [-?>]])
+  (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log])
   (:import java.io.ByteArrayInputStream
            java.io.StringWriter
            java.net.URI

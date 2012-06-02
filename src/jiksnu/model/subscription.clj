@@ -1,59 +1,49 @@
 (ns jiksnu.model.subscription
-  (:use (ciste [debug :only [spy]])
-        jiksnu.model)
-  (:require (clj-tigase [core :as tigase]
-                        [element :as element])
-            (jiksnu [namespace :as namespace])
-            (jiksnu.model [user :as model.user])
-            (karras [entity :as entity]
-                    [sugar :as sugar]))
+  (:use jiksnu.model)
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.namespace :as namespace]
+            [monger.collection :as mc])
   (:import jiksnu.model.Subscription))
+
+(def collection-name "subscriptions")
+
+(defn delete
+  [subscription]
+  (mc/remove-by-id collection-name (:_id subscription)))
 
 (defn drop!
   []
-  (entity/delete-all Subscription))
+  (mc/remove collection-name))
 
 (defn find-record
   [args]
-  (entity/fetch-one Subscription args))
+  (->Subscription (mc/find-one-as-map collection-name args)))
 
 (defn fetch-by-id
   [id]
-  (entity/fetch-by-id Subscription id))
+  (->Subscription (mc/find-map-by-id collection-name id)))
 
 (defn fetch-all
   "Fetch all users"
   ([] (fetch-all {}))
   ([params & options]
-     (apply entity/fetch Subscription params options)))
+     (map ->Subscription
+          (mc/find-maps collection-name params))))
 
 (defn create
   [subscription & options]
   (if-let [from (:from subscription)]
     (if-let [to (:to subscription)]
       (let [option-map
-            (merge {:created (sugar/date)}
+            (merge {:created (time/now)}
                    subscription)
             subscription (find-record {:from from :to to})
-            query (sugar/where (sugar/eq :from from)
-                               (sugar/eq :to to))
-            response (entity/update Subscription query
+            query {:from from :to to}
+            response (mc/update collection-name query
                                     option-map :upsert)]
         (find-record {:from from :to to})))))
-
-(defn index
-  [& args]
-  (let [option-map (apply hash-map args)]
-    (entity/fetch Subscription option-map)))
-
-(defn show
-  [& args]
-  (let [option-map (apply hash-map args)]
-    (entity/fetch-one Subscription option-map)))
-
-(defn delete
-  [subscription]
-  (entity/delete subscription))
 
 (defn subscribe
   [actor user]
@@ -61,28 +51,27 @@
 
 (defn confirm
   [subscription]
-  (entity/save (assoc subscription :pending false)))
+  (mc/update collection-name {:$set {:pending false}}))
 
 (defn find-by-users
   [actor target]
-  (entity/fetch-one Subscription {:from (:_id actor) :to (:_id target)}))
+  (fetch-all {:from (:_id actor) :to (:_id target)}))
 
 (defn unsubscribe
   [actor user]
   (if-let [subscription (find-by-users actor user)]
-    (do (entity/delete subscription)
-        subscription)
-    #_(entity/make Subscription {:from actor :to user :created (sugar/date)})))
+    (do (mc/remove collection-name subscription)
+        subscription)))
 
 (defn subscribing?
   "Does the actor have a subscription to the user"
   [actor user]
-  (show :from actor :to user))
+  (mc/any? {:from actor :to user}))
 
 (defn subscribed?
   "Does the user have a subscription to the actor"
   [actor user]
-  (show :from user :to actor))
+  (mc/any? {:from user :to actor}))
 
 (defn get-actor
   [subscription]
@@ -104,10 +93,7 @@
 
 (defn create-pending
   [actor user]
-  (entity/create Subscription
-                 {:from actor
-                  :to user
-                  :pending true}))
+  (create {:from actor :to user :pending true}))
 
 (defn pending?
   [subscription]
@@ -121,8 +107,8 @@
     :from (tigase/make-jid from)
     :type :get
     :body (element/make-element
-           ["pubsub" {"xmlns" namespace/pubsub}
-            ["subscriptions" {"node" namespace/microblog}]])}))
+           ["pubsub" {"xmlns" ns/pubsub}
+            ["subscriptions" {"node" ns/microblog}]])}))
 
 (defn subscribers-request
   [from to]
@@ -132,5 +118,5 @@
     :type :get
     ;; :id (fseq :id)
     :body (element/make-element
-           "pubsub" {"xmlns" namespace/pubsub}
-           ["subscribers" {"node" namespace/microblog}])}))
+           "pubsub" {"xmlns" ns/pubsub}
+           ["subscribers" {"node" ns/microblog}])}))

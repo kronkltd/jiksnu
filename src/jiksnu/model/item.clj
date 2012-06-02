@@ -1,16 +1,18 @@
 (ns jiksnu.model.item
-  (:require (jiksnu.model [activity :as model.activity]
-                          [user :as model.user])
-            (karras [entity :as entity]))
+  (:require [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [monger.collection :as mc])
   (:import (jiksnu.model Activity Item)))
+
+(def collection-name "items")
 
 (defn drop!
   []
-  (entity/delete-all Item))
+  (mc/remove collection-name))
 
 (defn index
   [user]
-  (entity/fetch Item {:user (:_id user)}))
+  (mc/find-maps collection-name {:user (:_id user)}))
 
 (defn fetch-activities
   [user]
@@ -21,5 +23,5 @@
 
 (defn push
   [user activity]
-  (entity/create Item {:user (:_id user)
-                       :activity (:_id activity)}))
+  (mc/insert collection-name {:user (:_id user)
+                              :activity (:_id activity)}))

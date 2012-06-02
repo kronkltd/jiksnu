@@ -1,7 +1,6 @@
 (ns jiksnu.model.key
-  (:use [ciste.debug :only [spy]])
   (:require [jiksnu.model.user :as model.user]
-            [karras.entity :as entity])
+            [monger.collection :as mc])
   (:import java.net.URI
            java.io.ByteArrayInputStream
            java.io.InputStream
@@ -22,6 +21,8 @@
            org.apache.http.impl.client.DefaultHttpClient
            org.bson.types.ObjectId))
 
+(def collection-name "keys")
+
 (def key-factory (KeyFactory/getInstance "RSA"))
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
@@ -29,12 +30,11 @@
 (defn drop!
   "Drop all keypairs"
   []
-  (entity/delete-all Key))
+  (mc/remove collection-name))
 
 (defn delete
   [record]
-  (entity/delete Key record)
-  )
+  (mc/remove collection-name record))
 
 (defn get-user
   [key]
@@ -119,9 +119,6 @@
 
 
 
-
-
-
 (defn get-base-string
   "Generate a signature base string"
   [^String armored-data
@@ -178,14 +175,14 @@
 
 (defn create
   [params]
-  (entity/create Key params))
+  (mc/insert collection-name params))
 
 
 ;; Make this an action
 (defn get-key-for-user-id
   "Fetch keypair by user id"
   [^ObjectId id]
-  (entity/fetch-one Key {:userid id}))
+  (mc/find-one-as-map collection-name {:userid id}))
 
 (defn get-key-for-user
   [^User user]
@@ -200,15 +197,13 @@
    ^String n
    ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
-    (entity/save
-     (merge key-pair
-            {:armored-n n
-             :armored-e e}))
-    (entity/create
-     Key
-     {:armored-n n
-      :armored-e e
-      :userid user-id})))
+    (mc/save (merge key-pair
+                    {:armored-n n
+                     :armored-e e}))
+    (mc/insert collection-name
+               {:armored-n n
+                :armored-e e
+                :userid user-id})))
 
 
 
@@ -242,10 +237,10 @@
 (defn fetch-all
   ([] (fetch-all {} {}))
   ([params opts]
-     (apply entity/fetch-all Key params opts)))
+     (mc/find-maps collection-name params)))
 
 (defn count-records
   ([] (count-records {}))
   ([params]
-     (entity/count-instances Key params)))
+     (mc/count collection-name params)))
 
