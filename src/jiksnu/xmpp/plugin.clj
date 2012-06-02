@@ -1,14 +1,11 @@
 (ns jiksnu.xmpp.plugin
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         ciste.routes
-        [clojure.pprint :only [pprint]]
         jiksnu.model
         jiksnu.routes)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
-            [clojure.tools.logging :as log]
-            [jiksnu.namespace :as namespace])
+            [clojure.tools.logging :as log])
   (:import java.util.Queue
            tigase.server.Packet
            tigase.xmpp.JID
@@ -54,14 +51,14 @@
   [this ^Packet packet session
    repo queue settings]
   (if (config :print :packet)
-    (spy packet))
+    (log/spy packet))
   (let [packet-to (.getPacketTo packet)]
     (if-not (#{"sess-man"} (.getLocalpart packet-to))
       (if-let [to (.getStanzaTo packet)]
         (if-let [bare-to (.getBareJID to)]
           (let [request (packet/make-request packet)]
             (when (config :print :request)
-              (spy request))
+              (log/spy request))
             (if-let [response (main-handler queue request)]
               (do
                 (.setPacketTo response (.getPacketFrom packet))

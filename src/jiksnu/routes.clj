@@ -41,7 +41,7 @@
             [jiksnu.actions.tag-actions :as tag]
             [jiksnu.actions.user-actions :as user]
             [jiksnu.middleware :as jm]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             jiksnu.sections.layout-sections
             [jiksnu.session :as session]
             [jiksnu.views :as views]
@@ -240,19 +240,19 @@
    [[{:method :get
       :pubsub true
       :name "items"
-      :node (escape-route namespace/microblog)}
+      :node (escape-route ns/microblog)}
      #'stream/user-timeline]
 
     [{:method :set
       :pubsub true
       :name "publish"
-      :node (escape-route namespace/microblog)}
+      :node (escape-route ns/microblog)}
      #'activity/post]
 
     [{:method :get
       :pubsub true
       :name "items"
-      :node (str namespace/microblog ":replies:item=:id")}
+      :node (str ns/microblog ":replies:item=:id")}
      #'comment/fetch-comments]
 
     [{:method :error
@@ -261,17 +261,17 @@
 
     [{:method :get
       :name "query"
-      :ns namespace/vcard-query}
+      :ns ns/vcard-query}
      #'user/show]
 
     [{:method :set
       :name "publish"
-      :ns namespace/vcard}
+      :ns ns/vcard}
      #'user/create]
 
     ;; [{:method :result
     ;;   :name "query"
-    ;;   :ns namespace/vcard-query}
+    ;;   :ns ns/vcard-query}
     ;;  #'user/remote-create]
 
     [{:method :error
@@ -280,8 +280,8 @@
 
     [{:method :result
       :pubsub true
-      :node (str namespace/microblog ":replies:item=:id")
-      :ns namespace/pubsub}
+      :node (str ns/microblog ":replies:item=:id")
+      :ns ns/pubsub}
      #'comment/comment-response]
 
     [{:method :get
@@ -290,12 +290,12 @@
 
     [{:method :set
       :name "subscribe"
-      :ns namespace/pubsub}
+      :ns ns/pubsub}
      #'sub/subscribed]
 
     [{:method :set
       :name "unsubscribe"
-      :ns namespace/pubsub}
+      :ns ns/pubsub}
      #'sub/unsubscribe]
 
     [{:method :get
@@ -308,7 +308,7 @@
 
     [{:method :result
       :name "subscription"
-      :ns namespace/pubsub}
+      :ns ns/pubsub}
      #'sub/remote-subscribe-confirm]
 
     ;; FIXME: This is way too general
@@ -317,12 +317,12 @@
 
     ;; [{:method :result
     ;;   :pubsub true
-    ;;   :node namespace/microblog}
+    ;;   :node ns/microblog}
     ;;  #'activity/remote-create]
 
     [{:method :get
       :pubsub true
-      :node (escape-route namespace/inbox)}
+      :node (escape-route ns/inbox)}
      #'inbox/index]
 
     #_[{:method :result

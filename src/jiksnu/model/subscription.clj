@@ -1,9 +1,10 @@
 (ns jiksnu.model.subscription
-  (:use jiksnu.model)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
+            [clj-time.core :as time]
+            [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             [monger.collection :as mc])
   (:import jiksnu.model.Subscription))
 
@@ -19,17 +20,17 @@
 
 (defn find-record
   [args]
-  (->Subscription (mc/find-one-as-map collection-name args)))
+  (model/map->Subscription (mc/find-one-as-map collection-name args)))
 
 (defn fetch-by-id
   [id]
-  (->Subscription (mc/find-map-by-id collection-name id)))
+  (model/map->Subscription (mc/find-map-by-id collection-name id)))
 
 (defn fetch-all
   "Fetch all users"
   ([] (fetch-all {}))
   ([params & options]
-     (map ->Subscription
+     (map model/map->Subscription
           (mc/find-maps collection-name params))))
 
 (defn create

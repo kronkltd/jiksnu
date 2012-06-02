@@ -5,6 +5,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [monger.collection :as mc]
             [monger.core :as mg])
   (:import jiksnu.model.Domain))

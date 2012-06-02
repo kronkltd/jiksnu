@@ -1,7 +1,6 @@
 (ns jiksnu.actions.subscription-actions
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
         [ciste.model :only [implement]]
         [jiksnu.session :only [current-user]]

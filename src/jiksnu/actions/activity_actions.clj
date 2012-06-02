@@ -21,7 +21,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
             [lamina.core :as l])
   (:import javax.xml.namespace.QName
@@ -30,7 +30,7 @@
            org.apache.abdera2.ext.thread.ThreadHelper
            org.apache.abdera2.model.Element))
 
-(def ^QName activity-object-type (QName. namespace/as "object-type"))
+(def ^QName activity-object-type (QName. ns/as "object-type"))
 
 ;; Since every activity requires an author, might want to throw an
 ;; exception here.
@@ -90,20 +90,20 @@ this is for OSW
   (let [qname (.getQName element)
         qname (element/parse-qname qname)]
     (condp = (:namespace qname)
-      namespace/as (condp = (:name qname)
+      ns/as (condp = (:name qname)
                      "actor" nil
                      ;; "object" (abdera/parse-object-element element)
                      nil)
 
-      namespace/statusnet (condp = (:name qname)
+      ns/statusnet (condp = (:name qname)
                             "notice_info" (parse-notice-info element)  
                             nil)
 
-      namespace/thr (condp = (:name qname)
+      ns/thr (condp = (:name qname)
                       "in-reply-to" (parse-reply-to element)
                       nil)
 
-      namespace/geo (condp = (:name qname)
+      ns/geo (condp = (:name qname)
                       "point" (parse-geo element)
                       nil)
 
@@ -156,7 +156,7 @@ this is for OSW
   "Returns the verb of the entry"
   [entry]
   (-?> entry
-       (.getExtension (QName. namespace/as "verb" "activity"))
+       (.getExtension (QName. ns/as "verb" "activity"))
        .getText
        model/strip-namespaces))
 
@@ -198,11 +198,11 @@ serialization"
                            (into #{}))
            
            tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
-           object-element (.getExtension entry (QName. namespace/as "object"))
+           object-element (.getExtension entry (QName. ns/as "object"))
            object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
                                 (-?> entry (.getExtension activity-object-type)))
                             .getText model/strip-namespaces)
-           object-id (-?> object-element (.getFirstChild (QName. namespace/atom "id")))
+           object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
            opts (apply merge
                        (when published         {:published published})
                        (when content           {:content content})
@@ -230,7 +230,7 @@ serialization"
                                        (when object-id {:id object-id}))
                         :comment-count (abdera/get-comment-count entry)}
                        extension-maps)]
-       (model.activity/make-activity opts))))
+       (model/map->Activity opts))))
 
 (defn get-activities
   "extract the activities from a feed"
@@ -267,7 +267,7 @@ serialization"
   (let [{{id :_id} :params} activity
         original-activity (model.activity/fetch-by-id id)
         opts
-        (model.activity/make-activity
+        (model/map->Activity
          (merge original-activity
                 activity
                 (when (= (get activity :public) "public")

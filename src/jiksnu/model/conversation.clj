@@ -1,6 +1,7 @@
 (ns jiksnu.model.conversation
   (:use [ciste.config :only [config]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [monger.collection :as mc]
             [monger.core :as mg])
   (:import jiksnu.model.Conversation))

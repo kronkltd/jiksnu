@@ -5,7 +5,7 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.net.URI))
@@ -20,8 +20,8 @@
 ;; a xrd document should be a hash with all this data.
 (defn host-meta
   [domain]
-  ["XRD" {"xmlns" namespace/xrd
-          "xmlns:hm" namespace/host-meta}
+  ["XRD" {"xmlns" ns/xrd
+          "xmlns:hm" ns/host-meta}
    ["hm:Host" domain]
    ["Link" {"rel" "lrdd"
             "template" (str "http://" domain "/main/xrd?uri={uri}")}
@@ -29,7 +29,7 @@
 
 (defn user-meta
   [lrdd]
-  ["XRD" {"xmlns" namespace/xrd}
+  ["XRD" {"xmlns" ns/xrd}
    ["Subject" {} (:subject lrdd)]
    ["Alias" {} (:alias lrdd)]
 

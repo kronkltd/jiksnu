@@ -1,5 +1,6 @@
 (ns jiksnu.model.authentication-mechanism
-  (:require [monger.core :as mg]
+  (:require [jiksnu.model :as model]
+            [monger.core :as mg]
             [monger.collection :as mc])
   (:import jiksnu.model.AuthenticationMechanism))
 
@@ -11,5 +12,5 @@
 
 (defn fetch-all
   [& options]
-  (map ->AuthenticationMechanism
+  (map model/map->AuthenticationMechanism
        (mc/find-maps collection-name options)))

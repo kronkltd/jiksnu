@@ -1,21 +1,22 @@
 (ns jiksnu.model.user
-  #_(:use [ciste.config :only [config]] 
+  (:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
-        [jiksnu.model :only [make-id rel-filter]])
-  (:require
-   ;; [jiksnu.abdera :as abdera]
-   ;; [jiksnu.namespace :as namespace]
-   ;; [clojure.string :as string]
-   ;; [clojure.tools.logging :as log]
-   ;; [clj-tigase.core :as tigase]
-   ;; [clj-tigase.element :as element]
-   [jiksnu.model.domain :as model.domain]
-
-            )
+        [jiksnu.model :only [make-id rel-filter map->User]])
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model :as model]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.namespace :as ns]
+            [monger.collection :as mc])
   (:import jiksnu.model.Domain
            jiksnu.model.User
            tigase.xmpp.BareJID
            tigase.xmpp.JID))
+
+(def collection-name "users")
 
 (defn salmon-link
   [user]
@@ -152,19 +153,13 @@
   [id]
   (mc/remove-by-id id))
 
-;; TODO: Is this needed?
-;; (defn add-node
-;;   [^User user name]
-;;   (entity/update User
-;;                  {:_id (tigase/get-id user)}))
-
 (defn update
   [^User new-user]
   (log/info "updating user")
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)
-        user (->User merged-user)]
+        user (map->User merged-user)]
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
@@ -187,7 +182,7 @@
 (defn vcard-request
   [user]
   (let [body (element/make-element
-              "query" {"xmlns" namespace/vcard-query})
+              "query" {"xmlns" ns/vcard-query})
         packet-map {:from (tigase/make-jid "" (config :domain))
                     :to (tigase/make-jid user)
                     :id "JIKSNU1"
@@ -198,4 +193,4 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
-     (entity/count-instances User params)))
+     (mc/count collection-name params)))

@@ -1,7 +1,7 @@
 (ns jiksnu.model.like
-  (:use jiksnu.model
-        [slingshot.slingshot :only [throw+]])
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [monger.collection :as mc])
@@ -15,7 +15,7 @@
 
 (defn fetch-by-id
   [id]
-  (->Like (mc/find-map-by-id collection-name id)))
+  (model/map->Like (mc/find-map-by-id collection-name id)))
 
 (defn delete
   [like]

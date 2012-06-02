@@ -3,7 +3,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [jiksnu.abdera :as abdera]
-            [jiksnu.namespace :as namespace])
+            [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName
            tigase.xml.Element
            tigase.server.Packet))
@@ -42,18 +42,18 @@
 
 (defn microblog-node?
   [^Element element]
-  (= (element/node-value element) namespace/microblog))
+  (= (element/node-value element) ns/microblog))
 
 (defn vcard-query-ns?
   [^Element element]
-  (= (.getXMLNS element) namespace/vcard-query))
+  (= (.getXMLNS element) ns/vcard-query))
 
 (defn vcard-publish?
   [^Element element]
   (and (= (.getName element) "publish")
-       (= (.getXMLNS element) namespace/vcard-publish)))
+       (= (.getXMLNS element) ns/vcard-publish)))
 
 (defn inbox-node?
   [element]
-  (= (element/node-value element) namespace/inbox))
+  (= (element/node-value element) ns/inbox))
 

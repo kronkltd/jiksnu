@@ -11,7 +11,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as namespace]
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
             [jiksnu.xmpp.element :as xmpp.element]

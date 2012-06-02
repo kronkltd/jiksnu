@@ -13,7 +13,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
             [jiksnu.views :as views]
@@ -26,20 +26,20 @@
            com.hp.hpl.jena.rdf.model.Model))
 
 (def rdf-prefixes
-  [["activity" namespace/as]
-   ["sioc" namespace/sioc]
-   ["cert" namespace/cert]
-   ["foaf" namespace/foaf]])
+  [["activity" ns/as]
+   ["sioc" ns/sioc]
+   ["cert" ns/cert]
+   ["foaf" ns/foaf]])
 
 (defn triples->model
   [triples]
   (try
     (let [model (rdf/build-model)]
       (doto ^Model (rdf/to-java model)
-        (.setNsPrefix "activity" namespace/as)
-        (.setNsPrefix "sioc" namespace/sioc)
-        (.setNsPrefix "cert" namespace/cert)
-        (.setNsPrefix "foaf" namespace/foaf))
+        (.setNsPrefix "activity" ns/as)
+        (.setNsPrefix "sioc" ns/sioc)
+        (.setNsPrefix "cert" ns/cert)
+        (.setNsPrefix "foaf" ns/foaf))
       (rdf/with-model model
         (rdf/model-add-triples triples)))
     (catch Exception ex

@@ -1,21 +1,19 @@
 (ns jiksnu.model.activity
   (:use [clojure.core.incubator :only [-?>>]]
+        [jiksnu.model :only [map->Activity]]
         [jiksnu.session :only [current-user current-user-id is-admin?]])
   (:require [clj-time.core :as time]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [monger.collection :as mc])
   (:import com.ocpsoft.pretty.time.PrettyTime
            jiksnu.model.Activity))
 
 (defonce page-size 20)
-
-(defn make-activity
-  [options]
-  (->Activity options))
-
+(def collection-name "activities")
 
 ;; TODO: This operation should be performed on local posts. Remote
 ;; posts without an id should be rejected
@@ -94,11 +92,11 @@
 
 (defn fetch-all
   [& options]
-  (map ->Activity (mc/find-maps collection-name options)))
+  (map map->Activity (mc/find-maps collection-name options)))
 
 (defn fetch-by-id
   [id]
-  (->Activity (mc/find-map-by-id collection-name id)))
+  (map->Activity (mc/find-map-by-id collection-name id)))
 
 (defn create
   [activity]
@@ -157,7 +155,7 @@
 
 (defn fetch-by-remote-id
   [id]
-  (->Activity (mc/find-one-as-map collection-name {:id id})))
+  (map->Activity (mc/find-one-as-map collection-name {:id id})))
 
 (defn show
   [id]
@@ -166,7 +164,7 @@
         (merge
          {:_id id}
          (privacy-filter user))]
-    (->Activity
+    (map->Activity
      (mc/find-one-as-map options))))
 
 (defn drop!

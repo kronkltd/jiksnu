@@ -8,7 +8,6 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [jiksnu.namespace :as namespace]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.helpers.subscription-helpers :as helpers.subscription]

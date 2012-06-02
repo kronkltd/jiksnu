@@ -2,11 +2,15 @@
   (:use [ciste.debug :only [spy]]
         [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?> -?>>]]
-        jiksnu.actions.subscription-actions
+        [jiksnu.actions.subscription-actions :only [delete ostatus
+                                                    ostatussub ostatussub-submit
+                                                    get-subscribers get-subscriptions
+                                                    subscribe unsubscribe
+                                                    remote-subscribe-confirm
+                                                    subscribed]]
         [jiksnu.session :only [current-user current-user-id]]
         [slingshot.slingshot :only [throw+]])
-  (:require [jiksnu.namespace :as namespace]
-            [jiksnu.actions.user-actions :as actions.user]
+  (:require [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
 

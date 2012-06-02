@@ -1,5 +1,6 @@
 (ns jiksnu.model.group
-  (:require [monger.collection :as mc]
+  (:require [jiksnu.model :as model]
+            [monger.collection :as mc]
             [monger.core :as mg])
   (:import jiksnu.model.Group))
 
@@ -9,10 +10,9 @@
 
 (defn index
   []
-  (map
-   ->Group
+  (map model/map->Group
    (mc/find-maps "groups")))
 
 (defn fetch-by-name
   [name]
-  (->Group (mc/find-one-as-map "groups"{:nickname name})))
+  (model/map->Group (mc/find-one-as-map "groups"{:nickname name})))

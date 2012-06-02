@@ -5,7 +5,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.namespace :as ns]
             [ring.util.response :as response]))
 
 (defview #'add-comment :html
@@ -40,5 +40,5 @@
   {:type :get
    :body
    (element/make-element
-    (packet/pubsub-items (str namespace/microblog ":replies:item=" (:id activity))))})
+    (packet/pubsub-items (str ns/microblog ":replies:item=" (:id activity))))})
 

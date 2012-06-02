@@ -1,4 +1,5 @@
 (ns jiksnu.model.feed-source
+  (:use [jiksnu.model :only [->FeedSource]])
   (:require [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -60,7 +61,7 @@ This will generally not be called"
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"
   [topic]
-  (fetch {:topic topic}))
+  (find-record {:topic topic}))
 
 (defn count-records
   ([] (count-records {}))

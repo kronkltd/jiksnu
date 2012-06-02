@@ -1,10 +1,9 @@
 (ns jiksnu.factory
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
-        clj-factory.core)
-  (:require [jiksnu.abdera :as abdera]
-            [jiksnu.model.user :as model.user]
-            [karras.sugar :as sugar])
+        [clj-factory.core :only [defseq deffactory fseq factory]])
+  (:require [clj-time.core :as time]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain
@@ -67,7 +66,7 @@
 (deffactory Subscription
   {:to (fseq :word)
    :from (fseq :word)
-   :created #'sugar/date})
+   :created #'time/now})
 
 (deffactory User
   (let [password (fseq :password)
@@ -100,10 +99,10 @@
    :title (fseq :title)
    :summary (fseq :summary)
    :author (:_id (model.user/create (factory :user)))
-   :published #'sugar/date
+   :published #'time/now
    :verb "post"
    :object-type "note"
-   :updated #'sugar/date
+   :updated #'time/now
    :public true})
 
 (deffactory :activity

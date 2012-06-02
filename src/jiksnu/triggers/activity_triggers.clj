@@ -9,7 +9,6 @@
             (clojure.tools [logging :as log])
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.actions.user-actions :as actions.user]

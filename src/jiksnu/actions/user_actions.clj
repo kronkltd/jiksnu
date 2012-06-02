@@ -12,6 +12,7 @@
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -24,8 +25,7 @@
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
             [jiksnu.xmpp.element :as xmpp.element]
-            [karras.entity :as entity]
-            [karras.sugar :as sugar]
+            [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
@@ -105,8 +105,8 @@
 
 (defaction add-link*
   [user link]
-  (entity/update User {:_id (:_id user)}
-                 {:$addToSet {:links link}})
+  (mc/update "users" {:_id (:_id user)}
+             {:$addToSet {:links link}})
   user)
 
 ;; FIXME: this is always hitting the else branch
@@ -122,7 +122,7 @@
   [options]
   (let [user (merge {:discovered false
                      :local false
-                     :updated (sugar/date)}
+                     :updated (time/now)}
                     (when-not (:id options) {:id (model.user/get-uri options)})
                     options)]
     ;; This has the side effect of ensuring that the domain is
@@ -151,7 +151,7 @@
   [options]
   (let [page (get options :page 1)
         page-size 20
-        criteria {:sort [(sugar/asc :username)]
+        criteria {:sort [{:username 1}]
                   :limit 20}
         record-count (apply model.user/count-records {})
         records (apply model.user/fetch-all {} criteria)]
@@ -327,7 +327,7 @@
                        (merge params))]
           (doseq [link links]
             (add-link user link))
-          (entity/make User user))
+          (model/map->User user))
         (throw (RuntimeException. "could not determine user"))))))
 
 

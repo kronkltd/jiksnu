@@ -1,5 +1,6 @@
 (ns jiksnu.model.item
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [monger.collection :as mc])
   (:import (jiksnu.model Activity Item)))

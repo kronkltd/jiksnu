@@ -1,5 +1,6 @@
 (ns jiksnu.model.key
-  (:require [jiksnu.model.user :as model.user]
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.user :as model.user]
             [monger.collection :as mc])
   (:import java.net.URI
            java.io.ByteArrayInputStream

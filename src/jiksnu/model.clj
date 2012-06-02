@@ -9,6 +9,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
+            [monger.collection :as mc]
             [monger.core :as mg]
             monger.joda-time
             monger.json
@@ -117,7 +118,7 @@
    subnodes])
 
 (defrecord Item
-  [user activity :created])
+  [user activity created])
 
 (defrecord Domain
   [_id discovered updated])
@@ -179,14 +180,13 @@
 
 (defn drop-collection
   [klass]
-  (mg/remove (lower-case (str klass))))
+  (mc/remove (string/lower-case (str klass))))
 
 (defn drop-all!
   "Drop all collections"
   []
-  (doseq [entity [Activity Like Subscription
-                  User Item Domain FeedSource
-                  Key]]
+  (doseq [entity [Activity Like Subscription User
+                  Item Domain FeedSource Key]]
     (drop-collection entity)))
 
 (defn parse-http-link

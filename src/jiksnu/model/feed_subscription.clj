@@ -2,6 +2,7 @@
   (:require [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [monger.collection :as mc]
             [monger.core :as mg])
   (:import jiksnu.model.FeedSubscription))
@@ -19,4 +20,4 @@
 
 (defn fetch
   [options]
-  (->FeedSubscription (mc/find-one-as-map collection-name options)))
+  (model/map->FeedSubscription (mc/find-one-as-map collection-name options)))

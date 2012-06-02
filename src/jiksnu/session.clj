@@ -1,5 +1,4 @@
 (ns jiksnu.session
-  (:use [ciste.debug :only [spy]])
   (:require [jiksnu.model.user :as model.user]))
 
 (def ^:dynamic *current-user* (ref nil))
