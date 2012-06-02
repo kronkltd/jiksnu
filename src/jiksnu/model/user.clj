@@ -6,7 +6,6 @@
             [clojure.tools.logging :as log]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -77,7 +76,7 @@
   [user]
   (if user
     (let [id (make-id)
-          {:keys [username domain]} user]
+          {:keys [username domain]} (log/spy user)]
       (if (and (and username (not= username ""))
                (and domain (not= domain "")))
         (do

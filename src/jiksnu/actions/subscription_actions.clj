@@ -8,6 +8,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import javax.security.sasl.AuthenticationException
@@ -32,7 +33,7 @@
   (if profile
     (let [[username domain] (clojure.string/split profile #"@")]
       (model.user/get-user username domain))
-    (User.)))
+    (model/map->User {})))
 
 (defaction remote-subscribe
   [& _]
@@ -74,17 +75,12 @@
   (if-let [actor (current-user)]
     (if-let [user  (if (re-matches #".*@.*" uri)
                      ;; uri is an acct uri
-                     (spy (actions.user/find-or-create-by-uri uri))
+                     (actions.user/find-or-create-by-uri uri)
                      
                      ;; uri is a http uri
-                     (spy (actions.user/find-or-create-by-remote-id {:id (spy uri)}))
-
-                     )]
+                     (actions.user/find-or-create-by-remote-id {:id uri}))]
       (subscribe actor user)
-      (throw+ "Could not determine user")
-
-
-      )
+      (throw+ "Could not determine user"))
     (throw+ "must be logged in")))
 
 (defaction subscribed

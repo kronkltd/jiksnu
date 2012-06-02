@@ -1,6 +1,5 @@
 (ns jiksnu.filters.auth-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.auth-actions)
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]))

@@ -1,7 +1,6 @@
 (ns jiksnu.actions.auth-actions
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
   (:require [clojure.tools.logging :as log]

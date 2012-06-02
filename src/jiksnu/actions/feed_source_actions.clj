@@ -1,7 +1,6 @@
 (ns jiksnu.actions.feed-source-actions
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         [slingshot.slingshot :only [throw+]])
@@ -58,7 +57,6 @@
 (defaction create
   "Create a new feed source record"
   [params options]
-  (spy options)
   (if-let [topic (:topic params)]
     (let [uri (URI. topic)
           domain (actions.domain/find-or-create (.getHost uri))]
@@ -131,8 +129,8 @@
 
 (defaction add-watcher
   [source user]
-  #_(entity/update
-   FeedSource
+  #_(mc/update
+   "feed_sources"
    {:_id (:_id source)}
    {:$addToSet {:watchers (:_id user)}}))
 

@@ -1,7 +1,6 @@
 (ns jiksnu.actions.comment-actions
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
   (:require [clj-tigase.core :as tigase]

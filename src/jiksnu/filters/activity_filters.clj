@@ -1,6 +1,5 @@
 (ns jiksnu.filters.activity-filters
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.filters :only [deffilter]]
         jiksnu.actions.activity-actions)
   (:require [aleph.http :as http]

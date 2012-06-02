@@ -1,7 +1,6 @@
 (ns jiksnu.actions.setting-actions
   (:use [ciste.config :only [config definitializer set-config! write-config!]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.session :as session]))
 

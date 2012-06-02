@@ -1,7 +1,6 @@
 (ns jiksnu.actions.pubsub-actions
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]])
   (:require [aleph.http :as http]
             [clojure.string :as string]
@@ -70,7 +69,7 @@
 ;; TODO: extract hub params in filter
 (defaction hub-dispatch
   [params]
-  (let [mode (or (get (spy params) :hub.mode) (get params "hub.mode"))
+  (let [mode (or (get params :hub.mode) (get params "hub.mode"))
         callback (or (get params :hub.callback) (get params "hub.callback"))
         challenge (or (get params :hub.challenge) (get params "hub.challenge"))
         lease-seconds (or (get params :hub.lease_seconds) (get params "hub.lease_seconds"))
@@ -93,7 +92,7 @@
       
       "unsubscribe"
       ;; remove feed subscriber
-      (if-let [subscription (model.feed-source/fetch {:topic topic :callback callback})]
+      (if-let [subscription (model.feed-source/find-record {:topic topic :callback callback})]
         (actions.feed-source/remove-subscription subscription)
         (subscription-not-found-error))
       

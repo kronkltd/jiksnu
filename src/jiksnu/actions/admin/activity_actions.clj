@@ -2,7 +2,6 @@
   "This is the namespace for the admin pages for activities"
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.model.activity :as model.activity]))
 

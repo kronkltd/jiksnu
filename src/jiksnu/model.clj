@@ -97,68 +97,18 @@
   (if (coll? x)
     x (list x)))
 
-(defrecord Activity
-  [id actor title])
-
-(defrecord AuthenticationMechanism
-  [type])
-
-(defrecord Like
-  [id user activity created])
-
-(defrecord Subscription
-  [to from created])
-
-(defrecord User
-  [_id
-   username
-   created
-   updated
-   domain
-   subnodes])
-
-(defrecord Item
-  [user activity created])
-
-(defrecord Domain
-  [_id discovered updated])
-
-(defrecord FeedSource
-  [hub verify-token secret created updated topic])
-
-(defrecord FeedSubscription
-  [hub verify-token secret created updated topic])
-
-(defrecord Key
-    [
-   ;;   :userid
-
-   ;; :crt-coefficient
-   ;; :armored-crt-coefficient
-
-   ;; :prime-exponent-p
-   ;; :armored-prime-exponent-p
-   
-   ;; :prime-exponent-q
-   ;; :armored-prime-exponent-q
-
-   ;; :prime-p
-   ;; :armored-prime-p
-   
-   ;; :prime-q
-   ;; :armored-prime-q
-
-   ;; :public-exponent
-   ;; :armored-public-exponent
-
-   ;; :private-exponent
-   ;; :armored-private-exponent
-   ])
-
-(defrecord Group
-  [name])
-
-(defrecord Conversation [])
+(defrecord Activity                [])
+(defrecord AuthenticationMechanism [])
+(defrecord Conversation            [])
+(defrecord Domain                  [])
+(defrecord FeedSource              [])
+(defrecord FeedSubscription        [])
+(defrecord Group                   [])
+(defrecord Item                    [])
+(defrecord Key                     [])
+(defrecord Like                    [])
+(defrecord Subscription            [])
+(defrecord User                    [])
 
 ;; Entity predicates
 
@@ -218,10 +168,11 @@
 (defn set-database!
   "Set the connection for mongo"
   []
-  (log/debug (str "setting database for " (environment)))
+  (log/info (str "setting database for " (environment)))
   ;; TODO: pass connection options
   (mg/connect!)
-  (mg/set-db! (mg/get-db (config :database :name))))
+  (let [db (mg/get-db (str (config :database :name)))]
+    (mg/set-db! (log/spy db))))
 
 ;; TODO: Find a good place for this
 

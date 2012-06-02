@@ -1,16 +1,15 @@
 (ns jiksnu.views
   (:use [ciste.core]
         [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         ciste.formats
         [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [full-uri title link-to index-block index-section uri delete-button edit-button]]
         ciste.views
-        ciste.sections.default
         ciste.views.default
-        jiksnu.model
         jiksnu.session)
   (:require [clj-tigase.core :as tigase]
             [hiccup.core :as h]
+            [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.vocabularies.foaf :as foaf]))

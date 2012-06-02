@@ -1,6 +1,5 @@
 (ns jiksnu.routes
-  (:use [ciste.debug :only [spy]]
-        [ciste.routes :only [make-matchers resolve-routes]]
+  (:use [ciste.routes :only [make-matchers resolve-routes]]
         [ring.middleware.flash :only [wrap-flash]])
   (:require [aleph.http :as http]
             ciste.formats.default

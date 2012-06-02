@@ -2,9 +2,9 @@
   (:use (ciste [views :only [defview]])
         ciste.sections.default
         jiksnu.actions.admin.auth-actions)
-  (:require (jiksnu.actions [auth-actions :as actions.auth]))
-  (:import jiksnu.model.AuthenticationMechanism)
-  )
+  (:require (jiksnu.actions [auth-actions :as actions.auth])
+            [jiksnu.model :as model])
+  (:import jiksnu.model.AuthenticationMechanism))
 
 ;; TODO: This page should use a single column
 (defview #'index :html
@@ -13,4 +13,4 @@
    :single true
    :body
    (list (index-section mechanisms)
-         (add-form (AuthenticationMechanism.)))})
+         (add-form (model/map->AuthenticationMechanism)))})

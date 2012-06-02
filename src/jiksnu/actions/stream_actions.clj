@@ -1,7 +1,6 @@
 (ns jiksnu.actions.stream-actions
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction with-context]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         ciste.sections.default
@@ -110,7 +109,7 @@
     (let [topic (-?> feed
                      (abdera/rel-filter-feed "self")
                      first .getHref str)]
-      (if-let [source (spy (actions.feed-source/find-or-create {:topic  (spy topic)}))]
+      (if-let [source (actions.feed-source/find-or-create {:topic topic})]
         (if (seq (:watchers source))
           (do (actions.feed-source/mark-updated source)
               (doseq [entry (.getEntries feed)]

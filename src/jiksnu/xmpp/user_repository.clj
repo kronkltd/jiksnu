@@ -1,7 +1,6 @@
 (ns jiksnu.xmpp.user-repository
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
-        [ciste.debug :only [spy]]
         [ciste.sections.default :only [show-section]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -14,7 +13,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
-            [karras.collection :as col])
+            [monger.collection :as mc])
   (:import tigase.db.AuthorizationException
            tigase.db.AuthRepository
            tigase.db.AuthRepositoryImpl
@@ -29,10 +28,6 @@
 (defonce password-key "password")
 (defonce non-sasl-mechs (into-array String ["password"]))
 (defonce sasl-mechs (into-array String ["PLAIN"]))
-
-(defn user-repo
-  []
-  (col/collection "user-repo"))
 
 (defn key-seq
   [subnode key]
@@ -58,15 +53,15 @@
 (defmethod get-data [:public :vcard-temp :vCard]
   [user ks def]
   (log/info "Vcard handler")
-  (spy (with-context [:xmpp :xmpp]
-         (show-section (spy user)))))
+  (with-context [:xmpp :xmpp]
+    (show-section user)))
 
 (defmethod get-data :default
   [user ks def]
   (log/infof "default handler - %s - %s" (pr-str ks) def)
   (get-in
-   (col/fetch-one (user-repo)
-                  {:_id (model.user/get-uri user false)})
+   (mc/find-one-as-map "nodes"
+                       {:_id (model.user/get-uri user false)})
    ks def))
 
 
@@ -86,8 +81,7 @@
            (throw (RuntimeException. "Could not find domain"))))))
   ([this ^BareJID user ^String password]
      (log/info "addUser")
-     (spy user)
-     (spy password)))
+     password))
 
 
 (defn -digestAuth
@@ -112,7 +106,7 @@ of registered users"
   ([^UserRepository this ^String domain]
      (log/info "get users count")
      (count (actions.user/index
-             {:domain (spy domain)}))))
+             {:domain domain}))))
 
 (defn -initRepository
   "The method is called to initialize the data repository."
@@ -128,11 +122,11 @@ of registered users"
 (defn -otherAuth
   [this props]
   (log/info "other auth")
-  (if-let [user (let [mech (.get (spy props) AuthRepository/MACHANISM_KEY)]
+  (if-let [user (let [mech (.get props AuthRepository/MACHANISM_KEY)]
                   (if (= mech "PLAIN")
                     (let [data (.get props "data")
-                          [_ username password] (string/split (spy (String. (model.key/decode data) "UTF-8")) #"\u0000")]
-                      (spy (actions.auth/login (spy username) (spy password))))))]
+                          [_ username password] (string/split (String. (model.key/decode data) "UTF-8") #"\u0000")]
+                      (actions.auth/login username password))))]
     (do
       (.put props "result" nil)
       (.put props "user-id" (tigase/bare-jid (:username user) (:domain user)))
@@ -172,10 +166,6 @@ of registered users"
   [this ^BareJID user ^String subnodes list foo]
   ;; TODO: implement
   (log/info "add data list")
-  (spy user)
-  (spy subnodes)
-  (spy list)
-  (spy foo)
   (cm/implement))
 
 ;; addUser
@@ -229,7 +219,7 @@ not exist for given user ID in given node path."
   (log/info "get users uid")
   ;; this should return the :_id
   (cm/implement
-   (spy user)))
+   user))
 
 (defn -getUsers
   "This method is only used by the data conversion tools."
@@ -250,9 +240,6 @@ not exist for given user ID in given node path."
   ([this ^BareJID user-id ^String subnode ^String key]
      (log/info "remove data")
      ;; TODO: implement
-     ;; (spy user-id)
-     ;; (spy key)
-     ;; (spy subnode)
      (cm/implement)))
 
 (defn -removeSubnode
@@ -262,8 +249,6 @@ this node and in all subnodes."
    ^String subnode]
   ;; TODO: implement
   (log/info "remove subnode")
-  ;; (spy user)
-  ;; (spy subnode)
   (cm/implement))
 
 ;; removeUser
@@ -276,10 +261,6 @@ associates it with given key."
   ([this ^BareJID user ^String subnode ^String key ^String value]
      ;; TODO: implement
      (log/info "set data - (" user ") " key " = " value)
-     ;; (spy user)
-     ;; (spy subnode)
-     ;; (spy key)
-     ;; (spy value)
      (cm/implement)))
 
 (defn -setDataList

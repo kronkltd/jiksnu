@@ -1,7 +1,6 @@
 (ns jiksnu.actions.salmon-actions
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]])
   (:require [ciste.model :as cm]

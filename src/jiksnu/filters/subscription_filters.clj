@@ -1,8 +1,7 @@
 (ns jiksnu.filters.subscription-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.actions.subscription-actions :only [delete ostatus
+        [jiksnu.actions.subscription-actions :only [delete ostatus confirm
                                                     ostatussub ostatussub-submit
                                                     get-subscribers get-subscriptions
                                                     subscribe unsubscribe

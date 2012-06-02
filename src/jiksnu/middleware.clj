@@ -1,10 +1,7 @@
 (ns jiksnu.middleware
-  (:use [clojure.pprint :only [pprint]]
-        [ciste.config :only [config]]
-        [ciste.debug :only [spy with-time]]
+  (:use [ciste.config :only [config]]
         [jiksnu.session :only [with-user-id]])
-  (:require [clojure.stacktrace :as st]
-            [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log])
   (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding

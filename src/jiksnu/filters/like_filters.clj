@@ -1,6 +1,5 @@
 (ns jiksnu.filters.like-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.session :only [current-user]]
         jiksnu.actions.like-actions)

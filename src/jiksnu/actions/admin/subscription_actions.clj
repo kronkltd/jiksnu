@@ -28,7 +28,7 @@
 ;; requires admin
 (defaction index
   [options]
-  [(model.subscription/index) options])
+  [(model.subscription/fetch-all) options])
 
 (definitializer
   (require-namespaces

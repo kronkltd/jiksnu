@@ -1,6 +1,5 @@
 (ns jiksnu.filters.setting-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         [jiksnu.session :only [current-user]]
         jiksnu.actions.setting-actions))
 

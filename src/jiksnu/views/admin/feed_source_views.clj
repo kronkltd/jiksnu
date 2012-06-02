@@ -6,6 +6,7 @@
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.model :as model]
             [ring.util.response :as response])
   (:import jiksnu.model.FeedSource))
 
@@ -16,7 +17,7 @@
    :body
    (list 
     (index-section sources)
-    (add-form (FeedSource.)))})
+    (add-form (model/map->FeedSource)))})
 
 (defview #'show :html
   [request source]

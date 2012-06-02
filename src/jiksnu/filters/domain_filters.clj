@@ -1,6 +1,5 @@
 (ns jiksnu.filters.domain-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.domain-actions)
   (:require [jiksnu.model.domain :as model.domain])
   (:import tigase.xml.Element))

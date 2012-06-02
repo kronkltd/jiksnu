@@ -1,6 +1,5 @@
 (ns jiksnu.filters.group-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.group-actions)
   (:require [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]))
@@ -24,4 +23,4 @@
 
 (deffilter #'edit-page :http
   [action request]
-  (action (spy (model.group/fetch-by-name (spy (:name (spy (:params request))))))))
+  (action (model.group/fetch-by-name (:name (:params request)))))

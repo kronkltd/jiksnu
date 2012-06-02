@@ -1,12 +1,11 @@
 (ns jiksnu.actions.key-actions
     (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.model.key :as model.key]
-            [karras.sugar :as sugar])
+            [jiksnu.model :as model]
+            [jiksnu.model.key :as model.key])
   (:import jiksnu.model.User))
 
 (defaction create
@@ -28,7 +27,7 @@
   [& [options & _]]
   (let [page (Integer/parseInt (get options :page "1"))
         page-size 20
-        criteria {:sort [(sugar/asc :_id)]
+        criteria {:sort [{:_id 1}]
                   :skip (* (dec page) page-size)
                   :limit page-size}
         total-records (model.key/count-records {})

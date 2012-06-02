@@ -1,7 +1,6 @@
 (ns jiksnu.actions.user-actions
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
@@ -395,7 +394,7 @@
   "perform a discovery on the user"
   [^User user & [options & _]]
   (loop [try-count (get options :try-count 1)]
-    (when (< (spy try-count) 5)
+    (when (< try-count 5)
       (if (:local user)
         user
         ;; Get domain should, in theory, always return a domain, or else error
@@ -457,7 +456,7 @@
 (defaction register-page
   "Display the form to reqister a user"
   []
-  (User.))
+  (model/map->User))
 
 (defaction show
   "This action just returns the passed user.

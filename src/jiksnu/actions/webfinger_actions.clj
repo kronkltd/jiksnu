@@ -1,7 +1,6 @@
 (ns jiksnu.actions.webfinger-actions
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.debug :only [spy]]
         [ciste.runner :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]])
   (:require [clojure.tools.logging :as log]
