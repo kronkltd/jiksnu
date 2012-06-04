@@ -3,7 +3,7 @@
         [clj-gravatar.core :only [gravatar-image]]
         [jiksnu.model :only [make-id rel-filter map->User]]
         [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
+        [validateur.validation :only [acceptance-of validation-set presence-of]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clj-tigase.core :as tigase]
@@ -27,6 +27,8 @@
    (presence-of :domain)
    (presence-of :id)
    #_(presence-of :local)
+   (acceptance-of :username :accept string?)
+   (acceptance-of :domain :accept string?)
    ))
 
 (defn salmon-link
@@ -84,7 +86,12 @@
   []
   (mc/remove collection-name))
 
-
+(defn fetch-by-id
+  "Fetch a user by it's object id"
+  [id]
+  (if-let [user (mc/find-map-by-id collection-name id)]
+    (model/map->User user)
+    (throw+ "Could not find user")))
 
 (defn create
   [user]
@@ -95,33 +102,28 @@
         (if (empty? errors)
           (do
             (log/debugf "Creating user: %s@%s" username domain)
-            (mc/insert collection-name (assoc user :_id id)))
+            (mc/insert collection-name (assoc user :_id id))
+            (fetch-by-id id)
+            )
           (throw+ {:type :validation
                    :errors errors}))))))
 
 (defn fetch-all
   "Fetch all users"
   ([] (fetch-all {}))
-  ([params & options]
-     (mc/find-maps collection-name params))) 
+  ([params] (fetch-all params {}))
+  ([params options]
+     (->> (mc/find-maps collection-name params)
+         (map model/map->User)))) 
 
 (defn get-user
   "Find a user by username and domain"
   ([username] (get-user username (config :domain)))
   ([username domain]
-     (mc/find-one-as-map collection-name
-                         {:username username
-                          :domain domain})))
-
-(defn fetch-by-id
-  "Fetch a user by it's object id"
-  [id]
-  (when id
-    (try
-      (mc/find-map-by-id collection-name id)
-      (catch IllegalArgumentException ex
-        ;; Invalid ObjectID simply returning nil
-        ))))
+     (if-let [user (mc/find-one-as-map collection-name
+                                       {:username username
+                                        :domain domain})]
+       (model/map->User user))))
 
 ;; deprecated
 ;; TODO: Split the jid into it's parts and fetch.
@@ -145,7 +147,8 @@
 (defn fetch-by-remote-id
   "Fetch user by their id value"
   [uri]
-  (mc/find-one-as-map collection-name {:id uri}))
+  (if-let [user (mc/find-one-as-map collection-name {:id uri})]
+    (model/map->User user)))
 
 (defn fetch-by-domain
   ([domain] (fetch-by-domain domain {}))

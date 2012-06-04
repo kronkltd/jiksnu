@@ -94,9 +94,9 @@
      :args options}))
 
 (defn find-or-create
-  [id]
-  (or (model.domain/fetch-by-id id)
-      (create {:_id id})))
+  [domain]
+  (or (model.domain/fetch-by-id (:_id domain))
+      (create domain)))
 
 (defn find-or-create-for-url
   "Return a domain object that matche the domain of the provided url"

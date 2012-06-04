@@ -19,10 +19,6 @@
      ;; (Thread/sleep 6000)
 
      (model/drop-all!)
-     (try+
-      ~@body
-      (catch Object ex#
-        (log/error "caught error" ex#)
-        )
-      (finally
-       (stop-application!)))))
+     
+     ~@body
+     (stop-application!)))
