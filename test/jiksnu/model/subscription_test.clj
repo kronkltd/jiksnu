@@ -15,7 +15,7 @@
 
  (fact "#'delete"
    (drop!)
-   (let [subscription (create (factory :subscription))]
+   (let [subscription (create (log/spy (factory :subscription)))]
      (delete subscription)
      (fetch-by-id (:_id subscription)) => nil))
 
@@ -57,37 +57,37 @@
             truthy
             (partial instance? Subscription)))))))
 
- ;; (fact "#'subscribing?"
+ (fact "#'subscribing?"
 
- ;;   (fact "when the user is subscribing"
- ;;     (fact "should return true"
- ;;       (let [actor (model.user/create (factory User))
- ;;             user (model.user/create (factory User))]
- ;;         (subscribe actor user)
- ;;         (let [response (subscribing? actor user)]
- ;;           response => truthy))))
+   (fact "when the user is subscribing"
+     (fact "should return true"
+       (let [actor (model.user/create (factory User))
+             user (model.user/create (factory User))]
+         (subscribe actor user)
+         (let [response (subscribing? actor user)]
+           response => truthy))))
 
- ;;   (fact "when the user is not subscribed"
- ;;     (fact "should return a false value"
- ;;       (let [actor (model.user/create (factory User))
- ;;             user (model.user/create (factory User))]
- ;;         (let [response (subscribing? actor user)]
- ;;           response =not=> truthy)))))
+   (fact "when the user is not subscribed"
+     (fact "should return a false value"
+       (let [actor (model.user/create (factory User))
+             user (model.user/create (factory User))]
+         (let [response (subscribing? actor user)]
+           response =not=> truthy)))))
 
- ;; (fact "#'subscribed?"
+ (fact "#'subscribed?"
 
- ;;   (fact "when the user is subscribed"
- ;;     (fact "should return true"
- ;;       (let [actor (model.user/create (factory User))
- ;;             user (model.user/create (factory User))]
- ;;         (subscribe user actor)
- ;;         (let [response (subscribed? actor user)]
- ;;           response => truthy))))
+   (fact "when the user is subscribed"
+     (fact "should return true"
+       (let [actor (model.user/create (factory User))
+             user (model.user/create (factory User))]
+         (subscribe user actor)
+         (let [response (subscribed? actor user)]
+           response => truthy))))
 
- ;;   (fact "when the user is not subscribed"
- ;;     (fact "should return a false value"
- ;;       (let [actor (model.user/create (factory User))
- ;;             user (model.user/create (factory User))]
- ;;         (let [response (subscribed? actor user)]
- ;;           response =not=> truthy)))))
+   (fact "when the user is not subscribed"
+     (fact "should return a false value"
+       (let [actor (model.user/create (factory User))
+             user (model.user/create (factory User))]
+         (let [response (subscribed? actor user)]
+           response =not=> truthy)))))
 )

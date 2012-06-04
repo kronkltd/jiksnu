@@ -63,14 +63,6 @@
 (deffactory :domain
   (factory Domain))
 
-(deffactory Subscription
-  {:to (fseq :word)
-   :from (fseq :word)
-   :created #'time/now})
-
-(deffactory :subscription
-  (factory Subscription))
-
 (deffactory User
   (let [password (fseq :password)
         first-name (fseq :name)
@@ -110,3 +102,13 @@
 
 (deffactory :activity
   (factory Activity))
+
+(deffactory Subscription
+  {:to (:_id (model.user/create (factory :local-user)))
+   :local true
+   :from (:_id (model.user/create (factory :local-user)))
+   :created #'time/now})
+
+(deffactory :subscription
+  (factory Subscription))
+
