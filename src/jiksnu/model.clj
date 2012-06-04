@@ -172,7 +172,7 @@
   ;; TODO: pass connection options
   (mg/connect!)
   (let [db (mg/get-db (str (config :database :name)))]
-    (mg/set-db! (log/spy db))))
+    (mg/set-db! db)))
 
 ;; TODO: Find a good place for this
 

@@ -32,13 +32,15 @@
 
 (defn create
   [domain]
-  (let [[passed errors] (valid? create-validators domain)] 
+  (let [passed (valid? create-validators domain)] 
     (if passed
       (do
         (log/debugf "Creating domain %s" (:_id domain))
-        (mc/insert collection-name domain))
+        (mc/insert collection-name domain)
+        domain)
       (throw+ {:type :validation
-               :errors errors}))))
+               ;; :errors errors
+               }))))
 
 ;; TODO: deprecated
 (defn index
@@ -77,7 +79,7 @@
 (defn ping-request
   [domain]
   {:type :get
-   :to (tigase/make-jid "" (:_id domain))
+   :to (tigase/make-jid "" (:_id (log/spy domain)))
    :from (tigase/make-jid "" (config :domain))
    :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
 

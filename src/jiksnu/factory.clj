@@ -68,6 +68,9 @@
    :from (fseq :word)
    :created #'time/now})
 
+(deffactory :subscription
+  (factory Subscription))
+
 (deffactory User
   (let [password (fseq :password)
         first-name (fseq :name)

@@ -76,7 +76,7 @@
   [user]
   (if user
     (let [id (make-id)
-          {:keys [username domain]} (log/spy user)]
+          {:keys [username domain]} user]
       (if (and (and username (not= username ""))
                (and domain (not= domain "")))
         (do

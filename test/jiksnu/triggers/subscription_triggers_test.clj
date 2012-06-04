@@ -5,6 +5,7 @@
         jiksnu.triggers.subscription-triggers
         midje.sweet)
   (:require [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
@@ -16,6 +17,5 @@
      (let [user (model.user/create (factory User))
            subscribee (model.user/create (factory User))
            subscription (model.subscription/subscribe
-                         (:_id user) (:_id subscribee))
-           response (notify-subscribe-xmpp {:id "JIKSNU1"} subscription)]
-       response => packet/packet?))))
+                         (:_id user) (:_id subscribee))]
+       (notify-subscribe-xmpp {:id "JIKSNU1"} (log/spy subscription)) => packet/packet?))))

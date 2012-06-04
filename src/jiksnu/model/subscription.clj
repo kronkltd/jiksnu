@@ -1,22 +1,32 @@
 (ns jiksnu.model.subscription
+  (:use [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-time.core :as time]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [monger.collection :as mc])
+            [monger.collection :as mc]
+            [monger.query :as mq])
   (:import jiksnu.model.Subscription))
 
 (def collection-name "subscriptions")
+(def default-page-size 20)
 
-(defn delete
-  [subscription]
-  (mc/remove-by-id collection-name (:_id subscription)))
+(def create-validators
+  (validation-set
+   (presence-of :from)
+   (presence-of :to)))
 
 (defn drop!
   []
   (mc/remove collection-name))
+
+(defn delete
+  [subscription]
+  (mc/remove-by-id collection-name (:_id subscription)))
 
 (defn find-record
   [args]
@@ -24,27 +34,38 @@
 
 (defn fetch-by-id
   [id]
-  (model/map->Subscription (mc/find-map-by-id collection-name id)))
+  (if-let [subscription (mc/find-map-by-id collection-name id)]
+    (model/map->Subscription subscription)
+    (log/warnf "Could not find subscription with id: %s" id)))
 
 (defn fetch-all
   "Fetch all users"
   ([] (fetch-all {}))
-  ([params & options]
-     (map model/map->Subscription
-          (mc/find-maps collection-name params))))
+  ([params] (fetch-all params {}))
+  ([params options]
+     (let [page (get options :page 1)
+           page-size (get options :page-size default-page-size)]
+       (->> (mq/with-collection collection-name
+              (mq/find params)
+              ;; TODO: sorting
+              (mq/paginate :page page :per-page page-size))
+            (map model/map->Subscription)))))
 
 (defn create
   [subscription & options]
-  (if-let [from (:from subscription)]
-    (if-let [to (:to subscription)]
+  (let [errors (log/spy (create-validators subscription))]
+    (if (empty? errors)
       (let [option-map
             (merge {:created (time/now)}
                    subscription)
+            {:keys [from to]} option-map
             subscription (find-record {:from from :to to})
             query {:from from :to to}
-            response (mc/update collection-name query
-                                    option-map :upsert)]
-        (find-record {:from from :to to})))))
+            response (mc/insert collection-name option-map)]
+        
+        (find-record {:from from :to to}))
+      (throw+ {:type :validation
+               :errors errors}))))
 
 (defn subscribe
   [actor user]
