@@ -2,6 +2,7 @@
   (:use [ciste.config :only [config]]
         [clj-factory.core :only [defseq deffactory fseq factory]])
   (:require [clj-time.core :as time]
+            [inflections.core :as inf]
             [jiksnu.abdera :as abdera]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -46,11 +47,11 @@
 
 (defseq :title
   [n]
-  (str n "th post!"))
+  (str (inf/ordinalize n) " post!"))
 
 (defseq :summary
   [n]
-  (str n "th post!"))
+  (str (inf/ordinalize n) " post!"))
 
 (defseq :word
   [n]
