@@ -1,7 +1,6 @@
 (ns jiksnu.views.stream-views-test
   (:use [ciste.config :only [with-environment]]
         ciste.core
-        [ciste.debug :only [spy]]
         ciste.sections
         ciste.views
         clj-factory.core
@@ -11,6 +10,7 @@
         jiksnu.views.stream-views
         midje.sweet)
   (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.model.activity :as model.activity]

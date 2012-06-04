@@ -15,7 +15,7 @@
 
  (fact "#'delete"
    (drop!)
-   (let [subscription (create (log/spy (factory :subscription)))]
+   (let [subscription (create (factory :subscription))]
      (delete subscription)
      (fetch-by-id (:_id subscription)) => nil))
 
@@ -52,7 +52,7 @@
          (drop!)
          (let [actor (model.user/create (factory User))
                user (model.user/create (factory User))]
-           (log/spy (subscribe (:_id actor) (:_id user))) =>
+           (subscribe (:_id actor) (:_id user)) =>
            (every-checker
             truthy
             (partial instance? Subscription)))))))

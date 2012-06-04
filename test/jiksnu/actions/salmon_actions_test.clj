@@ -1,11 +1,11 @@
 (ns jiksnu.actions.salmon-actions-test
   (:use [ciste.config :only [with-environment]]
-        [ciste.debug :only [spy]]
         [clj-factory.core :only [factory]]
         midje.sweet
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.key-actions :as actions.key]
@@ -111,7 +111,7 @@
  (future-fact "#'extract-activity"
    (fact "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
-       (extract-activity (spy envelope))) => model/activity?))
+       (extract-activity envelope)) => model/activity?))
 
  (future-fact "#'stream->envelope"
    (fact "should return an envelope"

@@ -18,4 +18,4 @@
            subscribee (model.user/create (factory User))
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
-       (notify-subscribe-xmpp {:id "JIKSNU1"} (log/spy subscription)) => packet/packet?))))
+       (notify-subscribe-xmpp {:id "JIKSNU1"} subscription) => packet/packet?))))

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.user-actions-test
   (:use [ciste.core :only [with-context]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [string->document]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
@@ -8,6 +7,7 @@
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]

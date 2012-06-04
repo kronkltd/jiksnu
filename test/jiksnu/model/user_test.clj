@@ -1,6 +1,5 @@
 (ns jiksnu.model.user-test
   (:use [ciste.config :only [config with-environment]]
-        [ciste.debug :only [spy]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.test-helper
         jiksnu.model

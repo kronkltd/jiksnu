@@ -1,7 +1,6 @@
 (ns jiksnu.filters.stream-filters-test
   (:use [clj-factory.core :only [factory]]
         [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.filters :only [filter-action]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         ;; [jiksnu.model :only []]
@@ -9,6 +8,7 @@
         [midje.sweet :only [fact future-fact]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.stream-actions :as actions.stream]

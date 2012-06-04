@@ -1,7 +1,6 @@
 (ns jiksnu.actions.activity-actions-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context]]
-        [ciste.debug :only [spy]]
         ciste.sections.default
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.activity-actions
@@ -9,7 +8,8 @@
         [jiksnu.model :only [activity?]]
         [jiksnu.session :only [with-user]]
         midje.sweet)
-  (:require [jiksnu.abdera :as abdera]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.abdera :as abdera]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -29,7 +29,7 @@
  (fact "#'oembed->activity"
    (let [oembed-str (slurp "test-resources/oembed.json")]
      ;; TODO: complete
-     (spy oembed-str) => string?))
+     oembed-str => string?))
  
  (fact "entry->activity"
    (let [domain-name (fseq :domain)

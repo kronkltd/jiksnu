@@ -2,7 +2,6 @@
   (:use [clj-factory.core :only [factory]]
         [ciste.config :only [with-environment]]
         ciste.core
-        [ciste.debug :only [spy]]
         ciste.filters
         jiksnu.test-helper
         [jiksnu.model :only [activity?]]
@@ -15,6 +14,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]

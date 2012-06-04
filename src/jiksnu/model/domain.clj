@@ -22,7 +22,8 @@
 
 (defn fetch-by-id
   [id]
-  (mc/find-map-by-id collection-name id))
+  (if-let [domain (mc/find-map-by-id collection-name id)]
+    (model/map->Domain domain)))
 
 (defn delete
   [domain]
@@ -37,7 +38,7 @@
       (do
         (log/debugf "Creating domain %s" (:_id domain))
         (mc/insert collection-name domain)
-        domain)
+        (fetch-by-id (:_id domain)))
       (throw+ {:type :validation
                ;; :errors errors
                }))))

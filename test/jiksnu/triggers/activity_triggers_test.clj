@@ -1,6 +1,5 @@
 (ns jiksnu.triggers.activity-triggers-test
   (:use [ciste.config :only [with-environment]]
-        [ciste.debug :only [spy]]
         [clj-factory.core :only [factory]]
         jiksnu.test-helper
         jiksnu.model
@@ -9,6 +8,7 @@
         jiksnu.views.activity-views
         midje.sweet)
   (require [clj-tigase.packet :as packet]
+           [clojure.tools.logging :as log]
            [jiksnu.model.activity :as model.activity]
            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity

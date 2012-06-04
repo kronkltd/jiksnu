@@ -1,11 +1,11 @@
 (ns jiksnu.filters.subscription-filters-test
   (:use [ciste.core :only [with-serialization]]
-        [ciste.debug :only [spy]]
         [ciste.filters :only [filter-action]]
         jiksnu.test-helper
         jiksnu.actions.subscription-actions
         midje.sweet)
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.session :as session]
             [jiksnu.actions.user-actions :as actions.user]
             jiksnu.filters.subscription-filters

@@ -1,6 +1,5 @@
 (ns jiksnu.views.subscription-views-test
-  (:use [ciste.debug :only [spy]]
-        [ciste.views :only [apply-view]]
+  (:use [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.views.subscription-views
@@ -8,6 +7,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
             [jiksnu.namespace :as namespace]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]

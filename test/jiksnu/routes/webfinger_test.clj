@@ -1,12 +1,12 @@
 (ns jiksnu.routes.webfinger-test
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [fetch-resource query string->document]]
         [jiksnu.model :only [rel-filter]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [every-checker fact]])
   (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
             [ring.mock.request :as mock]))
 
 (test-environment-fixture

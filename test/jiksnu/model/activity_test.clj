@@ -1,12 +1,12 @@
 (ns jiksnu.model.activity-test
-  (:use [ciste.debug :only [spy]]
-        [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model :only [activity?]]
         [jiksnu.session :only [with-user]]
         jiksnu.model.activity
         midje.sweet)
-  (:require (jiksnu.model [user :as model.user]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

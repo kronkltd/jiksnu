@@ -1,11 +1,11 @@
 (ns jiksnu.routes.domain-test
   (use [ciste.config :only [with-environment]]
-       [ciste.debug :only [spy]]
        [jiksnu.test-helper :only [test-environment-fixture]]
        [jiksnu.routes :only [app]]
        midje.sweet
        [ring.mock.request :only [request]])
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.session :as session]
             [jiksnu.model.activity :as model.activity]
             [lamina.core :as l]))
