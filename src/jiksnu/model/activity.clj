@@ -1,12 +1,15 @@
 (ns jiksnu.model.activity
   (:use [clojure.core.incubator :only [-?>>]]
         [jiksnu.model :only [map->Activity]]
-        [jiksnu.session :only [current-user current-user-id is-admin?]])
+        [jiksnu.session :only [current-user current-user-id is-admin?]]
+        [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clj-time.core :as time]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
+            [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [monger.collection :as mc])
   (:import com.ocpsoft.pretty.time.PrettyTime
@@ -14,6 +17,14 @@
 
 (defonce page-size 20)
 (def collection-name "activities")
+
+(def create-validators
+  (validation-set
+   (presence-of :_id)
+   (presence-of [:object :object-type])
+   (presence-of :title)
+   (presence-of :created)
+   (presence-of :author)))
 
 ;; TODO: This operation should be performed on local posts. Remote
 ;; posts without an id should be rejected
@@ -77,16 +88,30 @@
     (dissoc activity :parent)
     activity))
 
+(defn set-_id
+  [activity]
+  (if (:_id activity)
+    activity
+    (assoc activity :_id (model/make-id))))
+
+(defn set-created-time
+  [activity]
+  (if (:created activity)
+    activity
+    (assoc activity :created (time/now))))
+
 
 (defn prepare-activity
   [activity]
   (-> activity
+      set-_id
       set-id
       set-title
       set-object-id
       set-public
       set-remote
       set-tags
+      set-created-time
       set-object-type
       set-parent))
 
@@ -100,18 +125,19 @@
 
 (defn create
   [activity]
-  (->> activity
-       prepare-activity
-       ;; make-activity
-       ((fn [a]
-          ;; (log/debugf "Creating activity: %s" (pr-str a))
-          a))
-       (mc/insert collection-name)))
+  (let [activity (prepare-activity activity)
+        errors (create-validators activity)]
+    (if (empty? errors)
+      (do
+        (log/debugf "Creating activity: %s" (pr-str activity))
+        (mc/insert collection-name activity)
+        (fetch-by-id (:_id activity)))
+      (throw+ {:type :validation :errors errors}))))
 
 (defn get-comments
   [activity]
   (fetch-all {:parent (:_id activity)}
-             {:sort [{:published 1}]}))
+             {:sort [{:created 1}]}))
 
 (defn get-author
   [activity]
@@ -149,7 +175,7 @@
          (privacy-filter user))]
     (mc/find-maps collection-name
                   merged-options
-                  :sort [{:published 1}]
+                  :sort [{:created 1}]
                   :skip (* (dec page-number) page-size)
                   :limit page-size)))
 
@@ -202,17 +228,11 @@
     activity
     (assoc-in activity [:object :updated] (time/now))))
 
-(defn set-published-time
+(defn set-object-created
   [activity]
-  (if (:published activity)
+  (if (:created (:object activity))
     activity
-    (assoc activity :published (time/now))))
-
-(defn set-object-published
-  [activity]
-  (if (:published (:object activity))
-    activity
-    (assoc-in activity [:object :published] (time/now))))
+    (assoc-in activity [:object :created] (time/now))))
 
 (defn set-actor
   [activity]
@@ -239,8 +259,8 @@
       set-local
       set-updated-time
       set-object-updated
-      set-object-published
-      set-published-time
+      set-object-created
+      set-created-time
       set-actor))
 
 (defn count-records
