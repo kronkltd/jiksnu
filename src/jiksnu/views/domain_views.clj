@@ -1,6 +1,5 @@
 (ns jiksnu.views.domain-views
-  (:use [ciste.debug :only [spy]]
-        [ciste.model :only [implement]]
+  (:use [ciste.model :only [implement]]
         [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section
                                        show-section]]

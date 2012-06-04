@@ -1,6 +1,5 @@
 (ns jiksnu.views.subscription-views
-  (:use [ciste.debug :only [spy]]
-        [ciste.views :only [defview]]
+  (:use [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.subscription-actions)
   (:require [clj-tigase.core :as tigase]

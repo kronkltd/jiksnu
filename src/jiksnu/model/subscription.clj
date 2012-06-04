@@ -53,7 +53,7 @@
 
 (defn create
   [subscription & options]
-  (let [errors (log/spy (create-validators subscription))]
+  (let [errors (create-validators subscription)]
     (if (empty? errors)
       (let [option-map
             (merge {:created (time/now)}

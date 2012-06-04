@@ -1,23 +1,22 @@
 (ns jiksnu.triggers.activity-triggers
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.triggers :only [add-trigger!]]
         ciste.sections.default
         jiksnu.actions.activity-actions)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            (clojure.tools [logging :as log])
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            (jiksnu.model [activity :as model.activity]
-                          [domain :as model.domain]
-                          [item :as model.item]
-                          [subscription :as model.subscription]
-                          [user :as model.user]))
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.item :as model.item]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.model.user :as model.user])
   (:import java.net.URI
            jiksnu.model.Activity
            jiksnu.model.User))

@@ -1,5 +1,5 @@
 (ns jiksnu.xmpp.channels
-  (:use [ciste.debug :only [spy]])
+  (:require [clojure.tools.logging :as log])
   (:gen-class
    :extends tigase.server.AbstractMessageReceiver))
 

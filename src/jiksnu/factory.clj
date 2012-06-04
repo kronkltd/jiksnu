@@ -67,16 +67,21 @@
   (let [password (fseq :password)
         first-name (fseq :name)
         last-name (fseq :surname)
-        display-name (str first-name " " last-name)]
-    {:username (fseq :username)
-     :domain (fseq :domain)
+        display-name (str first-name " " last-name)
+        username (fseq :username)
+        domain (fseq :domain)]
+    {:username username
+     :domain domain
+     :id (str "acct:" username "@" domain)
+     :local false
      :name display-name
      :display-name display-name
      :first-name first-name
      :last-name last-name}))
 
 (deffactory :local-user
-  (factory User {:domain (config :domain)}))
+  (-> (factory User {:domain (config :domain)})
+      (assoc :local true)))
 
 (deffactory :user
   (factory User))

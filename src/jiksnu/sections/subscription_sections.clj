@@ -1,11 +1,11 @@
 (ns jiksnu.sections.subscription-sections
-  (:use [ciste.debug :only [spy]]
-        [ciste.model :only [implement]]
+  (:use [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
                                        index-section link-to show-section]]
         [jiksnu.views :only [control-line]])
-  (:require [jiksnu.model.subscription :as model.subscription]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription))

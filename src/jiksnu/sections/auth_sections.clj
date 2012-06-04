@@ -1,10 +1,10 @@
 (ns jiksnu.sections.auth-sections
-  (:use (ciste [debug :only [spy]]
-               [sections :only [defsection]])
+  (:use [ciste.sections :only [defsection]]
         ciste.sections.default
-        (jiksnu [session :only [current-user]]
-                [views :only [control-line]])
-        (jiksnu.sections [user-sections :only [display-avatar-img]]))
+        [jiksnu.session :only [current-user]]
+        [jiksnu.views :only [control-line]]
+        [jiksnu.sections.user-sections :only [display-avatar-img]])
+  (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.AuthenticationMechanism))
 
 (defn logout-button

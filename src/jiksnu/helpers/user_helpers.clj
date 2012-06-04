@@ -1,8 +1,8 @@
 (ns jiksnu.helpers.user-helpers
-  (:use [ciste.debug :only [spy]]
-        [clojure.core.incubator :only [-?>]]
+  (:use [clojure.core.incubator :only [-?>]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.namespace :as ns]
             [jiksnu.model.user :as model.user]

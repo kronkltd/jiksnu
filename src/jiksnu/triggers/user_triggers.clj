@@ -1,6 +1,5 @@
 (ns jiksnu.triggers.user-triggers
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.triggers :only [add-trigger!]]
         [clojure.core.incubator :only [-?>]]
         lamina.core
@@ -69,7 +68,7 @@
 
 (defn add-link-trigger
   [action [user link] _]
-  (condp = (:rel (spy link))
+  (condp = (:rel link)
     "magic-public-key" (parse-magic-public-key user link)
     "avatar" (parse-avatar user link)
     ns/updates-from (parse-updates-from user link)

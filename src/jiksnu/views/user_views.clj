@@ -1,11 +1,11 @@
 (ns jiksnu.views.user-views
   (:use [ciste.core :only [with-format]]
-        [ciste.debug :only [spy]]
         [ciste.views :only [defview]]
         [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.user-actions
         plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.namespace :as ns]
             [jiksnu.helpers.user-helpers :as helpers.user]

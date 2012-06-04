@@ -1,6 +1,5 @@
 (ns jiksnu.sections.user-sections
   (:use  [ciste.config :only [config]]
-         [ciste.debug :only [spy]]
          ciste.sections
          [ciste.sections.default :only [title uri full-uri show-section add-form edit-button
                                         delete-button link-to index-line
@@ -11,6 +10,7 @@
          [jiksnu.views :only [control-line]]
          plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
             [jiksnu.abdera :as abdera]
@@ -166,7 +166,7 @@
 
 (defn admin-index-line
   [user]
-  (let [domain (actions.user/get-domain (spy user))]
+  (let [domain (actions.user/get-domain user)]
     [:tr
      [:td (display-avatar user)]
      [:td (link-to user)]

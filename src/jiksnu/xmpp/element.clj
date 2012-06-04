@@ -1,7 +1,7 @@
 (ns jiksnu.xmpp.element
-  (:use [ciste.debug :only [spy]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName

@@ -1,10 +1,10 @@
 (ns jiksnu.sections.domain-sections
-  (:use [ciste.debug :only [spy]]
-        [ciste.sections :only [defsection]]
+  (:use [ciste.sections :only [defsection]]
         ciste.sections.default
         [jiksnu.session :only [current-user is-admin?]]
         [jiksnu.views :only [control-line]])
-  (:require [jiksnu.sections.link-sections :as sections.link])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.sections.link-sections :as sections.link])
   (:import jiksnu.model.Domain))
 
 (defn favicon-link

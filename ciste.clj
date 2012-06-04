@@ -1,1 +1,3 @@
-{:environment :development}
+{:environment :development
+ :modules ["jiksnu.factory"]
+ }

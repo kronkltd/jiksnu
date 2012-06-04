@@ -1,8 +1,10 @@
 (ns jiksnu.test-helper
   (:use [ciste.runner :only [load-site-config start-application!
-                             stop-application! process-requires]])
+                             stop-application! process-requires]]
+        [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
-            jiksnu.factory))
+            ;; jiksnu.factory
+            [jiksnu.model :as model]))
 
 (defmacro test-environment-fixture
   [& body]
@@ -15,5 +17,12 @@
      (start-application! :test)
      (process-requires)
      ;; (Thread/sleep 6000)
-     ~@body
-     (stop-application!)))
+
+     (model/drop-all!)
+     (try+
+      ~@body
+      (catch Object ex#
+        (log/error "caught error" ex#)
+        )
+      (finally
+       (stop-application!)))))

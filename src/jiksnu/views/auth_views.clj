@@ -1,11 +1,11 @@
 (ns jiksnu.views.auth-views
   (:use ciste.core
-        [ciste.debug :only [spy]]
         [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.model
         jiksnu.actions.auth-actions)
-  (:require [jiksnu.sections.auth-sections :as sections.auth]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.sections.auth-sections :as sections.auth]
             [ring.util.response :as response])
   (:import jiksnu.model.User))
 

@@ -1,7 +1,7 @@
 (ns jiksnu.filters.user-filters
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.filters :only [deffilter]]
+        [ciste.model :only [implement]]
         jiksnu.actions.user-actions)
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -33,8 +33,7 @@
 
 (deffilter #'delete :xmpp
   [action request]
-  ;; TODO: implement
-  )
+  (implement))
 
 (deffilter #'discover :http
   [action request]

@@ -1,6 +1,5 @@
 (ns jiksnu.sections.activity-sections
   (:use [ciste.core :only [with-format]]
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form edit-button index-section show-section
@@ -9,8 +8,10 @@
         [clojure.core.incubator :only [-?>]]
         [jiksnu.views :only [control-line]]
         [plaza.rdf.core]
-        [plaza.rdf.vocabularies.foaf])
-  (:require [hiccup.core :as h]
+        [plaza.rdf.vocabularies.foaf]
+        [slingshot.slingshot :only [throw+]])
+  (:require [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
@@ -531,35 +532,36 @@
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]
-  (let [entry (abdera/new-entry)
-        user (model.activity/get-author activity)]
-    (doto entry
-      (.setId (or (:id activity) (str (:_id activity))))
-      (.setPublished (:published activity))
-      (.setUpdated (:updated activity))
-      (.setTitle (or (and (not= (:title activity) "")
-                          (:title activity))
-                     (:content activity)))
-      (.addAuthor (show-section user))
-      (.addLink (full-uri activity) "alternate")
-      (.setContentAsHtml (:content activity))
-      (.addSimpleExtension
-       ns/as "object-type" "activity" ns/status)
-      (.addSimpleExtension
-       ns/as "verb" "activity" ns/post)
-      #_(actions.activity/comment-link-item activity)
-      (acl-link activity))
-    (let [object (:object activity)
-          object-element (.addExtension entry ns/as "object" "activity")]
-      #_(.setObjectType object-element ns/status)
-      (if-let [object-updated (:updated object)]
-        (.addSimpleExtension object-element ns/atom "updated" "" (str object-updated)))
-      (if-let [object-published (:published object)]
-        (.addSimpleExtension object-element ns/atom "published" "" (str object-published)))
-      #_(if-let [object-id (:id object)]
-          (.setId object-element object-id))
-      #_(.setContentAsHtml object-element (:content activity)))
-    entry))
+  (if-let [user (model.activity/get-author activity)]
+    (let [entry (abdera/new-entry)]
+      (doto entry
+        (.setId (or (:id activity) (str (:_id activity))))
+        (.setPublished (:published activity))
+        (.setUpdated (:updated activity))
+        (.setTitle (or (and (not= (:title activity) "")
+                            (:title activity))
+                       (:content activity)))
+        (.addAuthor (show-section user))
+        (.addLink (full-uri activity) "alternate")
+        (.setContentAsHtml (:content activity))
+        (.addSimpleExtension
+         ns/as "object-type" "activity" ns/status)
+        (.addSimpleExtension
+         ns/as "verb" "activity" ns/post)
+        #_(actions.activity/comment-link-item activity)
+        (acl-link activity))
+      (let [object (:object activity)
+            object-element (.addExtension entry ns/as "object" "activity")]
+        #_(.setObjectType object-element ns/status)
+        (if-let [object-updated (:updated object)]
+          (.addSimpleExtension object-element ns/atom "updated" "" (str object-updated)))
+        (if-let [object-published (:published object)]
+          (.addSimpleExtension object-element ns/atom "published" "" (str object-published)))
+        #_(if-let [object-id (:id object)]
+            (.setId object-element object-id))
+        #_(.setContentAsHtml object-element (:content activity)))
+      entry)
+    (throw+ "Could not determine author")))
 
 (defsection show-section [Activity :json]
   [activity & _]

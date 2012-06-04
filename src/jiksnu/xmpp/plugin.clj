@@ -51,14 +51,12 @@
   [this ^Packet packet session
    repo queue settings]
   (if (config :print :packet)
-    (log/spy packet))
+    (log/infof "processing packet: %s" packet))
   (let [packet-to (.getPacketTo packet)]
     (if-not (#{"sess-man"} (.getLocalpart packet-to))
       (if-let [to (.getStanzaTo packet)]
         (if-let [bare-to (.getBareJID to)]
           (let [request (packet/make-request packet)]
-            (when (config :print :request)
-              (log/spy request))
             (if-let [response (main-handler queue request)]
               (do
                 (.setPacketTo response (.getPacketFrom packet))

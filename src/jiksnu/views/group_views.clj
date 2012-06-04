@@ -1,9 +1,9 @@
 (ns jiksnu.views.group-views
-  (:use [ciste.debug :only [spy]]
-        [ciste.views :only [defview]]
+  (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section add-form]]
         [jiksnu.views :only [control-line]]
-        jiksnu.actions.group-actions))
+        jiksnu.actions.group-actions)
+  (:require [clojure.tools.logging :as log]))
 
 (defview #'index :html
   [request groups]
@@ -32,6 +32,6 @@
 
 (defview #'edit-page :html
   [request group]
-  {:title (:nickname (spy group))
+  {:title (:nickname group)
    :body
    [:div]})

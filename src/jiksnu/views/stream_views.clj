@@ -1,7 +1,6 @@
 (ns jiksnu.views.stream-views
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-format]]
-        [ciste.debug :only [spy]]
         [ciste.views :only [apply-view defview]]
         ciste.sections.default
         [clj-stacktrace.repl :only [pst+]]
@@ -9,6 +8,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -171,7 +171,7 @@
   {:title (str group " group")
    :post-form true
    :body (list
-          (show-section (spy group))
+          (show-section group)
           (index-section activities))})
 
 (defview #'home-timeline :html

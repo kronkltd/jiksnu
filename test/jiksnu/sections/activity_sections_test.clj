@@ -1,12 +1,14 @@
 (ns jiksnu.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context]]
-        ciste.sections.default
+        [ciste.sections.default :only [uri show-section]]
         [clj-factory.core :only [factory]]
         jiksnu.test-helper jiksnu.session
         jiksnu.sections.activity-sections
-        midje.sweet)
+        [midje.sweet :only [fact => every-checker]])
   (:require [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
@@ -19,43 +21,44 @@
            jiksnu.model.User
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Person
+           org.joda.time.DateTime
            tigase.xml.Element))
 
 (test-environment-fixture
 
+ (fact "#'like-button"
+   (like-button (factory :activity)) =>
+   (every-checker
+    vector?
+    #(= :form (first %))))
+ 
  (fact "#'uri Activity"
-   (facts "should be a string"
-     (uri activity) => string?
-     (against-background
-       (around
-        :facts
-        (with-context [::http :html]                                        
-          (with-user (model.user/create (factory User))
-            (let [activity (model.activity/create (factory Activity))]
-              ?form)))))))
+   (fact "should be a string"
+     (with-context [:http :html]
+       (uri .activity.)) =>
+       (every-checker
+        string?)))
 
  (fact "#'show-section Activity :atom"
-   (facts "should return an abdera entry"
+   (fact "should return an abdera entry"
      (with-context [:http :atom]
-       (let [domain (model.domain/create (factory Domain))
+       (let [domain (actions.domain/find-or-create (factory Domain))
              user (model.user/create (factory User {:domain (:_id domain)}))
              author-map {:author (:_id user)}
              activity (model.activity/create (factory Activity author-map))]
-         (let [response (show-section activity)]
-           (instance? Entry response) => truthy
-           (.getId response) => truthy
-           (.getTitle response) => truthy
-           (.getUpdated response) => truthy
-           (.getAuthor response) => (partial instance? Person)
-           )))))
+         (show-section activity) =>
+         (every-checker
+          (partial instance? Entry)
+          #(string? (.getId %))
+          #(string? (.getTitle %))
+          #(instance? DateTime (.getUpdated %))
+          #(instance? Person (.getAuthor %)))))))
 
  (fact "#'show-section Activity :xmpp"
-   (facts "should return an element"
-     (show-section entry) => element/element?
-     (against-background
-       (around
-        :facts
-        (with-context [:xmpp :xmpp]
-          (with-user (model.user/create (factory User))
-            (let [entry (model.activity/create (factory Activity))]
-              ?form))))))))
+   (fact "should return an element"
+     (with-context [:xmpp :xmpp]
+       (let [actor (model.user/create (factory User))]
+         (with-user actor
+           (let [entry (model.activity/create (factory Activity))]
+             (show-section entry)))) => element/element?)))
+)

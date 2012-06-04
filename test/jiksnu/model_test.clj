@@ -11,3 +11,9 @@
       )
     )
   )
+
+(fact "#'rel-filter"
+  (let [links [{:rel "alternate"}
+               {:rel "contains"}]]
+    (rel-filter "alternate" links nil) => [{:rel "alternate"}]
+    (rel-filter "foo" links nil) => []))

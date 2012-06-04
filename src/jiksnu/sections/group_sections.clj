@@ -1,9 +1,9 @@
 (ns jiksnu.sections.group-sections
-  (:use [ciste.debug :only [spy]]
-        [ciste.sections :only [defsection]]
+  (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form link-to index-section index-line show-section]]
         [jiksnu.views :only [control-line]])
-  (:require [jiksnu.model.user :as model.user])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Group))
 
 (defsection add-form [Group :html]

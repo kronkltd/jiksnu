@@ -1,12 +1,12 @@
 (ns jiksnu.views.activity-views
   (:use [ciste.config :only [config]]
-        [ciste.debug :only [spy]]
         [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.activity-actions)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]

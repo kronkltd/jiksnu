@@ -1,7 +1,6 @@
 (ns jiksnu.triggers.subscription-triggers
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
-        [ciste.debug :only [spy]]
         ciste.triggers
         ciste.sections.default
         jiksnu.actions.subscription-actions)

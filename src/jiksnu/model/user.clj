@@ -1,7 +1,9 @@
 (ns jiksnu.model.user
   (:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
-        [jiksnu.model :only [make-id rel-filter map->User]])
+        [jiksnu.model :only [make-id rel-filter map->User]]
+        [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clj-tigase.core :as tigase]
@@ -9,13 +11,23 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
-            [monger.collection :as mc])
+            [monger.collection :as mc]
+           )
   (:import jiksnu.model.Domain
            jiksnu.model.User
            tigase.xmpp.BareJID
            tigase.xmpp.JID))
 
 (def collection-name "users")
+(def default-page-size 20)
+
+(def create-validators
+  (validation-set
+   (presence-of :username)
+   (presence-of :domain)
+   (presence-of :id)
+   #_(presence-of :local)
+   ))
 
 (defn salmon-link
   [user]
@@ -72,19 +84,20 @@
   []
   (mc/remove collection-name))
 
+
+
 (defn create
   [user]
   (if user
     (let [id (make-id)
           {:keys [username domain]} user]
-      (if (and (and username (not= username ""))
-               (and domain (not= domain "")))
-        (do
-          (log/debugf "Creating user: %s@%s" username domain)
-          (mc/insert collection-name (assoc user :_id id)))
-        (throw (IllegalArgumentException.
-                "Users must contain both a username and a domain"))))
-    (throw (IllegalArgumentException. "Can not create nil users"))))
+      (let [errors (create-validators user)]
+        (if (empty? errors)
+          (do
+            (log/debugf "Creating user: %s@%s" username domain)
+            (mc/insert collection-name (assoc user :_id id)))
+          (throw+ {:type :validation
+                   :errors errors}))))))
 
 (defn fetch-all
   "Fetch all users"
