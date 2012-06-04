@@ -1,5 +1,7 @@
 (ns jiksnu.model.conversation
-  (:use [ciste.config :only [config]])
+  (:use [ciste.config :only [config]]
+        [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [monger.collection :as mc]
@@ -7,6 +9,10 @@
   (:import jiksnu.model.Conversation))
 
 (def collection-name "conversations")
+
+(def create-validators
+  (validation-set
+   (presence-of :_id)))
 
 (defn drop!
   []
@@ -34,8 +40,14 @@
 
 (defn create
   [record]
-  (log/debugf "Creating conversation: %s" (:_id record))
-  (mc/insert collection-name record))
+  (let [record (if (:_id record) record (assoc record :_id (model/make-id)))
+        errors (create-validators record)]
+    (if (empty? errors)
+      (do
+        (log/debugf "Creating conversation: %s" (:_id record))
+        (mc/insert collection-name record)
+        (fetch-by-id (:_id record)))
+      (throw+ {:type :validation :errors errors}))))
 
 (defn count-records
   ([] (count-records {}))
