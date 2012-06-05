@@ -121,7 +121,8 @@
 
 (defn fetch-by-id
   [id]
-  (map->Activity (mc/find-map-by-id collection-name id)))
+  (if-let [activity (mc/find-map-by-id collection-name id)]
+    (map->Activity activity)))
 
 (defn create
   [activity]
@@ -161,37 +162,39 @@
              {:author (:_id user)}]})
     {:public true}))
 
-(defn index
-  "Return all the activities in the database as abdera entries"
-  [opts]
-  ;; TODO: move all this to action
-  (let [page-number (get  opts :page 1)
-        user (current-user)
-        merged-options
-        (merge
-         (:where opts)
-         {:tags {:$ne "nsfw"}}
-         ;; {"object.object-type" {:$ne "comment"}}
-         (privacy-filter user))]
-    (mc/find-maps collection-name
-                  merged-options
-                  :sort [{:created 1}]
-                  :skip (* (dec page-number) page-size)
-                  :limit page-size)))
+;; (defn index
+;;   "Return all the activities in the database as abdera entries"
+;;   [opts]
+
+;;   ;; TODO: move all this to action
+;;   (let [page-number (get  opts :page 1)
+;;         user (current-user)
+;;         merged-options
+;;         (merge
+;;          (:where opts)
+;;          {:tags {:$ne "nsfw"}}
+;;          ;; {"object.object-type" {:$ne "comment"}}
+;;          (privacy-filter user))]
+;;     (mc/find-maps collection-name
+;;                   merged-options
+;;                   :sort [{:created 1}]
+;;                   :skip (* (dec page-number) page-size)
+;;                   :limit page-size)))
 
 (defn fetch-by-remote-id
   [id]
-  (map->Activity (mc/find-one-as-map collection-name {:id id})))
+  (if-let [activity (mc/find-one-as-map collection-name {:id id})]
+    (map->Activity activity)))
 
-(defn show
-  [id]
-  (let [user (current-user)
-        options
-        (merge
-         {:_id id}
-         (privacy-filter user))]
-    (map->Activity
-     (mc/find-one-as-map options))))
+;; (defn show
+;;   [id]
+;;   (let [user (current-user)
+;;         options
+;;         (merge
+;;          {:_id id}
+;;          (privacy-filter user))]
+;;     (if-let [activity (mc/find-one-as-map options)]
+;;       (map->Activity activity))))
 
 (defn drop!
   []
@@ -204,7 +207,7 @@
 
 (defn find-by-user
   [user]
-  (index {:where {:author (:_id user)}}))
+  (fetch-all {:where {:author (:_id user)}}))
 
 (defn add-comment
   [parent comment]

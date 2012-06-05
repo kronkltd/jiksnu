@@ -10,6 +10,7 @@
         midje.sweet)
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -22,9 +23,16 @@
 (test-environment-fixture
  
  (fact "#'set-recipients"
-   (fact "should return an activity with the recipients added"
-     (let [activity (factory Activity)]
-       (set-recipients activity) => activity?)))
+   (fact "when there are no recipient uris"
+     (fact "should return that activity"
+       (let [activity (factory :activity)]
+         (set-recipients activity) => activity)))
+   (fact "When the activity contains a recipient uri"
+     (let [recipient (model.user/create (factory :local-user))
+           activity (factory :activity {:recipient-uris [(:id recipient)]})]
+       (set-recipients activity) =>
+       (every-checker
+        #(= (:_id recipient) (first (:recipients %)))))))
 
  (fact "#'oembed->activity"
    (let [oembed-str (slurp "test-resources/oembed.json")]
@@ -33,7 +41,7 @@
  
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
-         domain (model.domain/create (factory Domain
+         domain (actions.domain/find-or-create (factory Domain
                                               {:discovered true
                                                :links [{:rel "lrdd"
                                                         :template (str "http://" domain-name "/lrdd?uri={uri}")}]

@@ -13,11 +13,11 @@
 
 (deffilter #'fetch-comments :http
   [action request]
-  (-> request :params :id actions.activity/show action))
+  (-> request :params :id model.activity/fetch-by-id action))
 
 (deffilter #'new-comment :http
   [action request]
-  (-> request :params :id model.activity/show))
+  (-> request :params :id model.activity/fetch-by-id))
 
 (deffilter #'comment-response :xmpp
   [action request]
@@ -32,7 +32,7 @@
 (deffilter #'fetch-comments :xmpp
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [activity (model.activity/show id)]
+    (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 
 (deffilter #'fetch-comments-remote :xmpp

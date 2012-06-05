@@ -113,10 +113,10 @@ this is for OSW
 (defn set-recipients
   "attempt to resolve the recipients"
   [activity]
-  (let [recipients (filter identity (:recipients activity))]
-    (if (empty? recipients)
-      (dissoc activity :recipients)
-      (let [users (map actions.user/user-for-uri recipients)]
+  (let [uris (filter identity (:recipient-uris activity))]
+    (if (empty? uris)
+      (dissoc activity :recipient-uris)
+      (let [users (map #(actions.user/find-or-create-by-remote-id {:id %}) uris)]
         (assoc activity :recipients users)))))
 
 (defaction create
@@ -260,7 +260,7 @@ serialization"
 (defaction show
   "Show an activity"
   [activity]
-  (model.activity/show (:_id activity)))
+  (model.activity/fetch-by-id (:_id activity)))
 
 (defaction update
   [activity]

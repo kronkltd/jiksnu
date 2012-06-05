@@ -69,13 +69,12 @@
     ;; Discover conversation
     (doseq [conversation-uri (:conversations activity)]
       (let [atom-link (model/extract-atom-link conversation-uri)
-            source (actions.feed-source/find-or-create {:topic atom-link} {})
-            ]
+            source (actions.feed-source/find-or-create {:topic atom-link} {})]
         (fetch-remote-feed source)))
     
     ;; Add as a comment to parent posts
     ;; TODO: deprecated
-    (if-let [parent (model.activity/show (:parent activity))]
+    (if-let [parent (model.activity/fetch-by-id (:parent activity))]
       (model.activity/add-comment parent activity))
 
     ;; Add as comment to irts
