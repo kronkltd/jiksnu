@@ -58,9 +58,11 @@
                          :body (element/make-element
                                 ["pubsub" {"xmlns" ns/pubsub}
                                  ["items" {"node" ns/microblog}
-                                  ["item" {"id" (:_id activity)}]]])}
+                                  ["item" {"id" (str (:_id activity))}]]])}
              packet (tigase/make-packet packet-map)
              request (assoc (packet/make-request packet)
                        :serialization :xmpp)
              response (filter-action #'actions.activity/show request)]
-         response => activity?)))))
+         (filter-action #'actions.activity/show request) =>
+         (every-checker
+          activity?))))))

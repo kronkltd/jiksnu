@@ -6,6 +6,7 @@
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]

@@ -37,7 +37,7 @@
 (defaction public-timeline
   [& {:as options}]
   ;; TODO: This should pull from the public-timeline collection
-  [(model.activity/fetch-all {} options)
+  [(model.activity/fetch-all {})
    options])
 
 (declare user-timeline)

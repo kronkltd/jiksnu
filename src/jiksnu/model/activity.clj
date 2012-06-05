@@ -116,13 +116,18 @@
       set-parent))
 
 (defn fetch-all
-  [& options]
-  (map map->Activity (mc/find-maps collection-name options)))
+  ([] (fetch-all {}))
+  ([params] (fetch-all params {}))
+  ([params options]
+     (map map->Activity
+          (mc/find-maps collection-name params))))
 
 (defn fetch-by-id
   [id]
-  (if-let [activity (mc/find-map-by-id collection-name id)]
-    (map->Activity activity)))
+  ;; TODO: Should this always take a string?
+  (let [id (if (string? id) (model/make-id id) id)]
+    (if-let [activity (mc/find-map-by-id collection-name id)]
+      (map->Activity activity))))
 
 (defn create
   [activity]
