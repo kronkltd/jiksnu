@@ -7,6 +7,7 @@
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [monger.collection :as mc]
@@ -130,7 +131,7 @@
 
 (defn drop-collection
   [klass]
-  (mc/remove (string/lower-case (str klass))))
+  (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
 
 (defn drop-all!
   "Drop all collections"

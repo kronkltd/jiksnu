@@ -50,28 +50,33 @@
     (->> user-meta
          (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
          model/force-coll
-         (keep #(.getValue %)))
+         (keep #(.getValue %))
+         first)
+    ;; TODO: What are the error risks here?
     (catch RuntimeException ex
-      (log/error "caught error" ex))))
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
 
 (defn get-username-from-identifiers
   [user-meta]
   (try
     (->> user-meta
          model.webfinger/get-identifiers
-         (keep (comp first model.user/split-uri)))
+         (keep (comp first model.user/split-uri))
+         first)
     (catch RuntimeException ex
-      (log/error "caught error" ex))))
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
 
 ;; takes a document
 (defn get-username-from-user-meta
   "return the username component of the user meta"
   [user-meta]
-  (first
-   ;; TODO: is this lazy enough?
-   (concat
-    (get-username-from-identifiers user-meta)
-    (get-username-from-atom-property user-meta))))
+  (->> [(get-username-from-atom-property user-meta)]
+       (lazy-cat
+        [(get-username-from-identifiers user-meta)])
+       (filter identity)
+       first))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
@@ -94,7 +99,7 @@
   [^User user]
   (if-let [domain-id (or (:domain user)
                          (get-domain-name (:id user)))]
-    (actions.domain/find-or-create domain-id)))
+    (actions.domain/find-or-create {:_id domain-id})))
 
 (defn get-user-meta-uri
   [user]
@@ -297,37 +302,34 @@
 (defn person->user
   "Extract user information from atom element"
   [^Person person]
-  ;; TODO: Do we need to nil-check here?
-  (when person
-    (let [id (str (.getUri person))
-          ;; TODO: check for custom domain field first?
-          domain-name (get-domain-name id)
-          domain (actions.domain/find-or-create domain-name)
-          username (or (.getSimpleExtension person ns/poco
-                                            "preferredUsername" "poco")
-                       (get-username id))]
-      (if (and username domain)
-        (let [email (.getEmail person)
-              name (get-name person)
-              note (.getSimpleExtension person (QName. ns/poco "note"))
-              uri (str (.getUri person))
-              links (-> person
-                        (.getExtensions (QName. ns/atom "link"))
-                        (->> (map abdera/parse-link)))
-              params (merge {:domain domain-name}
-                            (when uri {:uri uri})
-                            (when username {:username username})
-                            (when note {:bio note})
-                            (when email {:email email})
-                            (when name {:display-name name}))
-              
-              user (-> {:id id}
-                       #_(find-or-create-by-remote-id params)
-                       (merge params))]
-          (doseq [link links]
-            (add-link user link))
-          (model/map->User user))
-        (throw (RuntimeException. "could not determine user"))))))
+  (let [id (str (.getUri person))
+        ;; TODO: check for custom domain field first?
+        domain-name (get-domain-name id)
+        domain (actions.domain/find-or-create {:_id domain-name})
+        username (or (.getSimpleExtension person ns/poco
+                                          "preferredUsername" "poco")
+                     (get-username id))]
+    (if (and username domain)
+      (let [email (.getEmail person)
+            name (get-name person)
+            note (.getSimpleExtension person (QName. ns/poco "note"))
+            uri (str (.getUri person))
+            links (-> person
+                      (.getExtensions (QName. ns/atom "link"))
+                      (->> (map abdera/parse-link)))
+            params (merge {:domain domain-name}
+                          (when uri {:uri uri})
+                          (when username {:username username})
+                          (when note {:bio note})
+                          (when email {:email email})
+                          (when name {:display-name name}))
+            user (-> {:id id}
+                     #_(find-or-create-by-remote-id params)
+                     (merge params))]
+        (doseq [link links]
+          (add-link user link))
+        (model/map->User user))
+      (throw+ "could not determine user"))))
 
 
 ;; TODO: Collect all changes and update the user once.

@@ -7,7 +7,7 @@
 
 (defaction index
   [options]
-  (model.activity/index {:page 1}))
+  (model.activity/fetch-all {} {:page 1}))
 
 (definitializer
   (require-namespaces

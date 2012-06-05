@@ -3,12 +3,13 @@
         [ciste.model :only [string->document]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
-        [midje.sweet :only [fact => anything throws contains]]
+        [midje.sweet :only [fact => anything throws contains every-checker]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -26,20 +27,33 @@
    (fact "when given an acct uri"
      (get-domain-name "acct:bob@example.com") => "example.com"))
 
- (fact "#'get-username-from-user-meta"
-   (fact "when the usermeta has a identifier"
-     (get-username-from-user-meta .user-meta.) => .username.
-     (provided
-       (model.webfinger/get-identifiers .user-meta.) => [.id.]
-       (model.user/split-uri .id.) => [.username. .domain.]))
-   (fact "when the usermeta does not have any identifiers"
+ (fact "#'get-username-from-atom-property"
+   (fact "when the property has an identifier"
      (let [username (fseq :username)
            user-meta (string->document
                       (str
                        "<XRD><Link><Property type=\"http://apinamespace.org/atom/username\">"
                        username
                        "</Property></Link></XRD>"))]
-       (get-username-from-user-meta user-meta) => username)))
+       (get-username-from-atom-property user-meta) => username)))
+
+ (fact "#'get-username-from-user-meta"
+   (fact "when the usermeta has an identifier"
+     (get-username-from-user-meta .user-meta.) => .username.
+     (provided
+       (get-username-from-identifiers .user-meta.) => .username.
+       (get-username-from-atom-property .user-meta.) => nil :times 0))
+   (fact "when the usermeta does not have an identifier"
+     (fact "and the atom link has an identifier"
+       (get-username-from-user-meta .user-meta.) => .username.
+       (provided
+         (get-username-from-identifiers .user-meta.) => nil
+       (get-username-from-atom-property .user-meta.) => .username.))
+     (fact "and the atom link does not have an identifier"
+       (get-username-from-user-meta .user-meta.) => nil
+     (provided
+       (get-username-from-identifiers .user-meta.) => nil
+       (get-username-from-atom-property .user-meta.) => nil))))
 
  
  (fact "#'get-username"
@@ -47,9 +61,9 @@
      (let [username (fseq :username)
            domain-name (fseq :domain)
            template (str "http://" domain-name "/xrd?uri={uri}")
-           domain (model.domain/create (factory Domain
-                                                {:_id domain-name
-                                                 :links [{:rel "lrdd" :template template}]}))
+           domain (actions.domain/find-or-create (factory Domain
+                                                          {:_id domain-name
+                                                           :links [{:rel "lrdd" :template template}]}))
            uri (str "http://" domain-name "/users/1")]
        (get-username uri) => username)
      (provided
@@ -63,16 +77,17 @@
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)
            template (str "http://" domain-name "/xrd?uri={uri}")
-           domain (model.domain/create (factory Domain
-                                                {:_id domain-name
-                                                 :links [{:rel "lrdd" :template template}]}))
+           domain (actions.domain/find-or-create
+                   (factory Domain
+                            {:_id domain-name
+                             :links [{:rel "lrdd" :template template}]}))
            uri (str "acct:bob@" domain-name)]
        (get-username uri) => "bob")))
  
  (fact "#'get-domain"
    (fact "when the domain already exists"
 
-     (let [domain (model.domain/create (factory Domain))]
+     (let [domain (actions.domain/find-or-create (factory Domain))]
 
        (fact "when the domain is specified"
          (let [response (get-domain {:domain (:_id domain)})]
@@ -83,12 +98,14 @@
          (fact "when there is an id"
 
            (fact "when it is a http url"
-             (let [response (get-domain {:id (str "http://" (:_id domain) "/users/1")})]
+             (let [response (get-domain {:id (str "http://" (:_id domain)
+                                                  "/users/1")})]
                response => (partial instance? Domain)
                (:_id response) => (:_id domain)))
 
            (fact "when it is an acct uri"
-             (let [response (get-domain {:id (str "acct:" (fseq :username) "@" (:_id domain))})]
+             (let [response (get-domain {:id (str "acct:" (fseq :username)
+                                                  "@" (:_id domain))})]
                response => (partial instance? Domain)
                (:_id response) => (:_id domain))))))))
 
@@ -104,32 +121,29 @@
        (fact "when given a Person generated by show-section"
          (model/drop-all!)
          (let [user (create (factory User))
-               person (with-context [:http :atom] (show-section user))
-               response (person->user person)]
-           
-           response => (partial instance? User)
-           (:username response) => (:username user)
-           (:id response) => (:id user)
-           (:domain response) => (:domain user))))
+               person (with-context [:http :atom] (show-section user))]
+           (person->user person) =>
+           (every-checker
+            (partial instance? User)
+            #(= (:username %) (:username user))
+            #(= (:id %) (:id user))
+            #(= (:domain %) (:domain user))))))
 
      (fact "when the domain is not discovered"
        (fact "when given a Person generated by show-section"
          (model/drop-all!)
-         (let [user (factory User)
-               person (with-context [:http :atom] (show-section user))
-               response (person->user person)]
-           
-           response => (partial instance? User)
-           (:username response) => (:username user)
-           ;; (:id response) => (:id user)
-           (:domain response) => (:domain user)))))
+         (let [user (model/map->User (factory User))
+               person (with-context [:http :atom] (show-section user))]
+           (person->user person) =>
+           (every-checker
+            (partial instance? User)
+            #(= (:username %) (:username user))
+            #(= (:id %)       (:id user))
+            #(= (:domain %)   (:domain user)))))))
 
    (fact "when the user has an http uri"
      (fact "when the domain is not discovered"
-       
        (fact "when given a Person generated by show-section"
-         
-         
          (model/drop-all!)
          (let [domain-name (fseq :domain)
                uri (str "http://" domain-name "/users/1")
@@ -151,10 +165,11 @@
      (fact "when given a http uri"
        (fact "when the domain is discovered"
          (model/drop-all!)
-         (let [domain (model.domain/create (factory Domain
-                                                    {:_id domain-name
-                                                     :links [{:rel "lrdd" :template template}]
-                                                     :discovered true}))
+         (let [domain (actions.domain/find-or-create
+                       (factory Domain
+                                {:_id domain-name
+                                 :links [{:rel "lrdd" :template template}]
+                                 :discovered true}))
                uri (str "http://" domain-name "/user/1")]
            (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
          (provided
@@ -162,11 +177,11 @@
      
      (fact "when given an acct uri"
        (model/drop-all!)
-       (let [domain (model.domain/create (factory Domain
-                                                  {:links [{:rel "lrdd" :template template}]
-                                                   :discovered true}))
+       (let [domain (actions.domain/find-or-create
+                     (factory Domain
+                              {:links [{:rel "lrdd" :template template}]
+                               :discovered true}))
              uri (str "acct:" username "@" (:_id domain))
              response (find-or-create-by-remote-id {:id uri})]
-         response => (partial instance? User)))
-     ))
+         response => (partial instance? User)))))
  )
