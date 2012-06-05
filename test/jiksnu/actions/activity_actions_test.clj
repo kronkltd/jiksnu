@@ -11,6 +11,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -51,7 +52,8 @@
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
        (with-context [:http :atom]
-         (let [entry (show-section (factory Activity {:author (:_id user)}))]
+         (let [entry (show-section (model/map->Activity
+                                    (factory Activity {:author (:_id user)})))]
            (entry->activity entry) => activity?)))
      
      (future-fact "when coming from an identi.ca feed"
@@ -96,49 +98,37 @@
              (delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity?))))))
 
+ (fact "#'viewable?"
+   (fact "When it is public"
+     (let [activity (factory :activity {:public true})]
+       (viewable? activity .user.)) => truthy)
+   (fact "when it is not public"
+     (fact "when the user is the author"
+       (let [user (model.user/create (factory :user))
+             activity (model.activity/create
+                       (factory :activity {:public false
+                                           :author (:_id user)}))]
+         (viewable? activity user)) => truthy)
+     (fact "when the user is not the author"
+       (fact "when the user is an admin"
+         (let [user (model.user/create (factory :user {:admin true}))
+               activity (model.activity/create (factory :activity {:public false}))]
+           (viewable? activity user)) => truthy)
+       (fact "when the user is not an admin"
+         (let [user (model.user/create (factory :user))
+               activity (model.activity/create (factory :activity {:public false}))]
+           (viewable? activity user)) => falsey))))
+ 
  (fact "#'show"
    (fact "when the record exists"
-     (fact "and the user is not logged in"
-       (fact "and the record is public"
-         (facts "should return the activity"
-           (let [author (model.user/create (factory User))
-                 activity (with-user author
-                            (create (factory Activity)))]
-             (show activity) => activity?)))
-       (fact "and the record is not public"
-         (facts "should return nil"
-           (let [author (model.user/create (factory User))
-                 activity (with-user author
-                            (create (factory Activity {:public false})))]
-             (show activity) => nil?))))
-     (fact "and the user is logged in"
-       (fact "and is the author"
-         (facts "should return the activity"
-           (let [user (model.user/create (factory User))]
-             (with-user user
-               (let [activity (create (factory Activity))]
-                 (show activity) => activity?)))))
-       (fact "and is not the author"
-         (fact "and is not on the access list"
-           (fact "and is an admin"
-             (facts "should return the activity"
-               (let [user (model.user/create (factory User {:admin true}))
-                     author (model.user/create (factory User))]
-                 (let [activity (with-user author
-                                  (create (factory Activity {:public false})))]
-                   (with-user user
-                     (show activity) => activity?)))))
-           (fact "and is not an admin"
-             (facts "should return nil"
-               (let [user (model.user/create (factory User))
-                     author (model.user/create (factory User))
-                     activity (with-user author
-                                (create (factory Activity {:public false})))]
-                 (with-user user
-                   (show activity) => nil?)))))))
-     (fact "and the record is not public"
-       (fact "and the user is not logged in"
-         (facts "should return nil"
-           (let [activity (create (factory Activity {:public false}))]
-             (show activity) => nil))))))
+     (fact "and the record is viewable"
+       (let [activity (create (factory :activity))]
+         (show activity) => activity
+         (provided
+           (viewable? activity) => true)))
+     (fact "and the record is not viewable"
+       (let [activity (create (factory Activity))]
+         (show activity) => (throws RuntimeException)
+         (provided
+           (viewable? activity) => false)))))
  )

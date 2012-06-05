@@ -28,6 +28,7 @@
            jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera2.ext.thread.ThreadHelper
+           org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Element))
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
@@ -116,7 +117,9 @@ this is for OSW
   (let [uris (filter identity (:recipient-uris activity))]
     (if (empty? uris)
       (dissoc activity :recipient-uris)
-      (let [users (map #(actions.user/find-or-create-by-remote-id {:id %}) uris)]
+      (let [users (->> uris
+                       (keep #(:_id (actions.user/find-or-create-by-remote-id
+                                     {:id %})))) ]
         (assoc activity :recipients users)))))
 
 (defaction create
@@ -164,7 +167,7 @@ this is for OSW
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
   ([entry] (entry->activity entry nil))
-  ([entry feed]
+  ([^Entry entry feed]
      (let [id (str (.getId entry))
            original-activity (model.activity/fetch-by-remote-id id)
            title (.getTitle entry)
@@ -257,10 +260,24 @@ serialization"
     (create activity))
   true)
 
+(defn viewable?
+  ([activity]
+     (viewable? activity (session/current-user)))
+  ([activity user]
+     (or (:public activity)
+         (and user
+              (or (= (:author activity) (:_id user))
+                  (:admin user)))
+         ;; TODO: Group membership and acl
+         )))
+
 (defaction show
   "Show an activity"
   [activity]
-  (model.activity/fetch-by-id (:_id activity)))
+  (if (viewable? activity)
+    activity
+    (throw+ {:type :permission
+             :message "You are not authorized to view this activity"})))
 
 (defaction update
   [activity]
