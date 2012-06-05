@@ -3,7 +3,8 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model.subscription :only [delete drop! create fetch-all
-                                          fetch-by-id subscribe ]]
+                                          fetch-by-id subscribe subscribing?
+                                          subscribed?]]
         [midje.sweet :only [fact => future-fact every-checker truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]

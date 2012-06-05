@@ -88,12 +88,12 @@
 (defn subscribing?
   "Does the actor have a subscription to the user"
   [actor user]
-  (mc/any? {:from actor :to user}))
+  (mc/any? collection-name {:from actor :to user}))
 
 (defn subscribed?
   "Does the user have a subscription to the actor"
   [actor user]
-  (mc/any? {:from user :to actor}))
+  (mc/any? collection-name {:from user :to actor}))
 
 (defn get-actor
   [subscription]
