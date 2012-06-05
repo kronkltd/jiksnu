@@ -19,6 +19,7 @@
            jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User
+           org.apache.abdera2.common.iri.IRI
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Person
            org.joda.time.DateTime
@@ -27,13 +28,14 @@
 (test-environment-fixture
 
  (fact "#'like-button"
-   (like-button (factory :activity)) =>
+   (like-button (model/map->Activity (factory :activity))) =>
    (every-checker
     vector?
     #(= :form (first %))))
  
  (fact "#'uri Activity"
    (fact "should be a string"
+     ;; TODO: not a good test
      (with-context [:http :html]
        (uri .activity.)) =>
        (every-checker
@@ -49,7 +51,7 @@
          (show-section activity) =>
          (every-checker
           (partial instance? Entry)
-          #(string? (.getId %))
+          #(instance? IRI (.getId %))
           #(string? (.getTitle %))
           #(instance? DateTime (.getUpdated %))
           #(instance? Person (.getAuthor %)))))))
