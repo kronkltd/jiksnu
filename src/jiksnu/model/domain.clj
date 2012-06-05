@@ -27,7 +27,7 @@
 
 (defn delete
   [domain]
-  (let [domain (fetch-by-id (:_id domain))]
+  (when-let [domain (fetch-by-id (:_id domain))]
     (mc/remove-by-id collection-name (:_id domain))
     domain))
 
@@ -59,7 +59,8 @@
 ;; TODO: don't use
 (defn update
   [domain]
-  (mc/save collection-name domain))
+  (mc/save collection-name domain)
+  domain)
 
 ;; TODO: add the links to the list
 (defn add-links

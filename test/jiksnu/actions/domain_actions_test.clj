@@ -7,6 +7,8 @@
         midje.sweet)
   (:require [ciste.model :as cm]
             [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger])
@@ -15,27 +17,28 @@
 (test-environment-fixture
 
  (fact "#'create"
-   (fact "should create the domain"
-     (let [options {:_id (fseq :domain)}]
-       (create options) => model/domain?)))
+   (fact "when given valid options"
+     (fact "and the domain does not already exist"
+       (model.domain/drop!)
+       (let [options {:_id (fseq :domain)}]
+         (create options) => model/domain?))
+     ;; TODO: already exists
+     )
+   ;; TODO: invalid options
+   )
 
  (fact "#'delete"
    (fact "when the domain does not exist"
-     (fact "should return nil"
-       (let [domain (factory Domain)]
-         (delete domain) => nil?)))
+     (model.domain/drop!)
+     (let [domain (factory Domain {:_id (fseq :domain)})]
+       (delete domain) => nil?))
 
-   (future-fact "when the domain exists"
-     (against-background
-       [(around :facts
-                (let [domain (model.domain/create (factory Domain))]
-                  ?form))]
-       (fact "should return the deleted domain"
-         (delete domain) => domain)
-       
-       (fact "should delete the domain"
-         (delete domain)
-         (show domain) => nil?))))
+   (fact "when the domain exists"
+     (let [domain (actions.domain/find-or-create (factory Domain))]
+       (delete domain) =>
+       (every-checker
+        #(= domain %)
+        (fn [_] (nil? (model.domain/fetch-by-id (:_id domain))))))))
  
  (fact "#'discover-onesocialweb"
    (fact "when there is no url context"
@@ -109,5 +112,6 @@
  
  (fact "host-meta"
    (fact "should return a XRD object"
-     (host-meta) => map?)))
+     (host-meta) => map?))
 
+)
