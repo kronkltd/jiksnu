@@ -19,8 +19,8 @@
   [username password]
   ;; TODO: fix this
   (if-let [user (model.user/get-user username)]
-    (if-let [mechanisms (model.authentication-mechanism/fetch-all
-                      {:user (:_id user)})]
+    (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
+                          {:user (:_id user)}))]
       (if (some #(BCrypt/checkpw password (:value %))
                 mechanisms)
         user
