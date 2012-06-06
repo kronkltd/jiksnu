@@ -184,4 +184,9 @@
              uri (str "acct:" username "@" (:_id domain))
              response (find-or-create-by-remote-id {:id uri})]
          response => (partial instance? User)))))
+
+ (fact "#'register-page"
+   (register-page) =>
+   (every-checker
+    (partial instance? User)))
  )

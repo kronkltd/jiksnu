@@ -1,6 +1,5 @@
 (ns jiksnu.routes.activity-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         midje.sweet)

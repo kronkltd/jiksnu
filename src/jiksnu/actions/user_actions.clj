@@ -458,7 +458,7 @@
 (defaction register-page
   "Display the form to reqister a user"
   []
-  (model/map->User))
+  (model/->User))
 
 (defaction show
   "This action just returns the passed user.

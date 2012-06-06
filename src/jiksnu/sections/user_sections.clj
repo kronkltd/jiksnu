@@ -90,7 +90,7 @@
 
 (defn register-form
   [user]
-  [:form.well.form-horizontal {:method "post" :action "/main/register"}
+  [:form.well.form-horizontal.register-form {:method "post" :action "/main/register"}
    [:fieldset
     [:legend "Register"]
 
