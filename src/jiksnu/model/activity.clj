@@ -13,6 +13,7 @@
             [jiksnu.model.user :as model.user]
             [monger.collection :as mc])
   (:import com.ocpsoft.pretty.time.PrettyTime
+           java.util.Date
            jiksnu.model.Activity))
 
 (defonce page-size 20)
@@ -219,10 +220,6 @@
   (mc/update collection-name
              {:_id (:_id parent)}
              {:$push {:comments (:_id comment)}}))
-
-(defn prettyify-time
-  [date]
-  (-?>> date (.format (PrettyTime.))))
 
 (defn set-updated-time
   [activity]

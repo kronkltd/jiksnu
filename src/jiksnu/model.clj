@@ -2,7 +2,7 @@
   (:use ciste.core
         [ciste.config :only [config definitializer environment]]
         [clj-factory.core :only [factory]]
-        [clojure.core.incubator :only [-?>]])
+        [clojure.core.incubator :only [-?> -?>>]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
             [clojure.data.json :as json]
@@ -16,7 +16,8 @@
             monger.json
             [plaza.rdf.core :as rdf]
             [plaza.rdf.implementations.jena :as jena])
-  (:import java.io.FileNotFoundException
+  (:import com.ocpsoft.pretty.time.PrettyTime
+           java.io.FileNotFoundException
            java.io.PrintWriter
            java.text.SimpleDateFormat
            java.util.Date
@@ -46,17 +47,23 @@
            (.format formatter  date))
     date))
 
+(defn date->twitter
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
+(defn prettyify-time
+  [^Date date]
+  (-?>> date (.format (PrettyTime.))))
+
 (defn strip-namespaces
   [val]
   (-?> val
        (string/replace #"http://activitystrea.ms/schema/1.0/" "")
        (string/replace #"http://ostatus.org/schema/1.0/" "")))
 
-(defn date->twitter
-  [date]
-  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
-    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
-    (.format formatter date)))
+
 
 (defn rel-filter
   "returns all the links in the collection where the rel value matches the

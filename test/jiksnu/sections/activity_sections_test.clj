@@ -8,7 +8,9 @@
         [midje.sweet :only [fact => every-checker]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
@@ -32,6 +34,27 @@
    (every-checker
     vector?
     #(= :form (first %))))
+
+ ;; TODO: acl-link
+ ;; TODO: show-comment
+ ;; TODO: comment-link-item
+ ;; TODO: index-formats
+ ;; TODO: timeline-formats
+ ;; TODO: pictures-section
+ ;; TODO: tag-section
+ ;; TODO: location-section
+ ;; TODO: add-button-section
+ ;; TODO: privacy select
+ ;; TODO: post-actions
+ ;; TODO: recipients-section
+ ;; TODO: links section
+ ;; TODO: tags section
+
+ (fact "#'posted-link-section"
+   (let [activity (actions.activity/create (factory :activity))]
+     (posted-link-section activity) =>
+     (every-checker
+      #(h/html %))))
  
  (fact "#'uri Activity"
    (fact "should be a string"

@@ -24,8 +24,7 @@
             [jiksnu.session :as session]
             [jiksnu.xmpp.element :as element]
             [ring.util.codec :as codec])
-  (:import com.ocpsoft.pretty.time.PrettyTime
-           java.io.StringWriter
+  (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
            org.apache.abdera2.model.Entry
@@ -271,7 +270,7 @@
            :title (model/format-date (:published activity))
            :property "dc:published"}
     [:a {:href (uri activity)}
-     (-> activity :published model.activity/prettyify-time)]]
+     (-> activity :published .toDate model/prettyify-time)]]
    
    (when (:source activity)
      (str " using " (:source activity)))

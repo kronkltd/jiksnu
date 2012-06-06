@@ -10,22 +10,21 @@
 
 (test-environment-fixture
  
- (fact "index-http-route"
-   (fact "and there are no activities"
+ (fact "public-timeline-http-route"
+   (fact "when there are no activities"
      (model.activity/drop!)
 
-     (fact "should return a sucessful response"
-       (let [response (->> "/"
-                           (mock/request :get)
-                           response-for)]
-         response => (contains {:status 200}))))
+     (-> (mock/request :get "/")
+         response-for) =>
+         (every-checker
+          (contains {:status 200})))
 
-   (fact "and there are activities"
+   (fact "when there are activities"
      (let [user (model.user/create (factory :user))]
        (dotimes [n 10]
          (model.activity/create (factory :activity {:author (:_id user)})))
 
-       (let [response (->> "/"
-                           (mock/request :get)
-                           response-for)]
-         response => (contains {:status 200}))))))
+       (-> (mock/request :get "/")
+           response-for) =>
+           (every-checker
+            (contains {:status 200}))))))
