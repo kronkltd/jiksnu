@@ -102,11 +102,10 @@ of registered users"
   ([^UserRepository this]
      ;; TODO: implement
      (log/info "get users count")
-     (count (actions.user/index)))
+     (model.user/count-records))
   ([^UserRepository this ^String domain]
      (log/info "get users count")
-     (count (actions.user/index
-             {:domain domain}))))
+     (model.user/count-records {:domain domain})))
 
 (defn -initRepository
   "The method is called to initialize the data repository."
