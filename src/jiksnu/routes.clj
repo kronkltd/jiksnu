@@ -355,7 +355,6 @@
 
 (def app
   (http/wrap-ring-handler
-   
    (-> all-routes
        jm/wrap-authentication-handler
        (file/wrap-file "resources/public/")
@@ -365,5 +364,4 @@
        handler/site
        middleware/wrap-http-serialization
        #_middleware/wrap-log-request
-       stacktrace/wrap-stacktrace)))
-
+       jm/wrap-stacktrace)))
