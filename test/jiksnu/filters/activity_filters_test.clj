@@ -1,6 +1,5 @@
 (ns jiksnu.filters.activity-filters-test
   (:use [clj-factory.core :only [factory]]
-        [ciste.config :only [with-environment]]
         ciste.core
         ciste.filters
         jiksnu.test-helper
