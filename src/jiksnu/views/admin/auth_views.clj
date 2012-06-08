@@ -13,4 +13,4 @@
    :single true
    :body
    (list (index-section mechanisms)
-         (add-form (model/map->AuthenticationMechanism)))})
+         (add-form (model/->AuthenticationMechanism)))})

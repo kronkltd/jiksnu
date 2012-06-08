@@ -10,6 +10,14 @@
    (fact "when not given any parameters"
      (fetch-all) =>
      (every-checker
-      seq?)))
+      seq?))
+
+   (fact "when passed an empty map"
+     (fetch-all {}) =>
+     (every-checker
+      seq?
+      )
+     )
+   )
  
  )

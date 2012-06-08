@@ -31,12 +31,11 @@
     record))
 
 (defn fetch-all
-  ([]
-     (fetch-all {} {}))
-  ([params]
-     (fetch-all params {}))
+  ([] (fetch-all {} {}))
+  ([params] (fetch-all params {}))
   ([params opts]
-     (mc/find-maps collection-name params)))
+     (->> (mc/find-maps collection-name params)
+          (map model/map->Conversation))))
 
 (defn create
   [record]

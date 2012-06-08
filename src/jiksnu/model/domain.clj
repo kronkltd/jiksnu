@@ -32,29 +32,22 @@
     domain))
 
 (defn create
-  [domain]
-  (let [passed (valid? create-validators domain)] 
-    (if passed
+  [domain & [options & _]]
+  (let [errors (create-validators domain)] 
+    (if (empty? errors)
       (do
         (log/debugf "Creating domain %s" (:_id domain))
         (mc/insert collection-name domain)
         (fetch-by-id (:_id domain)))
       (throw+ {:type :validation
-               ;; :errors errors
-               }))))
-
-;; TODO: deprecated
-(defn index
-  ([]
-     (index {}))
-  ([args]
-     (mc/find-maps collection-name args)))
+               :errors errors}))))
 
 (defn fetch-all
-  ([]
-     (fetch-all {}))
+  ([] (fetch-all {}))
+  ([params] (fetch-all params {}))
   ([params opts]
-     (mc/find-maps collection-name params)))
+     (->> (mc/find-maps collection-name params)
+          (map model/map->Domain))))
 
 ;; TODO: don't use
 (defn update

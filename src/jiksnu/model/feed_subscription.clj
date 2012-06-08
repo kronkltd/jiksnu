@@ -18,6 +18,6 @@
                  :update now}
                 options))))
 
-(defn fetch
+(defn fetch-all
   [options]
   (model/map->FeedSubscription (mc/find-one-as-map collection-name options)))

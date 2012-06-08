@@ -10,6 +10,14 @@
 
 (def collection-name "feed_sources")
 
+(def create-validators
+  (validation-set
+   (presence-of :_id)
+   (presence-of :topic)
+   (presence-of :subscription-status)
+   (presence-of :created)
+   (presence-of :updated)))
+
 ;; TODO: generalize this and move it to model
 (defn set-field!
   "atomically set a field"
@@ -21,21 +29,17 @@
 (defn create
   [options]
   (let [now (time/now)
-        params (merge
-                {:created now
-                 ;; The initial state of a topic is unknown
-                 :status "unknown"
-                 :subscription-status "none"
-                 ;; :update now
-                 }
-                options)]
-    (if (:topic params)
-      ;; TODO: topic must be a valid url
-      ;; TODO: topic must have a discovered domain
-      (do
-        (log/debugf "Creating feed source for %s" (:topic params))
-        (mc/insert collection-name params))
-      (throw (RuntimeException. "Source must contain a topic")))))
+        params (merge {:created now
+                       ;; The initial state of a topic is unknown
+                       :status "unknown"
+                       :subscription-status "none"}
+                      options)]
+    (let [errors (create-validators params)]
+      (if (empty? errors)
+        (do
+          (log/debugf "Creating feed source for %s" (:topic params))
+          (mc/insert collection-name params))
+        (throw+ {:type :validation :errors errors})))))
 
 (defn delete
   "Delete feed source
@@ -43,20 +47,24 @@
 This will generally not be called"
   [source]
   (log/debugf "Deleting source for %s" (:topic source))
-  (mc/remove collection-name source)
+  (mc/remove-by-id collection-name (:_id source))
   source)
 
 (defn find-record
   [options & args]
-  (->FeedSource (mc/find-one-as-map collection-name options)))
+  (if-let [record (mc/find-one-as-map collection-name options)]
+    (model/map->FeedSource record)))
 
 (defn fetch-all
   [& args]
-  (map ->FeedSource (mc/find-maps collection-name args)))
+  (->> (mc/find-maps collection-name args)
+       (map model/map->FeedSource)))
 
 (defn fetch-by-id
   [id]
-  (mc/find-map-by-id collection-name id))
+  (if-let [record (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSource record)
+    (log/warnf "Could not find source with id = %s" id)))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

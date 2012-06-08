@@ -17,7 +17,7 @@
 
 (defaction index
   []
-  (model.group/index))
+  (model.group/fetch-all))
 
 (defaction user-list
   [user]
