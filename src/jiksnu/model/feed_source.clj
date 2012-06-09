@@ -1,5 +1,7 @@
 (ns jiksnu.model.feed-source
-  (:use [jiksnu.model :only [->FeedSource]])
+  (:use [jiksnu.model :only [->FeedSource]]
+        [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -26,20 +28,34 @@
              {:topic (:topic source)}
              {:$set {key value}}))
 
+(defn fetch-by-id
+  [id]
+  (if-let [record (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSource record)
+    (log/warnf "Could not find source with id = %s" id)))
+
+(defn prepare
+  [params]
+  (let [now (time/now)]
+    (merge {:created now
+            :updated now
+            :_id (model/make-id)
+            ;; The initial state of a topic is unknown
+            :status "unknown"
+            :subscription-status "none"}
+           params)))
+
 (defn create
-  [options]
-  (let [now (time/now)
-        params (merge {:created now
-                       ;; The initial state of a topic is unknown
-                       :status "unknown"
-                       :subscription-status "none"}
-                      options)]
-    (let [errors (create-validators params)]
-      (if (empty? errors)
-        (do
-          (log/debugf "Creating feed source for %s" (:topic params))
-          (mc/insert collection-name params))
-        (throw+ {:type :validation :errors errors})))))
+  [params]
+  (let [params (prepare params)
+        errors (create-validators params)]
+    (if (empty? errors)
+      (do
+        (log/debugf "Creating feed source for %s" (:topic params))
+        (mc/insert collection-name params)
+        ;; TODO: check no errors
+        (fetch-by-id (:_id params)))
+      (throw+ {:type :validation :errors errors}))))
 
 (defn delete
   "Delete feed source
@@ -53,18 +69,13 @@ This will generally not be called"
 (defn find-record
   [options & args]
   (if-let [record (mc/find-one-as-map collection-name options)]
-    (model/map->FeedSource record)))
+    (model/map->FeedSource record)
+    (log/warn "Could not find record")))
 
 (defn fetch-all
   [& args]
   (->> (mc/find-maps collection-name args)
        (map model/map->FeedSource)))
-
-(defn fetch-by-id
-  [id]
-  (if-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSource record)
-    (log/warnf "Could not find source with id = %s" id)))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

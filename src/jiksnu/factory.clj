@@ -8,6 +8,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain
+           jiksnu.model.FeedSource
            jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -17,21 +18,24 @@
 
 (defseq :username
   [n]
-  (str "user" n))
+  (str "user-" n))
 
 (defseq :name
   [n]
   (rand-nth
-   ["Alice" "Bob" "Carol"
-    "Dave" "Eve" "Frank"]))
+   ["Alice" "Bob" "Carol" "Daniel"
+    "Dave" "Eve" "Frank" "Tony" "George"
+    "Jesus" "Ed" "Britta" "Abed" "Troy" "Jeff"
+    "Pierce" "Shirley" "Annie" "Bill" "Leto" "Jean-Luc"
+    "James" "Oscar" "Michael" "John"]))
 
 (defseq :surname
   [n]
   (rand-nth
    ["Smith" "Miller" "Johnson"
-    "Doe" "McDuck" "Skywalker"
-    "Attreides"
-    ]))
+    "Doe" "McDuck" "Nebuchadnezzar" "Renfer"
+    "Skywalker" "Bluth" "Adama" "Doe"
+    "Attreides"]))
 
 (defseq :password
   [n]
@@ -118,3 +122,8 @@
 (deffactory :subscription
   (factory Subscription))
 
+(deffactory FeedSource
+  {:topic (fseq :uri)})
+
+(deffactory :feed-source
+  (factory FeedSource))

@@ -8,7 +8,7 @@
   [options]
   (mc/insert "groups" options))
 
-(defn index
+(defn fetch-all
   []
   (map model/map->Group
    (mc/find-maps "groups")))
