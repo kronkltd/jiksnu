@@ -9,6 +9,18 @@
   [options]
   (actions.group/index options))
 
+(defaction create
+  [params]
+  (actions.group/create params))
+
+(defaction delete
+  [group]
+  (actions.group/delete group))
+
+(defaction show
+  [group]
+  (actions.group/show group))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.admin.group-filters"

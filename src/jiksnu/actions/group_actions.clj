@@ -38,6 +38,10 @@
   [group user]
   (implement))
 
+(defaction show
+  [group]
+  group)
+
 (defaction add
   [params]
   (if-let [user (current-user)]
@@ -51,6 +55,10 @@
 (defaction edit-page
   [group]
   group)
+
+(defaction delete
+  [group]
+  (model.group/delete group))
 
 (definitializer
   (require-namespaces
