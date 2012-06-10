@@ -1,4 +1,4 @@
-(ns jiksnu.routes.auth-test
+(ns jiksnu.routes.auth-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
