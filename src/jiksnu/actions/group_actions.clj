@@ -16,8 +16,18 @@
   (Group.))
 
 (defaction index
-  []
-  (model.group/fetch-all))
+  [params & [options & _]]
+  (let [page (get options :page 1)
+        page-size 20
+        criteria {:sort [{:username 1}]
+                  :limit 20}
+        record-count (model.group/count-records {})
+        records (model.group/fetch-all {} criteria)]
+    {:items records
+     :page page
+     :page-size page-size
+     :total-records record-count
+     :args options}))
 
 (defaction user-list
   [user]
