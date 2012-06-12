@@ -9,6 +9,7 @@
            jiksnu.model.Conversation
            jiksnu.model.Domain
            jiksnu.model.FeedSource
+           jiksnu.model.FeedSubscription
            jiksnu.model.Group
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -128,6 +129,12 @@
 
 (deffactory :feed-source
   (factory FeedSource))
+
+(deffactory FeedSubscription
+  {:topic (fseq :uri)})
+
+(deffactory :feed-subscription
+  (factory FeedSubscription))
 
 (deffactory Group
   {:name (fseq :word)})

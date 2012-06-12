@@ -1,0 +1,46 @@
+(ns jiksnu.routes.admin.feed-subscription-routes-test
+  (:use [clj-factory.core :only [factory fseq]]
+        [clojure.core.incubator :only [-?> -?>>]]
+        [jiksnu.routes-helper :only [response-for]]
+        [jiksnu.session :only [with-user]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [midje.sweet :only [every-checker fact future-fact => ]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [clj-http.cookies :as cookies]
+            [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.model :as model]
+            [jiksnu.model.user :as model.user]
+            [ring.mock.request :as mock]
+            [ring.util.codec :as codec]))
+
+(test-environment-fixture
+ (fact "index"
+   (let [password (fseq :password)
+         user (model.user/create (factory :local-user {:admin true}))]
+
+     (actions.auth/add-password user password)
+
+
+     (let [cookie-str (-?> (mock/request :post "/main/login")
+                           (assoc :params {:username (:username user)
+                                           :password password})
+                           response-for
+                           :headers
+                           (get "Set-Cookie")
+                           cookies/decode-cookies
+                           (->> (map (fn [[k v]] [k (:value v)]))
+                                (into {}))
+                           codec/form-encode)]
+       (if (seq cookie-str)
+        (do
+          (-> (mock/request :get "/admin/feed-subscriptions")
+              (assoc-in [:headers "cookie"] cookie-str)
+              response-for) =>
+          (every-checker
+           map?
+           (comp status/success? :status)))
+        (throw+ "Could not login")))))
+ )

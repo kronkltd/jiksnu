@@ -10,10 +10,7 @@
   (:import jiksnu.model.FeedSource
            org.bson.types.ObjectId
            org.joda.time.DateTime
-           slingshot.ExceptionInfo
-           )
-
-  )
+           slingshot.ExceptionInfo))
 
 (test-environment-fixture
 
