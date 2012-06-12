@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model.group :only [delete create fetch-all]]
-        [midje.sweet :only [fact => every-checker]])
+        [midje.sweet :only [fact => every-checker future-fact]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]))
@@ -45,6 +45,5 @@
      (every-checker
       seq?
       #(fact (count %) => 20))))
-
  
  )

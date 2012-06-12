@@ -17,6 +17,10 @@
 
 (test-environment-fixture
 
+ (fact "#'fetch-by-id"
+   (let [source (model.feed-source/create (factory :feed-source))]
+     (fetch-by-id (:_id source)) => source))
+
  (fact "create"
    (fact "when given valid parameters"
      (create (factory :feed-source)) =>
