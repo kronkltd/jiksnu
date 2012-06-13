@@ -50,3 +50,10 @@
   (let [params (assoc (model.key/pair-hash (model.key/generate-key))
                  :userid (:_id user))]
     (create params)))
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.key-filters"
+    "jiksnu.sections.key-sections"
+    ;; "jiksnu.triggers.key-triggers"
+    "jiksnu.views.key-views"]))
