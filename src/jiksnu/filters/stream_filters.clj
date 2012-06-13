@@ -37,8 +37,8 @@
 
 (deffilter #'public-timeline :http
   [action request]
-  (let [page-number (or (-?> request :params :page Integer/parseInt) 1)]
-    (action :page page-number)))
+  (let [page (or (-?> request :params :page Integer/parseInt) 1)]
+    (action {} {:page page})))
 
 (deffilter #'public-timeline :xmpp
   [action request]

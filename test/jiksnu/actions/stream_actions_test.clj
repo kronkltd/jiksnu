@@ -17,7 +17,7 @@
    (fact "when there are no activities"
      (fact "should be empty"
        (model.activity/drop!)
-       (public-timeline) => (comp empty? first)))
+       (public-timeline) => (comp empty? :items)))
    (fact "when there are activities"
      (fact "should return a seq of activities"
        (let [author (model.user/create (factory User))]
@@ -25,6 +25,8 @@
            (model.activity/create (factory Activity))))
        (public-timeline) => (every-checker
                              coll?
+                             #(seq? (:items %))
+                             #(= 1 (:total-records %))
                              ;; #(every? activity? (first %))
                              ))))
 

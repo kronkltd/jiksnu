@@ -22,16 +22,17 @@
 (test-environment-fixture
 
  (fact "apply-view #'public-timeline :atom"
-   (fact "should be a map"
-     (with-context [:http :atom]
-       (with-user (model.user/create (factory User))
-         (let [activity (model.activity/create (factory Activity))]
-           (apply-view {:action #'public-timeline :format :atom}
-                       [[activity] {}]) =>
-                       (every-checker
-                        map?
-                        #(not (:template %))
-                        (fn [response]
-                          (let [feed (abdera/parse-xml-string (:body response))]
-                            (= 1
-                               (count (.getEntries feed))))))))))))
+   (with-context [:http :atom]
+     (with-user (model.user/create (factory :local-user))
+       (let [action #'public-timeline
+             activity (model.activity/create (factory :activity))
+             request {:action action :format :atom}
+             response (filter-action action request)]
+         (apply-view request response) =>
+         (every-checker
+          map?
+          #(not (:template %))
+          (fn [response]
+            (let [feed (abdera/parse-xml-string (:body response))]
+              (= 1
+                 (count (.getEntries feed)))))))))))

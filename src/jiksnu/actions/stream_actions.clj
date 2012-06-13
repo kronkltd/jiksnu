@@ -35,10 +35,18 @@
   (implement))
 
 (defaction public-timeline
-  [& {:as options}]
-  ;; TODO: This should pull from the public-timeline collection
-  [(model.activity/fetch-all {})
-   options])
+  [params & [options & _]]
+  (let [page (get options :page 1)
+        page-size 20
+        criteria {:sort [{:updated 1}]
+                  :limit 20}
+        record-count (model.activity/count-records {})
+        records (model.activity/fetch-all params criteria)]
+    {:items records
+     :page page
+     :page-size page-size
+     :total-records record-count
+     :args options}))
 
 (declare user-timeline)
 
