@@ -26,7 +26,9 @@
 
 (deffilter #'post :http
   [action request]
-  (-> request :params action))
+  (-> request :params
+      (dissoc "geo.lat")
+      action))
 
 (deffilter #'show :http
   [action request]

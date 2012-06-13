@@ -38,7 +38,7 @@
   [params & [options & _]]
   (let [page (get options :page 1)
         page-size 20
-        criteria {:sort [{:updated 1}]
+        criteria {:sort [{:updated -1}]
                   :limit 20}
         record-count (model.activity/count-records {})
         records (model.activity/fetch-all params criteria)]

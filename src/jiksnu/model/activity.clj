@@ -37,8 +37,9 @@
 
 (defn set-title
   [activity]
-  (if (= (:title activity) "")
-    (dissoc activity :title)
+  (if (empty? (:title activity))
+    ;; TODO: strip down to plain text and limit to 140 characters
+    (assoc activity :title (:content activity))
     activity))
 
 (defn set-object-id

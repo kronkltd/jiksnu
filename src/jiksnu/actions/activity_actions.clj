@@ -125,11 +125,7 @@ this is for OSW
 (defaction create
   "create an activity"
   [{id :id :as params}]
-  (if (seq id)
-    (if-not (model.activity/fetch-by-remote-id id)
-      (model.activity/create params)
-      (throw+ {:msg (str "Activity already exists. id = " id)}))
-    (throw+ {:msg "id must not be empty"})))
+  (model.activity/create params))
 
 (defaction delete
   "delete an activity"

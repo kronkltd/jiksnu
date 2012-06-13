@@ -270,7 +270,7 @@
            :title (model/format-date (:published activity))
            :property "dc:published"}
     [:a {:href (uri activity)}
-     (-> activity :published .toDate model/prettyify-time)]]
+     (-> activity :created .toDate model/prettyify-time)]]
    
    (when (:source activity)
      (str " using " (:source activity)))
