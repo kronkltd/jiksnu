@@ -157,8 +157,8 @@
         page-size 20
         criteria {:sort [{:username 1}]
                   :limit 20}
-        record-count (apply model.user/count-records {})
-        records (apply model.user/fetch-all {} criteria)]
+        record-count (model.user/count-records {})
+        records (model.user/fetch-all {} criteria)]
     {:items records
      :page page
      :page-size page-size
