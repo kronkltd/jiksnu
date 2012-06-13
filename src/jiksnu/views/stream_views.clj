@@ -77,7 +77,7 @@
    [:statuses (map index-line activities)]})
 
 (defview #'public-timeline :atom
-  [request [activities _]]
+  [request {:keys [items] :as response}]
   (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
@@ -91,8 +91,8 @@
                      {:href self
                       :rel "self"
                       :type "application/atom+xml"}]
-             :updated (:updated (first activities))
-             :entries (map show-section activities)})}))
+             :updated (:updated (first items))
+             :entries (map show-section items)})}))
 
 (defview #'user-timeline :atom
   [request [user activities]]
@@ -181,16 +181,15 @@
    :body (index-section activities)})
 
 (defview #'public-timeline :html
-  [request [activities options]]
+  [request {:keys [items page] :as response}]
   {:title "Public Timeline"
    :post-form true
    :links [{:rel "next"
-            :href "?page=2"
+            :href (str "?page=" (inc page))
             :title "Next Page"
             :type "text/html"}]
-   :formats (sections.activity/index-formats activities)
-   ;; :aside '([:p "foo"])
-   :body (index-section activities options)})
+   :formats (sections.activity/index-formats items)
+   :body (index-section items response)})
 
 (defview #'remote-profile :html
   [request user]
