@@ -1,7 +1,6 @@
 (ns jiksnu.features-helper
   (:use aleph.http
         aleph.formats
-        [ciste.debug :only [spy]]
         [ciste.model :only [implement]]
         ;; ciste.sections.default
         [clj-factory.core :only [factory fseq]]
@@ -42,18 +41,16 @@
 (def that-user (ref nil))
 (def my-password (ref nil))
 
-      
+
 (defn before-hook
   []
   (log/info "before")
   (try (let [site-config (ciste.runner/load-site-config)]
          
          (ciste.runner/start-application! :test)
-         
-         (c/set-config! [:domain] (str domain ":" port))
-         ;; (log/info "dropping")
-         ;; (Thread/sleep 6000)
-         (model/drop-all!))
+         (model/drop-all!)
+         (set-driver! {:browser :htmlunit})
+         (ciste.runner/process-requires))
        (catch Exception ex
          (.printStackTrace ex)
          (System/exit 0))))
@@ -204,7 +201,7 @@
 
 (defn do-enter-password
   []
-  (do-enter-field (spy @my-password) "password"))
+  (do-enter-field @my-password "password"))
 
 (defn do-enter-username
   []
@@ -255,7 +252,7 @@
 (defn go-to-the-page
   [page-name]
   (if-let [path (get page-names page-name)]
-    (fetch-page-browser :get (spy path))
+    (fetch-page-browser :get path)
     (throw (RuntimeException. (str "No path defined for " page-name)))))
 
 (defn go-to-the-page-for-activity
@@ -299,7 +296,7 @@
 
 (defn log-response
   []
-  (-> @current-page :body channel-buffer->string spy))
+  (-> @current-page :body channel-buffer->string log/info))
 
 (defn name-should-be
   [display-name]
@@ -423,7 +420,7 @@
 (defn should-see-list
   [class-name]
   (check-response
-   (exists? (spy (str "." class-name))) => truthy))
+   (exists? (str "." class-name)) => truthy))
 
 (defn should-see-subscription-list
   []
@@ -432,14 +429,16 @@
 
 (defn there-is-an-activity
   [modifier]
-  (let [activity (actions.activity/create
-                  (factory Activity
-                           {:author (session/current-user-id)
-                            :public (= modifier "public")}))]
-    (dosync
-     (ref-set that-activity activity))))
+  (let [user (or @that-user
+                 (actions.user/create (factory :local-user)))]
+    (session/with-user user
+     (let [activity (actions.activity/create
+                     (factory Activity
+                              {:author (session/current-user-id)
+                               :public (= modifier "public")}))]
+       (dosync
+        (ref-set that-activity activity))))))
 
 (defn user-posts-activity
   []
-  (session/with-user @that-user
-    (there-is-an-activity "public")))
+  (there-is-an-activity "public"))

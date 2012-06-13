@@ -3,14 +3,16 @@
 (use 'clj-webdriver.taxi)
 (require '[jiksnu.model.activity :as model.activity])
 
-(set-driver! {:browser :firefox})
+(alter-var-root #'cucumber.runtime.clj/-buildWorld
+                (fn [_]
+                  (fn [_]
+                    (before-hook))))
 
-(Before []
- (before-hook))
 
-(After []
- (after-hook))
-
+(alter-var-root #'cucumber.runtime.clj/-disposeWorld
+                (fn [_]
+                  (fn [_]
+                    (after-hook))))
 
 ;; Given
 
