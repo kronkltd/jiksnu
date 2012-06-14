@@ -1,10 +1,9 @@
 (ns jiksnu.abdera-test
   (:use [ciste.config :only [with-environment]]
-        [ciste.debug :only [spy]]
         [clj-factory.core :only [fseq]]
-        jiksnu.abdera
-        jiksnu.test-helper
-        midje.sweet)
+        [jiksnu.abdera :only [*abdera-factory* new-id get-text new-entry]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [midje.sweet :only [fact future-fact => every-checker]])
   (:require [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName
            org.apache.abdera2.model.Entry))

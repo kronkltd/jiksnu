@@ -1,6 +1,7 @@
 (ns jiksnu.filters.stream-filters-test
   (:use [clj-factory.core :only [factory fseq]]
         [ciste.config :only [config]]
+        [ciste.core :only [with-serialization]]
         [ciste.filters :only [filter-action]]
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [test-environment-fixture]]
@@ -23,41 +24,42 @@
 (test-environment-fixture
    
  (fact "filter-action #'actions.stream/public-timeline :xmpp"
-   (fact "when there are no activities"
-     (model/drop-all!)
-     (let [user (model.user/create (factory User))
-           element nil
-           packet (tigase/make-packet
-                   {:from (tigase/make-jid user)
-                    :to (tigase/make-jid user)
-                    :type :get
-                    :body element})
-           request (assoc (packet/make-request packet)
-                     :serialization :xmpp)]
-       (filter-action #'actions.stream/public-timeline request) =>
-       (every-checker
-        map?
-        (comp empty? :items)
-        #(= 0 (:total-records %))
-        )))
-   
-   (fact "when there are activities"
-     (let [author (model.user/create (factory User))]
-       (with-user author
-         (let [element nil
-               packet (tigase/make-packet
-                       {:from (tigase/make-jid author)
-                        :to (tigase/make-jid author)
-                        :type :get
-                        :id (fseq :id)
-                        :body element})
-               request (assoc (packet/make-request packet)
-                         :serialization :xmpp)
-               activity (model.activity/create (factory Activity))]
-           (filter-action #'actions.stream/public-timeline request) =>
-           (every-checker
-            map?
-            #(every? model/activity? (:items %))
-            #(= 1 (:total-records %))))))))
+   (with-serialization :xmpp
+     (fact "when there are no activities"
+      (model/drop-all!)
+      (let [user (model.user/create (factory User))
+            element nil
+            packet (tigase/make-packet
+                    {:from (tigase/make-jid user)
+                     :to (tigase/make-jid user)
+                     :type :get
+                     :body element})
+            request (assoc (packet/make-request packet)
+                      :serialization :xmpp)]
+        (filter-action #'actions.stream/public-timeline request) =>
+        (every-checker
+         map?
+         (comp empty? :items)
+         #(= 0 (:total-records %))
+         )))
+     
+     (fact "when there are activities"
+       (let [author (model.user/create (factory User))]
+         (with-user author
+           (let [element nil
+                 packet (tigase/make-packet
+                         {:from (tigase/make-jid author)
+                          :to (tigase/make-jid author)
+                          :type :get
+                          :id (fseq :id)
+                          :body element})
+                 request (assoc (packet/make-request packet)
+                           :serialization :xmpp)
+                 activity (model.activity/create (factory Activity))]
+             (filter-action #'actions.stream/public-timeline request) =>
+             (every-checker
+              map?
+              #(every? model/activity? (:items %))
+              #(= 1 (:total-records %)))))))))
 
  )

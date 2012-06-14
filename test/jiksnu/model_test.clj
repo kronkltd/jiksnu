@@ -1,19 +1,20 @@
 (ns jiksnu.model-test
-  (:use midje.sweet
-        jiksnu.model))
+  (:use [jiksnu.model :only [parse-http-link rel-filter]]
+        [midje.sweet :only [fact future-fact => every-checker contains]]))
 
 (fact "#'parse-http-link"
-  (let [link-string "<http://jonkulp.dyndns-home.com/micro/main/xrd?PHPSESSID=17v5lqgsbdpggp3am4u9brfcd0?uri=acct:jonkulp@jonkulp.dyndns-home.com>; rel=\"lrdd\"; type=\"application/xrd+xml\""]
-    (let [response (parse-http-link link-string)]
-      response => (contains {"href" "http://jonkulp.dyndns-home.com/micro/main/xrd?PHPSESSID=17v5lqgsbdpggp3am4u9brfcd0?uri=acct:jonkulp@jonkulp.dyndns-home.com"})
-      response => (contains {"rel" "lrdd"})
-      response => (contains {"type" "application/xrd+xml"})
-      )
-    )
-  )
+  (let [link-string "<http://jonkulp.dyndns-home.com/micro/main/xrd?uri=acct:jonkulp@jonkulp.dyndns-home.com>; rel=\"lrdd\"; type=\"application/xrd+xml\""]
+    
+    (parse-http-link link-string) =>
+    (every-checker
+     (contains {"href" "http://jonkulp.dyndns-home.com/micro/main/xrd?uri=acct:jonkulp@jonkulp.dyndns-home.com"})
+     (contains {"rel" "lrdd"})
+     (contains {"type" "application/xrd+xml"}))))
 
 (fact "#'rel-filter"
   (let [links [{:rel "alternate"}
                {:rel "contains"}]]
-    (rel-filter "alternate" links nil) => [{:rel "alternate"}]
-    (rel-filter "foo" links nil) => []))
+    (fact "when the link exists"
+      (rel-filter "alternate" links nil) => [{:rel "alternate"}])
+    (fact "when the link does not exist"
+      (rel-filter "foo" links nil) => [])))

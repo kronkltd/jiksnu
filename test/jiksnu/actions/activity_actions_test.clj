@@ -1,21 +1,18 @@
 (ns jiksnu.actions.activity-actions-test
-  (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context]]
-        ciste.sections.default
+  (:use [ciste.core :only [with-context]]
+        [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.activity-actions
-        jiksnu.test-helper
-        [jiksnu.model :only [activity?]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        midje.sweet)
+        [midje.sweet :only [fact future-fact => every-checker throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            jiksnu.sections.activity-sections)
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User))
@@ -42,25 +39,25 @@
  
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
-         domain (actions.domain/find-or-create (factory Domain
+         domain (actions.domain/find-or-create (factory :domain
                                               {:discovered true
                                                :links [{:rel "lrdd"
                                                         :template (str "http://" domain-name "/lrdd?uri={uri}")}]
                                                :_id domain-name}))
-         user (model.user/create (factory User {:domain domain-name}))]
+         user (model.user/create (factory :user {:domain domain-name}))]
 
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
        (with-context [:http :atom]
          (let [entry (show-section (model/map->Activity
-                                    (factory Activity {:author (:_id user)})))]
-           (entry->activity entry) => activity?)))
+                                    (factory :activity {:author (:_id user)})))]
+           (entry->activity entry) => model/activity?)))
      
      (future-fact "when coming from an identi.ca feed"
        (fact "should parse the published field"
          (let [feed nil #_(abdera/load-file "identica-update.xml")
                entry (first (abdera/get-entries feed))]
-           (entry->activity entry) => activity?
+           (entry->activity entry) => model/activity?
            #_(provided
                (.getId entry) => "1"))))))
 
@@ -68,10 +65,10 @@
    (fact "when the user is logged in"
      (fact "and it is a valid activity"
        (fact "should return that activity"
-         (let [user (model.user/create (factory User))]
+         (let [user (model.user/create (factory :local-user))]
            (with-user user
              (let [activity (factory Activity)]
-               (create activity) => activity?)))))))
+               (create activity) => model/activity?)))))))
 
  (fact "#'post"
    (fact "when the user is not logged in"
@@ -83,20 +80,18 @@
    (fact "when the activity exists"
      (fact "and the user owns the activity"
        (fact "should delete that activity"
-         (let [user (model.user/create (factory User))]
+         (let [user (model.user/create (factory :local-user))]
            (with-user user
-             (let [activity (create (factory Activity {:author (:_id user)}))]
-               (delete activity)
+             (let [activity (create (factory :activity {:author (:_id user)}))]
+               (delete activity) => activity
                (model.activity/fetch-by-id (:_id activity)) => nil)))))
      (fact "and the user does not own the activity"
        (fact "should not delete that activity"
-         (let [user1 (model.user/create (factory User))
-               user2 (model.user/create (factory User))
-               activity (with-user user1
-                          (model.activity/create (factory Activity)))]
-           (with-user user2
+         (let [user (model.user/create (factory :local-user))
+               activity (model.activity/create (factory Activity))]
+           (with-user user
              (delete activity) => (throws RuntimeException)
-             (model.activity/fetch-by-id (:_id activity)) => activity?))))))
+             (model.activity/fetch-by-id (:_id activity)) => activity))))))
 
  (fact "#'viewable?"
    (fact "When it is public"

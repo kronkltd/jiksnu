@@ -1,14 +1,13 @@
 (ns jiksnu.filters.activity-filters-test
   (:use [clj-factory.core :only [factory]]
-        ciste.core
-        ciste.filters
-        jiksnu.test-helper
+        [ciste.core :only [with-serialization with-format
+                           *serialization* *format*]]
+        [ciste.filters :only [filter-action]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model :only [activity?]]
         [jiksnu.routes :only [app]]
         [jiksnu.session :only [with-user]]
-        jiksnu.filters.activity-filters
         jiksnu.xmpp.element
-        lamina.core
         midje.sweet)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -17,6 +16,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            jiksnu.filters.activity-filters
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [ring.mock.request :as mock])
@@ -47,21 +47,22 @@
                    (filter-action #'actions.activity/create request) => activity?)))))))))
 
  (fact "filter-action #'actions.activity/show :xmpp"
-   (let [author (model.user/create (factory User))]
-     (with-user author
-       (let [activity (model.activity/create (factory Activity))
-             packet-map {:from (tigase/make-jid author)
-                         :to (tigase/make-jid author)
-                         :type :get
-                         :id "JIKSNU1"
-                         :body (element/make-element
-                                ["pubsub" {"xmlns" ns/pubsub}
-                                 ["items" {"node" ns/microblog}
-                                  ["item" {"id" (str (:_id activity))}]]])}
-             packet (tigase/make-packet packet-map)
-             request (assoc (packet/make-request packet)
-                       :serialization :xmpp)
-             response (filter-action #'actions.activity/show request)]
-         (filter-action #'actions.activity/show request) =>
-         (every-checker
-          activity?))))))
+   (with-serialization :xmpp
+     (let [author (model.user/create (factory User))]
+      (with-user author
+        (let [activity (model.activity/create (factory Activity))
+              packet-map {:from (tigase/make-jid author)
+                          :to (tigase/make-jid author)
+                          :type :get
+                          :id "JIKSNU1"
+                          :body (element/make-element
+                                 ["pubsub" {"xmlns" ns/pubsub}
+                                  ["items" {"node" ns/microblog}
+                                   ["item" {"id" (str (:_id activity))}]]])}
+              packet (tigase/make-packet packet-map)
+              request (assoc (packet/make-request packet)
+                        :serialization :xmpp)
+              response (filter-action #'actions.activity/show request)]
+          (filter-action #'actions.activity/show request) =>
+          (every-checker
+           activity?)))))))
