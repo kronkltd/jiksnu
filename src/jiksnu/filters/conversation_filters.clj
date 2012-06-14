@@ -1,6 +1,6 @@
 (ns jiksnu.filters.conversation-filters
   (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.domain-actions)
+        jiksnu.actions.conversation-actions)
   (:require [jiksnu.model.conversation :as model.conversation]))
 
 (deffilter #'create :http
