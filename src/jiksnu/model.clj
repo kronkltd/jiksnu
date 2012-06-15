@@ -140,6 +140,30 @@
   [klass]
   (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
 
+
+(defmacro make-indexer
+  [namespace-sym & options]
+  `(do (require ~namespace-sym)
+       (let [ns-ns# (the-ns ~namespace-sym)
+             sort-clause# (get ~options :sort-clause [{:updated -1}])
+             page-size# (get ~options :page-size 20)
+             count-fn# (ns-resolve ns-ns# (symbol "count-records"))
+             fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
+         (fn [& [{:as params#} & [{:as options#} & _#]]]
+           (let [options# (or options# {})
+                 page# (get options# :page 1)
+                 criteria# {:sort sort-clause#
+                            :skip (* (dec page#) page-size#)
+                            :limit page-size#}
+                 record-count# (count-fn# params#)
+                 records# (fetch-fn# params# criteria#)]
+             {:items records#
+              :page page#
+              :page-size page-size#
+              :total-records record-count#
+              :args options#})))))
+
+
 (defn drop-all!
   "Drop all collections"
   []
@@ -202,15 +226,6 @@
         {:write-json write-json-date})
 (extend ObjectId json/Write-JSON
         {:write-json write-json-object-id})
-
-;; (extend-type DateTime
-;;   MongoMappable
-;;   (to-dbo [d] (.toDate d))
-;;   (to-clj [d] (DateTime/parse d))
-;;   (to-description [d] (str d)))
-
-;; Factory specific support in Ciste?
-;; (load-file "factories.clj")
 
 (definitializer
   (set-database!))

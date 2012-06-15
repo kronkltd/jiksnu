@@ -5,8 +5,7 @@
         [ciste.runner :only [require-namespaces]]
         ciste.sections.default
         [clojure.core.incubator :only [-?>]]
-        jiksnu.actions.stream-actions
-        jiksnu.model)
+        jiksnu.actions.stream-actions)
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -14,6 +13,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
@@ -34,19 +34,12 @@
   [& _]
   (implement))
 
+(def public-timeline*
+  (model/make-indexer 'jiksnu.model.activity))
+
 (defaction public-timeline
-  [params & [options & _]]
-  (let [page (get options :page 1)
-        page-size 20
-        criteria {:sort [{:updated -1}]
-                  :limit 20}
-        record-count (model.activity/count-records {})
-        records (model.activity/fetch-all params criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records record-count
-     :args options}))
+  [& options]
+  (apply public-timeline* options))
 
 (declare user-timeline)
 

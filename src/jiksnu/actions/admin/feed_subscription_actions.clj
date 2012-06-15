@@ -3,11 +3,15 @@
         [ciste.config :only [definitializer]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.model.feed-subscription :as model.feed-subscription]))
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.feed-subscription :as model.feed-subscription]))
+
+(def index*
+  (model/make-indexer 'jiksnu.model.feed-subscription))
 
 (defaction index
-  [& [params & [options & _]]]
-  (model.feed-subscription/fetch-all params options))
+  [& options]
+  (apply index* options))
 
 (defaction delete
   [record]

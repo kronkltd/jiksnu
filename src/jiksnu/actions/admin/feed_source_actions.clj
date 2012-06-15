@@ -6,17 +6,12 @@
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]))
 
-(defaction index
-  "List feed sources
+(def index*
+  (model/make-indexer 'jiksnu.model.feed-source))
 
-for admin use"
-  [options]
-  [(model.feed-source/fetch-all
-    {}
-    ;; TODO: hardcoded configurable value
-    :limit 20
-    :sort [{:updated -1}]
-    ) options])
+(defaction index
+  [& options]
+  (apply index* options))
 
 (defn delete
   [source]

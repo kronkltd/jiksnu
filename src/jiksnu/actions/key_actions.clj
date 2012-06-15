@@ -23,26 +23,13 @@
 (defaction show
   [record] record)
 
-(defaction index
-  [& [options & _]]
-  (let [page (Integer/parseInt (get options :page "1"))
-        page-size 20
-        criteria {:sort [{:_id 1}]
-                  :skip (* (dec page) page-size)
-                  :limit page-size}
-        total-records (model.key/count-records {})
-        records (model.key/fetch-all (:where options) criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records total-records
-     :args options}))
+(def index*
+  (model/make-indexer 'jiksnu.model.key
+                      :sort-clause [{:_id 1}]))
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.key-filters"
-    "jiksnu.triggers.key-triggers"
-    "jiksnu.views.key-views"]))
+(defaction index
+  [& options]
+  (apply index* options))
 
 (defn generate-key-for-user
   "Generate key for the user and store the result."
@@ -55,5 +42,6 @@
   (require-namespaces
    ["jiksnu.filters.key-filters"
     "jiksnu.sections.key-sections"
-    ;; "jiksnu.triggers.key-triggers"
+    "jiksnu.triggers.key-triggers"
     "jiksnu.views.key-views"]))
+

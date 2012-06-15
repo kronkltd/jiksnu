@@ -1,8 +1,6 @@
 (ns jiksnu.model.feed-subscription
-  (:use
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [presence-of valid? validation-set]]
-   )
+  (:use [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [presence-of valid? validation-set]])
   (:require [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -55,3 +53,9 @@
                         (mq/find params)
                         (mq/paginate :page page :per-page 20))]
          (map model/map->FeedSubscription records)))))
+
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (mc/count collection-name)))
+

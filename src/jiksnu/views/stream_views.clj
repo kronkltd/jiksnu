@@ -53,20 +53,22 @@
 
 
 (defview #'public-timeline :as
-  [request [activities _]]
+  [request {:keys [items] :as response}]
   {:body
    ;; TODO: I know that doesn't actually work.
+   ;; TODO: assign the generator in the formatter
    {:generator "Jiksnu ${VERSION}"
     :title "Public Timeline"
-    :totalItems (count activities)
+    :totalItems (:total-records response)
     :items
-    (map show-section activities)}})
+    (index-section items response)}})
 
 (defview #'user-timeline :as
-  [request [user activities]]
+  [request [user {:keys [items] :as response}]]
   {:body
-   {:items
-    (map show-section activities)}})
+   {:title (str (title user) " Timeline")
+    :items
+    (index-section items response)}})
 
 
 
@@ -92,7 +94,7 @@
                       :rel "self"
                       :type "application/atom+xml"}]
              :updated (:updated (first items))
-             :entries (map show-section items)})}))
+             :entries (index-section items response)})}))
 
 (defview #'user-timeline :atom
   [request [user activities]]

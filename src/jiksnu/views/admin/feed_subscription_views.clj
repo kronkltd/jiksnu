@@ -1,6 +1,5 @@
 (ns jiksnu.views.admin.feed-subscription-views
-  (:use [ciste.debug :only [spy]]
-        [ciste.sections.default :only [add-form index-section title show-section]]
+  (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.feed-subscription-actions :only [delete index show]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
@@ -9,12 +8,12 @@
   (:import jiksnu.model.FeedSubscription))
 
 (defview #'index :html
-  [request [subscriptions options]]
+  [request {:keys [items] :as response}]
   {:title "Feed Subscriptions"
    :single true
    :body
    (list 
-    (index-section subscriptions)
+    (index-section items response)
     (add-form (model/->FeedSubscription)))})
 
 ;; (defview #'show :html

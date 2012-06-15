@@ -11,13 +11,13 @@
   (:import jiksnu.model.FeedSource))
 
 (defview #'index :html
-  [request [sources options]]
+  [request {:keys [items] :as request}]
   {:title "Feed Sources"
    :single true
    :body
    (list 
-    (index-section sources)
-    (add-form (model/map->FeedSource)))})
+    (index-section items request)
+    (add-form (model/->FeedSource)))})
 
 (defview #'show :html
   [request source]

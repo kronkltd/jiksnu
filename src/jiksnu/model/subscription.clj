@@ -34,7 +34,7 @@
 
 (defn fetch-by-id
   [id]
-  (if-let [subscription (mc/find-map-by-id collection-name id)]
+  (if-let [subscription (mc/find-map-by-id collection-name (model/make-id id))]
     (model/map->Subscription subscription)
     (log/warnf "Could not find subscription with id: %s" id)))
 

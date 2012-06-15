@@ -3,16 +3,17 @@
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.model.activity :as model.activity]))
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]))
+
+(def index*
+  (model/make-indexer 'jiksnu.model.activity))
 
 (defaction index
-  [options]
-  (model.activity/fetch-all {} {:page 1}))
+  [& options]
+  (apply index* options))
 
 (definitializer
   (require-namespaces
    ["jiksnu.filters.admin.activity-filters"
-    ;; "jiksnu.helpers.admin.activity-helpers"
-    ;; "jiksnu.sections.admin.activity-sections"
-    ;; "jiksnu.triggers.admin.activity-triggers"
     "jiksnu.views.admin.activity-views"]))

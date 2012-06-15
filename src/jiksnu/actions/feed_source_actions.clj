@@ -64,6 +64,15 @@
                                   :domain (:_id domain))))
     (throw+ "Must contain a topic")))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.feed-source
+                      :sort-clause [{:_id 1}]))
+
+(defaction index
+  [& options]
+  (apply index* options))
+
+
 (defn find-or-create
   [params & [options & _]]
   (if-let [source (or (and (:_id params) (model.feed-source/fetch-by-id (:_id params)))

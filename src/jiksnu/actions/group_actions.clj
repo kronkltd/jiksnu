@@ -4,7 +4,8 @@
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
         [jiksnu.session :only [current-user]])
-  (:require [jiksnu.model.group :as model.group])
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.group :as model.group])
   (:import jiksnu.model.Group))
 
 (defaction create
@@ -15,19 +16,13 @@
   []
   (Group.))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.group
+                      :sort-clause [{:username 1}]))
+
 (defaction index
-  [params & [options & _]]
-  (let [page (get options :page 1)
-        page-size 20
-        criteria {:sort [{:username 1}]
-                  :limit 20}
-        record-count (model.group/count-records {})
-        records (model.group/fetch-all {} criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records record-count
-     :args options}))
+  [& options]
+  (apply index* options))
 
 (defaction user-list
   [user]

@@ -3,11 +3,12 @@
         [ciste.config :only [config]]
         ciste.formats
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [full-uri title link-to index-block index-section uri delete-button edit-button]]
+        [ciste.sections.default :only [full-uri title link-to index-block index-section uri delete-button index-line edit-button]]
         ciste.views
         ciste.views.default
         jiksnu.session)
   (:require [clj-tigase.core :as tigase]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
@@ -58,6 +59,12 @@
      [:span {:about (uri record)
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))
+
+(defsection index-block :default
+  [records & [options & _]]
+  [:ul
+   (map #(index-line % options) records)])
+
 
 ;; TODO: look for a {:paginate false} key
 (defsection index-section :default

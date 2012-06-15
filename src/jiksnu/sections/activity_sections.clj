@@ -6,7 +6,8 @@
                                        delete-button full-uri link-to uri title
                                        index-block index-line update-button]]
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.views :only [control-line]]
+        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section]]
+        [jiksnu.views :only [control-line pagination-links]]
         [plaza.rdf.core]
         [plaza.rdf.vocabularies.foaf]
         [slingshot.slingshot :only [throw+]])
@@ -373,9 +374,7 @@
     ;;  [:a {:href "#post-bookmark" :data-toggle "tab"} "Bookmark"]]
 
     [:li
-     [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]
-
-    ]])
+     [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]]])
 
 ;; dynamic sections
 
@@ -390,20 +389,41 @@
      [:div.tab-content
       [:div#post-note.tab-pane.active
        (note-form activity)]
-      
       #_[:div#post-status.tab-pane
        (status-form activity)]
-      
       [:div#post-poll.tab-pane
        (poll-form activity)]
-
       [:div#post-event.tab-pane
-       (event-form activity)]
-      
-      ]
+       (event-form activity)]]
      [:div.actions
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
+
+(defsection admin-index-line [Activity :html]
+  [activity & [options & _]]
+  [:tr
+   [:td (-> activity actions.activity/get-author link-to)]
+   [:td (-> activity :object :object-type)]
+   [:td (if (-> activity :public) "public" "private")]
+   [:td (:title activity)]])
+
+(defsection admin-index-block [Activity :html]
+  [activities & [options & _]]
+  [:table.table
+    [:thead
+     [:tr
+      [:th "user"]
+      [:th "type"]
+      [:th "visibility"]
+      [:th "title"]]]
+    [:tbody
+     (map admin-index-line activities)]])
+
+(defsection admin-index-section [Activity :html]
+  [activities & [options & _]]
+  (list
+   (pagination-links options)
+   (admin-index-block activities options)))
 
 (defsection edit-button [Activity :html]
   [activity & _]
@@ -427,9 +447,9 @@
 
 
 
-(defsection index-block [Activity :html]
-  [activities & _]
-  (index-section activities))
+;; (defsection index-block [Activity :html]
+;;   [activities & _]
+;;   (index-section activities))
 
 (defsection index-block [Activity :xml]
   [activities & _]
@@ -461,21 +481,22 @@
 
 
 
-(defsection index-section [Activity :html]
-  [activities & [options & _]]
-  (let [page-number (get options :page 1)]
-    (list
-     [:div.activities
-      {:role "region"
-       :aria-live "polite"}
-      [:p "page: " page-number]
-      (map index-line activities)]
-     [:ul.pager
-      (when (> page-number 1)
-        [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "next"}
-                       "&larr; Newer"]])
-      [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "prev"}
-                 "Older &rarr;"]]])))
+;; (defsection index-section [Activity :html]
+;;   [activities & [options & _]]
+;;   (let [page-number (get options :page 1)]
+;;     (list
+;;      [:div.activities
+;;       {:role "region"
+;;        :aria-live "polite"}
+;;       [:p "page: " page-number]
+;;       [:p "Total Records: " (:total-records options)]
+;;       (map index-line activities)]
+;;      [:ul.pager
+;;       (when (> page-number 1)
+;;         [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "next"}
+;;                        "&larr; Newer"]])
+;;       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "prev"}
+;;                  "Older &rarr;"]]])))
 
 (defsection index-section [Activity :rdf]
   [activities & _]
@@ -697,5 +718,4 @@
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
    [:button.btn.update-button {:type "submit"}
     [:i.icon-refresh] [:span.button-text "update"]]])
-
 

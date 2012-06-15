@@ -73,9 +73,11 @@ This will generally not be called"
     (log/warn "Could not find record")))
 
 (defn fetch-all
-  [& args]
-  (->> (mc/find-maps collection-name args)
-       (map model/map->FeedSource)))
+  ([] (fetch-all {}))
+  ([params] (fetch-all params {}))
+  ([params options]
+     (->> (mc/find-maps collection-name params)
+          (map model/map->FeedSource))))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

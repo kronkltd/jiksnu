@@ -5,6 +5,7 @@
         [ciste.runner :only [require-namespaces]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.session :as session])
   (:import javax.security.sasl.AuthenticationException))
@@ -25,10 +26,13 @@
   [subscription]
   (actions.subscription/update subscription))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.subscription))
+
 ;; requires admin
 (defaction index
-  [options]
-  [(model.subscription/fetch-all) options])
+  [& options]
+  (apply index* options))
 
 (definitializer
   (require-namespaces
