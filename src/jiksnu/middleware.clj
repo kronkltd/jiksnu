@@ -30,7 +30,8 @@
      (catch Exception ex
        (try
          (let [st (with-out-str (print-stack-trace ex))]
-          {:status 500
+           (println st)
+           {:status 500
            :headers {"content-type" "text/plain"}
            :body st})
          (catch Exception ex
