@@ -447,6 +447,11 @@
 
 
 
+(defsection index-block [Activity :atom]
+  [items & response]
+  (map (fn [item] (index-line item response))
+       items))
+
 ;; (defsection index-block [Activity :html]
 ;;   [activities & _]
 ;;   (index-section activities))
@@ -497,6 +502,10 @@
 ;;                        "&larr; Newer"]])
 ;;       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "prev"}
 ;;                  "Older &rarr;"]]])))
+
+(defsection index-section [Activity :atom]
+  [items & response]
+  (index-block items response))
 
 (defsection index-section [Activity :rdf]
   [activities & _]

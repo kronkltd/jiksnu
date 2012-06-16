@@ -28,12 +28,12 @@
            (with-format :atom
              (fact "when there are activities"
                (model/drop-all!)
-               (dotimes [n 25]
-                 (model.activity/create (factory :activity)))
+               (let [user (model.user/create (factory :local-user))]
+                 (dotimes [n 25]
+                   (model.activity/create (factory :activity
+                                                   {:author (:_id user)}))))
 
-               (let [request {:action action
-                              :format *format*
-                              :serialization *serialization*}
+               (let [request {:action action}
                      response (filter-action action request)]
 
                  (apply-view request response) =>
@@ -49,12 +49,12 @@
            (with-format :html
              (fact "when there are activities"
                (model/drop-all!)
-               (dotimes [n 25]
-                 (model.activity/create (factory :activity)))
+               (let [user (model.user/create (factory :local-user))]
+                 (dotimes [n 25]
+                   (model.activity/create (factory :activity
+                                                   {:author (:_id user)}))))
 
-               (let [request {:action action
-                              :format *format*
-                              :serialization *serialization*}
+               (let [request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>
                  (every-checker

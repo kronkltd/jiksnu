@@ -14,8 +14,11 @@
 
      (index) =>
      (every-checker
-      seq?
-      empty?))
+      map?
+      (comp empty? :items)
+      #(zero? (:total-records %))
+
+      ))
 
    (fact "when there are more than the page size sources"
      (model/drop-all!)
@@ -25,6 +28,6 @@
      
      (index) =>
      (every-checker
-      #(fact (count %) => 20))))
+      #(fact (count (:items %)) => 20))))
 
  )
