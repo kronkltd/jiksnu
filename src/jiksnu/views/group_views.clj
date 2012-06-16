@@ -6,11 +6,11 @@
   (:require [clojure.tools.logging :as log]))
 
 (defview #'index :html
-  [request groups]
+  [request {:keys [items] :as response}]
   {:title "Groups"
    :body
    [:section.groups
-    (index-section groups)
+    (index-section items response)
     [:p
      [:a {:href "/groups/new"} "Create a new group"]]]})
 

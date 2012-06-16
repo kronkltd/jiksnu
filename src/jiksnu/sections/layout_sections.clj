@@ -9,6 +9,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.group :as model.group]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -92,6 +93,7 @@
   [:div.well
    [:p "Activities: " (model.activity/count-records)]
    [:p "Domains: " (model.domain/count-records)]
+   [:p "Groups: " (model.group/count-records)]
    [:p "Feed Sources: " (model.feed-source/count-records)]
    [:p "Users: " (model.user/count-records)]])
 
