@@ -1,7 +1,6 @@
 (ns jiksnu.views.group-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section add-form]]
-        [jiksnu.views :only [control-line]]
         jiksnu.actions.group-actions)
   (:require [clojure.tools.logging :as log]))
 

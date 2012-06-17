@@ -1,6 +1,7 @@
 (ns jiksnu.routes
   (:use [ciste.routes :only [make-matchers resolve-routes]]
-        [ring.middleware.flash :only [wrap-flash]])
+        [ring.middleware.flash :only [wrap-flash]]
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             ciste.formats.default
             [ciste.middleware :as middleware]
@@ -355,7 +356,7 @@
                   (if (session/is-admin?)
                     ((resolve-routes [http-predicates] admin-routes) request)
                     ;; TODO: move this somewhere else
-                    (throw (LoginException. "Must be admin")))))
+                    (throw+ {:type :authentication :message "Must be admin"}))))
   (middleware/wrap-log-request
    (resolve-routes [http-predicates] http-routes))
   (compojure/GET "/websocket" _

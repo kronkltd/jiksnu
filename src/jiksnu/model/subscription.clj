@@ -142,3 +142,8 @@
     :body (element/make-element
            "pubsub" {"xmlns" ns/pubsub}
            ["subscribers" {"node" ns/microblog}])}))
+
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (mc/count collection-name params)))

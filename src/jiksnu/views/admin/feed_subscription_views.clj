@@ -4,17 +4,14 @@
         [jiksnu.actions.admin.feed-subscription-actions :only [delete index show]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [ring.util.response :as response])
-  (:import jiksnu.model.FeedSubscription))
+            [ring.util.response :as response]))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Feed Subscriptions"
    :single true
-   :body
-   (list 
-    (index-section items response)
-    (add-form (model/->FeedSubscription)))})
+   :body (list (index-section items response)
+               (add-form (model/->FeedSubscription)))})
 
 ;; (defview #'show :html
 ;;   [request subscription]
@@ -22,8 +19,7 @@
 ;;    :single true
 ;;    :body (list (show-section subscription)
 ;;                (index-watchers subscription)
-;;                (add-watcher-form subscription)
-;;                )})
+;;                (add-watcher-form subscription))})
 
 ;; (defview #'delete :html
 ;;   [request subscription]

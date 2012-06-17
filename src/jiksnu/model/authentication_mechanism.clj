@@ -18,3 +18,8 @@
   ([params options]
      (map model/map->AuthenticationMechanism
           (mc/find-maps collection-name params))))
+
+(defn count-records
+  ([] (count-records {}))
+  ([params]
+     (mc/count collection-name params)))

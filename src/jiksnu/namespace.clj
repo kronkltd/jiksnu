@@ -26,6 +26,7 @@
 (def poco           "http://portablecontacts.net/spec/1.0")
 (def post           "http://activitystrea.ms/schema/1.0/post")
 (def pubsub         "http://jabber.org/protocol/pubsub")
+(def rdf            "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 (def salmon-mention "http://salmon-protocol.org/ns/salmon-mention")
 (def salmon-replies "http://salmon-protocol.org/ns/salmon-replies")
 (def sioc           "http://rdfs.org/sioc/ns#")

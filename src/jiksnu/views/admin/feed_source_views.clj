@@ -1,6 +1,5 @@
 (ns jiksnu.views.admin.feed-source-views
-  (:use [ciste.debug :only [spy]]
-        [ciste.sections.default :only [add-form index-section title show-section]]
+  (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.feed-source-actions :only [delete index show]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
@@ -25,10 +24,9 @@
    :single true
    :body (list (show-section source)
                (index-watchers source)
-               (add-watcher-form source)
-               )})
+               (add-watcher-form source))})
 
 (defview #'delete :html
   [request source]
   (-> (response/redirect-after-post "/admin/feed-sources")
-        (assoc :template false)))
+      (assoc :template false)))

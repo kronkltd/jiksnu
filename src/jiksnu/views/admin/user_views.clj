@@ -1,25 +1,10 @@
 (ns jiksnu.views.admin.user-views
-  (:use (ciste [views :only [defview]])
-        jiksnu.actions.admin.user-actions)
-  (:require (jiksnu.sections [user-sections :as sections.user])
-            (jiksnu.helpers [user-helpers :as helpers.user])))
+  (:use [ciste.views :only [defview]]
+        [jiksnu.actions.admin.user-actions :only [index]]
+        [jiksnu.sections :only [admin-index-section]]))
 
 (defview #'index :html
-  [request {:keys [items]}]
+  [request {:keys [items] :as response}]
   {:single true
    :title "Users"
-   :body
-   [:div
-    [:table.users.table
-     [:thead
-      [:tr
-       [:th]
-       [:th "User"]
-       [:th "Domain"]
-       [:th "Discover"]
-       [:th "Update"]
-       [:th "Edit"]
-       [:th "Delete"]]]
-     [:tbody
-      (map sections.user/admin-index-line items)]]]})
-
+   :body (admin-index-section items response)})

@@ -1,6 +1,5 @@
 (ns jiksnu.routes.domain-test
-  (use [ciste.config :only [with-environment]]
-       [jiksnu.test-helper :only [test-environment-fixture]]
+  (use [jiksnu.test-helper :only [test-environment-fixture]]
        [jiksnu.routes :only [app]]
        midje.sweet
        [ring.mock.request :only [request]])

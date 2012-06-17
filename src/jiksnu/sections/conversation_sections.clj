@@ -3,7 +3,7 @@
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
                                        index-section link-to show-section]]
-        [jiksnu.views :only [control-line]])
+        [jiksnu.sections :only [control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.conversation :as model.conversation])
   (:import jiksnu.model.Conversation))

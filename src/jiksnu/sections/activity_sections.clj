@@ -6,10 +6,9 @@
                                        delete-button full-uri link-to uri title
                                        index-block index-line update-button]]
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section]]
-        [jiksnu.views :only [control-line pagination-links]]
-        [plaza.rdf.core]
-        [plaza.rdf.vocabularies.foaf]
+        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section control-line pagination-links]]
+
+        ;; [plaza.rdf.vocabularies.foaf]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -24,6 +23,7 @@
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.xmpp.element :as element]
+            [plaza.rdf.core :as rdf]
             [ring.util.codec :as codec])
   (:import java.io.StringWriter
            javax.xml.namespace.QName
@@ -662,19 +662,19 @@
 
 (defsection show-section [Activity :rdf]
   [activity & _]
-  (with-rdf-ns ""
+  (rdf/with-rdf-ns ""
     (let [{:keys [content id published]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
-          user-res (rdf-resource (or (:id user) (model.user/get-uri user)))]
+          user-res (rdf/rdf-resource (or (:id user) (model.user/get-uri user)))]
       (concat [
                [uri [:rdf :type]         [:sioc :Post]]
-               [uri [:as  :verb]         (l "post")]
-               [uri [:sioc  :content]    (l content)]
+               [uri [:as  :verb]         (rdf/l "post")]
+               [uri [:sioc  :content]    (rdf/l content)]
                [uri [:sioc :has_creator] user-res]
-               [uri [:sioc :has_owner] user-res]
+               [uri [:sioc :has_owner]   user-res]
                [uri [:as  :author]       user-res]
-               [uri [:dc  :published]    (date published)]
+               [uri [:dc  :published]    (rdf/date published)]
                ]
               #_(show-section user)))))
 
@@ -700,7 +700,7 @@
    (show-section (model.activity/get-author activity))
    (when (:geo activity)
      (list [:geo]
-           [:coordinates]
+           [:coordnates]
            [:place]))
    [:contributors]
    [:entities

@@ -6,10 +6,10 @@
   (:require [jiksnu.model.conversation :as model.conversation]))
 
 (defview #'index :html
-  [request page]
+  [request {:keys [items] :as response}]
   {:title "Conversations"
    :single true
-   :body (admin-index-section page)})
+   :body (admin-index-section items response)})
 
 (defview #'show :html
   [request conversation]

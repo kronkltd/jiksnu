@@ -1,8 +1,8 @@
 (ns jiksnu.sections.auth-sections
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
+        [jiksnu.sections :only [control-line]]
         [jiksnu.session :only [current-user]]
-        [jiksnu.views :only [control-line]]
         [jiksnu.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.AuthenticationMechanism))
@@ -47,7 +47,7 @@
   [mechanism & _]
   [:form.well {:method "post" :action "/admin/auth"}
    [:fieldset
-    [:legend"Add a mechanism"
+    [:legend "Add a mechanism"
      (control-line "Type" "type" "text")
      (control-line "Value" "value" "text")
      [:div.actions

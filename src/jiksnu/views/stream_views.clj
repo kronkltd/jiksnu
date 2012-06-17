@@ -196,9 +196,7 @@
 (defview #'remote-profile :html
   [request user]
   (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'user-timeline))
+   (assoc request :action #'user-timeline)
    user))
 
 (defview #'remote-user :html

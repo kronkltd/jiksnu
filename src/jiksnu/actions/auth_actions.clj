@@ -2,14 +2,13 @@
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.runner :only [require-namespaces]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.model.user :as model.user])
-  (:import javax.security.auth.login.AccountNotFoundException
-           javax.security.auth.login.LoginException
-           org.mindrot.jbcrypt.BCrypt))
+  (:import org.mindrot.jbcrypt.BCrypt))
 
 (defaction guest-login
   [webid]
@@ -24,11 +23,9 @@
       (if (some #(BCrypt/checkpw password (:value %))
                 mechanisms)
         user
-        (do (log/error "passwords do not match")
-            (throw (LoginException. "passwords do not match"))))
-      (throw (LoginException. "No authentication mechanisms found")))
-    (do (log/error "user not found")
-        (throw (AccountNotFoundException. "user not found")))))
+        (throw+ {:type :authentication :message "passwords do not match"}))
+      (throw+ {:type :authentication :message "No authentication mechanisms found"}))
+    (throw+ {:type :authentication :message "user not found"})))
 
 (defaction login-page
   [request]

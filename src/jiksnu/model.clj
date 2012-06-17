@@ -2,7 +2,8 @@
   (:use ciste.core
         [ciste.config :only [config definitializer environment]]
         [clj-factory.core :only [factory]]
-        [clojure.core.incubator :only [-?> -?>>]])
+        [clojure.core.incubator :only [-?> -?>>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
             [clojure.data.json :as json]
@@ -29,7 +30,7 @@
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ss'Z'")
 
-(def ^:dynamic *mongo-database* (ref nil))
+;; (def ^:dynamic *mongo-database* (ref nil))
 
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
@@ -147,22 +148,38 @@
        (let [ns-ns# (the-ns ~namespace-sym)
              sort-clause# (get ~options :sort-clause [{:updated -1}])
              page-size# (get ~options :page-size 20)
-             count-fn# (ns-resolve ns-ns# (symbol "count-records"))
-             fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
-         (fn [& [{:as params#} & [{:as options#} & _#]]]
-           (let [options# (or options# {})
-                 page# (get options# :page 1)
-                 criteria# {:sort sort-clause#
-                            :skip (* (dec page#) page-size#)
-                            :limit page-size#}
-                 record-count# (count-fn# params#)
-                 records# (fetch-fn# params# criteria#)]
-             {:items records#
-              :page page#
-              :page-size page-size#
-              :total-records record-count#
-              :args options#})))))
+             ]
+         (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
+           (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
+             (fn [& [{:as params#} & [{:as options#} & _#]]]
+               (let [options# (or options# {})
+                     page# (get options# :page 1)
+                     criteria# {:sort sort-clause#
+                                :skip (* (dec page#) page-size#)
+                                :limit page-size#}
+                     record-count# (count-fn# params#)
+                     records# (fetch-fn# params# criteria#)]
+                 {:items records#
+                  :page page#
+                  :page-size page-size#
+                 :total-records record-count#
+                  :args options#}))
+             (throw+ "Could not find fetch function"))
+          (throw+ "Could not find count function")))))
 
+(defn format-triples
+  [triples format]
+  (let [model (rdf/build-model)]
+    (.setNsPrefix (rdf/to-java model) "activity" ns/as)
+    (.setNsPrefix (rdf/to-java model) "sioc" ns/sioc)
+    (.setNsPrefix (rdf/to-java model) "foaf" ns/foaf)
+    (.setNsPrefix (rdf/to-java model) "dc" ns/dc)
+    (.setNsPrefix (rdf/to-java model) "xsd" (str ns/xsd "#"))
+    (.setNsPrefix (rdf/to-java model) "notice" (str "http://" (config :domain) "/notice/"))
+    (.setNsPrefix (rdf/to-java model) "cert" ns/cert)
+    
+    (rdf/with-model model (rdf/model-add-triples triples))
+    (with-out-str (rdf/model-to-format model format))))
 
 (defn drop-all!
   "Drop all collections"

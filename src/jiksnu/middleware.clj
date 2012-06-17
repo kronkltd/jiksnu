@@ -1,7 +1,8 @@
 (ns jiksnu.middleware
   (:use [ciste.config :only [config]]
         [clojure.stacktrace :only [print-stack-trace]]
-        [jiksnu.session :only [with-user-id]])
+        [jiksnu.session :only [with-user-id]]
+        [slingshot.slingshot :only [try+ throw+]])
   (:require [clojure.tools.logging :as log])
   (:import javax.security.auth.login.LoginException))
 
@@ -14,8 +15,15 @@
 (defn wrap-authentication-handler
   [handler]
   (fn [request]
-    (try
+    (try+
       (handler request)
+      (catch [:type :authentication] ex
+        {:status 303
+         :template false
+         :flash "You must be logged in to do that."
+         :headers {"location" "/main/login"}}
+          )
+
       (catch LoginException e
         {:status 303
          :template false

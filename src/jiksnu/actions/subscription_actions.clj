@@ -80,8 +80,10 @@
                      ;; uri is a http uri
                      (actions.user/find-or-create-by-remote-id {:id uri}))]
       (subscribe actor user)
-      (throw+ "Could not determine user"))
-    (throw+ "must be logged in")))
+      (throw+ {:type :validation :message "Could not determine user"
+               ;; TODO: list failed fields
+               }))
+    (throw+ {:type :authentication :message "must be logged in"})))
 
 (defaction subscribed
   [actor user]

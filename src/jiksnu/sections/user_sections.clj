@@ -1,14 +1,13 @@
 (ns jiksnu.sections.user-sections
   (:use  [ciste.config :only [config]]
-         ciste.sections
+         [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section add-form edit-button
                                         delete-button link-to index-line
                                         update-button index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [jiksnu.model :only [with-subject]]
-         jiksnu.session
-         [jiksnu.views :only [control-line]]
-         plaza.rdf.vocabularies.foaf)
+         [jiksnu.sections :only [admin-index-block admin-index-line admin-index-section control-line]]
+         jiksnu.session)
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -164,18 +163,6 @@
      (when (model.subscription/subscribed? user authenticated)
        [:p "You follow this user"]))))
 
-(defn admin-index-line
-  [user]
-  (let [domain (actions.user/get-domain user)]
-    [:tr
-     [:td (display-avatar user)]
-     [:td (link-to user)]
-     [:td (link-to domain)]
-     [:td (discover-button user)]
-     [:td (update-button user)]
-     [:td (edit-button user)]
-     [:td (delete-button user)]]))
-
 (defn user->person
   [user]
   (let [author-uri (model.user/get-uri user)]
@@ -266,6 +253,37 @@
     (str "/" (:username user))
     (str "/remote-user/" (:username user) "@" (:domain user))))
 
+(defsection admin-index-block [User :html]
+  [items & [page & _]]
+  [:table.users.table
+   [:thead
+    [:tr
+     [:th]
+     [:th "User"]
+     [:th "Domain"]
+     [:th "Discover"]
+     [:th "Update"]
+     [:th "Edit"]
+     [:th "Delete"]]]
+   [:tbody
+    (map admin-index-line items)]])
+
+(defsection admin-index-line [User :html]
+  [user & [page & _]]
+  (let [domain (actions.user/get-domain user)]
+    [:tr
+     [:td (display-avatar user)]
+     [:td (link-to user)]
+     [:td (link-to domain)]
+     [:td (discover-button user)]
+     [:td (update-button user)]
+     [:td (edit-button user)]
+     [:td (delete-button user)]]))
+
+(defsection admin-index-section [User :html]
+  [items & [page & _]]
+  (list (pagination-links page)
+        (admin-index-block items page)))
 
 
 
@@ -400,34 +418,32 @@
                 acct-uri (rdf/rdf-resource (model.user/get-uri user))]
     (rdf/with-rdf-ns ""
       (concat
+       ;; TODO: describing the document should be the relm of the view
        (with-subject document-uri
-         [[rdf/rdf:type                    foaf:PersonalProfileDocument]
-          [[foaf :title]                   (rdf/l (str display-name "'s Profile"))]
-          [[foaf :maker]                   user-uri]
-          [foaf:primaryTopic               user-uri]])
+         [[[ns/rdf  :type]                    [ns/foaf :PersonalProfileDocument]]
+          [[ns/foaf :title]                   (rdf/l (str display-name "'s Profile"))]
+          [[ns/foaf :maker]                   user-uri]
+          [[ns/foaf :primaryTopic]            user-uri]])
        (with-subject user-uri
-         (concat [[rdf/rdf:type                    [foaf :Person]]
-                  [foaf:weblog                     (rdf/rdf-resource (full-uri user))]
-                  [[ns/foaf "holdsAccount"]        acct-uri]]
+         (concat [[[ns/rdf  :type]                  [ns/foaf :Person]]
+                  [[ns/foaf :weblog]                (rdf/rdf-resource (full-uri user))]
+                  [[ns/foaf :holdsAccount]          acct-uri]]
                  (when mkp          [[(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))]])
-                 (when username     [[foaf:nick       (rdf/l username)]])
-                 (when name         [[foaf:name       (rdf/l name)]])
-                 (when url          [[foaf:homepage   (rdf/rdf-resource url)]])
-                 (when avatar-url   [[foaf:img        avatar-url]])
-                 (when email        [[foaf:mbox       (rdf/rdf-resource (str "mailto:" email))]])
-                 (when display-name [[[foaf :name]    (rdf/l display-name)]])
-                 (when first-name   [[foaf:givenName  (rdf/l first-name)]])
-                 (when last-name    [[foaf:familyName (rdf/l last-name)]]))
-
-
-         )
+                 (when username     [[[ns/foaf :nick]                        (rdf/l username)]])
+                 (when name         [[[ns/foaf :name]                        (rdf/l name)]])
+                 (when url          [[[ns/foaf :homepage]                    (rdf/rdf-resource url)]])
+                 (when avatar-url   [[[ns/foaf :img]                         (rdf/rdf-resource avatar-url)]])
+                 (when email        [[[ns/foaf :mbox]                        (rdf/rdf-resource (str "mailto:" email))]])
+                 (when display-name [[[ns/foaf :name]                        (rdf/l display-name)]])
+                 (when first-name   [[[ns/foaf :givenName]                   (rdf/l first-name)]])
+                 (when last-name    [[[ns/foaf :familyName]                  (rdf/l last-name)]])))
        (when mkp (show-section mkp))
        (with-subject acct-uri
-         [[rdf/rdf:type                [ns/sioc "UserAccount"]]
-          [foaf:accountServiceHomepage (rdf/rdf-resource (full-uri user))]
-          [foaf:accountName            (rdf/l (:username user))]
-          [[foaf "accountProfilePage"] (rdf/rdf-resource (full-uri user))]
-          [[ns/sioc "account_of"]      user-uri]])))))
+         [[[ns/rdf  :type]                    [ns/sioc "UserAccount"]]
+          [[ns/foaf :accountServiceHomepage]  (rdf/rdf-resource (full-uri user))]
+          [[ns/foaf :accountName]             (rdf/l (:username user))]
+          [[ns/foaf :accountProfilePage]      (rdf/rdf-resource (full-uri user))]
+          [[ns/sioc :account_of]              user-uri]])))))
 
 
 

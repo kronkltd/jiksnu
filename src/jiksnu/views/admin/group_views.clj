@@ -5,7 +5,7 @@
   (:require [jiksnu.sections.group-sections :as sections.like]))
 
 (defview #'index :html
-  [request {:keys [items]}]
+  [request {:keys [items] :as response}]
   {:single true
    :title "Groups"
-   :body (index-section items)})
+   :body (index-section items response)})
