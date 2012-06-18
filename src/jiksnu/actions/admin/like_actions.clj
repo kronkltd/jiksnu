@@ -6,8 +6,8 @@
   (:require [jiksnu.actions.like-actions :as actions.like]))
 
 (defaction index
-  [& [options & _]]
-  (actions.like/index options))
+  [& options]
+  (apply actions.like/index options))
 
 (definitializer
   (require-namespaces

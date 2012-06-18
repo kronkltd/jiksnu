@@ -13,10 +13,8 @@
   [request {:keys [items] :as request}]
   {:title "Feed Sources"
    :single true
-   :body
-   (list 
-    (index-section items request)
-    (add-form (model/->FeedSource)))})
+   :body (list (index-section items request)
+               (add-form (model/->FeedSource)))})
 
 (defview #'show :html
   [request source]

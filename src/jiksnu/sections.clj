@@ -2,7 +2,8 @@
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line]]
-        ))
+        )
+  (:require [clojure.tools.logging :as log]))
 
 (defn control-line
   [label name type & {:as options}]
@@ -24,11 +25,16 @@
         page-size (get options :page-size 20)
         ;; If no total, no pagination
         total-records (get options :total-records 0)]
-    [:ul.pager
-     (when (> page 1)
-       [:li.previous [:a {:href (str "?page=" (dec page)) :rel "prev"} "&larr; Previous"]])
-     (when (< (* page page-size) total-records)
-       [:li.next [:a {:href (str "?page=" (inc page)) :rel "next"} "Next &rarr;"]])]))
+    [:div.paginations
+     [:p "Page: " page]
+     [:p "Total Records: " total-records]
+     [:ul.pager
+      (when (> page 1)
+        [:li.previous
+         [:a {:href (str "?page=" (dec page)) :rel "prev"} "&larr; Previous"]])
+      (when (< (* page page-size) total-records)
+        [:li.next
+         [:a {:href (str "?page=" (inc page)) :rel "next"} "Next &rarr;"]])]]))
 
 (declare-section admin-index-section :seq)
 (declare-section admin-index-block :seq)

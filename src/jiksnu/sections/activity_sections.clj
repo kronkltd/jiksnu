@@ -6,9 +6,8 @@
                                        delete-button full-uri link-to uri title
                                        index-block index-line update-button]]
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section control-line pagination-links]]
-
-        ;; [plaza.rdf.vocabularies.foaf]
+        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
+                                control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -123,10 +122,6 @@
     :href (sections.user/user-timeline-link user "xml")
     :type "application/xml"}])
 
-;; (defn add-entry
-;;   [feed activity]
-;;   (.addEntry feed (show-section activity)))
-
 ;; specific sections
 
 (defn pictures-section
@@ -194,7 +189,8 @@
      [:ul.post-actions.unstyled.buttons
       (when authenticated
         (list [:li (like-button activity)]
-              [:li [:a.btn {:href "#"} [:i.icon-comment] [:span.button-text "Comment"]]]
+              [:li [:a.btn {:href "#"} [:i.icon-comment]
+                    [:span.button-text "Comment"]]]
               (when (or (model.activity/author? activity authenticated)
                         (session/is-admin?))
                 (list [:li (edit-button activity)]
@@ -227,6 +223,8 @@
      [:img.map
       {:alt ""
        :src
+       ;; TODO: use urly to construct this
+       ;; TODO: Move this to cljs
        (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
             (:lat geo)
             ","
@@ -399,14 +397,6 @@
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
 
-(defsection admin-index-line [Activity :html]
-  [activity & [options & _]]
-  [:tr
-   [:td (-> activity actions.activity/get-author link-to)]
-   [:td (-> activity :object :object-type)]
-   [:td (if (-> activity :public) "public" "private")]
-   [:td (:title activity)]])
-
 (defsection admin-index-block [Activity :html]
   [activities & [options & _]]
   [:table.table
@@ -419,24 +409,13 @@
     [:tbody
      (map admin-index-line activities)]])
 
-(defsection admin-index-section [Activity :html]
-  [activities & [options & _]]
-  (list
-   (pagination-links options)
-   (admin-index-block activities options)))
-
-(defsection edit-button [Activity :html]
-  [activity & _]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
-   [:button.btn {:type "submit"}
-    [:i.icon-edit] [:span.button-text "edit"]]])
-
-
-
-
-(defsection uri [Activity]
-  [activity & options]
-  (str "/notice/" (:_id activity)))
+(defsection admin-index-line [Activity :html]
+  [activity & [options & _]]
+  [:tr
+   [:td (-> activity actions.activity/get-author link-to)]
+   [:td (-> activity :object :object-type)]
+   [:td (if (-> activity :public) "public" "private")]
+   [:td (:title activity)]])
 
 (defsection delete-button [Activity :html]
   [activity & _]
@@ -445,16 +424,16 @@
    [:button.btn.delete-button {:type "submit"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
-
+(defsection edit-button [Activity :html]
+  [activity & _]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
+   [:button.btn {:type "submit"}
+    [:i.icon-edit] [:span.button-text "edit"]]])
 
 (defsection index-block [Activity :atom]
   [items & response]
   (map (fn [item] (index-line item response))
        items))
-
-;; (defsection index-block [Activity :html]
-;;   [activities & _]
-;;   (index-section activities))
 
 (defsection index-block [Activity :xml]
   [activities & _]
@@ -465,10 +444,6 @@
   [activities & options]
   ["items" {"node" ns/microblog}
    (map index-line activities)])
-
-
-
-
 
 (defsection index-line [Activity]
   [activity & opts]
@@ -483,26 +458,6 @@
   ["item" {"id" (:_id activity)}
    (show-section activity)])
 
-
-
-
-;; (defsection index-section [Activity :html]
-;;   [activities & [options & _]]
-;;   (let [page-number (get options :page 1)]
-;;     (list
-;;      [:div.activities
-;;       {:role "region"
-;;        :aria-live "polite"}
-;;       [:p "page: " page-number]
-;;       [:p "Total Records: " (:total-records options)]
-;;       (map index-line activities)]
-;;      [:ul.pager
-;;       (when (> page-number 1)
-;;         [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "next"}
-;;                        "&larr; Newer"]])
-;;       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "prev"}
-;;                  "Older &rarr;"]]])))
-
 (defsection index-section [Activity :atom]
   [items & response]
   (index-block items response))
@@ -514,11 +469,6 @@
 (defsection index-section [Activity :xmpp]
   [activities & options]
   ["pubsub" {} (index-block activities)])
-
-
-
-
-
 
 (defsection show-section [Activity :as]
   [activity & _]
@@ -714,17 +664,17 @@
      ;; TODO: list hashtags
      ]]])
 
-
-
 (defsection title [Activity]
   [activity & options]
   (:title activity))
-
-
 
 (defsection update-button [Activity :html]
   [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
    [:button.btn.update-button {:type "submit"}
     [:i.icon-refresh] [:span.button-text "update"]]])
+
+(defsection uri [Activity]
+  [activity & options]
+  (str "/notice/" (:_id activity)))
 

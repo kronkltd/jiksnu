@@ -202,7 +202,7 @@
     [[:delete "/subscriptions/:id"]                           #'sub/delete]
     [[:get    "/tags/:name.:format"]                          #'tag/show]
     [[:get    "/tags/:name"]                                  #'tag/show]
-    [[:get    "/tags"]                                        #'tag/index]
+    ;; [[:get    "/tags"]                                        #'tag/index]
     [[:get    "/users.:format"]                               #'user/index]
     [[:get    "/users"]                                       #'user/index]
     [[:get    "/users/local.:format"]                         #'user/local-index]

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.admin.like-actions-test
-  (:use [ciste.debug :only [spy]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+  (:use [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.actions.admin.like-actions :only [index]]
         [midje.sweet :only [fact => every-checker]]))
 
@@ -8,19 +7,14 @@
 
  (fact "#'index"
 
-   (spy (index))
-   => (every-checker
-       #(= 1 (:page %))
-       #(= 0 (:total-records %))
-       )
+   (index) =>
+   (every-checker
+    #(fact (:page %) => 1)
+    #(fact (:total-records %) => 0))
 
-   (spy (index {:page "2"}))
-   => (every-checker
-       #(= 2 (:page %))
-       #(= 0 (:total-records %))
-       )
+   (index {} {:page 2}) =>
+   (every-checker
+    #(fact (:page %) => 2)
+    #(fact (:total-records %) => 0)))
 
-   
-   )
- 
  )

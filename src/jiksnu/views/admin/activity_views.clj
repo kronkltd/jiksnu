@@ -6,7 +6,6 @@
   (:require [jiksnu.actions.activity-actions :as actions.activity]))
 
 
-;; TODO: This page should use a single column
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Activities"
