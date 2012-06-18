@@ -7,6 +7,7 @@
            java.net.URI
            javax.xml.namespace.QName
            org.apache.abdera2.Abdera
+           org.apache.abdera2.ext.thread.ThreadHelper
            org.apache.abdera2.factory.Factory
            org.apache.abdera2.model.Element
            org.apache.abdera2.model.Entry
@@ -54,6 +55,26 @@
   "get the href from a link as a string"
   [^Link link]
   (->> link .getHref str))
+
+(defn parse-irts
+  "Get the in-reply-to uris"
+  [entry]
+  (->> (ThreadHelper/getInReplyTos entry)
+       (map #(str (.getHref %)))
+       (filter identity)))
+
+(defn parse-link
+  "extract the node element from links
+
+this is for OSW
+"
+  [link]
+  (if-let [href (get-href link)]
+    (when (and (re-find #"^.+@.+$" href)
+               (not (re-find #"node=" href)))
+      href)))
+
+
 
 (defn parse-stream
   [stream]

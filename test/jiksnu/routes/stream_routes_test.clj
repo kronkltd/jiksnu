@@ -1,4 +1,4 @@
-(ns jiksnu.routes.stream-test
+(ns jiksnu.routes.stream-routes-test
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.routes-helper :only [response-for]]

@@ -1,15 +1,17 @@
 (ns jiksnu.actions.like-actions
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
+        [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.like :as model.like])
   (:import jiksnu.model.Like))
 
 (defn admin-index
   [request]
-  (model.like/fetch-all {} :limit 20))
+  (model.like/fetch-all {} {:limit 20}))
 
 (defaction like-activity
   [activity user]
@@ -23,20 +25,16 @@
   [activity]
   (model.like/fetch-all {:activity (:_id activity)}))
 
+(defaction show
+  [tag]
+  (implement))
+
+(def index*
+  (model/make-indexer 'jiksnu.model.like))
+
 (defaction index
-  [& [options & _]]
-  (let [page (Integer/parseInt (get options :page "1"))
-        page-size 20
-        criteria {:sort [{:_id 1}]
-                  :skip (* (dec page) page-size)
-                  :limit page-size}
-        total-records (model.like/count-records {})
-        records (model.like/fetch-all (:where options) criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records total-records
-     :args options}))
+  [& options]
+  (apply index* options))
 
 (definitializer
   (require-namespaces

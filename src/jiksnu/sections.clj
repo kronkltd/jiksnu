@@ -34,6 +34,20 @@
 (declare-section admin-index-block :seq)
 (declare-section admin-index-line)
 
+(defsection admin-index-block :default
+  [records & [options & _]]
+  (map #(index-block % options) records))
+
+(defsection admin-index-line :default
+  [record & [options]]
+  (index-line record options))
+
+(defsection admin-index-section :default
+  [records & [options & _]]
+  (list
+   (pagination-links options)
+   (admin-index-block records options)))
+
 (defsection full-uri :default
   [record & options]
   (str "http://" (config :domain)

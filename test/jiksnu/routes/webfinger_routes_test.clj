@@ -1,4 +1,4 @@
-(ns jiksnu.routes.webfinger-test
+(ns jiksnu.routes.webfinger-routes-test
   (:use [ciste.config :only [config]]
         [ciste.model :only [fetch-resource query string->document]]
         [jiksnu.model :only [rel-filter]]

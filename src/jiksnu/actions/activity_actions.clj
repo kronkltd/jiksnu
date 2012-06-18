@@ -27,7 +27,6 @@
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera2.ext.thread.ThreadHelper
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Element))
 
@@ -67,24 +66,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
      :source-link source-link
      :local-id local-id}))
 
-(defn parse-irts
-  "Get the in-reply-to uris"
-  [entry]
-  (->> (ThreadHelper/getInReplyTos entry)
-       (map #(str (.getHref %)))
-       (filter identity)))
-
-(defn parse-link
-  "extract the node element from links
-
-this is for OSW
-"
-  [link]
-  (if-let [href (abdera/get-href link)]
-    (when (and (re-find #"^.+@.+$" href)
-               (not (re-find #"node=" href)))
-      href)))
-
 (defn parse-extension-element
   "parse atom extensions"
   [element]
@@ -121,6 +102,14 @@ this is for OSW
                        (keep #(:_id (actions.user/find-or-create-by-remote-id
                                      {:id %})))) ]
         (assoc activity :recipients users)))))
+
+(def index*
+  (model/make-indexer 'jiksnu.model.activity))
+
+
+(defaction index
+  [& options]
+  (apply index* options))
 
 (defaction create
   "create an activity"
@@ -180,7 +169,7 @@ serialization"
            content (.getContent entry)
            links (seq (abdera/parse-links entry))
 
-           irts (seq (parse-irts entry))
+           irts (seq (abdera/parse-irts entry))
 
            ;; TODO: Extract this pattern
            mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
