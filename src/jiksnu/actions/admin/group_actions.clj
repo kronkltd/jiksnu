@@ -3,11 +3,12 @@
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.actions.group-actions :as actions.group]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.group-actions :as actions.group]))
 
 (defaction index
-  [options]
-  (actions.group/index options))
+  [& options]
+  (apply actions.group/index options))
 
 (defaction create
   [params]

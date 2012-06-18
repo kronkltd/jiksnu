@@ -1,6 +1,7 @@
 (ns jiksnu.sections.group-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form link-to index-section index-line show-section]]
+        [ciste.sections.default :only [add-form link-to index-section
+                                       index-line show-section]]
         [jiksnu.sections :only [control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])

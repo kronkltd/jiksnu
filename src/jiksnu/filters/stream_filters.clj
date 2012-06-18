@@ -2,7 +2,8 @@
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.stream-actions)
-  (:require [jiksnu.actions.user-actions :as actions.user]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]))
