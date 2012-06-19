@@ -10,6 +10,7 @@
         [jiksnu.session :only [current-user current-user-id]]
         [slingshot.slingshot :only [throw+]])
   (:require [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
 
@@ -35,7 +36,7 @@
   (let [{{username :username
           id :id} :params} request
           user (or (when username (model.user/get-user username))
-                   (when id (model.user/fetch-by-id id)))]
+                   (when id (model.user/fetch-by-id (model/make-id id))))]
     (action user)))
 
 (deffilter #'get-subscriptions :http
@@ -43,7 +44,7 @@
   (let [{{username :username
           id :id} :params} request
           user (or (when username (model.user/get-user username))
-                   (when id (model.user/fetch-by-id id)))]
+                   (when id (model.user/fetch-by-id (model/make-id id))))]
     (action user)))
 
 (deffilter #'subscribe :http
@@ -51,6 +52,7 @@
   (if-let [actor (current-user)]
     (let [params (:params request)]
       (if-let [target (-?> (or (:id params) (:subscribeto params))
+                           model/make-id
                            model.user/fetch-by-id)]
         (action actor target)
         (throw+ "User not found")))
@@ -61,6 +63,7 @@
   (if-let [actor (current-user)]
     (let [params (:params request)]
       (if-let [target (-?> (or (:id params) (:unsubscribeto params))
+                           model/make-id
                            model.user/fetch-by-id)]
         (action actor target)
         (throw+ "User not found")))

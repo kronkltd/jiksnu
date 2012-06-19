@@ -1,5 +1,6 @@
 (ns jiksnu.views.subscription-views-test
   (:use [ciste.core :only [with-serialization with-format]]
+        [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
@@ -9,16 +10,38 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [jiksnu.namespace :as namespace]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.actions.subscription-actions :as actions.subscription])
+            [jiksnu.namespace :as namespace])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
 (test-environment-fixture
 
- (fact "apply-view #'unsubscribe :xmpp"
+ (fact "apply-view #'actions.subscription/get-subscriptions"
+   (let [action #'actions.subscription/get-subscriptions]
+     (fact "when the serialization is :http"
+       (with-serialization :http
+         (fact "when the format is :as"
+           (with-format :as
+             (fact "when the user has subscriptions"
+               (model/drop-all!)
+               (let [user (model.user/create (factory :local-user))
+                     subscription (model.subscription/create (factory :subscription
+                                                                      {:actor (:_id user)}))
+                     request {:action action}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (every-checker
+                  map?
+                  (fn [response]
+                    (let [body (:body response)]
+                      (fact
+                        (:totalItems body) => (:total-records response)))))))))))))
+
+ (fact "apply-view #'unsubscribe"
    (let [action #'actions.subscription/unsubscribe]
      (fact "when the serialization is :xmpp"
        (with-serialization :xmpp
