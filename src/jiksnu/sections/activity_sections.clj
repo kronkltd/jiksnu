@@ -2,9 +2,10 @@
   (:use [ciste.core :only [with-format]]
         [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form edit-button index-section show-section
-                                       delete-button full-uri link-to uri title
-                                       index-block index-line update-button]]
+        [ciste.sections.default :only [add-form edit-button index-section
+                                       show-section delete-button full-uri link-to
+                                       uri title index-block index-line index-section
+                                       update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
                                 control-line pagination-links]]
@@ -397,6 +398,7 @@
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
 
+
 (defsection admin-index-block [Activity :html]
   [activities & [options & _]]
   [:table.table
@@ -409,6 +411,7 @@
     [:tbody
      (map admin-index-line activities)]])
 
+
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
   [:tr
@@ -417,6 +420,7 @@
    [:td (if (-> activity :public) "public" "private")]
    [:td (:title activity)]])
 
+
 (defsection delete-button [Activity :html]
   [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity))}
@@ -424,11 +428,13 @@
    [:button.btn.delete-button {:type "submit"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
+
 (defsection edit-button [Activity :html]
   [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
    [:button.btn {:type "submit"}
     [:i.icon-edit] [:span.button-text "edit"]]])
+
 
 (defsection index-block [Activity :atom]
   [items & response]
@@ -445,6 +451,7 @@
   ["items" {"node" ns/microblog}
    (map index-line activities)])
 
+
 (defsection index-line [Activity]
   [activity & opts]
   (apply show-section activity opts))
@@ -458,6 +465,7 @@
   ["item" {"id" (:_id activity)}
    (show-section activity)])
 
+
 (defsection index-section [Activity :atom]
   [items & response]
   (index-block items response))
@@ -469,6 +477,7 @@
 (defsection index-section [Activity :xmpp]
   [activities & options]
   ["pubsub" {} (index-block activities)])
+
 
 (defsection show-section [Activity :as]
   [activity & _]
@@ -664,15 +673,18 @@
      ;; TODO: list hashtags
      ]]])
 
+
 (defsection title [Activity]
   [activity & options]
   (:title activity))
+
 
 (defsection update-button [Activity :html]
   [activity & _]
   [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
    [:button.btn.update-button {:type "submit"}
     [:i.icon-refresh] [:span.button-text "update"]]])
+
 
 (defsection uri [Activity]
   [activity & options]

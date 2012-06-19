@@ -1,7 +1,7 @@
 (ns jiksnu.views.group-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section add-form]]
-        jiksnu.actions.group-actions)
+        [jiksnu.actions.group-actions :only [add create edit-page index new-page user-list]])
   (:require [clojure.tools.logging :as log]))
 
 (defview #'add :html

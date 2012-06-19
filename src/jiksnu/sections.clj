@@ -1,8 +1,7 @@
 (ns jiksnu.sections
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line]]
-        )
+        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line]])
   (:require [clojure.tools.logging :as log]))
 
 (defn control-line

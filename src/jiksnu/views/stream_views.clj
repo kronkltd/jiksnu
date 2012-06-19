@@ -25,32 +25,52 @@
            plaza.rdf.core.RDFModel
            com.hp.hpl.jena.rdf.model.Model))
 
-(def rdf-prefixes
-  [["activity" ns/as]
-   ["sioc" ns/sioc]
-   ["cert" ns/cert]
-   ["foaf" ns/foaf]])
+(defview #'callback-publish :html
+  [request params]
+  {:status 200
+   :template false})
 
-(defn triples->model
-  [triples]
-  (try
-    (let [model (rdf/build-model)]
-      (doto ^Model (rdf/to-java model)
-        (.setNsPrefix "activity" ns/as)
-        (.setNsPrefix "sioc" ns/sioc)
-        (.setNsPrefix "cert" ns/cert)
-        (.setNsPrefix "foaf" ns/foaf))
-      (rdf/with-model model
-        (rdf/model-add-triples triples)))
-    (catch Exception ex
-      (clojure.stacktrace/print-stack-trace ex)
-      (pst+ ex)
-      (throw ex))))
+(defview #'direct-message-timeline :json
+  [request data]
+  {:body data})
 
+(defview #'direct-message-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"}
+    (map index-line (index-section activities))]})
 
+(defview #'group-timeline :html
+  [request [group {:keys [items] :as response}]]
+  {:title (str group " group")
+   :post-form true
+   :body (list
+          (show-section group)
+          (index-section items response))})
 
+(defview #'home-timeline :html
+  [request activities]
+  {:title "Home Timeline"
+   :post-form true
+   :body (index-section activities)})
 
+(defview #'home-timeline :json
+  [request data]
+  {:body data})
 
+(defview #'home-timeline :xml
+  [request activities]
+  {:body (index-section activities)})
+
+(defview #'mentions-timeline :atom
+  [request activities]
+  {:body
+   [:statuses (map index-line activities)]})
+
+(defview #'mentions-timeline :xml
+  [request activities]
+  {:body
+   [:statuses {:type "array"} (map index-line (index-section activities))]})
 
 (defview #'public-timeline :as
   [request {:keys [items] :as response}]
@@ -62,21 +82,6 @@
     :totalItems (:total-records response)
     :items
     (index-section items response)}})
-
-(defview #'user-timeline :as
-  [request [user {:keys [items] :as response}]]
-  {:body
-   {:title (str (title user) " Timeline")
-    :items
-    (index-section items response)}})
-
-
-
-
-(defview #'mentions-timeline :atom
-  [request activities]
-  {:body
-   [:statuses (map index-line activities)]})
 
 (defview #'public-timeline :atom
   [request {:keys [items] :as response}]
@@ -96,8 +101,71 @@
              :updated (:updated (first items))
              :entries (index-section items response)})}))
 
-(defview #'user-timeline :atom
+(defview #'public-timeline :json
+  [request [activities _]]
+  {:body (map show-section activities)})
+
+(defview #'public-timeline :html
+  [request {:keys [items page] :as response}]
+  {:title "Public Timeline"
+   :post-form true
+   :links [{:rel "next"
+            :href (str "?page=" (inc page))
+            :title "Next Page"
+            :type "text/html"}]
+   :formats (sections.activity/index-formats items)
+   :body (index-section items response)})
+
+(defview #'public-timeline :n3
+  [request [activities _]]
+  {:body
+   (with-format :rdf (index-section activities))
+   :template :false})
+
+(defview #'public-timeline :rdf
+  [request {:keys [items] :as response}]
+  {:body (index-section items response)
+   :template :false})
+
+(defview #'public-timeline :xml
+  [request [activities _]]
+  {:body (index-section activities)})
+
+(defview #'public-timeline :xmpp
+  [request [activities _]]
+  (tigase/result-packet request (index-section activities)))
+
+(defview #'remote-profile :html
+  [request user]
+  (apply-view
+   (assoc request :action #'user-timeline)
+   user))
+
+(defview #'remote-profile :n3
   [request [user activities]]
+  {:body (with-format :rdf (show-section user))
+   :template false})
+
+(defview #'remote-profile :rdf
+  [request [user activities]]
+  {:body (show-section user)
+   :template :false})
+
+(defview #'remote-user :html
+  [request user]
+  (apply-view
+   (-> request
+       (assoc :format :html)
+       (assoc :action #'user-timeline))
+   user))
+
+(defview #'stream :html
+  [request response-fn]
+  {:body response-fn
+   :template false})
+
+(defview #'user-timeline :atom
+  [request [user {activities :items :as response}]]
   {:headers {"Content-Type" "application/xml"}
    :template false
    :body (abdera/make-feed
@@ -126,100 +194,16 @@
            :updated (:updated (first activities))
            :entries (map show-section activities)})})
 
-
-
-
-
-
-
-
-
-
-
-
-(defview #'direct-message-timeline :json
-  [request data]
-  {:body data})
-
-(defview #'home-timeline :json
-  [request data]
-  {:body data})
-
-(defview #'public-timeline :json
-  [request [activities _]]
-  {:body (map show-section activities)})
+(defview #'user-timeline :as
+  [request [user {:keys [items] :as response}]]
+  {:body
+   {:title (str (title user) " Timeline")
+    :items
+    (index-section items response)}})
 
 (defview #'user-timeline :json
   [request [user activities]]
   {:body (map show-section activities)})
-
-
-
-
-
-
-
-
-
-
-
-(defview #'callback-publish :html
-  [request params]
-  {:status 200
-   :template false})
-
-(defview #'group-timeline :html
-  [request [group activities]]
-  {:title (str group " group")
-   :post-form true
-   :body (list
-          (show-section group)
-          (index-section activities))})
-
-(defview #'home-timeline :html
-  [request activities]
-  {:title "Home Timeline"
-   :post-form true
-   :body (index-section activities)})
-
-(defview #'public-timeline :html
-  [request {:keys [items page] :as response}]
-  {:title "Public Timeline"
-   :post-form true
-   :links [{:rel "next"
-            :href (str "?page=" (inc page))
-            :title "Next Page"
-            :type "text/html"}]
-   :formats (sections.activity/index-formats items)
-   :body (index-section items response)})
-
-(defview #'remote-profile :html
-  [request user]
-  (apply-view
-   (assoc request :action #'user-timeline)
-   user))
-
-(defview #'remote-user :html
-  [request user]
-  (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'user-timeline))
-   user))
-
-;; (defview #'show :html
-;;   [request user]
-;;   {:status 200
-;;    :body
-;;    (apply-view
-;;     (-> request
-;;         (assoc :action #'user-timeline))
-;;     user)})
-
-(defview #'stream :html
-  [request response-fn]
-  {:body response-fn
-   :template false})
 
 (defview #'user-timeline :html
   [request [user activities]]
@@ -229,24 +213,11 @@
    :body (index-section activities)
    :formats (sections.activity/timeline-formats user)})
 
-
-
-
-
-
-
-
-
-(defview #'public-timeline :n3
-  [request [activities _]]
-  {:body
-   (with-format :rdf (index-section activities))
-   :template :false})
-
-(defview #'remote-profile :n3
+(defview #'user-timeline :rdf
   [request [user activities]]
-  {:body (with-format :rdf (show-section user))
-   :template false})
+  {:body (concat (show-section user)
+                 (index-section activities))
+   :template :false})
 
 (defview #'user-timeline :n3
   [request [user activities]]
@@ -255,70 +226,10 @@
                    (index-section activities)))
    :template false})
 
-
-
-
-
-
-
-
-(defview #'public-timeline :rdf
-  [request [activities _]]
-  {:body (index-section activities)
-   :template :false})
-
-(defview #'remote-profile :rdf
-  [request [user activities]]
-  {:body (show-section user)
-   :template :false})
-
-(defview #'user-timeline :rdf
-  [request [user activities]]
-  {:body (concat (show-section user)
-                 (index-section activities))
-   :template :false})
-
-
-
-
-
-
-
-
-
-(defview #'direct-message-timeline :xml
-  [request activities]
-  {:body
-   [:statuses {:type "array"}
-    (map index-line (index-section activities))]})
-
-(defview #'home-timeline :xml
-  [request activities]
-  {:body (index-section activities)})
-
-(defview #'mentions-timeline :xml
-  [request activities]
-  {:body
-   [:statuses {:type "array"} (map index-line (index-section activities))]})
-
-(defview #'public-timeline :xml
-  [request [activities _]]
-  {:body (index-section activities)})
-
 (defview #'user-timeline :xml
   [request [user activities]]
   {:body (index-block activities)
    :template :false})
-
-
-
-
-
-
-
-(defview #'public-timeline :xmpp
-  [request [activities _]]
-  (tigase/result-packet request (index-section activities)))
 
 (defview #'user-timeline :xmpp
   [request [user  activities]]

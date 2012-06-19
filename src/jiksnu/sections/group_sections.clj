@@ -44,7 +44,6 @@
 (defsection show-section [Group :html]
   [group & _]
   [:div
-   [:p (:title group)]
    [:div
     [:p "Admins " (count (:admins group))]
     [:ul

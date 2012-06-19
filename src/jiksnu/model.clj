@@ -167,6 +167,14 @@
              (throw+ "Could not find fetch function"))
           (throw+ "Could not find count function")))))
 
+(def rdf-prefixes
+  [["activity" ns/as]
+   ["sioc" ns/sioc]
+   ["cert" ns/cert]
+   ["foaf" ns/foaf]])
+
+;; TODO: Only one of these should be used, but which one?
+
 (defn format-triples
   [triples format]
   (let [model (rdf/build-model)]
@@ -180,6 +188,17 @@
     
     (rdf/with-model model (rdf/model-add-triples triples))
     (with-out-str (rdf/model-to-format model format))))
+
+(defn triples->model
+  [triples]
+  (let [model (rdf/build-model)]
+    (doto (rdf/to-java model)
+      (.setNsPrefix "activity" ns/as)
+      (.setNsPrefix "sioc" ns/sioc)
+      (.setNsPrefix "cert" ns/cert)
+      (.setNsPrefix "foaf" ns/foaf))
+    (rdf/with-model model
+      (rdf/model-add-triples triples))))
 
 (defn drop-all!
   "Drop all collections"

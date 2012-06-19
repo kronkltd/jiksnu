@@ -1,13 +1,14 @@
 (ns jiksnu.sections.user-sections
   (:use  [ciste.config :only [config]]
          [ciste.sections :only [defsection]]
-         [ciste.sections.default :only [title uri full-uri show-section add-form edit-button
-                                        delete-button link-to index-line
-                                        update-button index-section]]
+         [ciste.sections.default :only [title uri full-uri show-section add-form
+                                        edit-button delete-button link-to index-line
+                                        update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [jiksnu.model :only [with-subject]]
-         [jiksnu.sections :only [admin-index-block admin-index-line admin-index-section control-line]]
-         jiksnu.session)
+         [jiksnu.sections :only [admin-index-block admin-index-line
+                                 admin-index-section control-line]]
+         [jiksnu.session :only [current-user is-admin?]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -247,12 +248,6 @@
       (:first-name user)
       (model.user/get-uri user)))
 
-(defsection uri [User]
-  [user & options]
-  (if (model.user/local? user)
-    (str "/" (:username user))
-    (str "/remote-user/" (:username user) "@" (:domain user))))
-
 (defsection admin-index-block [User :html]
   [items & [page & _]]
   [:table.users.table
@@ -285,8 +280,56 @@
   (list (pagination-links page)
         (admin-index-block items page)))
 
+(defsection add-form [User :html]
+  [user & _]
+  [:form {:method "post" :action "/admin/users"}
+   [:fieldset
+    [:legend "Add User"]
+    (control-line "Username" "username" "text")
+    (control-line "Domain" "domain" "text")
+    [:div.actions
+     [:input.btn.primary {:type "submit" :value "Add User"}]]]])
 
+(defsection delete-button [User :html]
+  [user & _]
+  [:form {:method "post" :action (str "/users/" (:_id user) "/delete")}
+   [:button.btn.delete-button {:type "submit" :title "Delete"}
+    [:i.icon-trash] [:span.button-text "Delete"]]])
 
+(defsection edit-button [User :html]
+  [user & _]
+  [:form {:method "post" :action (str "/users/" (:_id user) "/edit")}
+   [:button.btn.edit-button {:type "submit" :title "Edit"}
+    [:i.icon-pencil] [:span.button-text "Edit"]]])
+
+(defsection index-block [User :html]
+  [users & [options & _]]
+  [:table.table.users
+   [:thead]
+   [:tbody
+    (map index-line users)]])
+
+(defsection index-line [User :html]
+  [user & _]
+  (let [authenticated (current-user)]
+    [:tr
+     [:td (display-avatar user)]
+     [:td
+      [:p (link-to user)]
+      [:p (:username user) "@" (:domain user)]
+      [:p (:url user)]
+      [:p (:bio user)]]
+     [:td
+      [:ul.buttons
+       [:li (subscribe-button user)]
+       (when authenticated
+         (list
+          [:li (discover-button user)]
+          [:li (update-button user)]
+          (when (is-admin?)
+            (list
+             [:li (edit-button user)]
+             [:li (delete-button user)]))))]]]))
 
 (defsection show-section [User :as]
   [user & options]
@@ -311,75 +354,9 @@
            (when display-name
              {:displayName display-name}))))
 
-
-
-
-
 (defsection show-section [User :atom]
   [user & _]
   (user->person user))
-
-
-
-
-
-
-(defsection add-form [User :html]
-  [user & _]
-  [:form {:method "post" :action "/admin/users"}
-   [:fieldset
-    [:legend "Add User"]
-    (control-line "Username" "username" "text")
-    (control-line "Domain" "domain" "text")
-    [:div.actions
-     [:input.btn.primary {:type "submit" :value "Add User"}]]]])
-
-(defsection delete-button [User :html]
-  [user & _]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/delete")}
-   [:button.btn.delete-button {:type "submit" :title "Delete"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
-
-(defsection edit-button [User :html]
-  [user & _]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/edit")}
-   [:button.btn.edit-button {:type "submit" :title "Edit"}
-    [:i.icon-pencil] [:span.button-text "Edit"]]])
-
-(defsection index-line [User :html]
-  [user & _]
-  (let [authenticated (current-user)]
-    [:tr
-     [:td (display-avatar user)]
-     [:td
-      [:p (link-to user)]
-      [:p (:username user) "@" (:domain user)]
-      [:p (:url user)]
-      [:p (:bio user)]]
-     [:td
-      [:ul.buttons
-       [:li (subscribe-button user)]
-       (when authenticated
-         (list
-          [:li (discover-button user)]
-          [:li (update-button user)]
-          (when (is-admin?)
-            (list
-             [:li (edit-button user)]
-             [:li (delete-button user)]))))]]]))
-
-(defsection index-section [User :html]
-  [users & [options & _]]
-  (let [{:keys [page total-records]} options]
-    (list
-     [:p "Page " page]
-     [:p "Total Records: " total-records]
-     [:table.table.users
-      [:thead]
-      [:tbody
-       (map index-line users)]]
-     (pagination-links options))))
-
 
 (defsection show-section [User :html]
   [user & options]
@@ -396,16 +373,6 @@
    (when (:discovered user)
      (show-section (model.key/get-key-for-user user)))
    (user-actions user)])
-
-(defsection update-button [User :html]
-  [user & _]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/update")}
-   [:button.btn.update-button {:type "submit" :title "Update"}
-    [:i.icon-refresh] [:span.button-text "Update"]]])
-
-
-
-
 
 (defsection show-section [User :rdf]
   [user & _]
@@ -445,10 +412,6 @@
           [[ns/foaf :accountProfilePage]      (rdf/rdf-resource (full-uri user))]
           [[ns/sioc :account_of]              user-uri]])))))
 
-
-
-
-
 (defsection show-section [User :xml]
   [user & options]
   [:user
@@ -460,9 +423,6 @@
    [:profile_image_url (h/h (:avatar-url user))]
    [:url (:url user)]
    [:protected "false"]])
-
-
-
 
 ;; TODO: This should be the vcard format
 (defsection show-section [User :xmpp]
@@ -482,3 +442,22 @@
       (when avatar-url
          ["photo"
           ["uri" avatar-url]])])))
+
+(defsection update-button [User :html]
+  [user & _]
+  [:form {:method "post" :action (str "/users/" (:_id user) "/update")}
+   [:button.btn.update-button {:type "submit" :title "Update"}
+    [:i.icon-refresh] [:span.button-text "Update"]]])
+
+(defsection uri [User]
+  [user & options]
+  (if (model.user/local? user)
+    (str "/" (:username user))
+    (str "/remote-user/" (:username user) "@" (:domain user))))
+
+
+
+
+
+
+

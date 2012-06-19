@@ -3,8 +3,10 @@
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
-        [jiksnu.session :only [current-user]])
-  (:require [jiksnu.model :as model]
+        [jiksnu.session :only [current-user]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.group :as model.group])
   (:import jiksnu.model.Group))
 
@@ -26,8 +28,7 @@
 
 (defaction user-list
   [user]
-  ;; TODO: implement
-  [])
+  (implement))
 
 (defaction add-admin
   [group user]
@@ -44,8 +45,9 @@
       (if-let [group (create params)]
         (do #_(add-admin group user)
             group)
-        (throw (RuntimeException. "Could not create group"))))
-    (throw (RuntimeException. "authenticate"))))
+        ;; TODO: When would this happen?
+        (throw+ "Could not create group")))
+    (throw+ {:type :authentication})))
 
 (defaction edit-page
   [group]
