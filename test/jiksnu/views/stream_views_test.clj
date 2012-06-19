@@ -6,7 +6,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [jiksnu.actions.stream-actions :only [public-timeline]]
+        [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
         [midje.sweet :only [every-checker fact future-fact => contains]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -66,6 +66,26 @@
                         body => #"25")))
                   ;; TODO: not a very good test
                   #(string? (h/html (:body %))))))))))))
+
+ (fact "apply-view #'user-timeline"
+   (let [action #'user-timeline]
+     (fact "when the serialization is :http"
+       (with-serialization :http
+         (fact "when the format is :html"
+           (with-format :html
+             (fact "when that user has activities"
+               (model/drop-all!)
+               (let [user (model.user/create (factory :local-user))
+                     activity (model.activity/create (factory :activity {:author (:_id user)}))
+                     request {:action action
+                              :params {:id (str (:_id user))}}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (every-checker
+                  (fn [response]
+                    (let [body (h/html (:body response))]
+                      (fact
+                        body => (re-pattern (str ".*activity-" (:_id activity) ".*"))))))))))))))
 
  
  )

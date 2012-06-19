@@ -6,6 +6,7 @@
         jiksnu.model.activity
         midje.sweet)
   (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))

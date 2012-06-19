@@ -61,6 +61,21 @@
            #_(provided
                (.getId entry) => "1"))))))
 
+ (fact "#'find-by-user"
+   (fact "when the user has activities"
+     (model/drop-all!)
+     (let [user (model.user/create (factory :local-user))
+           activity (create (factory :activity
+                                     {:author (:_id user)}))]
+       (find-by-user user) =>
+       (every-checker
+        map?
+        (fn [response]
+          (fact
+            (:total-records response) => 1
+            (count (:items response)) => 1
+            (:items response) => (partial every? model/activity?)))))))
+
  (fact "#'create"
    (fact "when the user is logged in"
      (fact "and it is a valid activity"

@@ -212,10 +212,6 @@
   (mc/remove-by-id collection-name (:_id activity))
   activity)
 
-(defn find-by-user
-  [user]
-  (fetch-all {:where {:author (:_id user)}}))
-
 (defn add-comment
   [parent comment]
   (mc/update collection-name

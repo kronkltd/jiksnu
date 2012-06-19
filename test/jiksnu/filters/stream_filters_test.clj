@@ -62,4 +62,15 @@
               #(every? model/activity? (:items %))
               #(= 1 (:total-records %)))))))))
 
+ (fact "filter-action #'actions.stream/user-timeline"
+   (let [action #'actions.stream/user-timeline]
+     (fact "when the serialization is :http"
+       (with-serialization :http
+         (fact "when the user exists"
+           (let [user (model.user/create (factory :local-user))
+                 request {:params {:id (str (:_id user))}}]
+             (filter-action action request) => .response.
+             (provided
+               (actions.stream/user-timeline user) => .response.)))))))
+
  )

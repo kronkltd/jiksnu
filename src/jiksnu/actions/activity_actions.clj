@@ -111,6 +111,12 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [& options]
   (apply index* options))
 
+(defn find-by-user
+  [user]
+  (index {:author (:_id user)}))
+
+
+
 (defaction create
   "create an activity"
   [{id :id :as params}]

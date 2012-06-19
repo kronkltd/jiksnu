@@ -206,11 +206,11 @@
   {:body (map show-section activities)})
 
 (defview #'user-timeline :html
-  [request [user activities]]
+  [request [user {activities :items :as response}]]
   {:user user
    :title (:display-name user)
    :post-form true
-   :body (index-section activities)
+   :body (index-section activities response)
    :formats (sections.activity/timeline-formats user)})
 
 (defview #'user-timeline :rdf

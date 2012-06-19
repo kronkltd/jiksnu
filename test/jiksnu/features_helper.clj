@@ -2,19 +2,17 @@
   (:use aleph.http
         aleph.formats
         [ciste.model :only [implement]]
-        ;; ciste.sections.default
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
-        jiksnu.features-helper
         midje.sweet
-        ring.mock.request)
+        ring.mock.request
+        [slingshot.slingshot :only [throw+]])
   (:require [ciste.config :as c]
             [ciste.core :as core]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
             [ciste.service.aleph :as aleph]
-            [clj-webdriver.core :as w]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -48,9 +46,9 @@
   (try (let [site-config (ciste.runner/load-site-config)]
          
          (ciste.runner/start-application! :test)
-         (model/drop-all!)
-         (set-driver! {:browser :htmlunit})
-         (ciste.runner/process-requires))
+         (set-driver! {:browser :firefox})
+         (ciste.runner/process-requires)
+         (model/drop-all!))
        (catch Exception ex
          (.printStackTrace ex)
          (System/exit 0))))
@@ -81,7 +79,7 @@
    "ostatus sub"                    "/main/ostatussub"
    "host-meta"                      "/.well-known/host-meta"
    "subscription index"             "/admin/subscriptions"
-   "edit profile"                   "/settings/profile"
+   "edit profile"                   "/main/profile"
    "user admin"                     "/admin/users"
    "domain index"                   "/main/domains"
    "feed source admin index"        "/admin/feed-sources"
@@ -196,8 +194,10 @@
 (defn do-enter-field
   [value field-name]
   (let [selector (str "*[name='" field-name "']")]
-    (clear selector)
-    (input-text selector value)))
+    (try (clear selector)
+         (input-text selector value)
+         (catch NullPointerException ex
+           (throw+ (str "Could not find element with selector: " selector))))))
 
 (defn do-enter-password
   []
@@ -301,7 +301,7 @@
 (defn name-should-be
   [display-name]
   (check-response
-   (actions.user/show @that-user) => (contains {:display-name display-name})))
+   (model.user/fetch-by-id (:_id @that-user)) => (contains {:display-name display-name})))
 
 (defn request-oembed-resource
   []
@@ -400,7 +400,7 @@
 (defn should-see-activity
   []
   (check-response
-   (exists? (str "article[id='" (:_id @that-activity) "']")) => truthy))
+   (exists? (str "article[id='activity-" (:_id @that-activity) "']")) => truthy))
 
 (defn should-see-domain
   []

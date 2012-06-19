@@ -4,6 +4,7 @@
         jiksnu.actions.stream-actions)
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]))
@@ -64,7 +65,7 @@
   [action request]
   (let [{{:keys [id username]} :params} request]
     (if-let [user (if id
-                    (model.user/fetch-by-id id)
+                    (model.user/fetch-by-id (model/make-id id))
                     (model.user/get-user username))]
       (action user))))
 

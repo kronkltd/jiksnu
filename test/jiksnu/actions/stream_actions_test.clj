@@ -6,7 +6,8 @@
         jiksnu.session
         jiksnu.actions.stream-actions
         [clj-factory.core :only [factory]])
-  (:require [jiksnu.model.activity :as model.activity]
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -30,6 +31,21 @@
                              ;; #(every? activity? (first %))
                              ))))
 
+ (fact "#'user-timeline"
+   (fact "when the user has activities"
+     (model/drop-all!)
+     (let [user (model.user/create (factory :local-user))
+           activity (model.activity/create (factory :activity
+                                                    {:author (:_id user)}))]
+       (user-timeline user) =>
+       (every-checker
+        vector?
+        (fn [response]
+          (fact
+            (first response) => user
+            (second response) => map?
+            (:total-records (second response)) => 1))))))
+ 
  ;; (fact "#'remote-profile"
  ;;   (remote-profile) => nil)
 
