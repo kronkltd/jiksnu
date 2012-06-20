@@ -29,14 +29,14 @@
     "Dave" "Eve" "Frank" "Tony" "George"
     "Jesus" "Ed" "Britta" "Abed" "Troy" "Jeff"
     "Pierce" "Shirley" "Annie" "Bill" "Leto" "Jean-Luc"
-    "James" "Oscar" "Michael" "John"]))
+    "James" "Oscar" "Michael" "John" "Agent"]))
 
 (defseq :surname
   [n]
   (rand-nth
    ["Smith" "Miller" "Johnson"
     "Doe" "McDuck" "Nebuchadnezzar" "Renfer"
-    "Skywalker" "Bluth" "Adama" "Doe"
+    "Skywalker" "Bluth" "Adama" "Dumbledore"
     "Attreides"]))
 
 (defseq :password
@@ -45,11 +45,61 @@
 
 (defseq :domain
   [n]
-  (str "subdomain" n ".example.com"))
+  (str "subdomain" n ".example.local"))
 
 (defseq :uri
   [n]
   (str "http://" (fseq :domain) "/" n))
+
+(defseq :noun
+  [n]
+  (rand-nth
+   [(str (fseq :name) " " (fseq :surname))
+    "Butt"
+    "Paul Anka"
+    "Ubuntu"
+    "Monkey"
+    "Group"
+    "Titanic"
+    ""
+    "Tardis"
+    "Justin Bieber"
+    (fseq :title)]))
+
+(defseq :preamble
+  [n]
+  (rand-nth
+   ["Users of "
+    "Fans of "
+    "The International Union to Destroy "
+    "Employees of "
+    "Ex-lovers of "
+    "The Sacred order of "
+    ""
+    "The Heralds of the Imminent Arrival of "]))
+
+(defseq :adjective
+  [n]
+  (rand-nth
+   ["The Second Coming of "
+    "The Purple "
+    "My Monkey, "
+    "Robot "
+    "The Glorious "
+    "Undead "
+    "Zombie "
+    ""
+    "Ninja "
+    "The Unflappable "
+    "The Unsinkable "
+    "The Underestimated "
+    "The Official "]))
+
+(defseq :group-name
+  [n]
+  (str (fseq :preamble)
+       (fseq :adjective)
+       (fseq :noun)))
 
 (defseq :title
   [n]
@@ -95,8 +145,7 @@
 
 (deffactory Conversation
   {:items []
-   :local true}
-  )
+   :local true})
 
 (deffactory :conversation
   (factory Conversation))
@@ -137,7 +186,7 @@
   (factory FeedSubscription))
 
 (deffactory Group
-  {:name (fseq :word)})
+  {:nickname (fseq :group-name)})
 
 (deffactory :group
   (factory Group))
