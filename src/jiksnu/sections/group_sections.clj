@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form link-to index-section
                                        index-line show-section]]
-        [jiksnu.sections :only [control-line]])
+        [jiksnu.sections :only [control-line admin-index-block admin-index-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Group))
@@ -23,6 +23,24 @@
     (control-line "Aliases" "aliases" "text")
     [:div.controls
      [:input.btn.btn-primary {:type "submit" :value "Add"}]]]])
+
+(defsection admin-index-block [Group :html]
+  [groups & [options & _]]
+  [:table.table.groups
+   [:thead
+    [:tr
+     [:th "Name"]
+     [:th "Full Name"]
+     [:th "Homepage"]]]
+   [:tbody
+    (map #(admin-index-line % options) groups)]])
+
+(defsection admin-index-line [Group :html]
+  [group & [options & _]]
+  [:tr {:id (str "group-" (:_id group))}
+   [:td (:nickname group)]
+   [:td (:fullname group)]
+   [:td (:homepage group)]])
 
 (defsection index-line [Group :html]
   [group & _]

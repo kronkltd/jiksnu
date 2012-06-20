@@ -4,4 +4,6 @@
 
 (deffilter #'index :http
   [action request]
-  (-> request :params action))
+  (-> request :params
+      (select-keys #{:page})
+       action))
