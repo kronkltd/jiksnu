@@ -23,11 +23,13 @@
 
 (defn subscriber-line
   [subscription]
-  [:li (-> subscription model.subscription/get-actor show-minimal)])
+  [:li {:id (str "subscription-" (:_id subscription))}
+   (-> subscription model.subscription/get-actor show-minimal)])
 
 (defn subscriptions-line
   [subscription]
-  [:li (-> subscription model.subscription/get-target show-minimal)])
+  [:li {:id (str "subscription-" (:_id subscription))}
+   (-> subscription model.subscription/get-target show-minimal)])
 
 (defsection uri [Subscription]
   [subscription & _]

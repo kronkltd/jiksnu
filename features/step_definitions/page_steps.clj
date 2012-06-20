@@ -46,6 +46,9 @@
 (Given #"^that user posts an activity$" []
        (user-posts-activity))
 
+(Given #"^that user has a subscription$" []
+       (user-has-a-subscription))
+
 (Given #"^I am authorized to view that activity$" []
   (comment  Express the Regexp above with the code you wish you had  )
   (throw (cucumber.runtime.PendingException.)))
@@ -169,6 +172,9 @@
 
 (Then #"^I should see that domain$" []
       (should-see-domain))
+
+(Then #"^I should see that subscription$" []
+      (should-see-subscription))
 
 (Then #"^I should wait$" []
       (do-wait))

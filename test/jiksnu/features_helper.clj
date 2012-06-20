@@ -22,6 +22,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             jiksnu.routes
             [jiksnu.session :as session])
@@ -36,6 +37,7 @@
 (def port 8175)
 (def that-activity (ref nil))
 (def that-domain (ref nil))
+(def that-subscription (ref nil))
 (def that-user (ref nil))
 (def my-password (ref nil))
 
@@ -407,6 +409,11 @@
   (check-response
    (text ".domain-id") => (:_id @that-domain)))
 
+(defn should-see-subscription
+  []
+  (check-response
+   (exists? (str "subscription-"(:_id @that-subscription))) => truthy))
+
 (defn should-see-domain-named
   [domain-name]
   (check-response
@@ -438,6 +445,12 @@
                                :public (= modifier "public")}))]
        (dosync
         (ref-set that-activity activity))))))
+
+(defn user-has-a-subscription
+  []
+  (let [subscription (model.subscription/create (factory :subscription {:actor (:_id @that-user)}))]
+    (dosync
+     (ref-set that-subscription subscription))))
 
 (defn user-posts-activity
   []

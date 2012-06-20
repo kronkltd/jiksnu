@@ -40,7 +40,7 @@
           {:params {:subscribeto .id.}}) => truthy
            (provided
              (session/current-user) => .actor.
-             (model.user/fetch-by-id .id.) => .target.
+             (model.user/fetch-by-id (model/make-id .id.)) => .target.
              (subscribe .actor. .target.) => truthy))
        (fact "when a user matching the subscribeto param is not found"
          (filter-action
@@ -48,7 +48,7 @@
           {:params {:subscribeto .id.}}) => (throws RuntimeException)
            (provided
              (session/current-user) => .actor.
-             (model.user/fetch-by-id .id.) => nil
+             (model.user/fetch-by-id (model/make-id .id.)) => nil
              (subscribe .actor. .target.) => nil :times 0)))
      (fact "when the user is not authenticated"
        (filter-action
