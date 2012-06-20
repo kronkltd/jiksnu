@@ -4,7 +4,8 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker]])
-  (:require [jiksnu.actions.auth-actions :as actions.auth]))
+  (:require [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 
@@ -14,6 +15,7 @@
                              :password .password.}}]
        (filter-action #'actions.auth/login request))) => .response.
        (provided
-         (actions.auth/login .username. .password.) => .response. :times 1))
+         (actions.auth/login .user. .password.) => .response. :times 1
+         (model.user/get-user .username.) => .user.))
  
  )

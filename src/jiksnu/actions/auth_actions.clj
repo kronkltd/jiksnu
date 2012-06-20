@@ -5,43 +5,48 @@
         [ciste.runner :only [require-namespaces]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism])
   (:import org.mindrot.jbcrypt.BCrypt))
 
+;; TODO: doesn't work yet
 (defaction guest-login
-  [webid]
-  (actions.user/find-or-create-by-uri webid))
+  [user]
+  user)
+
+(defn password-matches?
+  [password hash]
+  (BCrypt/checkpw password hash))
 
 (defaction login
-  [username password]
-  ;; TODO: fix this
-  (if-let [user (model.user/get-user username)]
-    (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
-                          {:user (:_id user)}))]
-      (if (some #(BCrypt/checkpw password (:value %))
-                mechanisms)
-        user
-        (throw+ {:type :authentication :message "passwords do not match"}))
-      (throw+ {:type :authentication :message "No authentication mechanisms found"}))
-    (throw+ {:type :authentication :message "user not found"})))
+  [user password]
+  ;; TODO: Is this an acceptable use of fetch-all?
+  (if-let [mechanisms (seq (model.authentication-mechanism/fetch-all
+                            {:user (:_id user)}))]
+    (if (->> mechanisms
+             (map :value)
+             (some (partial password-matches? password)))
+      user
+      (throw+ {:type :authentication :message "passwords do not match"}))
+    (throw+ {:type :authentication :message "No authentication mechanisms found"})))
 
 (defaction login-page
   [request]
+  ;; TODO: Should this display the login page if already logged in?
   true)
 
 (defaction logout
   [request]
+  ;; TODO: close any open session resources, send away presence?
   true)
 
 (defaction password-page
-  [request]
-  (let [{{id :pending-id} :session} request]
-    (model.user/fetch-by-id id)))
+  "Page for when the identifier has come from elsewhere"
+  [user]
+  user)
 
 (defaction verify-credentials
   []
+  ;; TODO: actually check
   true)
 
 (defn add-password

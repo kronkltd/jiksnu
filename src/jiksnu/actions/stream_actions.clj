@@ -38,8 +38,10 @@
   (model/make-indexer 'jiksnu.model.activity))
 
 (defaction public-timeline
-  [& options]
-  (apply public-timeline* options))
+  [& [params & [options & _]]]
+  (public-timeline* params (merge
+                            {:sort-clause [{:updated -1}]}
+                            options)))
 
 (declare user-timeline)
 
