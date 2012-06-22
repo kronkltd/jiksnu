@@ -4,19 +4,16 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        jiksnu.views.subscription-views
-        midje.sweet)
+        [midje.sweet :only [every-checker fact future-fact truthy =>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as namespace])
-  (:import jiksnu.model.Subscription
-           jiksnu.model.User))
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 
@@ -39,7 +36,25 @@
                   (fn [response]
                     (let [body (:body response)]
                       (fact
-                        (:totalItems body) => (:total-records response)))))))))))))
+                        (:totalItems body) => (:total-records response)))))))))
+         (fact "when the format is :html"
+           (with-format :html
+             (fact "when the user has subscriptions"
+               (model/drop-all!)
+               (let [user (model.user/create (factory :local-user))
+                     subscription (model.subscription/create
+                                   (factory :subscription
+                                            {:actor (:_id user)}))
+                     request {:action action
+                              :params {:id (str (:_id user))}}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (every-checker
+                  map?
+                  (fn [response]
+                    (let [body (h/html (:body response))]
+                      (fact
+                        body => #"subscriptions"))))))))))))
 
  (fact "apply-view #'unsubscribe"
    (let [action #'actions.subscription/unsubscribe]
@@ -52,10 +67,10 @@
               (apply-view request nil) => packet/packet?))
           
           (fact "when there is a subscription"
-            (let [user (model.user/create (factory User))
-                  subscribee (model.user/create (factory User))
-                  record (factory Subscription {:from (:_id user)
-                                                :to (:_id subscribee)})
+            (let [user (model.user/create (factory :local-user))
+                  subscribee (model.user/create (factory :local-user))
+                  record (factory :subscription {:from (:_id user)
+                                                 :to (:_id subscribee)})
                   request {:action #'actions.subscription/unsubscribe
                            :format :xmpp
                            :id "Foo"}

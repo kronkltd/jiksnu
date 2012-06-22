@@ -23,6 +23,13 @@
   [subscription]
   (model.subscription/delete subscription))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.subscription))
+
+(defaction index
+  [& options]
+  (apply index* options))
+
 (defaction ostatus
   [& _]
   (implement))
@@ -98,7 +105,7 @@
 
 (defaction get-subscriptions
   [user]
-  [user (model.subscription/subscriptions user)])
+  [user (index {:actor (:_id user)} )])
 
 
 (defaction unsubscribe

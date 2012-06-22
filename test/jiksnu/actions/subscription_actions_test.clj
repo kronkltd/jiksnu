@@ -16,23 +16,23 @@
  (fact "subscribe"
    (fact "when the user is not already subscribed"
      (fact "should return a subscription"
-       (let [user (model.user/create (factory User))
-             subscribee (model.user/create (factory User))]
+       (let [user (model.user/create (factory :local-user))
+             subscribee (model.user/create (factory :local-user))]
          (model.subscription/drop!)
          (with-user user
            (subscribe user subscribee) => subscription?)))))
 
  (fact "subscribed"
    (fact "should return a subscription"
-     (let [user (model.user/create (factory User))
-           subscribee (model.user/create (factory User))]
+     (let [user (model.user/create (factory :local-user))
+           subscribee (model.user/create (factory :local-user))]
        (subscribed user subscribee) => subscription?)))
 
  (fact "subscribers"
    (fact "when there are subscribers"
      (fact "should not be empty"
-       (let [user (model.user/create (factory User))
-             subscriber (model.user/create (factory User))
+       (let [user (model.user/create (factory :local-user))
+             subscriber (model.user/create (factory :local-user))
              subscription (model.subscription/create
                            (factory Subscription
                                     {:from (:_id subscriber)
@@ -44,12 +44,19 @@
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
      (fact "should return a sequence of subscriptions"
-       (let [user (model.user/create (factory User))
-             subscribee (model.user/create (factory User))
+       (let [user (model.user/create (factory :local-user))
+             subscribee (model.user/create (factory :local-user))
              subscription (model.subscription/create
                            (factory Subscription
                                     {:from (:_id user)
-                                     :to (:_id subscribee)}))
-             [user subscriptions] (get-subscriptions user)]
-         subscriptions => (comp not empty?)
-         subscriptions => (partial every? (partial instance? Subscription)))))))
+                                     :to (:_id subscribee)}))]
+         (get-subscriptions user) =>
+         (every-checker
+          vector?
+          #(= user (first %))
+          (fn [response]
+            (let [subscriptions (second response)]
+              (fact
+                subscriptions =>  map?
+                (:items subscriptions) =>
+                (partial every? (partial instance? Subscription)))))))))))

@@ -412,7 +412,7 @@
 (defn should-see-subscription
   []
   (check-response
-   (exists? (str "subscription-"(:_id @that-subscription))) => truthy))
+   (exists? (str "#subscription-" (:_id @that-subscription))) => truthy))
 
 (defn should-see-domain-named
   [domain-name]
