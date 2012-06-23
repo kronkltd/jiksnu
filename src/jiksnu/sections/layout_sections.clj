@@ -25,8 +25,8 @@
   (when user
     (list
      (show-section user)
-     (sections.subscription/subscriptions-section user)
-     (sections.subscription/subscribers-section user)
+     (sections.subscription/subscriptions-widget user)
+     (sections.subscription/subscribers-widget user)
      (sections.group/user-groups user))))
 
 (defn side-navigation

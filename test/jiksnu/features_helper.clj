@@ -48,7 +48,7 @@
   (try (let [site-config (ciste.runner/load-site-config)]
          
          (ciste.runner/start-application! :test)
-         (set-driver! {:browser :firefox})
+         (set-driver! {:browser :htmlunit})
          (ciste.runner/process-requires)
          (model/drop-all!))
        (catch Exception ex

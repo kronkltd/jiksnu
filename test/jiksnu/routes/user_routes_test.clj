@@ -16,10 +16,7 @@
         (every-checker
          map?
          (comp status/success? :status)
-         (comp string? :body)
-         
-         )
-   )
+         (comp string? :body)))
  
  (fact "registration page"
    (->> "/main/register"
