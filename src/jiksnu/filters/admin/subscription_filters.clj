@@ -1,7 +1,8 @@
 (ns jiksnu.filters.admin.subscription-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.admin.subscription-actions)
-  (:require [jiksnu.model.subscription :as model.subscription]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.subscription :as model.subscription]))
 
 (deffilter #'create :http
   [action request]

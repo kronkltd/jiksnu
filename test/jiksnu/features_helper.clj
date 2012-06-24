@@ -13,6 +13,7 @@
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
             [ciste.service.aleph :as aleph]
+            [clj-webdriver.core :as webdriver]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -132,11 +133,11 @@
                  {:username (fseq :username)
                   :password password
                   :display-name (fseq :name)
-                  :accepted true
-                  })]
+                  :accepted true})]
        (dosync
         (ref-set my-password password)
-        (ref-set that-user user)))))
+        (ref-set that-user user)))
+     (Thread/sleep 6000)))
 
 (defn a-user-exists-with-password
   [password]
@@ -412,7 +413,8 @@
 (defn should-see-subscription
   []
   (check-response
-   (exists? (str "#subscription-" (:_id @that-subscription))) => truthy))
+   (let [elements (elements ".subscription")]
+     (map #(webdriver/attribute % :data-id) elements) => (contains (str (:_id @that-subscription))))))
 
 (defn should-see-domain-named
   [domain-name]

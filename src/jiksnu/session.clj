@@ -1,5 +1,6 @@
 (ns jiksnu.session
-  (:require [jiksnu.model.user :as model.user]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user]))
 
 (def ^:dynamic *current-user* (ref nil))
 (def ^:dynamic *admin-mode* false)

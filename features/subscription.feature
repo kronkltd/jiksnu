@@ -16,6 +16,7 @@ Scenario: Admin page, user
 
 Scenario: Admin page, user
   Given I am logged in as an admin
+  And that user has a subscription
   When I go to the "subscription index" page
   Then I should see a list of subscriptions
   # And the response is sucsessful

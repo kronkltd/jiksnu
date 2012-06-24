@@ -9,6 +9,10 @@
 
 (def collection-name "groups")
 
+(defn drop!
+  []
+  (mc/remove collection-name))
+
 (defn delete
   [group]
   (let [result (mc/remove-by-id collection-name (:_id group))]

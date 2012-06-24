@@ -81,10 +81,8 @@
   [records & [options & _]]
   (let [{:keys [page total-records]} options]
     (list
-     [:p "Page: " page]
-     [:p "Total Records: " total-records]
-     (index-block records options)
-     (pagination-links options))))
+     (pagination-links options)
+     (index-block records options))))
 
 (defsection delete-button :default
   [record & _]

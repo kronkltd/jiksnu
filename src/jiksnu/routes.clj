@@ -7,6 +7,7 @@
             [ciste.middleware :as middleware]
             [ciste.predicates :as pred]
             [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [compojure.core :as compojure]
             [compojure.handler :as handler]
             [compojure.route :as route]

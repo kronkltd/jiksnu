@@ -79,9 +79,17 @@
    [:tbody
     (map #(admin-index-line % options) items)]])
 
+(defsection index-line [Subscription :as]
+  [subscription & _]
+  (let [actor (model.subscription/get-actor subscription)
+        target (model.subscription/get-target subscription)]
+    {:verb "follow"
+     :actor (show-section actor)
+     :target (show-section target)}))
+
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]
-  [:li.subscription {:data-id (:_item item) :data-type "subscription"}
+  [:li.subscription {:data-id (:_id item) :data-type "subscription"}
    (link-to (model.subscription/get-actor item))])
 
 (defsection subscriptions-block [Subscription :html]
@@ -108,14 +116,6 @@
   [items & [options & _]]
   (subscribers-block items options))
 
-
-(defsection index-line [Subscription :as]
-  [subscription & _]
-  (let [actor (model.subscription/get-actor subscription)
-        target (model.subscription/get-target subscription)]
-    {:verb "follow"
-     :actor (show-section actor)
-     :target (show-section target)}))
 
 (defsection uri [Subscription]
   [subscription & _]

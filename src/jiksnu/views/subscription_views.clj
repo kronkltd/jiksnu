@@ -3,6 +3,7 @@
         ciste.sections.default
         jiksnu.actions.subscription-actions)
   (:require [clj-tigase.core :as tigase]
+            [clojure.tools.logging :as log]
             [jiksnu.helpers.subscription-helpers :as helpers.subscription]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.subscription :as model.subscription]
