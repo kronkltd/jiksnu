@@ -12,23 +12,24 @@
     (with-user-id (-> request :session :id)
       (handler request))))
 
+(defn auth-exception
+  [ex]
+  {:status 303
+   :template false
+   :flash "You must be logged in to do that."
+   :headers {"location" "/main/login"}})
+
 (defn wrap-authentication-handler
   [handler]
   (fn [request]
     (try+
       (handler request)
       (catch [:type :authentication] ex
-        {:status 303
-         :template false
-         :flash "You must be logged in to do that."
-         :headers {"location" "/main/login"}}
-          )
-
-      (catch LoginException e
-        {:status 303
-         :template false
-         :flash "You must be logged in to do that."
-         :headers {"location" "/main/login"}}))))
+        (auth-exception ex))
+      (catch [:type :permission] ex
+        (auth-exception (log/spy :info ex)))
+      (catch LoginException ex
+        (auth-exception ex)))))
 
 (defn wrap-stacktrace
   [handler]

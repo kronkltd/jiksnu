@@ -43,6 +43,9 @@
 (Given #"^there is a (.+) activity$" [type]
        (there-is-an-activity type))
 
+(Given #"^there is a (.+) activity created by another$" [type]
+       (there-is-an-activity-by-another type))
+
 (Given #"^that user posts an activity$" []
        (user-posts-activity))
 
@@ -139,6 +142,10 @@
 
 (Then #"^I should get a not found error$" []
       (get-not-found-error))
+
+(Then #"^I should get an authentication error$" []
+      (should-be-at-page "login"))
+
 
 (Then #"^I should not be logged in$" []
       (should-not-be-logged-in))

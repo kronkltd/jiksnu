@@ -448,6 +448,19 @@
        (dosync
         (ref-set that-activity activity))))))
 
+(defn there-is-an-activity-by-another
+  [modifier]
+  (let [user (actions.user/create (factory :local-user))]
+    (session/with-user user
+     (let [activity (actions.activity/create
+                     (factory Activity
+                              {:author (session/current-user-id)
+                               :public (= modifier "public")}))]
+       (dosync
+        (ref-set that-activity activity))))))
+
+
+
 (defn user-has-a-subscription
   []
   (let [subscription (model.subscription/create (factory :subscription {:actor (:_id @that-user)}))]

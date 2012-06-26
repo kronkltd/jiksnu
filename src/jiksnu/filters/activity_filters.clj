@@ -30,15 +30,6 @@
       (dissoc "geo.lat")
       action))
 
-(deffilter #'show :http
-  [action request]
-  (-> request :params :id
-      model.activity/fetch-by-id action))
-
-(deffilter #'update :http
-  [action request]
-  (-> request :params action))
-
 (deffilter #'post :xmpp
   [action request]
   (let [{:keys [items]} request
@@ -50,6 +41,11 @@
                entry->activity))
          items)]
     (action (first activities))))
+
+(deffilter #'show :http
+  [action request]
+  (-> request :params :id
+      model.activity/fetch-by-id action))
 
 (deffilter #'show :xmpp
   [action request]
@@ -67,3 +63,7 @@
       (action (map #(entry->activity
                      (abdera/parse-xml-string (str %)))
                    items)))))
+
+(deffilter #'update :http
+  [action request]
+  (-> request :params action))

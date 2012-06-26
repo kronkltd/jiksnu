@@ -1,12 +1,14 @@
 (ns jiksnu.routes.activity-routes-test
-  (:use [clj-factory.core :only [factory]]
-        [jiksnu.routes-helper :only [response-for]]
+  (:use [clj-factory.core :only [factory fseq]]
+        [jiksnu.routes-helper :only [get-auth-cookie response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [contains every-checker fact future-fact =>]])
   (:require [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [ring.mock.request :as mock])
   (:import jiksnu.model.Activity
@@ -16,7 +18,7 @@
 (test-environment-fixture
 
  (fact "show-http-route"
-   (fact "when the user is not authenticated"
+   #_(fact "when the user is not authenticated"
      (fact "and the activity does not exist"
        (let [author (model.user/create (factory :local-user))
              activity (factory :activity)]
@@ -36,4 +38,39 @@
                (contains {:status 200})
                (fn [response]
                  (fact
-                   (:body response) => (re-pattern (str (:_id created-activity)))))))))))
+                   (:body response) => (re-pattern (str (:_id created-activity)))))))))
+   (fact "when the user is authenticated"
+     (let [password (fseq :password)
+           user (factory :local-user)]
+       (actions.auth/add-password user password)
+
+       (fact "when a private activity exists"
+         (let [author (model.user/create (factory :local-user))
+               activity (->> {:author (:_id author)
+                              :public false}
+                             (factory :activity)
+                             model.activity/create)]
+           (let [cookie-str (get-auth-cookie (:username user) password)]
+             (-> (->> (str "/notice/" (:_id activity))
+                      (mock/request :get))
+                 (assoc-in [:headers "cookie"] (log/spy :info cookie-str))
+                 response-for)) =>
+                (every-checker
+                 map?
+                 (fn [response]
+                   (fact
+                     (:status response) => status/redirect?
+                   
+                     ))
+                 
+                 )
+
+           )
+
+         )
+       
+       )
+
+     )
+
+   ))
