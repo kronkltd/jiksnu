@@ -16,6 +16,7 @@
             [clj-tigase.packet :as packet]
             [hiccup.core :as h]
             [jiksnu.model :as model]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.user-actions :as actions.user])
   (:import jiksnu.model.User))
@@ -44,19 +45,25 @@
                        body => #"Total Records: 0"))))))))))))
  
  (fact "apply-view #'show :xmpp"
-   (fact "should return a query results packet map"
-     (with-context [:xmpp :xmpp]
-       (let [user (model.user/create (factory User))
-             packet (tigase/make-packet
-                     {:to (tigase/make-jid user)
-                      :from (tigase/make-jid user)
-                      :type :get})
-             request (merge {:format :xmpp
-                             :action #'actions.user/show}
-                            (packet/make-request packet))]
-         (let [response (apply-view request user)]
-           response => map?
-           response => (contains {:type :result}))))))
+   (let [action #'actions.user/show]
+     (fact "should return a query results packet map"
+       (fact "when the serialization is :xmpp"
+         (with-serialization :xmpp
+          (fact "when the format is :xmpp"
+            (with-format :xmpp
+              (let [user (model.user/create (factory User))
+                    packet (tigase/make-packet
+                            {:to (tigase/make-jid user)
+                             :from (tigase/make-jid user)
+                             :type :get})
+                    request (merge {:format :xmpp
+                                    :action action}
+                                   (packet/make-request packet))]
+                (let [response (apply-view request user)]
+                  response => map?
+                  response => (contains {:type :result})))))))
+     
+      )))
 
  (fact "apply-view-test #'fetch-remote :xmpp"
    (fact "should return an iq query packet map"
