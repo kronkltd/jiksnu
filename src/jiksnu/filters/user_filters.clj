@@ -68,9 +68,11 @@
 
 (deffilter #'register :http
   [action {{:keys [username password confirm-password] :as params} :params}]
-  (if (= password confirm-password)
-    (action params)
-    (throw (RuntimeException. "Password and confirm password do not match"))))
+  (if (:accepted params)
+    (if (= password confirm-password)
+      (action params)
+      (throw (RuntimeException. "Password and confirm password do not match")))
+    (throw (IllegalArgumentException. "you didn't check the box"))))
 
 (deffilter #'register-page :http
   [action request]

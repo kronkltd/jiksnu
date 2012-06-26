@@ -39,6 +39,10 @@
     "Skywalker" "Bluth" "Adama" "Dumbledore"
     "Attreides"]))
 
+(defseq :display-name
+  [n]
+  (str (fseq :name) " " (fseq :surname)))
+
 (defseq :password
   [n]
   (str "hunter" n))
@@ -101,6 +105,11 @@
        (fseq :adjective)
        (fseq :noun)))
 
+(defseq :email
+  [n]
+  (str (fseq :username)
+       "@" (fseq :domain)))
+
 (defseq :title
   [n]
   (str (inf/ordinalize n) " post!"))
@@ -112,6 +121,14 @@
 (defseq :word
   [n]
   (str "word" n))
+
+(defseq :bio
+  [n]
+  (fseq :word))
+
+(defseq :location
+  [n]
+  "Anytown, USA")
 
 (deffactory Domain
   {:_id (fseq :domain)

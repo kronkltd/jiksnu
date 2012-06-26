@@ -15,6 +15,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
@@ -437,23 +438,23 @@
   [{:keys [username password email display-name location bio] :as options}]
   ;; TODO: should we check reg-enabled here?
   ;; verify submission.
-  (if (:accepted options)
-    (if (and username password)
-      (let [user (model.user/get-user username)]
-        (if-not user
-          (-> {:username username
-               :domain (config :domain)
-               :discovered true
-               :id (str "acct:" username "@" (config :domain))
-               :local true}
-              (merge (when email {:email email})
-                     (when display-name {:display-name display-name})
-                     (when bio {:bio bio})
-                     (when location {:location location}))
-              create)
-          (throw (IllegalArgumentException. "user already exists"))))
-      (throw (IllegalArgumentException. "Missing required params")))
-    (throw (IllegalArgumentException. "you didn't check the box"))))
+  (if (and username password)
+    (let [user (model.user/get-user username)]
+      (if-not user
+        (let [user (-> {:username username
+                        :domain (config :domain)
+                        :discovered true
+                        :id (str "acct:" username "@" (config :domain))
+                        :local true}
+                       (merge (when email {:email email})
+                              (when display-name {:display-name display-name})
+                              (when bio {:bio bio})
+                              (when location {:location location}))
+                       create)]
+          (actions.auth/add-password user password)
+          user)
+        (throw (IllegalArgumentException. "user already exists"))))
+    (throw (IllegalArgumentException. "Missing required params"))))
 
 (defaction register-page
   "Display the form to reqister a user"

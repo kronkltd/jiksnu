@@ -11,6 +11,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
+            [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger])
@@ -189,4 +190,26 @@
    (register-page) =>
    (every-checker
     (partial instance? User)))
+
+ (fact "#register"
+   (let [params {:username (fseq :username)
+                 :email (fseq :email)
+                 :display-name (fseq :display-name)
+                 :bio (fseq :bio)
+                 :location (fseq :location)
+                 :password (fseq :password)}]
+     (register params) =>
+     (every-checker
+      map?
+      (partial instance? User)
+      (fn [response]
+        (fact
+          (model.auth-mechanism/fetch-by-user response) =not=> empty?
+
+          )
+        )
+      )
+
+     )
+   )
  )

@@ -19,6 +19,10 @@
      (map model/map->AuthenticationMechanism
           (mc/find-maps collection-name params))))
 
+(defn fetch-by-user
+  [user & options]
+  (apply fetch-all {:user (:_id user)} options))
+
 (defn count-records
   ([] (count-records {}))
   ([params]
