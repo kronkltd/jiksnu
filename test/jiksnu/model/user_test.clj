@@ -79,6 +79,15 @@
        (create (factory User))
        (fetch-all) => (partial every? user?))))
 
+ (fact "#'fetch-by-domain"
+   (let [domain (model.domain/create (factory :domain))
+         user (create (factory :user {:domain (:_id domain)}))
+         ]
+     (fetch-by-domain domain) => (contains user))
+   )
+ 
+
+ 
  (fact "#'get-user"
    (fact "when the user is found"
      (fact "should return a user"

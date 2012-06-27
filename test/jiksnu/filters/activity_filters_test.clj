@@ -27,42 +27,41 @@
 (test-environment-fixture
 
  (future-fact "filter-action #'actions.activity/create :xmpp"
-   (fact "when the user is logged in"
-     (fact "and it is a valid activity"
-       (fact "should return that activity"
-         (with-serialization :xmpp
-           (with-format :xmpp
-             (let [user (model.user/create (factory User))]
-               (with-user user
-                 (let [activity (factory Activity)
-                       element (element/make-element
-                                (index-section [activity]))
-                       packet (tigase/make-packet
-                               {:to (tigase/make-jid user)
-                                :from (tigase/make-jid user)
-                                :type :set
-                                :body element})
-                       request (assoc (packet/make-request packet)
-                                 :serialization :xmpp)]
-                   (filter-action #'actions.activity/create request) => activity?)))))))))
+   (let [action  #'actions.activity/create]
+     (fact "when the user is logged in"
+       (fact "and it is a valid activity"
+         (fact "should return that activity"
+           (with-serialization :xmpp
+             (with-format :xmpp
+               (let [user (model.user/create (factory :local-user))]
+                 (with-user user
+                   (let [activity (factory Activity)
+                         element (element/make-element
+                                  (index-section [activity]))
+                         packet (tigase/make-packet
+                                 {:to (tigase/make-jid user)
+                                  :from (tigase/make-jid user)
+                                  :type :set
+                                  :body element})
+                         request (packet/make-request packet)]
+                     (filter-action action request) => activity?))))))))))
 
  (fact "filter-action #'actions.activity/show :xmpp"
-   (with-serialization :xmpp
-     (let [author (model.user/create (factory User))]
-      (with-user author
-        (let [activity (model.activity/create (factory Activity))
-              packet-map {:from (tigase/make-jid author)
-                          :to (tigase/make-jid author)
-                          :type :get
-                          :id "JIKSNU1"
-                          :body (element/make-element
-                                 ["pubsub" {"xmlns" ns/pubsub}
-                                  ["items" {"node" ns/microblog}
-                                   ["item" {"id" (str (:_id activity))}]]])}
-              packet (tigase/make-packet packet-map)
-              request (assoc (packet/make-request packet)
-                        :serialization :xmpp)
-              response (filter-action #'actions.activity/show request)]
-          (filter-action #'actions.activity/show request) =>
-          (every-checker
-           activity?)))))))
+   (let [action #'actions.activity/show ]
+     (with-serialization :xmpp
+       (let [author (model.user/create (factory User))]
+         (with-user author
+           (let [activity (model.activity/create (factory Activity))
+                 packet-map {:from (tigase/make-jid author)
+                             :to (tigase/make-jid author)
+                             :type :get
+                             :id "JIKSNU1"
+                             :body (element/make-element
+                                    ["pubsub" {"xmlns" ns/pubsub}
+                                     ["items" {"node" ns/microblog}
+                                      ["item" {"id" (str (:_id activity))}]]])}
+                 packet (tigase/make-packet packet-map)
+                 request (packet/make-request packet)]
+             (filter-action action request) =>
+             (every-checker
+              activity?))))))))

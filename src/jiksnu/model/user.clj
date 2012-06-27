@@ -154,7 +154,7 @@
   ([domain] (fetch-by-domain domain {}))
   ([domain options]
      (fetch-all {:domain (:_id domain)}
-                :limit 20)))
+                {:limit 20})))
 
 ;; TODO: Is this needed?
 (defn subnodes

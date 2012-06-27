@@ -110,8 +110,14 @@
      (fact "should return nil"
        (get-user-meta-url nil "acct:foo@example.com") => nil?)))
  
- (fact "host-meta"
-   (fact "should return a XRD object"
-     (host-meta) => map?))
+ (fact "#'host-meta"
+   (host-meta) =>
+   (every-checker
+    map?
+    ;; TODO: verify the response map against the app's settings
+    ))
 
+ (fact "#'show"
+   (show .domain.) => .domain.)
+ 
 )

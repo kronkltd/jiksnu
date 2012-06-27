@@ -4,7 +4,8 @@
         [clj-tigase.packet :only [packet?]]
         [midje.sweet :only [fact => contains every-checker]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [jiksnu.model.domain :only [create drop! ping-request pending-domains-key]])
+        [jiksnu.model.domain :only [create drop! ping-request
+                                    pending-domains-key]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.actions.domain-actions :as actions.domain])
@@ -32,5 +33,5 @@
     )
            
    )
- 
+
  )
