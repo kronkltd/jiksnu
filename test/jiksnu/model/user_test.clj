@@ -74,51 +74,43 @@
    (fact "when there are users"
      (fact "should not be empty"
        (create (factory User))
-       (fetch-all) => seq?)
-     (fact "should return a seq of users"
-       (create (factory User))
-       (fetch-all) => (partial every? user?))))
+       (fetch-all) =>
+       (every-checker
+        seq?
+        (partial every? user?)))))
 
  (fact "#'fetch-by-domain"
    (let [domain (model.domain/create (factory :domain))
-         user (create (factory :user {:domain (:_id domain)}))
-         ]
-     (fetch-by-domain domain) => (contains user))
-   )
- 
-
+         user (create (factory :user {:domain (:_id domain)}))]
+     (fetch-by-domain domain) => (contains user)))
  
  (fact "#'get-user"
    (fact "when the user is found"
-     (fact "should return a user"
-       (let [username (fseq :username)
-             domain (actions.domain/find-or-create (factory Domain))]
-         (create (factory User {:username username
-                                :domain (:_id domain)}))
-         (get-user username (:_id domain)) => user?)))
+     (let [username (fseq :username)
+           domain (actions.domain/find-or-create (factory Domain))]
+       (create (factory User {:username username
+                              :domain (:_id domain)}))
+       (get-user username (:_id domain)) => user?))
 
    (fact "when the user is not found"
-     (fact "should return nil"
-       (drop!)
-       (let [username (fseq :id)
-             domain (actions.domain/find-or-create (factory Domain))]
-         (get-user username (:_id domain)) => nil))))
+     (drop!)
+     (let [username (fseq :id)
+           domain (actions.domain/find-or-create (factory Domain))]
+       (get-user username (:_id domain)) => nil)))
 
  (fact "user-meta-uri"
    (fact "when the user's domain does not have a lrdd link"
-     (fact "should throw an error"
-       (model.domain/drop!)
-       (let [user (create (factory User))]
-         (user-meta-uri user) => (throws RuntimeException))))
+     (model.domain/drop!)
+     (let [user (create (factory User))]
+       (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
-     (fact "should insert the user's uri into the template"
-       (let [domain (actions.domain/find-or-create
-                     (factory Domain
-                              {:links [{:rel "lrdd"
-                                        :template "http://example.com/main/xrd?uri={uri}"}]}))
-             user (create (factory User {:domain (:_id domain)}))]
-         (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
+     (let [domain (actions.domain/find-or-create
+                   (factory Domain
+                            {:links [{:rel "lrdd"
+                                      :template "http://example.com/main/xrd?uri={uri}"}]}))
+           user (create (factory User {:domain (:_id domain)}))]
+       (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
 
  (fact "vcard-request"
    (let [user (create (factory User))]
