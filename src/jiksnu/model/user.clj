@@ -166,7 +166,7 @@
 ;; TODO: Should accept a user
 (defn delete
   [id]
-  (mc/remove-by-id id))
+  (mc/remove-by-id collection-name id))
 
 (defn update
   [^User new-user]

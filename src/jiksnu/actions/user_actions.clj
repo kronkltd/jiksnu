@@ -339,7 +339,7 @@
   [user]
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (helpers.user/fetch-user-meta user)]
-    (let [links (model.webfinger/get-links xrd)
+    (let [links (log/spy (model.webfinger/get-links xrd))
           new-user (assoc user :links links)
           feed (helpers.user/fetch-user-feed new-user)
           first-entry (-?> feed .getEntries first)

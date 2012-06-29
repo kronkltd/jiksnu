@@ -20,6 +20,7 @@
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-SNAPSHOT"]
                  [lamina "0.5.0-alpha3"]
+   [clj-aws-s3 "0.3.2"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
                  [oauthentic "0.0.6"]
@@ -27,7 +28,7 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
                  ;; [org.clojars.sean_devlin/decorators "0.0.1-SNAPSHOT"]
-                 [org.clojure/clojure "1.3.0"]
+                 [org.clojure/clojure "1.4.0"]
                  [org.clojure/core.cache "0.5.0"]
                  [org.clojure/tools.logging "0.2.3"]
                  [org.mindrot/jbcrypt "0.3m"]
@@ -72,7 +73,7 @@
                [clj-webdriver "0.6.0-SNAPSHOT"]]}}
 
   :plugins [
-               [lein-cljsbuild "0.1.5"]
+               [lein-cljsbuild "0.2.2"]
                [lein-cucumber "1.0.0"]  
                [lein-midje "2.0.0-SNAPSHOT"]
 

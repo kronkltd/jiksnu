@@ -7,6 +7,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -29,7 +30,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id model.user/fetch-by-id action))
+  (-> request :params :id model/make-id model.user/fetch-by-id action))
 
 (deffilter #'delete :xmpp
   [action request]
@@ -38,7 +39,7 @@
 (deffilter #'discover :http
   [action request]
   (let [{{id :id} :params} request
-        user (model.user/fetch-by-id id)]
+        user (model.user/fetch-by-id (model/make-id id))]
     (action user)))
 
 (deffilter #'fetch-remote :xmpp
@@ -48,7 +49,7 @@
 (deffilter #'fetch-updates :http
   [action request]
   (let [{{id :id} :params} request
-        user (model.user/fetch-by-id id)]
+        user (model.user/fetch-by-id (model/make-id id))]
     (action user)))
 
 (deffilter #'index :http

@@ -5,14 +5,18 @@
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
+        [lamina.core :only [permanent-channel read-channel*]]
+        [lamina.executor :only [task]]
         midje.sweet
         ring.mock.request
         [slingshot.slingshot :only [throw+]])
-  (:require [ciste.config :as c]
+  (:require [aleph.http :as http]
+            [ciste.config :as c]
             [ciste.core :as core]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
             [ciste.service.aleph :as aleph]
+            [clj-http.client :as client]
             [clj-webdriver.core :as webdriver]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -23,6 +27,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             jiksnu.routes
@@ -40,6 +45,7 @@
 (def that-domain (ref nil))
 (def that-subscription (ref nil))
 (def that-user (ref nil))
+(def that-stream (permanent-channel))
 (def my-password (ref nil))
 
 
@@ -87,6 +93,7 @@
    "domain index"                   "/main/domains"
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"
+   "firehose"                       "/main/events"
    })
 
 (defn fetch-page
@@ -139,13 +146,19 @@
         (ref-set that-user user)))
      (Thread/sleep 6000)))
 
+(defn a-feed-source-exists
+  []
+  (model.feed-source/create (factory :feed-source))
+  )
+
 (defn a-user-exists-with-password
   [password]
   (a-user-exists {} password))
 
 (defn activity-gets-posted
   []
-  (implement))
+  (actions.activity/post (factory :activity))
+ )
 
 (defn alias-should-match-uri
   []
@@ -312,7 +325,10 @@
 
 (defn request-stream
   [stream-name]
-  (implement))
+  
+  (http/http-request {:method :get
+                      :uri (expand-url (page-names stream-name))})
+ )
 
 (defn request-page-for-user
   ([page-name] (request-page-for-user page-name nil))
@@ -394,7 +410,9 @@
 
 (defn should-receive-activity
   []
-  (implement))
+  (check-response
+   @(read-channel* that-stream
+                  :timeout 5000) => model/activity?))
 
 (defn should-receive-oembed
   []

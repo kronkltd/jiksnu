@@ -6,7 +6,8 @@
         ciste.sections.default
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.stream-actions)
-  (:require [clojure.data.json :as json]
+  (:require [aleph.http :as http]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
@@ -137,19 +138,19 @@
         (actions.activity/create activity)))))
 
 (defn stream-handler
-  [ch request]
+  [request]
   (log/info "Openening connection stream")
   (let [stream (l/channel)]
-    (future
-      (l/siphon
-       (->> ciste.core/*actions*
-            (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
-            (l/map* format-message)
-            (l/map* (fn [m] (str m "\r\n"))))
-       stream))
-    (l/enqueue ch {:status 200
-                   :headers {"content-type" "application/json"}
-                   :body stream})))
+    (l/siphon
+     (->> ciste.core/*actions*
+          (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
+          (l/map* format-message)
+          (l/map* (fn [m] (str m "\r\n"))))
+     stream)
+    (log/debug "stream set up")
+    {:status 200
+     :headers {"content-type" "application/json"}
+     :body stream}))
 
 (defn websocket-handler
   [ch request]

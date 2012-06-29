@@ -73,7 +73,7 @@
 
 (defsection index-line [FeedSource :html]
   [source & _]
-  [:tr
+  [:tr {:data-type "feed-source" :data-id (str (:_id source))}
    [:td (:title source)]
    [:td (:domain source)]
    [:td (link-to source)]
@@ -92,7 +92,7 @@
 
 (defsection index-section [FeedSource :html]
   [sources & _]
-  [:table.table
+  [:table.table.feed-sources
    [:thead
     [:tr
      [:th "Title"]
@@ -118,7 +118,6 @@
    [:button.btn.delete-button {:type "submit" :title "Delete"}
     [:i.icon-trash] [:span.button-text "Delete"]]])
 
-
 (defn index-watchers
   [source]
   [:div.watchers
@@ -138,7 +137,4 @@
     [:legend "Add Watcher"]
     (control-line "Acct id"
                   :user_id "text")
-    [:input {:type "submit"}]
-    ]
-   ]
-  )
+    [:input {:type "submit"}]]])

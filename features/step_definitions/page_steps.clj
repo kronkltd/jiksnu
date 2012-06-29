@@ -19,6 +19,9 @@
 (Given #"^a domain exists$" []
        (a-domain-exists))
 
+(Given #"^a feed source exists" []
+       (a-feed-source-exists))
+
 (Given #"^a normal user is logged in$" []
        (a-normal-user-is-logged-in))
 

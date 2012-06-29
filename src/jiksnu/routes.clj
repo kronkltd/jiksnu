@@ -363,7 +363,7 @@
   (compojure/GET "/websocket" _
                  (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/main/events" _
-                 (http/wrap-aleph-handler stream/stream-handler))
+                 stream/stream-handler)
   (route/not-found (not-found-msg)))
 
 (def app
