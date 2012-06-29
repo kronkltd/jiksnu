@@ -325,10 +325,9 @@
 
 (defn request-stream
   [stream-name]
-  
-  (http/http-request {:method :get
-                      :uri (expand-url (page-names stream-name))})
- )
+  (http/http-request
+   {:method :get
+    :uri (expand-url (page-names stream-name))}))
 
 (defn request-page-for-user
   ([page-name] (request-page-for-user page-name nil))
