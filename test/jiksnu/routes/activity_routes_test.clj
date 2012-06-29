@@ -65,7 +65,8 @@
 
  (fact "oembed"
    (fact "when the format is json"
-     (let [activity (model.activity/create (factory :activity))]
+     (let [activity (model.activity/create (factory :activity
+                                                    {:local true}))]
        (-> (mock/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=json&url=" (full-uri activity))))
            response-for) =>
@@ -73,9 +74,10 @@
             map?
             (fn [response]
               (fact
-                (:status response) => status/redirect?)))))
+                (:status response) => status/success?)))))
    (fact "when the format is xml"
-     (let [activity (actions.activity/post (factory :activity))]
+     (let [activity (model.activity/create (factory :activity
+                                                    {:local true}))]
        (-> (mock/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=xml&url=" (full-uri activity))))
            response-for) =>
@@ -83,5 +85,5 @@
             map?
             (fn [response]
               (fact
-                (:status response) => status/redirect?))))))
+                (:status response) => status/success?))))))
  )

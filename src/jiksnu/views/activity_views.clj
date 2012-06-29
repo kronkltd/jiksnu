@@ -33,6 +33,25 @@
    :body oembed-map}
   )
 
+(defview #'oembed :xml
+  [request m]
+  {:status 200
+   :body
+   [:oembed
+    [:version (:version m)]
+    [:type (:type m)]
+    [:provider_name (:provider_name m)]
+    [:provider_url (:provider_url m)]
+    [:title (:title m)]
+    [:author_name (:author_name m)]
+    [:author_url (:author_url m)]
+    [:url (:url m)]
+    [:html (:html m)]
+    ]
+   
+   }
+  )
+
 (defview #'post :html
   [request activity]
   (let [actor (session/current-user)

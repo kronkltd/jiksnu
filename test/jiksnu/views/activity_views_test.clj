@@ -44,20 +44,23 @@
                   (let [body (:body result)]
                     (fact
                       body => (contains
-                               {:title (:title activity)}
+                               {:title (:title activity)}))))))))
+         (fact "when the format is :xml"
+           (with-format :xml
+             (let [activity (actions.activity/create (factory :activity
+                                                              {:local true}))
+                   request {:params {:url (full-uri activity)}
+                            :action action}
+                   response (filter-action action request)]
+               (apply-view request response) =>
+               (every-checker
+                map?
+                :body
+                (comp status/success? :status)
+                (fn [result]
+                  (let [body (:body result)]
+                    (fact
+                      body =not=> string?)))))))
 
-                               )
-                      )
-                    )
-                  )
-                )
-
-               )
-             )
-           )
-         )
-       )
-
-     )
-   )
+         ))))
  )

@@ -32,7 +32,7 @@
 ;; posts without an id should be rejected
 (defn set-id
   [activity]
-  (if (empty? (:id (log/spy activity)))
+  (if (empty? (:id activity))
     (assoc activity :id (or (:url activity) (abdera/new-id)))
     activity))
 
