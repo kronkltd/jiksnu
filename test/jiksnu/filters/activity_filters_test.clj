@@ -64,4 +64,20 @@
                  request (packet/make-request packet)]
              (filter-action action request) =>
              (every-checker
-              activity?))))))))
+              activity?)))))))
+
+ (fact "filter-action #'actions.activity/oembed"
+   (let [action #'actions.activity/oembed]
+     (fact "when the serialization is :http"
+       (with-serialization :http
+         (let [request {:params {:url .url. :format .format.}}]
+           (filter-action action request) => .oembed-map.
+           (provided
+             (model.activity/fetch-by-remote-id .url.) => .activity.
+             (actions.activity/oembed .activity.) => .oembed-map.
+             )
+
+          ))))
+   )
+ )
+

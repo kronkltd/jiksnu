@@ -164,6 +164,7 @@
     [[:get    "/main/logout"]                                 #'auth/logout]
     [[:post   "/main/logout"]                                 #'auth/logout]
     ;; [[:get "/main/events"]                                     #'activity/stream]
+    [[:get    "/main/oembed"]                                 #'activity/oembed]
     [[:get    "/main/ostatus"]                                #'sub/ostatus]
     [[:get    "/main/ostatussub"]                             #'sub/ostatussub]
     [[:post   "/main/ostatussub"]                             #'sub/ostatussub-submit]

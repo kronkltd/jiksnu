@@ -27,6 +27,12 @@
   [request activity]
   {:body (edit-form activity)})
 
+(defview #'oembed :json
+  [request oembed-map]
+  {:status 200
+   :body oembed-map}
+  )
+
 (defview #'post :html
   [request activity]
   (let [actor (session/current-user)

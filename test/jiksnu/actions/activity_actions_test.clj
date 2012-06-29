@@ -141,4 +141,12 @@
          (show activity) => (throws RuntimeException)
          (provided
            (viewable? activity) => false)))))
+
+ (fact "#'oembed"
+   (with-context [:http :html]
+     (let [activity (model.activity/create (factory :activity))]
+      (oembed activity) =>
+      (every-checker
+       map?
+       (comp string? :html)))))
  )

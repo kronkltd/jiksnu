@@ -168,7 +168,8 @@
   (factory Conversation))
 
 (deffactory Activity
-  {:id #'abdera/new-id
+  {
+   ;; :id #'abdera/new-id
    :title (fseq :title)
    :summary (fseq :summary)
    :author (:_id (model.user/create (factory :user)))

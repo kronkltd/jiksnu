@@ -1,5 +1,7 @@
 (ns jiksnu.routes.activity-routes-test
-  (:use [clj-factory.core :only [factory fseq]]
+  (:use [ciste.core :only [with-context]]
+        [ciste.sections.default :only [full-uri]]
+        [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [get-auth-cookie response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [contains every-checker fact future-fact =>]])
@@ -53,24 +55,33 @@
            (let [cookie-str (get-auth-cookie (:username user) password)]
              (-> (->> (str "/notice/" (:_id activity))
                       (mock/request :get))
-                 (assoc-in [:headers "cookie"] (log/spy :info cookie-str))
+                 (assoc-in [:headers "cookie"] cookie-str)
                  response-for)) =>
                 (every-checker
                  map?
                  (fn [response]
                    (fact
-                     (:status response) => status/redirect?
-                   
-                     ))
-                 
-                 )
+                     (:status response) => status/redirect?))))))))
 
-           )
-
-         )
-       
-       )
-
-     )
-
-   ))
+ (fact "oembed"
+   (fact "when the format is json"
+     (let [activity (model.activity/create (factory :activity))]
+       (-> (mock/request :get (with-context [:http :html]
+                                (str "/main/oembed?format=json&url=" (full-uri activity))))
+           response-for) =>
+           (every-checker
+            map?
+            (fn [response]
+              (fact
+                (:status response) => status/redirect?)))))
+   (fact "when the format is xml"
+     (let [activity (actions.activity/post (factory :activity))]
+       (-> (mock/request :get (with-context [:http :html]
+                                (str "/main/oembed?format=xml&url=" (full-uri activity))))
+           response-for) =>
+           (every-checker
+            map?
+            (fn [response]
+              (fact
+                (:status response) => status/redirect?))))))
+ )

@@ -24,6 +24,12 @@
 ;;   [action request]
 ;;   (action))
 
+(deffilter #'oembed :http
+  [action request]
+  (let [url (get-in request [:params :url])]
+    (if-let [activity (model.activity/fetch-by-remote-id url)]
+      (action activity))))
+
 (deffilter #'post :http
   [action request]
   (-> request :params

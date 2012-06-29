@@ -1,5 +1,6 @@
 (ns jiksnu.model.activity
-  (:use [clojure.core.incubator :only [-?>>]]
+  (:use [ciste.config :only [config]]
+        [clojure.core.incubator :only [-?>>]]
         [jiksnu.model :only [map->Activity]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
         [slingshot.slingshot :only [throw+]]
@@ -31,9 +32,9 @@
 ;; posts without an id should be rejected
 (defn set-id
   [activity]
-  (if (and (:id activity) (not= (:id activity) ""))
-    activity
-    (assoc activity :id (abdera/new-id))))
+  (if (empty? (:id (log/spy activity)))
+    (assoc activity :id (or (:url activity) (abdera/new-id)))
+    activity))
 
 (defn set-title
   [activity]
@@ -102,12 +103,20 @@
     activity
     (assoc activity :created (time/now))))
 
+(defn set-url
+  [activity]
+  (if (and (:local activity)
+           (empty? (:url activity)))
+    (assoc activity :url (str "http://" (config :domain) "/notice/" (:_id activity)))
+    activity
+    )
+  )
+
 
 (defn prepare-activity
   [activity]
   (-> activity
       set-_id
-      set-id
       set-title
       set-object-id
       set-public
@@ -115,7 +124,10 @@
       set-tags
       set-created-time
       set-object-type
-      set-parent))
+      set-parent
+      set-url
+      set-id
+      ))
 
 (defn fetch-all
   ([] (fetch-all {}))

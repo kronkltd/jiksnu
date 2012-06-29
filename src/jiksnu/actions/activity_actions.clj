@@ -1,8 +1,8 @@
 (ns jiksnu.actions.activity-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
         [ciste.runner :only [require-namespaces]]
-        ;; ciste.sections.default
+        [ciste.sections.default :only [full-uri title]]
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
@@ -309,6 +309,19 @@ serialization"
       (try (find-or-create activity)
            (catch Exception ex
              (log/error ex))))))
+
+(defaction oembed
+  [activity & [options & _]]
+  (when activity
+    {:version "1.0"
+     :provider_name (config :site :name)
+     :provider_url "/"
+     :type "link"
+     :title (:title activity)
+     :author_name (title (get-author activity))
+     :author_url (full-uri (get-author activity))
+     :url (:url activity)
+     :html (:summary activity)}))
 
 (definitializer
   (require-namespaces
