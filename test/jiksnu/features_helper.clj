@@ -331,7 +331,7 @@
 
 (defn request-oembed-resource
   []
-  (implement))
+  (fetch-page-browser :get (str "/main/oembed?format=json&url=" (:url @that-activity))))
 
 (defn request-stream
   [stream-name]
@@ -420,7 +420,8 @@
 
 (defn should-receive-oembed
   []
-  (implement))
+  (check-response
+   (page-source) => (re-pattern (:title @that-activity))))
 
 (defn should-see-activity
   []
@@ -470,6 +471,7 @@
     (let [activity (actions.activity/create
                     (factory Activity
                              {:author (:_id user)
+                              :local true
                               :public (= modifier "public")}))]
       (dosync
        (ref-set that-activity activity)))))
