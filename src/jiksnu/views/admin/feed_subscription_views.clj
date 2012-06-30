@@ -1,7 +1,8 @@
 (ns jiksnu.views.admin.feed-subscription-views
   (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.actions.admin.feed-subscription-actions :only [delete index show]])
+        [jiksnu.actions.admin.feed-subscription-actions :only [delete index show]]
+        [jiksnu.sections :only [admin-index-section]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [ring.util.response :as response]))
@@ -9,8 +10,9 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Feed Subscriptions"
+   :status 200
    :single true
-   :body (list (index-section items response)
+   :body (list (admin-index-section items response)
                (add-form (model/->FeedSubscription)))})
 
 ;; (defview #'show :html

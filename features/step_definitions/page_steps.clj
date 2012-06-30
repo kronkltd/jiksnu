@@ -59,6 +59,9 @@
   (comment  Express the Regexp above with the code you wish you had  )
   (throw (cucumber.runtime.PendingException.)))
 
+(Given #"^someone has subscribed to my feed" []
+       (a-feed-subscription-exists))
+
 ;; When
 
 (When #"^a new activity gets posted$" []

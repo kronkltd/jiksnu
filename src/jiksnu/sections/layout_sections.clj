@@ -11,6 +11,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
@@ -95,6 +96,7 @@
    [:p "Domains: " (model.domain/count-records)]
    [:p "Groups: " (model.group/count-records)]
    [:p "Feed Sources: " (model.feed-source/count-records)]
+   [:p "Feed Subscriptions: " (model.feed-subscription/count-records)]
    [:p "Users: " (model.user/count-records)]])
 
 (defn left-column-section

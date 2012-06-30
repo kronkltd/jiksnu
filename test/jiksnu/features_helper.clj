@@ -28,6 +28,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             jiksnu.routes
@@ -155,6 +156,10 @@
   []
   (model.feed-source/create (factory :feed-source))
   )
+
+(defn a-feed-subscription-exists
+  []
+  (model.feed-subscription/create (factory :feed-subscription)))
 
 (defn a-user-exists-with-password
   [password]
