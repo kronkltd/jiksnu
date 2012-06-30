@@ -1,10 +1,10 @@
 (ns jiksnu.model.activity-test
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [jiksnu.model :only [activity?]]
         [jiksnu.session :only [with-user]]
-        jiksnu.model.activity
-        midje.sweet)
+        [jiksnu.model.activity :only [create create-validators get-author prepare-activity]]
+        [midje.sweet :only [fact future-fact =>]]
+        [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
@@ -15,13 +15,19 @@
 
  (fact "#'create"
    (fact "should create the activity"
-     (create (factory :activity)) => activity?))
+     (create (factory :activity)) => model/activity?))
  
- ;; (fact "#'prepare-activity"
- ;;   (fact "should return an activity"
- ;;     (let [user (model.user/create (factory User))]
- ;;       (with-user user
- ;;         (let [args (factory Activity)]
- ;;           (prepare-activity args) => activity?)))))
+ (fact "#'prepare-activity"
+   (fact "should return an activity"
+     (let [user (model.user/create (factory :local-user))]
+       (with-user user
+         (let [args (factory :activity)]
+           (prepare-activity args) => #(valid? % create-validators))))))
+
+
+ (fact "#'get-author"
+   (let [user (model.user/create (factory :local-user))
+         activity (create (factory :activity {:author (:_id user)}))]
+     (get-author activity) => user))
 
  )

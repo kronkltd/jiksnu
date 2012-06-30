@@ -20,7 +20,6 @@
            user (actions.user/register {:username username
                                         :password password
                                         :accepted true})]
-       (Thread/sleep 5000)
        (-> (mock/request :post "/main/login")
            (assoc :content-type "application/x-www-form-urlencoded")
            (assoc :body

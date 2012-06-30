@@ -57,7 +57,13 @@
          (ciste.runner/start-application! :test)
          (set-driver! {:browser :htmlunit})
          (ciste.runner/process-requires)
-         (model/drop-all!))
+         (model/drop-all!)
+         (dosync
+          (ref-set that-activity nil)
+          (ref-set that-domain nil)
+          (ref-set that-subscription nil)
+          (ref-set that-user nil)
+          (ref-set my-password nil)))
        (catch Exception ex
          (.printStackTrace ex)
          (System/exit 0))))
@@ -143,8 +149,7 @@
                   :accepted true})]
        (dosync
         (ref-set my-password password)
-        (ref-set that-user user)))
-     (Thread/sleep 6000)))
+        (ref-set that-user user)))))
 
 (defn a-feed-source-exists
   []
@@ -376,11 +381,6 @@
   (check-response
    (exists? ".avatar") => truthy))
 
-(defn should-see-a-activity
-  []
-  (check-response
-   (exists? ".activities") => truthy))
-
 (defn should-have-content-type
   [type]
   (check-response
@@ -422,6 +422,11 @@
   (check-response
    (exists? (str "article[id='activity-" (:_id @that-activity) "']")) => truthy))
 
+(defn should-see-a-activity
+  []
+  (check-response
+   (exists? ".activities") => truthy))
+
 (defn should-see-domain
   []
   (check-response
@@ -457,13 +462,12 @@
   [modifier]
   (let [user (or @that-user
                  (actions.user/create (factory :local-user)))]
-    (session/with-user user
-     (let [activity (actions.activity/create
-                     (factory Activity
-                              {:author (session/current-user-id)
-                               :public (= modifier "public")}))]
-       (dosync
-        (ref-set that-activity activity))))))
+    (let [activity (actions.activity/create
+                    (factory Activity
+                             {:author (:_id user)
+                              :public (= modifier "public")}))]
+      (dosync
+       (ref-set that-activity activity)))))
 
 (defn there-is-an-activity-by-another
   [modifier]

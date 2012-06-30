@@ -203,6 +203,7 @@
 (defn drop-all!
   "Drop all collections"
   []
+  (log/debug "dropping all collections")
   (doseq [entity [Activity AuthenticationMechanism Domain
                   FeedSource FeedSubscription
                   Group Item Key Like Subscription User]]

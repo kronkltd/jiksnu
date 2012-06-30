@@ -100,11 +100,10 @@
           {:keys [username domain]} user]
       (let [errors (create-validators user)]
         (if (empty? errors)
-          (do
-            (log/debugf "Creating user: %s@%s" username domain)
-            (mc/insert collection-name (assoc user :_id id))
-            (fetch-by-id id)
-            )
+          (let [user (assoc user :_id id)]
+            (log/debugf "Creating user: %ss" user)
+            (mc/insert collection-name user)
+            (fetch-by-id id))
           (throw+ {:type :validation
                    :errors errors}))))))
 
