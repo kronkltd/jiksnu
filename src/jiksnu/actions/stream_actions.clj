@@ -61,7 +61,7 @@
 (defn format-message
   [message]
   (if-let [records (:records message)]
-    (with-context [:http :json]
+    (with-context [:http :as]
       (->> records
            show-section
            json/json-str))))

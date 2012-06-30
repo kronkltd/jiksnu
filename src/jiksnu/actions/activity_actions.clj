@@ -237,11 +237,12 @@ serialization"
   "Post a new activity"
   [activity]
   ;; TODO: validate user
-  (when-let [prepared-post (-> activity
-                               model.activity/prepare-post
-                               (dissoc :pictures))]
-    (-> activity :pictures model.activity/parse-pictures)
-    (create prepared-post)))
+  (if-let [prepared-post (-> activity
+                             model.activity/prepare-post
+                             (dissoc :pictures))]
+    (do (-> activity :pictures model.activity/parse-pictures)
+        (create prepared-post))
+    (throw+ "error preparing")))
 
 ;; TODO: use stream update
 (defaction remote-create

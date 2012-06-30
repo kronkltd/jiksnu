@@ -250,7 +250,9 @@
 
 (defn set-actor
   [activity]
-  (if-let [author (current-user-id)]
+  ;; TODO: Should we be allowing an author to be passed in?
+  (if-let [author (or (:author activity)
+                      (current-user-id))]
     (assoc activity :author author)))
 
 (defn set-local

@@ -87,9 +87,8 @@
 
  (fact "#'post"
    (fact "when the user is not logged in"
-     (fact "should return nil"
-       (let [activity (factory Activity)]
-         (post activity) => nil))))
+     (let [activity (dissoc (factory Activity) :author)]
+       (post activity) => (throws RuntimeException))))
 
  (fact "#'delete"
    (fact "when the activity exists"

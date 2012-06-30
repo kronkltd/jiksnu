@@ -5,7 +5,7 @@
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
-        [lamina.core :only [permanent-channel read-channel*]]
+        [lamina.core :only [permanent-channel read-channel* siphon]]
         [lamina.executor :only [task]]
         midje.sweet
         ring.mock.request
@@ -18,6 +18,7 @@
             [ciste.service.aleph :as aleph]
             [clj-http.client :as client]
             [clj-webdriver.core :as webdriver]
+            [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -32,7 +33,8 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             jiksnu.routes
-            [jiksnu.session :as session])
+            [jiksnu.session :as session]
+            [ring.mock.request :as mock])
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User
@@ -150,15 +152,17 @@
                   :accepted true})]
        (dosync
         (ref-set my-password password)
-        (ref-set that-user user)))))
+        (ref-set that-user user))
+       user)))
 
 (defn a-feed-source-exists
   []
-  (model.feed-source/create (factory :feed-source))
-  )
+  ;; TODO: that-source
+  (model.feed-source/create (factory :feed-source)))
 
 (defn a-feed-subscription-exists
   []
+  ;; TODO: that-subscription
   (model.feed-subscription/create (factory :feed-subscription)))
 
 (defn a-user-exists-with-password
@@ -167,8 +171,9 @@
 
 (defn activity-gets-posted
   []
-  (actions.activity/post (factory :activity))
- )
+  (let [activity (actions.activity/post (factory :activity))]
+    (dosync
+     (ref-set that-activity activity))))
 
 (defn alias-should-match-uri
   []
@@ -335,9 +340,10 @@
 
 (defn request-stream
   [stream-name]
-  (http/http-request
-   {:method :get
-    :uri (expand-url (page-names stream-name))}))
+  (let [ch (:body @(http/http-request
+                    (mock/request :get (expand-url (page-names stream-name))) 3000))]
+    (siphon ch that-stream)
+    (Thread/sleep 3000)))
 
 (defn request-page-for-user
   ([page-name] (request-page-for-user page-name nil))
@@ -415,8 +421,12 @@
 (defn should-receive-activity
   []
   (check-response
-   @(read-channel* that-stream
-                  :timeout 5000) => model/activity?))
+   (:displayName
+    (:object
+     (json/read-json
+      (channel-buffer->string
+       @(read-channel* that-stream
+                       :timeout 60000))))) => (:title @that-activity)))
 
 (defn should-receive-oembed
   []
@@ -465,27 +475,21 @@
    (get-body)) => #".*subscriptions")
 
 (defn there-is-an-activity
-  [modifier]
-  (let [user (or @that-user
-                 (actions.user/create (factory :local-user)))]
+  [modifier & {:as options}]
+  (let [user (or (:user options) @that-user (a-user-exists))]
     (let [activity (actions.activity/create
                     (factory Activity
                              {:author (:_id user)
                               :local true
                               :public (= modifier "public")}))]
       (dosync
-       (ref-set that-activity activity)))))
+       (ref-set that-activity activity))
+      activity)))
 
 (defn there-is-an-activity-by-another
   [modifier]
   (let [user (actions.user/create (factory :local-user))]
-    (session/with-user user
-     (let [activity (actions.activity/create
-                     (factory Activity
-                              {:author (session/current-user-id)
-                               :public (= modifier "public")}))]
-       (dosync
-        (ref-set that-activity activity))))))
+    (there-is-an-activity modifier :user user)))
 
 
 

@@ -563,7 +563,7 @@
   (merge
    {:text (:title activity)
     :truncated false
-    :created_at (model/date->twitter (:published activity))
+    :created_at (model/date->twitter (:created activity))
     :source (:source activity)
     :id (:_id activity)
     :in_reply_to_user_id nil
