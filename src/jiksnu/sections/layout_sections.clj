@@ -9,6 +9,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -94,10 +95,12 @@
   [response]
   [:div.well
    [:p "Activities: " (model.activity/count-records)]
+   [:p "Conversations: " (model.conversation/count-records)]
    [:p "Domains: " (model.domain/count-records)]
    [:p "Groups: " (model.group/count-records)]
    [:p "Feed Sources: " (model.feed-source/count-records)]
    [:p "Feed Subscriptions: " (model.feed-subscription/count-records)]
+   [:p "Subscriptions: " (model.subscription/count-records)]
    [:p "Users: " (model.user/count-records)]])
 
 (defn left-column-section
@@ -244,7 +247,7 @@
   [request response]
   (merge response
          (if (not= (:template response) false)
-           (page-template-content (log/spy request)
+           (page-template-content request
             (if (:flash request)
               (assoc response :flash (:flash request))
               response)))))

@@ -53,7 +53,7 @@
 
 (deffilter #'remote-profile :http
   [action request]
-  (-> request :params :id 
+  (-> request :params :id model/make-id
       model.user/fetch-by-id action))
 
 (deffilter #'remote-user :http

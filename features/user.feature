@@ -30,3 +30,38 @@ Scenario: User timeline, HTML, unauthenticated
   And that user posts an activity
   When I go to the "user timeline" page for that user
   Then I should see that activity
+
+Scenario: User index, authenticated
+  Given I am logged in as a normal user
+  And another user exists
+  When I go to the "user index" page
+  Then I should see 2 users
+
+Scenario: User index delete button, unauthenticated
+  Given I am not logged in
+  And another user exists
+  When I go to the "user index" page
+  Then I should not see a "delete" button for that user
+
+Scenario: User index delete button, authenticated
+  Given I am logged in as a normal user
+  And another user exists
+  When I go to the "user index" page
+  Then I should not see a "delete" button for that user
+
+Scenario: User index delete button, admin
+  Given I am logged in as an admin
+  And another user exists
+  When I go to the "user index" page
+  And I click the "delete" button for that user
+  Then I should see the flash message "user deleted"
+  And that user should be deleted
+  And I should be at the "user index" page
+
+Scenario: User index subscribe button, unauthenticated
+  Given I am not logged in
+  And another user exists
+  When I go to the "user index" page
+  And I click the "subscribe" button for that user
+  Then I should be at the "ostatus subscription" page
+

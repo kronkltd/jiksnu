@@ -186,18 +186,17 @@
 (defn post-actions
   [activity]
   (let [authenticated (session/current-user)]
-    [:div.pull-right
-     [:ul.post-actions.unstyled.buttons
-      (when authenticated
-        (list [:li (like-button activity)]
-              [:li [:a.btn {:href "#"} [:i.icon-comment]
-                    [:span.button-text "Comment"]]]
-              (when (or (model.activity/author? activity authenticated)
-                        (session/is-admin?))
-                (list [:li (edit-button activity)]
-                      [:li (delete-button activity)]))
-              (when (session/is-admin?)
-                [:li (update-button activity)])))]]))
+    [:ul.post-actions.unstyled.buttons
+     (when authenticated
+       (list [:li (like-button activity)]
+             [:li [:a.btn {:href "#"} [:i.icon-comment]
+                   [:span.button-text "Comment"]]]
+             (when (or (model.activity/author? activity authenticated)
+                       (session/is-admin?))
+               (list [:li (edit-button activity)]
+                     [:li (delete-button activity)]))
+             (when (session/is-admin?)
+               [:li (update-button activity)])))]))
 
 (defn recipients-section
   [activity]
@@ -404,10 +403,11 @@
   [:table.table
     [:thead
      [:tr
-      [:th "user"]
-      [:th "type"]
-      [:th "visibility"]
-      [:th "title"]]]
+      [:th "User"]
+      [:th "Type"]
+      [:th "Visibility"]
+      [:th "Title"]
+      [:th "Actions"]]]
     [:tbody
      (map admin-index-line activities)]])
 
@@ -418,7 +418,8 @@
    [:td (-> activity actions.activity/get-author link-to)]
    [:td (-> activity :object :object-type)]
    [:td (if (-> activity :public) "public" "private")]
-   [:td (:title activity)]])
+   [:td (:title activity)]
+   [:td (post-actions activity)]])
 
 
 (defsection delete-button [Activity :html]
@@ -595,7 +596,8 @@
       :about (uri activity)
       :typeof "sioc:Post"}
      [:header
-      (post-actions activity)
+      [:div.pull-right
+       (post-actions activity)]
       [:div.vcard
        ;; TODO: merge into the same link
        (sections.user/display-avatar user)

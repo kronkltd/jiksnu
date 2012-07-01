@@ -24,4 +24,5 @@
   [request _]
   {:status 303
    :flash "subscription deleted"
+   :template false
    :headers {"Location" "/admin/subscriptions"}})
