@@ -16,20 +16,23 @@
 
 ;; Given
 
-(Given #"^a domain exists$" []
-       (a-domain-exists))
+;; (Given #"^a domain exists$" []
+;;        (a-domain-exists))
 
-(Given #"^a feed source exists" []
-       (a-feed-source-exists))
+;; (Given #"^a feed source exists" []
+;;        (a-feed-source-exists))
+
+(Given #"a (.*) exists$" [type]
+       (a-record-exists (keyword type)))
 
 (Given #"^a normal user is logged in$" []
        (a-normal-user-is-logged-in))
 
-(Given #"^a subscription exists$" []
-       (a-subscription-exists))
+;; (Given #"^a subscription exists$" []
+;;        (a-subscription-exists))
 
-(Given #"^a user exists$" []
-       (a-user-exists))
+;; (Given #"^a user exists$" []
+;;        (a-user-exists))
 
 (Given #"^a user exists with the password \"([^\"]+)\"$" [password]
        (a-user-exists-with-password password))
@@ -194,6 +197,9 @@
 
 (Then #"^I should see an activity" []
       (should-see-a-activity))
+
+(Then #"^I should see this (.*)" [type]
+      (should-see-this (keyword type)))
 
 (Then #"^I should see that activity" []
       (should-see-activity))

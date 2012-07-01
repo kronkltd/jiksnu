@@ -1,5 +1,5 @@
 Feature: Feed Source Admin
-  In order to manage feed sourced
+  In order to manage feed sources
   As an administrator
   I want to be able to perform basic operations on sources
 

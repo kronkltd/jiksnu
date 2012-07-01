@@ -3,7 +3,8 @@
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.actions.like-actions :as actions.like]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.like-actions :as actions.like]))
 
 (defaction index
   [& options]

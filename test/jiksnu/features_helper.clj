@@ -119,6 +119,7 @@
    "domain index"                   "/main/domains"
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"
+   "like admin index"               "/admin/likes"
    "subscriptions admin index"      "/admin/subscriptions"
    "firehose"                       "/main/events"
    })
@@ -168,6 +169,14 @@
   []
   (a-user-exists)
   (do-login))
+
+(defn a-record-exists
+  [type]
+  (let [create-fn (resolve (symbol (str "jiksnu.model." (name type) "/create")))]
+    (->>
+     (factory type)
+     create-fn
+     (set-this type))))
 
 (defn a-subscription-exists
   []
@@ -525,6 +534,16 @@
   [message]
   (check-response
    (page-source) => (re-pattern message)))
+
+(defn should-see-this
+  [type]
+  (if-let [record (get-this type)]
+    (check-response
+     (exists? (format "*[data-id='%s'][data-type='%s']"
+                      (str (:_id record))
+                      (name type))) => truthy)
+    (throw+ (format "Could not find 'this' for %s" type)))
+  )
 
 (defn should-not-see-button-for-that-user
   [button-name]

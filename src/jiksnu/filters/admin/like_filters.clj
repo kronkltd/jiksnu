@@ -4,4 +4,5 @@
 
 (deffilter #'index :http
   [action request]
-  (-> request :params action))
+  ;; TODO: pass page params
+  (action))

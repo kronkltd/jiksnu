@@ -44,7 +44,7 @@
   ([] (fetch-all {} {}))
   ([params] (fetch-all params {}))
   ([params opts]
-     (mc/find-maps collection-name params)))
+     (map model/map->Like (mc/find-maps collection-name params))))
 
 ;; TODO: use index to get pagination
 (defn fetch-by-user

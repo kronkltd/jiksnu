@@ -4,12 +4,14 @@
   (:require [clj-time.core :as time]
             [inflections.core :as inf]
             [jiksnu.abdera :as abdera]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.FeedSubscription
+           jiksnu.model.Like
            jiksnu.model.Group
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -208,3 +210,10 @@
 
 (deffactory :group
   (factory Group))
+
+(deffactory Like
+  {:user (:_id (model.user/create (factory :user)))
+   :activity (:_id (model.activity/create (factory :activity)))})
+
+(deffactory :like
+  (factory Like))

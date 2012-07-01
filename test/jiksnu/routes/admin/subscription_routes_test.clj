@@ -1,6 +1,6 @@
 (ns jiksnu.routes.admin.subscription-routes-test
   (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.routes-helper :only [get-auth-cookie response-for]]
+        [jiksnu.routes-helper :only [as-admin get-auth-cookie response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker contains]])
   (:require [clojure.tools.logging :as log]
@@ -16,31 +16,21 @@
 (test-environment-fixture
 
  (fact "index page"
-   (let [password (fseq :password)
-         user (model.user/create (factory :local-user {:admin true}))]
-     (actions.auth/add-password user password)
-     (let [cookie-str (get-auth-cookie (:username user) password)]
-       (-> (mock/request :get "/admin/subscriptions")
-           (assoc-in [:headers "cookie"] cookie-str)
-           response-for)) =>
-         (every-checker
-          (contains {:status 200})
-          (fn [req]
-            (fact
-              (let [body (h/html (:body req))]
-                body => #"subscription"))))))
-
+   (-> (mock/request :get "/admin/subscriptions")
+       as-admin response-for) =>
+       (every-checker
+        (comp status/success? :status)
+        (fn [req]
+          (fact
+            (let [body (h/html (:body req))]
+              body => #"subscription")))))
+ 
  (fact "delete"
-   (let [password (fseq :password)
-         user (model.user/create (factory :local-user {:admin true}))
-         subscription (model.subscription/create (factory :subscription))]
-     (actions.auth/add-password user password)
-     (let [cookie-str (get-auth-cookie (:username user) password)]
-       (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
-           (assoc-in [:headers "cookie"] cookie-str)
-           response-for)) =>
-           (every-checker
-            map?
-            (comp status/redirect? :status))))
+   (let [subscription (model.subscription/create (factory :subscription))]
+     (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
+         as-admin response-for) =>
+         (every-checker
+          map?
+          (comp status/redirect? :status))))
  
  )
