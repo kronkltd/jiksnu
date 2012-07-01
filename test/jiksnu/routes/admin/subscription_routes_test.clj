@@ -4,9 +4,11 @@
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker contains]])
   (:require [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [hiccup.core :as h]
             [ring.mock.request :as mock]))
@@ -27,4 +29,18 @@
             (fact
               (let [body (h/html (:body req))]
                 body => #"subscription"))))))
+
+ (fact "delete"
+   (let [password (fseq :password)
+         user (model.user/create (factory :local-user {:admin true}))
+         subscription (model.subscription/create (factory :subscription))]
+     (actions.auth/add-password user password)
+     (let [cookie-str (get-auth-cookie (:username user) password)]
+       (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
+           (assoc-in [:headers "cookie"] cookie-str)
+           response-for)) =>
+           (every-checker
+            map?
+            (comp status/redirect? :status))))
+ 
  )

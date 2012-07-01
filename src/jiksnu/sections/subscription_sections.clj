@@ -53,12 +53,18 @@
 
 (defsection admin-index-line [Subscription :html]
   [subscription & [options & _]]
-  [:tr
+  [:tr {:data-type "subscription" :data-id (str (:_id subscription))}
    [:td (link-to subscription)]
-   [:td (let [user (model.subscription/get-actor subscription)]
-          (link-to user))]
-   [:td (let [user (model.subscription/get-target subscription )]
-          (link-to user))]
+   [:td (if-let [user (try (model.subscription/get-actor subscription)
+                           (catch RuntimeException ex
+                             (log/warn "could not find actor")))]
+          (link-to user)
+          "unknown")]
+   [:td (if-let [user (try (model.subscription/get-target subscription )
+                           (catch RuntimeException ex
+                             (log/warn "could not find target")))]
+          (link-to user)
+          "unknown")]
    [:td (:created subscription)]
    [:td (:pending subscription)]
    [:td (:local subscription)]
@@ -90,7 +96,10 @@
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]
   [:li.subscription {:data-id (:_id item) :data-type "subscription"}
-   (link-to (model.subscription/get-actor item))])
+   (if-let [user (try (model.subscription/get-target item)
+                   (catch RuntimeException ex nil))]
+     (link-to user)
+     "unknown")])
 
 (defsection subscriptions-block [Subscription :html]
   [items & [options & _]]
@@ -105,7 +114,11 @@
 (defsection subscribers-line [Subscription :html]
   [item & [options & _]]
   [:li.subscription {:data-id (:_item item) :data-type "subscription"}
-   (link-to (model.subscription/get-target item))])
+   (if-let [user (try
+                   (model.subscription/get-actor item)
+                   (catch RuntimeException ex nil))]
+     (link-to user)
+     "unknown")])
 
 (defsection subscribers-block [Subscription :html]
   [items & [options & _]]

@@ -102,6 +102,7 @@
    "domain index"                   "/main/domains"
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"
+   "subscriptions admin index"      "/admin/subscriptions"
    "firehose"                       "/main/events"
    })
 
@@ -129,18 +130,32 @@
 (declare a-user-exists do-login)
 
 
-
-
 (defn a-domain-exists
   []
   (let [domain (model.domain/create (factory Domain))]
     (dosync
      (ref-set that-domain domain))))
 
+(defn a-feed-source-exists
+  []
+  ;; TODO: that-source
+  (model.feed-source/create (factory :feed-source)))
+
+(defn a-feed-subscription-exists
+  []
+  ;; TODO: that-subscription
+  (model.feed-subscription/create (factory :feed-subscription)))
+
 (defn a-normal-user-is-logged-in
   []
   (a-user-exists)
   (do-login))
+
+(defn a-subscription-exists
+  []
+  (let [subscription (model.subscription/create (factory :subscription))]
+    (dosync
+     (ref-set that-subscription subscription))))
 
 (defn a-user-exists
   ([] (a-user-exists {:discovered true} "hunter2"))
@@ -154,16 +169,6 @@
         (ref-set my-password password)
         (ref-set that-user user))
        user)))
-
-(defn a-feed-source-exists
-  []
-  ;; TODO: that-source
-  (model.feed-source/create (factory :feed-source)))
-
-(defn a-feed-subscription-exists
-  []
-  ;; TODO: that-subscription
-  (model.feed-subscription/create (factory :feed-subscription)))
 
 (defn a-user-exists-with-password
   [password]
@@ -217,6 +222,13 @@
   [class-name]
   ;; TODO: find domain first
   (click (str "." class-name "-button")))
+
+(defn do-click-button-for-subscription
+  [class-name]
+  (let [button (find-element-under
+                (str "*[data-id='" (:_id @that-subscription) "']")
+                (webdriver/by-class-name (str class-name "-button")))]
+    (click button)))
 
 (defn do-click-link
   [value]
@@ -469,10 +481,20 @@
   (check-response
    (exists? (str "." class-name)) => truthy))
 
+(defn should-see-flash-message
+  [message]
+  (check-response
+   (page-source) => (re-pattern message)))
+
 (defn should-see-subscription-list
   []
   (check-response
-   (get-body)) => #".*subscriptions")
+   (get-body) => #".*subscriptions"))
+
+(defn subscription-should-be-deleted
+  []
+  (check-response
+   (model.subscription/fetch-by-id (:_id @that-subscription)) => falsey))
 
 (defn there-is-an-activity
   [modifier & {:as options}]

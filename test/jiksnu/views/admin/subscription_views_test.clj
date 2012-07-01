@@ -6,6 +6,7 @@
             [jiksnu.test-helper :only [test-environment-fixture]]
             [midje.sweet :only [every-checker fact future-fact => contains]])
   (:require [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.subscription-actions :as actions.admin.subscription]
             [jiksnu.model :as model]
@@ -40,4 +41,21 @@
                     (let [body (h/html (:body response))]
                       (fact
                         body => #"subscriptions"))))))))))))
+
+(fact "apply-view #'actions.admin.subscription/delete"
+   (let [action #'actions.admin.subscription/delete]
+     (fact "when the serialization is :http"
+       (with-serialization :http
+         (fact "when the format is :html"
+           (with-format :html
+             (fact "when there is a subscription"
+               (let [subscription (model.subscription/create (factory :subscription))
+                     request {:action action
+                              :params {:id (str (:_id subscription))}}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (every-checker
+                  map?
+                  (comp status/redirect? :status))))))))))
+ 
  )

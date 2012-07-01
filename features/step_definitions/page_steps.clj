@@ -25,6 +25,9 @@
 (Given #"^a normal user is logged in$" []
        (a-normal-user-is-logged-in))
 
+(Given #"^a subscription exists$" []
+       (a-subscription-exists))
+
 (Given #"^a user exists$" []
        (a-user-exists))
 
@@ -75,6 +78,9 @@
 
 (When #"^I click the \"([^\"]*)\" button for that domain$" [button]
       (do-click-button-for-domain button))
+
+(When #"^I click the \"([^\"]*)\" button for that subscription$" [button]
+      (do-click-button-for-subscription button))
 
 (When #"^I go to the \"([^\"]+)\" page$" [page]
       (go-to-the-page page))
@@ -207,6 +213,9 @@
 (Then #"^that domain should be discovered$" []
       (domain-should-be-discovered))
 
+(Then #"^that subscription should be deleted$" []
+      (subscription-should-be-deleted))
+
 (Then #"^that user's name should be \"(.*)\"$" [name]
       (name-should-be name))
 
@@ -228,3 +237,6 @@
 (Then #"^that activity should be created$" []
       (check-response
        (model.activity/count-records) => 1))
+
+(Then #"^I should see the flash message \"([^\"]*)\"$" [message]
+      (should-see-flash-message message))

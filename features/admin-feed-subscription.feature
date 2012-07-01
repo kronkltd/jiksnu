@@ -1,7 +1,7 @@
 Feature: Feed Subscription Admin
   In order to manage feed subscriptions
   As an administrator
-  I want to be able to perform basic operations on subscriptions
+  I want to be able to perform basic operations on feed subscriptions
 
 Scenario: Index Feed Subscriptions, admin
   Given I am logged in as an admin

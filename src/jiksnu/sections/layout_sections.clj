@@ -3,7 +3,8 @@
         [ciste.config :only [config environment]]
         [ciste.sections.default :only [add-form link-to show-section]]
         [jiksnu.session :only [current-user is-admin?]])
-  (:require [hiccup.core :as h]
+  (:require [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [hiccup.page :as p]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.subscription-actions :as actions.subscription]
@@ -128,7 +129,7 @@
         [:code ":production"] " to continue."]])))
 
 (defn main-content
-  [response]
+  [request response]
   (list
    (when (:flash response)
      [:div#flash (:flash response)])
@@ -140,7 +141,7 @@
    (:body response)))
 
 (defn page-template-content
-  [response]
+  [request response]
   {:headers {"Content-Type" "text/html; charset=utf-8"}
    :body
    (str
@@ -212,13 +213,13 @@
           (left-column-section response)]
          [:div#content.span10
           [:div#notification-area.row
-           [:div#flash]
+           [:div#flash (:flash request)]
            #_[:div.span10 (devel-warning response)]]
           [:div.row
            (if-not (:single response)
-             (list [:div.span7 (main-content response)]
+             (list [:div.span7 (main-content request response)]
                    [:div.span3 (right-column-section response)])
-             [:div.span10 (main-content response)])]]]
+             [:div.span10 (main-content request response)])]]]
         [:footer.row.page-footer
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
@@ -243,7 +244,7 @@
   [request response]
   (merge response
          (if (not= (:template response) false)
-           (page-template-content
+           (page-template-content (log/spy request)
             (if (:flash request)
               (assoc response :flash (:flash request))
               response)))))

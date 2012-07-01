@@ -1,7 +1,7 @@
 (ns jiksnu.views.admin.subscription-views
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.actions.admin.subscription-actions :only [index show]]
+        [jiksnu.actions.admin.subscription-actions :only [index delete show]]
         [jiksnu.sections :only [admin-index-section]])
   (:require [clojure.tools.logging :as log]))
 
@@ -19,3 +19,9 @@
   [request subscription]
   {:title "Subscription"
    :body (show-section subscription)})
+
+(defview #'delete :html
+  [request _]
+  {:status 303
+   :flash "subscription deleted"
+   :headers {"Location" "/admin/subscriptions"}})
