@@ -54,7 +54,7 @@ Scenario: User index delete button, admin
   And another user exists
   When I go to the "user index" page
   And I click the "delete" button for that user
-  Then I should see the flash message "user deleted"
+  Then I should see the flash message "user has been deleted"
   And that user should be deleted
   And I should be at the "user index" page
 

@@ -266,7 +266,7 @@
 (defsection admin-index-line [User :html]
   [user & [page & _]]
   (let [domain (actions.user/get-domain user)]
-    [:tr
+    [:tr {:data-id (:_id user) :data-type "user"}
      [:td (display-avatar user)]
      [:td (link-to user)]
      [:td (link-to domain)]
@@ -312,7 +312,7 @@
 (defsection index-line [User :html]
   [user & _]
   (let [authenticated (current-user)]
-    [:tr
+    [:tr {:data-id (:_id user) :data-type "user"}
      [:td (display-avatar user)]
      [:td
       [:p (link-to user)]
@@ -360,7 +360,7 @@
 
 (defsection show-section [User :html]
   [user & options]
-  [:div.vcard.user-full
+  [:div.vcard.user-full {:data-id (:_id user) :data-type "user"}
    [:p
     (display-avatar user)
     [:span.nickname.fn.n (:display-name user)]

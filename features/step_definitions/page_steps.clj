@@ -34,10 +34,16 @@
 (Given #"^a user exists with the password \"([^\"]+)\"$" [password]
        (a-user-exists-with-password password))
 
+(Given #"^another user exists$" []
+       (another-user-exists))
+
 (Given #"^I am at the \"(.+)\" page$" [page]
        (be-at-the-page page))
 
 (Given #"^I am logged in$" []
+       (a-normal-user-is-logged-in))
+
+(Given #"^I am logged in as a normal user$" []
        (a-normal-user-is-logged-in))
 
 (Given #"^I am logged in as an admin$" []
@@ -76,11 +82,8 @@
 (When #"^I click the \"([^\"]*)\" button$" [button]
       (do-click-button button))
 
-(When #"^I click the \"([^\"]*)\" button for that domain$" [button]
-      (do-click-button-for-domain button))
-
-(When #"^I click the \"([^\"]*)\" button for that subscription$" [button]
-      (do-click-button-for-subscription button))
+(When #"^I click the \"([^\"]*)\" button for that (.*)$" [button-name type]
+      (do-click-button-for-that-type button-name (keyword type)))
 
 (When #"^I go to the \"([^\"]+)\" page$" [page]
       (go-to-the-page page))
@@ -171,6 +174,9 @@
 (Then #"^I should receive an oEmbed document$" []
       (should-receive-oembed))
 
+(Then #"^I should not see a \"([^\"]*)\" button for that user$" [button-type]
+      (should-not-see-button-for-that-user button-type))
+
 (Then #"^I should see a domain named \"(.*)\"$" [domain]
       (should-see-domain-named domain))
 
@@ -195,6 +201,9 @@
 (Then #"^I should see that subscription$" []
       (should-see-subscription))
 
+(Then #"^I should see (\d+) users$" [n]
+      (should-see-n-users n))
+
 (Then #"^I should wait$" []
       (do-wait))
 
@@ -215,6 +224,9 @@
 
 (Then #"^that subscription should be deleted$" []
       (subscription-should-be-deleted))
+
+(Then #"^that (.*) should be deleted$" [type]
+      (that-type-should-be-deleted (keyword type)))
 
 (Then #"^that user's name should be \"(.*)\"$" [name]
       (name-should-be name))

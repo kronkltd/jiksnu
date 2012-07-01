@@ -373,9 +373,8 @@
        jm/wrap-authentication-handler
        (file/wrap-file "resources/public/")
        file-info/wrap-file-info
-       wrap-flash
        jm/wrap-user-binding
-       handler/site
        middleware/wrap-http-serialization
        #_middleware/wrap-log-request
+       handler/site
        jm/wrap-stacktrace)))

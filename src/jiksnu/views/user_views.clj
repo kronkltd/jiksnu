@@ -25,7 +25,7 @@
   {:status 303
    :flash "user has been deleted"
    :template false
-   :headers {"Location" "/admin/users"}})
+   :headers {"Location" "/users"}})
 
 (defview #'discover :html
   [request user]

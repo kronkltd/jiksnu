@@ -44,10 +44,28 @@
 (def current-page (ref nil))
 (def domain "localhost")
 (def port 8175)
-(def that-activity (ref nil))
-(def that-domain (ref nil))
-(def that-subscription (ref nil))
-(def that-user (ref nil))
+
+(def this (ref {}))
+(def that (ref {}))
+
+(defn get-this
+  [k]
+  (get @this k))
+
+(defn set-this
+  [k v]
+  (dosync
+   (alter this assoc k v)))
+
+(defn get-that
+  [k]
+  (get @that k))
+
+(defn set-that
+  [k v]
+  (dosync
+   (alter that assoc k v)))
+
 (def that-stream (permanent-channel))
 (def my-password (ref nil))
 
@@ -62,10 +80,8 @@
          (ciste.runner/process-requires)
          (model/drop-all!)
          (dosync
-          (ref-set that-activity nil)
-          (ref-set that-domain nil)
-          (ref-set that-subscription nil)
-          (ref-set that-user nil)
+          (ref-set this {})
+          (ref-set that {})
           (ref-set my-password nil)))
        (catch Exception ex
          (.printStackTrace ex)
@@ -99,6 +115,7 @@
    "subscription index"             "/admin/subscriptions"
    "edit profile"                   "/main/profile"
    "user admin"                     "/admin/users"
+   "user index"                     "/users"
    "domain index"                   "/main/domains"
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"
@@ -133,18 +150,19 @@
 (defn a-domain-exists
   []
   (let [domain (model.domain/create (factory Domain))]
-    (dosync
-     (ref-set that-domain domain))))
+    (set-this :domain domain)))
 
 (defn a-feed-source-exists
   []
-  ;; TODO: that-source
-  (model.feed-source/create (factory :feed-source)))
+  (->> (factory :feed-source)
+       model.feed-source/create
+       (set-this :feed-source)))
 
 (defn a-feed-subscription-exists
   []
-  ;; TODO: that-subscription
-  (model.feed-subscription/create (factory :feed-subscription)))
+  (->> (factory :feed-subscription)
+       model.feed-subscription/create
+       (set-this :feed-subscription)))
 
 (defn a-normal-user-is-logged-in
   []
@@ -153,9 +171,9 @@
 
 (defn a-subscription-exists
   []
-  (let [subscription (model.subscription/create (factory :subscription))]
-    (dosync
-     (ref-set that-subscription subscription))))
+  (->> (factory :subscription)
+       model.subscription/create
+       (set-this :subscription)))
 
 (defn a-user-exists
   ([] (a-user-exists {:discovered true} "hunter2"))
@@ -165,25 +183,31 @@
                   :password password
                   :display-name (fseq :name)
                   :accepted true})]
+       (set-this :user user)
        (dosync
-        (ref-set my-password password)
-        (ref-set that-user user))
+        (ref-set my-password password))
        user)))
 
 (defn a-user-exists-with-password
   [password]
   (a-user-exists {} password))
 
+(defn another-user-exists
+  []
+  (log/info "another user")
+  (let [user (model.user/create (factory :local-user))]
+    (set-that :user user)))
+
 (defn activity-gets-posted
   []
-  (let [activity (actions.activity/post (factory :activity))]
-    (dosync
-     (ref-set that-activity activity))))
+  (->> (factory :activity)
+       actions.activity/post
+       (set-this :activity)))
 
 (defn alias-should-match-uri
   []
   (check-response
-   (let [uri (model.user/get-uri @that-user)
+   (let [uri (model.user/get-uri (get-this :user))
          pattern (re-pattern (str ".*" uri ".*"))]
      (get-body) => pattern)))
 
@@ -194,7 +218,7 @@
 (defn an-admin-is-logged-in
   []
   (a-user-exists)
-  (-> @that-user
+  (-> (get-this :user)
       (assoc :admin true)
       actions.user/update
       session/set-authenticated-user!)
@@ -210,7 +234,7 @@
   (condp = page-name
     "show"
     (check-response
-     (let [url (:_id @that-domain)]
+     (let [url (:_id (get-this :domain))]
        ;; TODO: Identify the domain link
        (find-element url) => truthy))))
 
@@ -218,17 +242,14 @@
   [class-name]
   (click (str "#" class-name "-button")))
 
-(defn do-click-button-for-domain
-  [class-name]
-  ;; TODO: find domain first
-  (click (str "." class-name "-button")))
-
-(defn do-click-button-for-subscription
-  [class-name]
-  (let [button (find-element-under
-                (str "*[data-id='" (:_id @that-subscription) "']")
-                (webdriver/by-class-name (str class-name "-button")))]
-    (click button)))
+(defn do-click-button-for-that-type
+  [button-name type]
+  (if-let [record (get-that type)]
+    (let [button (find-element-under
+                  (str "*[data-id='" (:_id record) "']")
+                  (webdriver/by-class-name (str button-name "-button")))]
+      (click button))
+    (throw+ (format "Could not find 'that' record for %s" type))))
 
 (defn do-click-link
   [value]
@@ -248,7 +269,7 @@
 
 (defn do-enter-username
   []
-  (do-enter-field (:username @that-user) "username"))
+  (do-enter-field (:username (get-this :user)) "username"))
 
 (defn do-login
   []
@@ -257,7 +278,7 @@
   (do-enter-username)
   (do-enter-password)
   (click "input[type='submit']")
-  (session/set-authenticated-user! @that-user))
+  (session/set-authenticated-user! (get-this :user)))
 
 (defn do-wait
   []
@@ -270,18 +291,18 @@
 (defn domain-should-be-deleted
   []
   (check-response
-   (actions.domain/show @that-domain) => nil))
+   (actions.domain/show (get-this :domain)) => nil))
 
 (defn domain-should-be-discovered
   []
   (check-response
-   @that-domain => (contains {:discovered true})))
+   (get-this :domain) => (contains {:discovered true})))
 
 (defn fetch-user-meta-for-user
   []
   (fetch-page-browser
    :get
-   (str "/main/xrd?uri=" (model.user/get-uri @that-user))))
+   (str "/main/xrd?uri=" (model.user/get-uri (get-this :user)))))
 
 (defn fetch-user-meta-for-user-with-client
   []
@@ -302,33 +323,37 @@
   [page-name]
   (condp = page-name
     "show" (core/with-context [:html :http]
-             (let [path (sections/uri @that-activity)]
+             (let [path (sections/uri (get-this :activity))]
                (fetch-page-browser :get path)))))
 
 (defn go-to-the-page-for-domain
   [page-name]
   (condp = page-name
-    "show" (let [path (str "/main/domains/" (:_id @that-domain))]
+    "show" (let [path (str "/main/domains/" (:_id (get-this :domain)))]
              (fetch-page-browser :get path))
     (implement)
     ))
 
 (defn go-to-the-page-for-user
   [page-name]
-  (condp = page-name
-    "show" (fetch-page-browser :get (str "/main/users/" (:_id @that-user)))
-    "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username @that-user) "@" (:domain @that-user)))
-    "subscriptions" (fetch-page-browser :get (str "/" (:username @that-user) "/subscriptions"))
-    "subscribers" (fetch-page-browser :get (str "/" (:username @that-user) "/subscribers"))
-    (implement)))
+  (let [user (get-this :user)]
+    (condp = page-name
+      "show" (fetch-page-browser :get (str "/main/users/" (:_id user)))
+      "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username user) "@" (:domain user)))
+      "subscriptions" (fetch-page-browser :get (str "/" (:username user) "/subscriptions"))
+      "subscribers" (fetch-page-browser :get (str "/" (:username user) "/subscribers"))
+      (implement))))
 
 (defn go-to-the-page-for-user-with-format
   [page-name format]
-  (condp = page-name
-    "show" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "." (string/lower-case format)))
-    "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscriptions." (string/lower-case format)))
-    "subscribers" (fetch-page-browser :get (str "/main/users/" (:_id @that-user) "/subscribers." (string/lower-case format)))
-    (implement)))
+  (let [user (get-this :user)]
+    (str
+     (condp = page-name
+       "show"          (fetch-page-browser :get (str "/main/users/" (:_id user)))
+       "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id user) "/subscriptions"))
+       "subscribers"   (fetch-page-browser :get (str "/main/users/" (:_id user) "/subscribers"))
+       (implement))
+     "." (string/lower-case format))))
 
 (defn host-field-should-match-domain
   []
@@ -344,11 +369,11 @@
 (defn name-should-be
   [display-name]
   (check-response
-   (model.user/fetch-by-id (:_id @that-user)) => (contains {:display-name display-name})))
+   (model.user/fetch-by-id (:_id (get-this :user))) => (contains {:display-name display-name})))
 
 (defn request-oembed-resource
   []
-  (fetch-page-browser :get (str "/main/oembed?format=json&url=" (:url @that-activity))))
+  (fetch-page-browser :get (str "/main/oembed?format=json&url=" (:url (get-this :activity)))))
 
 (defn request-stream
   [stream-name]
@@ -363,17 +388,17 @@
      (condp = page-name
        "subscriptions"
        (fetch-page :get
-                   (str "/users/" (:_id @that-user) "/subscriptions"
+                   (str "/users/" (:_id (get-this :user)) "/subscriptions"
                         (when format
                           (str "." (string/lower-case format)))))
        "user-meta"
        (fetch-page :get
-                   (str "/main/xrd?uri=" (model.user/get-uri @that-user))))))
+                   (str "/main/xrd?uri=" (model.user/get-uri (get-this :user)))))))
 
 (defn request-user-meta
   []
   (fetch-page :get
-              (str "/main/xrd?uri=" (model.user/get-uri @that-user))))
+              (str "/main/xrd?uri=" (model.user/get-uri (get-this :user)))))
 
 (defn response-should-be-redirect
   []
@@ -438,33 +463,39 @@
      (json/read-json
       (channel-buffer->string
        @(read-channel* that-stream
-                       :timeout 60000))))) => (:title @that-activity)))
+                       :timeout 60000))))) => (:title (get-this :activity))))
 
 (defn should-receive-oembed
   []
   (check-response
-   (page-source) => (re-pattern (:title @that-activity))))
+   (page-source) => (re-pattern (:title (get-this :activity)))))
 
 (defn should-see-activity
   []
   (check-response
-   (exists? (str "article[id='activity-" (:_id @that-activity) "']")) => truthy))
+   (exists? (str "article[id='activity-" (:_id (get-this :activity)) "']")) => truthy))
 
 (defn should-see-a-activity
   []
   (check-response
    (exists? ".activities") => truthy))
 
+(defn should-see-n-users
+  [n]
+  (check-response
+   (let [users (find-elements {:data-type "user"} #_"*[data-type='user']")]
+     (count users) => n)))
+
 (defn should-see-domain
   []
   (check-response
-   (text ".domain-id") => (:_id @that-domain)))
+   (text ".domain-id") => (:_id (get-this :domain))))
 
 (defn should-see-subscription
   []
   (check-response
    (let [elements (elements ".subscription")]
-     (map #(webdriver/attribute % :data-id) elements) => (contains (str (:_id @that-subscription))))))
+     (map #(webdriver/attribute % :data-id) elements) => (contains (str (:_id (get-this :subscription)))))))
 
 (defn should-see-domain-named
   [domain-name]
@@ -486,6 +517,15 @@
   (check-response
    (page-source) => (re-pattern message)))
 
+(defn should-not-see-button-for-that-user
+  [button-name]
+  (if-let [user (get-that :user)]
+    (check-response
+     (try (find-element-under (format "*[data-id='%s']" (str (:_id user)))
+                              (webdriver/by-class-name (str button-name "-button")))
+          (catch NoSuchElementException ex nil)) => falsey)
+    (throw+ "no 'that' user")))
+
 (defn should-see-subscription-list
   []
   (check-response
@@ -494,18 +534,27 @@
 (defn subscription-should-be-deleted
   []
   (check-response
-   (model.subscription/fetch-by-id (:_id @that-subscription)) => falsey))
+   (model.subscription/fetch-by-id (:_id (get-this :subscription))) => falsey))
+
+(defn that-type-should-be-deleted
+  [type]
+  (if-let [record (get-that type)]
+    (check-response
+     (let [ns-str (str "jiksnu.model." (name type) "/fetch-by-id")
+           find-fn (resolve (symbol ns-str))]
+       (try (find-fn (:_id record))
+            (catch RuntimeException ex nil)) => falsey))
+    (throw+ (format "Could not find 'that' record for %s" type))))
 
 (defn there-is-an-activity
   [modifier & {:as options}]
-  (let [user (or (:user options) @that-user (a-user-exists))]
+  (let [user (or (:user options) (get-this :user) (a-user-exists))]
     (let [activity (actions.activity/create
                     (factory Activity
                              {:author (:_id user)
                               :local true
                               :public (= modifier "public")}))]
-      (dosync
-       (ref-set that-activity activity))
+      (set-this :activity activity)
       activity)))
 
 (defn there-is-an-activity-by-another
@@ -517,9 +566,8 @@
 
 (defn user-has-a-subscription
   []
-  (let [subscription (model.subscription/create (factory :subscription {:actor (:_id @that-user)}))]
-    (dosync
-     (ref-set that-subscription subscription))))
+  (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
+    (set-this :subscription subscription)))
 
 (defn user-posts-activity
   []
