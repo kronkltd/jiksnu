@@ -82,6 +82,9 @@
 (When #"^I click the \"([^\"]*)\" button$" [button]
       (do-click-button button))
 
+(When #"^I click the \"([^\"]*)\" button for this (.*)$" [button-name type]
+      (do-click-button-for-this-type button-name (keyword type)))
+
 (When #"^I click the \"([^\"]*)\" button for that (.*)$" [button-name type]
       (do-click-button-for-that-type button-name (keyword type)))
 
@@ -216,17 +219,14 @@
 (Then #"^log the response$" []
       (log-response))
 
-(Then #"^that domain should be deleted" []
-      (domain-should-be-deleted))
-
 (Then #"^that domain should be discovered$" []
       (domain-should-be-discovered))
 
-(Then #"^that subscription should be deleted$" []
-      (subscription-should-be-deleted))
-
 (Then #"^that (.*) should be deleted$" [type]
       (that-type-should-be-deleted (keyword type)))
+
+(Then #"^this (.*) should be deleted$" [type]
+      (this-type-should-be-deleted (keyword type)))
 
 (Then #"^that user's name should be \"(.*)\"$" [name]
       (name-should-be name))

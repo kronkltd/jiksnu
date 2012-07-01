@@ -49,14 +49,17 @@
 
 (deffilter #'subscribe :http
   [action request]
-  (if-let [actor (current-user)]
-    (let [params (:params request)]
-      (if-let [target (-?> (or (:id params) (:subscribeto params))
-                           model/make-id
-                           model.user/fetch-by-id)]
-        (action actor target)
-        (throw+ "User not found")))
-    (throw+ "Must be logged in")))
+  (let [params (:params request)]
+    (if-let [id (or (:id params) (:subscribeto params))]
+      (if-let [target (-> id model/make-id model.user/fetch-by-id)]
+        (if-let [actor (current-user)]
+          (action actor target)
+          {:view false
+           :status 303
+           :headers {"Location" (str "/main/ostatussub?subscribeto=" (:_id target))}})
+        (throw+ (format "Could not find target with id: %s" id)))
+      (throw+ {:type :validation
+               :errors {:subscribeto ["Not provided"]}}))))
 
 (deffilter #'unsubscribe :http
   [action request]

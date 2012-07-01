@@ -31,11 +31,11 @@ Scenario: User timeline, HTML, unauthenticated
   When I go to the "user timeline" page for that user
   Then I should see that activity
 
-Scenario: User index, authenticated
-  Given I am logged in as a normal user
-  And another user exists
-  When I go to the "user index" page
-  Then I should see 2 users
+# Scenario: User index, authenticated
+#   Given I am logged in as a normal user
+#   And another user exists
+#   When I go to the "user index" page
+#   Then I should see 2 users
 
 Scenario: User index delete button, unauthenticated
   Given I am not logged in

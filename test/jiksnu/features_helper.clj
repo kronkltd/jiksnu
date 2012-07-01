@@ -242,6 +242,15 @@
   [class-name]
   (click (str "#" class-name "-button")))
 
+(defn do-click-button-for-this-type
+  [button-name type]
+  (if-let [record (get-this type)]
+    (let [button (find-element-under
+                  (str "*[data-id='" (:_id record) "']")
+                  (webdriver/by-class-name (str button-name "-button")))]
+      (click button))
+    (throw+ (format "Could not find 'this' record for %s" type))))
+
 (defn do-click-button-for-that-type
   [button-name type]
   (if-let [record (get-that type)]
@@ -545,6 +554,16 @@
        (try (find-fn (:_id record))
             (catch RuntimeException ex nil)) => falsey))
     (throw+ (format "Could not find 'that' record for %s" type))))
+
+(defn this-type-should-be-deleted
+  [type]
+  (if-let [record (get-this type)]
+    (check-response
+     (let [ns-str (str "jiksnu.model." (name type) "/fetch-by-id")
+           find-fn (resolve (symbol ns-str))]
+       (try (find-fn (:_id record))
+            (catch RuntimeException ex nil)) => falsey))
+    (throw+ (format "Could not find 'this' record for %s" type))))
 
 (defn there-is-an-activity
   [modifier & {:as options}]

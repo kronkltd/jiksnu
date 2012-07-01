@@ -13,7 +13,7 @@ Scenario: Deleting subscriptions from the admin index
   Given I am logged in as an admin
   And a subscription exists
   When I go to the "subscriptions admin index" page
-  And I click the "delete" button for that subscription
-  Then that subscription should be deleted
+  And I click the "delete" button for this subscription
+  Then this subscription should be deleted
   And I should see the flash message "subscription deleted"
   And I should be at the "subscriptions admin index" page

@@ -31,32 +31,32 @@
            (model.subscription/fetch-by-id .id.) => nil
            (delete .subscription.) => truthy :times 0))))
 
- (fact "filter-action [#'subscribe :http]"
-   (with-serialization :http
-     (fact "when the user is authenticated"
-       (fact "when a user matching the subscribeto param is found"
-         (filter-action
-          #'subscribe
-          {:params {:subscribeto .id.}}) => truthy
-           (provided
-             (session/current-user) => .actor.
-             (model.user/fetch-by-id (model/make-id .id.)) => .target.
-             (subscribe .actor. .target.) => truthy))
-       (fact "when a user matching the subscribeto param is not found"
-         (filter-action
-          #'subscribe
-          {:params {:subscribeto .id.}}) => (throws RuntimeException)
-           (provided
-             (session/current-user) => .actor.
-             (model.user/fetch-by-id (model/make-id .id.)) => nil
-             (subscribe .actor. .target.) => nil :times 0)))
-     (fact "when the user is not authenticated"
-       (filter-action
-        #'subscribe
-        {:params {:subscribeto .id.}}) => (throws RuntimeException)
-         (provided
-           (session/current-user) => nil
-           (subscribe .actor. .target.) => nil :times 0))))
+ (fact "filter-action #'subscribe :http"
+   (let [action #'subscribe]
+     (fact "when the serialization is :http"
+      (with-serialization :http
+        (fact "when a user matching the subscribeto param is found"
+          (fact "when the user is authenticated"
+            (let [request {:params {:subscribeto .id.}}]
+              (filter-action action request) => truthy
+              (provided
+                (model.user/fetch-by-id (model/make-id .id.)) => .target.
+                (session/current-user) => .actor.
+                (subscribe .actor. .target.) => truthy)))
+          (fact "when the user is not authenticated"
+            (let [request {:params {:subscribeto .id.}}]
+              (filter-action action request) => (throws RuntimeException)
+              (provided
+                (model.user/fetch-by-id (model/make-id .id.)) => nil
+                (session/current-user) => .actor. :times 0
+                (subscribe .actor. .target.) => nil :times 0))))
+        (fact "when a user matching the subscribeto param is not found"
+          (let [request {:params {:subscribeto .id.}}]
+            (filter-action action request) => (throws RuntimeException)
+            (provided
+              (session/current-user) => .actor. :times 0
+              (model.user/fetch-by-id (model/make-id .id.)) => nil
+              (subscribe .actor. .target.) => nil :times 0)))))))
 
    (fact "#'filter-action [#'get-subscribers :xmpp]"
      (with-serialization :xmpp

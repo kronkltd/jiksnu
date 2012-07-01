@@ -101,7 +101,7 @@
       (let [errors (create-validators user)]
         (if (empty? errors)
           (let [user (assoc user :_id id)]
-            (log/debugf "Creating user: %ss" user)
+            (log/debugf "Creating user: %s" user)
             (mc/insert collection-name user)
             (fetch-by-id id))
           (throw+ {:type :validation
