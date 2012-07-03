@@ -3,6 +3,7 @@
         [clojure.core.incubator :only [-?>>]]
         [jiksnu.model :only [map->Activity]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
+        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
   (:require [clj-time.core :as time]
@@ -91,27 +92,12 @@
     (dissoc activity :parent)
     activity))
 
-(defn set-_id
-  [activity]
-  (if (:_id activity)
-    activity
-    (assoc activity :_id (model/make-id))))
-
-(defn set-created-time
-  [activity]
-  (if (:created activity)
-    activity
-    (assoc activity :created (time/now))))
-
 (defn set-url
   [activity]
   (if (and (:local activity)
            (empty? (:url activity)))
     (assoc activity :url (str "http://" (config :domain) "/notice/" (:_id activity)))
-    activity
-    )
-  )
-
+    activity))
 
 (defn prepare-activity
   [activity]
@@ -229,12 +215,6 @@
   (mc/update collection-name
              {:_id (:_id parent)}
              {:$push {:comments (:_id comment)}}))
-
-(defn set-updated-time
-  [activity]
-  (if (:updated activity)
-    activity
-    (assoc activity :updated (time/now))))
 
 (defn set-object-updated
   [activity]

@@ -18,7 +18,8 @@
    (presence-of :topic)
    (presence-of :subscription-status)
    (presence-of :created)
-   (presence-of :updated)))
+   (presence-of :updated)
+   ))
 
 ;; TODO: generalize this and move it to model
 (defn set-field!

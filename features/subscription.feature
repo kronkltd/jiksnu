@@ -28,10 +28,10 @@ Scenario: Ostatus subscription page
 
 Scenario: User subscriptions, default
   Given I am not logged in
-  And a user exists
-  And that user has a subscription
-  When I go to the "subscriptions" page for that user
-  Then I should see that subscription
+  And there is a user
+  And this user has a subscription
+  When I go to the "subscriptions" page for this user
+  Then I should see this subscription
 
 Scenario: User subscriptions, activity streams
   Given I am not logged in

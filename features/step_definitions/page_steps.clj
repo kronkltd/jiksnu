@@ -31,9 +31,6 @@
 ;; (Given #"^a subscription exists$" []
 ;;        (a-subscription-exists))
 
-;; (Given #"^a user exists$" []
-;;        (a-user-exists))
-
 (Given #"^a user exists with the password \"([^\"]+)\"$" [password]
        (a-user-exists-with-password password))
 
@@ -61,11 +58,17 @@
 (Given #"^there is a (.+) activity created by another$" [type]
        (there-is-an-activity-by-another type))
 
+(Given #"^there is a user$" []
+       (a-user-exists))
+
 (Given #"^that user posts an activity$" []
        (user-posts-activity))
 
 (Given #"^that user has a subscription$" []
        (user-has-a-subscription))
+
+(Given #"^this user has a subscription$" []
+       (this-user-has-a-subscription))
 
 (Given #"^I am authorized to view that activity$" []
   (comment  Express the Regexp above with the code you wish you had  )
@@ -105,6 +108,9 @@
 
 (When #"^I go to the \"([^\"]+)\" page for that user with a \"([^\"]+)\" format$" [page format]
       (go-to-the-page-for-user-with-format page format))
+
+(When #"^I go to the \"([^\"]*)\" page for this user$" [page]
+      (go-to-the-page-for-user page))
 
 (When #"^I log out$" []
       (click ".dropdown-toggle")

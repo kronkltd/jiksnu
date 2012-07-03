@@ -9,7 +9,8 @@
                                                     subscribed]]
         [jiksnu.session :only [current-user current-user-id]]
         [slingshot.slingshot :only [throw+]])
-  (:require [jiksnu.actions.user-actions :as actions.user]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
@@ -42,10 +43,10 @@
 (deffilter #'get-subscriptions :http
   [action request]
   (let [{{username :username
-          id :id} :params} request
+          id :id} :params} (log/spy request)
           user (or (when username (model.user/get-user username))
                    (when id (model.user/fetch-by-id (model/make-id id))))]
-    (action user)))
+    (action (log/spy user))))
 
 (deffilter #'subscribe :http
   [action request]

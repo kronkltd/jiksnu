@@ -95,25 +95,27 @@
 
 
     
-    [[:get  "/admin/subscriptions"]                     #'admin.sub/index]
-    [[:post "/admin/subscriptions"]                     #'admin.sub/create]
-    [[:get  "/admin/subscriptions/:id.:format"]         #'admin.sub/show]
-    [[:get  "/admin/subscriptions/:id"]                 #'admin.sub/show]
-    [[:post "/admin/subscriptions/:id/delete"]          #'admin.sub/delete]
-    [[:post "/admin/subscriptions/:id/update"]          #'admin.sub/update]
-    [[:get  "/admin/feed-sources"]                      #'admin.feed-source/index]
-    [[:get  "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
-    [[:post "/admin/feed-sources/:id/delete"]           #'admin.feed-source/delete]
-    [[:post "/admin/feed-sources/:id/unsubscribe"]      #'feed-source/remove-subscription]
-    [[:post "/admin/feed-sources/:id/update"]           #'feed-source/fetch-updates]
-    [[:post "/admin/feed-sources/:id/watchers"]         #'feed-source/add-watcher]
-    [[:post "/admin/feed-sources/:id/watchers/delete"]  #'feed-source/remove-watcher]
-    [[:get  "/admin/feed-subscriptions"]                #'admin.feed-subscription/index]
-    [[:get  "/admin/likes"]                             #'admin.like/index]
-    [[:post "/admin/users"]                             #'admin.user/create]
-    [[:get  "/admin/users"]                             #'admin.user/index]
-    [[:get  "/admin/settings"]                          #'setting/admin-edit-page]
-    [[:post "/admin/settings"]                          #'setting/update-settings]]))
+    [[:get    "/admin/subscriptions"]                     #'admin.sub/index]
+    [[:post   "/admin/subscriptions"]                     #'admin.sub/create]
+    [[:get    "/admin/subscriptions/:id.:format"]         #'admin.sub/show]
+    [[:get    "/admin/subscriptions/:id"]                 #'admin.sub/show]
+    [[:post   "/admin/subscriptions/:id/delete"]          #'admin.sub/delete]
+    [[:post   "/admin/subscriptions/:id/update"]          #'admin.sub/update]
+    [[:get    "/admin/feed-sources"]                      #'admin.feed-source/index]
+    [[:get    "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
+    [[:post   "/admin/feed-sources/:id/delete"]           #'admin.feed-source/delete]
+    [[:post   "/admin/feed-sources/:id/unsubscribe"]      #'feed-source/remove-subscription]
+    [[:post   "/admin/feed-sources/:id/update"]           #'feed-source/fetch-updates]
+    [[:post   "/admin/feed-sources/:id/watchers"]         #'feed-source/add-watcher]
+    [[:post   "/admin/feed-sources/:id/watchers/delete"]  #'feed-source/remove-watcher]
+    [[:get    "/admin/feed-subscriptions"]                #'admin.feed-subscription/index]
+    [[:get    "/admin/likes"]                             #'admin.like/index]
+    [[:delete "/admin/likes/:id"]                  #'admin.like/delete]
+    [[:post   "/admin/likes/:id/delete"]                  #'admin.like/delete]
+    [[:post   "/admin/users"]                             #'admin.user/create]
+    [[:get    "/admin/users"]                             #'admin.user/index]
+    [[:get    "/admin/settings"]                          #'setting/admin-edit-page]
+    [[:post   "/admin/settings"]                          #'setting/update-settings]]))
 
 (def http-routes
   (make-matchers

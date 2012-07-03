@@ -36,6 +36,10 @@
   [& options]
   (apply index* options))
 
+(defaction delete
+  [like]
+  (model.like/delete like))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.like-filters"

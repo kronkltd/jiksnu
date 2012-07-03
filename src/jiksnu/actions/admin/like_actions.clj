@@ -10,6 +10,10 @@
   [& options]
   (apply actions.like/index options))
 
+(defaction delete
+  [& options]
+  (apply actions.like/delete options))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.admin.like-filters"

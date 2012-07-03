@@ -105,7 +105,7 @@
 
 (defaction get-subscriptions
   [user]
-  [user (index {:actor (:_id user)} )])
+  (log/spy [user (index {:actor (:_id user)} )]))
 
 
 (defaction unsubscribe

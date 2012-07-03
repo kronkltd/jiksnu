@@ -173,10 +173,9 @@
 (defn a-record-exists
   [type]
   (let [create-fn (resolve (symbol (str "jiksnu.model." (name type) "/create")))]
-    (->>
-     (factory type)
-     create-fn
-     (set-this type))))
+    (->> (factory type)
+         create-fn
+         (set-this type))))
 
 (defn a-subscription-exists
   []
@@ -352,6 +351,16 @@
     (implement)
     ))
 
+(defn go-to-the-page-for-this-user
+  [page-name]
+  (let [user (get-this :user)]
+    (condp = page-name
+      "show" (fetch-page-browser :get (str "/main/users/" (:_id user)))
+      "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username user) "@" (:domain user)))
+      "subscriptions" (fetch-page-browser :get (str "/" (:username user) "/subscriptions"))
+      "subscribers" (fetch-page-browser :get (str "/" (:username user) "/subscribers"))
+      (implement))))
+
 (defn go-to-the-page-for-user
   [page-name]
   (let [user (get-this :user)]
@@ -511,9 +520,12 @@
 
 (defn should-see-subscription
   []
-  (check-response
-   (let [elements (elements ".subscription")]
-     (map #(webdriver/attribute % :data-id) elements) => (contains (str (:_id (get-this :subscription)))))))
+  (println (page-source))
+  (if-let [subscription (get-this :subscription)]
+    (let [elements (elements {:data-type "subscription"})]
+      (check-response
+       (map #(webdriver/attribute % :data-id) elements) => (contains (str (:_id subscription)))))
+    (throw+ "could not find 'this' subscription")))
 
 (defn should-see-domain-named
   [domain-name]
@@ -537,11 +549,14 @@
 
 (defn should-see-this
   [type]
+  (println (page-source))
   (if-let [record (get-this type)]
     (check-response
-     (exists? (format "*[data-id='%s'][data-type='%s']"
-                      (str (:_id record))
-                      (name type))) => truthy)
+     (exists? (format "*[data-id='%s']"
+                      ;; [data-type='%s']
+                      (log/spy (str (:_id record)))
+                      ;; (log/spy (name type))
+                      )) => truthy)
     (throw+ (format "Could not find 'this' for %s" type)))
   )
 
@@ -601,6 +616,11 @@
     (there-is-an-activity modifier :user user)))
 
 
+
+(defn this-user-has-a-subscription
+  []
+  (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
+    (set-this :subscription subscription)))
 
 (defn user-has-a-subscription
   []

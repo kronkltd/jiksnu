@@ -31,35 +31,35 @@
 
 
 (defview #'get-subscribers :html
-  [request [user subscribers]]
+  [request [user {:keys [items] :as response}]]
   {:title "Subscribers"
-   :body (sections.subscription/subscribers-section subscribers)})
+   :body (sections.subscription/subscribers-section items response)})
 
 (defview #'get-subscribers :xmpp
-  [request subscribers]
+  [request [user {:keys [items] :as response}]]
   (tigase/result-packet
-   request (helpers.subscription/subscribers-response subscribers)))
+   request (helpers.subscription/subscribers-response items response)))
 
 
 (defview #'get-subscriptions :as
-  [request [user subscriptions]]
+  [request [user {:keys [items] :as response}]]
   {:template false
-   :body {:items (index-section subscriptions)}})
+   :body {:items (index-section items response)}})
 
 (defview #'get-subscriptions :html
   [request [user {:keys [items] :as response}]]
   {:title "Subscriptions"
    :formats (subscription-formats user)
-   :body (sections.subscription/subscriptions-section items response)})
+   :body (sections.subscription/subscriptions-section (log/spy items) response)})
 
 (defview #'get-subscriptions :json
-  [request [user subscriptions]]
-  {:body (sections.subscription/subscriptions-section subscriptions)})
+  [request [user {:keys [items] :as response}]]
+  {:body (sections.subscription/subscriptions-section items response)})
 
 (defview #'get-subscriptions :xmpp
-  [request [user subscriptions]]
+  [request [user {:keys [items] :as response}]]
   (tigase/result-packet
-   request (helpers.subscription/subscriptions-response subscriptions)))
+   request (helpers.subscription/subscriptions-response items response)))
 
 
 (defview #'ostatus :html
