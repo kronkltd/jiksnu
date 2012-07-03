@@ -1,5 +1,4 @@
 (use 'jiksnu.features-helper)
-(use '(ciste [debug :only [spy]]))
 (use 'clj-webdriver.taxi)
 (require '[jiksnu.model.activity :as model.activity])
 

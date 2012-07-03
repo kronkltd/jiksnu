@@ -447,6 +447,9 @@
   [:div.activities
    (map #(index-line % options) records)])
 
+(defsection index-block [Activity :rdf]
+  [records & [options & _]]
+  (map index-line records))
 
 (defsection index-block [Activity :xml]
   [activities & _]
@@ -466,6 +469,10 @@
 (defsection index-line [Activity :html]
   [activity & opts]
   (apply show-section activity opts))
+
+(defsection index-line [Activity :rdf]
+  [activity & [options & _]]
+  (show-section activity))
 
 (defsection index-line [Activity :xmpp]
   [^Activity activity & options]
@@ -497,7 +504,7 @@
                     {:displayName (:title activity)
                      :id (:id object)
                      :objectType (:object-type object)
-               :content (:content object)
+                     :content (:content object)
                      :url (:id object)
                      :tags (map
                             (fn [tag]
@@ -507,8 +514,7 @@
                      ;; "published" (:published object)
                      ;; "updated" (:updated object)
                      })
-         
-   
+          
           "published" (:published activity)
           
           "updated" (:updated activity)
@@ -631,7 +637,7 @@
 (defsection show-section [Activity :rdf]
   [activity & _]
   (rdf/with-rdf-ns ""
-    (let [{:keys [content id published]} activity
+    (let [{:keys [content id created]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
           user-res (rdf/rdf-resource (or (:id user) (model.user/get-uri user)))]
@@ -642,7 +648,7 @@
                [uri [:sioc :has_creator] user-res]
                [uri [:sioc :has_owner]   user-res]
                [uri [:as  :author]       user-res]
-               [uri [:dc  :published]    (rdf/date published)]
+               [uri [:dc  :published]    (rdf/date (.toDate created))]
                ]
               #_(show-section user)))))
 

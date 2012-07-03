@@ -554,8 +554,8 @@
     (check-response
      (exists? (format "*[data-id='%s']"
                       ;; [data-type='%s']
-                      (log/spy (str (:_id record)))
-                      ;; (log/spy (name type))
+                      (str (:_id record))
+                      ;; (name type)
                       )) => truthy)
     (throw+ (format "Could not find 'this' for %s" type)))
   )

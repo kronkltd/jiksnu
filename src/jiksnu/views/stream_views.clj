@@ -117,9 +117,9 @@
    :body (index-section items response)})
 
 (defview #'public-timeline :n3
-  [request [activities _]]
+  [request {:keys [items] :as response}]
   {:body
-   (with-format :rdf (index-section activities))
+   (with-format :rdf (index-section items))
    :template :false})
 
 (defview #'public-timeline :rdf
