@@ -102,8 +102,8 @@
              :entries (index-section items response)})}))
 
 (defview #'public-timeline :json
-  [request [activities _]]
-  {:body (map show-section activities)})
+  [request {:keys [items] :as response}]
+  {:body (map show-section items response)})
 
 (defview #'public-timeline :html
   [request {:keys [items page] :as response}]
@@ -119,7 +119,7 @@
 (defview #'public-timeline :n3
   [request {:keys [items] :as response}]
   {:body
-   (with-format :rdf (index-section items))
+   (with-format :rdf (index-section items response))
    :template :false})
 
 (defview #'public-timeline :rdf
@@ -128,12 +128,12 @@
    :template :false})
 
 (defview #'public-timeline :xml
-  [request [activities _]]
-  {:body (index-section activities)})
+  [request {:keys [items] :as response}]
+  {:body (index-section items response)})
 
 (defview #'public-timeline :xmpp
-  [request [activities _]]
-  (tigase/result-packet request (index-section activities)))
+  [request {:keys [items] :as response}]
+  (tigase/result-packet request (index-section items response)))
 
 (defview #'remote-profile :html
   [request user]

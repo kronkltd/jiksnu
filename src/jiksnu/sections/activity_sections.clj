@@ -442,6 +442,11 @@
   (map (fn [item] (index-line item response))
        items))
 
+(defsection index-block [Activity :as]
+  [items & response]
+  (map (fn [item] (index-line item response))
+       items))
+
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
@@ -481,6 +486,10 @@
 
 
 (defsection index-section [Activity :atom]
+  [items & response]
+  (index-block items response))
+
+(defsection index-section [Activity :as]
   [items & response]
   (index-block items response))
 
