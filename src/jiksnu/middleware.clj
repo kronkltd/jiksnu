@@ -27,7 +27,7 @@
       (catch [:type :authentication] ex
         (auth-exception ex))
       (catch [:type :permission] ex
-        (auth-exception (log/spy :info ex)))
+        (auth-exception ex))
       (catch LoginException ex
         (auth-exception ex)))))
 

@@ -8,3 +8,10 @@
    ;; TODO: redirect to redirect url
    :headers {"Location" "/"}
    :template false})
+
+(defview #'delete :html
+  [request _]
+  {:status 303
+   :flash "like deleted"
+   :template false
+   :headers {"Location" "/"}})

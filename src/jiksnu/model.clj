@@ -30,10 +30,6 @@
 
 (def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ss'Z'")
 
-;; (l/receive-all *actions* (fn [action-map] (log/spy action-map)))
-
-;; (def ^:dynamic *mongo-database* (ref nil))
-
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
                    :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})

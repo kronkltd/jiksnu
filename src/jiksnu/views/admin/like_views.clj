@@ -9,7 +9,7 @@
   [request {:keys [items] :as response}]
   {:single true
    :title "Likes"
-   :body (admin-index-section (log/spy items) response)})
+   :body (admin-index-section items response)})
 
 (defview #'delete :html
   [request _]

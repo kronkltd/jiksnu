@@ -15,7 +15,7 @@
                  [clojurewerkz/elastisch "1.0.0-alpha4"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
                  [clojurewerkz/support "0.4.0"]
-                 [com.novemberain/monger "1.0.0-SNAPSHOT"]
+                 [com.novemberain/monger "1.1.0-SNAPSHOT"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-SNAPSHOT"]

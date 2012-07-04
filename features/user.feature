@@ -16,9 +16,9 @@ Scenario: Editing profile
   And I submit that form
   Then that user's name should be "John Smith"
 
-Scenario: Fetchin a User Meta document
+Scenario: Fetching a User Meta document
   Given I am not logged in
-  And a user exists
+  And there is a user
   When I request the user-meta page for that user with a client
   Then the alias field matches that user's uri
   And the content-type is "application/xrds+xml"

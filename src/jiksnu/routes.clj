@@ -161,6 +161,7 @@
     [[:post   "/main/domains/:id/edit"]                       #'domain/edit-page]
     [[:post   "/main/domains"]                                #'domain/find-or-create]
     [[:post   "/main/guest-login"]                            #'auth/guest-login]
+    [[:post   "/likes/:id/delete"]                            #'like/delete]
     [[:get    "/main/login"]                                  #'auth/login-page]
     [[:post   "/main/login"]                                  #'auth/login]
     [[:get    "/main/logout"]                                 #'auth/logout]

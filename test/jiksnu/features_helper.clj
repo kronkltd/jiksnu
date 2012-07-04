@@ -520,7 +520,6 @@
 
 (defn should-see-subscription
   []
-  (println (page-source))
   (if-let [subscription (get-this :subscription)]
     (let [elements (elements {:data-type "subscription"})]
       (check-response
@@ -549,7 +548,6 @@
 
 (defn should-see-this
   [type]
-  (println (page-source))
   (if-let [record (get-this type)]
     (check-response
      (exists? (format "*[data-id='%s']"

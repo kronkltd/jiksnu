@@ -1,6 +1,5 @@
 (ns jiksnu.filters.admin.feed-source-filters
-  (:use [ciste.debug :only [spy]]
-        [ciste.filters :only [deffilter]]
+  (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.admin.feed-source-actions)
   (:require [jiksnu.model.feed-source :as model.feed-source]))
 

@@ -230,6 +230,9 @@
 (Then #"^log the response$" []
       (log-response))
 
+(Then #"^print the source$" []
+      (println (page-source)))
+
 (Then #"^that domain should be discovered$" []
       (domain-should-be-discovered))
 

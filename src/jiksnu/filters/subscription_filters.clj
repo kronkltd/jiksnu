@@ -43,10 +43,10 @@
 (deffilter #'get-subscriptions :http
   [action request]
   (let [{{username :username
-          id :id} :params} (log/spy request)
+          id :id} :params} request
           user (or (when username (model.user/get-user username))
                    (when id (model.user/fetch-by-id (model/make-id id))))]
-    (action (log/spy user))))
+    (action user)))
 
 (deffilter #'subscribe :http
   [action request]

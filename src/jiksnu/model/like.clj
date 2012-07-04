@@ -38,7 +38,7 @@
 
 (defn delete
   [like]
-  (let [like (fetch-by-id (:_id (log/spy like)))]
+  (let [like (fetch-by-id (:_id like))]
     (mc/remove-by-id collection-name (:_id like))
     like))
 
