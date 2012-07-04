@@ -1,5 +1,6 @@
 (ns jiksnu.transforms
   (:require [clj-time.core :as time]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]))
 
 (defn set-_id

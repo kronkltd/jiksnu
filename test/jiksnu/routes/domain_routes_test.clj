@@ -26,22 +26,16 @@
        (fn [response]
          (let [body (h/html (:body response))]
            (fact
-             body => (re-pattern (str (:_id domain)))
-             )
-           )
-         )
-       )
-      ))
-   
-   
-   )
+             body => (re-pattern (str (:_id domain))))))))))
  
  (fact "#'webfinger-host-meta"
    (fact "should return a XRD document"
      (-> (mock/request :get "/.well-known/host-meta")
          response-for) =>
          (every-checker
-          (contains {:status 200})
+          map?
+          (comp status/success? :status)
           (fn [req]
-            (fact
-              (:body req) => #"<XRD.*"))))))
+            (let [body (:body req)]
+              (fact
+                body => #"<XRD.*")))))))

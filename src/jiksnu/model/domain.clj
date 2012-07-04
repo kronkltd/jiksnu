@@ -1,5 +1,6 @@
 (ns jiksnu.model.domain
   (:use [ciste.config :only [config]]
+        [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [presence-of valid? validation-set]])
   (:require [clj-tigase.core :as tigase]
@@ -15,6 +16,19 @@
 (def create-validators
   (validation-set
    (presence-of :_id)))
+
+(defn set-discovered
+  [record]
+  (if (contains? record :discovered)
+    record
+    (assoc record :discovered false)))
+
+(defn prepare
+  [domain]
+  (-> domain
+      set-discovered
+      set-created-time
+      set-updated-time))
 
 (defn drop!
   []
@@ -33,14 +47,14 @@
 
 (defn create
   [domain & [options & _]]
-  (let [errors (create-validators domain)] 
+  (let [domain (prepare domain)
+        errors (create-validators domain)]
     (if (empty? errors)
       (do
         (log/debugf "Creating domain %s" (:_id domain))
         (mc/insert collection-name domain)
         (fetch-by-id (:_id domain)))
-      (throw+ {:type :validation
-               :errors errors}))))
+      (throw+ {:type :validation :errors errors}))))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -67,9 +81,9 @@
    {:_id (:_id domain)}
    {:$set {field value}}))
 
-(defn set-discovered
-  [domain]
-  (set-field domain :discovered true))
+;; (defn set-discovered
+;;   [domain]
+;;   (set-field domain :discovered true))
 
 (defn ping-request
   [domain]

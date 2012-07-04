@@ -58,12 +58,6 @@
        (provided
          (deliver-packet! anything) => nil :times 1))))
 
- (fact "#'path-segments"
-   (path-segments "http://example.com/status/users/1") =>
-   '("http://example.com/"
-     "http://example.com/status/"
-     "http://example.com/status/users/"))
-
  (fact "#'discover-webfinger"
    (fact "when there is no url context"
      (let [domain (model.domain/create (factory Domain))

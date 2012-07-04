@@ -2,12 +2,14 @@
   (:use [ciste.config :only [config definitializer]]
         [ciste.core :only [defaction]]
         [ciste.runner :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>>]])
+        [clojure.core.incubator :only [-?>>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
             [ring.util.codec :as codec])
@@ -16,8 +18,7 @@
 
 (defaction create
   [options]
-  (let [prepared-domain (assoc options :discovered false)]
-    (model.domain/create prepared-domain)))
+  (model.domain/create options))
 
 (defaction delete
   [domain]
@@ -35,18 +36,6 @@
       tigase/deliver-packet!)
   domain)
 
-(defn path-segments
-  [url]
-  (if url
-    (let [url-obj (URL. url)
-          path (.getPath url-obj)
-          ps (string/split path #"/")
-          bare (str "http://" (.getHost url-obj))]
-      (map #(str bare % "/")
-           (reductions (fn [s1 s2] (clojure.string/join "/" [s1 s2]))
-                       (drop-last ps))))
-    []))
-
 (defn discover-webfinger
   [^Domain domain url]
   ;; TODO: check https first
@@ -60,15 +49,14 @@
                         (model.domain/host-meta-link domain)
                         (map
                          #(str % ".well-known/host-meta")
-                         (rest (path-segments url))))))]
+                         (rest (model/path-segments url))))))]
     (if-let [links (model.webfinger/get-links xrd)]
       ;; TODO: do individual updates
       (update (-> domain
                   (assoc :links links)
                   (assoc :discovered true)))
-      (throw (RuntimeException. "Host meta does not have any links")))
-    (throw (RuntimeException.
-            (str "Could not find host meta for domain: " (:_id domain))))))
+      (throw+  "Host meta does not have any links"))
+    (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
 (defaction show
   [domain]
@@ -80,6 +68,7 @@
 
 (defaction index
   [& [options & _]]
+  ;; TODO: to the filter
   (let [page (Integer/parseInt (get options :page "1"))
         page-size 20
         criteria {:sort [{:_id 1}]
@@ -106,7 +95,7 @@
 
 (defn current-domain
   []
-  (find-or-create (config :domain)))
+  (find-or-create {:_id (config :domain)}))
 
 (defaction ping
   [domain]

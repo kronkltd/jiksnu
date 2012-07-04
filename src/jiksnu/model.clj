@@ -62,7 +62,18 @@
        (string/replace #"http://activitystrea.ms/schema/1.0/" "")
        (string/replace #"http://ostatus.org/schema/1.0/" "")))
 
-
+(defn path-segments
+  [url]
+  (if url
+    (let [url-obj (URL. url)
+          path (.getPath url-obj)
+          ps (string/split path #"/")
+          ;; TODO: get scheme
+          bare (str "http://" (.getHost url-obj))]
+      (map #(str bare % "/")
+           (reductions (fn [s1 s2] (string/join "/" [s1 s2]))
+                       (drop-last ps))))
+    []))
 
 (defn rel-filter
   "returns all the links in the collection where the rel value matches the

@@ -1,5 +1,5 @@
 (ns jiksnu.model-test
-  (:use [jiksnu.model :only [parse-http-link rel-filter]]
+  (:use [jiksnu.model :only [parse-http-link path-segments rel-filter]]
         [midje.sweet :only [fact future-fact => every-checker contains]]))
 
 (fact "#'parse-http-link"
@@ -10,6 +10,12 @@
      (contains {"href" "http://jonkulp.dyndns-home.com/micro/main/xrd?uri=acct:jonkulp@jonkulp.dyndns-home.com"})
      (contains {"rel" "lrdd"})
      (contains {"type" "application/xrd+xml"}))))
+
+ (fact "#'path-segments"
+   (path-segments "http://example.com/status/users/1") =>
+   '("http://example.com/"
+     "http://example.com/status/"
+     "http://example.com/status/users/"))
 
 (fact "#'rel-filter"
   (let [links [{:rel "alternate"}

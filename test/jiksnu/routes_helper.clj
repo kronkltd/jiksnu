@@ -31,10 +31,19 @@
             (into {}))
        codec/form-encode))
 
+(defn as-user
+  ([m]
+     (let [user (model.user/create (factory :local-user))]
+       (as-user m user)))
+  ([m user]
+     (let [password (fseq :password)]
+       (actions.auth/add-password user password)
+       (as-user m user password)))
+  ([m user password]
+     (let [cookie-str (get-auth-cookie (:username user) password)]
+       (assoc-in m [:headers "cookie"] cookie-str))))
+
 (defn as-admin
   [m]
-  (let [password (fseq :password)
-        user (model.user/create (factory :local-user {:admin true}))]
-    (actions.auth/add-password user password)
-    (let [cookie-str (get-auth-cookie (:username user) password)]
-      (assoc-in m [:headers "cookie"] cookie-str))))
+  (let [user (model.user/create (factory :local-user {:admin true}))]
+    (as-user m user)))

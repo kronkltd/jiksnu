@@ -1,9 +1,10 @@
 (ns jiksnu.routes.stream-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [jiksnu.routes-helper :only [get-auth-cookie response-for]]
-        [midje.sweet :only [fact future-fact => every-checker contains]])
+        [jiksnu.routes-helper :only [as-user response-for]]
+        [midje.sweet :only [fact future-fact => every-checker]])
   (:require [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.model :as model]
@@ -21,14 +22,13 @@
      (-> (mock/request :get "/")
          response-for) =>
          (every-checker
-          (contains {:status 200})))
+          map?
+          (comp status/success? :status)
+          ;; TODO: check count == 0
+          ))
 
    (fact "when there are activities"
-     (let [password (fseq :password)
-           user (model.user/create (factory :user))]
-
-       (actions.auth/add-password user password)
-       
+     (let [user (model.user/create (factory :local-user))]
        (dotimes [n 10]
          (model.activity/create (factory :activity {:author (:_id user)})))
        
@@ -38,20 +38,15 @@
          (-> (mock/request :get "/")
              response-for) =>
              (every-checker
-              (contains {:status 200})))
+              map?
+              (comp status/success? :status)))
 
        (fact "when the user is authenticated"
-         (let [cookie-str (get-auth-cookie (:username user) password)]
-           (-> (mock/request :get "/")
-               (assoc-in [:headers "cookie"] cookie-str)
-               response-for) =>
-               (every-checker
-                map?
-                (contains {:status 200})
-                (fn [response]
-                  (let [body (h/html (:body response))]
-                    (fact
-                      body => (re-pattern (:first-name user))
-                      body => #"authenticated")))))))))
+         (-> (mock/request :get "/")
+             as-user
+             response-for) =>
+             (every-checker
+              map?
+              (comp status/success? :status))))))
 
  )

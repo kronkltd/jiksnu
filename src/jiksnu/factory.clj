@@ -174,7 +174,8 @@
    ;; :id #'abdera/new-id
    :title (fseq :title)
    :summary (fseq :summary)
-   :author (:_id (model.user/create (factory :user)))
+   :author (:_id (model.user/create (factory :local-user)))
+   :local true
    :published #'time/now
    :verb "post"
    :object-type "note"
