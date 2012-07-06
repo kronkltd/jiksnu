@@ -43,7 +43,7 @@
                   (fn [response]
                     (let [feed (abdera/parse-xml-string (:body response))]
                       (fact
-                        (count (.getEntries feed)) => 25))))))))
+                        (count (.getEntries feed)) => 20))))))))
          
          (fact "when the format is :html"
            (with-format :html
@@ -63,7 +63,7 @@
                     (let [body (h/html (:body response))]
                       (fact
                         ;; TODO: this should be limited to 20
-                        body => #"25")))
+                        body => #"20")))
                   ;; TODO: not a very good test
                   #(string? (h/html (:body %))))))))))))
 
