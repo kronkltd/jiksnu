@@ -41,7 +41,7 @@
 (defaction public-timeline
   [& [params & [options & _]]]
   (public-timeline* params (merge
-                            {:sort-clause [{:updated -1}]}
+                            {:sort-clause {:updated -1}}
                             options)))
 
 (declare user-timeline)

@@ -156,7 +156,8 @@
   (fn [& [{:as params} & [{:as options} & _]]]
     (let [options (or options {})
           page (get options :page 1)
-          criteria {:sort-clause sort-clause
+          criteria {:sort-clause (or (:sort-clause options)
+                                     sort-clause)
                     :page page
                     :page-size page-size
                     :skip (* (dec page) page-size)
@@ -171,17 +172,18 @@
 
 (defmacro make-indexer
   [namespace-sym & options]
-  `(do (require ~namespace-sym)
-       (let [ns-ns# (the-ns ~namespace-sym)]
-         (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
-           (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
-             (make-indexer*
-              {:sort-clause (get ~options :sort-clause {:updated -1})
-               :page-size (get ~options :page-size 20)
-               :fetch-fn fetch-fn#
-               :count-fn count-fn#})
-             (throw+ "Could not find fetch function"))
-          (throw+ "Could not find count function")))))
+  (let [options (apply hash-map options)]
+    `(do (require ~namespace-sym)
+         (let [ns-ns# (the-ns ~namespace-sym)]
+           (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
+             (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
+               (make-indexer*
+                {:sort-clause (get ~options :sort-clause {:updated -1})
+                 :page-size (get ~options :page-size 20)
+                 :fetch-fn fetch-fn#
+                 :count-fn count-fn#})
+               (throw+ "Could not find fetch function"))
+             (throw+ "Could not find count function"))))))
 
 (def rdf-prefixes
   [["activity" ns/as]

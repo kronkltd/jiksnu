@@ -55,9 +55,10 @@
 (defsection show-section [FeedSource :html]
   [source & options]
   (let [{:keys [topic callback challenge mode hub
-                verify-token lease-seconds created update]} source]
+                verify-token lease-seconds created updated]} source]
     [:div
      [:p "Id: " (:_id source)]
+     [:p "Title: " (:title source)]
      [:p "Topic: " topic]
      [:p "Hub: " hub]
      [:p "Callback: " callback]
@@ -67,7 +68,7 @@
      [:p "Subscription Status: " (:subscription-status source)]
      [:p "Verify Token: " verify-token]
      [:p "Created: " created]
-     [:p "Updated: " update]
+     [:p "Updated: " updated]
      [:p "Lease Seconds: " lease-seconds]
      (actions-section source)]))
 

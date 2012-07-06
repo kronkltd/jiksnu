@@ -2,7 +2,8 @@
   (:use [ciste.core :only [defaction]]
         [ciste.config :only [definitializer]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.actions.feed-source-actions :as actions.feed-source]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]))
 

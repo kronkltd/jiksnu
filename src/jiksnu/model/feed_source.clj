@@ -7,7 +7,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [monger.collection :as mc]
-            [monger.core :as mg])
+            [monger.core :as mg]
+            [monger.query :as mq])
   (:import jiksnu.model.FeedSource))
 
 (def collection-name "feed_sources")
@@ -84,8 +85,13 @@ This will generally not be called"
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (->> (mc/find-maps collection-name params)
-          (map model/map->FeedSource))))
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (:page options 1)
+                                  :per-page (:page-size options 20)))]
+       (map model/map->FeedSource records))))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"
