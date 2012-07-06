@@ -62,10 +62,8 @@
                   (fn [response]
                     (let [body (h/html (:body response))]
                       (fact
-                        ;; TODO: this should be limited to 20
-                        body => #"20")))
-                  ;; TODO: not a very good test
-                  #(string? (h/html (:body %))))))))))))
+                        body => #"20"
+                        body => string?))))))))))))
 
  (fact "apply-view #'user-timeline"
    (let [action #'user-timeline]
