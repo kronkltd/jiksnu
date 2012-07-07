@@ -21,7 +21,6 @@
   [:table.likes.table
    [:thead
     [:tr
-     [:th]
      [:th "User"]
      [:th "Activity"]
      [:th "Updated"]
@@ -35,6 +34,7 @@
   [:tr {:data-id (:_id like) :data-type "like"}
    [:td (link-to (model.user/fetch-by-id (:user like)))]
    [:td (link-to (model.activity/fetch-by-id (:activity like)))]
+   [:td (:updated like)]
    [:td (actions-section like)]])
 
 
@@ -50,6 +50,7 @@
   [:tr {:data-id (:_id like) :data-type "like"}
    [:td (link-to (model.user/fetch-by-id (:user like)))]
    [:td (link-to (model.activity/fetch-by-id (:activity like)))]
+   [:td (:updated like)]
    [:td (actions-section like)]])
 
 
@@ -58,7 +59,6 @@
   [:table.users.table
    [:thead
     [:tr
-     [:th]
      [:th "User"]
      [:th "Activity"]
      [:th "Updated"]

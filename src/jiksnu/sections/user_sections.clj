@@ -6,7 +6,10 @@
                                         update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [jiksnu.model :only [with-subject]]
-         [jiksnu.sections :only [admin-index-block admin-index-line admin-index-section
+         [jiksnu.sections :only [admin-actions-section
+                                 admin-index-block
+                                 admin-index-line
+                                 admin-index-section
                                  admin-show-section control-line]]
          [jiksnu.session :only [current-user is-admin?]])
   (:require [clj-tigase.element :as element]
@@ -248,6 +251,15 @@
       (:first-name user)
       (model.user/get-uri user)))
 
+
+(defsection admin-actions-section [User :html]
+  [user & [page & _]]
+  [:ul.user-actions.buttons
+   [:li (discover-button user)]
+   [:li (update-button user)]
+   [:li (edit-button user)]
+   [:li (delete-button user)]])
+
 (defsection admin-index-block [User :html]
   [items & [page & _]]
   [:table.users.table
@@ -257,10 +269,7 @@
      [:th "Id"]
      [:th "User"]
      [:th "Domain"]
-     [:th "Discover"]
-     [:th "Update"]
-     [:th "Edit"]
-     [:th "Delete"]]]
+     [:th "Actions"]]]
    [:tbody
     (map admin-index-line items)]])
 
@@ -273,10 +282,7 @@
            (:_id user)]]
      [:td (link-to user)]
      [:td (link-to domain)]
-     [:td (discover-button user)]
-     [:td (update-button user)]
-     [:td (edit-button user)]
-     [:td (delete-button user)]]))
+     [:td (admin-actions-section user page)]]))
 
 (defsection admin-index-section [User :html]
   [items & [page & _]]
@@ -285,8 +291,18 @@
 
 (defsection admin-show-section [User :html]
   [item & [response & _]]
-  [:div
-   [:p "Username: " (:username item)]])
+  [:div {:data-type "user" :data-id (:_id item)}
+   [:p (display-avatar item)]
+   [:p "Username: " (:username item)]
+   [:p "Domain: " (:domain item)]
+   [:p "Bio: " (:bio item)]
+   [:p "Location: " (:location item)]
+   [:p "Url: " (:url item)]
+   [:p "Id: " (:id item)]
+   [:p "Discovered: " (:discovered item)]
+   [:p "Created: " (:created item)]
+   [:p "Updated: " (:updated item)]
+   (admin-actions-section item)])
 
 (defsection add-form [User :html]
   [user & _]

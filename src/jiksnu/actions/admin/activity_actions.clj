@@ -3,15 +3,16 @@
   (:use [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.runner :only [require-namespaces]])
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]))
 
 (def index*
   (model/make-indexer 'jiksnu.model.activity))
 
 (defaction index
-  [& options]
-  (apply index* options))
+  [& [params & [options & _]]]
+  (index* params options))
 
 (definitializer
   (require-namespaces

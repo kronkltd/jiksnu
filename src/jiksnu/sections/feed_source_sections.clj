@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line
                                        index-section link-to update-button]]
-        [jiksnu.sections :only [control-line]])
+        [jiksnu.sections :only [actions-section control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSource))
@@ -19,9 +19,9 @@
    [:button.btn.unsubscribe-button {:type "submit"}
     [:i.icon-eye-close] [:span.button-text "Unsubscribe"]]])
 
-(defn actions-section
+(defsection actions-section [FeedSource :html]
   [source]
-  [:ul
+  [:ul.feed-source-actions.buttons
    [:li
     (update-button source)]
    [:li

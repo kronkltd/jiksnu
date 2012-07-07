@@ -37,6 +37,8 @@
         [:li.next
          [:a {:href (str "?page=" (inc page)) :rel "next"} "Next &rarr;"]])]]))
 
+(declare-section actions-section)
+(declare-section admin-actions-section)
 (declare-section admin-index-section :seq)
 (declare-section admin-index-block :seq)
 (declare-section admin-index-line)

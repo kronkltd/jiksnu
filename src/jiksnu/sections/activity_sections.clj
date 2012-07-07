@@ -299,7 +299,7 @@
 
 (defn comments-section
   [activity]
-  (list [:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
+  (list #_[:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
         (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
           [:section.comments
            [:h4 "Comments"]
@@ -414,7 +414,7 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr
+  [:tr {:data-type "activity" :data-id (:_id activity)}
    [:td (-> activity actions.activity/get-author link-to)]
    [:td (-> activity :object :object-type)]
    [:td (if (-> activity :public) "public" "private")]
