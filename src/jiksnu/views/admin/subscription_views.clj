@@ -2,7 +2,7 @@
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.subscription-actions :only [index delete show]]
-        [jiksnu.sections :only [admin-index-section]])
+        [jiksnu.sections :only [admin-index-section admin-show-section]])
   (:require [clojure.tools.logging :as log]))
 
 ;; (defview #'admin-index :html
@@ -18,7 +18,7 @@
 (defview #'show :html
   [request subscription]
   {:title "Subscription"
-   :body (show-section subscription)})
+   :body (admin-show-section subscription)})
 
 (defview #'delete :html
   [request _]

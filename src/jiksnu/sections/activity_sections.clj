@@ -486,6 +486,12 @@
   [items & [response & _]]
   (index-block items response))
 
+(defsection index-section [Activity :html]
+  [items & [response & _]]
+  (list
+   (pagination-links response)
+   (index-block items response)))
+
 (defsection index-section [Activity :rdf]
   [activities & _]
   (index-block activities))

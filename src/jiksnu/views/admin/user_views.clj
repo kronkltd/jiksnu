@@ -2,7 +2,7 @@
   (:use [ciste.sections.default :only [title]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.user-actions :only [index show]]
-        [jiksnu.sections :only [admin-index-block admin-show-section]])
+        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]))
 

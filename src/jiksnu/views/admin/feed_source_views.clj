@@ -2,6 +2,7 @@
   (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.feed-source-actions :only [delete index show]]
+        [jiksnu.sections :only [admin-index-section admin-show-section]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
@@ -13,14 +14,14 @@
   [request {:keys [items] :as request}]
   {:title "Feed Sources"
    :single true
-   :body (list (index-section items request)
+   :body (list (admin-index-section items request)
                (add-form (model/->FeedSource)))})
 
 (defview #'show :html
   [request source]
   {:title (title source)
    :single true
-   :body (list (show-section source)
+   :body (list (admin-show-section source)
                (index-watchers source)
                (add-watcher-form source))})
 
