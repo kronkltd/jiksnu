@@ -222,8 +222,6 @@
     ;; [[:get    "/tags"]                                        #'tag/index]
     [[:get    "/users.:format"]                               #'user/index]
     [[:get    "/users"]                                       #'user/index]
-    [[:get    "/users/local.:format"]                         #'user/local-index]
-    [[:get    "/users/local"]                                 #'user/local-index]
     [[:get    "/users/:id.:format"]                           #'stream/remote-profile]
     [[:delete "/users/:id"]                                   #'user/delete]
     [[:get    "/users/:id"]                                   #'stream/remote-profile]

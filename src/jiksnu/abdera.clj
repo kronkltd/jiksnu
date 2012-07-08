@@ -21,19 +21,18 @@
 (defonce ^:dynamic *abdera-parser* (.getParser *abdera*))
 (defonce ^:dynamic *abdera-client* (AbderaClient.))
 
+(declare make-link)
+
 ;; TODO: Since I am no longer using this style of id, I am not sure if
 ;; this is still needed. Perhaps move to abdera
 (defn new-id
   []
   (UIDGenerator/generateURNString))
 
-(defn get-text
-  [^Element element]
-  (.getText element))
-
 (defn ^Entry new-entry
   []
   (.newEntry *abdera*))
+
 
 (defn fetch-resource
   [uri]
@@ -47,63 +46,105 @@
   [uri]
   (.getRoot (fetch-resource uri)))
 
-(defn get-entries
-  [^Feed feed]
-  (-> feed .getEntries seq))
-
-(defn get-href
-  "get the href from a link as a string"
-  [^Link link]
-  (str (.getHref link)))
-
-(defn parse-irts
-  "Get the in-reply-to uris"
-  [entry]
-  (->> (ThreadHelper/getInReplyTos entry)
-       (map #(str (.getHref %)))
-       (filter identity)))
-
-(defn parse-link
-  "extract the node element from links
-
-this is for OSW
-"
-  [link]
-  (if-let [href (get-href link)]
-    (when (and (re-find #"^.+@.+$" href)
-               (not (re-find #"node=" href)))
-      href)))
-
-
-
-(defn parse-stream
-  [stream]
-  (try
-    (let [parser *abdera-parser*]
-      (.parse parser stream))
-    (catch IllegalStateException e
-      (log/error e))))
-
-(defn parse-xml-string
-  "Converts a string to an Abdera entry"
-  [^String entry-string]
-  (let [stream (ByteArrayInputStream. (.getBytes entry-string "UTF-8"))
-        parsed (parse-stream stream)]
-    (.getRoot parsed)))
-
 (defn not-namespace
   "Filter for map entries that do not represent namespaces"
   [[k v]]
   (not (= k :xmlns)))
 
+
+
+
+
+
+(defn get-text
+  [^Element element]
+  (.getText element))
+
 (defn find-children
-  [element path]
+  [^Element element path]
   (.findChild element path))
 
 (defn get-qname
   "Returns a map representing the QName of the given element"
   [^Element element]
   (element/parse-qname (.getQName element)))
+
+(defn rule-element?
+  [^Element element]
+  (= (.getName element) "acl-rule"))
+
+
+
+(defn get-entries
+  [^Feed feed]
+  (-> feed .getEntries seq))
+
+(defn rel-filter-feed
+  [^Feed feed rel]
+  (if feed
+    (filter
+     (fn [link] (= (.getRel link) rel))
+     (.getLinks feed))))
+
+(defn get-hub-link
+  [^Feed feed]
+  (-?> feed
+       (rel-filter-feed "hub")
+       first
+       .getHref
+       str))
+
+(defn add-link
+  [^Feed feed link]
+  (.addLink feed (make-link link)))
+
+
+
+(defn get-href
+  "get the href from a link as a string"
+  [^Link link]
+  (str (.getHref link)))
+
+(defn parse-link
+  "extract the node element from links
+
+this is for OSW
+"
+  [^Link link]
+  (if-let [href (get-href link)]
+    (when (and (re-find #"^.+@.+$" href)
+               (not (re-find #"node=" href)))
+      href)))
+
+(defn parse-link
+  "Returns a map representing the link element"
+  [^Link link]
+  (let [type (try (str (.getMimeType link)) (catch Exception ex))
+        extensions (map
+                    #(.getAttributeValue link  %)
+                    (.getExtensionAttributes link))
+        title (.getTitle link)
+        href (str (.getHref link))
+        rel (.getRel link)]
+    (merge (when (seq href)       {:href href})
+           (when (seq rel)        {:rel rel})
+           (when (seq title)      {:title title})
+           (when (seq extensions) {:extensions extensions})
+           (when (seq type)       {:type (str type)}))))
+
+
+
+
+
+
+
+
+(defn parse-irts
+  "Get the in-reply-to uris"
+  [^Entry entry]
+  (->> (ThreadHelper/getInReplyTos entry)
+       (map #(str (.getHref %)))
+       (filter identity)))
 
 (defn get-comment-count
   [^Entry entry]
@@ -123,25 +164,9 @@ this is for OSW
      (fn [category] (.getTerm category))
      categories)))
 
-;; (defn get-author-id
-;;   [author]
-;;   (let [uri (.getUri author)
-;;         domain (.getHost uri)
-;;         name (or (.getUserInfo uri)
-;;                  (.getName author))]
-;;     (str name "@" domain)))
-
 (defn has-author?
   [^Entry entry]
   (not (nil? (.getAuthor entry))))
-
-
-(defn rel-filter-feed
-  [^Feed feed rel]
-  (if feed
-    (filter
-     (fn [link] (= (.getRel link) rel))
-     (.getLinks feed))))
 
 (defn ^URI author-uri
   "Returns the uri of the author"
@@ -151,17 +176,9 @@ this is for OSW
     (let [uri (.getUri author)]
       (URI. (.toString uri)))))
 
-(defn rule-element?
-  [^Element element]
-  (= (.getName element) "acl-rule"))
-
-(defn get-hub-link
-  [feed]
-  (-?> feed
-       (rel-filter-feed "hub")
-       first
-       .getHref
-       str))
+(defn parse-links
+  [^Entry entry]
+  (map parse-link (.getLinks entry)))
 
 (defn get-author
   [entry feed]
@@ -172,25 +189,25 @@ this is for OSW
    (if-let [source (.getSource entry)]
      (first (.getAuthors source)))))
 
+
+
+
 (defn ^Link make-link
   "Convert a map to an abdera link"
-  [link]
-  (let [{:keys [href rel type attributes]} link
-        link-element (.newLink *abdera-factory*)]
-    (when href (.setHref link-element href))
-    (when rel (.setRel link-element rel))
-    (when type (.setMimeType link-element type))
+  [link-map]
+  (let [{:keys [href rel type attributes]} link-map
+        link (.newLink *abdera-factory*)]
+    (when href (.setHref link href))
+    (when rel (.setRel link rel))
+    (when type (.setMimeType link type))
     (when attributes
       (doseq [{:keys [name value]} attributes]
-        (.setAttributeValue link-element name value)))
-    link-element))
+        (.setAttributeValue link name value)))
+    link))
 
-(defn add-link
-  [feed link]
-  (.addLink feed (make-link link)))
-
-(defn make-feed*
-  [{:keys [author title subtitle links entries updated id generator]}]
+(defn ^Feed make-feed*
+  "Convert a feed map into a feed"
+  [{:keys [author title subtitle links entries updated id generator] :as feed-map}]
   (let [feed (.newFeed *abdera*)]
     (when title (.setTitle feed title))
     (when subtitle (.setSubtitle feed subtitle))
@@ -203,8 +220,7 @@ this is for OSW
     (doseq [link links]
       (add-link feed link))
     (doseq [entry entries]
-      (.addEntry feed entry)
-      #_(add-entry feed entry))
+      (.addEntry feed entry))
     feed))
 
 ;; TODO: should return the actual map
@@ -213,24 +229,44 @@ this is for OSW
   [m]
   (str (make-feed* m)))
 
-(defn parse-link
-  [^Link link]
-  (let [type (try (str (.getMimeType link)) (catch Exception ex))
-        extensions (map
-                    #(.getAttributeValue link  %)
-                    (.getExtensionAttributes link))
-        title (.getTitle link)
-        href (str (.getHref link))
-        rel (.getRel link)]
-    (merge (when (seq href)       {:href href})
-           (when (seq rel)        {:rel rel})
-           (when (seq title)      {:title title})
-           (when (seq extensions) {:extensions extensions})
-           (when (seq type)       {:type (str type)}))))
 
-(defn parse-links
-  [entry]
-  (map parse-link (.getLinks entry)))
+
+
+
+
+
+
+
+
+(defn parse-stream
+  [stream]
+  (try
+    (let [parser *abdera-parser*]
+      (.parse parser stream))
+    (catch IllegalStateException e
+      (log/error e))))
+
+(defn stream->feed
+  [stream]
+  (.getRoot (parse-stream stream)))
+
+
+
+
+(defn parse-xml-string
+  "Converts a string to an Abdera entry"
+  [^String entry-string]
+  (let [stream (ByteArrayInputStream. (.getBytes entry-string "UTF-8"))
+        parsed (parse-stream stream)]
+    (.getRoot parsed)))
+
+;; (defn get-author-id
+;;   [author]
+;;   (let [uri (.getUri author)
+;;         domain (.getHost uri)
+;;         name (or (.getUserInfo uri)
+;;                  (.getName author))]
+;;     (str name "@" domain)))
 
 ;; (defn parse-object-element
 ;;   [element]
@@ -243,28 +279,25 @@ this is for OSW
 ;;        :content (.getContent object)}))
 
 ;; Deprecated
-(defn parse-json-element
-  "Takes a json object representing an Abdera element and converts it to
-an Element"
-  ([activity]
-     (parse-json-element activity ""))
-  ([{children :children
-     attributes :attributes
-     element-name :name
-     :as activity} bound-ns]
-     (let [xmlns (or (:xmlns attributes) bound-ns)
-           qname (QName. xmlns element-name)
-           element (.newExtensionElement *abdera-factory* qname)
-           filtered (filter not-namespace attributes)]
-       (doseq [[k v] filtered]
-         (.setAttributeValue element (name k) v))
-       (doseq [child children]
-         (if (map? child)
-           (.addExtension element (parse-json-element child xmlns))
-           (when (string? child)
-             (.setText element child))))
-       element)))
+;; (defn parse-json-element
+;;   "Takes a json object representing an Abdera element and converts it to
+;; an Element"
+;;   ([activity]
+;;      (parse-json-element activity ""))
+;;   ([{children :children
+;;      attributes :attributes
+;;      element-name :name
+;;      :as activity} bound-ns]
+;;      (let [xmlns (or (:xmlns attributes) bound-ns)
+;;            qname (QName. xmlns element-name)
+;;            element (.newExtensionElement *abdera-factory* qname)
+;;            filtered (filter not-namespace attributes)]
+;;        (doseq [[k v] filtered]
+;;          (.setAttributeValue element (name k) v))
+;;        (doseq [child children]
+;;          (if (map? child)
+;;            (.addExtension element (parse-json-element child xmlns))
+;;            (when (string? child)
+;;              (.setText element child))))
+;;        element)))
 
-(defn stream->feed
-  [stream]
-  (.getRoot (parse-stream stream)))

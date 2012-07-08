@@ -166,9 +166,9 @@
      :total-records record-count
      :args options}))
 
-(defn local-index
-  []
-  (implement))
+;; (defn local-index
+;;   []
+;;   (implement))
 
 (defaction profile
   [& _]
