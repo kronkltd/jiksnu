@@ -5,7 +5,8 @@
         jiksnu.routes)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
-            [clojure.tools.logging :as log])
+            [clojure.tools.logging :as log]
+            [jiksnu.routes.xmpp-routes :as routes.xmpp])
   (:import java.util.Queue
            tigase.server.Packet
            tigase.xmpp.JID
@@ -44,7 +45,7 @@
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
                                :format :xmpp} request)
-        route-fn (resolve-routes [xmpp-predicates] (lazier xmpp-routes))]
+        route-fn (resolve-routes [xmpp-predicates] (lazier routes.xmpp/xmpp-routes))]
     (route-fn merged-request)))
 
 (defn -process

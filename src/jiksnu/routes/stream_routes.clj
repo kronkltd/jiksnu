@@ -5,6 +5,7 @@
   []
   [
      [[:get    "/"]                                            #'stream/public-timeline]
+     [[:get    "/groups/:name"]                                #'stream/group-timeline]
      [[:get    "/users/:id.:format"]                           #'stream/remote-profile]
      [[:get    "/users/:id"]                                   #'stream/remote-profile]
      [[:get    "/:username.:format"]                           #'stream/user-timeline]

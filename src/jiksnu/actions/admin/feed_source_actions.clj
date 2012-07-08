@@ -18,6 +18,22 @@
   [source]
   (actions.feed-source/delete source))
 
+(defaction remove-subscription
+  [& options]
+  (apply actions.feed-source/remove-subscription options))
+
+(defaction fetch-updates
+  [& options]
+  (apply actions.feed-source/fetch-updates options))
+
+(defaction add-watcher
+  [& options]
+  (apply actions.feed-source/add-watcher options))
+
+(defaction remove-watcher
+  [& options]
+  (apply actions.feed-source/remove-watcher options))
+
 (defaction show
   [source]
   source)

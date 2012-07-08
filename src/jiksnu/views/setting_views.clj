@@ -4,10 +4,6 @@
   (:require [hiccup.form :as f]
             [jiksnu.sections.setting-sections :as sections.setting]))
 
-(defview #'admin-edit-page :html
-  [request _]
-  {:body (sections.setting/edit-form)})
-
 (defview #'avatar-page :html
   [request {:keys [user]}]
   {:title "Avatar"
@@ -26,9 +22,3 @@
   [request data]
   {:body data})
 
-(defview #'update-settings :html
-  [request data]
-  {:flash "Settings updated"
-   :status 303
-   :template false
-   :headers {"Location" "/admin/settings"}})

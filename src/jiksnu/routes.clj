@@ -11,9 +11,7 @@
             [compojure.core :as compojure]
             [compojure.handler :as handler]
             [compojure.route :as route]
-            ;; [jiksnu.actions.domain-actions :as domain]
-            ;; [jiksnu.actions.inbox-actions :as inbox]
-            ;; [jiksnu.actions.tag-actions :as tag]
+            [jiksnu.actions.stream-actions :as stream]
             [jiksnu.middleware :as jm]
             ;; [jiksnu.namespace :as ns]
             [jiksnu.routes.activity-routes :as routes.activity]
@@ -50,10 +48,6 @@
   []
   "Not Found")
 
-(defn escape-route
-  [path]
-  (string/replace path #":" "\\:"))
-
 (def http-routes
   (make-matchers
    (concat
@@ -77,7 +71,8 @@
     (routes.subscription/routes)
     (routes.tag/routes)
     (routes.user/routes)
-    (routes.xmpp/routes))))
+    ;; (routes.xmpp/routes)
+    )))
 
 (def http-predicates
   [#'pred/request-method-matches?
@@ -94,7 +89,7 @@
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
-                    ((resolve-routes [http-predicates] routers.admin/admin-routes) request)
+                    ((resolve-routes [http-predicates] routes.admin/admin-routes) request)
                     ;; TODO: move this somewhere else
                     (throw+ {:type :authentication :message "Must be admin"}))))
   (middleware/wrap-log-request

@@ -1,4 +1,14 @@
-(ns jiksnu.routes.xmpp-routes)
+(ns jiksnu.routes.xmpp-routes
+  (:use [ciste.routes :only [escape-route]])
+  (:require [clojure.string :as string]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.comment-actions :as actions.comment]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.inbox-actions :as actions.inbox]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.actions.subscription-actions :as actions.sub]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.namespace :as ns]))
 
 (def xmpp-routes
   (map
@@ -10,90 +20,90 @@
       :pubsub true
       :name "items"
       :node (escape-route ns/microblog)}
-     #'stream/user-timeline]
+     #'actions.stream/user-timeline]
 
     [{:method :set
       :pubsub true
       :name "publish"
       :node (escape-route ns/microblog)}
-     #'activity/post]
+     #'actions.activity/post]
 
     [{:method :get
       :pubsub true
       :name "items"
       :node (str ns/microblog ":replies:item=:id")}
-     #'comment/fetch-comments]
+     #'actions.comment/fetch-comments]
 
     [{:method :error
       :name "ping"}
-     #'domain/ping-error]
+     #'actions.domain/ping-error]
 
     [{:method :get
       :name "query"
       :ns ns/vcard-query}
-     #'user/show]
+     #'actions.user/show]
 
     [{:method :set
       :name "publish"
       :ns ns/vcard}
-     #'user/create]
+     #'actions.user/create]
 
     ;; [{:method :result
     ;;   :name "query"
     ;;   :ns ns/vcard-query}
-    ;;  #'user/remote-create]
+    ;;  #'actions.user/remote-create]
 
     [{:method :error
       :name "error"}
-     #'user/xmpp-service-unavailable]
+     #'actions.user/xmpp-service-unavailable]
 
     [{:method :result
       :pubsub true
       :node (str ns/microblog ":replies:item=:id")
       :ns ns/pubsub}
-     #'comment/comment-response]
+     #'actions.comment/comment-response]
 
     [{:method :get
       :name "subscriptions"}
-     #'sub/get-subscriptions]
+     #'actions.sub/get-subscriptions]
 
     [{:method :set
       :name "subscribe"
       :ns ns/pubsub}
-     #'sub/subscribed]
+     #'actions.sub/subscribed]
 
     [{:method :set
       :name "unsubscribe"
       :ns ns/pubsub}
-     #'sub/unsubscribe]
+     #'actions.sub/unsubscribe]
 
     [{:method :get
       :name "subscribers"}
-     #'sub/get-subscribers]
+     #'actions.sub/get-subscribers]
 
     [{:method :set
       :name "subscribers"}
-     #'sub/subscribed]
+     #'actions.sub/subscribed]
 
     [{:method :result
       :name "subscription"
       :ns ns/pubsub}
-     #'sub/remote-subscribe-confirm]
+     #'actions.sub/remote-subscribe-confirm]
 
     ;; FIXME: This is way too general
     ;; [{:method :headline}
-    ;;  #'activity/remote-create]
+    ;;  #'actions.activity/remote-create]
 
     ;; [{:method :result
     ;;   :pubsub true
     ;;   :node ns/microblog}
-    ;;  #'activity/remote-create]
+    ;;  #'actions.activity/remote-create]
 
     [{:method :get
       :pubsub true
       :node (escape-route ns/inbox)}
-     #'inbox/index]
+     #'actions.inbox/index]
 
     #_[{:method :result
-        :pubsub false} #'domain/ping-response]]))
+        :pubsub false} #'actions.domain/ping-response]]))
 

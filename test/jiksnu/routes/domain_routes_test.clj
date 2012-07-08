@@ -38,4 +38,5 @@
           (fn [req]
             (let [body (:body req)]
               (fact
-                body => #"<XRD.*")))))))
+                body => #"<XRD.*"))))))
+ )

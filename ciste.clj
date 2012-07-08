@@ -1,4 +1,5 @@
 {:environment :development
- :modules ["jiksnu.factory"
-           "jiksnu.workers"]
- }
+ :modules ["ciste.formats.default"
+           "jiksnu.factory"
+           "jiksnu.workers"
+           "jiksnu.views"]}

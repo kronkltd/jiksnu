@@ -8,7 +8,6 @@
      [[:get    "/groups"]                                      #'group/index]
      [[:post   "/groups"]                                      #'group/create]
      [[:get    "/groups/new"]                                  #'group/new-page]
-     [[:get    "/groups/:name"]                                #'stream/group-timeline]
      [[:get    "/groups/:name/edit"]                           #'group/edit-page]
      ;; [[:get    "/search/group"]                                 #'group/search-page]
      ;; [[:post   "/search/group"]                                 #'group/search]
