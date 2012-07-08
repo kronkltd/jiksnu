@@ -23,3 +23,10 @@
   [action request]
   (if-let [source (-> request :params :id model/make-id model.feed-source/fetch-by-id)]
     (action source)))
+
+;; (deffilter #'add-source :http
+;;   [action request]
+;;   (if-let [source (-?> request :params :id model/make-id model.feed-source/fetch-by-id)]
+;;     (if-let [watcher (-?> request :params :user_id)])
+;;     )
+;;   )

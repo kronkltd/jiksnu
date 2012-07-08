@@ -34,6 +34,7 @@
 (defn add-watcher-form
   [source]
   [:form.well.form-horizontal
+   {:method "post" :action (format "/admin/feed-sources/%s/watchers" (:_id source))}
    [:fieldset
     [:legend "Add Watcher"]
     (control-line "Acct id"
