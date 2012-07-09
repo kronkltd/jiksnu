@@ -23,12 +23,18 @@
   [source]
   [:div.watchers
    [:h3 "Watchers " (count (:watchers source))]
-   [:ul
+   [:table.table
     (map
      (fn [id]
-       [:li
-        (link-to
-         (model.user/fetch-by-id id))])
+       (let [user (model.user/fetch-by-id id)]
+         [:tr
+          [:td (link-to user)]
+          [:td
+           [:form
+            {:method "post" :action (format "/admin/feed-sources/%s/watchers/delete" (:_id source))}
+            [:input {:type "hidden" :name "user_id" :value (:_id user)}]
+            [:button.btn.delete-button {:type "submit"}
+             [:i.icon-trash] [:span.button-text "Delete"]]]]]))
      (:watchers source))]])
 
 (defn add-watcher-form

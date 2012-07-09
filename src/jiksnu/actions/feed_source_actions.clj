@@ -148,17 +148,22 @@
       (when-not (= feed-title (:title source))
         (model.feed-source/set-field! source :title feed-title))
       (mark-updated source)
-      (.getLinks feed "hub")
+      (if-let [hub-link (str (.getHref (.getLink feed "hub")))]
+        (model.feed-source/set-field! source :hub hub-link))
       (process-entries feed)
-      feed)))
+      source)))
 
 (defaction add-watcher
   [source user]
-  (model.feed-source/push-value! source :watchers (:_id user)))
+  (model.feed-source/push-value! source :watchers (:_id user))
+  (model.feed-source/fetch-by-id (:_id source)))
 
 (defaction remove-watcher
   [source user]
-  (implement))
+  (model.feed-source/update
+   (select-keys source [:_id])
+   {:$pull {:watchers (:_id user)}})
+  (model.feed-source/fetch-by-id (:_id source)))
 
 (definitializer
   (require-namespaces

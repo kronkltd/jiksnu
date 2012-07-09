@@ -35,6 +35,13 @@
    (acceptance-of :domain :accept string?)
    (acceptance-of :local :accept (partial instance? Boolean))))
 
+(defn prepare
+  [user]
+  (-> user
+      set-_id
+      set-updated-time
+      set-created-time))
+
 (defn salmon-link
   [user]
   (str "http://" (:domain user) "/main/salmon/user/" (:_id user)))
@@ -96,13 +103,6 @@
   (if-let [user (mc/find-map-by-id collection-name id)]
     (model/map->User user)
     (log/warnf "Could not find user: %s" id)))
-
-(defn prepare
-  [user]
-  (-> user
-      set-_id
-      set-updated-time
-      set-created-time))
 
 (defn create
   [user]

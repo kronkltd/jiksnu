@@ -1,5 +1,6 @@
 (ns jiksnu.model.feed-source
   (:use [jiksnu.model :only [->FeedSource]]
+        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
   (:require [clj-time.core :as time]
@@ -21,36 +22,39 @@
    (presence-of :created)
    (presence-of :updated)))
 
-;; TODO: generalize this and move it to model
-(defn set-field!
-  "atomically set a field"
-  [source key value]
-  (mc/update collection-name
-             {:topic (:topic source)}
-             {:$set {key value}}))
-
-(defn push-value!
-  [source key value]
-  (mc/update
-   collection-name
-   {:_id (:_id source)}
-   {:$addToSet {key value}}))
+(defn prepare
+  [params]
+  (let [now (time/now)]
+    (-> (merge {:status "unknown"
+                :subscription-status "none"}
+               params)
+        set-_id
+        set-updated-time
+        set-created-time)))
 
 (defn fetch-by-id
   [id]
   (when-let [record (mc/find-map-by-id collection-name id)]
     (model/map->FeedSource record)))
 
-(defn prepare
-  [params]
-  (let [now (time/now)]
-    (merge {:created now
-            :updated now
-            :_id (model/make-id)
-            ;; The initial state of a topic is unknown
-            :status "unknown"
-            :subscription-status "none"}
-           params)))
+(defn update
+  [source params]
+  (mc/update collection-name
+             (select-keys source [:_id])
+             params)
+  (fetch-by-id (:_id source)))
+
+;; TODO: generalize this and move it to model
+(defn set-field!
+  "atomically set a field"
+  [source key value]
+  (update source
+    {:$set {key value}}))
+
+(defn push-value!
+  [source key value]
+  (update source
+    {:$addToSet {key value}}))
 
 (defn create
   [params]
