@@ -19,6 +19,30 @@
   [action request]
   (-?> request :params :id model.subscription/fetch-by-id action))
 
+(deffilter #'get-subscribers :http
+  [action request]
+  (let [{{:keys [username id]} :params} request]
+    (if-let [user (or (when username (model.user/get-user username))
+                      (when id (model.user/fetch-by-id (model/make-id id))))]
+      (action user))))
+
+(deffilter #'get-subscribers :xmpp
+  [action request]
+  (if-let [user (actions.user/fetch-by-jid (:to request))]
+    (action user)))
+
+(deffilter #'get-subscriptions :http
+  [action request]
+  (let [{{:keys [username id]} :params} request]
+    (if-let [user (or (when username (model.user/get-user username))
+                      (when id (model.user/fetch-by-id (model/make-id id))))]
+     (action user))))
+
+(deffilter #'get-subscriptions :xmpp
+  [action request]
+  (if-let [user (actions.user/fetch-by-jid (:to request))]
+    (action user)))
+
 (deffilter #'ostatus :http
   [action request]
   (action))
@@ -32,21 +56,14 @@
   [action request]
   (-> request :params :profile action))
 
-(deffilter #'get-subscribers :http
+(deffilter #'remote-subscribe-confirm :xmpp
   [action request]
-  (let [{{username :username
-          id :id} :params} request
-          user (or (when username (model.user/get-user username))
-                   (when id (model.user/fetch-by-id (model/make-id id))))]
-    (action user)))
-
-(deffilter #'get-subscriptions :http
-  [action request]
-  (let [{{username :username
-          id :id} :params} request
-          user (or (when username (model.user/get-user username))
-                   (when id (model.user/fetch-by-id (model/make-id id))))]
-    (action user)))
+  (let [subscriber (actions.user/fetch-by-jid (:to request))
+        subscribee (actions.user/fetch-by-jid (:from request))]
+    (if-let [subscription (model.subscription/fetch-all
+                           {:to (:_id subscribee) :from (:_id subscriber)})]
+      ;; TODO: this should call the action
+      (confirm subscription))))
 
 (deffilter #'subscribe :http
   [action request]
@@ -62,6 +79,17 @@
       (throw+ {:type :validation
                :errors {:subscribeto ["Not provided"]}}))))
 
+(deffilter #'subscribe :xmpp
+  [action request]
+  (if-let [user (actions.user/fetch-by-jid (:to request))]
+    (action user)))
+
+(deffilter #'subscribed :xmpp
+  [action request]
+  (if-let [subscriber (actions.user/fetch-by-jid (:from request))]
+    (if-let [subscribee (actions.user/fetch-by-jid (:to request))]
+      (action subscriber subscribee))))
+
 (deffilter #'unsubscribe :http
   [action request]
   (if-let [actor (current-user)]
@@ -73,38 +101,9 @@
         (throw+ "User not found")))
     (throw+ "Must be logged in")))
 
-(deffilter #'remote-subscribe-confirm :xmpp
-  [action request]
-  (let [subscriber (actions.user/fetch-by-jid (:to request))
-        subscribee (actions.user/fetch-by-jid (:from request))
-        subscription (model.subscription/fetch-all
-                      {:to (:_id subscribee) :from (:_id subscriber)})]
-    (confirm subscription)))
-
-(deffilter #'subscribe :xmpp
-  [action request]
-  (let [user (actions.user/fetch-by-jid (:to request))]
-    (action user)))
-
-(deffilter #'subscribed :xmpp
-  [action request]
-  (let [subscriber (actions.user/fetch-by-jid (:from request))
-        subscribee (actions.user/fetch-by-jid (:to request))]
-    (action subscriber subscribee)))
-
-(deffilter #'get-subscribers :xmpp
-  [action request]
-  (if-let [user (actions.user/fetch-by-jid (:to request))]
-    (action user)))
-
-(deffilter #'get-subscriptions :xmpp
-  [action request]
-  (if-let [user (actions.user/fetch-by-jid (:to request))]
-    (action user)))
-
 (deffilter #'unsubscribe :xmpp
   [action request]
-  (let [{:keys [to from]} request
-        user (actions.user/fetch-by-jid to)
-        subscriber (actions.user/find-or-create-by-jid from)]
-    (action (:_id subscriber) (:_id user))))
+  (let [{:keys [to from]} request]
+    (if-let [user (actions.user/fetch-by-jid to)]
+      (if-let [subscriber (actions.user/find-or-create-by-jid from)]
+        (action (:_id subscriber) (:_id user))))))
