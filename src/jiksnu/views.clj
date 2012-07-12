@@ -19,6 +19,11 @@
   [format request response]
   (format-as :json request response))
 
+(defmethod format-as :html
+  [format request response]
+  (-> response
+      (assoc :body (h/html (:body response)))))
+
 (defmethod format-as :rdf
   [request format response]
   (-> response
@@ -42,11 +47,10 @@
 
 (defmethod serialize-as :http
   [serialization response-map]
-  (assoc-in
-   (merge {:status 200} response-map)
-   [:headers "Content-Type"]
-   (or (-> response-map :headers (get "Content-Type"))
-       "text/html; charset=utf-8")))
+  (let [content-type (or (-> response-map :headers (get "Content-Type"))
+                         "text/html; charset=utf-8")]
+    (-> (merge {:status 200} response-map)
+        (assoc-in  [:headers "Content-Type"] content-type))))
 
 (defmethod serialize-as :xmpp
   [serialization response]
