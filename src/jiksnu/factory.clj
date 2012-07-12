@@ -16,6 +16,13 @@
            jiksnu.model.Subscription
            jiksnu.model.User))
 
+(defn activity-id
+  [] (:_id (model.activity/create (factory :activity))))
+
+(defn user-id
+  []
+  (:_id (model.user/create (factory :local-user))))
+
 (defseq :id [n] n)
 
 (defseq :username
@@ -172,7 +179,7 @@
    ;; :id #'abdera/new-id
    :title (fseq :title)
    :summary (fseq :summary)
-   :author (:_id (model.user/create (factory :local-user)))
+   :author #'user-id
    :local true
    :published #'time/now
    :verb "post"
@@ -184,9 +191,9 @@
   (factory Activity))
 
 (deffactory Subscription
-  {:to (:_id (model.user/create (factory :local-user)))
+  {:to #'user-id
    :local true
-   :from (:_id (model.user/create (factory :local-user)))
+   :from #'user-id
    :created #'time/now})
 
 (deffactory :subscription
@@ -212,7 +219,7 @@
 
 (deffactory Like
   {:user (:_id (model.user/create (factory :user)))
-   :activity (:_id (model.activity/create (factory :activity)))})
+   :activity #'activity-id})
 
 (deffactory :like
   (factory Like))
