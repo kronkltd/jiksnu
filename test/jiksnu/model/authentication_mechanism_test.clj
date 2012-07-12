@@ -15,9 +15,5 @@
    (fact "when passed an empty map"
      (fetch-all {}) =>
      (every-checker
-      seq?
-      )
-     )
-   )
- 
+      seq?)))
  )

@@ -11,8 +11,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.webfinger :as model.webfinger])
-  (:import jiksnu.model.Domain))
+            [jiksnu.model.webfinger :as model.webfinger]))
 
 (test-environment-fixture
 
@@ -30,11 +29,11 @@
  (fact "#'delete"
    (fact "when the domain does not exist"
      (model.domain/drop!)
-     (let [domain (factory Domain {:_id (fseq :domain)})]
+     (let [domain (factory :domain {:_id (fseq :domain)})]
        (delete domain) => nil?))
 
    (fact "when the domain exists"
-     (let [domain (actions.domain/find-or-create (factory Domain))]
+     (let [domain (actions.domain/find-or-create (factory :domain))]
        (delete domain) =>
        (every-checker
         #(= domain %)
@@ -44,7 +43,7 @@
    (fact "when there is no url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
-             domain (model.domain/create (factory Domain))
+             domain (model.domain/create (factory :domain))
              url nil]
          (discover-onesocialweb domain url) => domain)
        (provided
@@ -52,7 +51,7 @@
    (fact "when there is a url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
-             domain (model.domain/create (factory Domain))
+             domain (model.domain/create (factory :domain))
              url (str "http://" (:_id domain) "/status/users/1")]
          (discover-onesocialweb domain url) => domain)
        (provided
@@ -60,14 +59,14 @@
 
  (fact "#'discover-webfinger"
    (fact "when there is no url context"
-     (let [domain (model.domain/create (factory Domain))
+     (let [domain (model.domain/create (factory :domain))
            url nil]
        (discover-webfinger domain url) => (contains {:_id (:_id domain)})
        (provided
          (model.webfinger/fetch-host-meta anything) => (cm/string->document "<XRD/>"))))
    (fact "when there is a url context"
      (fact "and the bare domain has a host-meta"
-       (let [domain (model.domain/create (factory Domain))
+       (let [domain (model.domain/create (factory :domain))
              url (str "http://" (:_id domain) "/status/users/1")]
          (discover-webfinger domain url) => (contains {:_id (:_id domain)})
          (provided
@@ -75,7 +74,7 @@
      (fact "and the bare domain does not have a host meta"
        (fact "and none of the subpaths have host metas"
          (fact "should raise an exception"
-           (let [domain (model.domain/create (factory Domain))
+           (let [domain (model.domain/create (factory :domain))
                  url (str "http://" (:_id domain) "/status/users/1")
                  hm-bare (str "http://" (:_id domain) "/.well-known/host-meta")
                  hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")
@@ -87,7 +86,7 @@
                (model.webfinger/fetch-host-meta hm2) => nil))))
        (fact "and one of the subpaths has a host meta"
          (fact "should update the host meta path"
-           (let [domain (model.domain/create (factory Domain))
+           (let [domain (model.domain/create (factory :domain))
                  url (str "http://" (:_id domain) "/status/users/1")
                  hm-bare (str "http://" (:_id domain) "/.well-known/host-meta")
                  hm1 (str "http://" (:_id domain) "/status/.well-known/host-meta")

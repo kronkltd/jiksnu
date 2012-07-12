@@ -35,7 +35,7 @@
              (with-format :xmpp
                (let [user (model.user/create (factory :local-user))]
                  (with-user user
-                   (let [activity (factory Activity)
+                   (let [activity (factory :activity)
                          element (element/make-element
                                   (index-section [activity]))
                          packet (tigase/make-packet
@@ -49,9 +49,9 @@
  (fact "filter-action #'actions.activity/show :xmpp"
    (let [action #'actions.activity/show ]
      (with-serialization :xmpp
-       (let [author (model.user/create (factory User))]
+       (let [author (model.user/create (factory :user))]
          (with-user author
-           (let [activity (model.activity/create (factory Activity))
+           (let [activity (model.activity/create (factory :activity))
                  packet-map {:from (tigase/make-jid author)
                              :to (tigase/make-jid author)
                              :type :get
@@ -74,10 +74,5 @@
            (filter-action action request) => .oembed-map.
            (provided
              (model.activity/fetch-by-remote-id .url.) => .activity.
-             (actions.activity/oembed .activity.) => .oembed-map.
-             )
-
-          ))))
-   )
+             (actions.activity/oembed .activity.) => .oembed-map.))))))
  )
-

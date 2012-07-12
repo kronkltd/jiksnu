@@ -5,16 +5,7 @@
             [inflections.core :as inf]
             [jiksnu.abdera :as abdera]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation
-           jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.FeedSubscription
-           jiksnu.model.Like
-           jiksnu.model.Group
-           jiksnu.model.Subscription
-           jiksnu.model.User))
+            [jiksnu.model.user :as model.user]))
 
 (defn activity-id
   [] (:_id (model.activity/create (factory :activity))))
@@ -137,14 +128,11 @@
   [n]
   "Anytown, USA")
 
-(deffactory Domain
+(deffactory :domain
   {:_id (fseq :domain)
    :local false})
 
-(deffactory :domain
-  (factory Domain))
-
-(deffactory User
+(deffactory :user
   (let [password (fseq :password)
         first-name (fseq :name)
         last-name (fseq :surname)
@@ -161,20 +149,14 @@
      :last-name last-name}))
 
 (deffactory :local-user
-  (-> (factory User {:domain (config :domain)})
+  (-> (factory :user {:domain (config :domain)})
       (assoc :local true)))
 
-(deffactory :user
-  (factory User))
-
-(deffactory Conversation
+(deffactory :conversation
   {:items nil
    :local true})
 
-(deffactory :conversation
-  (factory Conversation))
-
-(deffactory Activity
+(deffactory :activity
   {
    ;; :id #'abdera/new-id
    :title (fseq :title)
@@ -187,39 +169,21 @@
    :updated #'time/now
    :public true})
 
-(deffactory :activity
-  (factory Activity))
-
-(deffactory Subscription
+(deffactory :subscription
   {:to #'user-id
    :local true
    :from #'user-id
    :created #'time/now})
 
-(deffactory :subscription
-  (factory Subscription))
-
-(deffactory FeedSource
-  {:topic (fseq :uri)})
-
 (deffactory :feed-source
-  (factory FeedSource))
-
-(deffactory FeedSubscription
   {:topic (fseq :uri)})
 
 (deffactory :feed-subscription
-  (factory FeedSubscription))
-
-(deffactory Group
-  {:nickname (fseq :group-name)})
+  {:topic (fseq :uri)})
 
 (deffactory :group
-  (factory Group))
-
-(deffactory Like
-  {:user (:_id (model.user/create (factory :user)))
-   :activity #'activity-id})
+  {:nickname (fseq :group-name)})
 
 (deffactory :like
-  (factory Like))
+  {:user (:_id (model.user/create (factory :user)))
+   :activity #'activity-id})

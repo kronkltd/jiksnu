@@ -6,9 +6,7 @@
         [jiksnu.session :only (with-user)]
         jiksnu.actions.comment-actions)
   (:require [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+            [jiksnu.model.user :as model.user]))
 
 
 (test-environment-fixture
@@ -17,9 +15,9 @@
    (fact "when the activity exists"
      (fact "and there are no comments"
        (fact "should return an empty sequence"
-         (let [actor (model.user/create (factory User))]
+         (let [actor (model.user/create (factory :user))]
            (with-user actor
-             (let [activity (actions.activity/create (factory Activity))
+             (let [activity (actions.activity/create (factory :activity))
                    [_ comments] (fetch-comments activity)]
                comments => empty?)))))))
  )

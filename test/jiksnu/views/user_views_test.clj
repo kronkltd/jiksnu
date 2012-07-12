@@ -51,7 +51,7 @@
          (with-serialization :xmpp
           (fact "when the format is :xmpp"
             (with-format :xmpp
-              (let [user (model.user/create (factory User))
+              (let [user (model.user/create (factory :user))
                     packet (tigase/make-packet
                             {:to (tigase/make-jid user)
                              :from (tigase/make-jid user)
@@ -68,7 +68,7 @@
  (fact "apply-view-test #'fetch-remote :xmpp"
    (fact "should return an iq query packet map"
      (with-context [:xmpp :xmpp]
-       (let [user (model.user/create (factory User))
+       (let [user (model.user/create (factory :user))
              packet (tigase/make-packet
                      {:to (tigase/make-jid user)
                       :from (tigase/make-jid user)
@@ -83,7 +83,7 @@
  (future-fact "apply-view #'remote-create :xmpp"
    (fact "should return a query results packet map"
      (with-context [:xmpp :xmpp]
-       (let [user (model.user/create (factory User))
+       (let [user (model.user/create (factory :user))
              packet (tigase/make-packet
                      {:to (tigase/make-jid user)
                       :from (tigase/make-jid user)

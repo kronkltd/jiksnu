@@ -107,8 +107,8 @@
  (fact "#'show-section Activity :xmpp"
    (fact "should return an element"
      (with-context [:xmpp :xmpp]
-       (let [actor (model.user/create (factory User))]
+       (let [actor (model.user/create (factory :user))]
          (with-user actor
-           (let [entry (model.activity/create (factory Activity))]
+           (let [entry (model.activity/create (factory :activity))]
              (show-section entry)))) => element/element?)))
 )

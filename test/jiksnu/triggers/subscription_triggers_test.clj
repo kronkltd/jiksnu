@@ -14,8 +14,8 @@
 
  (fact "notify-subscribe-xmpp"
    (fact "should return a packet"
-     (let [user (model.user/create (factory User))
-           subscribee (model.user/create (factory User))
+     (let [user (model.user/create (factory :user))
+           subscribee (model.user/create (factory :user))
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (notify-subscribe-xmpp {:id "JIKSNU1"} subscription) => packet/packet?))))

@@ -150,7 +150,7 @@
 
 (defn a-domain-exists
   []
-  (let [domain (model.domain/create (factory Domain))]
+  (let [domain (model.domain/create (factory :domain))]
     (set-this :domain domain)))
 
 (defn a-feed-source-exists
@@ -601,7 +601,7 @@
   [modifier & {:as options}]
   (let [user (or (:user options) (get-this :user) (a-user-exists))]
     (let [activity (actions.activity/create
-                    (factory Activity
+                    (factory :activity
                              {:author (:_id user)
                               :local true
                               :public (= modifier "public")}))]

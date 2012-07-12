@@ -23,8 +23,8 @@
  (fact "#'drop!"
    (fact "when there are subscriptions"
      (fact "should delete them all"
-       (let [actor (model.user/create (factory User))
-             user (model.user/create (factory User))]
+       (let [actor (model.user/create (factory :user))
+             user (model.user/create (factory :user))]
          (subscribe (:_id actor) (:_id user))
          (drop!)
          (fetch-all) => empty?))))
@@ -51,8 +51,8 @@
      (fact "and the subscription doesn't exist"
        (fact "should return a Subscription"
          (drop!)
-         (let [actor (model.user/create (factory User))
-               user (model.user/create (factory User))]
+         (let [actor (model.user/create (factory :user))
+               user (model.user/create (factory :user))]
            (subscribe (:_id actor) (:_id user)) =>
            (every-checker
             truthy
@@ -62,16 +62,16 @@
 
    (fact "when the user is subscribing"
      (fact "should return true"
-       (let [actor (model.user/create (factory User))
-             user (model.user/create (factory User))]
+       (let [actor (model.user/create (factory :user))
+             user (model.user/create (factory :user))]
          (subscribe actor user)
          (let [response (subscribing? actor user)]
            response => truthy))))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
-       (let [actor (model.user/create (factory User))
-             user (model.user/create (factory User))]
+       (let [actor (model.user/create (factory :user))
+             user (model.user/create (factory :user))]
          (let [response (subscribing? actor user)]
            response =not=> truthy)))))
 
@@ -79,16 +79,16 @@
 
    (fact "when the user is subscribed"
      (fact "should return true"
-       (let [actor (model.user/create (factory User))
-             user (model.user/create (factory User))]
+       (let [actor (model.user/create (factory :user))
+             user (model.user/create (factory :user))]
          (subscribe user actor)
          (let [response (subscribed? actor user)]
            response => truthy))))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
-       (let [actor (model.user/create (factory User))
-             user (model.user/create (factory User))]
+       (let [actor (model.user/create (factory :user))
+             user (model.user/create (factory :user))]
          (let [response (subscribed? actor user)]
            response =not=> truthy)))))
 )

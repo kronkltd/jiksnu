@@ -12,10 +12,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Domain
-           jiksnu.model.User))
+            [jiksnu.model.user :as model.user]))
 
 
 (test-environment-fixture
@@ -82,12 +79,12 @@
        (fact "should return that activity"
          (let [user (model.user/create (factory :local-user))]
            (with-user user
-             (let [activity (factory Activity)]
+             (let [activity (factory :activity)]
                (create activity) => model/activity?)))))))
 
  (fact "#'post"
    (fact "when the user is not logged in"
-     (let [activity (dissoc (factory Activity) :author)]
+     (let [activity (dissoc (factory :activity) :author)]
        (post activity) => (throws RuntimeException))))
 
  (fact "#'delete"
@@ -102,7 +99,7 @@
      (fact "and the user does not own the activity"
        (fact "should not delete that activity"
          (let [user (model.user/create (factory :local-user))
-               activity (model.activity/create (factory Activity))]
+               activity (model.activity/create (factory :activity))]
            (with-user user
              (delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity))))))
@@ -136,7 +133,7 @@
          (provided
            (viewable? activity) => true)))
      (fact "and the record is not viewable"
-       (let [activity (create (factory Activity))]
+       (let [activity (create (factory :activity))]
          (show activity) => (throws RuntimeException)
          (provided
            (viewable? activity) => false)))))

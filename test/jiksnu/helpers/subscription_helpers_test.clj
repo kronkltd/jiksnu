@@ -13,8 +13,8 @@
 
  (fact "subscriber-response-element"
    (fact "should"
-     (let [user (model.user/create (factory User))
-           subscribee (model.user/create (factory User))
+     (let [user (model.user/create (factory :user))
+           subscribee (model.user/create (factory :user))
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (let [response (subscriber-response-element subscription)]
@@ -22,8 +22,8 @@
 
  (fact "subscribe-request"
    (fact "should"
-     (let [user (model.user/create (factory User))
-           subscribee (model.user/create (factory User))
+     (let [user (model.user/create (factory :user))
+           subscribee (model.user/create (factory :user))
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (let [response (subscribe-request subscription)]

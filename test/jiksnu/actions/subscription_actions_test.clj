@@ -34,7 +34,7 @@
        (let [user (model.user/create (factory :local-user))
              subscriber (model.user/create (factory :local-user))
              subscription (model.subscription/create
-                           (factory Subscription
+                           (factory :subscription
                                     {:from (:_id subscriber)
                                      :to (:_id user)}))
              [_ subscriptions] (get-subscribers user)]
@@ -47,7 +47,7 @@
        (let [user (model.user/create (factory :local-user))
              subscribee (model.user/create (factory :local-user))
              subscription (model.subscription/create
-                           (factory Subscription
+                           (factory :subscription
                                     {:from (:_id user)
                                      :to (:_id subscribee)}))]
          (get-subscriptions user) =>

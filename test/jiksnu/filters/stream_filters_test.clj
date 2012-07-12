@@ -27,7 +27,7 @@
    (with-serialization :xmpp
      (fact "when there are no activities"
       (model/drop-all!)
-      (let [user (model.user/create (factory User))
+      (let [user (model.user/create (factory :user))
             element nil
             packet (tigase/make-packet
                     {:from (tigase/make-jid user)
@@ -44,7 +44,7 @@
          )))
      
      (fact "when there are activities"
-       (let [author (model.user/create (factory User))]
+       (let [author (model.user/create (factory :user))]
          (with-user author
            (let [element nil
                  packet (tigase/make-packet
@@ -55,7 +55,7 @@
                           :body element})
                  request (assoc (packet/make-request packet)
                            :serialization :xmpp)
-                 activity (model.activity/create (factory Activity))]
+                 activity (model.activity/create (factory :activity))]
              (filter-action #'actions.stream/public-timeline request) =>
              (every-checker
               map?

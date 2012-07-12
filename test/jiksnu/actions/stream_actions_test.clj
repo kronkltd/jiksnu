@@ -12,9 +12,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 

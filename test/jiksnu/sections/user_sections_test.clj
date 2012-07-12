@@ -32,20 +32,20 @@
  (fact "uri User :html :http"
    (fact "should return a link to that user"
      (with-context [:http :html]       
-       (let [user (model.user/create (factory User))]
+       (let [user (model.user/create (factory :user))]
          (uri user) => string?))))
 
  (fact "title User"
    (fact "should return the title of that user"
      (with-context [:http :html]
-       (let [user (model.user/create (factory User))
+       (let [user (model.user/create (factory :user))
              response (title user)]
          response => string?))))
 
  (fact "show-section User :xmpp :xmpp"
    (fact "should return a vcard string"
      (with-context [:xmpp :xmpp]
-       (let [user (model.user/create (factory User))]
+       (let [user (model.user/create (factory :user))]
          (show-section user) => string?))))
 
 
