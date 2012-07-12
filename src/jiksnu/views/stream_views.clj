@@ -119,7 +119,7 @@
 (defview #'public-timeline :n3
   [request {:keys [items] :as response}]
   {:body
-   (with-format :rdf (index-section items response))
+   (with-format :rdf (doall (index-section items response)))
    :template :false})
 
 (defview #'public-timeline :rdf
@@ -143,7 +143,7 @@
 
 (defview #'remote-profile :n3
   [request [user activities]]
-  {:body (with-format :rdf (show-section user))
+  {:body (with-format :rdf (doall (show-section user)))
    :template false})
 
 (defview #'remote-profile :rdf

@@ -41,6 +41,16 @@
               map?
               (comp status/success? :status)))
 
+       (fact "when the the request is for n3"
+         (-> (mock/request :get "/api/statuses/public_timeline.n3")
+             response-for) =>
+             (every-checker
+              map?
+              (comp status/success? :status)
+              (comp string? :body)
+              ;; TODO: parse and check model
+              ))
+
        (fact "when the user is authenticated"
          (-> (mock/request :get "/")
              as-user
@@ -74,5 +84,6 @@
            as-user response-for)) =>
            (every-checker
             map?
-            (comp status/success? :status))))
+            (comp status/success? :status)
+            (comp string? :body))))
  )
