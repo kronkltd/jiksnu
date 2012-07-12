@@ -69,55 +69,57 @@
                               :attributes [{:name "count"
                                             :value (str comment-count)}]}))))
 
+(defn atom-link
+  [href]
+  {:label "Atom"
+   :href href
+   :icon "feed-icon-14x14.png"
+   :type "application/atom+xml"})
+
+(defn activitystream-link
+  [href]
+   {:label "Activity Streams"
+    :href href
+    :icon "as-bw-14x14.png"
+    :type "application/json"})
+
 (defn index-formats
   [activities]
-  [{:label "Atom"
-    :href "/api/statuses/public_timeline.atom"
-    :icon "feed-icon-14x14.png"
-    :type "application/atom+xml"}
-   {:label "Activity Streams"
-    :href "/api/statuses/public_timeline.as"
-    :icon "as-bw-14x14.png"
-    :type "application/json"}
+  [(atom-link "/api/statuses/public_timeline.atom")
+   (activitystream-link "/api/statuses/public_timeline.as")
    {:label "JSON"
     :href "/api/statuses/public_timeline.json"
     :icon "json.png"
     :type "application/json"}
-   {:label "XML"
-    :icon "file_xml.png"
-    :href "/api/statuses/public_timeline.xml"
-    :type "application/xml"}
+   {:label "N3"
+    :icon "chart_organisation.png"
+    :href "/api/statuses/public_timeline.n3"
+    :type "text/n3"}
    {:label "RDF/XML"
     :href "/api/statuses/public_timeline.rdf"
     :icon "foafTiny.gif"
     :type "application/rdf+xml"}
-   {:label "N3"
-    :icon "chart_organisation.png"
-    :href "/api/statuses/public_timeline.n3"
-    :type "text/n3"}])
+   {:label "XML"
+    :icon "file_xml.png"
+    :href "/api/statuses/public_timeline.xml"
+    :type "application/xml"}])
 
 (defn timeline-formats
   [user]
-  [{:label "Atom"
-    :icon "feed-icon-14x14.png"
-    :href (sections.user/user-timeline-link user "atom")
-    :type "application/atom+xml"}
-   {:label "Activity Streams"
-    :href (sections.user/user-timeline-link user "as")
-    :icon "as-bw-14x14.png"
-    :type "application/json"}
+  [(atom-link (sections.user/user-timeline-link user "atom"))
+   (activitystream-link (sections.user/user-timeline-link user "as"))
    {:label "JSON"
     :icon "json.png"
     :href (sections.user/user-timeline-link user "json")
     :type "application/json"}
-   {:label "RDF/XML"
-    :href (sections.user/user-timeline-link user "rdf")
-    :icon "foafTiny.gif"
-    :type "application/rdf+xml"}
    {:label "N3"
     :icon "chart_organisation.png"
     :href (sections.user/user-timeline-link user "n3")
     :type "text/n3"}
+   {:label "RDF/XML"
+    :href (sections.user/user-timeline-link user "rdf")
+    :icon "foafTiny.gif"
+    :type "application/rdf+xml"}
    {:label "XML"
     :icon "file_xml.png"
     :href (sections.user/user-timeline-link user "xml")
@@ -579,7 +581,7 @@
   (merge
    {:text (:title activity)
     :truncated false
-    :created_at (model/date->twitter (:created activity))
+    :created_at (model/date->twitter (.toDate (:created activity)))
     :source (:source activity)
     :id (:_id activity)
     :in_reply_to_user_id nil
@@ -674,7 +676,7 @@
    [:text (h/h (or (:title activity)
                              (:content activity)))]
    [:truncated "false"]
-   [:created_at (-?> activity :published model/date->twitter)]
+   [:created_at (-?> activity :published .toDate model/date->twitter)]
    [:source (:source activity)]
    [:id (:_id activity)]
    [:in_reply_to_status_id]

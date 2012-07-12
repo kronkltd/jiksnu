@@ -88,18 +88,17 @@
   (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
-     :body (abdera/make-feed
-            {:title "Public Activities"
-             :subtitle "All activities posted"
-             :id self
-             :links [{:href (str "http://" (config :domain) "/")
-                      :rel "alternate"
-                      :type "text/html"}
-                     {:href self
-                      :rel "self"
-                      :type "application/atom+xml"}]
-             :updated (:updated (first items))
-             :entries (index-section items response)})}))
+     :title "Public Activities"
+     :body {:subtitle "All activities posted"
+            :id self
+            :links [{:href (str "http://" (config :domain) "/")
+                     :rel "alternate"
+                     :type "text/html"}
+                    {:href self
+                     :rel "self"
+                     :type "application/atom+xml"}]
+            :updated (:updated (first items))
+            :entries (index-section items response)}}))
 
 (defview #'public-timeline :json
   [request {:keys [items] :as response}]
@@ -168,31 +167,31 @@
   [request [user {activities :items :as response}]]
   {:headers {"Content-Type" "application/xml"}
    :template false
-   :body (abdera/make-feed
-          {:title (str (:username user) " timeline")
-           ;; TODO: pick these up from maven
-           :generator {:uri "http://jiksnu.com/"
-                       :name "Jiksnu"
-                       :version "0.1.0-SNAPSHOT"}
-           :subtitle (str "Updates from " (:username user) " on " (:domain user))
-           :id (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
-           :links [{:href (full-uri user)
-                    :rel "alternate"
-                    :type "text/html"}
-                   {:href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
-                    :rel "self"
-                    :type "application/atom+xml"}
-                   {:href (str "http://" (config :domain) "/main/push/hub")
-                    :rel "hub"}
-                   {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
-                    :rel "salmon"}
-                   {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
-                    :rel "http://salmon-protocol.org/ns/salmon-replies"}
-                   {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
-                    :rel "http://salmon-protocol.org/ns/salmon-mention"}]
-           :author (show-section user)
-           :updated (:updated (first activities))
-           :entries (map show-section activities)})})
+   :title (str (:username user) " timeline")
+   :body {
+          ;; TODO: pick these up from maven
+          :generator {:uri "http://jiksnu.com/"
+                      :name "Jiksnu"
+                      :version "0.1.0-SNAPSHOT"}
+          :subtitle (str "Updates from " (:username user) " on " (:domain user))
+          :id (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
+          :links [{:href (full-uri user)
+                   :rel "alternate"
+                   :type "text/html"}
+                  {:href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
+                   :rel "self"
+                   :type "application/atom+xml"}
+                  {:href (str "http://" (config :domain) "/main/push/hub")
+                   :rel "hub"}
+                  {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
+                   :rel "salmon"}
+                  {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
+                   :rel "http://salmon-protocol.org/ns/salmon-replies"}
+                  {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
+                   :rel "http://salmon-protocol.org/ns/salmon-mention"}]
+          :author (show-section user)
+          :updated (:updated (first activities))
+          :entries (map show-section activities)}})
 
 (defview #'user-timeline :as
   [request [user {:keys [items] :as response}]]

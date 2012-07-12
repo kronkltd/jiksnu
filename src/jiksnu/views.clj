@@ -1,5 +1,5 @@
 (ns jiksnu.views
-  (:use [ciste.core :only [serialize-as]]
+  (:use [ciste.core :only [serialize-as with-format]]
         [ciste.config :only [config]]
         [ciste.formats :only [format-as]]
         [ciste.sections :only [defsection]]
@@ -9,6 +9,7 @@
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             jiksnu.sections
@@ -17,7 +18,14 @@
 
 (defmethod format-as :as
   [format request response]
-  (format-as :json request response))
+  (with-format :json (format-as :json request response)))
+
+(defmethod format-as :atom
+  [format request response]
+  (let [atom-map (-> (:body response)
+                     (assoc :title (:title response)))]
+    (-> response
+        (assoc :body (abdera/make-feed atom-map)))))
 
 (defmethod format-as :html
   [format request response]

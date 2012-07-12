@@ -1,6 +1,7 @@
 (ns jiksnu.views.stream-views-test
   (:use [ciste.core :only [with-context with-serialization with-format
                            *serialization* *format*]]
+        [ciste.formats :only [format-as]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
@@ -41,7 +42,7 @@
                   map?
                   #(not (:template %))
                   (fn [response]
-                    (let [feed (abdera/parse-xml-string (:body response))]
+                    (let [feed (abdera/parse-xml-string (:body (format-as :atom request response)))]
                       (fact
                         (count (.getEntries feed)) => 20))))))))
          
