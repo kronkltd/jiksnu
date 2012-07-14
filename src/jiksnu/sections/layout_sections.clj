@@ -173,8 +173,9 @@
         (when (:title response)
           (str (:title response) " - "))
         (config :site :name)]
-       (p/include-css "/bootstrap/css/bootstrap.css"
-                      "/themes/classic/standard.css")
+       (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
+                      "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
+                      "/assets/themes/classic/standard.css")
        [:link {:href (str "http://" (config :domain) "/favicon.ico")
                :rel "shortcut icon"}]
        #_[:link {:href "/opensearch/people"
@@ -235,12 +236,21 @@
              ";"
              "var CLOSURE_NO_DEPS = true;")]
        (p/include-js
-        "/web-socket-js/swfobject.js"
-        "/web-socket-js/web_socket.js"
+        "/assets/web-socket-js/swfobject.js"
+        "/assets/web-socket-js/web_socket.js"
         "http://code.jquery.com/jquery-1.7.1.js"
-        ;; "/js/main.js"
         "/cljs/bootstrap.js"
-        "/bootstrap/js/bootstrap.js")
+        "/assets/bootstrap-2.4.0/js/bootstrap-alert.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-button.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-carousel.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-collapse.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-dropdown.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-modal.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-popover.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-scrollspy.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-tab.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-transition.js"
+        "/assets/bootstrap-2.4.0/js/bootstrap-typeahead.js")
        [:script {:type "text/javascript"}
         "goog.require('jiksnu.core');"]]]))})
 
