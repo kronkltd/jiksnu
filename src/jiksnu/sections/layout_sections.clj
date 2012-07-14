@@ -206,7 +206,7 @@
           ;;  {:action "/main/search" :method "post"}
           ;;  [:input.search-query.span3
           ;;   {:type "text" :placeholder "Search" :name "q"}]]
-          [:div.navbar-text.connection-info ]
+          [:div.navbar-text.connection-info.pull-right ]
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
        [:div.container-fluid
         #_[:a {:href "http://github.com/duck1123/jiksnu"}
@@ -240,17 +240,8 @@
         "/assets/web-socket-js/web_socket.js"
         "http://code.jquery.com/jquery-1.7.1.js"
         "/cljs/bootstrap.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-alert.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-button.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-carousel.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-collapse.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-dropdown.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-modal.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-popover.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-scrollspy.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-tab.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-transition.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap-typeahead.js")
+        "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
+)
        [:script {:type "text/javascript"}
         "goog.require('jiksnu.core');"]]]))})
 
