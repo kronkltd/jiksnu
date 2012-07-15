@@ -22,6 +22,7 @@
             [jiksnu.actions.admin.key-actions :as admin.key]
             [jiksnu.actions.admin.subscription-actions :as admin.sub]
             [jiksnu.actions.admin.user-actions :as admin.user]
+            [jiksnu.actions.admin.worker-actions :as admin.worker]
             [jiksnu.actions.admin-actions :as admin]
             [jiksnu.actions.auth-actions :as auth]
             [jiksnu.actions.comment-actions :as comment]
@@ -114,10 +115,19 @@
     [[:get    "/admin/subscriptions/:id"]                 #'admin.sub/show]
     [[:post   "/admin/subscriptions/:id/delete"]          #'admin.sub/delete]
     [[:post   "/admin/subscriptions/:id/update"]          #'admin.sub/update]
+
     [[:post   "/admin/users"]                             #'admin.user/create]
     [[:get    "/admin/users"]                             #'admin.user/index]
+    [[:get    "/admin/users/:id"]                         #'admin.user/show]
+
     [[:get    "/admin/settings"]                          #'setting/admin-edit-page]
-    [[:post   "/admin/settings"]                          #'setting/update-settings]]))
+    [[:post   "/admin/settings"]                          #'setting/update-settings]
+
+
+    [[:get    "/admin/workers"]                          #'admin.worker/index]
+    [[:post   "/admin/workers/start"]                    #'admin.worker/start-worker]
+    [[:post   "/admin/workers/stop"]                     #'admin.worker/stop-worker]
+    [[:post   "/admin/workers/stop/all"]                 #'admin.worker/stop-all-workers]]))
 
 (def http-routes
   (make-matchers

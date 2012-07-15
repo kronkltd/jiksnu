@@ -40,6 +40,7 @@
 (declare-section admin-index-section :seq)
 (declare-section admin-index-block :seq)
 (declare-section admin-index-line)
+(declare-section admin-show-section)
 
 (defsection admin-index-block :default
   [records & [options & _]]
