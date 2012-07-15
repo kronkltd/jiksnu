@@ -27,7 +27,7 @@
     [:div.paginations
      [:p "Page: " page]
      [:p "Page Size: " page-size]
-     [:p "Records returned" (count (:items options))]
+     [:p "Records returned: " (count (:items options))]
      [:p "Total Records: " total-records]
      [:ul.pager
       (when (> page 1)

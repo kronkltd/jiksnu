@@ -294,8 +294,7 @@
 (defn get-name
   "Returns the name of the Atom person"
   [^Person person]
-  (or (.getSimpleExtension person ns/poco
-                           "displayName" "poco" )
+  (or (.getSimpleExtension person ns/poco "displayName" "poco" )
       (.getName person)))
 
 
@@ -412,13 +411,11 @@
               ;; TODO: there sould be a different discovered flag for
               ;; each aspect of a domain, and this flag shouldn't be set
               ;; till they've all responded
-              (model.user/set-field! user :discovered true))
+              (model.user/set-field! user :discovered true)
+              (model.user/fetch-by-id (:_id user)))
             (do
               ;; Domain not yet discovered
               (actions.domain/discover domain)
-              ;; TODO: need to recurse here, but not forever unless the
-              ;; domain is bogus. Perhaps a try counter.
-              #_(enqueue-discover user)
               (recur (inc try-count)))))))))
 
 (defaction fetch-remote
@@ -426,12 +423,6 @@
   (let [domain (get-domain user)]
     (if (:xmpp domain)
       (request-vcard! user))))
-
-;; TODO: hub functionality is moving to sources
-(defaction find-hub
-  [user]
-  (implement
-      (get-domain user)))
 
 (defaction register
   "Register a new user"

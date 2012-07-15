@@ -42,7 +42,7 @@
 
 (defview #'group-timeline :html
   [request [group {:keys [items] :as response}]]
-  {:title (str group " group")
+  {:title (str (:nickname group) " group")
    :post-form true
    :body (list
           (show-section group)

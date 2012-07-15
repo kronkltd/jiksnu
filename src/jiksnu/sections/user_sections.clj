@@ -301,7 +301,8 @@
   [:div {:data-type "user" :data-id (:_id item)}
    [:p (display-avatar item)]
    [:p "Username: " (:username item)]
-   [:p "Domain: " (:domain item)]
+   (let [domain (actions.user/get-domain item)]
+     [:p "Domain: " (link-to domain)])
    [:p "Bio: " (:bio item)]
    [:p "Location: " (:location item)]
    [:p "Url: " (:url item)]

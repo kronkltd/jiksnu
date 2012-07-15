@@ -148,6 +148,7 @@
       (when-not (= feed-title (:title source))
         (model.feed-source/set-field! source :title feed-title))
       (mark-updated source)
+      (.getLinks feed "hub")
       (process-entries feed)
       feed)))
 
