@@ -59,9 +59,9 @@
 (defn fetch-all
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
-  ([params opts]
-     (->> (mc/find-maps collection-name params)
-          (map model/map->Domain))))
+  ([params options]
+     ((model/make-fetch-fn model/map->Domain collection-name)
+      params options)))
 
 ;; TODO: don't use
 (defn update

@@ -13,6 +13,7 @@
             [lamina.core :as l]
             [monger.collection :as mc]
             [monger.core :as mg]
+            [monger.query :as mq]
             monger.joda-time
             monger.json
             [plaza.rdf.core :as rdf]
@@ -150,6 +151,16 @@
   [klass]
   (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
 
+(defn make-fetch-fn
+  [make-fn collection-name]
+  (fn [params options]
+    (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+          records (mq/with-collection collection-name
+                    (mq/find params)
+                    (merge sort-clause)
+                    (mq/paginate :page (:page options 1)
+                                 :per-page (:page-size options 20)))]
+      (map make-fn records))))
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]

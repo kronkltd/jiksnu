@@ -19,8 +19,7 @@
    (presence-of :topic)
    (presence-of :subscription-status)
    (presence-of :created)
-   (presence-of :updated)
-   ))
+   (presence-of :updated)))
 
 ;; TODO: generalize this and move it to model
 (defn set-field!
@@ -39,9 +38,8 @@
 
 (defn fetch-by-id
   [id]
-  (if-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSource record)
-    (log/warnf "Could not find source with id = %s" id)))
+  (when-let [record (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSource record)))
 
 (defn prepare
   [params]
@@ -85,13 +83,8 @@ This will generally not be called"
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map model/map->FeedSource records))))
+     ((model/make-fetch-fn model/map->FeedSource collection-name)
+      params options)))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"
