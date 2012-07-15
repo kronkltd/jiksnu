@@ -91,7 +91,7 @@
   [id]
   (if-let [user (mc/find-map-by-id collection-name id)]
     (model/map->User user)
-    (throw+ "Could not find user")))
+    (log/warnf "Could not find user: %s" id)))
 
 (defn create
   [user]

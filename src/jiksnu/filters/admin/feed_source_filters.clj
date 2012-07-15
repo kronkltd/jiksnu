@@ -1,7 +1,8 @@
 (ns jiksnu.filters.admin.feed-source-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.admin.feed-source-actions)
-  (:require [jiksnu.model.feed-source :as model.feed-source]))
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.feed-source :as model.feed-source]))
 
 (deffilter #'index :http
   [action request]
@@ -9,8 +10,10 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id model.feed-source/fetch-by-id action))
+  (if-let [source (-> request :params :id model/make-id model.feed-source/fetch-by-id)]
+    (action source)))
 
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id model.feed-source/fetch-by-id action))
+  (if-let [source (-> request :params :id model/make-id model.feed-source/fetch-by-id)]
+    (action source)))

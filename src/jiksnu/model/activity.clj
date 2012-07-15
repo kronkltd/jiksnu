@@ -13,7 +13,8 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [monger.collection :as mc])
+            [monger.collection :as mc]
+            [monger.query :as mq])
   (:import com.ocpsoft.pretty.time.PrettyTime
            java.util.Date
            jiksnu.model.Activity))
@@ -119,8 +120,13 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (map map->Activity
-          (mc/find-maps collection-name params))))
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (:page options 1)
+                                  :per-page (:page-size options 20)))]
+       (map map->Activity records))))
 
 (defn fetch-by-id
   [id]

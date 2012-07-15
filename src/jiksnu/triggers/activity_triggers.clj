@@ -56,7 +56,7 @@
   (let [author (actions.activity/get-author activity)
         mentioned-users (map #(actions.user/find-or-create-by-remote-id {:id %})
                              (:mentioned-uris activity))
-        parent-activities (map #(actions.activity/find-or-create-by-remote-id {:id %})
+        parent-activities (map #(actions.activity/find-or-create {:id %})
                                (:irts activity))
         subscribers (map model.subscription/get-actor
                          (model.subscription/subscribers author))
@@ -70,7 +70,7 @@
     (doseq [conversation-uri (:conversations activity)]
       (let [atom-link (model/extract-atom-link conversation-uri)
             source (actions.feed-source/find-or-create {:topic atom-link} {})]
-        (fetch-remote-feed source)))
+        #_(fetch-remote-feed source)))
     
     ;; Add as a comment to parent posts
     ;; TODO: deprecated

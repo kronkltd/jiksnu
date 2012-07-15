@@ -151,28 +151,35 @@
   (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
 
 
+(defn make-indexer*
+  [{:keys [page-size sort-clause count-fn fetch-fn]}]
+  (fn [& [{:as params} & [{:as options} & _]]]
+    (let [options (or options {})
+          page (get options :page 1)
+          criteria {:sort-clause sort-clause
+                    :page page
+                    :page-size page-size
+                    :skip (* (dec page) page-size)
+                    :limit page-size}
+          record-count (count-fn params)
+          records (fetch-fn params criteria)]
+      {:items records
+       :page page
+       :page-size page-size
+       :total-records record-count
+       :args options})))
+
 (defmacro make-indexer
   [namespace-sym & options]
   `(do (require ~namespace-sym)
-       (let [ns-ns# (the-ns ~namespace-sym)
-             sort-clause# (get ~options :sort-clause [{:updated -1}])
-             page-size# (get ~options :page-size 20)
-             ]
+       (let [ns-ns# (the-ns ~namespace-sym)]
          (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
            (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
-             (fn [& [{:as params#} & [{:as options#} & _#]]]
-               (let [options# (or options# {})
-                     page# (get options# :page 1)
-                     criteria# {:sort sort-clause#
-                                :skip (* (dec page#) page-size#)
-                                :limit page-size#}
-                     record-count# (count-fn# params#)
-                     records# (fetch-fn# params# criteria#)]
-                 {:items records#
-                  :page page#
-                  :page-size page-size#
-                 :total-records record-count#
-                  :args options#}))
+             (make-indexer*
+              {:sort-clause (get ~options :sort-clause {:updated -1})
+               :page-size (get ~options :page-size 20)
+               :fetch-fn fetch-fn#
+               :count-fn count-fn#})
              (throw+ "Could not find fetch function"))
           (throw+ "Could not find count function")))))
 

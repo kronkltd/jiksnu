@@ -14,7 +14,6 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as hiccup]
             [jiksnu.abdera :as abdera]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
@@ -226,12 +225,6 @@ serialization"
                        extension-maps)]
        (model/map->Activity opts))))
 
-(defn get-activities
-  "extract the activities from a feed"
-  [feed]
-  (map #(entry->activity % feed)
-       (.getEntries feed)))
-
 ;; TODO: rename to publish
 (defaction post
   "Post a new activity"
@@ -283,17 +276,6 @@ serialization"
                   {:public true})))]
     (model.activity/update (dissoc opts :picture))))
 
-(declare fetch-remote-feed)
-
-(defaction find-or-create-by-remote-id
-  [activity]
-  (if-let [activity (model.activity/fetch-by-remote-id (:id activity))]
-    activity
-    (if-let [atom-link (model/extract-atom-link (:id activity))]
-      (let [source (actions.feed-source/find-or-create {:topic atom-link} {})]
-        (fetch-remote-feed source))
-      (throw+ {:msg "could not discover atom link"}))))
-
 (defn find-or-create
   [params]
   (if-let [activity (or (model.activity/fetch-by-remote-id (:id params))
@@ -301,15 +283,6 @@ serialization"
                              (model.activity/fetch-by-id (:_id params))))]
     activity
     (create params)))
-
-(defaction fetch-remote-feed
-  "fetch a feed and create it's activities"
-  [source]
-  (let [feed (actions.feed-source/fetch-updates source)]
-    (doseq [activity (get-activities feed)]
-      (try (find-or-create activity)
-           (catch Exception ex
-             (log/error ex))))))
 
 (defaction oembed
   [activity & [options & _]]

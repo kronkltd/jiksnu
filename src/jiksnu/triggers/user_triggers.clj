@@ -18,11 +18,6 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]))
 
-(defn fetch-updates-http
-  [user]
-  (let [uri (helpers.user/feed-link-uri user)]
-      (actions.activity/fetch-remote-feed uri)))
-
 (defn fetch-updates-xmpp
   [user]
   ;; TODO: send user timeline request
@@ -39,7 +34,7 @@
   [action _ user]
   (let [domain (model.user/get-domain user)]
     (when (:xmpp domain) (fetch-updates-xmpp user))
-    (fetch-updates-http user)))
+    #_(fetch-updates-http user)))
 
 (defn create-trigger
   [action params user]
@@ -79,7 +74,12 @@
   (actions.auth/add-password user (-> params first :password))
   (actions.key/generate-key-for-user user))
 
+(defn discover-trigger
+  [action params user]
+  (log/info "discover-trigger"))
+
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
 (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
 (add-trigger! #'actions.user/register      #'register-trigger)
+(add-trigger! #'actions.user/discover      #'discover-trigger)

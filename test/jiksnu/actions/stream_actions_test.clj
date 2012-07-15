@@ -1,7 +1,7 @@
 (ns jiksnu.actions.stream-actions-test
   (:use [ciste.core :only [with-context]]
         [ciste.sections.default :only [index-section]]
-        [clj-factory.core :only [factory]]
+        [clj-factory.core :only [factory fseq]]
         jiksnu.actions.stream-actions
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.session
@@ -54,7 +54,7 @@
      (with-context [:http :atom]
        (let [user (model.user/create (factory :local-user))
              source (model.feed-source/create (factory :feed-source))
-             activity (model/map->Activity (factory :activity))
+             activity (model/map->Activity (factory :activity {:id (fseq :uri)}))
              feed (abdera/make-feed* {:links
                                       [{:rel "self"
                                         :href (:topic source)}]

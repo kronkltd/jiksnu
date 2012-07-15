@@ -11,6 +11,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
@@ -124,6 +125,19 @@
    (:topic source))
   true)
 
+(defn get-activities
+  "extract the activities from a feed"
+  [feed]
+  (map #(actions.activity/entry->activity % feed)
+       (.getEntries feed)))
+
+(defn process-entries
+  [feed]
+  (doseq [activity (get-activities feed)]
+    (try (actions.activity/find-or-create activity)
+         (catch Exception ex
+           (log/error ex)))))
+
 (defaction fetch-updates
   "Fetch updates for the source"
   [source]
@@ -134,6 +148,7 @@
       (when-not (= feed-title (:title source))
         (model.feed-source/set-field! source :title feed-title))
       (mark-updated source)
+      (process-entries feed)
       feed)))
 
 (defaction add-watcher

@@ -132,7 +132,7 @@
   [^User user]
   (when user
     (if-let [feed (helpers.user/fetch-user-feed user)]
-      (doseq [activity (actions.activity/get-activities feed)]
+      (doseq [activity (actions.feed-source/get-activities feed)]
         (actions.activity/create activity)))))
 
 (defn stream-handler
