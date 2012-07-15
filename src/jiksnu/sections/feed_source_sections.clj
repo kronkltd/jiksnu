@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line
                                        index-section link-to update-button]]
-        [jiksnu.sections :only [actions-section control-line]])
+        [jiksnu.sections :only [actions-section admin-show-section control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSource))
@@ -51,6 +51,10 @@
     [:div.form-actions
      [:button.btn.btn-primary
       {:type "submit"} "Add"]]]])
+
+(defsection admin-show-section [FeedSource :html]
+  [source & [options & _]]
+  (show-section source options))
 
 (defsection show-section [FeedSource :html]
   [source & options]

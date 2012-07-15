@@ -5,6 +5,7 @@
                                         edit-button delete-button link-to index-line
                                         update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
+         [clojure.core.incubator :only [-?>]]
          [jiksnu.model :only [with-subject]]
          [jiksnu.sections :only [admin-actions-section
                                  admin-index-block
@@ -23,6 +24,7 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -289,6 +291,11 @@
   (list (pagination-links page)
         (admin-index-block items page)))
 
+(defn link-actions-section
+  [link]
+  [:ul.buttons
+   [:li "delete"]])
+
 (defsection admin-show-section [User :html]
   [item & [response & _]]
   [:div {:data-type "user" :data-id (:_id item)}
@@ -302,6 +309,24 @@
    [:p "Discovered: " (:discovered item)]
    [:p "Created: " (:created item)]
    [:p "Updated: " (:updated item)]
+   (when-let [source (-?> item :update-source model.feed-source/fetch-by-id)]
+     (link-to source))
+   [:table.table
+    [:thead
+     [:tr
+      [:th "title"]
+      [:th "rel"]
+      [:th "href"]
+      [:th "Actions"]]]
+    [:tbody
+     (map
+      (fn [link]
+        [:tr
+         [:td (:title link)]
+         [:td (:rel link)]
+         [:td (:href link)]
+         [:td (link-actions-section link)]])
+      (:links item))]]
    (admin-actions-section item)])
 
 (defsection add-form [User :html]

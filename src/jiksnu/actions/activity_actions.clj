@@ -72,21 +72,21 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
         qname (element/parse-qname qname)]
     (condp = (:namespace qname)
       ns/as (condp = (:name qname)
-                     "actor" nil
-                     ;; "object" (abdera/parse-object-element element)
-                     nil)
+              "actor" nil
+              ;; "object" (abdera/parse-object-element element)
+              nil)
 
       ns/statusnet (condp = (:name qname)
-                            "notice_info" (parse-notice-info element)  
-                            nil)
+                     "notice_info" (parse-notice-info element)
+                     nil)
 
       ns/thr (condp = (:name qname)
-                      "in-reply-to" (parse-reply-to element)
-                      nil)
+               "in-reply-to" (parse-reply-to element)
+               nil)
 
       ns/geo (condp = (:name qname)
-                      "point" (parse-geo element)
-                      nil)
+               "point" (parse-geo element)
+               nil)
 
       nil)))
 
@@ -178,7 +178,7 @@ serialization"
 
            ;; TODO: Extract this pattern
            mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
-                                       (.getLinks entry "ostatus:attention"))
+                                        (.getLinks entry "ostatus:attention"))
                                 (map abdera/get-href)
                                 (into #{}))
 
@@ -195,35 +195,34 @@ serialization"
            object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
                                 (-?> entry (.getExtension activity-object-type)))
                             .getText model/strip-namespaces)
-           object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
-           opts (apply merge
-                       (when published         {:published published})
-                       (when content           {:content content})
-                       (when updated           {:updated updated})
-                       ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
-                       (when title             {:title title})
-                       (when irts        {:irts irts})
-
-                       (when (seq links)
-                         {:links links})
-                       (when (seq conversation-uris)
-                         {:conversations conversation-uris})
-                       (when (seq mentioned-uris)
-                         {:mentioned-uris mentioned-uris})
-                       (when (seq enclosures)
-                         {:enclosures enclosures})
-                       (when (seq tags)
-                         {:tags tags})
-                       (when verb              {:verb verb})
-                       {:id id
-                        :author (:_id user)
-                        ;; TODO: try to read
-                        :public true
-                        :object (merge (when object-type {:object-type object-type})
-                                       (when object-id {:id object-id}))
-                        :comment-count (abdera/get-comment-count entry)}
-                       extension-maps)]
-       (model/map->Activity opts))))
+           object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))]
+       (let [opts (apply merge
+                         (when published         {:published published})
+                         (when content           {:content content})
+                         (when updated           {:updated updated})
+                         ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
+                         (when title             {:title title})
+                         (when irts        {:irts irts})
+                         (when (seq links)
+                           {:links links})
+                         (when (seq conversation-uris)
+                           {:conversations conversation-uris})
+                         (when (seq mentioned-uris)
+                           {:mentioned-uris mentioned-uris})
+                         (when (seq enclosures)
+                           {:enclosures enclosures})
+                         (when (seq tags)
+                           {:tags tags})
+                         (when verb              {:verb verb})
+                         {:id id
+                          :author (:_id user)
+                          ;; TODO: try to read
+                          :public true
+                          :object (merge (when object-type {:object-type object-type})
+                                         (when object-id {:id object-id}))
+                          :comment-count (abdera/get-comment-count entry)}
+                         extension-maps)]
+         (model/map->Activity opts)))))
 
 ;; TODO: rename to publish
 (defaction post

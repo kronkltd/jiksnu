@@ -2,6 +2,7 @@
   (:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
         [jiksnu.model :only [make-id rel-filter map->User]]
+        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of validation-set presence-of]])
   (:require [clojure.string :as string]
@@ -27,9 +28,12 @@
    (presence-of :domain)
    (presence-of :id)
    #_(presence-of :local)
+   (presence-of :created)
+   (presence-of :updated)
+   (presence-of :_id)
    (acceptance-of :username :accept string?)
    (acceptance-of :domain :accept string?)
-   ))
+   (acceptance-of :local :accept (partial instance? Boolean))))
 
 (defn salmon-link
   [user]
@@ -93,10 +97,18 @@
     (model/map->User user)
     (log/warnf "Could not find user: %s" id)))
 
+(defn prepare
+  [user]
+  (-> user
+      set-_id
+      set-updated-time
+      set-created-time))
+
 (defn create
   [user]
   (if user
-    (let [id (make-id)
+    (let [user (prepare user)
+          id (make-id)
           {:keys [username domain]} user]
       (let [errors (create-validators user)]
         (if (empty? errors)
