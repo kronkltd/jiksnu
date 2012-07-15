@@ -5,7 +5,8 @@
         [jiksnu.routes-helper :only [as-user response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [contains every-checker fact future-fact =>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -19,6 +20,14 @@
 
 (test-environment-fixture
 
+ (fact "update"
+   (fact "when the user is authenticated"
+     (let [author (model.user/create (factory :local-user))
+           content (fseq :summary)
+           data (json/json-str                  
+                 {:content content})]
+       (log/spy data) => string?)))
+ 
  (fact "show-http-route"
    (future-fact "when the user is not authenticated"
      (fact "and the activity does not exist"
