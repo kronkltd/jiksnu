@@ -6,7 +6,9 @@
   :dependencies [
                  ;; [aleph "0.3.0-alpha2"]
                  [cheshire "4.0.0"]
-                 [ciste "0.3.0-SNAPSHOT"]
+                 [ciste/ciste-core "0.4.0-SNAPSHOT"]
+                 [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"]
+                 [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
                  [clj-factory "0.2.0"]
                  [clj-http "0.4.2"]
                  [clojurewerkz/route-one "1.0.0-beta1"]
