@@ -14,6 +14,10 @@
   [options]
   (actions.user/index options))
 
+(defaction show
+  [user]
+  (actions.user/show user))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.admin.user-filters"

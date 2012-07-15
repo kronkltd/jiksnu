@@ -49,4 +49,30 @@
               map?
               (comp status/success? :status))))))
 
+
+ (fact "user timeline"
+
+   (fact "html"
+
+     (let [user (model.user/create (factory :local-user))]
+       (dotimes [n 10]
+         (model.activity/create (factory :activity {:author (:_id user)})))
+       
+       (-> (mock/request :get (format "/%s" (:username user)))
+           as-user response-for)) =>
+           (every-checker
+            map?
+            (comp status/success? :status)))
+
+   (fact "n3"
+
+     (let [user (model.user/create (factory :local-user))]
+       (dotimes [n 10]
+         (model.activity/create (factory :activity {:author (:_id user)})))
+       
+       (-> (mock/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
+           as-user response-for)) =>
+           (every-checker
+            map?
+            (comp status/success? :status))))
  )

@@ -227,7 +227,8 @@
       (.setNsPrefix "cert" ns/cert)
       (.setNsPrefix "foaf" ns/foaf))
     (rdf/with-model model
-      (rdf/model-add-triples triples))))
+      (rdf/model-add-triples triples))
+    model))
 
 (defn drop-all!
   "Drop all collections"

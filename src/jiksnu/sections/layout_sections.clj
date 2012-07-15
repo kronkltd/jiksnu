@@ -53,7 +53,8 @@
              ["/admin/keys"               "Keys"]
              ["/admin/likes"              "Likes"]
              ["/admin/users"              "Users"]
-             ["/admin/subscriptions"      "Subscriptions"]]])]]
+             ["/admin/subscriptions"      "Subscriptions"]
+             ["/admin/workers"            "Workers"]]])]]
     [:ul.nav.nav-list.well
      (reduce concat
              (map

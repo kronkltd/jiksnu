@@ -1,7 +1,7 @@
 (ns jiksnu.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context]]
-        [ciste.sections.default :only [uri show-section]]
+        [ciste.sections.default :only [index-block index-section show-section uri]]
         [clj-factory.core :only [factory]]
         jiksnu.test-helper jiksnu.session
         jiksnu.sections.activity-sections
@@ -64,13 +64,38 @@
        (every-checker
         string?)))
 
+ (fact "index-block"
+   (fact "when the context is [:http :rdf]"
+     (with-context [:http :rdf]
+       (let [user (model.user/create (factory :local-user))
+             author-map {:author (:_id user)}
+             activity (model.activity/create (factory :activity author-map))]
+         (index-block [activity]) =>
+         (every-checker
+          (partial every? (fn [t]
+                            (and (vector? t)
+                                 (= 3 (count t))))))))))
+ 
+ (fact "index-section"
+   (fact "when the context is [:http :rdf]"
+     (with-context [:http :rdf]
+       (let [user (model.user/create (factory :local-user))
+             author-map {:author (:_id user)}
+             activity (model.activity/create (factory :activity author-map))]
+         (index-section [activity]) =>
+         (every-checker
+          (fn [r]
+            (for [t r]
+              (fact
+                t => vector?
+                (count t) => 3))))))))
+ 
  (fact "#'show-section Activity :atom"
    (fact "should return an abdera entry"
      (with-context [:http :atom]
-       (let [domain (actions.domain/find-or-create (factory Domain))
-             user (model.user/create (factory User {:domain (:_id domain)}))
+       (let [user (model.user/create (factory :local-user))
              author-map {:author (:_id user)}
-             activity (model.activity/create (factory Activity author-map))]
+             activity (model.activity/create (factory :activity author-map))]
          (show-section activity) =>
          (every-checker
           (partial instance? Entry)

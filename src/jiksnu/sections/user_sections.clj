@@ -6,8 +6,8 @@
                                         update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [jiksnu.model :only [with-subject]]
-         [jiksnu.sections :only [admin-index-block admin-index-line
-                                 admin-index-section control-line]]
+         [jiksnu.sections :only [admin-index-block admin-index-line admin-index-section
+                                 admin-show-section control-line]]
          [jiksnu.session :only [current-user is-admin?]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -254,6 +254,7 @@
    [:thead
     [:tr
      [:th]
+     [:th "Id"]
      [:th "User"]
      [:th "Domain"]
      [:th "Discover"]
@@ -268,6 +269,8 @@
   (let [domain (actions.user/get-domain user)]
     [:tr {:data-id (:_id user) :data-type "user"}
      [:td (display-avatar user)]
+     [:td [:a {:href (format "/admin/users/%s" (:_id user))}
+           (:_id user)]]
      [:td (link-to user)]
      [:td (link-to domain)]
      [:td (discover-button user)]
@@ -279,6 +282,11 @@
   [items & [page & _]]
   (list (pagination-links page)
         (admin-index-block items page)))
+
+(defsection admin-show-section [User :html]
+  [item & [response & _]]
+  [:div
+   [:p "Username: " (:username item)]])
 
 (defsection add-form [User :html]
   [user & _]

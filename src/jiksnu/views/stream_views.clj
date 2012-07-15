@@ -220,10 +220,13 @@
    :template :false})
 
 (defview #'user-timeline :n3
-  [request [user activities]]
-  {:body (with-format :rdf
-           (concat (show-section user)
-                   (index-section activities)))
+  [request [user activities-map]]
+  {:body
+   (->> (when-let [activities (:items activities-map)]
+          (index-section activities))
+        (concat (show-section user))
+        doall
+        (with-format :rdf))
    :template false})
 
 (defview #'user-timeline :xml

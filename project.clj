@@ -73,7 +73,7 @@
                [clj-webdriver "0.6.0-SNAPSHOT"]]}}
 
   :plugins [
-               [lein-cljsbuild "0.2.2"]
+               [lein-cljsbuild "0.2.4"]
                [lein-cucumber "1.0.0"]  
                [lein-midje "2.0.0-SNAPSHOT"]
 

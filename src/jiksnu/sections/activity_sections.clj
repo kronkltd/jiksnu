@@ -447,6 +447,10 @@
   [:div.activities
    (map #(index-line % options) records)])
 
+(defsection index-block [Activity :rdf]
+  [items & [response & _]]
+  (apply concat (map #(index-line % response) items)))
+
 (defsection index-block [Activity :xml]
   [activities & _]
   [:statuses {:type "array"}
@@ -484,7 +488,7 @@
 
 (defsection index-section [Activity :rdf]
   [activities & _]
-  (vector (reduce concat (index-block activities))))
+  (index-block activities))
 
 (defsection index-section [Activity :xmpp]
   [activities & options]
@@ -514,11 +518,11 @@
                      ;; "updated" (:updated object)
                      })
           
-          "published" (:published activity)
+          :published (:published activity)
           
-          "updated" (:updated activity)
+          :updated (:updated activity)
           :verb (:verb activity)
-          "title" (:title activity)
+          :title (:title activity)
           :url (full-uri activity)}
          (when (:links activity)
            ;; TODO: Some of these links don't make sense in the
@@ -636,20 +640,21 @@
 (defsection show-section [Activity :rdf]
   [activity & _]
   (rdf/with-rdf-ns ""
-    (let [{:keys [content id created]} activity
+    (let [{:keys [summary id created content]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
-          user-res (rdf/rdf-resource (or (:id user) (model.user/get-uri user)))]
+          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
+          summary (or content summary)]
       (concat [
                [uri [:rdf :type]         [:sioc :Post]]
                [uri [:as  :verb]         (rdf/l "post")]
-               [uri [:sioc  :content]    (rdf/l content)]
+               
                [uri [:sioc :has_creator] user-res]
                [uri [:sioc :has_owner]   user-res]
                [uri [:as  :author]       user-res]
                [uri [:dc  :published]    (rdf/date (.toDate created))]
                ]
-              #_(show-section user)))))
+              (when summary [[uri [:sioc  :content]    (rdf/l summary)]])))))
 
 (defsection show-section [Activity :xmpp]
   [^Activity activity & options]

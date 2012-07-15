@@ -16,9 +16,7 @@
            jiksnu.model.Subscription
            jiksnu.model.User))
 
-(defseq :id
-  [n]
-  n)
+(defseq :id [n] n)
 
 (defseq :username
   [n]
