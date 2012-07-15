@@ -3,9 +3,9 @@
         [ciste.core :only [defaction with-context]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
-        ciste.sections.default
+        [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
-        jiksnu.actions.stream-actions)
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -106,22 +106,20 @@
   (implement))
 
 (defaction callback-publish
-  [params]
-  (let [document (abdera/parse-stream (:body params))
-        feed (.getRoot document)]
-    ;; (log/debug (.toString feed))
-    (let [topic (-?> feed
-                     (abdera/rel-filter-feed "self")
-                     first .getHref str)]
-      (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-        (if (seq (:watchers source))
-          (do (actions.feed-source/mark-updated source)
-              (doseq [entry (.getEntries feed)]
-                (let [activity (actions.activity/entry->activity entry feed)]
-                  (actions.activity/create activity))))
-          (do (log/warnf "no watchers for %s" topic)
-              (actions.feed-source/remove-subscription source)))
-        (log/warn "unknown source"))))
+  [feed]
+  (if-let [topic (-?> feed
+                      (abdera/rel-filter-feed "self")
+                      first abdera/get-href)]
+    (if-let [source (actions.feed-source/find-or-create {:topic topic})]
+      (if (seq (:watchers source))
+        (do (actions.feed-source/mark-updated source)
+            (doseq [entry (.getEntries feed)]
+              (let [activity (actions.activity/entry->activity entry feed)]
+                (actions.activity/create activity))))
+        (do (log/warnf "no watchers for %s" topic)
+            (actions.feed-source/remove-subscription source)))
+      (throw+ "could not create source"))
+    (throw+ "Could not determine topic"))
   true)
 
 (defaction user-microsummary

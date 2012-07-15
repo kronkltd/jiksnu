@@ -54,7 +54,7 @@
 (defn get-href
   "get the href from a link as a string"
   [^Link link]
-  (->> link .getHref str))
+  (str (.getHref link)))
 
 (defn parse-irts
   "Get the in-reply-to uris"
@@ -140,8 +140,7 @@ this is for OSW
   [^Feed feed rel]
   (if feed
     (filter
-     (fn [link]
-       (= (.getRel link) rel))
+     (fn [link] (= (.getRel link) rel))
      (.getLinks feed))))
 
 (defn ^URI author-uri
@@ -190,9 +189,7 @@ this is for OSW
   [feed link]
   (.addLink feed (make-link link)))
 
-;; TODO: should return the actual map
-(defn make-feed
-  "Returns the string representation of a feed from a feed map"
+(defn make-feed*
   [{:keys [author title subtitle links entries updated id generator]}]
   (let [feed (.newFeed *abdera*)]
     (when title (.setTitle feed title))
@@ -208,7 +205,13 @@ this is for OSW
     (doseq [entry entries]
       (.addEntry feed entry)
       #_(add-entry feed entry))
-    (str feed)))
+    feed))
+
+;; TODO: should return the actual map
+(defn make-feed
+  "Returns the string representation of a feed from a feed map"
+  [m]
+  (str (make-feed* m)))
 
 (defn parse-link
   [^Link link]
@@ -261,3 +264,7 @@ an Element"
            (when (string? child)
              (.setText element child))))
        element)))
+
+(defn stream->feed
+  [stream]
+  (.getRoot (parse-stream stream)))

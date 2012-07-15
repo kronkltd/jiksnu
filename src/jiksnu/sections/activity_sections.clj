@@ -437,24 +437,15 @@
     [:i.icon-edit] [:span.button-text "edit"]]])
 
 
-(defsection index-block [Activity :atom]
-  [items & response]
-  (map (fn [item] (index-line item response))
-       items))
 
-(defsection index-block [Activity :as]
-  [items & response]
-  (map (fn [item] (index-line item response))
-       items))
+(defsection index-block [Activity]
+  [items & [response & _]]
+  (map #(index-line % response) items))
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
    (map #(index-line % options) records)])
-
-(defsection index-block [Activity :rdf]
-  [records & [options & _]]
-  (map index-line records))
 
 (defsection index-block [Activity :xml]
   [activities & _]
@@ -485,14 +476,11 @@
    (show-section activity)])
 
 
-(defsection index-section [Activity :atom]
-  [items & response]
-  (index-block items response))
 
-(defsection index-section [Activity :as]
-  [items & response]
-  (index-block items response))
 
+(defsection index-section [Activity]
+  [items & [response & _]]
+  (index-block items response))
 
 (defsection index-section [Activity :rdf]
   [activities & _]
@@ -501,6 +489,8 @@
 (defsection index-section [Activity :xmpp]
   [activities & options]
   ["pubsub" {} (index-block activities)])
+
+
 
 
 (defsection show-section [Activity :as]

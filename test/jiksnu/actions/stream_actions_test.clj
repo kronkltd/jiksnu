@@ -1,13 +1,17 @@
 (ns jiksnu.actions.stream-actions-test
-  (:use midje.sweet
+  (:use [ciste.core :only [with-context]]
+        [ciste.sections.default :only [index-section]]
+        [clj-factory.core :only [factory]]
         jiksnu.actions.stream-actions
-        jiksnu.test-helper
-        jiksnu.model
+        [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.session
-        jiksnu.actions.stream-actions
-        [clj-factory.core :only [factory]])
-  (:require [jiksnu.model :as model]
+        midje.sweet)
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.abdera :as abdera]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -21,15 +25,14 @@
        (public-timeline) => (comp empty? :items)))
    (fact "when there are activities"
      (fact "should return a seq of activities"
-       (let [author (model.user/create (factory User))]
-         (with-user author
-           (model.activity/create (factory Activity))))
-       (public-timeline) => (every-checker
-                             coll?
-                             #(seq? (:items %))
-                             #(= 1 (:total-records %))
-                             ;; #(every? activity? (first %))
-                             ))))
+       (let [activity (model.activity/create (factory :activity))]
+         (public-timeline) =>
+         (every-checker
+          map?
+          #(seq? (:items %))
+          #(= 1 (:total-records %))
+          ;; #(every? activity? (first %))
+          )))))
 
  (fact "#'user-timeline"
    (fact "when the user has activities"
@@ -46,19 +49,20 @@
             (second response) => map?
             (:total-records (second response)) => 1))))))
  
- ;; (fact "#'remote-profile"
- ;;   (remote-profile) => nil)
-
- ;; (fact "#'show"
- ;;   (fact "when the user exists"
- ;;     (facts "should return that user"
- ;;       (let [user (model.user/create (factory User))
- ;;             response (show user)]
- ;;         response => (partial instance? User)
- ;;         response => user))))
-
- ;; (fact "#'remote-user"
- ;;   (remote-user user) => user?)
+ (fact "#'callback-publish"
+   (fact "when there is a watched source"
+     (with-context [:http :atom]
+       (let [user (model.user/create (factory :local-user))
+             source (model.feed-source/create (factory :feed-source))
+             activity (model/map->Activity (factory :activity))
+             feed (abdera/make-feed* {:links
+                                      [{:rel "self"
+                                        :href (:topic source)}]
+                                      :entries (index-section [activity])})]
+         (actions.feed-source/add-watcher source user)
+         activity => model/activity?
+         (callback-publish feed)
+         (model.activity/fetch-by-remote-id (:id activity)) => truthy))))
 
  )
 

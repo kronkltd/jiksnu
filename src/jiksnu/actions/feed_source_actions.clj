@@ -59,7 +59,7 @@
   [params options]
   (if-let [topic (:topic params)]
     (let [uri (URI. topic)
-          domain (actions.domain/find-or-create (.getHost uri))]
+          domain (actions.domain/find-or-create {:_id (.getHost uri)})]
       (model.feed-source/create (assoc params
                                   :domain (:_id domain))))
     (throw+ "Must contain a topic")))
@@ -76,7 +76,7 @@
 (defn find-or-create
   [params & [options & _]]
   (if-let [source (or (and (:_id params) (model.feed-source/fetch-by-id (:_id params)))
-                      (model.feed-source/fetch-by-topic {:topic params}))]
+                      (model.feed-source/fetch-by-topic (:topic params)))]
     source
     (create params options)))
 
@@ -138,10 +138,7 @@
 
 (defaction add-watcher
   [source user]
-  #_(mc/update
-   "feed_sources"
-   {:_id (:_id source)}
-   {:$addToSet {:watchers (:_id user)}}))
+  (model.feed-source/push-value! source :watchers (:_id user)))
 
 (defaction remove-watcher
   [source user]

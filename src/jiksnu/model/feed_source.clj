@@ -29,6 +29,13 @@
              {:topic (:topic source)}
              {:$set {key value}}))
 
+(defn push-value!
+  [source key value]
+  (mc/update
+   collection-name
+   {:_id (:_id source)}
+   {:$addToSet {key value}}))
+
 (defn fetch-by-id
   [id]
   (if-let [record (mc/find-map-by-id collection-name id)]
@@ -52,7 +59,7 @@
         errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "Creating feed source for %s" (:topic params))
+        (log/debugf "Creating feed source: %s" params)
         (mc/insert collection-name params)
         ;; TODO: check no errors
         (fetch-by-id (:_id params)))
