@@ -161,7 +161,7 @@
   (factory User))
 
 (deffactory Conversation
-  {:items []
+  {:items nil
    :local true})
 
 (deffactory :conversation

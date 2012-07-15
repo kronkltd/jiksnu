@@ -14,7 +14,7 @@
 
 (test-environment-fixture
 
- (fact "abdera-to-tigase-element"
+ #_(fact "abdera-to-tigase-element"
    (fact "should return a tigase element"
      (with-context [:xmpp :atom]
        (let [element (show-section (model/map->Activity (factory Activity)))]
