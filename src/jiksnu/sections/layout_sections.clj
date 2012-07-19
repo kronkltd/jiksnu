@@ -7,6 +7,7 @@
             [hiccup.core :as h]
             [hiccup.page :as p]
             [jiksnu.namespace :as ns]
+            [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
@@ -94,37 +95,38 @@
 
 (defn statistics-section
   [response]
-  [:div.well.statistics-section
-   [:table.table.table-compact
-    [:thead
-     [:tr
-      [:th "Collection"]
-      [:th "Count"]]]
-    [:tbody
-     [:tr {:data-model "activities"}
-      [:td.stat-label "Activities: "]
-      [:td.stat-value ]]
-     [:tr {:data-model "conversations"}
-      [:td.stat-label "Conversations: "]
-      [:td.stat-value (model.conversation/count-records)]]
-     [:tr {:data-model "domains"}
-      [:td.stat-label "Domains: "]
-      [:td.stat-value (model.domain/count-records)]]
-     [:tr {:data-model "groups"}
-      [:td.stat-label "Groups: "]
-      [:td.stat-value (model.group/count-records)]]
-     [:tr {:data-model "feed-sourcces"}
-      [:td.stat-label "Feed Sources: "]
-      [:td.stat-value (model.feed-source/count-records)]]
-     [:tr {:data-model "feed-subscriptions"}
-      [:td.stat-label "Feed Subscriptions: "]
-      [:td.stat-value (model.feed-subscription/count-records)]]
-     [:tr {:data-model "subscriptions"}
-      [:td.stat-label "Subscriptions: "]
-      [:td.stat-value (model.subscription/count-records)]]
-     [:tr {:data-model "users"}
-      [:td.stat-label "Users: "]
-      [:td.stat-value (model.user/count-records)]]]]])
+  (let [stats (actions.site/get-stats)]
+    [:div.well.statistics-section
+     [:table.table.table-compact
+      [:thead
+       [:tr
+        [:th "Collection"]
+        [:th "Count"]]]
+      [:tbody
+       [:tr {:data-model "activities"}
+       [:td.stat-label "Activities: "]
+        [:td.stat-value (:activities stats)]]
+       [:tr {:data-model "conversations"}
+        [:td.stat-label "Conversations: "]
+        [:td.stat-value (:conversations stats)]]
+       [:tr {:data-model "domains"}
+        [:td.stat-label "Domains: "]
+        [:td.stat-value (:domains stats)]]
+       [:tr {:data-model "groups"}
+        [:td.stat-label "Groups: "]
+        [:td.stat-value (:groups stats)]]
+       [:tr {:data-model "feed-sourcces"}
+        [:td.stat-label "Feed Sources: "]
+        [:td.stat-value (:feed-sources stats)]]
+       [:tr {:data-model "feed-subscriptions"}
+        [:td.stat-label "Feed Subscriptions: "]
+        [:td.stat-value (:feed-subscriptions stats)]]
+       [:tr {:data-model "subscriptions"}
+        [:td.stat-label "Subscriptions: "]
+        [:td.stat-value (:subscriptions stats)]]
+       [:tr {:data-model "users"}
+        [:td.stat-label "Users: "]
+        [:td.stat-value (:users stats)]]]]]))
 
 (defn left-column-section
   [response]
