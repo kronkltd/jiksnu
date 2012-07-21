@@ -28,6 +28,10 @@
             (fn [data]
               (let [m (ko/obj->model data)]
                 (def _m m)
+
+                (when-let [title (.-title m)]
+                  (.title _view title))
+
                 (.users _view (.-users m))))))
 
 
