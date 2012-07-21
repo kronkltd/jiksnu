@@ -17,7 +17,7 @@
                    (get stats key))))))
 
 (defn update-statistics-handler
-  [data]
+  [model data]
   (let [body (.-body data)
         b (ko/obj->model body (.-statistics model))]
     (.statistics model b)))
@@ -26,7 +26,7 @@
   [model]
   (.getJSON js/jQuery
             "http://renfer.name/main/stats.json"
-            update-statistics-handler)
+            (partial update-statistics-handler model))
   nil)
 
 (defn mock-stats
