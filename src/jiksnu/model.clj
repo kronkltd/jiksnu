@@ -29,20 +29,27 @@
            org.joda.time.DateTime
            java.io.StringReader))
 
-(def ^:dynamic *date-format* "yyyy-MM-dd'T'hh:mm:ss'Z'")
-
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
                    :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
+
+(def rdf-prefixes
+  [["activity" ns/as]
+   ["sioc" ns/sioc]
+   ["cert" ns/cert]
+   ["foaf" ns/foaf]
+   ["dc" ns/dc]
+   ["xsd" (str ns/xsd "#")]])
 
 (defn format-date
   "This is a dirty little function to get a properly formatted date."
   ;; TODO: Get more control of passed dates
   [^Date date]
+  ;; TODO: Time for a protocol
   (condp = (class date)
     String (DateTime/parse date)
     DateTime date
-    Date (let [formatter (SimpleDateFormat. *date-format*)]
+    Date (let [formatter (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'")]
            (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
            (.format formatter  date))
     date))
@@ -104,12 +111,12 @@
 
 (jena/init-jena-framework)
 ;; TODO: Find a better ns for this
-(rdf/register-rdf-ns :dc ns/dc)
-(rdf/register-rdf-ns :foaf ns/foaf)
-(rdf/register-rdf-ns :sioc ns/sioc)
-(rdf/register-rdf-ns :cert ns/cert)
-(rdf/register-rdf-ns :aair ns/aair)
-(rdf/register-rdf-ns :as ns/as)
+;; (rdf/register-rdf-ns :dc ns/dc)
+;; (rdf/register-rdf-ns :foaf ns/foaf)
+;; (rdf/register-rdf-ns :sioc ns/sioc)
+;; (rdf/register-rdf-ns :cert ns/cert)
+;; (rdf/register-rdf-ns :aair ns/aair)
+;; (rdf/register-rdf-ns :as ns/as)
 
 (defn force-coll
   [x]
@@ -196,23 +203,12 @@
                (throw+ "Could not find fetch function"))
              (throw+ "Could not find count function"))))))
 
-(def rdf-prefixes
-  [["activity" ns/as]
-   ["sioc" ns/sioc]
-   ["cert" ns/cert]
-   ["foaf" ns/foaf]])
-
 (defn triples->model
   [triples]
-  (let [model (rdf/build-model)]
-    (doto (rdf/to-java model)
-      ;; TODO: read these from rdf-prefixes
-      (.setNsPrefix "activity" ns/as)
-      (.setNsPrefix "sioc" ns/sioc)
-      (.setNsPrefix "cert" ns/cert)
-      (.setNsPrefix "foaf" ns/foaf)
-      (.setNsPrefix "dc" ns/dc)
-      (.setNsPrefix "xsd" (str ns/xsd "#")))
+  (let [model (rdf/build-model)
+        j-model (rdf/to-java model)]
+    (doseq [[prefix uri] rdf-prefixes]
+      (.setNsPrefix prefix uri))
     (rdf/with-model model
       (rdf/model-add-triples triples))
     model))
