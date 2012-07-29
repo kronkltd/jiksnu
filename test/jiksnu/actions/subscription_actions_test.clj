@@ -5,7 +5,8 @@
         jiksnu.model
         [jiksnu.session :only [with-user]]
         midje.sweet)
-  (:require [jiksnu.model.subscription :as model.subscription]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
@@ -28,7 +29,7 @@
            subscribee (model.user/create (factory :local-user))]
        (subscribed user subscribee) => subscription?)))
 
- (fact "subscribers"
+ (fact "get-subscribers"
    (fact "when there are subscribers"
      (fact "should not be empty"
        (let [user (model.user/create (factory :local-user))
@@ -36,10 +37,15 @@
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id subscriber)
-                                     :to (:_id user)}))
-             [_ subscriptions] (get-subscribers user)]
-         subscriptions => seq?
-         subscriptions => (partial every? (partial instance? Subscription))))))
+                                     :to (:_id user)}))]
+         (get-subscribers user) =>
+         (every-checker
+          vector?
+          (comp (partial instance? User) first)
+          (fn [[_ {:keys [items] :as page}]]
+            (fact
+              (doseq [subscription items]
+                subscription => (partial instance? Subscription)))))))))
 
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
@@ -59,4 +65,5 @@
               (fact
                 subscriptions =>  map?
                 (:items subscriptions) =>
-                (partial every? (partial instance? Subscription)))))))))))
+                (partial every? (partial instance? Subscription))))))))))
+ )
