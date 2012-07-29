@@ -1,4 +1,8 @@
 (ns jiksnu.model.group
+  (:use [jiksnu.transforms :only [set-_id set-created-time
+                                  set-updated-time]]
+        [slingshot.slingshot :only [throw+]]
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [monger.collection :as mc]
@@ -7,7 +11,21 @@
             [monger.result :as result])
   (:import jiksnu.model.Group))
 
+(defonce page-size 20)
 (def collection-name "groups")
+
+(def create-validators
+  (validation-set
+   (presence-of :_id)
+   (presence-of :created)
+   (presence-of :updated)))
+
+(defn prepare
+  [group]
+  (-> group
+      set-_id
+      set-created-time
+      set-updated-time))
 
 (defn drop!
   []
@@ -25,12 +43,16 @@
     (model/map->Group group)))
 
 (defn create
-  [params]
-  (let [params (-> params
-                   (assoc :_id (model/make-id)))
-        result (mc/insert "groups" params)]
-    (if (result/ok? result)
-      (fetch-by-id (:_id params)))))
+  [group]
+  (let [group (prepare group)
+        errors (create-validators group)]
+    (if (empty? errors)
+      (do
+        (log/debugf "Creating group: %s" (pr-str group))
+        (mc/insert "groups" group)
+        (fetch-by-id (:_id group)))
+      (throw+ {:type :validation
+               :errors errors}))))
 
 (defn fetch-all
   ([] (fetch-all {}))
