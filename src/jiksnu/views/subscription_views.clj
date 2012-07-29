@@ -57,7 +57,7 @@
    :formats (subscription-formats user)
    :body [:div
           (when (seq items)
-            (sections.subscription/subscriptions-section items (log/spy response)))]})
+            (sections.subscription/subscriptions-section items response))]})
 
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]
