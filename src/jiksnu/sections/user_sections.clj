@@ -6,6 +6,7 @@
                                         show-section-minimal update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [clojure.core.incubator :only [-?>]]
+         [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.model :only [with-subject]]
          [jiksnu.sections :only [admin-actions-section
@@ -405,18 +406,20 @@
   [users & [options & _]]
   [:table.table.users
    [:thead]
-   [:tbody
+   [:tbody {:data-bind "foreach: items"}
     (if *dynamic*
       (index-line (User.))
       (map index-line users))]])
 
 (defsection index-block [User :viewmodel]
   [items & [page]]
-  (map #(index-line % page) items))
+  (->> items
+       (map (fn [m] {(:_id m) (index-line m page)}))
+       (into {})))
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr
+  [:tr {:data-bind "with: $root.users()[$data]"}
    (when-not *dynamic*
      {:data-id (:_id user) :data-type "user"})
    [:td
@@ -427,14 +430,20 @@
      (when-not *dynamic*
        (link-to user))]
     [:p
-     (when-not *dynamic*
-       (:username user))
+     [:span
+      (if *dynamic*
+        {:data-bind "text: username"}
+        (:username user))]
      "@"
-     (when-not *dynamic*
-       (:domain user))]
+     [:span
+      (if *dynamic*
+        {:data-bind "text: domain"}
+        (:domain user))]]
+    [:p {:data-bind "text: displayName"}]
     [:p
-     (when-not *dynamic*
-       (:url user))]
+     (if *dynamic*
+       {:data-bind "text: typeof($data.uri) != 'undefined' ? uri : ''"}
+       (:uri user))]
     [:p
      (when-not *dynamic*
        (:bio user))]]
@@ -495,20 +504,28 @@
     (when-not *dynamic*
       (display-avatar user))
     [:span.nickname.fn.n
-     (when-not *dynamic*
-       (:display-name user))]
+     [:span
+      (if *dynamic*
+        {:data-bind "text: displayName"}
+        (:display-name user))]]
     " ("
-    (when-not *dynamic*
-      (:username user))
+    [:span
+     (if *dynamic*
+       {:data-bind "text: username"}
+       (:username user))]
     "@"
-    (when-not *dynamic*
-      (link-to (actions.user/get-domain user))) ")"]
+    [:span
+     (if *dynamic*
+       {:data-bind "text: domain"}
+       (link-to (actions.user/get-domain user)))] ")"]
    [:div.adr
     [:p.locality
-     (when-not *dynamic*
+     (if *dynamic*
+       {:data-bind "text: location"}
        (:location user))]]
    [:p.note
-    (when-not *dynamic*
+    (if *dynamic*
+      {:data-bind "text: bio"}
       (:bio user))]
    ;; [:p [:a {:href (:id user)} (:id user)]]
    ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
@@ -557,7 +574,10 @@
 
 (defsection show-section [User :viewmodel]
   [item & [page]]
-  item)
+  (into {} (map
+            (fn [[k v]]
+              [(camelize (name k) :lower) v])
+            item)))
 
 (defsection show-section [User :xml]
   [user & options]

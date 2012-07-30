@@ -15,9 +15,16 @@
   [request {:keys [items] :as response}]
   {:title "Subscriptions"
    :single true
+   :viewmodel "/admin/subscriptions.viewmodel"
    :body (admin-index-section (if *dynamic*
                                 (Subscription.)
                                 items) response)})
+
+(defview #'index :viewmodel
+  [request {:keys [items] :as response}]
+  {:body {:title "Subscriptions"
+          :items (map :_id items)
+          :subscriptions (admin-index-section items response)}})
 
 (defview #'show :html
   [request subscription]

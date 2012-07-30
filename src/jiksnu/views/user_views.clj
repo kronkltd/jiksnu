@@ -48,6 +48,7 @@
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Users"
+   :viewmodel "/users.viewmodel"
    :body (index-section items page)})
 
 (defview #'index :json
@@ -58,6 +59,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Users"
+          :items (map :_id items)
           :users (index-section items page)}})
 
 (defview #'profile :html

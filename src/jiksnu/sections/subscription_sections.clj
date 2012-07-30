@@ -82,6 +82,12 @@
    [:td (:local subscription)]
    [:td (delete-button subscription)]])
 
+(defsection admin-index-line [Subscription :viewmodel]
+  [item & [page]]
+  item)
+
+;; admin-index-block
+
 (defsection admin-index-block [Subscription :html]
   [items & [options & _]]
   [:table.table.subscriptions
@@ -96,6 +102,14 @@
      [:th "Delete"]]]
    [:tbody
     (map #(admin-index-line % options) items)]])
+
+(defsection admin-index-block [Subscription :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (into {})))
+
+;; index-line
 
 (defsection index-line [Subscription :as]
   [subscription & _]
