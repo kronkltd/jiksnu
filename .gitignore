@@ -20,5 +20,5 @@ logs
 newrelic
 out
 pom.xml
-resources/public/cljs
+resources/public/assets/js/jiksnu*
 target
