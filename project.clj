@@ -43,7 +43,7 @@
                  ]
   :exclusions [org.clojure/google-closure-library]
   :aot [
-        jiksnu.model
+  ;;       jiksnu.model
         jiksnu.xmpp.plugin
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository

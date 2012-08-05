@@ -146,6 +146,7 @@
     {:username username
      :domain #'domain-id
      :local false
+     :email (fseq :email)
      :name display-name
      :display-name display-name
      :first-name first-name
