@@ -4,7 +4,8 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.page :as p]
             [jiksnu.namespace :as ns]
@@ -27,11 +28,11 @@
 
 (defn user-info-section
   [user]
-  [:div {:data-bind "with: currentUser"}
+  (list
    (show-section user)
    (sections.subscription/subscriptions-widget user)
    (sections.subscription/subscribers-widget user)
-   (sections.group/user-groups user)])
+   (sections.group/user-groups user)))
 
 (defn nav-info
   []
@@ -143,7 +144,9 @@
   (let [user (or (:user response)
                  (current-user))]
     (list
-     #_(user-info-section user)
+     [:div {:data-bind "with: currentUser"}
+      [:div {:data-bind "with: $root.users()[$data]"}
+       (user-info-section user)]]
      (:aside response))))
 
 (defn devel-warning
@@ -201,7 +204,11 @@
    (when (current-user)
      (new-post-section request response))
    (title-section request response)
-   (:body response)])
+   (:body response)
+   ;; TODO: align middle
+   [:footer.row-fluid.page-footer
+    [:p "Copyright © 2011 KRONK Ltd."]
+    [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
 
 (defn navbar-search-form
   []
@@ -268,62 +275,76 @@
                        "/assets/google-code-prettify/src/prettify.css")
         (links-section request response)))
 
-(defn page-template-content
+(defn scripts-section
   [request response]
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
-    {:headers {"Content-Type" "text/html; charset=utf-8"}
-    :body
-    (str
-     "<!DOCTYPE html" ">"
-     (h/html
-      [:html
-       ;; TODO: Read the list of declared namespaces
-       (merge {
-         :xmlns:sioc ns/sioc
-         :xmlns:dc ns/dc
-         :xmlns:foaf ns/foaf
-         :xmlns:dcterms ns/dcterms
-         ;; :version "HTML+RDFa 1.1"
-         :lang "en"
-         :xml:lang "en"
-         :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"}
-              (if *dynamic*
-                (when-let [vm (:viewmodel response)]
-                  {:data-load-model vm})))
-       [:head (head-section request response)]
-       [:body
-        (navbar-section request response)
-        [:div.container-fluid
-         #_(fork-me-link)
-         [:div.row-fluid
-          [:div.span2
-           (left-column-section request response)]
-          [:div#content.span10
-           [:div.row-fluid
-            (if-not (:single response)
-              (list [:div.span9 (main-content request response)]
-                    [:div.span3 (right-column-section response)])
-              [:div.span12 (main-content request response)])]]]
-         ;; TODO: align middle
-         [:footer.row-fluid.page-footer
-          [:p "Copyright © 2011 KRONK Ltd."]
-          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
-        [:script {:type "text/javascript"}
-         (format
-          "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
-        (p/include-js
-         "/assets/web-socket-js/swfobject.js"
-         "/assets/web-socket-js/web_socket.js"
-         "http://code.jquery.com/jquery-1.7.1.js"
-         "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
-         "/assets/js/knockout/build/output/knockout-latest.debug.js"
-         "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
-         "/assets/google-code-prettify/src/prettify.js"
-         "/assets/knockout.mapping.js"
-         "/assets/js/jiksnu.js"
-         )
-        [:script {:type "text/javascript"}
-         "goog.require('jiksnu.core');"]]]))}))
+    (list
+    [:script {:type "text/javascript"}
+     (format
+      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
+    (p/include-js
+     "/assets/web-socket-js/swfobject.js"
+     "/assets/web-socket-js/web_socket.js"
+     "http://code.jquery.com/jquery-1.7.1.js"
+     "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
+     "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
+     ;; "/assets/js/knockout/build/output/knockout-latest.debug.js"
+     "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
+     ;; "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"
+     "/assets/google-code-prettify/src/prettify.js"
+     "/assets/knockout.mapping.js"
+     "/assets/js/jiksnu.js"
+     )
+    [:script {:type "text/javascript"}
+     "goog.require('jiksnu.core');"]))
+
+  )
+
+(defn body-section
+  [request response]
+  (list
+   (navbar-section request response)
+   [:div.container-fluid
+    #_(fork-me-link)
+    [:div.row-fluid
+     [:div.span2
+      (left-column-section request response)]
+     [:div#content.span10
+      [:div.row-fluid
+       (if-not (:single response)
+         (list [:div.span9 (main-content request response)]
+               [:div.span3 (right-column-section response)])
+         [:div.span12 (main-content request response)])]]]]
+   (scripts-section request response)))
+
+(defn page-template-content
+  [request response]
+  {:headers {"Content-Type" "text/html; charset=utf-8"}
+   :body
+   (str
+    "<!DOCTYPE html" ">"
+    (h/html
+     [:html
+      ;; TODO: Read the list of declared namespaces
+      (merge {:xmlns:sioc ns/sioc
+              :xmlns:dc ns/dc
+              :xmlns:foaf ns/foaf
+              :xmlns:dcterms ns/dcterms
+              ;; :version "HTML+RDFa 1.1"
+              :lang "en"
+              :xml:lang "en"
+              :prefix (->> [["foaf" ns/foaf]
+                            ["dc" ns/dc]
+                            ["sioc" ns/sioc]
+                            ["dcterms" "http://purl.org/dc/terms/"]]
+                           (map
+                            (fn [[prefix uri]] (format "%s: %s" prefix uri)))
+                           (string/join " "))}
+             (if *dynamic*
+               (when-let [vm (:viewmodel response)]
+                 {:data-load-model vm})))
+      [:head (head-section request response)]
+      [:body (body-section request response)]]))})
 
 
 (defmethod apply-template :html
