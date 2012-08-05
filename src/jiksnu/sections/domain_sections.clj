@@ -10,7 +10,10 @@
 
 (defn favicon-link
   [domain]
-  [:img {:src (str "http://" (:_id domain) "/favicon.ico")}])
+  [:img
+   (if *dynamic*
+     {:data-bind "attr: {src: 'http://' + $parent + '/favicon.ico'}"}
+     {:src (str "http://" (:_id domain) "/favicon.ico")})])
 
 (defsection uri [Domain]
   [domain & _]
@@ -58,9 +61,7 @@
   [:tr (when *dynamic*
          {:data-bind "with: $root.domains()[$data]"})
 
-   [:td (when *dynamic*
-          {:data-bind "text: _id"})
-    (favicon-link domain)]
+   [:td (favicon-link domain)]
    [:td (link-to domain)]
    [:td (if *dynamic*
           {:data-bind "text: typeof(xmpp) !== 'undefined' ? xmpp : ''"}
@@ -69,9 +70,15 @@
           {:data-bind "text: typeof(discovered) !== 'undefined' ? discovered : ''"}
           (:discovered domain))]
    [:td
-    [:a {:href (str "http://" (:_id domain) "/.well-known/host-meta")}
+    [:a
+     (if *dynamic*
+       {:data-bind "attr: {href: 'http://' + $parent + '/.well-known/host-meta'}"}
+       {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
-   [:td (count (:links domain))]
+   [:td
+    #_(if *dynamic*
+      {:data-bind "text: links.length"}
+      (count (:links domain)))]
    #_[:th
     (discover-button domain)
     (edit-button domain)
@@ -79,7 +86,11 @@
 
 (defsection link-to [Domain :html]
   [domain & _]
-  [:a {:href (uri domain)} (:_id domain)])
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/main/domains/' + $parent}, text: $parent"}
+        {:href (uri domain)})
+   (when-not *dynamic*
+     (:_id domain))])
 
 
 (defsection show-section [Domain :html]

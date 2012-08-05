@@ -1,6 +1,7 @@
 (ns jiksnu.sections.auth-sections
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [control-line]]
         [jiksnu.session :only [current-user]]
         [jiksnu.sections.user-sections :only [display-avatar-img]])
@@ -10,9 +11,16 @@
 (defn logout-button
   [user]
   [:li.dropdown
-   [:a.dropdown-toggle {:href "#" :data-toggle "dropdown"}
-    (display-avatar-img user 18)
-    (:display-name user) [:b.caret]]
+   [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"}
+                              (if *dynamic*
+                                {:data-bind "with: currentUser"})
+                              )
+    [:span (if *dynamic* {:data-bind "with: $root.users()[$data]"})
+     (display-avatar-img user 18)
+     [:span
+      (if *dynamic*
+        {:data-bind "text: displayName"}
+        (:display-name user))]] [:b.caret]]
    [:ul.dropdown-menu
     [:li
      [:a.settings-link {:href "/main/settings"} "Settings"]

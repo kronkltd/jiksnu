@@ -1,7 +1,7 @@
 (ns jiksnu.sections
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line show-section]]
+        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line show-section index-block-type]]
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.tools.logging :as log]))
 
@@ -119,6 +119,12 @@
 (defsection index-block :default
   [items & [page]]
   (map #(index-line % page) items))
+
+(defmethod index-block-type :default
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (index-line m page)}))
+       (into {})))
 
 (defsection index-line :default
   [item & [page]]

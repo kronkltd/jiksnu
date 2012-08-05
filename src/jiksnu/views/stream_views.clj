@@ -198,13 +198,16 @@
   {:body (map show-section activities)})
 
 (defview #'user-timeline :html
-  [request [user {activities :items :as response}]]
-  {:user user
-   :title (:display-name user)
-   :post-form true
-   :viewmodel (format "/users/%s.viewmodel" (:_id user))
-   :body (index-section activities response)
-   :formats (sections.activity/timeline-formats user)})
+  [request [user {:keys [items] :as page}]]
+  (let [items (if *dynamic*
+                [(Activity.)]
+                items)]
+    {:user user
+     :title (:display-name user)
+     :post-form true
+     :viewmodel (format "/users/%s.viewmodel" (:_id user))
+    :body (index-section items page)
+    :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :rdf
   [request [user activities-map]]

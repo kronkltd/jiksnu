@@ -5,7 +5,8 @@
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri title link-to
                                        index-block index-section uri
-                                       delete-button index-line edit-button]])
+                                       delete-button index-line edit-button]]
+        [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -85,8 +86,16 @@
 
 (defmethod format-as :viewmodel
   [format request response]
-  (with-format :json
-    (doall (format-as :json request response))))
+  (let [response (if-let [user (current-user)]
+                   (-> response
+                       (assoc-in [:body :currentUser] (:_id user))
+                       (update-in [:body :users]
+                                  (fn [users]
+                                    (merge users
+                                           (index-section [user])))))
+                   response)]
+    (with-format :json
+     (doall (format-as :json request response)))))
 
 (defmethod format-as :xml
   [format request response]

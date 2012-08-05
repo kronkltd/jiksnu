@@ -27,12 +27,11 @@
 
 (defn user-info-section
   [user]
-  (when user
-    (list
-     (show-section user)
-     (sections.subscription/subscriptions-widget user)
-     (sections.subscription/subscribers-widget user)
-     (sections.group/user-groups user))))
+  [:div {:data-bind "with: currentUser"}
+   (show-section user)
+   (sections.subscription/subscriptions-widget user)
+   (sections.subscription/subscribers-widget user)
+   (sections.group/user-groups user)])
 
 (defn nav-info
   []
@@ -144,7 +143,7 @@
   (let [user (or (:user response)
                  (current-user))]
     (list
-     (user-info-section user)
+     #_(user-info-section user)
      (:aside response))))
 
 (defn devel-warning

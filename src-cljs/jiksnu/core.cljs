@@ -28,6 +28,9 @@
                 (when-let [title (.-title m)]
                   (.title _view title))
 
+                (when-let [currentUser (.-currentUser m)]
+                  (.currentUser _view currentUser))
+
                 (when-let [activities (.-activities m)]
                   (.activities _view activities))
 
@@ -68,7 +71,7 @@
 
   (if-let [elts ($ "*[data-load-model]")]
     (log/info (fetch-viewmodel (.data elts "load-model"))))
-  #_(ko/apply-bindings _view)
+  #_(stats/fetch-statistics _view)
   #_(js/prettyPrint))
 
 (main)

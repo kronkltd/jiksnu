@@ -79,18 +79,18 @@
   [:img.avatar.photo
    (merge {:width size
            :height size
-           :alt ""
-           :src (model.user/image-link user)}
+           :alt ""}
           (if *dynamic*
-            {:data-bind "attr: {src: avatarUrl}"}))])
+            {:data-bind "attr: {src: avatarUrl}"}
+            {:src (model.user/image-link user)}))])
 
 (defn display-avatar
   ([user] (display-avatar user 48))
   ([user size]
-     [:a.url (merge {:href (full-uri user)
-                     :title (:name user)}
-                    (if *dynamic*
-                      {:data-bind "attr: {href: \"/users/\" + $parent}, text: username"}))
+     [:a.url (if *dynamic*
+               {:data-bind "attr: {href: \"/users/\" + $parent, title: name}"}
+               {:href (full-uri user)
+                :title (:name user)})
       (display-avatar-img user size)]))
 
 (defn register-form
@@ -409,14 +409,17 @@
    [:button.btn.edit-button {:type "submit" :title "Edit"}
     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
+;; index-block
+
 (defsection index-block [User :html]
-  [users & [options & _]]
+  [users & [page]]
   [:table.table.users
    [:thead]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
-    (if *dynamic*
-      (index-line (User.))
-      (map index-line users))]])
+   [:tbody (merge {:data-bag "users"}
+                  (when *dynamic* {:data-bind "foreach: items"}))
+    ;; TODO: handle this higher up
+    (let [users (if *dynamic* [(User.)] users)]
+      (map #(index-line % page) users))]])
 
 (defsection index-block [User :viewmodel]
   [items & [page]]
@@ -424,17 +427,16 @@
        (map (fn [m] {(:_id m) (index-line m page)}))
        (into {})))
 
+;; index-line
+
 (defsection index-line [User :html]
   [user & _]
   [:tr (merge {:data-id (:_id user) :data-type "user"}
               (when *dynamic* {:data-bind "with: $root.users()[$data]"}))
+   [:td (display-avatar user)]
    [:td
-    (when-not *dynamic*
-      (display-avatar user))]
-   [:td
-    [:p
-     (when-not *dynamic*
-       (link-to user))]
+    ;; TODO: call a show section here?
+    [:p (link-to user)]
     [:p
      [:span
       (if *dynamic*
@@ -454,9 +456,7 @@
      (if *dynamic*
        {:data-bind "text: typeof($data.bio) !== 'undefined' ? bio : ''"}
        (:bio user))]]
-   [:td
-    (when-not *dynamic*
-      (actions-section user))]])
+   [:td (actions-section user)]])
 
 (defsection index-line [User :viewmodel]
   [item & page]
@@ -466,13 +466,25 @@
   [items & [page]]
   (index-block items page))
 
+(defsection link-to [User :html]
+  [record & options]
+  (let [options-map (apply hash-map options)]
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: url}"}
+          {:href (uri record)})
+     [:span (merge {:property "dc:title"}
+                   (if *dynamic*
+                     {:data-bind "attr: {about: url}, text: displayName"}
+                     {:about (uri record)}))
+      (when-not *dynamic*
+       (or (:title options-map) (title record)))] ]))
+
 (defsection show-section-minimal [User :html]
   [user & _]
   [:div.vcard
    ;; TODO: merge into the same link
    (display-avatar user)
-   [:span.fn.n
-    (link-to user)]])
+   [:span.fn.n (link-to user)]])
 
 (defsection show-section [User :as]
   [user & options]

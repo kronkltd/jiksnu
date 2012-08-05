@@ -102,6 +102,10 @@
     :href "/api/statuses/public_timeline.rdf"
     :icon "foafTiny.gif"
     :type "application/rdf+xml"}
+   {:label "Viewmodel"
+    :href "/api/statuses/public_timeline.viewmodel"
+    :type "application/json"
+    }
    {:label "XML"
     :icon "file_xml.png"
     :href "/api/statuses/public_timeline.xml"
