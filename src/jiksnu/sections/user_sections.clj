@@ -470,11 +470,11 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: url}"}
+          {:data-bind "attr: {href: typeof($data.url) !== 'undefined' ? url : ''}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: displayName"}
+                     {:data-bind "attr: {about: typeof($data.url) !== 'undefined' ? url : ''}, text: displayName"}
                      {:about (uri record)}))
       (when-not *dynamic*
        (or (:title options-map) (title record)))] ]))
