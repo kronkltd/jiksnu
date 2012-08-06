@@ -3,5 +3,5 @@
 
 (defn routes
   []
-  [[[:post   "/likes/:id/delete"]                            #'like/delete]
-   [[:post   "/notice/:id/like"]                             #'like/like-activity]])
+  [[[:post   "/likes/:id/delete"] #'like/delete]
+   [[:post   "/notice/:id/like"]  #'like/like-activity]])

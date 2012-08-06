@@ -22,7 +22,4 @@
    [[:get    "/:username/subscriptions"]                     #'sub/get-subscriptions]
    [[:post   "/users/:subscribeto/subscribe.:format"]        #'sub/subscribe]
    [[:post   "/users/:subscribeto/subscribe"]                #'sub/subscribe]
- 
-
-   ]
-  )
+   ])

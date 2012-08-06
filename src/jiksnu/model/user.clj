@@ -46,7 +46,10 @@
   [user]
   (if (:avatar-url user)
     user
-    (assoc user :avatar-url (gravatar-image (:email user)))))
+    (assoc user :avatar-url
+           (if (:email user)
+             (gravatar-image (:email user))
+             (format "http://%s/assets/images/default-avatar.jpg" (config :domain))))))
 
 (defn prepare
   [user]

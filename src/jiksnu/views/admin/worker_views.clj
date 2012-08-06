@@ -28,7 +28,8 @@
   [request _]
   {:status 303
    :template false
-   :headers {"Location" "/"}})
+   :flash "worker started"
+   :headers {"Location" "/admin/workers"}})
 
 (defview #'start-worker :text
   [request data]
@@ -46,12 +47,13 @@
   [request _]
   {:status 303
    :template false
-   :headers {"Location" "/"}})
+   :flash "all workers stopped"
+   :headers {"Location" "/admin/workers"}})
 
 (defview #'stop-worker :html
   [request _]
   {:status 303
    :template false
    :flash "Worker stopped"
-   :headers {"Location" "/"}})
+   :headers {"Location" "/admin/workers"}})
 

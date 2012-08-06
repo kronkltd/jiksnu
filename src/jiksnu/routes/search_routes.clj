@@ -3,5 +3,5 @@
 
 (defn routes
   []
-  [[[:get    "/main/search"]                                 #'search/perform-search]
-   [[:post   "/main/search"]                                 #'search/perform-search]])
+  [[[:get    "/main/search"] #'search/perform-search]
+   [[:post   "/main/search"] #'search/perform-search]])

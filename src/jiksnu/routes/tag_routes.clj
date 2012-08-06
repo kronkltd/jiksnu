@@ -3,7 +3,8 @@
 
 (defn routes
   []
-  [[[:get    "/tags/:name.:format"]                          #'tag/show]
-   [[:get    "/tags/:name"]                                  #'tag/show]
-   ;; [[:get    "/tags"]                                        #'tag/index]
+  [
+   [[:get    "/tags/:name.:format"] #'tag/show]
+   [[:get    "/tags/:name"]         #'tag/show]
+   ;; [[:get    "/tags"]               #'tag/index]
    ])

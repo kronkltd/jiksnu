@@ -424,7 +424,8 @@
      [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody (if *dynamic*
+             {:data-bind "foreach: items"})
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -437,11 +438,17 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr {:data-type "activity" :data-id (:_id activity)
-        :data-bind "with: $root.activities()[$data]"}
-   [:td (when-not *dynamic*
-          (-> activity actions.activity/get-author link-to))]
-   [:td {:data-bind "text: object['object-type']"}
+  [:tr (merge {:data-type "activity" :data-id (:_id activity)}
+              (if *dynamic*
+                {:data-bind "with: $root.activities()[$data]"}))
+   [:td (if *dynamic* {:data-bind "with: author"})
+    [:div (if *dynamic*
+            {:data-bind "with: $root.users()[$data]"})
+     (link-to (if *dynamic*
+                (User.)
+                (actions.activity/get-author (:author activity))))]]
+   [:td (if *dynamic*
+          {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
       (-> activity :object :object-type))]
    [:td (when-not *dynamic*
@@ -486,7 +493,9 @@
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
-  [:div.activities {:data-bind "foreach: items"}
+  [:div.activities
+   (if *dynamic*
+     {:data-bind "foreach: items"})
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -664,7 +673,8 @@
      [:header
       [:div.pull-right (post-actions activity)]
       [:div
-       {:data-bind "with: author"}
+       (if *dynamic*
+         {:data-bind "with: author"})
        [:div (if *dynamic* {:data-bind "with: $root.users()[$data]"})
         (show-section-minimal
          (if *dynamic*

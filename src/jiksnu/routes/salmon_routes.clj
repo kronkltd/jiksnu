@@ -3,4 +3,4 @@
 
 (defn routes
   []
-  [[[:post   "/main/salmon/user/:id"]                        #'salmon/process]])
+  [[[:post   "/main/salmon/user/:id"] #'salmon/process]])
