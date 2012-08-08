@@ -10,7 +10,7 @@
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-swank "0.4.0-SNAPSHOT"]
-                 [clj-factory "0.2.0"]
+                 [clj-factory "0.2.1-SNAPSHOT"]
                  [clojurewerkz/route-one "1.0.0-beta1"]
                  [clojurewerkz/urly "1.0.0"]
                  [clojurewerkz/quartzite "1.0.0-rc5"]
@@ -43,7 +43,7 @@
                  ]
   :exclusions [org.clojure/google-closure-library]
   :aot [
-  ;;       jiksnu.model
+        jiksnu.model
         jiksnu.xmpp.plugin
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository

@@ -1,5 +1,10 @@
 (ns jiksnu.routes.stream-routes
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
   (:require [jiksnu.actions.stream-actions :as stream]))
+
+(println "stream routes")
+
+(add-route! "/:username" {:named "user timeline"})
 
 (defn routes
   []
@@ -9,7 +14,7 @@
    [[:get    "/users/:id.:format"]                      #'stream/user-timeline]
    [[:get    "/users/:id"]                              #'stream/user-timeline]
    [[:get    "/:username.:format"]                      #'stream/user-timeline]
-   [[:get    "/:username"]                              #'stream/user-timeline]
+   [[:get    (named-path "user timeline")]              #'stream/user-timeline]
    [[:get    "/:username/all"]                          #'stream/home-timeline]
    [[:get    "/:username/streams"]                      #'stream/user-list]
    [[:post   "/:username/streams"]                      #'stream/add]

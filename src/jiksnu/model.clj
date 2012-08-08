@@ -3,6 +3,7 @@
         [ciste.config :only [config environment]]
         [ciste.initializer :only [definitializer]]
         [clj-factory.core :only [factory]]
+        [clojurewerkz.route-one.core :only [*base-url*]]
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -288,5 +289,6 @@
         {:write-json write-json-object-id})
 
 (definitializer
+  (alter-var-root #'*base-url* (constantly (format "http://%s" (config :domain))) )
   (set-database!))
 

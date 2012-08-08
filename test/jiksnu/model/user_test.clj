@@ -18,12 +18,6 @@
  (def domain-a (actions.domain/find-or-create (factory :domain)))
  (def user-a (create (factory :user {:domain (:_id domain-a)})))
 
- ;; (fact "#'salmon-link"
- ;;   (salmon-link .user.) => string?
- ;;   (provided
- ;;     (:domain .user.) => (config :domain)
- ;;     (:_id .user.) => (make-id)))
- 
  (fact "#'get-domain"
    (fact "when passed nil"
      (fact "should throw an exception"

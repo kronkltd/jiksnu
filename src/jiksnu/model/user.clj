@@ -1,6 +1,7 @@
 (ns jiksnu.model.user
   (:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
+        [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.model :only [make-id rel-filter map->User]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
@@ -26,6 +27,7 @@
   (validation-set
    (presence-of :username)
    (presence-of :domain)
+   (presence-of :url)
    (presence-of :id)
    #_(presence-of :local)
    (presence-of :created)
@@ -51,6 +53,12 @@
              (gravatar-image (:email user))
              (format "http://%s/assets/images/default-avatar.jpg" (config :domain))))))
 
+(defn set-url
+  [user]
+  (if (:url user)
+    user
+    (assoc user :url (named-url "user timeline" user))))
+
 (defn prepare
   [user]
   (-> user
@@ -58,6 +66,7 @@
       set-id
       set-updated-time
       set-created-time
+      set-url
       set-avatar-url))
 
 (defn salmon-link
