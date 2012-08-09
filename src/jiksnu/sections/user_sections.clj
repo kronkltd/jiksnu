@@ -486,6 +486,8 @@
    (display-avatar user)
    [:span.fn.n (link-to user)]])
 
+;; show-section
+
 (defsection show-section [User :as]
   [user & options]
   (let [{:keys [display-name id avatar-url]} user
@@ -550,6 +552,10 @@
      (when (:discovered user)
        (show-section (model.key/get-key-for-user user))))
    #_(user-actions user)])
+
+(defsection show-section [User :model]
+  [user & _]
+  user)
 
 (defsection show-section [User :rdf]
   [user & _]

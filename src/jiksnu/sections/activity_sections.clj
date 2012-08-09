@@ -430,6 +430,7 @@
   [:table.table
    [:thead
     [:tr
+     [:th "Dump"]
      [:th "User"]
      [:th "Type"]
      [:th "Visibility"]
@@ -452,6 +453,7 @@
   [:tr (merge {:data-type "activity" :data-id (:_id activity)}
               (if *dynamic*
                 {:data-bind "with: $root.activities()[$data]"}))
+   [:td (dump-data)]
    [:td (if *dynamic* {:data-bind "with: author"})
     [:div (if *dynamic*
             {:data-bind "with: $root.users()[$data]"})
