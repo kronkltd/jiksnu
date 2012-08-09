@@ -2,15 +2,15 @@
   (:use [ciste.core :only [with-format]]
         [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form edit-button index-section
-                                       show-section-minimal show-section delete-button
-                                       full-uri link-to uri title index-block index-line
-                                       index-section update-button]]
+        [ciste.sections.default :only [add-form delete-button edit-button
+                                       full-uri index-section show-section-minimal
+                                       show-section link-to uri title index-block
+                                       index-line index-section update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
-        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section dump-data
-                                control-line pagination-links]]
+        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
+                                dump-data control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -60,7 +60,10 @@
     [:div.comment
      [:p (sections.user/display-avatar author)
       (link-to author) ": "
-      (h/h (:title activity))]
+      [:span
+       (if *dynamic*
+         {:data-bind "text: title"}
+         (h/h (:title activity)))]]
      [:p (posted-link-section activity)]]))
 
 (defn comment-link-item
@@ -215,7 +218,9 @@
       (fn [mentioned-uri]
         [:li
          [:i.icon-chevron-right]
-         (if-let [mentioned-user (model.user/fetch-by-remote-id mentioned-uri)]
+         (if-let [mentioned-user (if *dynamic*
+                                   (User.)
+                                   (model.user/fetch-by-remote-id mentioned-uri))]
            (link-to mentioned-user)
            [:a {:href mentioned-uri :rel "nofollow"} mentioned-uri])])
       mentioned-uris)]))
@@ -267,7 +272,10 @@
   [activity]
   [:span.posted
    "posted a "
-   (-> activity :object :object-type)
+   [:span
+    (if *dynamic*
+      {:data-bind "text: $data['object']['object-type']"}
+      (-> activity :object :object-type))]
 
    ;; TODO: handle other visibilities
    (when-not (:public activity)
@@ -277,14 +285,17 @@
    [:time {:datetime (model/format-date (:published activity))
            :title (model/format-date (:published activity))
            :property "dc:published"}
-    [:a {:href (uri activity)}
-     (if *dynamic*
-       nil
+    [:a (merge {:href (uri activity)}
+               (if *dynamic*
+                 {:data-bind "text: created "}))
+     (when-not *dynamic*
        (-> activity :created .toDate model/prettyify-time))]]
+   " using "
+   [:span
+    (if *dynamic*
+      {:data-bind "text: typeof($data.source) !== 'undefined' ? source : ''"}
+      (:source activity))]
    
-   (when (:source activity)
-     (str " using " (:source activity)))
-
    ;; TODO: link to the domain
    (when-not (:local activity)
      (list " via a "
