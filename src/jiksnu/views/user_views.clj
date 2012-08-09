@@ -13,6 +13,8 @@
             [jiksnu.sections.user-sections :as sections.user]
             [plaza.rdf.core :as rdf]))
 
+;; create
+
 (defview #'create :html
   [request user]
   {:status 303
@@ -20,12 +22,16 @@
    :template false
    :headers {"Location" (uri user)}})
 
+;; delete
+
 (defview #'delete :html
   [request _]
   {:status 303
    :flash "user has been deleted"
    :template false
    :headers {"Location" "/users"}})
+
+;; discover
 
 (defview #'discover :html
   [request user]
@@ -79,6 +85,12 @@
   {:title "Register"
    :body (sections.user/register-form user)})
 
+;; show
+
+(defview #'show :model
+  [request user]
+  {:body (show-section user)})
+
 (defview #'show :n3
   [request user]
   {:body
@@ -106,6 +118,8 @@
      :id id
      :from to
      :to from}))
+
+;; update
 
 (defview #'update :html
   [request user]

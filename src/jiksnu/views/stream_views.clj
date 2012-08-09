@@ -156,6 +156,8 @@
   {:body response-fn
    :template false})
 
+;; user-timeline
+
 (defview #'user-timeline :atom
   [request [user {activities :items :as response}]]
   {:headers {"Content-Type" "application/xml"}
@@ -208,6 +210,10 @@
      :viewmodel (format "/users/%s.viewmodel" (:_id user))
     :body (index-section items page)
     :formats (sections.activity/timeline-formats user)}))
+
+(defview #'user-timeline :model
+  [request [user page]]
+  {:body (show-section user)})
 
 (defview #'user-timeline :rdf
   [request [user activities-map]]
