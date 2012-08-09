@@ -3,7 +3,7 @@
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
-  :dependencies [
+  :dependencies [[aleph "0.3.0-alpha3"]
                  [cheshire "4.0.0"]
                  [ciste/ciste-core "0.4.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
@@ -22,7 +22,7 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-alpha4"]
-                 [lamina "0.5.0-alpha3"]
+                 ;; [lamina "0.5.0-alpha3"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
                  [net.kronkltd/waltz "0.1.2-SNAPSHOT"]
