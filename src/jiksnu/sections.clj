@@ -5,6 +5,15 @@
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.tools.logging :as log]))
 
+(defn bind-property
+  [property]
+  {:data-bind
+   (str "text: typeof($data."
+        property
+        ") !== 'undefined' ? "
+        property
+        " : ''")})
+
 (defn dump-data
   []
   [:pre.prettyprint

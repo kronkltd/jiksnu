@@ -5,7 +5,10 @@
         [jiksnu.actions.admin.user-actions :only [index show]]
         [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.stream-actions :as actions.stream]))
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.model.domain :as model.domain]))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
@@ -31,14 +34,23 @@
 
 (defview #'show :html
   [request user]
-  (let [activity-map (second (actions.stream/user-timeline user))]
+  (let [page (second (actions.stream/user-timeline user))]
     {:title (title user)
+     :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
-     (doall (list (admin-show-section user)
-                  (admin-index-block (:items activity-map) activity-map)))}))
+     (doall (list [:div {:data-bind "with: targetUser"}
+                   (admin-show-section user)]
+                  (admin-index-block (:items page) page)))}))
 
 (defview #'show :viewmodel
   [request user]
-  {:body
-   {:users (doall (admin-index-section [user]))}})
+  (let [activities (actions.activity/find-by-user user)]
+    {:body
+     {:users (doall (admin-index-section [user]))
+      :targetUser (:_id user)
+      :domains (doall (admin-index-section [(-> user
+                                                :domain
+                                                model.domain/fetch-by-id)]))
+      :items (map :_id (:items activities))
+      :activities (doall (admin-index-section (:items activities)))}}))

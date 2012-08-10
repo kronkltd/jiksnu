@@ -63,7 +63,7 @@
     (ko/assoc-observable "showPostForm" true)
     (ko/assoc-observable "pageInfo")
     (ko/assoc-observable "currentUser")
-
+    (ko/assoc-observable "targetUser")
     (ko/assoc-observable-array "activities")
     (ko/assoc-observable-array "domains")
     (ko/assoc-observable-array "groups")

@@ -31,6 +31,9 @@
                 (when-let [currentUser (.-currentUser m)]
                   (.currentUser _view currentUser))
 
+                (when-let [targetUser (.-targetUser m)]
+                  (.targetUser _view targetUser))
+
                 (when-let [activities (.-activities m)]
                   (.activities _view activities))
 

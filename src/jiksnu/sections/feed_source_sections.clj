@@ -91,7 +91,10 @@
   [:table.table
    [:thead
     [:tr
+     [:th "Title"]
+     [:th "Domain"]
      [:th "Topic"]
+     [:th "Status"]
      [:th "Actions"]]]
    [:tbody {:data-bind "foreach: items"}
     (map admin-index-line items)]])
@@ -109,8 +112,22 @@
   [:tr {:data-type "feed-source" :data-id (:_id item)
         :data-bind "with: $root.feedSources()[$data]"}
    [:td (if *dynamic*
+          {:data-bind "text: title"}
+          (:title item))]
+   [:td (if *dynamic*
+          {:data-bind "text: domain"}
+          (:domain item))]
+
+   [:td (if *dynamic*
           {:data-bind "text: topic"}
-          (:topic item))]])
+          (:topic item))]
+
+   [:td (if *dynamic*
+          {:data-bind "text: status"}
+          (:status item))]
+
+
+   ])
 
 
 

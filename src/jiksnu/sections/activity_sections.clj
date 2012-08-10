@@ -9,7 +9,8 @@
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
-        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
+        [jiksnu.sections :only [admin-index-line admin-index-block
+                                admin-index-section bind-property
                                 dump-data control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
@@ -62,7 +63,7 @@
       (link-to author) ": "
       [:span
        (if *dynamic*
-         {:data-bind "text: title"}
+         (bind-property "title")
          (h/h (:title activity)))]]
      [:p (posted-link-section activity)]]))
 
@@ -293,7 +294,7 @@
    " using "
    [:span
     (if *dynamic*
-      {:data-bind "text: typeof($data.source) !== 'undefined' ? source : ''"}
+      (bind-property "source")
       (:source activity))]
    
    ;; TODO: link to the domain

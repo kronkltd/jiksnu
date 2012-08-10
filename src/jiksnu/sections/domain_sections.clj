@@ -3,7 +3,8 @@
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
-        [jiksnu.sections :only [control-line]])
+        [jiksnu.sections :only [admin-index-block admin-index-line
+                                control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.link-sections :as sections.link])
   (:import jiksnu.model.Domain))
@@ -35,6 +36,12 @@
     [:div.actions
      [:button.btn.primary.add-button {:type "submit"}
       "Add"]]]])
+
+(defsection admin-index-block [Domain :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (into {})))
 
 (defsection index-block [Domain :html]
   [domains & _]

@@ -13,6 +13,7 @@
                                  admin-index-line
                                  admin-index-section
                                  admin-show-section control-line
+                                 bind-property
                                  pagination-links]]
          [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.tools.logging :as log]
@@ -343,40 +344,69 @@
 
 (defsection admin-show-section [User :html]
   [item & [response & _]]
-  [:div {:data-type "user" :data-id (:_id item)}
-   [:p (display-avatar item)]
-   [:p "Username: " (:username item)]
-   (let [domain (actions.user/get-domain item)]
-     [:p "Domain: " (link-to domain)])
-   [:p [:span "Bio: "]
-    [:span (if *dynamic*
-             {:data-bind "text: bio"})
-     (:bio item)]]
-   [:p "Location: " (:location item)]
-   [:p "Url: " (:url item)]
-   [:p "Id: " (:id item)]
-   [:p "Discovered: " (:discovered item)]
-   [:p "Created: " (:created item)]
-   [:p "Updated: " (:updated item)]
-   (when-let [source (-?> item :update-source model.feed-source/fetch-by-id)]
-     (link-to source))
-   [:table.table
-    [:thead
-     [:tr
-      [:th "title"]
-      [:th "rel"]
-      [:th "href"]
-      [:th "Actions"]]]
-    [:tbody
-     (map
-      (fn [link]
-        [:tr
-         [:td (:title link)]
-         [:td (:rel link)]
-         [:td (:href link)]
-         [:td (link-actions-section link)]])
-      (:links item))]]
-   (admin-actions-section item)])
+  (list
+   [:div (merge {:data-type "user"}
+                (if *dynamic*
+                  {:data-bind "with: $root.users()[$data]"}
+                  {:data-id (:_id item)}))
+    [:p (display-avatar item)]
+    [:p "Username: "
+     [:span (if *dynamic*
+              {:data-bind "text: username"}
+              (:username item))]]
+    [:div (if *dynamic*
+            {:data-bind "with: domain"})
+     (let [domain (actions.user/get-domain item)]
+       [:p "Domain: " (link-to domain)])]
+    [:p [:span "Bio: "]
+     [:span (if *dynamic*
+              (bind-property "bio")
+              (:bio item))]]
+    [:p "Location: "
+     [:span (if *dynamic*
+              (bind-property "location")
+              (:location item))]]
+    [:p "Url: "
+     [:span (if *dynamic*
+              (bind-property "url")
+              (:url item))]]
+    [:p "Id: "
+     [:span (if *dynamic*
+              (bind-property "id")
+              (:id item))]]
+    [:p "Discovered: "
+     [:span (if *dynamic*
+              (bind-property "discovered")
+              (:discovered item))]]
+    [:p "Created: "
+     [:span (if *dynamic*
+              (bind-property "created")
+              (:created item))]]
+    [:p "Updated: "
+     [:span (if *dynamic*
+              {:data-bind "text: updated"}
+              (:updated item))]]
+    [:div (bind-property "updateSource")
+     [:div {:data-bind "with: $root.feedSources()[$data]"}
+      (when-let [source (-?> item :update-source model.feed-source/fetch-by-id)]
+        (link-to source))]]
+    [:table.table
+     [:thead
+      [:tr
+       [:th "title"]
+       [:th "rel"]
+       [:th "href"]
+       [:th "Actions"]]]
+     [:tbody {:data-bind "foreach: links"}
+      (map
+       (fn [link]
+         [:tr
+          [:td {:data-bind "text: title"} (:title link)]
+          [:td {:data-bind "text: rel"} (:rel link)]
+          [:td {:data-bind "text: href"} (:href link)]
+          [:td (link-actions-section link)]])
+       (:links item))]]
+    (admin-actions-section item)]))
 
 
 (defsection title [User]
@@ -525,26 +555,26 @@
     [:span.nickname.fn.n
      [:span
       (if *dynamic*
-        {:data-bind "text: typeof($data.displayName) !== 'undefined' ? displayName : ''"}
+        (bind-property "displayName")
         (:display-name user))]]
     " ("
     [:span
      (if *dynamic*
-       {:data-bind "text: typeof($data.username) !== 'undefined' ? username : ''"}
+       (bind-property "username")
        (:username user))]
     "@"
     [:span
      (if *dynamic*
-       {:data-bind "text: typeof($data.domain) !== 'undefined' ? domain : ''"}
+       (bind-property "domain")
        (link-to (actions.user/get-domain user)))] ")"]
    [:div.adr
     [:p.locality
      (if *dynamic*
-       {:data-bind "text: typeof($data.location) !== 'undefined' ? location : ''"}
+       (bind-property "location")
        (:location user))]]
    [:p.note
     (if *dynamic*
-      {:data-bind "text: typeof($data.bio) !== 'undefined' ? bio : ''"}
+      (bind-property "bio")
       (:bio user))]
    ;; [:p [:a {:href (:id user)} (:id user)]]
    ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
