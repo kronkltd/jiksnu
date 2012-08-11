@@ -3,6 +3,7 @@
         [ciste.sections.default :only [title]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.user-actions :only [index show]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -39,7 +40,8 @@
      :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
-     (doall (list [:div {:data-bind "with: targetUser"}
+     (doall (list [:div
+                   (if *dynamic* {:data-bind "with: targetUser"})
                    (admin-show-section user)]
                   (admin-index-block (:items page) page)))}))
 

@@ -386,8 +386,9 @@
      [:span (if *dynamic*
               {:data-bind "text: updated"}
               (:updated item))]]
-    [:div (bind-property "updateSource")
-     [:div {:data-bind "with: $root.feedSources()[$data]"}
+    [:div (if *dynamic* (bind-property "updateSource"))
+     [:div (if *dynamic*
+             {:data-bind "with: $root.feedSources()[$data]"})
       (when-let [source (-?> item :update-source model.feed-source/fetch-by-id)]
         (link-to source))]]
     [:table.table
@@ -397,13 +398,13 @@
        [:th "rel"]
        [:th "href"]
        [:th "Actions"]]]
-     [:tbody {:data-bind "foreach: links"}
+     [:tbody (if *dynamic* {:data-bind "foreach: links"})
       (map
        (fn [link]
          [:tr
-          [:td {:data-bind "text: title"} (:title link)]
-          [:td {:data-bind "text: rel"} (:rel link)]
-          [:td {:data-bind "text: href"} (:href link)]
+          [:td (if *dynamic* {:data-bind "text: title"} (:title link))]
+          [:td (if *dynamic* {:data-bind "text: rel"} (:rel link))]
+          [:td (if *dynamic* {:data-bind "text: href"} (:href link))]
           [:td (link-actions-section link)]])
        (:links item))]]
     (admin-actions-section item)]))

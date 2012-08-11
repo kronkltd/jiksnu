@@ -96,7 +96,7 @@
      [:th "Topic"]
      [:th "Status"]
      [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody (if *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
 (defsection admin-index-block [FeedSource :viewmodel]
@@ -109,8 +109,9 @@
 
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
-  [:tr {:data-type "feed-source" :data-id (:_id item)
-        :data-bind "with: $root.feedSources()[$data]"}
+  [:tr (merge {:data-type "feed-source" :data-id (:_id item)}
+              (if *dynamic*
+                {:data-bind "with: $root.feedSources()[$data]"}))
    [:td (if *dynamic*
           {:data-bind "text: title"}
           (:title item))]

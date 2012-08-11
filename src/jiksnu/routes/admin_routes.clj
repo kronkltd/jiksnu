@@ -19,6 +19,7 @@
 (add-route! "/admin/conversations"     {:named "admin conversation index"})
 (add-route! "/admin/conversations/:id" {:named "admin show conversation"})
 (add-route! "/admin/feed-sources"      {:named "admin feed-source index"})
+(add-route! "/admin/users/:id"         {:named "admin show user"})
 
 (def admin-routes
   (make-matchers
@@ -83,7 +84,7 @@
     [[:get    "/admin/users.:format"]                     #'admin.user/index]
     [[:get    "/admin/users"]                             #'admin.user/index]
     [[:get    "/admin/users/:id.:format"]                 #'admin.user/show]
-    [[:get    "/admin/users/:id"]                         #'admin.user/show]
+    [[:get    (named-path "admin show user")]             #'admin.user/show]
 
     [[:get    "/admin/settings"]                          #'admin.setting/edit-page]
     [[:post   "/admin/settings"]                          #'admin.setting/update-settings]
