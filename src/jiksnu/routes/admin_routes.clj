@@ -1,5 +1,6 @@
 (ns jiksnu.routes.admin-routes
-  (:use [ciste.routes :only [make-matchers]])
+  (:use [ciste.routes :only [make-matchers]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]])
   (:require [jiksnu.actions.admin.activity-actions :as admin.activity]
             [jiksnu.actions.admin.auth-actions :as admin.auth]
             [jiksnu.actions.admin.conversation-actions :as admin.conversation]
@@ -14,26 +15,31 @@
             [jiksnu.actions.admin.worker-actions :as admin.worker]
             [jiksnu.actions.admin-actions :as admin]))
 
+(add-route! "/admin/activities"        {:named "admin activity index"})
+(add-route! "/admin/conversations"     {:named "admin conversation index"})
+(add-route! "/admin/conversations/:id" {:named "admin show conversation"})
+(add-route! "/admin/feed-sources"      {:named "admin feed-source index"})
+
 (def admin-routes
   (make-matchers
    [
     [[:get    "/admin"]                                   #'admin/index]
 
     [[:get    "/admin/activities.:format"]                #'admin.activity/index]
-    [[:get    "/admin/activities"]                        #'admin.activity/index]
+    [[:get    (named-path "admin activity index")]        #'admin.activity/index]
 
     [[:get    "/admin/auth"]                              #'admin.auth/index]
 
-    [[:get    "/admin/conversations"]                     #'admin.conversation/index]
+    [[:get    (named-path "admin conversation index")]    #'admin.conversation/index]
     [[:get    "/admin/conversations.:format"]             #'admin.conversation/index]
-    [[:post   "/admin/conversations"]                     #'admin.conversation/create]
-    [[:get    "/admin/conversations/:id"]                 #'admin.conversation/show]
+    [[:post   (named-path "admin conversation index")]    #'admin.conversation/create]
+    [[:get    (named-path "admin show conversation")]     #'admin.conversation/show]
     [[:get    "/admin/conversations/:id.:format"]         #'admin.conversation/show]
     [[:post   "/admin/conversations/:id/update"]          #'admin.conversation/fetch-updates]
     [[:post   "/admin/conversations/:id/delete"]          #'admin.conversation/delete]
 
     [[:get    "/admin/feed-sources.:format"]              #'admin.feed-source/index]
-    [[:get    "/admin/feed-sources"]                      #'admin.feed-source/index]
+    [[:get    (named-path "admin feed-source index")]     #'admin.feed-source/index]
     [[:get    "/admin/feed-sources/:id.:format"]          #'admin.feed-source/show]
     [[:get    "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
     [[:post   "/admin/feed-sources/:id/delete"]           #'admin.feed-source/delete]
