@@ -90,6 +90,7 @@
   :plugins [
                [lein-cljsbuild "0.2.4"]
                [lein-cucumber "1.0.0"]  
+               [lein-lesscss "1.2"]
                [lein-midje "2.0.0-SNAPSHOT"]
 
             ]
