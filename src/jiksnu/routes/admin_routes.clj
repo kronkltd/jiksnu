@@ -17,8 +17,10 @@
 
 (add-route! "/admin/activities"        {:named "admin activity index"})
 (add-route! "/admin/conversations"     {:named "admin conversation index"})
-(add-route! "/admin/conversations/:id" {:named "admin show conversation"})
 (add-route! "/admin/feed-sources"      {:named "admin feed-source index"})
+
+(add-route! "/admin/conversations/:id" {:named "admin show conversation"})
+(add-route! "/admin/feed-sources/:id"  {:named "admin show feed-source"})
 (add-route! "/admin/users/:id"         {:named "admin show user"})
 
 (def admin-routes
@@ -42,7 +44,7 @@
     [[:get    "/admin/feed-sources.:format"]              #'admin.feed-source/index]
     [[:get    (named-path "admin feed-source index")]     #'admin.feed-source/index]
     [[:get    "/admin/feed-sources/:id.:format"]          #'admin.feed-source/show]
-    [[:get    "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
+    [[:get    (named-path "admin show feed-source")]      #'admin.feed-source/show]
     [[:post   "/admin/feed-sources/:id/delete"]           #'admin.feed-source/delete]
     [[:post   "/admin/feed-sources/:id/unsubscribe"]      #'admin.feed-source/remove-subscription]
     [[:post   "/admin/feed-sources/:id/update"]           #'admin.feed-source/fetch-updates]

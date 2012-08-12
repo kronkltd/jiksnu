@@ -24,6 +24,12 @@
 (declare-section subscriptions-block :seq)
 (declare-section subscriptions-line)
 
+(defn actions-section
+  [subscription]
+  [:ul
+   [:li (delete-button subscription)]])
+
+
 (defn ostatus-sub-form
   []
   [:form {:method "post"
@@ -53,11 +59,11 @@
            (count subscriptions))]]
        [:ul.unstyled
         (map (fn [subscription]
-               [:li (sections.user/display-avatar (if *dynamic*
-                                                    (User.)
-                                                    (model.subscription/get-actor (log/spy subscription))) "24")]
-               )
-             (log/spy subscriptions))]])))
+               (let [user (if *dynamic*
+                            (User.)
+                            (model.subscription/get-actor subscription))]
+                 [:li (sections.user/display-avatar user "24")]))
+             subscriptions)]])))
 
 (defn subscriptions-widget
   [user]
@@ -88,7 +94,7 @@
    [:td (:created subscription)]
    [:td (:pending subscription)]
    [:td (:local subscription)]
-   [:td (delete-button subscription)]])
+   [:td (actions-section subscription)]])
 
 (defsection admin-index-line [Subscription :viewmodel]
   [item & [page]]
@@ -107,7 +113,7 @@
      [:th "Created"]
      [:th "pending"]
      [:th "local"]
-     [:th "Delete"]]]
+     [:th "Actions"]]]
    [:tbody
     (map #(admin-index-line % options) items)]])
 

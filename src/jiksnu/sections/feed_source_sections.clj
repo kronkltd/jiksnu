@@ -1,7 +1,8 @@
 (ns jiksnu.sections.feed-source-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line index-block
-                                       index-section link-to update-button]]
+                                       index-section link-to title update-button]]
+        [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line]])
   (:require [clojure.tools.logging :as log]
@@ -112,9 +113,12 @@
   [:tr (merge {:data-type "feed-source" :data-id (:_id item)}
               (if *dynamic*
                 {:data-bind "with: $root.feedSources()[$data]"}))
-   [:td (if *dynamic*
-          {:data-bind "text: title"}
-          (:title item))]
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: '/admin/feed-sources/' + _id}, text: title"}
+          {:title (:title item) :href (named-path "admin show feed-source" {:id (:_id item)})})
+     (when-not *dynamic*
+       (:title item))]]
    [:td (if *dynamic*
           {:data-bind "text: domain"}
           (:domain item))]
@@ -127,7 +131,7 @@
           {:data-bind "text: status"}
           (:status item))]
 
-
+   [:td (actions-section item)]
    ])
 
 
@@ -143,6 +147,10 @@
 (defsection admin-show-section [FeedSource]
   [item & [page]]
   item)
+
+(defsection admin-show-section [FeedSource :html]
+  [item & [page]]
+  (show-section item))
 
 ;; delete-button
 
@@ -194,21 +202,46 @@
   [source & options]
   (let [{:keys [topic callback challenge mode hub
                 verify-token lease-seconds created updated]} source]
-    [:div
-     [:p "Id: " (:_id source)]
-     [:p "Title: " (:title source)]
-     [:p "Topic: " topic]
-     [:p "Hub: " hub]
-     [:p "Callback: " callback]
-     [:p "Challenge: " challenge]
-     [:p "Mode: " (or mode "unknown")]
-     [:p "Status: " (:status source)]
-     [:p "Subscription Status: " (:subscription-status source)]
-     [:p "Verify Token: " verify-token]
-     [:p "Created: " created]
-     [:p "Updated: " updated]
-     [:p "Lease Seconds: " lease-seconds]
-     (actions-section source)]))
+    (list [:table.table
+           [:tbody 
+            [:tr
+             [:th "Topic: "]
+             [:td [:a {:href topic} topic]]]
+            [:tr
+             [:th "Hub: "]
+             [:td [:a {:href hub} hub]]]
+            [:tr
+             [:th "Callback: "]
+             [:td callback]]
+            [:tr
+             [:th  "Challenge: "]
+             [:td challenge]]
+            [:tr
+             [:th "Mode: "]
+             [:td (or mode "unknown")]]
+            [:tr
+             [:th "Status: "]
+             [:td (:status source)]]
+            [:tr
+             [:th "Subscription Status: "]
+             [:td (:subscription-status source)]]
+            [:tr
+             [:th "Verify Token: "]
+             [:td verify-token]]
+            [:tr
+             [:th "Created: "]
+             [:td created]]
+            [:tr
+             [:th "Updated: "]
+             [:td updated]]
+            [:tr
+             [:th "Lease Seconds: "]
+             [:td lease-seconds]]]]
+          (actions-section source))))
+
+(defsection title [FeedSource]
+  [item & _]
+  (:title item))
 
 (defsection update-button [FeedSource :html]
   [activity & _]
