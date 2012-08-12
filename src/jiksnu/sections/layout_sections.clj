@@ -267,10 +267,11 @@
            (str (when (:title response)
                   (str (:title response) " - "))
                 (config :site :name)))]
-        (p/include-css "/assets/js/bootstrap-2.4.0/css/bootstrap.min.css"
-                       "/assets/js/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
+        (p/include-css "/assets/styles/bootstrap.min.css"
+                       "/assets/styles/bootstrap-responsive.min.css"
                        "/assets/themes/classic/standard.css"
-                       "/assets/js/google-code-prettify/src/prettify.css")
+                       ;; "/assets/js/google-code-prettify/src/prettify.css"
+                       )
         (links-section request response)))
 
 (defn scripts-section
@@ -287,7 +288,7 @@
      "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
      "/assets/js/knockout-2.1.0.min.js"
      "/assets/js/bootstrap-2.4.0.min.js"
-     "/assets/js/google-code-prettify/src/prettify.js"
+     ;; "/assets/js/google-code-prettify/src/prettify.js"
      "/assets/js/knockout.mapping.js"
      ;; "/assets/js/require.min.js"
      "/assets/js/backbone-0.9.2.min.js"
