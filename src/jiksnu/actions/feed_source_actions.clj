@@ -5,6 +5,7 @@
         [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -144,17 +145,19 @@
   "Fetch updates for the source"
   [source]
   (let [{:keys [topic]} source]
-    (log/debugf "Fetching feed: %s" topic)
-    (let [feed (abdera/fetch-feed topic)
-          feed-title (.getTitle feed)]
-      (when-not (= feed-title (:title source))
-        (model.feed-source/set-field! source :title feed-title))
-      (mark-updated source)
-      (if-let [hub-link (-?> feed (.getLink "hub")
-                             .getHref str)]
-        (model.feed-source/set-field! source :hub hub-link))
-      (process-entries feed)
-      source)))
+    (task
+     (log/debugf "Fetching feed: %s" topic)
+     (let [feed (abdera/fetch-feed topic)
+                feed-title (.getTitle feed)]
+            (when-not (= feed-title (:title source))
+              (log/info "updating title")
+              (model.feed-source/set-field! source :title feed-title))
+            (mark-updated source)
+            (if-let [hub-link (-?> feed (.getLink "hub")
+                                   .getHref str)]
+              (model.feed-source/set-field! source :hub hub-link))
+            (process-entries feed)))
+    source))
 
 (defaction add-watcher
   [source user]

@@ -61,3 +61,10 @@
    :body (list (admin-show-section source)
                (index-watchers source)
                (add-watcher-form source))})
+
+(defview #'show :viewmodel
+  [request source]
+  {:body {:title (title source)
+          :items [(:_id source)]
+          :feedSources (admin-index-section [source])}})
+

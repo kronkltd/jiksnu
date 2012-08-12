@@ -9,7 +9,8 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.model.domain :as model.domain]))
+            [jiksnu.model.domain :as model.domain])
+  (:import jiksnu.model.Activity))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
@@ -43,13 +44,16 @@
      (doall (list [:div
                    (if *dynamic* {:data-bind "with: targetUser"})
                    (admin-show-section user)]
-                  (admin-index-block (:items page) page)))}))
+                  (admin-index-block (if *dynamic*
+                                       [(Activity.)]
+                                       (:items page)) page)))}))
 
 (defview #'show :viewmodel
   [request user]
   (let [activities (actions.activity/find-by-user user)]
     {:body
      {:users (doall (admin-index-section [user]))
+      :title (title user)
       :targetUser (:_id user)
       :domains (doall (admin-index-section [(-> user
                                                 :domain

@@ -402,11 +402,13 @@
       (map
        (fn [link]
          [:tr
-          [:td (if *dynamic* {:data-bind "text: title"} (:title link))]
-          [:td (if *dynamic* {:data-bind "text: rel"} (:rel link))]
-          [:td (if *dynamic* {:data-bind "text: href"} (:href link))]
+          [:td (if *dynamic* (bind-property "title") (:title link))]
+          [:td (if *dynamic* (bind-property "rel") (:rel link))]
+          [:td (if *dynamic* (bind-property "href") (:href link))]
           [:td (link-actions-section link)]])
-       (:links item))]]
+       (if *dynamic*
+         [{}]
+         (:links item)))]]
     (admin-actions-section item)]))
 
 
@@ -628,7 +630,8 @@
 
 (defsection show-section [User :viewmodel]
   [item & [page]]
-  (->> (dissoc (dissoc item :links) :_id)
+  (->> #_(dissoc (dissoc item :links) :_id)
+       item
        (map (fn [[k v]] [(camelize (name k) :lower)
                         v]))
        (into {})))
