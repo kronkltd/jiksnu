@@ -1,26 +1,19 @@
 body {
-    /* font-color: black; */
-    /* background-color: #4444ee; */
     padding-top: 50px;
-    /* margin: 0; */
 }
 
 h1 {
     margin-bottom: 15px;
 }
 
-/* .container, .container-fluid { */
-/*     width: 940px; */
-
-/* } */
-
-/* .post-actions { */
-/*     float: right; */
-/* } */
-
 .post-actions li form {
     margin: 0;
 }
+
+.buttons > li {
+    display: inline-block;
+}
+
 
 .button-text, .minimal-text {
     display: none;
@@ -39,55 +32,53 @@ article {
     padding-left: 60px;
     padding-bottom: 10px;
     margin-bottom: 20px;
-/*     width: 100%; */
-}
 
-article .photo
-{
-    position: absolute;
-    top: 3px;
-    left: 0;
+
+    .photo {
+        position: absolute;
+        top: 3px;
+        left: 0;
+    }
 }
 
 .comments {
     margin-left: -35px;
+
+    .comment {
+        display: block;
+        position: relative;
+        padding-left: 60px;
+        min-height: 50px;
+    }
 }
 
-.comment {
-    display: block;
-    position: relative;
-    padding-left: 60px;
-    min-height: 50px;
+.tags {
+    ul {
+        display: inline;
+        padding: 0;
+    }
+
+    li {
+        list-style-type: none;
+        display: inline;
+        margin-left: 1em;
+    }
 }
 
-.tags ul {
-    display: inline;
-    padding: 0;
-}
+.subscriptions {
+    ul {
+        padding: 0;
+        margin: 0;
+    }
 
-.tags li {
-    list-style-type: none;
-    display: inline;
-    margin-left: 1em;
-}
+    li {
+        display: inline;
+        margin-right: 5px;
+    }
 
-.buttons > li {
-    /* width: 30px; */
-    display: inline-block;
-}
-
-.subscriptions ul {
-    padding: 0;
-    margin: 0;
-}
-
-.subscriptions li {
-    display: inline;
-    margin-right: 5px;
-}
-
-.subscriptions p {
-    display: block;
+    p {
+        display: block;
+    }
 }
 
 .labels
@@ -107,12 +98,14 @@ article .photo
     left: 0;
     width: 30px;
     display: inline-block;
+
+
+    /* this isn't working */
+    img {
+        margin: 0 auto;
+    }
 }
 
-/* this isn't working */
-.format-icon img {
-    margin: 0 auto;
-}
 
 .post-form legend {
     display: none;
