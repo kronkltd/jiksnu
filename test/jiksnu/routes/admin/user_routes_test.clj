@@ -29,7 +29,7 @@
               (fact
                 (let [body (:body response)]
                   body => (re-pattern (:username user))
-                  (let [doc (hiccup->doc (log/spy body))]
+                  (let [doc (hiccup->doc body)]
                     (-> doc
                         (enlive/select [:.user])) => truthy))))))))
  )
