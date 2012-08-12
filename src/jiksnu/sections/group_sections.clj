@@ -3,7 +3,9 @@
         [ciste.sections.default :only [add-form link-to index-section
                                        index-block  index-line show-section]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-show-section admin-index-section control-line admin-index-block admin-index-line]])
+        [jiksnu.sections :only [admin-show-section admin-index-block
+                                admin-index-line admin-index-section
+                                bind-property control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Group))
@@ -62,15 +64,15 @@
                 {:data-bind "with: $root.groups()[$data]"}))
    [:td
     (if *dynamic*
-      {:data-bind "text: nickname"}
+      (bind-property "nickname")
       (:nickname group))]
    [:td
     (if *dynamic*
-      {:data-bind "text: fullname"}
+      (bind-property "fullname")
       (:fullname group))]
    [:td
     (if *dynamic*
-      {:data-bind "text: homepage"}
+      (bind-property "homepage")
       (:homepage group))]])
 
 ;; admin-index-section
@@ -124,7 +126,8 @@
                 (:nickname group))] ")"]]]
     [:a.url
      (if *dynamic*
-       {:data-bind "attr: {href: homepage}, text: hompage"}
+       {:data-bind "attr: {href: typeof($data.homepage) !== 'undefined' ? homepage : ''},
+                    text:  typeof($data.homepage) !== 'undefined' ? homepage : ''"}
        {:href (:homepage group)})
      (when-not *dynamic*
        (:homepage group))]

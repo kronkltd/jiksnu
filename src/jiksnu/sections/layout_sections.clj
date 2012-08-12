@@ -230,11 +230,9 @@
   [:div.navbar.navbar-fixed-top
    [:div.navbar-inner
     [:div.container-fluid
-     [:a.brand.home (merge {:href "/" :rel "top"}
-                           (when *dynamic*
-                             {:data-bind "text: site().name"}))
-      (when-not *dynamic*
-        (config :site :name))]
+     [:a.brand.home {:href "/" :rel "top"}
+      (config :site :name)]
+     ;; (navbar-search-form)
      [:ul.nav.pull-right (sections.auth/login-section response)]
      [:div.navbar-text.connection-info.pull-right]
      [:div.navbar-text.pull-right
@@ -269,10 +267,10 @@
            (str (when (:title response)
                   (str (:title response) " - "))
                 (config :site :name)))]
-        (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
-                       "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
+        (p/include-css "/assets/js/bootstrap-2.4.0/css/bootstrap.min.css"
+                       "/assets/js/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
                        "/assets/themes/classic/standard.css"
-                       "/assets/google-code-prettify/src/prettify.css")
+                       "/assets/js/google-code-prettify/src/prettify.css")
         (links-section request response)))
 
 (defn scripts-section
@@ -283,16 +281,22 @@
      (format
       "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
     (p/include-js
-     "/assets/web-socket-js/swfobject.js"
-     "/assets/web-socket-js/web_socket.js"
-     "http://code.jquery.com/jquery-1.7.1.js"
+     "/assets/js/modernizr-2.6.1.js"
+     "/assets/js/underscore-1.3.3.min.js"
+     "/assets/js/swfobject-2.2.min.js"
+     "/assets/js/web-socket-js/web_socket.js"
+     "/assets/js/jquery-1.8.0.min.js"
      "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
-     "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
+     "/assets/js/knockout-2.1.0.min.js"
      ;; "/assets/js/knockout/build/output/knockout-latest.debug.js"
-     "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
+     "/assets/js/bootstrap-2.4.0.min.js"
      ;; "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"
-     "/assets/google-code-prettify/src/prettify.js"
-     "/assets/knockout.mapping.js"
+     "/assets/js/google-code-prettify/src/prettify.js"
+     "/assets/js/knockout.mapping.js"
+     ;; "/assets/js/require.min.js"
+     "/assets/js/backbone-0.9.2.min.js"
+     "/assets/js/knockback-0.15.4.min.js"
+
      "/assets/js/jiksnu.js"
      )
     [:script {:type "text/javascript"}
