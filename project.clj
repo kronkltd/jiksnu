@@ -86,6 +86,7 @@
               [[midje "1.4.0"]
                [ring-mock "0.1.1"]
                [clj-webdriver "0.6.0-alpha10"]]}}
+  :lesscss-output-path "resources/public/assets/themes/classic/"
 
   :plugins [
                [lein-cljsbuild "0.2.4"]
