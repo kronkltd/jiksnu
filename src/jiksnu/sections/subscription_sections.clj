@@ -3,13 +3,16 @@
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
                                        index-block index-section link-to show-section]]
-            [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [control-line admin-index-block admin-index-line admin-index-section]])
+        [clojurewerkz.route-one.core :only [named-path]]
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [control-line admin-index-block
+                                admin-index-line admin-index-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.user-sections :as sections.user])
-  (:import jiksnu.model.Subscription))
+  (:import jiksnu.model.Subscription
+           jiksnu.model.User))
 
 ;; subscriptions where the user is the target
 (declare-section subscribers-section :seq)
@@ -39,14 +42,13 @@
       [:div.subscribers #_(when *dynamic*
                           {:data-bind "with: currentUser"})
        [:h3
-        ;; subscribers link
         [:a
-         #_(if *dynamic*
+         (if *dynamic*
            {:data-bind "attr: {href: url + '/subscribers}" :href "#"}
-           {:href (str (full-uri user) "/subscribers")})
+           {:href (named-path "user subscribers" {:id (:_id user)})})
          "Followers"] " "
         [:span
-         #_(if *dynamic*
+         (if *dynamic*
            {:data-bind "text: subscriptionCount"}
            (count subscriptions))]]
        [:ul.unstyled
@@ -69,14 +71,10 @@
   [subscription & [options & _]]
   [:tr {:data-type "subscription" :data-id (str (:_id subscription))}
    [:td (link-to subscription)]
-   [:td (if-let [user (try (model.subscription/get-actor subscription)
-                           (catch RuntimeException ex
-                             (log/warn "could not find actor")))]
+   [:td (if-let [user (model.subscription/get-actor subscription)]
           (link-to user)
           "unknown")]
-   [:td (if-let [user (try (model.subscription/get-target subscription )
-                           (catch RuntimeException ex
-                             (log/warn "could not find target")))]
+   [:td (if-let [user (model.subscription/get-target subscription)]
           (link-to user)
           "unknown")]
    [:td (:created subscription)]
@@ -144,14 +142,12 @@
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]
   [:li.subscription
-   (merge {:data-id (:_id item) :data-type "subscription"}
-          #_(if *dynamic*
-            {:data-bind "text: id"}))
-   (when-not *dynamic*
-     (if-let [user (try (model.subscription/get-target item)
-                        (catch RuntimeException ex nil))]
-       (link-to user)
-       "unknown"))])
+   (merge {:data-id (:_id item) :data-type "subscription"})
+   (if-let [user (if *dynamic*
+                   (User.)
+                   (model.subscription/get-target item))]
+     (show-section user)
+     "unknown")])
 
 (defsection subscriptions-block [Subscription :html]
   [items & [options & _]]
@@ -166,10 +162,8 @@
 (defsection subscribers-line [Subscription :html]
   [item & [options & _]]
   [:li.subscription {:data-id (:_item item) :data-type "subscription"}
-   (if-let [user (try
-                   (model.subscription/get-actor item)
-                   (catch RuntimeException ex nil))]
-     (link-to user)
+   (if-let [user (model.subscription/get-actor item)]
+     (show-section user)
      "unknown")])
 
 (defsection subscribers-block [Subscription :html]
