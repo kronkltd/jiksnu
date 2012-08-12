@@ -466,8 +466,7 @@
    [:td (when-not *dynamic*
           (if (-> activity :public) "public" "private"))]
    [:td (if *dynamic* {:data-bind "text: title"} (:title activity))]
-   [:td (when-not *dynamic*
-          (post-actions activity))]])
+   [:td (post-actions activity)]])
 
 ;; admin-index-section
 

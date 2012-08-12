@@ -44,15 +44,20 @@
        [:h3
         [:a
          (if *dynamic*
-           {:data-bind "attr: {href: url + '/subscribers}" :href "#"}
+           {:data-bind "attr: {href: url + '/subscribers'}" :href "#"}
            {:href (named-path "user subscribers" {:id (:_id user)})})
          "Followers"] " "
         [:span
          (if *dynamic*
-           {:data-bind "text: subscriptionCount"}
+           {:data-bind "text: $root.subscriptions().length"}
            (count subscriptions))]]
        [:ul.unstyled
-        [:li (map subscribers-line subscriptions)]]])))
+        (map (fn [subscription]
+               [:li (sections.user/display-avatar (if *dynamic*
+                                                    (User.)
+                                                    (model.subscription/get-actor (log/spy subscription))) "24")]
+               )
+             (log/spy subscriptions))]])))
 
 (defn subscriptions-widget
   [user]
@@ -61,7 +66,10 @@
       [:div.subscriptions
        [:h3
         [:a {:href (str (full-uri user) "/subscriptions")} "Following"] " " (count subscriptions)]
-       [:ul (map subscriptions-line subscriptions)]
+       [:ul (map (fn [subscription]
+                   [:li (sections.user/display-avatar (if *dynamic*
+                                                        (User.)
+                                                        (model.subscription/get-target subscription)) "24")]) subscriptions)]
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
