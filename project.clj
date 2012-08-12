@@ -22,7 +22,6 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-alpha4"]
-                 ;; [lamina "0.5.0-alpha3"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
                  [net.kronkltd/waltz "0.1.2-SNAPSHOT"]
@@ -66,33 +65,26 @@
                 :compiler
                 {:output-to "resources/public/assets/js/jiksnu.advanced.js"
                  :output-dir "target/cljsout/advanced"
-                 :optimizations :advanced                }}]}
+                 :optimizations :advanced}}]}
   :main ciste.runner
   :jvm-opts [
              "-server"
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"
              ]
-  :repositories {
-                 ;; "java-dot-net"          "http://download.java.net/maven/2"
-                 "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
-                 "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"
-                 }
+  :repositories {"sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
+                 "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"}
   :warn-on-reflection false
 
   :profiles {:dev
-             {
-              :dependencies
+             {:dependencies
               [[midje "1.4.0"]
                [ring-mock "0.1.1"]
                [clj-webdriver "0.6.0-alpha10"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
-  :plugins [
-               [lein-cljsbuild "0.2.4"]
-               [lein-cucumber "1.0.0"]  
-               [lein-lesscss "1.2"]
-               [lein-midje "2.0.0-SNAPSHOT"]
-
-            ]
+  :plugins [[lein-cljsbuild "0.2.4"]
+            [lein-cucumber "1.0.0"]  
+            [lein-lesscss "1.2"]
+            [lein-midje "2.0.0-SNAPSHOT"]]
   )
