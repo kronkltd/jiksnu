@@ -32,7 +32,8 @@
             [jiksnu.model.user :as model.user]
             [plaza.rdf.core :as rdf]
             [ring.util.codec :as codec])
-  (:import jiksnu.model.User
+  (:import jiksnu.model.Domain
+           jiksnu.model.User
            org.apache.abdera2.model.Entry))
 
 (defn user-timeline-link
@@ -290,9 +291,8 @@
      [:th "User"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
-    (if *dynamic*
-      (admin-index-line (User.) page)
+   [:tbody (when *dynamic* {:data-bind "foreach: _.map(items(), getUser)"})
+    (let [items (if *dynamic* [(User.)] items)]
       (map #(admin-index-line % page) items))]])
 
 (defsection admin-index-block [User :viewmodel]
@@ -305,12 +305,11 @@
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
-  [:tr (merge {:data-id (:_id user) :data-type "user"}
-              (when *dynamic*
-                {:data-bind "with: $root.users()[$data]"}))
-   [:td
-    (when-not *dynamic*
-      (display-avatar user))]
+  [:tr (merge {:data-type "user"}
+              (if *dynamic*
+                {:data-bind "attr: {'data-id': _id}"}
+                {:data-id (:_id user)}))
+   [:td (display-avatar user)]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/users/' + $parent}, text: $parent"}
@@ -321,11 +320,9 @@
     (if *dynamic*
       {:data-bind "text: username"}
       (link-to user))]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: domain"}
-      (let [domain (actions.user/get-domain user)]
-        (link-to domain)))]
+   [:td {:data-bind "with: domain"}
+    (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
+      (link-to domain))]
    [:td
     (when-not *dynamic*
       (admin-actions-section user page))]])
@@ -347,7 +344,7 @@
   (list
    [:div (merge {:data-type "user"}
                 (if *dynamic*
-                  {:data-bind "with: $root.users()[$data]"}
+                  {:data-bind "attr: {'data-id': _id}"}
                   {:data-id (:_id item)}))
     [:p (display-avatar item)]
     [:p "Username: "
@@ -355,8 +352,10 @@
               {:data-bind "text: username"}
               (:username item))]]
     [:div (if *dynamic*
-            {:data-bind "with: domain"})
-     (let [domain (actions.user/get-domain item)]
+            {:data-bind "with: getDomain(domain)"})
+     (let [domain (if *dynamic*
+                    (Domain.)
+                    (actions.user/get-domain item))]
        [:p "Domain: " (link-to domain)])]
     [:p [:span "Bio: "]
      [:span (if *dynamic*

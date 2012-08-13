@@ -1,5 +1,6 @@
 (ns jiksnu.model
-  (:require [jiksnu.ko :as ko])
+  (:require [jiksnu.ko :as ko]
+            [jiksnu.logging :as log])
 
   (:use-macros [jiksnu.macros :only [defvar]])
   )
@@ -76,4 +77,16 @@
     (aset "dismissNotification"
           (fn [self]
             (log/info self)
-            (.remove (.-notifications this) self)))))
+            (.remove (.-notifications this) self)))
+
+    (aset "getDomain"
+          (fn [id]
+            (log/info id)
+            (aget (.domains this) id)))
+
+    (aset "getUser"
+          (fn [id]
+            (log/info id)
+            (aget (.users this) id)))
+
+    ))
