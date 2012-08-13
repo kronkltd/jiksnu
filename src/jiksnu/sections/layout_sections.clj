@@ -289,7 +289,7 @@
      "/assets/js/knockout-2.1.0.min.js"
      "/assets/js/bootstrap-2.4.0.min.js"
      ;; "/assets/js/google-code-prettify/src/prettify.js"
-     "/assets/js/knockout.mapping.js"
+     "/assets/js/knockout.mapping-2.2.3.js"
      ;; "/assets/js/require.min.js"
      "/assets/js/backbone-0.9.2.min.js"
      "/assets/js/knockback-0.15.4.min.js"
