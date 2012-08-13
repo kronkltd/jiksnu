@@ -140,24 +140,24 @@
                   "email" "email"
                   :value (:email user))
 
-    [:div.clearfix
-     [:label {:for "bio"} "Bio"]
-     [:div.input
+    [:div.control-group
+     [:label.control-label {:for "bio"} "Bio"]
+     [:div.controls
       [:textarea {:name "bio"}
        (:bio user)]]]
 
-    [:div.clearfix
-     [:label {:for "location"} "Location"]
-     [:div.input
+    [:div.control-group
+     [:label.control-label {:for "location"} "Location"]
+     [:div.controls
       [:input {:type "text" :name "location" :value (:location user)}]]]
 
-    [:div.clearfix
-     [:label {:for "url"} "Url"]
-     [:div.input
+    [:div.control-group
+     [:label.control-label {:for "url"} "Url"]
+     [:div.controls
       [:input {:type "text" :name "url" :value (:url user)}]]]
 
-    [:div.actions
-     [:input.btn.primary {:type "submit" :value "submit"}]]]]
+    [:div.controls
+     [:input.btn.btn-primary {:type "submit" :value "submit"}]]]]
   
   )
 
@@ -607,6 +607,7 @@
           [[ns/foaf :title]                   (rdf/l (str display-name "'s Profile"))]
           [[ns/foaf :maker]                   user-uri]
           [[ns/foaf :primaryTopic]            user-uri]])
+
        (with-subject user-uri
          (concat [[[ns/rdf  :type]                  [ns/foaf :Person]]
                   [[ns/foaf :weblog]                (rdf/rdf-resource (full-uri user))]
@@ -620,13 +621,16 @@
                  (when display-name [[[ns/foaf :name]                        (rdf/l display-name)]])
                  (when first-name   [[[ns/foaf :givenName]                   (rdf/l first-name)]])
                  (when last-name    [[[ns/foaf :familyName]                  (rdf/l last-name)]])))
-       (when mkp (show-section mkp))
+
+       ;; (when mkp (show-section mkp)))
+
        (with-subject acct-uri
          [[[ns/rdf  :type]                    [ns/sioc "UserAccount"]]
           [[ns/foaf :accountServiceHomepage]  (rdf/rdf-resource (full-uri user))]
           [[ns/foaf :accountName]             (rdf/l (:username user))]
           [[ns/foaf :accountProfilePage]      (rdf/rdf-resource (full-uri user))]
-          [[ns/sioc :account_of]              user-uri]])))))
+          [[ns/sioc :account_of]              user-uri]])
+       ))))
 
 (defsection show-section [User :viewmodel]
   [item & [page]]

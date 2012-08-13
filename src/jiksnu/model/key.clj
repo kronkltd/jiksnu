@@ -1,5 +1,6 @@
 (ns jiksnu.model.key
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [monger.collection :as mc])
   (:import java.net.URI
@@ -39,7 +40,7 @@
 
 (defn get-user
   [key]
-  (model.user/fetch-by-id (:user key)))
+  (model.user/fetch-by-id (:userid key)))
 
 (defn get-keystore
   ([] (get-keystore "JKS"))
@@ -183,7 +184,9 @@
 (defn get-key-for-user-id
   "Fetch keypair by user id"
   [^ObjectId id]
-  (mc/find-one-as-map collection-name {:userid id}))
+  (if-let [key (mc/find-one-as-map collection-name {:userid id})]
+    (model/map->Key key)
+    (log/warnf "Could not find key with id: %s" id)))
 
 (defn get-key-for-user
   [^User user]
@@ -238,7 +241,7 @@
 (defn fetch-all
   ([] (fetch-all {} {}))
   ([params opts]
-     (mc/find-maps collection-name params)))
+     (map model/map->Key (mc/find-maps collection-name params))))
 
 (defn count-records
   ([] (count-records {}))
