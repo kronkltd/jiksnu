@@ -54,7 +54,7 @@
                 :compiler
                 {:output-to "resources/public/assets/js/jiksnu.js"
                  :output-dir "target/cljsout/simple"
-                 :optimizations :simple
+                 :optimizations :whitespace
                  :pretty-print true}}
                #_{:source-path "src-cljs"
                 :compiler

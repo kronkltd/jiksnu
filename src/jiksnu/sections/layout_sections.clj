@@ -144,9 +144,8 @@
   (let [user (or (:user response)
                  (current-user))]
     (list
-     [:div (if *dynamic* {:data-bind "with: currentUser"})
-      [:div (if *dynamic* {:data-bind "with: $root.users()[$data]"})
-       (user-info-section user)]]
+     [:div (when *dynamic* {:data-bind "with: $root.getUser(currentUser)"})
+      (user-info-section user)]
      (:aside response))))
 
 (defn devel-warning

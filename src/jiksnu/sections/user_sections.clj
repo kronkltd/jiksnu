@@ -291,7 +291,7 @@
      [:th "User"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: _.map(items(), getUser)"})
+   [:tbody (when *dynamic* {:data-bind "foreach: _.map($root.items(), function (id) {return $root.getUser(id)})"})
     (let [items (if *dynamic* [(User.)] items)]
       (map #(admin-index-line % page) items))]])
 
@@ -312,7 +312,7 @@
    [:td (display-avatar user)]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/users/' + $parent}, text: $parent"}
+          {:data-bind "attr: {href: '/admin/users/' + _id}, text: _id"}
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
@@ -320,7 +320,7 @@
     (if *dynamic*
       {:data-bind "text: username"}
       (link-to user))]
-   [:td {:data-bind "with: domain"}
+   [:td {:data-bind "with: $root.getDomain($data.domain)"}
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
    [:td
@@ -448,7 +448,7 @@
   [:table.table.users
    [:thead]
    [:tbody (merge {:data-bag "users"}
-                  (when *dynamic* {:data-bind "foreach: items"}))
+                  (when *dynamic* {:data-bind "foreach: _.map($root.items(), function (id) {return $root.getUser(id)})"}))
     ;; TODO: handle this higher up
     (let [users (if *dynamic* [(User.)] users)]
       (map #(index-line % page) users))]])
@@ -463,8 +463,10 @@
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr (merge {:data-id (:_id user) :data-type "user"}
-              (when *dynamic* {:data-bind "with: $root.users()[$data]"}))
+  [:tr (merge {:data-type "user"}
+              (if *dynamic*
+                {}
+                {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
     ;; TODO: call a show section here?

@@ -436,8 +436,7 @@
      [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody (if *dynamic*
-             {:data-bind "foreach: items"})
+   [:tbody (when *dynamic* {:data-bind "foreach: _.map($root.items(), function (id) {return $root.getActivity(id)})"})
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -450,15 +449,11 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr (merge {:data-type "activity" :data-id (:_id activity)}
-              (if *dynamic*
-                {:data-bind "with: $root.activities()[$data]"}))
-   [:td (if *dynamic* {:data-bind "with: author"})
-    [:div (if *dynamic*
-            {:data-bind "with: $root.users()[$data]"})
-     (link-to (if *dynamic*
-                (User.)
-                (actions.activity/get-author activity)))]]
+  [:tr {:data-type "activity" :data-id (:_id activity)}
+   [:td (if *dynamic* {:data-bind "with: $root.getUser($data.author)"})
+    (link-to (if *dynamic*
+               (User.)
+               (actions.activity/get-author activity)))]
    [:td (if *dynamic*
           {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
@@ -506,7 +501,7 @@
   [records & [options & _]]
   [:div.activities
    (if *dynamic*
-     {:data-bind "foreach: items"})
+     {:data-bind "foreach: _.map(items(), function (id) {return $root.getActivity(id);})"})
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -534,6 +529,10 @@
 
 
 (defsection index-line [Activity]
+  [activity & [page]]
+  (show-section activity page))
+
+(defsection index-line [Activity :html]
   [activity & [page]]
   (show-section activity page))
 
@@ -674,23 +673,20 @@
   [activity & _]
   (let [activity-uri (uri activity)]
     [:article.hentry.notice
-     (merge {:id (str "activity-" (:_id activity))
-             :about activity-uri
-             :typeof "sioc:Post"
-             :data-type "activity"
-             :data-id (:_id activity)}
-            (when *dynamic*
-              {:data-bind "with: $root.activities()[$data]"}))
+     (merge {:typeof "sioc:Post"
+             :data-type "activity"}
+            (if *dynamic*
+              {}
+              {:about activity-uri
+               :id (str "activity-" (:_id activity))
+               :data-id (:_id activity)}))
      [:header
       [:div.pull-right (post-actions activity)]
-      [:div
-       (if *dynamic*
-         {:data-bind "with: author"})
-       [:div (if *dynamic* {:data-bind "with: $root.users()[$data]"})
-        (show-section-minimal
-         (if *dynamic*
-           (User.)
-           (model.activity/get-author activity)))]]
+      [:div (when *dynamic* {:data-bind "with: $root.getUser($data.author)"})
+       (let [user (if *dynamic*
+                    (User.)
+                    (model.activity/get-author activity))]
+         (show-section-minimal user))]
       (recipients-section activity)]
      [:div.entry-content
       #_(when (:title activity)

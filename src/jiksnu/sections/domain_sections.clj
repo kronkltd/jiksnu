@@ -13,7 +13,7 @@
   [domain]
   [:img
    (if *dynamic*
-     {:data-bind "attr: {src: 'http://' + $parent + '/favicon.ico'}"}
+     {:data-bind "attr: {src: 'http://' + _id + '/favicon.ico'}"}
      {:src (str "http://" (:_id domain) "/favicon.ico")})])
 
 (defsection uri [Domain]
@@ -65,9 +65,7 @@
 
 (defsection index-line [Domain :html]
   [domain & _]
-  [:tr (when *dynamic*
-         {:data-bind "with: $root.domains()[$data]"})
-
+  [:tr
    [:td (favicon-link domain)]
    [:td (link-to domain)]
    [:td (if *dynamic*
@@ -79,7 +77,7 @@
    [:td
     [:a
      (if *dynamic*
-       {:data-bind "attr: {href: 'http://' + $parent + '/.well-known/host-meta'}"}
+       {:data-bind "attr: {href: 'http://' + _id + '/.well-known/host-meta'}"}
        {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
    [:td
@@ -94,7 +92,7 @@
 (defsection link-to [Domain :html]
   [domain & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/domains/' + $parent}, text: $parent"}
+        {:data-bind "attr: {href: '/main/domains/' + _id}, text: _id"}
         {:href (uri domain)})
    (when-not *dynamic*
      (:_id domain))])

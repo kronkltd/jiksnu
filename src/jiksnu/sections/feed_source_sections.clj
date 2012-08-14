@@ -123,16 +123,17 @@
           {:data-bind "text: domain"}
           (:domain item))]
 
-   [:td (if *dynamic*
-          {:data-bind "text: topic"}
-          (:topic item))]
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: topic}, text: topic"}
+          {:href (:topic item)})
+     (when-not *dynamic* (:topic item))]]
 
    [:td (if *dynamic*
           {:data-bind "text: status"}
           (:status item))]
 
-   [:td (actions-section item)]
-   ])
+   [:td (actions-section item)]])
 
 
 

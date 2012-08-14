@@ -1,9 +1,7 @@
 (ns jiksnu.model
   (:require [jiksnu.ko :as ko]
             [jiksnu.logging :as log])
-
-  (:use-macros [jiksnu.macros :only [defvar]])
-  )
+  (:use-macros [jiksnu.macros :only [defvar]]))
 
 (defvar Statistics
   [this]
@@ -50,12 +48,20 @@
   [this]
   (doto this))
 
+(def Activity (js-obj))
+
+(def ^{:doc "collection of activities"} Activities
+  (.extend (.-Collection js/Backbone)
+           (js-obj
+            "url" (fn [id] (str "/main/notices/" id ".viewmodel"))
+            "model" Activity)))
+
 (defvar SiteInfo
   [this]
   (doto this
     (ko/assoc-observable "name")))
 
-(defvar AppViewModel
+(defvar ^{:doc "The main view model for the site"} AppViewModel
   [this]
   (doto this
     (ko/assoc-observable "statistics")
@@ -74,19 +80,22 @@
     (ko/assoc-observable-array "subscriptions")
     (ko/assoc-observable-array "users")
     (ko/assoc-observable "site" (SiteInfo.))
+
     (aset "dismissNotification"
           (fn [self]
-            (log/info self)
             (.remove (.-notifications this) self)))
+
+    (aset "getActivity"
+          (fn [id]
+            (let [m (.activities this)]
+              (aget m id))))
 
     (aset "getDomain"
           (fn [id]
-            (log/info id)
             (aget (.domains this) id)))
 
     (aset "getUser"
           (fn [id]
-            (log/info id)
             (aget (.users this) id)))
 
     ))
