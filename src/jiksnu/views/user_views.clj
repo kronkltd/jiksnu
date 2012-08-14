@@ -98,14 +98,14 @@
          (rdf/defmodel (rdf/model-add-triples
                         (with-format :rdf
                           (show-section user))))]
-     (with-out-str (rdf/model-to-format rdf-model :n3)))
+     (with-out-str (rdf/model->format rdf-model :n3)))
    :template :false})
 
 (defview #'show :rdf
   [request user]
   {:body
    (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
-     (with-out-str (rdf/model-to-format rdf-model :xml-abbrev)))
+     (with-out-str (rdf/model->format rdf-model :xml-abbrev)))
    :template :false})
 
 (defview #'show :xmpp

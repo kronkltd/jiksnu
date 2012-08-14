@@ -220,7 +220,7 @@
   [triples format]
   (-> triples
       triples->model
-      (rdf/model-to-format format)
+      (rdf/model->format format)
       with-out-str))
 
 

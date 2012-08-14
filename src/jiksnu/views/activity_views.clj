@@ -78,7 +78,7 @@
              index-section
              plaza/model-add-triples
              plaza/defmodel
-             (plaza/model-to-format :n3)
+             (plaza/model->format :n3)
              with-out-str)
    :template :false})
 
@@ -88,7 +88,7 @@
              show-section
              plaza/model-add-triples
              plaza/defmodel
-             (plaza/model-to-format :xml)
+             (plaza/model->format :xml)
              with-out-str)
    :template :false})
 
