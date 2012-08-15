@@ -144,7 +144,7 @@
   (let [user (or (:user response)
                  (current-user))]
     (list
-     [:div (when *dynamic* {:data-bind "with: $root.getUser(currentUser)"})
+     [:div (when *dynamic* {:data-bind "with: $root.getUser($root.targetUser() || $root.currentUser())"})
       (user-info-section user)]
      (:aside response))))
 

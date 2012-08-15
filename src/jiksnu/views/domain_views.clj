@@ -47,9 +47,11 @@
   {:title "Domains"
    :single true
    :viewmodel "/main/domains.viewmodel"
-   :body (index-section
-          (if *dynamic* [(Domain.)] items)
-          options)})
+   :body
+   [:div (if *dynamic*
+           {:data-bind "with: _.map($root.items(), function (id) {return $root.getDomain(id)})"})
+    (let [domains (if *dynamic* [(Domain.)] items)]
+      (index-section domains options))]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

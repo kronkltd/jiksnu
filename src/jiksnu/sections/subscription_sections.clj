@@ -50,7 +50,7 @@
        [:h3
         [:a
          (if *dynamic*
-           {:data-bind "attr: {href: url + '/subscribers'}" :href "#"}
+           {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}
            {:href (named-path "user subscribers" {:id (:_id user)})})
          "Followers"] " "
         [:span

@@ -287,8 +287,8 @@
    [:thead
     [:tr
      [:th]
-     [:th "Id"]
      [:th "User"]
+     [:th "Id"]
      [:th "Domain"]
      [:th "Actions"]]]
    [:tbody (when *dynamic* {:data-bind "foreach: $data"})
@@ -311,15 +311,15 @@
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
+    (if *dynamic*
+      {:data-bind "text: username"}
+      (link-to user))]
+   [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/users/' + _id}, text: _id"}
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: username"}
-      (link-to user))]
    [:td {:data-bind "with: $root.getDomain($data.domain)"}
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
@@ -450,7 +450,7 @@
   [:table.table.users
    [:thead]
    [:tbody (merge {:data-bag "users"}
-                  (when *dynamic* {:data-bind "foreach: _.map($root.items(), function (id) {return $root.getUser(id)})"}))
+                  (when *dynamic* {:data-bind "foreach: $data"}))
     ;; TODO: handle this higher up
     (let [users (if *dynamic* [(User.)] users)]
       (map #(index-line % page) users))]])

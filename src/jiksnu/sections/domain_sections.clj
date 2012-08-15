@@ -27,6 +27,14 @@
    [:button.btn.discover-button {:type "submit"}
     [:i.icon-search] [:span.button-text "Discover"]]])
 
+(defsection actions-section [Domain :html]
+  [domain & _]
+  [:ul
+   [:li (discover-button domain)]
+   [:li (delete-button domain)]
+   ]
+  )
+
 (defsection add-form [Domain :html]
   [domain & _]
   [:form.well {:method "post" :actions "/main/domains"}
@@ -53,8 +61,9 @@
      [:th "XMPP?"]
      [:th "Discovered"]
      [:th "Host Meta"]
-     [:th "# Links"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+     [:th "# Links"]
+     [:th "Actions"]]]
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map index-line domains)]])
 
 (defsection index-block [Domain :viewmodel]
@@ -81,13 +90,10 @@
        {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
    [:td
-    #_(if *dynamic*
-      {:data-bind "text: links.length"}
+    (if *dynamic*
+      {:data-bind "text: typeof(links) !== 'undefined' ? links.length : 0"}
       (count (:links domain)))]
-   #_[:th
-    (discover-button domain)
-    (edit-button domain)
-    (delete-button domain)]])
+   [:th (actions-section domain)]])
 
 (defsection link-to [Domain :html]
   [domain & _]

@@ -3,6 +3,7 @@
         [ciste.views :only [defview]]
         [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.user-actions
+        [jiksnu.ko :only [*dynamic*]]
         plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -55,7 +56,14 @@
   [request {:keys [items] :as page}]
   {:title "Users"
    :viewmodel "/users.viewmodel"
-   :body (index-section items page)})
+   :single true
+   :body
+   [:div (if *dynamic*
+           {:data-bind "with: _.map($root.items(), function (id) {return $root.getUser(id)})"}
+          
+           )
+
+    (index-section items page)]})
 
 (defview #'index :json
   [request {:keys [items] :as options}]

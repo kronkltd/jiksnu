@@ -208,8 +208,8 @@
      :title (:display-name user)
      :post-form true
      :viewmodel (format "/users/%s.viewmodel" (:_id user))
-    :body (index-section items page)
-    :formats (sections.activity/timeline-formats user)}))
+     :body (index-section items page)
+     :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model
   [request [user page]]
@@ -241,9 +241,9 @@
    (merge {:users (index-section [user])
            :title (title user)
            :items (map :_id (:items activities-map))
+           :targetUser (:_id user)
            :activities (index-section (:items activities-map))}
-          (if-let [id (:_id (current-user))]
-            {:currentUser id}))})
+       )})
 
 (defview #'user-timeline :xml
   [request [user activities]]
