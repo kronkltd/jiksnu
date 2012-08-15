@@ -17,7 +17,10 @@
   {:single true
    :title "Users"
    :viewmodel "/admin/users.viewmodel"
-   :body (doall (admin-index-section items response))})
+   :body [:div (if *dynamic*
+                 {:data-bind "with: _.map($root.items(), function (id) {return $root.getUser(id)})"}
+                 )
+          (admin-index-section items response)]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as response}]
@@ -34,6 +37,8 @@
     :items (map :_id items)
     :users (doall (admin-index-section items))}})
 
+;; show
+
 (defview #'show :html
   [request user]
   (let [page (second (actions.stream/user-timeline user))]
@@ -41,8 +46,7 @@
      :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
-     (doall (list [:div
-                   (if *dynamic* {:data-bind "with: targetUser"})
+     (doall (list [:div (when *dynamic* {:data-bind "with: $root.getUser($root.targetUser())"})
                    (admin-show-section user)]
                   (admin-index-block (if *dynamic*
                                        [(Activity.)]

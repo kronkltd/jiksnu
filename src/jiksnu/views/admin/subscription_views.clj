@@ -16,9 +16,13 @@
   {:title "Subscriptions"
    :single true
    :viewmodel "/admin/subscriptions.viewmodel"
-   :body (admin-index-section (if *dynamic*
-                                (Subscription.)
-                                items) response)})
+   :body
+   [:div (if *dynamic*
+           {:data-bind "with: _.map($root.items(), function (id) {return $root.getSubscription(id)})"})
+    (let [subscriptions (if *dynamic*
+                          [(Subscription.)]
+                          items)]
+      (admin-index-section subscriptions response))]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as response}]

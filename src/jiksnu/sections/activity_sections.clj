@@ -436,7 +436,7 @@
      [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: _.map($root.items(), function (id) {return $root.getActivity(id)})"})
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -449,7 +449,10 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr {:data-type "activity" :data-id (:_id activity)}
+  [:tr (merge {:data-type "activity"}
+              (if *dynamic*
+                {:data-bind "attr: {'data-id': _id}"}
+                { :data-id (:_id activity)}))
    [:td (if *dynamic* {:data-bind "with: $root.getUser($data.author)"})
     (link-to (if *dynamic*
                (User.)

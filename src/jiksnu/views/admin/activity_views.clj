@@ -3,7 +3,7 @@
         [ciste.sections.default :only [link-to]]
         [jiksnu.actions.admin.activity-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section]])
+        [jiksnu.sections :only [admin-index-section dump-data]])
   (:require [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Activity))
 
@@ -12,10 +12,12 @@
   {:title "Activities"
    :single true
    :viewmodel "/admin/activities.viewmodel"
-   :body (admin-index-section
+   :body
+   [:div (when *dynamic* {:data-bind "with: _.map($root.items(), function (id) {return $root.getActivity(id)})"})
+    (admin-index-section
           (if *dynamic*
             [(Activity.)]
-            items) response)})
+            items) response)]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

@@ -83,17 +83,26 @@
 
 (defsection admin-index-line [Subscription :html]
   [subscription & [options & _]]
-  [:tr {:data-type "subscription" :data-id (str (:_id subscription))}
+  [:tr (merge {:data-type "subscription"}
+              (if *dynamic*
+                {:data-bind "attr: {'data-id': _id}"}
+                {:data-id (str (:_id subscription))}
+                )
+              )
    [:td (link-to subscription)]
-   [:td (if-let [user (model.subscription/get-actor subscription)]
+   [:td (if-let [user (if *dynamic*
+                        (User.)
+                        (model.subscription/get-actor subscription))]
           (link-to user)
           "unknown")]
-   [:td (if-let [user (model.subscription/get-target subscription)]
+   [:td (if-let [user (if *dynamic*
+                        (User.)
+                        (model.subscription/get-target subscription))]
           (link-to user)
           "unknown")]
-   [:td (:created subscription)]
-   [:td (:pending subscription)]
-   [:td (:local subscription)]
+   [:td (if *dynamic* {:data-bind "text: created"} (:created subscription))]
+   [:td (if *dynamic* {:data-bind "text: pending"} (:pending subscription))]
+   [:td (if *dynamic* {:data-bind "text: local"} (:local subscription))]
    [:td (actions-section subscription)]])
 
 (defsection admin-index-line [Subscription :viewmodel]
@@ -114,7 +123,7 @@
      [:th "pending"]
      [:th "local"]
      [:th "Actions"]]]
-   [:tbody
+   [:tbody (if *dynamic* {:data-bind "foreach: $data"})
     (map #(admin-index-line % options) items)]])
 
 (defsection admin-index-block [Subscription :viewmodel]

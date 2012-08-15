@@ -9,13 +9,15 @@
   (:import jiksnu.model.Group))
 
 (defview #'index :html
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:single true
    :title "Groups"
    :viewmodel "/admin/groups.viewmodel"
-   :body (admin-index-section
-          (if *dynamic* [(Group.)] items)
-          response)})
+   :body
+   [:div (if *dynamic*
+           {:data-bind "with: _.map($root.items(), function (id) {return $root.getGroup(id)})"})
+    (let [items (if *dynamic* [(Group.)] items)]
+      (admin-index-section items page))]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

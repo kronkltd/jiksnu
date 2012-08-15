@@ -94,6 +94,14 @@
           (fn [id]
             (aget (.domains this) id)))
 
+    (aset "getGroup"
+          (fn [id]
+            (aget (.groups this) id)))
+
+    (aset "getSubscription"
+          (fn [id]
+            (aget (.subscriptions this) id)))
+
     (aset "getUser"
           (fn [id]
             (aget (.users this) id)))

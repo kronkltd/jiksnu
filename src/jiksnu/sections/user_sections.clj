@@ -90,7 +90,7 @@
   ([user] (display-avatar user 48))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind "attr: {href: \"/users/\" + $parent, title: name}"}
+               {:data-bind "attr: {href: \"/users/\" + _id, title: name}"}
                {:href (full-uri user)
                 :title (:name user)})
       (display-avatar-img user size)]))
@@ -291,7 +291,7 @@
      [:th "User"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: _.map($root.items(), function (id) {return $root.getUser(id)})"})
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (let [items (if *dynamic* [(User.)] items)]
       (map #(admin-index-line % page) items))]])
 
@@ -323,9 +323,7 @@
    [:td {:data-bind "with: $root.getDomain($data.domain)"}
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
-   [:td
-    (when-not *dynamic*
-      (admin-actions-section user page))]])
+   [:td (admin-actions-section user page)]])
 
 ;; admin-index-section
 
@@ -351,12 +349,15 @@
      [:span (if *dynamic*
               {:data-bind "text: username"}
               (:username item))]]
-    [:div (if *dynamic*
-            {:data-bind "with: getDomain(domain)"})
+    
+    [:p "Domain: "
      (let [domain (if *dynamic*
                     (Domain.)
                     (actions.user/get-domain item))]
-       [:p "Domain: " (link-to domain)])]
+       [:span
+        (when *dynamic*
+          {:data-bind "with: $root.getDomain($data.domain)"})
+        (link-to domain)])]
     [:p [:span "Bio: "]
      [:span (if *dynamic*
               (bind-property "bio")
@@ -390,14 +391,15 @@
              {:data-bind "with: $root.feedSources()[$data]"})
       (when-let [source (-?> item :update-source model.feed-source/fetch-by-id)]
         (link-to source))]]
-    [:table.table
+    (admin-actions-section item)
+    [:table.table (when *dynamic* {:data-bind "if: typeof(links) !== 'undefined'"})
      [:thead
       [:tr
        [:th "title"]
        [:th "rel"]
        [:th "href"]
        [:th "Actions"]]]
-     [:tbody (if *dynamic* {:data-bind "foreach: links"})
+     [:tbody (when *dynamic* {:data-bind "foreach: typeof(links) !== 'undefined' ? links : []"})
       (map
        (fn [link]
          [:tr
@@ -408,7 +410,7 @@
        (if *dynamic*
          [{}]
          (:links item)))]]
-    (admin-actions-section item)]))
+    ]))
 
 
 (defsection title [User]
@@ -465,7 +467,7 @@
   [user & _]
   [:tr (merge {:data-type "user"}
               (if *dynamic*
-                {}
+                {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
@@ -504,11 +506,11 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: typeof($data.url) !== 'undefined' ? url : ''}"}
+          {:data-bind "attr: {href: '/users/' + _id}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: typeof($data.url) !== 'undefined' ? url : ''}, text: displayName"}
+                     {:data-bind "attr: {about: typeof($data.url) !== 'undefined' ? url : ''}, text: typeof(displayName) !== 'undefined' ? displayName : ''"}
                      {:about (uri record)}))
       (when-not *dynamic*
        (or (:title options-map) (title record)))] ]))
@@ -552,8 +554,9 @@
 (defsection show-section [User :html]
   [user & options]
   [:div.vcard.user-full
-   (when-not *dynamic*
-     {:data-id (:_id user) :data-type "user"})
+   (merge {:data-type "user"}
+          (when-not *dynamic*
+            {:data-id (:_id user)}))
    [:p
     (display-avatar user)
     [:span.nickname.fn.n

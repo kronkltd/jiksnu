@@ -3,12 +3,19 @@
         [ciste.sections.default :only [add-form link-to index-section
                                        index-block  index-line show-section]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-show-section admin-index-block
-                                admin-index-line admin-index-section
-                                bind-property control-line]])
+        [jiksnu.sections :only [actions-section admin-show-section
+                                admin-index-block admin-index-line
+                                admin-index-section bind-property control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Group))
+
+(defsection actions-section [Group :html]
+  [group & _]
+  [:ul
+   [:li]
+   ]
+  )
 
 (defsection add-form [Group :html]
   [group & _]
@@ -42,7 +49,7 @@
      [:th "Name"]
      [:th "Full Name"]
      [:th "Homepage"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map #(admin-index-line % options) groups)]])
 
 (defsection admin-index-block [Group :viewmodel]
@@ -59,9 +66,11 @@
 
 (defsection admin-index-line [Group :html]
   [group & [options & _]]
-  [:tr (merge {:id (str "group-" (:_id group))}
-              (when *dynamic*
-                {:data-bind "with: $root.groups()[$data]"}))
+  [:tr (merge {:data-type "group"}
+              (if *dynamic*
+                {:data-bind "attr: {'data-id': _id}"}
+                {:data-id (:_id group)}
+                ))
    [:td
     (if *dynamic*
       (bind-property "nickname")
@@ -73,7 +82,9 @@
    [:td
     (if *dynamic*
       (bind-property "homepage")
-      (:homepage group))]])
+      (:homepage group))]
+   [:td (actions-section group)]
+   ])
 
 ;; admin-index-section
 
