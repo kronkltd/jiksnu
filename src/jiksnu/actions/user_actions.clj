@@ -210,18 +210,6 @@
   [uri]
   (apply find-or-create (model.user/split-uri uri)))
 
-(defn update-hub*
-  [user feed]
-  (when-let [hub-link (abdera/get-hub-link feed)]
-    (model.user/set-field! user :hub hub-link)
-    user))
-
-(defaction update-hub
-  "Determine the user's hub link and update the user object"
-  [user]
-  (if-let [feed (helpers.user/fetch-user-feed user)]
-    (update-hub* user feed)))
-
 (defaction user-meta
   "returns a user matching the uri"
   [user]
@@ -315,6 +303,14 @@
             name (get-name person)
             note (.getSimpleExtension person (QName. ns/poco "note"))
             uri (str (.getUri person))
+            ;; homepage 
+            local-id (-> person
+                         (.getExtensions (QName. ns/statusnet "profile_info"))
+                         (->> (map (fn [extension]
+                                     (.getAttributeValue extension "local_id")
+                                     )))
+                         first
+                         )
             links (-> person
                       (.getExtensions (QName. ns/atom "link"))
                       (->> (map abdera/parse-link)))
@@ -323,6 +319,7 @@
                           (when username {:username username})
                           (when note {:bio note})
                           (when email {:email email})
+                          (when local-id {:local-id local-id})
                           (when name {:display-name name}))
             user (-> {:id id}
                      #_(find-or-create-by-remote-id params)
@@ -347,14 +344,11 @@
                       (-?> (abdera/get-author first-entry feed)
                            person->user))
           avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)]
-      (update-hub* user feed)
       (if (seq links)
         (doseq [link links]
           (add-link user link))
         (log/warn "usermeta has no links"))
-      (-> user
-          (merge (when avatar-url {:avatar-url avatar-url}))
-          update))
+      (model.user/set-field! user :avatar-url avatar-url))
     (throw+ "Could not fetch user-meta")))
 
 ;; FIXME: This does not work yet

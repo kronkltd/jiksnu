@@ -33,6 +33,7 @@
             [plaza.rdf.core :as rdf]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
+           jiksnu.model.FeedSource
            jiksnu.model.User
            org.apache.abdera2.model.Entry))
 
@@ -340,77 +341,90 @@
 (defsection admin-show-section [User :html]
   [item & [response & _]]
   (list
-   [:div (merge {:data-type "user"}
+   [:table.table (merge {:data-type "user"}
                 (if *dynamic*
                   {:data-bind "attr: {'data-id': _id}"}
                   {:data-id (:_id item)}))
-    [:p (display-avatar item)]
-    [:p "Username: "
-     [:span (if *dynamic*
-              {:data-bind "text: username"}
-              (:username item))]]
+    [:tr
+     [:th]
+     [:td
+      (display-avatar item)]]
+    [:tr
+     [:th "Username"]
+     [:td (if *dynamic*
+            {:data-bind "text: username"}
+            (:username item))]]
     
-    [:p "Domain: "
-     (let [domain (if *dynamic*
-                    (Domain.)
-                    (actions.user/get-domain item))]
-       [:span
-        (when *dynamic*
-          {:data-bind "with: $root.getDomain($data.domain)"})
-        (link-to domain)])]
-    [:p [:span "Bio: "]
-     [:span (if *dynamic*
+    [:tr
+     [:th  "Domain"]
+     [:td (when *dynamic*
+              {:data-bind "with: $root.getDomain($data.domain)"})
+      (let [domain (if *dynamic* (Domain.)
+                       (actions.user/get-domain item))]
+        (link-to domain))]]
+    [:tr
+     [:th "Bio"]
+     [:td (if *dynamic*
               (bind-property "bio")
               (:bio item))]]
-    [:p "Location: "
-     [:span (if *dynamic*
+    [:tr
+     [:th  "Location"]
+     [:td (if *dynamic*
               (bind-property "location")
               (:location item))]]
-    [:p "Url: "
-     [:span (if *dynamic*
+    [:tr
+     [:th  "Url"]
+     [:td (if *dynamic*
               (bind-property "url")
               (:url item))]]
-    [:p "Id: "
-     [:span (if *dynamic*
+    [:tr
+     [:th  "Id"]
+     [:td (if *dynamic*
               (bind-property "id")
               (:id item))]]
-    [:p "Discovered: "
-     [:span (if *dynamic*
+    [:tr
+     [:th  "Discovered"]
+     [:td (if *dynamic*
               (bind-property "discovered")
               (:discovered item))]]
-    [:p "Created: "
-     [:span (if *dynamic*
+    [:tr
+     [:th  "Created"]
+     [:td (if *dynamic*
               (bind-property "created")
               (:created item))]]
-    [:p "Updated: "
-     [:span (if *dynamic*
+    [:tr
+     [:th "Updated"]
+     [:td (if *dynamic*
               {:data-bind "text: updated"}
               (:updated item))]]
-    [:div (if *dynamic* (bind-property "updateSource"))
-     [:div (if *dynamic*
-             {:data-bind "with: $root.feedSources()[$data]"})
-      (when-let [source (-?> item :update-source model.feed-source/fetch-by-id)]
-        (link-to source))]]
-    (admin-actions-section item)
-    [:table.table (when *dynamic* {:data-bind "if: typeof(links) !== 'undefined'"})
-     [:thead
-      [:tr
-       [:th "title"]
-       [:th "rel"]
-       [:th "href"]
-       [:th "Actions"]]]
-     [:tbody (when *dynamic* {:data-bind "foreach: typeof(links) !== 'undefined' ? links : []"})
-      (map
-       (fn [link]
-         [:tr
-          [:td (if *dynamic* (bind-property "title") (:title link))]
-          [:td (if *dynamic* (bind-property "rel") (:rel link))]
-          [:td (if *dynamic* (bind-property "href") (:href link))]
-          [:td (link-actions-section link)]])
-       (if *dynamic*
-         [{}]
-         (:links item)))]]
-    ]))
+    [:tr
+     [:th "Update Source"]
+     [:td (if *dynamic*
+            {:data-bind "with: $root.getFeedSource($data.updateSource)"})
+      (when-let [source (if *dynamic*
+                          (FeedSource.)
+                          (-?> item :update-source model.feed-source/fetch-by-id))]
+        (link-to source))]]]
+   (admin-actions-section item)
+   [:table.table (when *dynamic* {:data-bind "if: typeof(links) !== 'undefined'"})
+    [:thead
+     [:tr
+      [:th "title"]
+      [:th "rel"]
+      [:th "href"]
+      [:th "Actions"]]]
+    [:tbody (when *dynamic* {:data-bind "foreach: typeof(links) !== 'undefined' ? links : []"})
+     (map
+      (fn [link]
+        [:tr
+         [:td (if *dynamic* (bind-property "title") (:title link))]
+         [:td (if *dynamic* (bind-property "rel") (:rel link))]
+         [:td (if *dynamic* (bind-property "href") (:href link))]
+         [:td (link-actions-section link)]])
+      (if *dynamic*
+        [{}]
+        (:links item)))]]
+    ))
 
 
 (defsection title [User]

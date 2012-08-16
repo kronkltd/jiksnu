@@ -11,3 +11,7 @@
 (defn debug
   [m]
   (.debug js/console m))
+
+(defn warn
+  [m]
+  (.warn js/console m))

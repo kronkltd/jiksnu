@@ -62,6 +62,10 @@
                (index-watchers source)
                (add-watcher-form source))})
 
+(defview #'show :model
+  [request source]
+  {:body (admin-show-section source)})
+
 (defview #'show :viewmodel
   [request source]
   {:body {:title (title source)

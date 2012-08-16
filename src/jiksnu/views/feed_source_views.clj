@@ -8,17 +8,17 @@
             [jiksnu.model.user :as model.user]
             [ring.util.response :as response]))
 
+(defview #'fetch-updates :html
+  [request params]
+  (-> (response/redirect-after-post "/admin/feed-sources")
+        (assoc :template false)))
+
 (defview #'process-updates :html
   [request params]
   {:body params
    :template false})
 
 (defview #'remove-subscription :html
-  [request params]
-  (-> (response/redirect-after-post "/admin/feed-sources")
-        (assoc :template false)))
-
-(defview #'fetch-updates :html
   [request params]
   (-> (response/redirect-after-post "/admin/feed-sources")
         (assoc :template false)))

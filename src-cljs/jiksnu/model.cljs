@@ -94,6 +94,13 @@
           (fn [id]
             (aget (.domains this) id)))
 
+    (aset "getFeedSource"
+          (fn [id]
+            (if-let [source (aget (.feedSources this) id)]
+              source
+              (log/warn (str "Could not find source: " id))
+              )))
+
     (aset "getGroup"
           (fn [id]
             (aget (.groups this) id)))

@@ -176,6 +176,7 @@
 (defn set-field!
   "Updates user's field to value"
   [user field value]
+  (log/debugf "setting %s (%s = %s)" (:_id user) field value)
   (mc/update collection-name
              {:_id (:_id user)}
              {:$set {field value}}))
@@ -211,7 +212,7 @@
 
 (defn update
   [^User new-user]
-  (log/info "updating user")
+  (log/infof "updating user: %s" new-user)
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)

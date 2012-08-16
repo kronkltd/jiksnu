@@ -52,6 +52,10 @@
                                        [(Activity.)]
                                        (:items page)) page)))}))
 
+(defview #'show :model
+  [request user]
+  {:body (admin-show-section user) })
+
 (defview #'show :viewmodel
   [request user]
   (let [activities (actions.activity/find-by-user user)]
