@@ -40,7 +40,6 @@
                         (fact
                           body => #"groups"
                           (doseq [group groups]
-                            (let [pattern (re-pattern (str "group-" (:_id group)))]
+                            (let [pattern (re-pattern (str (:_id group)))]
                               body => pattern)))))))))))))))
-
  )
