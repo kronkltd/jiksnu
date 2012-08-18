@@ -26,5 +26,5 @@
    [[:post   (named-path "discover user")]      #'user/discover]
    [[:post   "/users/:id/update.:format"]       #'user/fetch-updates]
    [[:post   (named-path "update user")]        #'user/fetch-updates]
-   [[:post   "/users/:id/update-hub"]           #'user/update-hub]
+   ;; [[:post   "/users/:id/update-hub"]           #'user/update-hub]
    [[:post   "/:username"]                      #'user/update]])

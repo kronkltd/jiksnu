@@ -48,71 +48,77 @@
   [this]
   (doto this))
 
-(def Activity (js-obj))
+(def Activity
+  (.extend (.-Model js/Backbone)
+           (js-obj
+            "defaults" (js-obj
+                        "enclosures" nil)
+            "initialize" (fn []
+                           (log/info "Initialize activity")))))
 
 (def ^{:doc "collection of activities"} Activities
   (.extend (.-Collection js/Backbone)
            (js-obj
             "url" (fn [id] (str "/main/notices/" id ".viewmodel"))
-            "model" Activity)))
+            "model" Activity
+            "initialize" (fn [models options]
+                           (log/info "init activities")))))
 
 (defvar SiteInfo
   [this]
   (doto this
     (ko/assoc-observable "name")))
 
-(defvar ^{:doc "The main view model for the site"} AppViewModel
-  [this model]
-  (doto this
-    (ko/assoc-observable "statistics" #_(Statistics.))
-    (ko/assoc-observable "title")
-    (ko/assoc-observable "postForm" (PostForm.))
-    (ko/assoc-observable "showPostForm" true)
-    (ko/assoc-observable "pageInfo")
-    (ko/assoc-observable "currentUser")
-    (ko/assoc-observable "targetUser")
-    (ko/assoc-observable-array "activities")
-    (ko/assoc-observable-array "domains")
-    (ko/assoc-observable-array "groups")
-    (ko/assoc-observable-array "feedSources")
-    (ko/assoc-observable-array "followers")
-    (ko/assoc-observable-array "following")
-    (ko/assoc-observable-array "items")
-    (ko/assoc-observable-array "notifications")
-    (ko/assoc-observable-array "subscriptions")
-    (ko/assoc-observable-array "users")
-    (ko/assoc-observable "site" (SiteInfo.))
+(def ^{:doc "The main view model for the site"} AppViewModel
+  (.extend
+   (.-Model js/Backbone)
+   (js-obj
+    "defaults"
+    (js-obj
+     "statistics"   nil
+     "title"        nil
+     "postForm"     nil
+     "showPostForm" true
+     "pageInfo"     nil
+     "currentUser"  nil
+     "notifications" nil
+     "items" nil
+     "users" nil
+     "activities" nil
+     "domains" nil
+     "groups" nil
+     "feedSources" nil
+     "followers" nil
+     "following" nil
+     "subscriptions" nil
+     "site" nil
+     "dismissNotification"
+     (fn [self]
+       (.remove (.-notifications this) self))
 
-    (aset "dismissNotification"
-          (fn [self]
-            (.remove (.-notifications this) self)))
+     "getActivity"
+     (fn [id]
+       (let [m (.activities this)]
+         (aget m id)))
 
-    (aset "getActivity"
-          (fn [id]
-            (let [m (.activities this)]
-              (aget m id))))
+     "getDomain"
+     (fn [id]
+       (aget (.domains this) id))
 
-    (aset "getDomain"
-          (fn [id]
-            (aget (.domains this) id)))
+     "getFeedSource"
+     (fn [id]
+       (if-let [source (aget (.feedSources this) id)]
+         source
+         (log/warn (str "Could not find source: " id))))
 
-    (aset "getFeedSource"
-          (fn [id]
-            (if-let [source (aget (.feedSources this) id)]
-              source
-              (log/warn (str "Could not find source: " id))
-              )))
+     "getGroup"
+     (fn [id]
+       (aget (.groups this) id))
 
-    (aset "getGroup"
-          (fn [id]
-            (aget (.groups this) id)))
+     "getSubscription"
+     (fn [id]
+       (aget (.subscriptions this) id))
 
-    (aset "getSubscription"
-          (fn [id]
-            (aget (.subscriptions this) id)))
-
-    (aset "getUser"
-          (fn [id]
-            (aget (.users this) id)))
-
-    ))
+     "getUser"
+     (fn [id]
+       (aget (.users this) id))))))

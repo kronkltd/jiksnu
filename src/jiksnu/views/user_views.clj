@@ -136,12 +136,12 @@
    :flash "User updated"
    :headers {"Location" (uri user)}})
 
-(defview #'update-hub :html
-  [request user]
-  {:status 302
-   :flash "updating hub"
-   :template false
-   :headers {"Location" (uri user)}})
+;; (defview #'update-hub :html
+;;   [request user]
+;;   {:status 302
+;;    :flash "updating hub"
+;;    :template false
+;;    :headers {"Location" (uri user)}})
 
 (defview #'update-profile :html
   [request user]

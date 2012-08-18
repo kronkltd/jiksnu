@@ -11,11 +11,9 @@
 (defn logout-button
   [user]
   [:li.dropdown
-   [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"}
-                              (if *dynamic*
-                                {:data-bind "with: currentUser"})
-                              )
-    [:span (if *dynamic* {:data-bind "with: $root.users()[$data]"})
+   [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
+    [:span (if *dynamic*
+             {:data-bind "with: $root.getUser($root.currentUser())"})
      (display-avatar-img user 18)
      [:span
       (if *dynamic*

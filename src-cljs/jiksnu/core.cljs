@@ -60,7 +60,7 @@
   []
   (start-display (console-output))
   (log/info "starting application")
-  (def _view (model/AppViewModel.))
+  (def _view (.viewModel js/kb (model/AppViewModel.)))
 
   ;; NB: for debugging only. use fully-qualified var
   (aset js/window "_view" _view)

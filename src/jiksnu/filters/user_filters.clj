@@ -127,12 +127,12 @@
         user (show username)]
     (action user params)))
 
-(deffilter #'update-hub :http
-  [action request]
-  (let [{params :params} request
-        {username :id} params
-        user (model.user/fetch-by-id username)]
-    (action user)))
+;; (deffilter #'update-hub :http
+;;   [action request]
+;;   (let [{params :params} request
+;;         {username :id} params
+;;         user (model.user/fetch-by-id username)]
+;;     (action user)))
 
 (deffilter #'update-profile :http
   [action {params :params}]

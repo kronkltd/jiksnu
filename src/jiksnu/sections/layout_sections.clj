@@ -291,6 +291,8 @@
      "/assets/js/knockout.mapping-2.2.3.js"
      ;; "/assets/js/require.min.js"
      "/assets/js/backbone-0.9.2.min.js"
+     "/assets/js/backbone-relational-0.5.0.js"
+     "/assets/js/backbone-modelref-0.1.3.min.js"
      "/assets/js/knockback-0.15.4.min.js"
 
      "/assets/js/jiksnu.js"
