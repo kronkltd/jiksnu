@@ -602,7 +602,7 @@
    (when-not *dynamic*
      (when (:discovered user)
        (show-section (model.key/get-key-for-user user))))
-   #_(user-actions user)])
+   (user-actions user)])
 
 (defsection show-section [User :model]
   [user & _]
