@@ -33,7 +33,14 @@
 (defview #'show :html
   [request subscription]
   {:title "Subscription"
-   :body (admin-show-section subscription)})
+   :viewmodel (str "/admin/subscriptions/" (:_id subscription) ".viewmodel")
+   :body (admin-show-section (log/spy subscription))})
+
+(defview #'show :viewmodel
+  [request subscription]
+  {:body {:title "Subscription"
+          :subscriptions (admin-index-section [subscription])
+          :targetSubscription (:_id subscription)}})
 
 (defview #'delete :html
   [request _]

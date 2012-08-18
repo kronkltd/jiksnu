@@ -75,6 +75,7 @@
   (if-let [elts ($ "*[data-load-model]")]
     (log/info (fetch-viewmodel (.data elts "load-model"))))
   #_(stats/fetch-statistics _view)
+  #_(.start (.-history js/Backbone))
   #_(js/prettyPrint))
 
 (main)

@@ -45,24 +45,25 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      [:div.subscribers #_(when *dynamic*
-                          {:data-bind "with: currentUser"})
+      [:div.subscribers
        [:h3
-        [:a
-         (if *dynamic*
-           {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}
-           {:href (named-path "user subscribers" {:id (:_id user)})})
-         "Followers"] " "
-        [:span
-         (if *dynamic*
-           {:data-bind "text: $root.subscriptions().length"}
-           (count subscriptions))]]
+        [:a (if *dynamic*
+              {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}
+              {:href (named-path "user subscribers" {:id (:_id user)})}) "Followers"]
+        " "
+        [:span (if *dynamic*
+                 {:data-bind "text: $root.followers().length"}
+                 (count subscriptions))]]
        [:ul.unstyled
+        (if *dynamic* {:data-bind "foreach: $data"})
         (map (fn [subscription]
-               (let [user (if *dynamic*
-                            (User.)
-                            (model.subscription/get-actor subscription))]
-                 [:li (sections.user/display-avatar user "24")]))
+               [:li (merge {:data-type "subscription"}
+                           (if *dynamic*
+                             {:data-bind "with: _.map($root.followers(), function (id) {return $root.getSubscription(id)}), attr: {'data-id': _id}"}))
+                (let [user (if *dynamic*
+                             (User.)
+                             (model.subscription/get-actor subscription))]
+                  (sections.user/display-avatar user "24"))])
              subscriptions)]])))
 
 (defn subscriptions-widget
@@ -71,11 +72,24 @@
     (let [subscriptions (model.subscription/subscriptions user)]
       [:div.subscriptions
        [:h3
-        [:a {:href (str (full-uri user) "/subscriptions")} "Following"] " " (count subscriptions)]
-       [:ul (map (fn [subscription]
-                   [:li (sections.user/display-avatar (if *dynamic*
-                                                        (User.)
-                                                        (model.subscription/get-target subscription)) "24")]) subscriptions)]
+        [:a (if *dynamic*
+              {:data-bind "attr: {href: '/users/' + _id + '/subscriptions'}"}
+              {:href (str (full-uri user) "/subscriptions")}) "Following"]
+        " "
+        [:span (if *dynamic*
+                 {:data-bind "text: $root.following().length"}
+                 (count subscriptions))]]
+       [:div (if *dynamic*
+               {:data-bind "with: _.map($root.subscriptions(), function (id) {return $root.getSubscription(id)})"})
+        [:ul
+         (if *dynamic*
+           {:data-bind "foreach: $data"})
+         (map (fn [subscription]
+                [:li
+                 (if *dynamic*
+                   {:data-bind "with: $root.getUser($data.target)"})
+                 (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
+                   (sections.user/display-avatar user "24"))]) subscriptions)]]
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
@@ -86,9 +100,7 @@
   [:tr (merge {:data-type "subscription"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
-                {:data-id (str (:_id subscription))}
-                )
-              )
+                {:data-id (str (:_id subscription))}))
    [:td (link-to subscription)]
    [:td (if-let [user (if *dynamic*
                         (User.)
@@ -161,6 +173,20 @@
 (defsection index-section [Subscription :viewmodel]
   [items & [page]]
   (index-block items page))
+
+(defsection link-to [Subscription :html]
+  [record & options]
+  (let [options-map (apply hash-map options)]
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: '/admin/subscriptions/' + _id}"}
+          {:href (uri record)})
+     [:span (merge {:about (uri record)
+                    :property "dc:title"}
+                   (if *dynamic*
+                     {:data-bind "text: _id"}))
+      (when-not *dynamic*
+        (or (:title options-map) (title record)))] ]))
+
 
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]

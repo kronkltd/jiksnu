@@ -396,6 +396,21 @@
     [:li
      [:a {:href "#post-poll" :data-toggle "tab"} "Poll"]]]])
 
+(defn enclosures-section
+  [activity]
+  (when-let [enclosures (if *dynamic*
+                          [{:href ""}]
+                          (seq (:enclosures activity)))]
+    [:ul.unstyled {:data-bind "foreach: enclosures"}
+     (map
+      (fn [enclosure]
+        [:li
+         [:img (merge {:alt ""}
+                      (if *dynamic*
+                        {:data-bind "attr: {src: href}"}
+                        {:src (:href enclosure)}))]])
+      enclosures)]))
+
 ;; dynamic sections
 
 (defsection add-form [Activity :html]
@@ -662,16 +677,6 @@
    (when (:attachments activity)
      {:attachments []})))
 
-(defn enclosures-section
-  [activity]
-  (when (seq (:enclosures activity))
-    [:ul.unstyled
-     (map
-      (fn [enclosure]
-        [:li
-         [:img {:src (:href enclosure) :alt ""} ]])
-      (:enclosures activity))]))
-
 (defsection show-section [Activity :html]
   [activity & _]
   (let [activity-uri (uri activity)]
@@ -684,7 +689,6 @@
                :id (str "activity-" (:_id activity))
                :data-id (:_id activity)}))
      [:header
-      [:div.pull-right (post-actions activity)]
       [:div (when *dynamic* {:data-bind "with: $root.getUser($data.author)"})
        (let [user (if *dynamic*
                     (User.)
@@ -707,15 +711,14 @@
             (:irts activity))]
       (map
        #(% activity)
-       [
-        ;; enclosures-section
+       [enclosures-section
         ;; links-section
-        ;; likes-section
-        ;; maps-section
-        ;; tags-section
+        likes-section
+        maps-section
+        tags-section
         posted-link-section
-        ;; comments-section
-        ])]]))
+        comments-section])
+      [:div.pull-right (post-actions activity)]]]))
 
 (defsection show-section [Activity :rdf]
   [activity & _]

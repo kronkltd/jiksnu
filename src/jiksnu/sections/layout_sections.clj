@@ -312,8 +312,8 @@
      [:div#content.span10
       [:div.row-fluid
        (if-not (:single response)
-         (list [:div.span9 (main-content request response)]
-               [:div.span3 (right-column-section response)])
+         (list [:div.span10 (main-content request response)]
+               [:div.span2 (right-column-section response)])
          [:div.span12 (main-content request response)])]]]]
    (scripts-section request response)))
 

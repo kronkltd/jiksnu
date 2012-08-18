@@ -62,9 +62,9 @@
     (ko/assoc-observable "name")))
 
 (defvar ^{:doc "The main view model for the site"} AppViewModel
-  [this]
+  [this model]
   (doto this
-    (ko/assoc-observable "statistics")
+    (ko/assoc-observable "statistics" #_(Statistics.))
     (ko/assoc-observable "title")
     (ko/assoc-observable "postForm" (PostForm.))
     (ko/assoc-observable "showPostForm" true)
@@ -75,6 +75,8 @@
     (ko/assoc-observable-array "domains")
     (ko/assoc-observable-array "groups")
     (ko/assoc-observable-array "feedSources")
+    (ko/assoc-observable-array "followers")
+    (ko/assoc-observable-array "following")
     (ko/assoc-observable-array "items")
     (ko/assoc-observable-array "notifications")
     (ko/assoc-observable-array "subscriptions")

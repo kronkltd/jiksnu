@@ -571,8 +571,8 @@
    (merge {:data-type "user"}
           (when-not *dynamic*
             {:data-id (:_id user)}))
+   [:div (display-avatar user 96)]
    [:p
-    (display-avatar user)
     [:span.nickname.fn.n
      [:span
       (if *dynamic*
