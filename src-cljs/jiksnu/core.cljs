@@ -18,49 +18,56 @@
     (.message notification message)
     (.push (.-notifications _view) notification)))
 
+(declare _model)
+
 (defn fetch-viewmodel
   [url]
   (.getJSON js/jQuery url
             (fn [data]
-              (let [m data]
-                (def _m m)
+              (def _m data)
 
-                (when-let [title (.-title m)]
-                  (.title _view title))
+              (when-let [title (.-title data)]
+                (.title _view title))
 
-                (when-let [currentUser (.-currentUser m)]
-                  (.currentUser _view currentUser))
+              (when-let [currentUser (.-currentUser data)]
+                (.currentUser _view currentUser))
 
-                (when-let [targetUser (.-targetUser m)]
-                  (.targetUser _view targetUser))
+              (when-let [targetUser (.-targetUser data)]
+                (.targetUser _view targetUser))
 
-                (when-let [activities (.-activities m)]
-                  (.activities _view activities))
+              (when-let [activities (.-activities data)]
+                (log/info "activities")
+                (log/info activities)
+                (doseq [activity activities]
+                  (.add (.get _model "activities") activity )))
 
-                (when-let [domains (.-domains m)]
-                  (.domains _view domains))
+              (when-let [domains (.-domains data)]
+                (.domains _view domains))
 
-                (when-let [groups (.-groups m)]
-                  (.groups _view groups))
+              (when-let [groups (.-groups data)]
+                (.groups _view groups))
 
-                (when-let [feedSources (.-feedSources m)]
-                  (.feedSources _view feedSources))
+              (when-let [feedSources (.-feedSources data)]
+                (.feedSources _view feedSources))
 
-                (when-let [subscriptions (.-subscriptions m)]
-                  (.subscriptions _view subscriptions))
+              (when-let [subscriptions (.-subscriptions data)]
+                (.subscriptions _view subscriptions))
 
-                (when-let [users (.-users m)]
-                  (.users _view users))
+              (when-let [users (.-users data)]
+                (.users _view users))
 
-                (when-let [items (.-items m)]
-                  (.items _view items))))))
+              (when-let [items (.-items data)]
+                (.items _view items))
+              )))
 
 
 (defn main
   []
   (start-display (console-output))
   (log/info "starting application")
-  (def _view (.viewModel js/kb (model/AppViewModel.)))
+  (def _model (model/AppViewModel.))
+  (aset js/window "_model" _model)
+  (def _view (.viewModel js/kb _model))
 
   ;; NB: for debugging only. use fully-qualified var
   (aset js/window "_view" _view)

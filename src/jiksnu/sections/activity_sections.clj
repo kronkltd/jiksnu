@@ -529,8 +529,8 @@
 (defsection index-block [Activity :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 (defsection index-block [Activity :xml]
   [activities & _]

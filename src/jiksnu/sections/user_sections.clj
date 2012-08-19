@@ -472,8 +472,8 @@
 (defsection index-block [User :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 ;; index-line
 
