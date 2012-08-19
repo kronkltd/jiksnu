@@ -27,7 +27,7 @@
               (def _m data)
 
               (when-let [title (.-title data)]
-                (.title _view title))
+                (.set _model "title" title))
 
               (when-let [currentUser (.-currentUser data)]
                 (.currentUser _view currentUser))

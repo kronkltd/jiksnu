@@ -23,6 +23,13 @@
   (-> (response/redirect-after-post "/")
       (assoc :template false)))
 
+(defview #'delete :model
+  [request activity]
+  {:body (show-section activity)})
+
+
+
+
 (defview #'edit-page :html
   [request activity]
   {:body (edit-form activity)})

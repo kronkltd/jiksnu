@@ -689,7 +689,7 @@
                :id (str "activity-" (:_id activity))
                :data-id (:_id activity)}))
      [:header
-      [:div (when *dynamic* {:data-bind "with: $root.getUser($data.author)"})
+      #_[:div (when *dynamic* {:data-bind "with: $root.getUser($data.author)"})
        (let [user (if *dynamic*
                     (User.)
                     (model.activity/get-author activity))]

@@ -17,6 +17,7 @@
    [[:get    (named-path "show activity")]     #'activity/show]
    [[:post   (named-path "new activity")]      #'activity/post]
    [[:post   (named-path "show activity")]     #'activity/update]
+   [[:delete "/notice/:id.:format"]            #'activity/delete]
    [[:delete "/notice/:id"]                    #'activity/delete]
    [[:get    (named-path "edit activity")]     #'activity/edit-page]
    ;; [[:get "/main/events"]                      #'activity/stream]

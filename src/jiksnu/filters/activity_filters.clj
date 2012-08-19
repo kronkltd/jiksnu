@@ -18,7 +18,11 @@
 
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id model.activity/fetch-by-id action))
+  (if-let [id (try (-> request :params :id log/spy model/make-id)
+                   (catch RuntimeException ex))]
+    (if-let [activity (model.activity/fetch-by-id (log/spy id))]
+     (action (log/spy activity))
+     )))
 
 ;; (deffilter #'new :http
 ;;   [action request]

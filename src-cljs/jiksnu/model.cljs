@@ -151,8 +151,10 @@
 
      "getActivity" (fn [id]
                      (this-as this
+                              (log/info "this")
+                              (log/info this)
                               (let [m (.activities this)]
-                                (aget m id))))
+                                (.get m id))))
 
      "getDomain" (fn [id]
                    (this-as this
@@ -176,7 +178,9 @@
      "getUser"
      (fn [id]
        (this-as this
-        (aget (.users this) id)))
+                (log/info "this")
+                (log/info this)
+        (.get (.users this) id)))
 
      "groups"        nil
      "items"         nil

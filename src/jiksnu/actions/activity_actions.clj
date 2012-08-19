@@ -126,7 +126,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   "delete an activity"
   [activity]
   (let [actor-id (session/current-user-id)
-        author (:author activity)]
+        author (:author (log/spy activity))]
     (if (or (session/is-admin?) (= actor-id author))
       (model.activity/delete activity)
       ;; TODO: better exception type
