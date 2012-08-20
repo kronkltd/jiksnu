@@ -454,11 +454,17 @@
    [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map admin-index-line activities)]])
 
+;; (defsection admin-index-block [Activity :viewmodel]
+;;   [items & [page]]
+;;   (->> items
+;;        (map (fn [m] {(:_id m) (admin-index-line m page)}))
+;;        (into {})))
+
 (defsection admin-index-block [Activity :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 ;; admin-index-line
 
@@ -466,9 +472,9 @@
   [activity & [options & _]]
   [:tr (merge {:data-type "activity"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+                {:data-bind "attr: {'data-id': _id()}"}
                 { :data-id (:_id activity)}))
-   [:td (if *dynamic* {:data-bind "with: $root.getUser($data.author)"})
+   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user($data.author)"})
     (link-to (if *dynamic*
                (User.)
                (actions.activity/get-author activity)))]
@@ -519,7 +525,7 @@
   [records & [options & _]]
   [:div.activities
    (if *dynamic*
-     {:data-bind "foreach: _.map(items(), function (id) {return $root.getActivity(id);})"})
+     {:data-bind "foreach: _.map(items(), jiksnu.core.get_activity)"})
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -689,8 +695,9 @@
                :id (str "activity-" (:_id activity))
                :data-id (:_id activity)}))
      [:header
-      #_[:div (when *dynamic* {:data-bind "with: $root.getUser($data.author)"})
-       (let [user (if *dynamic*
+      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author())"})
+
+       [:div {:data-bind "text: $data"}] (let [user (if *dynamic*
                     (User.)
                     (model.activity/get-author activity))]
          (show-section-minimal user))]

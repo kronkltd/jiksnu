@@ -22,6 +22,7 @@
 
 (defn fetch-viewmodel
   [url]
+  (log/info (str "Fetching viewmodel: " url))
   (.getJSON js/jQuery url
             (fn [data]
               (def _m data)
@@ -30,36 +31,40 @@
                 (.set _model "title" title))
 
               (when-let [currentUser (.-currentUser data)]
-                (.currentUser _view currentUser))
+                (.set _model "currentUser" currentUser))
 
               (when-let [targetUser (.-targetUser data)]
-                (.targetUser _view targetUser))
+                (.set _model "targetUser" targetUser))
 
-              (when-let [activities (.-activities data)]
-                (log/info "activities")
-                (log/info activities)
-                (doseq [activity activities]
-                  (.add (.get _model "activities") activity )))
-
-              (when-let [domains (.-domains data)]
-                (.domains _view domains))
-
-              (when-let [groups (.-groups data)]
-                (.groups _view groups))
-
-              (when-let [feedSources (.-feedSources data)]
-                (.feedSources _view feedSources))
-
-              (when-let [subscriptions (.-subscriptions data)]
-                (.subscriptions _view subscriptions))
-
-              (when-let [users (.-users data)]
-                (.users _view users))
+              (doseq [key ["activities"
+                           "domains"
+                           ;; "groups"
+                           "feedSources"
+                           "subscriptions"
+                           "users"]]
+                (when-let [items (aget data key)]
+                  (doseq [item items]
+                    (.add (.get _model key) item))))
 
               (when-let [items (.-items data)]
-                (.items _view items))
-              )))
+                (.items _view items)))))
 
+
+(defn get-activity
+  [id]
+  (.viewModel js/kb (.get (.get _model "activities") id)))
+
+(defn get-domain
+  [id]
+  (.viewModel js/kb (.get (.get _model "domains") id)))
+
+(defn get-feed-source
+  [id]
+  (.viewModel js/kb (.get (.get _model "feedSources") id)))
+
+(defn get-user
+  [id]
+  (.viewModel js/kb (.get (.get _model "users") id)))
 
 (defn main
   []
@@ -80,7 +85,8 @@
   (stats/fetch-statistics _view)
 
   (if-let [elts ($ "*[data-load-model]")]
-    (log/info (fetch-viewmodel (.data elts "load-model"))))
+    (fetch-viewmodel (.data elts "load-model")))
+  
   #_(stats/fetch-statistics _view)
   #_(.start (.-history js/Backbone))
   #_(js/prettyPrint))

@@ -70,16 +70,21 @@
 
 (defmethod format-as :viewmodel
   [format request response]
-  (let [response (if-let [user (current-user)]
-                   (-> response
-                       (assoc-in [:body :currentUser] (:_id user))
-                       (update-in [:body :users]
-                                  (fn [users]
-                                    (merge users
-                                           (index-section [user])))))
-                   response)]
-    (with-format :json
-     (doall (format-as :json request response)))))
+  (with-format :json
+    (doall (format-as :json request response))))
+
+;; (defmethod format-as :viewmodel
+;;   [format request response]
+;;   (let [response (if-let [user (current-user)]
+;;                    (-> response
+;;                        (assoc-in [:body :currentUser] (:_id user))
+;;                        (update-in [:body :users]
+;;                                   (fn [users]
+;;                                     (merge users
+;;                                            (index-section [user])))))
+;;                    response)]
+;;     (with-format :json
+;;      (doall (format-as :json request response)))))
 
 (defmethod format-as :xml
   [format request response]

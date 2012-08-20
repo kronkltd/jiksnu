@@ -45,16 +45,36 @@
                (.totalRecords this))))))
 
 
+(def Domain
+  (.extend (.-RelationalModel js/Backbone)
+           (js-obj
+            "name" "Domain"
+            "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
+            "idAttribute" "_id")))
+
+(def Domains
+  (.extend (.-Collection js/Backbone)
+           (js-obj
+            "name" "domains"
+            "urlRoot" "/main/domains/"
+            "model" Domain
+            "initialize" (fn [models options]
+                           (log/info "init domains")))))
+
+
 (def User
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
+            "name" "User"
+            "defaults" (js-obj "url" nil
+                               "displayName" nil)
             "idAttribute" "_id")))
 
 (def Users
   (.extend (.-Collection js/Backbone)
            (js-obj
-            "idAttribute" "_id")))
-
+            "idAttribute" "_id"
+            "model" User)))
 
 
 
@@ -62,24 +82,43 @@
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
             "idAttribute" "_id"
-            "url" (fn [id] (this-as this (str "/notice/" (.-id this) ".model")))
+            "url" (fn [id] (this-as
+                           this
+                           (str "/notice/" (.-id this) ".model")))
+            "class" "Activity"
             "defaults" (js-obj
-                        "_id" nil
-                        "enclosures" nil)
-            "relations" (apply array [ (js-obj
-                                        "type" "HasOne"
-                                        "key" "author"
-                                        "relatedModel" User
-                                        "collectionType" Users)])
-            "initialize" (fn []
+                        "_id"        nil
+                        "author"     nil
+                        "links"      (array)
+                        "enclosures" (array))
+            ;; "relations" (apply array
+            ;;                    [(js-obj
+            ;;                      "type"           "HasOne"
+            ;;                      "key"            "author"
+            ;;                      "relatedModel"   User
+            ;;                      "collectionType" Users)])
+            "initialize" (fn [model]
                            (log/info "Initialize activity")))))
 
-(def Subscription
-  (.extend (.-RelationalModel js/Backbone)
+(def ^{:doc "collection of activities"} Activities
+  (.extend (.-Collection js/Backbone)
            (js-obj
-            "idAttribute" "_id")))
+            "class" "Activities"
+            "urlRoot" "/main/notices/"
+            "model" Activity
+            "initialize" (fn [models options]
+                           (log/info "init activities"))
 
-(def Domain
+            )))
+
+
+
+
+
+
+
+
+(def Subscription
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
             "idAttribute" "_id")))
@@ -94,19 +133,6 @@
 
 
 
-
-(def ^{:doc "collection of activities"} Activities
-  (.extend (.-Collection js/Backbone)
-           (js-obj
-            "name" "activities"
-            "urlRoot" "/main/notices/"
-            "model" Activity
-            "initialize" (fn [models options]
-                           (log/info "init activities")))))
-
-(def Domains
-  (.extend (.-Collection js/Backbone)
-           (js-obj)))
 
 (def FeedSources
   (.extend (.-Collection js/Backbone)
@@ -193,4 +219,4 @@
      "subscriptions" nil
      "targetUser"    nil
      "title"         nil
-     "users"         nil))))
+     "users"         (Users.)))))

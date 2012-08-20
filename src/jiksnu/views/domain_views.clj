@@ -49,7 +49,7 @@
    :viewmodel "/main/domains.viewmodel"
    :body
    [:div (if *dynamic*
-           {:data-bind "with: _.map($root.items(), function (id) {return $root.getDomain(id)})"})
+           {:data-bind "with: _.map(items(), jiksnu.core.get_domain)"})
     (let [domains (if *dynamic* [(Domain.)] items)]
       (index-section domains options))]})
 
@@ -57,7 +57,7 @@
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
           :items (map :_id items)
-          :domains (index-section items page)}})
+          :domains (doall (index-section items page))}})
 
 (defview #'show :html
   [_request domain]

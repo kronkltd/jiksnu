@@ -69,8 +69,8 @@
 (defsection index-block [Domain :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 (defsection index-line [Domain :html]
   [domain & _]
@@ -86,7 +86,7 @@
    [:td
     [:a
      (if *dynamic*
-       {:data-bind "attr: {href: 'http://' + _id + '/.well-known/host-meta'}"}
+       {:data-bind "attr: {href: 'http://' + _id() + '/.well-known/host-meta'}"}
        {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
    [:td

@@ -59,9 +59,7 @@
    :single true
    :body
    [:div (if *dynamic*
-           {:data-bind "with: _.map($root.items(), function (id) {return $root.getUser(id)})"}
-          
-           )
+           {:data-bind "with: _.map($root.items(), jiksnu.core.get_user)"})
 
     (index-section items page)]})
 

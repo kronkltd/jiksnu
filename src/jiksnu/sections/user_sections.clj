@@ -84,7 +84,7 @@
            :height size
            :alt ""}
           (if *dynamic*
-            {:data-bind "attr: {src: avatarUrl}"}
+            {:data-bind "attr: {src: avatarUrl()}"}
             {:src (model.user/image-link user)}))])
 
 (defn display-avatar
@@ -299,8 +299,8 @@
 (defsection admin-index-block [User :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 ;; admin-index-line
 
@@ -308,20 +308,20 @@
   [user & [page & _]]
   [:tr (merge {:data-type "user"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+                {:data-bind "attr: {'data-id': _id()}"}
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
     (if *dynamic*
-      {:data-bind "text: username"}
+      {:data-bind "text: username()"}
       (link-to user))]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/users/' + _id}, text: _id"}
+          {:data-bind "attr: {href: '/admin/users/' + _id()}, text: _id()"}
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
-   [:td {:data-bind "with: $root.getDomain($data.domain)"}
+   [:td {:data-bind "with: jiksnu.core.get_domain(domain())"}
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
    [:td (admin-actions-section user page)]])
@@ -343,7 +343,7 @@
   (list
    [:table.table (merge {:data-type "user"}
                 (if *dynamic*
-                  {:data-bind "attr: {'data-id': _id}"}
+                  {:data-bind "attr: {'data-id': _id()}"}
                   {:data-id (:_id item)}))
     [:tr
      [:th]
@@ -352,13 +352,13 @@
     [:tr
      [:th "Username"]
      [:td (if *dynamic*
-            {:data-bind "text: username"}
+            {:data-bind "text: username()"}
             (:username item))]]
     
     [:tr
      [:th  "Domain"]
      [:td (when *dynamic*
-              {:data-bind "with: $root.getDomain($data.domain)"})
+              {:data-bind "with: jiksnu.core.get_domain($data.domain)"})
       (let [domain (if *dynamic* (Domain.)
                        (actions.user/get-domain item))]
         (link-to domain))]]
@@ -395,18 +395,18 @@
     [:tr
      [:th "Updated"]
      [:td (if *dynamic*
-              {:data-bind "text: updated"}
+              {:data-bind "text: updated()"}
               (:updated item))]]
     [:tr
      [:th "Update Source"]
      [:td (if *dynamic*
-            {:data-bind "with: $root.getFeedSource($data.updateSource)"})
+            {:data-bind "with: jiksnu.core.get_feed_source($data.updateSource)"})
       (when-let [source (if *dynamic*
                           (FeedSource.)
                           (-?> item :update-source model.feed-source/fetch-by-id))]
         (link-to source))]]]
    (admin-actions-section item)
-   [:table.table (when *dynamic* {:data-bind "if: typeof(links) !== 'undefined'"})
+   [:table.table (when *dynamic* {:data-bind "if: links()"})
     [:thead
      [:tr
       [:th "title"]
@@ -481,7 +481,7 @@
   [user & _]
   [:tr (merge {:data-type "user"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+                {:data-bind "attr: {'data-id': _id()}"}
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
@@ -520,11 +520,11 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/users/' + _id}"}
+          {:data-bind "attr: {href: '/users/' + _id()}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: typeof($data.url) !== 'undefined' ? url : ''}, text: typeof(displayName) !== 'undefined' ? displayName : ''"}
+                     {:data-bind "attr: {about: url()}, text: displayName()"}
                      {:about (uri record)}))
       (when-not *dynamic*
        (or (:title options-map) (title record)))] ]))

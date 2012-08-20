@@ -85,7 +85,7 @@
 (defn process-event
   [event]
   (let [t (:type (js->clj event))]
-    (log/info t)))
+    t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States
