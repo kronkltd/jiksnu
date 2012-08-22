@@ -51,12 +51,15 @@
             "name" "Domain"
             "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
             "defaults" (js-obj "xmpp" "true")
-            "idAttribute" "_id")))
+            "idAttribute" "_id"
+            "initialize" (fn [models options]
+                           (log/info "init domain")))))
 
 (def Domains
   (.extend (.-Collection js/Backbone)
            (js-obj
             "name" "domains"
+            "class" "Domains"
             "urlRoot" "/main/domains/"
             "model" Domain
             "initialize" (fn [models options]
@@ -67,18 +70,24 @@
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
             "name" "User"
+            "class" "User"
             "defaults" (js-obj "url" nil
                                "avatarUrl" nil
                                "uri" ""
                                "bio" ""
                                "displayName" nil)
-            "idAttribute" "_id")))
+            "idAttribute" "_id"
+            "initialize" (fn [models options]
+                           (log/info "init user")))))
 
 (def Users
   (.extend (.-Collection js/Backbone)
            (js-obj
             "idAttribute" "_id"
-            "model" User)))
+            "class" "Users"
+            "model" User
+            "initialize" (fn [models options]
+                           (log/info "init users")))))
 
 
 
@@ -113,11 +122,11 @@
             "initialize" (fn [models options]
                            (log/info "init activities")))))
 
-
 (def Group
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
             "idAttribute" "_id"
+            "class" "Group"
             "initialize" (fn [model]
                            (log/info "Initialize activity")))))
 
@@ -125,34 +134,37 @@
   (.extend (.-Collection js/Backbone)
            (js-obj
             "model" Group
-            "initialize" (fn [models options]
-                           (log/info "init groups")))))
-
-
+            "class" "Groups"
+           "initialize" (fn [models options]
+                          (log/info "init groups")))))
 
 (def Subscription
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
-            "idAttribute" "_id")))
+            "class" "Subscription"
+            "idAttribute" "_id"
+            "initialize" (fn [models options]
+                           (log/info "init subscription")))))
+
+(def Subscriptions
+  (.extend (.-Collection js/Backbone)
+           (js-obj
+            "initialize" (fn [models options]
+                           (log/info "init subscriptions")))))
 
 (def FeedSource
   (.extend (.-RelationalModel js/Backbone)
            (js-obj
-            "idAttribute" "_id")))
-
-
-
-
-
-
+            "class" "FeedSource"
+            "idAttribute" "_id"
+            "initialize" (fn [models options]
+                           #_(log/info "init feed source")))))
 
 (def FeedSources
   (.extend (.-Collection js/Backbone)
-           (js-obj)))
-
-(def Subscriptions
-  (.extend (.-Collection js/Backbone)
-           (js-obj)))
+           (js-obj
+            "initialize" (fn [models options]
+                           #_(log/info "init feed sources")))))
 
 
 
@@ -166,7 +178,12 @@
 
 
 
-
+(def activities   (Activities.))
+(def users (Users.))
+(def domains (Domains.))
+(def subscriptions (Subscriptions.))
+(def groups (Groups.))
+(def feed-sources (FeedSources.))
 
 (def ^{:doc "The main view model for the site"} AppViewModel
   (.extend
@@ -175,52 +192,19 @@
     "defaults"
     (js-obj
      
-     "activities"    (Activities.)
-     "domains"       (Domains.)
+     "activities"  activities
+     "domains"       domains
      "currentUser"   nil
 
      "dismissNotification" (fn [self]
                              (this-as this
                                       (.remove (.-notifications this) self)))
 
-     "feedSources"   (FeedSources.)
-     "followers"     nil
-     "following"     nil
+     "feedSources"   feed-sources
+     "followers"     (array)
+     "following"     (array)
 
-     "getActivity" (fn [id]
-                     (this-as this
-                              (log/info "this")
-                              (log/info this)
-                              (let [m (.activities this)]
-                                (.get m id))))
-
-     "getDomain" (fn [id]
-                   (this-as this
-                            (aget (.domains this) id)))
-     
-     "getFeedSource" (fn [id]
-                       (this-as this
-                                (if-let [source (aget (.feedSources this) id)]
-                                  source
-                                  (log/warn (str "Could not find source: " id)))))
-
-     "getGroup" (fn [id]
-                  (this-as this
-                   (aget (.groups this) id)))
-
-     "getSubscription"
-     (fn [id]
-       (this-as this
-                (aget (.subscriptions this) id)))
-
-     "getUser"
-     (fn [id]
-       (this-as this
-                (log/info "this")
-                (log/info this)
-        (.get (.users this) id)))
-
-     "groups"        (Groups.)
+     "groups"        groups
      "items"         nil
      "pageInfo"      nil
      "postForm"      nil
@@ -228,7 +212,7 @@
      "showPostForm"  true
      "site"          nil
      "statistics"    nil
-     "subscriptions" nil
+     "subscriptions" subscriptions
      "targetUser"    nil
-     "title"         nil
-     "users"         (Users.)))))
+     "title"         "Jiksnu"
+     "users"         users))))

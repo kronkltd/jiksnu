@@ -474,7 +474,7 @@
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 { :data-id (:_id activity)}))
-   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
+   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author())"})
     (link-to (if *dynamic*
                (User.)
                (actions.activity/get-author activity)))]

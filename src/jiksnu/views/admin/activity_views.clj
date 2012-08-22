@@ -13,11 +13,12 @@
    :single true
    :viewmodel "/admin/activities.viewmodel"
    :body
-   [:div (when *dynamic* {:data-bind "with: _.map(items(), jiksnu.core.get_activity)"})
-    (admin-index-section
-          (if *dynamic*
-            [(Activity.)]
-            items) response)]})
+   [:div (when *dynamic*
+           {:data-bind "with: _.map(items(), jiksnu.core.get_activity)"})
+    (let [activities (if *dynamic*
+                       [(Activity.)]
+                       items)]
+      (admin-index-section activities response))]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

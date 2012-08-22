@@ -1,4 +1,5 @@
-(ns jiksnu.logging)
+(ns jiksnu.logging
+  (:require [console :as console]))
 
 (defn info
   [m]

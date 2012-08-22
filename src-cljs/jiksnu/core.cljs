@@ -53,15 +53,21 @@
 
 (defn get-model
   [model-name id]
-  (if-let [coll (.get _model model-name)]
-    (do (log/info coll)
+  (if id
+    (if-let [coll (.get _model model-name)]
+      (do
         (let [m (Backbone/ModelRef. coll id)]
           (if (.isLoaded m)
-            (do
-              (log/info m)
-              (.-attributes (.model m)))
-            (log/info (str "not loaded: " model-name "(" id ")")))))
-    (log/error "could not get collection")))
+            (.viewModel js/kb (.model m))
+            (do (log/info (str "not loaded: " model-name "(" id ")"))
+                (let [url (str "/" model-name "/" id ".model")]
+                  (log/info (str "fetching " url))
+                  (let [resp (.getJSON js/jQuery url
+                                       (fn [data d]
+                                         (.add coll data)))]
+                    (.viewModel js/kb (.-cached_model m))))))))
+      (log/error "could not get collection"))
+    (log/warn "id is undefined")))
 
 (def get-activity (partial get-model "activities"))
 (def get-domain (partial get-model "domains"))
