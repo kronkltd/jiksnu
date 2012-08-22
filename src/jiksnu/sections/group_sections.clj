@@ -55,8 +55,8 @@
 (defsection admin-index-block [Group :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 ;; admin-index-line
 
@@ -104,14 +104,14 @@
   [groups & _]
   [:ul.profiles
    (when *dynamic*
-     {:data-bind "foreach: items"})
+     {:data-bind "foreach: items()"})
    (map index-line groups)])
 
 (defsection index-block [Group :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 ;; index-line
 
@@ -122,7 +122,7 @@
 (defsection index-line [Group :html]
   [group & _]
   [:li (when *dynamic*
-         {:data-bind "with: $root.groups()[$data]"})
+         {:data-bind "with: jiksnu.core.get_group($data)"})
    [:section.profile.hentry.vcard
     [:p
      [:a.url.entry-title {:href (str "/groups/" (:nickname group))}

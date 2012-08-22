@@ -50,6 +50,7 @@
            (js-obj
             "name" "Domain"
             "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
+            "defaults" (js-obj "xmpp" "true")
             "idAttribute" "_id")))
 
 (def Domains
@@ -67,6 +68,9 @@
            (js-obj
             "name" "User"
             "defaults" (js-obj "url" nil
+                               "avatarUrl" nil
+                               "uri" ""
+                               "bio" ""
                                "displayName" nil)
             "idAttribute" "_id")))
 
@@ -87,8 +91,8 @@
                            (str "/notice/" (.-id this) ".model")))
             "class" "Activity"
             "defaults" (js-obj
-                        "_id"        nil
-                        "author"     nil
+                        "_id"        ""
+                        "author"     ""
                         "links"      (array)
                         "enclosures" (array))
             ;; "relations" (apply array
@@ -107,14 +111,22 @@
             "urlRoot" "/main/notices/"
             "model" Activity
             "initialize" (fn [models options]
-                           (log/info "init activities"))
-
-            )))
+                           (log/info "init activities")))))
 
 
+(def Group
+  (.extend (.-RelationalModel js/Backbone)
+           (js-obj
+            "idAttribute" "_id"
+            "initialize" (fn [model]
+                           (log/info "Initialize activity")))))
 
-
-
+(def Groups
+  (.extend (.-Collection js/Backbone)
+           (js-obj
+            "model" Group
+            "initialize" (fn [models options]
+                           (log/info "init groups")))))
 
 
 
@@ -208,7 +220,7 @@
                 (log/info this)
         (.get (.users this) id)))
 
-     "groups"        nil
+     "groups"        (Groups.)
      "items"         nil
      "pageInfo"      nil
      "postForm"      nil

@@ -78,7 +78,7 @@
    [:td (favicon-link domain)]
    [:td (link-to domain)]
    [:td (if *dynamic*
-          {:data-bind "text: typeof(xmpp) !== 'undefined' ? xmpp : ''"}
+          {:data-bind "text: xmpp"}
           (:xmpp domain))]
    [:td (if *dynamic*
           {:data-bind "text: typeof(discovered) !== 'undefined' ? discovered : ''"}
@@ -86,7 +86,7 @@
    [:td
     [:a
      (if *dynamic*
-       {:data-bind "attr: {href: 'http://' + _id() + '/.well-known/host-meta'}"}
+       {:data-bind "attr: {href: 'http://' + _id + '/.well-known/host-meta'}"}
        {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
    [:td

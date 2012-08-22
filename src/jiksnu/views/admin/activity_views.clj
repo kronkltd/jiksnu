@@ -13,7 +13,7 @@
    :single true
    :viewmodel "/admin/activities.viewmodel"
    :body
-   [:div (when *dynamic* {:data-bind "with: _.map($root.items(), function (id) {return $root.getActivity(id)})"})
+   [:div (when *dynamic* {:data-bind "with: _.map(items(), jiksnu.core.get_activity)"})
     (admin-index-section
           (if *dynamic*
             [(Activity.)]

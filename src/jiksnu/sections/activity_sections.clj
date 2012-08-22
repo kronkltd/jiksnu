@@ -472,9 +472,9 @@
   [activity & [options & _]]
   [:tr (merge {:data-type "activity"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id()}"}
+                {:data-bind "attr: {'data-id': _id}"}
                 { :data-id (:_id activity)}))
-   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user($data.author)"})
+   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
     (link-to (if *dynamic*
                (User.)
                (actions.activity/get-author activity)))]
@@ -695,9 +695,9 @@
                :id (str "activity-" (:_id activity))
                :data-id (:_id activity)}))
      [:header
-      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author())"})
+      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
 
-       [:div {:data-bind "text: $data"}] (let [user (if *dynamic*
+       (let [user (if *dynamic*
                     (User.)
                     (model.activity/get-author activity))]
          (show-section-minimal user))]

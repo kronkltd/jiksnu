@@ -1,7 +1,8 @@
 (ns jiksnu.core
   (:use [lolg :only [start-display console-output]]
         [jayq.core :only [$]])
-  (:require [jiksnu.handlers :as handlers]
+  (:require [Backbone :as Backbone]
+            [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as log]
             [jiksnu.model :as model]
@@ -27,18 +28,9 @@
             (fn [data]
               (def _m data)
 
-              (when-let [title (.-title data)]
-                (.set _model "title" title))
-
-              (when-let [currentUser (.-currentUser data)]
-                (.set _model "currentUser" currentUser))
-
-              (when-let [targetUser (.-targetUser data)]
-                (.set _model "targetUser" targetUser))
-
               (doseq [key ["activities"
                            "domains"
-                           ;; "groups"
+                           "groups"
                            "feedSources"
                            "subscriptions"
                            "users"]]
@@ -47,24 +39,35 @@
                     (.add (.get _model key) item))))
 
               (when-let [items (.-items data)]
-                (.items _view items)))))
+                (.items _view items))
+
+              (when-let [title (.-title data)]
+                (.set _model "title" title))
+
+              (when-let [currentUser (.-currentUser data)]
+                (.set _model "currentUser" currentUser))
+
+              (when-let [targetUser (.-targetUser data)]
+                (.set _model "targetUser" targetUser)))))
 
 
-(defn get-activity
-  [id]
-  (.viewModel js/kb (.get (.get _model "activities") id)))
+(defn get-model
+  [model-name id]
+  (if-let [coll (.get _model model-name)]
+    (do (log/info coll)
+        (let [m (Backbone/ModelRef. coll id)]
+          (if (.isLoaded m)
+            (do
+              (log/info m)
+              (.-attributes (.model m)))
+            (log/info (str "not loaded: " model-name "(" id ")")))))
+    (log/error "could not get collection")))
 
-(defn get-domain
-  [id]
-  (.viewModel js/kb (.get (.get _model "domains") id)))
-
-(defn get-feed-source
-  [id]
-  (.viewModel js/kb (.get (.get _model "feedSources") id)))
-
-(defn get-user
-  [id]
-  (.viewModel js/kb (.get (.get _model "users") id)))
+(def get-activity (partial get-model "activities"))
+(def get-domain (partial get-model "domains"))
+(def get-group (partial get-model "groups"))
+(def get-feed-source (partial get-model "feedSources"))
+(def get-user (partial get-model "users"))
 
 (defn main
   []

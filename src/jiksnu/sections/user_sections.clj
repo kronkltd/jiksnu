@@ -84,7 +84,7 @@
            :height size
            :alt ""}
           (if *dynamic*
-            {:data-bind "attr: {src: avatarUrl()}"}
+            {:data-bind "attr: {src: avatarUrl}"}
             {:src (model.user/image-link user)}))])
 
 (defn display-avatar
@@ -308,20 +308,20 @@
   [user & [page & _]]
   [:tr (merge {:data-type "user"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id()}"}
+                {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
     (if *dynamic*
-      {:data-bind "text: username()"}
+      {:data-bind "text: username"}
       (link-to user))]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/users/' + _id()}, text: _id()"}
+          {:data-bind "attr: {href: '/admin/users/' + _id}, text: _id"}
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
-   [:td {:data-bind "with: jiksnu.core.get_domain(domain())"}
+   [:td {:data-bind "with: jiksnu.core.get_domain(domain)"}
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
    [:td (admin-actions-section user page)]])
@@ -343,7 +343,7 @@
   (list
    [:table.table (merge {:data-type "user"}
                 (if *dynamic*
-                  {:data-bind "attr: {'data-id': _id()}"}
+                  {:data-bind "attr: {'data-id': _id}"}
                   {:data-id (:_id item)}))
     [:tr
      [:th]
@@ -352,7 +352,7 @@
     [:tr
      [:th "Username"]
      [:td (if *dynamic*
-            {:data-bind "text: username()"}
+            {:data-bind "text: username"}
             (:username item))]]
     
     [:tr
@@ -395,7 +395,7 @@
     [:tr
      [:th "Updated"]
      [:td (if *dynamic*
-              {:data-bind "text: updated()"}
+              {:data-bind "text: updated"}
               (:updated item))]]
     [:tr
      [:th "Update Source"]
@@ -406,7 +406,7 @@
                           (-?> item :update-source model.feed-source/fetch-by-id))]
         (link-to source))]]]
    (admin-actions-section item)
-   [:table.table (when *dynamic* {:data-bind "if: links()"})
+   [:table.table (when *dynamic* {:data-bind "if: links"})
     [:thead
      [:tr
       [:th "title"]
@@ -481,7 +481,7 @@
   [user & _]
   [:tr (merge {:data-type "user"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id()}"}
+                {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
@@ -497,14 +497,14 @@
       (if *dynamic*
         {:data-bind "text: domain"}
         (:domain user))]]
-    [:p (when *dynamic* {:data-bind "text: typeof($data.displayName) != 'undefined' ? displayName : ''"})]
+    [:p (when *dynamic* {:data-bind "text: displayName"})]
     [:p
      (if *dynamic*
-       {:data-bind "text: typeof($data.uri) != 'undefined' ? uri : ''"}
+       {:data-bind "text: uri"}
        (:uri user))]
     [:p
      (if *dynamic*
-       {:data-bind "text: typeof($data.bio) !== 'undefined' ? bio : ''"}
+       {:data-bind "text: bio"}
        (:bio user))]]
    [:td (actions-section user)]])
 
@@ -520,11 +520,11 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/users/' + _id()}"}
+          {:data-bind "attr: {href: '/users/' + _id}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url()}, text: displayName()"}
+                     {:data-bind "attr: {about: url}, text: displayName"}
                      {:about (uri record)}))
       (when-not *dynamic*
        (or (:title options-map) (title record)))] ]))

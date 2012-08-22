@@ -13,7 +13,7 @@
   [:li.dropdown
    [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
     [:span (if *dynamic*
-             {:data-bind "with: $root.getUser($root.currentUser())"})
+             {:data-bind "with: jiksnu.core.get_user(currentUser())"})
      (display-avatar-img user 18)
      [:span
       (if *dynamic*

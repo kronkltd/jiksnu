@@ -39,6 +39,7 @@
             [jiksnu.session :as session]
             [jiksnu.views :as views]
             [ring.middleware.file :as file]
+            [monger.ring.session-store :as ms]
             [ring.middleware.file-info :as file-info]
             [ring.middleware.stacktrace :as stacktrace]
             [ring.util.response :as response])
@@ -110,5 +111,5 @@
        middleware/wrap-http-serialization
        #_middleware/wrap-log-request
        jm/wrap-dynamic-mode
-       handler/site
+       (handler/site {:session {:store (ms/session-store)}})
        jm/wrap-stacktrace)))
