@@ -57,43 +57,53 @@
   (log/info (str "Fetching viewmodel: " url))
   (.getJSON js/jQuery url process-viewmodel))
 
+(defn receive-model
+  [coll id o data d]
+  (let [resp (.add coll data)
+        m (.get coll id)
+        a (.-attributes m)]
+    (log/info "setting observable from response")
+    (o a)))
+
+(defn load-model
+  [om model-name id]
+  #_(log/info (str "not loaded: " model-name "(" id ")"))
+  (let [coll (.get _model model-name)
+        url (str "/" model-name "/" id ".model")]
+    (log/info (str "fetching " url))
+    (let [o (.observable js/ko)
+          resp (.getJSON js/jQuery url (partial receive-model coll id o))]
+      (aset om id o)
+      o)))
+
+(defn init-observable
+  [om mref model-name id]
+  (let [m (.model mref)
+        a (.-attributes m)
+        o (.observable js/ko a)]
+    (log/info (str "setting observable (already loaded): " model-name "(" id ")"))
+    (aset om id o)
+    o))
+
+(defn get-model*
+  [om model-name id]
+  #_(log/info (str "observable not found: " model-name "(" id ")"))
+  (if-let [coll (.get _model model-name)]
+    (let [mref (Backbone/ModelRef. coll id)]
+      (if (.isLoaded mref)
+        (init-observable om mref model-name id)
+        (load-model om model-name id)))
+    (log/error "could not get collection")))
+
 (defn get-model
   [model-name id]
   (if id
-    (let [om (aget model/observables model-name) ]
+    (let [om (aget model/observables model-name)]
       (if-let [o (aget om id)]
         (do
           (log/info (str "cached observable found: " model-name "(" id ")"))
           o)
-        (do
-          #_(log/info (str "observable not found: " model-name "(" id ")"))
-          (if-let [coll (.get _model model-name)]
-            (do
-              #_(log/info (str "collection found: " coll))
-              (let [mref (Backbone/ModelRef. coll id)]
-                (if (.isLoaded mref)
-                  (let [m (.model mref)]
-                    (let [a (.-attributes m)]
-                      (let [o (.observable js/ko a)]
-                        (log/info (str "setting observable (already loaded): " model-name "(" id ")"))
-                        (aset om id o)
-                        o)))
-                  (do
-                    #_(log/info (str "not loaded: " model-name "(" id ")"))
-                    (let [url (str "/" model-name "/" id ".model")]
-                      (log/info (str "fetching " url))
-                      (let [o (.observable js/ko)]
-                        (let [resp (.getJSON js/jQuery url
-                                             (fn [data d]
-                                               (let [resp (.add coll data)]
-                                                 (let [m (.get coll id)]
-                                                   (let [a (.-attributes m)]
-                                                     (log/info "setting observable from response")
-                                                     (o a))))))]
-                          (log/info "returning empty observable")
-                          (aset om id o)
-                          o)))))))
-            (log/error "could not get collection")))))
+        (get-model* om model-name id)))
     (log/warn "id is undefined")))
 
 (def get-activity (partial get-model "activities"))

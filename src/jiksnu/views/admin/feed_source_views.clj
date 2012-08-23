@@ -37,9 +37,11 @@
   {:title "Feed Sources"
    :viewmodel "/admin/feed-sources.viewmodel"
    :single true
-   :body (list (admin-index-section (if *dynamic*
-                                      [(FeedSource.)]
-                                      items) response)
+   :body (list (let [sources (if *dynamic*
+                               [(FeedSource.)]
+                               items)]
+                 [:div {:data-bind "with: _.map(items(), jiksnu.core.get_feed_source)"}
+                  (admin-index-section sources response)])
                (add-form (FeedSource.)))})
 
 (defview #'index :viewmodel

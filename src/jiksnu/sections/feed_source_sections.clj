@@ -97,22 +97,23 @@
      [:th "Topic"]
      [:th "Status"]
      [:th "Actions"]]]
-   [:tbody (if *dynamic* {:data-bind "foreach: items"})
+   [:tbody (if *dynamic* {:data-bind "foreach: $data"})
     (map admin-index-line items)]])
 
 (defsection admin-index-block [FeedSource :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 ;; admin-index-line
 
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
-  [:tr (merge {:data-type "feed-source" :data-id (:_id item)}
+  [:tr (merge {:data-type "feed-source"}
               (if *dynamic*
-                {:data-bind "with: $root.feedSources()[$data]"}))
+                {:data-bind "attr: {'data-id': _id}"}
+                {:data-id (:_id item)}))
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/feed-sources/' + _id}, text: title"}
@@ -147,7 +148,7 @@
 
 (defsection admin-show-section [FeedSource]
   [item & [page]]
-  item)
+  (show-section item))
 
 (defsection admin-show-section [FeedSource :html]
   [item & [page]]
@@ -239,6 +240,10 @@
              [:th "Lease Seconds: "]
              [:td lease-seconds]]]]
           (actions-section source))))
+
+(defsection show-section [FeedSource :viewmodel]
+  [item & _]
+  item)
 
 (defsection title [FeedSource]
   [item & _]

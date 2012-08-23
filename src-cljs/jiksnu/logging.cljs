@@ -16,3 +16,8 @@
 (defn warn
   [m]
   (.warn js/console m))
+
+(defn spy
+  [m]
+  (.info js/console m)
+  m)
