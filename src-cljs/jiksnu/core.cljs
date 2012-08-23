@@ -14,6 +14,7 @@
   _view)
 
 (defn add-notification
+  "Add a new notification"
   [message]
   (let [notification (model/Notification.)]
     (.message notification message)
@@ -21,52 +22,78 @@
 
 (declare _model)
 
+(def model-names
+  ["activities"
+   "domains"
+   "groups"
+   "feedSources"
+   "subscriptions"
+   "users"])
+
+(defn process-viewmodel
+  "Callback handler when a viewmodel is loaded"
+  [data]
+  (def _m data)
+
+  (doseq [key model-names]
+    (when-let [items (aget data key)]
+      (doseq [item items]
+        (.add (.get _model key) item))))
+
+  (when-let [items (.-items data)]
+    (.items _view items))
+
+  (when-let [title (.-title data)]
+    (.set _model "title" title))
+
+  (when-let [currentUser (.-currentUser data)]
+    (.set _model "currentUser" currentUser))
+
+  (when-let [targetUser (.-targetUser data)]
+    (.set _model "targetUser" targetUser)))
+
 (defn fetch-viewmodel
   [url]
   (log/info (str "Fetching viewmodel: " url))
-  (.getJSON js/jQuery url
-            (fn [data]
-              (def _m data)
-
-              (doseq [key ["activities"
-                           "domains"
-                           "groups"
-                           "feedSources"
-                           "subscriptions"
-                           "users"]]
-                (when-let [items (aget data key)]
-                  (doseq [item items]
-                    (.add (.get _model key) item))))
-
-              (when-let [items (.-items data)]
-                (.items _view items))
-
-              (when-let [title (.-title data)]
-                (.set _model "title" title))
-
-              (when-let [currentUser (.-currentUser data)]
-                (.set _model "currentUser" currentUser))
-
-              (when-let [targetUser (.-targetUser data)]
-                (.set _model "targetUser" targetUser)))))
-
+  (.getJSON js/jQuery url process-viewmodel))
 
 (defn get-model
   [model-name id]
   (if id
-    (if-let [coll (.get _model model-name)]
-      (do
-        (let [m (Backbone/ModelRef. coll id)]
-          (if (.isLoaded m)
-            (.viewModel js/kb (.model m))
-            (do (log/info (str "not loaded: " model-name "(" id ")"))
-                (let [url (str "/" model-name "/" id ".model")]
-                  (log/info (str "fetching " url))
-                  (let [resp (.getJSON js/jQuery url
-                                       (fn [data d]
-                                         (.add coll data)))]
-                    (.viewModel js/kb (.-cached_model m))))))))
-      (log/error "could not get collection"))
+    (let [om (aget model/observables model-name) ]
+      (if-let [o (aget om id)]
+        (do
+          (log/info (str "cached observable found: " model-name "(" id ")"))
+          o)
+        (do
+          #_(log/info (str "observable not found: " model-name "(" id ")"))
+          (if-let [coll (.get _model model-name)]
+            (do
+              #_(log/info (str "collection found: " coll))
+              (let [mref (Backbone/ModelRef. coll id)]
+                (if (.isLoaded mref)
+                  (let [m (.model mref)]
+                    (let [a (.-attributes m)]
+                      (let [o (.observable js/ko a)]
+                        (log/info (str "setting observable (already loaded): " model-name "(" id ")"))
+                        (aset om id o)
+                        o)))
+                  (do
+                    #_(log/info (str "not loaded: " model-name "(" id ")"))
+                    (let [url (str "/" model-name "/" id ".model")]
+                      (log/info (str "fetching " url))
+                      (let [o (.observable js/ko)]
+                        (let [resp (.getJSON js/jQuery url
+                                             (fn [data d]
+                                               (let [resp (.add coll data)]
+                                                 (let [m (.get coll id)]
+                                                   (let [a (.-attributes m)]
+                                                     (log/info "setting observable from response")
+                                                     (o a))))))]
+                          (log/info "returning empty observable")
+                          (aset om id o)
+                          o)))))))
+            (log/error "could not get collection")))))
     (log/warn "id is undefined")))
 
 (def get-activity (partial get-model "activities"))
@@ -79,25 +106,24 @@
   []
   (start-display (console-output))
   (log/info "starting application")
+
   (def _model (model/AppViewModel.))
-  (aset js/window "_model" _model)
   (def _view (.viewModel js/kb _model))
 
   ;; NB: for debugging only. use fully-qualified var
+  (aset js/window "_model" _model)
   (aset js/window "_view" _view)
 
-  (handlers/setup-handlers)
+  (ko/apply-bindings _view)
+
   (ws/connect)
-  ;; (connect-repl)
-  ;; (mock-stats _view)
-  ;; (.title _view "foo")
-  (stats/fetch-statistics _view)
+
+  (doseq [model-name model-names]
+    (aset model/observables model-name (js-obj)))
 
   (if-let [elts ($ "*[data-load-model]")]
     (fetch-viewmodel (.data elts "load-model")))
   
-  #_(stats/fetch-statistics _view)
-  #_(.start (.-history js/Backbone))
-  #_(js/prettyPrint))
+  (stats/fetch-statistics _view))
 
 (main)

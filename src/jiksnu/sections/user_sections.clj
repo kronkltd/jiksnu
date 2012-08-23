@@ -531,10 +531,12 @@
 
 (defsection show-section-minimal [User :html]
   [user & _]
-  [:div.vcard
-   ;; TODO: merge into the same link
-   (display-avatar user)
-   [:span.fn.n (link-to user)]])
+  (list
+   ;; (dump-data)
+   [:div.vcard
+    ;; TODO: merge into the same link
+    (display-avatar user)
+    [:span.fn.n (link-to user)]]))
 
 ;; show-section
 
@@ -567,42 +569,44 @@
 
 (defsection show-section [User :html]
   [user & options]
-  [:div.vcard.user-full
-   (merge {:data-type "user"}
-          (when-not *dynamic*
-            {:data-id (:_id user)}))
-   [:div (display-avatar user 96)]
-   [:p
-    [:span.nickname.fn.n
+  (list
+   ;; (dump-data)
+   [:div.vcard.user-full
+    (merge {:data-type "user"}
+           (when-not *dynamic*
+             {:data-id (:_id user)}))
+    [:div (display-avatar user 96)]
+    [:p
+     [:span.nickname.fn.n
+      [:span
+       (if *dynamic*
+         (bind-property "displayName")
+         (:display-name user))]]
+     " ("
      [:span
       (if *dynamic*
-        (bind-property "displayName")
-        (:display-name user))]]
-    " ("
-    [:span
+        (bind-property "username")
+        (:username user))]
+     "@"
+     [:span
+      (if *dynamic*
+        (bind-property "domain")
+        (link-to (actions.user/get-domain user)))] ")"]
+    [:div.adr
+     [:p.locality
+      (if *dynamic*
+        (bind-property "location")
+        (:location user))]]
+    [:p.note
      (if *dynamic*
-       (bind-property "username")
-       (:username user))]
-    "@"
-    [:span
-     (if *dynamic*
-       (bind-property "domain")
-       (link-to (actions.user/get-domain user)))] ")"]
-   [:div.adr
-    [:p.locality
-     (if *dynamic*
-       (bind-property "location")
-       (:location user))]]
-   [:p.note
-    (if *dynamic*
-      (bind-property "bio")
-      (:bio user))]
-   ;; [:p [:a {:href (:id user)} (:id user)]]
-   ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-   (when-not *dynamic*
-     (when (:discovered user)
-       (show-section (model.key/get-key-for-user user))))
-   (user-actions user)])
+       (bind-property "bio")
+       (:bio user))]
+    ;; [:p [:a {:href (:id user)} (:id user)]]
+    ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
+    (when-not *dynamic*
+      (when (:discovered user)
+        (show-section (model.key/get-key-for-user user))))
+    (user-actions user)]))
 
 (defsection show-section [User :model]
   [user & _]
@@ -649,6 +653,14 @@
           [[ns/foaf :accountProfilePage]      (rdf/rdf-resource (full-uri user))]
           [[ns/sioc :account_of]              user-uri]])
        ))))
+
+(defsection show-section [User :model]
+  [item & [page]]
+  (->> #_(dissoc (dissoc item :links) :_id)
+       item
+       (map (fn [[k v]] [(camelize (name k) :lower)
+                        v]))
+       (into {})))
 
 (defsection show-section [User :viewmodel]
   [item & [page]]

@@ -104,7 +104,7 @@
   [groups & _]
   [:ul.profiles
    (when *dynamic*
-     {:data-bind "foreach: items()"})
+     {:data-bind "foreach: _.map(items(), jiksnu.core.get_group)"})
    (map index-line groups)])
 
 (defsection index-block [Group :viewmodel]
@@ -121,11 +121,13 @@
 
 (defsection index-line [Group :html]
   [group & _]
-  [:li (when *dynamic*
-         {:data-bind "with: jiksnu.core.get_group($data)"})
+  [:li
    [:section.profile.hentry.vcard
     [:p
-     [:a.url.entry-title {:href (str "/groups/" (:nickname group))}
+     [:a.url.entry-title
+      (if *dynamic*
+        {:data-bind "attr: {href: '/groups/' + nickname}"}
+        {:href (str "/groups/" (:nickname group))})
       [:img {:src (:avatar-url group) }]
       [:span.nickname
        [:span

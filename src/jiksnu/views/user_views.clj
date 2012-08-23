@@ -56,10 +56,9 @@
   [request {:keys [items] :as page}]
   {:title "Users"
    :viewmodel "/users.viewmodel"
-   :single true
    :body
    [:div (if *dynamic*
-           {:data-bind "with: _.map($root.items(), jiksnu.core.get_user)"})
+           {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
 
     (index-section items page)]})
 

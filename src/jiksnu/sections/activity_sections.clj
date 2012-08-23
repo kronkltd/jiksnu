@@ -288,7 +288,7 @@
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
                (if *dynamic*
-                 {:data-bind "text: created "}))
+                 {:data-bind "text: created, attr: {href: '/notice/' + _id}"}))
      (when-not *dynamic*
        (-> activity :created .toDate model/prettyify-time))]]
    " using "
@@ -474,10 +474,11 @@
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 { :data-id (:_id activity)}))
-   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author())"})
-    (link-to (if *dynamic*
-               (User.)
-               (actions.activity/get-author activity)))]
+   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
+    (let [user (if *dynamic*
+                (User.)
+                (actions.activity/get-author activity))]
+      (show-section-minimal user))]
    [:td (if *dynamic*
           {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
@@ -696,11 +697,11 @@
                :data-id (:_id activity)}))
      [:header
       [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
-
-       (let [user (if *dynamic*
-                    (User.)
-                    (model.activity/get-author activity))]
-         (show-section-minimal user))]
+       [:div {:data-bind "if: typeof($data) !== 'undefined'"}
+        (let [user (if *dynamic*
+                     (User.)
+                     (model.activity/get-author activity))]
+          (show-section-minimal user))]]
       (recipients-section activity)]
      [:div.entry-content
       #_(when (:title activity)

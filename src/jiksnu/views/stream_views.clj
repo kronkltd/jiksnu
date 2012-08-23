@@ -137,7 +137,7 @@
    :body
    {:title "Public Timeline"
     :items (map :_id items)
-    :users (index-section (map actions.activity/get-author items))
+    ;; :users (index-section (map actions.activity/get-author items))
     :activities (doall (index-section items page))}})
 
 

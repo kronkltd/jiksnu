@@ -56,13 +56,12 @@
   [:table.domains.table
    [:thead
     [:tr
-     [:th ]
      [:th "Name"]
      [:th "XMPP?"]
      [:th "Discovered"]
      [:th "Host Meta"]
      [:th "# Links"]
-     [:th "Actions"]]]
+     #_[:th "Actions"]]]
    [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map index-line domains)]])
 
@@ -75,8 +74,9 @@
 (defsection index-line [Domain :html]
   [domain & _]
   [:tr
-   [:td (favicon-link domain)]
-   [:td (link-to domain)]
+   [:td
+    (favicon-link domain)
+    (link-to domain)]
    [:td (if *dynamic*
           {:data-bind "text: xmpp"}
           (:xmpp domain))]
@@ -93,7 +93,7 @@
     (if *dynamic*
       {:data-bind "text: typeof(links) !== 'undefined' ? links.length : 0"}
       (count (:links domain)))]
-   [:th (actions-section domain)]])
+   #_[:th (actions-section domain)]])
 
 (defsection link-to [Domain :html]
   [domain & _]

@@ -50,10 +50,10 @@
            (js-obj
             "name" "Domain"
             "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
-            "defaults" (js-obj "xmpp" "true")
+            "defaults" (js-obj "xmpp" "unknown")
             "idAttribute" "_id"
             "initialize" (fn [models options]
-                           (log/info "init domain")))))
+                           (log/debug "init domain")))))
 
 (def Domains
   (.extend (.-Collection js/Backbone)
@@ -63,7 +63,7 @@
             "urlRoot" "/main/domains/"
             "model" Domain
             "initialize" (fn [models options]
-                           (log/info "init domains")))))
+                           (log/debug "init domains")))))
 
 
 (def User
@@ -111,7 +111,7 @@
             ;;                      "relatedModel"   User
             ;;                      "collectionType" Users)])
             "initialize" (fn [model]
-                           (log/info "Initialize activity")))))
+                           (log/info "init activity")))))
 
 (def ^{:doc "collection of activities"} Activities
   (.extend (.-Collection js/Backbone)
@@ -128,15 +128,15 @@
             "idAttribute" "_id"
             "class" "Group"
             "initialize" (fn [model]
-                           (log/info "Initialize activity")))))
+                           (log/info "Initialize group")))))
 
 (def Groups
   (.extend (.-Collection js/Backbone)
            (js-obj
             "model" Group
             "class" "Groups"
-           "initialize" (fn [models options]
-                          (log/info "init groups")))))
+            "initialize" (fn [models options]
+                           (log/info "init groups")))))
 
 (def Subscription
   (.extend (.-RelationalModel js/Backbone)
@@ -158,13 +158,13 @@
             "class" "FeedSource"
             "idAttribute" "_id"
             "initialize" (fn [models options]
-                           #_(log/info "init feed source")))))
+                           (log/info "init feed source")))))
 
 (def FeedSources
   (.extend (.-Collection js/Backbone)
            (js-obj
             "initialize" (fn [models options]
-                           #_(log/info "init feed sources")))))
+                           (log/info "init feed sources")))))
 
 
 
@@ -184,6 +184,7 @@
 (def subscriptions (Subscriptions.))
 (def groups (Groups.))
 (def feed-sources (FeedSources.))
+(def observables (js-obj))
 
 (def ^{:doc "The main view model for the site"} AppViewModel
   (.extend

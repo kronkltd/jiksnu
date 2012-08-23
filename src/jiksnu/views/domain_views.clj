@@ -13,7 +13,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.sections.domain-sections :as sections.domain])
-  (:import jiksnu.model.Domain))
+  (:import jiksnu.model.Domain
+           jiksnu.model.User))
 
 (defview #'create :html
   [_request _domain]
@@ -68,7 +69,11 @@
             :title "Domain Index"}]
    :body
    (list (show-section domain)
-         (index-section (model.user/fetch-by-domain domain) {:page 1}))})
+         (let [users (if *dynamic*
+                       [(User.)]
+                      (model.user/fetch-by-domain domain))]
+           [:div (if *dynamic* {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
+            (index-section users {:page 1})]))})
 
 (defview #'host-meta :html
   [_request xrd]
