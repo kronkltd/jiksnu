@@ -75,6 +75,7 @@
                                "avatarUrl" nil
                                "uri" ""
                                "bio" ""
+                               "links" (array)
                                "displayName" nil)
             "idAttribute" "_id"
             "initialize" (fn [models options]

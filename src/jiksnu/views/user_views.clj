@@ -12,7 +12,8 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.sections.user-sections :as sections.user]
-            [plaza.rdf.core :as rdf]))
+            [plaza.rdf.core :as rdf]
+            [ring.util.response :as response]))
 
 ;; create
 
@@ -36,10 +37,9 @@
 
 (defview #'discover :html
   [request user]
-  {:status 303
-   :flash "discovering user"
-   :template false
-   :headers {"Location" (uri user)}})
+  (-> (response/redirect-after-post "/users")
+      (assoc :template false)
+      (assoc :flash "discovering user")))
 
 (defview #'fetch-remote :xmpp
   [request user]
@@ -59,7 +59,6 @@
    :body
    [:div (if *dynamic*
            {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
-
     (index-section items page)]})
 
 (defview #'index :json
@@ -132,13 +131,6 @@
    :template false
    :flash "User updated"
    :headers {"Location" (uri user)}})
-
-;; (defview #'update-hub :html
-;;   [request user]
-;;   {:status 302
-;;    :flash "updating hub"
-;;    :template false
-;;    :headers {"Location" (uri user)}})
 
 (defview #'update-profile :html
   [request user]

@@ -390,28 +390,29 @@
 (defaction discover
   "perform a discovery on the user"
   [^User user & [options & _]]
-  (loop [try-count (get options :try-count 1)]
-    (when (< try-count 5)
-      (if (:local user)
-        user
-        ;; Get domain should, in theory, always return a domain, or else error
-        (let [domain (get-domain user)]
-          (if (:discovered domain)
-            (do
-              (when (:xmpp domain) (discover-user-xmpp user))
-              ;; There should be a similar check here so we're not
-              ;; hitting xmpp-only services.
-              ;; This is really OStatus specific
-              (discover-user-http user)
-              ;; TODO: there sould be a different discovered flag for
-              ;; each aspect of a domain, and this flag shouldn't be set
-              ;; till they've all responded
-              (model.user/set-field! user :discovered true)
-              (model.user/fetch-by-id (:_id user)))
-            (do
-              ;; Domain not yet discovered
-              (actions.domain/discover domain)
-              (recur (inc try-count)))))))))
+  (future (loop [try-count (get options :try-count 1)]
+     (when (< try-count 5)
+       (if (:local user)
+         user
+         ;; Get domain should, in theory, always return a domain, or else error
+         (let [domain (get-domain user)]
+           (if (:discovered domain)
+             (do
+               (when (:xmpp domain) (discover-user-xmpp user))
+               ;; There should be a similar check here so we're not
+               ;; hitting xmpp-only services.
+               ;; This is really OStatus specific
+               (discover-user-http user)
+               ;; TODO: there sould be a different discovered flag for
+               ;; each aspect of a domain, and this flag shouldn't be set
+               ;; till they've all responded
+               (model.user/set-field! user :discovered true)
+               (model.user/fetch-by-id (:_id user)))
+             (do
+               ;; Domain not yet discovered
+               (actions.domain/discover domain)
+               (recur (inc try-count)))))))))
+  user)
 
 (defaction fetch-remote
   [user]

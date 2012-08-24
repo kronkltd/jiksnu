@@ -18,7 +18,7 @@
    :title "Users"
    :viewmodel "/admin/users.viewmodel"
    :body [:div (if *dynamic*
-                 {:data-bind "with: _.map($root.items(), jiksnu.core.get_user)"}
+                 {:data-bind "with: _.map(items(), jiksnu.core.get_user)"}
                  )
           (admin-index-section items response)]})
 
@@ -46,7 +46,7 @@
      :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
-     (doall (list [:div (when *dynamic* {:data-bind "with: $root.getUser($root.targetUser())"})
+     (doall (list [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(targetUser())"})
                    (admin-show-section user)]
                   (admin-index-block (if *dynamic*
                                        [(Activity.)]
@@ -58,13 +58,7 @@
 
 (defview #'show :viewmodel
   [request user]
-  (let [activities (actions.activity/find-by-user user)]
-    {:body
-     {:users (doall (admin-index-section [user]))
-      :title (title user)
-      :targetUser (:_id user)
-      :domains (doall (admin-index-section [(-> user
-                                                :domain
-                                                model.domain/fetch-by-id)]))
-      :items (map :_id (:items activities))
-      :activities (doall (admin-index-section (:items activities)))}}))
+  {:body
+   {:users (doall (admin-index-section [user]))
+    :title (title user)
+    :targetUser (:_id user)}})
