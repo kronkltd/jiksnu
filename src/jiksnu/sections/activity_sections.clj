@@ -230,11 +230,7 @@
           (list (edit-button activity)
                 (delete-button activity)))
         (when (session/is-admin?)
-          (list (update-button activity)))))]
-     
-
-
-     ]))
+          (list (update-button activity)))))]]))
 
 (defn recipients-section
   [activity]

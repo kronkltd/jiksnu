@@ -2,6 +2,7 @@
   (:use [ciste.core :only [apply-template]]
         [ciste.config :only [config environment]]
         [ciste.sections.default :only [add-form link-to show-section]]
+        [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
@@ -37,10 +38,10 @@
 (defn nav-info
   []
   [["Home"
-    [["/"                         "Public"]
-     ["/users"                    "Users"]
-     ["/main/domains"             "Domains"]
-     ["/groups"                   "Groups"]]]
+    [[(named-path "public timeline") "Public"]
+     [(named-path "index users")     "Users"]
+     [(named-path "index domains")   "Domains"]
+     [(named-path "index groups")    "Groups"]]]
    
    (when (is-admin?)
      ["Admin"

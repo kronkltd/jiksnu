@@ -2,20 +2,21 @@
   (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
   (:require [jiksnu.actions.stream-actions :as stream]))
 
-(println "stream routes")
+(add-route! "/" {:named "public timeline"})
+(add-route! "/:username" {:named "local user timeline"})
+(add-route! "/:username/all" {:named "home timeline"})
 
-(add-route! "/:username" {:named "user timeline"})
 
 (defn routes
   []
   [
-   [[:get    "/"]                                       #'stream/public-timeline]
+   [[:get    (named-path "public timeline")]            #'stream/public-timeline]
    [[:get    "/groups/:name"]                           #'stream/group-timeline]
    [[:get    "/users/:id.:format"]                      #'stream/user-timeline]
    [[:get    "/users/:id"]                              #'stream/user-timeline]
    [[:get    "/:username.:format"]                      #'stream/user-timeline]
-   [[:get    (named-path "user timeline")]              #'stream/user-timeline]
-   [[:get    "/:username/all"]                          #'stream/home-timeline]
+   [[:get    (named-path "local user timeline")]        #'stream/user-timeline]
+   [[:get    (named-path "home timeline")]              #'stream/home-timeline]
    [[:get    "/:username/streams"]                      #'stream/user-list]
    [[:post   "/:username/streams"]                      #'stream/add]
    [[:get    "/:username/microsummary"]                 #'stream/user-microsummary]

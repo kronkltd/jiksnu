@@ -31,9 +31,7 @@
   [domain & _]
   [:ul
    [:li (discover-button domain)]
-   [:li (delete-button domain)]
-   ]
-  )
+   [:li (delete-button domain)]])
 
 (defsection add-form [Domain :html]
   [domain & _]
