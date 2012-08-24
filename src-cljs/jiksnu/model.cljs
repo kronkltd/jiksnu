@@ -103,6 +103,7 @@
             "defaults" (js-obj
                         "_id"        ""
                         "author"     ""
+                        "url"        nil
                         "links"      (array)
                         "enclosures" (array))
             ;; "relations" (apply array
@@ -216,5 +217,5 @@
      "statistics"    nil
      "subscriptions" subscriptions
      "targetUser"    nil
-     "title"         "Jiksnu"
+     "title"         nil
      "users"         users))))

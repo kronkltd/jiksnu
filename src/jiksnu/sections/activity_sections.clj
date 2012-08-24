@@ -9,7 +9,7 @@
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
-        [jiksnu.sections :only [admin-index-line admin-index-block
+        [jiksnu.sections :only [action-link admin-index-line admin-index-block
                                 admin-index-section bind-property
                                 dump-data control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
@@ -35,18 +35,6 @@
            jiksnu.model.User
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.ExtensibleElement))
-
-(defn action-link
-  [model action title icon id]
-  [:a {:title title
-       :class (string/join " " [
-                                ;; "btn"
-                                (str action "-button")])
-                         :href (str "/main/confirm"
-                                    "?action=" action
-                                    "&model=" model
-                                    "&id=" id)}
-   [:i {:class (str "icon-" icon)}] [:span.button-text title]])
 
 (defn like-button
   [activity]
@@ -219,7 +207,7 @@
     [:div.btn-group.actions-menu
      [:a.dropdown-toggle {:data-toggle "dropdown" :href "#"}
       [:span.caret]]
-     [:ul.dropdown-menu
+     [:ul.dropdown-menu.pull-right
       (map
        (fn [x] [:li x])
        (concat
@@ -523,11 +511,11 @@
 
 (defsection edit-button [Activity :html]
   [activity & _]
-  (action-link "activity" "edit" "Edit" "edit" (:_id activity)))
+  (action-link "activity" "edit" (:_id activity)))
 
 (defsection delete-button [Activity :html]
   [activity & _]
-  (action-link "activity" "delete" "Delete" "trash" (:_id activity)))
+  (action-link "activity" "delete" (:_id activity)))
 
 
 
@@ -703,18 +691,16 @@
   (let [activity-uri (uri activity)]
     [:article.hentry.notice
      (merge {:typeof "sioc:Post"
+             :data-model "activity"
              :data-type "activity"}
             (if *dynamic*
-              {}
+              {:data-bind "attr: {'data-id': _id, about: url}"}
               {:about activity-uri
-               :id (str "activity-" (:_id activity))
                :data-id (:_id activity)}))
      [:header
       [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
        [:div {:data-bind "if: typeof($data) !== 'undefined'"}
-        (let [user (if *dynamic*
-                     (User.)
-                     (model.activity/get-author activity))]
+        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
           (show-section-minimal user))]]
       (recipients-section activity)]
      [:div.entry-content
@@ -809,7 +795,7 @@
 
 (defsection update-button [Activity :html]
   [activity & _]
-  (action-link "activity" "update" "Update" "refresh" (:_id activity)))
+  (action-link "activity" "update" (:_id activity)))
 
 
 (defsection uri [Activity]

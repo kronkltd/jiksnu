@@ -3,7 +3,35 @@
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line show-section index-block-type]]
         [jiksnu.ko :only [*dynamic*]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]))
+
+(def action-icons
+  {"update" "refresh"
+   "delete" "trash"
+   "edit" "edit"})
+
+(def action-titles
+  {"update" "Update"
+   "delete" "Delete"
+   "edit" "Edit"})
+
+(defn action-link
+  ([model action id]
+     (action-link model action (action-titles action) (action-icons action) id))
+  ([model action title icon id]
+     [:a (merge {:title title
+                 :class (string/join " " [(str action "-button")])
+                 :data-model model
+                 :data-action action}
+                (if *dynamic*
+                  {:href "#"}
+                  {:href (str "/main/confirm"
+                              "?action=" action
+                              "&model=" model
+                              "&id=" id)}))
+      [:i {:class (str "icon-" icon)}] [:span.button-text title]]))
+
 
 (defn bind-property
   [property]
@@ -106,19 +134,20 @@
   (show-section item page))
 
 ;; TODO: only for html
-(defsection delete-button :default
-  [record & _]
-  [:form {:method "post"
-          :action (str (uri record) "/delete")}
-   [:button.btn.delete-button {:type "submit"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
+;; (defsection delete-button :default
+;;   [record & _]
+;;   ;; (log/debug "delete-button :default")
+;;   [:form {:method "post"
+;;           :action (str (uri record) "/delete")}
+;;    [:button.btn.delete-button {:type "submit"}
+;;     [:i.icon-trash] [:span.button-text "Delete"]]])
 
 ;; TODO: only for html
-(defsection edit-button :default
-  [domain & _]
-  [:form {:method "post" :action (str (uri domain) "/edit")}
-   [:button.btn.edit-button {:type "submit"}
-    [:i.icon-pencil] [:span.button-text "Edit"]]])
+;; (defsection edit-button :default
+;;   [domain & _]
+;;   [:form {:method "post" :action (str (uri domain) "/edit")}
+;;    [:button.btn.edit-button {:type "submit"}
+;;     [:i.icon-pencil] [:span.button-text "Edit"]]])
 
 (defsection full-uri :default
   [record & options]

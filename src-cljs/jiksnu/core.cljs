@@ -125,6 +125,7 @@
   (aset js/window "_view" _view)
 
   (ko/apply-bindings _view)
+  (.addClass ($ :html) "bound")
 
   (ws/connect)
 

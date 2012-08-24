@@ -8,7 +8,8 @@
          [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.model :only [with-subject]]
-         [jiksnu.sections :only [admin-actions-section
+         [jiksnu.sections :only [action-link
+                                 admin-actions-section
                                  admin-index-block
                                  admin-index-line
                                  admin-index-section
@@ -43,39 +44,19 @@
        "/api/statuses/user_timeline/" (:_id user) "." format))
 
 (defn discover-button
-  [user]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/discover")}
-   [:button.btn.discover-button {:type "submit" :title "Discover"}
-    [:i.icon-search] [:span.button-text "Discover"]]])
+  [item]
+  (action-link "user" "discover" "Discover" "search" (:_id item)))
 
 (defn subscribe-button
-  [user]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/subscribe")}
-   [:button.btn.subscribe-button {:type "submit" :title "Subscribe"}
-    [:i.icon-eye-open] [:span.button-text "Subscribe"]]])
+  [item]
+  (action-link "user" "subscribe" "Subscribe" "eye-open" (:_id item)))
 
 (defn unsubscribe-button
-  [user]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/unsubscribe")}
-   [:button.btn.unsubscribe-button {:type "submit" :title "Unsubscribe"}
-    [:i.icon-eye-close] [:span.button-text "Unsubscribe"]]])
+  [item]
+  (action-link "user" "unsubscribe" "Unsubscribe" "eye-close" (:_id item)))
 
 
-;; (defn add-author
-;;   "Adds the supplied user to the atom entry"
-;;   [^Entry entry ^User user]
-;;   ;; TODO: Do we need to re-fetch here?
-;;   (if-let [user (model.user/fetch-by-id (:_id user))]
-;;     (let [name (:name user)
-;;           jid  (model.user/get-uri user false)
-;;           actor (.addExtension entry ns/as "actor" "activity")]
-;;       (doto actor
-;;         (.addSimpleExtension ns/atom "name" "" name)
-;;         (.addSimpleExtension ns/atom "email" "" jid)
-;;         (.addSimpleExtension ns/atom "uri" "" jid))
-;;       (doto entry
-;;         (.addExtension actor)
-;;         (.addExtension (show-section user))))))
+
 
 (defn display-avatar-img
   [user size]
@@ -91,7 +72,7 @@
   ([user] (display-avatar user 48))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind "attr: {href: \"/users/\" + _id, title: name}"}
+               {:data-bind "attr: {href: \"/users/\" + _id, title: displayName}"}
                {:href (full-uri user)
                 :title (:name user)})
       (display-avatar-img user size)]))
