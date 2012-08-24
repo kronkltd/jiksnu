@@ -35,6 +35,7 @@
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
+           jiksnu.model.Key
            jiksnu.model.User
            org.apache.abdera2.model.Entry))
 
@@ -319,6 +320,26 @@
 
 ;; admin-show-section
 
+(defn links-table
+  [links]
+  [:table.table (when *dynamic* {:data-bind "if: links"})
+   [:thead
+    [:tr
+     [:th "title"]
+     [:th "rel"]
+     [:th "href"]
+     [:th "Actions"]]]
+   [:tbody (when *dynamic* {:data-bind "foreach: links"})
+    (map
+     (fn [link]
+       [:tr
+        [:td (if *dynamic* {:data-bind "text: title"} (:title link))]
+        [:td (if *dynamic* {:data-bind "text: rel"} (:rel link))]
+        [:td (if *dynamic* {:data-bind "text: href"} (:href link))]
+        [:td (link-actions-section link)]])
+     links)]])
+
+
 (defsection admin-show-section [User :html]
   [item & [response & _]]
   (list
@@ -328,8 +349,7 @@
                   {:data-id (:_id item)}))
     [:tr
      [:th]
-     [:td
-      (display-avatar item)]]
+     [:td (display-avatar item)]]
     [:tr
      [:th "Username"]
      [:td (if *dynamic*
@@ -346,8 +366,8 @@
     [:tr
      [:th "Bio"]
      [:td (if *dynamic*
-              (bind-property "bio")
-              (:bio item))]]
+            (bind-property "bio")
+            (:bio item))]]
     [:tr
      [:th  "Location"]
      [:td (if *dynamic*
@@ -381,31 +401,14 @@
     [:tr
      [:th "Update Source"]
      [:td (if *dynamic*
-            {:data-bind "with: jiksnu.core.get_feed_source($data.updateSource)"})
+            {:data-bind "with: jiksnu.core.get_feed_source(updateSource)"})
       (when-let [source (if *dynamic*
                           (FeedSource.)
                           (-?> item :update-source model.feed-source/fetch-by-id))]
         (link-to source))]]]
    (admin-actions-section item)
-   [:table.table (when *dynamic* {:data-bind "if: links"})
-    [:thead
-     [:tr
-      [:th "title"]
-      [:th "rel"]
-      [:th "href"]
-      [:th "Actions"]]]
-    [:tbody (when *dynamic* {:data-bind "foreach: typeof(links) !== 'undefined' ? links : []"})
-     (map
-      (fn [link]
-        [:tr
-         [:td (if *dynamic* (bind-property "title") (:title link))]
-         [:td (if *dynamic* (bind-property "rel") (:rel link))]
-         [:td (if *dynamic* (bind-property "href") (:href link))]
-         [:td (link-actions-section link)]])
-      (if *dynamic*
-        [{}]
-        (:links item)))]]
-    ))
+   (let [links (if *dynamic*  [{}] (:links item))]
+     (links-table links))))
 
 
 (defsection title [User]
@@ -561,32 +564,33 @@
      [:span.nickname.fn.n
       [:span
        (if *dynamic*
-         (bind-property "displayName")
+         {:data-bind "text: displayName"}
          (:display-name user))]]
      " ("
      [:span
       (if *dynamic*
-        (bind-property "username")
+        {:data-bind "text: username"}
         (:username user))]
      "@"
      [:span
       (if *dynamic*
-        (bind-property "domain")
+        {:data-bind "text: domain"}
         (link-to (actions.user/get-domain user)))] ")"]
     [:div.adr
      [:p.locality
       (if *dynamic*
-        (bind-property "location")
+        {:data-bind "text: location"}
         (:location user))]]
     [:p.note
      (if *dynamic*
-       (bind-property "bio")
+       {:data-bind "text: bio"}
        (:bio user))]
     ;; [:p [:a {:href (:id user)} (:id user)]]
     ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-    (when-not *dynamic*
-      (when (:discovered user)
-        (show-section (model.key/get-key-for-user user))))
+    (if-let [key (if *dynamic*
+                (Key.)
+                (model.key/get-key-for-user user))]
+      (show-section key))
     (user-actions user)]))
 
 (defsection show-section [User :model]

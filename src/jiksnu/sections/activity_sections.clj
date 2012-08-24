@@ -10,6 +10,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
         [jiksnu.sections :only [action-link admin-index-line admin-index-block
+                                format-links
                                 admin-index-section bind-property
                                 dump-data control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
@@ -62,7 +63,7 @@
       (link-to author) ": "
       [:span
        (if *dynamic*
-         (bind-property "title")
+         {:data-bind "text: title"}
          (h/h (:title activity)))]]
      [:p (posted-link-section activity)]]))
 
@@ -75,44 +76,20 @@
                               :attributes [{:name "count"
                                             :value (str comment-count)}]}))))
 
-(defn atom-link
-  [href]
-  {:label "Atom"
-   :href href
-   :icon "feed-icon-14x14.png"
-   :type "application/atom+xml"})
-
-(defn activitystream-link
-  [href]
-  {:label "Activity Streams"
-   :href href
-   :icon "as-bw-14x14.png"
-   :type "application/json"})
-
 (defn index-formats
   [activities]
-  [(atom-link "/api/statuses/public_timeline.atom")
-   (activitystream-link "/api/statuses/public_timeline.as")
-   {:label "JSON"
-    :href "/api/statuses/public_timeline.json"
-    :icon "json.png"
-    :type "application/json"}
-   {:label "N3"
-    :icon "chart_organisation.png"
-    :href "/api/statuses/public_timeline.n3"
-    :type "text/n3"}
-   {:label "RDF/XML"
-    :href "/api/statuses/public_timeline.rdf"
-    :icon "foafTiny.gif"
-    :type "application/rdf+xml"}
-   {:label "Viewmodel"
-    :href "/api/statuses/public_timeline.viewmodel"
-    :type "application/json"
-    }
-   {:label "XML"
-    :icon "file_xml.png"
-    :href "/api/statuses/public_timeline.xml"
-    :type "application/xml"}])
+  (map
+   (fn [[f h]]
+     (let [def (format-links f)]
+       (merge def
+              {:href h})))
+   [[:as        "/api/statuses/public_timeline.as"]
+    [:atom      "/api/statuses/public_timeline.atom"]
+    [:json      "/api/statuses/public_timeline.json"]
+    [:n3        "/api/statuses/public_timeline.n3"]
+    [:rdf       "/api/statuses/public_timeline.rdf"]
+    [:viewmodel "/api/statuses/public_timeline.viewmodel"]
+    [:xml       "/api/statuses/public_timeline.xml"]]))
 
 (defn timeline-formats
   [user]
@@ -258,8 +235,10 @@
 
 (defn likes-section
   [activity]
-  (when-let [likes (model.like/get-likes activity)]
-    [:section
+  (when-let [likes (if *dynamic*
+                     []
+                     (model.like/get-likes activity))]
+    [:section.likes
      [:span "Liked by"]
      [:ul
       (map

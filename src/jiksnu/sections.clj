@@ -16,6 +16,28 @@
    "delete" "Delete"
    "edit" "Edit"})
 
+(def format-links
+  {:n3        {:label "N3"
+               :type "text/n3"
+               :icon "chart_organisation.png"}
+   :json      {:label "JSON"
+               :icon "json.png"
+               :type "application/json"}
+   :rdf       {:label "RDF/XML"
+               :icon "foafTiny.gif"
+               :type "application/rdf+xml"}
+   :viewmodel {:label "Viewmodel"
+               :type "application/json"}
+   :xml       {:label "XML"
+               :icon "file_xml.png"
+               :type "application/xml"}
+   :atom      {:label "Atom"
+               :icon "feed-icon-14x14.png"
+               :type "application/atom+xml"}
+   :as        {:label "Activity Streams"
+               :icon "as-bw-14x14.png"
+               :type "application/json"}})
+
 (defn action-link
   ([model action id]
      (action-link model action (action-titles action) (action-icons action) id))
