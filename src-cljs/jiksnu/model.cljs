@@ -209,8 +209,8 @@
 
      "groups"        groups
      "items"         nil
-     "pageInfo"      nil
-     "postForm"      nil
+     "pageInfo"      (PageInfo.)
+     "postForm"      (PostForm.)
      "notifications" nil
      "showPostForm"  true
      "site"          nil
