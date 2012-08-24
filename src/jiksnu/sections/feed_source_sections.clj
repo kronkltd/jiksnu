@@ -110,7 +110,7 @@
 
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
-  [:tr (merge {:data-type "feed-source"}
+  [:tr (merge {:data-model "feed-source"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id item)}))
@@ -180,7 +180,7 @@
 
 (defsection index-line [FeedSource :html]
   [source & _]
-  [:tr {:data-type "feed-source" :data-id (str (:_id source))}
+  [:tr {:data-model "feed-source" :data-id (str (:_id source))}
    [:td (:title source)]
    [:td (:domain source)]
    [:td (link-to source)]

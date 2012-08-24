@@ -19,7 +19,7 @@
 
 (defsection admin-index-line [FeedSubscription :html]
   [subscription & [options & _]]
-  [:tr {:data-id (str (:_id subscription)) :data-type "feed-subscription"}
+  [:tr {:data-id (str (:_id subscription)) :data-model "feed-subscription"}
    [:td (str (:_id subscription))]])
 
 (defsection add-form [FeedSubscription :html]

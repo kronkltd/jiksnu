@@ -57,7 +57,7 @@
        [:ul.unstyled
         (if *dynamic* {:data-bind "foreach: $data"})
         (map (fn [subscription]
-               [:li (merge {:data-type "subscription"}
+               [:li (merge {:data-model "subscription"}
                            (if *dynamic*
                              {:data-bind "with: _.map($root.followers(), function (id) {return $root.getSubscription(id)}), attr: {'data-id': _id}"}))
                 (let [user (if *dynamic*
@@ -97,7 +97,7 @@
 
 (defsection admin-index-line [Subscription :html]
   [subscription & [options & _]]
-  [:tr (merge {:data-type "subscription"}
+  [:tr (merge {:data-model "subscription"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (str (:_id subscription))}))
@@ -191,7 +191,7 @@
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]
   [:li.subscription
-   (merge {:data-id (:_id item) :data-type "subscription"})
+   (merge {:data-id (:_id item) :data-model "subscription"})
    (if-let [user (if *dynamic*
                    (User.)
                    (model.subscription/get-target item))]
@@ -210,7 +210,7 @@
 
 (defsection subscribers-line [Subscription :html]
   [item & [options & _]]
-  [:li.subscription {:data-id (:_item item) :data-type "subscription"}
+  [:li.subscription {:data-id (:_item item) :data-model "subscription"}
    (if-let [user (model.subscription/get-actor item)]
      (show-section user)
      "unknown")])

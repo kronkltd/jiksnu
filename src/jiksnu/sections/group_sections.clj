@@ -66,7 +66,7 @@
 
 (defsection admin-index-line [Group :html]
   [group & [options & _]]
-  [:tr (merge {:data-type "group"}
+  [:tr (merge {:data-model "group"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id group)}

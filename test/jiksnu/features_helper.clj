@@ -509,7 +509,7 @@
 (defn should-see-n-users
   [n]
   (check-response
-   (let [users (find-elements {:data-type "user"} #_"*[data-type='user']")]
+   (let [users (find-elements {:data-model "user"} #_"*[data-model='user']")]
      (count users) => n)))
 
 (defn should-see-domain
@@ -520,7 +520,7 @@
 (defn should-see-subscription
   []
   (if-let [subscription (get-this :subscription)]
-    (let [elements (elements {:data-type "subscription"})]
+    (let [elements (elements {:data-model "subscription"})]
       (check-response
        (map #(webdriver/attribute % :data-id) elements) => (contains (str (:_id subscription)))))
     (throw+ "could not find 'this' subscription")))
@@ -550,7 +550,7 @@
   (if-let [record (get-this type)]
     (check-response
      (exists? (format "*[data-id='%s']"
-                      ;; [data-type='%s']
+                      ;; [data-model='%s']
                       (str (:_id record))
                       ;; (name type)
                       )) => truthy)

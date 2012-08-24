@@ -31,7 +31,7 @@
 
 (defsection admin-index-line [Like :html]
   [like & _]
-  [:tr {:data-id (:_id like) :data-type "like"}
+  [:tr {:data-id (:_id like) :data-model "like"}
    [:td (link-to (model.user/fetch-by-id (:user like)))]
    [:td (link-to (model.activity/fetch-by-id (:activity like)))]
    [:td (:updated like)]
@@ -47,7 +47,7 @@
 
 (defsection index-line [Like :html]
   [like & _]
-  [:tr {:data-id (:_id like) :data-type "like"}
+  [:tr {:data-id (:_id like) :data-model "like"}
    [:td (link-to (model.user/fetch-by-id (:user like)))]
    [:td (link-to (model.activity/fetch-by-id (:activity like)))]
    [:td (:updated like)]

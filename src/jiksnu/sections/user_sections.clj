@@ -287,7 +287,7 @@
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
-  [:tr (merge {:data-type "user"}
+  [:tr (merge {:data-model "user"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id user)}))
@@ -322,7 +322,7 @@
 (defsection admin-show-section [User :html]
   [item & [response & _]]
   (list
-   [:table.table (merge {:data-type "user"}
+   [:table.table (merge {:data-model "user"}
                 (if *dynamic*
                   {:data-bind "attr: {'data-id': _id}"}
                   {:data-id (:_id item)}))
@@ -460,7 +460,7 @@
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr (merge {:data-type "user"}
+  [:tr (merge {:data-model "user"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id user)}))
@@ -553,7 +553,7 @@
   (list
    ;; (dump-data)
    [:div.vcard.user-full
-    (merge {:data-type "user"}
+    (merge {:data-model "user"}
            (when-not *dynamic*
              {:data-id (:_id user)}))
     [:div (display-avatar user 96)]

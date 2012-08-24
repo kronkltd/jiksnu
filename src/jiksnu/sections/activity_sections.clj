@@ -479,7 +479,7 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr (merge {:data-type "activity"}
+  [:tr (merge {:data-model "activity"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 { :data-id (:_id activity)}))
@@ -692,7 +692,7 @@
     [:article.hentry.notice
      (merge {:typeof "sioc:Post"
              :data-model "activity"
-             :data-type "activity"}
+             :data-model "activity"}
             (if *dynamic*
               {:data-bind "attr: {'data-id': _id, about: url}"}
               {:about activity-uri
