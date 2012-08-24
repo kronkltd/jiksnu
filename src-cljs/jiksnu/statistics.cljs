@@ -23,5 +23,5 @@
 
 (defn fetch-statistics
   [model]
-  (let [stat-url "http://renfer.name/main/stats.json"]
+  (let [stat-url "/main/stats.json"]
     (.getJSON js/jQuery stat-url (partial update-statistics-handler model))))
