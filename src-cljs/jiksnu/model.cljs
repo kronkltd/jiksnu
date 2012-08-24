@@ -1,5 +1,6 @@
 (ns jiksnu.model
-  (:require [jiksnu.ko :as ko]
+  (:require [Backbone :as backbone]
+            [jiksnu.ko :as ko]
             [jiksnu.logging :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
 
@@ -30,23 +31,34 @@
     (ko/assoc-observable this "message" message)
     (ko/assoc-observable this "message")))
 
-(defvar PageInfo
-  [this]
-  (doto this
-    (ko/assoc-observable "page")
-    (ko/assoc-observable "pageSize")
-    (ko/assoc-observable "recordCount")
-    (ko/assoc-observable "totalRecords")
+(def PageInfo
+  (.extend backbone/Model
+           (js-obj
+            "defaults" (js-obj
+                        "page" 1
+                        "pageSize" 0
+                        "recordCount" 0
+                        "totalRecords" 0
+                        )
+            )
+           )
+  ;; [this]
+  ;; (doto this
+  ;;   (ko/assoc-observable "page")
+  ;;   (ko/assoc-observable "pageSize")
+  ;;   (ko/assoc-observable "recordCount")
+  ;;   (ko/assoc-observable "totalRecords")
 
-    (aset "hasNext"
-          (fn []
-            (< (* (.page this)
-                  (.pageSize this))
-               (.totalRecords this))))))
+  ;;   (aset "hasNext"
+  ;;         (fn []
+  ;;           (< (* (.page this)
+  ;;                 (.pageSize this))
+  ;;              (.totalRecords this)))))
+  )
 
 
 (def Domain
-  (.extend (.-RelationalModel js/Backbone)
+  (.extend backbone/Model
            (js-obj
             "name" "Domain"
             "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
@@ -56,7 +68,7 @@
                            (log/debug "init domain")))))
 
 (def Domains
-  (.extend (.-Collection js/Backbone)
+  (.extend backbone/Collection
            (js-obj
             "name" "domains"
             "class" "Domains"
@@ -67,7 +79,7 @@
 
 
 (def User
-  (.extend (.-RelationalModel js/Backbone)
+  (.extend backbone/Model
            (js-obj
             "name" "User"
             "class" "User"
@@ -82,7 +94,7 @@
                            (log/info "init user")))))
 
 (def Users
-  (.extend (.-Collection js/Backbone)
+  (.extend backbone/Collection
            (js-obj
             "idAttribute" "_id"
             "class" "Users"
@@ -93,7 +105,7 @@
 
 
 (def Activity
-  (.extend (.-RelationalModel js/Backbone)
+  (.extend backbone/Model
            (js-obj
             "idAttribute" "_id"
             "url" (fn [id] (this-as
@@ -116,7 +128,7 @@
                            (log/info "init activity")))))
 
 (def ^{:doc "collection of activities"} Activities
-  (.extend (.-Collection js/Backbone)
+  (.extend backbone/Collection
            (js-obj
             "class" "Activities"
             "urlRoot" "/main/notices/"
@@ -125,7 +137,7 @@
                            (log/info "init activities")))))
 
 (def Group
-  (.extend (.-RelationalModel js/Backbone)
+  (.extend backbone/Model
            (js-obj
             "idAttribute" "_id"
             "class" "Group"
@@ -133,7 +145,7 @@
                            (log/info "Initialize group")))))
 
 (def Groups
-  (.extend (.-Collection js/Backbone)
+  (.extend backbone/Collection
            (js-obj
             "model" Group
             "class" "Groups"
@@ -141,7 +153,7 @@
                            (log/info "init groups")))))
 
 (def Subscription
-  (.extend (.-RelationalModel js/Backbone)
+  (.extend backbone/Model
            (js-obj
             "class" "Subscription"
             "idAttribute" "_id"
@@ -149,13 +161,13 @@
                            (log/info "init subscription")))))
 
 (def Subscriptions
-  (.extend (.-Collection js/Backbone)
+  (.extend backbone/Collection
            (js-obj
             "initialize" (fn [models options]
                            (log/info "init subscriptions")))))
 
 (def FeedSource
-  (.extend (.-RelationalModel js/Backbone)
+  (.extend backbone/Model
            (js-obj
             "class" "FeedSource"
             "idAttribute" "_id"
@@ -163,7 +175,7 @@
                            (log/info "init feed source")))))
 
 (def FeedSources
-  (.extend (.-Collection js/Backbone)
+  (.extend backbone/Collection
            (js-obj
             "initialize" (fn [models options]
                            (log/info "init feed sources")))))

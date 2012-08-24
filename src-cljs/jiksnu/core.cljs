@@ -40,6 +40,12 @@
       (doseq [item items]
         (.add (.get _model key) item))))
 
+  (when-let [page-info (.-pageInfo data)]
+    (let [p (.get _model "pageInfo")]
+      (.set p page-info)
+      )
+    )
+
   (when-let [items (.-items data)]
     (.items _view items))
 
