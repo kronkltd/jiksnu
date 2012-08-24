@@ -691,7 +691,6 @@
   (let [activity-uri (uri activity)]
     [:article.hentry.notice
      (merge {:typeof "sioc:Post"
-             :data-model "activity"
              :data-model "activity"}
             (if *dynamic*
               {:data-bind "attr: {'data-id': _id, about: url}"}
