@@ -13,7 +13,8 @@
                                 admin-index-section bind-property
                                 dump-data control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -35,11 +36,21 @@
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.ExtensibleElement))
 
+(defn action-link
+  [model action title icon id]
+  [:a {:title title
+       :class (string/join " " [
+                                ;; "btn"
+                                (str action "-button")])
+                         :href (str "/main/confirm"
+                                    "?action=" action
+                                    "&model=" model
+                                    "&id=" id)}
+   [:i {:class (str "icon-" icon)}] [:span.button-text title]])
+
 (defn like-button
   [activity]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/like")}
-   [:button.btn.like-button {:type "submit"}
-    [:i.icon-heart] [:span.button-text "like"]]])
+  (action-link "activity" "like" "Like" "heart" (:_id activity)))
 
 (defn acl-link
   [^Entry entry activity]
@@ -196,20 +207,34 @@
 
 ;; move to model
 
+(defn comment-button
+  [activity]
+  [:a {:href "#"}
+   [:i.icon-comment]
+   [:span.button-text "Comment"]])
+
 (defn post-actions
   [activity]
-  (let [authenticated (session/current-user)]
-    [:ul.post-actions.unstyled.buttons
-     (when authenticated
-       (list [:li (like-button activity)]
-             [:li [:a.btn {:href "#"} [:i.icon-comment]
-                   [:span.button-text "Comment"]]]
-             (when (or (model.activity/author? activity authenticated)
-                       (session/is-admin?))
-               (list [:li (edit-button activity)]
-                     [:li (delete-button activity)]))
-             (when (session/is-admin?)
-               [:li (update-button activity)])))]))
+  (if-let [user (session/current-user)]
+    [:div.btn-group.actions-menu
+     [:a.dropdown-toggle {:data-toggle "dropdown" :href "#"}
+      [:span.caret]]
+     [:ul.dropdown-menu
+      (map
+       (fn [x] [:li x])
+       (concat
+        (list (like-button activity)
+              (comment-button activity))
+        (when (or (model.activity/author? activity user)
+                  (session/is-admin?))
+          (list (edit-button activity)
+                (delete-button activity)))
+        (when (session/is-admin?)
+          (list (update-button activity)))))]
+     
+
+
+     ]))
 
 (defn recipients-section
   [activity]
@@ -500,20 +525,13 @@
 
 ;; delete-button
 
-(defsection delete-button [Activity :html]
-  [activity & _]
-  [:form {:method "post" :action (str "/notice/" (:_id activity))}
-   [:input {:type "hidden" :name "_method" :value "DELETE"}]
-   [:button.btn.delete-button {:type "submit"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
-
-
 (defsection edit-button [Activity :html]
   [activity & _]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/edit")}
-   [:button.btn {:type "submit"}
-    [:i.icon-edit] [:span.button-text "edit"]]])
+  (action-link "activity" "edit" "Edit" "edit" (:_id activity)))
 
+(defsection delete-button [Activity :html]
+  [activity & _]
+  (action-link "activity" "delete" "Delete" "trash" (:_id activity)))
 
 
 
@@ -795,9 +813,7 @@
 
 (defsection update-button [Activity :html]
   [activity & _]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
-   [:button.btn.update-button {:type "submit"}
-    [:i.icon-refresh] [:span.button-text "update"]]])
+  (action-link "activity" "update" "Update" "refresh" (:_id activity)))
 
 
 (defsection uri [Activity]
