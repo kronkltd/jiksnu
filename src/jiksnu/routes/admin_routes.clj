@@ -63,7 +63,7 @@
 
     [[:get    "/admin/likes.:format"]                     #'admin.like/index]
     [[:get    "/admin/likes"]                             #'admin.like/index]
-    [[:delete "/admin/likes/:id.:format"]                         #'admin.like/delete]
+    [[:delete "/admin/likes/:id.:format"]                 #'admin.like/delete]
     [[:delete "/admin/likes/:id"]                         #'admin.like/delete]
     [[:post   "/admin/likes/:id/delete"]                  #'admin.like/delete]
         

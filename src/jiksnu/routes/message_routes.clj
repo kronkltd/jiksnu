@@ -3,5 +3,5 @@
 
 (defn routes
   []
-  [[[:get    "/:username/inbox"]  #'message/inbox-page]
-   [[:get    "/:username/outbox"] #'message/outbox-page]])
+  [[[:get "/:username/inbox"]  #'message/inbox-page]
+   [[:get "/:username/outbox"] #'message/outbox-page]])
