@@ -3,4 +3,4 @@
 
 (defn routes
   []
-  [[[:get    "/main/push/callback"]                          #'feed-source/process-updates]])
+  [[[:get    "/main/push/callback"]  #'feed-source/process-updates]])

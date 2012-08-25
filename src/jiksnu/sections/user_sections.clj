@@ -46,15 +46,15 @@
 
 (defn discover-button
   [item]
-  (action-link "user" "discover" "Discover" "search" (:_id item)))
+  (action-link "user" "discover" (:_id item)))
 
 (defn subscribe-button
   [item]
-  (action-link "user" "subscribe" "Subscribe" "eye-open" (:_id item)))
+  (action-link "user" "subscribe" (:_id item)))
 
 (defn unsubscribe-button
   [item]
-  (action-link "user" "unsubscribe" "Unsubscribe" "eye-close" (:_id item)))
+  (action-link "user" "unsubscribe" (:_id item)))
 
 
 
@@ -206,29 +206,10 @@
       (when (is-admin?)
         [:li (delete-button user)])]]))
 
-(defn push-subscribe-button
-  [user]
-  [:a.url {:href (:url user) :rel "contact"}
-   [:span.fn.n (:display-name user)]])
-
 (defn remote-warning
   [user]
   (when-not (:local user)
     [:p "This is a cached copy of information for a user on a different system"]))
-
-(defn pagination-links
-  [options]
-  ;; TODO: page should always be there from now on
-  (let [page-number (get options :page 1)
-        page-size (get options :page-size 20)
-        ;; If no total, no pagination
-        total (get options :total-records 0)]
-    [:ul.pager
-     (when (> page-number 1)
-       [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
-     (when (< (* page-number page-size) total)
-       [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
-
 
 (defn link-actions-section
   [link]
@@ -431,15 +412,11 @@
 
 (defsection delete-button [User :html]
   [user & _]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/delete")}
-   [:button.btn.delete-button {:type "submit" :title "Delete"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
+  (action-link "user" "delete" (:_id user)))
 
 (defsection edit-button [User :html]
   [user & _]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/edit")}
-   [:button.btn.edit-button {:type "submit" :title "Edit"}
-    [:i.icon-pencil] [:span.button-text "Edit"]]])
+  (action-link "user" "edit" (:_id user)))
 
 ;; index-block
 
@@ -688,9 +665,7 @@
 
 (defsection update-button [User :html]
   [user & _]
-  [:form {:method "post" :action (str "/users/" (:_id user) "/update")}
-   [:button.btn.update-button {:type "submit" :title "Update"}
-    [:i.icon-refresh] [:span.button-text "Update"]]])
+  (action-link "user" "update" (:_id user)))
 
 (defsection uri [User]
   [user & options]

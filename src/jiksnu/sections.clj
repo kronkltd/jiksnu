@@ -9,12 +9,18 @@
 (def action-icons
   {"update" "refresh"
    "delete" "trash"
-   "edit" "edit"})
+   "edit" "edit"
+   "discover" "search"
+   "subscribe" "eye-open"
+   "unsubscribe" "eye-close"})
 
 (def action-titles
   {"update" "Update"
    "delete" "Delete"
-   "edit" "Edit"})
+   "edit" "Edit"
+   "discover" "Discover"
+   "subscribe" "Subscribe"
+   "unsubscribe" "Unsubscribe"})
 
 (def format-links
   {:n3        {:label "N3"
