@@ -2,6 +2,7 @@
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.feed-source-actions :only [process-updates
                                                    fetch-updates
+                                                   show
                                                    remove-subscription]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -15,6 +16,12 @@
   [action request]
   (if-let [source (-> request :params :id model/make-id model.feed-source/fetch-by-id)]
     (action source)))
+
+(deffilter #'show :http
+  [action request]
+  (let [{{id :id} :params} request]
+    (if-let [user (model.feed-source/fetch-by-id (model/make-id id))]
+     (action user))))
 
 (deffilter #'fetch-updates :http
   [action request]

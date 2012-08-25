@@ -22,3 +22,8 @@
   [request params]
   (-> (response/redirect-after-post "/admin/feed-sources")
         (assoc :template false)))
+
+(defview #'show :model
+  [request activity]
+  {:body (show-section activity)})
+

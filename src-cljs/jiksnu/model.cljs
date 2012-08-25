@@ -22,10 +22,10 @@
   "Load data into the model store"
   [coll id o data d]
   (let [resp (.add coll data)
-        m (.get coll id)
-        a (.-attributes m)]
-    ;; (log/info "setting observable from response")
-    (o a)))
+        m (.get coll id)]
+    (let [a (.-attributes m)]
+      (log/info "setting observable from response")
+      (o a))))
 
 
 
@@ -53,6 +53,7 @@
   (.extend
    backbone/Model
    (js-obj
+    "class" "PageInfo"
     "defaults" (js-obj
                 "page"         1
                 "pageSize"     0
@@ -72,6 +73,7 @@
   (.extend
    backbone/Model
    (js-obj
+    "class" "Notification"
     "dismiss"
     (fn []
       (this-as
@@ -104,7 +106,7 @@
   (.extend
    backbone/Model
    (js-obj
-    "name" "Domain"
+    "class" "Domain"
     "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
     "defaults" (js-obj "xmpp" "unknown")
     "idAttribute" "_id"
@@ -114,7 +116,6 @@
 (def Domains
   (.extend backbone/Collection
            (js-obj
-            "name" "domains"
             "class" "Domains"
             "urlRoot" "/main/domains/"
             "model" Domain
@@ -125,7 +126,6 @@
 (def User
   (.extend backbone/Model
            (js-obj
-            "name" "User"
             "class" "User"
             "defaults" (js-obj "url" nil
                                "avatarUrl" nil
@@ -204,6 +204,8 @@
 (def Subscriptions
   (.extend backbone/Collection
            (js-obj
+            "model" Subscription
+            "class" "Subscriptions"
             "initialize" (fn [models options]
                            #_(log/info "init subscriptions")))))
 
@@ -218,6 +220,8 @@
 (def FeedSources
   (.extend backbone/Collection
            (js-obj
+            "class" "FeedSources"
+            "model" FeedSource
             "initialize" (fn [models options]
                            #_(log/info "init feed sources")))))
 

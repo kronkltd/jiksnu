@@ -241,6 +241,10 @@
              [:td lease-seconds]]]]
           (actions-section source))))
 
+(defsection show-section [FeedSource :model]
+  [activity & [page]]
+  activity)
+
 (defsection show-section [FeedSource :viewmodel]
   [item & _]
   item)
