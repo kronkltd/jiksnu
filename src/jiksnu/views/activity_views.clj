@@ -18,6 +18,8 @@
             [plaza.rdf.vocabularies.foaf :as foaf]
             [ring.util.response :as response]))
 
+;; delete
+
 (defview #'delete :html
   [request activity]
   (-> (response/redirect-after-post "/")
@@ -27,18 +29,18 @@
   [request activity]
   {:body (show-section activity)})
 
-
-
+;; edit-page
 
 (defview #'edit-page :html
   [request activity]
   {:body (edit-form activity)})
 
+;; oembed
+
 (defview #'oembed :json
   [request oembed-map]
   {:status 200
-   :body oembed-map}
-  )
+   :body oembed-map})
 
 (defview #'oembed :xml
   [request m]
@@ -53,11 +55,9 @@
     [:author_name (:author_name m)]
     [:author_url (:author_url m)]
     [:url (:url m)]
-    [:html (:html m)]
-    ]
-   
-   }
-  )
+    [:html (:html m)]]})
+
+;; post
 
 (defview #'post :html
   [request activity]
@@ -67,15 +67,23 @@
     (-> (response/redirect-after-post url)
         (assoc :template false))))
 
+;; remote-create
+
 (defview #'remote-create :xmpp
   [request _]
   nil)
+
+;; show
 
 (defview #'show :clj
   [request activity]
   {:body activity})
 
 (defview #'show :html
+  [request activity]
+  {:body (show-section activity)})
+
+(defview #'show :model
   [request activity]
   {:body (show-section activity)})
 
@@ -107,6 +115,8 @@
           :displayMode "single"
           :showPostForm false
           :title (:title activity)}})
+
+;; update
 
 (defview #'update :html
   [request activity]

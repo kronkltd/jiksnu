@@ -45,14 +45,15 @@
 
 (defn fetch-viewmodel
   [url]
-  (log/info (str "Fetching viewmodel: " url))
+  (log/info (format "Fetching viewmodel: %s" url))
   (.getJSON js/jQuery url process-viewmodel))
 
 (defn load-model
   [model-name id om]
-  #_(log/info (str "not loaded: " model-name "(" id ")"))
+  #_(log/info (format "not loaded: %s(%s)" model-name id))
   (let [coll (.get _model model-name)
-        url (str "/" model-name "/" id ".model")]
+        url (format "/model/%s/%s.model"
+                    model-name id)]
     (log/info (str "fetching " url))
     (let [o (.observable js/ko)
           resp (.getJSON js/jQuery url (partial receive-model coll id o))]

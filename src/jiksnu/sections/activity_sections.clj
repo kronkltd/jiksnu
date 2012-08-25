@@ -382,7 +382,9 @@
   (when-let [enclosures (if *dynamic*
                           [{:href ""}]
                           (seq (:enclosures activity)))]
-    [:ul.unstyled {:data-bind "foreach: enclosures"}
+    [:ul.unstyled
+     (if *dynamic*
+       {:data-bind "foreach: enclosures"})
      (map
       (fn [enclosure]
         [:li
@@ -642,21 +644,15 @@
 
     ;; TODO: test for the presence of a like
     :favorited false
-    :user
-    (let [user (actions.activity/get-author activity)]
-      {:name (:display-name user)
-       :id (:_id user)
-       :screen_name (:username user)
-       :url (:id user)
-       :profile_image_url (:avatar-url user)
-       :protected false})
+    :user (let [user (actions.activity/get-author activity)]
+            (show-section user))
     :statusnet_html (:content activity)}
    (when-let [conversation (first (:conversations activity))]
      {:statusnet_conversation_id conversation})
    (when-let [irt (first (:irts activity))]
      {:in_reply_to_status_id irt})
-   (when (:attachments activity)
-     {:attachments []})))
+   (when-let [attachments (:attachments activity)]
+     {:attachments attachments})))
 
 (defsection show-section [Activity :html]
   [activity & _]
@@ -676,7 +672,8 @@
       (recipients-section activity)]
      [:div.entry-content
       #_(when (:title activity)
-          [:h1.entry-title {:property "dc:title"} (:title activity)])
+          [:h1.entry-title {:property "dc:title"}
+           (:title activity)])
       [:p (merge {:property "dc:title"}
                  (if *dynamic*
                    {:data-bind "text: title"}))
@@ -698,6 +695,10 @@
         posted-link-section
         comments-section])
       [:div.pull-right (post-actions activity)]]]))
+
+(defsection show-section [Activity :model]
+  [activity & [page]]
+  activity)
 
 (defsection show-section [Activity :rdf]
   [activity & _]

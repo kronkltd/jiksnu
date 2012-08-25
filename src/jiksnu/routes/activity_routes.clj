@@ -2,11 +2,11 @@
   (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
   (:require [jiksnu.actions.activity-actions :as activity]))
 
+(add-route! "/main/oembed"     {:named "oembed"})
 (add-route! "/notice/:id"      {:named "show activity"})
+(add-route! "/notice/:id"      {:named "delete activity"})
 (add-route! "/notice/:id/edit" {:named "edit activity"})
 (add-route! "/notice/new"      {:named "new activity"})
-(add-route! "/main/oembed"     {:named "oembed"})
-(add-route! "/notice/:id"      {:named "delete activity"})
 
 (defn routes
   []
@@ -23,5 +23,6 @@
     #'activity/delete]
    [[:delete (named-path "delete activity")]   #'activity/delete]
    [[:get    (named-path "edit activity")]     #'activity/edit-page]
+   [[:get "/model/activities/:id.:format"]        #'activity/show]
    ;; [[:get "/main/events"]                      #'activity/stream]
    ])

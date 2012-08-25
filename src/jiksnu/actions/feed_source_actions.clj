@@ -77,6 +77,10 @@
   (apply index* options))
 
 
+(defaction show
+  [item]
+  item)
+
 (defn find-or-create
   [params & [options & _]]
   (if-let [source (or (and (:_id params) (model.feed-source/fetch-by-id (:_id params)))

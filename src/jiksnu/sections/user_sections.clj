@@ -575,6 +575,15 @@
       (show-section key))
     (user-actions user)]))
 
+(defsection show-section [User :json]
+  [user & _]
+  {:name (:display-name user)
+   :id (:_id user)
+   :screen_name (:username user)
+   :url (:id user)
+   :profile_image_url (:avatar-url user)
+   :protected false})
+
 (defsection show-section [User :model]
   [user & _]
   user)

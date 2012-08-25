@@ -20,4 +20,5 @@
    [[:post   (named-path "discover domain")]   #'domain/discover]
    [[:post   "/main/domains/:id/edit"]         #'domain/edit-page]
    [[:post   "/main/domains"]                  #'domain/find-or-create]
+   [[:get    "/model/domains/:id.:format"]        #'domain/show]
    ])
