@@ -18,7 +18,8 @@
                                  pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
             [jiksnu.abdera :as abdera]
@@ -81,18 +82,20 @@
 
 (defn register-form
   [user]
-  [:form.well.form-horizontal.register-form {:method "post" :action "/main/register"}
+  [:form.well.form-horizontal.register-form
+   {:method "post" :action "/main/register"}
    [:fieldset
     [:legend "Register"]
-
-    (control-line "Username" "username" "text")
-    (control-line "Password" "password" "password")
-    (control-line "Confirm Password" "confirm-password" "password")
-    (control-line "Email" "email" "email")
-    (control-line "Display Name" "display-name" "text")
-    (control-line "Location" "location" "text")
-    (control-line "I have checked the box" "accepted" "checkbox")
-
+    (map
+     (fn [[label field type]]
+       (control-line label field type))
+     [["Username"               "username"         "text"]
+      ["Password"               "password"         "password"]
+      ["Confirm Password"       "confirm-password" "password"]
+      ["Email"                  "email"            "email"]
+      ["Display Name"           "display-name"     "text"]
+      ["Location"               "location"         "text"]
+      ["I have checked the box" "accepted"         "checkbox"]])
     [:div.actions
      [:input.btn.primary {:type "submit" :value "Register"}]]]])
 
@@ -157,39 +160,42 @@
 
 (defn user->person
   [user]
-  (let [author-uri (model.user/get-uri user)]
-    (let [person (.newAuthor abdera/abdera-factory)]
-      (doto person
-       (.addSimpleExtension ns/as "object-type" "activity" ns/person)
-       (.addSimpleExtension ns/atom "id" "" (or (:id user)
-                                                author-uri))
-       (.setName (or (:name user)
-                     (:display-name user)
-                     (str (:first-name user) " " (:last-name user))))
+  (let [author-uri (model.user/get-uri user)
+        name (or (:name user)
+                 (:display-name user)
+                 (str (:first-name user) " " (:last-name user)))
+        id (or (:id user) author-uri)
+        person (.newAuthor abdera/abdera-factory)]
+    (doto person
+      (.setName name)
       
-       (.addExtension (doto (.newLink abdera/abdera-factory)
-                        (.setHref (:avatar-url user))
-                        (.setRel "avatar")
-                        (.setMimeType "image/jpeg")))
-       
-       (.addSimpleExtension ns/atom "uri" "" author-uri)
+      (.addSimpleExtension ns/as   "object-type"       "activity" ns/person)
+      (.addSimpleExtension ns/atom "id"                ""         id)
+      (.addSimpleExtension ns/atom "uri"               ""         author-uri)
+      (.addSimpleExtension ns/poco "preferredUsername" "poco"     (:username user))
+      (.addSimpleExtension ns/poco "displayName"       "poco"     (title user))
 
-       (.addSimpleExtension ns/poco "preferredUsername" "poco" (:username user))
-       (.addSimpleExtension ns/poco "displayName" "poco" (title user))
-       (.addExtension (doto (.newLink abdera/abdera-factory)
-                        (.setHref (full-uri user))
-                        (.setRel "alternate")
-                        (.setMimeType "text/html")))
-       (-> (.addExtension ns/status "profile_info" "statusnet")
-           (.setAttributeValue "local_id" (str (:_id user))))
-       (-> (.addExtension ns/poco "urls" "poco")
-           (doto (.addSimpleExtension ns/poco "type" "poco" "homepage")
-             (.addSimpleExtension ns/poco "value" "poco" (full-uri user))
-             (.addSimpleExtension ns/poco "primary" "poco" "true"))))
+      (.addExtension (doto (.newLink abdera/abdera-factory)
+                       (.setHref (:avatar-url user))
+                       (.setRel "avatar")
+                       (.setMimeType "image/jpeg")))
+      (.addExtension (doto (.newLink abdera/abdera-factory)
+                       (.setHref (full-uri user))
+                       (.setRel "alternate")
+                       (.setMimeType "text/html")))
 
-      (when (:email user)
-        (.addSimpleExtension person ns/atom "email" "" (:email user)))
-      person)))
+      (-> (.addExtension ns/status "profile_info" "statusnet")
+          (.setAttributeValue "local_id" (str (:_id user))))
+
+      (-> (.addExtension ns/poco "urls" "poco")
+          (doto (.addSimpleExtension ns/poco "type" "poco" "homepage")
+            (.addSimpleExtension ns/poco "value" "poco" (full-uri user))
+            (.addSimpleExtension ns/poco "primary" "poco" "true"))))
+
+    (when (:email user)
+      (.addSimpleExtension person ns/atom "email" "" (:email user)))
+
+    person))
 
 (defn user-actions
   [user]
@@ -229,6 +235,29 @@
         (list
          [:li (edit-button user)]
          [:li (delete-button user)]))))])
+
+(defn links-table
+  [links]
+  [:table.table
+   (when *dynamic*
+     {:data-bind "if: links"})
+   [:thead
+    [:tr
+     [:th "title"]
+     [:th "rel"]
+     [:th "href"]
+     [:th "Actions"]]]
+   [:tbody
+    (when *dynamic*
+      {:data-bind "foreach: links"})
+    (map
+     (fn [link]
+       [:tr
+        [:td (if *dynamic* {:data-bind "text: title"} (:title link))]
+        [:td (if *dynamic* {:data-bind "text: rel"}   (:rel link))]
+        [:td (if *dynamic* {:data-bind "text: href"}  (:href link))]
+        [:td (link-actions-section link)]])
+     links)]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sections
@@ -303,26 +332,6 @@
 
 ;; admin-show-section
 
-(defn links-table
-  [links]
-  [:table.table (when *dynamic* {:data-bind "if: links"})
-   [:thead
-    [:tr
-     [:th "title"]
-     [:th "rel"]
-     [:th "href"]
-     [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: links"})
-    (map
-     (fn [link]
-       [:tr
-        [:td (if *dynamic* {:data-bind "text: title"} (:title link))]
-        [:td (if *dynamic* {:data-bind "text: rel"} (:rel link))]
-        [:td (if *dynamic* {:data-bind "text: href"} (:href link))]
-        [:td (link-actions-section link)]])
-     links)]])
-
-
 (defsection admin-show-section [User :html]
   [item & [response & _]]
   (list
@@ -392,14 +401,6 @@
    (admin-actions-section item)
    (let [links (if *dynamic*  [{}] (:links item))]
      (links-table links))))
-
-
-(defsection title [User]
-  [user & options]
-  (or (:name user)
-      (:display-name user)
-      (:first-name user)
-      (model.user/get-uri user)))
 
 
 (defsection add-form [User :html]
@@ -678,9 +679,21 @@
          ["photo"
           ["uri" avatar-url]])])))
 
+;; title
+
+(defsection title [User]
+  [user & options]
+  (or (:name user)
+      (:display-name user)
+      (:first-name user)
+      (model.user/get-uri user)))
+
+;; update-button
+
 (defsection update-button [User :html]
-  [user & _]
-  (action-link "user" "update" (:_id user)))
+  [item & _]
+  (let [model-name (string/lower-case (class item))]
+    (action-link model-name "update" (:_id item))))
 
 (defsection uri [User]
   [user & options]

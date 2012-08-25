@@ -7,58 +7,65 @@
             [clojure.tools.logging :as log]))
 
 (def action-icons
-  {"update" "refresh"
-   "delete" "trash"
-   "edit" "edit"
-   "discover" "search"
-   "subscribe" "eye-open"
+  {"update"      "refresh"
+   "delete"      "trash"
+   "edit"        "edit"
+   "discover"    "search"
+   "subscribe"   "eye-open"
    "unsubscribe" "eye-close"})
 
 (def action-titles
-  {"update" "Update"
-   "delete" "Delete"
-   "edit" "Edit"
-   "discover" "Discover"
-   "subscribe" "Subscribe"
+  {"update"      "Update"
+   "delete"      "Delete"
+   "edit"        "Edit"
+   "discover"    "Discover"
+   "subscribe"   "Subscribe"
    "unsubscribe" "Unsubscribe"})
 
 (def format-links
-  {:n3        {:label "N3"
-               :type "text/n3"
-               :icon "chart_organisation.png"}
-   :json      {:label "JSON"
-               :icon "json.png"
-               :type "application/json"}
-   :rdf       {:label "RDF/XML"
-               :icon "foafTiny.gif"
-               :type "application/rdf+xml"}
-   :viewmodel {:label "Viewmodel"
-               :type "application/json"}
-   :xml       {:label "XML"
-               :icon "file_xml.png"
-               :type "application/xml"}
-   :atom      {:label "Atom"
-               :icon "feed-icon-14x14.png"
-               :type "application/atom+xml"}
+  {
    :as        {:label "Activity Streams"
-               :icon "as-bw-14x14.png"
-               :type "application/json"}})
+               :icon  "as-bw-14x14.png"
+               :type  "application/json"}
+   :atom      {:label "Atom"
+               :icon  "feed-icon-14x14.png"
+               :type  "application/atom+xml"}
+   :json      {:label "JSON"
+               :icon  "json.png"
+               :type  "application/json"}
+   :n3        {:label "N3"
+               :type  "text/n3"
+               :icon  "chart_organisation.png"}
+   :rdf       {:label "RDF/XML"
+               :icon  "foafTiny.gif"
+               :type  "application/rdf+xml"}
+   :xml       {:label "XML"
+               :icon  "file_xml.png"
+               :type  "application/xml"}
+   :viewmodel {:label "Viewmodel"
+               :type  "application/json"}})
 
 (defn action-link
   ([model action id]
-     (action-link model action (action-titles action) (action-icons action) id))
+     (action-link model
+                  action
+                  (action-titles action)
+                  (action-icons action)
+                  id))
   ([model action title icon id]
-     [:a (merge {:title title
-                 :class (string/join " " [(str action "-button")])
-                 :data-model model
-                 :data-action action}
-                (if *dynamic*
-                  {:href "#"}
-                  {:href (str "/main/confirm"
-                              "?action=" action
-                              "&model=" model
-                              "&id=" id)}))
-      [:i {:class (str "icon-" icon)}] [:span.button-text title]]))
+     [:a (merge
+          {:title title
+           :class (string/join " " [(str action "-button")])
+           :data-model model
+           :data-action action}
+          (if *dynamic*
+            {:href "#"}
+            {:href (str "/main/confirm"
+                        "?action=" action
+                        "&model=" model
+                        "&id=" id)}))
+      [:i {:class (str "icon-" icon)}]
+      [:span.button-text title]]))
 
 
 (defn bind-property
@@ -105,38 +112,38 @@
         page-size (get options :page-size 20)
         ;; If no total, no pagination
         total-records (get options :total-records 0)]
-    [:div.paginations
-     (when *dynamic*
-       {:data-bind "with: pageInfo"})
-     [:p.paginations-page
-      [:span.pagination-label "Page"] " "
-      [:span.pagination-value
-       (if *dynamic*
-         {:data-bind "text: page"}
-         page)]]
-     [:p.paginations-page-size
-      [:span.pagination-label "Page Size"] " "
-      [:span.pagination-value
-       (if *dynamic*
-         {:data-bind "text: pageSize"}
-         page-size)]]
-     [:p.paginations-record-count
-      [:span.pagination-label "Records returned"] " "
-      [:span.pagination-value
-       (if *dynamic*
-         {:data-bind "text: recordCount"}
-         (count (:items options)))]]
-     [:p.paginations-total-records
-      [:span.pagination-label "Total Records"] " "
-      [:span.pagination-value
-       (if *dynamic*
-         {:data-bind "text: totalRecords"}
-         total-records)]]
-     [:ul.pager
-      (when (> page 1)
-        (prev-link page))
-      (when (< (* page page-size) total-records)
-        (next-link page))]]))
+    (list [:table.paginations
+           (when *dynamic*
+             {:data-bind "with: pageInfo"})
+           [:tr.paginations-page
+            [:th.pagination-label "Page"]
+            [:td.pagination-value
+             (if *dynamic*
+               {:data-bind "text: page"}
+               page)]]
+           [:tr.paginations-page-size
+            [:th.pagination-label "Page Size"]
+            [:td.pagination-value
+             (if *dynamic*
+               {:data-bind "text: pageSize"}
+               page-size)]]
+           [:tr.paginations-record-count
+            [:th.pagination-label "Records returned"] " "
+            [:td.pagination-value
+             (if *dynamic*
+               {:data-bind "text: recordCount"}
+               (count (:items options)))]]
+           [:tr.paginations-total-records
+            [:th.pagination-label "Total Records"] " "
+            [:td.pagination-value
+             (if *dynamic*
+               {:data-bind "text: totalRecords"}
+               total-records)]]]
+          [:ul.pager
+           (when (> page 1)
+             (prev-link page))
+           (when (< (* page page-size) total-records)
+             (next-link page))])))
 
 (declare-section actions-section)
 (declare-section admin-actions-section)
@@ -186,11 +193,11 @@
   [items & [page]]
   (map #(index-line % page) items))
 
-(defmethod index-block-type :default
-  [items & [page]]
-  (->> items
-       (map (fn [m] {(:_id m) (index-line m page)}))
-       (into {})))
+;; (defmethod index-block-type :default
+;;   [items & [page]]
+;;   (->> items
+;;        (map (fn [m] {(:_id m) (index-line m page)}))
+;;        (into {})))
 
 (defsection index-line :default
   [item & [page]]
