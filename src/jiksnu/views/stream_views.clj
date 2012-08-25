@@ -8,28 +8,21 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.sections.activity-sections :as sections.activity]
-            [jiksnu.session :as session]
-            [jiksnu.views :as views]
-            [jiksnu.xmpp.element :as xmpp.element]
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.vocabularies.foaf :as foaf]
-            [ring.util.response :as response])
+            [jiksnu.sections.activity-sections :as sections.activity])
   (:import jiksnu.model.Activity))
+
+;; callback-publish
 
 (defview #'callback-publish :html
   [request params]
   {:status 200
    :template false})
+
+;; direct-message-timeline
 
 (defview #'direct-message-timeline :json
   [request data]
@@ -41,13 +34,17 @@
    [:statuses {:type "array"}
     (map index-line (index-section activities))]})
 
+;; group-timeline
+
 (defview #'group-timeline :html
-  [request [group {:keys [items] :as response}]]
+  [request [group {:keys [items] :as page}]]
   {:title (str (:nickname group) " group")
    :post-form true
    :body (list
           (show-section group)
-          (index-section items response))})
+          (index-section items page))})
+
+;; home-timeline
 
 (defview #'home-timeline :html
   [request activities]
@@ -63,6 +60,8 @@
   [request activities]
   {:body (index-section activities)})
 
+;; mentions-timeline
+
 (defview #'mentions-timeline :atom
   [request activities]
   {:body
@@ -73,20 +72,21 @@
   {:body
    [:statuses {:type "array"} (map index-line (index-section activities))]})
 
+;; public-timeline
 
 (defview #'public-timeline :as
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:body
    ;; TODO: I know that doesn't actually work.
    ;; TODO: assign the generator in the formatter
    {:generator "Jiksnu ${VERSION}"
     :title "Public Timeline"
-    :totalItems (:total-records response)
+    :totalItems (:total-records page)
     :items
-    (index-section items response)}})
+    (index-section items page)}})
 
 (defview #'public-timeline :atom
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   (let [self (str "http://" (config :domain) "/api/statuses/public_timeline.atom")]
     {:headers {"Content-Type" "application/xml"}
      :template false
@@ -100,35 +100,35 @@
                      :rel "self"
                      :type "application/atom+xml"}]
             :updated (:updated (first items))
-            :entries (index-section items response)}}))
+            :entries (index-section items page)}}))
 
 (defview #'public-timeline :json
-  [request {:keys [items] :as response}]
-  {:body (map show-section items response)})
+  [request {:keys [items] :as page}]
+  {:body (map show-section items page)})
 
 (defview #'public-timeline :html
-  [request {:keys [items page] :as response}]
+  [request {:keys [items] :as page}]
   {:title "Public Timeline"
    :post-form true
    :viewmodel "/api/statuses/public_timeline.viewmodel"
    :links [{:rel "next"
-            :href (str "?page=" (inc page))
+            :href (str "?page=" (inc (:page page)))
             :title "Next Page"
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
    :body (if *dynamic*
            (index-section [(Activity.)])
-           (index-section items response))})
+           (index-section items page))})
 
 (defview #'public-timeline :n3
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:body
-   (with-format :rdf (doall (index-section items response)))
+   (with-format :rdf (doall (index-section items page)))
    :template :false})
 
 (defview #'public-timeline :rdf
-  [request {:keys [items] :as response}]
-  {:body (index-section items response)
+  [request {:keys [items] :as page}]
+  {:body (index-section items page)
    :template :false})
 
 (defview #'public-timeline :viewmodel
@@ -141,16 +141,15 @@
     ;; :users (index-section (map actions.activity/get-author items))
     :activities (doall (index-section items page))}})
 
-
-
-
 (defview #'public-timeline :xml
-  [request {:keys [items] :as response}]
-  {:body (index-section items response)})
+  [request {:keys [items] :as page}]
+  {:body (index-section items page)})
 
 (defview #'public-timeline :xmpp
-  [request {:keys [items] :as response}]
-  (tigase/result-packet request (index-section items response)))
+  [request {:keys [items] :as page}]
+  (tigase/result-packet request (index-section items page)))
+
+;; stream
 
 (defview #'stream :html
   [request response-fn]
@@ -160,7 +159,7 @@
 ;; user-timeline
 
 (defview #'user-timeline :atom
-  [request [user {activities :items :as response}]]
+  [request [user {activities :items :as page}]]
   {:headers {"Content-Type" "application/xml"}
    :template false
    :title (str (:username user) " timeline")
@@ -190,11 +189,11 @@
           :entries (map show-section activities)}})
 
 (defview #'user-timeline :as
-  [request [user {:keys [items] :as response}]]
+  [request [user {:keys [items] :as page}]]
   {:body
    {:title (str (title user) " Timeline")
     :items
-    (index-section items response)}})
+    (index-section items page)}})
 
 (defview #'user-timeline :json
   [request [user activities]]
@@ -228,12 +227,11 @@
 (defview #'user-timeline :n3
   [request [user activities-map]]
   (when user
-    {:body
-     (->> (when-let [activities (seq (:items activities-map))]
-            (index-section activities))
-          (concat (show-section user))
-          doall
-          (with-format :rdf))
+    {:body (->> (when-let [activities (seq (:items activities-map))]
+                  (index-section activities))
+                (concat (show-section user))
+                doall
+                (with-format :rdf))
      :template false}))
 
 (defview #'user-timeline :viewmodel
@@ -243,8 +241,7 @@
            :title (title user)
            :items (map :_id (:items activities-map))
            :targetUser (:_id user)
-           :activities (index-section (:items activities-map))}
-       )})
+           :activities (index-section (:items activities-map))})})
 
 (defview #'user-timeline :xml
   [request [user activities]]
