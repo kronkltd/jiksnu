@@ -45,8 +45,9 @@
 
 (defn fetch-viewmodel
   [url]
-  (log/info (format "Fetching viewmodel: %s" url))
-  (.getJSON js/jQuery url process-viewmodel))
+  (when url
+    (log/info (format "Fetching viewmodel: %s" url))
+    (.getJSON js/jQuery url process-viewmodel)))
 
 (defn load-model
   [model-name id om]

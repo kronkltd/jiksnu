@@ -40,7 +40,9 @@
    :body (list (let [sources (if *dynamic*
                                [(FeedSource.)]
                                items)]
-                 [:div {:data-bind "with: _.map(items(), jiksnu.core.get_feed_source)"}
+                 [:div
+                  (if *dynamic*
+                    {:data-bind "with: _.map(items(), jiksnu.core.get_feed_source)"})
                   (admin-index-section sources response)])
                (add-form (FeedSource.)))})
 

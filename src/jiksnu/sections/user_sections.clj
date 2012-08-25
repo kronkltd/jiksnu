@@ -285,7 +285,8 @@
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
-   [:td {:data-bind "with: jiksnu.core.get_domain(domain)"}
+   [:td (if *dynamic*
+          {:data-bind "with: jiksnu.core.get_domain(domain)"})
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
    [:td (admin-actions-section user page)]])

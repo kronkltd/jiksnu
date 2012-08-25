@@ -72,7 +72,8 @@
          (let [users (if *dynamic*
                        [(User.)]
                       (model.user/fetch-by-domain domain))]
-           [:div (if *dynamic* {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
+           [:div (if *dynamic*
+                   {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
             (index-section users {:page 1})]))})
 
 (defview #'host-meta :html

@@ -666,7 +666,8 @@
                :data-id (:_id activity)}))
      [:header
       [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
-       [:div {:data-bind "if: typeof($data) !== 'undefined'"}
+       [:div (if *dynamic*
+               {:data-bind "if: typeof($data) !== 'undefined'"})
         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
           (show-section-minimal user))]]
       (recipients-section activity)]
