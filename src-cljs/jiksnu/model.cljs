@@ -4,6 +4,33 @@
             [jiksnu.logging :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
 
+(def
+  ^{:doc "The list of model names"}
+  model-names
+  ["activities"
+   "domains"
+   "groups"
+   "feedSources"
+   "subscriptions"
+   "users"])
+
+(def
+  ^{:doc "The main backbone model"}
+  _model)
+
+(defn receive-model
+  "Load data into the model store"
+  [coll id o data d]
+  (let [resp (.add coll data)
+        m (.get coll id)
+        a (.-attributes m)]
+    ;; (log/info "setting observable from response")
+    (o a)))
+
+
+
+
+
 (defvar Statistics
   [this]
   (doto this
@@ -22,50 +49,67 @@
     (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
 
-(defvar Foo
-  [this])
-
-(defvar Notification
-  [this & [message]]
-  (if message
-    (ko/assoc-observable this "message" message)
-    (ko/assoc-observable this "message")))
-
 (def PageInfo
-  (.extend backbone/Model
-           (js-obj
-            "defaults" (js-obj
-                        "page" 1
-                        "pageSize" 0
-                        "recordCount" 0
-                        "totalRecords" 0
-                        )
-            )
-           )
-  ;; [this]
-  ;; (doto this
-  ;;   (ko/assoc-observable "page")
-  ;;   (ko/assoc-observable "pageSize")
-  ;;   (ko/assoc-observable "recordCount")
-  ;;   (ko/assoc-observable "totalRecords")
+  (.extend
+   backbone/Model
+   (js-obj
+    "defaults" (js-obj
+                "page"         1
+                "pageSize"     0
+                "recordCount"  0
+                "totalRecords" 0)
+    "hasNext" (fn []
+                (this-as
+                 this
+                 (< (* (.page this)
+                       (.pageSize this))
+                    (.totalRecords this)))))))
 
-  ;;   (aset "hasNext"
-  ;;         (fn []
-  ;;           (< (* (.page this)
-  ;;                 (.pageSize this))
-  ;;              (.totalRecords this)))))
-  )
+
+
+
+(def Notification
+  (.extend
+   backbone/Model
+   (js-obj
+    "dismiss"
+    (fn []
+      (this-as
+       this
+       (.remove (.-collection this)
+                this)))
+
+
+    "default" (js-obj
+               "message" ""
+               "level"   ""))))
+
+(def Notifications
+  (.extend
+   backbone/Collection
+   (js-obj
+    "model" Notification
+    "class" "Notifications"
+
+    ;; Add a new notification
+    "add-notification"
+    (fn [message]
+      (this-as this
+       (let [notification (model/Notification.)]
+         (.set notification "message" message)
+         (.push this notification)))))))
 
 
 (def Domain
-  (.extend backbone/Model
-           (js-obj
-            "name" "Domain"
-            "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
-            "defaults" (js-obj "xmpp" "unknown")
-            "idAttribute" "_id"
-            "initialize" (fn [models options]
-                           (log/debug "init domain")))))
+  (.extend
+   backbone/Model
+   (js-obj
+    "name" "Domain"
+    "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
+    "defaults" (js-obj "xmpp" "unknown")
+    "idAttribute" "_id"
+    "initialize" (fn [models options]
+                   (log/debug "init domain")))))
 
 (def Domains
   (.extend backbone/Collection
@@ -75,7 +119,7 @@
             "urlRoot" "/main/domains/"
             "model" Domain
             "initialize" (fn [models options]
-                           (log/debug "init domains")))))
+                           #_(log/debug "init domains")))))
 
 
 (def User
@@ -100,41 +144,38 @@
             "class" "Users"
             "model" User
             "initialize" (fn [models options]
-                           (log/info "init users")))))
-
+                           #_(log/info "init users")))))
 
 
 (def Activity
-  (.extend backbone/Model
-           (js-obj
-            "idAttribute" "_id"
-            "url" (fn [id] (this-as
-                           this
-                           (str "/notice/" (.-id this) ".model")))
-            "class" "Activity"
-            "defaults" (js-obj
-                        "_id"        ""
-                        "author"     ""
-                        "url"        nil
-                        "links"      (array)
-                        "enclosures" (array))
-            ;; "relations" (apply array
-            ;;                    [(js-obj
-            ;;                      "type"           "HasOne"
-            ;;                      "key"            "author"
-            ;;                      "relatedModel"   User
-            ;;                      "collectionType" Users)])
-            "initialize" (fn [model]
-                           (log/info "init activity")))))
+  (.extend
+   backbone/Model
+   (js-obj
+    "idAttribute" "_id"
+    "url" (fn [id]
+            (this-as
+             this
+             (format "/notice/%s.model" (.-id this))))
+    "class" "Activity"
+    "defaults" (js-obj
+                "_id"        ""
+                "author"     ""
+                "url"        nil
+                "links"      (array)
+                "enclosures" (array))
+    "initialize" (fn [model]
+                   (log/info "init activity")))))
 
-(def ^{:doc "collection of activities"} Activities
+(def ^{:doc "collection of activities"}
+  Activities
   (.extend backbone/Collection
            (js-obj
             "class" "Activities"
             "urlRoot" "/main/notices/"
             "model" Activity
             "initialize" (fn [models options]
-                           (log/info "init activities")))))
+                           #_(log/info "init activities")
+                           ))))
 
 (def Group
   (.extend backbone/Model
@@ -150,7 +191,7 @@
             "model" Group
             "class" "Groups"
             "initialize" (fn [models options]
-                           (log/info "init groups")))))
+                           #_(log/info "init groups")))))
 
 (def Subscription
   (.extend backbone/Model
@@ -164,7 +205,7 @@
   (.extend backbone/Collection
            (js-obj
             "initialize" (fn [models options]
-                           (log/info "init subscriptions")))))
+                           #_(log/info "init subscriptions")))))
 
 (def FeedSource
   (.extend backbone/Model
@@ -178,16 +219,9 @@
   (.extend backbone/Collection
            (js-obj
             "initialize" (fn [models options]
-                           (log/info "init feed sources")))))
+                           #_(log/info "init feed sources")))))
 
 
-
-
-
-(defvar SiteInfo
-  [this]
-  (doto this
-    (ko/assoc-observable "name")))
 
 
 
@@ -201,8 +235,7 @@
 (def observables (js-obj))
 
 (def ^{:doc "The main view model for the site"} AppViewModel
-  (.extend
-   (.-Model js/Backbone)
+  (.extend backbone/Model
    (js-obj
     "defaults"
     (js-obj
@@ -210,10 +243,6 @@
      "activities"  activities
      "domains"       domains
      "currentUser"   nil
-
-     "dismissNotification" (fn [self]
-                             (this-as this
-                                      (.remove (.-notifications this) self)))
 
      "feedSources"   feed-sources
      "followers"     (array)
@@ -224,10 +253,9 @@
      "pageInfo"      (PageInfo.)
      "postForm"      (PostForm.)
      "notifications" nil
-     "showPostForm"  true
-     "site"          nil
      "statistics"    nil
      "subscriptions" subscriptions
      "targetUser"    nil
      "title"         nil
      "users"         users))))
+

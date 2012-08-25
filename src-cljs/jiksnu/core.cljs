@@ -1,6 +1,8 @@
 (ns jiksnu.core
   (:use [lolg :only [start-display console-output]]
-        [jayq.core :only [$]])
+        [jayq.core :only [$]]
+        [jiksnu.model :only [_model model-names
+                             receive-model]])
   (:require [Backbone :as Backbone]
             [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
@@ -13,23 +15,6 @@
   ^{:doc "This is the main view model bound to the page"}
   _view)
 
-(defn add-notification
-  "Add a new notification"
-  [message]
-  (let [notification (model/Notification.)]
-    (.message notification message)
-    (.push (.-notifications _view) notification)))
-
-(declare _model)
-
-(def model-names
-  ["activities"
-   "domains"
-   "groups"
-   "feedSources"
-   "subscriptions"
-   "users"])
-
 (defn process-viewmodel
   "Callback handler when a viewmodel is loaded"
   [data]
@@ -37,8 +22,10 @@
 
   (doseq [key model-names]
     (when-let [items (aget data key)]
-      (doseq [item items]
-        (.add (.get _model key) item))))
+      (let [coll (.get _model key)]
+        (log/info coll)
+        (doseq [item items]
+          (.add coll item)))))
 
   (when-let [page-info (.-pageInfo data)]
     (let [p (.get _model "pageInfo")]
@@ -61,16 +48,8 @@
   (log/info (str "Fetching viewmodel: " url))
   (.getJSON js/jQuery url process-viewmodel))
 
-(defn receive-model
-  [coll id o data d]
-  (let [resp (.add coll data)
-        m (.get coll id)
-        a (.-attributes m)]
-    (log/info "setting observable from response")
-    (o a)))
-
 (defn load-model
-  [om model-name id]
+  [model-name id om]
   #_(log/info (str "not loaded: " model-name "(" id ")"))
   (let [coll (.get _model model-name)
         url (str "/" model-name "/" id ".model")]
@@ -81,23 +60,22 @@
       o)))
 
 (defn init-observable
-  [om mref model-name id]
-  (let [m (.model mref)
-        a (.-attributes m)
+  [model-name id om m]
+  (let [a (.-attributes m)
         o (.observable js/ko a)]
-    #_(log/info (str "setting observable (already loaded): "
-                     model-name "(" id ")"))
+    #_(log/info (format "setting observable (already loaded): %s(%s)"
+                        model-name id))
     (aset om id o)
     o))
 
 (defn get-model*
-  [om model-name id]
-  #_(log/info (str "observable not found: " model-name "(" id ")"))
+  [model-name id]
+  #_(log/info (format "observable not found: %s(%s)" model-name id))
   (if-let [coll (.get _model model-name)]
-    (let [mref (Backbone/ModelRef. coll id)]
-      (if (.isLoaded mref)
-        (init-observable om mref model-name id)
-        (load-model om model-name id)))
+    (let [om (aget model/observables model-name)]
+      (if-let [m (.get coll id)]
+        (init-observable model-name id om m)
+        (load-model model-name id om)))
     (log/error "could not get collection")))
 
 (defn get-model
@@ -106,9 +84,10 @@
     (let [om (aget model/observables model-name)]
       (if-let [o (aget om id)]
         (do
-          #_(log/info (str "cached observable found: " model-name "(" id ")"))
+          #_(log/info (format "cached observable found: %s(%s)"
+                              model-name id))
           o)
-        (get-model* om model-name id)))
+        (get-model* model-name id)))
     (log/warn "id is undefined")))
 
 (def get-activity (partial get-model "activities"))
@@ -122,8 +101,8 @@
   (start-display (console-output))
   (log/info "starting application")
 
-  (def _model (model/AppViewModel.))
-  (def _view (.viewModel js/kb _model))
+  (set! _model (model/AppViewModel.))
+  (set! _view (.viewModel js/kb _model))
 
   ;; NB: for debugging only. use fully-qualified var
   (aset js/window "_model" _model)
