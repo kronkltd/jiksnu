@@ -16,7 +16,8 @@
                                  admin-show-section control-line
                                  bind-property
                                  pagination-links]]
-         [jiksnu.session :only [current-user is-admin?]])
+         [jiksnu.session :only [current-user is-admin?]]
+         [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
@@ -566,7 +567,11 @@
     ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (if-let [key (if *dynamic*
                 (Key.)
-                (model.key/get-key-for-user user))]
+                (try+  (model.key/get-key-for-user user)
+                       (catch Object ex
+                         (log/warn ex)
+                         )
+                       ))]
       (show-section key))
     (user-actions user)]))
 

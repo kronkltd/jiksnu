@@ -57,7 +57,7 @@
   [user]
   (if (:url user)
     user
-    (assoc user :url (named-url "user timeline" user))))
+    (assoc user :url (named-url "local user timeline" user))))
 
 (defn prepare
   [user]

@@ -29,11 +29,11 @@
 
 (test-environment-fixture
 
- (fact "#'like-button"
-   (like-button (model/map->Activity (factory :activity))) =>
-   (every-checker
-    vector?
-    #(= :form (first %))))
+ ;; (fact "#'like-button"
+ ;;   (like-button (model/map->Activity (factory :activity))) =>
+ ;;   (every-checker
+ ;;    vector?
+ ;;    #(= :form (first %))))
 
  ;; TODO: acl-link
  ;; TODO: show-comment
