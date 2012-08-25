@@ -42,9 +42,7 @@
 
   (when-let [page-info (.-pageInfo data)]
     (let [p (.get _model "pageInfo")]
-      (.set p page-info)
-      )
-    )
+      (.set p page-info)))
 
   (when-let [items (.-items data)]
     (.items _view items))
@@ -87,7 +85,8 @@
   (let [m (.model mref)
         a (.-attributes m)
         o (.observable js/ko a)]
-    (log/info (str "setting observable (already loaded): " model-name "(" id ")"))
+    #_(log/info (str "setting observable (already loaded): "
+                     model-name "(" id ")"))
     (aset om id o)
     o))
 
@@ -107,7 +106,7 @@
     (let [om (aget model/observables model-name)]
       (if-let [o (aget om id)]
         (do
-          (log/info (str "cached observable found: " model-name "(" id ")"))
+          #_(log/info (str "cached observable found: " model-name "(" id ")"))
           o)
         (get-model* om model-name id)))
     (log/warn "id is undefined")))
@@ -132,6 +131,7 @@
 
   (ko/apply-bindings _view)
   (.addClass ($ :html) "bound")
+  (handlers/setup-handlers)
 
   (ws/connect)
 
@@ -140,7 +140,7 @@
 
   (if-let [elts ($ "*[data-load-model]")]
     (fetch-viewmodel (.data elts "load-model")))
-  
+
   (stats/fetch-statistics _view))
 
 (main)

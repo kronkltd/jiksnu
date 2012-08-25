@@ -56,7 +56,18 @@
 
 (defn setup-handlers
   []
+  (log/info "setting up handlers")
   (add-handler do-delete-activity ($ :.delete-button))
   (add-handler do-like-button ($ :.like-button))
-  (add-handler do-logout-link ($ :.logout-link)))
+  (add-handler do-logout-link ($ :.logout-link))
+  (.on (js/$ js/document)
+       "click" "*[data-action]"
+       (fn [e]
+         (let [target (js/$ (.-currentTarget e))
+               action (.data target "action")
+               model (.data target "model")
+               parent (.closest target "*[data-id]")
+               id (.data parent "id")]
+           (log/info (str action " >> " model "(" id ")"))
+           (halt e)))))
 
