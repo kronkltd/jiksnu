@@ -14,6 +14,8 @@
             [jiksnu.session :as session])
   (:import tigase.xml.Element))
 
+;; create
+
 (deffilter #'create :http
   [action request]
   (let [{:keys [params]} request]
@@ -28,6 +30,8 @@
            (map helpers.user/process-vcard-element items))]
       (action properties))))
 
+;; delete
+
 (deffilter #'delete :http
   [action request]
   (-> request :params :id model/make-id model.user/fetch-by-id action))
@@ -36,15 +40,21 @@
   [action request]
   (implement))
 
+;; discover
+
 (deffilter #'discover :http
   [action request]
   (let [{{id :id} :params} request
         user (model.user/fetch-by-id (model/make-id id))]
     (action user)))
 
+;; fetch-remote
+
 (deffilter #'fetch-remote :xmpp
   [action request]
   (fetch-by-jid (:to request)))
+
+;; fetch-updates
 
 (deffilter #'fetch-updates :http
   [action request]
@@ -52,20 +62,25 @@
         user (model.user/fetch-by-id (model/make-id id))]
     (action user)))
 
+;; index
+
 (deffilter #'index :http
   [action request]
   (let [{params :params} request]
     (action params)))
 
-
 (deffilter #'index :xmpp
   [action request]
   (action {}))
+
+;; profile
 
 (deffilter #'profile :http
   [action request]
   (if-let [user (session/current-user)]
     user (log/error "no user")))
+
+;; register
 
 (deffilter #'register :http
   [action {{:keys [username password confirm-password] :as params} :params}]
@@ -75,9 +90,61 @@
       (throw (RuntimeException. "Password and confirm password do not match")))
     (throw (IllegalArgumentException. "you didn't check the box"))))
 
+;; register-page
+
 (deffilter #'register-page :http
   [action request]
   (action))
+
+;; show
+
+(deffilter #'show :http
+  [action request]
+  (let [{{id :id} :params} request]
+    (if-let [user (model.user/fetch-by-id (model/make-id id))]
+     (action user))))
+
+;; TODO: This action is working off of a jid
+(deffilter #'show :xmpp
+  [action request]
+  (let [{:keys [to]} request
+        user (fetch-by-jid to)]
+    (action user)))
+
+;; update
+
+(deffilter #'update :http
+  [action request]
+  (let [{params :params} request
+        {username :username} params
+        user (show username)]
+    (action user params)))
+
+;; update-profile
+
+(deffilter #'update-profile :http
+  [action {params :params}]
+  (action params))
+
+;; user-meta
+
+(deffilter #'user-meta :http
+  [action request]
+  (->> request :params :uri
+       model.user/split-uri
+       (apply model.user/get-user)
+       action))
+
+;; xmpp-service-unavailable
+
+(deffilter #'xmpp-service-unavailable :xmpp
+  [action request]
+  (let [from (:from request)
+        user (find-or-create-by-jid from)]
+    (action user)))
+
+
+
 
 ;; TODO: extract vcard->user
 
@@ -107,26 +174,6 @@
 ;;                     :url url
 ;;                     :avatar-url avatar-url}))))
 
-(deffilter #'show :http
-  [action request]
-  (let [{{id :id} :params} request
-        user (show id)]
-    (action user)))
-
-;; TODO: This action is working off of a jid
-(deffilter #'show :xmpp
-  [action request]
-  (let [{:keys [to]} request
-        user (fetch-by-jid to)]
-    (action user)))
-
-(deffilter #'update :http
-  [action request]
-  (let [{params :params} request
-        {username :username} params
-        user (show username)]
-    (action user params)))
-
 ;; (deffilter #'update-hub :http
 ;;   [action request]
 ;;   (let [{params :params} request
@@ -134,19 +181,3 @@
 ;;         user (model.user/fetch-by-id username)]
 ;;     (action user)))
 
-(deffilter #'update-profile :http
-  [action {params :params}]
-  (action params))
-
-(deffilter #'xmpp-service-unavailable :xmpp
-  [action request]
-  (let [from (:from request)
-        user (find-or-create-by-jid from)]
-    (action user)))
-
-(deffilter #'user-meta :http
-  [action request]
-  (->> request :params :uri
-       model.user/split-uri
-       (apply model.user/get-user)
-       action))
