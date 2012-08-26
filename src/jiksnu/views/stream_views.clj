@@ -116,9 +116,16 @@
             :title "Next Page"
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
-   :body (if *dynamic*
-           (index-section [(Activity.)])
-           (index-section items page))})
+   :body (let [activities (if *dynamic*
+                            [(Activity.)]
+                            items)]
+           [:div (if *dynamic*
+                   {:data-bind "with: items"}
+                   )
+            [:div (if *dynamic*
+                    {:data-bind "with: _.map($data, jiksnu.core.get_activity)"}
+                    )
+             (index-section activities page)]])})
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]

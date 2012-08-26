@@ -502,7 +502,7 @@
   [records & [options & _]]
   [:div.activities
    (if *dynamic*
-     {:data-bind "foreach: _.map(items(), jiksnu.core.get_activity)"})
+     {:data-bind "foreach: $data"})
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -550,10 +550,8 @@
   (index-block items page))
 
 (defsection index-section [Activity :html]
-  [items & [response]]
-  (list
-   (pagination-links response)
-   (index-block items response)))
+  [items & [page]]
+  (index-block items page))
 
 (defsection index-section [Activity :xmpp]
   [activities & options]
