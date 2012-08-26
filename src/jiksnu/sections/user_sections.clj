@@ -225,16 +225,20 @@
 
 (defn actions-section
   [user]
-  [:ul.buttons
-   [:li (subscribe-button user)]
-   (when (current-user)
-     (list
-      [:li (discover-button user)]
-      [:li (update-button user)]
-      (when (is-admin?)
-        (list
-         [:li (edit-button user)]
-         [:li (delete-button user)]))))])
+  [:div.btn-group
+   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
+    [:span.caret]
+    ]
+   [:ul.dropdown-menu.pull-right
+    [:li (subscribe-button user)]
+    (when (current-user)
+      (list
+       [:li (discover-button user)]
+       [:li (update-button user)]
+       (when (is-admin?)
+         (list
+          [:li (edit-button user)]
+          [:li (delete-button user)]))))]])
 
 (defn links-table
   [links]
@@ -447,29 +451,31 @@
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
                 {:data-id (:_id user)}))
-   [:td (display-avatar user)]
    [:td
+    [:div
+     (display-avatar user)]
     ;; TODO: call a show section here?
-    [:p (link-to user)]
-    [:p
-     [:span
+    [:div
+     [:p (link-to user)]
+     [:p
+      [:span
+       (if *dynamic*
+         {:data-bind "text: username"}
+         (:username user))]
+      "@"
+      [:span
+       (if *dynamic*
+         {:data-bind "text: domain"}
+         (:domain user))]]
+     [:p (when *dynamic* {:data-bind "text: displayName"})]
+     [:p
       (if *dynamic*
-        {:data-bind "text: username"}
-        (:username user))]
-     "@"
-     [:span
+        {:data-bind "text: uri"}
+        (:uri user))]
+     [:p
       (if *dynamic*
-        {:data-bind "text: domain"}
-        (:domain user))]]
-    [:p (when *dynamic* {:data-bind "text: displayName"})]
-    [:p
-     (if *dynamic*
-       {:data-bind "text: uri"}
-       (:uri user))]
-    [:p
-     (if *dynamic*
-       {:data-bind "text: bio"}
-       (:bio user))]]
+        {:data-bind "text: bio"}
+        (:bio user))]]]
    [:td (actions-section user)]])
 
 (defsection index-line [User :viewmodel]
@@ -537,7 +543,8 @@
    ;; (dump-data)
    [:div.vcard.user-full
     (merge {:data-model "user"}
-           (when-not *dynamic*
+           (if *dynamic*
+             {:data-bind "attr: {'data-id': _id}"}
              {:data-id (:_id user)}))
     [:div (display-avatar user 96)]
     [:p
@@ -692,8 +699,7 @@
 
 (defsection update-button [User :html]
   [item & _]
-  (let [model-name (string/lower-case (class item))]
-    (action-link model-name "update" (:_id item))))
+  (action-link "user" "update" (:_id item)))
 
 (defsection uri [User]
   [user & options]

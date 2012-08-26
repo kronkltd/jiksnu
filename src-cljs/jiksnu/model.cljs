@@ -256,7 +256,7 @@
      "items"         nil
      "pageInfo"      (PageInfo.)
      "postForm"      (PostForm.)
-     "notifications" nil
+     "notifications" (Notifications.)
      "statistics"    nil
      "subscriptions" subscriptions
      "targetUser"    nil

@@ -1,6 +1,7 @@
 (ns jiksnu.handlers
   (:use [jayq.core :only [$ css inner prepend text]]
-        [jayq.util :only [map->js]])
+        [jayq.util :only [map->js]]
+        [jiksnu.model :only [_model]])
   (:require [goog.events :as events]
             [jiksnu.logging :as log]
             [jayq.core :as jayq]))
@@ -68,6 +69,10 @@
                model (.data target "model")
                parent (.closest target "*[data-id]")
                id (.data parent "id")]
-           (log/info (str action " >> " model "(" id ")"))
+           (let [message (str action " >> " model "(" id ")")]
+             (log/info message)
+             (.add (.get _model "notifications")
+                   (js-obj
+                    "message" message)))
            (halt e)))))
 

@@ -4,22 +4,19 @@
                                        index-section link-to title update-button]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line]])
-  (:require [clojure.tools.logging :as log]
+        [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line]])
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSource))
 
 (defn subscribe-button
-  [source]
-  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id source) "/subscribe")}
-   [:button.btn.subscribe-button {:type "submit"}
-    [:i.icon-eye-open] [:span.button-text "Subscribe"]]])
+  [item & _]
+  (action-link "feed-source" "subscribe" (:_id item)))
 
 (defn unsubscribe-button
-  [source]
-  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id source) "/unsubscribe")}
-   [:button.btn.unsubscribe-button {:type "submit"}
-    [:i.icon-eye-close] [:span.button-text "Unsubscribe"]]])
+  [item & _]
+  (action-link "feed-source" "unsubscribe" (:_id item)))
 
 (defn index-watchers
   [source]
@@ -157,10 +154,8 @@
 ;; delete-button
 
 (defsection delete-button [FeedSource :html]
-  [user & _]
-  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id user) "/delete")}
-   [:button.btn.delete-button {:type "submit" :title "Delete"}
-    [:i.icon-trash] [:span.button-text "Delete"]]])
+  [item & _]
+  (action-link "feed-source" "delete" (:_id item)))
 
 (defsection index-block [FeedSource :html]
   [sources & _]
@@ -254,8 +249,5 @@
   (:title item))
 
 (defsection update-button [FeedSource :html]
-  [activity & _]
-  [:form {:method "post" :action (str "/admin/feed-sources/" (:_id activity) "/update")}
-   [:button.btn.update-button {:type "submit"}
-    [:i.icon-refresh] [:span.button-text "update"]]])
-
+  [item & _]
+  (action-link "feed-source" "update" (:_id item)))

@@ -175,7 +175,7 @@
   [activity]
   (if-let [user (session/current-user)]
     [:div.btn-group.actions-menu
-     [:a.dropdown-toggle {:data-toggle "dropdown" :href "#"}
+     [:a.dropdown-toggle.btn {:data-toggle "dropdown" :href "#"}
       [:span.caret]]
      [:ul.dropdown-menu.pull-right
       (map
