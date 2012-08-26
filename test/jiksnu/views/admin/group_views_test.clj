@@ -27,9 +27,10 @@
              (binding [*dynamic* false]
                (fact "when there are groups"
                  (model/drop-all!)
-                 (let [groups (doall (map (fn [n]
-                                            (model.group/create (factory :group)))
-                                          (range 15)))
+                 (let [groups (doall
+                               (map (fn [n]
+                                      (model.group/create (factory :group)))
+                                    (range 15)))
                        request {:action action}
                        response (filter-action action request)]
                    (apply-view request response) =>

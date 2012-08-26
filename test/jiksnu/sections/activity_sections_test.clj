@@ -1,26 +1,21 @@
 (ns jiksnu.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context]]
-        [ciste.sections.default :only [index-block index-section show-section uri]]
+        [ciste.sections.default :only [index-block index-section
+                                       show-section uri]]
         [clj-factory.core :only [factory]]
-        jiksnu.test-helper jiksnu.session
+        jiksnu.test-helper
+        jiksnu.session
         jiksnu.sections.activity-sections
         [midje.sweet :only [fact => every-checker]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.xmpp.element :as xmpp.element])
-  (:import java.io.StringWriter
-           javax.xml.namespace.QName
-           jiksnu.model.Activity
-           jiksnu.model.Domain
-           jiksnu.model.User
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.User
            org.apache.abdera2.common.iri.IRI
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Person

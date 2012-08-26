@@ -7,7 +7,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
         [midje.sweet :only [every-checker fact future-fact => contains truthy]])
   (:require [clojure.string :as string]
@@ -67,8 +67,7 @@
                      (let [body (h/html (:body response))]
                        (fact
                          body => #"20"
-                         body => string?)))))))))
-         ))))
+                         body => string?)))))))))))))
 
  (fact "apply-view #'user-timeline"
    (let [action #'user-timeline]
@@ -88,9 +87,14 @@
                   (apply-view request response) =>
                   (every-checker
                    (fn [response]
-                     (let [body (h/html (:body response))]
+                     (let [doc (hiccup->doc (:body response))]
                        (fact
-                         body => (re-pattern (str ".*activity-" (:_id activity) ".*")))))))))))
+                         (-> doc
+                             (enlive/select ["*[data-id]"])
+                             first
+                             enlive/text
+                             ) => (str (:_id activity))
+                       )))))))))
          
          (fact "when the format is :n3"
            (with-format :n3

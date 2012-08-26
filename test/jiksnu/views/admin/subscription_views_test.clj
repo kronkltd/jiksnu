@@ -11,11 +11,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.admin.subscription-actions :as actions.admin.subscription]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            jiksnu.views.stream-views)
+            [jiksnu.model.subscription :as model.subscription])
   (:import org.apache.abdera2.model.Entry))
 
 (test-environment-fixture
