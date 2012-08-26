@@ -655,11 +655,11 @@
               {:about activity-uri
                :data-id (:_id activity)}))
      [:header
-      #_[:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
-         [:div (if *dynamic*
-                 {:data-bind "if: typeof($data) !== 'undefined'"})
-          (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-            (show-section-minimal user))]]
+      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
+       [:div (if *dynamic*
+               {:data-bind "if: typeof($data) !== 'undefined'"})
+        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+          (show-section-minimal user))]]
       (recipients-section activity)]
      [:div.entry-content
       #_(when (:title activity)

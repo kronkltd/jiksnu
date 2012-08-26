@@ -199,42 +199,43 @@
   [source & options]
   (let [{:keys [topic callback challenge mode hub
                 verify-token lease-seconds created updated]} source]
-    (list [:table.table
-           [:tbody 
-            [:tr
-             [:th "Topic: "]
-             [:td [:a {:href topic} topic]]]
-            [:tr
-             [:th "Hub: "]
-             [:td [:a {:href hub} hub]]]
-            [:tr
-             [:th "Callback: "]
-             [:td callback]]
-            [:tr
-             [:th  "Challenge: "]
-             [:td challenge]]
-            [:tr
-             [:th "Mode: "]
-             [:td (or mode "unknown")]]
-            [:tr
-             [:th "Status: "]
-             [:td (:status source)]]
-            [:tr
-             [:th "Subscription Status: "]
-             [:td (:subscription-status source)]]
-            [:tr
-             [:th "Verify Token: "]
-             [:td verify-token]]
-            [:tr
-             [:th "Created: "]
-             [:td created]]
-            [:tr
-             [:th "Updated: "]
-             [:td updated]]
-            [:tr
-             [:th "Lease Seconds: "]
-             [:td lease-seconds]]]]
-          (actions-section source))))
+    [:div {:data-model "feedSource"}
+     [:table.table
+      [:tbody
+       [:tr
+        [:th "Topic: "]
+        [:td [:a {:href topic} topic]]]
+       [:tr
+        [:th "Hub: "]
+        [:td [:a {:href hub} hub]]]
+       [:tr
+        [:th "Callback: "]
+        [:td callback]]
+       [:tr
+        [:th  "Challenge: "]
+        [:td challenge]]
+       [:tr
+        [:th "Mode: "]
+        [:td (or mode "unknown")]]
+       [:tr
+        [:th "Status: "]
+        [:td (:status source)]]
+       [:tr
+        [:th "Subscription Status: "]
+        [:td (:subscription-status source)]]
+       [:tr
+        [:th "Verify Token: "]
+        [:td verify-token]]
+       [:tr
+        [:th "Created: "]
+        [:td created]]
+       [:tr
+        [:th "Updated: "]
+        [:td updated]]
+       [:tr
+        [:th "Lease Seconds: "]
+        [:td lease-seconds]]]]
+     (actions-section source)]))
 
 (defsection show-section [FeedSource :model]
   [activity & [page]]
