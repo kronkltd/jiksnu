@@ -27,10 +27,6 @@
       (log/info "setting observable from response")
       (o a))))
 
-
-
-
-
 (defvar Statistics
   [this]
   (doto this
@@ -65,9 +61,6 @@
                  (< (* (.page this)
                        (.pageSize this))
                     (.totalRecords this)))))))
-
-
-
 
 (def Notification
   (.extend
