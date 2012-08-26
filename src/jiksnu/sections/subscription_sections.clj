@@ -2,11 +2,11 @@
   (:use [ciste.model :only [implement]]
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
-                                       index-block index-section link-to show-section]]
+                                edit-button         index-block index-section link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [control-line admin-index-block
-                                admin-index-line admin-index-section]])
+                                action-link admin-index-line admin-index-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -143,6 +143,19 @@
   (->> items
        (map (fn [m] {(:_id m) (admin-index-line m page)}))
        (into {})))
+
+(defsection edit-button [Subscription :html]
+  [item & _]
+  (action-link "subscription" "edit" (:_id item)))
+
+(defsection delete-button [Subscription :html]
+  [item & _]
+  (action-link "subscription" "delete" (:_id item)))
+
+
+
+
+
 
 ;; index-block
 
