@@ -34,7 +34,7 @@
   [request subscription]
   {:title "Subscription"
    :viewmodel (str "/admin/subscriptions/" (:_id subscription) ".viewmodel")
-   :body (admin-show-section (log/spy subscription))})
+   :body (admin-show-section subscription)})
 
 (defview #'show :viewmodel
   [request subscription]

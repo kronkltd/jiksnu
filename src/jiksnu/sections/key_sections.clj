@@ -19,12 +19,12 @@
 (defsection show-section [Key :rdf]
   [key & _]
   (let [user (model.key/get-user key)]
-    (log/spy [(rdf/rdf-resource (str (full-uri user) "#key"))
-              [rdf/rdf:type (rdf/rdf-resource (str ns/cert "RSAPublicKey"))
-               (rdf/rdf-resource (str ns/cert "identity")) (rdf/rdf-resource (str (full-uri user) "#me"))
-               (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent key))
-               (rdf/rdf-resource (str ns/cert "modulus"))  (rdf/rdf-typed-literal
-                                                            (.toString
-                                                             (BigInteger.
-                                                              ^String (:modulus key)) 16)
-                                                            (str ns/xsd "#hexBinary"))]])))
+    [(rdf/rdf-resource (str (full-uri user) "#key"))
+     [rdf/rdf:type (rdf/rdf-resource (str ns/cert "RSAPublicKey"))
+      (rdf/rdf-resource (str ns/cert "identity")) (rdf/rdf-resource (str (full-uri user) "#me"))
+      (rdf/rdf-resource (str ns/cert "exponent")) (rdf/l (:public-exponent key))
+      (rdf/rdf-resource (str ns/cert "modulus"))  (rdf/rdf-typed-literal
+                                                   (.toString
+                                                    (BigInteger.
+                                                     ^String (:modulus key)) 16)
+                                                   (str ns/xsd "#hexBinary"))]]))

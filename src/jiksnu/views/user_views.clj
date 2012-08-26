@@ -93,7 +93,7 @@
 
 (defview #'show :model
   [request user]
-  {:body (doall (show-section (log/spy user)))})
+  {:body (doall (show-section user))})
 
 (defview #'show :n3
   [request user]

@@ -17,8 +17,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            jiksnu.views.stream-views)
-  (:import org.apache.abdera2.model.Entry))
+            [net.cgrand.enlive-html :as enlive]))
 
 (test-environment-fixture
 
@@ -26,7 +25,7 @@
    (let [action #'public-timeline]
      (fact "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :atom"
+         #_(fact "when the format is :atom"
            (with-format :atom
              (fact "when there are activities"
                (model/drop-all!)
@@ -47,29 +46,40 @@
                           feed (abdera/parse-xml-string (:body formatted))]
                       (fact
                         (count (.getEntries feed)) => 20))))))))
-         
+
          (fact "when the format is :html"
            (with-format :html
              (binding [*dynamic* false]
                (fact "when there are activities"
-                (model/drop-all!)
-                (let [user (model.user/create (factory :local-user))]
-                  (dotimes [n 25]
-                    (model.activity/create (factory :activity
-                                                    {:author (:_id user)}))))
+                 (model/drop-all!)
+                 (let [user (model.user/create (factory :local-user))
+                       ;; TODO: This used to be set to 25, I need a
+                       ;; good way to make sure I have the right
+                       ;; amount of records returned in the default
+                       ;; page.
+                       activities (doall (for [n (range 20)]
+                                     (model.activity/create
+                                      (factory :activity
+                                               {:author (:_id user)}))))
+                       request {:action action}
+                       response (filter-action action request)]
+                   (apply-view request response) =>
+                   (every-checker
+                    map?
+                    (fn [response]
+                      (fact
+                        (let [doc (hiccup->doc (:body response))
+                              activity-elements (->> [(enlive/attr= :data-model "activity")]
+                                                     (enlive/select doc))
+                              ids (->> activity-elements
+                                       (map #(get-in % [:attrs :data-id]))
+                                       (into #{}))]
+                          (doseq [activity activities]
+                            (let [id (str (:_id activity))]
+                              (ids id) => truthy))
+                          (count activity-elements) => 20)))))))))))))
 
-                (let [request {:action action}
-                      response (filter-action action request)]
-                  (apply-view request response) =>
-                  (every-checker
-                   map?
-                   (fn [response]
-                     (let [body (h/html (:body response))]
-                       (fact
-                         body => #"20"
-                         body => string?)))))))))))))
-
- (fact "apply-view #'user-timeline"
+ #_(fact "apply-view #'user-timeline"
    (let [action #'user-timeline]
      (fact "when the serialization is :http"
        (with-serialization :http
@@ -78,23 +88,21 @@
            (with-format :html
              (binding [*dynamic* false]
                (fact "when that user has activities"
-                (model/drop-all!)
-                (let [user (model.user/create (factory :local-user))
-                      activity (model.activity/create (factory :activity {:author (:_id user)}))
-                      request {:action action
-                               :params {:id (str (:_id user))}}
-                      response (filter-action action request)]
-                  (apply-view request response) =>
-                  (every-checker
-                   (fn [response]
-                     (let [doc (hiccup->doc (:body response))]
-                       (fact
-                         (-> doc
-                             (enlive/select ["*[data-id]"])
-                             first
-                             enlive/text
-                             ) => (str (:_id activity))
-                       )))))))))
+                 (model/drop-all!)
+                 (let [user (model.user/create (factory :local-user))
+                       activity (model.activity/create (factory :activity {:author (:_id user)}))
+                       request {:action action
+                                :params {:id (str (:_id user))}}
+                       response (filter-action action request)]
+                   (apply-view request response) =>
+                   (every-checker
+                    (fn [response]
+                      (let [doc (hiccup->doc (:body response))]
+                        (fact
+                          (map
+                           #(get-in % [:attrs :data-id])
+                           (enlive/select doc [(enlive/attr? :data-id)])) =>
+                           (contains (str (:_id activity))))))))))))
          
          (fact "when the format is :n3"
            (with-format :n3
