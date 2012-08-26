@@ -434,14 +434,8 @@
      [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: _.map($data, jiksnu.core.get_activity)"})
     (map admin-index-line activities)]])
-
-;; (defsection admin-index-block [Activity :viewmodel]
-;;   [items & [page]]
-;;   (->> items
-;;        (map (fn [m] {(:_id m) (admin-index-line m page)}))
-;;        (into {})))
 
 (defsection admin-index-block [Activity :viewmodel]
   [items & [page]]
@@ -454,13 +448,12 @@
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
   [:tr (merge {:data-model "activity"}
-              (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+              (when-not *dynamic*
                 { :data-id (:_id activity)}))
    [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
     (let [user (if *dynamic*
-                (User.)
-                (actions.activity/get-author activity))]
+                 (User.)
+                 (actions.activity/get-author activity))]
       (show-section-minimal user))]
    [:td (if *dynamic*
           {:data-bind "text: object['object-type']"})
@@ -658,16 +651,15 @@
     [:article.hentry.notice
      (merge {:typeof "sioc:Post"
              :data-model "activity"}
-            (if *dynamic*
-              {:data-bind "attr: {'data-id': _id, about: url}"}
+            (when-not *dynamic*
               {:about activity-uri
                :data-id (:_id activity)}))
      [:header
-      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
-       [:div (if *dynamic*
-               {:data-bind "if: typeof($data) !== 'undefined'"})
-        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-          (show-section-minimal user))]]
+      #_[:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
+         [:div (if *dynamic*
+                 {:data-bind "if: typeof($data) !== 'undefined'"})
+          (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+            (show-section-minimal user))]]
       (recipients-section activity)]
      [:div.entry-content
       #_(when (:title activity)

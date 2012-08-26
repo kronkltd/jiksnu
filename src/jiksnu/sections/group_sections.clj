@@ -123,6 +123,7 @@
   [group & _]
   [:li
    [:section.profile.hentry.vcard
+    {:data-model "group"}
     [:p
      [:a.url.entry-title
       (if *dynamic*
@@ -139,8 +140,7 @@
                 (:nickname group))] ")"]]]
     [:a.url
      (if *dynamic*
-       {:data-bind "attr: {href: typeof($data.homepage) !== 'undefined' ? homepage : ''},
-                    text:  typeof($data.homepage) !== 'undefined' ? homepage : ''"}
+       {:data-bind "attr: {href: homepage}, text: homepage"}
        {:href (:homepage group)})
      (when-not *dynamic*
        (:homepage group))]

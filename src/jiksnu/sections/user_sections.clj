@@ -305,7 +305,7 @@
   [user & [page & _]]
   [:tr (merge {:data-model "user"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+                {}
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
@@ -341,7 +341,7 @@
   (list
    [:table.table (merge {:data-model "user"}
                 (if *dynamic*
-                  {:data-bind "attr: {'data-id': _id}"}
+                  {}
                   {:data-id (:_id item)}))
     [:tr
      [:th]
@@ -449,7 +449,7 @@
   [user & _]
   [:tr (merge {:data-model "user"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+                {}
                 {:data-id (:_id user)}))
    [:td
     [:div
@@ -544,7 +544,7 @@
    [:div.vcard.user-full
     (merge {:data-model "user"}
            (if *dynamic*
-             {:data-bind "attr: {'data-id': _id}"}
+             {}
              {:data-id (:_id user)}))
     [:div (display-avatar user 96)]
     [:p

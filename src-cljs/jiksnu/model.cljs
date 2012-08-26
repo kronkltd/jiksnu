@@ -101,7 +101,8 @@
    (js-obj
     "class" "Domain"
     "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
-    "defaults" (js-obj "xmpp" "unknown")
+    "defaults" (js-obj "xmpp" "unknown"
+                       "links" (array))
     "idAttribute" "_id"
     "initialize" (fn [models options]
                    (log/debug "init domain")))))

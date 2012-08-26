@@ -71,7 +71,7 @@
 
 (defsection index-line [Domain :html]
   [domain & _]
-  [:tr
+  [:tr {:data-model "domain"}
    [:td
     (favicon-link domain)
     (link-to domain)]
@@ -79,7 +79,7 @@
           {:data-bind "text: xmpp"}
           (:xmpp domain))]
    [:td (if *dynamic*
-          {:data-bind "text: typeof(discovered) !== 'undefined' ? discovered : ''"}
+          {:data-bind "text: discovered"}
           (:discovered domain))]
    [:td
     [:a
@@ -89,7 +89,7 @@
      "Host-Meta"]]
    [:td
     (if *dynamic*
-      {:data-bind "text: typeof(links) !== 'undefined' ? links.length : 0"}
+      {:data-bind "text: links.length"}
       (count (:links domain)))]
    #_[:th (actions-section domain)]])
 

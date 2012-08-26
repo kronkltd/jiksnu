@@ -9,7 +9,8 @@
             [jiksnu.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.statistics :as stats]
-            [jiksnu.websocket :as ws]))
+            [jiksnu.websocket :as ws])
+    (:use-macros [jiksnu.macros :only [defvar]]))
 
 (def
   ^{:doc "This is the main view model bound to the page"}
@@ -98,6 +99,27 @@
 (def get-feed-source (partial get-model "feedSources"))
 (def get-user (partial get-model "users"))
 
+(defvar DataModelProvider
+  [this]
+  (let [underlying-provider (.-instance (.-bindingProvider js/ko))]
+   (doto this
+     (aset "nodeHasBindings"
+           (fn [node context]
+             ;; TODO: look for data-model
+             (or (.data ($ node) "model")
+                 (.nodeHasBindings underlying-provider node context))))
+
+     (aset "getBindings"
+           (fn [node context]
+             (if-let [model-name (.data ($ node) "model")]
+               (let [data (.-$data context)]
+                 (js-obj
+                  ;; "with" (format "jiksnu.core.get_%s($data)" model-name)
+                  "attr" (js-obj
+                          "about" (.-url data)
+                          "data-id" (.-_id data))))
+               (.getBindings underlying-provider node context)))))))
+
 (defn main
   []
   (start-display (console-output))
@@ -110,6 +132,8 @@
   (aset js/window "_model" _model)
   (aset js/window "_view" _view)
 
+  (set! (.-instance (.-bindingProvider js/ko))
+        (DataModelProvider.))
   (ko/apply-bindings _view)
   (.addClass ($ :html) "bound")
   (handlers/setup-handlers)

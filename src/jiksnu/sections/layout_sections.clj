@@ -112,7 +112,7 @@
 
 (defn statistics-line
   [stats [model-name label]]
-  [:tr {:data-model model-name}
+  [:tr
    [:td.stat-label label]
    [:td.stat-value
     (if *dynamic*

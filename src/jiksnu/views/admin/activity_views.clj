@@ -14,7 +14,7 @@
    :viewmodel "/admin/activities.viewmodel"
    :body
    [:div (when *dynamic*
-           {:data-bind "with: _.map(items(), jiksnu.core.get_activity)"})
+           {:data-bind "with: items"})
     (let [activities (if *dynamic*
                        [(Activity.)]
                        items)]
