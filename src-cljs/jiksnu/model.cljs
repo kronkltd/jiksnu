@@ -207,6 +207,10 @@
   (.extend backbone/Model
            (js-obj
             "class" "FeedSource"
+            "defaults" (js-obj
+                        "callback" nil
+                        "mode" nil
+                        )
             "idAttribute" "_id"
             "initialize" (fn [models options]
                            (log/info "init feed source")))))
@@ -253,6 +257,7 @@
      "notifications" (Notifications.)
      "statistics"    nil
      "subscriptions" subscriptions
+     "targetFeedSource" nil
      "targetUser"    nil
      "title"         nil
      "users"         users))))

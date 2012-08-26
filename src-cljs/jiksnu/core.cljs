@@ -20,7 +20,7 @@
   "Callback handler when a viewmodel is loaded"
   [data]
   (def _m data)
-
+  
   (doseq [key model-names]
     (when-let [items (aget data key)]
       (let [coll (.get _model key)]
@@ -41,8 +41,13 @@
   (when-let [currentUser (.-currentUser data)]
     (.set _model "currentUser" currentUser))
 
-  (when-let [targetUser (.-targetUser data)]
-    (.set _model "targetUser" targetUser)))
+  (when-let [id (.-targetFeedSource data)]
+    (.set _model "targetFeedSource" id))
+
+  (when-let [id (.-targetUser data)]
+    (.set _model "targetUser" id))
+
+  )
 
 (defn fetch-viewmodel
   [url]

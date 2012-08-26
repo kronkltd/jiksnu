@@ -204,22 +204,42 @@
       [:tbody
        [:tr
         [:th "Topic: "]
-        [:td [:a {:href topic} topic]]]
+        [:td
+         [:a 
+          (if *dynamic*
+            {:data-bind "attr: {href: topic}, text: topic"}
+            {:href topic})
+          (when-not *dynamic*
+            topic)]]]
        [:tr
         [:th "Hub: "]
         [:td [:a {:href hub} hub]]]
        [:tr
         [:th "Callback: "]
-        [:td callback]]
+        [:td (merge {:data-property "callback"}
+                    (if *dynamic*
+                      {:data-bind "text: callback"}
+                      ))
+         (when-not *dynamic*
+           callback
+           )
+         ]]
        [:tr
         [:th  "Challenge: "]
-        [:td challenge]]
+        [:td (if *dynamic*
+               {:data-bind "text: callback"}
+               challenge)]]
        [:tr
         [:th "Mode: "]
-        [:td (or mode "unknown")]]
+        [:td (if *dynamic*
+               {:data-bind "text: mode"}
+               (or mode "unknown"))]]
        [:tr
         [:th "Status: "]
-        [:td (:status source)]]
+        [:td
+         (if *dynamic*
+           {:data-bind "text: status"}
+           (:status source))]]
        [:tr
         [:th "Subscription Status: "]
         [:td (:subscription-status source)]]
@@ -228,10 +248,15 @@
         [:td verify-token]]
        [:tr
         [:th "Created: "]
-        [:td created]]
+        [:td (if *dynamic*
+               {:data-bind "text: created"}
+               created)]]
        [:tr
         [:th "Updated: "]
-        [:td updated]]
+        [:td
+         (if *dynamic*
+           {:data-bind "text: updated"}
+           updated)]]
        [:tr
         [:th "Lease Seconds: "]
         [:td lease-seconds]]]]

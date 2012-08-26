@@ -503,7 +503,7 @@
   [user & _]
   (list
    ;; (dump-data)
-   [:div.vcard
+   [:div.vcard {:data-model "user"}
     ;; TODO: merge into the same link
     (display-avatar user)
     [:span.fn.n (link-to user)]]))

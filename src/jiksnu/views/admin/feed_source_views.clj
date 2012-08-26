@@ -61,10 +61,15 @@
 (defview #'show :html
   [request source]
   {:title (title source)
+   :viewmodel (format "/admin/feed-sources/%s.viewmodel" (:_id source))
    :single true
-   :body (list (admin-show-section source)
-               (index-watchers source)
-               (add-watcher-form source))})
+   :body
+   (let [source (if *dynamic* (FeedSource.) source)]
+     [:div {:data-bind "with: targetFeedSource"}
+      [:div {:data-bind "with: jiksnu.core.get_feed_source($data)"}
+       (admin-show-section source)
+       (index-watchers source)
+       (add-watcher-form source)]])})
 
 (defview #'show :model
   [request source]
@@ -73,6 +78,6 @@
 (defview #'show :viewmodel
   [request source]
   {:body {:title (title source)
-          :items [(:_id source)]
+          :targetFeedSource (:_id source)
           :feedSources (admin-index-section [source])}})
 
