@@ -24,7 +24,6 @@
   (doseq [key model-names]
     (when-let [items (aget data key)]
       (let [coll (.get _model key)]
-        (log/info coll)
         (doseq [item items]
           (.add coll item)))))
 
@@ -40,6 +39,9 @@
 
   (when-let [currentUser (.-currentUser data)]
     (.set _model "currentUser" currentUser))
+
+  (when-let [id (.-targetDomain data)]
+    (.set _model "targetDomain" id))
 
   (when-let [id (.-targetFeedSource data)]
     (.set _model "targetFeedSource" id))

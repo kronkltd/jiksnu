@@ -16,12 +16,16 @@
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
+;; create
+
 (defview #'create :html
   [_request _domain]
   {:status 303
    :template false
    :flash "Domain has been created"
    :headers {"Location" "/main/domains"}})
+
+;; delete
 
 (defview #'delete :html
   [_request _domain]
@@ -30,6 +34,8 @@
    :flash "Domain has been deleted"
    :headers {"Location" "/main/domains"}})
 
+;; discover
+
 (defview #'discover :html
   [_request _domain]
   {:status 303
@@ -37,44 +43,16 @@
    :flash "Discovering domain"
    :headers {"Location" "/main/domains"}})
 
+;; find-or-create
+
+;; TODO: is this actually ever called as a route?
 (defview #'find-or-create :html
   [_request _domain]
   {:status 303
    :template false
    :headers {"Location" "/main/domains"}})
 
-(defview #'index :html
-  [_request {:keys [items] :as options}]
-  {:title "Domains"
-   :single true
-   :viewmodel "/main/domains.viewmodel"
-   :body
-   [:div (if *dynamic*
-           {:data-bind "with: _.map(items(), jiksnu.core.get_domain)"})
-    (let [domains (if *dynamic* [(Domain.)] items)]
-      (index-section domains options))]})
-
-(defview #'index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Domains"
-          :items (map :_id items)
-          :domains (doall (index-section items page))}})
-
-(defview #'show :html
-  [_request domain]
-  {:title (:_id domain)
-   :single true
-   :links [{:rel "up"
-            :href "/main/domains"
-            :title "Domain Index"}]
-   :body
-   (list (show-section domain)
-         (let [users (if *dynamic*
-                       [(User.)]
-                      (model.user/fetch-by-domain domain))]
-           [:div (if *dynamic*
-                   {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
-            (index-section users {:page 1})]))})
+;; host-meta
 
 (defview #'host-meta :html
   [_request xrd]
@@ -98,20 +76,43 @@
              [:Title title])])
         (:links xrd))])}))
 
-
-
 (defview #'host-meta :json
   [_request xrd]
   {:template false
    :body xrd})
 
+;; index
+
+(defview #'index :html
+  [_request {:keys [items] :as options}]
+  {:title "Domains"
+   :single true
+   :viewmodel "/main/domains.viewmodel"
+   :body
+   [:div (if *dynamic*
+           {:data-bind "with: _.map(items(), jiksnu.core.get_domain)"})
+    (let [domains (if *dynamic* [(Domain.)] items)]
+      (index-section domains options))]})
+
+(defview #'index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Domains"
+          :items (map :_id items)
+          :domains (doall (index-section items page))}})
+
+;; ping
+
 (defview #'ping :xmpp
   [_request domain]
   (model.domain/ping-request domain))
 
+;; ping-error
+
 (defview #'ping-error :xmpp
   [_request _]
   (implement))
+
+;; ping-response
 
 (defview #'ping-response :xmpp
   [_request _domain]
@@ -120,3 +121,35 @@
      :template false
      :headers {"Location" "/main/domains"}})
 
+;; show
+
+(defview #'show :html
+  [_request domain]
+  {:title (:_id domain)
+   :single true
+   :viewmodel (format "/main/domains/%s.viewmodel" (:_id domain))
+   :links [{:rel "up"
+            :href "/main/domains"
+            :title "Domain Index"}]
+   :body
+   [:div (if *dynamic*
+           {:data-bind "with: jiksnu.core.get_domain(targetDomain())"})
+    (show-section domain)
+    (let [users (if *dynamic*
+                  [(User.)]
+                  (model.user/fetch-by-domain domain))]
+      [:div (if *dynamic*
+              {:data-bind "with: _.map($root.items(), jiksnu.core.get_user)"})
+       (index-section users {:page 1})])]})
+
+(defview #'show :model
+  [request domain]
+  {:body (show-section domain)})
+
+(defview #'show :viewmodel
+  [request domain]
+  {:body
+   {:title (:_id domain)
+    :targetDomain (:_id domain)
+    :domains (index-section [domain])
+    }})

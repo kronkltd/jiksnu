@@ -104,7 +104,7 @@
 
 (defsection show-section [Domain :html]
   [domain & _]
-  [:div
+  [:div {:data-model "domain"}
    [:p "Id: "
     (favicon-link domain)
     [:span.domain-id (:_id domain)]]
@@ -128,6 +128,10 @@
    (when (seq (:links domain))
      (sections.link/index-section (:links domain)))
    (when (current-user) (discover-button domain))])
+
+(defsection show-section [Domain :model]
+  [item & [page]]
+  item)
 
 (defsection show-section [Domain :viewmodel]
   [item & [page]]

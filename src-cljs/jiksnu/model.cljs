@@ -241,24 +241,21 @@
    (js-obj
     "defaults"
     (js-obj
-     
-     "activities"  activities
-     "domains"       domains
-     "currentUser"   nil
-
-     "feedSources"   feed-sources
-     "followers"     (array)
-     "following"     (array)
-
-     "groups"        groups
-     "items"         nil
-     "pageInfo"      (PageInfo.)
-     "postForm"      (PostForm.)
-     "notifications" (Notifications.)
-     "statistics"    nil
-     "subscriptions" subscriptions
+     "activities"       activities
+     "domains"          domains
+     "currentUser"      nil
+     "feedSources"      feed-sources
+     "followers"        (array)
+     "following"        (array)
+     "groups"           groups
+     "items"            nil
+     "pageInfo"         (PageInfo.)
+     "postForm"         (PostForm.)
+     "notifications"    (Notifications.)
+     "statistics"       nil
+     "subscriptions"    subscriptions
+     "targetDomain"     nil
      "targetFeedSource" nil
-     "targetUser"    nil
-     "title"         nil
-     "users"         users))))
-
+     "targetUser"       nil
+     "title"            nil
+     "users"            users))))
