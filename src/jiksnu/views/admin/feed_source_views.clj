@@ -33,23 +33,24 @@
       (assoc :flash "Fetching updates")))
 
 (defview #'index :html
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:title "Feed Sources"
-   :viewmodel "/admin/feed-sources.viewmodel"
+   :viewmodel (str "/admin/feed-sources.viewmodel"
+                   "?page=" (:page page))
    :single true
    :body (list (let [sources (if *dynamic*
                                [(FeedSource.)]
                                items)]
-                 [:div
-                  (if *dynamic*
-                    {:data-bind "with: _.map(items(), jiksnu.core.get_feed_source)"})
-                  (admin-index-section sources response)])
+                 [:div (if *dynamic*
+                         {:data-bind "with: _.map(items(), jiksnu.core.get_feed_source)"})
+                  (admin-index-section sources page)])
                (add-form (FeedSource.)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
           :items (map :_id items)
+          :pageInfo (dissoc page :items)
           :feedSources (admin-index-section items page)}})
 
 (defview #'remove-watcher :html

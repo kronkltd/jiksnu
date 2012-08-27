@@ -51,14 +51,10 @@
 (defsection actions-section [FeedSource :html]
   [source]
   [:ul.feed-source-actions.buttons
-   [:li
-    (update-button source)]
-   [:li
-    (subscribe-button source)]
-   [:li
-    (unsubscribe-button source)]
-   [:li
-    (delete-button source)]])
+   [:li (update-button source)]
+   [:li (subscribe-button source)]
+   [:li (unsubscribe-button source)]
+   [:li (delete-button source)]])
 
 ;; add-form
 
@@ -107,9 +103,8 @@
 
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
-  [:tr (merge {:data-model "feed-source"}
-              (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+  [:tr (merge {:data-model "feedSource"}
+              (when-not *dynamic*
                 {:data-id (:_id item)}))
    [:td
     [:a (if *dynamic*
@@ -203,7 +198,7 @@
      [:table.table
       [:tbody
        [:tr
-        [:th "Topic: "]
+        [:th "Topic:"]
         [:td
          [:a 
           (if *dynamic*
@@ -212,53 +207,50 @@
           (when-not *dynamic*
             topic)]]]
        [:tr
-        [:th "Hub: "]
+        [:th "Hub:"]
         [:td [:a {:href hub} hub]]]
        [:tr
-        [:th "Callback: "]
+        [:th "Callback:"]
         [:td (merge {:data-property "callback"}
                     (if *dynamic*
-                      {:data-bind "text: callback"}
-                      ))
+                      {:data-bind "text: callback"}))
          (when-not *dynamic*
-           callback
-           )
-         ]]
+           callback)]]
        [:tr
-        [:th  "Challenge: "]
+        [:th  "Challenge:"]
         [:td (if *dynamic*
                {:data-bind "text: callback"}
                challenge)]]
        [:tr
-        [:th "Mode: "]
+        [:th "Mode:"]
         [:td (if *dynamic*
                {:data-bind "text: mode"}
                (or mode "unknown"))]]
        [:tr
-        [:th "Status: "]
+        [:th "Status:"]
         [:td
          (if *dynamic*
            {:data-bind "text: status"}
            (:status source))]]
        [:tr
-        [:th "Subscription Status: "]
+        [:th "Subscription Status:"]
         [:td (:subscription-status source)]]
        [:tr
-        [:th "Verify Token: "]
+        [:th "Verify Token:"]
         [:td verify-token]]
        [:tr
-        [:th "Created: "]
+        [:th "Created:"]
         [:td (if *dynamic*
                {:data-bind "text: created"}
                created)]]
        [:tr
-        [:th "Updated: "]
+        [:th "Updated:"]
         [:td
          (if *dynamic*
            {:data-bind "text: updated"}
            updated)]]
        [:tr
-        [:th "Lease Seconds: "]
+        [:th "Lease Seconds:"]
         [:td lease-seconds]]]]
      (actions-section source)]))
 

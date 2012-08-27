@@ -4,6 +4,7 @@
         [jiksnu.model :only [_model]])
   (:require [goog.events :as events]
             [jiksnu.logging :as log]
+            [jiksnu.websocket :as ws]
             [jayq.core :as jayq]))
 
 (defn find-parent-article
@@ -71,6 +72,7 @@
                id (.data parent "id")]
            (let [message (str action " >> " model "(" id ")")]
              (log/info message)
+             (ws/send (str "invoke-action " model " " action " " id))
              (.add (.get _model "notifications")
                    (js-obj
                     "message" message)))

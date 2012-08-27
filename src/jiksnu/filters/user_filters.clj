@@ -42,6 +42,11 @@
 
 ;; discover
 
+(deffilter #'discover :command
+  [action id]
+  (let [item (model.user/fetch-by-id (model/make-id id))]
+    (action item)))
+
 (deffilter #'discover :http
   [action request]
   (let [{{id :id} :params} request
@@ -119,6 +124,11 @@
         {username :username} params
         user (show username)]
     (action user params)))
+
+(deffilter #'update :command
+  [action id]
+  (let [item (model.user/fetch-by-id (model/make-id id))]
+    (action item)))
 
 ;; update-profile
 

@@ -1,6 +1,5 @@
 (ns jiksnu.websocket
   (:use [jayq.core :only [$ css inner prepend text]])
-
   (:require [goog.events :as events]
             [goog.net.WebSocket :as websocket]
             [goog.net.WebSocket.EventType :as websocket-event]
