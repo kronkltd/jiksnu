@@ -154,25 +154,32 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
        .getText
        model/strip-namespaces))
 
+(defn parse-entry
+  [entry]
+  {:id (str (.getId entry))
+   :title (.getTitle entry)
+   :published (.getPublished entry)
+   :updated (.getUpdated entry)
+   :content (.getContent entry)
+   :extensions (.getExtensions entry)
+   }
+  )
+
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
   ([entry] (entry->activity entry nil))
   ([^Entry entry feed]
-     (let [id (str (.getId entry))
+     (let [{:keys [extensions content id title published updated]} (parse-entry entry)
            original-activity (model.activity/fetch-by-remote-id id)
-           title (.getTitle entry)
-           published (.getPublished entry)
-           updated (.getUpdated entry)
            verb (get-verb entry)
            user (-> entry
                     (abdera/get-author feed)
                     actions.user/person->user
                     actions.user/find-or-create-by-remote-id)
-           extension-maps (->> (.getExtensions entry)
+           extension-maps (->> extensions
                                (map parse-extension-element)
                                doall)
-           content (.getContent entry)
            links (seq (abdera/parse-links entry))
 
            irts (seq (abdera/parse-irts entry))
@@ -203,9 +210,8 @@ serialization"
                          (when updated           {:updated updated})
                          ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
                          (when title             {:title title})
-                         (when irts        {:irts irts})
-                         (when (seq links)
-                           {:links links})
+                         (when irts              {:irts irts})
+                         (when (seq links)       {:links links})
                          (when (seq conversation-uris)
                            {:conversations conversation-uris})
                          (when (seq mentioned-uris)
