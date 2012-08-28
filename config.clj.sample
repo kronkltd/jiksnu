@@ -21,7 +21,7 @@
   :run-triggers true,
   :salmon {:verify true},
   :services ["ciste.service.aleph" "ciste.service.swank"
-             "ciste.services.nrepl"],
+             "ciste.services.nrepl" "ciste.service.tigase"],
   :site {:available-themes ["amelia" "cerulean" "classic" "cyborg"
                             "journal" "readable" "simplex" "slate"
                             "spacelab" "spruce" "superhero" "united"],
