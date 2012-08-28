@@ -15,6 +15,7 @@
   (let [site-name (get params "site.name")
         domain (:domain params)
         admin-email (get params "site-email")
+        theme (get params "site.theme")
         print-actions (= "on" (get params "print.actions"))
         print-triggers (= "on" (get params "print.triggers"))
         print-request (= "on" (get params "print.request"))
@@ -23,6 +24,7 @@
         htmlOnly (= "on" (get params :htmlOnly))]
     (set-config! [:site :name] site-name)
     (set-config! [:domain] domain)
+    (set-config! [:site :theme] theme)
     (set-config! [:site :email] admin-email)
     (set-config! [:print :actions] print-actions)
     (set-config! [:print :request] print-request)

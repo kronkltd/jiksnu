@@ -17,6 +17,17 @@
     (control-line "Admin Email"
                   "site.email" "text"
                   :value (config :site :email))
+    [:div.control-group
+     [:label.control-label {:for "site.theme"} "Theme"]
+     [:div.controls
+      (let [current-theme (config :site :theme)]
+        [:select {:name "site.theme"}
+         (map
+          (fn [theme]
+            [:option (merge {:value theme}
+                            (if (= current-theme theme)
+                              {:selected "selected"})) theme])
+         (config :site :available-themes))])]]
     (control-line "Print Actions"
                   "print.actions" "checkbox"
                   :checked (config :print :actions))
