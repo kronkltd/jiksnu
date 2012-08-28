@@ -17,6 +17,12 @@
     (control-line "Admin Email"
                   "site.email" "text"
                   :value (config :site :email))
+    (control-line "Brought By Name"
+                  "site.brought-by.name" "text"
+                  :value (config :site :brought-by :name))
+    (control-line "Brought By Url"
+                  "site.brought-by.url" "text"
+                  :value (config :site :brought-by :url))
     [:div.control-group
      [:label.control-label {:for "site.theme"} "Theme"]
      [:div.controls
@@ -43,6 +49,21 @@
     (control-line "Allow registration?"
                   "registration-enabled" "checkbox"
                   :checked (config :registration-enabled))
+    (control-line "Private"
+                  "site.private" "checkbox"
+                  :checked (config :site :private))
+    (control-line "Closed"
+                  "site.closed" "checkbox"
+                  :checked (config :site :closed))
+    (control-line "Limit"
+                  "site.limit.text" "text"
+                  :value (config :site :limit :text))
+    (control-line "Dupe"
+                  "site.limit.dupe" "text"
+                  :value (config :site :limit :dupe))
+    (control-line "Swank Port"
+                  "swank.port" "text"
+                  :value (config :swank :port))
     (control-line "HTML only?"
                   "htmlOnly" "checkbox"
                   :checked (config :htmlOnly))
