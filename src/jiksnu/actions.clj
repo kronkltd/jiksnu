@@ -15,8 +15,13 @@
 
     (let [action (log/spy (ns-resolve (log/spy action-ns)
                                       (log/spy (symbol action-name))))]
-      (filter-action action id)
-      {:message "action invoked"})
+      (let [body (filter-action action id)]
+        {:message "action invoked"
+         :model model-name
+         :action action-name
+         :id id
+         :body body
+         }))
     )
 
   )

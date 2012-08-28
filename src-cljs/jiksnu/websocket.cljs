@@ -83,8 +83,13 @@
 
 (defn process-event
   [event]
-  (let [t (:type (js->clj event))]
-    t))
+  (when event
+    (condp = (.-action event)
+
+     "delete" (log/info "delete callback")
+
+     (log/info "No match found")
+     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States

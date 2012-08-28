@@ -57,7 +57,9 @@
 
 (defn show-comment
   [activity]
-  (let [author (model.activity/get-author activity)]
+  (let [author (if *dynamic*
+                 (User.)
+                 #_(model.activity/get-author activity))]
     [:div.comment
      [:p (sections.user/display-avatar author)
       (link-to author) ": "
@@ -264,7 +266,7 @@
      " privately")
 
    " approximately "
-   [:time {:datetime (model/format-date (:published activity))
+   #_[:time {:datetime (model/format-date (:published activity))
            :title (model/format-date (:published activity))
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
@@ -303,11 +305,14 @@
 (defn comments-section
   [activity]
   (list #_[:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
-        (if-let [comments (seq (second (actions.comment/fetch-comments activity)))]
+        (if-let [comments (if *dynamic*
+                            [(Activity.)]
+                            (seq (second (actions.comment/fetch-comments activity))))]
           [:section.comments
            [:h4 "Comments"]
            [:ul.unstyled.comments
-            (map (fn [comment] [:li (show-comment comment)])
+            (map (fn [comment]
+                   [:li (show-comment comment)])
                  comments)]])))
 
 (defn poll-form
