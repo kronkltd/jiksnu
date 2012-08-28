@@ -1,12 +1,15 @@
+;; -*- mode: clojure -*-
 {
  :default
 
- {
-  :admins ["admin"]
+ {:admins ["admin"]
+  :ciste.services.nrepl/port 7888,
   :database {:host "localhost"},
   :debug false,
-  :domain "jiksnu.com",
+  :domain "jiksnu.com"
   :http {:port 8080, :websocket true, :handler "jiksnu.routes/app"},
+  :modules ["jiksnu.routes" "jiksnu.views"
+            "jiksnu.formats" "jiksnu.actions"],
   :print {:actions false,
           :matchers false,
           :packet false,
@@ -17,41 +20,28 @@
   :registration-enabled true,
   :run-triggers true,
   :salmon {:verify true},
-  :site {:name "Jiksnu",
+  :services ["ciste.service.aleph" "ciste.service.swank"
+             "ciste.services.nrepl"],
+  :site {:available-themes ["amelia" "cerulean" "classic" "cyborg"
+                            "journal" "readable" "simplex" "slate"
+                            "spacelab" "spruce" "superhero" "united"],
+         :brought-by {:name "Jiksnu", :url "http://jiksnu.org/"},
+         :closed false,
          :default {:timezone "+0:00", :language "en-us"},
          :email "admin@jiksnu.com",
-         :brought-by {:name "Jiksnu", :url "http://jiksnu.org/"},
-         :limit {:text 140, :dupe 60}},
+         :limit {:text 140, :dupe 60},
+         :invite-only false,
+         :name "Jiksnu",
+         :private false,
+         :theme "classic"},
   :swank {:port "4005"},
   :triggers {:thread-count 1},
   :use-pipeline true,
-  :xmpp {:c2s 5222,
-         :s2s 5269,
+  :xmpp {:c2s [5222],
+         :s2s [5269],
          :auth-db "jiksnu.xmpp.user_repository",
          :user-db "jiksnu.xmpp.user_repository",
          :plugins ["jiksnu" "message"],
-         :components [{:name "channels", :class "jiksnu.xmpp.channels"}]}
-  },
- 
- :development
-
- {
-  :admins ["daniel"],
-  :database {:name :jiksnu_development},
-  :domain "dev.jiksnu.com",
-  :http {:port 8082},
-  :print {:routes true, :triggers true},
-  :registration-enabled false,
-  :swank {:port "4007"}
-  },
- 
- :test
-
- {
-  :database {:name :jiksnu_test},
-  :domain "test.jiksnu.com",
-  :http {:port 8175},
-  :run-triggers false
+         :components [{:name "channels", :class "jiksnu.xmpp.channels"}]},
   }
-
  }
