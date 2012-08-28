@@ -16,6 +16,13 @@
             [jiksnu.sections.activity-sections :as sections.activity])
   (:import tigase.xml.Element))
 
+;; delete
+
+(deffilter #'delete :command
+  [action id]
+  (let [item (model.activity/fetch-by-id (model/make-id id))]
+    (action item)))
+
 (deffilter #'delete :http
   [action request]
   (if-let [id (try (-> request :params :id model/make-id)
@@ -27,11 +34,15 @@
 ;;   [action request]
 ;;   (action))
 
+;; oembed
+
 (deffilter #'oembed :http
   [action request]
   (let [url (get-in request [:params :url])]
     (if-let [activity (model.activity/fetch-by-remote-id url)]
       (action activity))))
+
+;; post
 
 (deffilter #'post :http
   [action request]
@@ -51,6 +62,20 @@
          items)]
     (action (first activities))))
 
+;; remote-create
+
+(deffilter #'remote-create :xmpp
+  [action request]
+  (if (not= (:to request) (:from request))
+    (let [packet (:packet request)
+          ;; items (element/children packet "/message/event/items/item")
+          items (map (comp first element/children) (:items request))]
+      (action (map #(entry->activity
+                     (abdera/parse-xml-string (str %)))
+                   items)))))
+
+;; show
+
 (deffilter #'show :http
   [action request]
   (-> request :params :id
@@ -63,15 +88,7 @@
         id (first ids)]
     (action (model.activity/fetch-by-id id))))
 
-(deffilter #'remote-create :xmpp
-  [action request]
-  (if (not= (:to request) (:from request))
-    (let [packet (:packet request)
-          ;; items (element/children packet "/message/event/items/item")
-          items (map (comp first element/children) (:items request))]
-      (action (map #(entry->activity
-                     (abdera/parse-xml-string (str %)))
-                   items)))))
+;; update
 
 (deffilter #'update :http
   [action request]

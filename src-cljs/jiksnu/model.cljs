@@ -22,10 +22,9 @@
   "Load data into the model store"
   [coll id o data d]
   (let [resp (.add coll data)
-        m (.get coll id)]
-    (let [a (.-attributes m)]
-      (log/info "setting observable from response")
-      (o a))))
+        m (.get coll id)
+        a (.-attributes m)]
+    (o a)))
 
 (defvar Statistics
   [this]
@@ -105,7 +104,7 @@
                        "links" (array))
     "idAttribute" "_id"
     "initialize" (fn [models options]
-                   (log/debug "init domain")))))
+                   #_(log/debug "init domain")))))
 
 (def Domains
   (.extend backbone/Collection
@@ -129,7 +128,7 @@
                                "displayName" nil)
             "idAttribute" "_id"
             "initialize" (fn [models options]
-                           (log/info "init user")))))
+                           #_(log/info "init user")))))
 
 (def Users
   (.extend backbone/Collection
@@ -158,7 +157,7 @@
                 "links"      (array)
                 "enclosures" (array))
     "initialize" (fn [model]
-                   (log/info "init activity")))))
+                   #_(log/info "init activity")))))
 
 (def ^{:doc "collection of activities"}
   Activities
@@ -177,7 +176,7 @@
             "idAttribute" "_id"
             "class" "Group"
             "initialize" (fn [model]
-                           (log/info "Initialize group")))))
+                           #_(log/info "Initialize group")))))
 
 (def Groups
   (.extend backbone/Collection
@@ -193,7 +192,7 @@
             "class" "Subscription"
             "idAttribute" "_id"
             "initialize" (fn [models options]
-                           (log/info "init subscription")))))
+                           #_(log/info "init subscription")))))
 
 (def Subscriptions
   (.extend backbone/Collection
@@ -213,7 +212,7 @@
                         )
             "idAttribute" "_id"
             "initialize" (fn [models options]
-                           (log/info "init feed source")))))
+                           #_(log/info "init feed source")))))
 
 (def FeedSources
   (.extend backbone/Collection

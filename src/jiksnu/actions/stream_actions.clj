@@ -168,19 +168,21 @@
 
 (defn websocket-handler
   [ch request]
-  (l/receive-all
-   ch
-   (fn [m]
-     (let [[name & args] (string/split m #" ")]
-       (let [resp (try
-                    (parse-command {:format :json
-                                    :name name
-                                    :args args})
-                    (catch RuntimeException ex
-                      (.printStackTrace ex)
-                      {:body (json/json-str {:type "error"
-                                             :message (str ex)})}))]
-         (l/enqueue ch (:body resp))))))
+  (let [user (session/current-user)]
+    (l/receive-all
+     ch
+     (fn [m]
+       (session/with-user-id (:_id user)
+         (let [[name & args] (string/split m #" ")]
+           (let [resp (try
+                        (parse-command {:format :json
+                                        :name name
+                                        :args args})
+                        (catch RuntimeException ex
+                          (.printStackTrace ex)
+                          {:body (json/json-str {:type "error"
+                                                 :message (str ex)})}))]
+             (l/enqueue ch (:body resp))))))))
   #_(siphon-new-activities ch))
 
 (definitializer
