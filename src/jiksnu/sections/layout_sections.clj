@@ -267,11 +267,13 @@
            (str (when (:title response)
                   (str (:title response) " - "))
                 (config :site :name)))]
-        (p/include-css "/assets/styles/bootstrap.min.css"
-                       "/assets/styles/bootstrap-responsive.min.css"
-                       "/assets/themes/classic/standard.css"
-                       ;; "/assets/js/google-code-prettify/src/prettify.css"
-                       )
+        (let [theme (config :site :theme)]
+          (p/include-css
+           (format "/assets/themes/%s/bootstrap.min.css" theme)
+           "/assets/styles/bootstrap-responsive.min.css"
+           (format "/assets/themes/classic/standard.css")
+           ;; "/assets/js/google-code-prettify/src/prettify.css"
+                       ))
         (links-section request response)))
 
 (defn scripts-section
