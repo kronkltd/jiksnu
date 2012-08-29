@@ -247,7 +247,7 @@
      "followers"        (array)
      "following"        (array)
      "groups"           groups
-     "items"            (backbone/Collection.)
+     "items"            (array)
      "pageInfo"         (PageInfo.)
      "postForm"         (PostForm.)
      "notifications"    (Notifications.)

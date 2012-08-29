@@ -21,24 +21,27 @@
   [data]
   (def _m data)
   
+  (when-let [title (.-title data)]
+    (.set _model "title" title))
+
   (doseq [key model-names]
     (when-let [items (aget data key)]
       (let [coll (.get _model key)]
         (doseq [item items]
           (.add coll item)))))
 
+  (when-let [currentUser (.-currentUser data)]
+    (.set _model "currentUser" currentUser))
+
   (when-let [page-info (.-pageInfo data)]
     (let [p (.get _model "pageInfo")]
       (.set p page-info)))
 
   (when-let [items (.-items data)]
-    (.items _view items))
-
-  (when-let [title (.-title data)]
-    (.set _model "title" title))
-
-  (when-let [currentUser (.-currentUser data)]
-    (.set _model "currentUser" currentUser))
+    (let [coll (.get _model "items")]
+      (doseq [item items]
+        (.push coll item)
+        (.notifySubscribers (.-items _view)))))
 
   (when-let [id (.-targetDomain data)]
     (.set _model "targetDomain" id))

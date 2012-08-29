@@ -308,7 +308,7 @@
         (if-let [comments (if *dynamic*
                             [(Activity.)]
                             (seq (second (actions.comment/fetch-comments activity))))]
-          [:section.comments
+          [:section.comments {:data-bind "if: $data['comment-count'] > 0"}
            [:h4 "Comments"]
            [:ul.unstyled.comments
             (map (fn [comment]

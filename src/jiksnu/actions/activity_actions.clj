@@ -161,9 +161,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
    :published (.getPublished entry)
    :updated (.getUpdated entry)
    :content (.getContent entry)
-   :extensions (.getExtensions entry)
-   }
-  )
+   :extensions (.getExtensions entry)})
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
