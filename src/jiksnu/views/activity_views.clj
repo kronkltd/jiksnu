@@ -2,7 +2,8 @@
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         ciste.sections.default
-        jiksnu.actions.activity-actions)
+        jiksnu.actions.activity-actions
+        [jiksnu.ko :only [*dynamic*]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -81,7 +82,16 @@
 
 (defview #'show :html
   [request activity]
-  {:body (show-section activity)})
+  {:body
+   [:div (if *dynamic*
+           {:data-bind "with: targetActivity"}
+           )
+    [:div (if *dynamic*
+            {:data-bind "with: jiksnu.core.get_activity($data)"}
+            )
+     (show-section activity)]]
+   :viewmodel (format "/notice/%s.viewmodel" (:_id activity))
+   })
 
 (defview #'show :model
   [request activity]
@@ -110,10 +120,7 @@
 (defview #'show :viewmodel
   [request activity]
   {:body {:activities (doall (index-section [activity]))
-          :target (:_id activity)
-          :model "activity"
-          :displayMode "single"
-          :showPostForm false
+          :targetActivity (:_id activity)
           :title (:title activity)}})
 
 ;; update

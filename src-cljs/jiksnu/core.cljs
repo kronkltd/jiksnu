@@ -43,15 +43,12 @@
         (.push coll item)
         (.notifySubscribers (.-items _view)))))
 
-  (when-let [id (.-targetDomain data)]
-    (.set _model "targetDomain" id))
-
-  (when-let [id (.-targetFeedSource data)]
-    (.set _model "targetFeedSource" id))
-
-  (when-let [id (.-targetUser data)]
-    (.set _model "targetUser" id))
-
+  (doseq [model-name ["Activity" "Domain"
+                      "FeedSource" "User"]]
+    (let [key (str "target" model-name)]
+      (when-let [id (aget data key)]
+        (.set _model key id))))
+  
   )
 
 (defn fetch-viewmodel

@@ -151,11 +151,14 @@
              (format "/notice/%s.model" (.-id this))))
     "class" "Activity"
     "defaults" (js-obj
-                "_id"        ""
-                "author"     ""
-                "url"        nil
-                "links"      (array)
-                "enclosures" (array))
+                "_id"           ""
+                "author"        ""
+                "url"           nil
+                "links"         (array)
+                "source"        "unknown"
+                "comment-count" 0
+                "like-count"    0
+                "enclosures"    (array))
     "initialize" (fn [model]
                    #_(log/info "init activity")))))
 
@@ -253,6 +256,7 @@
      "notifications"    (Notifications.)
      "statistics"       nil
      "subscriptions"    subscriptions
+     "targetActivity"   nil
      "targetDomain"     nil
      "targetFeedSource" nil
      "targetUser"       nil

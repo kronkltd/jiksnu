@@ -234,6 +234,8 @@
                      []
                      (model.like/get-likes activity))]
     [:section.likes
+     (if *dynamic*
+       {:data-bind "if: $data['like-count']"})
      [:span "Liked by"]
      [:ul
       (map
@@ -266,7 +268,7 @@
      " privately")
 
    " approximately "
-   #_[:time {:datetime (model/format-date (:published activity))
+   [:time {:datetime (model/format-date (:published activity))
            :title (model/format-date (:published activity))
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
@@ -277,7 +279,7 @@
    " using "
    [:span
     (if *dynamic*
-      (bind-property "source")
+      {:data-bind "text: source"}
       (:source activity))]
    
    ;; TODO: link to the domain
