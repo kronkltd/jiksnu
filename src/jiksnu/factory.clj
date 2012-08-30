@@ -117,7 +117,7 @@
   [n]
   (str (inf/ordinalize n) " post!"))
 
-(defseq :summary
+(defseq :content
   [n]
   (str (inf/ordinalize n) " post!"))
 
@@ -162,7 +162,7 @@
 
 (deffactory :activity
   {:title (fseq :title)
-   :summary (fseq :summary)
+   :content (fseq :content)
    :author #'user-id})
 
 (deffactory :subscription

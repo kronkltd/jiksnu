@@ -699,11 +699,10 @@
 (defsection show-section [Activity :rdf]
   [activity & _]
   (rdf/with-rdf-ns ""
-    (let [{:keys [summary id created content]} activity
+    (let [{:keys [id created content]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
-          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
-          summary (or content summary)]
+          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
       (concat
        (with-subject uri
          [
@@ -713,7 +712,7 @@
           [[ns/sioc :has_owner]   user-res]
           [[ns/as   :author]      user-res]
           [[ns/dc   :published]   (rdf/date (.toDate created))]])
-       (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
+       (when content [[uri [ns/sioc  :content]    (rdf/l content)]])))))
 
 (defsection show-section [Activity :viewmodel]
   [activity & [page]]

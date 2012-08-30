@@ -297,7 +297,7 @@ serialization"
             :type "link"
             :title (:title activity)
             :url (:url activity)
-            :html (:summary activity)}
+            :html (:content activity)}
            (let [author (get-author activity)]
              {:author_name (:name author)}))))
 

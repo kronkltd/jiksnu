@@ -5,7 +5,7 @@
 (add-route! "/"                        {:named "public timeline"})
 (add-route! "/:username"               {:named "local user timeline"})
 (add-route! "/:username/all"           {:named "home timeline"})
-(add-route! "/:username/microstrategy" {:named "user microsummary"})
+(add-route! "/:username/microsummary"  {:named "user microsummary"})
 (add-route! "/:username/streams"       {:named "user stream index"})
 (add-route! "/main/push/callback"      {:named "callback publish"})
 (add-route! "/api/statuses/mentions"   {:named "mentions timeline api"})
