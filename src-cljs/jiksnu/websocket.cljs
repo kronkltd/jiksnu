@@ -5,6 +5,7 @@
             [goog.net.WebSocket.EventType :as websocket-event]
             [goog.net.WebSocket.MessageEvent :as websocket-message]
             [jiksnu.logging :as log]
+            [jiksnu.underscore :as _]
             [waltz.state :as state])
   (:use-macros [waltz.macros :only [in out defstate defevent]]))
 
@@ -13,6 +14,12 @@
 (def ws-state (state/machine "websocket state"))
 ;; (state/set-debug ws-state false)
 (state/set ws-state :closed)
+(def _view)
+
+(defn set-view
+  [view]
+  (set! _view view))
+
 
 (defn parse-json
   [s]
@@ -81,15 +88,27 @@
   []
   (state/trigger ws-state :close))
 
+(defn delete-handler
+  [event]
+  (log/info "delete callback")
+  (let [id (.-id event)]
+    (.items _view (log/spy (_/without (log/spy (.items _view)) id)))))
+
+
 (defn process-event
   [event]
   (when event
     (condp = (.-action event)
 
-     "delete" (log/info "delete callback")
+      "delete"
+      (delete-handler event)
+      
 
-     (log/info "No match found")
-     )))
+      (condp = (.-type event)
+
+        "error" (log/error (.-message event))
+        
+        (log/info "No match found")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States

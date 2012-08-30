@@ -14,6 +14,11 @@
     (if-let [watcher (-?> request :params :user_id model.user/get-user)]
       (action source watcher))))
 
+(deffilter #'delete :command
+  [action id]
+  (let [item (model.feed-source/fetch-by-id (model/make-id id))]
+    (action item)))
+
 (deffilter #'delete :http
   [action request]
   (if-let [source (-?> request :params :id model/make-id model.feed-source/fetch-by-id)]

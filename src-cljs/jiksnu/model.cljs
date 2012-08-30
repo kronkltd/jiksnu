@@ -41,7 +41,7 @@
 (defvar PostForm
   [this]
   (doto this
-    (ko/assoc-observable "visible" false)
+    (ko/assoc-observable "visible" true)
     (ko/assoc-observable "currentPage" "note")))
 
 (def PageInfo

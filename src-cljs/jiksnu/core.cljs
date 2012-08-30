@@ -148,6 +148,7 @@
   (.addClass ($ :html) "bound")
   (handlers/setup-handlers)
 
+  (ws/set-view _view)
   (ws/connect)
 
   (doseq [model-name model-names]
