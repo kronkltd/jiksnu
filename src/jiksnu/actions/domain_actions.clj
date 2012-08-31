@@ -21,13 +21,20 @@
   [options]
   (model.domain/create options))
 
+(defonce delete-hooks (ref []))
+
+(defn prepare-delete
+  ([domain]
+     (prepare-delete domain @delete-hooks))
+  ([domain hooks]
+     (if (seq hooks)
+       (recur ((first hooks) domain) (rest hooks))
+       domain)))
+
 (defaction delete
   [domain]
-  (model.domain/delete domain))
-
-(defaction update
-  [domain]
-  (model.domain/update domain))
+  (let [domain (prepare-delete domain)]
+    (model.domain/delete domain)))
 
 (defn discover-onesocialweb
   [domain url]
@@ -37,20 +44,28 @@
       tigase/deliver-packet!)
   domain)
 
+(defn fetch-xrd*
+  [url]
+  (try
+    (model.webfinger/fetch-host-meta url)
+    (catch RuntimeException ex
+      (log/error "Fetching host meta failed"))))
+
+(defn fetch-xrd
+  [domain url]
+  (->> url model/path-segments rest
+       (map #(str % ".well-known/host-meta"))
+       (cons (model.domain/host-meta-link domain))
+       (keep fetch-xrd*) first))
+
+(defaction update
+  [domain]
+  (model.domain/update domain))
+
 (defn discover-webfinger
   [^Domain domain url]
   ;; TODO: check https first
-  (if-let [xrd (first (keep
-                       (fn [url]
-                         (try
-                           (model.webfinger/fetch-host-meta url)
-                           (catch RuntimeException ex
-                             (log/error "Fetching host meta failed"))))
-                       (cons
-                        (model.domain/host-meta-link domain)
-                        (map
-                         #(str % ".well-known/host-meta")
-                         (rest (model/path-segments url))))))]
+  (if-let [xrd (fetch-xrd domain url) ]
     (if-let [links (model.webfinger/get-links xrd)]
       ;; TODO: do individual updates
       (update (-> domain
@@ -59,11 +74,11 @@
       (throw+  "Host meta does not have any links"))
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
-(defaction show
+(defaction edit-page
   [domain]
   domain)
 
-(defaction edit-page
+(defaction show
   [domain]
   domain)
 

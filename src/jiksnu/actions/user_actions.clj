@@ -483,4 +483,11 @@
     "jiksnu.helpers.user-helpers"
     "jiksnu.sections.user-sections"
     "jiksnu.triggers.user-triggers"
-    "jiksnu.views.user-views"]))
+    "jiksnu.views.user-views"])
+
+ ;; cascade delete on domain deletion
+  (dosync
+   (alter actions.domain/delete-hooks
+          conj (fn [domain]
+                 (doseq [user (model.user/fetch-by-domain domain)]
+                   (delete user))))))

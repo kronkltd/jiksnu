@@ -23,7 +23,7 @@
  (fact "update"
    (fact "when the user is authenticated"
      (let [author (model.user/create (factory :local-user))
-           content (fseq :summary)
+           content (fseq :content)
            data (json/json-str                  
                  {:content content})]
        data => string?)))

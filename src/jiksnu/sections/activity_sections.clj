@@ -180,6 +180,10 @@
      [:a.dropdown-toggle.btn {:data-toggle "dropdown" :href "#"}
       [:span.caret]]
      [:ul.dropdown-menu.pull-right
+      [:li
+       [:a (if *dynamic*
+             {:data-bind "attr: {href: '/model/activities/' + _id + '.model'}"})
+        "Model"]]
       (map
        (fn [x] [:li x])
        (concat
@@ -283,15 +287,18 @@
       (:source activity))]
    
    ;; TODO: link to the domain
-   (when-not (:local activity)
-     (list " via a "
-           [:a {:href
-                (->> activity :links
-                     (filter #(= (:rel %) "alternate"))
-                     (filter #(= (:type %) "text/html"))
-                     first :href)}
-            "foreign service"]
-           " "))
+   (when (or *dynamic* (not (:local activity)))
+     [:span (if *dynamic*
+             {:data-bind "if: !$data.local"})
+      " via a "
+      [:a {:href
+           (if *dynamic*
+             "#"
+             (->> activity :links
+                  (filter #(= (:rel %) "alternate"))
+                  (filter #(= (:type %) "text/html"))
+                  first :href))}
+       "foreign service"]])
    (when (:conversations activity)
      (list
       " "
