@@ -3,8 +3,8 @@
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
-        [jiksnu.sections :only [admin-index-block admin-index-line
-                                control-line]])
+        [jiksnu.sections :only [action-link admin-index-block
+                                admin-index-line control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.link-sections :as sections.link])
   (:import jiksnu.model.Domain))
@@ -16,16 +16,9 @@
      {:data-bind "attr: {src: 'http://' + _id + '/favicon.ico'}"}
      {:src (str "http://" (:_id domain) "/favicon.ico")})])
 
-(defsection uri [Domain]
-  [domain & _]
-  (str "/main/domains/" (:_id domain)))
-
 (defn discover-button
-  [domain]
-  [:form {:method "post"
-          :action (str "/main/domains/" (:_id domain) "/discover")}
-   [:button.btn.discover-button {:type "submit"}
-    [:i.icon-search] [:span.button-text "Discover"]]])
+  [item]
+  (action-link "domain" "discover" (:_id item)))
 
 (defsection actions-section [Domain :html]
   [domain & _]
@@ -48,6 +41,10 @@
   (->> items
        (map (fn [m] {(:_id m) (admin-index-line m page)}))
        (into {})))
+
+(defsection delete-button [Domain :html]
+  [item & _]
+  (action-link "domain" "delete" (:_id item)))
 
 (defsection index-block [Domain :html]
   [domains & _]
@@ -91,7 +88,7 @@
     (if *dynamic*
       {:data-bind "text: links.length"}
       (count (:links domain)))]
-   #_[:th (actions-section domain)]])
+   [:th (actions-section domain)]])
 
 (defsection link-to [Domain :html]
   [domain & _]
@@ -101,6 +98,7 @@
    (when-not *dynamic*
      (:_id domain))])
 
+;; show-section
 
 (defsection show-section [Domain :html]
   [domain & _]
@@ -123,8 +121,7 @@
                [:img {:src (:image license)
                       :alt (:title license)}]]])))
    (when (is-admin?)
-     [:ul.domain-actions.buttons
-      [:li (discover-button domain)]])
+     (actions-section domain))
    (when (seq (:links domain))
      (sections.link/index-section (:links domain)))
    (when (current-user) (discover-button domain))])
@@ -137,3 +134,8 @@
   [item & [page]]
   item)
 
+;; uri
+
+(defsection uri [Domain]
+  [domain & _]
+  (str "/main/domains/" (:_id domain)))

@@ -1,17 +1,33 @@
 (ns jiksnu.filters.domain-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
-        jiksnu.actions.domain-actions)
-  (:require [jiksnu.model.domain :as model.domain])
+        jiksnu.actions.domain-actions
+        [slingshot.slingshot :only [throw+]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
+            [jiksnu.model.domain :as model.domain])
   (:import tigase.xml.Element))
+
+;; create
 
 (deffilter #'create :http
   [action {{:keys [domain]} :params}]
   (action {:_id domain}))
 
+;; delete
+
+(deffilter #'delete :command
+  [action id]
+  (if-let [item (model.domain/fetch-by-id id)]
+    (action item)))
+
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id action))
+  (let [id (-> request :params :id action)]
+    (if-let [item (model.domain/fetch-by-id id)]
+      (action item))))
+
+;; discover
 
 (deffilter #'discover :http
   [action request]

@@ -41,9 +41,8 @@
 
 (defn delete
   [domain]
-  (when-let [domain (fetch-by-id (:_id domain))]
-    (mc/remove-by-id collection-name (:_id domain))
-    domain))
+  (mc/remove-by-id collection-name (:_id domain))
+  domain)
 
 (defn create
   [domain & [options & _]]

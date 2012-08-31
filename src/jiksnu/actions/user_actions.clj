@@ -490,4 +490,5 @@
    (alter actions.domain/delete-hooks
           conj (fn [domain]
                  (doseq [user (model.user/fetch-by-domain domain)]
-                   (delete user))))))
+                   (delete user))
+                 domain))))
