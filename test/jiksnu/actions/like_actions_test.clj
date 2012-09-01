@@ -10,11 +10,11 @@
 
 (test-environment-fixture
 
- ;; (fact "#'show"
- ;;   (let [tag-name (fseq :word)]
- ;;     (show tag-name) =>
- ;;     (every-checker
- ;;      seq?)))
+ (fact "#'show"
+   (let [tag-name (fseq :word)]
+     (show tag-name) =>
+     (every-checker
+      seq?)))
 
  (fact "#'delete"
    (let [like (model.like/create (factory :like))]
