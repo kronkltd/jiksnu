@@ -45,6 +45,17 @@
       (second (model.user/split-uri id))
       (.getHost uri))))
 
+(defonce delete-hooks (ref []))
+
+(defn prepare-delete
+  ([item]
+     (prepare-delete item @delete-hooks))
+  ([item hooks]
+     (if (seq hooks)
+       (recur ((first hooks) item) (rest hooks))
+       item)))
+
+
 
 (defn get-username-from-atom-property
   [user-meta]

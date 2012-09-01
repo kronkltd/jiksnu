@@ -306,4 +306,12 @@ serialization"
    ["jiksnu.filters.activity-filters"
     "jiksnu.sections.activity-sections"
     "jiksnu.triggers.activity-triggers"
-    "jiksnu.views.activity-views"]))
+    "jiksnu.views.activity-views"])
+
+  ;; cascade delete on domain deletion
+  (dosync
+   (alter actions.user/delete-hooks
+          conj (fn [user]
+                 (doseq [activity (find-by-user user)]
+                   (delete activity))
+                 user))))
