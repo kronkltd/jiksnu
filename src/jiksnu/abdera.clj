@@ -132,6 +132,16 @@ this is for OSW
            (when (seq extensions) {:extensions extensions})
            (when (seq type)       {:type (str type)}))))
 
+(defn parse-notice-info
+  "extract the notice info from a statusnet element"
+  [^Element element]
+  (let [source (.getAttributeValue element "source")
+        local-id (.getAttributeValue element "local_id")
+        source-link (.getAttributeValue element "source_link")]
+    {:source source
+     :source-link source-link
+     :local-id local-id}))
+
 
 
 

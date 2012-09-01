@@ -23,7 +23,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [monger.collection :as mc])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
@@ -56,21 +57,10 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
     ;; TODO: these should have a common geo property
     {:geo {:lat lat :long long}}))
 
-(defn parse-notice-info
-  "extract the notice info from a statusnet element"
-  [^Element element]
-  (let [source (.getAttributeValue element "source")
-        local-id (.getAttributeValue element "local_id")
-        source-link (.getAttributeValue element "source_link")]
-    {:source source
-     :source-link source-link
-     :local-id local-id}))
-
 (defn parse-extension-element
   "parse atom extensions"
   [element]
-  (let [qname (.getQName element)
-        qname (element/parse-qname qname)]
+  (let [qname (element/parse-qname (.getQName element))]
     (condp = (:namespace qname)
       ns/as (condp = (:name qname)
               "actor" nil
@@ -78,7 +68,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
               nil)
 
       ns/statusnet (condp = (:name qname)
-                     "notice_info" (parse-notice-info element)
+                     "notice_info" (abdera/parse-notice-info element)
                      nil)
 
       ns/thr (condp = (:name qname)
@@ -90,6 +80,21 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
                nil)
 
       nil)))
+
+(defaction add-link*
+  [item link]
+  (mc/update "activities" {:_id (:_id item)}
+             {:$addToSet {:links link}})
+  item)
+
+;; FIXME: this is always hitting the else branch
+(defn add-link
+  [user link]
+  (if-let [existing-link (model.activity/get-link user
+                                                  (:rel link)
+                                                  (:type link))]
+    user
+    (add-link* user link)))
 
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients
@@ -166,9 +171,10 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
-  ([entry] (entry->activity entry nil))
-  ([^Entry entry feed]
-     (let [{:keys [extensions content id title published updated]} (parse-entry entry)
+  ([entry] (entry->activity entry nil nil))
+  ([^Entry entry feed source]
+     (let [{:keys [extensions content id title published updated]}
+           (parse-entry entry)
            original-activity (model.activity/fetch-by-remote-id id)
            verb (get-verb entry)
            user (-> entry
@@ -178,7 +184,7 @@ serialization"
            extension-maps (->> extensions
                                (map parse-extension-element)
                                doall)
-           links (seq (abdera/parse-links entry))
+           links (log/spy (seq (abdera/parse-links entry)))
 
            irts (seq (abdera/parse-irts entry))
 
@@ -221,6 +227,7 @@ serialization"
                          (when verb              {:verb verb})
                          {:id id
                           :author (:_id user)
+                          :update-source (:_id source)
                           ;; TODO: try to read
                           :public true
                           :object (merge (when object-type {:object-type object-type})

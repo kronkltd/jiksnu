@@ -25,18 +25,15 @@
 
 (def create-validators
   (validation-set
-   (presence-of :username)
-   (presence-of :domain)
-   (presence-of :url)
-   (presence-of :id)
-   #_(presence-of :local)
-   (presence-of :created)
-   (presence-of :updated)
-   (presence-of :_id)
-   (presence-of :avatar-url)
-   (acceptance-of :username :accept string?)
-   (acceptance-of :domain :accept string?)
-   (acceptance-of :local :accept (partial instance? Boolean))))
+   (presence-of   :_id)
+   (presence-of   :id)
+   (acceptance-of :username   :accept string?)
+   (acceptance-of :domain     :accept string?)
+   (presence-of   :url)
+   (presence-of   :created)
+   (presence-of   :updated)
+   (presence-of   :avatar-url)
+   (acceptance-of :local      :accept (partial instance? Boolean))))
 
 (defn set-id
   [user]
@@ -120,7 +117,7 @@
 
 (defn get-link
   [user rel content-type]
-  (first (rel-filter rel (:links user) content-type)))
+  (first (model/rel-filter rel (:links user) content-type)))
 
 (defn drop!
   []

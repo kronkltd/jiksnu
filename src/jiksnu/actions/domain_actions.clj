@@ -13,6 +13,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
+            [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
            jiksnu.model.Domain))
@@ -58,9 +59,30 @@
        (cons (model.domain/host-meta-link domain))
        (keep fetch-xrd*) first))
 
-(defaction update
+;; (defaction update
+;;   [domain]
+;;   (model.domain/update (log/spy domain)))
+
+(defaction set-discovered!
+  "marks the domain as having been discovered"
   [domain]
-  (model.domain/update domain))
+  (model.domain/set-field domain :discovered true))
+
+(defaction add-link*
+  [item link]
+  (mc/update "domains" {:_id (:_id item)}
+             {:$addToSet {:links link}})
+  item)
+
+;; FIXME: this is always hitting the else branch
+(defn add-link
+  [item link]
+  (if-let [existing-link (model.domain/get-link item
+                                                (:rel link)
+                                                (:type link))]
+    item
+    (add-link* item link)))
+
 
 (defn discover-webfinger
   [^Domain domain url]
@@ -68,9 +90,10 @@
   (if-let [xrd (fetch-xrd domain url) ]
     (if-let [links (model.webfinger/get-links xrd)]
       ;; TODO: do individual updates
-      (update (-> domain
-                  (assoc :links links)
-                  (assoc :discovered true)))
+      (do
+        (set-discovered! domain)
+        (doseq [link links]
+          (add-link link)))
       (throw+  "Host meta does not have any links"))
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
@@ -111,7 +134,8 @@
 
 (defn current-domain
   []
-  (find-or-create {:_id (config :domain)}))
+  (find-or-create {:_id (config :domain)
+                   :local true}))
 
 (defaction ping
   [domain]
@@ -123,21 +147,13 @@
   (model.domain/set-field domain :xmpp false)
   false)
 
-(defaction set-discovered!
-  "marks the domain as having been discovered"
-  [domain]
-  (model.domain/set-field domain :discovered true))
-
 (defaction set-xmpp
   [domain value]
   (model.domain/set-field domain :xmpp false))
 
 (defaction ping-response
   [domain]
-  (-> domain
-      (assoc :xmpp true)
-      set-discovered!
-      model.domain/update))
+  (set-xmpp domain true))
 
 (defn fetch-statusnet-config
   ([domain] (fetch-statusnet-config domain nil))
@@ -147,17 +163,17 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (-> domain
-      (assoc :statusnet-config (fetch-statusnet-config domain))
-      update))
+  (let [sconfig (fetch-statusnet-config domain)]
+    (model.domain/set-field domain :statusnet-config sconfig)))
 
 (defaction discover
   [^Domain domain url]
-  (log/debugf "discovering domain - %s" (:_id domain))
-  (future (discover-webfinger domain url))
-  (future (discover-onesocialweb domain url))
-  (future (discover-statusnet-config domain url))
-  (model.domain/fetch-by-id (:_id domain)))
+  (when-not (:local (log/spy domain))
+    (log/debugf "discovering domain - %s" (:_id domain))
+    (future (discover-webfinger domain url))
+    (future (discover-onesocialweb domain url))
+    (future (discover-statusnet-config domain url))
+    (model.domain/fetch-by-id (:_id domain))))
 
 (defn get-user-meta-url
   [domain user-uri]

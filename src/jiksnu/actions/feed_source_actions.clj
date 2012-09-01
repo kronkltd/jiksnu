@@ -145,6 +145,17 @@
          (catch Exception ex
            (log/error ex)))))
 
+(defn parse-feed
+  [source feed]
+  (let [{:keys [topic]} (log/spy source)]
+    (if (seq (:watchers source))
+      (do (mark-updated source)
+          (doseq [entry (.getEntries feed)]
+            (let [activity (actions.activity/entry->activity (log/spy entry) (log/spy feed) source)]
+              (actions.activity/create activity))))
+      (do (log/warnf "no watchers for %s" topic)
+          (remove-subscription source)))))
+
 (defaction fetch-updates
   "Fetch updates for the source"
   [source]
@@ -156,11 +167,14 @@
             (when-not (= feed-title (:title source))
               (log/info "updating title")
               (model.feed-source/set-field! source :title feed-title))
+            ;; TODO: This should be automatic for any transformation
             (mark-updated source)
+
             (if-let [hub-link (-?> feed (.getLink "hub")
                                    .getHref str)]
               (model.feed-source/set-field! source :hub hub-link))
-            (process-entries feed)))
+
+            (parse-feed source feed)))
     source))
 
 (defaction add-watcher

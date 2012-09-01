@@ -105,16 +105,9 @@
   (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (if (seq (:watchers source))
-        (do (actions.feed-source/mark-updated source)
-            (doseq [entry (.getEntries feed)]
-              (let [activity (actions.activity/entry->activity entry feed)]
-                (actions.activity/create activity))))
-        (do (log/warnf "no watchers for %s" topic)
-            (actions.feed-source/remove-subscription source)))
+      (actions.feed-source/parse-feed source feed)
       (throw+ "could not create source"))
-    (throw+ "Could not determine topic"))
-  true)
+    (throw+ "Could not determine topic")))
 
 (defaction user-microsummary
   [user]

@@ -25,11 +25,15 @@
 (def create-validators
   (validation-set
    (presence-of :_id)
-   (presence-of [:object :object-type])
    (presence-of :title)
+   (presence-of :author)
+   (presence-of :content)
+   (presence-of :public)
+   (presence-of :update-source)
+   ;; (presence-of :conversations)
    (presence-of :created)
    (presence-of :updated)
-   (presence-of :author)))
+   (presence-of [:object :object-type])))
 
 ;; TODO: This operation should be performed on local posts. Remote
 ;; posts without an id should be rejected
@@ -45,6 +49,10 @@
     ;; TODO: strip down to plain text and limit to 140 characters
     (assoc activity :title (:content activity))
     activity))
+
+(defn get-link
+  [user rel content-type]
+  (first (model/rel-filter rel (:links user) content-type)))
 
 (defn set-object-id
   [activity]

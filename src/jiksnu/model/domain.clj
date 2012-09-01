@@ -50,7 +50,7 @@
         errors (create-validators domain)]
     (if (empty? errors)
       (do
-        (log/debugf "Creating domain %s" (:_id domain))
+        (log/debugf "Creating domain: %s" domain)
         (mc/insert collection-name domain)
         (fetch-by-id (:_id domain)))
       (throw+ {:type :validation :errors errors}))))
@@ -62,11 +62,15 @@
      ((model/make-fetch-fn model/map->Domain collection-name)
       params options)))
 
+(defn get-link
+  [item rel content-type]
+  (first (model/rel-filter rel (:links item) content-type)))
+
 ;; TODO: don't use
-(defn update
-  [domain]
-  (mc/save collection-name domain)
-  domain)
+;; (defn update
+;;   [domain]
+;;   (mc/save collection-name domain)
+;;   domain)
 
 ;; TODO: add the links to the list
 (defn add-links

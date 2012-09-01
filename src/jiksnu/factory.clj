@@ -2,10 +2,13 @@
   (:use [ciste.config :only [config]]
         [clj-factory.core :only [defseq deffactory fseq factory]])
   (:require [clj-time.core :as time]
+            [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.abdera :as abdera]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]))
 
 (defn domain-id
@@ -14,6 +17,12 @@
 
 (defn activity-id
   [] (:_id (model.activity/create (factory :activity))))
+
+(defn conversation-id
+  [] (:_id (model.conversation/create (factory :conversation))))
+
+(defn source-id
+  [] (:_id (model.feed-source/create (factory :feed-source))))
 
 (defn user-id
   []
@@ -163,7 +172,9 @@
 (deffactory :activity
   {:title (fseq :title)
    :content (fseq :content)
-   :author #'user-id})
+   :author #'user-id
+   :update-source #'source-id
+   :conversations #'conversation-id})
 
 (deffactory :subscription
   {:to #'user-id
