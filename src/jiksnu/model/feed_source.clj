@@ -32,6 +32,14 @@
         set-updated-time
         set-created-time)))
 
+(defn set-field!
+  "Updates user's field to value"
+  [user field value]
+  (log/debugf "setting %s (%s = %s)" (:_id user) field value)
+  (mc/update collection-name
+             {:_id (:_id user)}
+             {:$set {field value}}))
+
 (defn fetch-by-id
   [id]
   (if-let [record (mc/find-map-by-id collection-name id)]
