@@ -59,10 +59,6 @@
        (cons (model.domain/host-meta-link domain))
        (keep fetch-xrd*) first))
 
-;; (defaction update
-;;   [domain]
-;;   (model.domain/update (log/spy domain)))
-
 (defaction set-discovered!
   "marks the domain as having been discovered"
   [domain]
@@ -168,7 +164,7 @@
 
 (defaction discover
   [^Domain domain url]
-  (when-not (:local (log/spy domain))
+  (when-not (:local domain)
     (log/debugf "discovering domain - %s" (:_id domain))
     (future (discover-webfinger domain url))
     (future (discover-onesocialweb domain url))

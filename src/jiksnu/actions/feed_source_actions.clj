@@ -147,11 +147,11 @@
 
 (defn parse-feed
   [source feed]
-  (let [{:keys [topic]} (log/spy source)]
+  (let [{:keys [topic]} source]
     (if (seq (:watchers source))
       (do (mark-updated source)
           (doseq [entry (.getEntries feed)]
-            (let [activity (actions.activity/entry->activity (log/spy entry) (log/spy feed) source)]
+            (let [activity (actions.activity/entry->activity entry feed source)]
               (actions.activity/create activity))))
       (do (log/warnf "no watchers for %s" topic)
           (remove-subscription source)))))

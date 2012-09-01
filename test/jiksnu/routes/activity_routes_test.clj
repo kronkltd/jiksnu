@@ -20,35 +20,35 @@
 
 (test-environment-fixture
 
- (fact "update"
-   (fact "when the user is authenticated"
-     (let [author (model.user/create (factory :local-user))
-           content (fseq :content)
-           data (json/json-str                  
-                 {:content content})]
-       data => string?)))
+ ;; (fact "update"
+ ;;   (fact "when the user is authenticated"
+ ;;     (let [author (model.user/create (factory :local-user))
+ ;;           content (fseq :content)
+ ;;           data (json/json-str
+ ;;                 {:content content})]
+ ;;       data => string?)))
  
  (fact "show-http-route"
-   (future-fact "when the user is not authenticated"
-     (fact "and the activity does not exist"
-       (let [author (model.user/create (factory :local-user))
-             activity (factory :activity)]
-         (->> (str "/notice/" (:_id activity))
-              (mock/request :get)
-              response-for) =>
-              (contains {:status 404})))
+   ;; (future-fact "when the user is not authenticated"
+   ;;   (fact "and the activity does not exist"
+   ;;     (let [author (model.user/create (factory :local-user))
+   ;;           activity (factory :activity)]
+   ;;       (->> (str "/notice/" (:_id activity))
+   ;;            (mock/request :get)
+   ;;            response-for) =>
+   ;;            (contains {:status 404})))
 
-     (fact "and there are activities"
-       (let [author (model.user/create (factory :local-user))
-             activity (model.activity/create (factory :activity {:author (:_id author)}))]
-         (->> (str "/notice/" (:_id activity))
-              (mock/request :get)
-              response-for) =>
-              (every-checker
-               (comp status/success? :status)
-               (fn [response]
-                 (fact
-                   (:body response) => (re-pattern (str (:_id activity)))))))))
+   ;;   (fact "and there are activities"
+   ;;     (let [author (model.user/create (factory :local-user))
+   ;;           activity (model.activity/create (factory :activity {:author (:_id author)}))]
+   ;;       (->> (str "/notice/" (:_id activity))
+   ;;            (mock/request :get)
+   ;;            response-for) =>
+   ;;            (every-checker
+   ;;             (comp status/success? :status)
+   ;;             (fn [response]
+   ;;               (fact
+   ;;                 (:body response) => (re-pattern (str (:_id activity)))))))))
    (fact "when the user is authenticated"
      (fact "when a private activity exists"
        (let [author (model.user/create (factory :local-user))
@@ -62,24 +62,24 @@
               map?
               (comp status/redirect? :status))))))
  
- (fact "oembed"
-   (fact "when the format is json"
-     (let [activity (model.activity/create (factory :activity {:local true}))]
-       (-> (mock/request :get (with-context [:http :html]
-                                (str "/main/oembed?format=json&url=" (full-uri activity))))
-           response-for) =>
-           (every-checker
-            map?
-            (fn [response]
-              (fact
-                (:status response) => status/success?)))))
-   (fact "when the format is xml"
-     (let [activity (model.activity/create (factory :activity
-                                                    {:local true}))]
-       (-> (mock/request :get (with-context [:http :html]
-                                (str "/main/oembed?format=xml&url=" (full-uri activity))))
-           response-for) =>
-           (every-checker
-            map?
-            (comp status/success? :status)))))
+ ;; (fact "oembed"
+ ;;   (fact "when the format is json"
+ ;;     (let [activity (model.activity/create (factory :activity {:local true}))]
+ ;;       (-> (mock/request :get (with-context [:http :html]
+ ;;                                (str "/main/oembed?format=json&url=" (full-uri activity))))
+ ;;           response-for) =>
+ ;;           (every-checker
+ ;;            map?
+ ;;            (fn [response]
+ ;;              (fact
+ ;;                (:status response) => status/success?)))))
+ ;;   (fact "when the format is xml"
+ ;;     (let [activity (model.activity/create (factory :activity
+ ;;                                                    {:local true}))]
+ ;;       (-> (mock/request :get (with-context [:http :html]
+ ;;                                (str "/main/oembed?format=xml&url=" (full-uri activity))))
+ ;;           response-for) =>
+ ;;           (every-checker
+ ;;            map?
+ ;;            (comp status/success? :status)))))
  )

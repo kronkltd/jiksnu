@@ -5,7 +5,7 @@
         [jiksnu.session :only [current-user current-user-id is-admin?]]
         [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
+        [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [clj-time.core :as time]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
@@ -24,16 +24,17 @@
 
 (def create-validators
   (validation-set
-   (presence-of :_id)
-   (presence-of :title)
-   (presence-of :author)
-   (presence-of :content)
-   (presence-of :public)
-   (presence-of :update-source)
+   (presence-of   :_id)
+   (presence-of   :title)
+   (presence-of   :author)
+   (presence-of   :content)
+   (acceptance-of :local         :accept (partial instance? Boolean))
+   (acceptance-of :public        :accept (partial instance? Boolean))
+   (presence-of   :update-source)
    ;; (presence-of :conversations)
-   (presence-of :created)
-   (presence-of :updated)
-   (presence-of [:object :object-type])))
+   (presence-of   :created)
+   (presence-of   :updated)
+   (presence-of   [:object :object-type])))
 
 ;; TODO: This operation should be performed on local posts. Remote
 ;; posts without an id should be rejected

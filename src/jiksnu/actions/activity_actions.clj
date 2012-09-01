@@ -184,7 +184,7 @@ serialization"
            extension-maps (->> extensions
                                (map parse-extension-element)
                                doall)
-           links (log/spy (seq (abdera/parse-links entry)))
+           links (seq (abdera/parse-links entry))
 
            irts (seq (abdera/parse-irts entry))
 
