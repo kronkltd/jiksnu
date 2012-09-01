@@ -89,7 +89,8 @@
       (do
         (set-discovered! domain)
         (doseq [link links]
-          (add-link link)))
+          (add-link link))
+        domain)
       (throw+  "Host meta does not have any links"))
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
