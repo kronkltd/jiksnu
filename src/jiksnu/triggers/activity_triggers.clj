@@ -67,7 +67,7 @@
     (model.item/push author activity)
 
     ;; Discover conversation
-    (doseq [conversation-uri (:conversations activity)]
+    (doseq [conversation-uri (:conversation-uris activity)]
       (let [atom-link (model/extract-atom-link conversation-uri)
             source (actions.feed-source/find-or-create {:topic atom-link} {})]
         #_(fetch-remote-feed source)))

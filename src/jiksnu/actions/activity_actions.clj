@@ -217,7 +217,7 @@ serialization"
                          (when irts              {:irts irts})
                          (when (seq links)       {:links links})
                          (when (seq conversation-uris)
-                           {:conversations conversation-uris})
+                           {:conversation-uris conversation-uris})
                          (when (seq mentioned-uris)
                            {:mentioned-uris mentioned-uris})
                          (when (seq enclosures)

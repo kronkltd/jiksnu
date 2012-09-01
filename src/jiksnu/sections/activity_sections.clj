@@ -299,12 +299,11 @@
                   (filter #(= (:type %) "text/html"))
                   first :href))}
        "foreign service"]])
-   (when (:conversations activity)
-     (list
-      " "
-      [:a {:href (first (:conversations activity))}
-       "in context"]))
-
+   #_(when (:conversation-uris activity)
+       (list
+        " "
+        [:a {:href (first (:conversation-uris activity))}
+         "in context"]))
    (when-let [geo (:geo activity)]
      (list " near "
            [:a.geo-link {:href "#"}
@@ -598,8 +597,8 @@
            ;; TODO: Some of these links don't make sense in the
            ;; context of an AS stream
            {:links (:links activity)})
-         (when (:conversations activity)
-           {:context {:conversations (first (:conversations activity))}})
+         (when (:conversation-uris activity)
+           {:context {:conversations (first (:conversation-uris activity))}})
          (if-let [geo (:geo activity)]
            {:location {:objectType "place"
                        :lat (:lat geo)
@@ -652,7 +651,7 @@
     :user (let [user (actions.activity/get-author activity)]
             (show-section user))
     :statusnet_html (:content activity)}
-   (when-let [conversation (first (:conversations activity))]
+   (when-let [conversation (first (:conversation-uris activity))]
      {:statusnet_conversation_id conversation})
    (when-let [irt (first (:irts activity))]
      {:in_reply_to_status_id irt})

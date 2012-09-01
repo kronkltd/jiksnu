@@ -7,7 +7,7 @@
 
 (defn routes
   []
-  [[[:get (named-path "conversation index")] #'conversation/index]
-   [[:get "/main/conversations.:format"]     #'conversation/index]
-   [[:get (named-path "show conversation")]  #'conversation/show]
-   [[:get "/main/conversations/:id.:format"] #'conversation/show]])
+  [[[:get (named-path "conversation index")]                  #'conversation/index]
+   [[:get (str (named-path "conversation index") ".:format")] #'conversation/index]
+   [[:get (named-path "show conversation")]                   #'conversation/show]
+   [[:get (str (named-path "show conversation") ".:format")]  #'conversation/show]])
