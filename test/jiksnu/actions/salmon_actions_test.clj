@@ -1,7 +1,7 @@
 (ns jiksnu.actions.salmon-actions-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
-        midje.sweet
+        [midje.sweet :only [anything fact future-fact truthy =>]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]
@@ -95,7 +95,7 @@
            ;; TODO: specify a public key?
            (get-key user) => (partial instance? Key))))))
 
- (fact "#'signature-valid?"
+ (future-fact "#'signature-valid?"
    (fact "when it is valid"
      (fact "should return truthy"
        (let [key (model.key/get-key-from-armored
@@ -117,7 +117,7 @@
    (fact "should return an envelope"
      (stream->envelope (valid-envelope-stream)) => map?))
 
- (fact "#'process"
+ (future-fact "#'process"
    (fact "with a valid signature"
      (fact "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)

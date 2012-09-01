@@ -89,7 +89,8 @@
   :warn-on-reflection false
 
   :profiles {:dev
-             {:dependencies
+             {:resource-paths ["test-resources"]
+              :dependencies
               [[midje "1.5.0-SNAPSHOT"
                  :exclusions [joda-time]]
                [ring-mock "0.1.3"]

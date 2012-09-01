@@ -17,5 +17,5 @@
  (fact "abdera-to-tigase-element"
    (fact "should return a tigase element"
      (with-context [:xmpp :atom]
-       (let [element (show-section (model/map->Activity (factory Activity)))]
+       (let [element (show-section (model/map->Activity (factory :activity)))]
          (abdera-to-tigase-element element) => element/element?)))))
