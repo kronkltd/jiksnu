@@ -54,9 +54,7 @@
        (fact "should parse the published field"
          (let [feed nil #_(abdera/load-file "identica-update.xml")
                entry (first (abdera/get-entries feed))]
-           (entry->activity entry) => model/activity?
-           (provided
-            (.getId entry) => "1"))))))
+           (entry->activity entry) => model/activity?)))))
 
  (fact "#'find-by-user"
    (fact "when the user has activities"

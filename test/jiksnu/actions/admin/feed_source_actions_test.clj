@@ -1,18 +1,23 @@
 (ns jiksnu.actions.admin.feed-source-actions-test
-  (:use [jiksnu.test-helper :only [test-environment-fixture]]
-        jiksnu.actions.admin.feed-source-actions
-        midje.sweet))
+  (:use [clj-factory.core :only [factory]]
+        [jiksnu.actions.admin.feed-source-actions :only [index]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [midje.sweet :only [fact =>]])
+  (:require [jiksnu.model.feed-source :as model.feed-source]))
 
 (test-environment-fixture
 
  (fact "#'index"
    (fact "when there are no sources"
-     (fact "should return an empty sequence"))
+     (fact "should return an empty sequence"
+       (:items (index)) => empty?))
 
    (fact "when there are many sources"
      (fact "should return a limited ammount"
-       (let [response (index)]
-         ;; TODO: hardcoded configurable value
-         (count response) => 20))))
+       (dotimes [i 25]
+         (model.feed-source/create (factory :feed-source)))
+
+       ;; TODO: hardcoded configurable value
+       (count (:items (index))) => 20)))
 
  )
