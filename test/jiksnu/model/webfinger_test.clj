@@ -29,13 +29,13 @@
        (provided
          (cm/fetch-resource .url.) => ""))))
  
- (future-fact "#'get-links"
+ (fact "#'get-links"
    (fact "When it has links"
      (fact "should return the sequence of links"
        (let [xrd nil]
          (get-links xrd)) => seq?)))
 
- (future-fact "#'get-keys-from-xrd"
+ (fact "#'get-keys-from-xrd"
    (fact "should return a sequence of keys for the uri"
      (let [uri "acct:duck@kronkltd.net"]
        (get-keys uri)) => seq?))

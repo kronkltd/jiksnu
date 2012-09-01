@@ -6,10 +6,10 @@
 (test-environment-fixture
 
  (fact "#'index"
-   (future-fact "when there are no sources"
+   (fact "when there are no sources"
      (fact "should return an empty sequence"))
 
-   (future-fact "when there are many sources"
+   (fact "when there are many sources"
      (fact "should return a limited ammount"
        (let [response (index)]
          ;; TODO: hardcoded configurable value

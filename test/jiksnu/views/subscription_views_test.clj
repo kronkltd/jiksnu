@@ -62,7 +62,7 @@
        (with-serialization :xmpp
          (with-format :xmpp
            ;; TODO: this should be an error packet
-          (future-fact "when there is not a subscription"
+          (fact "when there is not a subscription"
             (fact "should return an error packet"
               (apply-view request nil) => packet/packet?))
           

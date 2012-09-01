@@ -5,7 +5,7 @@
 
 (test-environment-fixture
 
- (future-fact "#'add-watcher"
+ (fact "#'add-watcher"
    (add-watcher .source. .user.) => truthy
    )
  )

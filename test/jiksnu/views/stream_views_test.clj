@@ -25,7 +25,7 @@
    (let [action #'public-timeline]
      (fact "when the serialization is :http"
        (with-serialization :http
-         #_(fact "when the format is :atom"
+         (fact "when the format is :atom"
            (with-format :atom
              (fact "when there are activities"
                (model/drop-all!)
@@ -79,7 +79,7 @@
                               (ids id) => truthy))
                           (count activity-elements) => 20)))))))))))))
 
- #_(fact "apply-view #'user-timeline"
+ (fact "apply-view #'user-timeline"
    (let [action #'user-timeline]
      (fact "when the serialization is :http"
        (with-serialization :http

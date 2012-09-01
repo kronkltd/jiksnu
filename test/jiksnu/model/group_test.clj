@@ -10,7 +10,7 @@
 (test-environment-fixture
 
  (fact "#'delete"
-   (future-fact "When the record does not exist"
+   (fact "When the record does not exist"
      (delete {:_id (model/make-id)}) =>
      (every-checker
       nil?))

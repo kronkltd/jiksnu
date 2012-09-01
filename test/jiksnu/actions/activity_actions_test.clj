@@ -50,13 +50,13 @@
                                     (factory :activity {:author (:_id user)})))]
            (entry->activity entry) => model/activity?)))
      
-     (future-fact "when coming from an identi.ca feed"
+     (fact "when coming from an identi.ca feed"
        (fact "should parse the published field"
          (let [feed nil #_(abdera/load-file "identica-update.xml")
                entry (first (abdera/get-entries feed))]
            (entry->activity entry) => model/activity?
-           #_(provided
-              (.getId entry) => "1"))))))
+           (provided
+            (.getId entry) => "1"))))))
 
  (fact "#'find-by-user"
    (fact "when the user has activities"

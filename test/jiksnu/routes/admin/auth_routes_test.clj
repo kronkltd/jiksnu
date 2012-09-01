@@ -22,7 +22,7 @@
           map?
           (comp status/redirect? :status)))
 
-   (future-fact "When authenticated as an admin"
+   (fact "When authenticated as an admin"
      (let [user (model.user/create (factory :user {:admin true}))]
        (with-user user
          (-> (mock/request :get "/admin/auth")

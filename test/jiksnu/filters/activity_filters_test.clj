@@ -26,7 +26,7 @@
 
 (test-environment-fixture
 
- (future-fact "filter-action #'actions.activity/create :xmpp"
+ (fact "filter-action #'actions.activity/create :xmpp"
    (let [action  #'actions.activity/create]
      (fact "when the user is logged in"
        (fact "and it is a valid activity"

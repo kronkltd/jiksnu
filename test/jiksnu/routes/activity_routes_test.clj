@@ -29,7 +29,7 @@
        data => string?)))
  
  (fact "show-http-route"
-   (future-fact "when the user is not authenticated"
+   (fact "when the user is not authenticated"
      (fact "and the activity does not exist"
        (let [author (model.user/create (factory :local-user))
              activity (factory :activity)]

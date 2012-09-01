@@ -148,7 +148,7 @@
          (model/drop-all!)
          (let [domain-name (fseq :domain)
                uri (str "http://" domain-name "/users/1")
-               person (.newAuthor abdera/*abdera-factory*)]
+               person (.newAuthor abdera/abdera-factory)]
            (doto person
              (.setUri uri))
            ;; (person->user person) => (partial instance? User)

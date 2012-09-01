@@ -29,7 +29,7 @@
  (fact "#'delete"
 
    ;; There is no reason this shouldn't be a success
-   (future-fact "when the domain does not exist"
+   (fact "when the domain does not exist"
      (model.domain/drop!)
      (let [domain (factory :domain {:_id (fseq :domain)})]
        (delete domain) => nil?))

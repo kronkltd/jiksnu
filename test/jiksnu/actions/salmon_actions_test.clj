@@ -95,7 +95,7 @@
            ;; TODO: specify a public key?
            (get-key user) => (partial instance? Key))))))
 
- (future-fact "#'signature-valid?"
+ (fact "#'signature-valid?"
    (fact "when it is valid"
      (fact "should return truthy"
        (let [key (model.key/get-key-from-armored
@@ -103,21 +103,21 @@
                    :armored-e armored-e})]
          (signature-valid? val-env2 key) => truthy))))
 
- (future-fact "#'decode-envelope"
+ (fact "#'decode-envelope"
    (fact "should return a string"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (decode-envelope envelope) => string?)))
 
- (future-fact "#'extract-activity"
+ (fact "#'extract-activity"
    (fact "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (extract-activity envelope)) => model/activity?))
 
- (future-fact "#'stream->envelope"
+ (fact "#'stream->envelope"
    (fact "should return an envelope"
      (stream->envelope (valid-envelope-stream)) => map?))
 
- (future-fact "#'process"
+ (fact "#'process"
    (fact "with a valid signature"
      (fact "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)

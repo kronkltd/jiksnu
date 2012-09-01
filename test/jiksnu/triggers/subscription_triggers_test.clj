@@ -12,7 +12,7 @@
 
 (test-environment-fixture
 
- (future-fact "notify-subscribe-xmpp"
+ (fact "notify-subscribe-xmpp"
    (fact "should return a packet"
      (let [user (model.user/create (factory :user))
            subscribee (model.user/create (factory :user))
