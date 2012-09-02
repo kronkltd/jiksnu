@@ -29,7 +29,7 @@
        (provided
          (cm/fetch-resource .url.) => ""))))
  
- (fact "#'get-links"
+ (future-fact "#'get-links"
    (fact "When it has links"
      (fact "should return the sequence of links"
        (let [xrd nil]
