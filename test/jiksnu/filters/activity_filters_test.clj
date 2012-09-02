@@ -3,6 +3,7 @@
         [ciste.core :only [with-serialization with-format
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
+        [ciste.sections.default :only [index-section]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model :only [activity?]]
         [jiksnu.routes :only [app]]
