@@ -10,11 +10,6 @@
 (test-environment-fixture
 
  (fact "#'delete"
-   (fact "When the record does not exist"
-     (delete {:_id (model/make-id)}) =>
-     (every-checker
-      nil?))
-
    (fact "when the record exists"
      (let [group (create (factory :group))]
        (delete group) =>

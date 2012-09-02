@@ -23,21 +23,14 @@
        (cm/fetch-resource .url.) => "<XRD/>"))
    
    (fact "when the url does not point to a valid XRD document"
-     (fact "should raise an exception"
-       (let [url "http://example.com/.well-known/host-meta"]
-         (fetch-host-meta .url.) => (throws Exception))
-       (provided
-         (cm/fetch-resource .url.) => ""))))
+     (let [url "http://example.com/.well-known/host-meta"]
+       (fetch-host-meta .url.) => (throws Exception))
+     (provided
+       (cm/fetch-resource .url.) => "")))
  
  (future-fact "#'get-links"
    (fact "When it has links"
-     (fact "should return the sequence of links"
-       (let [xrd nil]
-         (get-links xrd)) => seq?)))
-
- (fact "#'get-keys-from-xrd"
-   (fact "should return a sequence of keys for the uri"
-     (let [uri "acct:duck@kronkltd.net"]
-       (get-keys uri)) => seq?))
+     (let [xrd nil]
+       (get-links xrd)) => seq?))
 
  )

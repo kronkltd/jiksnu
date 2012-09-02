@@ -13,8 +13,7 @@
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
-  (when-let [doc (cm/fetch-document url)]
-    doc))
+  (cm/fetch-document url))
 
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
@@ -50,22 +49,25 @@
         (:properties link))])
     (:links lrdd))])
 
+(defn parse-link
+  [link]
+  (let [rel (.getAttributeValue link "rel")
+        template (.getAttributeValue link "template")
+        href (.getAttributeValue link "href")
+        type (.getAttributeValue link "type")
+        lang (.getAttributeValue link "lang")]
+    (merge (when rel      {:rel rel})
+           (when template {:template template})
+           (when href     {:href href})
+           (when type     {:type type})
+           (when lang     {:lang lang}))))
+
 (defn get-links
   [xrd]
-  (let [links (model/force-coll (cm/query "//*[local-name() = 'Link']" xrd))]
-    (map
-     (fn [link]
-       (let [rel (.getAttributeValue link "rel")
-             template (.getAttributeValue link "template")
-             href (.getAttributeValue link "href")
-             type (.getAttributeValue link "type")
-             lang (.getAttributeValue link "lang")]
-         (merge (when rel      {:rel rel})
-                (when template {:template template})
-                (when href     {:href href})
-                (when type     {:type type})
-                (when lang     {:lang lang}))))
-     links)))
+  (->> xrd
+       (cm/query "//*[local-name() = 'Link']")
+       model/force-coll
+       (map parse-link)))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
