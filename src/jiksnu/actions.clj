@@ -10,14 +10,14 @@
   (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
     (require action-ns)
 
-    (let [action (ns-resolve action-ns
-                             (symbol action-name))
-          body (filter-action action id)]
-      {:message "action invoked"
-       :model model-name
-       :action action-name
-       :id id
-       :body body})))
+    (if-let [action (ns-resolve action-ns
+                                (symbol action-name))]
+      (let [body (filter-action action id)]
+        {:message "action invoked"
+         :model model-name
+         :action action-name
+         :id id
+         :body body}))))
 
 (deffilter #'invoke-action :command
   [action request]

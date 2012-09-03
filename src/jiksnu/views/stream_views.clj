@@ -175,20 +175,23 @@
                       :version "0.1.0-SNAPSHOT"}
           :subtitle (str "Updates from " (:username user) " on " (:domain user))
           :id (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
-          :links [{:href (full-uri user)
-                   :rel "alternate"
-                   :type "text/html"}
-                  {:href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")
-                   :rel "self"
-                   :type "application/atom+xml"}
-                  {:href (str "http://" (config :domain) "/main/push/hub")
-                   :rel "hub"}
-                  {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
-                   :rel "salmon"}
-                  {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
-                   :rel "http://salmon-protocol.org/ns/salmon-replies"}
-                  {:href (str "http://" (config :domain) "/main/salmon/user/" (:_id user))
-                   :rel "http://salmon-protocol.org/ns/salmon-mention"}]
+          :links
+          (let [d (config :domain)
+                id (:_id user)]
+            [{:href (full-uri user)
+              :rel "alternate"
+              :type "text/html"}
+             {:href (format "http://%s/api/statuses/user_timeline/%s.atom" d id)
+              :rel "self"
+              :type "application/atom+xml"}
+             {:href (format "http://%s/main/push/hub" d)
+              :rel "hub"}
+             {:href (format "http://%s/main/salmon/user/%s" d id)
+              :rel "salmon"}
+             {:href (format "http://%s/main/salmon/user/%s" d id)
+              :rel "http://salmon-protocol.org/ns/salmon-replies"}
+             {:href (format "http://%s/main/salmon/user/%s" d id)
+              :rel "http://salmon-protocol.org/ns/salmon-mention"}])
           :author (show-section user)
           :updated (:updated (first activities))
           :entries (map show-section activities)}})
@@ -213,7 +216,12 @@
      :title (:display-name user)
      :post-form true
      :viewmodel (format "/users/%s.viewmodel" (:_id user))
-     :body (index-section items page)
+     :body
+     [:div (when *dynamic*
+             {:data-bind "with: items"})
+      [:div (when *dynamic*
+              {:data-bind "with: _.map($data, jiksnu.core.get_activity)"})
+       (index-section items page)]]
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model

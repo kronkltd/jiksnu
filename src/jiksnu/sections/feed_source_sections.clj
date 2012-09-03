@@ -46,6 +46,10 @@
                   :user_id "text")
     [:input {:type "submit"}]]])
 
+(defn watch-button
+  [item]
+  (action-link "feed-source" "watch" (:_id item)))
+
 ;; actions-section
 
 (defsection actions-section [FeedSource :html]
@@ -54,7 +58,9 @@
    [:li (update-button source)]
    [:li (subscribe-button source)]
    [:li (unsubscribe-button source)]
-   [:li (delete-button source)]])
+   [:li (delete-button source)]
+   [:li (watch-button source)]
+   ])
 
 ;; add-form
 

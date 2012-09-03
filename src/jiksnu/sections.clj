@@ -12,6 +12,7 @@
    "edit"        "edit"
    "discover"    "search"
    "subscribe"   "eye-open"
+   "watch"       "eye-open"
    "unsubscribe" "eye-close"})
 
 (def action-titles
@@ -19,6 +20,7 @@
    "delete"      "Delete"
    "edit"        "Edit"
    "discover"    "Discover"
+   "watch"       "Watch"
    "subscribe"   "Subscribe"
    "unsubscribe" "Unsubscribe"})
 
