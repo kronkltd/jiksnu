@@ -17,18 +17,19 @@
    :single true
    :viewmodel "/admin/subscriptions.viewmodel"
    :body
-   [:div (if *dynamic*
-           {:data-bind "with: _.map($root.items(), function (id) {return $root.getSubscription(id)})"})
-    (let [subscriptions (if *dynamic*
-                          [(Subscription.)]
-                          items)]
-      (admin-index-section subscriptions response))]})
+   [:div {:data-bind "with: items"}
+    [:div (if *dynamic*
+            {:data-bind "with: _.map($data, jiksnu.core.get_subscription)"})
+     (let [subscriptions (if *dynamic*
+                           [(Subscription.)]
+                           items)]
+       (admin-index-section subscriptions response))]]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as response}]
   {:body {:title "Subscriptions"
           :items (map :_id items)
-          :subscriptions (admin-index-section items response)}})
+          :subscriptions (doall (admin-index-section items response))}})
 
 (defview #'show :html
   [request subscription]

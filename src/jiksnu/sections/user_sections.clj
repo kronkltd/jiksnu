@@ -572,15 +572,20 @@
      (if *dynamic*
        {:data-bind "text: bio"}
        (:bio user))]
-    ;; [:p [:a {:href (:id user)} (:id user)]]
-    ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
+    [:p
+     (if *dynamic*
+       {:data-bind "with: updateSource"}
+       (:update-source user))
+     [:span (if *dynamic*
+              {:data-bind "with: jiksnu.core.get_feed_source($data)"})
+      [:a {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"}]]]
+    [:p [:a {:href (:id user)} (:id user)]]
+    [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (if-let [key (if *dynamic*
-                (Key.)
-                (try+  (model.key/get-key-for-user user)
-                       (catch Object ex
-                         (log/warn ex)
-                         )
-                       ))]
+                   (Key.)
+                   (try+  (model.key/get-key-for-user user)
+                          (catch Object ex
+                            (log/warn ex))))]
       (show-section key))
     (user-actions user)]))
 

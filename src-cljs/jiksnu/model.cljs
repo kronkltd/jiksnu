@@ -124,6 +124,7 @@
                                "avatarUrl" nil
                                "uri" ""
                                "bio" ""
+                               "updateSource" nil
                                "links" (array)
                                "displayName" nil)
             "idAttribute" "_id"
@@ -158,6 +159,7 @@
                 "source"        "unknown"
                 "comment-count" 0
                 "like-count"    0
+                "updateSource" nil
                 "enclosures"    (array))
     "initialize" (fn [model]
                    #_(log/info "init activity")))))

@@ -134,47 +134,47 @@
 
 (defn get-activities
   "extract the activities from a feed"
-  [feed]
-  (map #(actions.activity/entry->activity % feed)
+  [feed source]
+  (map #(actions.activity/entry->activity % feed source)
        (.getEntries feed)))
 
 (defn process-entries
-  [feed]
-  (doseq [activity (get-activities feed)]
+  [feed source]
+  ;; (mark-updated source)
+  (doseq [activity (get-activities feed source)]
     (try (actions.activity/find-or-create activity)
          (catch Exception ex
            (log/error ex)))))
 
 (defn parse-feed
-  [source feed]
-  (let [{:keys [topic]} source]
-    (if (seq (:watchers source))
-      (do (mark-updated source)
-          (doseq [entry (.getEntries feed)]
-            (let [activity (actions.activity/entry->activity entry feed source)]
-              (actions.activity/create activity))))
-      (do (log/warnf "no watchers for %s" topic)
-          (remove-subscription source)))))
+  [feed source]
+  (if (seq (:watchers source))
+    (process-entries feed source)
+    (do (log/warnf "no watchers for %s" (:topic source))
+        (remove-subscription source))))
 
-(defaction fetch-updates
+(defaction update
   "Fetch updates for the source"
   [source]
   (let [{:keys [topic]} source]
     (task
-     (log/debugf "Fetching feed: %s" topic)
-     (let [feed (abdera/fetch-feed topic)
-                feed-title (.getTitle feed)]
-            (when-not (= feed-title (:title source))
-              (log/info "updating title")
-              (model.feed-source/set-field! source :title feed-title))
-            ;; TODO: This should be automatic for any transformation
-            (mark-updated source)
+     (try
+       (log/debugf "Fetching feed: %s" topic)
+       (let [feed (abdera/fetch-feed topic)
+             feed-title (.getTitle feed)]
+         (when-not (= feed-title (:title source))
+           (log/info "updating title")
+           (model.feed-source/set-field! source :title feed-title))
+         ;; TODO: This should be automatic for any transformation
+         (mark-updated source)
 
-            (if-let [hub-link (-?> feed (.getLink "hub")
-                                   .getHref str)]
-              (model.feed-source/set-field! source :hub hub-link))
+         (if-let [hub-link (-?> feed (.getLink "hub")
+                                .getHref str)]
+           (model.feed-source/set-field! source :hub hub-link))
 
-            (parse-feed source feed)))
+         (process-entries feed source))
+       (catch RuntimeException ex
+         (log/error ex))))
     source))
 
 (defaction add-watcher

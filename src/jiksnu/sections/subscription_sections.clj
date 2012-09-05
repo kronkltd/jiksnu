@@ -45,21 +45,19 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      [:div.subscribers
+      [:div.subscribers {:data-bind "with: _.map(followers, jiksnu.core.get_subscription)"}
        [:h3
-        [:a (if *dynamic*
+        [:a #_(if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}
               {:href (named-path "user subscribers" {:id (:_id user)})}) "Followers"]
         " "
         [:span (if *dynamic*
-                 {:data-bind "text: $root.followers().length"}
+                 {:data-bind "text: $data.length"}
                  (count subscriptions))]]
        [:ul.unstyled
         (if *dynamic* {:data-bind "foreach: $data"})
         (map (fn [subscription]
-               [:li (merge {:data-model "subscription"}
-                           (if *dynamic*
-                             {:data-bind "with: _.map($root.followers(), function (id) {return $root.getSubscription(id)}), attr: {'data-id': _id}"}))
+               [:li {:data-model "subscription"}
                 (let [user (if *dynamic*
                              (User.)
                              (model.subscription/get-actor subscription))]
@@ -80,7 +78,7 @@
                  {:data-bind "text: $root.following().length"}
                  (count subscriptions))]]
        [:div (if *dynamic*
-               {:data-bind "with: _.map($root.subscriptions(), function (id) {return $root.getSubscription(id)})"})
+               {:data-bind "with: _.map($root.subscriptions(), jiksnu.core.get_subscription)"})
         [:ul
          (if *dynamic*
            {:data-bind "foreach: $data"})
@@ -141,8 +139,8 @@
 (defsection admin-index-block [Subscription :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
-       (into {})))
+       (map (fn [m] (index-line m page)))
+       doall))
 
 (defsection edit-button [Subscription :html]
   [item & _]

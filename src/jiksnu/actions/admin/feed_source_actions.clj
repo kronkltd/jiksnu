@@ -24,7 +24,7 @@
 
 (defaction fetch-updates
   [& options]
-  (apply actions.feed-source/fetch-updates options))
+  (apply actions.feed-source/update options))
 
 (defaction add-watcher
   [& options]

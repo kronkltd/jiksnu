@@ -8,7 +8,7 @@
             [jiksnu.model.user :as model.user]
             [ring.util.response :as response]))
 
-(defview #'fetch-updates :html
+(defview #'update :html
   [request params]
   (-> (response/redirect-after-post "/admin/feed-sources")
         (assoc :template false)))

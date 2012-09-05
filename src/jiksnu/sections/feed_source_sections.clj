@@ -140,7 +140,7 @@
 
 (defsection admin-index-section [FeedSource]
   [items & [page]]
-  (admin-index-block items page))
+  (admin-index-block (log/spy items) page))
 
 ;; admin-show-section
 
@@ -173,6 +173,17 @@
      [:th "Updated"]
      [:th "Actions"]]]
    [:tbody (map index-line sources)]])
+
+(defsection index-block [FeedSource :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] (index-line m page)))
+       doall))
+
+
+
+
+
 
 (defsection index-line [FeedSource :html]
   [source & _]

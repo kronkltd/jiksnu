@@ -12,13 +12,16 @@
   [user]
   [:li.dropdown
    [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
-    [:span (if *dynamic*
-             {:data-bind "with: jiksnu.core.get_user(currentUser())"})
-     (display-avatar-img user 18)
-     [:span
-      (if *dynamic*
-        {:data-bind "text: displayName"}
-        (:display-name user))]] [:b.caret]]
+    [:span
+     (if *dynamic*
+       {:data-bind "with: currentUser()"})
+     [:span (if *dynamic*
+              {:data-bind "with: jiksnu.core.get_user($data)"})
+      (display-avatar-img user 18)
+      [:span
+       (if *dynamic*
+         {:data-bind "text: displayName"}
+         (:display-name user))]]] [:b.caret]]
    [:ul.dropdown-menu
     [:li
      [:a.settings-link {:href "/main/settings"} "Settings"]

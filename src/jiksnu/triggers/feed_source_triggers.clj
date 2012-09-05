@@ -21,6 +21,6 @@
 
 (defn create-trigger
   [action params source]
-  (actions.feed-source/fetch-updates source))
+  (actions.feed-source/update source))
 
 (add-trigger! #'actions.feed-source/create        #'create-trigger)

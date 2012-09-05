@@ -66,8 +66,10 @@
 
 (defview #'get-subscriptions :viewmodel
   [request [user {:keys [items] :as page}]]
-  {:body (doall {:user (show-section user)
-           :subscriptions (doall (index-section items page))})})
+  {:body
+   {:targetUser (:_id user)
+    :subscriptions (doall (index-section items page))
+    :items (map :_id items)}})
 
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]

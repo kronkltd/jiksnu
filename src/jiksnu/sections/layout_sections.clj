@@ -145,8 +145,12 @@
   (let [user (or (:user response)
                  (current-user))]
     (list
-     [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user($root.targetUser() || $root.currentUser())"})
-      (user-info-section user)]
+     [:div
+      (when *dynamic*
+        {:data-bind "with: $root.targetUser() || $root.currentUser()"}
+        )
+      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user($data)"})
+       (user-info-section user)]]
      (:aside response))))
 
 (defn devel-warning
@@ -282,7 +286,7 @@
     (list
     [:script {:type "text/javascript"}
      (format
-      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
+      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = false;" websocket-path)]
     (p/include-js
      "/assets/js/modernizr-2.6.1.js"
      "/assets/js/underscore-1.3.3.min.js"
