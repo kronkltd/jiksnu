@@ -33,7 +33,8 @@
                  [jayq "0.1.0-alpha4"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.2.0-SNAPSHOT"]
-                 [net.kronkltd/waltz "0.1.2-SNAPSHOT"]
+                 [net.kronkltd/waltz "0.1.2-SNAPSHOT"
+                  :exclusions [org.clojure/google-closure-library]]
                  [oauthentic "0.0.6"]
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"
                   :exclusions [org.apache.httpcomponents/httpmime

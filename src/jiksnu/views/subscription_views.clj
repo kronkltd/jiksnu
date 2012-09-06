@@ -1,7 +1,8 @@
 (ns jiksnu.views.subscription-views
   (:use [ciste.views :only [defview]]
         ciste.sections.default
-        jiksnu.actions.subscription-actions)
+        jiksnu.actions.subscription-actions
+        [jiksnu.sections :only [format-page-info]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.helpers.subscription-helpers :as helpers.subscription]
@@ -39,6 +40,7 @@
 (defview #'get-subscribers :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body {:user (show-section user)
+          :pageInfo (format-page-info page)
           :subscriptions (index-section items page)}})
 
 (defview #'get-subscribers :xmpp
@@ -68,6 +70,7 @@
   [request [user {:keys [items] :as page}]]
   {:body
    {:targetUser (:_id user)
+    :pageInfo (format-page-info page)
     :subscriptions (doall (index-section items page))
     :items (map :_id items)}})
 

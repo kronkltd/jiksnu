@@ -4,7 +4,7 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.user-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section]])
+        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section format-page-info]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -13,27 +13,24 @@
   (:import jiksnu.model.Activity))
 
 (defview #'index :html
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:single true
    :title "Users"
    :viewmodel "/admin/users.viewmodel"
    :body [:div (if *dynamic*
                  {:data-bind "with: _.map(items(), jiksnu.core.get_user)"}
                  )
-          (admin-index-section items response)]})
+          (admin-index-section items page)]})
 
 (defview #'index :viewmodel
-  [request {:keys [items] :as response}]
+  [request {:keys [items] :as page}]
   {:single true
    :body
    {:title "Users"
     :site {:name (config :site :name)}
     :showPostForm false
     :notifications []
-    :pageInfo {:page (:page response)
-               :totalRecords (:total-records response)
-               :pageSize (:page-size response)
-               :recordCount (count (:items response))}
+    :pageInfo (format-page-info page)
     :items (map :_id items)
     :users (doall (admin-index-section items))}})
 

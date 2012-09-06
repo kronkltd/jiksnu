@@ -3,7 +3,8 @@
         [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.activity-actions
-        [jiksnu.ko :only [*dynamic*]])
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [format-page-info]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]

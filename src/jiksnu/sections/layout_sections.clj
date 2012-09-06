@@ -4,6 +4,7 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [dump-data pagination-links]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -208,6 +209,7 @@
    (when (current-user)
      (new-post-section request response))
    (title-section request response)
+   (pagination-links (:page response))
    (:body response)
    ;; TODO: align middle
    [:footer.row-fluid.page-footer
@@ -286,7 +288,7 @@
     (list
     [:script {:type "text/javascript"}
      (format
-      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = false;" websocket-path)]
+      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
     (p/include-js
      "/assets/js/modernizr-2.6.1.js"
      "/assets/js/underscore-1.3.3.min.js"

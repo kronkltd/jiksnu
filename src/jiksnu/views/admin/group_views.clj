@@ -3,7 +3,7 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.group-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section]])
+        [jiksnu.sections :only [admin-index-section format-page-info]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.group-sections :as sections.like])
   (:import jiksnu.model.Group))
@@ -22,5 +22,6 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Groups"
+          :pageInfo (format-page-info page)
           :items (map :_id items)
           :groups (admin-index-section items page)}})

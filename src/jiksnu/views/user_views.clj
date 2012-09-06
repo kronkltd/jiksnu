@@ -4,6 +4,7 @@
         [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.user-actions
         [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [format-page-info]]
         plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -69,6 +70,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Users"
+          :pageInfo (format-page-info page)
           :items (map :_id items)
           :users (index-section items page)}})
 

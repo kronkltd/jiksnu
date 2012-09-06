@@ -4,7 +4,8 @@
         [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line show-section index-block-type]]
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.string :as string]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [inflections.core :as inf]))
 
 (def action-icons
   {"update"      "refresh"
@@ -46,6 +47,14 @@
                :type  "application/xml"}
    :viewmodel {:label "Viewmodel"
                :type  "application/json"}})
+
+(defn format-page-info
+  [page]
+  (into {}
+        (map
+         (fn [[k v]]
+           [(inf/camelize (name k) :lower) v])
+         (dissoc page :items))))
 
 (defn action-link
   ([model action id]

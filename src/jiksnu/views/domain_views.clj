@@ -6,7 +6,8 @@
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
                                               index show host-meta ping ping-response
                                               ping-error]]
-        [jiksnu.ko :only [*dynamic*]])
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [format-page-info]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.domain :as model.domain]
@@ -97,6 +98,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
+          :pageInfo (format-page-info page)
           :items (map :_id items)
           :domains (doall (index-section items page))}})
 

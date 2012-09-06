@@ -5,7 +5,7 @@
                                                          fetch-updates index
                                                          remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-show-section]]
+        [jiksnu.sections :only [admin-index-section admin-show-section format-page-info]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])
   (:require [clojure.tools.logging :as log]
@@ -50,7 +50,7 @@
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
           :items (map :_id items)
-          :pageInfo (dissoc page :items)
+          :pageInfo (format-page-info page)
           :feedSources (admin-index-section items page)}})
 
 (defview #'remove-watcher :html

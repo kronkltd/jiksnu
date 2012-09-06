@@ -3,7 +3,7 @@
         [ciste.sections.default :only [link-to]]
         [jiksnu.actions.admin.activity-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section dump-data]])
+        [jiksnu.sections :only [admin-index-section dump-data format-page-info]])
   (:require [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Activity))
 
@@ -25,5 +25,6 @@
   (doall
    {:body
     {:title "Activities"
+     :pageInfo (format-page-info page)
      :items (map :_id items)
      :activities (admin-index-section items page)}}))

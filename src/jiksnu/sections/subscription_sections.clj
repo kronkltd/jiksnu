@@ -45,7 +45,7 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      [:div.subscribers {:data-bind "with: _.map(followers, jiksnu.core.get_subscription)"}
+      [:div.subscribers {:data-bind "with: _.map($root.followers, jiksnu.core.get_subscription)"}
        [:h3
         [:a #_(if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}

@@ -2,7 +2,7 @@
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.like-actions :only [delete index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section]])
+        [jiksnu.sections :only [admin-index-section format-page-info]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.like-sections :as sections.like])
   (:import jiksnu.model.Like))
@@ -21,6 +21,7 @@
   [request {:keys [items] :as page}]
   {:body {:title "Likes"
           :items (map :_id items)
+          :pageInfo (format-page-info page)
           :likes (admin-index-section items page)}})
 
 (defview #'delete :html

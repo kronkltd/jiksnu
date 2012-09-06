@@ -3,7 +3,8 @@
         [ciste.sections.default :only [index-section add-form]]
         [jiksnu.actions.group-actions :only [add create edit-page index
                                              new-page user-list]]
-        [jiksnu.ko :only [*dynamic*]])
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [format-page-info]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.Group))
 
@@ -42,6 +43,7 @@
   [request {:keys [items] :as page}]
   {:body {:title "Groups"
           :items (map :_id items)
+          :pageInfo (format-page-info page)
           :groups (index-section items page)}})
 
 (defview #'new-page :html

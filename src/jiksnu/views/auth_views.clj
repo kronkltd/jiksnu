@@ -3,7 +3,8 @@
         [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.model
-        jiksnu.actions.auth-actions)
+        jiksnu.actions.auth-actions
+        [jiksnu.sections :only [format-page-info]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.auth-sections :as sections.auth]
             [ring.util.response :as response])

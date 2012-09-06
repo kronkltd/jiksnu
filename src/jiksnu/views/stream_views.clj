@@ -6,6 +6,7 @@
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [format-page-info]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
@@ -142,7 +143,7 @@
    :body
    {:title "Public Timeline"
     :items (map :_id items)
-    :pageInfo (dissoc page :items)
+    :pageInfo (format-page-info page)
     ;; :users (index-section (map actions.activity/get-author items))
     :activities (doall (index-section items page))}})
 
@@ -248,13 +249,14 @@
      :template false}))
 
 (defview #'user-timeline :viewmodel
-  [request [user activities-map]]
+  [request [user page]]
   {:body
-   (merge {:users (index-section [user])
-           :title (title user)
-           :items (map :_id (:items activities-map))
-           :targetUser (:_id user)
-           :activities (index-section (:items activities-map))})})
+   {:users (index-section [user])
+    :title (title user)
+    :pageInfo (format-page-info page)
+    :items (map :_id (:items page))
+    :targetUser (:_id user)
+    :activities (index-section (:items page))}})
 
 (defview #'user-timeline :xml
   [request [user activities]]
