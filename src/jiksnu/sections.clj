@@ -108,13 +108,19 @@
 
 (defn next-link
   [page]
-  [:li.next
-   [:a {:href (str "?page=" (inc page)) :rel "next"} "Next &rarr;"]])
+  [:a.next (merge {:rel "next"}
+                  (if *dynamic*
+                    {:data-bind "attr: {href: '?page=' + (1 + $data.page())}"}
+                    {:href (str "?page=" (inc page))}))
+   "Next &rarr;"])
 
 (defn prev-link
   [page]
-  [:li.previous
-   [:a {:href (str "?page=" (dec page)) :rel "prev"} "&larr; Previous"]])
+  [:a.previous (merge {:rel "prev"}
+                      (if *dynamic*
+                        {:data-bind "attr: {href: '?page=' + (0 + $data.page() - 1)}"}
+                        {:href (str "?page=" (dec page)) }))
+   "&larr; Previous"])
 
 (defn pagination-links
   [options]
@@ -123,38 +129,29 @@
         page-size (get options :page-size 20)
         ;; If no total, no pagination
         total-records (get options :total-records 0)]
-    (list [:table.paginations
-           (when *dynamic*
-             {:data-bind "with: pageInfo"})
-           [:tr.paginations-page
-            [:th.pagination-label "Page"]
-            [:td.pagination-value
-             (if *dynamic*
-               {:data-bind "text: page"}
-               page)]]
-           [:tr.paginations-page-size
-            [:th.pagination-label "Page Size"]
-            [:td.pagination-value
-             (if *dynamic*
-               {:data-bind "text: pageSize"}
-               page-size)]]
-           [:tr.paginations-record-count
-            [:th.pagination-label "Records returned"] " "
-            [:td.pagination-value
-             (if *dynamic*
-               {:data-bind "text: recordCount"}
-               (count (:items options)))]]
-           [:tr.paginations-total-records
-            [:th.pagination-label "Total Records"] " "
-            [:td.pagination-value
-             (if *dynamic*
-               {:data-bind "text: totalRecords"}
-               total-records)]]]
-          [:ul.pager
-           (when (> page 1)
-             (prev-link page))
-           (when (< (* page page-size) total-records)
-             (next-link page))])))
+    [:div (when *dynamic*
+            {:data-bind "with: pageInfo"})
+     [:div.pull-left
+      (prev-link page)]
+     [:p.pull-left
+      "Page " [:span
+               (if *dynamic*
+                 {:data-bind "text: page"}
+                 page)]
+      ". (showing " [:span
+                     (if *dynamic*
+                       {:data-bind "text: (($data.page() - 1) * $data.pageSize()) + 1"}
+                       (inc (* (dec page) page-size)))]
+      " to " [:span (if *dynamic*
+                      {:data-bind "text: ($data.page() * $data.pageSize())"}
+                      (* page page-size))]
+      " of " [:span (if *dynamic*
+                      {:data-bind "text: totalRecords"}
+                      total-records)]
+      " records)"]
+     [:div.pull-right
+      (next-link page)]
+     [:div.clearfix]]))
 
 (declare-section actions-section)
 (declare-section admin-actions-section)

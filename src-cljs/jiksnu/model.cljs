@@ -41,7 +41,7 @@
 (defvar PostForm
   [this]
   (doto this
-    (ko/assoc-observable "visible" true)
+    (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
 
 (def PageInfo
@@ -157,6 +157,7 @@
                 "url"           nil
                 "links"         (array)
                 "source"        "unknown"
+                "comments"      (array)
                 "comment-count" 0
                 "like-count"    0
                 "updateSource" nil

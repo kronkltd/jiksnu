@@ -111,7 +111,8 @@
   [request {:keys [items] :as page}]
   {:title "Public Timeline"
    :post-form true
-   :viewmodel "/api/statuses/public_timeline.viewmodel"
+   :viewmodel (str "/api/statuses/public_timeline.viewmodel"
+                   "?page=" (:page page))
    :links [{:rel "next"
             :href (str "?page=" (inc (:page page)))
             :title "Next Page"

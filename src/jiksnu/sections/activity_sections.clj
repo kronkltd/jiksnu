@@ -60,14 +60,20 @@
   (let [author (if *dynamic*
                  (User.)
                  #_(model.activity/get-author activity))]
-    [:div.comment
-     [:p (sections.user/display-avatar author)
-      (link-to author) ": "
+    [:div.comment {:data-model "activity"}
+     [:p
+      [:span (if *dynamic*
+               {:data-bind "with: author"})
+       [:span (if *dynamic*
+                {:data-bind "with: jiksnu.core.get_user($data)"})
+        (sections.user/display-avatar author)
+        (link-to author)]]
+      ": "
       [:span
        (if *dynamic*
          {:data-bind "text: title"}
          (h/h (:title activity)))]]
-     [:p (posted-link-section activity)]]))
+     #_[:p (posted-link-section activity)]]))
 
 (defn comment-link-item
   [entry activity]
@@ -312,16 +318,21 @@
 
 (defn comments-section
   [activity]
-  (list #_[:p "Comments: " (:comment-count activity) " / " (count (:comments activity))]
-        (if-let [comments (if *dynamic*
-                            [(Activity.)]
-                            (seq (second (actions.comment/fetch-comments activity))))]
-          [:section.comments {:data-bind "if: $data['comment-count'] > 0"}
-           [:h4 "Comments"]
-           [:ul.unstyled.comments
-            (map (fn [comment]
-                   [:li (show-comment comment)])
-                 comments)]])))
+  [:div (if *dynamic*
+          {:data-bind "with: comments"})
+   [:div (if *dynamic*
+           {:data-bind "with: _.map($data, jiksnu.core.get_activity)"})
+    (if-let [comments (if *dynamic*
+                        [(Activity.)]
+                        (seq (second (actions.comment/fetch-comments activity))))]
+      [:section.comments
+       ;; [:h4 "Comments"]
+       [:ul.unstyled.comments
+        (if *dynamic*
+          {:data-bind "foreach: $data"})
+        (map (fn [comment]
+               [:li (show-comment comment)])
+             comments)]])]])
 
 (defn poll-form
   [activity]
@@ -675,15 +686,15 @@
           (show-section-minimal user))]]
       (recipients-section activity)]
      [:div.entry-content
-      #_(when (:title activity)
-          [:h1.entry-title {:property "dc:title"}
-           (:title activity)])
+      (when (:title activity)
+        [:h1.entry-title {:property "dc:title"}
+         (:title activity)])
       [:p (merge {:property "dc:title"}
                  (if *dynamic*
                    {:data-bind "text: title"}))
-       (when-not *dynamic*)
-       (or #_(:title activity)
-           (:content activity))]]
+       (when-not *dynamic*
+         (or #_(:title activity)
+             (:content activity)))]]
      [:div
       [:ul.unstyled
        (map (fn [irt]

@@ -68,17 +68,45 @@
                 {:output-to "resources/public/assets/js/jiksnu.js"
                  :output-dir "target/cljsout/simple"
                  :optimizations :whitespace
-                 :pretty-print true}}
+                 :pretty-print true
+                 :externs ["resources/externs/backbone-0.9.1.js"
+                           "resources/externs/underscore-0.3.1.js"]
+
+                 ;; :foreign-libs [{:file "public/assets/js/underscore-1.3.3.js"
+                 ;;                 :provides ["_"]}
+                 ;;                {:file "public/assets/js/backbone-0.9.2.js"
+                 ;;                 :provides ["Backbone"]}]
+
+                 }}
                #_{:source-path "src-cljs"
                 :compiler
-                {:output-to "resources/public/assets/js/jiksnu.min.js"
+                {
+
+                 :output-to "resources/public/assets/js/jiksnu.min.js"
+                 :externs ["externs/backbone-0.9.1.js"
+                           "externs/underscore-0.3.1.js"]
+
+                 :foreign-libs [{:file "public/assets/js/underscore-1.3.3.js"
+                                 :provides ["_"]}
+                                {:file "public/assets/js/backbone-0.9.2.min.js"
+                                 :provides ["Backbone"]}]
+
+
+
                  :output-dir "target/cljsout/min"
-                 :optimizations :simple}}
+                 :optimizations :simple
+
+                 }}
                #_{:source-path "src-cljs"
                 :compiler
-                {:output-to "resources/public/assets/js/jiksnu.advanced.js"
-                 :output-dir "target/cljsout/advanced"
-                 :optimizations :advanced}}]}
+                  {
+                   :output-to "resources/public/assets/js/jiksnu.advanced.js"
+                   :externs ["resources/externs/backbone-0.9.1.js"
+                             "resources/externs/underscore-0.3.1.js"]
+                   :output-dir "target/cljsout/advanced"
+                   :optimizations :advanced
+
+                   }}]}
   :main ciste.runner
   :jvm-opts [
              "-server"

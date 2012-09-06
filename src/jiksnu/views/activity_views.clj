@@ -18,7 +18,8 @@
             [jiksnu.xmpp.element :as xmpp.element]
             [plaza.rdf.core :as plaza]
             [plaza.rdf.vocabularies.foaf :as foaf]
-            [ring.util.response :as response]))
+            [ring.util.response :as response])
+  (:import jiksnu.model.Activity))
 
 ;; delete
 
@@ -85,14 +86,14 @@
   [request activity]
   {:body
    [:div (if *dynamic*
-           {:data-bind "with: targetActivity"}
-           )
+           {:data-bind "with: targetActivity"})
     [:div (if *dynamic*
-            {:data-bind "with: jiksnu.core.get_activity($data)"}
-            )
-     (show-section activity)]]
-   :viewmodel (format "/notice/%s.viewmodel" (:_id activity))
-   })
+            {:data-bind "with: jiksnu.core.get_activity($data)"})
+     (let [activity (if *dynamic*
+                      (Activity.)
+                      activity)]
+       (show-section activity))]]
+   :viewmodel (format "/notice/%s.viewmodel" (:_id activity))})
 
 (defview #'show :model
   [request activity]
