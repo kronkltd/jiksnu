@@ -183,7 +183,9 @@
    :created #'time/now})
 
 (deffactory :feed-source
-  {:topic (fseq :uri)})
+  {:topic (fseq :uri)
+   :hub (fseq :uri)
+   })
 
 (deffactory :feed-subscription
   {:topic (fseq :uri)})

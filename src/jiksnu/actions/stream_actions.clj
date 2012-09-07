@@ -105,7 +105,7 @@
   (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (actions.feed-source/parse-feed source feed)
+      (actions.feed-source/parse-feed feed source)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
 

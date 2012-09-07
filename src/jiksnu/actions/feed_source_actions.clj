@@ -114,14 +114,15 @@
       (str "http://" (config :domain) "/main/push/callback")))
   ([hub topic callback]
      (log/debugf "Sending unsubscribe to %s" topic)
-     (client/post
-      hub
-      {:throw-exceptions false
-       :form-params
-       {"hub.callback" callback
-        "hub.mode" "unsubscribe"
-        "hub.topic" topic
-        "hub.verify" "async"}})))
+     (when (seq hub)
+       (client/post
+       hub
+       {:throw-exceptions false
+        :form-params
+        {"hub.callback" callback
+         "hub.mode" "unsubscribe"
+         "hub.topic" topic
+         "hub.verify" "async"}}))))
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
