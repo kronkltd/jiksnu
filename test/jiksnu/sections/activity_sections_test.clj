@@ -7,7 +7,7 @@
         jiksnu.test-helper
         jiksnu.session
         jiksnu.sections.activity-sections
-        [midje.sweet :only [fact => every-checker]])
+        [midje.sweet :only [fact future-fact => every-checker]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -24,7 +24,7 @@
 
 (test-environment-fixture
 
- (fact "#'like-button"
+ (future-fact "#'like-button"
    (like-button (model/map->Activity (factory :activity))) =>
    (every-checker
     vector?

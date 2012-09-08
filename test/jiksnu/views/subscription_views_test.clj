@@ -56,7 +56,7 @@
                       (fact
                         body => #"subscriptions"))))))))))))
 
- (fact "apply-view #'unsubscribe"
+ (future-fact "apply-view #'unsubscribe"
    (let [action #'actions.subscription/unsubscribe]
      (fact "when the serialization is :xmpp"
        (with-serialization :xmpp
