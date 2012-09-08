@@ -40,17 +40,7 @@
                          response (filter-action action request)]
                      (apply-view request response) =>
                      (every-checker
-                      map?
-                      (fn [response]
-                        (let [doc (hiccup->doc (:body response))]
-                          ;; TODO: This test relies on pagination links
-                          true
-                          (fact
-                            (-> doc
-                                (enlive/select [:.paginations-record-count
-                                                :.pagination-value])
-                                first
-                                enlive/text) => "0"))))))))))))))
+                      map?)))))))))))
  
  (fact "apply-view #'show"
    (let [action #'actions.user/show]
