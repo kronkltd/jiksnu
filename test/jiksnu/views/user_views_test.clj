@@ -20,7 +20,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.actions.user-actions :as actions.user])
+            [jiksnu.actions.user-actions :as actions.user]
+            [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader
            jiksnu.model.User))
 

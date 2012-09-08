@@ -22,7 +22,7 @@
 
 (test-environment-fixture
 
- (fact "filter-action #'actions.activity/create"
+ (future-fact "filter-action #'actions.activity/create"
    (let [action  #'actions.activity/create]
      (fact "when the serialization is :xmpp"
        (with-serialization :xmpp
@@ -39,7 +39,8 @@
                                    {:to (tigase/make-jid user)
                                     :from (tigase/make-jid user)
                                     :type :set
-                                    :body element})
+                                    :body element
+                                    })
                            request (packet/make-request packet)]
                        (filter-action action request) => activity?)))))))))))
 

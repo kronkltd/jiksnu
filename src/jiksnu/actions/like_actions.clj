@@ -26,8 +26,8 @@
   (model.like/fetch-all {:activity (:_id activity)}))
 
 (defaction show
-  [tag]
-  (implement))
+  [like]
+  like)
 
 (def index*
   (model/make-indexer 'jiksnu.model.like))

@@ -10,7 +10,7 @@
 
 (test-environment-fixture
 
- (fact "#'show"
+ (future-fact "#'show"
    (let [tag-name (fseq :word)]
      (show tag-name) =>
      (every-checker
