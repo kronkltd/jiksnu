@@ -66,12 +66,6 @@
   [item rel content-type]
   (first (model/rel-filter rel (:links item) content-type)))
 
-;; TODO: don't use
-;; (defn update
-;;   [domain]
-;;   (mc/save collection-name domain)
-;;   domain)
-
 ;; TODO: add the links to the list
 (defn add-links
   [domain links]

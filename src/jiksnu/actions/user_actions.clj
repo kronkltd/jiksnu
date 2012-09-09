@@ -25,7 +25,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
-            [jiksnu.xmpp.element :as xmpp.element]
             [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
@@ -54,8 +53,6 @@
      (if (seq hooks)
        (recur ((first hooks) item) (rest hooks))
        item)))
-
-
 
 (defn get-username-from-atom-property
   [user-meta]
@@ -99,13 +96,13 @@
       (first (model.user/split-uri id))
       (or (.getUserInfo uri)
           (if-let [domain-name (get-domain-name id)]
+            ;; TODO: should be find or create
             (let [domain (model.domain/fetch-by-id domain-name)]
-              (or
-               ;; Try getting the username from user-meta
-               (-?>> (actions.domain/get-user-meta-url domain id)
-                     model.webfinger/fetch-host-meta
-                     get-username-from-user-meta)))
-            (throw (RuntimeException. "Could not determine domain name")))))))
+              ;; Try getting the username from user-meta
+              (-?>> (actions.domain/get-user-meta-url domain id)
+                    model.webfinger/fetch-host-meta
+                    get-username-from-user-meta))
+            (throw+ "Could not determine domain name"))))))
 
 (defn get-domain
   "Return the domain of the user"
@@ -118,6 +115,7 @@
   [user]
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
+        ;; TODO: should update uri in this case
         (actions.domain/get-user-meta-url domain (:id user)))))
 
 (defaction add-link*
@@ -126,7 +124,6 @@
              {:$addToSet {:links link}})
   user)
 
-;; FIXME: this is always hitting the else branch
 (defn add-link
   [user link]
   (if-let [existing-link (model.user/get-link user
@@ -146,12 +143,13 @@
     ;; created. This should probably be explicitly done elsewhere.
     (if-let [domain (get-domain user)]
       (model.user/create user)
-      (throw (RuntimeException. "Could not determine domain for user")))))
+      (throw+ "Could not determine domain for user"))))
 
 (defaction delete
   "Delete the user"
   [^User user]
-  (model.user/delete (:_id user)))
+  (let [user (prepare-delete user)]
+    (model.user/delete user)))
 
 (defaction exists?
   [user]
@@ -177,10 +175,6 @@
      :page-size page-size
      :total-records record-count
      :args options}))
-
-;; (defn local-index
-;;   []
-;;   (implement))
 
 (defaction profile
   [& _]
@@ -213,9 +207,9 @@
                                 {:domain (:_id domain)
                                  :username username}))
                  (log/warn (str "Could not determine username for: " id))))
-           (throw (RuntimeException. "domain has not been disovered")))
-         (throw (RuntimeException. "could not determine domain")))
-       (throw (RuntimeException. "User does not have an id")))))
+           (throw+ "domain has not been disovered"))
+         (throw+ "could not determine domain"))
+       (throw+ "User does not have an id"))))
 
 (defn find-or-create-by-uri
   [uri]
@@ -274,7 +268,7 @@
          :href (str "http://" (config :domain) "/api/")
          :property [{:type "http://apinamespace.org/twitter/username"
                      :value (:username user)}]}]})
-    (throw (RuntimeException. "Not authorative for this resource"))))
+    (throw+ "Not authorative for this resource")))
 
 (defn request-vcard!
   "Send a vcard request to the xmpp endpoint of the user"
@@ -318,10 +312,8 @@
             local-id (-> person
                          (.getExtensions (QName. ns/statusnet "profile_info"))
                          (->> (map (fn [extension]
-                                     (.getAttributeValue extension "local_id")
-                                     )))
-                         first
-                         )
+                                     (.getAttributeValue extension "local_id"))))
+                         first)
             links (-> person
                       (.getExtensions (QName. ns/atom "link"))
                       (->> (map abdera/parse-link)))
@@ -451,8 +443,8 @@
                        create)]
           (actions.auth/add-password user password)
           user)
-        (throw (IllegalArgumentException. "user already exists"))))
-    (throw (IllegalArgumentException. "Missing required params"))))
+        (throw+ "user already exists")))
+    (throw+ "Missing required params")))
 
 (defaction register-page
   "Display the form to reqister a user"

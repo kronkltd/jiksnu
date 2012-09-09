@@ -202,10 +202,10 @@
         domain (tigase/get-domain user)]
     (:nodes (get-user id))))
 
-;; TODO: Should accept a user
 (defn delete
-  [id]
-  (mc/remove-by-id collection-name id))
+  "Delete the user"
+  [user]
+  (mc/remove-by-id collection-name (:_id user)))
 
 (defn update
   [^User new-user]
