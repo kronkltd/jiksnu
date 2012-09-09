@@ -23,8 +23,8 @@
   (apply actions.feed-source/remove-subscription options))
 
 (defaction fetch-updates
-  [& options]
-  (apply actions.feed-source/update options))
+  [& args]
+  (apply actions.feed-source/update args))
 
 (defaction add-watcher
   [& options]

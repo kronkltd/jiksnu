@@ -103,7 +103,7 @@
 (def get-domain       (partial get-model "domains"))
 (def get-feed-source  (partial get-model "feedSources"))
 (def get-group        (partial get-model "groups"))
-(def get-subscription (partial get-model "subscription"))
+(def get-subscription (partial get-model "subscriptions"))
 (def get-user         (partial get-model "users"))
 
 (defvar DataModelProvider

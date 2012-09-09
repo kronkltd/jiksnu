@@ -5,7 +5,7 @@
                                 edit-button         index-block index-section link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [control-line admin-index-block
+        [jiksnu.sections :only [control-line admin-index-block dump-data
                                 action-link admin-index-line admin-index-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
@@ -96,20 +96,26 @@
 (defsection admin-index-line [Subscription :html]
   [subscription & [options & _]]
   [:tr (merge {:data-model "subscription"}
-              (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
+              (when-not *dynamic*
                 {:data-id (str (:_id subscription))}))
-   [:td (link-to subscription)]
-   [:td (if-let [user (if *dynamic*
-                        (User.)
-                        (model.subscription/get-actor subscription))]
-          (link-to user)
-          "unknown")]
-   [:td (if-let [user (if *dynamic*
-                        (User.)
-                        (model.subscription/get-target subscription))]
-          (link-to user)
-          "unknown")]
+   [:td
+    (link-to subscription)]
+   [:td
+    [:div {:data-bind "with: from"}
+     [:div {:data-bind "with: jiksnu.core.get_user($data)"}
+      (if-let [user (if *dynamic*
+                      (User.)
+                      (model.subscription/get-actor subscription))]
+        (link-to user)
+        "unknown")]]]
+   [:td
+    [:div {:data-bind "with: to"}
+     [:div {:data-bind "with: jiksnu.core.get_user($data)"}
+      (if-let [user (if *dynamic*
+                      (User.)
+                      (model.subscription/get-target subscription))]
+        (link-to user)
+        "unknown")]]]
    [:td (if *dynamic* {:data-bind "text: created"} (:created subscription))]
    [:td (if *dynamic* {:data-bind "text: pending"} (:pending subscription))]
    [:td (if *dynamic* {:data-bind "text: local"} (:local subscription))]

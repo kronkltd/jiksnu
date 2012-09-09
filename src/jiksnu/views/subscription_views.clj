@@ -107,6 +107,7 @@
   [request _]
   nil)
 
+;; subscribe
 
 (defview #'subscribe :html
   [request subscription]
@@ -119,13 +120,14 @@
   (tigase/result-packet
    request (helpers.subscription/subscription-response-element subscription)))
 
+;; subscribed
 
 (defview #'subscribed :xmpp
   [request subscription]
   (tigase/result-packet
    request (helpers.subscription/subscriptions-response [subscription])))
 
-
+;; unsubscribe
 
 (defview #'unsubscribe :html
   [request subscription]
