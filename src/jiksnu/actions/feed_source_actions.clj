@@ -54,8 +54,9 @@
                         (log/info "confirming subscription removal")
                         (model.feed-source/set-field! source :subscription-status "none")
                         #_(model.feed-source/delete source))
-       (cm/implement
-        (log/warn "Unknown mode"))))
+        ;; TODO: This should probably throw
+        (cm/implement
+         (log/warn "Unknown mode"))))
     challenge))
 
 (defaction create
@@ -116,13 +117,13 @@
      (log/debugf "Sending unsubscribe to %s" topic)
      (when (seq hub)
        (client/post
-       hub
-       {:throw-exceptions false
-        :form-params
-        {"hub.callback" callback
-         "hub.mode" "unsubscribe"
-         "hub.topic" topic
-         "hub.verify" "async"}}))))
+        hub
+        {:throw-exceptions false
+         :form-params
+         {"hub.callback" callback
+          "hub.mode" "unsubscribe"
+          "hub.topic" topic
+          "hub.verify" "async"}}))))
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
@@ -145,7 +146,8 @@
   (doseq [activity (get-activities feed source)]
     (try (actions.activity/find-or-create activity)
          (catch Exception ex
-           (log/error ex)))))
+           (log/error ex)
+           (.printStackTrace ex)))))
 
 (defn parse-feed
   [feed source]
@@ -158,24 +160,24 @@
   "Fetch updates for the source"
   [source]
   (let [{:keys [topic]} source]
-    (task
-     (try
-       (log/debugf "Fetching feed: %s" topic)
-       (let [feed (abdera/fetch-feed topic)
-             feed-title (.getTitle feed)]
-         (when-not (= feed-title (:title source))
-           (log/info "updating title")
-           (model.feed-source/set-field! source :title feed-title))
-         ;; TODO: This should be automatic for any transformation
-         (mark-updated source)
-
-         (if-let [hub-link (-?> feed (.getLink "hub")
-                                .getHref str)]
-           (model.feed-source/set-field! source :hub hub-link))
-
-         (process-entries feed source))
-       (catch RuntimeException ex
-         (log/error ex))))
+    (when topic
+      (task
+       (try
+         (log/debugf "Fetching feed: %s" topic)
+         (let [feed (abdera/fetch-feed topic)
+               feed-title (.getTitle feed)]
+           (when-not (= feed-title (:title source))
+             (log/info "updating title")
+             (model.feed-source/set-field! source :title feed-title))
+           ;; TODO: This should be automatic for any transformation
+           (mark-updated source)
+           (if-let [hub-link (-?> feed (.getLink "hub")
+                                  .getHref str)]
+             (model.feed-source/set-field! source :hub hub-link))
+           (process-entries feed source))
+         (catch RuntimeException ex
+           (log/error ex)
+           (.printStackTrace ex)))))
     source))
 
 (defaction add-watcher

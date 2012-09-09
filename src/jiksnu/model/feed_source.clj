@@ -104,6 +104,11 @@ This will generally not be called"
   [topic]
   (find-record {:topic topic}))
 
+(defn find-by-user
+  "Returns the source associated with a user"
+  [user]
+  (fetch-by-id (:updateSource user)))
+
 (defn count-records
   ([] (count-records {}))
   ([params]

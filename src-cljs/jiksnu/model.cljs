@@ -120,7 +120,7 @@
   (.extend backbone/Model
            (js-obj
             "class" "User"
-            "defaults" (js-obj "url" nil
+            "defaults" (js-obj "url" ""
                                "avatarUrl" nil
                                "uri" ""
                                "bio" ""
@@ -154,6 +154,7 @@
     "defaults" (js-obj
                 "_id"           ""
                 "author"        ""
+                "uri"           ""
                 "url"           nil
                 "links"         (array)
                 "source"        "unknown"

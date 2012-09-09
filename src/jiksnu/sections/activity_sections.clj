@@ -326,12 +326,12 @@
                         [(Activity.)]
                         (seq (second (actions.comment/fetch-comments activity))))]
       [:section.comments
-       ;; [:h4 "Comments"]
        [:ul.unstyled.comments
         (if *dynamic*
           {:data-bind "foreach: $data"})
         (map (fn [comment]
-               [:li (show-comment comment)])
+               [:li {:data-bind "if: $data"}
+                (show-comment comment)])
              comments)]])]])
 
 (defn poll-form

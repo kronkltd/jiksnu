@@ -23,6 +23,7 @@
                  [clojurewerkz/elastisch "1.0.0-beta2"
                   :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
+                 [ clojure-complete "0.2.1"]
                  [clojurewerkz/support "0.7.0-alpha3"
                   :exclusions [com.google.guava/guava]]
                  [com.cemerick/friend "0.0.9"

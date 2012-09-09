@@ -1,6 +1,5 @@
 (ns jiksnu.core
-  (:use [lolg :only [start-display console-output]]
-        [jayq.core :only [$]]
+  (:use [jayq.core :only [$]]
         [jiksnu.model :only [_model model-names
                              receive-model]])
   (:require [Backbone :as Backbone]
@@ -130,7 +129,6 @@
 
 (defn main
   []
-  (start-display (console-output))
   (log/info "starting application")
 
   (set! _model (model/AppViewModel.))

@@ -129,4 +129,14 @@
    ["jiksnu.filters.subscription-filters"
     "jiksnu.helpers.subscription-helpers"
     "jiksnu.triggers.subscription-triggers"
-    "jiksnu.views.subscription-views"]))
+    "jiksnu.views.subscription-views"])
+
+  (dosync
+   (alter actions.user/delete-hooks
+          conj
+          (fn [user]
+            (let [subscriptions (concat
+                                 (get-subscribers user)
+                                 (get-subscriptions user))]
+              (doseq [subscription subscriptions]
+                (delete subscription)))))))
