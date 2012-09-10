@@ -5,6 +5,11 @@
             [jiksnu.websocket :as ws]
             [jayq.core :as jayq]))
 
+(defn halt
+  [event]
+  (.stopPropagation event)
+  (.preventDefault event))
+
 (defn setup-handlers
   []
   (log/info "setting up handlers")

@@ -1,5 +1,5 @@
 (ns jiksnu.model
-  (:require [Backbone :as backbone]
+  (:require [jiksnu.backbone :as backbone]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
