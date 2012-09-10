@@ -124,7 +124,7 @@
 
 (defn main
   []
-  (log/info "starting application")
+  #_(log/info "starting application")
 
   (set! _model (model/AppViewModel.))
   (set! _view (.viewModel js/kb _model))

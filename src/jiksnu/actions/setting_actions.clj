@@ -33,7 +33,7 @@
     :private (config :site :private)
     :textlimit (config :site :limit :text)
     :ssl "sometimes"
-    :sslserver (config :site :domain)
+    :sslserver (config :domain)
     :shorturllength 30
     }
    :license {

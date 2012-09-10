@@ -319,6 +319,6 @@ serialization"
   (dosync
    (alter actions.user/delete-hooks
           conj (fn [user]
-                 (doseq [activity (find-by-user user)]
+                 (doseq [activity (:items (find-by-user user))]
                    (delete activity))
                  user))))

@@ -37,7 +37,8 @@
 
 (defn delete
   [subscription]
-  (mc/remove-by-id collection-name (:_id subscription)))
+  (mc/remove-by-id collection-name (:_id subscription))
+  subscription)
 
 (defn find-record
   [args]
@@ -77,6 +78,7 @@
   [actor user]
   (create {:from actor :to user :pending true}))
 
+;; TODO: use set-field
 (defn confirm
   [subscription]
   (mc/update collection-name {:$set {:pending false}}))

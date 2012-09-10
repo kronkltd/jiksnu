@@ -24,7 +24,8 @@
           {:message "action not found"
            :type "error"})))
     (catch RuntimeException ex
-      (log/error ex))))
+      (log/error ex)
+      (.printStackTrace ex))))
 
 (deffilter #'invoke-action :command
   [action request]

@@ -136,7 +136,7 @@
           conj
           (fn [user]
             (let [subscriptions (concat
-                                 (get-subscribers user)
-                                 (get-subscriptions user))]
+                                 (:items (second (get-subscribers user)))
+                                 (:items (second (get-subscriptions user))))]
               (doseq [subscription subscriptions]
                 (delete subscription)))))))
