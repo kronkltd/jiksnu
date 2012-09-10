@@ -2,8 +2,7 @@
   (:use [jayq.core :only [$]]
         [jiksnu.model :only [_model model-names
                              receive-model]])
-  (:require [Backbone :as Backbone]
-            [jiksnu.handlers :as handlers]
+  (:require [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as log]
             [jiksnu.model :as model]
@@ -46,9 +45,7 @@
                       "FeedSource" "User"]]
     (let [key (str "target" model-name)]
       (when-let [id (aget data key)]
-        (.set _model key id))))
-  
-  )
+        (.set _model key id)))))
 
 (defn fetch-viewmodel
   [url]
@@ -112,7 +109,6 @@
    (doto this
      (aset "nodeHasBindings"
            (fn [node context]
-             ;; TODO: look for data-model
              (or (.data ($ node) "model")
                  (.nodeHasBindings underlying-provider node context))))
 
@@ -121,7 +117,6 @@
              (if-let [model-name (.data ($ node) "model")]
                (let [data (.-$data context)]
                  (js-obj
-                  ;; "with" (format "jiksnu.core.get_%s($data)" model-name)
                   "attr" (js-obj
                           "about" (.-url data)
                           "data-id" (.-_id data))))
