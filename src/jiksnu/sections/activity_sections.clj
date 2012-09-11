@@ -498,18 +498,19 @@
   [items & [page]]
   (admin-index-block items page))
 
-;; delete-button
+;; edit-button
 
 (defsection edit-button [Activity :html]
   [activity & _]
   (action-link "activity" "edit" (:_id activity)))
 
+;; delete-button
+
 (defsection delete-button [Activity :html]
   [activity & _]
   (action-link "activity" "delete" (:_id activity)))
 
-
-
+;; index-block
 
 (defsection index-block [Activity]
   [items & [page]]
@@ -542,9 +543,7 @@
   ["items" {"node" ns/microblog}
    (map index-line activities)])
 
-
-
-
+;; index-line
 
 (defsection index-line [Activity]
   [activity & [page]]
@@ -559,8 +558,7 @@
   ["item" {"id" (:_id activity)}
    (show-section activity)])
 
-
-
+;; index-section
 
 (defsection index-section [Activity]
   [items & [page]]
@@ -574,8 +572,7 @@
   [activities & options]
   ["pubsub" {} (index-block activities)])
 
-
-
+;; show-section
 
 (defsection show-section [Activity :as]
   [activity & _]
@@ -773,16 +770,19 @@
      ;; TODO: list hashtags
      ]]])
 
+;; title
 
 (defsection title [Activity]
   [activity & options]
   (:title activity))
 
+;; update-button
 
 (defsection update-button [Activity :html]
   [activity & _]
   (action-link "activity" "update" (:_id activity)))
 
+;; uri
 
 (defsection uri [Activity]
   [activity & options]
