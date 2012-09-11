@@ -31,14 +31,14 @@
   [source]
   (model.feed-source/set-field! source :updated (time/now)))
 
-(defaction delete
-  [source]
-  (model.feed-source/delete source))
-
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
   [source]
   (model.feed-source/set-field! source :subscription-status "confirmed"))
+
+(defaction delete
+  [source]
+  (model.feed-source/delete source))
 
 (defaction process-updates
   "Handler for PuSh subscription"
@@ -156,6 +156,25 @@
     (do (log/warnf "no watchers for %s" (:topic source))
         (remove-subscription source))))
 
+(defn update*
+  [source]
+  (if-let [topic (:topic source)]
+    (do
+      (log/debugf "Fetching feed: %s" topic)
+      (let [feed (abdera/fetch-feed topic)
+            feed-title (.getTitle feed)]
+        (when-not (= feed-title (:title source))
+          (log/info "updating title")
+          (model.feed-source/set-field! source :title feed-title))
+        ;; TODO: This should be automatic for any transformation
+        (mark-updated source)
+        (if-let [hub-link (-?> feed (.getLink "hub")
+                               .getHref str)]
+          (model.feed-source/set-field! source :hub hub-link))
+        (process-entries feed source)))
+    (throw+ {:message "Source does not contain a topic"
+             :source source})))
+
 (defaction update
   "Fetch updates for the source"
   [source]
@@ -163,18 +182,7 @@
     (when topic
       (task
        (try
-         (log/debugf "Fetching feed: %s" topic)
-         (let [feed (abdera/fetch-feed topic)
-               feed-title (.getTitle feed)]
-           (when-not (= feed-title (:title source))
-             (log/info "updating title")
-             (model.feed-source/set-field! source :title feed-title))
-           ;; TODO: This should be automatic for any transformation
-           (mark-updated source)
-           (if-let [hub-link (-?> feed (.getLink "hub")
-                                  .getHref str)]
-             (model.feed-source/set-field! source :hub hub-link))
-           (process-entries feed source))
+         (update* source)
          (catch RuntimeException ex
            (log/error ex)
            (.printStackTrace ex)))))

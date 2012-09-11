@@ -32,6 +32,7 @@
    (presence-of   :url)
    (presence-of   :created)
    (presence-of   :updated)
+   (presence-of   :updateSource)
    (presence-of   :avatar-url)
    (acceptance-of :local      :accept (partial instance? Boolean))))
 

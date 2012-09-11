@@ -37,7 +37,7 @@
 
 (deffilter #'get-subscribers :xmpp
   [action request]
-  (if-let [user (actions.user/fetch-by-jid (:to request))]
+  (if-let [user (model.user/fetch-by-jid (:to request))]
     (action user)))
 
 ;; get-subscriptions
@@ -51,7 +51,7 @@
 
 (deffilter #'get-subscriptions :xmpp
   [action request]
-  (if-let [user (actions.user/fetch-by-jid (:to request))]
+  (if-let [user (model.user/fetch-by-jid (:to request))]
     (action user)))
 
 ;; ostatus
@@ -77,8 +77,8 @@
 
 (deffilter #'remote-subscribe-confirm :xmpp
   [action request]
-  (let [subscriber (actions.user/fetch-by-jid (:to request))
-        subscribee (actions.user/fetch-by-jid (:from request))]
+  (let [subscriber (model.user/fetch-by-jid (:to request))
+        subscribee (model.user/fetch-by-jid (:from request))]
     (if-let [subscription (model.subscription/fetch-all
                            {:to (:_id subscribee) :from (:_id subscriber)})]
       ;; TODO: this should call the action
@@ -102,15 +102,15 @@
 
 (deffilter #'subscribe :xmpp
   [action request]
-  (if-let [user (actions.user/fetch-by-jid (:to request))]
+  (if-let [user (model.user/fetch-by-jid (:to request))]
     (action user)))
 
 ;; subscribed
 
 (deffilter #'subscribed :xmpp
   [action request]
-  (if-let [subscriber (actions.user/fetch-by-jid (:from request))]
-    (if-let [subscribee (actions.user/fetch-by-jid (:to request))]
+  (if-let [subscriber (model.user/fetch-by-jid (:from request))]
+    (if-let [subscribee (model.user/fetch-by-jid (:to request))]
       (action subscriber subscribee))))
 
 ;; unsubscribe
@@ -129,6 +129,6 @@
 (deffilter #'unsubscribe :xmpp
   [action request]
   (let [{:keys [to from]} request]
-    (if-let [user (actions.user/fetch-by-jid to)]
+    (if-let [user (model.user/fetch-by-jid to)]
       (if-let [subscriber (actions.user/find-or-create-by-jid from)]
         (action (:_id subscriber) (:_id user))))))

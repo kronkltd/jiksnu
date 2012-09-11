@@ -145,9 +145,7 @@
       [:input {:type "text" :name "url" :value (:url user)}]]]
 
     [:div.controls
-     [:input.btn.btn-primary {:type "submit" :value "submit"}]]]]
-  
-  )
+     [:input.btn.btn-primary {:type "submit" :value "submit"}]]]])
 
 (defn following-section
   [user]
@@ -600,7 +598,7 @@
 
 (defsection show-section [User :model]
   [user & _]
-  user)
+  (dissoc user :links))
 
 (defsection show-section [User :rdf]
   [user & _]

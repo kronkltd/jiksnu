@@ -20,19 +20,17 @@
 
 (defview #'create :html
   [request user]
-  {:status 303
-   :flash "user has been created"
-   :template false
-   :headers {"Location" (uri user)}})
+  (-> (response/redirect-after-post (uri user))
+      (assoc :template false)
+      (assoc :flash "user has been created")))
 
 ;; delete
 
 (defview #'delete :html
   [request _]
-  {:status 303
-   :flash "user has been deleted"
-   :template false
-   :headers {"Location" "/users"}})
+  (-> (response/redirect-after-post "/")
+      (assoc :template false)
+      (assoc :flash "user has been deleted")))
 
 ;; discover
 
@@ -48,10 +46,9 @@
 
 (defview #'fetch-updates :html
   [request user]
-  {:status 303
-   :flash "fetching updates"
-   :template false
-   :headers {"Location" (uri user)}})
+  (-> (response/redirect-after-post (uri user))
+      (assoc :template false)
+      (assoc :flash "fetching updates")))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
@@ -81,10 +78,10 @@
 
 (defview #'register :html
   [request user]
-  {:status 303,
-   :template false
-   :session {:id (:_id user)}
-   :headers {"Location" (uri user)}})
+  (-> (response/redirect-after-post "/")
+      (assoc :template false)
+      (assoc :flash "user has been created")
+      (assoc :session {:id (:_id (log/spy user))})))
 
 (defview #'register-page :html
   [request user]

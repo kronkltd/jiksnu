@@ -67,4 +67,4 @@
 (deffilter #'user-timeline :xmpp
   [action request]
   (-> request :to
-      actions.user/fetch-by-jid action))
+      model.user/fetch-by-jid action))

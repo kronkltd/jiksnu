@@ -65,14 +65,14 @@
          #'get-subscribers
          {:to .jid.}) => truthy
         (provided
-          (actions.user/fetch-by-jid .jid.) => .user.
+          (model.user/fetch-by-jid .jid.) => .user.
           (get-subscribers .user.) => truthy))
        (fact "when a user matching the to param is not found"
          (filter-action
           #'get-subscribers
           {:to .jid.}) => nil
           (provided
-            (actions.user/fetch-by-jid .jid.) => nil
+            (model.user/fetch-by-jid .jid.) => nil
             (get-subscribers .user.) => nil :times 0))))
 
    (fact "#'filter-action [#'get-subscriptions :xmpp]"
@@ -82,11 +82,11 @@
            (let [request {:to .jid.}]
              (filter-action action request) => truthy
              (provided
-               (actions.user/fetch-by-jid .jid.) => .user.
+               (model.user/fetch-by-jid .jid.) => .user.
                (get-subscriptions .user.) => truthy)))
          (fact "when a user matching the to param is not found"
            (let [request {:to .jid.}]
              (filter-action action request) => nil
              (provided
-               (actions.user/fetch-by-jid .jid.) => nil
+               (model.user/fetch-by-jid .jid.) => nil
                (get-subscriptions .user.) => nil :times 0)))))))

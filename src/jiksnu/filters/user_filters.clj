@@ -57,7 +57,7 @@
 
 (deffilter #'fetch-remote :xmpp
   [action request]
-  (fetch-by-jid (:to request)))
+  (model.user/fetch-by-jid (:to request)))
 
 ;; fetch-updates
 
@@ -113,7 +113,7 @@
 (deffilter #'show :xmpp
   [action request]
   (let [{:keys [to]} request
-        user (fetch-by-jid to)]
+        user (model.user/fetch-by-jid to)]
     (action user)))
 
 ;; update
@@ -161,7 +161,7 @@
 ;; (deffilter #'remote-create :xmpp
 ;;   [action request]
 ;;   (let [{:keys [to from payload]} request
-;;         user (fetch-by-jid from)]
+;;         user (model.user/fetch-by-jid from)]
 ;;     (let [vcard (first (element/children payload))
 
 ;;           avatar-url-element (abdera/find-children vcard "/vcard/photo/uri")

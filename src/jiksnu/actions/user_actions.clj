@@ -36,13 +36,23 @@
            tigase.xml.Element
            tigase.xmpp.JID))
 
-(defn get-domain-name
-  "Takes a string representing a uri and returns the domain"
-  [id]
-  (let [uri (URI. id)]
-    (if (= "acct" (.getScheme uri))
-      (second (model.user/split-uri id))
-      (.getHost uri))))
+(defn assert-unique
+  [user]
+  (when-let [id (:id user)]
+    (if-not (model.user/fetch-by-remote-id id)
+      user)))
+
+(defn set-discovered
+  [user]
+  (if (contains? user :discovered)
+    user
+    (assoc user :discovered false)))
+
+(defn set-local
+  [user]
+  (if (contains? user :local)
+    user
+    (assoc user :local false)))
 
 (defonce delete-hooks (ref []))
 
@@ -54,7 +64,37 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
+(defn prepare-create
+  [user]
+  (-> user
+      assert-unique
+      set-discovered
+      set-local))
+
+(defn get-domain-name
+  "Takes a string representing a uri and returns the domain"
+  [id]
+  (let [uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (second (model.user/split-uri id))
+      (.getHost uri))))
+
+(defn get-domain
+  "Return the domain of the user"
+  [^User user]
+  (if-let [domain-id (or (:domain user)
+                         (get-domain-name (:id user)))]
+    (actions.domain/find-or-create {:_id domain-id})))
+
+
+
+
+
+
+
+
 (defn get-username-from-atom-property
+  ;; passed a document
   [user-meta]
   (try
     (->> user-meta
@@ -68,6 +108,7 @@
       (.printStackTrace ex))))
 
 (defn get-username-from-identifiers
+  ;; passed a document
   [user-meta]
   (try
     (->> user-meta
@@ -88,6 +129,9 @@
        (filter identity)
        first))
 
+
+
+
 (defn get-username
   "Given a url, try to determine the username of the owning user"
   [id]
@@ -104,12 +148,6 @@
                     get-username-from-user-meta))
             (throw+ "Could not determine domain name"))))))
 
-(defn get-domain
-  "Return the domain of the user"
-  [^User user]
-  (if-let [domain-id (or (:domain user)
-                         (get-domain-name (:id user)))]
-    (actions.domain/find-or-create {:_id domain-id})))
 
 (defn get-user-meta-uri
   [user]
@@ -117,6 +155,8 @@
     (or (:user-meta-uri user)
         ;; TODO: should update uri in this case
         (actions.domain/get-user-meta-url domain (:id user)))))
+
+
 
 (defaction add-link*
   [user link]
@@ -134,11 +174,7 @@
 
 (defaction create
   [options]
-  (let [user (merge {:discovered false
-                     :local false
-                     :updated (time/now)}
-                    (when-not (:id options) {:id (model.user/get-uri options)})
-                    options)]
+  (let [user (prepare-create options)]
     ;; This has the side effect of ensuring that the domain is
     ;; created. This should probably be explicitly done elsewhere.
     (if-let [domain (get-domain user)]
@@ -155,11 +191,6 @@
   [user]
   ;; TODO: No need to actually fetch the record
   (model.user/fetch-by-id (:_id user)))
-
-;; DEPRICATED
-(defn fetch-by-jid
-  [jid]
-  (model.user/get-user (.getLocalpart jid) (.getDomain jid)))
 
 (defaction index
   "List all of the users"
