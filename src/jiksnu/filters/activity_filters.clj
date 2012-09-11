@@ -47,7 +47,7 @@
 (deffilter #'post :http
   [action request]
   (-> request :params
-      (dissoc "geo.lat")
+      (dissoc "geo.latitude")
       action))
 
 (deffilter #'post :xmpp

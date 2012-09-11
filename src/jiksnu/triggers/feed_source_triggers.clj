@@ -8,4 +8,4 @@
   [action params source]
   (actions.feed-source/update source))
 
-(add-trigger! #'actions.feed-source/create #'create-trigger)
+#_(add-trigger! #'actions.feed-source/create #'create-trigger)

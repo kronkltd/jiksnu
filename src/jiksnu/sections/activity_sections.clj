@@ -135,12 +135,12 @@
   [:div.control-group.hidden
    [:label.control-label "Location"]
    [:div.controls
-    [:label {:for "geo.lat"} "Latitude"]
+    [:label {:for "geo.latitude"} "Latitude"]
     [:div.input
-     [:input {:type "text" :name "geo.lat"}]]
-    [:label {:for "geo.long"} "Longitude"]
+     [:input {:type "text" :name "geo.latitude"}]]
+    [:label {:for "geo.longitude"} "Longitude"]
     [:div.input
-     [:input {:type "text" :name "geo.lat"}]]]])
+     [:input {:type "text" :name "geo.longitude"}]]]])
 
 
 (defn add-button-section
@@ -232,11 +232,11 @@
        ;; TODO: use urly to construct this
        ;; TODO: Move this to cljs
        (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-            (:lat geo)
+            (:latitude geo)
             ","
-            (:long geo))}]
-     #_[:p "Lat: " (:lat geo)]
-     #_[:p "Long: " (:long geo)]]))
+            (:longitude geo))}]
+     #_[:p "Latitude: " (:latitude geo)]
+     #_[:p "Longitude: " (:longitude geo)]]))
 
 (defn likes-section
   [activity]
@@ -313,8 +313,8 @@
    (when-let [geo (:geo activity)]
      (list " near "
            [:a.geo-link {:href "#"}
-            (:lat geo) ", "
-            (:long geo)]))])
+            (:latitude geo) ", "
+            (:longitude geo)]))])
 
 (defn comments-section
   [activity]
@@ -612,8 +612,8 @@
            {:context {:conversations (first (:conversation-uris activity))}})
          (if-let [geo (:geo activity)]
            {:location {:objectType "place"
-                       :lat (:lat geo)
-                       :long (:long geo)}})))
+                       :latitude (:latitude geo)
+                       :longitude (:longitude geo)}})))
 
 (defsection show-section [Activity :atom]
   [^Activity activity & _]

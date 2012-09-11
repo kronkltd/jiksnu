@@ -50,12 +50,12 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
     {:parent parent-id}))
 
 (defn parse-geo
-  "extract the lat and long components from a geo element"
+  "extract the latitude and longitude components from a geo element"
   [element]
   (let [coords (.getText element)
-        [lat long] (string/split coords #" ")]
+        [latitude longitude] (string/split coords #" ")]
     ;; TODO: these should have a common geo property
-    {:geo {:lat lat :long long}}))
+    {:geo {:latitude latitude :longitude longitude}}))
 
 (defn parse-extension-element
   "parse atom extensions"
