@@ -5,7 +5,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.xmpp.element :only [abdera-to-tigase-element]]
-        [midje.sweet :only [fact =>]])
+        [midje.sweet :only [fact future-fact =>]])
   (:require [clj-tigase.element :as element]
             [jiksnu.model :as model]
             [jiksnu.namespace :as namespace]
@@ -14,7 +14,8 @@
 
 (test-environment-fixture
 
- (fact "abdera-to-tigase-element"
+ ;; just create a simple element here, don't involve activities
+ (future-fact "abdera-to-tigase-element"
    (fact "should return a tigase element"
      (with-context [:xmpp :atom]
        (let [element (show-section (model/map->Activity (factory :activity)))]

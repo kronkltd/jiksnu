@@ -5,28 +5,35 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+
+            ))
 
 (defn domain-id
   []
-  (:_id (model.domain/create (factory :domain))))
+  (:_id (actions.domain/create (factory :domain))))
 
 (defn activity-id
-  [] (:_id (model.activity/create (factory :activity))))
+  [] (:_id (actions.activity/create (factory :activity))))
 
 (defn conversation-id
-  [] (:_id (model.conversation/create (factory :conversation))))
+  [] (:_id (actions.conversation/create (factory :conversation))))
 
 (defn source-id
-  [] (:_id (model.feed-source/create (factory :feed-source))))
+  [] (:_id (actions.feed-source/create (factory :feed-source))))
 
 (defn user-id
   []
-  (:_id (model.user/create (factory :local-user))))
+  (:_id (actions.user/create (factory :local-user))))
 
 (defseq :id [n] n)
 
@@ -157,6 +164,7 @@
      :local false
      :email (fseq :email)
      :name display-name
+     :updateSource #'source-id
      :display-name display-name
      :first-name first-name
      :last-name last-name}))
