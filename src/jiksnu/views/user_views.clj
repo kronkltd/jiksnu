@@ -81,7 +81,7 @@
   (-> (response/redirect-after-post "/")
       (assoc :template false)
       (assoc :flash "user has been created")
-      (assoc :session {:id (:_id (log/spy user))})))
+      (assoc :session {:id (:_id user)})))
 
 (defview #'register-page :html
   [request user]

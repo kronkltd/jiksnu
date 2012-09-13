@@ -133,8 +133,7 @@
 
 (defn create
   [user]
-  (let [user (prepare user)
-        errors (create-validators user)]
+  (let [errors (create-validators user)]
     (if (empty? errors)
       (do
         (log/debugf "Creating user: %s" user)

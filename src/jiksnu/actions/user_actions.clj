@@ -6,6 +6,7 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.session :only [current-user]]
+        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -67,17 +68,20 @@
 (defn prepare-create
   [user]
   (-?> user
-       log/spy
+       set-_id
+       model.user/set-id
+       set-updated-time
+       set-created-time
+       model.user/set-url
+       model.user/set-avatar-url
        assert-unique
-       log/spy
        set-discovered
-       log/spy
        set-local))
 
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
   [id]
-  (let [uri (URI. (log/spy id))]
+  (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
       (second (model.user/split-uri id))
       (.getHost uri))))
@@ -85,8 +89,9 @@
 (defn get-domain
   "Return the domain of the user"
   [^User user]
-  (if-let [domain-id (or (:domain (log/spy user))
-                         (get-domain-name (:id user)))]
+  (if-let [domain-id (or (:domain user)
+                         (when-let [id (:id user)]
+                           (get-domain-name id)))]
     (actions.domain/find-or-create {:_id domain-id})))
 
 
@@ -177,7 +182,7 @@
 
 (defaction create
   [options]
-  (let [user (prepare-create (log/spy options))]
+  (let [user (prepare-create options)]
     ;; This has the side effect of ensuring that the domain is
     ;; created. This should probably be explicitly done elsewhere.
     (if-let [domain (get-domain user)]

@@ -140,7 +140,7 @@
 
 (defsection admin-index-section [FeedSource]
   [items & [page]]
-  (admin-index-block (log/spy items) page))
+  (admin-index-block items page))
 
 ;; admin-show-section
 
