@@ -30,7 +30,9 @@
           [:td (link-to user)]
           [:td
            [:form
-            {:method "post" :action (format "/admin/feed-sources/%s/watchers/delete" (:_id source))}
+            {:method "post"
+             :action (format "/admin/feed-sources/%s/watchers/delete"
+                             (:_id source))}
             [:input {:type "hidden" :name "user_id" :value (:_id user)}]
             [:button.btn.delete-button {:type "submit"}
              [:i.icon-trash] [:span.button-text "Delete"]]]]]))
@@ -39,7 +41,9 @@
 (defn add-watcher-form
   [source]
   [:form.well.form-horizontal
-   {:method "post" :action (format "/admin/feed-sources/%s/watchers" (:_id source))}
+   {:method "post"
+    :action (format "/admin/feed-sources/%s/watchers"
+                    (:_id source))}
    [:fieldset
     [:legend "Add Watcher"]
     (control-line "Acct id"
@@ -59,8 +63,7 @@
    [:li (subscribe-button source)]
    [:li (unsubscribe-button source)]
    [:li (delete-button source)]
-   [:li (watch-button source)]
-   ])
+   [:li (watch-button source)]])
 
 ;; add-form
 
@@ -115,7 +118,9 @@
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/feed-sources/' + _id}, text: title"}
-          {:title (:title item) :href (named-path "admin show feed-source" {:id (:_id item)})})
+          {:title (:title item)
+           :href (named-path "admin show feed-source"
+                             {:id (:_id item)})})
      (when-not *dynamic*
        (:title item))]]
    [:td (if *dynamic*
@@ -133,8 +138,6 @@
           (:status item))]
 
    [:td (actions-section item)]])
-
-
 
 ;; admin-index-section
 
@@ -180,10 +183,7 @@
        (map (fn [m] (index-line m page)))
        doall))
 
-
-
-
-
+;; index-line
 
 (defsection index-line [FeedSource :html]
   [source & _]
@@ -198,14 +198,20 @@
    [:td (:updated source)]
    [:td (actions-section source)]])
 
+;; index-section
+
 (defsection index-section [FeedSource :html]
   [sources & [options & _]]
   (index-block sources options))
+
+;; link-to
 
 (defsection link-to [FeedSource :html]
   [source & _]
   [:a {:href (str "/admin/feed-sources/" (:_id source))}
    (:topic source)])
+
+;; show-section
 
 (defsection show-section [FeedSource :html]
   [source & options]
@@ -279,9 +285,13 @@
   [item & _]
   item)
 
+;; title
+
 (defsection title [FeedSource]
   [item & _]
   (:title item))
+
+;; update-button
 
 (defsection update-button [FeedSource :html]
   [item & _]
