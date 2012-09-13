@@ -6,6 +6,7 @@
         [jiksnu.session :only [with-user]]
         midje.sweet)
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
@@ -17,23 +18,23 @@
  (fact "subscribe"
    (fact "when the user is not already subscribed"
      (fact "should return a subscription"
-       (let [user (model.user/create (factory :local-user))
-             subscribee (model.user/create (factory :local-user))]
+       (let [user (actions.user/create (factory :local-user))
+             subscribee (actions.user/create (factory :local-user))]
          (model.subscription/drop!)
          (with-user user
            (subscribe user subscribee) => subscription?)))))
 
  (fact "subscribed"
    (fact "should return a subscription"
-     (let [user (model.user/create (factory :local-user))
-           subscribee (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))
+           subscribee (actions.user/create (factory :local-user))]
        (subscribed user subscribee) => subscription?)))
 
  (fact "get-subscribers"
    (fact "when there are subscribers"
      (fact "should not be empty"
-       (let [user (model.user/create (factory :local-user))
-             subscriber (model.user/create (factory :local-user))
+       (let [user (actions.user/create (factory :local-user))
+             subscriber (actions.user/create (factory :local-user))
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id subscriber)
@@ -50,8 +51,8 @@
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
      (fact "should return a sequence of subscriptions"
-       (let [user (model.user/create (factory :local-user))
-             subscribee (model.user/create (factory :local-user))
+       (let [user (actions.user/create (factory :local-user))
+             subscribee (actions.user/create (factory :local-user))
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id user)

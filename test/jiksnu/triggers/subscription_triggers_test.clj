@@ -6,6 +6,7 @@
         midje.sweet)
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
@@ -14,8 +15,8 @@
 
  (fact "notify-subscribe-xmpp"
    (fact "should return a packet"
-     (let [user (model.user/create (factory :user))
-           subscribee (model.user/create (factory :user))
+     (let [user (actions.user/create (factory :user))
+           subscribee (actions.user/create (factory :user))
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (notify-subscribe-xmpp {:id "JIKSNU1"} subscription) => packet/packet?))))

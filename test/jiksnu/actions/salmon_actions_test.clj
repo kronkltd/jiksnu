@@ -82,7 +82,7 @@
        (get-key nil) => nil?))
 
    (fact "when a user is provided"
-     (let [user (model.user/create (factory :user {:discovered true}))]
+     (let [user (actions.user/create (factory :user {:discovered true}))]
 
        (fact "and it does not have a key assigned"
          (fact "should return nil"

@@ -14,6 +14,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -29,7 +30,7 @@
            (with-format :atom
              (fact "when there are activities"
                (model/drop-all!)
-               (let [user (model.user/create (factory :local-user))]
+               (let [user (actions.user/create (factory :local-user))]
                  (dotimes [n 25]
                    (model.activity/create (factory :activity
                                                    {:author (:_id user)}))))
@@ -52,7 +53,7 @@
              (binding [*dynamic* false]
                (fact "when there are activities"
                  (model/drop-all!)
-                 (let [user (model.user/create (factory :local-user))
+                 (let [user (actions.user/create (factory :local-user))
                        ;; TODO: This used to be set to 25, I need a
                        ;; good way to make sure I have the right
                        ;; amount of records returned in the default
@@ -89,7 +90,7 @@
              (binding [*dynamic* false]
                (fact "when that user has activities"
                  (model/drop-all!)
-                 (let [user (model.user/create (factory :local-user))
+                 (let [user (actions.user/create (factory :local-user))
                        activity (model.activity/create (factory :activity {:author (:_id user)}))
                        request {:action action
                                 :params {:id (str (:_id user))}}
@@ -108,7 +109,7 @@
            (with-format :n3
              (fact "when that user has activities"
                (model/drop-all!)
-               (let [user (model.user/create (factory :local-user))
+               (let [user (actions.user/create (factory :local-user))
                      activity (model.activity/create (factory :activity {:author (:_id user)}))
                      request {:action action
                               :params {:id (str (:_id user))}}

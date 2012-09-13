@@ -202,5 +202,5 @@
   {:nickname (fseq :group-name)})
 
 (deffactory :like
-  {:user (:_id (model.user/create (factory :user)))
+  {:user #'user-id
    :activity #'activity-id})

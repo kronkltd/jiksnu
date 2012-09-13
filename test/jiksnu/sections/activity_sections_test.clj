@@ -12,6 +12,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
@@ -62,7 +63,7 @@
  (fact "index-block"
    (fact "when the context is [:http :rdf]"
      (with-context [:http :rdf]
-       (let [user (model.user/create (factory :local-user))
+       (let [user (actions.user/create (factory :local-user))
              author-map {:author (:_id user)}
              activity (model.activity/create (factory :activity author-map))]
          (index-block [activity]) =>
@@ -74,7 +75,7 @@
  (fact "index-section"
    (fact "when the context is [:http :rdf]"
      (with-context [:http :rdf]
-       (let [user (model.user/create (factory :local-user))
+       (let [user (actions.user/create (factory :local-user))
              author-map {:author (:_id user)}
              activity (model.activity/create (factory :activity author-map))]
          (index-section [activity]) =>
@@ -88,7 +89,7 @@
  (fact "#'show-section Activity :atom"
    (fact "should return an abdera entry"
      (with-context [:http :atom]
-       (let [user (model.user/create (factory :local-user))
+       (let [user (actions.user/create (factory :local-user))
              author-map {:author (:_id user)}
              activity (model.activity/create (factory :activity author-map))]
          (show-section activity) =>
@@ -104,7 +105,7 @@
  (fact "#'show-section Activity :xmpp"
    (fact "should return an element"
      (with-context [:xmpp :xmpp]
-       (let [actor (model.user/create (factory :user))]
+       (let [actor (actions.user/create (factory :user))]
          (with-user actor
            (let [entry (model.activity/create (factory :activity))]
              (show-section entry)))) => element/element?)))

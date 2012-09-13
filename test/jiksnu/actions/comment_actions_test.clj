@@ -6,6 +6,7 @@
         [jiksnu.session :only (with-user)]
         jiksnu.actions.comment-actions)
   (:require [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]))
 
 
@@ -15,7 +16,7 @@
    (fact "when the activity exists"
      (fact "and there are no comments"
        (fact "should return an empty sequence"
-         (let [actor (model.user/create (factory :user))]
+         (let [actor (actions.user/create (factory :user))]
            (with-user actor
              (let [activity (actions.activity/create (factory :activity))
                    [_ comments] (fetch-comments activity)]

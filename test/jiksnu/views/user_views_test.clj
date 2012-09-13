@@ -17,6 +17,7 @@
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -48,7 +49,7 @@
        (with-serialization :xmpp
          (fact "when the format is :xmpp"
            (with-format :xmpp
-             (let [user (model.user/create (factory :user))
+             (let [user (actions.user/create (factory :user))
                    request {:action action}
                    response (action user)]
                (apply-view request response) =>
@@ -60,7 +61,7 @@
    (let [action #'actions.user/fetch-remote]
      (fact "should return an iq query packet map"
        (with-context [:xmpp :xmpp]
-         (let [user (model.user/create (factory :user))
+         (let [user (actions.user/create (factory :user))
                request {:action action}
                response (action user)]
            (apply-view request response) =>

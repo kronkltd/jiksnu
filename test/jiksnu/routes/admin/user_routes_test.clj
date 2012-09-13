@@ -9,6 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as mock]))
@@ -17,7 +18,7 @@
 
  (fact "admin show user"
    (fact "html"
-     (let [user (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))]
        (with-user user
          (actions.activity/post (factory :activity)))
        (-> (mock/request :get (named-path "admin show user" {:id (:_id user)}))

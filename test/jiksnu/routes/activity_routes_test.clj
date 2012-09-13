@@ -22,7 +22,7 @@
 
  (fact "update"
    (fact "when the user is authenticated"
-     (let [author (model.user/create (factory :local-user))
+     (let [author (actions.user/create (factory :local-user))
            content (fseq :content)
            data (json/json-str
                  {:content content})]
@@ -31,7 +31,7 @@
  (fact "show-http-route"
    (fact "when the user is not authenticated"
      (fact "and the activity does not exist"
-       (let [author (model.user/create (factory :local-user))
+       (let [author (actions.user/create (factory :local-user))
              activity (factory :activity)]
          (->> (str "/notice/" (:_id activity))
               (mock/request :get)
@@ -39,7 +39,7 @@
               (contains {:status 404})))
 
      (fact "and there are activities"
-       (let [author (model.user/create (factory :local-user))
+       (let [author (actions.user/create (factory :local-user))
              activity (model.activity/create (factory :activity {:author (:_id author)}))]
          (->> (str "/notice/" (:_id activity))
               (mock/request :get)
@@ -51,7 +51,7 @@
                    (:body response) => (re-pattern (str (:_id activity)))))))))
    (fact "when the user is authenticated"
      (fact "when a private activity exists"
-       (let [author (model.user/create (factory :local-user))
+       (let [author (actions.user/create (factory :local-user))
              activity (->> {:author (:_id author)
                             :public false}
                            (factory :activity)

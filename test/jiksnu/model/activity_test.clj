@@ -6,6 +6,7 @@
         [midje.sweet :only [fact future-fact =>]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -19,14 +20,14 @@
  
  (fact "#'prepare-activity"
    (fact "should return an activity"
-     (let [user (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))]
        (with-user user
          (let [args (factory :activity)]
            (prepare-activity args) => #(valid? % create-validators))))))
 
 
  (fact "#'get-author"
-   (let [user (model.user/create (factory :local-user))
+   (let [user (actions.user/create (factory :local-user))
          activity (create (factory :activity {:author (:_id user)}))]
      (get-author activity) => user))
 

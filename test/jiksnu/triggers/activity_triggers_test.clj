@@ -21,6 +21,7 @@
 
  (fact "#'notify-activity"
    (fact "should return a packet"
-     (let [user (actions.user/create (factory :local-user))]
-       (let [activity (actions.activity/post (factory :activity))]
-         (notify-activity user activity) => packet/packet?)))))
+     (let [user (actions.user/create (factory :local-user))
+           activity (actions.activity/post (factory :activity))]
+       
+       (notify-activity user activity) => packet/packet?))))

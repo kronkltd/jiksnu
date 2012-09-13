@@ -66,15 +66,18 @@
 
 (defn prepare-create
   [user]
-  (-> user
-      assert-unique
-      set-discovered
-      set-local))
+  (-?> user
+       log/spy
+       assert-unique
+       log/spy
+       set-discovered
+       log/spy
+       set-local))
 
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
   [id]
-  (let [uri (URI. id)]
+  (let [uri (URI. (log/spy id))]
     (if (= "acct" (.getScheme uri))
       (second (model.user/split-uri id))
       (.getHost uri))))
@@ -82,7 +85,7 @@
 (defn get-domain
   "Return the domain of the user"
   [^User user]
-  (if-let [domain-id (or (:domain user)
+  (if-let [domain-id (or (:domain (log/spy user))
                          (get-domain-name (:id user)))]
     (actions.domain/find-or-create {:_id domain-id})))
 
@@ -174,7 +177,7 @@
 
 (defaction create
   [options]
-  (let [user (prepare-create options)]
+  (let [user (prepare-create (log/spy options))]
     ;; This has the side effect of ensuring that the domain is
     ;; created. This should probably be explicitly done elsewhere.
     (if-let [domain (get-domain user)]

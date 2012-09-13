@@ -29,7 +29,7 @@
          (fact "when the format is :xmpp"
            (with-format :xmpp
              (fact "when the user is logged in"
-               (let [user (model.user/create (factory :local-user))]
+               (let [user (actions.user/create (factory :local-user))]
                  (with-user user
                    (fact "and it is a valid activity"
                      (let [activity (factory :activity)
@@ -48,7 +48,7 @@
    (let [action #'actions.activity/show]
      (fact "when the serialization is :xmpp"
        (with-serialization :xmpp
-         (let [author (model.user/create (factory :user))]
+         (let [author (actions.user/create (factory :user))]
            (with-user author
              (let [activity (model.activity/create (factory :activity))
                    packet-map {:from (tigase/make-jid author)

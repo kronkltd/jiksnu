@@ -9,6 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
@@ -23,7 +24,7 @@
        (let [activity (factory :activity)]
          (set-recipients activity) => activity)))
    (fact "When the activity contains a recipient uri"
-     (let [recipient (model.user/create (factory :local-user))
+     (let [recipient (actions.user/create (factory :local-user))
            activity (factory :activity {:recipient-uris [(:id recipient)]})]
        (set-recipients activity) =>
        (every-checker
@@ -41,7 +42,7 @@
                                                          :links [{:rel "lrdd"
                                                                   :template (str "http://" domain-name "/lrdd?uri={uri}")}]
                                                          :_id domain-name}))
-         user (model.user/create (factory :user {:domain domain-name}))]
+         user (actions.user/create (factory :user {:domain domain-name}))]
 
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
@@ -59,7 +60,7 @@
  (fact "#'find-by-user"
    (fact "when the user has activities"
      (model/drop-all!)
-     (let [user (model.user/create (factory :local-user))
+     (let [user (actions.user/create (factory :local-user))
            activity (create (factory :activity
                                      {:author (:_id user)}))]
        (find-by-user user) =>
@@ -75,7 +76,7 @@
    (fact "when the user is logged in"
      (fact "and it is a valid activity"
        (fact "should return that activity"
-         (let [user (model.user/create (factory :local-user))]
+         (let [user (actions.user/create (factory :local-user))]
            (with-user user
              (let [activity (factory :activity)]
                (create activity) => model/activity?)))))))
@@ -89,14 +90,14 @@
    (fact "when the activity exists"
      (fact "and the user owns the activity"
        (fact "should delete that activity"
-         (let [user (model.user/create (factory :local-user))]
+         (let [user (actions.user/create (factory :local-user))]
            (with-user user
              (let [activity (create (factory :activity {:author (:_id user)}))]
                (delete activity) => activity
                (model.activity/fetch-by-id (:_id activity)) => nil)))))
      (fact "and the user does not own the activity"
        (fact "should not delete that activity"
-         (let [user (model.user/create (factory :local-user))
+         (let [user (actions.user/create (factory :local-user))
                activity (model.activity/create (factory :activity))]
            (with-user user
              (delete activity) => (throws RuntimeException)
@@ -108,18 +109,18 @@
        (viewable? activity .user.)) => truthy)
    (fact "when it is not public"
      (fact "when the user is the author"
-       (let [user (model.user/create (factory :user))
+       (let [user (actions.user/create (factory :user))
              activity (model.activity/create
                        (factory :activity {:public false
                                            :author (:_id user)}))]
          (viewable? activity user)) => truthy)
      (fact "when the user is not the author"
        (fact "when the user is an admin"
-         (let [user (model.user/create (factory :user {:admin true}))
+         (let [user (actions.user/create (factory :user {:admin true}))
                activity (model.activity/create (factory :activity {:public false}))]
            (viewable? activity user)) => truthy)
        (fact "when the user is not an admin"
-         (let [user (model.user/create (factory :user))
+         (let [user (actions.user/create (factory :user))
                activity (model.activity/create (factory :activity {:public false}))]
            (viewable? activity user)) => falsey))))
  

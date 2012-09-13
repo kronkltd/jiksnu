@@ -202,7 +202,7 @@
 (defn another-user-exists
   []
   (log/info "another user")
-  (let [user (model.user/create (factory :local-user))]
+  (let [user (actions.user/create (factory :local-user))]
     (set-that :user user)))
 
 (defn activity-gets-posted

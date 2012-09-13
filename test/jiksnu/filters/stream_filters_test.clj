@@ -27,7 +27,7 @@
    (with-serialization :xmpp
      (fact "when there are no activities"
       (model/drop-all!)
-      (let [user (model.user/create (factory :user))
+      (let [user (actions.user/create (factory :user))
             element nil
             packet (tigase/make-packet
                     {:from (tigase/make-jid user)
@@ -44,7 +44,7 @@
          )))
      
      (fact "when there are activities"
-       (let [author (model.user/create (factory :user))]
+       (let [author (actions.user/create (factory :user))]
          (with-user author
            (let [element nil
                  packet (tigase/make-packet
@@ -67,7 +67,7 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (fact "when the user exists"
-           (let [user (model.user/create (factory :local-user))
+           (let [user (actions.user/create (factory :local-user))
                  request {:params {:id (str (:_id user))}}]
              (filter-action action request) => .response.
              (provided

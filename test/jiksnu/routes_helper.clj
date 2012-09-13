@@ -6,6 +6,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
             [net.cgrand.enlive-html :as enlive]
@@ -36,7 +37,7 @@
 
 (defn as-user
   ([m]
-     (let [user (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))]
        (as-user m user)))
   ([m user]
      (let [password (fseq :password)]
@@ -48,5 +49,5 @@
 
 (defn as-admin
   [m]
-  (let [user (model.user/create (factory :local-user {:admin true}))]
+  (let [user (actions.user/create (factory :local-user {:admin true}))]
     (as-user m user)))

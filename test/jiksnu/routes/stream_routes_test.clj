@@ -8,6 +8,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
@@ -29,7 +30,7 @@
           ))
 
    (fact "when there are activities"
-     (let [user (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))]
        (dotimes [n 10]
          (model.activity/create (factory :activity {:author (:_id user)})))
        
@@ -65,7 +66,7 @@
 
    (fact "html"
 
-     (let [user (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))]
        (dotimes [n 10]
          (model.activity/create (factory :activity {:author (:_id user)})))
        
@@ -76,7 +77,7 @@
             (comp status/success? :status)))
 
    (fact "n3"
-     (let [user (model.user/create (factory :local-user))]
+     (let [user (actions.user/create (factory :local-user))]
        (dotimes [n 10]
          (model.activity/create (factory :activity {:author (:_id user)})))
        

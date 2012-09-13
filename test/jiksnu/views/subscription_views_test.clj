@@ -11,6 +11,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
@@ -25,7 +26,7 @@
            (with-format :as
              (fact "when the user has subscriptions"
                (model/drop-all!)
-               (let [user (model.user/create (factory :local-user))
+               (let [user (actions.user/create (factory :local-user))
                      subscription (model.subscription/create (factory :subscription
                                                                       {:from (:_id user)}))
                      request {:action action}
@@ -41,7 +42,7 @@
            (with-format :html
              (fact "when the user has subscriptions"
                (model/drop-all!)
-               (let [user (model.user/create (factory :local-user))
+               (let [user (actions.user/create (factory :local-user))
                      subscription (model.subscription/create
                                    (factory :subscription
                                             {:from (:_id user)}))
@@ -67,8 +68,8 @@
               (apply-view request nil) => packet/packet?))
           
           (fact "when there is a subscription"
-            (let [user (model.user/create (factory :local-user))
-                  subscribee (model.user/create (factory :local-user))
+            (let [user (actions.user/create (factory :local-user))
+                  subscribee (actions.user/create (factory :local-user))
                   record (factory :subscription {:from (:_id user)
                                                  :to (:_id subscribee)})
                   request {:action #'actions.subscription/unsubscribe
