@@ -120,8 +120,7 @@
    "feed subscriptions admin index" "/admin/feed-subscriptions"
    "like admin index"               "/admin/likes"
    "subscriptions admin index"      "/admin/subscriptions"
-   "firehose"                       "/main/events"
-   })
+   "firehose"                       "/main/events"})
 
 (defn fetch-page
   [method path]
