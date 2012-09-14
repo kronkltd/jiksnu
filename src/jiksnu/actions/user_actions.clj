@@ -16,6 +16,7 @@
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [lamina.core :as l]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -96,6 +97,20 @@
 
 
 
+(defaction add-link*
+  [user link]
+  (mc/update "users" {:_id (:_id user)}
+             {:$addToSet {:links link}})
+  user)
+
+(defn add-link
+  [user link]
+  (if-let [existing-link (model.user/get-link user
+                                              (:rel link)
+                                              (:type link))]
+    user
+    (add-link* user link)))
+
 
 
 
@@ -147,50 +162,6 @@
          first)))
 
 
-(defn get-username
-  "Given a url, try to determine the username of the owning user"
-  [^String id]
-  (let [uri (URI. id)]
-    (if (= "acct" (.getScheme uri))
-      (first (model.user/split-uri id))
-      (or (.getUserInfo uri)
-          (if-let [domain-name (get-domain-name id)]
-            (let [domain (actions.domain/find-or-create {:_id domain-name})]
-              ;; if the domain is created at this point, it won't have
-              ;; an xrd link set yet
-              
-              ;; Try getting the username from user-meta
-              (if-let [um-url (actions.domain/get-user-meta-url domain id)]
-                (when-let [user-meta (model.webfinger/fetch-host-meta um-url)]
-                  (let [source-link (get-source-link user-meta)]
-                    (log/spy source-link))
-                  (get-username-from-user-meta user-meta))))
-            (throw+ "Could not determine domain name"))))))
-
-
-(defn get-user-meta-uri
-  [user]
-  (let [domain (get-domain user)]
-    (or (:user-meta-uri user)
-        ;; TODO: should update uri in this case
-        (actions.domain/get-user-meta-url domain (:id user)))))
-
-
-
-(defaction add-link*
-  [user link]
-  (mc/update "users" {:_id (:_id user)}
-             {:$addToSet {:links link}})
-  user)
-
-(defn add-link
-  [user link]
-  (if-let [existing-link (model.user/get-link user
-                                              (:rel link)
-                                              (:type link))]
-    user
-    (add-link* user link)))
-
 (defaction create
   [options]
   (let [user (prepare-create options)]
@@ -199,6 +170,66 @@
     (if-let [domain (get-domain user)]
       (model.user/create user)
       (throw+ "Could not determine domain for user"))))
+
+(defaction find-or-create
+  [username domain]
+  (or (model.user/get-user username domain)
+      (create {:username username :domain domain})))
+
+(defn get-username
+  "Given a url, try to determine the username of the owning user"
+  [user]
+  (let [id (:id user)
+        uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (assoc user :username (first (model.user/split-uri id)))
+      (or (if-let [username (.getUserInfo uri)]
+            (assoc user :username username))
+          (if-let [domain-name (get-domain-name id)]
+            (let [domain (actions.domain/find-or-create {:_id domain-name})]
+              (if-let [um-url (actions.domain/get-user-meta-url domain id)]
+                (when-let [user-meta (model.webfinger/fetch-host-meta um-url)]
+                  (if-let [source-link (get-source-link user-meta)]
+                    (let [ch (model/get-source source-link)]
+                      (merge user
+                             {:username (get-username-from-user-meta user-meta)
+                              :updateSource (:_id (l/wait-for-result ch 5000))}))
+                    (throw+ "could not determine source")
+                    ))))
+            (throw+ "Could not determine domain name"))))))
+
+(defn get-user-meta-uri
+  [user]
+  (let [domain (get-domain user)]
+    (or (:user-meta-uri user)
+        ;; TODO: should update uri in this case
+        (actions.domain/get-user-meta-url domain (:id user)))))
+
+(defn find-or-create-by-remote-id
+  ([user] (find-or-create-by-remote-id user {}))
+  ;; params is never used
+  ([user params]
+     (if-let [id (:id user)]
+       (if-let [domain (get-domain user)]
+         (if-let [domain (if (:discovered domain) domain (actions.domain/discover domain id))]
+           (let [user (assoc user :domain (:_id domain))]
+             (or (model.user/fetch-by-remote-id id)
+                 (let [user (if (:username user)
+                              user
+                              (get-username user))]
+                   (create user))))
+           ;; this should never happen
+           (throw+ "domain has not been disovered"))
+         (throw+ "could not determine domain"))
+       (throw+ "User does not have an id"))))
+
+(defn find-or-create-by-uri
+  [uri]
+  (apply find-or-create (model.user/split-uri uri)))
+
+(defn find-or-create-by-jid
+  [^JID jid]
+  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
 
 (defaction delete
   "Delete the user"
@@ -234,41 +265,6 @@
   [user]
   ;; TODO: stream action?
   user)
-
-(defaction find-or-create
-  [username domain]
-  (or (model.user/get-user username domain)
-      (create {:username username :domain domain})))
-
-(defn find-or-create-by-jid
-  [^JID jid]
-  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
-
-(defn find-or-create-by-remote-id
-  ([user] (find-or-create-by-remote-id user {}))
-  ;; params is never used
-  ([user params]
-     (if-let [id (:id user)]
-       (if-let [domain (get-domain user)]
-         (if-let [domain
-                  (if (:discovered domain)
-                    domain
-                    (actions.domain/discover domain id))]
-           (or (model.user/fetch-by-remote-id id)
-               (if-let [username (or (:username user) (get-username id))]
-                 (create (merge user
-                                {:domain (:_id domain)
-                                 :username username}))
-                 (throw+ (format "Could not determine username for: %s" id)))
-               (throw+ "Could not create user"))
-           ;; this should never happen
-           (throw+ "domain has not been disovered"))
-         (throw+ "could not determine domain"))
-       (throw+ "User does not have an id"))))
-
-(defn find-or-create-by-uri
-  [uri]
-  (apply find-or-create (model.user/split-uri uri)))
 
 (defaction user-meta
   "returns a user matching the uri"
@@ -357,7 +353,7 @@
         domain (actions.domain/find-or-create {:_id domain-name})
         username (or (.getSimpleExtension person ns/poco
                                           "preferredUsername" "poco")
-                     (get-username id))]
+                     (get-username {:id id}))]
     (if (and username domain)
       (let [email (.getEmail person)
             name (get-name person)

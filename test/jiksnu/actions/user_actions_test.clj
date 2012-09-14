@@ -21,6 +21,23 @@
            jiksnu.model.User
            org.apache.abdera2.model.Person))
 
+(defn mock-user-meta
+  [username domain-name uri source-link]
+  (string->document
+   (format "
+<XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
+  <Subject>%s</Subject>
+  <Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"%s\"></Link>
+  <Link rel=\"http://apinamespace.org/atom\" type=\"application/atomsvc+xml\" href=\"http://%s/api/statusnet/app/service/%s.xml\">
+    <Property type=\"http://apinamespace.org/atom/username\">%s</Property>
+  </Link>
+  <Link rel=\"http://apinamespace.org/twitter\" href=\"https://%s/api/\">
+    <Property type=\"http://apinamespace.org/twitter/username\">%s</Property>
+  </Link>
+  <Link rel=\"http://schemas.google.com/g/2010#updates-from\" href=\"%s\" type=\"application/atom+xml\"></Link>
+</XRD>"
+           uri uri domain-name username username domain-name username source-link)))
+
 (test-environment-fixture
 
  (fact "#'get-domain-name"
@@ -44,21 +61,22 @@
    (fact "when the usermeta has an identifier"
      (get-username-from-user-meta .user-meta.) => .username.
      (provided
-       (get-username-from-identifiers .user-meta.) => .username.
-       (get-username-from-atom-property .user-meta.) => nil :times 0))
+      (get-username-from-identifiers .user-meta.) => .username.
+      (get-username-from-atom-property .user-meta.) => nil :times 0))
    (fact "when the usermeta does not have an identifier"
      (fact "and the atom link has an identifier"
        (get-username-from-user-meta .user-meta.) => .username.
        (provided
-         (get-username-from-identifiers .user-meta.) => nil
-       (get-username-from-atom-property .user-meta.) => .username.))
+        (get-username-from-identifiers .user-meta.) => nil
+        (get-username-from-atom-property .user-meta.) => .username.))
      (fact "and the atom link does not have an identifier"
        (get-username-from-user-meta .user-meta.) => nil
-     (provided
-       (get-username-from-identifiers .user-meta.) => nil
-       (get-username-from-atom-property .user-meta.) => nil))))
+       (provided
+        (get-username-from-identifiers .user-meta.) => nil
+        (get-username-from-atom-property .user-meta.) => nil))))
 
- 
+
+
  (fact "#'get-username"
    (fact "when given a http uri"
      (let [username (fseq :username)
@@ -67,15 +85,11 @@
            domain (actions.domain/find-or-create (factory :domain
                                                           {:_id domain-name
                                                            :links [{:rel "lrdd" :template template}]}))
-           uri (str "http://" domain-name "/users/1")]
-       (get-username uri) => username)
+           uri (str "http://" domain-name "/users/1")
+           source-link (fseq :uri)]
+       (get-username {:id uri}) => (contains {:username username}))
      (provided
-       (cm/fetch-resource anything) =>
-       (str "
- <XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
-   <Subject>" uri "</Subject>
-   <Alias>acct:" username "@" domain-name "</Alias>"
-   "</XRD>")))
+      (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)))
 
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)
@@ -85,7 +99,7 @@
                             {:_id domain-name
                              :links [{:rel "lrdd" :template template}]}))
            uri (str "acct:bob@" domain-name)]
-       (get-username uri) => "bob")))
+       (get-username {:id uri}) => (contains {:username "bob"}))))
  
  (fact "#'get-domain"
    (fact "when the domain already exists"
@@ -158,8 +172,11 @@
                                                :domain domain-name
                                                :username "bob"})
            (provided
-             (get-username anything) => "bob"))))))
+            (get-username anything) => "bob"))))))
  
+
+
+
  (fact "#'find-or-create-by-remote-id"
    (let [username (fseq :username)
          domain-name (fseq :domain)
@@ -181,21 +198,7 @@
                source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)]
            (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
          (provided
-           (model.webfinger/fetch-host-meta um-url) =>
-           (string->document
-            (format "
-<XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
-  <Subject>%s</Subject>
-  <Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"%s\"></Link>
-  <Link rel=\"http://apinamespace.org/atom\" type=\"application/atomsvc+xml\" href=\"http://%s/api/statusnet/app/service/%s.xml\">
-    <Property type=\"http://apinamespace.org/atom/username\">%s</Property>
-  </Link>
-  <Link rel=\"http://apinamespace.org/twitter\" href=\"https://%s/api/\">
-    <Property type=\"http://apinamespace.org/twitter/username\">%s</Property>
-  </Link>
-  <Link rel=\"http://schemas.google.com/g/2010#updates-from\" href=\"%s\" type=\"application/atom+xml\"></Link>
-</XRD>"
-                    uri uri domain-name username username domain-name username source-link )))))
+          (model.webfinger/fetch-host-meta um-url) => (mock-user-meta username domain-name uri source-link))))
      
      (future-fact "when given an acct uri uri"
        (model/drop-all!)

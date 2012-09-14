@@ -257,6 +257,14 @@
        (map #(-> % :attrs :href))
        first))
 
+(defonce pending-sources (l/permanent-channel))
+
+(defn get-source
+  [url]
+  (let [result (l/result-channel)]
+    (l/enqueue pending-sources [url result])
+    result))
+
 ;; Database functions
 
 (defn set-database!

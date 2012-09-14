@@ -202,6 +202,11 @@
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
+(l/receive-all
+ model/pending-sources
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:topic url}))))
+
 (definitializer
   (require-namespaces
    [
