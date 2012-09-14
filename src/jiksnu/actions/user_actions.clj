@@ -137,23 +137,34 @@
        (filter identity)
        first))
 
-
+(defn get-source-link
+  [user-meta]
+  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
+    (->> user-meta
+         (cm/query query-str)
+         model/force-coll
+         (keep #(.getAttributeValue % "href"))
+         first)))
 
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
-  [id]
+  [^String id]
   (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
       (first (model.user/split-uri id))
       (or (.getUserInfo uri)
           (if-let [domain-name (get-domain-name id)]
-            ;; TODO: should be find or create
-            (let [domain (model.domain/fetch-by-id domain-name)]
+            (let [domain (actions.domain/find-or-create {:_id domain-name})]
+              ;; if the domain is created at this point, it won't have
+              ;; an xrd link set yet
+              
               ;; Try getting the username from user-meta
-              (-?>> (actions.domain/get-user-meta-url domain id)
-                    model.webfinger/fetch-host-meta
-                    get-username-from-user-meta))
+              (if-let [um-url (actions.domain/get-user-meta-url domain id)]
+                (when-let [user-meta (model.webfinger/fetch-host-meta um-url)]
+                  (let [source-link (get-source-link user-meta)]
+                    (log/spy source-link))
+                  (get-username-from-user-meta user-meta))))
             (throw+ "Could not determine domain name"))))))
 
 
@@ -235,17 +246,22 @@
 
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
+  ;; params is never used
   ([user params]
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
-         (if-let [discovered-domain (if (:discovered domain)
-                                      domain (actions.domain/discover domain id))]
+         (if-let [domain
+                  (if (:discovered domain)
+                    domain
+                    (actions.domain/discover domain id))]
            (or (model.user/fetch-by-remote-id id)
                (if-let [username (or (:username user) (get-username id))]
                  (create (merge user
                                 {:domain (:_id domain)
                                  :username username}))
-                 (log/warn (str "Could not determine username for: " id))))
+                 (throw+ (format "Could not determine username for: %s" id)))
+               (throw+ "Could not create user"))
+           ;; this should never happen
            (throw+ "domain has not been disovered"))
          (throw+ "could not determine domain"))
        (throw+ "User does not have an id"))))

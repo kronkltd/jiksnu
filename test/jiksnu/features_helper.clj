@@ -347,39 +347,35 @@
   (condp = page-name
     "show" (let [path (str "/main/domains/" (:_id (get-this :domain)))]
              (fetch-page-browser :get path))
-    (implement)
-    ))
-
-(defn go-to-the-page-for-this-user
-  [page-name]
-  (let [user (get-this :user)]
-    (condp = page-name
-      "show" (fetch-page-browser :get (str "/main/users/" (:_id user)))
-      "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username user) "@" (:domain user)))
-      "subscriptions" (fetch-page-browser :get (str "/" (:username user) "/subscriptions"))
-      "subscribers" (fetch-page-browser :get (str "/" (:username user) "/subscribers"))
-      (implement))))
+    (implement)))
 
 (defn go-to-the-page-for-user
-  [page-name]
-  (let [user (get-this :user)]
-    (condp = page-name
-      "show" (fetch-page-browser :get (str "/main/users/" (:_id user)))
-      "user timeline" (fetch-page-browser :get (str "/remote-user/" (:username user) "@" (:domain user)))
-      "subscriptions" (fetch-page-browser :get (str "/" (:username user) "/subscriptions"))
-      "subscribers" (fetch-page-browser :get (str "/" (:username user) "/subscribers"))
-      (implement))))
+  [page-name user format]
+  (if-let [path (condp = page-name
+                  "show"          (str "/main/users/" (:_id user))
+                  "user timeline" (str "/remote-user/" (:username user) "@" (:domain user))
+                  "subscriptions" (str "/" (:username user) "/subscriptions")
+                  "subscribers"   (str "/" (:username user) "/subscribers")
+                  nil)]
+    (fetch-page-browser :get
+                        (if format
+                          path
+                          (str path "." format)))
+    (implement)))
 
-(defn go-to-the-page-for-user-with-format
-  [page-name format]
-  (let [user (get-this :user)]
-    (str
-     (condp = page-name
-       "show"          (fetch-page-browser :get (str "/main/users/" (:_id user)))
-       "subscriptions" (fetch-page-browser :get (str "/main/users/" (:_id user) "/subscriptions"))
-       "subscribers"   (fetch-page-browser :get (str "/main/users/" (:_id user) "/subscribers"))
-       (implement))
-     "." (string/lower-case format))))
+(defn go-to-the-page-for-this-user
+  ([page-name]
+     (go-to-the-page-for-this-user page-name nil))
+  ([page-name format]
+     (let [user (get-this :user)]
+       (go-to-the-page-for-user page-name user format))))
+
+(defn go-to-the-page-for-that-user
+  ([page-name]
+     (go-to-the-page-for-that-user page-name nil))
+  ([page-name format]
+     (let [user (get-that :user)]
+       (go-to-the-page-for-user page-name user format))))
 
 (defn host-field-should-match-domain
   []

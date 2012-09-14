@@ -103,13 +103,13 @@
       (go-to-the-page-for-domain page))
 
 (When #"^I go to the \"([^\"]+)\" page for that user$" [page]
-      (go-to-the-page-for-user page))
+      (go-to-the-page-for-that-user page))
 
 (When #"^I go to the \"([^\"]+)\" page for that user with a \"([^\"]+)\" format$" [page format]
-      (go-to-the-page-for-user-with-format page format))
+      (go-to-the-page-for-that-user page format))
 
 (When #"^I go to the \"([^\"]*)\" page for this user$" [page]
-      (go-to-the-page-for-user page))
+      (go-to-the-page-for-this-user page))
 
 (When #"^I log out$" []
       (click ".dropdown-toggle")

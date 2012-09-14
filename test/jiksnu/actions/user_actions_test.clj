@@ -3,7 +3,7 @@
         [ciste.model :only [string->document]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
-        [midje.sweet :only [fact => anything throws contains every-checker]]
+        [midje.sweet :only [fact future-fact => anything throws contains every-checker]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
@@ -15,7 +15,8 @@
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger])
+            [jiksnu.model.webfinger :as model.webfinger]
+            [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera2.model.Person))
@@ -167,17 +168,36 @@
      (fact "when given a http uri"
        (fact "when the domain is discovered"
          (model/drop-all!)
-         (let [domain (actions.domain/find-or-create
+         (let [username (fseq :username)
+               domain (actions.domain/find-or-create
                        (factory :domain
                                 {:_id domain-name
                                  :links [{:rel "lrdd" :template template}]
                                  :discovered true}))
-               uri (str "http://" domain-name "/user/1")]
+               uri (str "http://" domain-name "/user/1")
+               um-url (format "http://%s/xrd?uri=%s"
+                              domain-name
+                              (codec/url-encode uri))
+               source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)]
            (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
          (provided
-           (get-username uri) => username)))
+           (model.webfinger/fetch-host-meta um-url) =>
+           (string->document
+            (format "
+<XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
+  <Subject>%s</Subject>
+  <Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"%s\"></Link>
+  <Link rel=\"http://apinamespace.org/atom\" type=\"application/atomsvc+xml\" href=\"http://%s/api/statusnet/app/service/%s.xml\">
+    <Property type=\"http://apinamespace.org/atom/username\">%s</Property>
+  </Link>
+  <Link rel=\"http://apinamespace.org/twitter\" href=\"https://%s/api/\">
+    <Property type=\"http://apinamespace.org/twitter/username\">%s</Property>
+  </Link>
+  <Link rel=\"http://schemas.google.com/g/2010#updates-from\" href=\"%s\" type=\"application/atom+xml\"></Link>
+</XRD>"
+                    uri uri domain-name username username domain-name username source-link )))))
      
-     (fact "when given an acct uri"
+     (future-fact "when given an acct uri uri"
        (model/drop-all!)
        (let [domain (actions.domain/find-or-create
                      (factory :domain

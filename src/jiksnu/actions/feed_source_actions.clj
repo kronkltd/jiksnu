@@ -84,7 +84,8 @@
 
 (defn find-or-create
   [params & [options & _]]
-  (if-let [source (or (and (:_id params) (model.feed-source/fetch-by-id (:_id params)))
+  (if-let [source (or (if-let [id  (:_id params)]
+                        (model.feed-source/fetch-by-id id))
                       (model.feed-source/fetch-by-topic (:topic params)))]
     source
     (create params options)))
@@ -95,6 +96,7 @@
   "Send a subscription request to the feed"
   [user]
   (if-let [hub-url (:hub user)]
+    ;; TODO: this will use the update source
     (let [topic (helpers.user/feed-link-uri user)]
       (find-or-create {:topic topic :hub hub-url} {})
       (client/post
