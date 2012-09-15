@@ -66,18 +66,30 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
+(defn set-update-source
+  [item]
+  (if (:local item)
+    (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
+                        (:domain item) (:_id item))
+          source  (l/wait-for-result
+                   (model/get-source topic)
+                   5000)]
+      (assoc item :updateSource (:_id source)))
+    item))
+
 (defn prepare-create
   [user]
-  (-?> user
-       set-_id
-       model.user/set-id
-       set-updated-time
-       set-created-time
-       model.user/set-url
-       model.user/set-avatar-url
-       assert-unique
-       set-discovered
-       set-local))
+  (-> user
+      set-_id
+      model.user/set-id
+      model.user/set-url
+      set-local
+      assert-unique
+      set-updated-time
+      set-created-time
+      set-update-source
+      set-discovered
+      model.user/set-avatar-url))
 
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"

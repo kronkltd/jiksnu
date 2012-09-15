@@ -16,7 +16,7 @@
 (test-environment-fixture
 
  (def domain-a (actions.domain/find-or-create (factory :domain)))
- (def user-a (create (factory :user {:domain (:_id domain-a)})))
+ (def user-a (actions.user/create (factory :user {:domain (:_id domain-a)})))
 
  (fact "#'get-domain"
    (fact "when passed nil"
@@ -53,7 +53,7 @@
      (get-link user "baz" nil) => nil))
 
  (fact "#'create"
-   (create (factory :local-user)) => (partial instance? User))
+   (create (actions.user/prepare-create (factory :local-user))) => (partial instance? User))
 
  ;; TODO: This is a better test for actions
  (fact "#'fetch-all"
@@ -67,7 +67,7 @@
 
    (fact "when there are users"
      (fact "should not be empty"
-       (create (factory :user))
+       (actions.user/create (factory :user))
        (fetch-all) =>
        (every-checker
         seq?
@@ -75,14 +75,14 @@
 
  (fact "#'fetch-by-domain"
    (let [domain (model.domain/create (factory :domain))
-         user (create (factory :user {:domain (:_id domain)}))]
+         user (actions.user/create (factory :user {:domain (:_id domain)}))]
      (fetch-by-domain domain) => (contains user)))
  
  (fact "#'get-user"
    (fact "when the user is found"
      (let [username (fseq :username)
            domain (actions.domain/find-or-create (factory :domain))]
-       (create (factory :user {:username username
+       (actions.user/create (factory :user {:username username
                               :domain (:_id domain)}))
        (get-user username (:_id domain)) => user?))
 
@@ -95,7 +95,7 @@
  (fact "user-meta-uri"
    (fact "when the user's domain does not have a lrdd link"
      (model.domain/drop!)
-     (let [user (create (factory :user))]
+     (let [user (actions.user/create (factory :user))]
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
@@ -103,10 +103,10 @@
                    (factory :domain
                             {:links [{:rel "lrdd"
                                       :template "http://example.com/main/xrd?uri={uri}"}]}))
-           user (create (factory :user {:domain (:_id domain)}))]
+           user (actions.user/create (factory :user {:domain (:_id domain)}))]
        (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
 
  (fact "vcard-request"
-   (let [user (create (factory :user))]
+   (let [user (actions.user/create (factory :user))]
      (vcard-request user) => packet/packet?))
 )
