@@ -11,17 +11,17 @@
 
            [jiksnu.actions.activity-actions :as actions.activity]
            [jiksnu.actions.user-actions :as actions.user]
+
+           [jiksnu.features-helper :as feature]
            
            [jiksnu.model.activity :as model.activity]
            [jiksnu.model.user :as model.user]
-
            ))
 
 (test-environment-fixture
 
  (fact "#'notify-activity"
    (fact "should return a packet"
-     (let [user (actions.user/create (factory :local-user))
-           activity (actions.activity/post (factory :activity))]
-       
+     (let [user (feature/a-user-exists)
+           activity (feature/there-is-an-activity {:user user})]
        (notify-activity user activity) => packet/packet?))))

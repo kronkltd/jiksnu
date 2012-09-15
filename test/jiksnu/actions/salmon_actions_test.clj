@@ -10,6 +10,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.security.Key
@@ -82,7 +83,7 @@
        (get-key nil) => nil?))
 
    (fact "when a user is provided"
-     (let [user (actions.user/create (factory :user {:discovered true}))]
+     (let [user (feature/a-user-exists)]
 
        (fact "and it does not have a key assigned"
          (fact "should return nil"
@@ -121,7 +122,8 @@
    (fact "with a valid signature"
      (fact "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)
-             user (-> envelope extract-activity
+             user (-> envelope
+                      extract-activity
                       actions.activity/get-author)]
          (actions.user/discover user)
          (let [sig (:sig envelope)
