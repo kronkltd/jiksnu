@@ -74,7 +74,7 @@
           source  (l/wait-for-result
                    (model/get-source topic)
                    5000)]
-      (assoc item :updateSource (:_id source)))
+      (assoc item :update-source (:_id source)))
     item))
 
 (defn prepare-create
@@ -205,7 +205,7 @@
                     (let [ch (model/get-source source-link)]
                       (merge user
                              {:username (get-username-from-user-meta user-meta)
-                              :updateSource (:_id (l/wait-for-result ch 5000))}))
+                              :update-source (:_id (l/wait-for-result ch 5000))}))
                     (throw+ "could not determine source")
                     ))))
             (throw+ "Could not determine domain name"))))))

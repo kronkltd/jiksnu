@@ -576,7 +576,7 @@
        (:update-source user))
      [:span (if *dynamic*
               {:data-bind "with: jiksnu.core.get_feed_source($data)"})
-      [:a {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"}]]]
+      [:a (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"})]]]
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (if-let [key (if *dynamic*

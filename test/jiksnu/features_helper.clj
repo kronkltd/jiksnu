@@ -23,6 +23,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             jiksnu.factory
             [jiksnu.model :as model]
@@ -75,7 +76,9 @@
   (try (let [site-config (ciste.config/load-site-config)]
          
          (ciste.runner/start-application! :integration)
-         (set-driver! {:browser :firefox})
+         (set-driver! {:browser
+                       ;; :firefox
+                       :htmlunit})
          (ciste.loader/process-requires)
          (model/drop-all!)
          (dosync
@@ -149,19 +152,31 @@
 (defn a-domain-exists
   []
   (let [domain (model.domain/create (factory :domain))]
-    (set-this :domain domain)))
+    (set-this :domain domain)
+    domain))
 
 (defn a-feed-source-exists
-  []
-  (->> (factory :feed-source)
-       model.feed-source/create
-       (set-this :feed-source)))
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        source (actions.feed-source/create
+                (factory :feed-source
+                         {:topic (format "http://%s/api/statuses/user_timeline/1.atom" (:_id domain))
+                          :hub (format "http://%s/push/hub" (:_id domain))}))]
+    (set-this :feed-source source)
+    source))
 
 (defn a-feed-subscription-exists
-  []
-  (->> (factory :feed-subscription)
-       model.feed-subscription/create
-       (set-this :feed-subscription)))
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        feed-subscription (model.feed-subscription/create
+                           (factory :feed-subscription
+                                    {:domain domain}))]
+    (set-this :feed-subscription feed-subscription)
+    feed-subscription))
 
 (defn a-normal-user-is-logged-in
   []
@@ -203,16 +218,29 @@
   (a-user-exists {} password))
 
 (defn another-user-exists
-  []
+  [& [options]]
   (log/info "another user")
-  (let [user (actions.user/create (factory :local-user))]
-    (set-that :user user)))
+  (let [domain (or (:domain options)
+                   (get-that :domain)
+                   (a-domain-exists))
+        source (or (:source options)
+                   (get-that :feed-source)
+                   (a-feed-source-exists {:domain domain}))
+        user (actions.user/create (factory :user
+                                           {:domain (:_id domain)
+                                            :update-source (:_id source)}))]
+    (set-that :user user)
+    user))
 
 (defn activity-gets-posted
-  []
-  (->> (factory :activity)
-       actions.activity/post
-       (set-this :activity)))
+  [& [options]]
+  (let [source (or (:feed-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists))
+        activity (actions.activity/post (factory :activity
+                                                 {:update-source source}))]
+    (set-this :activity activity)
+    activity))
 
 (defn alias-should-match-uri
   []
@@ -362,8 +390,8 @@
                   nil)]
     (fetch-page-browser :get
                         (if format
-                          path
-                          (str path "." format)))
+                          (str path "." format)
+                          path))
     (implement)))
 
 (defn go-to-the-page-for-this-user
@@ -498,7 +526,7 @@
 (defn should-see-activity
   []
   (check-response
-   (exists? (str "article[id='activity-" (:_id (get-this :activity)) "']")) => truthy))
+   (exists? (format "article[data-id='%s']" (:_id (get-this :activity)))) => truthy))
 
 (defn should-see-a-activity
   []
@@ -598,13 +626,18 @@
 (defn there-is-an-activity
   [modifier & {:as options}]
   (let [user (or (:user options) (get-this :user) (a-user-exists))]
-    (let [activity (actions.activity/create
-                    (factory :activity
-                             {:author (:_id user)
-                              :local true
-                              :public (= modifier "public")}))]
-      (set-this :activity activity)
-      activity)))
+    (let [source (or (:feed-source options)
+                     (get-this :feed-source)
+                     (a-feed-source-exists))]
+      (let [activity (session/with-user user
+                       (actions.activity/create
+                        (factory :activity
+                                 {:author (:_id user)
+                                  :update-source (:_id source)
+                                  ;; :local true
+                                 :public (= modifier "public")})))]
+       (set-this :activity activity)
+       activity))))
 
 (defn there-is-an-activity-by-another
   [modifier]
@@ -626,3 +659,7 @@
 (defn user-posts-activity
   []
   (there-is-an-activity "public"))
+
+(defn that-user-posts-activity
+  []
+  (there-is-an-activity "public" :user (get-that :user)))

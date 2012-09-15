@@ -26,9 +26,9 @@ Scenario: Fetching a User Meta document
 
 Scenario: User timeline, HTML, unauthenticated
   Given I am not logged in
-  And a user exists
+  And another user exists
   And that user posts an activity
-  When I go to the "user timeline" page for this user
+  When I go to the "user timeline" page for that user
   Then I should see that activity
 
 # Scenario: User index, authenticated

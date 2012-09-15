@@ -126,27 +126,33 @@
   []
   #_(log/info "starting application")
 
-  (set! _model (model/AppViewModel.))
-  (set! _view (.viewModel js/kb _model))
+  (try
+    (ws/set-view _view)
+    (ws/connect)
+    (catch Exception ex
+      (log/error ex)))
 
-  ;; NB: for debugging only. use fully-qualified var
-  (aset js/window "_model" _model)
-  (aset js/window "_view" _view)
-
-  (set! (.-instance (.-bindingProvider js/ko))
-        (DataModelProvider.))
-  (ko/apply-bindings _view)
-  (.addClass ($ :html) "bound")
   (handlers/setup-handlers)
 
-  (ws/set-view _view)
-  (ws/connect)
+  (when-let [elts (seq ($ "*[data-load-model]"))]
+    (log/info "init knockout")
+    (set! _model (model/AppViewModel.))
+    (set! _view (.viewModel js/kb _model))
 
-  (doseq [model-name model-names]
-    (aset model/observables model-name (js-obj)))
+    ;; NB: for debugging only. use fully-qualified var
+    (aset js/window "_model" _model)
+    (aset js/window "_view" _view)
 
-  (if-let [elts ($ "*[data-load-model]")]
+    (doseq [model-name model-names]
+      (aset model/observables model-name (js-obj)))
+
+    (set! (.-instance (.-bindingProvider js/ko))
+          (DataModelProvider.))
+    (ko/apply-bindings _view)
+
     (fetch-viewmodel (.data elts "load-model")))
+
+  (.addClass ($ :html) "bound")
 
   (stats/fetch-statistics _view))
 

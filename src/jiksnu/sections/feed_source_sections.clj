@@ -99,7 +99,8 @@
      [:th "Topic"]
      [:th "Status"]
      [:th "Actions"]]]
-   [:tbody (if *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic*
+             {:data-bind "foreach: $data"})
     (map admin-index-line items)]])
 
 (defsection admin-index-block [FeedSource :viewmodel]
@@ -235,7 +236,7 @@
        [:tr
         [:th "Callback:"]
         [:td (merge {:data-property "callback"}
-                    (if *dynamic*
+                    (when *dynamic*
                       {:data-bind "text: callback"}))
          (when-not *dynamic*
            callback)]]

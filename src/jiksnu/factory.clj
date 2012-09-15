@@ -164,7 +164,7 @@
      :local false
      :email (fseq :email)
      :name display-name
-     :updateSource #'source-id
+     ;; :update-source #'source-id
      :display-name display-name
      :first-name first-name
      :last-name last-name}))
@@ -180,9 +180,7 @@
 (deffactory :activity
   {:title (fseq :title)
    :content (fseq :content)
-   :author #'user-id
-   :update-source #'source-id
-   :conversations #'conversation-id})
+   :author #'user-id})
 
 (deffactory :subscription
   {:to #'user-id
@@ -192,8 +190,7 @@
 
 (deffactory :feed-source
   {:topic (fseq :uri)
-   :hub (fseq :uri)
-   })
+   :hub (fseq :uri)})
 
 (deffactory :feed-subscription
   {:topic (fseq :uri)})

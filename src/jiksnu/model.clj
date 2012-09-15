@@ -228,7 +228,7 @@
   "Drop all collections"
   []
   (log/debug "dropping all collections")
-  (doseq [entity [Activity AuthenticationMechanism Domain
+  (doseq [entity [Activity AuthenticationMechanism Conversation Domain
                   FeedSource FeedSubscription
                   Group Item Key Like Subscription User]]
     (drop-collection entity)))

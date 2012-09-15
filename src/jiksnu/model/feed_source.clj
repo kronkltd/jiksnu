@@ -105,7 +105,7 @@ This will generally not be called"
 (defn find-by-user
   "Returns the source associated with a user"
   [user]
-  (fetch-by-id (:updateSource user)))
+  (fetch-by-id (:update-source user)))
 
 (defn count-records
   ([] (count-records {}))

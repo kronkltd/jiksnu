@@ -62,9 +62,9 @@
                  #_(model.activity/get-author activity))]
     [:div.comment {:data-model "activity"}
      [:p
-      [:span (if *dynamic*
+      [:span (when *dynamic*
                {:data-bind "with: author"})
-       [:span (if *dynamic*
+       [:span (when *dynamic*
                 {:data-bind "with: jiksnu.core.get_user($data)"})
         (sections.user/display-avatar author)
         (link-to author)]]
@@ -187,7 +187,7 @@
       [:span.caret]]
      [:ul.dropdown-menu.pull-right
       [:li
-       [:a (if *dynamic*
+       [:a (when *dynamic*
              {:data-bind "attr: {href: '/model/activities/' + _id + '.model'}"})
         "Model"]]
       (map
@@ -244,7 +244,7 @@
                      []
                      (model.like/get-likes activity))]
     [:section.likes
-     (if *dynamic*
+     (when *dynamic*
        {:data-bind "if: $data['like-count']"})
      [:span "Liked by"]
      [:ul
@@ -282,7 +282,7 @@
            :title (model/format-date (:published activity))
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
-               (if *dynamic*
+               (when *dynamic*
                  {:data-bind "text: created, attr: {href: '/notice/' + _id}"}))
      (when-not *dynamic*
        (-> activity :created .toDate model/prettyify-time))]]
@@ -294,7 +294,7 @@
    
    ;; TODO: link to the domain
    (when (or *dynamic* (not (:local activity)))
-     [:span (if *dynamic*
+     [:span (when *dynamic*
              {:data-bind "if: !$data.local"})
       " via a "
       [:a {:href
@@ -318,19 +318,20 @@
 
 (defn comments-section
   [activity]
-  [:div (if *dynamic*
+  [:div (when *dynamic*
           {:data-bind "with: comments"})
-   [:div (if *dynamic*
+   [:div (when *dynamic*
            {:data-bind "with: _.map($data, jiksnu.core.get_activity)"})
     (if-let [comments (if *dynamic*
                         [(Activity.)]
                         (seq (second (actions.comment/fetch-comments activity))))]
       [:section.comments
        [:ul.unstyled.comments
-        (if *dynamic*
+        (when *dynamic*
           {:data-bind "foreach: $data"})
         (map (fn [comment]
-               [:li {:data-bind "if: $data"}
+               [:li (when *dynamic*
+                      {:data-bind "if: $data"})
                 (show-comment comment)])
              comments)]])]])
 
@@ -407,7 +408,7 @@
                           [{:href ""}]
                           (seq (:enclosures activity)))]
     [:ul.unstyled
-     (if *dynamic*
+     (when *dynamic*
        {:data-bind "foreach: enclosures"})
      (map
       (fn [enclosure]
@@ -474,18 +475,21 @@
   [:tr (merge {:data-model "activity"}
               (when-not *dynamic*
                 { :data-id (:_id activity)}))
-   [:td (if *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
+   [:td (when *dynamic*
+          {:data-bind "with: jiksnu.core.get_user(author)"})
     (let [user (if *dynamic*
                  (User.)
                  (actions.activity/get-author activity))]
       (show-section-minimal user))]
-   [:td (if *dynamic*
+   [:td (when *dynamic*
           {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
       (-> activity :object :object-type))]
    [:td (when-not *dynamic*
           (if (-> activity :public) "public" "private"))]
-   [:td (if *dynamic* {:data-bind "text: title"} (:title activity))]
+   [:td (if *dynamic*
+          {:data-bind "text: title"}
+          (:title activity))]
    [:td (post-actions activity)]])
 
 ;; admin-index-section
@@ -519,7 +523,7 @@
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
-   (if *dynamic*
+   (when *dynamic*
      {:data-bind "foreach: $data"})
    (map #(index-line % options) records)])
 
@@ -676,8 +680,9 @@
               {:about activity-uri
                :data-id (:_id activity)}))
      [:header
-      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user(author)"})
-       [:div (if *dynamic*
+      [:div (when *dynamic*
+              {:data-bind "with: jiksnu.core.get_user(author)"})
+       [:div (when *dynamic*
                {:data-bind "if: typeof($data) !== 'undefined'"})
         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
           (show-section-minimal user))]]
@@ -687,7 +692,7 @@
         [:h1.entry-title {:property "dc:title"}
          (:title activity)])
       [:p (merge {:property "dc:title"}
-                 (if *dynamic*
+                 (when *dynamic*
                    {:data-bind "text: title"}))
        (when-not *dynamic*
          (or #_(:title activity)
