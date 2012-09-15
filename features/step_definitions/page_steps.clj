@@ -1,6 +1,7 @@
 (use 'jiksnu.features-helper)
 (use 'clj-webdriver.taxi)
 (require '[jiksnu.model.activity :as model.activity])
+(require '[clojure.tools.logging :as log])
 
 (alter-var-root #'cucumber.runtime.clj/-buildWorld
                 (fn [_]

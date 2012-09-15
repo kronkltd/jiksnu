@@ -75,7 +75,7 @@
   (try (let [site-config (ciste.config/load-site-config)]
          
          (ciste.runner/start-application! :integration)
-         (set-driver! {:browser :htmlunit})
+         (set-driver! {:browser :firefox})
          (ciste.loader/process-requires)
          (model/drop-all!)
          (dosync
@@ -170,10 +170,14 @@
 
 (defn a-record-exists
   [type]
-  (let [create-fn (resolve (symbol (str "jiksnu.model." (name type) "/create")))]
-    (->> (factory type)
-         create-fn
-         (set-this type))))
+  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
+                               (name type)))]
+    (require ns-sym)
+    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
+      (->> (factory type)
+           create-fn
+           (set-this type))
+      (throw+ (format "could not find %s/create" ns-sym)))))
 
 (defn a-subscription-exists
   []
