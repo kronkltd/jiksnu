@@ -114,8 +114,10 @@
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"
              ]
-  :repositories {"sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
-                 "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"}
+  :repositories {
+                 "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
+                 "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"
+                 }
   :warn-on-reflection false
 
   :profiles {:dev

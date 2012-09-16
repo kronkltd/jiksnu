@@ -83,7 +83,7 @@
        (println " ")
        (println " ")
        (println " ")
-       (there-is-an-activity type))
+       (there-is-an-activity {:modifier type}))
 
 (Given #"^there is a (.+) activity created by another$" [type]
        (println " ")

@@ -202,12 +202,18 @@
 
 (defn a-user-exists
   ([] (a-user-exists {:discovered true} "hunter2"))
+  ([options]
+     (a-user-exists options "hunter2"))
   ([opts password]
      (let [user (actions.user/register
                  {:username (fseq :username)
                   :password password
                   :display-name (fseq :name)
-                  :accepted true})]
+                  :accepted true})
+           user (if (:admin opts)
+                  (do (model.user/set-field! user :admin true)
+                      (assoc user :admin true))
+                  user)]
        (set-this :user user)
        (dosync
         (ref-set my-password password))
@@ -624,8 +630,9 @@
     (throw+ (format "Could not find 'this' record for %s" type))))
 
 (defn there-is-an-activity
-  [modifier & {:as options}]
-  (let [user (or (:user options) (get-this :user) (a-user-exists))]
+  [& [options]]
+  (let [modifier (:modifier options "public")
+        user (or (:user options) (get-this :user) (a-user-exists))]
     (let [source (or (:feed-source options)
                      (get-this :feed-source)
                      (a-feed-source-exists))]
@@ -635,14 +642,15 @@
                                  {:author (:_id user)
                                   :update-source (:_id source)
                                   ;; :local true
-                                 :public (= modifier "public")})))]
-       (set-this :activity activity)
-       activity))))
+                                  :public (= modifier "public")})))]
+        (set-this :activity activity)
+        activity))))
 
 (defn there-is-an-activity-by-another
   [modifier]
   (let [user (actions.user/create (factory :local-user))]
-    (there-is-an-activity modifier :user user)))
+    (there-is-an-activity {:modifier  modifier
+                           :user user})))
 
 
 
@@ -658,8 +666,9 @@
 
 (defn user-posts-activity
   []
-  (there-is-an-activity "public"))
+  (there-is-an-activity {:modifier "public"}))
 
 (defn that-user-posts-activity
   []
-  (there-is-an-activity "public" :user (get-that :user)))
+  (there-is-an-activity {:modifier "public"
+                         :user (get-that :user)}))
