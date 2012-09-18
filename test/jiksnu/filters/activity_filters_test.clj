@@ -17,6 +17,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]))
 
@@ -29,7 +30,7 @@
          (fact "when the format is :xmpp"
            (with-format :xmpp
              (fact "when the user is logged in"
-               (let [user (actions.user/create (factory :local-user))]
+               (let [user (feature/a-user-exists)]
                  (with-user user
                    (fact "and it is a valid activity"
                      (let [activity (factory :activity)
@@ -48,9 +49,9 @@
    (let [action #'actions.activity/show]
      (fact "when the serialization is :xmpp"
        (with-serialization :xmpp
-         (let [author (actions.user/create (factory :user))]
+         (let [author (feature/a-user-exists)]
            (with-user author
-             (let [activity (model.activity/create (factory :activity))
+             (let [activity (feature/there-is-an-activity)
                    packet-map {:from (tigase/make-jid author)
                                :to (tigase/make-jid author)
                                :type :get

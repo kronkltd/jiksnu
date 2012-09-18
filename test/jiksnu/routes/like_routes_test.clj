@@ -12,7 +12,7 @@
 
 (test-environment-fixture
 
- (fact "delete html"
+ (future-fact "delete html"
    (let [like (model.like/create (factory :like))]
      (-> (mock/request :post (format "/likes/%s/delete" (:_id like)))
          as-admin response-for) =>

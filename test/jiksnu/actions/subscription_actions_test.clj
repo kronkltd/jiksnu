@@ -7,6 +7,7 @@
         midje.sweet)
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
@@ -18,23 +19,23 @@
  (fact "subscribe"
    (fact "when the user is not already subscribed"
      (fact "should return a subscription"
-       (let [user (actions.user/create (factory :local-user))
-             subscribee (actions.user/create (factory :local-user))]
+       (let [user (feature/a-user-exists)
+             subscribee (feature/a-user-exists)]
          (model.subscription/drop!)
          (with-user user
            (subscribe user subscribee) => subscription?)))))
 
  (fact "subscribed"
    (fact "should return a subscription"
-     (let [user (actions.user/create (factory :local-user))
-           subscribee (actions.user/create (factory :local-user))]
+     (let [user (feature/a-user-exists)
+           subscribee (feature/a-user-exists)]
        (subscribed user subscribee) => subscription?)))
 
  (fact "get-subscribers"
    (fact "when there are subscribers"
      (fact "should not be empty"
-       (let [user (actions.user/create (factory :local-user))
-             subscriber (actions.user/create (factory :local-user))
+       (let [user (feature/a-user-exists)
+             subscriber (feature/a-user-exists)
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id subscriber)
@@ -51,8 +52,8 @@
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
      (fact "should return a sequence of subscriptions"
-       (let [user (actions.user/create (factory :local-user))
-             subscribee (actions.user/create (factory :local-user))
+       (let [user (feature/a-user-exists)
+             subscribee (feature/a-user-exists)
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id user)

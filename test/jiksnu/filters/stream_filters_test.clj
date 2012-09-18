@@ -13,6 +13,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             jiksnu.filters.stream-filters
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -27,7 +28,7 @@
    (with-serialization :xmpp
      (fact "when there are no activities"
       (model/drop-all!)
-      (let [user (actions.user/create (factory :user))
+      (let [user (feature/a-user-exists)
             element nil
             packet (tigase/make-packet
                     {:from (tigase/make-jid user)
@@ -44,7 +45,7 @@
          )))
      
      (fact "when there are activities"
-       (let [author (actions.user/create (factory :user))]
+       (let [author (feature/a-user-exists)]
          (with-user author
            (let [element nil
                  packet (tigase/make-packet
@@ -55,7 +56,7 @@
                           :body element})
                  request (assoc (packet/make-request packet)
                            :serialization :xmpp)
-                 activity (model.activity/create (factory :activity))]
+                 activity (feature/there-is-an-activity)]
              (filter-action #'actions.stream/public-timeline request) =>
              (every-checker
               map?
@@ -67,7 +68,7 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (fact "when the user exists"
-           (let [user (actions.user/create (factory :local-user))
+           (let [user (feature/a-user-exists)
                  request {:params {:id (str (:_id user))}}]
              (filter-action action request) => .response.
              (provided

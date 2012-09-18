@@ -9,6 +9,8 @@
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.like-actions :as actions.admin.like]
+            [jiksnu.actions.like-actions :as actions.like]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
@@ -22,13 +24,15 @@
        (with-serialization :http
          (fact "when the format is :html"
            (with-format :html
-             (let [like (model.like/create (factory :like))]
-               (let [request {:action action
-                              :params {:id (str (:_id like))}}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (comp status/redirect? :status)
-                  #(= (get-in % [:headers "Location"])
-                      "/admin/likes")))))))))))
+             (let [user (feature/a-user-exists)
+                   activity (feature/there-is-an-activity)
+                   like (actions.like/like-activity activity user)
+                   request {:action action
+                            :params {:id (str (:_id like))}}
+                   response (filter-action action request)]
+               (apply-view request response) =>
+               (every-checker
+                map?
+                (comp status/redirect? :status)
+                #(= (get-in % [:headers "Location"])
+                    "/admin/likes"))))))))))

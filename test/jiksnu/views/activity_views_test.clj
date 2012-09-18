@@ -16,6 +16,7 @@
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -30,8 +31,7 @@
        (with-serialization :http
          (fact "when the format is :json"
            (with-format :json
-             (let [activity (actions.activity/create (factory :activity
-                                                              {:local true}))
+             (let [activity (feature/there-is-an-activity)
                    request {:params {:url (full-uri activity)}
                             :action action}
                    response (filter-action action request)]
@@ -47,8 +47,7 @@
                                {:title (:title activity)}))))))))
          (fact "when the format is :xml"
            (with-format :xml
-             (let [activity (actions.activity/create (factory :activity
-                                                              {:local true}))
+             (let [activity (feature/there-is-an-activity)
                    request {:params {:url (full-uri activity)}
                             :action action}
                    response (filter-action action request)]

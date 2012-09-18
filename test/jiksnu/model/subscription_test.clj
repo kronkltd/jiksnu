@@ -8,6 +8,7 @@
         [midje.sweet :only [fact => future-fact every-checker truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User
@@ -24,8 +25,8 @@
  (fact "#'drop!"
    (fact "when there are subscriptions"
      (fact "should delete them all"
-       (let [actor (actions.user/create (factory :user))
-             user (actions.user/create (factory :user))]
+       (let [actor (feature/a-user-exists)
+             user (feature/a-user-exists)]
          (subscribe (:_id actor) (:_id user))
          (drop!)
          (fetch-all) => empty?))))
@@ -52,8 +53,8 @@
      (fact "and the subscription doesn't exist"
        (fact "should return a Subscription"
          (drop!)
-         (let [actor (actions.user/create (factory :user))
-               user (actions.user/create (factory :user))]
+         (let [actor (feature/a-user-exists)
+               user (feature/a-user-exists)]
            (subscribe (:_id actor) (:_id user)) =>
            (every-checker
             truthy
@@ -63,16 +64,16 @@
 
    (fact "when the user is subscribing"
      (fact "should return true"
-       (let [actor (actions.user/create (factory :user))
-             user (actions.user/create (factory :user))]
+       (let [actor (feature/a-user-exists)
+             user (feature/a-user-exists)]
          (subscribe actor user)
          (let [response (subscribing? actor user)]
            response => truthy))))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
-       (let [actor (actions.user/create (factory :user))
-             user (actions.user/create (factory :user))]
+       (let [actor (feature/a-user-exists)
+             user (feature/a-user-exists)]
          (let [response (subscribing? actor user)]
            response =not=> truthy)))))
 
@@ -80,16 +81,16 @@
 
    (fact "when the user is subscribed"
      (fact "should return true"
-       (let [actor (actions.user/create (factory :user))
-             user (actions.user/create (factory :user))]
+       (let [actor (feature/a-user-exists)
+             user (feature/a-user-exists)]
          (subscribe user actor)
          (let [response (subscribed? actor user)]
            response => truthy))))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
-       (let [actor (actions.user/create (factory :user))
-             user (actions.user/create (factory :user))]
+       (let [actor (feature/a-user-exists)
+             user (feature/a-user-exists)]
          (let [response (subscribed? actor user)]
            response =not=> truthy)))))
 )

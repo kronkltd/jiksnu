@@ -12,6 +12,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]))
@@ -26,7 +27,7 @@
            (with-format :as
              (fact "when the user has subscriptions"
                (model/drop-all!)
-               (let [user (actions.user/create (factory :local-user))
+               (let [user (feature/a-user-exists)
                      subscription (model.subscription/create (factory :subscription
                                                                       {:from (:_id user)}))
                      request {:action action}
@@ -42,7 +43,7 @@
            (with-format :html
              (fact "when the user has subscriptions"
                (model/drop-all!)
-               (let [user (actions.user/create (factory :local-user))
+               (let [user (feature/a-user-exists)
                      subscription (model.subscription/create
                                    (factory :subscription
                                             {:from (:_id user)}))
@@ -68,8 +69,8 @@
               (apply-view request nil) => packet/packet?))
           
           (fact "when there is a subscription"
-            (let [user (actions.user/create (factory :local-user))
-                  subscribee (actions.user/create (factory :local-user))
+            (let [user (feature/a-user-exists)
+                  subscribee (feature/a-user-exists)
                   record (factory :subscription {:from (:_id user)
                                                  :to (:_id subscribee)})
                   request {:action #'actions.subscription/unsubscribe

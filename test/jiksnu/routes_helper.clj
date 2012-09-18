@@ -7,6 +7,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
             [net.cgrand.enlive-html :as enlive]
@@ -37,7 +38,7 @@
 
 (defn as-user
   ([m]
-     (let [user (actions.user/create (factory :local-user))]
+     (let [user (feature/a-user-exists)]
        (as-user m user)))
   ([m user]
      (let [password (fseq :password)]

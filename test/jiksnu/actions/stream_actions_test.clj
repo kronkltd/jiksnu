@@ -10,6 +10,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -24,7 +25,7 @@
        (public-timeline) => (comp empty? :items)))
    (fact "when there are activities"
      (fact "should return a seq of activities"
-       (let [activity (model.activity/create (factory :activity))]
+       (let [activity (feature/there-is-an-activity)]
          (public-timeline) =>
          (every-checker
           map?
@@ -36,9 +37,8 @@
  (fact "#'user-timeline"
    (fact "when the user has activities"
      (model/drop-all!)
-     (let [user (actions.user/create (factory :local-user))
-           activity (model.activity/create (factory :activity
-                                                    {:author (:_id user)}))]
+     (let [user (feature/a-user-exists)
+           activity (feature/there-is-an-activity)]
        (user-timeline user) =>
        (every-checker
         vector?
@@ -51,8 +51,8 @@
  (fact "#'callback-publish"
    (fact "when there is a watched source"
      (with-context [:http :atom]
-       (let [user (actions.user/create (factory :local-user))
-             source (model.feed-source/create (factory :feed-source))
+       (let [user (feature/a-user-exists)
+             source (feature/a-feed-source-exists)
              activity (model/map->Activity
                        (factory :activity {:id (fseq :uri)}))
              feed (abdera/make-feed* {:links

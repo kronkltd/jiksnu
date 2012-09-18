@@ -25,7 +25,7 @@
        (let [activity (factory :activity)]
          (set-recipients activity) => activity)))
    (fact "When the activity contains a recipient uri"
-     (let [recipient (actions.user/create (factory :local-user))
+     (let [recipient (feature/a-user-exists)
            activity (factory :activity {:recipient-uris [(:id recipient)]})]
        (set-recipients activity) =>
        (every-checker

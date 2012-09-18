@@ -17,7 +17,7 @@
             [ring.mock.request :as mock]))
 
 (test-environment-fixture
- (fact "delete"
+ (future-fact "delete"
      (let [like (model.like/create (factory :like))]
      (-> (mock/request :post (str "/admin/likes/" (:_id like) "/delete"))
          as-admin response-for) =>

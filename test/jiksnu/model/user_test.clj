@@ -9,14 +9,15 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.domain :as model.domain])
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
 (test-environment-fixture
 
- (def domain-a (actions.domain/find-or-create (factory :domain)))
- (def user-a (actions.user/create (factory :user {:domain (:_id domain-a)})))
+ (def domain-a (actions.domain/current-domain))
+ (def user-a (feature/a-user-exists))
 
  (fact "#'get-domain"
    (fact "when passed nil"
@@ -67,24 +68,23 @@
 
    (fact "when there are users"
      (fact "should not be empty"
-       (actions.user/create (factory :user))
+       (feature/a-user-exists)
        (fetch-all) =>
        (every-checker
         seq?
         (partial every? user?)))))
 
  (fact "#'fetch-by-domain"
-   (let [domain (model.domain/create (factory :domain))
-         user (actions.user/create (factory :user {:domain (:_id domain)}))]
+   (let [domain (actions.domain/current-domain)
+         user (feature/a-user-exists)]
      (fetch-by-domain domain) => (contains user)))
  
  (fact "#'get-user"
    (fact "when the user is found"
-     (let [username (fseq :username)
-           domain (actions.domain/find-or-create (factory :domain))]
-       (actions.user/create (factory :user {:username username
-                              :domain (:_id domain)}))
-       (get-user username (:_id domain)) => user?))
+     (let [user (feature/a-user-exists)
+           username (:username user)
+           domain (actions.user/get-domain user)]
+       (get-user username (:_id domain)) => user))
 
    (fact "when the user is not found"
      (drop!)
@@ -95,7 +95,7 @@
  (fact "user-meta-uri"
    (fact "when the user's domain does not have a lrdd link"
      (model.domain/drop!)
-     (let [user (actions.user/create (factory :user))]
+     (let [user (feature/a-user-exists)]
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
@@ -103,10 +103,10 @@
                    (factory :domain
                             {:links [{:rel "lrdd"
                                       :template "http://example.com/main/xrd?uri={uri}"}]}))
-           user (actions.user/create (factory :user {:domain (:_id domain)}))]
+           user (feature/another-user-exists {:domain domain})]
        (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
 
  (fact "vcard-request"
-   (let [user (actions.user/create (factory :user))]
+   (let [user (feature/a-user-exists)]
      (vcard-request user) => packet/packet?))
 )

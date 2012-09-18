@@ -8,6 +8,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -22,7 +23,7 @@
 
  (fact "update"
    (fact "when the user is authenticated"
-     (let [author (actions.user/create (factory :local-user))
+     (let [author (feature/a-user-exists)
            content (fseq :content)
            data (json/json-str
                  {:content content})]
@@ -31,7 +32,7 @@
  (fact "show-http-route"
    (fact "when the user is not authenticated"
      (fact "and the activity does not exist"
-       (let [author (actions.user/create (factory :local-user))
+       (let [author (feature/a-user-exists)
              activity (factory :activity)]
          (->> (str "/notice/" (:_id activity))
               (mock/request :get)
@@ -39,8 +40,7 @@
               (contains {:status 404})))
 
      (fact "and there are activities"
-       (let [author (actions.user/create (factory :local-user))
-             activity (model.activity/create (factory :activity {:author (:_id author)}))]
+       (let [activity (feature/there-is-an-activity)]
          (->> (str "/notice/" (:_id activity))
               (mock/request :get)
               response-for) =>
@@ -51,22 +51,19 @@
                    (:body response) => (re-pattern (str (:_id activity)))))))))
    (fact "when the user is authenticated"
      (fact "when a private activity exists"
-       (let [author (actions.user/create (factory :local-user))
-             activity (->> {:author (:_id author)
-                            :public false}
-                           (factory :activity)
-                           model.activity/create)]
+       (let [activity (feature/there-is-an-activity {:modifier "private"})]
          (-> (mock/request :get (str "/notice/" (:_id activity)))
              as-user response-for) =>
              (every-checker
               map?
               (comp status/redirect? :status))))))
  
- (fact "oembed"
+ (future-fact "oembed"
    (fact "when the format is json"
-     (let [activity (model.activity/create (factory :activity {:local true}))]
+     (let [user (feature/a-user-exists)
+           activity (feature/there-is-an-activity)]
        (-> (mock/request :get (with-context [:http :html]
-                                (str "/main/oembed?format=json&url=" (full-uri activity))))
+                                (str "/main/oembed?format=json&url=" (log/spy (full-uri (log/spy activity))))))
            response-for) =>
            (every-checker
             map?
@@ -74,8 +71,7 @@
               (fact
                 (:status response) => status/success?)))))
    (fact "when the format is xml"
-     (let [activity (model.activity/create (factory :activity
-                                                    {:local true}))]
+     (let [activity (feature/there-is-an-activity)]
        (-> (mock/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=xml&url=" (full-uri activity))))
            response-for) =>

@@ -9,6 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))
@@ -22,13 +23,13 @@
          (with-format :html
            (fact "when it is html-only"
              (binding [*dynamic* false]
-               (let [user (actions.user/create (factory :user))]
+               (let [user (feature/a-user-exists)]
                  (uri user) => string?))))))))
 
  (fact "title User"
    (fact "should return the title of that user"
      (with-context [:http :html]
-       (let [user (actions.user/create (factory :user))
+       (let [user (feature/a-user-exists)
              response (title user)]
          response => string?))))
 
@@ -38,7 +39,7 @@
        (fact "when the format is :xmpp"
          (with-format :xmpp
            (fact "should return a vcard string"
-             (let [user (actions.user/create (factory :user))]
+             (let [user (feature/a-user-exists)]
                (show-section user) =>
                (every-checker
                 #(fact % => #"<vcard")
@@ -48,7 +49,7 @@
        (fact "when the format is :html"
          (with-format :html
            (binding [*dynamic* false]
-             (let [user (actions.user/create (factory :user))]
+             (let [user (feature/a-user-exists)]
                (show-section user))) =>
                (every-checker
                 (fn [response]

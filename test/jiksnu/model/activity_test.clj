@@ -7,6 +7,7 @@
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
@@ -16,19 +17,21 @@
 
  (fact "#'create"
    (fact "should create the activity"
-     (create (factory :activity)) => model/activity?))
+     (let [feed-source (feature/a-feed-source-exists)
+           activity (prepare-activity (factory :activity {:update-source (:_id feed-source)}))]
+       (create activity) => model/activity?)))
  
  (fact "#'prepare-activity"
    (fact "should return an activity"
-     (let [user (actions.user/create (factory :local-user))]
+     (let [user (feature/a-user-exists)]
        (with-user user
          (let [args (factory :activity)]
            (prepare-activity args) => #(valid? % create-validators))))))
 
 
  (fact "#'get-author"
-   (let [user (actions.user/create (factory :local-user))
-         activity (create (factory :activity {:author (:_id user)}))]
+   (let [user (feature/a-user-exists)
+         activity (feature/there-is-an-activity {:user user})]
      (get-author activity) => user))
 
  )

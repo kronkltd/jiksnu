@@ -15,6 +15,7 @@
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -30,10 +31,9 @@
            (with-format :atom
              (fact "when there are activities"
                (model/drop-all!)
-               (let [user (actions.user/create (factory :local-user))]
+               (let [user (feature/a-user-exists)]
                  (dotimes [n 25]
-                   (model.activity/create (factory :activity
-                                                   {:author (:_id user)}))))
+                   (feature/there-is-an-activity {:user user})))
 
                (let [request {:action action}
                      response (filter-action action request)]
@@ -53,15 +53,14 @@
              (binding [*dynamic* false]
                (fact "when there are activities"
                  (model/drop-all!)
-                 (let [user (actions.user/create (factory :local-user))
+                 (let [user (feature/a-user-exists)
                        ;; TODO: This used to be set to 25, I need a
                        ;; good way to make sure I have the right
                        ;; amount of records returned in the default
                        ;; page.
-                       activities (doall (for [n (range 20)]
-                                     (model.activity/create
-                                      (factory :activity
-                                               {:author (:_id user)}))))
+                       activities (doall
+                                   (for [n (range 20)]
+                                     (feature/there-is-an-activity {:user user})))
                        request {:action action}
                        response (filter-action action request)]
                    (apply-view request response) =>
@@ -90,8 +89,8 @@
              (binding [*dynamic* false]
                (fact "when that user has activities"
                  (model/drop-all!)
-                 (let [user (actions.user/create (factory :local-user))
-                       activity (model.activity/create (factory :activity {:author (:_id user)}))
+                 (let [user (feature/a-user-exists)
+                       activity (feature/there-is-an-activity {:user user})
                        request {:action action
                                 :params {:id (str (:_id user))}}
                        response (filter-action action request)]
@@ -109,8 +108,8 @@
            (with-format :n3
              (fact "when that user has activities"
                (model/drop-all!)
-               (let [user (actions.user/create (factory :local-user))
-                     activity (model.activity/create (factory :activity {:author (:_id user)}))
+               (let [user (feature/a-user-exists)
+                     activity (feature/there-is-an-activity {:user user})
                      request {:action action
                               :params {:id (str (:_id user))}}
                      response (filter-action action request)]

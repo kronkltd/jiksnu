@@ -10,6 +10,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as mock]))
@@ -18,9 +19,8 @@
 
  (fact "admin show user"
    (fact "html"
-     (let [user (actions.user/create (factory :local-user))]
-       (with-user user
-         (actions.activity/post (factory :activity)))
+     (let [user (feature/a-user-exists)]
+       (feature/there-is-an-activity {:user user})
        (-> (mock/request :get (named-path "admin show user" {:id (:_id user)}))
            as-admin response-for) =>
            (every-checker
