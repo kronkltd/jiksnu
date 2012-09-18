@@ -63,7 +63,7 @@
      (let [user (feature/a-user-exists)
            activity (feature/there-is-an-activity)]
        (-> (mock/request :get (with-context [:http :html]
-                                (str "/main/oembed?format=json&url=" (log/spy (full-uri (log/spy activity))))))
+                                (str "/main/oembed?format=json&url=" (full-uri activity))))
            response-for) =>
            (every-checker
             map?

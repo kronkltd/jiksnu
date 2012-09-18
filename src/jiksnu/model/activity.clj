@@ -36,12 +36,19 @@
    (presence-of   :updated)
    (presence-of   [:object :object-type])))
 
+(defn get-author
+  [activity]
+  (-> activity
+      :author
+      model.user/fetch-by-id))
+
 ;; TODO: This operation should be performed on local posts. Remote
 ;; posts without an id should be rejected
 (defn set-id
   [activity]
   (if (empty? (:id activity))
-    (assoc activity :id (or (:url activity) (abdera/new-id)))
+    (let [id (format "http://%s/notice/%s" (:domain (get-author activity)) (:_id activity))]
+      (assoc activity :id id))
     activity))
 
 (defn set-title
@@ -162,12 +169,6 @@
   (fetch-all {:parent (:_id activity)}
              {:sort [{:created 1}]}))
 
-(defn get-author
-  [activity]
-  (-> activity
-      :author
-      model.user/fetch-by-id))
-
 (defn author?
   [activity user]
   (= (:author activity) (:_id user)))
@@ -184,39 +185,10 @@
              {:author (:_id user)}]})
     {:public true}))
 
-;; (defn index
-;;   "Return all the activities in the database as abdera entries"
-;;   [opts]
-
-;;   ;; TODO: move all this to action
-;;   (let [page-number (get  opts :page 1)
-;;         user (current-user)
-;;         merged-options
-;;         (merge
-;;          (:where opts)
-;;          {:tags {:$ne "nsfw"}}
-;;          ;; {"object.object-type" {:$ne "comment"}}
-;;          (privacy-filter user))]
-;;     (mc/find-maps collection-name
-;;                   merged-options
-;;                   :sort [{:created 1}]
-;;                   :skip (* (dec page-number) page-size)
-;;                   :limit page-size)))
-
 (defn fetch-by-remote-id
   [id]
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (map->Activity activity)))
-
-;; (defn show
-;;   [id]
-;;   (let [user (current-user)
-;;         options
-;;         (merge
-;;          {:_id id}
-;;          (privacy-filter user))]
-;;     (if-let [activity (mc/find-one-as-map options)]
-;;       (map->Activity activity))))
 
 (defn drop!
   []

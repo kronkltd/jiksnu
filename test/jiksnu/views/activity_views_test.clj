@@ -1,8 +1,8 @@
 (ns jiksnu.views.activity-views-test
-    (:use [ciste.core :only [with-context with-serialization with-format
+  (:use [ciste.core :only [with-context with-serialization with-format
                            *serialization* *format*]]
-          [ciste.filters :only [filter-action]]
-          [ciste.sections.default :only [full-uri]]
+        [ciste.filters :only [filter-action]]
+        [ciste.sections.default :only [full-uri]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.session :only [with-user]]
@@ -31,7 +31,10 @@
        (with-serialization :http
          (fact "when the format is :json"
            (with-format :json
-             (let [activity (feature/there-is-an-activity)
+             (let [feed-source (feature/a-feed-source-exists)
+                   user (feature/a-user-exists {:feed-source feed-source})
+                   activity (feature/there-is-an-activity {:feed-source feed-source
+                                                           :user user})
                    request {:params {:url (full-uri activity)}
                             :action action}
                    response (filter-action action request)]
@@ -59,7 +62,5 @@
                 (fn [result]
                   (let [body (:body result)]
                     (fact
-                      body =not=> string?)))))))
-
-         ))))
+                      body =not=> string?)))))))))))
  )
