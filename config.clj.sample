@@ -7,6 +7,7 @@
   :database {:host "localhost"},
   :debug false,
   :domain "jiksnu.com"
+  :htmlOnly false
   :http {:port 8080, :websocket true, :handler "jiksnu.routes/app"},
   :modules ["jiksnu.routes" "jiksnu.views"
             "jiksnu.formats" "jiksnu.actions"],
