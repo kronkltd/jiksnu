@@ -79,7 +79,7 @@
                  ;;                 :provides ["Backbone"]}]
 
                  }}
-               #_{:source-path "src-cljs"
+               {:source-path "src-cljs"
                 :compiler
                 {
 
@@ -98,13 +98,14 @@
                  :optimizations :simple
 
                  }}
-               #_{:source-path "src-cljs"
+               {:source-path "src-cljs"
                 :compiler
                   {
                    :output-to "resources/public/assets/js/jiksnu.advanced.js"
                    :externs ["resources/externs/backbone-0.9.1.js"
                              "resources/externs/underscore-0.3.1.js"]
                    :output-dir "target/cljsout/advanced"
+                   :pretty-print false
                    :optimizations :advanced
 
                    }}]}
@@ -129,7 +130,7 @@
                [clj-webdriver "0.6.0-alpha11"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
-  :plugins [[lein-cljsbuild "0.2.4"]
+  :plugins [[lein-cljsbuild "0.2.7"]
             [lein-cucumber "1.0.0"]  
             [lein-lesscss "1.2"]
             [lein-midje "2.0.0-SNAPSHOT"]]

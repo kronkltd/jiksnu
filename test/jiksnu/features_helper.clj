@@ -423,7 +423,10 @@
 
 (defn log-response
   []
-  (-> @current-page :body channel-buffer->string log/info))
+  (println "logging response")
+  (let [body (:body (log/spy @current-page))
+        s (channel-buffer->string body)]
+    (log/info s)))
 
 (defn name-should-be
   [display-name]
@@ -548,7 +551,7 @@
 (defn should-see-domain
   []
   (check-response
-   (text ".domain-id") => (:_id (get-this :domain))))
+   (text "span.domain-id") => (:_id (get-this :domain))))
 
 (defn should-see-subscription
   []

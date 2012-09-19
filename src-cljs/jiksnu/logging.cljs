@@ -1,23 +1,24 @@
-(ns jiksnu.logging
-  (:require [console :as console]))
+(ns jiksnu.logging)
+
+(def console js/console)
 
 (defn info
   [m]
-  (.info js/console m))
+  (.info console m))
 
 (defn error
   [m]
-  (.error js/console m))
+  (.error console m))
 
 (defn debug
   [m]
-  (.debug js/console m))
+  (.debug console m))
 
 (defn warn
   [m]
-  (.warn js/console m))
+  (.warn console m))
 
 (defn spy
   [m]
-  (.info js/console m)
+  (.info console m)
   m)
