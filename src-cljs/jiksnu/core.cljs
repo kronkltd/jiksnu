@@ -154,6 +154,6 @@
 
   (.addClass ($ :html) "bound")
 
-  (stats/fetch-statistics _view))
+  #_(stats/fetch-statistics _view))
 
 (main)
