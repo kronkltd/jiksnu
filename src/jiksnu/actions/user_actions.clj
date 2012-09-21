@@ -75,7 +75,18 @@
                    (model/get-source topic)
                    5000)]
       (assoc item :update-source (:_id source)))
-    item))
+    (if (:update-source item)
+      item
+
+      ;; look up update source
+      (do
+
+
+        )
+      
+      )
+
+    ))
 
 (defn prepare-create
   [user]
