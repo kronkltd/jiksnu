@@ -237,7 +237,8 @@
 
 (defn find-or-create-by-uri
   [uri]
-  (apply find-or-create (model.user/split-uri uri)))
+  (let [[username domain] (model.user/split-uri uri)]
+    (find-or-create username domain)))
 
 (defn find-or-create-by-jid
   [^JID jid]
