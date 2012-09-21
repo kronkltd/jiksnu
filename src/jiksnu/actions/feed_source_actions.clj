@@ -3,6 +3,7 @@
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
+        [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -148,7 +149,8 @@
       (when-not (= feed-title (:title source))
         (model.feed-source/set-field! source :title feed-title))
       (mark-updated source)
-      (if-let [hub-link (str (.getHref (.getLink feed "hub")))]
+      (if-let [hub-link (-?> feed (.getLink "hub")
+                             .getHref str)]
         (model.feed-source/set-field! source :hub hub-link))
       (process-entries feed)
       source)))
