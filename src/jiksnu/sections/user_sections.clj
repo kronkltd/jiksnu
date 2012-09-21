@@ -9,6 +9,7 @@
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.model :only [with-subject]]
          [jiksnu.sections :only [action-link
+                                 actions-section
                                  admin-actions-section
                                  admin-index-block
                                  admin-index-line

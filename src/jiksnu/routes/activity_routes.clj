@@ -25,6 +25,6 @@
    [[:delete (formatted-path "delete activity")] #'activity/delete]
    [[:delete (named-path     "delete activity")] #'activity/delete]
    [[:get    (named-path     "edit activity")]   #'activity/edit-page]
-   [[:get    (formatted-path "activity-model")]  #'activity/show]
+   [[:get    (formatted-path "activity model")]  #'activity/show]
    ;; [[:get "/main/events"]                      #'activity/stream]
    ])

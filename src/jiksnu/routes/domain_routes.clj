@@ -13,7 +13,7 @@
   []
   [
    [[:get    (named-path     "host meta")]       #'domain/host-meta]
-   [[:get    (formatted-path "host-meta")]       #'domain/host-meta]
+   [[:get    (formatted-path "host meta")]       #'domain/host-meta]
    [[:get    (formatted-path "index domains")]   #'domain/index]
    [[:get    (named-path     "index domains")]   #'domain/index]
    [[:get    (formatted-path "show domain")]     #'domain/show]
