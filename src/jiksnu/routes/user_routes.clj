@@ -1,5 +1,6 @@
 (ns jiksnu.routes.user-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+        [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.user-actions :as user]))
 
 (add-route! "/main/register"      {:named "register page"})

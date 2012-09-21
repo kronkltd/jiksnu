@@ -204,6 +204,11 @@
      [:ul.user-actions.buttons
       [:li (discover-button user)]
       [:li (update-button user)]
+      [:li [:a
+            (if *dynamic*
+              {:data-bind "attr: {href: '/model/users/' + _id + '.model'}"}
+              {:href (format "/model/users/%s.model" (:_id user))})
+            "Model"]]
       (when (not= (:_id user) (:_id authenticated))
         (list
          [:li (subscribe-button user)]
@@ -220,23 +225,6 @@
   [link]
   [:ul.buttons
    [:li "delete"]])
-
-(defn actions-section
-  [user]
-  [:div.btn-group
-   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
-    [:span.caret]
-    ]
-   [:ul.dropdown-menu.pull-right
-    [:li (subscribe-button user)]
-    (when (current-user)
-      (list
-       [:li (discover-button user)]
-       [:li (update-button user)]
-       (when (is-admin?)
-         (list
-          [:li (edit-button user)]
-          [:li (delete-button user)]))))]])
 
 (defn links-table
   [links]
@@ -264,6 +252,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sections
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; actions-section
+
+(defsection actions-section [User :html]
+  [user]
+  [:div.btn-group
+   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
+    [:span.caret]
+    ]
+   [:ul.dropdown-menu.pull-right
+    [:li (subscribe-button user)]
+    (when (current-user)
+      (list
+       [:li (discover-button user)]
+       [:li (update-button user)]
+       (when (is-admin?)
+         (list
+          [:li (edit-button user)]
+          [:li (delete-button user)]))))]])
 
 ;; admin-actions-section
 
@@ -320,7 +327,7 @@
           {:data-bind "with: jiksnu.core.get_domain(domain)"})
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
-   [:td (admin-actions-section user page)]])
+   [:td (user-actions user)]])
 
 ;; admin-index-section
 
@@ -400,7 +407,7 @@
                           (FeedSource.)
                           (-?> item :update-source model.feed-source/fetch-by-id))]
         (link-to source))]]]
-   (admin-actions-section item)
+   (user-actions item)
    (let [links (if *dynamic*  [{}] (:links item))]
      (links-table links))))
 
@@ -474,7 +481,7 @@
       (if *dynamic*
         {:data-bind "text: bio"}
         (:bio user))]]]
-   [:td (actions-section user)]])
+   [:td (user-actions user)]])
 
 (defsection index-line [User :viewmodel]
   [item & page]
