@@ -205,6 +205,7 @@
           ;;  {:action "/main/search" :method "post"}
           ;;  [:input.search-query.span3
           ;;   {:type "text" :placeholder "Search" :name "q"}]]
+          [:div.navbar-text.connection-info ]
           [:ul.nav.pull-right (sections.auth/login-section response)]]]]
        [:div.container-fluid
         #_[:a {:href "http://github.com/duck1123/jiksnu"}

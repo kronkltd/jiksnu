@@ -24,7 +24,6 @@
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-SNAPSHOT"]
                  [lamina "0.5.0-alpha3"]
-   [clj-aws-s3 "0.3.2"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
                  [oauthentic "0.0.6"]
@@ -43,6 +42,8 @@
                  [ring-basic-authentication "0.0.1"]
                  [slingshot "0.10.2"]
                  [xml-picker-seq "0.0.2"]
+
+                 [waltz "0.1.0-alpha1"]
                  ]
   :aot [
         jiksnu.model
@@ -50,7 +51,8 @@
         jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
-  :cljsbuild {:builds
+  :cljsbuild {:repl-listen-port 9001
+              :builds
               [{:source-path "src-cljs"
                 :compiler
                 {:output-to "resources/public/cljs/bootstrap.js"

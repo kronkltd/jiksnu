@@ -1,24 +1,17 @@
 (ns jiksnu.core
-  (:use [jayq.core :only [$ css inner prepend]])
-  (:require [goog.events :as events]
+  (:use [jayq.core :only [$ css inner prepend text]])
+  (:require [clojure.browser.repl :as repl]
+            [goog.events :as events]
             [goog.dom :as dom]
-            ;; [goog.dom.query :as query]
-            ;; [goog.net :as net]
             [goog.net.XhrIo :as xhrio]
-            [jiksnu.websocket :as ws]))
-
-(def default-connection (atom nil))
-(def $interface ($ :#interface))
+            [jiksnu.logging :as log]
+            [waltz.state :as state]
+            [jiksnu.websocket :as ws])
+  (:use-macros [waltz.macros :only [in out defstate defevent]]))
 
 (defn greet
   [n]
   (str "Hello " n))
-
-(defn set-state
-  [state]
-  (-> $interface
-      (css {:background "red"})
-      (inner state)))
 
 (defn find-parent-article
   [element]
@@ -28,8 +21,8 @@
 (defn position-handler
   [position]
   (let [coords (. position (coords))]
-    (console/log "lat: " (. coords (latitude)))
-    (console/log "long: " (. coords (longitude)))))
+    (log/info (str "lat: " (. coords (latitude))))
+    (log/info (str "long: " (. coords (longitude))))))
 
 (defn halt
   [event]
@@ -39,23 +32,23 @@
 
 (defn do-delete-activity
   [x]
-  (console/log "Delete button clicked")
-  (console/log x)
+  (log/info "Delete button clicked")
+  (log/info x)
   (if-let [article (find-parent-article (. x (target)))]
     (let [id (.getAttribute article "id")
           url (str "/notice/" id)]
       (xhrio/send
        url
        (fn [e]
-         (console/log e)
+         (log/info e)
          #_(.hide this))
        "DELETE")
       (halt x))
-    (console/log "article not found")))
+    (log/info "article not found")))
 
 (defn do-like-button
   [x]
-  (console/log "like button clicked")
+  (log/info "like button clicked")
 
   #_(halt x))
 
@@ -69,63 +62,23 @@
 (defn do-logout-link
   [event]
   (console/log "Logging out")
-  
   #_(halt event))
 
-(defn ws-opened
-  [socket]
-  (set-state "opening")
-  (fn [event]
-    (.debug js/console "Websocket Connection Opened")
-    (set-state "connected")
-    (ws/emit! socket "connect")))
+(defn connect-repl
+  []
+  (repl/connect "http://192.168.1.42:9001/repl"))
 
-(defn ws-message
-  [jm]
-  ;; (.info js/console jm)
-  (try
-    (let [j (JSON/parse jm)]
-      ;; (.debug js/console j)
-
-      (let [body (. j -body)]
-        (prepend ($ :.activities) body)))
-    (catch js/Error ex
-        (.exception js/console ex))))
-
-(defn ws-error
-  [e]
-  (.error js/console "Error")
-  (set-state "error"))
-
-(defn ws-closed
-  [ev]
-  (set-state "closed"))
-
-(defn send-command
-  [command & args]
-  (ws/emit! @default-connection (apply str command " " args)))
-
-(defn initialize-websockets
-  [url]
-  (let [socket (ws/create)]
-    (if-let [socket (-> socket
-                        (ws/configure (ws-opened socket)
-                                      ws-message
-                                      ws-error
-                                      ws-closed)
-                        (ws/connect! url))]
-      (do
-        (.info js/console "initialized")
-        (reset! default-connection socket)))))
+(defn setup-handlers
+  []
+  (add-handler do-delete-activity ($ :.delete-button))
+  (add-handler do-like-button ($ :.like-button))
+  (add-handler do-logout-link ($ :.logout-link)))
 
 (defn main
   []
-  (.log js/console "starting application")
-  (add-handler do-delete-activity ($ :.delete-button))
-  (add-handler do-like-button ($ :.like-button))
-  (add-handler do-logout-link ($ :.logout-link))
-
-  ;; (set-loading-indicator)
-  (initialize-websockets js/WEBSOCKET_PATH))
+  (log/info "starting application")
+  (state/set ws/ws-state :closed)
+  (setup-handlers)
+  (state/trigger ws/ws-state :connect))
 
 (main)
