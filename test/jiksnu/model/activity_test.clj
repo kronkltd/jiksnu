@@ -2,10 +2,11 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.model.activity :only [create create-validators get-author prepare-activity]]
+        [jiksnu.model.activity :only [create create-validators get-author]]
         [midje.sweet :only [fact future-fact =>]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -18,20 +19,21 @@
  (fact "#'create"
    (fact "should create the activity"
      (let [feed-source (feature/a-feed-source-exists)
-           activity (prepare-activity (factory :activity {:update-source (:_id feed-source)}))]
+           activity (actions.activity/prepare-create
+                     (factory :activity {:update-source (:_id feed-source)}))]
        (create activity) => model/activity?)))
  
- (fact "#'prepare-activity"
-   (fact "should return an activity"
-     (let [user (feature/a-user-exists)]
-       (with-user user
-         (let [args (factory :activity)]
-           (prepare-activity args) => #(valid? % create-validators))))))
+ ;; (fact "#'prepare-activity"
+ ;;   (fact "should return an activity"
+ ;;     (let [user (feature/a-user-exists)]
+ ;;       (with-user user
+ ;;         (let [args (factory :activity)]
+ ;;           (prepare-activity args) => #(valid? % create-validators))))))
 
 
- (fact "#'get-author"
-   (let [user (feature/a-user-exists)
-         activity (feature/there-is-an-activity {:user user})]
-     (get-author activity) => user))
+ ;; (fact "#'get-author"
+ ;;   (let [user (feature/a-user-exists)
+ ;;         activity (feature/there-is-an-activity {:user user})]
+ ;;     (get-author activity) => user))
 
  )

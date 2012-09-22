@@ -122,22 +122,28 @@
     (assoc activity :url (str "http://" (config :domain) "/notice/" (:_id activity)))
     activity))
 
-(defn prepare-activity
+(defn set-object-updated
   [activity]
-  (-> activity
-      set-_id
-      set-title
-      set-object-id
-      set-public
-      set-remote
-      set-tags
-      set-created-time
-      set-updated-time
-      set-object-type
-      set-parent
-      set-url
-      set-id
-      ))
+  (if (:updated (:object activity))
+    activity
+    (assoc-in activity [:object :updated] (time/now))))
+
+(defn set-object-created
+  [activity]
+  (if (:created (:object activity))
+    activity
+    (assoc-in activity [:object :created] (time/now))))
+
+(defn set-actor
+  [activity]
+  ;; TODO: Should we be allowing an author to be passed in?
+  (if-let [author (or (:author activity)
+                      (current-user-id))]
+    (assoc activity :author author)))
+
+(defn set-local
+  [activity]
+  (assoc activity :local true))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -160,8 +166,7 @@
 
 (defn create
   [activity]
-  (let [activity (prepare-activity activity)
-        errors (create-validators activity)]
+  (let [errors (create-validators activity)]
     (if (empty? errors)
       (do
         (log/debugf "Creating activity: %s" (pr-str activity))
@@ -210,29 +215,6 @@
              {:_id (:_id parent)}
              {:$push {:comments (:_id comment)}}))
 
-(defn set-object-updated
-  [activity]
-  (if (:updated (:object activity))
-    activity
-    (assoc-in activity [:object :updated] (time/now))))
-
-(defn set-object-created
-  [activity]
-  (if (:created (:object activity))
-    activity
-    (assoc-in activity [:object :created] (time/now))))
-
-(defn set-actor
-  [activity]
-  ;; TODO: Should we be allowing an author to be passed in?
-  (if-let [author (or (:author activity)
-                      (current-user-id))]
-    (assoc activity :author author)))
-
-(defn set-local
-  [activity]
-  (assoc activity :local true))
-
 (defn parse-pictures
   [picture]
   (let [filename (:filename picture)
@@ -242,16 +224,6 @@
     (when (and (not= filename "") tempfile)
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
-
-(defn prepare-post
-  [activity]
-  (-> activity
-      set-local
-      set-updated-time
-      set-object-updated
-      set-object-created
-      set-created-time
-      set-actor))
 
 (defn count-records
   ([] (count-records {}))

@@ -5,6 +5,7 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [full-uri title]]
         [clojure.core.incubator :only [-?> -?>>]]
+        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -122,8 +123,27 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (defn prepare-create
   [activity]
-  activity)
+  (-> activity
+      set-_id
+      model.activity/set-title
+      model.activity/set-object-id
+      model.activity/set-public
+      model.activity/set-remote
+      model.activity/set-tags
+      set-created-time
+      set-updated-time
+      model.activity/set-object-type
+      model.activity/set-parent
+      model.activity/set-url
+      model.activity/set-id))
 
+(defn prepare-post
+  [activity]
+  (-> activity
+      model.activity/set-local
+      model.activity/set-object-updated
+      model.activity/set-object-created
+      model.activity/set-actor))
 
 (defaction create
   "create an activity"
@@ -246,7 +266,7 @@ serialization"
   [activity]
   ;; TODO: validate user
   (if-let [prepared-post (-> activity
-                             model.activity/prepare-post
+                             prepare-post
                              (dissoc :pictures))]
     (do (-> activity :pictures model.activity/parse-pictures)
         (create prepared-post))
