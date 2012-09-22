@@ -216,6 +216,7 @@
             "defaults" (js-obj
                         "callback" nil
                         "mode" nil
+                        "title" nil
                         )
             "idAttribute" "_id"
             "initialize" (fn [models options]

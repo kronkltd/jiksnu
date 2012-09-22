@@ -66,27 +66,81 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
+(defn get-user-meta
+  [user]
+  (let [id (:id user)
+        domain (actions.domain/find-or-create {:_id (:domain user)})]
+    (if-let [um-url (actions.domain/get-user-meta-url domain id)]
+      (model.webfinger/fetch-host-meta um-url))))
+
+(defn get-username-from-atom-property
+  ;; passed a document
+  [user-meta]
+  (try
+    (->> user-meta
+         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
+         model/force-coll
+         (keep #(.getValue %))
+         first)
+    ;; TODO: What are the error risks here?
+    (catch RuntimeException ex
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
+
+(defn get-username-from-identifiers
+  ;; passed a document
+  [user-meta]
+  (try
+    (->> user-meta
+         model.webfinger/get-identifiers
+         (keep (comp first model.user/split-uri))
+         first)
+    (catch RuntimeException ex
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
+
+;; takes a document
+(defn get-username-from-user-meta
+  "return the username component of the user meta"
+  [user-meta]
+  (->> [(get-username-from-atom-property user-meta)]
+       (lazy-cat
+        [(get-username-from-identifiers user-meta)])
+       (filter identity)
+       first))
+
+(defn get-source-link
+  [user-meta]
+  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
+    (->> user-meta
+         (cm/query query-str)
+         model/force-coll
+         (keep #(.getAttributeValue % "href"))
+         first)))
+
+
+(defn get-feed-source-from-user-meta
+  [user-meta]
+  (if-let [source-link (get-source-link user-meta)]
+    (let [ch (model/get-source source-link)]
+      (l/wait-for-result ch 5000))
+    (throw+ "could not determine source")))
+
 (defn set-update-source
-  [item]
-  (if (:local item)
+  [user]
+  (if (:local user)
     (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
-                        (:domain item) (:_id item))
+                        (:domain user) (:_id user))
           source  (l/wait-for-result
                    (model/get-source topic)
                    5000)]
-      (assoc item :update-source (:_id source)))
-    (if (:update-source item)
-      item
-
+      (assoc user :update-source (:_id source)))
+    (if (:update-source user)
+      user
       ;; look up update source
-      (do
-
-
-        )
-      
-      )
-
-    ))
+      (let [user-meta (get-user-meta user)
+            source (get-feed-source-from-user-meta user-meta)]
+        (assoc user :update-source (:_id source))))))
 
 (defn prepare-create
   [user]
@@ -139,52 +193,6 @@
 
 
 
-(defn get-username-from-atom-property
-  ;; passed a document
-  [user-meta]
-  (try
-    (->> user-meta
-         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
-         model/force-coll
-         (keep #(.getValue %))
-         first)
-    ;; TODO: What are the error risks here?
-    (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
-
-(defn get-username-from-identifiers
-  ;; passed a document
-  [user-meta]
-  (try
-    (->> user-meta
-         model.webfinger/get-identifiers
-         (keep (comp first model.user/split-uri))
-         first)
-    (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
-
-;; takes a document
-(defn get-username-from-user-meta
-  "return the username component of the user meta"
-  [user-meta]
-  (->> [(get-username-from-atom-property user-meta)]
-       (lazy-cat
-        [(get-username-from-identifiers user-meta)])
-       (filter identity)
-       first))
-
-(defn get-source-link
-  [user-meta]
-  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
-    (->> user-meta
-         (cm/query query-str)
-         model/force-coll
-         (keep #(.getAttributeValue % "href"))
-         first)))
-
-
 (defaction create
   [options]
   (let [user (prepare-create options)]
@@ -208,17 +216,14 @@
       (assoc user :username (first (model.user/split-uri id)))
       (or (if-let [username (.getUserInfo uri)]
             (assoc user :username username))
-          (if-let [domain-name (get-domain-name id)]
-            (let [domain (actions.domain/find-or-create {:_id domain-name})]
-              (if-let [um-url (actions.domain/get-user-meta-url domain id)]
-                (when-let [user-meta (model.webfinger/fetch-host-meta um-url)]
-                  (if-let [source-link (get-source-link user-meta)]
-                    (let [ch (model/get-source source-link)]
-                      (merge user
-                             {:username (get-username-from-user-meta user-meta)
-                              :update-source (:_id (l/wait-for-result ch 5000))}))
-                    (throw+ "could not determine source")
-                    ))))
+          (if-let [domain-name (or (:domain user)
+                                   (get-domain-name id))]
+            (let [user (assoc user :domain domain-name)
+                  user-meta (get-user-meta user)
+                  source (get-feed-source-from-user-meta user-meta)]
+              (merge user
+                     {:username (get-username-from-user-meta user-meta)
+                      :update-source (:_id source)}))
             (throw+ "Could not determine domain name"))))))
 
 (defn get-user-meta-uri
