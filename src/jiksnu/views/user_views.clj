@@ -40,15 +40,21 @@
       (assoc :template false)
       (assoc :flash "discovering user")))
 
+;; fetch-remote
+
 (defview #'fetch-remote :xmpp
   [request user]
   (helpers.user/vcard-request request user))
+
+;; fetch-updates
 
 (defview #'fetch-updates :html
   [request user]
   (-> (response/redirect-after-post (uri user))
       (assoc :template false)
       (assoc :flash "fetching updates")))
+
+;; index
 
 (defview #'index :html
   [request {:keys [items] :as page}]
@@ -71,10 +77,14 @@
           :items (map :_id items)
           :users (index-section items page)}})
 
+;; profile
+
 (defview #'profile :html
   [request user]
   {:title "Edit Profile"
    :body [:div (sections.user/edit-form user)]})
+
+;; register
 
 (defview #'register :html
   [request user]
@@ -82,6 +92,8 @@
       (assoc :template false)
       (assoc :flash "user has been created")
       (assoc :session {:id (:_id user)})))
+
+;; register-page
 
 (defview #'register-page :html
   [request user]
@@ -131,12 +143,16 @@
    :flash "User updated"
    :headers {"Location" (uri user)}})
 
+;; update-profile
+
 (defview #'update-profile :html
   [request user]
   {:status 303
    :template false
    :flash "Profile updated"
    :headers {"Location" "/main/profile"}})
+
+;; user-meta
 
 (defview #'user-meta :html
   [request user]

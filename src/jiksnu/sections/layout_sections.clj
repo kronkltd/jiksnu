@@ -39,10 +39,12 @@
 (defn nav-info
   []
   [["Home"
-    [[(named-path "public timeline") "Public"]
-     [(named-path "index users")     "Users"]
-     [(named-path "index domains")   "Domains"]
-     [(named-path "index groups")    "Groups"]]]
+    [[(named-path "public timeline")     "Public"]
+     [(named-path "index users")         "Users"]
+     [(named-path "index conversations") "Conversations"]
+     ;; [(named-path "index sources")       "Sources"]
+     [(named-path "index domains")       "Domains"]
+     [(named-path "index groups")        "Groups"]]]
    
    (when (is-admin?)
      ["Admin"

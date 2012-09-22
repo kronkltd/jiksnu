@@ -4,30 +4,23 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]))
-
-(defaction index
-    [& [options & _]]
-  (let [page (Integer/parseInt (get options :page "1"))
-        page-size 20
-        criteria {:sort [{:_id 1}]
-                  :skip (* (dec page) page-size)
-                  :limit page-size}
-        total-records (model.conversation/count-records {})
-        records (model.conversation/fetch-all (:where options) criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records total-records
-     :args options}))
 
 (defaction create
   [params]
   (model.conversation/create params))
 
 (defaction delete
-  [params]
-  (model.conversation/delete params))
+  [conversation]
+  (model.conversation/delete conversation))
+
+(def index*
+  (model/make-indexer 'jiksnu.model.conversation))
+
+(defaction index
+  [& [options & _]]
+  (log/spy (apply index* (log/spy options))))
 
 (defaction show
   [record]

@@ -5,6 +5,7 @@
         [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
+        [clojurewerkz.route-one.core :only [named-path named-url]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
@@ -59,14 +60,19 @@
          (log/warn "Unknown mode"))))
     challenge))
 
+(defn prepare-create
+  [source]
+  source)
+
 (defaction create
   "Create a new feed source record"
   [params options]
   (if-let [topic (:topic params)]
     (let [uri (URI. topic)
           domain (actions.domain/find-or-create {:_id (.getHost uri)})]
-      (model.feed-source/create (assoc params
-                                  :domain (:_id domain))))
+      (let [source (assoc params :domain (:_id domain))
+            source (prepare-create source)]
+        (model.feed-source/create source)))
     (throw+ "Must contain a topic")))
 
 (def index*
@@ -83,7 +89,7 @@
   item)
 
 (defn find-or-create
-  [params & [options & _]]
+  [params & [options]]
   (if-let [source (or (if-let [id  (:_id params)]
                         (model.feed-source/fetch-by-id id))
                       (model.feed-source/fetch-by-topic (:topic params)))]
@@ -103,7 +109,7 @@
        hub-url
        {:throw-exceptions false
         :form-params
-        {"hub.callback" (str "http://" (config :domain) "/main/push/callback")
+        {"hub.callback" (named-url "push callback")
          "hub.mode" "subscribe"
          "hub.topic" topic
          "hub.verify" "async"}}))))
@@ -111,10 +117,7 @@
 (defn send-unsubscribe
   "Send an unsubscription request to the source's hub"
   ([hub topic]
-     (send-unsubscribe
-      hub topic
-      ;; TODO: This should be a per-source callback url
-      (str "http://" (config :domain) "/main/push/callback")))
+     (send-unsubscribe hub topic (named-url "push callback")))
   ([hub topic callback]
      (log/debugf "Sending unsubscribe to %s" topic)
      (when (seq hub)
@@ -202,12 +205,12 @@
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
-(l/receive-all
- model/pending-sources
- (fn [[url ch]]
-   (l/enqueue ch (find-or-create {:topic url}))))
-
 (definitializer
+  (l/receive-all
+   model/pending-sources
+   (fn [[url ch]]
+     (l/enqueue ch (find-or-create {:topic url}))))
+  
   (require-namespaces
    [
     "jiksnu.filters.feed-source-filters"

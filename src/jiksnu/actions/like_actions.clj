@@ -13,6 +13,14 @@
   [request]
   (model.like/fetch-all {} {:limit 20}))
 
+(defaction delete
+  [like]
+  (model.like/delete like))
+
+(defn get-likes
+  [activity]
+  (model.like/fetch-all {:activity (:_id activity)}))
+
 (defaction like-activity
   [activity user]
   (model.like/create
@@ -21,14 +29,6 @@
     ;; TODO: created flag set lower
     :created (time/now)}))
 
-(defn get-likes
-  [activity]
-  (model.like/fetch-all {:activity (:_id activity)}))
-
-(defaction show
-  [like]
-  like)
-
 (def index*
   (model/make-indexer 'jiksnu.model.like))
 
@@ -36,9 +36,9 @@
   [& options]
   (apply index* options))
 
-(defaction delete
+(defaction show
   [like]
-  (model.like/delete like))
+  like)
 
 (definitializer
   (require-namespaces

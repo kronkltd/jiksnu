@@ -10,13 +10,26 @@
             [jiksnu.model.group :as model.group])
   (:import jiksnu.model.Group))
 
+(defn prepare-create
+  [group]
+  group)
+
+(defaction add-admin
+  [group user]
+  (implement))
+
 (defaction create
   [params]
-  (model.group/create params))
+  (let [group (prepare-create params)]
+    (model.group/create group)))
 
-(defaction new-page
-  []
-  (Group.))
+(defaction delete
+  [group]
+  (model.group/delete group))
+
+(defaction edit-page
+  [group]
+  group)
 
 (def index*
   (model/make-indexer 'jiksnu.model.group
@@ -26,17 +39,17 @@
   [& options]
   (apply index* options))
 
-(defaction user-list
-  [user]
-  (implement))
-
-(defaction add-admin
-  [group user]
-  (implement))
+(defaction new-page
+  []
+  (Group.))
 
 (defaction show
   [group]
   group)
+
+(defaction user-list
+  [user]
+  (implement))
 
 (defaction add
   [params]
@@ -48,14 +61,6 @@
         ;; TODO: When would this happen?
         (throw+ "Could not create group")))
     (throw+ {:type :authentication})))
-
-(defaction edit-page
-  [group]
-  group)
-
-(defaction delete
-  [group]
-  (model.group/delete group))
 
 (definitializer
   (require-namespaces

@@ -271,20 +271,13 @@
   ;; TODO: No need to actually fetch the record
   (model.user/fetch-by-id (:_id user)))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.group
+                      :sort-clause [{:username 1}]))
+
 (defaction index
-  "List all of the users"
-  [options]
-  (let [page (get options :page 1)
-        page-size 20
-        criteria {:sort [{:username 1}]
-                  :limit 20}
-        record-count (model.user/count-records {})
-        records (model.user/fetch-all {} criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records record-count
-     :args options}))
+  [& options]
+  (apply index* options))
 
 (defaction profile
   [& _]

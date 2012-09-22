@@ -102,21 +102,13 @@
   [domain]
   domain)
 
+(def index*
+  (model/make-indexer 'jiksnu.model.domain
+                      :sort-clause [{:username 1}]))
+
 (defaction index
-  [& [options & _]]
-  ;; TODO: to the filter
-  (let [page (Integer/parseInt (get options :page "1"))
-        page-size 20
-        criteria {:sort [{:_id 1}]
-                  :skip (* (dec page) page-size)
-                  :limit page-size}
-        total-records (model.domain/count-records {})
-        records (model.domain/fetch-all (:where options) criteria)]
-    {:items records
-     :page page
-     :page-size page-size
-     :total-records total-records
-     :args options}))
+  [& options]
+  (apply index* options))
 
 (defn find-or-create
   [domain]
