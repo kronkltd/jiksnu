@@ -4,6 +4,7 @@
         [jiksnu.model.group :only [delete create fetch-all]]
         [midje.sweet :only [fact => every-checker future-fact]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]))
 
@@ -11,7 +12,7 @@
 
  (fact "#'delete"
    (fact "when the record exists"
-     (let [group (create (factory :group))]
+     (let [group (actions.group/create (factory :group))]
        (delete group) =>
        (every-checker
         #(= group %)))))
@@ -26,7 +27,7 @@
    (fact "when there are less than a page"
      (model/drop-all!)
      (dotimes [n 19]
-       (create (factory :group)))
+       (actions.group/create (factory :group)))
      (fetch-all) =>
      (every-checker
       seq?
@@ -35,7 +36,7 @@
    (fact "when there is more than a page"
      (model/drop-all!)
      (dotimes [n 21]
-       (create (factory :group)))
+       (actions.group/create (factory :group)))
      (fetch-all) =>
      (every-checker
       seq?
