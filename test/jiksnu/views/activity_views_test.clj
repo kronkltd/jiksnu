@@ -35,7 +35,7 @@
                    user (feature/a-user-exists {:feed-source feed-source})
                    activity (feature/there-is-an-activity {:feed-source feed-source
                                                            :user user})
-                   request {:params {:url (full-uri activity)}
+                   request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
                (apply-view request response) =>
@@ -51,7 +51,7 @@
          (fact "when the format is :xml"
            (with-format :xml
              (let [activity (feature/there-is-an-activity)
-                   request {:params {:url (full-uri activity)}
+                   request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
                (apply-view request response) =>
