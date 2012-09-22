@@ -14,9 +14,7 @@
       set-_id
       ;; set-local
       set-updated-time
-      set-created-time
-      )
-  )
+      set-created-time))
 
 (defaction create
   [params]

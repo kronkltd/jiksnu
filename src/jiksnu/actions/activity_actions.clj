@@ -3,28 +3,24 @@
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [ciste.sections.default :only [full-uri title]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
-            [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.string :as string]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
-            [hiccup.core :as hiccup]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
-            [lamina.core :as l]
+            [jiksnu.transforms.activity-transforms :as transforms.activity]
             [monger.collection :as mc])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -125,25 +121,25 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [activity]
   (-> activity
       set-_id
-      model.activity/set-title
-      model.activity/set-object-id
-      model.activity/set-public
-      model.activity/set-remote
-      model.activity/set-tags
+      transforms.activity/set-title
+      transforms.activity/set-object-id
+      transforms.activity/set-public
+      transforms.activity/set-remote
+      transforms.activity/set-tags
       set-created-time
       set-updated-time
-      model.activity/set-object-type
-      model.activity/set-parent
-      model.activity/set-url
-      model.activity/set-id))
+      transforms.activity/set-object-type
+      transforms.activity/set-parent
+      transforms.activity/set-url
+      transforms.activity/set-id))
 
 (defn prepare-post
   [activity]
   (-> activity
-      model.activity/set-local
-      model.activity/set-object-updated
-      model.activity/set-object-created
-      model.activity/set-actor))
+      transforms.activity/set-local
+      transforms.activity/set-object-updated
+      transforms.activity/set-object-created
+      transforms.activity/set-actor))
 
 (defaction create
   "create an activity"
@@ -330,7 +326,8 @@ serialization"
             :url (:url activity)
             :html (:content activity)}
            (let [author (get-author activity)]
-             {:author_name (:name author)}))))
+             {:author_name (:name author)
+              :author_url (:uri author)}))))
 
 (definitializer
   (require-namespaces
