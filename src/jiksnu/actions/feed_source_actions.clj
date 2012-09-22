@@ -32,7 +32,7 @@
   [source]
   (if (:domain source)
     source
-    (let [uri (URI. (:topic params))
+    (let [uri (URI. (:topic source))
           domain (actions.domain/find-or-create {:_id (.getHost uri)})]
       (assoc source :domain :_id domain))))
 
@@ -77,7 +77,7 @@
 (defaction create
   "Create a new feed source record"
   [params options]
-  (let [source (prepare-create source)]
+  (let [source (prepare-create params)]
     (model.feed-source/create source)))
 
 (defn find-or-create
@@ -107,6 +107,8 @@
   (model.feed-source/set-field! source :updated (time/now)))
 
 (declare process-entries)
+(declare remove-subscription)
+(declare send-unsubscribe)
 
 (defn parse-feed
   [feed source]
@@ -123,8 +125,6 @@
          (catch Exception ex
            (log/error ex)
            (.printStackTrace ex)))))
-
-(declare send-unsubscribe)
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription

@@ -5,7 +5,8 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [monger.collection :as mc]
-            [monger.core :as mg])
+            [monger.core :as mg]
+            [monger.query :as mq])
   (:import jiksnu.model.Conversation))
 
 (def collection-name "conversations")
@@ -23,6 +24,8 @@
   ([] (count-records {}))
   ([params]
      (mc/count collection-name params)))
+
+(declare fetch-by-id)
 
 (defn create
   [record]
@@ -62,5 +65,5 @@
                      (merge sort-clause)
                      (mq/paginate :page (:page options 1)
                                   :per-page (:page-size options 20)))]
-       (map map->Conversation records))))
+       (map model/map->Conversation records))))
 

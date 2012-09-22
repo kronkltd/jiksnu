@@ -25,6 +25,8 @@
    (presence-of :created)
    (presence-of :updated)))
 
+(declare fetch-by-id)
+
 (defn create
   [group]
   (let [errors (create-validators group)]

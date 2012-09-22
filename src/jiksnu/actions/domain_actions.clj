@@ -18,6 +18,7 @@
   (:import java.net.URL
            jiksnu.model.Domain))
 
+(defonce delete-hooks (ref []))
 
 (defn prepare-create
   [domain]
@@ -50,8 +51,6 @@
   [options]
   (let [domain (prepare-create options)]
     (model.domain/create domain)))
-
-(defonce delete-hooks (ref []))
 
 (defaction delete
   [domain]
