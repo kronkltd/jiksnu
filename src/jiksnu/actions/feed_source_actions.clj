@@ -34,7 +34,7 @@
     source
     (let [uri (URI. (:topic source))
           domain (actions.domain/find-or-create {:_id (.getHost uri)})]
-      (assoc source :domain :_id domain))))
+      (assoc source :domain (:_id domain)))))
 
 (defn prepare-create
   [source]
