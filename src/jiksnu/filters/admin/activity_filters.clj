@@ -9,6 +9,6 @@
 (deffilter #'index :http
   [action request]
   (action {}
-          (log/spy (merge {}
-                          (parse-page request)
-                          (parse-sorting request)))))
+          (merge {}
+                 (parse-page request)
+                 (parse-sorting request))))

@@ -424,7 +424,7 @@
 (defn log-response
   []
   (println "logging response")
-  (let [body (:body (log/spy @current-page))
+  (let [body (:body @current-page)
         s (channel-buffer->string body)]
     (log/info s)))
 

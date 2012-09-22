@@ -32,7 +32,7 @@
 
 (defaction index
   [& [options & _]]
-  (log/spy (apply index* (log/spy options))))
+  (apply index* options))
 
 (defaction show
   [record]
