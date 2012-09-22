@@ -38,7 +38,7 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (let [request {}]
-           (log/spy (filter-action action request)) =>
+           (filter-action action request) =>
            (every-checker
             map?
             (comp empty? :items)

@@ -9,6 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.admin.group-actions :as actions.admin.group]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.group :as model.group]
@@ -29,7 +30,7 @@
                  (model/drop-all!)
                  (let [groups (doall
                                (map (fn [n]
-                                      (model.group/create (factory :group)))
+                                      (actions.group/create (factory :group)))
                                     (range 15)))
                        request {:action action}
                        response (filter-action action request)]
