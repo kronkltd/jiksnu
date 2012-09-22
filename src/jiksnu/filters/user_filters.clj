@@ -2,7 +2,9 @@
   (:use [ciste.config :only [config]]
         [ciste.filters :only [deffilter]]
         [ciste.model :only [implement]]
-        jiksnu.actions.user-actions)
+        jiksnu.actions.user-actions
+        [jiksnu.filters :only [parse-page parse-sorting]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -71,8 +73,9 @@
 
 (deffilter #'index :http
   [action request]
-  (let [{params :params} request]
-    (action params)))
+  (action {} (merge {}
+                    (parse-page request)
+                    (parse-sorting request))))
 
 (deffilter #'index :xmpp
   [action request]
@@ -92,8 +95,8 @@
   (if (:accepted params)
     (if (= password confirm-password)
       (action params)
-      (throw (RuntimeException. "Password and confirm password do not match")))
-    (throw (IllegalArgumentException. "you didn't check the box"))))
+      (throw+ "Password and confirm password do not match"))
+    (throw+ "you didn't check the box")))
 
 ;; register-page
 

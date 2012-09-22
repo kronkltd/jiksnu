@@ -28,9 +28,23 @@
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
-(defn mark-updated
+(defn set-domain
   [source]
-  (model.feed-source/set-field! source :updated (time/now)))
+  (if (:domain source)
+    source
+    (let [uri (URI. (:topic params))
+          domain (actions.domain/find-or-create {:_id (.getHost uri)})]
+      (assoc source :domain :_id domain))))
+
+(defn prepare-create
+  [source]
+  (-> source
+      set-domain))
+
+(defaction add-watcher
+  [source user]
+  (model.feed-source/push-value! source :watchers (:_id user))
+  (model.feed-source/fetch-by-id (:_id source)))
 
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
@@ -60,20 +74,25 @@
          (log/warn "Unknown mode"))))
     challenge))
 
-(defn prepare-create
-  [source]
-  source)
-
 (defaction create
   "Create a new feed source record"
   [params options]
-  (if-let [topic (:topic params)]
-    (let [uri (URI. topic)
-          domain (actions.domain/find-or-create {:_id (.getHost uri)})]
-      (let [source (assoc params :domain (:_id domain))
-            source (prepare-create source)]
-        (model.feed-source/create source)))
-    (throw+ "Must contain a topic")))
+  (let [source (prepare-create source)]
+    (model.feed-source/create source)))
+
+(defn find-or-create
+  [params & [options]]
+  (if-let [source (or (if-let [id  (:_id params)]
+                        (model.feed-source/fetch-by-id id))
+                      (model.feed-source/fetch-by-topic (:topic params)))]
+    source
+    (create params options)))
+
+(defn get-activities
+  "extract the activities from a feed"
+  [feed source]
+  (map #(actions.activity/entry->activity % feed source)
+       (.getEntries feed)))
 
 (def index*
   (model/make-indexer 'jiksnu.model.feed-source
@@ -83,18 +102,58 @@
   [& options]
   (apply index* options))
 
+(defn mark-updated
+  [source]
+  (model.feed-source/set-field! source :updated (time/now)))
+
+(declare process-entries)
+
+(defn parse-feed
+  [feed source]
+  (if (seq (:watchers source))
+    (process-entries feed source)
+    (do (log/warnf "no watchers for %s" (:topic source))
+        (remove-subscription source))))
+
+(defn process-entries
+  [feed source]
+  ;; (mark-updated source)
+  (doseq [activity (get-activities feed source)]
+    (try (actions.activity/find-or-create activity)
+         (catch Exception ex
+           (log/error ex)
+           (.printStackTrace ex)))))
+
+(declare send-unsubscribe)
+
+;; TODO: Rename to unsubscribe and make an action
+(defaction remove-subscription
+  "Action if user makes action to unsubscribe from remote source"
+  [source]
+  (send-unsubscribe
+   (:hub source)
+   (:topic source))
+  true)
+
+(defn send-unsubscribe
+  "Send an unsubscription request to the source's hub"
+  ([hub topic]
+     (send-unsubscribe hub topic (named-url "push callback")))
+  ([hub topic callback]
+     (log/debugf "Sending unsubscribe to %s" topic)
+     (when (seq hub)
+       (client/post
+        hub
+        {:throw-exceptions false
+         :form-params
+         {"hub.callback" callback
+          "hub.mode" "unsubscribe"
+          "hub.topic" topic
+          "hub.verify" "async"}}))))
 
 (defaction show
   [item]
   item)
-
-(defn find-or-create
-  [params & [options]]
-  (if-let [source (or (if-let [id  (:_id params)]
-                        (model.feed-source/fetch-by-id id))
-                      (model.feed-source/fetch-by-topic (:topic params)))]
-    source
-    (create params options)))
 
 ;; TODO: special case local subscriptions
 ;; TODO: should take a source
@@ -114,52 +173,12 @@
          "hub.topic" topic
          "hub.verify" "async"}}))))
 
-(defn send-unsubscribe
-  "Send an unsubscription request to the source's hub"
-  ([hub topic]
-     (send-unsubscribe hub topic (named-url "push callback")))
-  ([hub topic callback]
-     (log/debugf "Sending unsubscribe to %s" topic)
-     (when (seq hub)
-       (client/post
-        hub
-        {:throw-exceptions false
-         :form-params
-         {"hub.callback" callback
-          "hub.mode" "unsubscribe"
-          "hub.topic" topic
-          "hub.verify" "async"}}))))
-
-;; TODO: Rename to unsubscribe and make an action
-(defaction remove-subscription
-  "Action if user makes action to unsubscribe from remote source"
-  [source]
-  (send-unsubscribe
-   (:hub source)
-   (:topic source))
-  true)
-
-(defn get-activities
-  "extract the activities from a feed"
-  [feed source]
-  (map #(actions.activity/entry->activity % feed source)
-       (.getEntries feed)))
-
-(defn process-entries
-  [feed source]
-  ;; (mark-updated source)
-  (doseq [activity (get-activities feed source)]
-    (try (actions.activity/find-or-create activity)
-         (catch Exception ex
-           (log/error ex)
-           (.printStackTrace ex)))))
-
-(defn parse-feed
-  [feed source]
-  (if (seq (:watchers source))
-    (process-entries feed source)
-    (do (log/warnf "no watchers for %s" (:topic source))
-        (remove-subscription source))))
+(defaction remove-watcher
+  [source user]
+  (model.feed-source/update
+   (select-keys source [:_id])
+   {:$pull {:watchers (:_id user)}})
+  (model.feed-source/fetch-by-id (:_id source)))
 
 (defn update*
   [source]
@@ -192,18 +211,6 @@
            (log/error ex)
            (.printStackTrace ex)))))
     source))
-
-(defaction add-watcher
-  [source user]
-  (model.feed-source/push-value! source :watchers (:_id user))
-  (model.feed-source/fetch-by-id (:_id source)))
-
-(defaction remove-watcher
-  [source user]
-  (model.feed-source/update
-   (select-keys source [:_id])
-   {:$pull {:watchers (:_id user)}})
-  (model.feed-source/fetch-by-id (:_id source)))
 
 (definitializer
   (l/receive-all

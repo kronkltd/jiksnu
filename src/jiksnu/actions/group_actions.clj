@@ -4,6 +4,8 @@
         [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.session :only [current-user]]
+        [jiksnu.transforms :only [set-_id set-created-time
+                                  set-updated-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -12,7 +14,10 @@
 
 (defn prepare-create
   [group]
-  group)
+  (-> group
+      set-_id
+      set-created-time
+      set-updated-time))
 
 (defaction add-admin
   [group user]

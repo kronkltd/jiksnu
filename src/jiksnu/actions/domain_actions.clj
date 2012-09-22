@@ -18,11 +18,10 @@
   (:import java.net.URL
            jiksnu.model.Domain))
 
-(defaction create
-  [options]
-  (model.domain/create options))
 
-(defonce delete-hooks (ref []))
+(defn prepare-create
+  [domain]
+  domain)
 
 (defn prepare-delete
   ([domain]
@@ -31,6 +30,28 @@
      (if (seq hooks)
        (recur ((first hooks) domain) (rest hooks))
        domain)))
+
+(defaction add-link*
+  [item link]
+  (mc/update "domains" {:_id (:_id item)}
+             {:$addToSet {:links link}})
+  item)
+
+;; FIXME: this is always hitting the else branch
+(defn add-link
+  [item link]
+  (if-let [existing-link (model.domain/get-link item
+                                                (:rel link)
+                                                (:type link))]
+    item
+    (add-link* item link)))
+
+(defaction create
+  [options]
+  (let [domain (prepare-create options)]
+    (model.domain/create domain)))
+
+(defonce delete-hooks (ref []))
 
 (defaction delete
   [domain]
@@ -63,22 +84,6 @@
   "marks the domain as having been discovered"
   [domain]
   (model.domain/set-field domain :discovered true))
-
-(defaction add-link*
-  [item link]
-  (mc/update "domains" {:_id (:_id item)}
-             {:$addToSet {:links link}})
-  item)
-
-;; FIXME: this is always hitting the else branch
-(defn add-link
-  [item link]
-  (if-let [existing-link (model.domain/get-link item
-                                                (:rel link)
-                                                (:type link))]
-    item
-    (add-link* item link)))
-
 
 (defn discover-webfinger
   [^Domain domain url]

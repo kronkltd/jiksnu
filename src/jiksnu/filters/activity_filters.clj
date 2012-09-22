@@ -30,10 +30,6 @@
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 
-;; (deffilter #'new :http
-;;   [action request]
-;;   (action))
-
 ;; oembed
 
 (deffilter #'oembed :http

@@ -120,12 +120,16 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [user]
   (index {:author (:_id user)}))
 
+(defn prepare-create
+  [activity]
+  activity)
 
 
 (defaction create
   "create an activity"
   [{id :id :as params}]
-  (model.activity/create params))
+  (let [activity (prepare-create params)]
+    (model.activity/create activity)))
 
 (defaction delete
   "delete an activity"

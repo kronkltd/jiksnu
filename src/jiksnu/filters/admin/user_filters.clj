@@ -6,9 +6,13 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]))
 
+;; index
+
 (deffilter #'index :http
   [action request]
   (action))
+
+;; show
 
 (deffilter #'show :http
   [action request]

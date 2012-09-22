@@ -1,6 +1,7 @@
 (ns jiksnu.filters.conversation-filters
   (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.conversation-actions)
+        jiksnu.actions.conversation-actions
+        [jiksnu.filters :only [parse-page parse-sorting]])
   (:require [jiksnu.model.conversation :as model.conversation]))
 
 ;; create
@@ -19,7 +20,9 @@
 
 (deffilter #'index :http
   [action request]
-  (-> request :params action))
+  (action {} (merge {}
+                    (parse-page request)
+                    (parse-sorting request))))
 
 ;; show
 
