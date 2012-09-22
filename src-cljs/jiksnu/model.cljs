@@ -231,11 +231,22 @@
                            #_(log/info "init feed sources")))))
 
 
+(def Conversation
+  (.extend backbone/Model
+           (js-obj
+            "class" "Conversation"
+            ;; "defaults" (js-obj
+            ;;             )
+            "idAttribute" "_id")))
 
-
-
+(def Conversations
+  (.extend backbone/Collection
+           (js-obj
+            "class" "Conversations"
+            "model" Conversation)))
 
 (def activities   (Activities.))
+(def conversation (Conversations.))
 (def users (Users.))
 (def domains (Domains.))
 (def subscriptions (Subscriptions.))

@@ -41,7 +41,7 @@
         (.push coll item)
         (.notifySubscribers (.-items _view)))))
 
-  (doseq [model-name ["Activity" "Domain" "Subscription"
+  (doseq [model-name ["Activity" "Conversation" "Domain" "Subscription"
                       "FeedSource" "User"]]
     (let [key (str "target" model-name)]
       (when-let [id (aget data key)]
@@ -97,6 +97,7 @@
     (log/warn "id is undefined")))
 
 (def get-activity     (partial get-model "activities"))
+(def get-conversation (partial get-model "conversations"))
 (def get-domain       (partial get-model "domains"))
 (def get-feed-source  (partial get-model "feedSources"))
 (def get-group        (partial get-model "groups"))
