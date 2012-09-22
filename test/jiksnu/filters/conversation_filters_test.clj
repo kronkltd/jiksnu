@@ -38,7 +38,11 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (let [request {}]
-           (filter-action action request) => .response.
-           (provided
-             (actions.conversation/index anything) => .response.))))))
+           (log/spy (filter-action action request)) =>
+           (every-checker
+            map?
+            (comp empty? :items)
+            #(= 0 (:total-records %))
+            )
+           )))))
  )
