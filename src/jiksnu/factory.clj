@@ -180,7 +180,8 @@
 (deffactory :activity
   {:title (fseq :title)
    :content (fseq :content)
-   :author #'user-id})
+   :author #'user-id
+   :verb "post"})
 
 (deffactory :subscription
   {:to #'user-id

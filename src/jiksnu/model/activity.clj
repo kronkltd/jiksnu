@@ -25,16 +25,21 @@
 (def create-validators
   (validation-set
    (presence-of   :_id)
+   (presence-of   :id)
    (presence-of   :title)
    (presence-of   :author)
    (presence-of   :content)
    (acceptance-of :local         :accept (partial instance? Boolean))
    (acceptance-of :public        :accept (partial instance? Boolean))
    (presence-of   :update-source)
-   ;; (presence-of :conversations)
+   (presence-of   [:object :object-type])
+   (presence-of   :verb)
+   ;; (presence-of   :conversation)
+
+   ;; TODO: These should be joda times
    (presence-of   :created)
    (presence-of   :updated)
-   (presence-of   [:object :object-type])))
+   ))
 
 (defn get-author
   [activity]
