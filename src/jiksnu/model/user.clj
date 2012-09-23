@@ -36,37 +36,6 @@
    (presence-of   :avatar-url)
    (acceptance-of :local      :accept (partial instance? Boolean))))
 
-(defn set-id
-  [user]
-  (if (:id user)
-    user
-    (assoc user :id (format "acct:%s@%s" (:username user) (:domain user)))))
-
-(defn set-avatar-url
-  [user]
-  (if (:avatar-url user)
-    user
-    (assoc user :avatar-url
-           (if (:email user)
-             (gravatar-image (:email user))
-             (format "http://%s/assets/images/default-avatar.jpg" (config :domain))))))
-
-(defn set-url
-  [user]
-  (if (:url user)
-    user
-    (assoc user :url (named-url "local user timeline" user))))
-
-(defn prepare
-  [user]
-  (-> user
-      set-_id
-      set-id
-      set-updated-time
-      set-created-time
-      set-url
-      set-avatar-url))
-
 (defn salmon-link
   [user]
   (str "http://" (:domain user) "/main/salmon/user/" (:_id user)))

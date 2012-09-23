@@ -27,6 +27,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
+            [jiksnu.transforms.user-transforms :as transforms.user]
             [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
@@ -49,12 +50,6 @@
   (if (contains? user :discovered)
     user
     (assoc user :discovered false)))
-
-(defn set-local
-  [user]
-  (if (contains? user :local)
-    user
-    (assoc user :local false)))
 
 (defonce delete-hooks (ref []))
 
@@ -146,15 +141,15 @@
   [user]
   (-> user
       set-_id
-      model.user/set-id
-      model.user/set-url
-      set-local
+      transforms.user/set-id
+      transforms.user/set-url
+      transforms.user/set-local
       assert-unique
       set-updated-time
       set-created-time
       set-update-source
       set-discovered
-      model.user/set-avatar-url))
+      transforms.user/set-avatar-url))
 
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
