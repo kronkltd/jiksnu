@@ -13,8 +13,8 @@
   [key & _]
   ;; TODO: Rdfa
   [:div
-   [:p (:armored-n key)]
-   [:p (:armored-e key)]])
+   [:p (:n key)]
+   [:p (:e key)]])
 
 (defsection show-section [Key :rdf]
   [key & _]

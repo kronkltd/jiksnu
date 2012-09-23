@@ -67,3 +67,9 @@
                                   :per-page (:page-size options 20)))]
        (map model/map->Conversation records))))
 
+
+(defn find-by-uri
+  [conversation]
+  (log/spy (fetch-all (log/spy {:uri (:uri conversation)})))
+  )
+

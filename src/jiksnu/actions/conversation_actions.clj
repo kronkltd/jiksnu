@@ -32,6 +32,14 @@
   [& [options & _]]
   (apply index* options))
 
+(defaction find-or-create
+  [options]
+  (if-let [conversation (or (model.conversation/fetch-by-id (:_id options))
+                            (model.conversation/find-by-uri (:uri options))
+                            )]
+    conversation
+    (create options)))
+
 (defaction show
   [record]
   record)

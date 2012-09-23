@@ -5,6 +5,7 @@
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.model :as model]))
 
 (defn set-local
@@ -101,3 +102,11 @@
       (assoc activity :id id))
     activity))
 
+(defn set-conversation
+  [activity]
+  (let [uris (:conversation-uris activity)]
+    (doseq [uri uris]
+      (log/spy (actions.conversation/find-or-create {:uri uri}))
+      )
+    )
+  )

@@ -56,8 +56,8 @@
   (let [author (actions.activity/get-author activity)
         mentioned-users (map #(actions.user/find-or-create-by-remote-id {:id %})
                              (:mentioned-uris activity))
-        parent-activities (map #(actions.activity/find-or-create {:id %})
-                               (:irts activity))
+        ;; parent-activities (map #(actions.activity/find-or-create {:id %})
+        ;;                        (:irts activity))
         subscribers (map model.subscription/get-actor
                          (model.subscription/subscribers author))
         to-notify (->> (concat subscribers mentioned-users)
@@ -67,7 +67,7 @@
     (model.item/push author activity)
 
     ;; Discover conversation
-    (doseq [conversation-uri (:conversation-uris activity)]
+    #_(doseq [conversation-uri (:conversation-uris activity)]
       (let [atom-link (model/extract-atom-link conversation-uri)
             source (actions.feed-source/find-or-create {:topic atom-link} {})]
         #_(fetch-remote-feed source)))
@@ -78,8 +78,8 @@
       (model.activity/add-comment parent activity))
 
     ;; Add as comment to irts
-    (doseq [parent parent-activities]
-      (model.activity/add-comment parent activity))
+    ;; (doseq [parent parent-activities]
+    ;;   (model.activity/add-comment parent activity))
 
     ;; notify users
     (doseq [user to-notify]

@@ -16,9 +16,9 @@
   (:import java.security.Key
            jiksnu.model.User))
 
-(def armored-n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0=")
+(def n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0=")
 
-(def armored-e "AQAB")
+(def e "AQAB")
 
 (defn read-file
   [filename]
@@ -100,8 +100,7 @@
    (fact "when it is valid"
      (fact "should return truthy"
        (let [key (model.key/get-key-from-armored
-                  {:armored-n armored-n
-                   :armored-e armored-e})]
+                  {:n n :e e})]
          (signature-valid? val-env2 key) => truthy))))
 
  (fact "#'decode-envelope"

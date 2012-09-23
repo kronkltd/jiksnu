@@ -133,12 +133,9 @@
 (defn magic-key-string
   "Format keypair as a key string for use in webfinger."
   [^Key keypair]
-  (if keypair
-    (str
-     "data:application/magic-public-key,RSA."
-     (-> keypair :modulus (BigInteger.) get-bytes encode str)
-     "."
-     (-> keypair :public-exponent (BigInteger.) get-bytes encode str))))
+  (when keypair
+    (format "data:application/magic-public-key,RSA.%s.%s"
+            (:n keypair) (:e keypair))))
 
 
 ;; MagicKepPair functions
@@ -151,29 +148,14 @@
   (let [public-key (public-key keypair)
         private-key (private-key keypair)]
     {
-     :crt-coefficient          (str (.getCrtCoefficient private-key))
-     :armored-crt-coefficient  (encode (get-bytes (.getCrtCoefficient private-key)))
-     
-     :prime-exponent-p         (str (.getPrimeExponentP private-key))
-     :armored-prime-exponent-p (encode (get-bytes (.getPrimeExponentP private-key)))
-     
-     :prime-exponent-q         (str (.getPrimeExponentQ private-key))
-     :armored-prime-exponent-q (encode (get-bytes (.getPrimeExponentQ private-key)))
-     
-     :prime-p                  (str (.getPrimeP private-key))
-     :armored-prime-p          (encode (get-bytes (.getPrimeP private-key)))
-     
-     :prime-q                  (str (.getPrimeQ private-key))
-     :armored-prime-q          (encode (get-bytes (.getPrimeQ private-key)))
-     
-     :private-exponent         (str (.getPrivateExponent private-key))
-     :armored-private-exponent (encode (get-bytes (.getPrivateExponent private-key)))
-     
-     :modulus                  (str (.getModulus private-key))
-     :armored-n                (encode (get-bytes (.getModulus private-key)))
-
-     :public-exponent          (str (.getPublicExponent private-key))
-     :armored-e                (encode (get-bytes (.getPublicExponent private-key)))
+     :crt-coefficient  (encode (get-bytes (.getCrtCoefficient private-key)))
+     :prime-exponent-p (encode (get-bytes (.getPrimeExponentP private-key)))
+     :prime-exponent-q (encode (get-bytes (.getPrimeExponentQ private-key)))
+     :prime-p          (encode (get-bytes (.getPrimeP private-key)))
+     :prime-q          (encode (get-bytes (.getPrimeQ private-key)))
+     :private-exponent (encode (get-bytes (.getPrivateExponent private-key)))
+     :n                (encode (get-bytes (.getModulus private-key)))
+     :e                (encode (get-bytes (.getPublicExponent private-key)))
      }))
 
 (defn create
@@ -203,19 +185,19 @@
    ^String e]
   (if-let [key-pair (get-key-for-user-id user-id)]
     (mc/save (merge key-pair
-                    {:armored-n n
-                     :armored-e e}))
+                    {:n n
+                     :e e}))
     (mc/insert collection-name
-               {:armored-n n
-                :armored-e e
+               {:n n
+                :e e
                 :userid user-id})))
 
 
 
 (defn ^PublicKey get-key-from-armored
   [key-pair]
-  (let [big-n (-> key-pair :armored-n armored->big-int)
-        big-e (-> key-pair :armored-e armored->big-int)
+  (let [big-n (-> key-pair :n armored->big-int)
+        big-e (-> key-pair :e armored->big-int)
         key-factory (KeyFactory/getInstance "RSA")
         key-spec (RSAPublicKeySpec. big-n big-e)]
     (.generatePublic key-factory key-spec)))
