@@ -108,7 +108,7 @@
 
 (def index*
   (model/make-indexer 'jiksnu.model.domain
-                      :sort-clause [{:username 1}]))
+                      :sort-clause {:username 1}))
 
 (defaction index
   [& options]

@@ -256,11 +256,11 @@
            [{:href "/rsd.xml"
              :type "application/rsd+xml"
              :rel "EditURI"}
-            {:href "/opensearch/notices"
+            #_{:href "/opensearch/notices"
              :title "Notice Search"
              :type "application/opensearchdescription+xml"
              :rel "search"}
-            {:href "/opensearch/people"
+            #_{:href "/opensearch/people"
              :title "People Search"
              :type "application/opensearchdescription+xml"
              :rel "search"}
