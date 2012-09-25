@@ -58,7 +58,7 @@
                 map?
                 (contains {:type :result})))))))))
 
- (fact "apply-view-test #'fetch-remote :xmpp"
+ (future-fact "apply-view-test #'fetch-remote :xmpp"
    (let [action #'actions.user/fetch-remote]
      (fact "should return an iq query packet map"
        (with-context [:xmpp :xmpp]

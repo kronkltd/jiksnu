@@ -23,15 +23,6 @@
   (let [{:keys [params]} request]
     (action params)))
 
-;; TODO: this one wasn't working in the first place
-(deffilter #'create :xmpp
-  [action request]
-  (let [{:keys [items]} request]
-    (let [properties
-          (flatten
-           (map helpers.user/process-vcard-element items))]
-      (action properties))))
-
 ;; delete
 
 (deffilter #'delete :http

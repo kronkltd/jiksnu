@@ -234,7 +234,7 @@
   ([user params]
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
-         (if-let [domain (if (:discovered domain) domain (actions.domain/discover domain id))]
+         (if-let [domain (log/spy (if (:discovered domain) domain (actions.domain/discover domain id)))]
            (let [user (assoc user :domain (:_id domain))]
              (or (model.user/fetch-by-remote-id id)
                  (let [user (if (:username user)
@@ -409,7 +409,7 @@
   (if-let [xrd (helpers.user/fetch-user-meta user)]
     (let [links (model.webfinger/get-links xrd)
           new-user (assoc user :links links)
-          feed (helpers.user/fetch-user-feed new-user)
+          feed (model.user/fetch-user-feed new-user)
           first-entry (-?> feed .getEntries first)
           user (merge user
                       (-?> (abdera/get-author first-entry feed)

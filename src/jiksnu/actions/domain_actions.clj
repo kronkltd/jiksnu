@@ -159,14 +159,22 @@
   (let [sconfig (fetch-statusnet-config domain)]
     (model.domain/set-field domain :statusnet-config sconfig)))
 
+(defn discover*
+  [domain url]
+  (future (discover-webfinger domain url))
+  (future (discover-onesocialweb domain url))
+  (future (discover-statusnet-config domain url)))
+
 (defaction discover
   [^Domain domain url]
   (when-not (:local domain)
     (log/debugf "discovering domain - %s" (:_id domain))
-    (future (discover-webfinger domain url))
-    (future (discover-onesocialweb domain url))
-    (future (discover-statusnet-config domain url))
+    (discover* domain url)
     (model.domain/fetch-by-id (:_id domain))))
+
+(defn get-discovered
+  [domain]
+  (discover domain nil))
 
 (defn get-user-meta-url
   [domain user-uri]

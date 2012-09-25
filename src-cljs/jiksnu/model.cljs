@@ -120,6 +120,12 @@
   (.extend backbone/Model
            (js-obj
             "class" "User"
+            "url" (fn []
+                    (this-as this
+                      (log/info this)
+                      (str "/model/users/" (.-id this) ".model")
+                      )
+                    )
             "defaults" (js-obj "url" ""
                                "avatarUrl" nil
                                "uri" ""

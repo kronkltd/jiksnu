@@ -12,6 +12,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.model.user :as model.user]
             [jiksnu.sections.user-sections :as sections.user]
             [plaza.rdf.core :as rdf]
             [ring.util.response :as response]))
@@ -44,7 +45,7 @@
 
 (defview #'fetch-remote :xmpp
   [request user]
-  (helpers.user/vcard-request request user))
+  (model.user/vcard-request user))
 
 ;; fetch-updates
 

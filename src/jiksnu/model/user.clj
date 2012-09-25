@@ -1,6 +1,7 @@
 (ns jiksnu.model.user
   (:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
+        [clojure.core.incubator :only [-?> -?>>]]
         [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.model :only [make-id rel-filter map->User]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
@@ -10,6 +11,7 @@
             [clojure.tools.logging :as log]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
+            [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -201,6 +203,21 @@
   (or (:avatar-url user)
       (when (:email user) (gravatar-image (:email user)))
       (gravatar-image (get-uri user false))))
+
+
+;; TODO: This should check for an associated source
+(defn feed-link-uri
+  [^User user]
+  (if-let [link (or (get-link user ns/updates-from "application/atom+xml")
+                    (get-link user ns/updates-from nil))]
+    (:href link)))
+
+(defn fetch-user-feed
+  "returns a feed"
+  [^User user]
+  (-?> user
+       feed-link-uri
+       abdera/fetch-feed))
 
 (defn vcard-request
   [user]

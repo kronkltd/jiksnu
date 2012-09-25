@@ -118,7 +118,7 @@
 (defn load-activities
   [^User user]
   (when user
-    (if-let [feed (helpers.user/fetch-user-feed user)]
+    (if-let [feed (model.user/fetch-user-feed user)]
       (doseq [activity (actions.feed-source/get-activities feed)]
         (actions.activity/create activity)))))
 

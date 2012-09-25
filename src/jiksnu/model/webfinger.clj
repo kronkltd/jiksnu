@@ -8,12 +8,20 @@
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
-  (:import java.net.URI))
+  (:import java.net.URI
+           jiksnu.model.User))
 
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
   (cm/fetch-document url))
+
+(defn fetch-user-meta
+  "returns a user meta document"
+  [^User user]
+  (if-let [uri (model.user/user-meta-uri user)]
+    (fetch-host-meta uri)
+    (throw (RuntimeException. "Could not determine user-meta link"))))
 
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.

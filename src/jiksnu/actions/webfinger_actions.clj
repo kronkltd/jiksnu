@@ -16,14 +16,6 @@
            jiksnu.model.Domain
            jiksnu.model.User))
 
-(defn fetch-host-meta
-  [url]
-  #_(let [hm (-> url fetch-resource s/compile-xml)
-          host (s/query "//hm:Host/text()" bound-ns hm)]
-      (if (= (.getHost (URI. url)) (str host))
-        hm
-        (throw (RuntimeException. "Hostname does not match")))))
-
 (defaction host-meta
   []
   (let [domain (config :domain)
@@ -45,12 +37,6 @@
     (or (:user-meta-uri user)
         (actions.domain/get-user-meta-url domain (:id user)))))
 
-(defn fetch-user-meta
-  [^User user]
-  (-> user
-      model.user/user-meta-uri
-      fetch-host-meta))
-
 (defn get-links
   [xrd]
   #_(let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
@@ -65,10 +51,10 @@
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   [user]
-  (let [xrd (fetch-user-meta user)
+  (let [xrd (model.webfinger/fetch-user-meta user)
         links (get-links xrd)
         new-user (assoc user :links links)
-        feed (helpers.user/fetch-user-feed new-user)
+        feed (model.user/fetch-user-feed new-user)
         uri (-?> feed .getAuthor .getUri)]
     (doseq [link links]
       (actions.user/add-link user link))
@@ -77,16 +63,12 @@
         (assoc :discovered true)
         actions.user/update)))
 
-(defn host-meta-link
-  [domain]
-  (str "http://" (:_id domain) "/.well-known/host-meta"))
-
 (defn discover-webfinger
   [^Domain domain]
   ;; TODO: check https first
   (if-let [xrd (-> domain
-                   host-meta-link
-                   fetch-host-meta)]
+                   model.domain/host-meta-link
+                   model.webfinger/fetch-host-meta)]
     (if-let [links (get-links xrd)]
       ;; TODO: These should call actions
       (do (model.domain/add-links domain links)

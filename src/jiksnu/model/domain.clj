@@ -11,6 +11,10 @@
             [monger.core :as mg])
   (:import jiksnu.model.Domain))
 
+(defn host-meta-link
+  [domain]
+  (str "http://" (:_id domain) "/.well-known/host-meta"))
+
 (def collection-name "domains")
 
 (def create-validators
