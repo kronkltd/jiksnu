@@ -16,7 +16,7 @@
 (test-environment-fixture
 
  
- (fact "#'fetch-user-meta"
+ (future-fact "#'fetch-user-meta"
    (fact "when the user has a user meta link"
     (fact "when the user meta can be found"
       (fact "should return a xml stream"
@@ -32,7 +32,8 @@
           (model.webfinger/fetch-host-meta .url.) => nil))))
    (fact "when the user does not have a user meta link"
      (fact "should throw an exception"
-       (fetch-user-meta .user.) => (throws RuntimeException)
+       (
+        fetch-user-meta .user.) => (throws RuntimeException)
        (provided
          (model.user/user-meta-uri .user.) => nil)))))
 

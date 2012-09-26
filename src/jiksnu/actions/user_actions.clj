@@ -406,7 +406,7 @@
   "Retreive user information from webfinger"
   [user]
   ;; TODO: This is doing way more than it's supposed to
-  (if-let [xrd (helpers.user/fetch-user-meta user)]
+  (if-let [xrd (model.webfinger/fetch-user-meta user)]
     (let [links (model.webfinger/get-links xrd)
           new-user (assoc user :links links)
           feed (model.user/fetch-user-feed new-user)
