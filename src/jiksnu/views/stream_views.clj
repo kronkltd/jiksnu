@@ -145,6 +145,7 @@
    {:title "Public Timeline"
     :items (map :_id items)
     :pageInfo (format-page-info page)
+    :postForm {:visible true}
     ;; :users (index-section (map actions.activity/get-author items))
     :activities (doall (index-section items page))}})
 

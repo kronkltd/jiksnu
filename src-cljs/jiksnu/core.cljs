@@ -35,6 +35,10 @@
     (let [p (.get _model "pageInfo")]
       (.set p page-info)))
 
+  (if-let [post-form (.-postForm data)]
+    (if-let [visible (.-visible post-form)]
+      (.visible (.postForm _view) visible)))
+
   (doseq [model-name ["Activity" "Conversation" "Domain" "Subscription"
                       "FeedSource" "User"]]
     (let [key (str "target" model-name)]
