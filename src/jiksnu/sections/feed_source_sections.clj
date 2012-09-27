@@ -241,7 +241,11 @@
             topic)]]]
        [:tr
         [:th "Hub:"]
-        [:td [:a {:href hub} hub]]]
+        [:td [:a (if *dynamic*
+                   {:data-bind "attr: {href: hub}, text: hub"}
+                   {:href hub})
+              (when-not *dynamic*
+                hub)]]]
        [:tr
         [:th "Callback:"]
         [:td (merge {:data-property "callback"}
