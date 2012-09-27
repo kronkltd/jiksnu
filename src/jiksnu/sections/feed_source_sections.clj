@@ -61,6 +61,10 @@
   [:ul.feed-source-actions.buttons
    [:li (update-button source)]
    [:li (subscribe-button source)]
+   [:li [:a (if *dynamic*
+              {:data-bind "attr: {href: '/model/feedSources/' + _id + '.model'}"}
+              {:href (format "/model/feedSources/%s.model" (:_id source))})
+         "Model"]]
    [:li (unsubscribe-button source)]
    [:li (delete-button source)]
    [:li (watch-button source)]])
@@ -94,6 +98,7 @@
   [:table.table
    [:thead
     [:tr
+     [:th "Id"]
      [:th "Title"]
      [:th "Domain"]
      [:th "Topic"]
@@ -116,6 +121,8 @@
   [:tr (merge {:data-model "feedSource"}
               (when-not *dynamic*
                 {:data-id (:_id item)}))
+   [:td
+    (link-to item)]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/feed-sources/' + _id}, text: title"}
@@ -209,7 +216,9 @@
 
 (defsection link-to [FeedSource :html]
   [source & _]
-  [:a {:href (str "/admin/feed-sources/" (:_id source))}
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/admin/feed-sources/' + _id}, text: _id"}
+        {:href (str "/admin/feed-sources/" (:_id source))})
    (:topic source)])
 
 ;; show-section
