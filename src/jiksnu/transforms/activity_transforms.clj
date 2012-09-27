@@ -6,7 +6,9 @@
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.feed-source :as model.feed-source]))
 
 (defn set-local
   [activity]
@@ -48,6 +50,14 @@
     (dissoc activity :parent)
     activity))
 
+(defn set-source
+  [activity]
+  (if (:update-source activity)
+    activity
+    (let [author (model.activity/get-author activity)
+          source (model.feed-source/find-by-user author)]
+      (assoc activity :update-source (:_id source)))))
+
 (defn set-tags
   [activity]
   (let [tags (:tags activity )]
@@ -66,6 +76,16 @@
   (if (false? (:public activity))
     activity
     (assoc activity :public true)))
+
+(defn set-geo
+  [activity]
+  (let [latitude (get activity "geo.latitude")
+        longitude (get activity "geo.longitude")]
+    (-> activity
+        (dissoc "geo.latitude")
+        (dissoc "geo.longitude")
+        (assoc :geo {:latitude latitude
+                     :longitude longitude}))))
 
 (defn set-remote
   [activity]
@@ -106,7 +126,11 @@
   [activity]
   (let [uris (:conversation-uris activity)]
     (doseq [uri uris]
-      (log/spy (actions.conversation/find-or-create {:uri uri}))
-      )
-    )
-  )
+      (actions.conversation/find-or-create {:uri uri}))))
+
+
+(defn set-verb
+  [activity]
+  (if (:verb activity)
+    activity
+    (assoc activity :verb "post")))

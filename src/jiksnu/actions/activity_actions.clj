@@ -42,13 +42,13 @@
 
 This is a byproduct of OneSocialWeb's incorrect use of the ref value
 "
-  [element]
+  [^Element element]
   (let [parent-id (.getAttributeValue element "ref")]
     {:parent parent-id}))
 
 (defn parse-geo
   "extract the latitude and longitude components from a geo element"
-  [element]
+  [^Element element]
   (let [coords (.getText element)
         [latitude longitude] (string/split coords #" ")]
     ;; TODO: these should have a common geo property
@@ -56,7 +56,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (defn parse-extension-element
   "parse atom extensions"
-  [element]
+  [^Element element]
   (let [qname (element/parse-qname (.getQName element))]
     (condp = (:namespace qname)
       ns/as (condp = (:name qname)
@@ -86,12 +86,12 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
-  [user link]
-  (if-let [existing-link (model.activity/get-link user
+  [item link]
+  (if-let [existing-link (model.activity/get-link item
                                                   (:rel link)
                                                   (:type link))]
-    user
-    (add-link* user link)))
+    item
+    (add-link* item link)))
 
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients
@@ -136,10 +136,13 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn prepare-post
   [activity]
   (-> activity
+      transforms.activity/set-actor
       transforms.activity/set-local
+      transforms.activity/set-source
+      transforms.activity/set-geo
       transforms.activity/set-object-updated
       transforms.activity/set-object-created
-      transforms.activity/set-actor))
+      transforms.activity/set-verb))
 
 (defaction create
   "create an activity"
@@ -173,14 +176,14 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (defn get-verb
   "Returns the verb of the entry"
-  [entry]
+  [^Entry entry]
   (-?> entry
        (.getExtension (QName. ns/as "verb" "activity"))
        .getText
        model/strip-namespaces))
 
 (defn parse-entry
-  [entry]
+  [^Entry entry]
   {:id (str (.getId entry))
    :title (.getTitle entry)
    :published (.getPublished entry)
@@ -316,7 +319,7 @@ serialization"
     (create params)))
 
 (defaction oembed
-  [activity & [options & _]]
+  [activity & [options]]
   (when activity
     (merge {:version "1.0"
             :provider_name (config :site :name)
