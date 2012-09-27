@@ -74,7 +74,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id
+  (-> request :params :id model/make-id
       model.activity/fetch-by-id action))
 
 (deffilter #'show :xmpp

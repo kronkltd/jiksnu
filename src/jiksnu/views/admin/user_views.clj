@@ -43,12 +43,14 @@
      :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
-     (doall (list [:div (when *dynamic*
-                          {:data-bind "with: jiksnu.core.get_user(targetUser())"})
-                   (admin-show-section user)]
-                  (admin-index-block (if *dynamic*
-                                       [(Activity.)]
-                                       (:items page)) page)))}))
+     [:div (when *dynamic*
+             {:data-bind "with: targetUser"})
+      [:div (when *dynamic*
+              {:data-bind "with: jiksnu.core.get_user($data)"})
+       (admin-show-section user)]
+      (admin-index-block (if *dynamic*
+                           [(Activity.)]
+                           (:items page)) page)]}))
 
 (defview #'show :model
   [request user]

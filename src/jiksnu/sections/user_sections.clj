@@ -244,9 +244,9 @@
     (map
      (fn [link]
        [:tr
-        [:td (if *dynamic* {:data-bind "text: title"} (:title link))]
-        [:td (if *dynamic* {:data-bind "text: rel"}   (:rel link))]
-        [:td (if *dynamic* {:data-bind "text: href"}  (:href link))]
+        [:td (if *dynamic* (bind-property "title") (:title link))]
+        [:td (if *dynamic* (bind-property "rel")   (:rel link))]
+        [:td (if *dynamic* (bind-property "href")  (:href link))]
         [:td (link-actions-section link)]])
      links)]])
 

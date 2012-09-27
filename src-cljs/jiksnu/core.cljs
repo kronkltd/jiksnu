@@ -35,17 +35,19 @@
     (let [p (.get _model "pageInfo")]
       (.set p page-info)))
 
+  (doseq [model-name ["Activity" "Conversation" "Domain" "Subscription"
+                      "FeedSource" "User"]]
+    (let [key (str "target" model-name)]
+      (when-let [id (aget data key)]
+        (.set _model key id))))
+
   (when-let [items (.-items data)]
     (let [coll (.get _model "items")]
       (doseq [item items]
         (.push coll item)
         (.notifySubscribers (.-items _view)))))
 
-  (doseq [model-name ["Activity" "Conversation" "Domain" "Subscription"
-                      "FeedSource" "User"]]
-    (let [key (str "target" model-name)]
-      (when-let [id (aget data key)]
-        (.set _model key id)))))
+  )
 
 (defn fetch-viewmodel
   [url]
