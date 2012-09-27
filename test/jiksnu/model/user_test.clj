@@ -62,7 +62,7 @@
      (fact "should be empty"
        ;; TODO: all collections should be emptied in background
        (drop!)
-       (fetch-all) =>
+       (fetch-all {} {}) =>
        (every-checker
         empty?)))
 

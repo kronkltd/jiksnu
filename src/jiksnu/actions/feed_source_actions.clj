@@ -20,6 +20,7 @@
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.user :as model.user]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.FeedSource))
@@ -162,7 +163,7 @@
   [user]
   (if-let [hub-url (:hub user)]
     ;; TODO: this will use the update source
-    (let [topic (helpers.user/feed-link-uri user)]
+    (let [topic (model.user/feed-link-uri user)]
       (find-or-create {:topic topic :hub hub-url} {})
       (client/post
        hub-url

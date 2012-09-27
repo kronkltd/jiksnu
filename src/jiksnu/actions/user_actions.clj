@@ -234,7 +234,7 @@
   ([user params]
      (if-let [id (:id user)]
        (if-let [domain (get-domain user)]
-         (if-let [domain (log/spy (if (:discovered domain) domain (actions.domain/discover domain id)))]
+         (if-let [domain (if (:discovered domain) domain (actions.domain/discover domain id))]
            (let [user (assoc user :domain (:_id domain))]
              (or (model.user/fetch-by-remote-id id)
                  (let [user (if (:username user)
@@ -267,8 +267,8 @@
   (model.user/fetch-by-id (:_id user)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.group
-                      :sort-clause [{:username 1}]))
+  (model/make-indexer 'jiksnu.model.user
+                      :sort-clause {:username 1}))
 
 (defaction index
   [& options]

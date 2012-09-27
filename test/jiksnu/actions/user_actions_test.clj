@@ -132,6 +132,9 @@
      (fact "should throw an exception"
        (create nil) => (throws RuntimeException))))
 
+ (fact "#'index"
+   (index) => map?
+   )
 
  (fact "#'person->user"
    (fact "when the user has an acct uri"

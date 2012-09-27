@@ -130,7 +130,7 @@
   (try
     (ws/set-view _view)
     (ws/connect)
-    (catch Exception ex
+    (catch js/Exception ex
       (log/error ex)))
 
   (handlers/setup-handlers)
