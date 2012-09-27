@@ -4,7 +4,8 @@
                                                    update
                                                    delete
                                                    show
-                                                   remove-subscription]])
+                                                   remove-subscription
+                                                   watch]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]))
@@ -48,3 +49,9 @@
   [action request]
   (if-let [source (-> request :params :id model/make-id model.feed-source/fetch-by-id)]
     (action source)))
+
+;; watch
+
+(deffilter #'watch :command
+  [action id]
+  (action (model.feed-source/fetch-by-id (model/make-id id))))

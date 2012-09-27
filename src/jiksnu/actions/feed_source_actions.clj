@@ -6,6 +6,7 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-path named-url]]
+        [jiksnu.session :only [current-user]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
@@ -46,6 +47,10 @@
   [source user]
   (model.feed-source/push-value! source :watchers (:_id user))
   (model.feed-source/fetch-by-id (:_id source)))
+
+(defaction watch
+  [source]
+  (add-watcher source (current-user)))
 
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
