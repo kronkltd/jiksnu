@@ -103,8 +103,7 @@
     "defaults" (js-obj "xmpp" "unknown"
                        "links" (array))
     "idAttribute" "_id"
-    "initialize" (fn [models options]
-                   #_(log/debug "init domain")))))
+    )))
 
 (def Domains
   (.extend backbone/Collection

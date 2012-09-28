@@ -12,7 +12,6 @@
 
 (defn setup-handlers
   []
-  #_(log/info "setting up handlers")
   (.on (js/$ js/document)
        "click" "*[data-action]"
        (fn [e]
