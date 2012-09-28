@@ -17,12 +17,17 @@
        (fn [e]
          (let [target (js/$ (.-currentTarget e))
                action (.data target "action")
-               model (.data target "model")
                parent (.closest target "*[data-id]")
-               id (.data parent "id")]
+               model (.data parent "model")
+               id (.data parent "id")
+               target-element (.find parent "*[data-target]")
+               target (when target-element
+                        (.data target-element "target"))]
            (let [message (str action " >> " model "(" id ")")]
              (log/info message)
-             (ws/send (str "invoke-action " model " " action " " id))
+             (ws/send (str "invoke-action " model " " action " " id
+                           (if target
+                             (str " " target))))
              (.add (.get _model "notifications")
                    (js-obj
                     "message" message)))

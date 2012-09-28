@@ -4,11 +4,12 @@
                                        index-section link-to title update-button]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line]])
+        [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line dump-data]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.FeedSource))
+  (:import jiksnu.model.FeedSource
+           jiksnu.model.User))
 
 (defn subscribe-button
   [item & _]
@@ -21,22 +22,34 @@
 (defn index-watchers
   [source]
   [:div.watchers
-   [:h3 "Watchers " (count (:watchers source))]
-   [:table.table
-    (map
-     (fn [id]
-       (let [user (model.user/fetch-by-id id)]
-         [:tr
-          [:td (link-to user)]
-          [:td
-           [:form
-            {:method "post"
-             :action (format "/admin/feed-sources/%s/watchers/delete"
-                             (:_id source))}
-            [:input {:type "hidden" :name "user_id" :value (:_id user)}]
-            [:button.btn.delete-button {:type "submit"}
-             [:i.icon-trash] [:span.button-text "Delete"]]]]]))
-     (:watchers source))]])
+   [:h3 "Watchers "
+    [:span (if *dynamic*
+             {:data-bind "text: watchers.length"}
+             (count (:watchers source)))]]
+   [:div {:data-bind "with: watchers"}
+    [:table.table
+     [:tbody {:data-bind "foreach: _.map($data, jiksnu.core.get_user)"}
+      (map
+       (fn [id]
+         (let [user (if *dynamic*
+                      (User.)
+                      (model.user/fetch-by-id id))]
+           [:tr (merge
+                 {:data-model "user"}
+                 (if *dynamic*
+                   {:data-bind
+                    (string/join ", "
+                                 ["if: $data"
+                                  "attr: {'data-target': $data}"])}))
+            [:td (link-to user)]
+            [:td
+             (action-link "feed-source" "remove-watcher" (:_id source)
+                          {:target (:_id user)
+                           :icon "trash"
+                           :title "Delete"})]]))
+       (if *dynamic*
+         [""]
+         (:watchers source)))]]]])
 
 (defn add-watcher-form
   [source]
@@ -54,6 +67,10 @@
   [item]
   (action-link "feed-source" "watch" (:_id item)))
 
+(defn unwatch-button
+  [item]
+  (action-link "feed-source" "unwatch" (:_id item)))
+
 ;; actions-section
 
 (defsection actions-section [FeedSource :html]
@@ -67,7 +84,8 @@
          "Model"]]
    [:li (unsubscribe-button source)]
    [:li (delete-button source)]
-   [:li (watch-button source)]])
+   [:li (watch-button source)]
+   [:li (unwatch-button source)]])
 
 ;; add-form
 

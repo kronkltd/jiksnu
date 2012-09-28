@@ -39,7 +39,9 @@
 
 (defn like-button
   [activity]
-  (action-link "activity" "like" "Like" "heart" (:_id activity)))
+  (action-link "activity" "like" (:_id activity)
+               {:title "Like"
+                :icon "heart"}))
 
 (defn acl-link
   [^Entry entry activity]

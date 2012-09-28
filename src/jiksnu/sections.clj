@@ -57,26 +57,27 @@
          (dissoc page :items))))
 
 (defn action-link
-  ([model action id]
-     (action-link model
-                  action
-                  (action-titles action)
-                  (action-icons action)
-                  id))
-  ([model action title icon id]
-     [:a (merge
-          {:title title
-           :class (string/join " " [(str action "-button")])
-           :data-model model
-           :data-action action}
-          (if *dynamic*
-            {:href "#"}
-            {:href (str "/main/confirm"
-                        "?action=" action
-                        "&model=" model
-                        "&id=" id)}))
-      [:i {:class (str "icon-" icon)}]
-      [:span.button-text title]]))
+  [model action id & [options]]
+  (let [title (or (:title options) (action-titles action))
+        icon (or (:icon options) (action-icons action))
+        target (:target options)]
+    [:a (merge
+         {:title title
+          :class (string/join " " [(str action "-button")])
+          ;; :data-model model
+          :data-action action}
+         (if *dynamic*
+           {:href "#"}
+           {:href (str "/main/confirm"
+                       "?action=" action
+                       "&model=" model
+                       "&id=" id
+                       (if target
+                         (str "&target=" target)))})
+         (if target
+           {:data-target target}))
+     [:i {:class (str "icon-" icon)}]
+     [:span.button-text title]]))
 
 
 (defn bind-property
