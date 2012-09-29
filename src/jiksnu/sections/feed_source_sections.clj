@@ -28,7 +28,7 @@
              (count (:watchers source)))]]
    [:div {:data-bind "with: watchers"}
     [:table.table
-     [:tbody {:data-bind "foreach: _.map($data, jiksnu.core.get_user)"}
+     [:tbody {:data-bind "foreach: $data"}
       (map
        (fn [id]
          (let [user (if *dynamic*
@@ -36,7 +36,7 @@
                       (model.user/fetch-by-id id))]
            [:tr (merge
                  {:data-model "user"}
-                 (if *dynamic*
+                 #_(if *dynamic*
                    {:data-bind
                     (string/join ", "
                                  ["if: $data"
@@ -136,7 +136,7 @@
 
 (defsection admin-index-line [FeedSource :html]
   [item & [page]]
-  [:tr (merge {:data-model "feedSource"}
+  [:tr (merge {:data-model "feed-source"}
               (when-not *dynamic*
                 {:data-id (:_id item)}))
    [:td

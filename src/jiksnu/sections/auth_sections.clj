@@ -15,8 +15,7 @@
     [:span
      (if *dynamic*
        {:data-bind "with: currentUser()"})
-     [:span (if *dynamic*
-              {:data-bind "with: jiksnu.core.get_user($data)"})
+     [:span {:data-model "user"}
       (display-avatar-img user 18)
       [:span
        (if *dynamic*

@@ -20,7 +20,7 @@
    :body
    [:div {:data-bind "with: items"}
     [:div (if *dynamic*
-            {:data-bind "with: _.map($data, jiksnu.core.get_subscription)"})
+            {:data-bind "with: $data"})
      (let [subscriptions (if *dynamic*
                            [(Subscription.)]
                            items)]

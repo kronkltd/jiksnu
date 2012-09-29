@@ -104,7 +104,7 @@
   [groups & _]
   [:ul.profiles
    (when *dynamic*
-     {:data-bind "foreach: _.map(items(), jiksnu.core.get_group)"})
+     {:data-bind "foreach: items()"})
    (map index-line groups)])
 
 (defsection index-block [Group :viewmodel]

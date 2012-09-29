@@ -91,7 +91,7 @@
    :viewmodel "/main/domains.viewmodel"
    :body
    [:div (if *dynamic*
-           {:data-bind "with: _.map(items(), jiksnu.core.get_domain)"})
+           {:data-bind "with: items()"})
     (let [domains (if *dynamic* [(Domain.)] items)]
       (index-section domains options))]})
 
@@ -135,13 +135,13 @@
             :title "Domain Index"}]
    :body
    [:div (if *dynamic*
-           {:data-bind "with: jiksnu.core.get_domain(targetDomain())"})
+           {:data-bind "with: targetDomain()"})
     (show-section domain)
     (let [users (if *dynamic*
                   [(User.)]
                   (model.user/fetch-by-domain domain))]
       [:div (if *dynamic*
-              {:data-bind "with: _.map($root.items(), jiksnu.core.get_user)"})
+              {:data-bind "with: $root.items()"})
        (index-section users {:page 1})])]})
 
 (defview #'show :model

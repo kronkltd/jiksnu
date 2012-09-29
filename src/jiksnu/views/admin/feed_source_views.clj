@@ -42,7 +42,7 @@
                                [(FeedSource.)]
                                items)]
                  [:div (if *dynamic*
-                         {:data-bind "with: _.map(items(), jiksnu.core.get_feed_source)"})
+                         {:data-bind "with: items()"})
                   (admin-index-section sources page)])
                (add-form (FeedSource.)))})
 
@@ -67,7 +67,7 @@
    :body
    (let [source (if *dynamic* (FeedSource.) source)]
      [:div {:data-bind "with: targetFeedSource"}
-      [:div {:data-bind "with: jiksnu.core.get_feed_source($data)"}
+      [:div {:data-bind "with: $data"}
        (admin-show-section source)
        (index-watchers source)
        (add-watcher-form source)]])})

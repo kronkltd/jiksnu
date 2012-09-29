@@ -124,7 +124,7 @@
            [:div (if *dynamic*
                    {:data-bind "with: items()"})
             [:div (if *dynamic*
-                    {:data-bind "with: _.map($data, jiksnu.core.get_activity)"})
+                    {:data-bind "with: $data"})
              (index-section activities page)]])})
 
 (defview #'public-timeline :n3
@@ -223,7 +223,7 @@
      [:div (when *dynamic*
              {:data-bind "with: items"})
       [:div (when *dynamic*
-              {:data-bind "with: _.map($data, jiksnu.core.get_activity)"})
+              {:data-bind "with: $data"})
        (index-section items page)]]
      :formats (sections.activity/timeline-formats user)}))
 

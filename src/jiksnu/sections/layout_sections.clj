@@ -152,7 +152,7 @@
       (when *dynamic*
         {:data-bind "with: $root.targetUser() || $root.currentUser()"}
         )
-      [:div (when *dynamic* {:data-bind "with: jiksnu.core.get_user($data)"})
+      [:div
        (user-info-section user)]]
      (:aside response))))
 

@@ -63,7 +63,7 @@
    :viewmodel "/users.viewmodel"
    :body
    [:div (if *dynamic*
-           {:data-bind "with: _.map(items(), jiksnu.core.get_user)"})
+           {:data-bind "with: items()"})
     (index-section items page)]})
 
 (defview #'index :json

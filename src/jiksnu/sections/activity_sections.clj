@@ -66,8 +66,7 @@
      [:p
       [:span (when *dynamic*
                {:data-bind "with: author"})
-       [:span (when *dynamic*
-                {:data-bind "with: jiksnu.core.get_user($data)"})
+       [:span {:data-model "user"}
         (sections.user/display-avatar author)
         (link-to author)]]
       ": "
@@ -322,20 +321,17 @@
   [activity]
   [:div (when *dynamic*
           {:data-bind "with: comments"})
-   [:div (when *dynamic*
-           {:data-bind "with: _.map($data, jiksnu.core.get_activity)"})
-    (if-let [comments (if *dynamic*
-                        [(Activity.)]
-                        (seq (second (actions.comment/fetch-comments activity))))]
-      [:section.comments
-       [:ul.unstyled.comments
-        (when *dynamic*
-          {:data-bind "foreach: $data"})
-        (map (fn [comment]
-               [:li (when *dynamic*
-                      {:data-bind "if: $data"})
-                (show-comment comment)])
-             comments)]])]])
+   (if-let [comments (if *dynamic*
+                       [(Activity.)]
+                       (seq (second (actions.comment/fetch-comments activity))))]
+     [:section.comments
+      [:ul.unstyled.comments
+       (when *dynamic*
+         {:data-bind "foreach: $data"})
+       (map (fn [comment]
+              [:li {:data-model "activity"}
+               (show-comment comment)])
+            comments)]])])
 
 (defn poll-form
   [activity]
@@ -461,7 +457,7 @@
      [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: _.map($data, jiksnu.core.get_activity)"})
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -478,11 +474,11 @@
               (when-not *dynamic*
                 { :data-id (:_id activity)}))
    [:td (when *dynamic*
-          {:data-bind "with: jiksnu.core.get_user(author)"})
-    (let [user (if *dynamic*
-                 (User.)
-                 (actions.activity/get-author activity))]
-      (show-section-minimal user))]
+    [:div {:data-model "user"}
+     (let [user (if *dynamic*
+                  (User.)
+                  (actions.activity/get-author activity))]
+       (show-section-minimal user))]]
    [:td (when *dynamic*
           {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
@@ -685,35 +681,36 @@
       [:div (when *dynamic*
               {:data-bind "with: jiksnu.core.get_user(author)"})
        [:div (when *dynamic*
-               {:data-bind "if: typeof($data) !== 'undefined'"})
-        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-          (show-section-minimal user))]]
-      (recipients-section activity)]
-     [:div.entry-content
-      (when (:title activity)
-        [:h1.entry-title {:property "dc:title"}
-         (:title activity)])
-      [:p (merge {:property "dc:title"}
-                 (when *dynamic*
-                   {:data-bind "text: title"}))
-       (when-not *dynamic*
-         (or #_(:title activity)
-             (:content activity)))]]
-     [:div
-      [:ul.unstyled
-       (map (fn [irt]
-              [:a {:href irt :rel "nofollow"} irt])
-            (:irts activity))]
-      (map
-       #(% activity)
-       [enclosures-section
-        ;; links-section
-        likes-section
-        maps-section
-        tags-section
-        posted-link-section
-        comments-section])
-      [:div.pull-right (post-actions activity)]]]))
+               {:data-bind "with: author"})
+        [:div {:data-model "user"}
+         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+           (show-section-minimal user))]]
+       (recipients-section activity)]
+      [:div.entry-content
+       (when (:title activity)
+         [:h1.entry-title {:property "dc:title"}
+          (:title activity)])
+       [:p (merge {:property "dc:title"}
+                  (when *dynamic*
+                    {:data-bind "text: title"}))
+        (when-not *dynamic*
+          (or #_(:title activity)
+              (:content activity)))]]
+      [:div
+       [:ul.unstyled
+        (map (fn [irt]
+               [:a {:href irt :rel "nofollow"} irt])
+             (:irts activity))]
+       (map
+        #(% activity)
+        [enclosures-section
+         ;; links-section
+         likes-section
+         maps-section
+         tags-section
+         posted-link-section
+         comments-section])
+       [:div.pull-right (post-actions activity)]]])))
 
 (defsection show-section [Activity :model]
   [activity & [page]]

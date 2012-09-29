@@ -88,7 +88,7 @@
    [:div (if *dynamic*
            {:data-bind "with: targetActivity"})
     [:div (if *dynamic*
-            {:data-bind "with: jiksnu.core.get_activity($data)"})
+            {:data-bind "with: $data"})
      (let [activity (if *dynamic*
                       (Activity.)
                       activity)]

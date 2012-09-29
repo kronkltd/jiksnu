@@ -45,7 +45,7 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      [:div.subscribers {:data-bind "with: _.map($root.followers, jiksnu.core.get_subscription)"}
+      [:div.subscribers {:data-bind "with: followers"}
        [:h3
         [:a #_(if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}
@@ -78,14 +78,14 @@
                  {:data-bind "text: $root.following().length"}
                  (count subscriptions))]]
        [:div (if *dynamic*
-               {:data-bind "with: _.map($root.subscriptions(), jiksnu.core.get_subscription)"})
+               {:data-bind "with: $root.subscriptions()"})
         [:ul
          (if *dynamic*
            {:data-bind "foreach: $data"})
          (map (fn [subscription]
                 [:li
                  (if *dynamic*
-                   {:data-bind "with: $root.getUser($data.target)"})
+                   {:data-bind "with: $data.target"})
                  (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
                    (sections.user/display-avatar user "24"))]) subscriptions)]]
        [:p
@@ -102,7 +102,7 @@
     (link-to subscription)]
    [:td
     [:div {:data-bind "with: from"}
-     [:div {:data-bind "with: jiksnu.core.get_user($data)"}
+     [:div {:data-bind "with: $data"}
       (if-let [user (if *dynamic*
                       (User.)
                       (model.subscription/get-actor subscription))]
@@ -110,7 +110,7 @@
         "unknown")]]]
    [:td
     [:div {:data-bind "with: to"}
-     [:div {:data-bind "with: jiksnu.core.get_user($data)"}
+     [:div {:data-bind "with: $data"}
       (if-let [user (if *dynamic*
                       (User.)
                       (model.subscription/get-target subscription))]

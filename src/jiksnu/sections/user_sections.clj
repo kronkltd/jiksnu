@@ -325,7 +325,7 @@
      (when-not *dynamic*
        (:_id user))]]
    [:td (if *dynamic*
-          {:data-bind "with: jiksnu.core.get_domain(domain)"})
+          {:data-bind "with: domain"})
     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
       (link-to domain))]
    [:td (user-actions user)]])
@@ -361,7 +361,7 @@
     [:tr
      [:th  "Domain"]
      [:td (when *dynamic*
-              {:data-bind "with: jiksnu.core.get_domain($data.domain)"})
+              {:data-bind "with: $data.domain"})
       (let [domain (if *dynamic* (Domain.)
                        (actions.user/get-domain item))]
         (link-to domain))]]
@@ -403,7 +403,7 @@
     [:tr
      [:th "Update Source"]
      [:td (if *dynamic*
-            {:data-bind "with: jiksnu.core.get_feed_source(updateSource)"})
+            {:data-bind "with: updateSource"})
       (when-let [source (if *dynamic*
                           (FeedSource.)
                           (-?> item :update-source model.feed-source/fetch-by-id))]
@@ -583,7 +583,7 @@
        {:data-bind "with: updateSource"}
        (:update-source user))
      [:span (if *dynamic*
-              {:data-bind "with: jiksnu.core.get_feed_source($data)"})
+              {:data-bind "with: $data"})
       [:a (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"})]]]
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]

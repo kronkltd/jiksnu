@@ -18,7 +18,7 @@
    :title "Users"
    :viewmodel "/admin/users.viewmodel"
    :body [:div (if *dynamic*
-                 {:data-bind "with: _.map(items(), jiksnu.core.get_user)"}
+                 {:data-bind "with: items()"}
                  )
           (admin-index-section items page)]})
 
@@ -46,7 +46,7 @@
      [:div (when *dynamic*
              {:data-bind "with: targetUser"})
       [:div (when *dynamic*
-              {:data-bind "with: jiksnu.core.get_user($data)"})
+              {:data-bind "with: $data"})
        (admin-show-section user)]
       (admin-index-block (if *dynamic*
                            [(Activity.)]

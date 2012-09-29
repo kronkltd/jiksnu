@@ -110,6 +110,44 @@
 (def get-subscription (partial get-model "subscriptions"))
 (def get-user         (partial get-model "users"))
 
+
+(defn collection-name
+  [name]
+  (get {"activity" "activities"
+        "user" "users"
+        "conversation" "conversations"
+        "domain" "domains"
+        "feed-source" "feedSources"
+        "group" "groups"
+        "subscription" "subscriptions"}
+       name))
+
+(aset (.-bindingHandlers js/ko) "withModel"
+      (js-obj
+       "init" (fn [element value-accessor all-bindings data context]
+                (log/info "init")
+                (let [properties (value-accessor)
+                      model-ob (get-model (collection-name (.-type properties)) (.-_id data))
+                      child-binding (.createChildContext context (.unwrapObservable
+                                                                  (.-utils js/ko)
+                                                                  model-ob)  #_data)]
+
+                  ;; (.extend (.-utils js/ko) child-binding properties)
+
+                  (.applyBindingsToDescendants js/ko (log/spy child-binding) element)
+                  (js-obj
+                   "controlsDescendantBindings" true)))
+       ;; "update" (fn [element value-accessor all-bindings data]
+       ;;            (log/info "update")
+       ;;            (log/spy element)
+       ;;            (log/spy value-accessor)
+       ;;            (log/spy all-bindings)
+       ;;            (log/spy data)
+
+       ;;            )
+
+       ))
+
 (defvar DataModelProvider
   [this]
   (let [underlying-provider (.-instance (.-bindingProvider js/ko))]
@@ -122,8 +160,11 @@
      (aset "getBindings"
            (fn [node context]
              (if-let [model-name (.data ($ node) "model")]
-               (let [data (.-$data context)]
+               (if-let [data (.-$data context)]
                  (js-obj
+                  "withModel" (js-obj
+                               "type" model-name)
+                  ;; "if" "$data !== undefined"
                   "attr" (js-obj
                           "about" (.-url data)
                           "data-id" (.-_id data))))
