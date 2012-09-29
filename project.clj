@@ -32,6 +32,8 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-alpha4"]
+                 [lolg "0.1.0-SNAPSHOT"
+                  :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.2.0-SNAPSHOT"]
                  [net.kronkltd/waltz "0.1.2-SNAPSHOT"
@@ -80,7 +82,7 @@
                  ;;                 :provides ["Backbone"]}]
 
                  }}
-               {:source-path "src-cljs"
+               #_{:source-path "src-cljs"
                 :compiler
                 {
 
@@ -99,7 +101,7 @@
                  :optimizations :simple
 
                  }}
-               {:source-path "src-cljs"
+               #_{:source-path "src-cljs"
                 :compiler
                   {
                    :output-to "resources/public/assets/js/jiksnu.advanced.js"

@@ -45,7 +45,7 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      [:div.subscribers {:data-bind "with: followers"}
+      #_[:div.subscribers {:data-bind "with: followers"}
        [:h3
         [:a #_(if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id + '/subscribers'}"}
@@ -68,7 +68,7 @@
   [user]
   (when user
     (let [subscriptions (model.subscription/subscriptions user)]
-      [:div.subscriptions
+      #_[:div.subscriptions
        [:h3
         [:a (if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id + '/subscriptions'}"}
@@ -77,17 +77,14 @@
         [:span (if *dynamic*
                  {:data-bind "text: $root.following().length"}
                  (count subscriptions))]]
-       [:div (if *dynamic*
-               {:data-bind "with: $root.subscriptions()"})
-        [:ul
-         (if *dynamic*
-           {:data-bind "foreach: $data"})
+       [:div (if *dynamic* {:data-bind "with: $root.subscriptions()"})
+        [:ul (if *dynamic* {:data-bind "foreach: $data"})
          (map (fn [subscription]
-                [:li
-                 (if *dynamic*
-                   {:data-bind "with: $data.target"})
-                 (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
-                   (sections.user/display-avatar user "24"))]) subscriptions)]]
+                [:li {:data-model "subscription"}
+                 [:div {:data-bind "with: target"}
+                  [:div {:data-model "user"}
+                   (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
+                     (sections.user/display-avatar user "24"))]]]) subscriptions)]]
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 

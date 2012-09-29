@@ -714,7 +714,7 @@
 
 (defsection show-section [Activity :model]
   [activity & [page]]
-  activity)
+  (dissoc activity :links))
 
 (defsection show-section [Activity :rdf]
   [activity & _]
@@ -736,7 +736,7 @@
 
 (defsection show-section [Activity :viewmodel]
   [activity & [page]]
-  activity)
+  (dissoc activity :links))
 
 (defsection show-section [Activity :xmpp]
   [^Activity activity & options]

@@ -1,8 +1,10 @@
 (ns jiksnu.model
   (:require [jiksnu.backbone :as backbone]
             [jiksnu.ko :as ko]
-            [jiksnu.logging :as log])
+            [lolg :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
+
+(def *logger* (log/get-logger "jiksnu.model"))
 
 (def
   ^{:doc "The list of model names"}
@@ -48,7 +50,7 @@
   (.extend
    backbone/Model
    (js-obj
-    "class" "PageInfo"
+    "type" "PageInfo"
     "defaults" (js-obj
                 "page"         1
                 "pageSize"     0
@@ -65,7 +67,7 @@
   (.extend
    backbone/Model
    (js-obj
-    "class" "Notification"
+    "type" "Notification"
     "dismiss"
     (fn []
       (this-as
@@ -83,7 +85,7 @@
    backbone/Collection
    (js-obj
     "model" Notification
-    "class" "Notifications"
+    "type" "Notifications"
 
     ;; Add a new notification
     "add-notification"
@@ -98,52 +100,54 @@
   (.extend
    backbone/Model
    (js-obj
-    "class" "Domain"
+    "type" "Domain"
     "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
     "defaults" (js-obj "xmpp" "unknown"
                        "links" (array))
     "idAttribute" "_id"
-    )))
+    "initialize" (fn [& opts]
+                   (log/info *logger* (format "creating model: %s" opts))))))
 
 (def Domains
   (.extend backbone/Collection
            (js-obj
-            "class" "Domains"
+            "type" "Domains"
             "urlRoot" "/main/domains/"
-            "model" Domain
-            "initialize" (fn [models options]
-                           #_(log/debug "init domains")))))
+            "model" Domain)))
 
+
+(defn initializer
+  [m coll]
+  (this-as this
+    (let [n (.-type this)]
+      (log/info *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
 
 (def User
   (.extend backbone/Model
            (js-obj
-            "class" "User"
+            "type" "User"
             "url" (fn []
                     (this-as this
-                      (log/info this)
-                      (str "/model/users/" (.-id this) ".model")
-                      )
-                    )
+                      (format "/model/users/%s.model" (.-id this))))
             "defaults" (js-obj "url" ""
                                "avatarUrl" nil
                                "uri" ""
                                "bio" ""
+                               "username" nil
+                               "domain" nil
                                "updateSource" nil
                                "links" (array)
                                "displayName" nil)
             "idAttribute" "_id"
-            "initialize" (fn [models options]
-                           #_(log/info "init user")))))
+            "initialize" initializer
+)))
 
 (def Users
   (.extend backbone/Collection
            (js-obj
             "idAttribute" "_id"
-            "class" "Users"
-            "model" User
-            "initialize" (fn [models options]
-                           #_(log/info "init users")))))
+            "type" "Users"
+            "model" User)))
 
 
 (def Activity
@@ -155,7 +159,7 @@
             (this-as
              this
              (format "/notice/%s.model" (.-id this))))
-    "class" "Activity"
+    "type" "Activity"
     "defaults" (js-obj
                 "_id"           ""
                 "author"        ""
@@ -168,86 +172,76 @@
                 "like-count"    0
                 "updateSource" nil
                 "enclosures"    (array))
-    "initialize" (fn [model]
-                   #_(log/info "init activity")))))
+    "initialize" initializer)))
 
 (def ^{:doc "collection of activities"}
   Activities
   (.extend backbone/Collection
            (js-obj
-            "class" "Activities"
+            "type" "Activities"
             "urlRoot" "/main/notices/"
-            "model" Activity
-            "initialize" (fn [models options]
-                           #_(log/info "init activities")
-                           ))))
+            "model" Activity)))
 
 (def Group
   (.extend backbone/Model
            (js-obj
             "idAttribute" "_id"
-            "class" "Group"
-            "initialize" (fn [model]
-                           #_(log/info "Initialize group")))))
+            "type" "Group"
+            "initialize" initializer)))
 
 (def Groups
   (.extend backbone/Collection
            (js-obj
             "model" Group
-            "class" "Groups"
-            "initialize" (fn [models options]
-                           #_(log/info "init groups")))))
+            "type" "Groups")))
 
 (def Subscription
   (.extend backbone/Model
            (js-obj
-            "class" "Subscription"
+            "type" "Subscription"
             "idAttribute" "_id"
-            "initialize" (fn [models options]
-                           #_(log/info "init subscription")))))
+            "initialize" initializer)))
 
 (def Subscriptions
   (.extend backbone/Collection
            (js-obj
             "model" Subscription
-            "class" "Subscriptions"
-            "initialize" (fn [models options]
-                           #_(log/info "init subscriptions")))))
+            "type" "Subscriptions")))
 
 (def FeedSource
   (.extend backbone/Model
            (js-obj
-            "class" "FeedSource"
+            "type" "FeedSource"
+            "url" (fn [a b c]
+                    (this-as this
+                      (format "/model/feedSources/%s.model" (.-id this))))
             "defaults" (js-obj
                         "callback" nil
                         "mode" nil
-                        "title" nil
-                        )
+                        "title" nil)
             "idAttribute" "_id"
-            "initialize" (fn [models options]
-                           #_(log/info "init feed source")))))
+            "initialize" initializer)))
 
 (def FeedSources
   (.extend backbone/Collection
            (js-obj
-            "class" "FeedSources"
-            "model" FeedSource
-            "initialize" (fn [models options]
-                           #_(log/info "init feed sources")))))
+            "type" "FeedSources"
+            "model" FeedSource)))
 
 
 (def Conversation
   (.extend backbone/Model
            (js-obj
-            "class" "Conversation"
+            "type" "Conversation"
             ;; "defaults" (js-obj
             ;;             )
-            "idAttribute" "_id")))
+            "idAttribute" "_id"
+            "initialize" initializer)))
 
 (def Conversations
   (.extend backbone/Collection
            (js-obj
-            "class" "Conversations"
+            "type" "Conversations"
             "model" Conversation)))
 
 (def activities   (Activities.))

@@ -13,8 +13,7 @@
   [:li.dropdown
    [:a.dropdown-toggle (merge {:href "#" :data-toggle "dropdown"})
     [:span
-     (if *dynamic*
-       {:data-bind "with: currentUser()"})
+     (if *dynamic* {:data-bind "with: currentUser"})
      [:span {:data-model "user"}
       (display-avatar-img user 18)
       [:span

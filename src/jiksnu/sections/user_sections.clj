@@ -484,6 +484,10 @@
         (:bio user))]]]
    [:td (user-actions user)]])
 
+(defsection index-line [User :model]
+  [item & page]
+  (show-section item page))
+
 (defsection index-line [User :viewmodel]
   [item & page]
   (show-section item page))
@@ -578,13 +582,13 @@
      (if *dynamic*
        {:data-bind "text: bio"}
        (:bio user))]
-    [:p
-     (if *dynamic*
-       {:data-bind "with: updateSource"}
-       (:update-source user))
-     [:span (if *dynamic*
-              {:data-bind "with: $data"})
-      [:a (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"})]]]
+    [:div (if *dynamic* {:data-bind "with: updateSource"})
+     [:div {:data-model "feed-source"}
+      (dump-data)
+      [:a
+       (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"})
+       (when-not *dynamic*
+         (:update-source user))]]]
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (if-let [key (if *dynamic*
@@ -652,8 +656,9 @@
 
 (defsection show-section [User :model]
   [item & [page]]
-  (->> #_(dissoc (dissoc item :links) :_id)
-       item
+  (->> (dissoc item :links)
+       ;; item
+
        (map (fn [[k v]] [(camelize (name k) :lower)
                         v]))
        (into {})))

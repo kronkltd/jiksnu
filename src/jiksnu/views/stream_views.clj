@@ -122,10 +122,8 @@
                             [(Activity.)]
                             items)]
            [:div (if *dynamic*
-                   {:data-bind "with: items()"})
-            [:div (if *dynamic*
-                    {:data-bind "with: $data"})
-             (index-section activities page)]])})
+                   {:data-bind "with: items"})
+            (index-section activities page)])})
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
@@ -222,9 +220,7 @@
      :body
      [:div (when *dynamic*
              {:data-bind "with: items"})
-      [:div (when *dynamic*
-              {:data-bind "with: $data"})
-       (index-section items page)]]
+      (index-section items page)]
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model

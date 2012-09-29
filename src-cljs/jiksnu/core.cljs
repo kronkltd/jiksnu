@@ -4,7 +4,7 @@
                              receive-model]])
   (:require [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
-            [jiksnu.logging :as log]
+            [lolg :as log]
             [jiksnu.model :as model]
             [jiksnu.statistics :as stats]
             [jiksnu.websocket :as ws])
@@ -13,6 +13,8 @@
 (def
   ^{:doc "This is the main view model bound to the page"}
   _view)
+
+(def *logger* (log/get-logger "jiksnu.core"))
 
 (defn process-viewmodel
   "Callback handler when a viewmodel is loaded"
@@ -51,44 +53,53 @@
         (.push coll item)
         (.notifySubscribers (.-items _view)))))
 
-  )
+  (ko/apply-bindings _view))
 
 (defn fetch-viewmodel
   [url]
   (when url
-    (log/info (format "Fetching viewmodel: %s" url))
+    (log/info *logger* (format "Fetching viewmodel: %s" url))
     (.getJSON js/jQuery url process-viewmodel)))
+
+(defn fetch-model
+  [model-name id callback]
+  (let [url (format "/model/%s/%s.model" model-name id)]
+    (log/info *logger* (str "fetching " url))
+    (.getJSON js/jQuery url callback)))
 
 (defn load-model
   [model-name id om]
-  #_(log/info (format "not loaded: %s(%s)" model-name id))
-  (let [coll (.get _model model-name)
-        url (format "/model/%s/%s.model"
-                    model-name id)]
-    (log/info (str "fetching " url))
-    (let [o (.observable js/ko)
-          resp (.getJSON js/jQuery url (partial receive-model coll id o))]
-      (aset om id o)
-      o)))
+  (log/info *logger* (format "not loaded: %s(%s)" model-name id))
+  (let [coll (.get _model model-name)]
+    (.add coll (js-obj "_id" id))
+
+    (let [m (.get coll id)]
+      (.log js/console "m:" m)
+      (.fetch m)
+      (let [o (.viewModel js/kb m)
+            ;; resp (fetch-model model-name id (partial receive-model coll id o))
+            ]
+        (aset om id o)
+        o))))
 
 (defn init-observable
   [model-name id om m]
   (let [a (.-attributes m)
         o (.observable js/ko a)]
-    #_(log/info (format "setting observable (already loaded): %s(%s)"
-                        model-name id))
+    (.log js/console a)
+    (log/info *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
     (aset om id o)
     o))
 
 (defn get-model*
   [model-name id]
-  #_(log/info (format "observable not found: %s(%s)" model-name id))
+  (log/info *logger* (format "observable not found: %s(%s)" model-name id))
   (if-let [coll (.get _model model-name)]
     (let [om (aget model/observables model-name)]
       (if-let [m (.get coll id)]
         (init-observable model-name id om m)
         (load-model model-name id om)))
-    (log/error "could not get collection")))
+    (log/error *logger* "could not get collection")))
 
 (defn get-model
   [model-name id]
@@ -96,11 +107,10 @@
     (let [om (aget model/observables model-name)]
       (if-let [o (aget om id)]
         (do
-          #_(log/info (format "cached observable found: %s(%s)"
-                              model-name id))
+          (log/info *logger* (format "cached observable found: %s(%s)" model-name id))
           o)
         (get-model* model-name id)))
-    (log/warn "id is undefined")))
+    (log/warn *logger* "id is undefined")))
 
 (def get-activity     (partial get-model "activities"))
 (def get-conversation (partial get-model "conversations"))
@@ -111,40 +121,36 @@
 (def get-user         (partial get-model "users"))
 
 
-(defn collection-name
-  [name]
-  (get {"activity" "activities"
-        "user" "users"
-        "conversation" "conversations"
-        "domain" "domains"
-        "feed-source" "feedSources"
-        "group" "groups"
-        "subscription" "subscriptions"}
-       name))
+(def collection-name
+  {"activity"     "activities"
+   "user"         "users"
+   "conversation" "conversations"
+   "domain"       "domains"
+   "feed-source"  "feedSources"
+   "group"        "groups"
+   "subscription" "subscriptions"})
 
-(aset (.-bindingHandlers js/ko) "withModel"
+(aset ko/binding-handlers "withModel"
       (js-obj
        "init" (fn [element value-accessor all-bindings data context]
-                (log/info "init")
                 (let [properties (value-accessor)
-                      model-ob (get-model (collection-name (.-type properties)) (.-_id data))
-                      child-binding (.createChildContext context (.unwrapObservable
-                                                                  (.-utils js/ko)
-                                                                  model-ob)  #_data)]
-
-                  ;; (.extend (.-utils js/ko) child-binding properties)
-
-                  (.applyBindingsToDescendants js/ko (log/spy child-binding) element)
+                      model-name (collection-name (.-type properties))
+                      model-ob (get-model model-name data)
+                      unwrapped (ko/unwrap-observable model-ob)
+                      child-binding (.createChildContext context unwrapped)]
+                 
+                  (if unwrapped
+                    (do (.applyBindingsToDescendants js/ko child-binding element)
+                        ))
                   (js-obj
-                   "controlsDescendantBindings" true)))
+                   "controlsDescendantBindings" true)
+                  ))
        ;; "update" (fn [element value-accessor all-bindings data]
-       ;;            (log/info "update")
-       ;;            (log/spy element)
-       ;;            (log/spy value-accessor)
-       ;;            (log/spy all-bindings)
-       ;;            (log/spy data)
-
-       ;;            )
+       ;;            ((aget (aget ko/binding-handlers "template") "update")
+       ;;             element
+       ;;             (.-makeTemplateValueAccessor
+       ;;              (aget ko/binding-handlers "if")
+       ;;              data)))
 
        ))
 
@@ -172,8 +178,10 @@
 
 (defn main
   []
-  #_(log/info "starting application")
 
+  ;; (log/start-display (log/fancy-output))
+  (log/start-display (log/console-output))
+  (log/info *logger* "init")
   (try
     (ws/set-view _view)
     (ws/connect)
@@ -183,7 +191,7 @@
   (handlers/setup-handlers)
 
   (when-let [elts (seq ($ "*[data-load-model]"))]
-    (log/info "init knockout")
+    (log/info *logger* "init knockout")
     (set! _model (model/AppViewModel.))
     (set! _view (.viewModel js/kb _model))
 
@@ -196,12 +204,11 @@
 
     (set! (.-instance (.-bindingProvider js/ko))
           (DataModelProvider.))
-    (ko/apply-bindings _view)
 
     (fetch-viewmodel (.data elts "load-model")))
 
   (.addClass ($ :html) "bound")
 
-  #_(stats/fetch-statistics _view))
+  (stats/fetch-statistics _view))
 
 (main)
