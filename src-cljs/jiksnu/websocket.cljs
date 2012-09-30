@@ -92,7 +92,7 @@
   [event]
   (log/info "delete callback")
   (let [id (.-id event)]
-    (.items _view (log/spy (_/without (log/spy (.items _view)) id)))))
+    (.items _view (_/without (.items _view) id))))
 
 
 (defn process-event

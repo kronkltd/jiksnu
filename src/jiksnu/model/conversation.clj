@@ -70,6 +70,5 @@
 
 (defn find-by-uri
   [conversation]
-  (log/spy (fetch-all (log/spy {:uri (:uri conversation)})))
-  )
+  (fetch-all {:uri (:uri conversation)}))
 

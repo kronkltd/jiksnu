@@ -17,7 +17,7 @@
    :viewmodel (str (named-path "index conversations" {}) ".viewmodel")
    :body
    [:div (if *dynamic*
-           {:data-bind "with: items()"})
+           {:data-bind "with: items"})
     (index-section items page)]})
 
 (defview #'index :viewmodel

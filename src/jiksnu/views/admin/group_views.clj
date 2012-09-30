@@ -15,7 +15,7 @@
    :viewmodel "/admin/groups.viewmodel"
    :body
    [:div (if *dynamic*
-           {:data-bind "with: items()"})
+           {:data-bind "with: items"})
     (let [items (if *dynamic* [(Group.)] items)]
       (admin-index-section items page))]})
 

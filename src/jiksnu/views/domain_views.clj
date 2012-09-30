@@ -91,7 +91,7 @@
    :viewmodel "/main/domains.viewmodel"
    :body
    [:div (if *dynamic*
-           {:data-bind "with: items()"})
+           {:data-bind "with: items"})
     (let [domains (if *dynamic* [(Domain.)] items)]
       (index-section domains options))]})
 
@@ -135,13 +135,13 @@
             :title "Domain Index"}]
    :body
    [:div (if *dynamic*
-           {:data-bind "with: targetDomain()"})
+           {:data-bind "with: targetDomain"})
     (show-section domain)
     (let [users (if *dynamic*
                   [(User.)]
                   (model.user/fetch-by-domain domain))]
       [:div (if *dynamic*
-              {:data-bind "with: $root.items()"})
+              {:data-bind "with: items"})
        (index-section users {:page 1})])]})
 
 (defview #'show :model

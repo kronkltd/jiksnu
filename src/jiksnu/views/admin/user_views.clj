@@ -18,7 +18,7 @@
    :title "Users"
    :viewmodel "/admin/users.viewmodel"
    :body [:div (if *dynamic*
-                 {:data-bind "with: items()"}
+                 {:data-bind "with: items"}
                  )
           (admin-index-section items page)]})
 

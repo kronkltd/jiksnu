@@ -42,7 +42,7 @@
                                [(FeedSource.)]
                                items)]
                  [:div (if *dynamic*
-                         {:data-bind "with: items()"})
+                         {:data-bind "with: items"})
                   (admin-index-section sources page)])
                (add-form (FeedSource.)))})
 

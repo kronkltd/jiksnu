@@ -63,7 +63,7 @@
    :viewmodel "/users.viewmodel"
    :body
    [:div (if *dynamic*
-           {:data-bind "with: items()"})
+           {:data-bind "with: items"})
     (index-section items page)]})
 
 (defview #'index :json
