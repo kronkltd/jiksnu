@@ -46,11 +46,11 @@
     (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
 
-(def PageInfo
+(def Page
   (.extend
    backbone/Model
    (js-obj
-    "type" "PageInfo"
+    "type" "Page"
     "defaults" (js-obj
                 "page"         1
                 "pageSize"     0
@@ -64,19 +64,21 @@
                        (.pageSize this))
                     (.totalRecords this)))))))
 
+(def Pages
+  (.extend
+   backbone/Collection
+   (js-obj
+    "model" Page
+    "type" "Pages")))
+
 (def Notification
   (.extend
    backbone/Model
    (js-obj
     "type" "Notification"
-    "dismiss"
-    (fn []
-      (this-as
-       this
-       (.remove (.-collection this)
-                this)))
-
-
+    "dismiss" (fn []
+                (this-as this
+                  (.remove (.-collection this) this)))
     "default" (js-obj
                "message" ""
                "level"   ""))))
@@ -244,14 +246,16 @@
             "type" "Conversations"
             "model" Conversation)))
 
-(def activities   (Activities.))
-(def conversation (Conversations.))
-(def users (Users.))
-(def domains (Domains.))
+(def activities    (Activities.))
+(def conversation  (Conversations.))
+(def domains       (Domains.))
+(def feed-sources  (FeedSources.))
+(def groups        (Groups.))
+(def notifications (Notifications.))
+(def observables   (js-obj))
+(def pages         (Pages.))
 (def subscriptions (Subscriptions.))
-(def groups (Groups.))
-(def feed-sources (FeedSources.))
-(def observables (js-obj))
+(def users         (Users.))
 
 (def ^{:doc "The main view model for the site"} AppViewModel
   (.extend backbone/Model
@@ -265,10 +269,9 @@
      "followers"        (array)
      "following"        (array)
      "groups"           groups
-     "items"            (array)
-     "pageInfo"         (PageInfo.)
+     "pages"            pages
      "postForm"         (PostForm.)
-     "notifications"    (Notifications.)
+     "notifications"    notifications
      "statistics"       nil
      "subscriptions"    subscriptions
      "targetActivity"   nil

@@ -28,13 +28,15 @@
             [jiksnu.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity))
 
-(defn user-info-section
-  [user]
-  (list
-   (show-section user)
-   (sections.subscription/subscriptions-widget user)
-   (sections.subscription/subscribers-widget user)
-   (sections.group/user-groups user)))
+(def statistics-info
+  [["activities"        "Activities"]
+   ["conversations"     "Conversations"]
+   ["domains"           "Domains"]
+   ["groups"            "Groups"]
+   ["feedSources"       "Feed Sources"]
+   ["feedSubscriptions" "Feed Subscriptions"]
+   ["subscriptions"     "Subscriptions"]
+   ["users"             "Users"]])
 
 (defn nav-info
   []
@@ -61,13 +63,20 @@
        ["/admin/subscriptions"      "Subscriptions"]
        ["/admin/workers"            "Workers"]]])])
 
+(defn user-info-section
+  [user]
+  (list
+   (show-section user)
+   (sections.subscription/subscriptions-widget user)
+   (sections.subscription/subscribers-widget user)
+   (sections.group/user-groups user)))
+
 (defn navigation-group
   [[header links]]
   (concat [[:li.nav-header header]]
           (map
            (fn [[url label]]
-             [:li
-              [:a {:href url} label]])
+             [:li [:a {:href url} label]])
            links)))
 
 (defn side-navigation
@@ -102,17 +111,6 @@
            [:span.format-label (:label format)]]])
        (:formats response))]]))
 
-(def statistics-info
-  [["activities" "Activities"]
-   ["conversations" "Conversations"]
-   ["domains" "Domains"]
-   ["groups" "Groups"]
-   ["feedSources" "Feed Sources"]
-   ["feedSubscriptions" "Feed Subscriptions"]
-   ["subscriptions" "Subscriptions"]
-   ["users" "Users"]])
-
-
 (defn statistics-line
   [stats [model-name label]]
   [:tr
@@ -134,28 +132,6 @@
       [:tbody
        (map (partial statistics-line stats) statistics-info)]]]))
 
-(defn left-column-section
-  [request response]
-  (let [user (current-user)]
-    [:aside#left-column.sidebar
-     (side-navigation)
-     [:hr]
-     (formats-section response)
-     (statistics-section request response)]))
-
-(defn right-column-section
-  [response]
-  (let [user (or (:user response)
-                 (current-user))]
-    (list
-     [:div
-      (when *dynamic*
-        {:data-bind "with: $root.targetUser() || $root.currentUser()"}
-        )
-      [:div
-       (user-info-section user)]]
-     (:aside response))))
-
 (defn devel-warning
   [response]
   (let [development (= :development (environment))]
@@ -170,15 +146,13 @@
 (defn notification-line
   [message]
   [:li.alert
-   [:button
-    (merge {:class "close"}
-           (when *dynamic*
-             {:data-bind "click: $parent.dismissNotification"}))
+   [:button (merge {:class "close"}
+                   (when *dynamic*
+                     {:data-bind "click: $parent.dismissNotification"}))
     "x"]
-   [:span
-    (if *dynamic*
-      {:data-bind "text: message"}
-      message)]])
+   [:span (if *dynamic*
+            {:data-bind "text: message"}
+            message)]])
 
 (defn notification-area
   [request response]
@@ -204,19 +178,12 @@
          {:data-bind "text: title"}
          (:title response))])
 
-(defn main-content
-  [request response]
-  [:section#main
-   (notification-area request response)
-   (when (current-user)
-     (new-post-section request response))
-   (title-section request response)
-   (pagination-links (:page response))
-   (:body response)
-   ;; TODO: align middle
-   [:footer.row-fluid.page-footer
-    [:p "Copyright © 2011 KRONK Ltd."]
-    [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
+(defn fork-me-link
+  []
+  [:a {:href "http://github.com/duck1123/jiksnu"}
+   [:img {:style "position: absolute; top: 43px; right: 0; border: 0;"
+          :src "https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+          :alt "Fork me on GitHub"}]])
 
 (defn navbar-search-form
   []
@@ -224,14 +191,6 @@
    {:action "/main/search" :method "post"}
    [:input.search-query.span3
     {:type "text" :placeholder "Search" :name "q"}]])
-
-
-(defn fork-me-link
-  []
-  [:a {:href "http://github.com/duck1123/jiksnu"}
-   [:img {:style "position: absolute; top: 43px; right: 0; border: 0;"
-          :src "https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
-          :alt "Fork me on GitHub"}]])
 
 (defn navbar-section
   [request response]
@@ -267,23 +226,6 @@
             {:href (str "http://" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
-(defn head-section
-  [request response]
-  (list [:meta {:charset "UTF-8"}]
-        [:title {:property "dc:title"}
-         (when-not *dynamic*
-           (str (when (:title response)
-                  (str (:title response) " - "))
-                (config :site :name)))]
-        (let [theme (config :site :theme)]
-          (p/include-css
-           (format "/assets/themes/%s/bootstrap.min.css" theme)
-           "/assets/styles/bootstrap-responsive.min.css"
-           (format "/assets/themes/classic/standard.css")
-           ;; "/assets/js/google-code-prettify/src/prettify.css"
-                       ))
-        (links-section request response)))
-
 (defn scripts-section
   [request response]
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
@@ -303,9 +245,55 @@
      "/assets/js/jiksnu.js"
      )
     [:script {:type "text/javascript"}
-     "goog.require('jiksnu.core');"]))
+     "goog.require('jiksnu.core');"])))
 
-  )
+(defn left-column-section
+  [request response]
+  (let [user (current-user)]
+    [:aside#left-column.sidebar
+     (side-navigation)
+     [:hr]
+     (formats-section response)
+     (statistics-section request response)]))
+
+(defn right-column-section
+  [response]
+  (let [user (or (:user response)
+                 (current-user))]
+    (list
+     [:div (when *dynamic*
+             {:data-bind "with: $root.targetUser() || $root.currentUser()"})
+      (user-info-section user)]
+     (:aside response))))
+
+(defn main-content
+  [request response]
+  [:section#main
+   (notification-area request response)
+   (when (current-user)
+     (new-post-section request response))
+   (title-section request response)
+   [:div {:data-bind "with: pages().default"}
+    (pagination-links (:page response))]
+   (:body response)
+   [:footer.row-fluid.page-footer
+    [:p "Copyright © 2011 KRONK Ltd."]
+    [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
+
+(defn head-section
+  [request response]
+  (list [:meta {:charset "UTF-8"}]
+        [:title {:property "dc:title"}
+         (when-not *dynamic*
+           (str (when (:title response)
+                  (str (:title response) " - "))
+                (config :site :name)))]
+        (let [theme (config :site :theme)]
+          (p/include-css
+           (format "/assets/themes/%s/bootstrap.min.css" theme)
+           "/assets/styles/bootstrap-responsive.min.css"
+           (format "/assets/themes/classic/standard.css")))
+        (links-section request response)))
 
 (defn body-section
   [request response]
