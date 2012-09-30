@@ -99,7 +99,7 @@
     (link-to subscription)]
    [:td
     [:div {:data-bind "with: from"}
-     [:div {:data-bind "with: $data"}
+     [:div {:data-model "user"}
       (if-let [user (if *dynamic*
                       (User.)
                       (model.subscription/get-actor subscription))]
@@ -107,7 +107,7 @@
         "unknown")]]]
    [:td
     [:div {:data-bind "with: to"}
-     [:div {:data-bind "with: $data"}
+     [:div {:data-model "user"}
       (if-let [user (if *dynamic*
                       (User.)
                       (model.subscription/get-target subscription))]

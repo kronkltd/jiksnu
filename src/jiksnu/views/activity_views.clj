@@ -87,12 +87,10 @@
   {:body
    [:div (if *dynamic*
            {:data-bind "with: targetActivity"})
-    [:div (if *dynamic*
-            {:data-bind "with: $data"})
-     (let [activity (if *dynamic*
-                      (Activity.)
-                      activity)]
-       (show-section activity))]]
+    (let [activity (if *dynamic*
+                     (Activity.)
+                     activity)]
+      (show-section activity))]
    :viewmodel (format "/notice/%s.viewmodel" (:_id activity))})
 
 (defview #'show :model

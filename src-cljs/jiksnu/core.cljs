@@ -53,7 +53,7 @@
         (.push coll item)
         (.notifySubscribers (.-items _view)))))
 
-  (ko/apply-bindings _view))
+)
 
 (defn fetch-viewmodel
   [url]
@@ -92,6 +92,7 @@
     o))
 
 (defn get-model*
+  "Inintialize a new model reference based on the params when a cached ref is not found"
   [model-name id]
   (log/info *logger* (format "observable not found: %s(%s)" model-name id))
   (if-let [coll (.get _model model-name)]
@@ -102,14 +103,20 @@
     (log/error *logger* "could not get collection")))
 
 (defn get-model
+  "Given a model name and an id, return an observable representing that model"
   [model-name id]
   (if id
-    (let [om (aget model/observables model-name)]
-      (if-let [o (aget om id)]
-        (do
-          (log/info *logger* (format "cached observable found: %s(%s)" model-name id))
-          o)
-        (get-model* model-name id)))
+    (do
+      (.log js/console id)
+      (if (= (type id) js/String)
+        (let [om (aget model/observables model-name)]
+          (if-let [o (aget om id)]
+            (do
+              (log/info *logger* (format "cached observable found: %s(%s)" model-name id))
+              o)
+            (get-model* model-name id)))
+        (throw (js/Error. "Not a string"))
+        ))
     (log/warn *logger* "id is undefined")))
 
 (def get-activity     (partial get-model "activities"))
@@ -205,10 +212,12 @@
     (set! (.-instance (.-bindingProvider js/ko))
           (DataModelProvider.))
 
-    (fetch-viewmodel (.data elts "load-model")))
+    (fetch-viewmodel (.data elts "load-model"))
+    
+    (ko/apply-bindings _view))
 
-  (.addClass ($ :html) "bound")
+    (.addClass ($ :html) "bound")
 
-  (stats/fetch-statistics _view))
+  #_(stats/fetch-statistics _view))
 
 (main)

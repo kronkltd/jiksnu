@@ -329,7 +329,7 @@
        (when *dynamic*
          {:data-bind "foreach: $data"})
        (map (fn [comment]
-              [:li {:data-model "activity"}
+              [:li
                (show-comment comment)])
             comments)]])])
 
@@ -474,7 +474,8 @@
               (when-not *dynamic*
                 { :data-id (:_id activity)}))
    [:td (when *dynamic*
-    [:div {:data-model "user"}
+          {:data-bind "with: author"})
+    [:div
      (let [user (if *dynamic*
                   (User.)
                   (actions.activity/get-author activity))]
@@ -682,9 +683,8 @@
               {:data-bind "with: jiksnu.core.get_user(author)"})
        [:div (when *dynamic*
                {:data-bind "with: author"})
-        [:div {:data-model "user"}
-         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-           (show-section-minimal user))]]
+        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+          (show-section-minimal user))]
        (recipients-section activity)]
       [:div.entry-content
        (when (:title activity)

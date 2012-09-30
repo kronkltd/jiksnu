@@ -326,8 +326,9 @@
        (:_id user))]]
    [:td (if *dynamic*
           {:data-bind "with: domain"})
-    (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
-      (link-to domain))]
+    [:div {:data-model "domain"}
+     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
+       (link-to domain))]]
    [:td (user-actions user)]])
 
 ;; admin-index-section
@@ -361,10 +362,11 @@
     [:tr
      [:th  "Domain"]
      [:td (when *dynamic*
-              {:data-bind "with: $data.domain"})
-      (let [domain (if *dynamic* (Domain.)
-                       (actions.user/get-domain item))]
-        (link-to domain))]]
+            {:data-bind "with: domain"})
+      [:div {:data-model "domain"}
+       (let [domain (if *dynamic* (Domain.)
+                        (actions.user/get-domain item))]
+         (link-to domain))]]]
     [:tr
      [:th "Bio"]
      [:td (if *dynamic*
