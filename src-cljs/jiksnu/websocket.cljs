@@ -133,7 +133,7 @@
         (do (text $interface "Connected")
             (if (state/in? ws-state :queued)
               (do
-                (log/info *logger* "processing backlog")
+                (log/finer *logger* "processing backlog")
                 (let [message (first @queued-messages)]
                   (swap! queued-messages rest)
                   (if (empty? @queued-messages)
@@ -151,7 +151,7 @@
 
   (defstate :queued
     (in []
-        (log/info *logger* "queued")
+        (log/finer *logger* "queued")
         (text $interface "queued"))
     (out [] (log/info "not queued"))))
 
