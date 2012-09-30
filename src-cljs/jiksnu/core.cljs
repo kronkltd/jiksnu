@@ -24,6 +24,11 @@
   [data]
   (def _m data)
   
+  (when-let [pages (.-pages data)]
+    (doseq [pair (js->clj pages)]
+      (let [[k v] (jl/spyc pair)]
+        (jl/info " "))))
+
   (when-let [title (.-title data)]
     (.set _model "title" title))
 

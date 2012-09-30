@@ -54,7 +54,7 @@
         (map
          (fn [[k v]]
            [(inf/camelize (name k) :lower) v])
-         (dissoc page :items))))
+         (assoc page :items (map :_id (:items page))))))
 
 (defn action-link
   [model action id & [options]]

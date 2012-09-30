@@ -6,11 +6,13 @@
             [goog.net.WebSocket :as websocket]
             [goog.net.WebSocket.EventType :as websocket-event]
             [goog.net.WebSocket.MessageEvent :as websocket-message]
-            [jiksnu.logging :as log]
+            [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.underscore :as _]
             [waltz.state :as state])
   (:use-macros [waltz.macros :only [in out defstate defevent]]))
+
+(def *logger* (log/get-logger "jiksnu.websocket"))
 
 (def default-connection (atom nil))
 (def $interface ($ :.connection-info))
@@ -47,14 +49,14 @@
       (.open socket url)
       socket
       (catch js/Error e
-        (log/error "No WebSocket supported, get a decent browser.")
+        (log/error *logger* "No WebSocket supported, get a decent browser.")
         (state/set ws-state :error)))))
 
 (def queued-messages (atom []))
 
 (defn queue-message
   [command & [args]]
-  (log/info (format "queuing message: %s(%s)" command args))
+  (log/info *logger* (format "queuing message: %s(%s)" command args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 
@@ -99,7 +101,7 @@
 
 (defn delete-handler
   [event]
-  (log/info "delete callback")
+  (log/info *logger* "delete callback")
   (let [id (.-id event)]
     (.items _view (_/without (.items _view) id))))
 
@@ -111,7 +113,7 @@
       "delete" (delete-handler event)
       (condp = (.-type event)
         "error" (log/error (.-message event))
-        (log/info "No match found")))))
+        (log/info *logger* "No match found")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States
@@ -131,7 +133,7 @@
         (do (text $interface "Connected")
             (if (state/in? ws-state :queued)
               (do
-                (log/info "processing backlog")
+                (log/info *logger* "processing backlog")
                 (let [message (first @queued-messages)]
                   (swap! queued-messages rest)
                   (if (empty? @queued-messages)
@@ -149,7 +151,7 @@
 
   (defstate :queued
     (in []
-        (log/info "queued")
+        (log/info *logger* "queued")
         (text $interface "queued"))
     (out [] (log/info "not queued"))))
 
@@ -181,7 +183,7 @@
     [m command & args]
     (state/transition ws-state :idle :sending)
     (let [message (str command (when (seq args) (apply str " " args)))]
-      (log/info (format "sending message: %s" message))
+      (log/info *logger* (format "sending message: %s" message))
       (emit! @default-connection message))
     (state/transition ws-state :sending :idle))
 
@@ -193,4 +195,4 @@
             (process-event parsed-event)
             (state/transition ws-state :receiving :idle)
             parsed-event))
-      (log/warn "undefined event"))))
+      (log/warn *logger* "undefined event"))))

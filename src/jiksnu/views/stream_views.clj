@@ -141,8 +141,7 @@
   {:single false
    :body
    {:title "Public Timeline"
-    :items (map :_id items)
-    :pageInfo (format-page-info page)
+    :pages {:default (format-page-info page)}
     :postForm {:visible true}
     ;; :users (index-section (map actions.activity/get-author items))
     :activities (doall (index-section items page))}})
@@ -251,8 +250,7 @@
   {:body
    {:users (index-section [user])
     :title (title user)
-    :pageInfo (format-page-info page)
-    :items (map :_id (:items page))
+    :pages {:default (format-page-info page)}
     :targetUser (:_id user)
     :activities (index-section (:items page))}})
 
