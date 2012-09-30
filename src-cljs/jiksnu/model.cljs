@@ -54,6 +54,7 @@
     "defaults" (js-obj
                 "page"         1
                 "pageSize"     0
+                "items"        []
                 "recordCount"  0
                 "totalRecords" 0)
     "hasNext" (fn []
@@ -96,6 +97,12 @@
          (.push this notification)))))))
 
 
+(defn initializer
+  [m coll]
+  (this-as this
+    (let [n (.-type this)]
+      (log/finer *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
+
 (def Domain
   (.extend
    backbone/Model
@@ -105,8 +112,7 @@
     "defaults" (js-obj "xmpp" "unknown"
                        "links" (array))
     "idAttribute" "_id"
-    "initialize" (fn [& opts]
-                   (log/info *logger* (format "creating model: %s" opts))))))
+    "initialize" initializer)))
 
 (def Domains
   (.extend backbone/Collection
@@ -115,12 +121,6 @@
             "urlRoot" "/main/domains/"
             "model" Domain)))
 
-
-(defn initializer
-  [m coll]
-  (this-as this
-    (let [n (.-type this)]
-      (log/info *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
 
 (def User
   (.extend backbone/Model

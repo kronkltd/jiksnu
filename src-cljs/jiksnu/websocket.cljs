@@ -1,10 +1,13 @@
 (ns jiksnu.websocket
-  (:use [jayq.core :only [$ css inner prepend text]])
-  (:require [goog.events :as events]
+  (:use [jayq.core :only [$ css inner prepend text]]
+        [jayq.util :only [clj->js]])
+  (:require [clojure.string :as string]
+            [goog.events :as events]
             [goog.net.WebSocket :as websocket]
             [goog.net.WebSocket.EventType :as websocket-event]
             [goog.net.WebSocket.MessageEvent :as websocket-message]
             [jiksnu.logging :as log]
+            [jiksnu.logging :as jl]
             [jiksnu.underscore :as _]
             [waltz.state :as state])
   (:use-macros [waltz.macros :only [in out defstate defevent]]))
@@ -47,26 +50,31 @@
         (log/error "No WebSocket supported, get a decent browser.")
         (state/set ws-state :error)))))
 
+(def queued-messages (atom []))
+
+(defn queue-message
+  [command & [args]]
+  (log/info (format "queuing message: %s(%s)" command args))
+  (swap! queued-messages conj [command args])
+  (state/set ws-state :queued))
+
 (defn send
-  [& commands]
-  (state/trigger ws-state :send (apply str commands)))
+  [command & [args]]
+  (if (state/in? ws-state :idle)
+    (state/trigger ws-state :send (str command " " (string/join " "
+                                                                (map
+                                                                 #(.stringify js/JSON (clj->js %))
+                                                                 args))))
+    (queue-message command args)))
 
 (defn configure
   "Configures WebSocket"
   [socket]
-  (events/listen socket websocket-event/OPENED
-                 (fn [socket] (state/trigger ws-state :connected)))
-
-  (events/listen socket websocket-event/CLOSED
-                 (fn [socket] (state/set ws-state :closed)))
-
-  (events/listen socket websocket-event/ERROR
-                 (fn [socket] (state/set ws-state :error)))
-  
-  (events/listen socket websocket-event/MESSAGE
-                 (fn [event] (state/trigger ws-state :receive event)))
-
-  socket)
+  (doto socket
+    (events/listen websocket-event/OPENED  #(state/trigger ws-state :connected))
+    (events/listen websocket-event/CLOSED  #(state/set ws-state :closed))
+    (events/listen websocket-event/ERROR   #(state/set ws-state :error))
+    (events/listen websocket-event/MESSAGE #(state/trigger ws-state :receive %))))
 
 (defn ws-message
   [jm]
@@ -114,58 +122,81 @@
 ;; States
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defstate ws-state :closed
-  (in [] (text $interface "Closed")))
+(doto ws-state
+  (defstate :closed
+    (in []
+        (text $interface "Closed")))
 
-(defstate ws-state :connecting
-  (in [] (text $interface "Connecting")))
+  (defstate :connecting
+    (in []
+        (text $interface "Connecting")))
 
-(defstate ws-state :idle
-  (in [] (text $interface "Connected")))
+  (defstate :idle
+    (in []
+        (do (text $interface "Connected")
+            (if (state/in? ws-state :queued)
+              (do
+                (log/info "processing backlog")
+                (let [message (first @queued-messages)]
+                  (swap! queued-messages rest)
+                  (if (empty? @queued-messages)
+                    (state/unset ws-state :queued))
+                  (apply send message)))))))
 
-(defstate ws-state :error
-  (in [] (text $interface "Error!")))
+  (defstate :error
+    (in [] (text $interface "Error!")))
 
-(defstate ws-state :sending
-  (in [] (text $interface "sending")))
+  (defstate :sending
+    (in [] (text $interface "sending")))
 
-(defstate ws-state :receiving
-  (in [] (text $interface "sending")))
+  (defstate :receiving
+    (in [] (text $interface "sending")))
+
+  (defstate :queued
+    (in []
+        (log/info "queued")
+        (text $interface "queued"))
+    (out [] (log/info "not queued"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Events
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defevent ws-state :connect
-  []
-  (state/transition ws-state :closed :connecting)
-  (let [socket (configure (create))]
-    (if-let [socket (open-socket socket)]
-      (do (reset! default-connection socket)))))
+(doto ws-state
+  (defevent :connect
+    []
+    (state/transition ws-state :closed :connecting)
+    (let [socket (configure (create))]
+      (if-let [socket (open-socket socket)]
+        (do (reset! default-connection socket)))))
 
-(defevent ws-state :connected
-  []
-  (state/transition ws-state :connecting :idle)
-  ;; The connection isn't really opened till we send a command
-  (send "connect"))
+  (defevent :connected
+    []
+    (state/transition ws-state :connecting :idle)
+    ;; The connection isn't really opened till we send a command
+    (send "connect"))
 
-(defevent ws-state :close
-  []
-  (let [socket @default-connection]
-    (. socket (close))
-    (state/transition ws-state :idle :closed)))
+  (defevent :close
+    []
+    (let [socket @default-connection]
+      (. socket (close))
+      (state/transition ws-state :idle :closed)))
 
-(defevent ws-state :send
-  [m command & args]
-  (state/transition ws-state :idle :sending)
-  (let [message (str command (when (seq args) (apply str " " args)))]
-    (emit! @default-connection message))
-  (state/transition ws-state :sending :idle))
+  (defevent :send
+    [m command & args]
+    (state/transition ws-state :idle :sending)
+    (let [message (str command (when (seq args) (apply str " " args)))]
+      (emit! @default-connection message))
+    (state/transition ws-state :sending :idle))
 
-(defevent ws-state :receive
-  [m event]
-  (do (state/transition ws-state :idle :receiving)
-      (let [parsed-event (parse-json (. event -message))]
-        (process-event parsed-event)
-        (state/transition ws-state :receiving :idle)
-        parsed-event)))
+  (defevent :receive
+    [m event]
+    (if event
+     (do (state/transition ws-state :idle :receiving)
+         (let [parsed-event (parse-json (.-message event))]
+           (process-event parsed-event)
+           (state/transition ws-state :receiving :idle)
+           parsed-event))
+     (log/warn "undefined event"))))
+
+;; (state/watch ws-state :)

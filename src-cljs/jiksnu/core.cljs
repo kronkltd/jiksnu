@@ -4,7 +4,10 @@
                              receive-model]])
   (:require [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
+            [clojure.string :as string]
             [lolg :as log]
+            [jiksnu.backbone :as backbone]
+            [jiksnu.logging :as jl]
             [jiksnu.model :as model]
             [jiksnu.statistics :as stats]
             [jiksnu.websocket :as ws])
@@ -51,34 +54,28 @@
     (let [coll (.get _model "items")]
       (doseq [item items]
         (.push coll item)
-        (.notifySubscribers (.-items _view)))))
-
-)
+        (.notifySubscribers (.-items _view))))))
 
 (defn fetch-viewmodel
   [url]
   (when url
-    (log/info *logger* (format "Fetching viewmodel: %s" url))
+    (log/finer *logger* (format "Fetching viewmodel: %s" url))
     (.getJSON js/jQuery url process-viewmodel)))
 
 (defn fetch-model
   [model-name id callback]
   (let [url (format "/model/%s/%s.model" model-name id)]
-    (log/info *logger* (str "fetching " url))
+    (log/finer *logger* (str "fetching " url))
     (.getJSON js/jQuery url callback)))
 
 (defn load-model
   [model-name id om]
-  (log/info *logger* (format "not loaded: %s(%s)" model-name id))
+  (log/finer *logger* (format "not loaded: %s(%s)" model-name id))
   (let [coll (.get _model model-name)]
     (.add coll (js-obj "_id" id))
-
     (let [m (.get coll id)]
-      (.log js/console "m:" m)
       (.fetch m)
-      (let [o (.viewModel js/kb m)
-            ;; resp (fetch-model model-name id (partial receive-model coll id o))
-            ]
+      (let [o (.viewModel js/kb m)]
         (aset om id o)
         o))))
 
@@ -86,15 +83,14 @@
   [model-name id om m]
   (let [a (.-attributes m)
         o (.observable js/ko a)]
-    (.log js/console a)
-    (log/info *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
+    (log/finer *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
     (aset om id o)
     o))
 
 (defn get-model*
   "Inintialize a new model reference based on the params when a cached ref is not found"
   [model-name id]
-  (log/info *logger* (format "observable not found: %s(%s)" model-name id))
+  (log/finer *logger* (format "observable not found: %s(%s)" model-name id))
   (if-let [coll (.get _model model-name)]
     (let [om (aget model/observables model-name)]
       (if-let [m (.get coll id)]
@@ -106,17 +102,14 @@
   "Given a model name and an id, return an observable representing that model"
   [model-name id]
   (if id
-    (do
-      (.log js/console id)
-      (if (= (type id) js/String)
-        (let [om (aget model/observables model-name)]
-          (if-let [o (aget om id)]
-            (do
-              (log/info *logger* (format "cached observable found: %s(%s)" model-name id))
-              o)
-            (get-model* model-name id)))
-        (throw (js/Error. "Not a string"))
-        ))
+    (if (= (type id) js/String)
+      (let [om (aget model/observables model-name)]
+        (if-let [o (aget om id)]
+          (do
+            (log/finer *logger* (format "cached observable found: %s(%s)" model-name id))
+            o)
+          (get-model* model-name id)))
+      (throw (js/Error. "Not a string")))
     (log/warn *logger* "id is undefined")))
 
 (def get-activity     (partial get-model "activities"))
@@ -145,21 +138,15 @@
                       model-ob (get-model model-name data)
                       unwrapped (ko/unwrap-observable model-ob)
                       child-binding (.createChildContext context unwrapped)]
-                 
                   (if unwrapped
-                    (do (.applyBindingsToDescendants js/ko child-binding element)
-                        ))
+                    (.applyBindingsToDescendants js/ko child-binding element))
                   (js-obj
-                   "controlsDescendantBindings" true)
-                  ))
-       ;; "update" (fn [element value-accessor all-bindings data]
-       ;;            ((aget (aget ko/binding-handlers "template") "update")
-       ;;             element
-       ;;             (.-makeTemplateValueAccessor
-       ;;              (aget ko/binding-handlers "if")
-       ;;              data)))
-
-       ))
+                   "controlsDescendantBindings" true)))
+       "update" (fn [element value-accessor all-bindings data context]
+                  #_(.update (.-attr ko/binding-handlers) element (js-obj
+                                                                   "about" (.-url data)
+                           "data-id" (.-_id data))
+                         all-bindings data child-binding))))
 
 (defvar DataModelProvider
   [this]
@@ -176,16 +163,35 @@
                (if-let [data (.-$data context)]
                  (js-obj
                   "withModel" (js-obj
-                               "type" model-name)
-                  ;; "if" "$data !== undefined"
-                  "attr" (js-obj
-                          "about" (.-url data)
-                          "data-id" (.-_id data))))
+                               "type" model-name)))
                (.getBindings underlying-provider node context)))))))
+
+(defn parse-route
+  [path-string]
+  (log/finest (format "parsing route: %s" path-string))
+  (let [[route args] (string/split path-string "?" )
+        pairs (string/split args "&")
+        args-array (map #(string/split % "=") pairs)
+        args-map (into {} args-array)]
+    [(str route) args-map]))
+
+(def Router
+  (.extend backbone/Router
+           (js-obj
+            "routes" (js-obj
+                      ""        "public_timeline"
+                      "users"   "user_index"
+                      "*actions" "defaultRoute")
+            "user_index" (fn []
+                           (log/info *logger* "user index"))
+            "public_timeline" (fn []
+                                (log/info *logger* "public timeline"))
+            "defaultRoute" (fn [path-string]
+                             (ws/send "fetch-viewmodel" (parse-route path-string))))))
+(def _router nil)
 
 (defn main
   []
-
   ;; (log/start-display (log/fancy-output))
   (log/start-display (log/console-output))
   (log/info *logger* "init")
@@ -195,6 +201,8 @@
     (catch js/Exception ex
       (log/error ex)))
 
+  (set! _router (Router.))
+  
   (handlers/setup-handlers)
 
   (when-let [elts (seq ($ "*[data-load-model]"))]
@@ -217,7 +225,8 @@
     (ko/apply-bindings _view))
 
     (.addClass ($ :html) "bound")
-
+    (.start (.-history js/Backbone) (js-obj "pushState" true))
+    
   #_(stats/fetch-statistics _view))
 
 (main)
