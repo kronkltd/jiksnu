@@ -169,9 +169,14 @@
 (defn parse-route
   [path-string]
   (log/finest (format "parsing route: %s" path-string))
-  (let [[route args] (string/split path-string "?" )
-        pairs (string/split args "&")
-        args-array (map #(string/split % "=") pairs)
+  (let [[route args] (string/split path-string "?")
+        pairs (string/split (str args) "&")
+        args-array (map (fn [a]
+                          (if (seq a)
+                            (let [r (string/split a "=")]
+                              [(str (first r))
+                               (str (second r))])))
+                        pairs)
         args-map (into {} args-array)]
     [(str route) args-map]))
 

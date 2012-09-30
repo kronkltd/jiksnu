@@ -61,10 +61,11 @@
 (defn send
   [command & [args]]
   (if (state/in? ws-state :idle)
-    (state/trigger ws-state :send (str command " " (string/join " "
-                                                                (map
-                                                                 #(.stringify js/JSON (clj->js %))
-                                                                 args))))
+    (let [message (->> args
+                       (map #(.stringify js/JSON (clj->js %)))
+                       (string/join " ")
+                       (str command " "))]
+      (state/trigger ws-state :send message))
     (queue-message command args)))
 
 (defn configure
@@ -107,15 +108,9 @@
   [event]
   (when event
     (condp = (.-action event)
-
-      "delete"
-      (delete-handler event)
-      
-
+      "delete" (delete-handler event)
       (condp = (.-type event)
-
         "error" (log/error (.-message event))
-        
         (log/info "No match found")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -186,17 +181,16 @@
     [m command & args]
     (state/transition ws-state :idle :sending)
     (let [message (str command (when (seq args) (apply str " " args)))]
+      (log/info (format "sending message: %s" message))
       (emit! @default-connection message))
     (state/transition ws-state :sending :idle))
 
   (defevent :receive
     [m event]
     (if event
-     (do (state/transition ws-state :idle :receiving)
-         (let [parsed-event (parse-json (.-message event))]
-           (process-event parsed-event)
-           (state/transition ws-state :receiving :idle)
-           parsed-event))
-     (log/warn "undefined event"))))
-
-;; (state/watch ws-state :)
+      (do (state/transition ws-state :idle :receiving)
+          (let [parsed-event (parse-json (.-message event))]
+            (process-event parsed-event)
+            (state/transition ws-state :receiving :idle)
+            parsed-event))
+      (log/warn "undefined event"))))

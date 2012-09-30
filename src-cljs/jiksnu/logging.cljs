@@ -1,4 +1,5 @@
-(ns jiksnu.logging)
+(ns jiksnu.logging
+  (:use [jayq.util :only [clj->js]]))
 
 (def console js/console)
 
@@ -21,4 +22,9 @@
 (defn spy
   [m]
   (.info console m)
+  m)
+
+(defn spyc
+  [m]
+  (.info console (clj->js m))
   m)
