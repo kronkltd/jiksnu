@@ -671,16 +671,15 @@
 
 (defsection show-section [Activity :html]
   [activity & _]
-  (let [activity-uri (uri activity)]
-    [:article.hentry.notice
-     (merge {:typeof "sioc:Post"
-             :data-model "activity"}
-            (when-not *dynamic*
-              {:about activity-uri
-               :data-id (:_id activity)}))
-     [:header
-      [:div (when *dynamic*
-              {:data-bind "with: jiksnu.core.get_user(author)"})
+  (list
+   (let [activity-uri (uri activity)]
+     [:article.hentry.notice
+      (merge {:typeof "sioc:Post"
+              :data-model "activity"}
+             (when-not *dynamic*
+               {:about activity-uri
+                :data-id (:_id activity)}))
+      [:header
        [:div (when *dynamic*
                {:data-bind "with: author"})
         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]

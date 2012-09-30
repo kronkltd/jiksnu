@@ -514,7 +514,6 @@
 (defsection show-section-minimal [User :html]
   [user & _]
   (list
-   ;; (dump-data)
    [:div.vcard {:data-model "user"}
     ;; TODO: merge into the same link
     (display-avatar user)
@@ -552,7 +551,6 @@
 (defsection show-section [User :html]
   [user & options]
   (list
-   ;; (dump-data)
    [:div.vcard.user-full
     (merge {:data-model "user"}
            (if *dynamic*
@@ -586,7 +584,6 @@
        (:bio user))]
     [:div (if *dynamic* {:data-bind "with: updateSource"})
      [:div {:data-model "feed-source"}
-      (dump-data)
       [:a
        (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + _id}, text: title"})
        (when-not *dynamic*

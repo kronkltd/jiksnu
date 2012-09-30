@@ -178,21 +178,22 @@
 (def Router
   (.extend backbone/Router
            (js-obj
-            "routes" (js-obj
-                      ""        "public_timeline"
-                      "users"   "user_index"
-                      "*actions" "defaultRoute")
-            "user_index" (fn []
-                           (log/info *logger* "user index"))
-            "public_timeline" (fn []
-                                (log/info *logger* "public timeline"))
+            "routes" (js-obj "*actions" "defaultRoute")
             "defaultRoute" (fn [path-string]
+                             (log/fine *logger* "default route")
                              (ws/send "fetch-viewmodel" (parse-route path-string))))))
 (def _router nil)
 
 (defn main
   []
+
+
+  ;; (log/set-level (log/get-logger "waltz.state") :finest)
+  ;; (log/set-level (log/get-logger "jiksnu.core") :finest)
+  (log/set-level (log/get-logger "goog.net.WebSocket") :warning)
+  
   ;; (log/start-display (log/fancy-output))
+  
   (log/start-display (log/console-output))
   (log/info *logger* "init")
   (try
