@@ -25,6 +25,5 @@
   (doall
    {:body
     {:title "Activities"
-     :pageInfo (format-page-info page)
-     :items (map :_id items)
+     :pages {:default (format-page-info page)}
      :activities (admin-index-section items page)}}))

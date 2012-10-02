@@ -130,8 +130,7 @@
         page-size (get options :page-size 20)
         ;; If no total, no pagination
         total-records (get options :total-records 0)]
-    [:div (when *dynamic*
-            {:data-bind "with: pageInfo"})
+    [:div
      [:div.pull-left
       (prev-link page)]
      [:p.pull-left

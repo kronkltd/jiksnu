@@ -49,8 +49,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
-          :items (map :_id items)
-          :pageInfo (format-page-info page)
+          :pages {:default (format-page-info page)}
           :feedSources (admin-index-section items page)}})
 
 (defview #'remove-watcher :html
@@ -67,10 +66,9 @@
    :body
    (let [source (if *dynamic* (FeedSource.) source)]
      [:div {:data-bind "with: targetFeedSource"}
-      [:div {:data-bind "with: $data"}
-       (admin-show-section source)
-       (index-watchers source)
-       (add-watcher-form source)]])})
+      (admin-show-section source)
+      (index-watchers source)
+      (add-watcher-form source)])})
 
 (defview #'show :model
   [request source]

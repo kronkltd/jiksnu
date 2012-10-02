@@ -22,6 +22,5 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Groups"
-          :pageInfo (format-page-info page)
-          :items (map :_id items)
+          :pages {:default (format-page-info page)}
           :groups (admin-index-section items page)}})

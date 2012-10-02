@@ -40,7 +40,7 @@
 (defview #'get-subscribers :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body {:user (show-section user)
-          :pageInfo (format-page-info page)
+          :pages {:default (format-page-info page)}
           :subscriptions (index-section items page)}})
 
 (defview #'get-subscribers :xmpp
@@ -70,9 +70,8 @@
   [request [user {:keys [items] :as page}]]
   {:body
    {:targetUser (:_id user)
-    :pageInfo (format-page-info page)
-    :subscriptions (doall (index-section items page))
-    :items (map :_id items)}})
+    :pages {:default (format-page-info page)}
+    :subscriptions (doall (index-section items page))}})
 
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]

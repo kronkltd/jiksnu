@@ -98,8 +98,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
-          :pageInfo (format-page-info page)
-          :items (map :_id items)
+          :pages {:default (format-page-info page)}
           :domains (doall (index-section items page))}})
 
 ;; ping

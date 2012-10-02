@@ -13,7 +13,7 @@
   [domain]
   [:img
    (if *dynamic*
-     {:data-bind "attr: {src: 'http://' + _id + '/favicon.ico'}"}
+     {:data-bind "attr: {src: 'http://' + _id() + '/favicon.ico'}"}
      {:src (str "http://" (:_id domain) "/favicon.ico")})])
 
 (defn discover-button
@@ -81,7 +81,7 @@
    [:td
     [:a
      (if *dynamic*
-       {:data-bind "attr: {href: 'http://' + _id + '/.well-known/host-meta'}"}
+       {:data-bind "attr: {href: 'http://' + _id() + '/.well-known/host-meta'}"}
        {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
    [:td
@@ -93,7 +93,7 @@
 (defsection link-to [Domain :html]
   [domain & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/domains/' + _id}, text: _id"}
+        {:data-bind "attr: {href: '/main/domains/' + _id()}, text: _id"}
         {:href (uri domain)})
    (when-not *dynamic*
      (:_id domain))])

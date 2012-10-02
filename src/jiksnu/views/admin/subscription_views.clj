@@ -30,7 +30,7 @@
   [request {:keys [items] :as page}]
   {:body {:title "Subscriptions"
           :items (map :_id items)
-          :pageInfo (format-page-info page)
+          :pages {:default (format-page-info page)}
           :subscriptions (doall (admin-index-section items page))}})
 
 (defview #'show :html

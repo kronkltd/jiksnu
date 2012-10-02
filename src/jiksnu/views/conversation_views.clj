@@ -23,7 +23,6 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Conversations"
-          :pageInfo (format-page-info page)
-          :items (map :_id items)
+          :pages {:default (format-page-info page)}
           :users (index-section items page)}})
 

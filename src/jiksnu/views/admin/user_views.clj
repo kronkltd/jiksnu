@@ -30,8 +30,7 @@
     :site {:name (config :site :name)}
     :showPostForm false
     :notifications []
-    :pageInfo (format-page-info page)
-    :items (map :_id items)
+    :pages {:default (format-page-info page)}
     :users (doall (admin-index-section items))}})
 
 ;; show

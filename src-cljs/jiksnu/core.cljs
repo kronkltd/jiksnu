@@ -60,11 +60,13 @@
       (when-let [id (aget data key)]
         (.set _model key id))))
 
-  (when-let [items (.-items data)]
+  #_(when-let [items (.-items data)]
     (let [coll (.get _model "items")]
       (doseq [item items]
         (.push coll item)
-        (.notifySubscribers (.-items _view))))))
+        (.notifySubscribers (.-items _view)))))
+
+  )
 
 (defn fetch-viewmodel
   [url]
@@ -129,6 +131,17 @@
 (def get-group        (partial get-model "groups"))
 (def get-subscription (partial get-model "subscriptions"))
 (def get-user         (partial get-model "users"))
+
+(defn get-page
+  [name]
+  (first (.filter (.pages _view)
+            (fn [x]
+              (if (= (.id x) name)
+                x
+                )
+              )
+            ))
+  )
 
 
 (def collection-name

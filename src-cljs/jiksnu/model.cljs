@@ -174,6 +174,11 @@
                 "source"        "unknown"
                 "comments"      (array)
                 "comment-count" 0
+                "created"       nil
+                "title"         nil
+                "object"        (js-obj
+                                 "object-type" nil
+                                 )
                 "like-count"    0
                 "updateSource" nil
                 "enclosures"    (array))
@@ -204,6 +209,16 @@
   (.extend backbone/Model
            (js-obj
             "type" "Subscription"
+            "defaults" (js-obj
+                        "from" nil
+                        "to" nil
+                        "created" nil
+                        "pending" nil
+                        "local" nil
+                        )
+            "url" (fn []
+                    (this-as this
+                      (format "/model/subscriptions/%s.model" (.-id this))))
             "idAttribute" "_id"
             "initialize" initializer)))
 
@@ -217,12 +232,14 @@
   (.extend backbone/Model
            (js-obj
             "type" "FeedSource"
-            "url" (fn [a b c]
+            "url" (fn []
                     (this-as this
                       (format "/model/feedSources/%s.model" (.-id this))))
             "defaults" (js-obj
                         "callback" nil
+                        "domain" nil
                         "mode" nil
+                        "topic" nil
                         "title" nil)
             "idAttribute" "_id"
             "initialize" initializer)))
