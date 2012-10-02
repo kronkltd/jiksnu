@@ -28,6 +28,12 @@
         a (.-attributes m)]
     (o a)))
 
+(defn initializer
+  [m coll]
+  (this-as this
+    (let [n (.-type this)]
+      (log/finer *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
+
 (defvar Statistics
   [this]
   (doto this
@@ -58,18 +64,21 @@
                 "recordCount"  0
                 "totalRecords" 0)
     "hasNext" (fn []
-                (this-as
-                 this
-                 (< (* (.page this)
-                       (.pageSize this))
-                    (.totalRecords this)))))))
+                (this-as this
+                  (< (* (.page this)
+                        (.pageSize this))
+                     (.totalRecords this))))
+    "initialize" initializer)))
 
 (def Pages
   (.extend
    backbone/Collection
    (js-obj
     "model" Page
-    "type" "Pages")))
+    "type" "Pages"
+    "getPage" (fn [name]
+                (this-as this
+                  (.get this name))))))
 
 (def Notification
   (.extend
@@ -98,12 +107,6 @@
          (.set notification "message" message)
          (.push this notification)))))))
 
-
-(defn initializer
-  [m coll]
-  (this-as this
-    (let [n (.-type this)]
-      (log/finer *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
 
 (def Domain
   (.extend

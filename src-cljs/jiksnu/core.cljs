@@ -1,5 +1,6 @@
 (ns jiksnu.core
   (:use [jayq.core :only [$]]
+        [jayq.util :only [clj->js]]
         [jiksnu.model :only [_model model-names
                              receive-model]])
   (:require [jiksnu.handlers :as handlers]
@@ -13,11 +14,13 @@
             [jiksnu.websocket :as ws])
     (:use-macros [jiksnu.macros :only [defvar]]))
 
+(def *logger* (log/get-logger "jiksnu.core"))
+
 (def
   ^{:doc "This is the main view model bound to the page"}
   _view)
 
-(def *logger* (log/get-logger "jiksnu.core"))
+(def _router nil)
 
 (defn process-viewmodel
   "Callback handler when a viewmodel is loaded"
@@ -25,9 +28,11 @@
   (def _m data)
   
   (when-let [pages (.-pages data)]
-    (doseq [pair (js->clj pages)]
-      (let [[k v] (jl/spyc pair)]
-        (jl/info " "))))
+    (let [page-model (.get _model "pages")]
+      (doseq [pair (js->clj pages)]
+        (let [[k v] pair]
+          (.add page-model
+                (clj->js (assoc v :id k)))))))
 
   (when-let [title (.-title data)]
     (.set _model "title" title))
@@ -192,14 +197,13 @@
             "defaultRoute" (fn [path-string]
                              (log/fine *logger* "default route")
                              (ws/send "fetch-viewmodel" (parse-route path-string))))))
-(def _router nil)
-
 (defn main
   []
 
 
   ;; (log/set-level (log/get-logger "waltz.state") :finest)
   ;; (log/set-level (log/get-logger "jiksnu.core") :finest)
+  (log/set-level (log/get-logger "jiksnu.model") :finest)
   (log/set-level (log/get-logger "goog.net.WebSocket") :warning)
   
   ;; (log/start-display (log/fancy-output))
