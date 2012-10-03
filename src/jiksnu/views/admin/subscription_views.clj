@@ -19,12 +19,10 @@
    :viewmodel "/admin/subscriptions.viewmodel"
    :body
    [:div {:data-bind "with: items"}
-    [:div (if *dynamic*
-            {:data-bind "with: $data"})
-     (let [subscriptions (if *dynamic*
-                           [(Subscription.)]
-                           items)]
-       (admin-index-section subscriptions response))]]})
+    (let [subscriptions (if *dynamic*
+                          [(Subscription.)]
+                          items)]
+      (admin-index-section subscriptions response))]})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

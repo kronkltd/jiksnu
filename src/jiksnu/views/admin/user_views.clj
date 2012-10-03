@@ -44,9 +44,7 @@
      :body
      [:div (when *dynamic*
              {:data-bind "with: targetUser"})
-      [:div (when *dynamic*
-              {:data-bind "with: $data"})
-       (admin-show-section user)]
+      (admin-show-section user)
       (admin-index-block (if *dynamic*
                            [(Activity.)]
                            (:items page)) page)]}))
