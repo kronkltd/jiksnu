@@ -1,5 +1,6 @@
 (ns jiksnu.routes.user-routes-test
   (:use [clj-factory.core :only [factory]]
+        [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [every-checker fact future-fact => ]])
@@ -10,7 +11,7 @@
 (test-environment-fixture
 
  (fact "index page"
-   (->> "/users"
+   (->> (named-path "index users")
         (mock/request :get)
         response-for) =>
         (every-checker
@@ -19,7 +20,7 @@
          (comp string? :body)))
  
  (fact "registration page"
-   (->> "/main/register"
+   (->> (named-path "register page")
         (mock/request :get)
         response-for) =>
         (every-checker

@@ -98,7 +98,7 @@
 (defview #'register-page :html
   [request user]
   {:title "Register"
-   :body "FOO" #_(sections.user/register-form user)})
+   :body (sections.user/register-form user)})
 
 ;; show
 
