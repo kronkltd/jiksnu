@@ -122,9 +122,9 @@
 (def Domains
   (.extend backbone/Collection
            (js-obj
-            "type" "Domains"
+            "type"    "Domains"
             "urlRoot" "/main/domains/"
-            "model" Domain)))
+            "model"   Domain)))
 
 
 (def User
@@ -134,15 +134,15 @@
             "url" (fn []
                     (this-as this
                       (format "/model/users/%s.model" (.-id this))))
-            "defaults" (js-obj "url" ""
-                               "avatarUrl" nil
-                               "uri" ""
-                               "bio" ""
-                               "username" nil
-                               "domain" nil
+            "defaults" (js-obj "url"          nil
+                               "avatarUrl"    nil
+                               "uri"          nil
+                               "bio"          nil
+                               "username"     nil
+                               "domain"       nil
                                "updateSource" nil
-                               "links" (array)
-                               "displayName" nil)
+                               "links"        (array)
+                               "displayName"  nil)
             "idAttribute" "_id"
             "initialize" initializer
 )))
@@ -151,8 +151,8 @@
   (.extend backbone/Collection
            (js-obj
             "idAttribute" "_id"
-            "type" "Users"
-            "model" User)))
+            "type"        "Users"
+            "model"       User)))
 
 
 (def Activity

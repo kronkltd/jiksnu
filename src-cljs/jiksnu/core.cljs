@@ -30,9 +30,9 @@
   (when-let [pages (.-pages data)]
     (let [page-model (.get _model "pages")]
       (doseq [pair (js->clj pages)]
-        (let [[k v] pair]
-          (.add page-model
-                (clj->js (assoc v :id k)))))))
+        (let [[k v] pair
+              page (clj->js (assoc v :id k))]
+          (.add page-model page)))))
 
   (when-let [title (.-title data)]
     (.set _model "title" title))
@@ -60,8 +60,8 @@
       (when-let [id (aget data key)]
         (.set _model key id))))
 
-  #_(when-let [items (.-items data)]
-    (let [coll (.get _model "items")]
+  (when-let [items (.-items data)]
+    (when-let [coll (.get _model "items")]
       (doseq [item items]
         (.push coll item)
         (.notifySubscribers (.-items _view)))))
