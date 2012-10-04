@@ -1,6 +1,7 @@
 (ns jiksnu.views.group-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section add-form]]
+        [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.actions.group-actions :only [add create edit-page index
                                              new-page user-list]]
         [jiksnu.ko :only [*dynamic*]]
@@ -11,14 +12,14 @@
 (defview #'add :html
   [request group]
   {:status 303
-   :headers {"Location" "/groups"}
+   :headers {"Location" (named-path "index groups")}
    :flash "Group added"
    :template false})
 
 (defview #'create :html
   [request group]
   {:status 303
-   :headers {"Location" "/groups"}
+   :headers {"Location" (named-path "index groups")}
    :flash "Group added"
    :template false})
 
@@ -31,13 +32,14 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Groups"
-   :viewmodel "/groups.viewmodel"
+   :viewmodel (str (named-path "index groups") ".viewmodel")
    :body
    (list (index-section (if *dynamic*
                           [(Group.)]
                           items) response)
          [:p
-          [:a {:href "/groups/new"} "Create a new group"]])})
+          [:a {:href (named-path "new group")}
+           "Create a new group"]])})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

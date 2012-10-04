@@ -2,6 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         ciste.sections.default
+        [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.activity-actions
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [format-page-info]])
@@ -25,7 +26,8 @@
 
 (defview #'delete :html
   [request activity]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)))
 
 (defview #'delete :model
@@ -66,7 +68,8 @@
   [request activity]
   (let [actor (session/current-user)
         url (or (-> request :params :redirect_to)
-                "/" (uri actor))]
+                (named-path "public timeline")
+                (uri actor))]
     (-> (response/redirect-after-post url)
         (assoc :template false))))
 
@@ -91,7 +94,7 @@
                      (Activity.)
                      activity)]
       (show-section activity))]
-   :viewmodel (format "/notice/%s.viewmodel" (:_id activity))})
+   :viewmodel (str (named-path "show activity" {:id (:_id activity)}) ".viewmodel")})
 
 (defview #'show :model
   [request activity]

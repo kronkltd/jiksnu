@@ -2,6 +2,7 @@
   (:use ciste.core
         [ciste.views :only [defview]]
         ciste.sections.default
+        [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.model
         jiksnu.actions.auth-actions
         [jiksnu.sections :only [format-page-info]])
@@ -23,7 +24,7 @@
     {:session {:id (:_id user)}
      :status 303
      :template false
-     :headers {"Location" "/"}}))
+     :headers {"Location" (named-path "public timeline")}}))
 
 (defview #'login :text
   [request user]
@@ -40,7 +41,7 @@
    :body
    [:div
     [:div
-     [:form {:method "post" :action "/main/login"}
+     [:form {:method "post" :action (named-path "login page")}
       [:fieldset
        [:legend "Login"]
        [:div.clearfix
@@ -70,7 +71,7 @@
     {:session {:id nil}
      :status 303
      :template false
-     :headers {"Location" "/"}}))
+     :headers {"Location" (named-path "public timeline")}}))
 
 (defview #'password-page :html
   [request user]

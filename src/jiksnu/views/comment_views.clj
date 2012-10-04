@@ -1,6 +1,7 @@
 (ns jiksnu.views.comment-views
   (:use [ciste.views :only [defview]]
         ciste.sections.default
+        [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.comment-actions)
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -10,12 +11,14 @@
 
 (defview #'add-comment :html
   [request activity]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)))
 
 (defview #'comment-response :html
   [request activity]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)))
 
 (defview #'fetch-comments :html
@@ -23,10 +26,6 @@
   (-> (response/redirect-after-post (uri activity))
       (assoc :template false)
       (assoc :flash "comments are being fetched")))
-
-
-
-
 
 (defview #'comment-response :xmpp
   [request activity])

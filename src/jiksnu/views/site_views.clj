@@ -11,7 +11,7 @@
    :headers {"Content-Type" "application/xml"}
    :body
    (h/html [:rsd {:version "1.0"
-                  :xmlns "http://archipelago.phrasewise.com/rsd"}
+                  :xmlns ns/rsd}
             [:service
              [:engineName "Jiksnu"]
              [:engineLink "http://jiksnu.org/"]
@@ -35,8 +35,8 @@
   {:template false
    :body
    (h/html
-    [:service {:xmlns "http://www.w3.org/2007/app"
-               :xmlns:atom "http://www.w3.org/2005/Atom"
+    [:service {:xmlns          ns/app
+               :xmlns:atom     ns/atom
                :xmlns:activity ns/as}
 
      [:workspace
@@ -47,7 +47,7 @@
                                (:_id user) ".atom")}
        [:atom:title (str (:username user) " timeline")]
        [:accept "application/atom+xml;type=entry"]
-       [:activity:verb "http://activitystrea.ms/schema/1.0/post"]]
+       [:activity:verb ns/post]]
 
      
       [:collection {:href (str "http://" (config :domain)

@@ -2,6 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         ciste.sections.default
+        [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.feed-source-actions)
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -10,8 +11,9 @@
 
 (defview #'update :html
   [request params]
-  (-> (response/redirect-after-post "/admin/feed-sources")
-        (assoc :template false)))
+  (-> (named-path "index feed-sources")
+      response/redirect-after-post
+      (assoc :template false)))
 
 (defview #'process-updates :html
   [request params]
@@ -20,10 +22,10 @@
 
 (defview #'remove-subscription :html
   [request params]
-  (-> (response/redirect-after-post "/admin/feed-sources")
-        (assoc :template false)))
+  (-> (named-path "index feed-sources")
+      response/redirect-after-post
+      (assoc :template false)))
 
 (defview #'show :model
   [request activity]
   {:body (show-section activity)})
-

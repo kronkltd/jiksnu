@@ -120,7 +120,7 @@
   (implement)
   #_{:status 303
      :template false
-     :headers {"Location" "/main/domains"}})
+     :headers {"Location" (named-path "index domains")}})
 
 ;; show
 
@@ -152,5 +152,4 @@
   {:body
    {:title (:_id domain)
     :targetDomain (:_id domain)
-    :domains (index-section [domain])
-    }})
+    :domains (index-section [domain])}})

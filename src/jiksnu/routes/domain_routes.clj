@@ -21,6 +21,6 @@
    [[:delete "/main/domains/*"]                  #'domain/delete]
    [[:post   (named-path     "discover domain")] #'domain/discover]
    [[:post   "/main/domains/:id/edit"]           #'domain/edit-page]
-   [[:post   "/main/domains"]                    #'domain/find-or-create]
+   [[:post   (named-path "index domains")]                    #'domain/find-or-create]
    [[:get    (formatted-path "domain model")]    #'domain/show]
    ])

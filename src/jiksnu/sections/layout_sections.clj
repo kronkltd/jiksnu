@@ -274,10 +274,8 @@
      (new-post-section request response))
    (title-section request response)
    [:div {:data-bind "with: jiksnu.core.get_page('default')"}
-    ;; [:div {:data-bind "if: $data"}
      (pagination-links (:page response))
      (:body response)
-     ;; ]
     ]
    [:footer.row-fluid.page-footer
     [:p "Copyright © 2011 KRONK Ltd."]
