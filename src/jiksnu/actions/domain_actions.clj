@@ -112,7 +112,7 @@
 
 (defaction index
   [& options]
-  (apply index* options))
+  (apply index* (log/spy options)))
 
 (defn find-or-create
   [domain]

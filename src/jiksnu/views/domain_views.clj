@@ -85,7 +85,7 @@
 ;; index
 
 (defview #'index :html
-  [_request {:keys [items] :as options}]
+  [_request {:keys [items] :as page}]
   {:title "Domains"
    :single true
    :viewmodel "/main/domains.viewmodel"

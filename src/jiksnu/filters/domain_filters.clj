@@ -2,6 +2,7 @@
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.domain-actions
+        [jiksnu.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -54,7 +55,9 @@
 
 (deffilter #'index :http
   [action request]
-  (action (:params request)))
+  (action {} (merge {}
+                    (parse-page request)
+                    (parse-sorting request))))
 
 ;; ping-error
 
