@@ -5,7 +5,7 @@
                                                          fetch-updates index
                                                          remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-show-section format-page-info]]
+        [jiksnu.sections :only [admin-index-section admin-show-section format-page-info with-page]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])
   (:require [clojure.tools.logging :as log]
@@ -41,9 +41,10 @@
    :body (list (let [sources (if *dynamic*
                                [(FeedSource.)]
                                items)]
-                 [:div (if *dynamic*
-                         {:data-bind "with: items"})
-                  (admin-index-section sources page)])
+                 (with-page "default"
+                   [:div (if *dynamic*
+                           {:data-bind "with: items"})
+                    (admin-index-section sources page)]))
                (add-form (FeedSource.)))})
 
 (defview #'index :viewmodel

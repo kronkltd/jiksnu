@@ -48,7 +48,7 @@
       #_[:div.subscribers {:data-bind "with: followers"}
        [:h3
         [:a #_(if *dynamic*
-              {:data-bind "attr: {href: '/users/' + _id() + '/subscribers'}"}
+              {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id) + '/subscribers'}"}
               {:href (named-path "user subscribers" {:id (:_id user)})}) "Followers"]
         " "
         [:span (if *dynamic*
@@ -71,7 +71,7 @@
       #_[:div.subscriptions
        [:h3
         [:a (if *dynamic*
-              {:data-bind "attr: {href: '/users/' + _id() + '/subscriptions'}"}
+              {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id) + '/subscriptions'}"}
               {:href (str (full-uri user) "/subscriptions")}) "Following"]
         " "
         [:span (if *dynamic*
@@ -192,7 +192,7 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/subscriptions/' + _id()}"}
+          {:data-bind "attr: {href: '/admin/subscriptions/' + ko.utils.unwrapObservable(_id)}"}
           {:href (uri record)})
      [:span (merge {:about (uri record)
                     :property "dc:title"}

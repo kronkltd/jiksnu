@@ -7,7 +7,7 @@
                                               index show host-meta ping ping-response
                                               ping-error]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info]])
+        [jiksnu.sections :only [format-page-info with-page]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.domain :as model.domain]
@@ -90,10 +90,11 @@
    :single true
    :viewmodel "/main/domains.viewmodel"
    :body
-   [:div (if *dynamic*
-           {:data-bind "with: items"})
-    (let [domains (if *dynamic* [(Domain.)] items)]
-      (index-section domains options))]})
+   (with-page "default"
+     [:div (if *dynamic*
+             {:data-bind "with: items"})
+      (let [domains (if *dynamic* [(Domain.)] items)]
+        (index-section domains options))])})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
@@ -139,9 +140,10 @@
     (let [users (if *dynamic*
                   [(User.)]
                   (model.user/fetch-by-domain domain))]
-      [:div (if *dynamic*
-              {:data-bind "with: items"})
-       (index-section users {:page 1})])]})
+      (with-page "default"
+        [:div (if *dynamic*
+                {:data-bind "with: items"})
+         (index-section users {:page 1})]))]})
 
 (defview #'show :model
   [request domain]

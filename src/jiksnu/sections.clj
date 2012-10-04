@@ -79,6 +79,10 @@
      [:i {:class (str "icon-" icon)}]
      [:span.button-text title]]))
 
+(defn with-page
+  [page-name body]
+  [:div {:data-bind (format "with: jiksnu.core.get_page('%s')" page-name)}
+   body])
 
 (defn bind-property
   [property]

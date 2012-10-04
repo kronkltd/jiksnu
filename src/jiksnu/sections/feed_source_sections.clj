@@ -79,7 +79,7 @@
    [:li (update-button source)]
    [:li (subscribe-button source)]
    [:li [:a (if *dynamic*
-              {:data-bind "attr: {href: '/model/feedSources/' + _id() + '.model'}"}
+              {:data-bind "attr: {href: '/model/feedSources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
               {:href (format "/model/feedSources/%s.model" (:_id source))})
          "Model"]]
    [:li (unsubscribe-button source)]
@@ -143,7 +143,7 @@
     (link-to item)]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/feed-sources/' + _id()}, text: title"}
+          {:data-bind "attr: {href: '/admin/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: title"}
           {:title (:title item)
            :href (named-path "admin show feed-source"
                              {:id (:_id item)})})
@@ -235,7 +235,7 @@
 (defsection link-to [FeedSource :html]
   [source & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/admin/feed-sources/' + _id()}, text: _id"}
+        {:data-bind "attr: {href: '/admin/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: _id"}
         {:href (str "/admin/feed-sources/" (:_id source))})
    (:topic source)])
 

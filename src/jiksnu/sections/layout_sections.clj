@@ -273,10 +273,7 @@
    (when (current-user)
      (new-post-section request response))
    (title-section request response)
-   [:div {:data-bind "with: jiksnu.core.get_page('default')"}
-     (pagination-links (:page response))
-     (:body response)
-    ]
+   (:body response)
    [:footer.row-fluid.page-footer
     [:p "Copyright © 2011 KRONK Ltd."]
     [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])

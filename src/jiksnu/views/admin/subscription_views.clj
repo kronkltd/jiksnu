@@ -4,7 +4,7 @@
         [jiksnu.actions.admin.subscription-actions :only [index delete show]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-section admin-show-section
-                                dump-data format-page-info]])
+                                dump-data format-page-info with-page]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.Subscription))
 
@@ -18,11 +18,12 @@
    :single true
    :viewmodel "/admin/subscriptions.viewmodel"
    :body
-   [:div {:data-bind "with: items"}
-    (let [subscriptions (if *dynamic*
-                          [(Subscription.)]
-                          items)]
-      (admin-index-section subscriptions response))]})
+   (with-page "default"
+     [:div {:data-bind "with: items"}
+      (let [subscriptions (if *dynamic*
+                            [(Subscription.)]
+                            items)]
+        (admin-index-section subscriptions response))])})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

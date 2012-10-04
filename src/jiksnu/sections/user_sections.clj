@@ -76,7 +76,7 @@
   ([user] (display-avatar user 48))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind "attr: {href: \"/users/\" + _id(), title: displayName}"}
+               {:data-bind "attr: {href: \"/users/\" + ko.utils.unwrapObservable(_id), title: displayName}"}
                {:href (full-uri user)
                 :title (:name user)})
       (display-avatar-img user size)]))
@@ -207,7 +207,7 @@
       [:li (update-button user)]
       [:li [:a
             (if *dynamic*
-              {:data-bind "attr: {href: '/model/users/' + _id() + '.model'}"}
+              {:data-bind "attr: {href: '/model/users/' + ko.utils.unwrapObservable(_id) + '.model'}"}
               {:href (format "/model/users/%s.model" (:_id user))})
             "Model"]]
       (when (not= (:_id user) (:_id authenticated))
@@ -320,7 +320,7 @@
       (link-to user))]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/users/' + _id()}, text: _id"}
+          {:data-bind "attr: {href: '/admin/users/' + ko.utils.unwrapObservable(_id)}, text: _id"}
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
@@ -502,7 +502,7 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/users/' + _id()}"}
+          {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id)}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
@@ -585,7 +585,7 @@
     [:div (if *dynamic* {:data-bind "with: updateSource"})
      [:div {:data-model "feed-source"}
       [:a
-       (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + _id()}, text: title"})
+       (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: title"})
        (when-not *dynamic*
          (:update-source user))]]]
     [:p [:a {:href (:id user)} (:id user)]]

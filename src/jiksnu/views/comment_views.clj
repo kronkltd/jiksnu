@@ -9,11 +9,15 @@
             [jiksnu.namespace :as ns]
             [ring.util.response :as response]))
 
+;; add-comment
+
 (defview #'add-comment :html
   [request activity]
   (-> (named-path "public timeline")
       response/redirect-after-post
       (assoc :template false)))
+
+;; comment-response
 
 (defview #'comment-response :html
   [request activity]
@@ -21,18 +25,22 @@
       response/redirect-after-post
       (assoc :template false)))
 
+(defview #'comment-response :xmpp
+  [request activity])
+
+;; fetch-comments
+
 (defview #'fetch-comments :html
   [request [activity comments]]
   (-> (response/redirect-after-post (uri activity))
       (assoc :template false)
       (assoc :flash "comments are being fetched")))
 
-(defview #'comment-response :xmpp
-  [request activity])
-
 (defview #'fetch-comments :xmpp
   [request [activity comments]]
   (tigase/result-packet request (index-section comments)))
+
+;; fetch-comments-remote
 
 (defview #'fetch-comments-remote :xmpp
   [request activity]
@@ -40,4 +48,3 @@
    :body
    (element/make-element
     (packet/pubsub-items (str ns/microblog ":replies:item=" (:id activity))))})
-

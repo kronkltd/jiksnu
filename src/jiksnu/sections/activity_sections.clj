@@ -189,7 +189,7 @@
      [:ul.dropdown-menu.pull-right
       [:li
        [:a (when *dynamic*
-             {:data-bind "attr: {href: '/model/activities/' + _id() + '.model'}"})
+             {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"})
         "Model"]]
       (map
        (fn [x] [:li x])
@@ -284,7 +284,7 @@
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
                (when *dynamic*
-                 {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
+                 {:data-bind "text: created, attr: {href: '/notice/' + ko.utils.unwrapObservable(_id)}"}))
      (when-not *dynamic*
        (-> activity :created .toDate model/prettyify-time))]]
    " using "
