@@ -137,11 +137,7 @@
   (first (.filter (.pages _view)
             (fn [x]
               (if (= (.id x) name)
-                x
-                )
-              )
-            ))
-  )
+                x)))))
 
 
 (def collection-name
@@ -166,10 +162,7 @@
                   (js-obj
                    "controlsDescendantBindings" true)))
        "update" (fn [element value-accessor all-bindings data context]
-                  #_(.update (.-attr ko/binding-handlers) element (js-obj
-                                                                   "about" (.-url data)
-                           "data-id" (.-_id data))
-                         all-bindings data child-binding))))
+                  (.attr (js/$ element) "data-id" data))))
 
 (defvar DataModelProvider
   [this]

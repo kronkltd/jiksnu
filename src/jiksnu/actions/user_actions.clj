@@ -419,7 +419,8 @@
         (doseq [link links]
           (add-link user link))
         (log/warn "usermeta has no links"))
-      (model.user/set-field! user :avatar-url avatar-url))
+      (when (seq avatar-url)
+       (model.user/set-field! user :avatar-url avatar-url)))
     (throw+ "Could not fetch user-meta")))
 
 ;; FIXME: This does not work yet

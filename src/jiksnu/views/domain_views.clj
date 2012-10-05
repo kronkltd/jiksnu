@@ -94,7 +94,7 @@
      [:div (if *dynamic*
              {:data-bind "with: items"})
       (let [domains (if *dynamic* [(Domain.)] items)]
-        (index-section domains options))])})
+        (index-section domains page))])})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
