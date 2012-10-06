@@ -5,7 +5,7 @@
         [jiksnu.actions.group-actions :only [add create edit-page index
                                              new-page user-list]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info]])
+        [jiksnu.sections :only [format-page-info with-page]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.Group))
 
@@ -34,12 +34,13 @@
   {:title "Groups"
    :viewmodel (str (named-path "index groups") ".viewmodel")
    :body
-   (list (index-section (if *dynamic*
-                          [(Group.)]
-                          items) response)
-         [:p
-          [:a {:href (named-path "new group")}
-           "Create a new group"]])})
+   (with-page "default"
+     (list (index-section (if *dynamic*
+                            [(Group.)]
+                            items) response)
+           [:p
+            [:a {:href (named-path "new group")}
+             "Create a new group"]]))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
