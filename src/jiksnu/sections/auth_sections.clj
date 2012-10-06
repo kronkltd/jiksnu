@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [control-line]]
+        [jiksnu.sections :only [admin-index-block admin-index-line control-line dump-data]]
         [jiksnu.session :only [current-user]]
         [jiksnu.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log])
@@ -59,3 +59,48 @@
      (control-line "Value" "value" "text")
      [:div.actions
       [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]])
+
+(defsection admin-index-block [AuthenticationMechanism :html]
+  [items & [page]]
+  [:table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "User"]
+     [:th "Value"]
+     [:th "Actions"]]]
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+    (map #(admin-index-line % page) items)]])
+
+(defsection admin-index-block [AuthenticationMechanism :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] (index-line m page)))
+       doall))
+
+(defsection admin-index-line [AuthenticationMechanism :html]
+  [item & [page]]
+  [:tr {:data-model "authentication-mechanism"}
+   [:td
+    (if *dynamic*
+      {:data-bind "text: _id"}
+      (:_id item))]
+   [:td
+    (if *dynamic*
+      {:data-bind "text: user"}
+      (:user item))]
+   [:td
+    (if *dynamic*
+      {:data-bind "text: value"}
+      (:value item))]])
+
+(defsection index-block [AuthenticationMechanism :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] (index-line m page)))
+       doall))
+
+(defsection show-section [AuthenticationMechanism :viewmodel]
+  [item & [page]]
+  item)
+

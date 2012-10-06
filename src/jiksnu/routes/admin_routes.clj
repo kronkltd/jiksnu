@@ -33,6 +33,7 @@
     [[:get    (named-path "admin activity index")]        #'admin.activity/index]
 
     [[:get    "/admin/auth"]                              #'admin.auth/index]
+    [[:get    "/admin/auth.:format"]                      #'admin.auth/index]
 
     [[:get    (named-path "admin conversation index")]    #'admin.conversation/index]
     [[:get    "/admin/conversations.:format"]             #'admin.conversation/index]

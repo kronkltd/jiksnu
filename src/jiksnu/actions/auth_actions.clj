@@ -53,6 +53,11 @@
   ;; TODO: actually check
   true)
 
+(defaction show
+  [mech]
+  mech
+  )
+
 (defaction whoami
   []
   (current-user))

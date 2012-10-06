@@ -22,6 +22,17 @@
 
 (def _router nil)
 
+(def collection-name
+  {"activity"                 "activities"
+   "authentication-mechanism" "authenticationMechanisms"
+   "conversation"             "conversations"
+   "domain"                   "domains"
+   "feed-source"              "feedSources"
+   "group"                    "groups"
+   "subscription"             "subscriptions"
+   "user"                     "users"
+   })
+
 (defn process-viewmodel
   "Callback handler when a viewmodel is loaded"
   [data]
@@ -54,8 +65,8 @@
     (if-let [visible (.-visible post-form)]
       (.visible (.postForm _view) visible)))
 
-  (doseq [model-name ["Activity" "Conversation" "Domain" "Subscription"
-                      "FeedSource" "User"]]
+  (doseq [model-name ["Activity" "AuthenticationMechanism" "Conversation"
+                      "Domain" "Subscription" "FeedSource" "User"]]
     (let [key (str "target" model-name)]
       (when-let [id (aget data key)]
         (.set _model key id))))
@@ -71,7 +82,7 @@
 (defn fetch-viewmodel
   [url]
   (when url
-    (log/finer *logger* (format "Fetching viewmodel: %s" url))
+    (log/info *logger* (format "Fetching viewmodel: %s" url))
     (.getJSON js/jQuery url process-viewmodel)))
 
 (defn fetch-model
@@ -124,13 +135,14 @@
       (throw (js/Error. "Not a string")))
     (log/warn *logger* "id is undefined")))
 
-(def get-activity     (partial get-model "activities"))
-(def get-conversation (partial get-model "conversations"))
-(def get-domain       (partial get-model "domains"))
-(def get-feed-source  (partial get-model "feedSources"))
-(def get-group        (partial get-model "groups"))
-(def get-subscription (partial get-model "subscriptions"))
-(def get-user         (partial get-model "users"))
+(def get-activity                 (partial get-model "activities"))
+(def get-authentication-mechanism (partial get-model "authenticationMechanisms"))
+(def get-conversation             (partial get-model "conversations"))
+(def get-domain                   (partial get-model "domains"))
+(def get-feed-source              (partial get-model "feedSources"))
+(def get-group                    (partial get-model "groups"))
+(def get-subscription             (partial get-model "subscriptions"))
+(def get-user                     (partial get-model "users"))
 
 (defn get-page
   [name]
@@ -139,15 +151,6 @@
               (if (= (.id x) name)
                 x)))))
 
-
-(def collection-name
-  {"activity"     "activities"
-   "user"         "users"
-   "conversation" "conversations"
-   "domain"       "domains"
-   "feed-source"  "feedSources"
-   "group"        "groups"
-   "subscription" "subscriptions"})
 
 (aset ko/binding-handlers "withModel"
       (js-obj

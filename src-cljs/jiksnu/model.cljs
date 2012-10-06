@@ -10,6 +10,7 @@
   ^{:doc "The list of model names"}
   model-names
   ["activities"
+   "authenticationMechanisms"
    "domains"
    "groups"
    "feedSources"
@@ -267,8 +268,29 @@
             "type" "Conversations"
             "model" Conversation)))
 
+(def AuthenticationMechanism
+  (.extend backbone/Model
+           (js-obj
+            "type"        "AuthenticationMechanism"
+            "idAttribute" "_id"
+            "defaults" (js-obj
+                        "user" nil
+                        "value" nil
+                        )
+            "url" (fn []
+                    (this-as this
+                      (format "/model/authenticationMechanisms/%s.model" (.-id this))))
+            "initialize"  initializer)))
+
+(def AuthenticationMechanisms
+  (.extend backbone/Collection
+           (js-obj
+            "type" "AuthenticationMechanisms"
+            "model" AuthenticationMechanism)))
+
 (def activities    (Activities.))
-(def conversation  (Conversations.))
+(def authentication-mechanisms (AuthenticationMechanisms.))
+(def conversations  (Conversations.))
 (def domains       (Domains.))
 (def feed-sources  (FeedSources.))
 (def groups        (Groups.))
@@ -283,21 +305,23 @@
    (js-obj
     "defaults"
     (js-obj
-     "activities"       activities
-     "domains"          domains
-     "currentUser"      nil
-     "feedSources"      feed-sources
-     "followers"        (array)
-     "following"        (array)
-     "groups"           groups
-     "pages"            pages
-     "postForm"         (PostForm.)
-     "notifications"    notifications
-     "statistics"       nil
-     "subscriptions"    subscriptions
-     "targetActivity"   nil
-     "targetDomain"     nil
-     "targetFeedSource" nil
-     "targetUser"       nil
-     "title"            nil
-     "users"            users))))
+     "activities"               activities
+     "authenticationMechanisms" authentication-mechanisms
+     "conversations"            conversations
+     "domains"                  domains
+     "currentUser"              nil
+     "feedSources"              feed-sources
+     "followers"                (array)
+     "following"                (array)
+     "groups"                   groups
+     "pages"                    pages
+     "postForm"                 (PostForm.)
+     "notifications"            notifications
+     "statistics"               nil
+     "subscriptions"            subscriptions
+     "targetActivity"           nil
+     "targetDomain"             nil
+     "targetFeedSource"         nil
+     "targetUser"               nil
+     "title"                    nil
+     "users"                    users))))
