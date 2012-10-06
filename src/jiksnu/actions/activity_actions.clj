@@ -101,9 +101,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
     (if (empty? uris)
       (dissoc activity :recipient-uris)
       (let [users (->> uris
-                       (keep #(:_id (actions.user/find-or-create-by-remote-id
-                                     {:id %})))) ]
-        (assoc activity :recipients users)))))
+                       (keep #(:_id (actions.user/find-or-create-by-remote-id {:id %})))) ]
+        (assoc activity :recipients (log/spy users))))))
 
 (def index*
   (model/make-indexer 'jiksnu.model.activity))
@@ -131,7 +130,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-object-type
       transforms.activity/set-parent
       transforms.activity/set-url
-      transforms.activity/set-id))
+      transforms.activity/set-id
+      set-recipients))
 
 (defn prepare-post
   [activity]
