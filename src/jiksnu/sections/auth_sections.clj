@@ -5,8 +5,10 @@
         [jiksnu.sections :only [admin-index-block admin-index-line control-line dump-data]]
         [jiksnu.session :only [current-user]]
         [jiksnu.sections.user-sections :only [display-avatar-img]])
-  (:require [clojure.tools.logging :as log])
-  (:import jiksnu.model.AuthenticationMechanism))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.AuthenticationMechanism
+           jiksnu.model.User))
 
 (defn logout-button
   [user]
@@ -50,6 +52,14 @@
     [:div.actions
      [:input.btn.btn-primary {:type "submit" :value "Login"}]]]])
 
+;; actions-section
+
+(defsection actions-section [AuthenticationMechanism :html]
+  [mechanism & _]
+  [:ul])
+
+;; add-form
+
 (defsection add-form [AuthenticationMechanism :html]
   [mechanism & _]
   [:form.well {:method "post" :action "/admin/auth"}
@@ -60,9 +70,11 @@
      [:div.actions
       [:input.btn.btn-primary {:type "submit" :value "Add"}]]]]])
 
+;; admin-index-block
+
 (defsection admin-index-block [AuthenticationMechanism :html]
   [items & [page]]
-  [:table
+  [:table.table
    [:thead
     [:tr
      [:th "Id"]
@@ -78,6 +90,8 @@
        (map (fn [m] (index-line m page)))
        doall))
 
+;; admin-index-line
+
 (defsection admin-index-line [AuthenticationMechanism :html]
   [item & [page]]
   [:tr {:data-model "authentication-mechanism"}
@@ -85,20 +99,31 @@
     (if *dynamic*
       {:data-bind "text: _id"}
       (:_id item))]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: user"}
-      (:user item))]
+   [:td (if *dynamic* {:data-bind "with: user"})
+    [:div {:data-model "user"}
+     (let [user (if *dynamic*
+                  (User.)
+                  (model.user/fetch-by-id (:user item)))]
+       (link-to user))]]
    [:td
     (if *dynamic*
       {:data-bind "text: value"}
-      (:value item))]])
+      (:value item))]
+   [:td (actions-section item)]])
+
+;; index-block
 
 (defsection index-block [AuthenticationMechanism :viewmodel]
   [items & [page]]
   (->> items
        (map (fn [m] (index-line m page)))
        doall))
+
+;; show-section
+
+(defsection show-section [AuthenticationMechanism :model]
+  [item & [page]]
+  item)
 
 (defsection show-section [AuthenticationMechanism :viewmodel]
   [item & [page]]

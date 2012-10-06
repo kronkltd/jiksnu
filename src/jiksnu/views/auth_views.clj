@@ -11,12 +11,16 @@
             [ring.util.response :as response])
   (:import jiksnu.model.User))
 
+;; guest-login
+
 (defview #'guest-login :html
   [request user]
   {:status 303
    :template false
    :session {:pending-id (:_id user)}
    :headers {"Location" "/main/password"}})
+
+;; login
 
 (defview #'login :html
   [request user]
@@ -34,6 +38,7 @@
   [request user]
   {:body (format "logged in as %s" (:username user))})
 
+;; login-page
 
 (defview #'login-page :html
   [request _]
@@ -65,6 +70,8 @@
        [:div.actions
         [:input.btn.primary {:type "submit" :value "Login"}]]]]]]})
 
+;; logout
+
 (defview #'logout :html
   [request successful]
   (if successful
@@ -73,15 +80,27 @@
      :template false
      :headers {"Location" (named-path "public timeline")}}))
 
+;; password-page
+
 (defview #'password-page :html
   [request user]
   {:body (sections.auth/password-page user)})
+
+;; show
+
+(defview #'show :model
+  [request item]
+  {:body (doall (show-section item))})
+
+;; verify-credentials
 
 (defview #'verify-credentials :json
   [request _]
   {:body {:error "Could not authenticate you"
           :request (:uri request)}
    :template false})
+
+;; whoami
 
 (defview #'whoami :text
   [request user]

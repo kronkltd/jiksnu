@@ -27,3 +27,10 @@
   ([] (count-records {}))
   ([params]
      (mc/count collection-name params)))
+
+(defn fetch-by-id
+  [id]
+  (let [id (if (string? id) (model/make-id id) id)]
+    (if-let [item (mc/find-map-by-id collection-name id)]
+      (model/map->AuthenticationMechanism item))))
+
