@@ -54,8 +54,7 @@
                  [ring "1.1.1"]
                  [ring/ring-core "1.1.1"]
                  [ring-basic-authentication "0.0.1"]
-                 [slingshot "0.10.3"]
-                 ]
+                 [slingshot "0.10.3"]]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [
         jiksnu.model
@@ -105,11 +104,19 @@
                 :compiler
                   {
                    :output-to "resources/public/assets/js/jiksnu.advanced.js"
-                   :externs ["resources/externs/backbone-0.9.1.js"
-                             "resources/externs/underscore-0.3.1.js"]
+                   :externs [
+                             "resources/externs/backbone-0.9.1.js"
+                             "resources/externs/underscore-0.3.1.js"
+                             "resources/externs/jquery-1.7.js"
+                             "resources/public/assets/js/knockout-2.1.0.js"
+                             ]
                    :output-dir "target/cljsout/advanced"
                    :pretty-print false
                    :optimizations :advanced
+                 :foreign-libs [{:file "public/assets/js/underscore-1.3.3.js"
+                                 :provides ["_"]}
+                                {:file "public/assets/js/backbone-0.9.2.min.js"
+                                 :provides ["Backbone"]}]
 
                    }}]}
   :main ciste.runner

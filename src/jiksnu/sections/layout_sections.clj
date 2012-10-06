@@ -243,6 +243,7 @@
      "/assets/js/backbone-0.9.2.min.js"
      "/assets/js/knockback-0.15.4.min.js"
      "/assets/js/jiksnu.js"
+     ;; "/assets/js/jiksnu.advanced.js"
      )
     [:script {:type "text/javascript"}
      "goog.require('jiksnu.core');"])))
