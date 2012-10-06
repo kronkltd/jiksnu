@@ -213,7 +213,7 @@
 
 (defsection index-line [FeedSource :html]
   [source & _]
-  [:tr {:data-model "feed-source" :data-id (str (:_id source))}
+  [:tr {:data-model "feed-source"}
    [:td (:title source)]
    [:td (:domain source)]
    [:td (link-to source)]
@@ -245,7 +245,7 @@
   [source & options]
   (let [{:keys [topic callback challenge mode hub
                 verify-token lease-seconds created updated]} source]
-    [:div {:data-model "feedSource"}
+    [:div {:data-model "feed-source"}
      [:table.table
       [:tbody
        [:tr

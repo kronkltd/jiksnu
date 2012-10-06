@@ -239,10 +239,12 @@
                       (format "/model/feedSources/%s.model" (.-id this))))
             "defaults" (js-obj
                         "callback" nil
-                        "domain" nil
-                        "mode" nil
-                        "topic" nil
-                        "title" nil)
+                        "domain"   nil
+                        "hub"      nil
+                        "mode"     nil
+                        "topic"    nil
+                        "watchers" (array)
+                        "title"    nil)
             "idAttribute" "_id"
             "initialize" initializer)))
 

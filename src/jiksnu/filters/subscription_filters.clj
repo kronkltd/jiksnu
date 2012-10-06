@@ -1,12 +1,10 @@
 (ns jiksnu.filters.subscription-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.actions.subscription-actions :only [delete
-                                                    get-subscribers get-subscriptions
-                                                    ostatus ostatussub ostatussub-submit
-                                                    remote-subscribe-confirm
-                                                    subscribe subscribed
-                                                    confirm unsubscribe]]
+        [jiksnu.actions.subscription-actions :only [confirm delete get-subscribers
+                                                    get-subscriptions ostatus ostatussub
+                                                    ostatussub-submit remote-subscribe-confirm
+                                                    show subscribe subscribed unsubscribe]]
         [jiksnu.session :only [current-user current-user-id]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
@@ -83,6 +81,14 @@
                            {:to (:_id subscribee) :from (:_id subscriber)})]
       ;; TODO: this should call the action
       (confirm subscription))))
+
+;; show
+
+(deffilter #'show :http
+  [action request]
+  (let [{{id :id} :params} request]
+    (if-let [item (model.subscription/fetch-by-id (model/make-id id))]
+     (action item))))
 
 ;; subscribe
 

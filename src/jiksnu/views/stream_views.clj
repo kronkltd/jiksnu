@@ -6,7 +6,7 @@
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info with-page]]
+        [jiksnu.sections :only [format-page-info with-page pagination-links]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
@@ -122,9 +122,11 @@
            (let [activities (if *dynamic*
                               [(Activity.)]
                               items)]
-             [:div (if *dynamic*
-                     {:data-bind "with: items"})
-              (index-section activities page)]))})
+             (list
+              (pagination-links page)
+              [:div (if *dynamic*
+                      {:data-bind "with: items"})
+               (index-section activities page)])))})
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]

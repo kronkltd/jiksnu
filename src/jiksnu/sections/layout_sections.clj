@@ -239,7 +239,7 @@
      "/assets/js/jquery-1.8.0.min.js"
      "/assets/js/knockout-2.1.0.min.js"
      "/assets/js/bootstrap-2.4.0.min.js"
-     "/assets/js/knockout.mapping-2.2.3.js"
+     ;; "/assets/js/knockout.mapping-2.2.3.js"
      "/assets/js/backbone-0.9.2.min.js"
      "/assets/js/knockback-0.15.4.min.js"
      "/assets/js/jiksnu.js"

@@ -50,6 +50,10 @@
   [& _]
   (implement))
 
+(defaction show
+  [item]
+  item)
+
 (defaction create
   [params & options]
   (model.subscription/create params))

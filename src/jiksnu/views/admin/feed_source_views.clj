@@ -68,8 +68,9 @@
    (let [source (if *dynamic* (FeedSource.) source)]
      [:div {:data-bind "with: targetFeedSource"}
       (admin-show-section source)
-      (index-watchers source)
-      (add-watcher-form source)])})
+      [:div {:data-model "feed-source"}
+       (index-watchers source)
+       (add-watcher-form source)]])})
 
 (defview #'show :model
   [request source]

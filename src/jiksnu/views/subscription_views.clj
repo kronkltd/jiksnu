@@ -106,6 +106,12 @@
   [request _]
   nil)
 
+;; show
+
+(defview #'show :model
+  [request item]
+  {:body (show-section item)})
+
 ;; subscribe
 
 (defview #'subscribe :html

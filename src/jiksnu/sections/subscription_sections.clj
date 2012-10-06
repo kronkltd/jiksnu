@@ -201,6 +201,16 @@
       (when-not *dynamic*
         (or (:title options-map) (title record)))] ]))
 
+;; show-section
+
+(defsection show-section [Subscription :html]
+  [item & _]
+  item)
+
+(defsection show-section [Subscription :model]
+  [item & _]
+  item)
+
 
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]

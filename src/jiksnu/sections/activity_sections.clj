@@ -411,10 +411,11 @@
      (map
       (fn [enclosure]
         [:li
-         [:img (merge {:alt ""}
-                      (if *dynamic*
-                        {:data-bind "attr: {src: href}"}
-                        {:src (:href enclosure)}))]])
+         [:img.enclosure
+          (merge {:alt ""}
+                 (if *dynamic*
+                   {:data-bind "attr: {src: href}"}
+                   {:src (:href enclosure)}))]])
       enclosures)]))
 
 ;; dynamic sections

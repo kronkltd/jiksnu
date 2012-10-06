@@ -1,8 +1,10 @@
 (ns jiksnu.routes.subscription-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+        [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.subscription-actions :as sub]))
 
-(add-route! "/users/:id/subscribers" {:named "user subscribers"})
+(add-route! "/users/:id/subscribers"   {:named "user subscribers"})
+(add-route! "/model/subscriptions/:id" {:named "subscription model"})
 
 (defn routes
   []
@@ -17,7 +19,7 @@
    [[:get    "/users/:id/subscriptions.:format"]             #'sub/get-subscriptions]
    [[:get    "/users/:id/subscriptions"]                     #'sub/get-subscriptions]
    [[:get    "/users/:id/subscribers.:format"]               #'sub/get-subscribers]
-   [[:get    (named-path "user subscribers")]                       #'sub/get-subscribers]
+   [[:get    (named-path "user subscribers")]                #'sub/get-subscribers]
    [[:post   "/users/:id/unsubscribe"]                       #'sub/unsubscribe]
    [[:get    "/:username/subscribers.:format"]               #'sub/get-subscribers]
    [[:get    "/:username/subscribers"]                       #'sub/get-subscribers]
@@ -25,4 +27,5 @@
    [[:get    "/:username/subscriptions"]                     #'sub/get-subscriptions]
    [[:post   "/users/:subscribeto/subscribe.:format"]        #'sub/subscribe]
    [[:post   "/users/:subscribeto/subscribe"]                #'sub/subscribe]
+   [[:get    (formatted-path "subscription model")]          #'sub/show]
    ])
