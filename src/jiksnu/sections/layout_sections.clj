@@ -67,9 +67,10 @@
   [user]
   (list
    (show-section user)
-   (sections.subscription/subscriptions-widget user)
-   (sections.subscription/subscribers-widget user)
-   (sections.group/user-groups user)))
+   [:div {:data-model "user"}
+    (sections.subscription/subscriptions-widget user)
+    (sections.subscription/subscribers-widget user)
+    (sections.group/user-groups user)]))
 
 (defn navigation-group
   [[header links]]

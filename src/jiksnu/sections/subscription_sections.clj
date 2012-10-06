@@ -45,17 +45,17 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      #_[:div.subscribers {:data-bind "with: followers"}
+      [:div.subscribers
        [:h3
-        [:a #_(if *dynamic*
+        [:a (if *dynamic*
               {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id) + '/subscribers'}"}
               {:href (named-path "user subscribers" {:id (:_id user)})}) "Followers"]
         " "
         [:span (if *dynamic*
-                 {:data-bind "text: $data.length"}
+                 {:data-bind "text: $root.followers().length"}
                  (count subscriptions))]]
        [:ul.unstyled
-        (if *dynamic* {:data-bind "foreach: $data"})
+        (if *dynamic* {:data-bind "foreach: $root.followers"})
         (map (fn [subscription]
                [:li {:data-model "subscription"}
                 (let [user (if *dynamic*
@@ -68,7 +68,7 @@
   [user]
   (when user
     (let [subscriptions (model.subscription/subscriptions user)]
-      #_[:div.subscriptions
+      [:div.subscriptions
        [:h3
         [:a (if *dynamic*
               {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id) + '/subscriptions'}"}
