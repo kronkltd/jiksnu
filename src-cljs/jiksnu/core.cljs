@@ -119,7 +119,7 @@
       (if-let [m (.get coll id)]
         (init-observable model-name id om m)
         (load-model model-name id om)))
-    (log/error *logger* "could not get collection")))
+    (log/severe *logger* "could not get collection")))
 
 (defn get-model
   "Given a model name and an id, return an observable representing that model"
@@ -223,7 +223,7 @@
     (ws/set-view _view)
     (ws/connect)
     (catch js/Exception ex
-      (log/error ex)))
+      (log/severe *logger* ex)))
 
   (set! _router (Router.))
   

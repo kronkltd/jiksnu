@@ -49,7 +49,7 @@
       (.open socket url)
       socket
       (catch js/Error e
-        (log/error *logger* "No WebSocket supported, get a decent browser.")
+        (log/severe *logger* "No WebSocket supported, get a decent browser.")
         (state/set ws-state :error)))))
 
 (def queued-messages (atom []))
@@ -88,7 +88,7 @@
           (prepend ($ :.activities) body))
         jm))
     (catch js/Error ex
-      (log/error (str ex)))))
+      (log/severe *logger* (str ex)))))
 
 
 (defn connect
@@ -112,7 +112,7 @@
     (condp = (.-action event)
       "delete" (delete-handler event)
       (condp = (.-type event)
-        "error" (log/error (.-message event))
+        "error" (log/severe *logger* (.-message event))
         (log/info *logger* "No match found")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
