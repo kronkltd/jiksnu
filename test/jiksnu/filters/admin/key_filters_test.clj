@@ -15,8 +15,8 @@
          (let [request {:action action :serialization *serialization*}]
            (filter-action action request) =>
            (every-checker
-            #(= .response. %))
-           (provided
-             (actions.key/index anything) => .response. :times 1))))))
+            map?
+
+            ))))))
 
  )
