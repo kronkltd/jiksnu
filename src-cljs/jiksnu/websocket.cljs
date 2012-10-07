@@ -105,12 +105,17 @@
   (let [id (.-id event)]
     (.items _view (_/without (.items _view) id))))
 
+(defn viewmodel-handler
+  [event]
+  (log/info *logger* "updating viewmodel"))
+
 
 (defn process-event
   [event]
   (when event
     (condp = (.-action event)
       "delete" (delete-handler event)
+      "update viewmodel" (viewmodel-handler event)
       (condp = (.-type event)
         "error" (log/severe *logger* (.-message event))
         (log/info *logger* "No match found")))))
@@ -147,7 +152,8 @@
     (in [] (text $interface "sending")))
 
   (defstate :receiving
-    (in [] (text $interface "sending")))
+    (in []
+        (text $interface "receiving")))
 
   (defstate :queued
     (in []
@@ -191,8 +197,10 @@
     [m event]
     (if event
       (do (state/transition ws-state :idle :receiving)
-          (let [parsed-event (parse-json (.-message event))]
-            (process-event parsed-event)
-            (state/transition ws-state :receiving :idle)
-            parsed-event))
+          (let [message (.-message event)]
+            (log/info *logger* (format "Receiving message: %s" message))
+            (let [parsed-event (parse-json message)]
+              (process-event parsed-event)
+              (state/transition ws-state :receiving :idle)
+              parsed-event)))
       (log/warn *logger* "undefined event"))))

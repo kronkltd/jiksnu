@@ -22,62 +22,67 @@
 
 (def _router nil)
 
-(def collection-name
-  {"activity"                 "activities"
-   "authentication-mechanism" "authenticationMechanisms"
-   "conversation"             "conversations"
-   "domain"                   "domains"
-   "feed-source"              "feedSources"
-   "group"                    "groups"
-   "subscription"             "subscriptions"
-   "user"                     "users"
-   })
+(def class-names
+  ["Activity" "AuthenticationMechanism" "Conversation"
+   "Domain" "Subscription" "FeedSource" "User"])
 
-(defn process-viewmodel
-  "Callback handler when a viewmodel is loaded"
+(defn update-pages
   [data]
-  (def _m data)
-  
   (when-let [pages (.-pages data)]
     (let [page-model (.get _model "pages")]
       (doseq [pair (js->clj pages)]
         (let [[k v] pair
               page (clj->js (assoc v :id k))]
-          (.add page-model page)))))
+          (.add page-model page))))))
 
-  (when-let [title (.-title data)]
-    (.set _model "title" title))
-
+(defn update-items
+  [data]
   (doseq [key model-names]
     (when-let [items (aget data key)]
       (let [coll (.get _model key)]
         (doseq [item items]
-          (.add coll item)))))
+          (.add coll item))))))
 
-  (when-let [currentUser (.-currentUser data)]
-    (.set _model "currentUser" currentUser))
-
-  (when-let [page-info (.-pageInfo data)]
-    (let [p (.get _model "pageInfo")]
-      (.set p page-info)))
-
-  (if-let [post-form (.-postForm data)]
-    (if-let [visible (.-visible post-form)]
-      (.visible (.postForm _view) visible)))
-
-  (doseq [model-name ["Activity" "AuthenticationMechanism" "Conversation"
-                      "Domain" "Subscription" "FeedSource" "User"]]
+(defn update-targets
+  [data]
+  (doseq [model-name class-names]
     (let [key (str "target" model-name)]
       (when-let [id (aget data key)]
-        (.set _model key id))))
+        (.set _model key id)))))
 
-  (when-let [items (.-items data)]
-    (when-let [coll (.get _model "items")]
-      (doseq [item items]
-        (.push coll item)
-        (.notifySubscribers (.-items _view)))))
+(defn update-page-info
+  [data]
+  (when-let [page-info (.-pageInfo data)]
+    (let [p (.get _model "pageInfo")]
+      (.set p page-info))))
 
-  )
+(defn update-post-form
+  [data]
+  (if-let [post-form (.-postForm data)]
+    (if-let [visible (.-visible post-form)]
+      (.visible (.postForm _view) visible))))
+
+(defn update-title
+  [data]
+  (when-let [title (.-title data)]
+    (.set _model "title" title)))
+
+(defn update-currents
+  [data]
+  (when-let [currentUser (.-currentUser data)]
+    (.set _model "currentUser" currentUser)))
+
+(defn process-viewmodel
+  "Callback handler when a viewmodel is loaded"
+  [data]
+  (def _m data)
+  (update-pages     data)
+  (update-title     data)
+  (update-items     data)
+  (update-currents  data)
+  (update-page-info data)
+  (update-post-form data)
+  (update-targets   data))
 
 (defn fetch-viewmodel
   [url]
@@ -156,7 +161,7 @@
       (js-obj
        "init" (fn [element value-accessor all-bindings data context]
                 (let [properties (value-accessor)
-                      model-name (collection-name (.-type properties))
+                      model-name (model/collection-name (.-type properties))
                       model-ob (get-model model-name data)
                       unwrapped (ko/unwrap-observable model-ob)
                       child-binding (.createChildContext context unwrapped)]
@@ -169,7 +174,7 @@
 
 (defvar DataModelProvider
   [this]
-  (let [underlying-provider (.-instance (.-bindingProvider js/ko))]
+  (let [underlying-provider (.-instance ko/binding-provider)]
    (doto this
      (aset "nodeHasBindings"
            (fn [node context]
@@ -212,7 +217,8 @@
 
   ;; (log/set-level (log/get-logger "waltz.state") :finest)
   ;; (log/set-level (log/get-logger "jiksnu.core") :finest)
-  (log/set-level (log/get-logger "jiksnu.model") :finest)
+  ;; (log/set-level (log/get-logger "jiksnu.model") :finest)
+  (log/set-level (log/get-logger "jiksnu.websocket") :finest)
   (log/set-level (log/get-logger "goog.net.WebSocket") :warning)
   
   ;; (log/start-display (log/fancy-output))

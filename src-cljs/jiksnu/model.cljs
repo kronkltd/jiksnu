@@ -6,6 +6,17 @@
 
 (def *logger* (log/get-logger "jiksnu.model"))
 
+(def collection-name
+  {"activity"                 "activities"
+   "authentication-mechanism" "authenticationMechanisms"
+   "conversation"             "conversations"
+   "domain"                   "domains"
+   "feed-source"              "feedSources"
+   "group"                    "groups"
+   "subscription"             "subscriptions"
+   "user"                     "users"
+   })
+
 (def
   ^{:doc "The list of model names"}
   model-names

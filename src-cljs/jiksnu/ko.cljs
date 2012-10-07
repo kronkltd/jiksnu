@@ -1,6 +1,7 @@
 (ns jiksnu.ko)
 
 (def binding-handlers (.-bindingHandlers js/ko))
+(def binding-provider (.-bindingProvider js/ko))
 
 (defn apply-bindings
   [view & [context]]

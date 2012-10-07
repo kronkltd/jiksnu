@@ -167,15 +167,17 @@
      (fn [m]
        (session/with-user-id (:_id user)
          (let [[name & args] (string/split m #" ")]
-           (let [resp (try
-                        (parse-command {:format :json
-                                        :name name
-                                        :args args})
-                        (catch RuntimeException ex
-                          (.printStackTrace ex)
-                          {:body (json/json-str {:type "error"
-                                                 :message (str ex)})}))]
-             (l/enqueue ch (:body resp))))))))
+           (if-let [resp (try
+                           (parse-command {:format :json
+                                           :name name
+                                           :args args})
+                           (catch RuntimeException ex
+                             (.printStackTrace ex)
+                             {:body (json/json-str {:type "error"
+                                                    :message (str ex)})}))]
+             (l/enqueue ch (:body resp))
+             (l/enqueue ch (json/json-str {:type "error"
+                                           :message "no command found"}))))))))
   #_(siphon-new-activities ch))
 
 (definitializer
