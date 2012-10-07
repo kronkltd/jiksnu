@@ -137,13 +137,14 @@
    [:div (if *dynamic*
            {:data-bind "with: targetDomain"})
     (show-section domain)
-    (let [users (if *dynamic*
-                  [(User.)]
-                  (model.user/fetch-by-domain domain))]
-      (with-page "default"
-        [:div (if *dynamic*
-                {:data-bind "with: items"})
-         (index-section users {:page 1})]))]})
+    [:div {:data-model "domain"}
+     (let [users (if *dynamic*
+                   [(User.)]
+                   (model.user/fetch-by-domain domain))]
+       (with-page "default"
+         [:div (if *dynamic*
+                 {:data-bind "with: items"})
+          (index-section users {:page 1})]))]]})
 
 (defview #'show :model
   [request domain]

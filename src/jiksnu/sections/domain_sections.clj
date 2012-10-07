@@ -1,6 +1,7 @@
 (ns jiksnu.sections.domain-sections
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
+        [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
         [jiksnu.sections :only [action-link admin-index-block
@@ -20,11 +21,19 @@
   [item]
   (action-link "domain" "discover" (:_id item)))
 
+;; actions-section
+
 (defsection actions-section [Domain :html]
   [domain & _]
   [:ul
    [:li (discover-button domain)]
+   [:li [:a (if *dynamic*
+              {:data-bind "attr: {href: '/model/domains/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+              {:href (str (named-path "domain model" {:id (:_id domain)}) ".model")})
+         "Model"]]
    [:li (delete-button domain)]])
+
+;; add-form
 
 (defsection add-form [Domain :html]
   [domain & _]
@@ -36,15 +45,21 @@
      [:button.btn.primary.add-button {:type "submit"}
       "Add"]]]])
 
+;; admin-index-block
+
 (defsection admin-index-block [Domain :viewmodel]
   [items & [page]]
   (->> items
        (map (fn [m] {(:_id m) (admin-index-line m page)}))
        (into {})))
 
+;; delete-button
+
 (defsection delete-button [Domain :html]
   [item & _]
   (action-link "domain" "delete" (:_id item)))
+
+;; index-block
 
 (defsection index-block [Domain :html]
   [domains & _]
@@ -65,6 +80,8 @@
   (->> items
        (map (fn [m] (index-line m page)))
        doall))
+
+;; index-line
 
 (defsection index-line [Domain :html]
   [domain & _]
@@ -90,6 +107,8 @@
       (count (:links domain)))]
    [:th (actions-section domain)]])
 
+;; link-to
+
 (defsection link-to [Domain :html]
   [domain & _]
   [:a (if *dynamic*
@@ -103,28 +122,47 @@
 (defsection show-section [Domain :html]
   [domain & _]
   [:div {:data-model "domain"}
-   [:p "Id: "
-    (favicon-link domain)
-    [:span.domain-id (:_id domain)]]
-   [:p "XMPP: " (:xmpp domain)]
-   [:p "Discovered: " (:discovered domain)]
-   (when-let [sc (:statusnet-config domain)]
-     (list [:p "Closed: " (-> sc :site :closed)]
-           [:p "Private: " (-> sc :site :private)]
-           [:p "Invite Only: " (-> sc :site :inviteonly)]
-           [:p "Admin: " (-> sc :site :email)]
-           (when-let [license (:license sc)]
-             [:p "License: "
-              ;; RDFa
-              [:a {:href (:url license)
-                   :title (:title license)}
-               [:img {:src (:image license)
-                      :alt (:title license)}]]])))
+   [:table.table
+    [:thead]
+    [:tbody
+     [:tr
+      [:th "Id"]
+      [:td
+       (favicon-link domain)
+       [:span.domain-id (:_id domain)]]]
+     [:tr
+      [:th "XMPP"]
+      [:td (:xmpp domain)]]
+     [:tr
+      [:th "Discovered"]
+      [:td (:discovered domain)]]
+     (when-let [sc (:statusnet-config domain)]
+       (list
+        [:tr
+         [:th "Closed"]
+         [:td (-> sc :site :closed)]]
+        [:tr
+         [:th "Private"]
+         [:td (-> sc :site :private)]]
+        [:tr
+         [:th "Invite Only"]
+         [:td (-> sc :site :inviteonly)]]
+        [:tr
+         [:th "Admin"]
+         [:td (-> sc :site :email)]]
+        (when-let [license (:license sc)]
+          [:tr
+           [:th "License"]
+           [:td
+            ;; RDFa
+            [:a {:href (:url license)
+                 :title (:title license)}
+             [:img {:src (:image license)
+                    :alt (:title license)}]]]])))]]
    (when (is-admin?)
      (actions-section domain))
    (when (seq (:links domain))
-     (sections.link/index-section (:links domain)))
-   (when (current-user) (discover-button domain))])
+     (sections.link/index-section (:links domain)))])
 
 (defsection show-section [Domain :model]
   [item & [page]]
