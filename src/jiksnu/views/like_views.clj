@@ -4,7 +4,7 @@
         jiksnu.actions.like-actions))
 
 (defview #'like-activity :html
-  [_request _like]
+  [request like]
   {:status 303
    ;; TODO: redirect to redirect url
    :headers {"Location"  (named-path "public timeline")}

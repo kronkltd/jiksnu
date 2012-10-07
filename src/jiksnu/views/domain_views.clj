@@ -20,7 +20,7 @@
 ;; create
 
 (defview #'create :html
-  [_request _domain]
+  [request domain]
   {:status 303
    :template false
    :flash "Domain has been created"
@@ -29,7 +29,7 @@
 ;; delete
 
 (defview #'delete :html
-  [_request _domain]
+  [request domain]
   {:status 303
    :template false
    :flash "Domain has been deleted"
@@ -38,7 +38,7 @@
 ;; discover
 
 (defview #'discover :html
-  [_request _domain]
+  [request domain]
   {:status 303
    :template false
    :flash "Discovering domain"
@@ -48,7 +48,7 @@
 
 ;; TODO: is this actually ever called as a route?
 (defview #'find-or-create :html
-  [_request _domain]
+  [request domain]
   {:status 303
    :template false
    :headers {"Location" "/main/domains"}})
@@ -56,7 +56,7 @@
 ;; host-meta
 
 (defview #'host-meta :html
-  [_request xrd]
+  [request xrd]
   (let [domain (:host xrd)]
     {:template false
      :headers {"Content-Type" "application/xrds+xml"
@@ -78,14 +78,14 @@
         (:links xrd))])}))
 
 (defview #'host-meta :json
-  [_request xrd]
+  [request xrd]
   {:template false
    :body xrd})
 
 ;; index
 
 (defview #'index :html
-  [_request {:keys [items] :as page}]
+  [request {:keys [items] :as page}]
   {:title "Domains"
    :single true
    :viewmodel "/main/domains.viewmodel"
@@ -105,19 +105,19 @@
 ;; ping
 
 (defview #'ping :xmpp
-  [_request domain]
+  [request domain]
   (model.domain/ping-request domain))
 
 ;; ping-error
 
 (defview #'ping-error :xmpp
-  [_request _]
+  [request _]
   (implement))
 
 ;; ping-response
 
 (defview #'ping-response :xmpp
-  [_request _domain]
+  [request _domain]
   (implement)
   #_{:status 303
      :template false
@@ -126,7 +126,7 @@
 ;; show
 
 (defview #'show :html
-  [_request domain]
+  [request domain]
   {:title (:_id domain)
    :single true
    :viewmodel (format "/main/domains/%s.viewmodel" (:_id domain))
