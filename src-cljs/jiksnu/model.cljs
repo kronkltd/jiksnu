@@ -190,8 +190,7 @@
                 "created"       nil
                 "title"         nil
                 "object"        (js-obj
-                                 "object-type" nil
-                                 )
+                                 "object-type" nil)
                 "like-count"    0
                 "updateSource" nil
                 "enclosures"    (array))

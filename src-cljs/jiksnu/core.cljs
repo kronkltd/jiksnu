@@ -26,6 +26,15 @@
   ["Activity" "AuthenticationMechanism" "Conversation"
    "Domain" "Subscription" "FeedSource" "User"])
 
+(def logging-levels
+  {
+   ;; "waltz.state"        :finest
+   ;; "jiksnu.core"        :finest
+   ;; "jiksnu.model"       :finest
+   ;; "jiksnu.websocket"   :finest
+   "goog.net.WebSocket" :warning
+   })
+
 (defn update-pages
   [data]
   (when-let [pages (.-pages data)]
@@ -211,19 +220,37 @@
             "defaultRoute" (fn [path-string]
                              (log/fine *logger* "default route")
                              (ws/send "fetch-viewmodel" (parse-route path-string))))))
+
+(defmethod ws/process-event "delete"
+  [event]
+  (log/info *logger* "delete callback")
+  (let [id (.-id event)]
+    (.items _view (_/without (.items _view) id))))
+
+(defmethod ws/process-event "update viewmodel"
+  [event]
+  (log/info *logger* "updating viewmodel")
+  (process-viewmodel (.-body event)))
+
+(defmethod ws/process-event "error"
+  [event]
+  (log/severe *logger* (.-message event)))
+
+(defmethod ws/process-event :default
+  [event]
+  (log/info *logger* (format "No match found: %s" event))
+  (jl/info event))
+
 (defn main
   []
 
-
-  ;; (log/set-level (log/get-logger "waltz.state") :finest)
-  ;; (log/set-level (log/get-logger "jiksnu.core") :finest)
-  ;; (log/set-level (log/get-logger "jiksnu.model") :finest)
-  (log/set-level (log/get-logger "jiksnu.websocket") :finest)
-  (log/set-level (log/get-logger "goog.net.WebSocket") :warning)
+  (doseq [[k v] logging-levels]
+    (log/set-level (log/get-logger k) v))
   
   ;; (log/start-display (log/fancy-output))
   
   (log/start-display (log/console-output))
+
   (log/info *logger* "init")
   (try
     (ws/set-view _view)
@@ -232,30 +259,25 @@
       (log/severe *logger* ex)))
 
   (set! _router (Router.))
+  (.start (.-history js/Backbone) (js-obj "pushState" true))
   
   (handlers/setup-handlers)
 
-  (when-let [elts (seq ($ "*[data-load-model]"))]
-    (log/info *logger* "init knockout")
-    (set! _model (model/AppViewModel.))
-    (set! _view (.viewModel js/kb _model))
+  (set! _model (model/AppViewModel.))
+  (aset js/window "_model" _model)
 
-    ;; NB: for debugging only. use fully-qualified var
-    (aset js/window "_model" _model)
-    (aset js/window "_view" _view)
+  (set! _view (.viewModel js/kb _model))
+  (aset js/window "_view" _view)
 
-    (doseq [model-name model-names]
-      (aset model/observables model-name (js-obj)))
+  (doseq [model-name model-names]
+    (aset model/observables model-name (js-obj)))
 
-    (set! (.-instance (.-bindingProvider js/ko))
-          (DataModelProvider.))
+  (set! (.-instance ko/binding-provider)
+        (DataModelProvider.))
 
-    (fetch-viewmodel (.data elts "load-model"))
-    
-    (ko/apply-bindings _view))
+  (ko/apply-bindings _view)
 
-    (.addClass ($ :html) "bound")
-    (.start (.-history js/Backbone) (js-obj "pushState" true))
+  (.addClass ($ :html) "bound")
     
   #_(stats/fetch-statistics _view))
 

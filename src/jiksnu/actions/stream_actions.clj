@@ -173,10 +173,10 @@
                                            :args args})
                            (catch RuntimeException ex
                              (.printStackTrace ex)
-                             {:body (json/json-str {:type "error"
+                             {:body (json/json-str {:action "error"
                                                     :message (str ex)})}))]
              (l/enqueue ch (:body resp))
-             (l/enqueue ch (json/json-str {:type "error"
+             (l/enqueue ch (json/json-str {:action "error"
                                            :message "no command found"}))))))))
   #_(siphon-new-activities ch))
 

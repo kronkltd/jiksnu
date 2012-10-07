@@ -96,7 +96,8 @@
 
 (defview #'verify-credentials :json
   [request _]
-  {:body {:error "Could not authenticate you"
+  {:body {:action "error"
+          :message "Could not authenticate you"
           :request (:uri request)}
    :template false})
 

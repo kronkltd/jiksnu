@@ -5,7 +5,8 @@
         [ciste.routes :only [resolve-routes]]
         [ciste.views :only [defview]]
         [clojure.data.json :only [read-json]]
-        [jiksnu.routes :only [http-predicates http-routes]])
+        [jiksnu.routes :only [http-predicates http-routes]]
+        [jiksnu.routes.admin-routes :only [admin-routes]])
   (:require [clojure.tools.logging :as log]))
 
 (defaction invoke-action
@@ -25,7 +26,7 @@
           (log/warnf "could not find action for: %s(%s) => %s"
                      model-name id action-name)
           {:message "action not found"
-           :type "error"})))
+           :action "error"})))
     (catch RuntimeException ex
       (log/error ex)
       (.printStackTrace ex))))
@@ -44,10 +45,13 @@
   [path options]
   (let [request {:request-method :get
                  :uri            (str "/" path)
-                 ;; :params         options
+                 :params         options
                  :serialization  :http
                  :format         :viewmodel}
-        response ((resolve-routes [http-predicates] http-routes) request)]
+        response ((resolve-routes [http-predicates]
+                                  (concat http-routes
+                                          admin-routes))
+                  request)]
     (if-let [body (:body response)]
       (let [vm (read-json body)]
         {:path path

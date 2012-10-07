@@ -102,7 +102,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       (dissoc activity :recipient-uris)
       (let [users (->> uris
                        (keep #(:_id (actions.user/find-or-create-by-remote-id {:id %})))) ]
-        (assoc activity :recipients (log/spy users))))))
+        (assoc activity :recipients users)))))
 
 (def index*
   (model/make-indexer 'jiksnu.model.activity))
