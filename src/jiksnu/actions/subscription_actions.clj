@@ -9,6 +9,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
+            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import javax.security.sasl.AuthenticationException
@@ -65,7 +66,9 @@
 (defaction subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed
-  (actions.feed-source/subscribe user)
+  (if-let [source (model.feed-source/find-by-user user)]
+    (actions.feed-source/subscribe source)
+    (log/info "Could not find source"))
   (-> {:from (:_id actor)
        :to (:_id user)
        :local true

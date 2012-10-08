@@ -75,17 +75,21 @@
 
 (defsection actions-section [FeedSource :html]
   [source]
-  [:ul.feed-source-actions.buttons
-   [:li (update-button source)]
-   [:li (subscribe-button source)]
-   [:li [:a (if *dynamic*
-              {:data-bind "attr: {href: '/model/feedSources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
-              {:href (format "/model/feedSources/%s.model" (:_id source))})
-         "Model"]]
-   [:li (unsubscribe-button source)]
-   [:li (delete-button source)]
-   [:li (watch-button source)]
-   [:li (unwatch-button source)]])
+  [:div.btn-group
+   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
+    [:span.caret]
+    ]
+   [:ul.dropdown-menu.pull-right
+    [:li (update-button source)]
+    [:li (subscribe-button source)]
+    [:li [:a (if *dynamic*
+               {:data-bind "attr: {href: '/model/feedSources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+               {:href (format "/model/feedSources/%s.model" (:_id source))})
+          "Model"]]
+    [:li (unsubscribe-button source)]
+    [:li (delete-button source)]
+    [:li (watch-button source)]
+    [:li (unwatch-button source)]]])
 
 ;; add-form
 

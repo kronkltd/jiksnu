@@ -260,8 +260,7 @@
   [user]
   [:div.btn-group
    [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
-    [:span.caret]
-    ]
+    [:span.caret]]
    [:ul.dropdown-menu.pull-right
     [:li (subscribe-button user)]
     (when (current-user)
@@ -277,11 +276,7 @@
 
 (defsection admin-actions-section [User :html]
   [user & [page & _]]
-  [:ul.user-actions.buttons
-   [:li (discover-button user)]
-   [:li (update-button user)]
-   [:li (edit-button user)]
-   [:li (delete-button user)]])
+  (actions-section user page))
 
 ;; admin-index-block
 
@@ -329,7 +324,7 @@
     [:div {:data-model "domain"}
      (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
        (link-to domain))]]
-   [:td (user-actions user)]])
+   [:td (actions-section user)]])
 
 ;; admin-index-section
 
@@ -410,7 +405,7 @@
                           (FeedSource.)
                           (-?> item :update-source model.feed-source/fetch-by-id))]
         (link-to source))]]]
-   (user-actions item)
+   (actions-section item)
    (let [links (if *dynamic*  [{}] (:links item))]
      (links-table links))))
 
@@ -484,7 +479,7 @@
       (if *dynamic*
         {:data-bind "text: bio"}
         (:bio user))]]]
-   [:td (user-actions user)]])
+   [:td (actions-section user)]])
 
 (defsection index-line [User :model]
   [item & page]
@@ -596,7 +591,7 @@
                           (catch Object ex
                             (log/warn ex))))]
       (show-section key))
-    (user-actions user)]))
+    (actions-section user)]))
 
 (defsection show-section [User :json]
   [user & _]
@@ -715,6 +710,8 @@
 (defsection update-button [User :html]
   [item & _]
   (action-link "user" "update" (:_id item)))
+
+;; uri
 
 (defsection uri [User]
   [user & options]

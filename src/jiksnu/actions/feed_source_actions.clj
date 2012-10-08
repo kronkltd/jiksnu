@@ -161,23 +161,24 @@
   [item]
   item)
 
+(defn send-subscribe
+  [source]
+  (client/post
+   (:hub source)
+   {:throw-exceptions false
+    :form-params
+    {"hub.callback" (named-url "push callback")
+     "hub.mode" "subscribe"
+     "hub.topic" (:topic source)
+     "hub.verify" "async"}}))
+
 ;; TODO: special case local subscriptions
 ;; TODO: should take a source
 (defaction subscribe
   "Send a subscription request to the feed"
-  [user]
-  (if-let [hub-url (:hub user)]
-    ;; TODO: this will use the update source
-    (let [topic (model.user/feed-link-uri user)]
-      (find-or-create {:topic topic :hub hub-url} {})
-      (client/post
-       hub-url
-       {:throw-exceptions false
-        :form-params
-        {"hub.callback" (named-url "push callback")
-         "hub.mode" "subscribe"
-         "hub.topic" topic
-         "hub.verify" "async"}}))))
+  [source]
+  (send-subscribe source)
+  source)
 
 (defaction remove-watcher
   [source user]

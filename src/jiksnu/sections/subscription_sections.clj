@@ -26,8 +26,11 @@
 
 (defn actions-section
   [subscription]
-  [:ul
-   [:li (delete-button subscription)]])
+  [:div.btn-group
+   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
+    [:span.caret]]
+   [:ul.dropdown-menu.pull-right
+    [:li (delete-button subscription)]]])
 
 
 (defn ostatus-sub-form
