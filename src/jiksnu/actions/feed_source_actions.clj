@@ -118,7 +118,7 @@
 
 (defn parse-feed
   [feed source]
-  (if (seq (:watchers source))
+  (if (or true (seq (:watchers source)))
     (process-entries feed source)
     (do (log/warnf "no watchers for %s" (:topic source))
         (remove-subscription source))))
