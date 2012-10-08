@@ -31,7 +31,7 @@
    ;; "waltz.state"        :finest
    ;; "jiksnu.core"        :finest
    ;; "jiksnu.model"       :finest
-   ;; "jiksnu.websocket"   :finest
+   "jiksnu.websocket"   :fine
    "goog.net.WebSocket" :warning
    })
 
@@ -240,6 +240,10 @@
   [event]
   (log/info *logger* (format "No match found: %s" event))
   (jl/info event))
+
+(defmethod ws/process-event "add notice"
+  [event]
+  (handlers/add-notification (.-message event)))
 
 (defn main
   []

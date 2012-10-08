@@ -10,6 +10,12 @@
   (.stopPropagation event)
   (.preventDefault event))
 
+(defn add-notification
+  [message]
+  (.add (.get _model "notifications")
+        (js-obj
+         "message" message)))
+
 (defn invoke-action
   [e]
   (let [target (js/$ (.-currentTarget e))
@@ -24,9 +30,7 @@
       (ws/send (str "invoke-action " model " " action " " id
                     (if target
                       (str " " target))))
-      (.add (.get _model "notifications")
-            (js-obj
-             "message" message)))
+      (add-notification message))
     (halt e)))
 
 

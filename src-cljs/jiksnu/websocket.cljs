@@ -99,7 +99,10 @@
   []
   (state/trigger ws-state :close))
 
-(defmulti process-event #(.-action %))
+(defmulti process-event
+  (fn [m]
+    (if m
+      (.-action m))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States

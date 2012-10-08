@@ -112,7 +112,7 @@
     "type" "Notifications"
 
     ;; Add a new notification
-    "add-notification"
+    "addNotification"
     (fn [message]
       (this-as this
        (let [notification (model/Notification.)]

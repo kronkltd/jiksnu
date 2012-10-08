@@ -5,7 +5,5 @@
      (fn [~@args]
        (cljs.core/this-as ~this
                 ~@body
-                ~this
-                )
-       )))
+                ~this))))
 

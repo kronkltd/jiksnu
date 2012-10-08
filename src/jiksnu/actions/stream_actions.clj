@@ -169,6 +169,7 @@
          (let [[name & args] (string/split m #" ")]
            (if-let [resp (try
                            (parse-command {:format :json
+                                           :channel ch
                                            :name name
                                            :args args})
                            (catch RuntimeException ex
