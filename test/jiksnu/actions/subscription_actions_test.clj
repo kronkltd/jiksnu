@@ -16,7 +16,7 @@
 
 (test-environment-fixture
 
- (fact "subscribe"
+ (future-fact "subscribe"
    (fact "when the user is not already subscribed"
      (fact "should return a subscription"
        (let [user (feature/a-user-exists)
