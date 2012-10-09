@@ -13,6 +13,7 @@
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -116,6 +117,13 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [user]
   (index {:author (:_id user)}))
 
+(defn set-conversation
+  [activity]
+  (if-let [uri (first (:conversation-uris activity))]
+    (let [conversation (actions.conversation/find-or-create {:uri (:uri activity)})]
+      (assoc activity :conversation (:_id conversation)))
+    activity))
+
 (defn prepare-create
   [activity]
   (-> activity
@@ -131,7 +139,9 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-parent
       transforms.activity/set-url
       transforms.activity/set-id
-      set-recipients))
+      set-recipients
+      set-conversation
+      ))
 
 (defn prepare-post
   [activity]

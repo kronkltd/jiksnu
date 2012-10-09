@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.conversation-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info with-page]])
+        [jiksnu.sections :only [format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [ring.util.response :as response]))
 
@@ -17,9 +17,10 @@
    :viewmodel (str (named-path "index conversations" {}) ".viewmodel")
    :body
    (with-page "default"
-     [:div (if *dynamic*
-             {:data-bind "with: items"})
-      (index-section items page)])})
+     (list (pagination-links page)
+           [:div (if *dynamic*
+                   {:data-bind "with: items"})
+            (index-section items page)]))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

@@ -22,6 +22,7 @@
   model-names
   ["activities"
    "authenticationMechanisms"
+   "conversations"
    "domains"
    "groups"
    "feedSources"
@@ -271,6 +272,9 @@
             "type" "Conversation"
             ;; "defaults" (js-obj
             ;;             )
+            "url" (fn []
+                    (this-as this
+                      (format "/model/conversations/%s.model" (.-id this))))
             "idAttribute" "_id"
             "initialize" initializer)))
 

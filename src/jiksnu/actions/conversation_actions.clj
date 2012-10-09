@@ -34,9 +34,8 @@
 
 (defaction find-or-create
   [options]
-  (if-let [conversation (or (model.conversation/fetch-by-id (:_id options))
-                            (model.conversation/find-by-uri (:uri options))
-                            )]
+  (if-let [conversation (or (if-let [id (:_id options)] (model.conversation/fetch-by-id id))
+                            (if-let [uri (:uri options)] (model.conversation/find-by-uri uri)))]
     conversation
     (create options)))
 
