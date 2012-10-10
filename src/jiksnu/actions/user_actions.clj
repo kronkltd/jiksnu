@@ -133,9 +133,11 @@
     (if (:update-source user)
       user
       ;; look up update source
-      (let [user-meta (get-user-meta user)
-            source (get-feed-source-from-user-meta user-meta)]
-        (assoc user :update-source (:_id source))))))
+      (if-let [user-meta (get-user-meta user)]
+        (if-let [source (get-feed-source-from-user-meta user-meta)]
+          (assoc user :update-source (:_id source))
+          (throw+ "could not get source"))
+        (throw+ "Could not get user meta")))))
 
 (defn prepare-create
   [user]
