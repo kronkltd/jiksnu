@@ -1,7 +1,8 @@
 (ns jiksnu.filters.admin.user-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
-        jiksnu.actions.admin.user-actions)
+        jiksnu.actions.admin.user-actions
+        [jiksnu.filters :only [parse-page parse-sorting]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]))
@@ -10,7 +11,10 @@
 
 (deffilter #'index :http
   [action request]
-  (action))
+  (action {}
+          (merge {}
+                 (parse-page request)
+                 (parse-sorting request))))
 
 ;; show
 

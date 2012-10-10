@@ -4,15 +4,19 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]))
 
 (defaction create
   [options]
   (actions.user/create options))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.user))
+
 (defaction index
-  [options]
-  (actions.user/index options))
+  [& [params & [options & _]]]
+  (index* params options))
 
 (defaction show
   [user]

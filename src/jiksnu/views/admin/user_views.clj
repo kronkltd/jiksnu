@@ -4,7 +4,7 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.user-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section format-page-info with-page]])
+        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -19,9 +19,10 @@
    :viewmodel "/admin/users.viewmodel"
    :body
    (with-page "default"
-     [:div (if *dynamic*
-             {:data-bind "with: items"})
-      (admin-index-section items page)])})
+     (list (pagination-links page)
+           [:div (if *dynamic*
+              {:data-bind "with: items"})
+       (admin-index-section items page)]))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
