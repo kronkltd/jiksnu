@@ -32,6 +32,16 @@
           }})
 
 
+(defview #'show :html
+  [request item]
+  {:body
+   [:div (if *dynamic*
+           {:data-bind "with: targetConversation"})
+    (let [activity (if *dynamic*
+                     (Conversation.)
+                     item)]
+      (show-section item))]})
+
 (defview #'show :model
   [request item]
   {:body item})

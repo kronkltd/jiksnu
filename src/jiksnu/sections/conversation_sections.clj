@@ -24,6 +24,19 @@
    [:tbody
     (map #(admin-index-line % options) records)]])
 
+(defsection link-to [Conversation :html]
+  [record & options]
+  (let [options-map (apply hash-map options)]
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
+          {:href (uri record)})
+     [:span (merge {:property "dc:title"}
+                   (if *dynamic*
+                     {:data-bind "attr: {about: url}, text: _id"}
+                     {:about (uri record)}))
+      (when-not *dynamic*
+       (or (:title options-map) (title record)))] ]))
+
 (defsection index-block [Conversation :html]
   [items & [page]]
   [:table.table

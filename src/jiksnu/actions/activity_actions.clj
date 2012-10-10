@@ -120,7 +120,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn set-conversation
   [activity]
   (if-let [uri (first (:conversation-uris activity))]
-    (let [conversation (actions.conversation/find-or-create {:uri (:uri activity)})]
+    (let [conversation (actions.conversation/find-or-create {:uri uri})]
       (assoc activity :conversation (:_id conversation)))
     activity))
 
