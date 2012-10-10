@@ -2,7 +2,8 @@
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.conversation-actions
         [jiksnu.filters :only [parse-page parse-sorting]])
-  (:require [jiksnu.model.conversation :as model.conversation]))
+  (:require [jiksnu.model :as model]
+            [jiksnu.model.conversation :as model.conversation]))
 
 ;; create
 
@@ -28,5 +29,5 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id model.conversation/fetch-by-id action))
+  (-> request :params :id model/make-id model.conversation/fetch-by-id action))
 

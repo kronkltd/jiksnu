@@ -7,7 +7,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
-            [ring.util.response :as response]))
+            [ring.util.response :as response])
+  (:import jiksnu.model.Conversation))
 
 ;; index
 
@@ -16,15 +17,22 @@
   {:title "Users"
    :viewmodel (str (named-path "index conversations" {}) ".viewmodel")
    :body
-   (with-page "default"
-     (list (pagination-links page)
-           [:div (if *dynamic*
-                   {:data-bind "with: items"})
-            (index-section items page)]))})
+   (let [items (if *dynamic*
+                 [(Conversation.)]
+                 items)]
+     (with-page "default"
+       (list (pagination-links page)
+             [:div (if *dynamic*
+                     {:data-bind "with: items"})
+              (index-section items page)])))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Conversations"
           :pages {:default (format-page-info page)}
-          :users (index-section items page)}})
+          }})
 
+
+(defview #'show :model
+  [request item]
+  {:body item})

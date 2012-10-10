@@ -14,8 +14,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Conversations"
-          :pages {:default (format-page-info page)}
-          :users (admin-index-section items page)}})
+          :pages {:default (format-page-info page)}}})
 
 
 
