@@ -255,7 +255,7 @@
                         "mode"     nil
                         "topic"    nil
                         "watchers" (array)
-                        "title"    nil)
+                        "title"    "Feed")
             "idAttribute" "_id"
             "initialize" initializer)))
 
