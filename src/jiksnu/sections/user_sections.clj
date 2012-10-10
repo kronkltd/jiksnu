@@ -578,11 +578,12 @@
        {:data-bind "text: bio"}
        (:bio user))]
     [:div (if *dynamic* {:data-bind "with: updateSource"})
-     [:div {:data-model "feed-source"}
-      [:a
-       (when *dynamic* {:data-bind "attr: {href: '/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: title"})
-       (when-not *dynamic*
-         (:update-source user))]]]
+     (let [source (if *dynamic*
+                    (FeedSource.)
+                    ;; TODO: look up source
+                    nil)]
+       [:div {:data-model "feed-source"}
+        (link-to source) ])]
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (if-let [key (if *dynamic*

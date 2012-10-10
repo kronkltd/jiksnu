@@ -43,9 +43,9 @@
     [[:post   "/admin/conversations/:id/update"]          #'admin.conversation/fetch-updates]
     [[:post   "/admin/conversations/:id/delete"]          #'admin.conversation/delete]
 
-    [[:get    "/admin/feed-sources.:format"]              #'admin.feed-source/index]
+    [[:get    (formatted-path "admin feed-source index")]              #'admin.feed-source/index]
     [[:get    (named-path "admin feed-source index")]     #'admin.feed-source/index]
-    [[:get    "/admin/feed-sources/:id.:format"]          #'admin.feed-source/show]
+    [[:get    (formatted-path "admin show feed-source")]          #'admin.feed-source/show]
     [[:get    (named-path "admin show feed-source")]      #'admin.feed-source/show]
     [[:post   "/admin/feed-sources/:id/delete"]           #'admin.feed-source/delete]
     [[:post   "/admin/feed-sources/:id/unsubscribe"]      #'admin.feed-source/remove-subscription]

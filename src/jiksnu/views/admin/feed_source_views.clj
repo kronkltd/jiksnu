@@ -1,6 +1,7 @@
 (ns jiksnu.views.admin.feed-source-views
   (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
+        [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.actions.admin.feed-source-actions :only [add-watcher delete
                                                          fetch-updates index
                                                          remove-watcher show]]
@@ -16,7 +17,7 @@
 
 (defview #'add-watcher :html
   [request source]
-  (-> (response/redirect-after-post (format "/admin/feed-sources/%s" (:_id source)))
+  (-> (response/redirect-after-post (named-path "admin show feed-source" (:id (:_id source))))
       (assoc :template false)
       (assoc :flash "Watcher added")))
 
@@ -28,15 +29,13 @@
 
 (defview #'fetch-updates :html
   [request source]
-  (-> (response/redirect-after-post (format "/admin/feed-sources/%s" (:_id source)))
+  (-> (response/redirect-after-post (named-path "admin show feed-source" (:id (:_id source))))
       (assoc :template false)
       (assoc :flash "Fetching updates")))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Feed Sources"
-   :viewmodel (str "/admin/feed-sources.viewmodel"
-                   "?page=" (:page page))
    :single true
    :body (list (let [sources (if *dynamic*
                                [(FeedSource.)]
@@ -56,14 +55,13 @@
 
 (defview #'remove-watcher :html
   [request source]
-  (-> (response/redirect-after-post (format "/admin/feed-sources/%s" (:_id source)))
+  (-> (response/redirect-after-post (named-path "admin show feed-source" (:id (:_id source))))
       (assoc :template false)
       (assoc :flash "Watcher removed")))
 
 (defview #'show :html
   [request source]
   {:title (title source)
-   :viewmodel (format "/admin/feed-sources/%s.viewmodel" (:_id source))
    :single true
    :body
    (let [source (if *dynamic* (FeedSource.) source)]
@@ -80,6 +78,5 @@
 (defview #'show :viewmodel
   [request source]
   {:body {:title (title source)
-          :targetFeedSource (:_id source)
-          :feedSources (admin-index-section [source])}})
+          :targetFeedSource (:_id source)}})
 

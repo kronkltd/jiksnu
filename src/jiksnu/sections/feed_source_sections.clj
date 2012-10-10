@@ -239,7 +239,7 @@
 (defsection link-to [FeedSource :html]
   [source & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/admin/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: _id"}
+        {:data-bind "attr: {href: '/main/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: _id"}
         {:href (str "/admin/feed-sources/" (:_id source))})
    (:topic source)])
 
