@@ -15,8 +15,9 @@
 (def create-validators
   (validation-set
    (presence-of :_id)
-   (presence-of   :created)
-   (presence-of   :updated)
+   (presence-of :url)
+   (presence-of :created)
+   (presence-of :updated)
 
    ))
 

@@ -29,8 +29,8 @@
   (model/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
-  [& [options & _]]
-  (apply index* options))
+  [& [params & [options]]]
+  (index* params options))
 
 (defaction find-or-create
   [options]

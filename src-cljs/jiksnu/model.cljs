@@ -270,8 +270,11 @@
   (.extend backbone/Model
            (js-obj
             "type" "Conversation"
-            ;; "defaults" (js-obj
-            ;;             )
+            "defaults" (js-obj
+                        "url" nil
+                        "created" nil
+                        "updated" nil
+                        )
             "url" (fn []
                     (this-as this
                       (format "/model/conversations/%s.model" (.-id this))))

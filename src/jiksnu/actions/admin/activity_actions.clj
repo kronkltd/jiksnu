@@ -11,7 +11,7 @@
   (model/make-indexer 'jiksnu.model.activity))
 
 (defaction index
-  [& [params & [options & _]]]
+  [& [params & [options]]]
   (index* params options))
 
 (definitializer

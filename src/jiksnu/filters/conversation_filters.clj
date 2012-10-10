@@ -2,7 +2,8 @@
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.conversation-actions
         [jiksnu.filters :only [parse-page parse-sorting]])
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]))
 
 ;; create

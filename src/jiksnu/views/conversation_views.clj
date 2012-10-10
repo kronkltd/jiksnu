@@ -14,7 +14,7 @@
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  {:title "Users"
+  {:title "Conversations"
    :viewmodel (str (named-path "index conversations" {}) ".viewmodel")
    :body
    (let [items (if *dynamic*
@@ -22,8 +22,7 @@
                  items)]
      (with-page "default"
        (list (pagination-links page)
-             [:div (if *dynamic*
-                     {:data-bind "with: items"})
+             [:div (if *dynamic* {:data-bind "with: items"})
               (index-section items page)])))})
 
 (defview #'index :viewmodel

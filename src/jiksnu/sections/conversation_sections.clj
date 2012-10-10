@@ -26,17 +26,30 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  (let [items (if *dynamic*
-                [(Conversation.)]
-                items)]
-    [:table.table
-     [:tbody {:data-bind "foreach: $data"}
-      (map #(index-line % page) items)]]))
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Id"]
+     [:th "Url"]
+     [:th "Created"]
+     [:th "Updated"]]]
+   [:tbody {:data-bind "foreach: $data"}
+    (map #(index-line % page) items)]])
 
 (defsection index-line [Conversation :html]
   [item & [page]]
   [:tr {:data-model "conversation"}
-   [:td (link-to item)]])
+   [:td (link-to item)]
+   [:td (if *dynamic*
+          {:data-bind "text: url"}
+          (:url item))]
+   [:td (if *dynamic*
+          {:data-bind "text: created"}
+          (:created item))]
+   [:td (if *dynamic*
+          {:data-bind "text: updated"}
+          (:updated item))]
+   #_[:td (actions-section item)]])
 
 (defsection index-section [Conversation :html]
   [items & [page]]
