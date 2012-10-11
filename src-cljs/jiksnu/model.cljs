@@ -250,6 +250,8 @@
                       (format "/model/feed-sources/%s.model" (.-id this))))
             "defaults" (js-obj
                         "callback" nil
+                        "created"  nil
+                        "updated"  nil
                         "domain"   nil
                         "hub"      nil
                         "mode"     nil

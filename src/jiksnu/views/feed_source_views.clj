@@ -3,11 +3,13 @@
         [ciste.views :only [defview]]
         ciste.sections.default
         [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.feed-source-actions)
+        jiksnu.actions.feed-source-actions
+        [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
-            [ring.util.response :as response]))
+            [ring.util.response :as response])
+  (:import jiksnu.model.FeedSource))
 
 (defview #'update :html
   [request params]
@@ -26,6 +28,22 @@
       response/redirect-after-post
       (assoc :template false)))
 
+(defview #'show :html
+  [request item]
+  {:body
+   [:div (if *dynamic*
+           {:data-bind "with: targetFeedSource"})
+    (let [activity (if *dynamic*
+                     (FeedSource.)
+                     item)]
+      (show-section item))]
+   :viewmodel (str (named-path "show feed-source" {:id (:_id item)}) ".viewmodel")})
+
 (defview #'show :model
   [request activity]
   {:body (show-section activity)})
+
+(defview #'show :viewmodel
+  [request item]
+  {:body {:targetFeedSource (:_id item)
+          :title (:title item)}})
