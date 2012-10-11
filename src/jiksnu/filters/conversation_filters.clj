@@ -30,5 +30,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id model/make-id model.conversation/fetch-by-id action))
+  (if-let [id (:id (:params (log/spy request)))]
+    (if-let [item (model.conversation/fetch-by-id (model/make-id (log/spy id)))]
+     (action item))))
 

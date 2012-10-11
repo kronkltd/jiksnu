@@ -41,8 +41,10 @@
     (let [page-model (.get _model "pages")]
       (doseq [pair (js->clj pages)]
         (let [[k v] pair
-              page (clj->js (assoc v :id k))]
-          (.add page-model page))))))
+              ]
+          (log/info *logger* k)
+          (let [page (clj->js (assoc v :id k))]
+           (.add page-model page)))))))
 
 (defn update-items
   [data]

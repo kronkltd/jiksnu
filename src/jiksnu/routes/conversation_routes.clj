@@ -9,9 +9,9 @@
 
 (defn routes
   []
-  [[[:get (named-path     "index conversations")] #'conversation/index]
-   [[:get (formatted-path "index conversations")] #'conversation/index]
-   [[:get (named-path     "show conversation")]  #'conversation/show]
+  [[[:get (formatted-path "index conversations")] #'conversation/index]
+   [[:get (named-path     "index conversations")] #'conversation/index]
    [[:get (formatted-path "show conversation")]  #'conversation/show]
+   [[:get (named-path     "show conversation")]  #'conversation/show]
    [[:get (formatted-path "conversation model")] #'conversation/show]
    ])

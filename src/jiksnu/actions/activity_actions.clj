@@ -342,6 +342,11 @@ serialization"
              {:author_name (:name author)
               :author_url (:uri author)}))))
 
+(defaction fetch-by-conversation
+  [conversation & [options]]
+  (index {:conversation (:_id conversation)})
+  )
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.activity-filters"
