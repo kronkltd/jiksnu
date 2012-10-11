@@ -32,7 +32,7 @@
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: _id"}
+                     {:data-bind "attr: {about: uri}, text: _id"}
                      {:about (uri record)}))
       (when-not *dynamic*
        (or (:title options-map) (title record)))] ]))
@@ -47,15 +47,15 @@
      [:th "Created"]
      [:th "Updated"]]]
    [:tbody {:data-bind "foreach: $data"}
-    (map #(index-line % page) items)]])
+    (doall (map #(index-line % page) items))]])
 
 (defsection index-line [Conversation :html]
   [item & [page]]
   [:tr {:data-model "conversation"}
    [:td (link-to item)]
    [:td (if *dynamic*
-          {:data-bind "text: url"}
-          (:url item))]
+          {:data-bind "text: uri"}
+          (:uri item))]
    [:td (if *dynamic*
           {:data-bind "text: created"}
           (:created item))]

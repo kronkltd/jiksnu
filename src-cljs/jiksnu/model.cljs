@@ -247,7 +247,7 @@
             "type" "FeedSource"
             "url" (fn []
                     (this-as this
-                      (format "/model/feedSources/%s.model" (.-id this))))
+                      (format "/model/feed-sources/%s.model" (.-id this))))
             "defaults" (js-obj
                         "callback" nil
                         "domain"   nil
@@ -271,7 +271,7 @@
            (js-obj
             "type" "Conversation"
             "defaults" (js-obj
-                        "url" nil
+                        "uri" nil
                         "created" nil
                         "updated" nil
                         )
@@ -339,6 +339,7 @@
      "statistics"               nil
      "subscriptions"            subscriptions
      "targetActivity"           nil
+     "targetConversation"       nil
      "targetDomain"             nil
      "targetFeedSource"         nil
      "targetUser"               nil

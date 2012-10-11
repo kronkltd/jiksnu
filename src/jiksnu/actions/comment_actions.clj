@@ -72,4 +72,5 @@
 (definitializer
   (require-namespaces
    ["jiksnu.filters.comment-filters"
+    ;; "jiksnu.sections.comment-sections"
     "jiksnu.views.comment-views"]))

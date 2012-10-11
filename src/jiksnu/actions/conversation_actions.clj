@@ -34,10 +34,10 @@
 
 (defaction find-or-create
   [options]
-  (if-let [conversation (or (if-let [id (:_id options)] (model.conversation/fetch-by-id id))
-                            (if-let [uri (:uri options)] (model.conversation/find-by-uri uri)))]
+  (if-let [conversation (log/spy (or (if-let [id (:_id options)] (first (model.conversation/fetch-by-id id)))
+                             (if-let [uri (:uri options)] (first (model.conversation/find-by-uri uri)))))]
     conversation
-    (create options)))
+    (create (log/spy options))))
 
 (defaction show
   [record]
@@ -47,4 +47,5 @@
   (require-namespaces
    ["jiksnu.filters.conversation-filters"
     "jiksnu.triggers.conversation-triggers"
+    "jiksnu.sections.conversation-sections"
     "jiksnu.views.conversation-views"]))

@@ -111,8 +111,6 @@
   [request {:keys [items] :as page}]
   {:title "Public Timeline"
    :post-form true
-   :viewmodel (str "/api/statuses/public_timeline.viewmodel"
-                   "?page=" (:page page))
    :links [{:rel "next"
             :href (str "?page=" (inc (:page page)))
             :title "Next Page"
@@ -145,9 +143,7 @@
    :body
    {:title "Public Timeline"
     :pages {:default (format-page-info page)}
-    :postForm {:visible true}
-    ;; :users (index-section (map actions.activity/get-author items))
-    :activities (doall (index-section items page))}})
+    :postForm {:visible true}}})
 
 (defview #'public-timeline :xml
   [request {:keys [items] :as page}]

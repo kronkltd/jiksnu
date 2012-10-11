@@ -105,7 +105,7 @@
     (if *dynamic*
       {:data-bind "text: links.length"}
       (count (:links domain)))]
-   [:th (actions-section domain)]])
+   #_[:th (actions-section domain)]])
 
 ;; link-to
 
