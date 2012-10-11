@@ -2,11 +2,15 @@
   (:use [ciste.sections.default :only [index-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.key-actions :only [index]]
-        [jiksnu.sections :only [admin-index-section format-page-info with-page]]))
+        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]]))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
-  {:body (admin-index-section items response)
+  {:body
+   (with-page "default"
+     (list
+      (pagination-links response)
+      (admin-index-section items response)))
    :title "Keys"})
 
 (defview #'index :viewmodel

@@ -2,7 +2,7 @@
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.like-actions :only [delete index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section format-page-info]])
+        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.like-sections :as sections.like])
   (:import jiksnu.model.Like))
@@ -12,10 +12,14 @@
   {:single true
    :title "Likes"
    :viewmodel "/admin/likes.viewmodel"
-   :body (admin-index-section
-          (if *dynamic*
-            (Like.)
-            items) response)})
+   :body
+   (with-page "default"
+     (list
+      (pagination-links response)
+      (admin-index-section
+       (if *dynamic*
+         (Like.)
+         items) response)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

@@ -5,7 +5,7 @@
         [jiksnu.actions.group-actions :only [add create edit-page index
                                              new-page user-list]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info with-page]])
+        [jiksnu.sections :only [format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.Group))
 
@@ -35,7 +35,9 @@
    :viewmodel (str (named-path "index groups") ".viewmodel")
    :body
    (with-page "default"
-     (list (index-section (if *dynamic*
+     (list
+      (pagination-links response)
+      (index-section (if *dynamic*
                             [(Group.)]
                             items) response)
            [:p
