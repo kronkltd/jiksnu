@@ -189,6 +189,7 @@
                 "comments"      (array)
                 "comment-count" 0
                 "created"       nil
+                "conversation"  nil
                 "title"         nil
                 "mentioned"     (array)
                 "object"        (js-obj

@@ -45,7 +45,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 "
   [^Element element]
   (let [parent-id (.getAttributeValue element "ref")]
-    {:parent parent-id}))
+    {:parent-uri parent-id}))
 
 (defn parse-geo
   "extract the latitude and longitude components from a geo element"
@@ -121,7 +121,9 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [activity]
   (if-let [uri (first (:conversation-uris activity))]
     (let [conversation (actions.conversation/find-or-create {:uri uri})]
-      (dissoc (assoc activity :conversation (:_id conversation)) :conversation-uris))
+      (-> activity
+          (assoc :conversation (:_id conversation))
+          (dissoc :conversation-uris)))
     activity))
 
 (defn set-mentioned
@@ -354,8 +356,7 @@ serialization"
 
 (defaction fetch-by-conversation
   [conversation & [options]]
-  (index {:conversation (:_id conversation)})
-  )
+  (index {:conversation (:_id conversation)}))
 
 (definitializer
   (require-namespaces

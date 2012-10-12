@@ -54,10 +54,7 @@
 (defn create-trigger
   [action params activity]
   (let [author (actions.activity/get-author activity)
-        mentioned-users (map #(actions.user/find-or-create-by-remote-id {:id %})
-                             (:mentioned-uris activity))
-        ;; parent-activities (map #(actions.activity/find-or-create {:id %})
-        ;;                        (:irts activity))
+        mentioned-users (map model.user/fetch-by-id (:mentioned activity))
         subscribers (map model.subscription/get-actor
                          (model.subscription/subscribers author))
         to-notify (->> (concat subscribers mentioned-users)
@@ -66,12 +63,6 @@
     ;; Add item to author's stream
     (model.item/push author activity)
 
-    ;; Discover conversation
-    #_(doseq [conversation-uri (:conversation-uris activity)]
-      (let [atom-link (model/extract-atom-link conversation-uri)
-            source (actions.feed-source/find-or-create {:topic atom-link} {})]
-        #_(fetch-remote-feed source)))
-    
     ;; Add as a comment to parent posts
     ;; TODO: deprecated
     #_(if-let [parent (model.activity/fetch-by-id (:parent activity))]

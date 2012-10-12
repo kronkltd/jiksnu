@@ -308,11 +308,19 @@
                   (filter #(= (:type %) "text/html"))
                   first :href))}
        "foreign service"]])
-   #_(when (:conversation-uris activity)
-       (list
-        " "
-        [:a {:href (first (:conversation-uris activity))}
-         "in context"]))
+   
+   (when-let [id (if *dynamic*
+                   (model/make-id)
+                   (:conversation activity))]
+     (list
+      " "
+      [:span {:data-bind "with: conversation"}
+       [:span {:data-model "conversation"}
+        [:a (if *dynamic*
+              {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
+              {:href (first (:conversation-uris activity))})
+         "in context"]]]))
+
    (when-let [geo (:geo activity)]
      (list " near "
            [:a.geo-link {:href "#"}
