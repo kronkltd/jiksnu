@@ -34,10 +34,10 @@
 
 (defaction find-or-create
   [options]
-  (if-let [conversation (log/spy (or (if-let [id (:_id options)] (first (model.conversation/fetch-by-id id)))
-                             (if-let [uri (:uri options)] (first (model.conversation/find-by-uri uri)))))]
+  (if-let [conversation (or (if-let [id (:_id options)] (first (model.conversation/fetch-by-id id)))
+                            (if-let [uri (:uri options)] (first (model.conversation/find-by-uri uri))))]
     conversation
-    (create (log/spy options))))
+    (create options)))
 
 (defaction show
   [record]
