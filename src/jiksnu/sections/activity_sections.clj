@@ -205,18 +205,20 @@
 
 (defn recipients-section
   [activity]
-  (when-let [mentioned-uris (seq (:mentioned-uris activity))]
-    [:ul.unstyled
+  (let [ids (if *dynamic*
+              [nil]
+              (:mentioned activity))]
+    [:ul.unstyled {:data-bind "foreach: mentioned"}
      (map
-      (fn [mentioned-uri]
-        [:li
+      (fn [id]
+        [:li {:data-model "user"}
          [:i.icon-chevron-right]
-         (if-let [mentioned-user (if *dynamic*
-                                   (User.)
-                                   (model.user/fetch-by-remote-id mentioned-uri))]
-           (link-to mentioned-user)
-           [:a {:href mentioned-uri :rel "nofollow"} mentioned-uri])])
-      mentioned-uris)]))
+         (if-let [user (if *dynamic*
+                         (User.)
+                         (model.user/fetch-by-id id))]
+           (link-to user)
+           [:a {:href id :rel "nofollow"} id])])
+      ids)]))
 
 (defn links-section
   [activity]

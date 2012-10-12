@@ -121,7 +121,16 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [activity]
   (if-let [uri (first (:conversation-uris activity))]
     (let [conversation (actions.conversation/find-or-create {:uri uri})]
-      (assoc activity :conversation (:_id conversation)))
+      (dissoc (assoc activity :conversation (:_id conversation)) :conversation-uris))
+    activity))
+
+(defn set-mentioned
+  [activity]
+  (if-let [mentioned-uris (seq (:mentioned-uris activity))]
+    (let [ids (map (fn [uri]
+                     (:_id (actions.user/find-or-create-by-remote-id {:id uri})))
+                   mentioned-uris)]
+      (dissoc (assoc activity :mentioned ids) :mentioned-uris))
     activity))
 
 (defn prepare-create
@@ -140,6 +149,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-url
       transforms.activity/set-id
       set-recipients
+      set-mentioned
       set-conversation
       ))
 

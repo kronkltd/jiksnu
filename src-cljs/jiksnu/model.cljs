@@ -190,6 +190,7 @@
                 "comment-count" 0
                 "created"       nil
                 "title"         nil
+                "mentioned"     (array)
                 "object"        (js-obj
                                  "object-type" nil)
                 "like-count"    0
