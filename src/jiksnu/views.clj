@@ -28,34 +28,6 @@
     (-> response
         (assoc :body (abdera/make-feed atom-map)))))
 
-(defmethod format-as :html
-  [format request response]
-  (-> response
-      (assoc :body (h/html (:body response)))))
-
-(defmethod format-as :rdf
-  [request format response]
-  (-> response
-      (assoc :body (model/format-triples (:body response) :xml-abbrev))
-      (assoc-in [:headers "Content-Type"] "application/rdf+xml; charset=utf-8")))
-
-(defmethod format-as :n3
-  [request format response]
-  (-> response 
-      (assoc :body (model/format-triples (:body response) :n3))
-      (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
-
-(defmethod format-as :xml
-  [format request response]
-  (-> response
-      (assoc-in [:headers "Content-Type"] "application/xml")
-      (assoc :body (h/html (:body response)))))
-
-
-;; (defmethod format-as :default
-;;   [format request response]
-;;   response)
-
 ;; (defmethod format-as :atom
 ;;   [format request response]
 ;;   (-> response
@@ -66,6 +38,17 @@
 ;;   (-> response
 ;;       (assoc-in  [:headers "Content-Type"] "text/plain")
 ;;       (assoc :body (str (:body response)))))
+
+;; (defmethod format-as :default
+;;   [format request response]
+;;   response)
+
+
+
+(defmethod format-as :html
+  [format request response]
+  (-> response
+      (assoc :body (h/html (:body response)))))
 
 ;; (defmethod format-as :html
 ;;   [format request response]
@@ -78,22 +61,38 @@
       (assoc :body (json/json-str (:body response)))))
 
 
-(defmethod format-as :viewmodel
-  [format request response]
-  (with-format :json
-    (doall (format-as :json request response))))
-
-
+(defmethod format-as :n3
+  [request format response]
+  (-> response
+      (assoc :body (model/format-triples (:body response) :n3))
+      (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
 
 ;; (defmethod format-as :n3
 ;;   [format request response]
 ;;   (-> response
 ;;       (assoc-in [:headers "Content-Type"] "text/n3;charset=utf-8")))
 
+(defmethod format-as :rdf
+  [request format response]
+  (-> response
+      (assoc :body (model/format-triples (:body response) :xml-abbrev))
+      (assoc-in [:headers "Content-Type"] "application/rdf+xml; charset=utf-8")))
+
 ;; (defmethod format-as :rdf
 ;;   [format request response]
 ;;   (-> response
 ;;       (assoc-in [:headers "Content-Type"] "application/rdf+xml")))
+
+(defmethod format-as :viewmodel
+  [format request response]
+  (with-format :json
+    (doall (format-as :json request response))))
+
+(defmethod format-as :xml
+  [format request response]
+  (-> response
+      (assoc-in [:headers "Content-Type"] "application/xml")
+      (assoc :body (h/html (:body response)))))
 
 ;; (defmethod format-as :xml
 ;;   [format request response]
