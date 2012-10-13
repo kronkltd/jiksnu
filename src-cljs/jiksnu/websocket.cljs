@@ -104,15 +104,14 @@
         (log/debug jm)
         
         (if-let [body (. jm -body)]
-          (prepend ($ :.activities) body))))
+          (prepend ($ :.activities) body))
+        jm))
     (catch js/Error ex
       (log/error (str ex)))))
 
 (defevent ws-state :receive
   [event]
   (state/set ws-state :receiving)
-  (let [payload (. event -message)
-        [_ cmd body] (re-matches #"/([^ ]+) (.*)" payload)]
-    (ws-message payload))
- 
-  (state/set ws-state :idle))
+  (let [parsed-event (.parseJSON js/jQuery (. event -message))]
+    (state/set ws-state :idle)
+    parsed-event))
