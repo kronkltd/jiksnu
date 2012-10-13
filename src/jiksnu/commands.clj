@@ -16,7 +16,11 @@
 
 (defview #'ping :text
   [request data]
-  data)
+  {:body data})
+
+(defview #'ping :json
+  [request data]
+  {:body data})
 
 (add-command! "ping" #'ping)
 
@@ -52,7 +56,11 @@
 
 (defview #'get-environment :text
   [request data]
-  data)
+  {:body data})
+
+(defview #'get-environment :json
+  [request data]
+  {:body data})
 
 (add-command! "get-environment" #'get-environment)
 
@@ -72,7 +80,11 @@
 
 (defview #'get-config :text
   [request data]
-  data)
+  {:body data})
+
+(defview #'get-config :json
+  [request data]
+  {:body data})
 
 (add-command! "config" #'get-config)
 
@@ -92,7 +104,11 @@
 
 (defview #'start-worker :text
   [request data]
-  data)
+  {:body data})
+
+(defview #'start-worker :json
+  [request data]
+  {:body data})
 
 (add-command! "start-worker" #'start-worker)
 

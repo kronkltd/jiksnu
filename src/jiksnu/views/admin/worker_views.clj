@@ -20,6 +20,10 @@
     #(pr-str %)
     workers)})
 
+(defview #'index :json
+  [request workers]
+  {:body workers})
+
 (defview #'start-worker :html
   [request _]
   {:status 303

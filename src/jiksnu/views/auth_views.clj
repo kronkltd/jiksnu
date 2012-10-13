@@ -28,6 +28,10 @@
   [request user]
   {:body (format "logged in as %s" (:username user))})
 
+(defview #'login :json
+  [request user]
+  {:body (format "logged in as %s" (:username user))})
+
 
 (defview #'login-page :html
   [request _]
@@ -78,5 +82,9 @@
    :template false})
 
 (defview #'whoami :text
+  [request user]
+  {:body user})
+
+(defview #'whoami :json
   [request user]
   {:body user})

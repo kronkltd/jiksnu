@@ -118,4 +118,4 @@
 
 (defmethod serialize-as :command
   [serialization response]
-  (:body response))
+  response)
