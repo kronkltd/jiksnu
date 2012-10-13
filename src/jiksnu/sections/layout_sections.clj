@@ -223,9 +223,32 @@
    [:div.navbar-inner
     [:div.container-fluid
      [:a.brand.home {:href "/" :rel "top"}
-        (config :site :name)]
+      (config :site :name)]
+     [:ul.nav.pull-right (sections.auth/login-section response)]
      [:div.navbar-text.connection-info.pull-right]
-     [:ul.nav.pull-right (sections.auth/login-section response)]]]])
+     [:div.navbar-text.pull-right
+      (if *dynamic* "dynamic" "static")]]]])
+
+(defn links-section
+  [request response]
+  (map
+   (fn [format]
+     [:link format])
+   (concat (:formats response)
+           (:links response)
+           [{:href "/rsd.xml"
+             :type "application/rsd+xml"
+             :rel "EditURI"}
+            {:href "/opensearch/notices"
+             :title "Notice Search"
+             :type "application/opensearchdescription+xml"
+             :rel "search"}
+            {:href "/opensearch/people"
+             :title "People Search"
+             :type "application/opensearchdescription+xml"
+             :rel "search"}
+            {:href (str "http://" (config :domain) "/favicon.ico")
+             :rel "shortcut icon"}])))
 
 (defn head-section
   [request response]
@@ -238,32 +261,11 @@
         (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
                        "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
                        "/assets/themes/classic/standard.css")
-        [:link {:href (str "http://" (config :domain) "/favicon.ico")
-                :rel "shortcut icon"}]
-        #_[:link {:href "/opensearch/people"
-                  :title "People Search"
-                  :type "application/opensearchdescription+xml"
-                  :rel "search"}]
-        #_[:link {:href "/opensearch/notices"
-                  :title "Notice Search"
-                  :type "application/opensearchdescription+xml"
-                  :rel "search"}]
-        [:link {:href "/rsd.xml"
-                :type "application/rsd+xml"
-                :rel "EditURI"}]
-        (map
-         (fn [format]
-           [:link {:type (:type format)
-                   :href (:href format)
-                   :rel (or (:rel format) "alternate")
-                   :title (:title format)}])
-         (concat (:formats response)
-                 (:links response)))))
+        (links-section request response)))
 
 (defn page-template-content
   [request response]
-  (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")
-]
+  (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
     {:headers {"Content-Type" "text/html; charset=utf-8"}
     :body
     (str
