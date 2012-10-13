@@ -74,7 +74,7 @@
     
     ;; Add as a comment to parent posts
     ;; TODO: deprecated
-    (if-let [parent (model.activity/fetch-by-id (:parent activity))]
+    #_(if-let [parent (model.activity/fetch-by-id (:parent activity))]
       (model.activity/add-comment parent activity))
 
     ;; Add as comment to irts
