@@ -215,7 +215,7 @@
 (defview #'user-timeline :rdf
   [request [user activities-map]]
   (when user
-    {:body (->> (when-let [activities (:items activities-map)]
+    {:body (->> (when-let [activities (seq (:items activities-map))]
                   (index-section activities))
                 (concat (show-section user))
                 doall)
@@ -225,7 +225,7 @@
   [request [user activities-map]]
   (when user
     {:body
-     (->> (when-let [activities (:items activities-map)]
+     (->> (when-let [activities (seq (:items activities-map))]
             (index-section activities))
           (concat (show-section user))
           doall
