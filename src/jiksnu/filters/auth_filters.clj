@@ -17,6 +17,12 @@
     (action user password)
     (throw+ {:type :authentication :message "user not found"})))
 
+(deffilter #'login :command
+  [action request]
+  (let [[username password] (:args request)
+        user (model.user/get-user username)]
+    (action user password)))
+
 (deffilter #'login-page :http
   [action request]
   (action))
@@ -30,5 +36,9 @@
   (-> request :session :pending-id model/make-id model.user/fetch-by-id action))
 
 (deffilter #'verify-credentials :http
+  [action request]
+  (action))
+
+(deffilter #'whoami :command
   [action request]
   (action))

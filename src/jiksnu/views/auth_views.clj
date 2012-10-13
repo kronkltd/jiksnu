@@ -24,6 +24,11 @@
      :template false
      :headers {"Location" "/"}}))
 
+(defview #'login :text
+  [request user]
+  {:body (format "logged in as %s" (:username user))})
+
+
 (defview #'login-page :html
   [request _]
   {:title "Login"
@@ -71,3 +76,7 @@
   {:body {:error "Could not authenticate you"
           :request (:uri request)}
    :template false})
+
+(defview #'whoami :text
+  [request user]
+  {:body user})

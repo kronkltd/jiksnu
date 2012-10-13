@@ -1,8 +1,10 @@
 (ns jiksnu.actions.auth-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.commands :only [add-command!]]
+        [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
+        [jiksnu.session :only [current-user set-authenticated-user!]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism])
@@ -25,9 +27,11 @@
     (if (->> mechanisms
              (map :value)
              (some (partial password-matches? password)))
-      user
+      (set-authenticated-user! user)
       (throw+ {:type :authentication :message "passwords do not match"}))
     (throw+ {:type :authentication :message "No authentication mechanisms found"})))
+
+(add-command! "auth" #'login)
 
 (defaction login-page
   [request]
@@ -48,6 +52,12 @@
   []
   ;; TODO: actually check
   true)
+
+(defaction whoami
+  []
+  (current-user))
+
+(add-command! "whoami" #'whoami)
 
 (defn add-password
   [user password]
