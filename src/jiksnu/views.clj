@@ -77,6 +77,14 @@
       (assoc-in [:headers "Content-Type"] "application/json")
       (assoc :body (json/json-str (:body response)))))
 
+
+(defmethod format-as :viewmodel
+  [format request response]
+  (with-format :json
+    (doall (format-as :json request response))))
+
+
+
 ;; (defmethod format-as :n3
 ;;   [format request response]
 ;;   (-> response

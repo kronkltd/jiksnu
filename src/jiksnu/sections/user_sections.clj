@@ -263,7 +263,7 @@
    [:li (delete-button user)]])
 
 (defsection admin-index-block [User :html]
-  [items & [page & _]]
+  [items & [page]]
   [:table.users.table
    [:thead
     [:tr
@@ -272,24 +272,40 @@
      [:th "User"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody
-    (map admin-index-line items)]])
+   [:tbody {:data-bind "foreach: users"}
+    (if (config :html-only)
+      (map #(admin-index-line % page) items)
+      (admin-index-line (User.) page))]])
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
-  (let [domain (actions.user/get-domain user)]
-    [:tr {:data-id (:_id user) :data-type "user"}
-     [:td (display-avatar user)]
-     [:td [:a {:href (format "/admin/users/%s" (:_id user))}
-           (:_id user)]]
-     [:td (link-to user)]
-     [:td (link-to domain)]
-     [:td (admin-actions-section user page)]]))
+  [:tr {:data-id (:_id user) :data-type "user"}
+   [:td
+    (when (config :html-only)
+      (display-avatar user))]
+   [:td {:data-bind "text: _id"}
+    (when (config :html-only)
+      [:a {:href (format "/admin/users/%s" (:_id user))}
+       (:_id user)])]
+   [:td {:data-bind "text: username"}
+    (when (config :html-only)
+      (link-to user))]
+   [:td {:data-bind "text: domain"}
+    (when (config :html-only)
+      (let [domain (actions.user/get-domain user)]
+        (link-to domain)))]
+   [:td
+    (when (config :html-only)
+      (admin-actions-section user page))]])
 
 (defsection admin-index-section [User :html]
   [items & [page & _]]
   (list (pagination-links page)
         (admin-index-block items page)))
+
+(defsection admin-index-section [User :viewmodel]
+  [items & [page]]
+  (index-section items page))
 
 (defn link-actions-section
   [link]
@@ -357,7 +373,13 @@
   [:table.table.users
    [:thead]
    [:tbody
-    (map index-line users)]])
+    (if (config :html-only)
+      (map index-line users)
+      (index-line (User.)))]])
+
+(defsection index-block [User :viewmodel]
+  [items & [page]]
+  (map #(index-line % page) items))
 
 (defsection index-line [User :html]
   [user & _]
@@ -380,6 +402,14 @@
             (list
              [:li (edit-button user)]
              [:li (delete-button user)]))))]]]))
+
+(defsection index-line [User :viewmodel]
+  [item & page]
+  (show-section item page))
+
+(defsection index-section [User :viewmodel]
+  [items & [page]]
+  (index-block items page))
 
 (defsection show-section [User :as]
   [user & options]
@@ -461,6 +491,10 @@
           [[ns/foaf :accountName]             (rdf/l (:username user))]
           [[ns/foaf :accountProfilePage]      (rdf/rdf-resource (full-uri user))]
           [[ns/sioc :account_of]              user-uri]])))))
+
+(defsection show-section [User :viewmodel]
+  [item & [page]]
+  item)
 
 (defsection show-section [User :xml]
   [user & options]

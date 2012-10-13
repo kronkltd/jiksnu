@@ -65,6 +65,7 @@
 
     [[:post   "/admin/users"]                             #'admin.user/create]
     [[:get    "/admin/users"]                             #'admin.user/index]
+    [[:get    "/admin/users.:format"]                     #'admin.user/index]
     [[:get    "/admin/users/:id"]                         #'admin.user/show]
 
     [[:get    "/admin/settings"]                          #'admin.setting/edit-page]
