@@ -15,20 +15,44 @@
 ;; (state/set-debug ws-state false)
 (state/set ws-state :closed)
 
+(defn parse-json
+  [s]
+  (.parseJSON js/jQuery s))
+
 ;; WebSocket
 (defn create []
   (goog.net.WebSocket.))
+
+(defn emit!
+  "Sends a command to server, optionally with message."
+  ([socket cmd]
+     (emit! socket cmd nil))
+  ([socket cmd msg]
+     (let [packet (str cmd (when msg (str " " msg)))]
+       (.send socket packet))))
+
+(defn open-socket
+  [socket]
+  (let [url js/WEBSOCKET_PATH]
+    (try
+      (.open socket url)
+      socket
+      (catch js/Error e
+        (log/error "No WebSocket supported, get a decent browser.")
+        (state/set ws-state :error)))))
+
+(defn send
+  [& commands]
+  (apply state/trigger ws-state :send commands))
 
 (defn configure
   "Configures WebSocket"
   [socket]
   (events/listen socket websocket-event/OPENED
-                 (fn [socket] (state/set ws-state :idle)
-                   (state/trigger ws-state :send "connect")))
+                 (fn [socket] (state/trigger ws-state :connected)))
 
   (events/listen socket websocket-event/CLOSED
                  (fn [socket] (state/set ws-state :closed)))
-
 
   (events/listen socket websocket-event/ERROR
                  (fn [socket] (state/set ws-state :error)))
@@ -38,14 +62,20 @@
 
   socket)
 
-(defn emit!
-  "Sends a command to server, optionally with message."
-  ([socket cmd]
-     (emit! socket cmd nil))
-  ([socket cmd msg]
-     (let [packet (str cmd (when msg (str " " msg)))]
-       (log/debug packet)
-       (.send socket packet))))
+(defn ws-message
+  [jm]
+  (try
+    (when jm
+      (let [jm (js/eval jm)]
+        (if-let [body (. jm -body)]
+          (prepend ($ :.activities) body))
+        jm))
+    (catch js/Error ex
+      (log/error (str ex)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; States
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defstate ws-state :closed
   (in [] (text $interface "Closed")))
@@ -65,53 +95,40 @@
 (defstate ws-state :receiving
   (in [] (text $interface "sending")))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Events
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defevent ws-state :connect
   []
-  (state/set ws-state :connecting)
-  (let [socket (configure (create))
-        url js/WEBSOCKET_PATH]
-    (if-let [socket (try
-                      (.open socket url)
-                      socket
-                      (catch js/Error e
-                        (log/error "No WebSocket supported, get a decent browser.")
-                        (state/set ws-state :error)))]
-      (reset! default-connection socket))))
+  (state/transition ws-state :closed :connecting)
+  (let [socket (configure (create))]
+    (if-let [socket (open-socket socket)]
+      (do (reset! default-connection socket)))))
+
+(defevent ws-state :connected
+  []
+  (state/transition ws-state :connecting :idle)
+  ;; The connection isn't really opened till we send a command
+  (send "connect"))
 
 (defevent ws-state :close
   []
   (let [socket @default-connection]
     (. socket (close))
-    (state/set ws-state :closed)))
+    (state/transition ws-state :idle :closed)))
 
 (defevent ws-state :send
-  [command & args]
-  (state/set ws-state :sending)
-  (emit! @default-connection (apply str command " " args))
-  (state/set ws-state :idle))
-
-(defn send
-  [command & args]
-  (apply state/trigger ws-state :send command args))
-
-(defn ws-message
-  [jm]
-  (try
-    (when jm
-      (let [jm (js/eval jm)]
-        (log/debug jm)
-        
-        (if-let [body (. jm -body)]
-          (prepend ($ :.activities) body))
-        jm))
-    (catch js/Error ex
-      (log/error (str ex)))))
+  [m command & args]
+  (state/transition ws-state :idle :sending)
+  (let [message (str command (when (seq args)
+                               (apply str " " args)))]
+    (emit! @default-connection message))
+  (state/transition ws-state :sending :idle))
 
 (defevent ws-state :receive
-  [event]
-  (state/set ws-state :receiving)
-  (let [parsed-event (.parseJSON js/jQuery (. event -message))]
-    (state/set ws-state :idle)
-    parsed-event))
+  [m event]
+  (do (state/transition ws-state :idle :receiving)
+      (let [parsed-event (parse-json (. event -message))]
+        (state/transition ws-state :receiving :idle)
+        parsed-event)))
