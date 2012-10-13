@@ -26,7 +26,7 @@
            content (fseq :summary)
            data (json/json-str                  
                  {:content content})]
-       (log/spy data) => string?)))
+       data => string?)))
  
  (fact "show-http-route"
    (future-fact "when the user is not authenticated"
