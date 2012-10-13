@@ -1,6 +1,6 @@
 (ns jiksnu.sections.user-sections-test
-    (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context]]
+  (:use [ciste.config :only [with-environment]]
+        [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [uri show-section title]]
         [clj-factory.core :only [factory]]
         jiksnu.test-helper
@@ -42,11 +42,16 @@
              response (title user)]
          response => string?))))
 
- (fact "show-section User :xmpp :xmpp"
-   (fact "should return a vcard string"
-     (with-context [:xmpp :xmpp]
-       (let [user (model.user/create (factory :user))]
-         (show-section user) => string?))))
-
-
+ (fact "show-section User"
+   (fact "when the serialization is :xmpp"
+     (with-serialization :xmpp
+       (fact "when the format is :xmpp"
+         (with-format :xmpp
+           (fact "should return a vcard string"
+             (let [user (model.user/create (factory :user))]
+               (show-section user) => string?))))))
+   (fact "when the serialization is :http"
+     (with-serialization :http
+       (fact "when the format is :html"
+         (with-format :html)))))
  )
