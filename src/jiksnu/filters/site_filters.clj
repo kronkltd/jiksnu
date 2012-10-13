@@ -18,3 +18,20 @@
 (deffilter #'get-stats :http
   [action request]
   (action))
+
+(deffilter #'ping :command
+  [action request]
+  (apply action (:args request)))
+
+;; (deffilter #'get-load :command
+;;   [action request]
+;;   (apply action (:args request)))
+
+(deffilter #'get-environment :command
+  [action request]
+  (apply action (:args request)))
+
+(deffilter #'get-config :command
+  [action request]
+  (apply action (:args request)))
+

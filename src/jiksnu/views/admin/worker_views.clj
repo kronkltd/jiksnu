@@ -30,6 +30,18 @@
    :template false
    :headers {"Location" "/"}})
 
+(defview #'start-worker :text
+  [request data]
+  {:body data})
+
+(defview #'start-worker :json
+  [request data]
+  {:body data})
+
+
+
+
+
 (defview #'stop-all-workers :html
   [request _]
   {:status 303

@@ -101,6 +101,10 @@
 
 
 
+(defn command-not-found
+  []
+  "Command not found")
+
 
 
 

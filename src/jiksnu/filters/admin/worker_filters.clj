@@ -19,6 +19,10 @@
   [action request]
   (action))
 
+(deffilter #'start-worker :command
+  [action request]
+  (apply action (:args request)))
+
 (deffilter #'start-worker :http
   [action request]
   (-> request :params :name action))

@@ -3,18 +3,17 @@
         [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.runner :only [require-namespaces]])
-  (:require [inflections.core :as inf]))
+  (:require [clojure.string :as string]
+            [inflections.core :as inf]))
 
 (defaction service
   [id]
   ;; get user
-  true
-  )
+  true)
 
 (defaction rsd
   []
-  true
-  )
+  true)
 
 (defaction get-stats
   []
@@ -28,7 +27,33 @@
               [k (sym)])))
        (into {})))
 
+
+(defaction get-environment
+  []
+  (ciste.config/environment))
+
+(defn get-config
+  [path]
+  (->> (string/split path #"/")
+       (map keyword)
+       (apply ciste.config/config)))
+
+;; (defn get-load
+;;   []
+;;   (str (core.host/get-load-average)))
+
+(defn ping
+  []
+  "pong")
+
+
+
+(add-command! "get-environment" #'get-environment)
 (add-command! "get-stats" #'get-stats)
+;; (add-command! "get-load" #'get-load)
+(add-command! "config" #'get-config)
+(add-command! "ping" #'ping)
+
 
 (definitializer
   (require-namespaces

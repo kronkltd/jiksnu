@@ -78,3 +78,34 @@
   {:status 200
    :template false
    :body stats})
+
+
+(defview #'get-environment :text
+  [request data]
+  {:body data})
+
+(defview #'get-environment :json
+  [request data]
+  {:body data})
+
+(defview #'get-config :text
+  [request data]
+  {:body data})
+
+(defview #'get-config :json
+  [request data]
+  {:body data})
+
+(defview #'ping :text
+  [request data]
+  {:body data})
+
+(defview #'ping :json
+  [request data]
+  {:body data})
+
+;; (defview #'get-load :text
+;;   [request data]
+;;   data)
+
+
