@@ -110,8 +110,7 @@
 
 (defaction callback-publish
   [feed]
-  (if-let [topic (-?> feed
-                      (abdera/rel-filter-feed "self")
+  (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
       (if (seq (:watchers source))
