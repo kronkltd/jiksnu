@@ -11,3 +11,6 @@
   [action request]
   (action (current-user-id)))
 
+(deffilter #'get-stats :command
+  [action request]
+  (action))

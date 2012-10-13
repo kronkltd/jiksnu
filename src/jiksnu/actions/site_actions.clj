@@ -1,5 +1,6 @@
 (ns jiksnu.actions.site-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.commands :only [add-command!]]
+        [ciste.config :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.runner :only [require-namespaces]])
   (:require [inflections.core :as inf]))
@@ -26,6 +27,8 @@
                   sym (intern (the-ns namespace-sym) (symbol "count-records"))]
               [k (sym)])))
        (into {})))
+
+(add-command! "get-stats" #'get-stats)
 
 (definitializer
   (require-namespaces

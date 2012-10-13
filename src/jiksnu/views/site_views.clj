@@ -72,3 +72,9 @@
        [:accept "application/atom+xml;type=entry"]
        [:activity:verb "http://activitystrea.ms/schema/1.0/join"]]]])})
 
+
+(defview #'get-stats :json
+  [request stats]
+  {:status 200
+   :template false
+   :body stats})
