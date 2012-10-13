@@ -78,6 +78,7 @@
   []
   (log/info "starting application")
   (setup-handlers)
+  ;; (connect-repl)
   (state/trigger ws/ws-state :connect))
 
 (main)
