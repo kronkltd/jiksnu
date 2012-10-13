@@ -43,7 +43,8 @@
 
 (defn send
   [& commands]
-  (apply state/trigger ws-state :send commands))
+  (let [res (state/trigger ws-state :send (apply str commands))]
+    res))
 
 (defn configure
   "Configures WebSocket"
