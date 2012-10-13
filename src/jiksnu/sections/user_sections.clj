@@ -13,8 +13,7 @@
                                  admin-index-section
                                  admin-show-section control-line]]
          [jiksnu.session :only [current-user is-admin?]])
-  (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
             [jiksnu.abdera :as abdera]
@@ -30,12 +29,7 @@
             [jiksnu.model.user :as model.user]
             [plaza.rdf.core :as rdf]
             [ring.util.codec :as codec])
-  (:import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
-           java.math.BigInteger
-           java.net.URI
-           javax.xml.namespace.QName
-           jiksnu.model.Activity
-           jiksnu.model.User
+  (:import jiksnu.model.User
            org.apache.abdera2.model.Entry))
 
 (defn user-timeline-link
@@ -245,13 +239,27 @@
        [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
 
 
+(defn link-actions-section
+  [link]
+  [:ul.buttons
+   [:li "delete"]])
 
-(defsection title [User]
-  [user & options]
-  (or (:name user)
-      (:display-name user)
-      (:first-name user)
-      (model.user/get-uri user)))
+(defn actions-section
+  [user]
+  [:ul.buttons
+   [:li (subscribe-button user)]
+   (when authenticated
+     (list
+      [:li (discover-button user)]
+      [:li (update-button user)]
+      (when (is-admin?)
+        (list
+         [:li (edit-button user)]
+         [:li (delete-button user)]))))])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Sections
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (defsection admin-actions-section [User :html]
@@ -261,6 +269,9 @@
    [:li (update-button user)]
    [:li (edit-button user)]
    [:li (delete-button user)]])
+
+
+
 
 (defsection admin-index-block [User :html]
   [items & [page]]
@@ -298,6 +309,8 @@
     (when (config :html-only)
       (admin-actions-section user page))]])
 
+
+
 (defsection admin-index-section [User :html]
   [items & [page & _]]
   (list (pagination-links page)
@@ -307,10 +320,7 @@
   [items & [page]]
   (index-section items page))
 
-(defn link-actions-section
-  [link]
-  [:ul.buttons
-   [:li "delete"]])
+
 
 (defsection admin-show-section [User :html]
   [item & [response & _]]
@@ -345,6 +355,15 @@
          [:td (link-actions-section link)]])
       (:links item))]]
    (admin-actions-section item)])
+
+
+(defsection title [User]
+  [user & options]
+  (or (:name user)
+      (:display-name user)
+      (:first-name user)
+      (model.user/get-uri user)))
+
 
 (defsection add-form [User :html]
   [user & _]
@@ -392,16 +411,7 @@
       [:p (:url user)]
       [:p (:bio user)]]
      [:td
-      [:ul.buttons
-       [:li (subscribe-button user)]
-       (when authenticated
-         (list
-          [:li (discover-button user)]
-          [:li (update-button user)]
-          (when (is-admin?)
-            (list
-             [:li (edit-button user)]
-             [:li (delete-button user)]))))]]]))
+      (actions-section user)]]))
 
 (defsection index-line [User :viewmodel]
   [item & page]
@@ -538,10 +548,3 @@
   (if (model.user/local? user)
     (str "/" (:username user))
     (str "/remote-user/" (:username user) "@" (:domain user))))
-
-
-
-
-
-
-
