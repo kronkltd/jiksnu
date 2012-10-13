@@ -115,3 +115,7 @@
   [serialization response]
   (when response
     (tigase/make-packet response)))
+
+(defmethod serialize-as :command
+  [serialization response]
+  (:body response))
