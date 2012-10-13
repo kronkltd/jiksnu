@@ -208,7 +208,7 @@
   (let [model (rdf/build-model)
         j-model (rdf/to-java model)]
     (doseq [[prefix uri] rdf-prefixes]
-      (.setNsPrefix prefix uri))
+      (.setNsPrefix j-model prefix uri))
     (rdf/with-model model
       (rdf/model-add-triples triples))
     model))

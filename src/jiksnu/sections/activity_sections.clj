@@ -8,6 +8,7 @@
                                        update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.model :only [with-subject]]
         [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
                                 control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
@@ -660,16 +661,17 @@
           user (model.activity/get-author activity)
           user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
           summary (or content summary)]
-      (concat [
-               [uri [:rdf :type]         [:sioc :Post]]
-               [uri [:as  :verb]         (rdf/l "post")]
-               
-               [uri [:sioc :has_creator] user-res]
-               [uri [:sioc :has_owner]   user-res]
-               [uri [:as  :author]       user-res]
-               [uri [:dc  :published]    (rdf/date (.toDate created))]
-               ]
-              (when summary [[uri [:sioc  :content]    (rdf/l summary)]])))))
+      (concat
+       (with-subject uri
+         [
+          [[ns/rdf  :type]        [ns/sioc "Post"]]
+          [[ns/as   :verb]        (rdf/l "post")]
+          [[ns/sioc :has_creator] user-res]
+          [[ns/sioc :has_owner]   user-res]
+          [[ns/as   :author]      user-res]
+          [[ns/dc   :published]   (rdf/date (.toDate created))]
+         ])
+       (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
 
 (defsection show-section [Activity :viewmodel]
   [activity & [page]]
