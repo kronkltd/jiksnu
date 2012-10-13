@@ -36,26 +36,27 @@
         ;; If no total, no pagination
         total-records (get options :total-records 0)]
     [:div.paginations
-     {:data-bind "with: pageInfo"}
-     [:p
+     (when *dynamic*
+       {:data-bind "with: pageInfo"})
+     [:p.paginations-page
       [:span.pagination-label "Page"] " "
       [:span.pagination-value
        (if *dynamic*
          {:data-bind "text: page"}
          page)]]
-     [:p
+     [:p.paginations-page-size
       [:span.pagination-label "Page Size"] " "
       [:span.pagination-value
        (if *dynamic*
          {:data-bind "text: pageSize"}
          page-size)]]
-     [:p
+     [:p.paginations-record-count
       [:span.pagination-label "Records returned"] " "
       [:span.pagination-value
        (if *dynamic*
          {:data-bind "text: recordCount"}
          (count (:items options)))]]
-     [:p
+     [:p.paginations-total-records
       [:span.pagination-label "Total Records"] " "
       [:span.pagination-value
        (if *dynamic*
