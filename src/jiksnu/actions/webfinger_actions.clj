@@ -16,6 +16,7 @@
            jiksnu.model.Domain
            jiksnu.model.User))
 
+;; TODO: show domain, format :jrd
 (defaction host-meta
   []
   (let [domain (config :domain)
@@ -25,18 +26,22 @@
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
 
+;; TODO: show user, format :jrd
+;; TODO: should take a user
 (defaction user-meta
   [uri]
   (->> uri
        model.user/split-uri
        (apply model.user/get-user )))
 
+;; TODO: move to user actions and ensure property is always set
 (defn get-user-meta-uri
   [user]
   (let [domain (model.user/get-domain user)]
     (or (:user-meta-uri user)
         (actions.domain/get-user-meta-url domain (:id user)))))
 
+;; TODO: is this being called anymore?
 (defn get-links
   [xrd]
   #_(let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
@@ -49,6 +54,7 @@
        links)))
 
 ;; TODO: Collect all changes and update the user once.
+;; TODO: split the fetching and the processing apart
 (defaction update-usermeta
   [user]
   (let [xrd (model.webfinger/fetch-user-meta user)
@@ -64,6 +70,7 @@
         ;; TODO: set fields
         actions.user/update)))
 
+;; TODO: split the fetching and the processing apart
 (defn discover-webfinger
   [^Domain domain]
   ;; TODO: check https first
