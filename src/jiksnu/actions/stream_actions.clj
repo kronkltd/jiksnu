@@ -1,5 +1,7 @@
 (ns jiksnu.actions.stream-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.commands :only [parse-command]]
+        [ciste.config :only [config definitializer]]
+
         [ciste.core :only [defaction with-context]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
@@ -8,6 +10,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clojure.data.json :as json]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
@@ -150,18 +153,39 @@
      :headers {"content-type" "application/json"}
      :body stream}))
 
+
+(defn format-event
+  [m]
+  (str (json/json-str
+        {:body (format-message-html m)
+         :event "stream-add"
+         :stream "public"})
+       "\r\n"))
+
+(defn filter-create
+  [m]
+  (#{#'actions.activity/create} (:action m)))
+
+(defn siphon-new-activities
+  [ch]
+  (l/siphon
+   (->> ciste.core/*actions*
+        l/fork
+        (l/filter* filter-create)
+        (l/map* format-event))
+   ch))
+
 (defn websocket-handler
   [ch request]
-  (l/siphon (->> ciste.core/*actions*
-                 l/fork
-                 (l/filter* (fn [m] (#{#'actions.activity/create} (:action m))))
-                 (l/map* (fn [m]
-                           (str (json/json-str
-                                 {:body (format-message-html m)
-                                  :event "stream-add"
-                                  :stream "public"})
-                                "\r\n"))))
-            ch))
+  (l/receive-all
+   ch
+   (fn [m]
+     (let [[name & args] (string/split m #" ")]
+       (let [resp  (parse-command {:format :json
+                                   :name name
+                                   :args args})]
+         (l/enqueue ch resp)))))
+  (siphon-new-activities ch))
 
 (definitializer
   (require-namespaces
