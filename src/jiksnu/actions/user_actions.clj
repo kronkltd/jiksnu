@@ -355,13 +355,6 @@
        (into user)
        model.user/update))
 
-(defn get-name
-  "Returns the name of the Atom person"
-  [^Person person]
-  (or (.getSimpleExtension person ns/poco "displayName" "poco" )
-      (.getName person)))
-
-
 ;; TODO: This function should be called at most once per user, per feed
 (defn person->user
   "Extract user information from atom element"
@@ -370,23 +363,19 @@
         ;; TODO: check for custom domain field first?
         domain-name (get-domain-name id)
         domain (actions.domain/find-or-create {:_id domain-name})
-        username (or (.getSimpleExtension person ns/poco
-                                          "preferredUsername" "poco")
+        username (or (abdera/get-extension person ns/poco "preferredUsername")
                      (get-username {:id id}))]
     (if (and username domain)
       (let [email (.getEmail person)
-            name (get-name person)
-            note (.getSimpleExtension person (QName. ns/poco "note"))
+            name (abdera/get-name person)
+            note (abdera/get-extension person ns/poco "note")
             uri (str (.getUri person))
             ;; homepage 
             local-id (-> person
-                         (.getExtensions (QName. ns/statusnet "profile_info"))
-                         (->> (map (fn [extension]
-                                     (.getAttributeValue extension "local_id"))))
+                         (abdera/get-extension-elements ns/statusnet "profile_info")
+                         (->> (map #(.getAttributeValue % "local_id")))
                          first)
-            links (-> person
-                      (.getExtensions (QName. ns/atom "link"))
-                      (->> (map abdera/parse-link)))
+            links (abdera/get-links person)
             params (merge {:domain domain-name}
                           (when uri {:uri uri})
                           (when username {:username username})

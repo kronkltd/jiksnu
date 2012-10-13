@@ -2,7 +2,8 @@
   (:use [ciste.initializer :only [definitializer]]
         [clojure.core.incubator :only [-?>]])
   (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log])
+            [clojure.tools.logging :as log]
+            [jiksnu.namespace :as ns])
   (:import java.io.ByteArrayInputStream
            java.io.StringWriter
            java.net.URI
@@ -14,6 +15,7 @@
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Feed
            org.apache.abdera2.model.Link
+           org.apache.abdera2.model.Person
            org.apache.abdera2.protocol.client.AbderaClient
            org.apache.axiom.util.UIDGenerator))
 
@@ -199,7 +201,26 @@ this is for OSW
    (if-let [source (.getSource entry)]
      (first (.getAuthors source)))))
 
+(defn get-name
+  "Returns the name of the Atom person"
+  [^Person person]
+  (or (.getSimpleExtension person ns/poco "displayName" "poco" )
+      (.getName person)))
 
+
+(defn get-extension-elements
+  [person ns-part local-part]
+  (.getExtensions person (QName. ns-part local-part)))
+
+(defn get-links
+  [person]
+  (-> person
+      (get-extension-elements ns/atom "link")
+      (->> (map parse-link))))
+
+(defn get-extension
+  [person ns-part local-part]
+  (.getSimpleExtension person (QName. ns-part local-part)))
 
 
 (defn ^Link make-link
