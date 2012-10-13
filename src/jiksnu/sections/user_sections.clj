@@ -290,6 +290,11 @@
       (admin-index-line (User.) page)
       (map #(admin-index-line % page) items))]])
 
+(defsection admin-index-block [User :viewmodel]
+  [items & [page]]
+  (map #(admin-index-line % page) items))
+
+
 (defsection admin-index-line [User :html]
   [user & [page & _]]
   [:tr {:data-id (:_id user) :data-type "user"}
@@ -408,15 +413,31 @@
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr {:data-id (:_id user) :data-type "user"}
-   [:td (display-avatar user)]
+  [:tr
+   (when-not *dynamic*
+     {:data-id (:_id user) :data-type "user"})
    [:td
-    [:p (link-to user)]
-    [:p (:username user) "@" (:domain user)]
-    [:p (:url user)]
-    [:p (:bio user)]]
+    (when-not *dynamic*
+      (display-avatar user))]
    [:td
-    (actions-section user)]])
+    [:p
+     (when-not *dynamic*
+       (link-to user))]
+    [:p
+     (when-not *dynamic*
+       (:username user))
+     "@"
+     (when-not *dynamic*
+       (:domain user))]
+    [:p
+     (when-not *dynamic*
+       (:url user))]
+    [:p
+     (when-not *dynamic*
+       (:bio user))]]
+   [:td
+    (when-not *dynamic*
+      (actions-section user))]])
 
 (defsection index-line [User :viewmodel]
   [item & page]
@@ -455,19 +476,34 @@
 
 (defsection show-section [User :html]
   [user & options]
-  [:div.vcard.user-full {:data-id (:_id user) :data-type "user"}
+  [:div.vcard.user-full
+   (when-not *dynamic*
+     {:data-id (:_id user) :data-type "user"})
    [:p
-    (display-avatar user)
-    [:span.nickname.fn.n (:display-name user)]
-    " (" (:username user) "@" (link-to (actions.user/get-domain user)) ")"]
+    (when-not *dynamic*
+      (display-avatar user))
+    [:span.nickname.fn.n
+     (when-not *dynamic*
+       (:display-name user))]
+    " ("
+    (when-not *dynamic*
+      (:username user))
+    "@"
+    (when-not *dynamic*
+      (link-to (actions.user/get-domain user))) ")"]
    [:div.adr
-    [:p.locality (:location user)]]
-   [:p.note (:bio user)]
-   [:p [:a {:href (:id user)} (:id user)]]
-   [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-   (when (:discovered user)
-     (show-section (model.key/get-key-for-user user)))
-   (user-actions user)])
+    [:p.locality
+     (when-not *dynamic*
+       (:location user))]]
+   [:p.note
+    (when-not *dynamic*
+      (:bio user))]
+   ;; [:p [:a {:href (:id user)} (:id user)]]
+   ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
+   (when-not *dynamic*
+     (when (:discovered user)
+       (show-section (model.key/get-key-for-user user))))
+   #_(user-actions user)])
 
 (defsection show-section [User :rdf]
   [user & _]

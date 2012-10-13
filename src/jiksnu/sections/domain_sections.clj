@@ -15,7 +15,12 @@
   [domain & _]
   (str "/main/domains/" (:_id domain)))
 
-;; (defsection title [Domain])
+(defn discover-button
+  [domain]
+  [:form {:method "post"
+          :action (str "/main/domains/" (:_id domain) "/discover")}
+   [:button.btn.discover-button {:type "submit"}
+    [:i.icon-search] [:span.button-text "Discover"]]])
 
 
 (defsection add-form [Domain :html]
@@ -29,26 +34,60 @@
       "Add"]]]])
 
 
-;; (defsection delete-button [Domain :html]
-;;   [record & _]
-;;   [:form {:method "post"
-;;           :action (str (uri record) "/delete")}
-;;    [:button.btn.delete-button {:type "submit"}
-;;     [:i.icon-trash] [:span.button-text "Delete"]]])
+(defsection index-block [Domain :html]
+  [domains & _]
+  [:table.domains.table
+   [:thead
+    [:tr
+     [:th ]
+     [:th "Name"]
+     [:th "XMPP?"]
+     [:th "Discovered"]
+     [:th "Host Meta"]
+     [:th "# Links"]]]
+   [:tbody (map index-line domains)]])
 
-(defn discover-button
-  [domain]
-  [:form {:method "post"
-          :action (str "/main/domains/" (:_id domain) "/discover")}
-   [:button.btn.discover-button {:type "submit"}
-    [:i.icon-search] [:span.button-text "Discover"]]])
+(defsection index-block [Domain :viewmodel]
+  [items & [page]]
+  (map #(index-line % page) items))
 
-;; (defsection edit-button [Domain :html]
-;;   [domain & _]
-;;   [:form {:method "post"
-;;           :action (str "/main/domains/" (:_id domain) "/edit")}
-;;    [:button.btn.edit-button {:type "submit"}
-;;     [:i.icon-pencil] [:span.button-text "Edit"]]])
+(defsection index-line [Domain :html]
+  [domain & _]
+  [:tr
+   [:td (favicon-link domain)]
+   [:td (link-to domain)]
+   [:td (:xmpp domain)]
+   [:td (:discovered domain)]
+   [:td
+    [:a {:href (str "http://" (:_id domain) "/.well-known/host-meta")}
+     "Host-Meta"]]
+   [:td (count (:links domain))]
+   #_[:th
+    (discover-button domain)
+    (edit-button domain)
+    (delete-button domain)]])
+
+(defsection index-line [Domain :viewmodel]
+  [item & [page]]
+  (show-section item page))
+
+;; (defsection index-section [Domain :html]
+;;   [domains & [options & _]]
+;;   (let [{:keys [page total-records]} options]
+;;     (list
+;;      [:p "Page: " page]
+;;      [:p "Total Records: " total-records]
+;;      (index-block domains options)
+;;      (pagination-links options))))
+
+(defsection index-section [Domain :viewmodel]
+  [items & [page]]
+  (index-block items page))
+
+(defsection link-to [Domain :html]
+  [domain & _]
+  [:a {:href (uri domain)} (:_id domain)])
+
 
 (defsection show-section [Domain :html]
   [domain & _]
@@ -77,63 +116,7 @@
      (sections.link/index-section (:links domain)))
    (when (current-user) (discover-button domain))])
 
-(defsection index-line [Domain :html]
-  [domain & _]
-  [:tr
-   [:td (favicon-link domain)]
-   [:td (link-to domain)]
-   [:td (:xmpp domain)]
-   [:td (:discovered domain)]
-   [:td
-    [:a {:href (str "http://" (:_id domain) "/.well-known/host-meta")}
-     "Host-Meta"]]
-   [:td (count (:links domain))]
-   #_[:th
-    (discover-button domain)
-    (edit-button domain)
-    (delete-button domain)]])
+(defsection show-section [Domain :viewmodel]
+  [item & [page]]
+  item)
 
-(defsection index-block [Domain :html]
-  [domains & _]
-  [:table.domains.table
-   [:thead
-    [:tr
-     [:th ]
-     [:th "Name"]
-     [:th "XMPP?"]
-     [:th "Discovered"]
-     [:th "Host Meta"]
-     [:th "# Links"]
-     ;; [:th "Actions"]
-     ;; [:th "Discover"]
-     ;; [:th "Edit"]
-     ;; [:th "Delete"]
-     ]]
-   [:tbody (map index-line domains)]])
-
-;; (defn pagination-links
-;;   [options]
-;;   ;; TODO: page should always be there from now on
-;;   (let [page-number (get options :page 1)
-;;         page-size (get options :page-size 20)
-;;         ;; If no total, no pagination
-;;         total (get options :total-records 0)]
-;;     [:ul.pager
-;;      (when (> page-number 1)
-;;        [:li.previous [:a {:href (str "?page=" (dec page-number)) :rel "prev"} "&larr; Previous"]])
-;;      (when (< (* page-number page-size) total)
-;;        [:li.next [:a {:href (str "?page=" (inc page-number)) :rel "next"} "Next &rarr;"]])]))
-
-
-;; (defsection index-section [Domain :html]
-;;   [domains & [options & _]]
-;;   (let [{:keys [page total-records]} options]
-;;     (list
-;;      [:p "Page: " page]
-;;      [:p "Total Records: " total-records]
-;;      (index-block domains options)
-;;      (pagination-links options))))
-
-(defsection link-to [Domain :html]
-  [domain & _]
-  [:a {:href (uri domain)} (:_id domain)])

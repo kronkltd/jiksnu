@@ -7,6 +7,7 @@
                                        uri title index-block index-line index-section
                                        update-button]]
         [clojure.core.incubator :only [-?>]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
                                 control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
@@ -444,6 +445,8 @@
 
 
 
+
+
 (defsection index-block [Activity]
   [items & [page]]
   (map #(index-line % page) items))
@@ -468,21 +471,12 @@
    (map index-line activities)])
 
 
+
+
+
 (defsection index-line [Activity]
-  [activity & opts]
-  (apply show-section activity opts))
-
-(defsection index-line [Activity :html]
-  [activity & opts]
-  (apply show-section activity opts))
-
-(defsection index-line [Activity :rdf]
-  [activity & [options & _]]
-  (show-section activity))
-
-(defsection index-line [Activity :viewmodel]
-  [item & [page]]
-  (show-section item page))
+  [activity & [page]]
+  (show-section activity page))
 
 (defsection index-line [Activity :xmpp]
   [^Activity activity & options]
@@ -493,18 +487,14 @@
 
 
 (defsection index-section [Activity]
-  [items & [response]]
-  (index-block items response))
+  [items & [page]]
+  (index-block items page))
 
 (defsection index-section [Activity :html]
   [items & [response]]
   (list
    (pagination-links response)
    (index-block items response)))
-
-(defsection index-section [Activity :rdf]
-  [activities & _]
-  (index-block activities))
 
 (defsection index-section [Activity :xmpp]
   [activities & options]
@@ -613,6 +603,16 @@
    (when (:attachments activity)
      {:attachments []})))
 
+(defn enclosures-section
+  [activity]
+  (when (seq (:enclosures activity))
+    [:ul.unstyled
+     (map
+      (fn [enclosure]
+        [:li
+         [:img {:src (:href enclosure) :alt ""} ]])
+      (:enclosures activity))]))
+
 (defsection show-section [Activity :html]
   [activity & _]
   (let [user (model.activity/get-author activity)]
@@ -627,27 +627,24 @@
        (post-actions activity)]
       [:div.vcard
        ;; TODO: merge into the same link
-       (sections.user/display-avatar user)
-       [:span.fn.n (link-to user)]]
+       (when-not *dynamic* (sections.user/display-avatar user))
+       [:span.fn.n
+        (when-not *dynamic*
+          (link-to user))]]
       (recipients-section activity)]
      [:div.entry-content
       #_(when (:title activity)
           [:h1.entry-title {:property "dc:title"} (:title activity)])
       [:p {:property "dc:title"}
-       (or #_(:title activity)
-           (:content activity))]]
+       (when-not *dynamic*
+         (or #_(:title activity)
+             (:content activity)))]]
      [:div
       [:ul.unstyled
        (map (fn [irt]
               [:a {:href irt :rel "nofollow"} irt])
             (:irts activity))]
-      (when (seq (:enclosures activity))
-        [:ul.unstyled
-         (map
-          (fn [enclosure]
-            [:li
-             [:img {:src (:href enclosure) :alt ""} ]])
-          (:enclosures activity))])
+      (enclosures-section activity)
       #_(links-section activity)
       (likes-section activity)
       (maps-section activity)
@@ -688,7 +685,7 @@
   [activity & _]
   [:status
    [:text (h/h (or (:title activity)
-                             (:content activity)))]
+                   (:content activity)))]
    [:truncated "false"]
    [:created_at (-?> activity :published .toDate model/date->twitter)]
    [:source (:source activity)]
