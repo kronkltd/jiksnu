@@ -53,7 +53,7 @@
                 :compiler
                 {:output-to "resources/public/cljs/bootstrap.js"
                  :output-dir "resources/public/cljs"
-                 :optimizations :whitespace
+                 :optimizations :simple
                  :pretty-print true}}]}
   :main ciste.runner
   :jvm-opts [
