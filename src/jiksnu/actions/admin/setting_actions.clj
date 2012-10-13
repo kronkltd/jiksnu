@@ -1,6 +1,7 @@
 (ns jiksnu.actions.admin.setting-actions
   (:use [ciste.config :only [config definitializer set-config! write-config!]]
-        [ciste.core :only [defaction]])
+        [ciste.core :only [defaction]]
+        [ciste.runner :only [require-namespaces]])
   (:require [jiksnu.session :as session]))
 
 (defaction edit-page
@@ -28,3 +29,7 @@
     (write-config!)
     params))
 
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.admin.setting-filters"
+    "jiksnu.views.admin.setting-views"]))
