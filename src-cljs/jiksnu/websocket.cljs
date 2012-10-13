@@ -43,8 +43,7 @@
 
 (defn send
   [& commands]
-  (let [res (state/trigger ws-state :send (apply str commands))]
-    res))
+  (state/trigger ws-state :send (apply str commands)))
 
 (defn configure
   "Configures WebSocket"
@@ -73,6 +72,21 @@
         jm))
     (catch js/Error ex
       (log/error (str ex)))))
+
+
+(defn connect
+  []
+  (state/trigger ws-state :connect))
+
+(defn disconnect
+  []
+  (state/trigger ws-state :close))
+
+(defn process-event
+  [event]
+  (if (map? event)
+    (log/info "calling multimethod")
+    (log/info event)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States
@@ -122,8 +136,7 @@
 (defevent ws-state :send
   [m command & args]
   (state/transition ws-state :idle :sending)
-  (let [message (str command (when (seq args)
-                               (apply str " " args)))]
+  (let [message (str command (when (seq args) (apply str " " args)))]
     (emit! @default-connection message))
   (state/transition ws-state :sending :idle))
 
@@ -131,5 +144,6 @@
   [m event]
   (do (state/transition ws-state :idle :receiving)
       (let [parsed-event (parse-json (. event -message))]
+        (process-event parsed-event)
         (state/transition ws-state :receiving :idle)
         parsed-event)))
