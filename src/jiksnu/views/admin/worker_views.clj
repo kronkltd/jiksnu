@@ -13,6 +13,13 @@
     (sections.worker/start-worker-form)
     #_(sections.worker/available-worker-section workers))})
 
+(defview #'index :text
+  [request workers]
+  {:body
+   (map
+    #(pr-str %)
+    workers)})
+
 (defview #'start-worker :html
   [request _]
   {:status 303
