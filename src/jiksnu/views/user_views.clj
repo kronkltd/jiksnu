@@ -34,6 +34,10 @@
    :template false
    :headers {"Location" (uri user)}})
 
+(defview #'fetch-remote :xmpp
+  [request user]
+  (helpers.user/vcard-request request user))
+
 (defview #'fetch-updates :html
   [request user]
   {:status 303
@@ -45,6 +49,11 @@
   [request {:keys [items] :as options}]
   {:title "Users"
    :body (index-section items options)})
+
+(defview #'index :json
+  [request {:keys [items] :as options}]
+  {:body
+   {:items (index-section items options)}})
 
 (defview #'profile :html
   [request user]
@@ -62,6 +71,34 @@
   [request user]
   {:title "Register"
    :body (sections.user/register-form user)})
+
+(defview #'show :n3
+  [request user]
+  {:body
+   (let [rdf-model
+         (rdf/defmodel (rdf/model-add-triples
+                        (with-format :rdf
+                          (show-section user))))]
+     (with-out-str (rdf/model-to-format rdf-model :n3)))
+   :template :false})
+
+(defview #'show :rdf
+  [request user]
+  {:body
+   (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
+     (with-out-str (rdf/model-to-format rdf-model :xml-abbrev)))
+   :template :false})
+
+(defview #'show :xmpp
+  [request user]
+  (let [{:keys [id to from]} request]
+    {:body (element/make-element
+            "query" {"xmlns" ns/vcard-query}
+            (show-section user))
+     :type :result
+     :id id
+     :from to
+     :to from}))
 
 (defview #'update :html
   [request user]
@@ -96,36 +133,6 @@
 
 
 
-(defview #'index :json
-  [request {:keys [items] :as options}]
-  {:body
-   {:items (index-section items options)}})
-
-
-
-
-
-
-(defview #'show :n3
-  [request user]
-  {:body
-   (let [rdf-model
-         (rdf/defmodel (rdf/model-add-triples
-                        (with-format :rdf
-                          (show-section user))))]
-     (with-out-str (rdf/model-to-format rdf-model :n3)))
-   :template :false})
-
-
-
-
-
-(defview #'show :rdf
-  [request user]
-  {:body
-   (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
-     (with-out-str (rdf/model-to-format rdf-model :xml-abbrev)))
-   :template :false})
 
 
 
@@ -133,9 +140,9 @@
 
 
 
-(defview #'fetch-remote :xmpp
-  [request user]
-  (helpers.user/vcard-request request user))
+
+
+
 
 ;; (defview #'remote-create :xmpp
 ;;   [request user]
@@ -143,17 +150,6 @@
 ;;     {:from to
 ;;      :to from
 ;;      :type :result}))
-
-(defview #'show :xmpp
-  [request user]
-  (let [{:keys [id to from]} request]
-    {:body (element/make-element
-            "query" {"xmlns" ns/vcard-query}
-            (show-section user))
-     :type :result
-     :id id
-     :from to
-     :to from}))
 
 (defview #'xmpp-service-unavailable :xmpp
   [request _])
