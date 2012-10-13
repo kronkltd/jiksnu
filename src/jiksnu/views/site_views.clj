@@ -76,8 +76,10 @@
 (defview #'get-stats :json
   [request stats]
   {:status 200
-   :template false
-   :body stats})
+   :type "stats-updated"
+   ;; :template false
+   :body {:type "status-updated"
+          :body stats}})
 
 
 (defview #'get-environment :text

@@ -280,3 +280,10 @@
             (if (:flash request)
               (assoc response :flash (:flash request))
               response)))))
+
+(defmethod apply-template :command
+  [request response]
+  (let [body (:body response)]
+    (assoc response :body
+           {:type (get response :type "event")
+            :body body})))

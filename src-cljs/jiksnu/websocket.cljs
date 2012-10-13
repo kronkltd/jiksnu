@@ -84,9 +84,8 @@
 
 (defn process-event
   [event]
-  (if (map? event)
-    (log/info "calling multimethod")
-    (log/info event)))
+  (let [t (:type (js->clj event))]
+    (log/info t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; States
