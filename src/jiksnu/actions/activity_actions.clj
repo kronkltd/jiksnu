@@ -320,6 +320,7 @@ serialization"
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))
 
+;; TODO: this is the wrong kind of update
 (defaction update
   [activity]
   (let [{{id :_id} :params} activity
@@ -340,6 +341,7 @@ serialization"
     activity
     (create params)))
 
+;; TODO: show action with :oembed format
 (defaction oembed
   [activity & [options]]
   (when activity

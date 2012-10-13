@@ -5,6 +5,9 @@
 
 
 (defn create-trigger
+  "This will cause every new source to be updated.
+
+Note. This causes a lot of records to be created"
   [action params source]
   (actions.feed-source/update source))
 

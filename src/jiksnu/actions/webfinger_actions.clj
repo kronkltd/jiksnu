@@ -61,6 +61,7 @@
     (-> user
         (assoc :id (str uri))
         (assoc :discovered true)
+        ;; TODO: set fields
         actions.user/update)))
 
 (defn discover-webfinger
