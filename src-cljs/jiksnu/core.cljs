@@ -1,78 +1,21 @@
 (ns jiksnu.core
-  (:use [lolg :only [start-display console-output]]
-        [jayq.core :only [$ css inner prepend text]])
+  (:use [jayq.core :only [$]]
+        [lolg :only [start-display console-output]])
   (:require [clojure.browser.repl :as repl]
-            [goog.events :as events]
-            [goog.dom :as dom]
-            [goog.net.XhrIo :as xhrio]
-            [jiksnu.logging :as log]
-            [waltz.state :as state]
             [jayq.core :as jayq]
+            [jiksnu.handlers :as handlers]
+            [jiksnu.ko :as ko]
+            [jiksnu.logging :as log]
             [jiksnu.websocket :as ws])
-  (:use-macros [waltz.macros :only [in out defstate defevent]]))
+  (:use-macros [jiksnu.macros :only [defvar]]))
 
 (defn greet
   [n]
   (str "Hello " n))
 
-(defn find-parent-article
-  [element]
-  (let [helper (goog.dom.DomHelper.)]
-    (.getAncestorByTagNameAndClass helper element "article" "notice")))
-
-(defn position-handler
-  [position]
-  (let [coords (. position (coords))]
-    (log/info (str "lat: " (. coords (latitude))))
-    (log/info (str "long: " (. coords (longitude))))))
-
-(defn halt
-  [event]
-  (. event (stopPropagation))
-  (. event (preventDefault)))
-
-(defn do-delete-activity
-  [x]
-  (log/info "Delete button clicked")
-  (log/info x)
-  (if-let [article (find-parent-article (. x (target)))]
-    (let [id (.getAttribute article "id")
-          url (str "/notice/" id)]
-      (xhrio/send
-       url
-       (fn [e]
-         (log/info e)
-         #_(.hide this))
-       "DELETE")
-      (halt x))
-    (log/info "article not found")))
-
-(defn do-like-button
-  [x]
-  (log/info "like button clicked")
-  #_(halt x))
-
-(defn add-handler
-  [handler elements]
-  (doseq [i (range (alength elements))]
-    (let [element (aget elements i)]
-      (events/listen element "click" handler)
-      (events/listen element goog.events.EventType/SUBMIT handler))))
-
-(defn do-logout-link
-  [event]
-  (console/log "Logging out")
-  #_(halt event))
-
 (defn connect-repl
   []
   (repl/connect "http://192.168.1.42:9001/repl"))
-
-(defn setup-handlers
-  []
-  (add-handler do-delete-activity ($ :.delete-button))
-  (add-handler do-like-button ($ :.like-button))
-  (add-handler do-logout-link ($ :.logout-link)))
 
 (defn update-statistics
   [stats]
@@ -84,14 +27,104 @@
         (jayq/text (jayq/find section :.stat-value)
                    (get stats key))))))
 
+(defvar Statistics
+  [this]
+  (doto this
+    (ko/assoc-observable "activities")
+    (ko/assoc-observable "conversations")
+    (ko/assoc-observable "domains")
+    (ko/assoc-observable "groups")
+    (ko/assoc-observable "feedSources")
+    (ko/assoc-observable "feedSubscriptions")
+    (ko/assoc-observable "subscriptions")
+    (ko/assoc-observable "users")))
+
+(defvar PostForm
+  [this]
+  (doto this
+    (ko/assoc-observable "visible" false)
+    (ko/assoc-observable "currentPage" "note")))
+
+(defvar Foo
+  [this])
+
+(defvar Notification
+  [this & [message]]
+  (if message
+    (ko/assoc-observable this "message" message)
+    (ko/assoc-observable this "message")))
+
+(defvar AppViewModel
+  [this]
+  (doto this
+    (ko/assoc-observable "statistics")
+    (ko/assoc-observable "title")
+    (ko/assoc-observable "postForm" (PostForm.))
+    (ko/assoc-observable "showPostForm" false)
+    (ko/assoc-observable-array "activities")
+    (ko/assoc-observable-array "notifications")
+    (aset "site" (js-obj))
+    (aset "dismissNotification"
+          (fn [self]
+            (log/info self)
+            (.remove (.-notifications this) self))))
+  
+  (doto (.-site this)
+    (ko/assoc-observable "name")))
+
+(def _view (AppViewModel.))
+;; NB: for debugging only. use fully-qualified var
+(aset js/window "_view" _view)
+;; (def _statistics (Statistics.))
+;; (aset js/window "_statistics" _statistics)
+
+(defn add-notification
+  [message]
+  (let [notification (Notification.)]
+    (.message notification message)
+    (.push (.-notifications _view) notification)))
+
+(defn fetch-statistics
+  []
+  (.getJSON js/jQuery "http://renfer.name/main/stats.json"
+            (fn [data]
+              (log/info data)
+              (let [body (.-body data)]
+                (log/info body)
+                (let [b (ko/obj->model body (.-statistics _view))]
+                  (log/info b)
+                  (aset js/window "bbody" b)
+                  ;; (ko/assoc-observable _view "statistics" b)
+                  (.statistics _view b))
+                (aset js/window "gbody" body))))
+  nil)
+
+
+(defn mock-stats
+  []
+  (let [stats (Statistics.)]
+    (doseq [[k v] {"users" 9001
+                   "conversations" 2
+                   "groups" 4
+                   "domains" 6
+                   "feedSources" 8
+                   "feedSubscriptions" 16
+                   "subscriptions" 32
+                   "activities" "123456"}]
+      (ko/assoc-observable stats k v))
+    #_(def _statistics stats)
+    (ko/assoc-observable _view "statistics" stats)))
+
 (defn main
   []
   (start-display (console-output))
   (log/info "starting application")
-  (setup-handlers)
-  (state/trigger ws/ws-state :connect)
-  (update-statistics {"users" 9001
-                      "activities" "123456"}))
+  (handlers/setup-handlers)
+  (ws/connect)
+  ;; (connect-repl)
+  ;; (mock-stats)
+  ;; (.title _view "foo")
+  (fetch-statistics)
+  (ko/apply-bindings _view))
 
 (main)
-;; (connect-repl)
