@@ -12,7 +12,7 @@
 (def default-connection (atom nil))
 (def $interface ($ :.connection-info))
 (def ws-state (state/machine "websocket state"))
-(state/set-debug ws-state false)
+;; (state/set-debug ws-state false)
 (state/set ws-state :closed)
 
 ;; WebSocket

@@ -38,8 +38,9 @@
                  [ring/ring-core "1.1.1"]
                  [ring-basic-authentication "0.0.1"]
                  [slingshot "0.10.2"]
-                 [waltz "0.1.0-alpha1"]
+                 [net.kronkltd/waltz "0.1.2-SNAPSHOT"]
                  ]
+  :exclusions [org.clojure/google-closure-library]
   :aot [
         jiksnu.model
         jiksnu.xmpp.plugin
