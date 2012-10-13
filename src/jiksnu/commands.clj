@@ -1,5 +1,5 @@
 (ns jiksnu.commands
-  (:use  [ciste.commands :only [add-command!]]
+  (:use  [ciste.commands :only [add-command! command-names]]
          [ciste.core :only [serialize-as]]
          [ciste.filters :only [deffilter]]
          [ciste.views :only [defview]])
@@ -25,7 +25,7 @@
 (add-command! "ping" #'ping)
 
 
-
+(add-command! "help" #'command-names)
 
 
 ;; (defn get-load
