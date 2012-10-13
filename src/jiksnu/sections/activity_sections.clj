@@ -389,12 +389,13 @@
      [:div.tab-content
       [:div#post-note.tab-pane.active
        (note-form activity)]
-      #_[:div#post-status.tab-pane
-       (status-form activity)]
-      [:div#post-poll.tab-pane
-       (poll-form activity)]
-      [:div#post-event.tab-pane
-       (event-form activity)]]
+      ;; [:div#post-status.tab-pane
+      ;;  (status-form activity)]
+      ;; [:div#post-poll.tab-pane
+      ;;  (poll-form activity)]
+      ;; [:div#post-event.tab-pane
+      ;;  (event-form activity)]
+      ]
      [:div.actions
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
@@ -423,6 +424,9 @@
    [:td (:title activity)]
    [:td (post-actions activity)]])
 
+(defsection admin-index-section [Activity :viewmodel]
+  [items & [page]]
+  (index-section items page))
 
 (defsection delete-button [Activity :html]
   [activity & _]
@@ -441,8 +445,8 @@
 
 
 (defsection index-block [Activity]
-  [items & [response & _]]
-  (map #(index-line % response) items))
+  [items & [page]]
+  (map #(index-line % page) items))
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
@@ -476,6 +480,10 @@
   [activity & [options & _]]
   (show-section activity))
 
+(defsection index-line [Activity :viewmodel]
+  [item & [page]]
+  (show-section item page))
+
 (defsection index-line [Activity :xmpp]
   [^Activity activity & options]
   ["item" {"id" (:_id activity)}
@@ -485,11 +493,11 @@
 
 
 (defsection index-section [Activity]
-  [items & [response & _]]
+  [items & [response]]
   (index-block items response))
 
 (defsection index-section [Activity :html]
-  [items & [response & _]]
+  [items & [response]]
   (list
    (pagination-links response)
    (index-block items response)))
@@ -611,7 +619,9 @@
     [:article.hentry.notice
      {:id (str "activity-" (:_id activity))
       :about (uri activity)
-      :typeof "sioc:Post"}
+      :typeof "sioc:Post"
+      :data-type "activity"
+      :data-id (:_id activity)}
      [:header
       [:div.pull-right
        (post-actions activity)]
@@ -663,6 +673,10 @@
                [uri [:dc  :published]    (rdf/date (.toDate created))]
                ]
               (when summary [[uri [:sioc  :content]    (rdf/l summary)]])))))
+
+(defsection show-section [Activity :viewmodel]
+  [activity & [page]]
+  activity)
 
 (defsection show-section [Activity :xmpp]
   [^Activity activity & options]

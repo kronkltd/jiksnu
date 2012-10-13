@@ -60,7 +60,7 @@
     (ko/assoc-observable "statistics")
     (ko/assoc-observable "title")
     (ko/assoc-observable "postForm" (PostForm.))
-    (ko/assoc-observable "showPostForm" false)
+    (ko/assoc-observable "showPostForm" true)
     (ko/assoc-observable "pageInfo")
     (ko/assoc-observable-array "activities")
     (ko/assoc-observable-array "notifications")

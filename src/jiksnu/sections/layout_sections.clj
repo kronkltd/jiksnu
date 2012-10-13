@@ -273,16 +273,17 @@
      (h/html
       [:html
        ;; TODO: Read the list of declared namespaces
-       {
-        :xmlns:sioc ns/sioc
-        :xmlns:dc ns/dc
-        :xmlns:foaf ns/foaf
-        :xmlns:dcterms ns/dcterms
-        ;; :version "HTML+RDFa 1.1"
-        :lang "en"
-        :xml:lang "en"
-        :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
-        }
+       (merge {
+         :xmlns:sioc ns/sioc
+         :xmlns:dc ns/dc
+         :xmlns:foaf ns/foaf
+         :xmlns:dcterms ns/dcterms
+         ;; :version "HTML+RDFa 1.1"
+         :lang "en"
+         :xml:lang "en"
+         :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"}
+              (when-let [vm (:viewmodel response)]
+                {:data-load-model vm}))
        [:head (head-section request response)]
        [:body
         (navbar-section request response)

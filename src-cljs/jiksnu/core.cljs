@@ -1,5 +1,6 @@
 (ns jiksnu.core
-  (:use [lolg :only [start-display console-output]])
+  (:use [lolg :only [start-display console-output]]
+        [jayq.core :only [$]])
   (:require [clojure.browser.repl :as repl]
             [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
@@ -29,7 +30,7 @@
               (let [m (ko/obj->model data)]
                 (def _m m)
 
-                (when-let [title (.-title m)]
+                (when-let [title (.title m)]
                   (.title _view title))
 
                 (.users _view (.-users m))))))
@@ -50,6 +51,9 @@
   ;; (mock-stats _view)
   ;; (.title _view "foo")
   (stats/fetch-statistics _view)
+
+  (if-let [elts ($ "*[data-load-model]")]
+    (log/info (fetch-viewmodel (.data elts "load-model"))))
   (ko/apply-bindings _view))
 
 (main)

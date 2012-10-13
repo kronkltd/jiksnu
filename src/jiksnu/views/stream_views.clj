@@ -126,6 +126,14 @@
   {:body (index-section items response)
    :template :false})
 
+(defview #'public-timeline :viewmodel
+  [request {:keys [items] :as page}]
+  {:single false
+   :title "Public Timeline"
+   :body
+   {:activities (doall (index-section items page))}})
+
+
 (defview #'public-timeline :xml
   [request {:keys [items] :as response}]
   {:body (index-section items response)})

@@ -11,6 +11,7 @@
   [request {:keys [items] :as response}]
   {:single true
    :title "Users"
+   :viewmodel "/admin/users.viewmodel"
    :body (admin-index-section items response)})
 
 (defview #'index :viewmodel

@@ -3,7 +3,8 @@
         [clojure.stacktrace :only [print-stack-trace]]
         [jiksnu.session :only [with-user-id]]
         [slingshot.slingshot :only [try+ throw+]])
-  (:require [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.ko :as ko])
   (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
@@ -45,3 +46,10 @@
            :body st})
          (catch Exception ex
            (log/fatalf "Error parsing exception: %s" (str ex))))))))
+
+(defn wrap-dynamic-mode
+  [handler]
+  (fn [request]
+    (let [dynamic? (not (Boolean/valueOf (-> request :params :htmlOnly)))]
+      (binding [ko/*dynamic* dynamic?]
+        (handler request)))))

@@ -12,7 +12,8 @@
                                  admin-index-block
                                  admin-index-line
                                  admin-index-section
-                                 admin-show-section control-line]]
+                                 admin-show-section control-line
+                                 pagination-links]]
          [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -249,7 +250,7 @@
   [user]
   [:ul.buttons
    [:li (subscribe-button user)]
-   (when authenticated
+   (when (current-user)
      (list
       [:li (discover-button user)]
       [:li (update-button user)]
@@ -407,16 +408,15 @@
 
 (defsection index-line [User :html]
   [user & _]
-  (let [authenticated (current-user)]
-    [:tr {:data-id (:_id user) :data-type "user"}
-     [:td (display-avatar user)]
-     [:td
-      [:p (link-to user)]
-      [:p (:username user) "@" (:domain user)]
-      [:p (:url user)]
-      [:p (:bio user)]]
-     [:td
-      (actions-section user)]]))
+  [:tr {:data-id (:_id user) :data-type "user"}
+   [:td (display-avatar user)]
+   [:td
+    [:p (link-to user)]
+    [:p (:username user) "@" (:domain user)]
+    [:p (:url user)]
+    [:p (:bio user)]]
+   [:td
+    (actions-section user)]])
 
 (defsection index-line [User :viewmodel]
   [item & page]

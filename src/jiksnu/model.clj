@@ -272,7 +272,7 @@
   ([^Date date ^PrintWriter out]
      (write-json-date date out false))
   ([^Date date ^PrintWriter out escape-unicode?]
-     (let [formatted-date (.format (SimpleDateFormat. *date-format*) date)]
+     (let [formatted-date (.format (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'") date)]
        (.print out (str "\"" formatted-date "\"")))))
 
 (defn write-json-object-id
