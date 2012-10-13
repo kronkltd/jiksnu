@@ -34,8 +34,9 @@
 
 (defn fetch-by-id
   [id]
-  (when-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSource record)))
+  (if-let [record (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSource record)
+    (log/warnf "Could not find feed source with id: %s" id)))
 
 (defn update
   [source params]
@@ -81,7 +82,7 @@ This will generally not be called"
   [options & args]
   (if-let [record (mc/find-one-as-map collection-name options)]
     (model/map->FeedSource record)
-    (log/warn "Could not find record")))
+    (log/warnf "Could not find record with options: %s" options)))
 
 (defn fetch-all
   ([] (fetch-all {}))
