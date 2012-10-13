@@ -202,33 +202,29 @@
    ["cert" ns/cert]
    ["foaf" ns/foaf]])
 
-;; TODO: Only one of these should be used, but which one?
-
-(defn format-triples
-  [triples format]
-  (let [model (rdf/build-model)]
-    (.setNsPrefix (rdf/to-java model) "activity" ns/as)
-    (.setNsPrefix (rdf/to-java model) "sioc" ns/sioc)
-    (.setNsPrefix (rdf/to-java model) "foaf" ns/foaf)
-    (.setNsPrefix (rdf/to-java model) "dc" ns/dc)
-    (.setNsPrefix (rdf/to-java model) "xsd" (str ns/xsd "#"))
-    (.setNsPrefix (rdf/to-java model) "notice" (str "http://" (config :domain) "/notice/"))
-    (.setNsPrefix (rdf/to-java model) "cert" ns/cert)
-    
-    (rdf/with-model model (rdf/model-add-triples triples))
-    (with-out-str (rdf/model-to-format model format))))
-
 (defn triples->model
   [triples]
   (let [model (rdf/build-model)]
     (doto (rdf/to-java model)
+      ;; TODO: read these from rdf-prefixes
       (.setNsPrefix "activity" ns/as)
       (.setNsPrefix "sioc" ns/sioc)
       (.setNsPrefix "cert" ns/cert)
-      (.setNsPrefix "foaf" ns/foaf))
+      (.setNsPrefix "foaf" ns/foaf)
+      (.setNsPrefix "dc" ns/dc)
+      (.setNsPrefix "xsd" (str ns/xsd "#")))
     (rdf/with-model model
       (rdf/model-add-triples triples))
     model))
+
+
+(defn format-triples
+  [triples format]
+  (-> triples
+      triples->model
+      (rdf/model-to-format format)
+      with-out-str))
+
 
 (defn drop-all!
   "Drop all collections"
