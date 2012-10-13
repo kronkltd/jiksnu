@@ -1,5 +1,6 @@
 (ns jiksnu.core
-  (:use [jayq.core :only [$ css inner prepend text]])
+  (:use [lolg :only [start-display console-output]]
+        [jayq.core :only [$ css inner prepend text]])
   (:require [clojure.browser.repl :as repl]
             [goog.events :as events]
             [goog.dom :as dom]
@@ -30,7 +31,6 @@
   (. event (stopPropagation))
   (. event (preventDefault)))
 
-
 (defn do-delete-activity
   [x]
   (log/info "Delete button clicked")
@@ -50,7 +50,6 @@
 (defn do-like-button
   [x]
   (log/info "like button clicked")
-
   #_(halt x))
 
 (defn add-handler
@@ -85,10 +84,9 @@
         (jayq/text (jayq/find section :.stat-value)
                    (get stats key))))))
 
-
-
 (defn main
   []
+  (start-display (console-output))
   (log/info "starting application")
   (setup-handlers)
   (state/trigger ws/ws-state :connect)
