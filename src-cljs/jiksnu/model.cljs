@@ -31,6 +31,29 @@
     (ko/assoc-observable this "message" message)
     (ko/assoc-observable this "message")))
 
+(defvar PageInfo
+  [this]
+  (doto this
+    (ko/assoc-observable "page")
+    (ko/assoc-observable "pageSize")
+    (ko/assoc-observable "recordCount")
+    (ko/assoc-observable "totalRecords")
+
+    (aset "hasNext"
+          (fn []
+            (< (* (.page this)
+                  (.pageSize this))
+               (.totalRecords this))))))
+
+(defvar User
+  [this]
+  (doto this))
+
+(defvar SiteInfo
+  [this]
+  (doto this
+    (ko/assoc-observable "name")))
+
 (defvar AppViewModel
   [this]
   (doto this
@@ -38,14 +61,12 @@
     (ko/assoc-observable "title")
     (ko/assoc-observable "postForm" (PostForm.))
     (ko/assoc-observable "showPostForm" false)
+    (ko/assoc-observable "pageInfo")
     (ko/assoc-observable-array "activities")
     (ko/assoc-observable-array "notifications")
-    (aset "site" (js-obj))
+    (ko/assoc-observable-array "users")
+    (ko/assoc-observable "site" (SiteInfo.))
     (aset "dismissNotification"
           (fn [self]
             (log/info self)
-            (.remove (.-notifications this) self))))
-  
-  (doto (.-site this)
-    (ko/assoc-observable "name")))
-
+            (.remove (.-notifications this) self)))))

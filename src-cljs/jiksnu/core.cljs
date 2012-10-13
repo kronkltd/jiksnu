@@ -8,7 +8,9 @@
             [jiksnu.statistics :as stats]
             [jiksnu.websocket :as ws]))
 
-(def _view)
+(def
+  ^{:doc "This is the main view model bound to the page"}
+  _view)
 
 (defn connect-repl
   []
@@ -19,6 +21,15 @@
   (let [notification (model/Notification.)]
     (.message notification message)
     (.push (.-notifications _view) notification)))
+
+(defn fetch-viewmodel
+  [url]
+  (.getJSON js/jQuery url
+            (fn [data]
+              (let [m (ko/obj->model data)]
+                (def _m m)
+                (.users _view (.-users m))))))
+
 
 (defn main
   []
