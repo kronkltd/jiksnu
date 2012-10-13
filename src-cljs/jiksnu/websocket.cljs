@@ -12,6 +12,8 @@
 (def default-connection (atom nil))
 (def $interface ($ :.connection-info))
 (def ws-state (state/machine "websocket state"))
+(state/set-debug ws-state false)
+(state/set ws-state :closed)
 
 ;; WebSocket
 (defn create []
@@ -21,7 +23,8 @@
   "Configures WebSocket"
   [socket]
   (events/listen socket websocket-event/OPENED
-                 (fn [socket] (state/set ws-state :idle)))
+                 (fn [socket] (state/set ws-state :idle)
+                   (state/trigger ws-state :send "connect")))
 
   (events/listen socket websocket-event/CLOSED
                  (fn [socket] (state/set ws-state :closed)))
@@ -31,7 +34,7 @@
                  (fn [socket] (state/set ws-state :error)))
   
   (events/listen socket websocket-event/MESSAGE
-                 (fn [event] (state/trigger :receive event)))
+                 (fn [event] (state/trigger ws-state :receive event)))
 
   socket)
 
@@ -40,8 +43,8 @@
   ([socket cmd]
      (emit! socket cmd nil))
   ([socket cmd msg]
-     (let [packet (str "/" cmd (when msg (str " " msg)))]
-       (.debug js/console ">> " packet)
+     (let [packet (str cmd (when msg (str " " msg)))]
+       (log/debug packet)
        (.send socket packet))))
 
 (defstate ws-state :closed
@@ -75,8 +78,7 @@
                       (catch js/Error e
                         (log/error "No WebSocket supported, get a decent browser.")
                         (state/set ws-state :error)))]
-      (do (reset! default-connection socket)
-          (state/trigger ws-state :send "connect")))))
+      (reset! default-connection socket))))
 
 (defevent ws-state :close
   []
@@ -90,28 +92,27 @@
   (emit! @default-connection (apply str command " " args))
   (state/set ws-state :idle))
 
+(defn send
+  [command & args]
+  (apply state/trigger ws-state :send command args))
 
 (defn ws-message
   [jm]
-  ;; (.info js/console jm)
   (try
-    (let [j (JSON/parse jm)]
-      ;; (.debug js/console j)
-
-      (let [body (. j -body)]
-        (prepend ($ :.activities) body)))
+    (when jm
+      (let [jm (js/eval jm)]
+        (log/debug jm)
+        
+        (if-let [body (. jm -body)]
+          (prepend ($ :.activities) body))))
     (catch js/Error ex
-        (.exception js/console ex))))
-
-
+      (log/error (str ex)))))
 
 (defevent ws-state :receive
   [event]
   (state/set ws-state :receiving)
-
   (let [payload (. event -message)
         [_ cmd body] (re-matches #"/([^ ]+) (.*)" payload)]
-    (.debug js/console "<< " payload)
     (ws-message payload))
  
   (state/set ws-state :idle))

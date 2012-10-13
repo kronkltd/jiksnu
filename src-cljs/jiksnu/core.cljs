@@ -77,7 +77,6 @@
 (defn main
   []
   (log/info "starting application")
-  (state/set ws/ws-state :closed)
   (setup-handlers)
   (state/trigger ws/ws-state :connect))
 
