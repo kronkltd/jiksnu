@@ -5,7 +5,12 @@
             [inflections.core :as inf]
             [jiksnu.abdera :as abdera]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]))
+
+(defn domain-id
+  []
+  (:_id (model.domain/create (factory :domain))))
 
 (defn activity-id
   [] (:_id (model.activity/create (factory :activity))))
@@ -140,8 +145,8 @@
         username (fseq :username)
         domain (fseq :domain)]
     {:username username
-     :domain domain
-     :id (str "acct:" username "@" domain)
+     :domain #'domain-id
+     ;; :id (str "acct:" username "@" domain)
      :local false
      :name display-name
      :display-name display-name
