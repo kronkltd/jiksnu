@@ -5,6 +5,7 @@
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
@@ -42,29 +43,32 @@
                   map?
                   #(not (:template %))
                   (fn [response]
-                    (let [feed (abdera/parse-xml-string (:body (format-as :atom request response)))]
+                    (let [formatted (format-as :atom request response)
+                          feed (abdera/parse-xml-string (:body formatted))]
                       (fact
                         (count (.getEntries feed)) => 20))))))))
          
          (fact "when the format is :html"
            (with-format :html
-             (fact "when there are activities"
-               (model/drop-all!)
-               (let [user (model.user/create (factory :local-user))]
-                 (dotimes [n 25]
-                   (model.activity/create (factory :activity
-                                                   {:author (:_id user)}))))
+             (binding [*dynamic* false]
+               (fact "when there are activities"
+                (model/drop-all!)
+                (let [user (model.user/create (factory :local-user))]
+                  (dotimes [n 25]
+                    (model.activity/create (factory :activity
+                                                    {:author (:_id user)}))))
 
-               (let [request {:action action}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (fn [response]
-                    (let [body (h/html (:body response))]
-                      (fact
-                        body => #"20"
-                        body => string?))))))))))))
+                (let [request {:action action}
+                      response (filter-action action request)]
+                  (apply-view request response) =>
+                  (every-checker
+                   map?
+                   (fn [response]
+                     (let [body (h/html (:body response))]
+                       (fact
+                         body => #"20"
+                         body => string?)))))))))
+         ))))
 
  (fact "apply-view #'user-timeline"
    (let [action #'user-timeline]
@@ -73,19 +77,20 @@
 
          (fact "when the format is :html"
            (with-format :html
-             (fact "when that user has activities"
-               (model/drop-all!)
-               (let [user (model.user/create (factory :local-user))
-                     activity (model.activity/create (factory :activity {:author (:_id user)}))
-                     request {:action action
-                              :params {:id (str (:_id user))}}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (every-checker
-                  (fn [response]
-                    (let [body (h/html (:body response))]
-                      (fact
-                        body => (re-pattern (str ".*activity-" (:_id activity) ".*"))))))))))
+             (binding [*dynamic* false]
+               (fact "when that user has activities"
+                (model/drop-all!)
+                (let [user (model.user/create (factory :local-user))
+                      activity (model.activity/create (factory :activity {:author (:_id user)}))
+                      request {:action action
+                               :params {:id (str (:_id user))}}
+                      response (filter-action action request)]
+                  (apply-view request response) =>
+                  (every-checker
+                   (fn [response]
+                     (let [body (h/html (:body response))]
+                       (fact
+                         body => (re-pattern (str ".*activity-" (:_id activity) ".*")))))))))))
          
          (fact "when the format is :n3"
            (with-format :n3
