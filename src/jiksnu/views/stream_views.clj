@@ -213,20 +213,24 @@
    :formats (sections.activity/timeline-formats user)})
 
 (defview #'user-timeline :rdf
-  [request [user activities]]
-  {:body (concat (show-section user)
-                 (index-section activities))
-   :template :false})
+  [request [user activities-map]]
+  (when user
+    {:body (->> (when-let [activities (:items activities-map)]
+                  (index-section activities))
+                (concat (show-section user))
+                doall)
+    :template :false}))
 
 (defview #'user-timeline :n3
   [request [user activities-map]]
-  {:body
-   (->> (when-let [activities (:items activities-map)]
-          (index-section activities))
-        (concat (show-section user))
-        doall
-        (with-format :rdf))
-   :template false})
+  (when user
+    {:body
+     (->> (when-let [activities (:items activities-map)]
+            (index-section activities))
+          (concat (show-section user))
+          doall
+          (with-format :rdf))
+     :template false}))
 
 (defview #'user-timeline :xml
   [request [user activities]]
