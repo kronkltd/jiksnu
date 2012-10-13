@@ -35,10 +35,17 @@
    (acceptance-of :domain :accept string?)
    (acceptance-of :local :accept (partial instance? Boolean))))
 
+(defn set-id
+  [user]
+  (if (:id user)
+    user
+    (assoc user :id (format "acct:%s@%s" (:username user) (:domain user)))))
+
 (defn prepare
   [user]
   (-> user
       set-_id
+      set-id
       set-updated-time
       set-created-time))
 
@@ -108,18 +115,15 @@
 
 (defn create
   [user]
-  (if user
-    (let [user (prepare user)
-          id (make-id)
-          {:keys [username domain]} user]
-      (let [errors (create-validators user)]
-        (if (empty? errors)
-          (let [user (assoc user :_id id)]
-            (log/debugf "Creating user: %s" user)
-            (mc/insert collection-name user)
-            (fetch-by-id id))
-          (throw+ {:type :validation
-                   :errors errors}))))))
+  (let [user (prepare user)
+        errors (create-validators user)]
+    (if (empty? errors)
+      (do
+        (log/debugf "Creating user: %s" user)
+        (mc/insert collection-name user)
+        (fetch-by-id (:_id user)))
+      (throw+ {:type :validation
+               :errors errors}))))
 
 (defn fetch-all
   "Fetch all users"

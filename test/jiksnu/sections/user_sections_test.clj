@@ -3,6 +3,7 @@
         [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [uri show-section title]]
         [clj-factory.core :only [factory]]
+        [jiksnu.ko :only [*dynamic*]]
         jiksnu.test-helper
         jiksnu.session
         jiksnu.sections.user-sections
@@ -17,23 +18,18 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.xmpp.element :as xmpp.element])
-  (:import java.io.StringWriter
-           javax.xml.namespace.QName
-           jiksnu.model.Activity
-           jiksnu.model.Domain
-           jiksnu.model.User
-           org.apache.abdera2.common.iri.IRI
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.Person
-           org.joda.time.DateTime
-           tigase.xml.Element))
+  (:import jiksnu.model.User))
 
 (test-environment-fixture
  (fact "uri User :html :http"
-   (fact "should return a link to that user"
-     (with-context [:http :html]       
-       (let [user (model.user/create (factory :user))]
-         (uri user) => string?))))
+   (fact "when the serialization is :http"
+     (with-serialization :http
+       (fact "when the format is :html"
+         (with-format :html
+           (fact "when it is html-only"
+             (binding [*dynamic* false]
+               (let [user (model.user/create (factory :user))]
+                 (uri user) => string?))))))))
 
  (fact "title User"
    (fact "should return the title of that user"
@@ -49,9 +45,20 @@
          (with-format :xmpp
            (fact "should return a vcard string"
              (let [user (model.user/create (factory :user))]
-               (show-section user) => string?))))))
+               (show-section user) =>
+               (every-checker
+                #(fact % => #"<vcard")
+                string?)))))))
    (fact "when the serialization is :http"
      (with-serialization :http
        (fact "when the format is :html"
-         (with-format :html)))))
+         (with-format :html
+           (binding [*dynamic* false]
+            (let [user (model.user/create (factory :user))]
+              (show-section user))) =>
+             (every-checker
+              (fn [response]
+                (let [body (h/html response)]
+                  (fact
+                    body => #"user")))))))))
  )
