@@ -1,5 +1,5 @@
 (ns jiksnu.actions.stream-actions
-  (:use [ciste.commands :only [parse-command]]
+  (:use [ciste.commands :only [add-command! parse-command]]
         [ciste.config :only [config definitializer]]
 
         [ciste.core :only [defaction with-context]]
@@ -46,6 +46,8 @@
   (public-timeline* params (merge
                             {:sort-clause {:updated -1}}
                             options)))
+
+(add-command! "list-activities" #'public-timeline)
 
 (declare user-timeline)
 

@@ -38,6 +38,10 @@
   ;; TODO: fetch user
   (action))
 
+(deffilter #'public-timeline :command
+  [action request]
+  (action))
+
 (deffilter #'public-timeline :http
   [action request]
   (let [page (or (-?> request :params :page Integer/parseInt) 1)]
