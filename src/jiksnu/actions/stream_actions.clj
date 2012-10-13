@@ -180,11 +180,16 @@
    ch
    (fn [m]
      (let [[name & args] (string/split m #" ")]
-       (let [resp  (parse-command {:format :json
-                                   :name name
-                                   :args args})]
-         (l/enqueue ch resp)))))
-  (siphon-new-activities ch))
+       (let [resp (try
+                    (parse-command {:format :json
+                                    :name name
+                                    :args args})
+                    (catch RuntimeException ex
+                      (.printStackTrace ex)
+                      {:body (json/json-str {:type "error"
+                                             :message (str ex)})}))]
+         (l/enqueue ch (:body resp))))))
+  #_(siphon-new-activities ch))
 
 (definitializer
   (require-namespaces
