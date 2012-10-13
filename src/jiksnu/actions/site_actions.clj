@@ -24,7 +24,7 @@
           (fn [k]
             (let [namespace-sym (symbol (str "jiksnu.model." (inf/singular (name k))))
                   sym (intern (the-ns namespace-sym) (symbol "count-records"))]
-              [k (sym)])))
+              [(inf/camelize (name k) :lower) (sym)])))
        (into {})))
 
 

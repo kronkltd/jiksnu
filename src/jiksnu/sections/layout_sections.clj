@@ -33,40 +33,43 @@
      (sections.subscription/subscribers-widget user)
      (sections.group/user-groups user))))
 
+(def nav-info
+  [["Home"
+    [["/"                         "Public"]
+     ["/users"                    "Users"]
+     ["/main/domains"             "Domains"]
+     ["/groups"                   "Groups"]]]
+   
+   (when (is-admin?)
+     ["Admin"
+      [["/admin/activities"         "Activities"]
+       ["/admin/auth"               "Auth"]
+       ["/admin/conversations"      "Conversations"]
+       ["/admin/groups"             "Groups"]
+       ["/admin/settings"           "Settings"]
+       ["/admin/feed-sources"       "Feed Sources"]
+       ["/admin/feed-subscriptions" "Feed Subscriptions"]
+       ["/admin/keys"               "Keys"]
+       ["/admin/likes"              "Likes"]
+       ["/admin/users"              "Users"]
+       ["/admin/subscriptions"      "Subscriptions"]
+       ["/admin/workers"            "Workers"]]])])
+
+(defn navigation-group
+  [[header links]]
+  (concat [[:li.nav-header header]]
+          (map
+           (fn [[url label]]
+             [:li
+              [:a {:href url} label]])
+           links)))
+
 (defn side-navigation
   []
-  (let [nav-info
-        [["Home"
-          [["/"                         "Public"]
-           ["/users"                    "Users"]
-           ["/main/domains"             "Domains"]
-           ["/groups"                   "Groups"]]]
-         
-         (when (is-admin?)
-           ["Admin"
-            [["/admin/activities"         "Activities"]
-             ["/admin/auth"               "Auth"]
-             ["/admin/conversations"      "Conversations"]
-             ["/admin/groups"             "Groups"]
-             ["/admin/settings"           "Settings"]
-             ["/admin/feed-sources"       "Feed Sources"]
-             ["/admin/feed-subscriptions" "Feed Subscriptions"]
-             ["/admin/keys"               "Keys"]
-             ["/admin/likes"              "Likes"]
-             ["/admin/users"              "Users"]
-             ["/admin/subscriptions"      "Subscriptions"]
-             ["/admin/workers"            "Workers"]]])]]
-    [:ul.nav.nav-list.well
-     (reduce concat
-             (map
-              (fn [[header links]]
-                (concat [[:li.nav-header header]]
-                        (map
-                         (fn [[url label]]
-                           [:li
-                            [:a {:href url} label]])
-                         links)))
-              nav-info))]))
+  [:ul.nav.nav-list.well
+   (->> nav-info
+        (map navigation-group)
+        (reduce concat))])
 
 ;; TODO: this will be dynamically included
 (defn top-users
@@ -93,49 +96,46 @@
            [:span.format-label (:label format)]]])
        (:formats response))]]))
 
+(def statistics-info
+  [["activities" "Activities"]
+   ["conversations" "Conversations"]
+   ["domains" "Domains"]
+   ["groups" "Groups"]
+   ["feedSources" "Feed Sources"]
+   ["feedSubscriptions" "Feed Subscriptions"]
+   ["subscriptions" "Subscriptions"]
+   ["users" "Users"]])
+
+
+(defn statistics-line
+  [stats [model-name label]]
+  [:tr {:data-model model-name}
+   [:td.stat-label label]
+   [:td.stat-value
+    {:data-bind (format "text: %s" model-name)}
+    (when (config :html-only)
+      (get stats (keyword model-name)))]])
+
 (defn statistics-section
-  [response]
+  [request response]
   (let [stats (actions.site/get-stats)]
-    [:div.well.statistics-section
+    [:div.well.statistics-section {:data-bind "with: statistics"}
      [:table.table.table-compact
       [:thead
        [:tr
         [:th "Collection"]
         [:th "Count"]]]
       [:tbody
-       [:tr {:data-model "activities"}
-       [:td.stat-label "Activities: "]
-        [:td.stat-value (:activities stats)]]
-       [:tr {:data-model "conversations"}
-        [:td.stat-label "Conversations: "]
-        [:td.stat-value (:conversations stats)]]
-       [:tr {:data-model "domains"}
-        [:td.stat-label "Domains: "]
-        [:td.stat-value (:domains stats)]]
-       [:tr {:data-model "groups"}
-        [:td.stat-label "Groups: "]
-        [:td.stat-value (:groups stats)]]
-       [:tr {:data-model "feed-sourcces"}
-        [:td.stat-label "Feed Sources: "]
-        [:td.stat-value (:feed-sources stats)]]
-       [:tr {:data-model "feed-subscriptions"}
-        [:td.stat-label "Feed Subscriptions: "]
-        [:td.stat-value (:feed-subscriptions stats)]]
-       [:tr {:data-model "subscriptions"}
-        [:td.stat-label "Subscriptions: "]
-        [:td.stat-value (:subscriptions stats)]]
-       [:tr {:data-model "users"}
-        [:td.stat-label "Users: "]
-        [:td.stat-value (:users stats)]]]]]))
+       (map (partial statistics-line stats) statistics-info)]]]))
 
 (defn left-column-section
-  [response]
+  [request response]
   (let [user (current-user)]
     [:aside#left-column.sidebar
      (side-navigation)
      [:hr]
      (formats-section response)
-     (statistics-section response)]))
+     (statistics-section request response)]))
 
 (defn right-column-section
   [response]
@@ -156,28 +156,104 @@
        [:p "Veryify your configuration settings and restart this application with the environment variable set to "
         [:code ":production"] " to continue."]])))
 
+(defn notification-area
+  [request response]
+  [:div#flash
+   [:ul.unstyled {:data-bind "foreach: notifications"}
+    [:li.alert
+     [:button {:class "close"
+               :data-bind "click: $parent.dismissNotification"} "x"]
+     [:span {:data-bind "text: message"}
+      (when (config :html-only)
+        (:flash request))]]]])
+
+(defn new-post-section
+  [request response]
+  [:div {:data-bind "with: postForm"}
+   [:div {:data-bind "if: visible"}
+    [:p {:data-bind "text: currentPage"}]
+    (add-form (Activity.))]])
+
+(defn title-section
+  [request response]
+  (when (:title response)
+    [:h1 {:data-bind "text: title"} (:title response)]))
+
 (defn main-content
   [request response]
-  (list
-   (when (:flash response)
-     [:div#flash (:flash response)])
-   (when (and (:post-form response)
-              (current-user))
-     (add-form (Activity.)))
-   (when (:title response)
-     [:h1 (:title response)])
-   (:body response)))
+  [:section#main
+   (notification-area request response)
+   (new-post-section request response)
+   (title-section request response)
+   (:body response)])
+
+(defn navbar-search-form
+  []
+  [:form.navbar-search.pull-left
+   {:action "/main/search" :method "post"}
+   [:input.search-query.span3
+    {:type "text" :placeholder "Search" :name "q"}]])
+
+
+(defn fork-me-link
+  []
+  [:a {:href "http://github.com/duck1123/jiksnu"}
+   [:img {:style "position: absolute; top: 43px; right: 0; border: 0;"
+          :src "https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+          :alt "Fork me on GitHub"}]])
+
+(defn navbar-section
+  [request response]
+  [:div.navbar.navbar-fixed-top
+   [:div.navbar-inner
+    [:div.container-fluid
+     [:a.brand.home {:href "/" :rel "top"
+                     :data-bind "text: site.name"}
+      (when (config :html-only)
+        (config :site :name))]
+     ;; (navbar-search-form)
+     [:div.navbar-text.connection-info.pull-right]
+     [:ul.nav.pull-right (sections.auth/login-section response)]]]])
+
+(defn head-section
+  [request response]
+  (list [:meta {:charset "UTF-8"}]
+        [:title {:property "dc:title"}
+         (when (config :html-only)
+           (str (when (:title response)
+                  (:title response) " - ")
+                (config :site :name)))]
+        (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
+                       "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
+                       "/assets/themes/classic/standard.css")
+        [:link {:href (str "http://" (config :domain) "/favicon.ico")
+                :rel "shortcut icon"}]
+        #_[:link {:href "/opensearch/people"
+                  :title "People Search"
+                  :type "application/opensearchdescription+xml"
+                  :rel "search"}]
+        #_[:link {:href "/opensearch/notices"
+                  :title "Notice Search"
+                  :type "application/opensearchdescription+xml"
+                  :rel "search"}]
+        [:link {:href "/rsd.xml"
+                :type "application/rsd+xml"
+                :rel "EditURI"}]
+        (map
+         (fn [format]
+           [:link {:type (:type format)
+                   :href (:href format)
+                   :rel (or (:rel format) "alternate")
+                   :title (:title format)}])
+         (concat (:formats response)
+                 (:links response)))))
 
 (defn page-template-content
   [request response]
   {:headers {"Content-Type" "text/html; charset=utf-8"}
    :body
    (str
-    "<!DOCTYPE html"
-
-    ;; " PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"
-    ;;       \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\""
-    ">"
+    "<!DOCTYPE html" ">"
     (h/html
      [:html
       ;; TODO: Read the list of declared namespaces
@@ -191,65 +267,22 @@
        :xml:lang "en"
        :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
        }
-      [:head
-       [:meta {:charset "UTF-8"}]
-       [:title {:property "dc:title"}
-        (when (:title response)
-          (str (:title response) " - "))
-        (config :site :name)]
-       (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
-                      "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
-                      "/assets/themes/classic/standard.css")
-       [:link {:href (str "http://" (config :domain) "/favicon.ico")
-               :rel "shortcut icon"}]
-       #_[:link {:href "/opensearch/people"
-               :title "People Search"
-               :type "application/opensearchdescription+xml"
-               :rel "search"}]
-       #_[:link {:href "/opensearch/notices"
-               :title "Notice Search"
-               :type "application/opensearchdescription+xml"
-               :rel "search"}]
-       [:link {:href "/rsd.xml"
-               :type "application/rsd+xml"
-               :rel "EditURI"}]
-       (map
-        (fn [format]
-          [:link {:type (:type format)
-                  :href (:href format)
-                  :rel (or (:rel format) "alternate")
-                  :title (:title format)}])
-        (concat (:formats response)
-                (:links response)))]
+      [:head (head-section request response)]
       [:body
-       [:div.navbar.navbar-fixed-top
-        [:div.navbar-inner
-         [:div.container-fluid
-          [:a.brand.home {:href "/" :rel "top"} (config :site :name)]
-          ;; [:form.navbar-search.pull-left
-          ;;  {:action "/main/search" :method "post"}
-          ;;  [:input.search-query.span3
-          ;;   {:type "text" :placeholder "Search" :name "q"}]]
-          [:div.navbar-text.connection-info.pull-right ]
-          [:ul.nav.pull-right (sections.auth/login-section response)]]]]
+       (navbar-section request response)
        [:div.container-fluid
-        #_[:a {:href "http://github.com/duck1123/jiksnu"}
-         [:img {:style "position: absolute; top: 43px; right: 0; border: 0;"
-                :src "https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
-                :alt "Fork me on GitHub"}]]
+        #_(fork-me-link)
         [:div.row-fluid
          [:div.span2
-          #_[:span#interface]
-          (left-column-section response)]
+          (left-column-section request response)]
          [:div#content.span10
-          [:div#notification-area.row-fluid
-           [:div#flash (:flash request)]
-           #_[:div.span10 (devel-warning response)]]
           [:div.row-fluid
            (if-not (:single response)
              (list [:div.span9 (main-content request response)]
                    [:div.span3 (right-column-section response)])
              [:div.span12 (main-content request response)])]]]
+
+        ;; TODO: align middle
         [:footer.row-fluid.page-footer
          [:p "Copyright © 2011 KRONK Ltd."]
          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
@@ -267,7 +300,8 @@
         "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
         "/cljs/bootstrap.js"
         "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
-)
+        "/assets/knockout.mapping.js"
+        )
        [:script {:type "text/javascript"}
         "goog.require('jiksnu.core');"]]]))})
 
@@ -277,9 +311,9 @@
   (merge response
          (if (not= (:template response) false)
            (page-template-content request
-            (if (:flash request)
-              (assoc response :flash (:flash request))
-              response)))))
+                                  (if (:flash request)
+                                    (assoc response :flash (:flash request))
+                                    response)))))
 
 (defmethod apply-template :command
   [request response]
