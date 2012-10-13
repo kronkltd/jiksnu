@@ -2,6 +2,7 @@
   (:use [ciste.core :only [apply-template]]
         [ciste.config :only [config environment]]
         [ciste.sections.default :only [add-form link-to show-section]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -113,14 +114,14 @@
   [:tr {:data-model model-name}
    [:td.stat-label label]
    [:td.stat-value
-    {:data-bind (format "text: %s" model-name)}
-    (when (config :html-only)
+    (if *dynamic*
+      {:data-bind (format "text: %s" model-name)}
       (get stats (keyword model-name)))]])
 
 (defn statistics-section
   [request response]
   (let [stats (actions.site/get-stats)]
-    [:div.well.statistics-section {:data-bind "with: statistics"}
+    [:div.well.statistics-section (when *dynamic* {:data-bind "with: statistics"})
      [:table.table.table-compact
       [:thead
        [:tr
@@ -157,28 +158,41 @@
        [:p "Veryify your configuration settings and restart this application with the environment variable set to "
         [:code ":production"] " to continue."]])))
 
+(defn notification-line
+  [message]
+  [:li.alert
+   [:button
+    (merge {:class "close"}
+           (when *dynamic*
+             {:data-bind "click: $parent.dismissNotification"}))
+    "x"]
+   [:span
+    (if *dynamic*
+      {:data-bind "text: message"}
+      message)]])
+
 (defn notification-area
   [request response]
   [:div#flash
-   [:ul.unstyled {:data-bind "foreach: notifications"}
-    [:li.alert
-     [:button {:class "close"
-               :data-bind "click: $parent.dismissNotification"} "x"]
-     [:span {:data-bind "text: message"}
-      (when (config :html-only)
-        (:flash request))]]]])
+   [:ul.unstyled
+    (when *dynamic* {:data-bind "foreach: notifications"})
+    (if *dynamic*
+      (notification-line nil)
+      (notification-line (:flash request)))]])
 
 (defn new-post-section
   [request response]
-  [:div {:data-bind "with: postForm"}
-   [:div {:data-bind "if: visible"}
-    [:p {:data-bind "text: currentPage"}]
+  [:div (when *dynamic* {:data-bind "with: postForm"})
+   [:div (when *dynamic* {:data-bind "if: visible"})
+    [:p
+     (when *dynamic* {:data-bind "text: currentPage"})]
     (add-form (Activity.))]])
 
 (defn title-section
   [request response]
-  (when (:title response)
-    [:h1 {:data-bind "text: title"} (:title response)]))
+  [:h1 (if *dynamic*
+         {:data-bind "text: title"}
+         (:title response))])
 
 (defn main-content
   [request response]
@@ -217,7 +231,7 @@
   [request response]
   (list [:meta {:charset "UTF-8"}]
         [:title {:property "dc:title"}
-         (when (config :html-only)
+         (when-not *dynamic*
            (str (when (:title response)
                   (:title response) " - ")
                 (config :site :name)))]

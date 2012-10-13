@@ -109,5 +109,6 @@
        jm/wrap-user-binding
        middleware/wrap-http-serialization
        #_middleware/wrap-log-request
+       jm/wrap-dynamic-mode
        handler/site
        jm/wrap-stacktrace)))

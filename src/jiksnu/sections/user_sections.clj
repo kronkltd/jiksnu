@@ -6,6 +6,7 @@
                                         update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [clojure.core.incubator :only [-?>]]
+         [jiksnu.ko :only [*dynamic*]]
          [jiksnu.model :only [with-subject]]
          [jiksnu.sections :only [admin-actions-section
                                  admin-index-block
@@ -284,29 +285,33 @@
      [:th "Domain"]
      [:th "Actions"]]]
    [:tbody {:data-bind "foreach: users"}
-    (if (config :html-only)
-      (map #(admin-index-line % page) items)
-      (admin-index-line (User.) page))]])
+    (if *dynamic*
+      (admin-index-line (User.) page)
+      (map #(admin-index-line % page) items))]])
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
   [:tr {:data-id (:_id user) :data-type "user"}
    [:td
-    (when (config :html-only)
+    (when-not *dynamic*
       (display-avatar user))]
-   [:td {:data-bind "text: _id"}
-    (when (config :html-only)
-      [:a {:href (format "/admin/users/%s" (:_id user))}
-       (:_id user)])]
-   [:td {:data-bind "text: username"}
-    (when (config :html-only)
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: '/admin/users/' + _id()}, text: _id"}
+          {:href (format "/admin/users/%s" (:_id user))})
+     (when-not *dynamic*
+       (:_id user))]]
+   [:td
+    (if *dynamic*
+      {:data-bind "text: username"}
       (link-to user))]
-   [:td {:data-bind "text: domain"}
-    (when (config :html-only)
+   [:td
+    (if *dynamic*
+      {:data-bind "text: domain"}
       (let [domain (actions.user/get-domain user)]
         (link-to domain)))]
    [:td
-    (when (config :html-only)
+    (when-not *dynamic*
       (admin-actions-section user page))]])
 
 
@@ -392,9 +397,9 @@
   [:table.table.users
    [:thead]
    [:tbody
-    (if (config :html-only)
-      (map index-line users)
-      (index-line (User.)))]])
+    (if *dynamic*
+      (index-line (User.))
+      (map index-line users))]])
 
 (defsection index-block [User :viewmodel]
   [items & [page]]

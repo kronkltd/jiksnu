@@ -1,7 +1,8 @@
 (ns jiksnu.sections
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line]])
+        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line]]
+        [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.tools.logging :as log]))
 
 (defn control-line
@@ -39,23 +40,27 @@
      [:p
       [:span.pagination-label "Page"] " "
       [:span.pagination-value
-       {:data-bind "text: page"}
-       (when (config :html-only) page)]]
+       (if *dynamic*
+         {:data-bind "text: page"}
+         page)]]
      [:p
       [:span.pagination-label "Page Size"] " "
       [:span.pagination-value
-       {:data-bind "text: pageSize"}
-       (when (config :html-only) page-size)]]
+       (if *dynamic*
+         {:data-bind "text: pageSize"}
+         page-size)]]
      [:p
       [:span.pagination-label "Records returned"] " "
       [:span.pagination-value
-       {:data-bind "text: recordCount"}
-       (when (config :html-only) (count (:items options)))]]
+       (if *dynamic*
+         {:data-bind "text: recordCount"}
+         (count (:items options)))]]
      [:p
       [:span.pagination-label "Total Records"] " "
       [:span.pagination-value
-       {:data-bind "text: totalRecords"}
-       (when (config :html-only) total-records)]]
+       (if *dynamic*
+         {:data-bind "text: totalRecords"}
+         total-records)]]
      [:ul.pager
       (when (> page 1)
         (prev-link page))
