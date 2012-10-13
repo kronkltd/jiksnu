@@ -39,4 +39,5 @@
 (defn set-authenticated-user!
   [user]
   (dosync
-   (ref-set *current-user* (:_id user))))
+   (ref-set *current-user* (:_id user)))
+  user)
