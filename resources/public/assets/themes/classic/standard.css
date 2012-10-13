@@ -122,3 +122,7 @@ article .photo
 .hidden {
     display: none;
 }
+
+.statistics-section tr .stat-value {
+    text-align: right;
+}

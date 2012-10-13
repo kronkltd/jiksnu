@@ -6,6 +6,7 @@
             [goog.net.XhrIo :as xhrio]
             [jiksnu.logging :as log]
             [waltz.state :as state]
+            [jayq.core :as jayq]
             [jiksnu.websocket :as ws])
   (:use-macros [waltz.macros :only [in out defstate defevent]]))
 
@@ -74,11 +75,25 @@
   (add-handler do-like-button ($ :.like-button))
   (add-handler do-logout-link ($ :.logout-link)))
 
+(defn update-statistics
+  [stats]
+  (let [stat-section ($ :.statistics-section)]
+    (doseq [key (keys stats)]
+      (let [finder (format "*[data-model='%s']" key)
+            section (jayq/find stat-section finder)]
+        (.effect section "highlight" 3000)
+        (jayq/text (jayq/find section :.stat-value)
+                   (get stats key))))))
+
+
+
 (defn main
   []
   (log/info "starting application")
   (setup-handlers)
-  ;; (connect-repl)
-  (state/trigger ws/ws-state :connect))
+  (state/trigger ws/ws-state :connect)
+  (update-statistics {"users" 9001
+                      "activities" "123456"}))
 
 (main)
+;; (connect-repl)

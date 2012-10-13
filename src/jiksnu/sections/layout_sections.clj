@@ -94,15 +94,37 @@
 
 (defn statistics-section
   [response]
-  [:div.well
-   [:p "Activities: " (model.activity/count-records)]
-   [:p "Conversations: " (model.conversation/count-records)]
-   [:p "Domains: " (model.domain/count-records)]
-   [:p "Groups: " (model.group/count-records)]
-   [:p "Feed Sources: " (model.feed-source/count-records)]
-   [:p "Feed Subscriptions: " (model.feed-subscription/count-records)]
-   [:p "Subscriptions: " (model.subscription/count-records)]
-   [:p "Users: " (model.user/count-records)]])
+  [:div.well.statistics-section
+   [:table.table.table-compact
+    [:thead
+     [:tr
+      [:th "Collection"]
+      [:th "Count"]]]
+    [:tbody
+     [:tr {:data-model "activities"}
+      [:td.stat-label "Activities: "]
+      [:td.stat-value ]]
+     [:tr {:data-model "conversations"}
+      [:td.stat-label "Conversations: "]
+      [:td.stat-value (model.conversation/count-records)]]
+     [:tr {:data-model "domains"}
+      [:td.stat-label "Domains: "]
+      [:td.stat-value (model.domain/count-records)]]
+     [:tr {:data-model "groups"}
+      [:td.stat-label "Groups: "]
+      [:td.stat-value (model.group/count-records)]]
+     [:tr {:data-model "feed-sourcces"}
+      [:td.stat-label "Feed Sources: "]
+      [:td.stat-value (model.feed-source/count-records)]]
+     [:tr {:data-model "feed-subscriptions"}
+      [:td.stat-label "Feed Subscriptions: "]
+      [:td.stat-value (model.feed-subscription/count-records)]]
+     [:tr {:data-model "subscriptions"}
+      [:td.stat-label "Subscriptions: "]
+      [:td.stat-value (model.subscription/count-records)]]
+     [:tr {:data-model "users"}
+      [:td.stat-label "Users: "]
+      [:td.stat-value (model.user/count-records)]]]]])
 
 (defn left-column-section
   [response]
@@ -239,6 +261,7 @@
         "/assets/web-socket-js/swfobject.js"
         "/assets/web-socket-js/web_socket.js"
         "http://code.jquery.com/jquery-1.7.1.js"
+        "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
         "/cljs/bootstrap.js"
         "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
 )
