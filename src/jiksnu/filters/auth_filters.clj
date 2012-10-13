@@ -7,8 +7,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]))
 
-(println "auth filters")
-
 (deffilter #'guest-login :http
   [action request]
   (-> request :params :webid actions.user/find-or-create-by-uri action))
