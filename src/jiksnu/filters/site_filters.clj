@@ -14,3 +14,7 @@
 (deffilter #'get-stats :command
   [action request]
   (action))
+
+(deffilter #'get-stats :http
+  [action request]
+  (action))
