@@ -49,14 +49,16 @@
 ;; TODO: Move this to actions and make it find-or-create
 (defn get-domain
   [^User user]
-  (model.domain/fetch-by-id (:domain user)))
+  (if-let [domain (:domain user)]
+    (model.domain/fetch-by-id domain)
+    (throw+ (format "Could not determine domain for user: %s" (pr-str user)))))
 
 (defn local?
   [^User user]
   (or (:local user)
-      (:local (get-domain user))
-      ;; TODO: remove this clause
-      (= (:domain user) (config :domain))))
+      (if-let [domain (get-domain user)]
+        (:local domain)
+        (throw+ (format "Could not determine domain for user: %s" user)))))
 
 (defn get-uri
   ([^User user] (get-uri user true))

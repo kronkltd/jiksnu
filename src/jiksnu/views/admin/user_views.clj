@@ -12,7 +12,7 @@
   {:single true
    :title "Users"
    :viewmodel "/admin/users.viewmodel"
-   :body (admin-index-section items response)})
+   :body (doall (admin-index-section items response))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as response}]
@@ -34,6 +34,10 @@
     {:title (title user)
      :single true
      :body
-     (list (admin-show-section user)
-           (admin-index-block (:items activity-map) activity-map))}))
+     (doall (list (admin-show-section user)
+                  (admin-index-block (:items activity-map) activity-map)))}))
 
+(defview #'show :viewmodel
+  [request user]
+  {:body
+   {:users (doall (admin-index-section [user]))}})

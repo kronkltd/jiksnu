@@ -142,30 +142,6 @@
   [request {:keys [items] :as response}]
   (tigase/result-packet request (index-section items response)))
 
-(defview #'remote-profile :html
-  [request user]
-  (apply-view
-   (assoc request :action #'user-timeline)
-   user))
-
-(defview #'remote-profile :n3
-  [request [user activities]]
-  {:body (with-format :rdf (doall (show-section user)))
-   :template false})
-
-(defview #'remote-profile :rdf
-  [request [user activities]]
-  {:body (show-section user)
-   :template :false})
-
-(defview #'remote-user :html
-  [request user]
-  (apply-view
-   (-> request
-       (assoc :format :html)
-       (assoc :action #'user-timeline))
-   user))
-
 (defview #'stream :html
   [request response-fn]
   {:body response-fn

@@ -56,22 +56,13 @@
   ;; TODO: fetch user
   (action))
 
-(deffilter #'remote-profile :http
-  [action request]
-  (-> request :params :id model/make-id
-      model.user/fetch-by-id action))
-
-(deffilter #'remote-user :http
-  [action request]
-  (-> request :params :*
-      model.user/fetch-by-uri action))
-
 (deffilter #'user-timeline :http
   [action request]
-  (let [{{:keys [id username]} :params} request]
-    (if-let [user (if id
-                    (model.user/fetch-by-id (model/make-id id))
-                    (model.user/get-user username))]
+  (let [{{:keys [id username] :as params} :params} request
+        acct-id (:* params)]
+    (if-let [user (or (and acct-id (model.user/fetch-by-uri acct-id))
+                      (and id (model.user/fetch-by-id (model/make-id id)))
+                      (and username (model.user/get-user username)))]
       (action user))))
 
 (deffilter #'user-timeline :xmpp

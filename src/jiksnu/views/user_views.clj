@@ -55,6 +55,11 @@
   {:body
    {:items (index-section items options)}})
 
+(defview #'index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Users"
+          :users (index-section items page)}})
+
 (defview #'profile :html
   [request user]
   {:title "Edit Profile"

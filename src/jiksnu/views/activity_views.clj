@@ -92,6 +92,15 @@
              with-out-str)
    :template :false})
 
+(defview #'show :viewmodel
+  [request activity]
+  {:body {:activities (doall (index-section [activity]))
+          :target (:_id activity)
+          :model "activity"
+          :displayMode "single"
+          :showPostForm false
+          :title (:title activity)}})
+
 (defview #'update :html
   [request activity]
   (let [actor (session/current-user)]

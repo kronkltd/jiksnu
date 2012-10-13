@@ -1,5 +1,6 @@
 (ns jiksnu.filters.domain-filters
   (:use [ciste.filters :only [deffilter]]
+        [clojure.core.incubator :only [-?>]]
         jiksnu.actions.domain-actions)
   (:require [jiksnu.model.domain :as model.domain])
   (:import tigase.xml.Element))
@@ -26,7 +27,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id model.domain/fetch-by-id action))
+  (-?> request :params :id model.domain/fetch-by-id action))
 
 (deffilter #'ping-error :xmpp
   [action request]

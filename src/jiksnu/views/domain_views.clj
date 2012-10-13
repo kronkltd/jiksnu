@@ -47,6 +47,11 @@
    :single true
    :body (index-section items options)})
 
+(defview #'index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Domains"
+          :domains (index-section items page)}})
+
 (defview #'show :html
   [_request domain]
   {:title (:_id domain)

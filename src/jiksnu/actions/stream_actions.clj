@@ -51,14 +51,6 @@
 
 (declare user-timeline)
 
-(defaction remote-profile
-  [user]
-  (user-timeline user))
-
-(defaction remote-user
-  [user]
-  (user-timeline user))
-
 (defaction stream
   []
   (implement))
@@ -81,8 +73,7 @@
 
 (defaction user-timeline
   [user]
-  (when user
-    [user (actions.activity/find-by-user user)]))
+  [user (actions.activity/find-by-user user)])
 
 (defaction group-timeline
   [group]
