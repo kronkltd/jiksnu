@@ -33,7 +33,8 @@
      (sections.subscription/subscribers-widget user)
      (sections.group/user-groups user))))
 
-(def nav-info
+(defn nav-info
+  []
   [["Home"
     [["/"                         "Public"]
      ["/users"                    "Users"]
@@ -67,7 +68,7 @@
 (defn side-navigation
   []
   [:ul.nav.nav-list.well
-   (->> nav-info
+   (->> (nav-info)
         (map navigation-group)
         (reduce concat))])
 
@@ -92,7 +93,7 @@
            (when (:icon format)
              [:span.format-icon
               [:img {:alt ""
-                     :src (str "/themes/classic/" (:icon format))}]])
+                     :src (str "/assets/themes/classic/" (:icon format))}]])
            [:span.format-label (:label format)]]])
        (:formats response))]]))
 
@@ -207,11 +208,8 @@
   [:div.navbar.navbar-fixed-top
    [:div.navbar-inner
     [:div.container-fluid
-     [:a.brand.home {:href "/" :rel "top"
-                     :data-bind "text: site.name"}
-      (when (config :html-only)
-        (config :site :name))]
-     ;; (navbar-search-form)
+     [:a.brand.home {:href "/" :rel "top"}
+        (config :site :name)]
      [:div.navbar-text.connection-info.pull-right]
      [:ul.nav.pull-right (sections.auth/login-section response)]]]])
 
@@ -250,60 +248,58 @@
 
 (defn page-template-content
   [request response]
-  {:headers {"Content-Type" "text/html; charset=utf-8"}
-   :body
-   (str
-    "<!DOCTYPE html" ">"
-    (h/html
-     [:html
-      ;; TODO: Read the list of declared namespaces
-      {
-       :xmlns:sioc ns/sioc
-       :xmlns:dc ns/dc
-       :xmlns:foaf ns/foaf
-       :xmlns:dcterms ns/dcterms
-       ;; :version "HTML+RDFa 1.1"
-       :lang "en"
-       :xml:lang "en"
-       :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
-       }
-      [:head (head-section request response)]
-      [:body
-       (navbar-section request response)
-       [:div.container-fluid
-        #_(fork-me-link)
-        [:div.row-fluid
-         [:div.span2
-          (left-column-section request response)]
-         [:div#content.span10
-          [:div.row-fluid
-           (if-not (:single response)
-             (list [:div.span9 (main-content request response)]
-                   [:div.span3 (right-column-section response)])
-             [:div.span12 (main-content request response)])]]]
+  (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")
+]
+    {:headers {"Content-Type" "text/html; charset=utf-8"}
+    :body
+    (str
+     "<!DOCTYPE html" ">"
+     (h/html
+      [:html
+       ;; TODO: Read the list of declared namespaces
+       {
+        :xmlns:sioc ns/sioc
+        :xmlns:dc ns/dc
+        :xmlns:foaf ns/foaf
+        :xmlns:dcterms ns/dcterms
+        ;; :version "HTML+RDFa 1.1"
+        :lang "en"
+        :xml:lang "en"
+        :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"
+        }
+       [:head (head-section request response)]
+       [:body
+        (navbar-section request response)
+        [:div.container-fluid
+         #_(fork-me-link)
+         [:div.row-fluid
+          [:div.span2
+           (left-column-section request response)]
+          [:div#content.span10
+           [:div.row-fluid
+            (if-not (:single response)
+              (list [:div.span9 (main-content request response)]
+                    [:div.span3 (right-column-section response)])
+              [:div.span12 (main-content request response)])]]]
 
-        ;; TODO: align middle
-        [:footer.row-fluid.page-footer
-         [:p "Copyright © 2011 KRONK Ltd."]
-         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
-       [:script {:type "text/javascript"}
-        (str "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
-             "WEBSOCKET_PATH = "
-             "'ws://" (config :domain) ":" (config :http :port) "/websocket'"
-             ";"
-             "var CLOSURE_NO_DEPS = true;")]
-       (p/include-js
-        "/assets/web-socket-js/swfobject.js"
-        "/assets/web-socket-js/web_socket.js"
-        "http://code.jquery.com/jquery-1.7.1.js"
-        "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
-        "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
-        "/cljs/bootstrap.js"
-        "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
-        "/assets/knockout.mapping.js"
-        )
-       [:script {:type "text/javascript"}
-        "goog.require('jiksnu.core');"]]]))})
+         ;; TODO: align middle
+         [:footer.row-fluid.page-footer
+          [:p "Copyright © 2011 KRONK Ltd."]
+          [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]]
+        [:script {:type "text/javascript"}
+         (format
+          "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
+        (p/include-js
+         "/assets/web-socket-js/swfobject.js"
+         "/assets/web-socket-js/web_socket.js"
+         "http://code.jquery.com/jquery-1.7.1.js"
+         "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
+         "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
+         "/cljs/bootstrap.js"
+         "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
+         "/assets/knockout.mapping.js")
+        [:script {:type "text/javascript"}
+         "goog.require('jiksnu.core');"]]]))}))
 
 
 (defmethod apply-template :html
