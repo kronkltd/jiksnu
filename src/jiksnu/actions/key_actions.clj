@@ -17,10 +17,6 @@
   [record]
   (model.key/delete record))
 
-;; (defaction update
-;;   [params]
-;;   (model.key/update params))
-
 (defaction show
   [record] record)
 

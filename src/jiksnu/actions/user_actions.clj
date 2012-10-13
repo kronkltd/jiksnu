@@ -350,7 +350,8 @@
   "Update fields in the user"
   [user params]
   ;; TODO: injection attack
-  (->> params
+  (cm/implement)
+  #_(->> params
        (map (fn [[k v]] (if (not= v "") [(keyword k) v])))
        (into user)
        model.user/update))
