@@ -17,6 +17,16 @@
               (when checked
                 {:checked "checked"}))]]]))
 
+(defn next-link
+  [page]
+  [:li.next
+   [:a {:href (str "?page=" (inc page)) :rel "next"} "Next &rarr;"]])
+
+(defn prev-link
+  [page]
+  [:li.previous
+   [:a {:href (str "?page=" (dec page)) :rel "prev"} "&larr; Previous"]])
+
 (defn pagination-links
   [options]
   ;; TODO: page should always be there from now on
@@ -25,17 +35,32 @@
         ;; If no total, no pagination
         total-records (get options :total-records 0)]
     [:div.paginations
-     [:p "Page: " page]
-     [:p "Page Size: " page-size]
-     [:p "Records returned: " (count (:items options))]
-     [:p "Total Records: " total-records]
+     {:data-bind "with: pageInfo"}
+     [:p
+      [:span.pagination-label "Page"] " "
+      [:span.pagination-value
+       {:data-bind "text: page"}
+       (when (config :html-only) page)]]
+     [:p
+      [:span.pagination-label "Page Size"] " "
+      [:span.pagination-value
+       {:data-bind "text: pageSize"}
+       (when (config :html-only) page-size)]]
+     [:p
+      [:span.pagination-label "Records returned"] " "
+      [:span.pagination-value
+       {:data-bind "text: recordCount"}
+       (when (config :html-only) (count (:items options)))]]
+     [:p
+      [:span.pagination-label "Total Records"] " "
+      [:span.pagination-value
+       {:data-bind "text: totalRecords"}
+       (when (config :html-only) total-records)]]
      [:ul.pager
       (when (> page 1)
-        [:li.previous
-         [:a {:href (str "?page=" (dec page)) :rel "prev"} "&larr; Previous"]])
+        (prev-link page))
       (when (< (* page page-size) total-records)
-        [:li.next
-         [:a {:href (str "?page=" (inc page)) :rel "next"} "Next &rarr;"]])]]))
+        (next-link page))]]))
 
 (declare-section actions-section)
 (declare-section admin-actions-section)
