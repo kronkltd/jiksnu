@@ -1,5 +1,6 @@
 (ns jiksnu.routes.stream-routes-test
-  (:use [clj-factory.core :only [factory fseq]]
+  (:use [ciste.formats :only [format-as]]
+        [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.routes-helper :only [as-user response-for]]
         [midje.sweet :only [fact future-fact => every-checker]])
@@ -75,13 +76,12 @@
             (comp status/success? :status)))
 
    (fact "n3"
-
      (let [user (model.user/create (factory :local-user))]
        (dotimes [n 10]
          (model.activity/create (factory :activity {:author (:_id user)})))
        
        (-> (mock/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
-           as-user response-for)) =>
+           (as-user user) response-for)) =>
            (every-checker
             map?
             (comp status/success? :status)
