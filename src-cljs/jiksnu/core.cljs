@@ -64,11 +64,11 @@
   ;; (connect-repl)
   ;; (mock-stats _view)
   ;; (.title _view "foo")
-  ;; (stats/fetch-statistics _view)
+  (stats/fetch-statistics _view)
 
   (if-let [elts ($ "*[data-load-model]")]
     (log/info (fetch-viewmodel (.data elts "load-model"))))
   (ko/apply-bindings _view)
-  (js/prettyPrint))
+  #_(js/prettyPrint))
 
 (main)

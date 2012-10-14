@@ -30,12 +30,19 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Groups"
+   :viewmodel "/groups.viewmodel"
    :body
    (list (index-section (if *dynamic*
-                          (Group.)
+                          [(Group.)]
                           items) response)
          [:p
           [:a {:href "/groups/new"} "Create a new group"]])})
+
+(defview #'index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Groups"
+          :items (map :_id items)
+          :groups (index-section items page)}})
 
 (defview #'new-page :html
   [request group]

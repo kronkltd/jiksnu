@@ -5,12 +5,14 @@
   []
   [
      [[:get    "/api/statusnet/app/memberships/:id.:format"]   #'group/user-list]
+     [[:get    "/groups.:format"]                              #'group/index]
      [[:get    "/groups"]                                      #'group/index]
      [[:post   "/groups"]                                      #'group/create]
      [[:get    "/groups/new"]                                  #'group/new-page]
      [[:get    "/groups/:name/edit"]                           #'group/edit-page]
      ;; [[:get    "/search/group"]                                 #'group/search-page]
      ;; [[:post   "/search/group"]                                 #'group/search]
+     [[:get    "/:username/groups.:format"]                    #'group/user-list]
      [[:get    "/:username/groups"]                            #'group/user-list]
   
 

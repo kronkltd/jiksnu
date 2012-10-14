@@ -10,11 +10,11 @@
   [stats]
   (let [stat-section ($ :.statistics-section)]
     (doseq [key (keys stats)]
-      (let [finder (format "*[data-model='%s']" key)
-            section (jayq/find stat-section finder)]
-        (.effect section "highlight" 3000)
-        (jayq/text (jayq/find section :.stat-value)
-                   (get stats key))))))
+      (let [finder (format "*[data-model='%s']" key)]
+        (when-let [section (jayq/find stat-section finder)]
+          (.effect section "highlight" 3000)
+          (jayq/text (jayq/find section :.stat-value)
+                     (get stats key)))))))
 
 (defn update-statistics-handler
   [model data]

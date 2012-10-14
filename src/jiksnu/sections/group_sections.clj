@@ -85,6 +85,21 @@
   [item & [page]]
   (show-section item page))
 
+;; index-block
+
+(defsection index-block [Group :html]
+  [groups & _]
+  [:ul.profiles
+   (when *dynamic*
+     {:data-bind "foreach: items"})
+   (map index-line groups)])
+
+(defsection index-block [Group :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (index-line m page)}))
+       (into {})))
+
 ;; index-line
 
 (defsection index-line [Group]
@@ -93,12 +108,20 @@
 
 (defsection index-line [Group :html]
   [group & _]
-  [:li
+  [:li (when *dynamic*
+         {:data-bind "with: $root.groups()[$data]"})
    [:section.profile.hentry.vcard
     [:p
      [:a.url.entry-title {:href (str "/groups/" (:nickname group))}
       [:img {:src (:avatar-url group) }]
-      [:span.nickname (:fullname group) " (" (:nickname group) ")"]]]
+      [:span.nickname
+       [:span
+        (if *dynamic*
+          {:data-bind "text: fullname"}
+          (:fullname group))] " ("
+       [:span (if *dynamic*
+                {:data-bind "text: nickname"}
+                (:nickname group))] ")"]]]
     [:a.url
      (if *dynamic*
        {:data-bind "attr: {href: homepage}, text: hompage"}
@@ -113,12 +136,6 @@
 (defsection index-section [Group]
   [items & [page]]
   (index-block items page))
-
-(defsection index-section [Group :html]
-  [groups & _]
-  [:ul.profiles
-   (map index-line groups)])
-
 
 ;; show-section
 

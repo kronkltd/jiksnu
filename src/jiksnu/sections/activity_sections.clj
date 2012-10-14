@@ -492,7 +492,7 @@
 (defsection index-block [Activity :viewmodel]
   [items & [page]]
   (->> items
-       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (map (fn [m] {(:_id m) (index-line m page)}))
        (into {})))
 
 (defsection index-block [Activity :xml]
@@ -649,18 +649,18 @@
 (defsection show-section [Activity :html]
   [activity & _]
   (let [activity-uri (uri activity)]
-    (list
-     [:p {:data-bind "text: $data"}]
-     [:article.hentry.notice
-      (merge {:id (str "activity-" (:_id activity))
-              :about activity-uri
-              :typeof "sioc:Post"
-              :data-type "activity"
-              :data-id (:_id activity)}
-             (when *dynamic*
-               {:data-bind "with: $root.activities()[$data]"}))
-      [:header
-       [:div.pull-right (post-actions activity)]
+    [:article.hentry.notice
+     (merge {:id (str "activity-" (:_id activity))
+             :about activity-uri
+             :typeof "sioc:Post"
+             :data-type "activity"
+             :data-id (:_id activity)}
+            (when *dynamic*
+              {:data-bind "with: $root.activities()[$data]"}))
+     [:header
+      [:div.pull-right (post-actions activity)]
+      [:div (if *dynamic*
+              {:data-bind "with: author"}]
        (show-section-minimal
         (if *dynamic*
           (User.)
@@ -690,81 +690,81 @@
          ;; tags-section
          posted-link-section
          ;; comments-section
-         ])]])))
+         ])]]))
 
-(defsection show-section [Activity :rdf]
-  [activity & _]
-  (rdf/with-rdf-ns ""
-    (let [{:keys [summary id created content]} activity
-          uri (full-uri activity)
-          user (model.activity/get-author activity)
-          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
-          summary (or content summary)]
-      (concat
-       (with-subject uri
-         [
-          [[ns/rdf  :type]        [ns/sioc "Post"]]
-          [[ns/as   :verb]        (rdf/l "post")]
-          [[ns/sioc :has_creator] user-res]
-          [[ns/sioc :has_owner]   user-res]
-          [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (rdf/date (.toDate created))]])
-       (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
+  (defsection show-section [Activity :rdf]
+    [activity & _]
+    (rdf/with-rdf-ns ""
+      (let [{:keys [summary id created content]} activity
+            uri (full-uri activity)
+            user (model.activity/get-author activity)
+            user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
+            summary (or content summary)]
+        (concat
+         (with-subject uri
+           [
+            [[ns/rdf  :type]        [ns/sioc "Post"]]
+            [[ns/as   :verb]        (rdf/l "post")]
+            [[ns/sioc :has_creator] user-res]
+            [[ns/sioc :has_owner]   user-res]
+            [[ns/as   :author]      user-res]
+            [[ns/dc   :published]   (rdf/date (.toDate created))]])
+         (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
 
-(defsection show-section [Activity :viewmodel]
-  [activity & [page]]
-  activity)
+  (defsection show-section [Activity :viewmodel]
+    [activity & [page]]
+    activity)
 
-(defsection show-section [Activity :xmpp]
-  [^Activity activity & options]
-  (element/abdera-to-tigase-element
-   (with-format :atom
-     (show-section activity))))
+  (defsection show-section [Activity :xmpp]
+    [^Activity activity & options]
+    (element/abdera-to-tigase-element
+     (with-format :atom
+       (show-section activity))))
 
-(defsection show-section [Activity :xml]
-  [activity & _]
-  [:status
-   [:text (h/h (or (:title activity)
-                   (:content activity)))]
-   [:truncated "false"]
-   [:created_at (-?> activity :published .toDate model/date->twitter)]
-   [:source (:source activity)]
-   [:id (:_id activity)]
-   [:in_reply_to_status_id]
-   [:in_reply_to_user_id]
-   [:favorited "false" #_(liked? (current-user) activity)]
-   [:in_reply_to_screen_name]
-   (show-section (model.activity/get-author activity))
-   (when (:geo activity)
-     (list [:geo]
-           [:coordnates]
-           [:place]))
-   [:contributors]
-   [:entities
-    [:user_mentions
-     ;; TODO: list mentions
-     ]
-    [:urls
-     ;; TODO: list urls
-     ]
-    [:hashtags
-     ;; TODO: list hashtags
-     ]]])
-
-
-(defsection title [Activity]
-  [activity & options]
-  (:title activity))
+  (defsection show-section [Activity :xml]
+    [activity & _]
+    [:status
+     [:text (h/h (or (:title activity)
+                     (:content activity)))]
+     [:truncated "false"]
+     [:created_at (-?> activity :published .toDate model/date->twitter)]
+     [:source (:source activity)]
+     [:id (:_id activity)]
+     [:in_reply_to_status_id]
+     [:in_reply_to_user_id]
+     [:favorited "false" #_(liked? (current-user) activity)]
+     [:in_reply_to_screen_name]
+     (show-section (model.activity/get-author activity))
+     (when (:geo activity)
+       (list [:geo]
+             [:coordnates]
+             [:place]))
+     [:contributors]
+     [:entities
+      [:user_mentions
+       ;; TODO: list mentions
+       ]
+      [:urls
+       ;; TODO: list urls
+       ]
+      [:hashtags
+       ;; TODO: list hashtags
+       ]]])
 
 
-(defsection update-button [Activity :html]
-  [activity & _]
-  [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
-   [:button.btn.update-button {:type "submit"}
-    [:i.icon-refresh] [:span.button-text "update"]]])
+  (defsection title [Activity]
+    [activity & options]
+    (:title activity))
 
 
-(defsection uri [Activity]
-  [activity & options]
-  (str "/notice/" (:_id activity)))
+  (defsection update-button [Activity :html]
+    [activity & _]
+    [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
+     [:button.btn.update-button {:type "submit"}
+      [:i.icon-refresh] [:span.button-text "update"]]])
+
+
+  (defsection uri [Activity]
+    [activity & options]
+    (str "/notice/" (:_id activity)))
 
