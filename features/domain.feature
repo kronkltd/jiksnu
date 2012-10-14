@@ -8,12 +8,12 @@ Feature: Domains
   #   When I go to the "domain index" page
   #   Then I should see a list of domains
 
-  Scenario: Show domain page
-    Given I am logged in as an admin
-    And a domain exists
-    When I go to the "show" page for that domain
-    # Then I should wait forever
-    Then I should see that domain
+  # Scenario: Show domain page
+  #   Given I am logged in as an admin
+  #   And a domain exists
+  #   When I go to the "show" page for that domain
+  #   # Then I should wait forever
+  #   Then I should see that domain
     
   # Scenario: Deleting a domain
   #   Given I am logged in as an admin
