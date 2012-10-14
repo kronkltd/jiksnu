@@ -12,17 +12,27 @@
             [ring.mock.request :as mock]))
 
 (test-environment-fixture
+
  (fact "ostatus submit"
    (fact "when not authenticated"
      (fact "when it is a remote user"
-      (let [username (fseq :username)
-            domain-name (fseq :domain)]
-        (-> (mock/request :post "/main/ostatussub")
-            (assoc :params {:profile
-                            (format "acct:%s@%s" username domain-name)})
-            response-for) =>
-            (every-checker
-             map?
-             #(status/redirect? (:status %)))))))
+       (let [username (fseq :username)
+             domain-name (fseq :domain)]
+         (-> (mock/request :post "/main/ostatussub")
+             (assoc :params {:profile
+                             (format "acct:%s@%s" username domain-name)})
+             response-for) =>
+             (every-checker
+              map?
+              #(status/redirect? (:status %)))))))
+
+ (fact "get-subscriptions"
+   (let [user (model.user/create (factory :local-user))]
+     (-> (mock/request :get (format "/%s/subscriptions" (:username user)))
+         response-for)) =>
+         (every-checker
+          map?
+          #(status/success? (:status %))))
+ 
  
  )
