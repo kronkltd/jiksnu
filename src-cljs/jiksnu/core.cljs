@@ -22,10 +22,10 @@
   [url]
   (.getJSON js/jQuery url
             (fn [data]
-              (let [m (ko/obj->model data)]
+              (let [m data]
                 (def _m m)
 
-                (when-let [title (.title m)]
+                (when-let [title (.-title m)]
                   (.title _view title))
 
                 (when-let [activities (.-activities m)]

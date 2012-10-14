@@ -5,6 +5,11 @@
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.tools.logging :as log]))
 
+(defn dump-data
+  []
+  [:pre.prettyprint
+   {:data-bind "text: JSON.stringify(ko.toJS($data), undefined, 2)"}])
+
 (defn control-line
   [label name type & {:as options}]
   (let [{:keys [value checked]} options]

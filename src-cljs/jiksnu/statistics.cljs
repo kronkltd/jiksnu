@@ -18,28 +18,10 @@
 
 (defn update-statistics-handler
   [model data]
-  (let [body (.-body data)
-        b (ko/obj->model body (.-statistics model))]
-    (.statistics model b)))
+  (let [body (.-body data)]
+    (.statistics model body)))
 
 (defn fetch-statistics
   [model]
-  (.getJSON js/jQuery
-            "http://renfer.name/main/stats.json"
-            (partial update-statistics-handler model))
-  nil)
-
-(defn mock-stats
-  [model]
-  (let [stats (model/Statistics.)]
-    ;; TODO: use mapping plugin
-    (doseq [[k v] {"users" 9001
-                   "conversations" 2
-                   "groups" 4
-                   "domains" 6
-                   "feedSources" 8
-                   "feedSubscriptions" 16
-                   "subscriptions" 32
-                   "activities" "123456"}]
-      (ko/assoc-observable stats k v))
-    (ko/assoc-observable model "statistics" stats)))
+  (let [stat-url "http://renfer.name/main/stats.json"]
+    (.getJSON js/jQuery stat-url (partial update-statistics-handler model))))

@@ -309,7 +309,7 @@
       (display-avatar user))]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/users/' + _id()}, text: _id"}
+          {:data-bind "attr: {href: '/admin/users/' + $parent}, text: $parent"}
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
