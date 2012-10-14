@@ -142,8 +142,7 @@
         first-name (fseq :name)
         last-name (fseq :surname)
         display-name (str first-name " " last-name)
-        username (fseq :username)
-        domain (fseq :domain)]
+        username (fseq :username)]
     {:username username
      :domain #'domain-id
      :local false
