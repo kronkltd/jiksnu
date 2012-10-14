@@ -1,8 +1,7 @@
 (ns jiksnu.core
   (:use [lolg :only [start-display console-output]]
         [jayq.core :only [$]])
-  (:require [clojure.browser.repl :as repl]
-            [jiksnu.handlers :as handlers]
+  (:require [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as log]
             [jiksnu.model :as model]
@@ -12,10 +11,6 @@
 (def
   ^{:doc "This is the main view model bound to the page"}
   _view)
-
-(defn connect-repl
-  []
-  (repl/connect "http://192.168.1.42:9001/repl"))
 
 (defn add-notification
   [message]
