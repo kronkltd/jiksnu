@@ -73,7 +73,7 @@
               :dependencies
               [[midje "1.4.0"]
                [ring-mock "0.1.1"]
-               [clj-webdriver "0.6.0-SNAPSHOT"]]}}
+               [clj-webdriver "0.6.0-alpha9"]]}}
 
   :plugins [
                [lein-cljsbuild "0.2.4"]
