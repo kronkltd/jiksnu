@@ -14,17 +14,18 @@
                  [clojurewerkz/route-one "1.0.0-beta1"]
                  [clojurewerkz/urly "1.0.0"]
                  [clojurewerkz/quartzite "1.0.0-rc5"]
-                 [clojurewerkz/elastisch "1.0.0-alpha4"]
+                 [clojurewerkz/elastisch "1.0.0-beta2"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
-                 [clojurewerkz/support "0.4.0"]
+                 [clojurewerkz/support "0.7.0-alpha3"]
                  [com.cemerick/friend "0.0.9"]
-                 [com.novemberain/monger "1.1.0-SNAPSHOT"]
+                 [com.novemberain/monger "1.2.0-alpha1"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-alpha4"]
                  [lamina "0.5.0-alpha3"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.1.0-SNAPSHOT"]
+                 [net.kronkltd/waltz "0.1.2-SNAPSHOT"]
                  [oauthentic "0.0.6"]
                  [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"]
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"]
@@ -39,7 +40,6 @@
                  [ring/ring-core "1.1.1"]
                  [ring-basic-authentication "0.0.1"]
                  [slingshot "0.10.2"]
-                 [net.kronkltd/waltz "0.1.2-SNAPSHOT"]
                  ]
   :exclusions [org.clojure/google-closure-library]
   :aot [
@@ -85,7 +85,7 @@
               :dependencies
               [[midje "1.4.0"]
                [ring-mock "0.1.1"]
-               [clj-webdriver "0.6.0-alpha9"]]}}
+               [clj-webdriver "0.6.0-alpha10"]]}}
 
   :plugins [
                [lein-cljsbuild "0.2.4"]
