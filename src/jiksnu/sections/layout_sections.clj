@@ -314,7 +314,7 @@
          "http://code.jquery.com/jquery-1.7.1.js"
          "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
          "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
-         "/cljs/bootstrap.js"
+         "/assets/js/jiksnu.js"
          "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
          "/assets/knockout.mapping.js")
         [:script {:type "text/javascript"}

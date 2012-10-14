@@ -50,12 +50,23 @@
         ]
   :cljsbuild {:repl-listen-port 9001
               :builds
-              [{:source-path "src-cljs"
+              [
+               {:source-path "src-cljs"
                 :compiler
-                {:output-to "resources/public/cljs/bootstrap.js"
-                 :output-dir "resources/public/cljs"
+                {:output-to "resources/public/assets/js/jiksnu.js"
+                 :output-dir "target/cljsout/simple"
                  :optimizations :simple
-                 :pretty-print true}}]}
+                 :pretty-print true}}
+              {:source-path "src-cljs"
+                :compiler
+                {:output-to "resources/public/assets/js/jiksnu.min.js"
+                 :output-dir "target/cljsout/min"
+                 :optimizations :simple}}
+               {:source-path "src-cljs"
+                :compiler
+                {:output-to "resources/public/assets/js/jiksnu.advanced.js"
+                 :output-dir "target/cljsout/advanced"
+                 :optimizations :advanced                }}]}
   :main ciste.runner
   :jvm-opts [
              "-server"
