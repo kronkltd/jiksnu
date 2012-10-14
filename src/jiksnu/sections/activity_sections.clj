@@ -617,11 +617,13 @@
 (defsection show-section [Activity :html]
   [activity & _]
   [:article.hentry.notice
-   {:id (str "activity-" (:_id activity))
-    :about (uri activity)
-    :typeof "sioc:Post"
-    :data-type "activity"
-    :data-id (:_id activity)}
+   (merge {:id (str "activity-" (:_id activity))
+           :about (uri activity)
+           :typeof "sioc:Post"
+           :data-type "activity"
+           :data-id (:_id activity)}
+          (when *dynamic*
+            {:data-bind "with: activity"}))
    [:header
     [:div.pull-right
      (post-actions activity)]
@@ -642,13 +644,17 @@
      (map (fn [irt]
             [:a {:href irt :rel "nofollow"} irt])
           (:irts activity))]
-    (enclosures-section activity)
-    #_(links-section activity)
-    (likes-section activity)
-    (maps-section activity)
-    (tags-section activity)
-    (posted-link-section activity)
-    (comments-section activity)]])
+    (map
+     #(% activity)
+     [
+      ;; enclosures-section
+      ;; links-section
+      ;; likes-section
+      ;; maps-section
+      ;; tags-section
+      posted-link-section
+      ;; comments-section
+      ])]])
 
 (defsection show-section [Activity :rdf]
   [activity & _]
