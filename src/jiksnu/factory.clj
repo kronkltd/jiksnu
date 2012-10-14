@@ -146,7 +146,6 @@
         domain (fseq :domain)]
     {:username username
      :domain #'domain-id
-     ;; :id (str "acct:" username "@" domain)
      :local false
      :name display-name
      :display-name display-name
@@ -162,17 +161,9 @@
    :local true})
 
 (deffactory :activity
-  {
-   ;; :id #'abdera/new-id
-   :title (fseq :title)
+  {:title (fseq :title)
    :summary (fseq :summary)
-   :author #'user-id
-   :local true
-   :published #'time/now
-   :verb "post"
-   :object-type "note"
-   :updated #'time/now
-   :public true})
+   :author #'user-id})
 
 (deffactory :subscription
   {:to #'user-id
