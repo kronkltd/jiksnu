@@ -40,7 +40,7 @@
      [:th "Name"]
      [:th "Full Name"]
      [:th "Homepage"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % options) groups)]])
 
 (defsection admin-index-block [Group :viewmodel]

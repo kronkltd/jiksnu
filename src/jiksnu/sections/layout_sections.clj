@@ -224,8 +224,11 @@
   [:div.navbar.navbar-fixed-top
    [:div.navbar-inner
     [:div.container-fluid
-     [:a.brand.home {:href "/" :rel "top"}
-      (config :site :name)]
+     [:a.brand.home (merge {:href "/" :rel "top"}
+                           (when *dynamic*
+                             {:data-bind "text: site().name"}))
+      (when-not *dynamic*
+        (config :site :name))]
      [:ul.nav.pull-right (sections.auth/login-section response)]
      [:div.navbar-text.connection-info.pull-right]
      [:div.navbar-text.pull-right
@@ -284,8 +287,9 @@
          :lang "en"
          :xml:lang "en"
          :prefix "foaf: http://xmlns.com/foaf/0.1/ dc: http://purl.org/dc/elements/1.1/ sioc: http://rdfs.org/sioc/ns# dcterms: http://purl.org/dc/terms/"}
-              (when-let [vm (:viewmodel response)]
-                {:data-load-model vm}))
+              (if *dynamic*
+                (when-let [vm (:viewmodel response)]
+                  {:data-load-model vm})))
        [:head (head-section request response)]
        [:body
         (navbar-section request response)
@@ -300,7 +304,8 @@
               (list [:div.span9 (main-content request response)]
                     [:div.span3 (right-column-section response)])
               [:div.span12 (main-content request response)])]]]
-         [:div {:data-bind "text: $data"}]
+         (when *dynamic*
+           [:code.prettify {:data-bind "text: ko.toJSON($data)"}])
          ;; TODO: align middle
          [:footer.row-fluid.page-footer
           [:p "Copyright © 2011 KRONK Ltd."]
@@ -315,6 +320,7 @@
          "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
          "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
          "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
+         "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"
          "/assets/knockout.mapping.js"
          "/assets/js/jiksnu.js"
          )

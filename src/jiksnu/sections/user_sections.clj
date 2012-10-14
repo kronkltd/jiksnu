@@ -286,7 +286,7 @@
      [:th "User"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (if *dynamic*
       (admin-index-line (User.) page)
       (map #(admin-index-line % page) items))]])
@@ -301,8 +301,9 @@
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
-  [:tr {:data-id (:_id user) :data-type "user"
-        :data-bind "with: $root.users()[$data]"}
+  [:tr (merge {:data-id (:_id user) :data-type "user"}
+              (when *dynamic*
+                {:data-bind "with: $root.users()[$data]"}))
    [:td
     (when-not *dynamic*
       (display-avatar user))]
@@ -406,7 +407,7 @@
   [users & [options & _]]
   [:table.table.users
    [:thead]
-   [:tbody {:data-bind "foreach: items"}
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (if *dynamic*
       (index-line (User.))
       (map index-line users))]])
@@ -419,9 +420,8 @@
 
 (defsection index-line [User :html]
   [user & _]
-  [:tr {:data-bind "with: $root.users()[$data]"}
-   (when-not *dynamic*
-     {:data-id (:_id user) :data-type "user"})
+  [:tr (merge {:data-id (:_id user) :data-type "user"}
+              (when *dynamic* {:data-bind "with: $root.users()[$data]"}))
    [:td
     (when-not *dynamic*
       (display-avatar user))]
@@ -439,7 +439,7 @@
       (if *dynamic*
         {:data-bind "text: domain"}
         (:domain user))]]
-    [:p {:data-bind "text: typeof($data.displayName) != 'undefined' ? displayName : ''"}]
+    [:p (when *dynamic* {:data-bind "text: typeof($data.displayName) != 'undefined' ? displayName : ''"})]
     [:p
      (if *dynamic*
        {:data-bind "text: typeof($data.uri) != 'undefined' ? uri : ''"}
@@ -506,26 +506,26 @@
     [:span.nickname.fn.n
      [:span
       (if *dynamic*
-        {:data-bind "text: displayName"}
+        {:data-bind "text: typeof($data.displayName) != 'undefined' ? displayName : ''"}
         (:display-name user))]]
     " ("
     [:span
      (if *dynamic*
-       {:data-bind "text: username"}
+       {:data-bind "text: typeof($data.username) != 'undefined' ? username : ''"}
        (:username user))]
     "@"
     [:span
      (if *dynamic*
-       {:data-bind "text: domain"}
+       {:data-bind "text: typeof($data.domain) != 'undefined' ? domain : ''"}
        (link-to (actions.user/get-domain user)))] ")"]
    [:div.adr
     [:p.locality
      (if *dynamic*
-       {:data-bind "text: location"}
+       {:data-bind "text: typeof($data.location) != 'undefined' ? location : ''"}
        (:location user))]]
    [:p.note
     (if *dynamic*
-      {:data-bind "text: bio"}
+      {:data-bind "text: typeof($data.bio) != 'undefined' ? bio : ''"}
       (:bio user))]
    ;; [:p [:a {:href (:id user)} (:id user)]]
    ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
