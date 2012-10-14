@@ -98,11 +98,13 @@
              activity (model.activity/create (factory :activity author-map))]
          (show-section activity) =>
          (every-checker
-          (partial instance? Entry)
-          #(instance? IRI (.getId %))
-          #(string? (.getTitle %))
-          #(instance? DateTime (.getUpdated %))
-          #(instance? Person (.getAuthor %)))))))
+          (fn [response]
+            (fact
+              response => (partial instance? Entry)
+              (.getId response) => (partial instance? IRI)
+              (.getUpdated response) => (partial instance? DateTime)
+              (.getTitle response) => string?
+              (.getAuthor response) => (partial instance? Person))))))))
 
  (fact "#'show-section Activity :xmpp"
    (fact "should return an element"
