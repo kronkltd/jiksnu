@@ -27,7 +27,7 @@
                (model/drop-all!)
                (let [user (model.user/create (factory :local-user))
                      subscription (model.subscription/create (factory :subscription
-                                                                      {:actor (:_id user)}))
+                                                                      {:from (:_id user)}))
                      request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>
@@ -44,7 +44,7 @@
                (let [user (model.user/create (factory :local-user))
                      subscription (model.subscription/create
                                    (factory :subscription
-                                            {:actor (:_id user)}))
+                                            {:from (:_id user)}))
                      request {:action action
                               :params {:id (str (:_id user))}}
                      response (filter-action action request)]

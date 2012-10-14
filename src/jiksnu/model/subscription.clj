@@ -1,5 +1,6 @@
 (ns jiksnu.model.subscription
-  (:use [slingshot.slingshot :only [throw+]]
+  (:use [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
+        [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -18,7 +19,17 @@
 (def create-validators
   (validation-set
    (presence-of :from)
-   (presence-of :to)))
+   (presence-of :to)
+   (presence-of :created)
+   (presence-of :updated)
+   (presence-of :_id)))
+
+(defn prepare
+  [subscription]
+  (-> subscription
+      set-_id
+      set-updated-time
+      set-created-time))
 
 (defn drop!
   []
@@ -53,19 +64,14 @@
 
 (defn create
   [subscription & options]
-  (let [errors (create-validators subscription)]
+  (let [subscription (prepare subscription)
+        errors (create-validators subscription)]
     (if (empty? errors)
-      (let [option-map
-            (merge {:created (time/now)}
-                   subscription)
-            {:keys [from to]} option-map
-            subscription (find-record {:from from :to to})
-            query {:from from :to to}
-            response (mc/insert collection-name option-map)]
-        
-        (find-record {:from from :to to}))
-      (throw+ {:type :validation
-               :errors errors}))))
+      (do
+        (log/debugf "creating subscription: %s" (pr-str subscription))
+        (mc/insert collection-name subscription)
+        (fetch-by-id (:_id subscription)))
+      (throw+ {:type :validation :errors errors}))))
 
 (defn subscribe
   [actor user]

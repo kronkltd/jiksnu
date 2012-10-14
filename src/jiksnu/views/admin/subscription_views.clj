@@ -2,8 +2,10 @@
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.subscription-actions :only [index delete show]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-section admin-show-section]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log])
+  (:import jiksnu.model.Subscription))
 
 ;; (defview #'admin-index :html
 ;;   [request subscriptions]
@@ -13,7 +15,9 @@
   [request {:keys [items] :as response}]
   {:title "Subscriptions"
    :single true
-   :body (admin-index-section items response)})
+   :body (admin-index-section (if *dynamic*
+                                (Subscription.)
+                                items) response)})
 
 (defview #'show :html
   [request subscription]
