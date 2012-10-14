@@ -168,7 +168,7 @@
 (defn user->person
   [user]
   (let [author-uri (model.user/get-uri user)]
-    (let [person (.newAuthor abdera/*abdera-factory*)]
+    (let [person (.newAuthor abdera/abdera-factory)]
       (doto person
        (.addSimpleExtension ns/as "object-type" "activity" ns/person)
        (.addSimpleExtension ns/atom "id" "" (or (:id user)
@@ -177,7 +177,7 @@
                      (:display-name user)
                      (str (:first-name user) " " (:last-name user))))
       
-       (.addExtension (doto (.newLink abdera/*abdera-factory*)
+       (.addExtension (doto (.newLink abdera/abdera-factory)
                         (.setHref (:avatar-url user))
                         (.setRel "avatar")
                         (.setMimeType "image/jpeg")))
@@ -186,7 +186,7 @@
 
        (.addSimpleExtension ns/poco "preferredUsername" "poco" (:username user))
        (.addSimpleExtension ns/poco "displayName" "poco" (title user))
-       (.addExtension (doto (.newLink abdera/*abdera-factory*)
+       (.addExtension (doto (.newLink abdera/abdera-factory)
                         (.setHref (full-uri user))
                         (.setRel "alternate")
                         (.setMimeType "text/html")))

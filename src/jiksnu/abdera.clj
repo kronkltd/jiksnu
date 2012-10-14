@@ -1,5 +1,6 @@
 (ns jiksnu.abdera
-  (:use [clojure.core.incubator :only [-?>]])
+  (:use [ciste.config :only [definitializer]]
+        [clojure.core.incubator :only [-?>]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log])
   (:import java.io.ByteArrayInputStream
@@ -16,12 +17,11 @@
            org.apache.abdera2.protocol.client.AbderaClient
            org.apache.axiom.util.UIDGenerator))
 
-(defonce ^Abdera ^:dynamic *abdera* (Abdera/getInstance))
-(defonce ^Factory ^:dynamic *abdera-factory* (.getFactory *abdera*))
-(defonce ^:dynamic *abdera-parser* (.getParser *abdera*))
-(defonce ^:dynamic *abdera-client* (AbderaClient.))
-
 (declare make-link)
+(declare abdera)
+(declare abdera-factory)
+(declare abdera-client)
+(declare abdera-parser)
 
 ;; TODO: Since I am no longer using this style of id, I am not sure if
 ;; this is still needed. Perhaps move to abdera
@@ -31,7 +31,7 @@
 
 (defn ^Entry new-entry
   []
-  (.newEntry *abdera*))
+  (.newEntry abdera))
 
 
 (defn fetch-resource
@@ -196,7 +196,7 @@ this is for OSW
   "Convert a map to an abdera link"
   [link-map]
   (let [{:keys [href rel type attributes]} link-map
-        link (.newLink *abdera-factory*)]
+        link (.newLink abdera-factory)]
     (when href (.setHref link href))
     (when rel (.setRel link rel))
     (when type (.setMimeType link type))
@@ -208,7 +208,7 @@ this is for OSW
 (defn ^Feed make-feed*
   "Convert a feed map into a feed"
   [{:keys [author title subtitle links entries updated id generator] :as feed-map}]
-  (let [feed (.newFeed *abdera*)]
+  (let [feed (.newFeed abdera)]
     (when title (.setTitle feed title))
     (when subtitle (.setSubtitle feed subtitle))
     (when generator
@@ -241,7 +241,7 @@ this is for OSW
 (defn parse-stream
   [stream]
   (try
-    (let [parser *abdera-parser*]
+    (let [parser abdera-parser]
       (.parse parser stream))
     (catch IllegalStateException e
       (log/error e))))
@@ -290,7 +290,7 @@ this is for OSW
 ;;      :as activity} bound-ns]
 ;;      (let [xmlns (or (:xmlns attributes) bound-ns)
 ;;            qname (QName. xmlns element-name)
-;;            element (.newExtensionElement *abdera-factory* qname)
+;;            element (.newExtensionElement abdera-factory qname)
 ;;            filtered (filter not-namespace attributes)]
 ;;        (doseq [[k v] filtered]
 ;;          (.setAttributeValue element (name k) v))
@@ -301,3 +301,8 @@ this is for OSW
 ;;              (.setText element child))))
 ;;        element)))
 
+(definitializer
+  (defonce ^Abdera abdera (Abdera/getInstance))
+  (defonce ^Factory abdera-factory (.getFactory abdera))
+  (defonce abdera-parser (.getParser abdera))
+  (defonce abdera-client (AbderaClient.)))
