@@ -5,6 +5,7 @@
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
+        [jiksnu.referrant :only [this that get-this get-that set-this set-that]]
         [lamina.core :only [permanent-channel read-channel* siphon]]
         [lamina.executor :only [task]]
         midje.sweet
@@ -45,27 +46,6 @@
 (def current-page (ref nil))
 (def domain "localhost")
 (def port 8175)
-
-(def this (ref {}))
-(def that (ref {}))
-
-(defn get-this
-  [k]
-  (get @this k))
-
-(defn set-this
-  [k v]
-  (dosync
-   (alter this assoc k v)))
-
-(defn get-that
-  [k]
-  (get @that k))
-
-(defn set-that
-  [k v]
-  (dosync
-   (alter that assoc k v)))
 
 (def that-stream (permanent-channel))
 (def my-password (ref nil))
