@@ -4,11 +4,14 @@
         [lamina.core :only [channel wait-for-message]])
   (:require [clj-http.cookies :as cookies]
             [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
+            [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as mock]
-            [ring.util.codec :as codec]))
+            [ring.util.codec :as codec])
+  (:import java.io.StringReader))
 
 (defn response-for
   "Run a request against the main handler and wait for the response"

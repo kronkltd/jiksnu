@@ -6,7 +6,7 @@
         [clj-factory.core :only [factory]]
         clj-tigase.core
         [jiksnu.actions.user-actions :only [index]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
         jiksnu.helpers.user-helpers
         [jiksnu.ko :only [*dynamic*]]
         ;; jiksnu.views.user-views
@@ -20,17 +20,9 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.actions.user-actions :as actions.user]
-            [net.cgrand.enlive-html :as enlive])
+            [jiksnu.actions.user-actions :as actions.user])
   (:import java.io.StringReader
            jiksnu.model.User))
-
-(defn hiccup->doc
-  [hiccup-seq]
-  (-> hiccup-seq
-      h/html
-      StringReader.
-      enlive/html-resource))
 
 (test-environment-fixture
 

@@ -4,7 +4,17 @@
         [ciste.runner :only [start-application! stop-application!]]
         [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]))
+            [hiccup.core :as h]
+            [jiksnu.model :as model]
+            [net.cgrand.enlive-html :as enlive])
+  (:import java.io.StringReader))
+
+(defn hiccup->doc
+  [hiccup-seq]
+  (-> hiccup-seq
+      h/html
+      StringReader.
+      enlive/html-resource))
 
 (defmacro test-environment-fixture
   [& body]
