@@ -74,8 +74,8 @@
   []
   (try (let [site-config (ciste.config/load-site-config)]
          
-         (ciste.runner/start-application! :test)
-         (set-driver! {:browser :htmlunit})
+         (ciste.runner/start-application! :integration)
+         (set-driver! {:browser :firefox})
          (ciste.loader/process-requires)
          (model/drop-all!)
          (dosync
