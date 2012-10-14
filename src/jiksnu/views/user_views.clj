@@ -46,9 +46,9 @@
    :headers {"Location" (uri user)}})
 
 (defview #'index :html
-  [request {:keys [items] :as options}]
+  [request {:keys [items] :as page}]
   {:title "Users"
-   :body (index-section items options)})
+   :body (index-section items page)})
 
 (defview #'index :json
   [request {:keys [items] :as options}]

@@ -10,7 +10,6 @@
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]))
 
-
 (deffilter #'callback-publish :http
   [action request]
   (action (abdera/stream->feed (:body request))))
