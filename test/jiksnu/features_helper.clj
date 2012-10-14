@@ -72,12 +72,11 @@
 
 (defn before-hook
   []
-  (log/info "before")
-  (try (let [site-config (ciste.runner/load-site-config)]
+  (try (let [site-config (ciste.config/load-site-config)]
          
          (ciste.runner/start-application! :test)
          (set-driver! {:browser :htmlunit})
-         (ciste.runner/process-requires)
+         (ciste.loader/process-requires)
          (model/drop-all!)
          (dosync
           (ref-set this {})
