@@ -51,6 +51,6 @@
   [handler]
   (fn [request]
     (let [params (-> request :params)]
-      (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly "false")))]
+      (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly "true")))]
         (binding [ko/*dynamic* dynamic?]
           (handler request))))))
