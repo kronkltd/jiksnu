@@ -287,15 +287,15 @@ serialization"
 (defaction oembed
   [activity & [options & _]]
   (when activity
-    {:version "1.0"
-     :provider_name (config :site :name)
-     :provider_url "/"
-     :type "link"
-     :title (:title activity)
-     :author_name (title (get-author activity))
-     :author_url (full-uri (get-author activity))
-     :url (:url activity)
-     :html (:summary activity)}))
+    (merge {:version "1.0"
+            :provider_name (config :site :name)
+            :provider_url "/"
+            :type "link"
+            :title (:title activity)
+            :url (:url activity)
+            :html (:summary activity)}
+           (let [author (get-author activity)]
+             {:author_name (:name author)}))))
 
 (definitializer
   (require-namespaces
