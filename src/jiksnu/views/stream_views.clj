@@ -4,7 +4,8 @@
         [ciste.views :only [apply-view defview]]
         ciste.sections.default
         [clj-stacktrace.repl :only [pst+]]
-        jiksnu.actions.stream-actions)
+        jiksnu.actions.stream-actions
+        [jiksnu.ko :only [*dynamic*]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -21,9 +22,7 @@
             [plaza.rdf.core :as rdf]
             [plaza.rdf.vocabularies.foaf :as foaf]
             [ring.util.response :as response])
-  (:import java.text.SimpleDateFormat
-           plaza.rdf.core.RDFModel
-           com.hp.hpl.jena.rdf.model.Model))
+  (:import jiksnu.model.Activity))
 
 (defview #'callback-publish :html
   [request params]
@@ -113,7 +112,9 @@
             :title "Next Page"
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
-   :body (index-section items response)})
+   :body (if *dynamic*
+           (index-section [(Activity.)])
+           (index-section items response))})
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as response}]

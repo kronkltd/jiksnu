@@ -3,6 +3,7 @@
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
                                        index-section link-to show-section]]
+            [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [control-line admin-index-block admin-index-line admin-index-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
@@ -32,11 +33,22 @@
 (defn subscribers-widget
   [user]
   (when user
-    (let [subscriptions (model.subscription/subscribers user)]
-      [:div.subscribers
+    (let [subscriptions (if *dynamic*
+                          [(Subscription.)]
+                          (model.subscription/subscribers user))]
+      [:div.subscribers (when *dynamic*
+                          {:data-bind "with: currentUser"})
        [:h3
         ;; subscribers link
-        [:a {:href (str (full-uri user) "/subscribers")} "Followers"] " " (count subscriptions)]
+        [:a
+         (if *dynamic*
+           {:data-bind "attr: {href: url + '/subscribers}" :href "#"}
+           {:href (str (full-uri user) "/subscribers")})
+         "Followers"] " "
+        [:span
+         (if *dynamic*
+           {:data-bind "text: subscriptionCount"}
+           (count subscriptions))]]
        [:ul.unstyled
         [:li (map subscribers-line subscriptions)]]])))
 

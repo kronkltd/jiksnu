@@ -3,9 +3,9 @@
         [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form edit-button index-section
-                                       show-section delete-button full-uri link-to
-                                       uri title index-block index-line index-section
-                                       update-button]]
+                                       show-section-minimal show-section delete-button
+                                       full-uri link-to uri title index-block index-line
+                                       index-section update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
@@ -30,6 +30,7 @@
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
+           jiksnu.model.User
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.ExtensibleElement))
 
@@ -80,10 +81,10 @@
 
 (defn activitystream-link
   [href]
-   {:label "Activity Streams"
-    :href href
-    :icon "as-bw-14x14.png"
-    :type "application/json"})
+  {:label "Activity Streams"
+   :href href
+   :icon "as-bw-14x14.png"
+   :type "application/json"})
 
 (defn index-formats
   [activities]
@@ -273,7 +274,9 @@
            :title (model/format-date (:published activity))
            :property "dc:published"}
     [:a {:href (uri activity)}
-     (-> activity :created .toDate model/prettyify-time)]]
+     (if *dynamic*
+       nil
+       (-> activity :created .toDate model/prettyify-time))]]
    
    (when (:source activity)
      (str " using " (:source activity)))
@@ -288,7 +291,6 @@
                      first :href)}
             "foreign service"]
            " "))
-      
    (when (:conversations activity)
      (list
       " "
@@ -406,15 +408,15 @@
 (defsection admin-index-block [Activity :html]
   [activities & [options & _]]
   [:table.table
-    [:thead
-     [:tr
-      [:th "User"]
-      [:th "Type"]
-      [:th "Visibility"]
-      [:th "Title"]
-      [:th "Actions"]]]
-    [:tbody
-     (map admin-index-line activities)]])
+   [:thead
+    [:tr
+     [:th "User"]
+     [:th "Type"]
+     [:th "Visibility"]
+     [:th "Title"]
+     [:th "Actions"]]]
+   [:tbody
+    (map admin-index-line activities)]])
 
 
 (defsection admin-index-line [Activity :html]
@@ -614,42 +616,39 @@
 
 (defsection show-section [Activity :html]
   [activity & _]
-  (let [user (model.activity/get-author activity)]
-    [:article.hentry.notice
-     {:id (str "activity-" (:_id activity))
-      :about (uri activity)
-      :typeof "sioc:Post"
-      :data-type "activity"
-      :data-id (:_id activity)}
-     [:header
-      [:div.pull-right
-       (post-actions activity)]
-      [:div.vcard
-       ;; TODO: merge into the same link
-       (when-not *dynamic* (sections.user/display-avatar user))
-       [:span.fn.n
-        (when-not *dynamic*
-          (link-to user))]]
-      (recipients-section activity)]
-     [:div.entry-content
-      #_(when (:title activity)
-          [:h1.entry-title {:property "dc:title"} (:title activity)])
-      [:p {:property "dc:title"}
-       (when-not *dynamic*
-         (or #_(:title activity)
-             (:content activity)))]]
-     [:div
-      [:ul.unstyled
-       (map (fn [irt]
-              [:a {:href irt :rel "nofollow"} irt])
-            (:irts activity))]
-      (enclosures-section activity)
-      #_(links-section activity)
-      (likes-section activity)
-      (maps-section activity)
-      (tags-section activity)
-      (posted-link-section activity)
-      (comments-section activity)]]))
+  [:article.hentry.notice
+   {:id (str "activity-" (:_id activity))
+    :about (uri activity)
+    :typeof "sioc:Post"
+    :data-type "activity"
+    :data-id (:_id activity)}
+   [:header
+    [:div.pull-right
+     (post-actions activity)]
+    (show-section-minimal
+     (if *dynamic*
+       (User.)
+       (model.activity/get-author activity)))
+    (recipients-section activity)]
+   [:div.entry-content
+    #_(when (:title activity)
+        [:h1.entry-title {:property "dc:title"} (:title activity)])
+    [:p {:property "dc:title"}
+     (when-not *dynamic*
+       (or #_(:title activity)
+           (:content activity)))]]
+   [:div
+    [:ul.unstyled
+     (map (fn [irt]
+            [:a {:href irt :rel "nofollow"} irt])
+          (:irts activity))]
+    (enclosures-section activity)
+    #_(links-section activity)
+    (likes-section activity)
+    (maps-section activity)
+    (tags-section activity)
+    (posted-link-section activity)
+    (comments-section activity)]])
 
 (defsection show-section [Activity :rdf]
   [activity & _]
@@ -667,8 +666,7 @@
           [[ns/sioc :has_creator] user-res]
           [[ns/sioc :has_owner]   user-res]
           [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (rdf/date (.toDate created))]
-         ])
+          [[ns/dc   :published]   (rdf/date (.toDate created))]])
        (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
 
 (defsection show-section [Activity :viewmodel]

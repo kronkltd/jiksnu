@@ -3,7 +3,7 @@
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section add-form
                                         edit-button delete-button link-to index-line
-                                        update-button index-block index-section]]
+                                        show-section-minimal update-button index-block index-section]]
          [clj-gravatar.core :only [gravatar-image]]
          [clojure.core.incubator :only [-?>]]
          [jiksnu.ko :only [*dynamic*]]
@@ -446,6 +446,15 @@
 (defsection index-section [User :viewmodel]
   [items & [page]]
   (index-block items page))
+
+(defsection show-section-minimal [User :html]
+  [user & _]
+  [:div.vcard
+   ;; TODO: merge into the same link
+   (when-not *dynamic* (display-avatar user))
+   [:span.fn.n
+    (when-not *dynamic*
+      (link-to user))]])
 
 (defsection show-section [User :as]
   [user & options]
