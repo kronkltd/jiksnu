@@ -37,10 +37,10 @@
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
          domain (actions.domain/find-or-create (factory :domain
-                                              {:discovered true
-                                               :links [{:rel "lrdd"
-                                                        :template (str "http://" domain-name "/lrdd?uri={uri}")}]
-                                               :_id domain-name}))
+                                                        {:discovered true
+                                                         :links [{:rel "lrdd"
+                                                                  :template (str "http://" domain-name "/lrdd?uri={uri}")}]
+                                                         :_id domain-name}))
          user (model.user/create (factory :user {:domain domain-name}))]
 
      ;; TODO: Load elements from resources
@@ -56,7 +56,7 @@
                entry (first (abdera/get-entries feed))]
            (entry->activity entry) => model/activity?
            #_(provided
-               (.getId entry) => "1"))))))
+              (.getId entry) => "1"))))))
 
  (fact "#'find-by-user"
    (fact "when the user has activities"
@@ -131,18 +131,18 @@
        (let [activity (create (factory :activity))]
          (show activity) => activity
          (provided
-           (viewable? activity) => true)))
+          (viewable? activity) => true)))
      (fact "and the record is not viewable"
        (let [activity (create (factory :activity))]
          (show activity) => (throws RuntimeException)
          (provided
-           (viewable? activity) => false)))))
+          (viewable? activity) => false)))))
 
  (fact "#'oembed"
    (with-context [:http :html]
      (let [activity (model.activity/create (factory :activity))]
-      (oembed activity) =>
-      (every-checker
-       map?
-       (comp string? :html)))))
+       (oembed activity) =>
+       (every-checker
+        map?
+        (comp string? :html)))))
  )
