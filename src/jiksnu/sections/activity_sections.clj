@@ -429,6 +429,8 @@
        (map (fn [m] {(:_id m) (admin-index-line m page)}))
        (into {})))
 
+;; admin-index-line
+
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
   [:tr {:data-type "activity" :data-id (:_id activity)}
@@ -439,6 +441,10 @@
    [:td (post-actions activity)]])
 
 ;; admin-index-section
+
+(defsection admin-index-section [Activity]
+  [items & [page]]
+  (admin-index-block items page))
 
 (defsection admin-index-section [Activity :viewmodel]
   [items & [page]]

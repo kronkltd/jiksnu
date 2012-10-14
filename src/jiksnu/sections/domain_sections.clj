@@ -22,7 +22,6 @@
    [:button.btn.discover-button {:type "submit"}
     [:i.icon-search] [:span.button-text "Discover"]]])
 
-
 (defsection add-form [Domain :html]
   [domain & _]
   [:form.well {:method "post" :actions "/main/domains"}
@@ -32,7 +31,6 @@
     [:div.actions
      [:button.btn.primary.add-button {:type "submit"}
       "Add"]]]])
-
 
 (defsection index-block [Domain :html]
   [domains & _]
@@ -46,10 +44,6 @@
      [:th "Host Meta"]
      [:th "# Links"]]]
    [:tbody (map index-line domains)]])
-
-(defsection index-block [Domain :viewmodel]
-  [items & [page]]
-  (map #(index-line % page) items))
 
 (defsection index-line [Domain :html]
   [domain & _]
@@ -66,23 +60,6 @@
     (discover-button domain)
     (edit-button domain)
     (delete-button domain)]])
-
-(defsection index-line [Domain :viewmodel]
-  [item & [page]]
-  (show-section item page))
-
-;; (defsection index-section [Domain :html]
-;;   [domains & [options & _]]
-;;   (let [{:keys [page total-records]} options]
-;;     (list
-;;      [:p "Page: " page]
-;;      [:p "Total Records: " total-records]
-;;      (index-block domains options)
-;;      (pagination-links options))))
-
-(defsection index-section [Domain :viewmodel]
-  [items & [page]]
-  (index-block items page))
 
 (defsection link-to [Domain :html]
   [domain & _]

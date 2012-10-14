@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line index-block
                                        index-section link-to update-button]]
-        [jiksnu.sections :only [actions-section admin-show-section admin-index-block control-line]])
+        [jiksnu.sections :only [actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSource))
@@ -47,7 +47,7 @@
                   :user_id "text")
     [:input {:type "submit"}]]])
 
-
+;; actions-section
 
 (defsection actions-section [FeedSource :html]
   [source]
@@ -60,6 +60,8 @@
     (unsubscribe-button source)]
    [:li
     (delete-button source)]])
+
+;; add-form
 
 (defsection add-form [FeedSource :html]
   [source & options]
@@ -77,13 +79,31 @@
      [:button.btn.btn-primary
       {:type "submit"} "Add"]]]])
 
-(defsection admin-index-block [FeedSource :html]
-  [& params]
-  (apply index-block params))
+;; admin-index-block
 
-(defsection admin-show-section [FeedSource :html]
-  [source & [options & _]]
-  (show-section source options))
+(defsection admin-index-block [FeedSource]
+  [items & [page]]
+  (map #(admin-index-line % page) items))
+
+(defsection admin-index-block [FeedSource :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (into {})))
+
+;; admin-index-section
+
+(defsection admin-index-section [FeedSource]
+  [items & [page]]
+  (admin-index-block items page))
+
+;; admin-show-section
+
+(defsection admin-show-section [FeedSource]
+  [item & [page]]
+  (show-section item page))
+
+;; delete-button
 
 (defsection delete-button [FeedSource :html]
   [user & _]

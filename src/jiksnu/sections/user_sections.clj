@@ -263,6 +263,7 @@
 ;; Sections
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; admin-actions-section
 
 (defsection admin-actions-section [User :html]
   [user & [page & _]]
@@ -272,8 +273,7 @@
    [:li (edit-button user)]
    [:li (delete-button user)]])
 
-
-
+;; admin-index-block
 
 (defsection admin-index-block [User :html]
   [items & [page]]
@@ -292,8 +292,11 @@
 
 (defsection admin-index-block [User :viewmodel]
   [items & [page]]
-  (map #(admin-index-line % page) items))
+  (->> items
+       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (into {})))
 
+;; admin-index-line
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
@@ -320,7 +323,7 @@
     (when-not *dynamic*
       (admin-actions-section user page))]])
 
-
+;; admin-index-section
 
 (defsection admin-index-section [User :html]
   [items & [page & _]]
@@ -329,9 +332,9 @@
 
 (defsection admin-index-section [User :viewmodel]
   [items & [page]]
-  (index-section items page))
+  (admin-index-block items page))
 
-
+;; admin-show-section
 
 (defsection admin-show-section [User :html]
   [item & [response & _]]
