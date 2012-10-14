@@ -15,9 +15,6 @@
      (println " ")
      (load-site-config)
      (start-application! :test)
-     (process-requires)
-     ;; (Thread/sleep 6000)
-     ;; (process-requires)
 
      (model/drop-all!)
      

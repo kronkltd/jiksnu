@@ -87,6 +87,10 @@
   [items & [page]]
   (admin-index-block items page))
 
+(defsection admin-show-section :default
+  [item & [page]]
+  (show-section item page))
+
 ;; TODO: only for html
 (defsection delete-button :default
   [record & _]

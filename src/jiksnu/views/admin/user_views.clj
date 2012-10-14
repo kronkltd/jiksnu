@@ -26,6 +26,7 @@
                :totalRecords (:total-records response)
                :pageSize (:page-size response)
                :recordCount (count (:items response))}
+    :items (map :_id items)
     :users (doall (admin-index-section items))}})
 
 (defview #'show :html

@@ -1,8 +1,10 @@
 (ns jiksnu.views.group-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section add-form]]
-        [jiksnu.actions.group-actions :only [add create edit-page index new-page user-list]])
-  (:require [clojure.tools.logging :as log]))
+        [jiksnu.actions.group-actions :only [add create edit-page index new-page user-list]]
+        [jiksnu.ko :only [*dynamic*]])
+  (:require [clojure.tools.logging :as log])
+  (:import jiksnu.model.Group))
 
 (defview #'add :html
   [request group]
@@ -28,7 +30,9 @@
   [request {:keys [items] :as response}]
   {:title "Groups"
    :body
-   (list (index-section items response)
+   (list (index-section (if *dynamic*
+                          (Group.)
+                          items) response)
          [:p
           [:a {:href "/groups/new"} "Create a new group"]])})
 

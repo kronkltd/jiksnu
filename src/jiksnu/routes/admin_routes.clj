@@ -18,9 +18,12 @@
   (make-matchers
    [
     [[:get    "/admin"]                                   #'admin/index]
+
     [[:get    "/admin/activities.:format"]                #'admin.activity/index]
     [[:get    "/admin/activities"]                        #'admin.activity/index]
+
     [[:get    "/admin/auth"]                              #'admin.auth/index]
+
     [[:get    "/admin/conversations"]                     #'admin.conversation/index]
     [[:get    "/admin/conversations.:format"]             #'admin.conversation/index]
     [[:post   "/admin/conversations"]                     #'admin.conversation/create]
@@ -29,7 +32,9 @@
     [[:post   "/admin/conversations/:id/update"]          #'admin.conversation/fetch-updates]
     [[:post   "/admin/conversations/:id/delete"]          #'admin.conversation/delete]
 
+    [[:get    "/admin/feed-sources.:format"]              #'admin.feed-source/index]
     [[:get    "/admin/feed-sources"]                      #'admin.feed-source/index]
+    [[:get    "/admin/feed-sources/:id.:format"]          #'admin.feed-source/show]
     [[:get    "/admin/feed-sources/:id"]                  #'admin.feed-source/show]
     [[:post   "/admin/feed-sources/:id/delete"]           #'admin.feed-source/delete]
     [[:post   "/admin/feed-sources/:id/unsubscribe"]      #'admin.feed-source/remove-subscription]
@@ -37,26 +42,30 @@
     [[:post   "/admin/feed-sources/:id/watchers"]         #'admin.feed-source/add-watcher]
     [[:post   "/admin/feed-sources/:id/watchers/delete"]  #'admin.feed-source/remove-watcher]
 
+    [[:get    "/admin/feed-subscriptions.:format"]        #'admin.feed-subscription/index]
     [[:get    "/admin/feed-subscriptions"]                #'admin.feed-subscription/index]
 
-    [[:get    "/admin/groups"]                            #'admin.group/index]
     [[:get    "/admin/groups.:format"]                    #'admin.group/index]
+    [[:get    "/admin/groups"]                            #'admin.group/index]
     [[:post   "/admin/groups"]                            #'admin.group/create]
-    [[:get    "/admin/groups/:id"]                        #'admin.group/show]
     [[:get    "/admin/groups/:id.:format"]                #'admin.group/show]
+    [[:get    "/admin/groups/:id"]                        #'admin.group/show]
     [[:post   "/admin/groups/:id/delete"]                 #'admin.group/delete]
 
+    [[:get    "/admin/likes.:format"]                     #'admin.like/index]
     [[:get    "/admin/likes"]                             #'admin.like/index]
+    [[:delete "/admin/likes/:id.:format"]                         #'admin.like/delete]
     [[:delete "/admin/likes/:id"]                         #'admin.like/delete]
     [[:post   "/admin/likes/:id/delete"]                  #'admin.like/delete]
         
-    [[:get    "/admin/keys"]                              #'admin.key/index]
     [[:get    "/admin/keys.:format"]                      #'admin.key/index]
+    [[:get    "/admin/keys"]                              #'admin.key/index]
     [[:post   "/admin/keys"]                              #'admin.key/create]
-    [[:get    "/admin/keys/:id"]                          #'admin.key/show]
     [[:get    "/admin/keys/:id.:format"]                  #'admin.key/show]
+    [[:get    "/admin/keys/:id"]                          #'admin.key/show]
     [[:post   "/admin/keys/:id/delete"]                   #'admin.key/delete]
     
+    [[:get    "/admin/subscriptions.:format"]             #'admin.sub/index]
     [[:get    "/admin/subscriptions"]                     #'admin.sub/index]
     [[:post   "/admin/subscriptions"]                     #'admin.sub/create]
     [[:get    "/admin/subscriptions/:id.:format"]         #'admin.sub/show]
@@ -73,6 +82,7 @@
     [[:get    "/admin/settings"]                          #'admin.setting/edit-page]
     [[:post   "/admin/settings"]                          #'admin.setting/update-settings]
 
+    [[:get    "/admin/workers.:format"]                   #'admin.worker/index]
     [[:get    "/admin/workers"]                           #'admin.worker/index]
     [[:post   "/admin/workers/start"]                     #'admin.worker/start-worker]
     [[:post   "/admin/workers/stop"]                      #'admin.worker/stop-worker]

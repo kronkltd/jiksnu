@@ -420,7 +420,7 @@
      [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody
+   [:tbody {:data-bind "foreach: items"}
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -433,12 +433,18 @@
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
-  [:tr {:data-type "activity" :data-id (:_id activity)}
-   [:td (-> activity actions.activity/get-author link-to)]
-   [:td (-> activity :object :object-type)]
-   [:td (if (-> activity :public) "public" "private")]
-   [:td (:title activity)]
-   [:td (post-actions activity)]])
+  [:tr {:data-type "activity" :data-id (:_id activity)
+        :data-bind "with: $root.activities()[$data]"}
+   [:td (when-not *dynamic*
+          (-> activity actions.activity/get-author link-to))]
+   [:td {:data-bind "text: object['object-type']"}
+    (when-not *dynamic*
+      (-> activity :object :object-type))]
+   [:td (when-not *dynamic*
+          (if (-> activity :public) "public" "private"))]
+   [:td (if *dynamic* {:data-bind "text: title"} (:title activity))]
+   [:td (when-not *dynamic*
+          (post-actions activity))]])
 
 ;; admin-index-section
 

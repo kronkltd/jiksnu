@@ -28,7 +28,17 @@
                 (when-let [title (.title m)]
                   (.title _view title))
 
-                (.users _view (.-users m))))))
+                (when-let [activities (.-activities m)]
+                  (.activities _view activities))
+
+                (when-let [feed-sources (.-feedSources m)]
+                  (.feedSources _view feed-sources))
+
+                (when-let [users (.-users m)]
+                  (.users _view users))
+
+                (when-let [items (.-items m)]
+                  (.items _view items))))))
 
 
 (defn main

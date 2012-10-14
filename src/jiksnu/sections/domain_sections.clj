@@ -45,6 +45,12 @@
      [:th "# Links"]]]
    [:tbody (map index-line domains)]])
 
+(defsection index-block [Domain :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (index-line m page)}))
+       (into {})))
+
 (defsection index-line [Domain :html]
   [domain & _]
   [:tr

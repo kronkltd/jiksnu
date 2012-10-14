@@ -5,7 +5,8 @@
                                        show-section]]
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
                                               index show host-meta ping ping-response
-                                              ping-error]])
+                                              ping-error]]
+        [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.domain :as model.domain]
@@ -45,7 +46,11 @@
   [_request {:keys [items] :as options}]
   {:title "Domains"
    :single true
-   :body (index-section items options)})
+   :body (index-section
+          (if *dynamic*
+            [(Domain.)]
+            items)
+          options)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

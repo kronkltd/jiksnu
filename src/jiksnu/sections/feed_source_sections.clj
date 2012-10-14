@@ -101,7 +101,7 @@
 
 (defsection admin-show-section [FeedSource]
   [item & [page]]
-  (show-section item page))
+  item)
 
 ;; delete-button
 

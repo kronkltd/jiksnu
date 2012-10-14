@@ -285,7 +285,7 @@
      [:th "User"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: users"}
+   [:tbody {:data-bind "foreach: items"}
     (if *dynamic*
       (admin-index-line (User.) page)
       (map #(admin-index-line % page) items))]])
@@ -300,7 +300,8 @@
 
 (defsection admin-index-line [User :html]
   [user & [page & _]]
-  [:tr {:data-id (:_id user) :data-type "user"}
+  [:tr {:data-id (:_id user) :data-type "user"
+        :data-bind "with: $root.users()[$data]"}
    [:td
     (when-not *dynamic*
       (display-avatar user))]
@@ -327,8 +328,7 @@
 
 (defsection admin-index-section [User :html]
   [items & [page & _]]
-  (list (pagination-links page)
-        (admin-index-block items page)))
+  (admin-index-block items page))
 
 (defsection admin-index-section [User :viewmodel]
   [items & [page]]

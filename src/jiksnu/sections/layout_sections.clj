@@ -300,7 +300,7 @@
               (list [:div.span9 (main-content request response)]
                     [:div.span3 (right-column-section response)])
               [:div.span12 (main-content request response)])]]]
-
+         [:div {:data-bind "text: $data"}]
          ;; TODO: align middle
          [:footer.row-fluid.page-footer
           [:p "Copyright © 2011 KRONK Ltd."]

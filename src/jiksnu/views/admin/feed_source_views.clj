@@ -4,6 +4,7 @@
         [jiksnu.actions.admin.feed-source-actions :only [add-watcher delete
                                                          fetch-updates index
                                                          remove-watcher show]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-section admin-show-section]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])
@@ -34,9 +35,18 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Feed Sources"
+   :viewmodel "/admin/feed-sources.viewmodel"
    :single true
-   :body (list (admin-index-section items response)
-               (add-form (model/->FeedSource)))})
+   :body (list (admin-index-section (if *dynamic*
+                                      (FeedSource.)
+                                      items) response)
+               (add-form (FeedSource.)))})
+
+(defview #'index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Feed Sources"
+          :items (map :_id items)
+          :feedSources (admin-index-section items page)}})
 
 (defview #'remove-watcher :html
   [request source]
