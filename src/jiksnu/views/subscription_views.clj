@@ -35,6 +35,11 @@
   {:title "Subscribers"
    :body (sections.subscription/subscribers-section items response)})
 
+(defview #'get-subscribers :viewmodel
+  [request [user {:keys [items] :as page}]]
+  {:body {:user (show-section user)
+          :subscriptions (index-section items page)}})
+
 (defview #'get-subscribers :xmpp
   [request [user {:keys [items] :as response}]]
   (tigase/result-packet
@@ -57,6 +62,11 @@
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]
   {:body (sections.subscription/subscriptions-section items response)})
+
+(defview #'get-subscriptions :viewmodel
+  [request [user {:keys [items] :as page}]]
+  {:body {:user (show-section user)
+          :subscriptions (index-section items page)}})
 
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]

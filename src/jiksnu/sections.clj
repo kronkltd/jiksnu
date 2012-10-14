@@ -83,12 +83,6 @@
   [record & [options]]
   (index-line record options))
 
-(defsection admin-index-section :default
-  [records & [options & _]]
-  (list
-   (pagination-links options)
-   (admin-index-block records options)))
-
 (defsection full-uri :default
   [record & options]
   (str "http://" (config :domain)
@@ -105,20 +99,6 @@
      [:span {:about (uri record)
              :property "dc:title"}
       (or (:title options-map) (title record))] ]))
-
-(defsection index-block :default
-  [records & [options & _]]
-  [:ul
-   (map #(index-line % options) records)])
-
-
-;; TODO: look for a {:paginate false} key
-(defsection index-section :default
-  [records & [options & _]]
-  (let [{:keys [page total-records]} options]
-    (list
-     (pagination-links options)
-     (index-block records options))))
 
 (defsection delete-button :default
   [record & _]

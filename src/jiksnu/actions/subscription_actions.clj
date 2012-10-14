@@ -101,11 +101,11 @@
 
 (defaction get-subscribers
   [user]
-  [user (model.subscription/subscribers user)])
+  [user (index {:to (:_id user)})])
 
 (defaction get-subscriptions
   [user]
-  [user (index {:actor (:_id user)} )])
+  [user (index {:from (:_id user)})])
 
 
 (defaction unsubscribe

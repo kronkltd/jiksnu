@@ -404,6 +404,11 @@
       (privacy-select activity)
       [:input.btn.btn-primary.pull-right {:type "submit" :value "post"}]]]]])
 
+;; admin-index-block
+
+(defsection admin-index-block [Activity]
+  [items & [page]]
+  (map #(admin-index-line % page) items))
 
 (defsection admin-index-block [Activity :html]
   [activities & [options & _]]
@@ -418,6 +423,11 @@
    [:tbody
     (map admin-index-line activities)]])
 
+(defsection admin-index-block [Activity :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (into {})))
 
 (defsection admin-index-line [Activity :html]
   [activity & [options & _]]
@@ -428,9 +438,13 @@
    [:td (:title activity)]
    [:td (post-actions activity)]])
 
+;; admin-index-section
+
 (defsection admin-index-section [Activity :viewmodel]
   [items & [page]]
-  (index-section items page))
+  (admin-index-block items page))
+
+;; delete-button
 
 (defsection delete-button [Activity :html]
   [activity & _]

@@ -2,7 +2,7 @@
   (:use [ciste.model :only [implement]]
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
-                                       index-section link-to show-section]]
+                                       index-block index-section link-to show-section]]
             [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [control-line admin-index-block admin-index-line admin-index-section]])
   (:require [clojure.tools.logging :as log]
@@ -105,13 +105,21 @@
      :actor (show-section actor)
      :target (show-section target)}))
 
+(defsection index-section [Subscription :viewmodel]
+  [items & [page]]
+  (index-block items page))
+
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]
-  [:li.subscription {:data-id (:_id item) :data-type "subscription"}
-   (if-let [user (try (model.subscription/get-target item)
-                   (catch RuntimeException ex nil))]
-     (link-to user)
-     "unknown")])
+  [:li.subscription
+   (merge {:data-id (:_id item) :data-type "subscription"}
+          (if *dynamic*
+            {:data-bind "text: id"}))
+   (when-not *dynamic*
+     (if-let [user (try (model.subscription/get-target item)
+                        (catch RuntimeException ex nil))]
+       (link-to user)
+       "unknown"))])
 
 (defsection subscriptions-block [Subscription :html]
   [items & [options & _]]
