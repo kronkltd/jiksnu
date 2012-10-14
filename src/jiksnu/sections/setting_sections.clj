@@ -32,5 +32,8 @@
     (control-line "Allow registration?"
                   "registration-enabled" "checkbox"
                   :checked (config :registration-enabled))
+    (control-line "HTML only?"
+                  "htmlOnly" "checkbox"
+                  :checked (config :htmlOnly))
     [:div.actions
      [:input {:type "submit"}]]]])

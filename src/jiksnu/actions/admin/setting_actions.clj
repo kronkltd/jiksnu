@@ -3,7 +3,8 @@
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]])
-  (:require [jiksnu.session :as session]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.session :as session]))
 
 (defaction edit-page
   []
@@ -18,7 +19,8 @@
         print-triggers (= "on" (get params "print.triggers"))
         print-request (= "on" (get params "print.request"))
         print-routes (= "on" (get params "print.routes"))
-        registration-enabled (= "on" (get params "registration-enabled"))]
+        registration-enabled (= "on" (get params "registration-enabled"))
+        htmlOnly (= "on" (get params :htmlOnly))]
     (set-config! [:site :name] site-name)
     (set-config! [:domain] domain)
     (set-config! [:site :email] admin-email)
@@ -27,6 +29,7 @@
     (set-config! [:print :routes] print-routes)
     (set-config! [:print :triggers] print-triggers)
     (set-config! [:registration-enabled] registration-enabled)
+    (set-config! [:htmlOnly] htmlOnly)
     (write-config!)
     params))
 
