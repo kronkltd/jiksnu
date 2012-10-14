@@ -1,7 +1,7 @@
 (ns jiksnu.actions.admin.feed-source-actions
   (:use [ciste.core :only [defaction]]
-        [ciste.config :only [definitializer]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]

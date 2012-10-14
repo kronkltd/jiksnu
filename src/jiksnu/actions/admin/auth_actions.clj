@@ -1,7 +1,7 @@
 (ns jiksnu.actions.admin.auth-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]))
 

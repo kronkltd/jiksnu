@@ -1,7 +1,7 @@
 (ns jiksnu.actions.conversation-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.conversation :as model.conversation]))

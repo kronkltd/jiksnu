@@ -1,7 +1,7 @@
 (ns jiksnu.actions.favorite-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]]))
+        [ciste.loader :only [require-namespaces]]))
 
 (defaction user-list
   [user]

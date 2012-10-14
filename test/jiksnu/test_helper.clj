@@ -1,9 +1,9 @@
 (ns jiksnu.test-helper
-  (:use [ciste.runner :only [load-site-config start-application!
-                             stop-application! process-requires]]
+  (:use [ciste.config :only [load-site-config]]
+        [ciste.loader :only [process-requires]]
+        [ciste.runner :only [start-application! stop-application!]]
         [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
-            ;; jiksnu.factory
             [jiksnu.model :as model]))
 
 (defmacro test-environment-fixture

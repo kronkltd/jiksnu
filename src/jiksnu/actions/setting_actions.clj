@@ -1,7 +1,8 @@
 (ns jiksnu.actions.setting-actions
-  (:use [ciste.config :only [config definitializer set-config! write-config!]]
+  (:use [ciste.config :only [config set-config! write-config!]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.session :as session]))
 
 (defaction oauth-apps

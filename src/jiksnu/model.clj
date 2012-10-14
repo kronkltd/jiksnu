@@ -1,6 +1,7 @@
 (ns jiksnu.model
   (:use ciste.core
-        [ciste.config :only [config definitializer environment]]
+        [ciste.config :only [config environment]]
+        [ciste.initializer :only [definitializer]]
         [clj-factory.core :only [factory]]
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])

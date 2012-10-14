@@ -1,8 +1,8 @@
 (ns jiksnu.actions.admin.worker-actions
   (:use [ciste.commands :only [add-command!]]
-        [ciste.config :only [definitializer]]
+        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]])
   (:require [ciste.workers :as workers]))
 
 (defn get-worker-info

@@ -1,7 +1,8 @@
 (ns jiksnu.actions.activity-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config]]
+        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [full-uri title]]
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])

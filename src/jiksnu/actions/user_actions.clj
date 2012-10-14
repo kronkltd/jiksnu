@@ -1,8 +1,9 @@
 (ns jiksnu.actions.user-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
+        [ciste.initializer :only [definitializer]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.session :only [current-user]]
         [slingshot.slingshot :only [throw+]])

@@ -1,8 +1,9 @@
 (ns jiksnu.actions.feed-source-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config]]
+        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]

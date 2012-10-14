@@ -1,9 +1,9 @@
 (ns jiksnu.actions.auth-actions
   (:use [ciste.commands :only [add-command!]]
-        [ciste.config :only [definitializer]]
+        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [jiksnu.session :only [current-user set-authenticated-user!]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]

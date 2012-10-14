@@ -1,7 +1,7 @@
 (ns jiksnu.actions.tag-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]))

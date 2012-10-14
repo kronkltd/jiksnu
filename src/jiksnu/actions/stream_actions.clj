@@ -1,9 +1,10 @@
 (ns jiksnu.actions.stream-actions
   (:use [ciste.commands :only [add-command! parse-command]]
-        [ciste.config :only [config definitializer]]
+        [ciste.config :only [config]]
         [ciste.core :only [defaction with-context]]
+        [ciste.initializer :only [definitializer]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])

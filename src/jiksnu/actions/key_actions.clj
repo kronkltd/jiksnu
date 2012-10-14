@@ -1,7 +1,8 @@
 (ns jiksnu.actions.key-actions
-    (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]

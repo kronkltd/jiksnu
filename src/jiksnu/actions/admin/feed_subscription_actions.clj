@@ -1,8 +1,8 @@
 (ns jiksnu.actions.admin.feed-subscription-actions
   (:use [ciste.core :only [defaction]]
-        [ciste.config :only [definitializer]]
+        [ciste.initializer :only [definitializer]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 

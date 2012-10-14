@@ -1,8 +1,8 @@
 (ns jiksnu.actions.group-actions
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [jiksnu.session :only [current-user]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]

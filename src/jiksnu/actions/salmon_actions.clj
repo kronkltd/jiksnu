@@ -1,7 +1,8 @@
 (ns jiksnu.actions.salmon-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config]]
+        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.runner :only [require-namespaces]]
+        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]

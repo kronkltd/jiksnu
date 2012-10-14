@@ -1,8 +1,9 @@
 (ns jiksnu.actions.comment-actions
-  (:use [ciste.config :only [config definitializer]]
+  (:use [ciste.config :only [config]]
+        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.model :only [implement]]
-        [ciste.runner :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]

@@ -1,5 +1,5 @@
 (ns jiksnu.abdera
-  (:use [ciste.config :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [clojure.core.incubator :only [-?>]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log])
