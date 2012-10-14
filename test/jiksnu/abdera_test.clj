@@ -1,7 +1,7 @@
 (ns jiksnu.abdera-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [fseq]]
-        [jiksnu.abdera :only [*abdera-factory* new-id get-text new-entry]]
+        [jiksnu.abdera :only [abdera-factory new-id get-text new-entry]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker]])
   (:require [jiksnu.namespace :as ns])
@@ -19,14 +19,14 @@
      (fact "should return that string"
        (let [qname (QName. ns/atom "content")
              text (fseq :word)
-             element (.newElement *abdera-factory* qname)]
+             element (.newElement abdera-factory qname)]
          (.setText element text)
          (get-text element) => text)))
 
    (fact "when the element does not have any text"
      (fact "should return an empty string"
        (let [qname (QName. ns/atom "content")
-             element (.newElement *abdera-factory* qname)]
+             element (.newElement abdera-factory qname)]
          (get-text element) => ""))))
 
  (fact "new-entry"
