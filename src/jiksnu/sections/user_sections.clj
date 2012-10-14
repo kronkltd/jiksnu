@@ -439,7 +439,7 @@
       (if *dynamic*
         {:data-bind "text: domain"}
         (:domain user))]]
-    [:p {:data-bind "text: displayName"}]
+    [:p {:data-bind "text: typeof($data.displayName) != 'undefined' ? displayName : ''"}]
     [:p
      (if *dynamic*
        {:data-bind "text: typeof($data.uri) != 'undefined' ? uri : ''"}

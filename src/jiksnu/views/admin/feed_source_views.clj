@@ -38,7 +38,7 @@
    :viewmodel "/admin/feed-sources.viewmodel"
    :single true
    :body (list (admin-index-section (if *dynamic*
-                                      (FeedSource.)
+                                      [(FeedSource.)]
                                       items) response)
                (add-form (FeedSource.)))})
 

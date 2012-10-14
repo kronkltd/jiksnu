@@ -2,6 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line index-block
                                        index-section link-to update-button]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
@@ -85,11 +86,33 @@
   [items & [page]]
   (map #(admin-index-line % page) items))
 
+(defsection admin-index-block [FeedSource :html]
+  [items & [options & _]]
+  [:table.table
+   [:thead
+    [:tr
+     [:th "Topic"]
+     [:th "Actions"]]]
+   [:tbody {:data-bind "foreach: items"}
+    (map admin-index-line items)]])
+
 (defsection admin-index-block [FeedSource :viewmodel]
   [items & [page]]
   (->> items
        (map (fn [m] {(:_id m) (admin-index-line m page)}))
        (into {})))
+
+;; admin-index-line
+
+(defsection admin-index-line [FeedSource :html]
+  [item & [page]]
+  [:tr {:data-type "feed-source" :data-id (:_id item)
+        :data-bind "with: $root.feedSources()[$data]"}
+   [:td (if *dynamic*
+          {:data-bind "text: topic"}
+          (:topic item))]])
+
+
 
 ;; admin-index-section
 

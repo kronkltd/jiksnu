@@ -40,7 +40,7 @@
      [:th "Name"]
      [:th "Full Name"]
      [:th "Homepage"]]]
-   [:tbody
+   [:tbody {:data-bind "foreach: items"}
     (map #(admin-index-line % options) groups)]])
 
 (defsection admin-index-block [Group :viewmodel]
@@ -57,10 +57,21 @@
 
 (defsection admin-index-line [Group :html]
   [group & [options & _]]
-  [:tr {:id (str "group-" (:_id group))}
-   [:td (:nickname group)]
-   [:td (:fullname group)]
-   [:td (:homepage group)]])
+  [:tr (merge {:id (str "group-" (:_id group))}
+              (when *dynamic*
+                {:data-bind "with: $root.groups()[$data]"}))
+   [:td
+    (if *dynamic*
+      {:data-bind "text: nickname"}
+      (:nickname group))]
+   [:td
+    (if *dynamic*
+      {:data-bind "text: fullname"}
+      (:fullname group))]
+   [:td
+    (if *dynamic*
+      {:data-bind "text: homepage"}
+      (:homepage group))]])
 
 ;; admin-index-section
 

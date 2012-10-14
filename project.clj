@@ -57,12 +57,12 @@
                  :output-dir "target/cljsout/simple"
                  :optimizations :simple
                  :pretty-print true}}
-              {:source-path "src-cljs"
+               #_{:source-path "src-cljs"
                 :compiler
                 {:output-to "resources/public/assets/js/jiksnu.min.js"
                  :output-dir "target/cljsout/min"
                  :optimizations :simple}}
-               {:source-path "src-cljs"
+               #_{:source-path "src-cljs"
                 :compiler
                 {:output-to "resources/public/assets/js/jiksnu.advanced.js"
                  :output-dir "target/cljsout/advanced"

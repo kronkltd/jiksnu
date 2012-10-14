@@ -13,7 +13,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
             [monger.collection :as mc]
-           )
+            [monger.query :as mq])
   (:import jiksnu.model.Domain
            jiksnu.model.User
            tigase.xmpp.BareJID
@@ -126,12 +126,16 @@
                :errors errors}))))
 
 (defn fetch-all
-  "Fetch all users"
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (->> (mc/find-maps collection-name params)
-         (map model/map->User)))) 
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (:page options 1)
+                                  :per-page (:page-size options 20)))]
+       (map map->User records))))
 
 (defn get-user
   "Find a user by username and domain"

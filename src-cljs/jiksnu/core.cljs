@@ -34,8 +34,11 @@
                 (when-let [domains (.-domains m)]
                   (.domains _view domains))
 
-                (when-let [feed-sources (.-feedSources m)]
-                  (.feedSources _view feed-sources))
+                (when-let [groups (.-groups m)]
+                  (.groups _view groups))
+
+                (when-let [feedSources (.-feedSources m)]
+                  (.feedSources _view feedSources))
 
                 (when-let [subscriptions (.-subscriptions m)]
                   (.subscriptions _view subscriptions))

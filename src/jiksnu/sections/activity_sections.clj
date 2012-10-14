@@ -482,7 +482,7 @@
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
-  [:div.activities
+  [:div.activities {:data-bind "with: items"}
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -655,7 +655,7 @@
            :data-type "activity"
            :data-id (:_id activity)}
           (when *dynamic*
-            {:data-bind "with: activity"}))
+            {:data-bind "with: $root.activities()[$data]"}))
    [:header
     [:div.pull-right
      (post-actions activity)]
@@ -667,10 +667,12 @@
    [:div.entry-content
     #_(when (:title activity)
         [:h1.entry-title {:property "dc:title"} (:title activity)])
-    [:p {:property "dc:title"}
-     (when-not *dynamic*
-       (or #_(:title activity)
-           (:content activity)))]]
+    [:p (merge {:property "dc:title"}
+               (if *dynamic*
+                 {:data-bind "text: title"}))
+     (when-not *dynamic*)
+     (or #_(:title activity)
+         (:content activity))]]
    [:div
     [:ul.unstyled
      (map (fn [irt]

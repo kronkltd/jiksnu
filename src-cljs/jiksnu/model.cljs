@@ -64,6 +64,7 @@
     (ko/assoc-observable "pageInfo")
     (ko/assoc-observable-array "activities")
     (ko/assoc-observable-array "domains")
+    (ko/assoc-observable-array "groups")
     (ko/assoc-observable-array "feedSources")
     (ko/assoc-observable-array "items")
     (ko/assoc-observable-array "notifications")
