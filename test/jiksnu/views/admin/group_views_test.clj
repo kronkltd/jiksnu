@@ -1,8 +1,9 @@
 (ns jiksnu.views.admin.group-views-test
-    (:use [ciste.core :only [with-serialization with-format]]
+  (:use [ciste.core :only [with-serialization with-format]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [every-checker fact future-fact => contains]])
   (:require [clojure.tools.logging :as log]
@@ -23,22 +24,23 @@
        (with-serialization :http
          (fact "when the format is :html"
            (with-format :html
-             (fact "when there are groups"
-               (model/drop-all!)
-               (let [groups (doall (map (fn [n]
-                                          (model.group/create (factory :group)))
-                                        (range 15)))
-                     request {:action action}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (fn [response]
-                    (let [body (h/html (:body response))]
-                      (fact
-                        body => #"groups"
-                        (doseq [group groups]
-                          (let [pattern (re-pattern (str "group-" (:_id group)))]
-                            body => pattern))))))))))))))
+             (binding [*dynamic* false]
+               (fact "when there are groups"
+                 (model/drop-all!)
+                 (let [groups (doall (map (fn [n]
+                                            (model.group/create (factory :group)))
+                                          (range 15)))
+                       request {:action action}
+                       response (filter-action action request)]
+                   (apply-view request response) =>
+                   (every-checker
+                    map?
+                    (fn [response]
+                      (let [body (h/html (:body response))]
+                        (fact
+                          body => #"groups"
+                          (doseq [group groups]
+                            (let [pattern (re-pattern (str "group-" (:_id group)))]
+                              body => pattern)))))))))))))))
 
  )

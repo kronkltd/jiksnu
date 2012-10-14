@@ -1,10 +1,11 @@
 (ns jiksnu.views.admin.subscription-views-test
-      (:use [ciste.core :only [with-serialization with-format]]
-            [ciste.filters :only [filter-action]]
-            [ciste.views :only [apply-view]]
-            [clj-factory.core :only [factory]]
-            [jiksnu.test-helper :only [test-environment-fixture]]
-            [midje.sweet :only [every-checker fact future-fact => contains]])
+  (:use [ciste.core :only [with-serialization with-format]]
+        [ciste.filters :only [filter-action]]
+        [ciste.views :only [apply-view]]
+        [clj-factory.core :only [factory]]
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [midje.sweet :only [every-checker fact future-fact => contains]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
@@ -25,24 +26,25 @@
        (with-serialization :http
          (fact "when the format is :html"
            (with-format :html
-             (fact "when there are subscriptions"
-               (model/drop-all!)
-               (let [subscriptions
-                     (doall (map (fn [n]
-                                   (model.subscription/create
-                                    (factory :subscription)))
-                                 (range 15)))
-                     request {:action action}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (fn [response]
-                    (let [body (h/html (:body response))]
-                      (fact
-                        body => #"subscriptions"))))))))))))
+             (binding [*dynamic* false]
+               (fact "when there are subscriptions"
+                 (model/drop-all!)
+                 (let [subscriptions
+                       (doall (map (fn [n]
+                                     (model.subscription/create
+                                      (factory :subscription)))
+                                   (range 15)))
+                       request {:action action}
+                       response (filter-action action request)]
+                   (apply-view request response) =>
+                   (every-checker
+                    map?
+                    (fn [response]
+                      (let [body (h/html (:body response))]
+                        (fact
+                          body => #"subscriptions")))))))))))))
 
-(fact "apply-view #'actions.admin.subscription/delete"
+ (fact "apply-view #'actions.admin.subscription/delete"
    (let [action #'actions.admin.subscription/delete]
      (fact "when the serialization is :http"
        (with-serialization :http

@@ -14,9 +14,8 @@
    :title "Groups"
    :viewmodel "/admin/groups.viewmodel"
    :body (admin-index-section
-          (if *dynamic*
-            (Group.)
-            items) response)})
+          (if *dynamic* [(Group.)] items)
+          response)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
