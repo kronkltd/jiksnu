@@ -163,6 +163,7 @@
 
 
 (definitializer
+  (current-domain)
   (require-namespaces
    ["jiksnu.filters.domain-filters"
     "jiksnu.triggers.domain-triggers"

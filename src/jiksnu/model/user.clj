@@ -58,7 +58,7 @@
   [^User user]
   (if-let [domain (:domain user)]
     (model.domain/fetch-by-id domain)
-    (throw+ (format "Could not determine domain for user: %s" (pr-str user)))))
+    (throw+ (format "User must have a domain field, user = %s" (pr-str user)))))
 
 (defn local?
   [^User user]

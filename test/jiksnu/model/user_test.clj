@@ -36,13 +36,13 @@
    (fact "when passed a user user"
      (fact "and it's domain is the same as the current domain"
        (fact "should be true"
-         (let [domain (config :domain)
-               user (factory :user {:domain domain})]
+         (let [domain (actions.domain/current-domain)
+               user (factory :local-user)]
            (local? user) => truthy)))
      (fact "and it's domain is different from the current domain"
        (fact "should be false"
-         (let [domain (fseq :domain)
-               user (factory :user {:domain domain})]
+         (let [domain (model.domain/create (factory :domain))
+               user (factory :user {:domain (:_id domain)})]
            (local? user) => falsey)))))
 
  (fact "split-uri"
