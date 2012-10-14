@@ -6,6 +6,7 @@
   :dependencies [
                  [cheshire "4.0.0"]
                  [ciste/ciste-core "0.4.0-SNAPSHOT"]
+                 [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-swank "0.4.0-SNAPSHOT"]
