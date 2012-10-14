@@ -29,6 +29,7 @@
    :template false
    :headers {"Location" "/admin/subscriptions"}})
 
+;; get-subscribers
 
 (defview #'get-subscribers :html
   [request [user {:keys [items] :as response}]]
@@ -45,6 +46,7 @@
   (tigase/result-packet
    request (helpers.subscription/subscribers-response items response)))
 
+;; get-subscriptions
 
 (defview #'get-subscriptions :as
   [request [user {:keys [items] :as response}]]
@@ -65,25 +67,28 @@
 
 (defview #'get-subscriptions :viewmodel
   [request [user {:keys [items] :as page}]]
-  {:body {:user (show-section user)
-          :subscriptions (index-section items page)}})
+  {:body (doall {:user (show-section user)
+           :subscriptions (doall (index-section items page))})})
 
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]
   (tigase/result-packet
    request (helpers.subscription/subscriptions-response items response)))
 
+;; ostatus
 
 (defview #'ostatus :html
   [request arg]
   {:body ""
    :template false})
 
+;; ostatussub
 
 (defview #'ostatussub :html
   [request arg]
   {:body (sections.subscription/ostatus-sub-form)})
 
+;; ostatussub-submit
 
 (defview #'ostatussub-submit :html
   [request subscription]
@@ -92,6 +97,7 @@
    :flash "The request has been sent"
    :template false})
 
+;; remote-subscribe-confirm
 
 (defview #'remote-subscribe-confirm :xmpp
   [request _]

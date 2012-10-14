@@ -68,6 +68,7 @@
 
   (if-let [elts ($ "*[data-load-model]")]
     (log/info (fetch-viewmodel (.data elts "load-model"))))
-  (ko/apply-bindings _view))
+  (ko/apply-bindings _view)
+  (js/prettyPrint))
 
 (main)

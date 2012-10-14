@@ -36,17 +36,17 @@
     (let [subscriptions (if *dynamic*
                           [(Subscription.)]
                           (model.subscription/subscribers user))]
-      [:div.subscribers (when *dynamic*
+      [:div.subscribers #_(when *dynamic*
                           {:data-bind "with: currentUser"})
        [:h3
         ;; subscribers link
         [:a
-         (if *dynamic*
+         #_(if *dynamic*
            {:data-bind "attr: {href: url + '/subscribers}" :href "#"}
            {:href (str (full-uri user) "/subscribers")})
          "Followers"] " "
         [:span
-         (if *dynamic*
+         #_(if *dynamic*
            {:data-bind "text: subscriptionCount"}
            (count subscriptions))]]
        [:ul.unstyled
@@ -62,6 +62,8 @@
        [:ul (map subscriptions-line subscriptions)]
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
+
+;; admin-index-line
 
 (defsection admin-index-line [Subscription :html]
   [subscription & [options & _]]
@@ -109,6 +111,16 @@
        (map (fn [m] {(:_id m) (admin-index-line m page)}))
        (into {})))
 
+;; index-block
+
+(defsection index-block [Subscription :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (index-line m page)}))
+       (into {})))
+
+
+
 ;; index-line
 
 (defsection index-line [Subscription :as]
@@ -119,6 +131,12 @@
      :actor (show-section actor)
      :target (show-section target)}))
 
+(defsection index-line [Subscription :viewmodel]
+  [item & [page]]
+  item)
+
+;; index-section
+
 (defsection index-section [Subscription :viewmodel]
   [items & [page]]
   (index-block items page))
@@ -127,7 +145,7 @@
   [item & [options & _]]
   [:li.subscription
    (merge {:data-id (:_id item) :data-type "subscription"}
-          (if *dynamic*
+          #_(if *dynamic*
             {:data-bind "text: id"}))
    (when-not *dynamic*
      (if-let [user (try (model.subscription/get-target item)

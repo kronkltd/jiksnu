@@ -265,7 +265,8 @@
                 (config :site :name)))]
         (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
                        "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"
-                       "/assets/themes/classic/standard.css")
+                       "/assets/themes/classic/standard.css"
+                       "/assets/google-code-prettify/src/prettify.css")
         (links-section request response)))
 
 (defn page-template-content
@@ -304,8 +305,8 @@
               (list [:div.span9 (main-content request response)]
                     [:div.span3 (right-column-section response)])
               [:div.span12 (main-content request response)])]]]
-         (when *dynamic*
-           [:code.prettify {:data-bind "text: ko.toJSON($data)"}])
+         [:pre.prettyprint
+          {:data-bind "text: JSON.stringify(ko.toJS($data), undefined, 2)"}]
          ;; TODO: align middle
          [:footer.row-fluid.page-footer
           [:p "Copyright © 2011 KRONK Ltd."]
@@ -320,7 +321,8 @@
          "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"
          "http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"
          "/assets/bootstrap-2.4.0/js/bootstrap.min.js"
-         "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"
+         ;; "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"
+         "/assets/google-code-prettify/src/prettify.js"
          "/assets/knockout.mapping.js"
          "/assets/js/jiksnu.js"
          )

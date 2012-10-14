@@ -574,10 +574,10 @@
 
 (defsection show-section [User :viewmodel]
   [item & [page]]
-  (into {} (map
-            (fn [[k v]]
-              [(camelize (name k) :lower) v])
-            item)))
+  (->> (dissoc (dissoc item :links) :_id)
+       (map (fn [[k v]] [(camelize (name k) :lower)
+                        v]))
+       (into {})))
 
 (defsection show-section [User :xml]
   [user & options]

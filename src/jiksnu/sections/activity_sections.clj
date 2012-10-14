@@ -482,7 +482,7 @@
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
-  [:div.activities {:data-bind "with: items"}
+  [:div.activities {:data-bind "foreach: items"}
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -648,47 +648,49 @@
 
 (defsection show-section [Activity :html]
   [activity & _]
-  [:article.hentry.notice
-   (merge {:id (str "activity-" (:_id activity))
-           :about (uri activity)
-           :typeof "sioc:Post"
-           :data-type "activity"
-           :data-id (:_id activity)}
-          (when *dynamic*
-            {:data-bind "with: $root.activities()[$data]"}))
-   [:header
-    [:div.pull-right
-     (post-actions activity)]
-    (show-section-minimal
-     (if *dynamic*
-       (User.)
-       (model.activity/get-author activity)))
-    (recipients-section activity)]
-   [:div.entry-content
-    #_(when (:title activity)
-        [:h1.entry-title {:property "dc:title"} (:title activity)])
-    [:p (merge {:property "dc:title"}
-               (if *dynamic*
-                 {:data-bind "text: title"}))
-     (when-not *dynamic*)
-     (or #_(:title activity)
-         (:content activity))]]
-   [:div
-    [:ul.unstyled
-     (map (fn [irt]
-            [:a {:href irt :rel "nofollow"} irt])
-          (:irts activity))]
-    (map
-     #(% activity)
-     [
-      ;; enclosures-section
-      ;; links-section
-      ;; likes-section
-      ;; maps-section
-      ;; tags-section
-      posted-link-section
-      ;; comments-section
-      ])]])
+  (let [activity-uri (uri activity)]
+    (list
+     [:p {:data-bind "text: $data"}]
+     [:article.hentry.notice
+      (merge {:id (str "activity-" (:_id activity))
+              :about activity-uri
+              :typeof "sioc:Post"
+              :data-type "activity"
+              :data-id (:_id activity)}
+             (when *dynamic*
+               {:data-bind "with: $root.activities()[$data]"}))
+      [:header
+       [:div.pull-right (post-actions activity)]
+       (show-section-minimal
+        (if *dynamic*
+          (User.)
+          (model.activity/get-author activity)))
+       (recipients-section activity)]
+      [:div.entry-content
+       #_(when (:title activity)
+           [:h1.entry-title {:property "dc:title"} (:title activity)])
+       [:p (merge {:property "dc:title"}
+                  (if *dynamic*
+                    {:data-bind "text: title"}))
+        (when-not *dynamic*)
+        (or #_(:title activity)
+            (:content activity))]]
+      [:div
+       [:ul.unstyled
+        (map (fn [irt]
+               [:a {:href irt :rel "nofollow"} irt])
+             (:irts activity))]
+       (map
+        #(% activity)
+        [
+         ;; enclosures-section
+         ;; links-section
+         ;; likes-section
+         ;; maps-section
+         ;; tags-section
+         posted-link-section
+         ;; comments-section
+         ])]])))
 
 (defsection show-section [Activity :rdf]
   [activity & _]
