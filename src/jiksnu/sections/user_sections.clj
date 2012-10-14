@@ -595,6 +595,7 @@
 
 (defsection uri [User]
   [user & options]
-  (if (model.user/local? user)
-    (str "/" (:username user))
-    (str "/remote-user/" (:username user) "@" (:domain user))))
+  (when-not *dynamic*
+    (if (model.user/local? user)
+      (str "/" (:username user))
+      (str "/remote-user/" (:username user) "@" (:domain user)))))
