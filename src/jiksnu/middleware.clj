@@ -47,10 +47,14 @@
          (catch Exception ex
            (log/fatalf "Error parsing exception: %s" (str ex))))))))
 
+(defn default-html-mode
+  []
+  (config :htmlOnly))
+
 (defn wrap-dynamic-mode
   [handler]
   (fn [request]
     (let [params (-> request :params)]
-      (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly "true")))]
+      (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly (default-html-mode))))]
         (binding [ko/*dynamic* dynamic?]
           (handler request))))))
