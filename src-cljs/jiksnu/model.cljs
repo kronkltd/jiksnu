@@ -63,9 +63,11 @@
     (ko/assoc-observable "showPostForm" true)
     (ko/assoc-observable "pageInfo")
     (ko/assoc-observable-array "activities")
+    (ko/assoc-observable-array "domains")
     (ko/assoc-observable-array "feedSources")
     (ko/assoc-observable-array "items")
     (ko/assoc-observable-array "notifications")
+    (ko/assoc-observable-array "subscriptions")
     (ko/assoc-observable-array "users")
     (ko/assoc-observable "site" (SiteInfo.))
     (aset "dismissNotification"

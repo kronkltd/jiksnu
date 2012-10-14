@@ -71,6 +71,7 @@
   {:body
    [:statuses {:type "array"} (map index-line (index-section activities))]})
 
+
 (defview #'public-timeline :as
   [request {:keys [items] :as response}]
   {:body
@@ -107,6 +108,7 @@
   [request {:keys [items page] :as response}]
   {:title "Public Timeline"
    :post-form true
+   :viewmodel "/api/statuses/public_timeline.viewmodel"
    :links [{:rel "next"
             :href (str "?page=" (inc page))
             :title "Next Page"
@@ -130,9 +132,12 @@
 (defview #'public-timeline :viewmodel
   [request {:keys [items] :as page}]
   {:single false
-   :title "Public Timeline"
    :body
-   {:activities (doall (index-section items page))}})
+   {:title "Public Timeline"
+    :items (map :_id items)
+    :activities (doall (index-section items page))}})
+
+
 
 
 (defview #'public-timeline :xml

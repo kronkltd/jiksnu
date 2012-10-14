@@ -46,15 +46,15 @@
   [_request {:keys [items] :as options}]
   {:title "Domains"
    :single true
+   :viewmodel "/main/domains.viewmodel"
    :body (index-section
-          (if *dynamic*
-            [(Domain.)]
-            items)
+          (if *dynamic* [(Domain.)] items)
           options)})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
+          :items (map :_id items)
           :domains (index-section items page)}})
 
 (defview #'show :html

@@ -489,6 +489,12 @@
   [items & [response & _]]
   (apply concat (map #(index-line % response) items)))
 
+(defsection index-block [Activity :viewmodel]
+  [items & [page]]
+  (->> items
+       (map (fn [m] {(:_id m) (admin-index-line m page)}))
+       (into {})))
+
 (defsection index-block [Activity :xml]
   [activities & _]
   [:statuses {:type "array"}

@@ -31,8 +31,14 @@
                 (when-let [activities (.-activities m)]
                   (.activities _view activities))
 
+                (when-let [domains (.-domains m)]
+                  (.domains _view domains))
+
                 (when-let [feed-sources (.-feedSources m)]
                   (.feedSources _view feed-sources))
+
+                (when-let [subscriptions (.-subscriptions m)]
+                  (.subscriptions _view subscriptions))
 
                 (when-let [users (.-users m)]
                   (.users _view users))

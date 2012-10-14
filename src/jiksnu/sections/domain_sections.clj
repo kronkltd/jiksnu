@@ -1,6 +1,7 @@
 (ns jiksnu.sections.domain-sections
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
         [jiksnu.sections :only [control-line]])
   (:require [clojure.tools.logging :as log]
@@ -43,7 +44,8 @@
      [:th "Discovered"]
      [:th "Host Meta"]
      [:th "# Links"]]]
-   [:tbody (map index-line domains)]])
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
+    (map index-line domains)]])
 
 (defsection index-block [Domain :viewmodel]
   [items & [page]]
@@ -53,11 +55,19 @@
 
 (defsection index-line [Domain :html]
   [domain & _]
-  [:tr
-   [:td (favicon-link domain)]
+  [:tr (when *dynamic*
+         {:data-bind "with: $root.domains()[$data]"})
+
+   [:td (when *dynamic*
+          {:data-bind "text: _id"})
+    (favicon-link domain)]
    [:td (link-to domain)]
-   [:td (:xmpp domain)]
-   [:td (:discovered domain)]
+   [:td (if *dynamic*
+          {:data-bind "text: xmpp"}
+          (:xmpp domain))]
+   [:td (if *dynamic*
+          {:data-bind "text: discovered"}
+          (:discovered domain))]
    [:td
     [:a {:href (str "http://" (:_id domain) "/.well-known/host-meta")}
      "Host-Meta"]]
