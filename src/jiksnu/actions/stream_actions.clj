@@ -1,7 +1,6 @@
 (ns jiksnu.actions.stream-actions
   (:use [ciste.commands :only [add-command! parse-command]]
         [ciste.config :only [config definitializer]]
-
         [ciste.core :only [defaction with-context]]
         [ciste.model :only [implement]]
         [ciste.runner :only [require-namespaces]]
@@ -28,7 +27,6 @@
 (defaction direct-message-timeline
   [& _]
   (implement))
-
 
 (defaction friends-timeline
   [& _]

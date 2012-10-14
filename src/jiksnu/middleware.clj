@@ -50,6 +50,6 @@
 (defn wrap-dynamic-mode
   [handler]
   (fn [request]
-    (let [dynamic? (not (Boolean/valueOf (-> request :params :htmlOnly)))]
+    (let [dynamic? (not (Boolean/valueOf (not= false (-> request :params :htmlOnly))))]
       (binding [ko/*dynamic* dynamic?]
         (handler request)))))
