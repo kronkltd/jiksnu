@@ -6,7 +6,7 @@ body {
 }
 
 h1 {
-    margin-bottom: 15px !important;
+    margin-bottom: 15px;
 }
 
 /* .container, .container-fluid { */
@@ -46,7 +46,7 @@ article .photo
 {
     position: absolute;
     top: 3px;
-    left: 0px;
+    left: 0;
 }
 
 .comments {
@@ -62,8 +62,7 @@ article .photo
 
 .tags ul {
     display: inline;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
 }
 
 .tags li {
@@ -107,7 +106,7 @@ article .photo
     top: 0;
     left: 0;
     width: 30px;
-    display: block-inline;
+    display: inline-block;
 }
 
 /* this isn't working */
