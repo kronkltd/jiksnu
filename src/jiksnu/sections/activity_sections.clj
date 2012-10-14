@@ -9,7 +9,7 @@
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
-        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section
+        [jiksnu.sections :only [admin-index-line admin-index-block admin-index-section dump-data
                                 control-line pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
@@ -659,112 +659,112 @@
               {:data-bind "with: $root.activities()[$data]"}))
      [:header
       [:div.pull-right (post-actions activity)]
-      [:div (if *dynamic*
-              {:data-bind "with: author"}]
-       (show-section-minimal
-        (if *dynamic*
-          (User.)
-          (model.activity/get-author activity)))
-       (recipients-section activity)]
-      [:div.entry-content
-       #_(when (:title activity)
-           [:h1.entry-title {:property "dc:title"} (:title activity)])
-       [:p (merge {:property "dc:title"}
-                  (if *dynamic*
-                    {:data-bind "text: title"}))
-        (when-not *dynamic*)
-        (or #_(:title activity)
-            (:content activity))]]
       [:div
-       [:ul.unstyled
-        (map (fn [irt]
-               [:a {:href irt :rel "nofollow"} irt])
-             (:irts activity))]
-       (map
-        #(% activity)
-        [
-         ;; enclosures-section
-         ;; links-section
-         ;; likes-section
-         ;; maps-section
-         ;; tags-section
-         posted-link-section
-         ;; comments-section
-         ])]]))
+       {:data-bind "with: author"}
+       [:div (if *dynamic* {:data-bind "with: $root.users()[$data]"})
+        (show-section-minimal
+         (if *dynamic*
+           (User.)
+           (model.activity/get-author activity)))]]
+      (recipients-section activity)]
+     [:div.entry-content
+      #_(when (:title activity)
+          [:h1.entry-title {:property "dc:title"} (:title activity)])
+      [:p (merge {:property "dc:title"}
+                 (if *dynamic*
+                   {:data-bind "text: title"}))
+       (when-not *dynamic*)
+       (or #_(:title activity)
+           (:content activity))]]
+     [:div
+      [:ul.unstyled
+       (map (fn [irt]
+              [:a {:href irt :rel "nofollow"} irt])
+            (:irts activity))]
+      (map
+       #(% activity)
+       [
+        ;; enclosures-section
+        ;; links-section
+        ;; likes-section
+        ;; maps-section
+        ;; tags-section
+        posted-link-section
+        ;; comments-section
+        ])]]))
 
-  (defsection show-section [Activity :rdf]
-    [activity & _]
-    (rdf/with-rdf-ns ""
-      (let [{:keys [summary id created content]} activity
-            uri (full-uri activity)
-            user (model.activity/get-author activity)
-            user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
-            summary (or content summary)]
-        (concat
-         (with-subject uri
-           [
-            [[ns/rdf  :type]        [ns/sioc "Post"]]
-            [[ns/as   :verb]        (rdf/l "post")]
-            [[ns/sioc :has_creator] user-res]
-            [[ns/sioc :has_owner]   user-res]
-            [[ns/as   :author]      user-res]
-            [[ns/dc   :published]   (rdf/date (.toDate created))]])
-         (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
+(defsection show-section [Activity :rdf]
+  [activity & _]
+  (rdf/with-rdf-ns ""
+    (let [{:keys [summary id created content]} activity
+          uri (full-uri activity)
+          user (model.activity/get-author activity)
+          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))
+          summary (or content summary)]
+      (concat
+       (with-subject uri
+         [
+          [[ns/rdf  :type]        [ns/sioc "Post"]]
+          [[ns/as   :verb]        (rdf/l "post")]
+          [[ns/sioc :has_creator] user-res]
+          [[ns/sioc :has_owner]   user-res]
+          [[ns/as   :author]      user-res]
+          [[ns/dc   :published]   (rdf/date (.toDate created))]])
+       (when summary [[uri [ns/sioc  :content]    (rdf/l summary)]])))))
 
-  (defsection show-section [Activity :viewmodel]
-    [activity & [page]]
-    activity)
+(defsection show-section [Activity :viewmodel]
+  [activity & [page]]
+  activity)
 
-  (defsection show-section [Activity :xmpp]
-    [^Activity activity & options]
-    (element/abdera-to-tigase-element
-     (with-format :atom
-       (show-section activity))))
+(defsection show-section [Activity :xmpp]
+  [^Activity activity & options]
+  (element/abdera-to-tigase-element
+   (with-format :atom
+     (show-section activity))))
 
-  (defsection show-section [Activity :xml]
-    [activity & _]
-    [:status
-     [:text (h/h (or (:title activity)
-                     (:content activity)))]
-     [:truncated "false"]
-     [:created_at (-?> activity :published .toDate model/date->twitter)]
-     [:source (:source activity)]
-     [:id (:_id activity)]
-     [:in_reply_to_status_id]
-     [:in_reply_to_user_id]
-     [:favorited "false" #_(liked? (current-user) activity)]
-     [:in_reply_to_screen_name]
-     (show-section (model.activity/get-author activity))
-     (when (:geo activity)
-       (list [:geo]
-             [:coordnates]
-             [:place]))
-     [:contributors]
-     [:entities
-      [:user_mentions
-       ;; TODO: list mentions
-       ]
-      [:urls
-       ;; TODO: list urls
-       ]
-      [:hashtags
-       ;; TODO: list hashtags
-       ]]])
-
-
-  (defsection title [Activity]
-    [activity & options]
-    (:title activity))
+(defsection show-section [Activity :xml]
+  [activity & _]
+  [:status
+   [:text (h/h (or (:title activity)
+                   (:content activity)))]
+   [:truncated "false"]
+   [:created_at (-?> activity :published .toDate model/date->twitter)]
+   [:source (:source activity)]
+   [:id (:_id activity)]
+   [:in_reply_to_status_id]
+   [:in_reply_to_user_id]
+   [:favorited "false" #_(liked? (current-user) activity)]
+   [:in_reply_to_screen_name]
+   (show-section (model.activity/get-author activity))
+   (when (:geo activity)
+     (list [:geo]
+           [:coordnates]
+           [:place]))
+   [:contributors]
+   [:entities
+    [:user_mentions
+     ;; TODO: list mentions
+     ]
+    [:urls
+     ;; TODO: list urls
+     ]
+    [:hashtags
+     ;; TODO: list hashtags
+     ]]])
 
 
-  (defsection update-button [Activity :html]
-    [activity & _]
-    [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
-     [:button.btn.update-button {:type "submit"}
-      [:i.icon-refresh] [:span.button-text "update"]]])
+(defsection title [Activity]
+  [activity & options]
+  (:title activity))
 
 
-  (defsection uri [Activity]
-    [activity & options]
-    (str "/notice/" (:_id activity)))
+(defsection update-button [Activity :html]
+  [activity & _]
+  [:form {:method "post" :action (str "/notice/" (:_id activity) "/update")}
+   [:button.btn.update-button {:type "submit"}
+    [:i.icon-refresh] [:span.button-text "update"]]])
 
+
+(defsection uri [Activity]
+  [activity & options]
+  (str "/notice/" (:_id activity)))

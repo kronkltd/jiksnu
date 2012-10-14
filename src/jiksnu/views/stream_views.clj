@@ -5,12 +5,14 @@
         ciste.sections.default
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
-        [jiksnu.ko :only [*dynamic*]])
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -135,6 +137,7 @@
    :body
    {:title "Public Timeline"
     :items (map :_id items)
+    :users (index-section (map actions.activity/get-author items))
     :activities (doall (index-section items page))}})
 
 
@@ -199,6 +202,7 @@
   {:user user
    :title (:display-name user)
    :post-form true
+   :viewmodel (format "/users/%s.viewmodel" (:_id user))
    :body (index-section activities response)
    :formats (sections.activity/timeline-formats user)})
 
@@ -225,8 +229,12 @@
 (defview #'user-timeline :viewmodel
   [request [user activities-map]]
   {:body
-   {:user (show-section user)
-    :activities (index-section (:items activities-map))}})
+   (merge {:users (index-section [user])
+           :title (title user)
+           :items (map :_id (:items activities-map))
+           :activities (index-section (:items activities-map))}
+          (if-let [id (:_id (current-user))]
+            {:currentUser id}))})
 
 (defview #'user-timeline :xml
   [request [user activities]]

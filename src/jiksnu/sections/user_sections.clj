@@ -4,7 +4,6 @@
          [ciste.sections.default :only [title uri full-uri show-section add-form
                                         edit-button delete-button link-to index-line
                                         show-section-minimal update-button index-block index-section]]
-         [clj-gravatar.core :only [gravatar-image]]
          [clojure.core.incubator :only [-?>]]
          [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
@@ -78,16 +77,20 @@
 (defn display-avatar-img
   [user size]
   [:img.avatar.photo
-   {:width size
-    :height size
-    :alt ""
-    :src (model.user/image-link user)}])
+   (merge {:width size
+           :height size
+           :alt ""
+           :src (model.user/image-link user)}
+          (if *dynamic*
+            {:data-bind "attr: {src: avatarUrl}"}))])
 
 (defn display-avatar
   ([user] (display-avatar user 48))
   ([user size]
-     [:a.url {:href (full-uri user)
-              :title (:name user)}
+     [:a.url (merge {:href (full-uri user)
+                     :title (:name user)}
+                    (if *dynamic*
+                      {:data-bind "attr: {href: \"/users/\" + $parent}, text: username"}))
       (display-avatar-img user size)]))
 
 (defn register-form
@@ -345,7 +348,10 @@
    [:p "Username: " (:username item)]
    (let [domain (actions.user/get-domain item)]
      [:p "Domain: " (link-to domain)])
-   [:p "Bio: " (:bio item)]
+   [:p [:span "Bio: "]
+    [:span (if *dynamic*
+             {:data-bind "text: bio"})
+     (:bio item)]]
    [:p "Location: " (:location item)]
    [:p "Url: " (:url item)]
    [:p "Id: " (:id item)]
@@ -445,7 +451,8 @@
        {:data-bind "text: typeof($data.uri) != 'undefined' ? uri : ''"}
        (:uri user))]
     [:p
-     (when-not *dynamic*
+     (if *dynamic*
+       {:data-bind "text: typeof($data.bio) !== 'undefined' ? bio : ''"}
        (:bio user))]]
    [:td
     (when-not *dynamic*
@@ -463,10 +470,9 @@
   [user & _]
   [:div.vcard
    ;; TODO: merge into the same link
-   (when-not *dynamic* (display-avatar user))
+   (display-avatar user)
    [:span.fn.n
-    (when-not *dynamic*
-      (link-to user))]])
+    (link-to user)]])
 
 (defsection show-section [User :as]
   [user & options]
@@ -501,31 +507,30 @@
    (when-not *dynamic*
      {:data-id (:_id user) :data-type "user"})
    [:p
-    (when-not *dynamic*
-      (display-avatar user))
+    (display-avatar user)
     [:span.nickname.fn.n
      [:span
       (if *dynamic*
-        {:data-bind "text: typeof($data.displayName) != 'undefined' ? displayName : ''"}
+        {:data-bind "text: typeof($data.displayName) !== 'undefined' ? displayName : ''"}
         (:display-name user))]]
     " ("
     [:span
      (if *dynamic*
-       {:data-bind "text: typeof($data.username) != 'undefined' ? username : ''"}
+       {:data-bind "text: typeof($data.username) !== 'undefined' ? username : ''"}
        (:username user))]
     "@"
     [:span
      (if *dynamic*
-       {:data-bind "text: typeof($data.domain) != 'undefined' ? domain : ''"}
+       {:data-bind "text: typeof($data.domain) !== 'undefined' ? domain : ''"}
        (link-to (actions.user/get-domain user)))] ")"]
    [:div.adr
     [:p.locality
      (if *dynamic*
-       {:data-bind "text: typeof($data.location) != 'undefined' ? location : ''"}
+       {:data-bind "text: typeof($data.location) !== 'undefined' ? location : ''"}
        (:location user))]]
    [:p.note
     (if *dynamic*
-      {:data-bind "text: typeof($data.bio) != 'undefined' ? bio : ''"}
+      {:data-bind "text: typeof($data.bio) !== 'undefined' ? bio : ''"}
       (:bio user))]
    ;; [:p [:a {:href (:id user)} (:id user)]]
    ;; [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]

@@ -31,6 +31,7 @@
    (presence-of :created)
    (presence-of :updated)
    (presence-of :_id)
+   (presence-of :avatar-url)
    (acceptance-of :username :accept string?)
    (acceptance-of :domain :accept string?)
    (acceptance-of :local :accept (partial instance? Boolean))))
@@ -41,13 +42,20 @@
     user
     (assoc user :id (format "acct:%s@%s" (:username user) (:domain user)))))
 
+(defn set-avatar-url
+  [user]
+  (if (:avatar-url user)
+    user
+    (assoc user :avatar-url (gravatar-image (:email user)))))
+
 (defn prepare
   [user]
   (-> user
       set-_id
       set-id
       set-updated-time
-      set-created-time))
+      set-created-time
+      set-avatar-url))
 
 (defn salmon-link
   [user]

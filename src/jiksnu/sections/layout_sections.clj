@@ -305,8 +305,6 @@
               (list [:div.span9 (main-content request response)]
                     [:div.span3 (right-column-section response)])
               [:div.span12 (main-content request response)])]]]
-         [:pre.prettyprint
-          {:data-bind "text: JSON.stringify(ko.toJS($data), undefined, 2)"}]
          ;; TODO: align middle
          [:footer.row-fluid.page-footer
           [:p "Copyright © 2011 KRONK Ltd."]
