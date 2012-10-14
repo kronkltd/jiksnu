@@ -116,7 +116,7 @@
    [:td.stat-value
     (if *dynamic*
       {:data-bind (format "text: %s" model-name)}
-      (get stats (keyword model-name)))]])
+      (get stats model-name))]])
 
 (defn statistics-section
   [request response]
@@ -178,7 +178,7 @@
     (when *dynamic* {:data-bind "foreach: notifications"})
     (if *dynamic*
       (notification-line nil)
-      (notification-line (:flash request)))]])
+      (when-let [flash (:flash request)] (notification-line flash)))]])
 
 (defn new-post-section
   [request response]
@@ -186,7 +186,8 @@
    [:div (when *dynamic* {:data-bind "if: visible"})
     [:p
      (when *dynamic* {:data-bind "text: currentPage"})]
-    (add-form (Activity.))]])
+    (when (or *dynamic* (:post-form response))
+      (add-form (Activity.)))]])
 
 (defn title-section
   [request response]
@@ -198,7 +199,8 @@
   [request response]
   [:section#main
    (notification-area request response)
-   (new-post-section request response)
+   (when (current-user)
+     (new-post-section request response))
    (title-section request response)
    (:body response)])
 
@@ -256,7 +258,7 @@
         [:title {:property "dc:title"}
          (when-not *dynamic*
            (str (when (:title response)
-                  (:title response) " - ")
+                  (str (:title response) " - "))
                 (config :site :name)))]
         (p/include-css "/assets/bootstrap-2.4.0/css/bootstrap.min.css"
                        "/assets/bootstrap-2.4.0/css/bootstrap-responsive.min.css"

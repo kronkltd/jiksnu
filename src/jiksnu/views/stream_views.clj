@@ -216,6 +216,12 @@
           (with-format :rdf))
      :template false}))
 
+(defview #'user-timeline :viewmodel
+  [request [user activities-map]]
+  {:body
+   {:user (show-section user)
+    :activities (index-section (:items activities-map))}})
+
 (defview #'user-timeline :xml
   [request [user activities]]
   {:body (index-block activities)

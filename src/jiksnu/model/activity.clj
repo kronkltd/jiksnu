@@ -28,6 +28,7 @@
    (presence-of [:object :object-type])
    (presence-of :title)
    (presence-of :created)
+   (presence-of :updated)
    (presence-of :author)))
 
 ;; TODO: This operation should be performed on local posts. Remote
@@ -110,6 +111,7 @@
       set-remote
       set-tags
       set-created-time
+      set-updated-time
       set-object-type
       set-parent
       set-url

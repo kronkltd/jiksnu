@@ -548,7 +548,7 @@
     (let [entry (abdera/new-entry)]
       (doto entry
         (.setId (or (:id activity) (str (:_id activity))))
-        (.setPublished (:published activity))
+        (.setPublished (:created activity))
         (.setUpdated (:updated activity))
         (.setTitle (or (and (not= (:title activity) "")
                             (:title activity))
@@ -556,10 +556,8 @@
         (.addAuthor (show-section user))
         (.addLink (full-uri activity) "alternate")
         (.setContentAsHtml (:content activity))
-        (.addSimpleExtension
-         ns/as "object-type" "activity" ns/status)
-        (.addSimpleExtension
-         ns/as "verb" "activity" ns/post)
+        (.addSimpleExtension ns/as "object-type" "activity" ns/status)
+        (.addSimpleExtension ns/as "verb" "activity" ns/post)
         #_(actions.activity/comment-link-item activity)
         (acl-link activity))
       (let [object (:object activity)
