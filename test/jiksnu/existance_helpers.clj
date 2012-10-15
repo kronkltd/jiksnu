@@ -45,14 +45,14 @@
     feed-subscription))
 
 (defn a-record-exists
-  [type]
+  [type & [opts]]
   (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
                                (name type)))]
     (require ns-sym)
     (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
-      (->> (factory type)
-           create-fn
-           (set-this type))
+      (when-let [record (create-fn (factory type opts))]
+        (set-this type record)
+        record)
       (throw+ (format "could not find %s/create" ns-sym)))))
 
 (defn a-subscription-exists
