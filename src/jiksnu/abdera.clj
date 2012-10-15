@@ -46,6 +46,7 @@
 
 (defn fetch-feed
   [uri]
+  (log/debugf "Fetching feed: %s" uri)
   (.getRoot (fetch-resource uri)))
 
 (defn not-namespace

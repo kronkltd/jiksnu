@@ -187,37 +187,37 @@
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
+(defn process-feed
+  [feed source]
+  (let [feed-title (.getTitle feed)]
+    (when-not (= feed-title (:title source))
+      (log/info "updating title")
+      (model.feed-source/set-field! source :title feed-title))
+    ;; TODO: This should be automatic for any transformation
+    (mark-updated source)
+    (if-let [hub-link (-?> feed (.getLink "hub")
+                           .getHref str)]
+      (model.feed-source/set-field! source :hub hub-link))
+    (process-entries feed source)))
+
 (defn update*
   [source]
   (if-let [topic (:topic source)]
-    (do
-      (log/debugf "Fetching feed: %s" topic)
-      (let [feed (abdera/fetch-feed topic)
-            feed-title (.getTitle feed)]
-        (when-not (= feed-title (:title source))
-          (log/info "updating title")
-          (model.feed-source/set-field! source :title feed-title))
-        ;; TODO: This should be automatic for any transformation
-        (mark-updated source)
-        (if-let [hub-link (-?> feed (.getLink "hub")
-                               .getHref str)]
-          (model.feed-source/set-field! source :hub hub-link))
-        (process-entries feed source)))
+    (let [feed (abdera/fetch-feed topic)]
+      (process-feed feed source))
     (throw+ {:message "Source does not contain a topic"
              :source source})))
 
 (defaction update
   "Fetch updates for the source"
   [source]
-  (let [{:keys [topic]} source]
-    (when topic
-      (task
-       (try
-         (update* source)
-         (catch RuntimeException ex
-           (log/error ex)
-           (.printStackTrace ex)))))
-    source))
+  (task
+   (try
+     (update* source)
+     (catch RuntimeException ex
+       (log/error ex)
+       (.printStackTrace ex))))
+  source)
 
 (defn discover-source
   "determines the feed source associated with a url"
