@@ -161,7 +161,6 @@
         username (fseq :username)]
     {:username username
      :domain #'domain-id
-     :local false
      :email (fseq :email)
      :name display-name
      ;; :update-source #'source-id

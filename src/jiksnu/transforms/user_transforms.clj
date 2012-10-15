@@ -1,7 +1,8 @@
 (ns jiksnu.transforms.user-transforms
   (:use [ciste.config :only [config]] 
         [clj-gravatar.core :only [gravatar-image]]
-        [clojurewerkz.route-one.core :only [named-url]]))
+        [clojurewerkz.route-one.core :only [named-url]])
+  (:require [jiksnu.actions.domain-actions :as actions.domain]))
 
 
 (defn set-id
@@ -29,4 +30,4 @@
   [user]
   (if (contains? user :local)
     user
-    (assoc user :local false)))
+    (assoc user :local (= (:domain user) (:_id (actions.domain/current-domain))))))
