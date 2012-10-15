@@ -32,10 +32,10 @@
        (with-serialization :http
          (fact "when the format is :json"
            (with-format :json
-             (let [feed-source (existance/a-feed-source-exists)
+             (let [feed-source (existance/a-record-exists :feed-source)
                    user (existance/a-user-exists {:feed-source feed-source})
                    activity (existance/there-is-an-activity {:feed-source feed-source
-                                                           :user user})
+                                                             :user user})
                    request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
