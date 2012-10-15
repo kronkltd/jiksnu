@@ -10,6 +10,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
@@ -83,7 +84,7 @@
        (get-key nil) => nil?))
 
    (fact "when a user is provided"
-     (let [user (feature/a-user-exists)]
+     (let [user (existance/a-user-exists)]
 
        (fact "and it does not have a key assigned"
          (fact "should return nil"

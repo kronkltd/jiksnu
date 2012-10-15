@@ -8,6 +8,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
@@ -18,22 +19,22 @@
 
  (fact "#'create"
    (fact "should create the activity"
-     (let [feed-source (feature/a-feed-source-exists)
+     (let [feed-source (existance/a-feed-source-exists)
            activity (actions.activity/prepare-create
                      (factory :activity {:update-source (:_id feed-source)}))]
        (create activity) => model/activity?)))
  
  ;; (fact "#'prepare-activity"
  ;;   (fact "should return an activity"
- ;;     (let [user (feature/a-user-exists)]
+ ;;     (let [user (existance/a-user-exists)]
  ;;       (with-user user
  ;;         (let [args (factory :activity)]
  ;;           (prepare-activity args) => #(valid? % create-validators))))))
 
 
  ;; (fact "#'get-author"
- ;;   (let [user (feature/a-user-exists)
- ;;         activity (feature/there-is-an-activity {:user user})]
+ ;;   (let [user (existance/a-user-exists)
+ ;;         activity (existance/there-is-an-activity {:user user})]
  ;;     (get-author activity) => user))
 
  )

@@ -9,6 +9,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.domain :as model.domain])
   (:import jiksnu.model.Domain
@@ -17,7 +18,7 @@
 (test-environment-fixture
 
  (def domain-a (actions.domain/current-domain))
- (def user-a (feature/a-user-exists))
+ (def user-a (existance/a-user-exists))
 
  (fact "#'get-domain"
    (fact "when passed nil"
@@ -68,7 +69,7 @@
 
    (fact "when there are users"
      (fact "should not be empty"
-       (feature/a-user-exists)
+       (existance/a-user-exists)
        (fetch-all) =>
        (every-checker
         seq?
@@ -76,12 +77,12 @@
 
  (fact "#'fetch-by-domain"
    (let [domain (actions.domain/current-domain)
-         user (feature/a-user-exists)]
+         user (existance/a-user-exists)]
      (fetch-by-domain domain) => (contains user)))
  
  (fact "#'get-user"
    (fact "when the user is found"
-     (let [user (feature/a-user-exists)
+     (let [user (existance/a-user-exists)
            username (:username user)
            domain (actions.user/get-domain user)]
        (get-user username (:_id domain)) => user))
@@ -95,7 +96,7 @@
  (fact "user-meta-uri"
    (fact "when the user's domain does not have a lrdd link"
      (model.domain/drop!)
-     (let [user (feature/a-user-exists)]
+     (let [user (existance/a-user-exists)]
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
@@ -103,10 +104,10 @@
                    (factory :domain
                             {:links [{:rel "lrdd"
                                       :template "http://example.com/main/xrd?uri={uri}"}]}))
-           user (feature/another-user-exists {:domain domain})]
+           user (existance/another-user-exists {:domain domain})]
        (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
 
  (fact "vcard-request"
-   (let [user (feature/a-user-exists)]
+   (let [user (existance/a-user-exists)]
      (vcard-request user) => packet/packet?))
 )

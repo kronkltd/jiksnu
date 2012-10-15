@@ -9,6 +9,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -31,9 +32,9 @@
           ))
 
    (fact "when there are activities"
-     (let [user (feature/a-user-exists)]
+     (let [user (existance/a-user-exists)]
        (dotimes [n 10]
-         (feature/there-is-an-activity {:user user}))
+         (existance/there-is-an-activity {:user user}))
        
        (model.subscription/create (factory :subscription {:actor (:_id user)}))
 
@@ -67,9 +68,9 @@
 
    (fact "html"
 
-     (let [user (feature/a-user-exists)]
+     (let [user (existance/a-user-exists)]
        (dotimes [n 10]
-         (feature/there-is-an-activity {:user user}))
+         (existance/there-is-an-activity {:user user}))
        
        (-> (mock/request :get (format "/%s" (:username user)))
            as-user response-for)) =>
@@ -78,9 +79,9 @@
             (comp status/success? :status)))
 
    (fact "n3"
-     (let [user (feature/a-user-exists)]
+     (let [user (existance/a-user-exists)]
        (dotimes [n 10]
-         (feature/there-is-an-activity {:user user}))
+         (existance/there-is-an-activity {:user user}))
        
        (-> (mock/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
            (as-user user) response-for)) =>

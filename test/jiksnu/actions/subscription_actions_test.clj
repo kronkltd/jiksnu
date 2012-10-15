@@ -1,6 +1,7 @@
 (ns jiksnu.actions.subscription-actions-test
   (:use [clj-factory.core :only [factory]]
         jiksnu.actions.subscription-actions
+        [jiksnu.existance-helpers :as existance]
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.model
         [jiksnu.session :only [with-user]]
@@ -19,23 +20,23 @@
  (future-fact "subscribe"
    (fact "when the user is not already subscribed"
      (fact "should return a subscription"
-       (let [user (feature/a-user-exists)
-             subscribee (feature/a-user-exists)]
+       (let [user (existance/a-user-exists)
+             subscribee (existance/a-user-exists)]
          (model.subscription/drop!)
          (with-user user
            (subscribe user subscribee) => subscription?)))))
 
  (fact "subscribed"
    (fact "should return a subscription"
-     (let [user (feature/a-user-exists)
-           subscribee (feature/a-user-exists)]
+     (let [user (existance/a-user-exists)
+           subscribee (existance/a-user-exists)]
        (subscribed user subscribee) => subscription?)))
 
  (fact "get-subscribers"
    (fact "when there are subscribers"
      (fact "should not be empty"
-       (let [user (feature/a-user-exists)
-             subscriber (feature/a-user-exists)
+       (let [user (existance/a-user-exists)
+             subscriber (existance/a-user-exists)
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id subscriber)
@@ -52,8 +53,8 @@
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
      (fact "should return a sequence of subscriptions"
-       (let [user (feature/a-user-exists)
-             subscribee (feature/a-user-exists)
+       (let [user (existance/a-user-exists)
+             subscribee (existance/a-user-exists)
              subscription (model.subscription/create
                            (factory :subscription
                                     {:from (:_id user)

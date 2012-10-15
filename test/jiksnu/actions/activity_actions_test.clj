@@ -10,6 +10,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -25,7 +26,7 @@
        (let [activity (factory :activity)]
          (set-recipients activity) => activity)))
    (fact "When the activity contains a recipient uri"
-     (let [recipient (feature/a-user-exists)
+     (let [recipient (existance/a-user-exists)
            activity (factory :activity {:recipient-uris [(:id recipient)]})]
        (set-recipients activity) =>
        (every-checker
@@ -43,7 +44,7 @@
                                                          :links [{:rel "lrdd"
                                                                   :template (str "http://" domain-name "/lrdd?uri={uri}")}]
                                                          :_id domain-name}))
-         user (feature/a-user-exists {:domain domain})]
+         user (existance/a-user-exists {:domain domain})]
 
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
@@ -61,8 +62,8 @@
  (fact "#'find-by-user"
    (fact "when the user has activities"
      (model/drop-all!)
-     (let [user (feature/a-user-exists)
-           activity (feature/there-is-an-activity {:user user})]
+     (let [user (existance/a-user-exists)
+           activity (existance/there-is-an-activity {:user user})]
        (find-by-user user) =>
        (every-checker
         map?
@@ -76,8 +77,8 @@
    (fact "when the user is logged in"
      (fact "and it is a valid activity"
        (fact "should return that activity"
-         (let [feed-source (feature/a-feed-source-exists)
-               user (feature/a-user-exists)]
+         (let [feed-source (existance/a-feed-source-exists)
+               user (existance/a-user-exists)]
            (let [activity (factory :activity {:author (:_id user)
                                               :update-source (:_id feed-source)
                                               :local true})]
@@ -92,57 +93,57 @@
    (fact "when the activity exists"
      (fact "and the user owns the activity"
        (fact "should delete that activity"
-         (let [user (feature/a-user-exists)]
+         (let [user (existance/a-user-exists)]
            (with-user user
-             (let [activity (feature/there-is-an-activity {:user user})]
+             (let [activity (existance/there-is-an-activity {:user user})]
                (delete activity) => activity
                (model.activity/fetch-by-id (:_id activity)) => nil)))))
      (fact "and the user does not own the activity"
        (fact "should not delete that activity"
-         (let [user (feature/a-user-exists)
-               author (feature/another-user-exists)
-               activity (feature/there-is-an-activity {:user author})]
+         (let [user (existance/a-user-exists)
+               author (existance/another-user-exists)
+               activity (existance/there-is-an-activity {:user author})]
            (with-user user
              (delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity))))))
 
  (fact "#'viewable?"
    (fact "When it is public"
-     (let [activity (feature/there-is-an-activity)]
+     (let [activity (existance/there-is-an-activity)]
        (viewable? activity .user.)) => truthy)
    (fact "when it is not public"
      (fact "when the user is the author"
-       (let [user (feature/a-user-exists)
-             activity (feature/there-is-an-activity {:user user})]
+       (let [user (existance/a-user-exists)
+             activity (existance/there-is-an-activity {:user user})]
          (viewable? activity user)) => truthy)
      (fact "when the user is not the author"
        (fact "when the user is an admin"
-         (let [user (feature/a-user-exists {:admin true})
-               activity (feature/there-is-an-activity {:modifier "private"})]
+         (let [user (existance/a-user-exists {:admin true})
+               activity (existance/there-is-an-activity {:modifier "private"})]
            (viewable? activity user)) => truthy)
        (fact "when the user is not an admin"
-         (let [user (feature/a-user-exists)
-               author (feature/a-user-exists)
-               activity (feature/there-is-an-activity {:modifier "private"
+         (let [user (existance/a-user-exists)
+               author (existance/a-user-exists)
+               activity (existance/there-is-an-activity {:modifier "private"
                                                        :user author})]
            (viewable? activity user)) => falsey))))
  
  (fact "#'show"
    (fact "when the record exists"
      (fact "and the record is viewable"
-       (let [activity (feature/there-is-an-activity)]
+       (let [activity (existance/there-is-an-activity)]
          (show activity) => activity
          (provided
           (viewable? activity) => true)))
      (fact "and the record is not viewable"
-       (let [activity (feature/there-is-an-activity)]
+       (let [activity (existance/there-is-an-activity)]
          (show activity) => (throws RuntimeException)
          (provided
           (viewable? activity) => false)))))
 
  (fact "#'oembed"
    (with-context [:http :html]
-     (let [activity (feature/there-is-an-activity)]
+     (let [activity (existance/there-is-an-activity)]
        (oembed activity) =>
        (every-checker
         map?

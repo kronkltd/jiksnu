@@ -13,6 +13,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -48,8 +49,8 @@
  ;; TODO: tags section
 
  (fact "#'posted-link-section"
-   (let [user (feature/a-user-exists)
-         activity (feature/there-is-an-activity)]
+   (let [user (existance/a-user-exists)
+         activity (existance/there-is-an-activity)]
      (posted-link-section activity) =>
      (every-checker
       #(h/html %))))
@@ -65,7 +66,7 @@
  (fact "index-block"
    (fact "when the context is [:http :rdf]"
      (with-context [:http :rdf]
-       (let [activity (feature/there-is-an-activity)]
+       (let [activity (existance/there-is-an-activity)]
          (index-block [activity]) =>
          (every-checker
           (partial every? (fn [t]
@@ -75,7 +76,7 @@
  (fact "index-section"
    (fact "when the context is [:http :rdf]"
      (with-context [:http :rdf]
-       (let [activity (feature/there-is-an-activity)]
+       (let [activity (existance/there-is-an-activity)]
          (index-section [activity]) =>
          (every-checker
           (fn [r]
@@ -87,7 +88,7 @@
  (fact "#'show-section Activity :atom"
    (fact "should return an abdera entry"
      (with-context [:http :atom]
-       (let [activity (feature/there-is-an-activity)]
+       (let [activity (existance/there-is-an-activity)]
          (show-section activity) =>
          (every-checker
           (fn [response]
@@ -101,6 +102,6 @@
  (fact "#'show-section Activity :xmpp"
    (fact "should return an element"
      (with-context [:xmpp :xmpp]
-       (let [activity (feature/there-is-an-activity)]
+       (let [activity (existance/there-is-an-activity)]
          (show-section activity)) => element/element?)))
 )

@@ -6,6 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -30,7 +31,7 @@
               #(status/redirect? (:status %)))))))
 
  (fact "get-subscriptions"
-   (let [user (feature/a-user-exists)]
+   (let [user (existance/a-user-exists)]
      (-> (mock/request :get (format "/%s/subscriptions" (:username user)))
          response-for)) =>
          (every-checker

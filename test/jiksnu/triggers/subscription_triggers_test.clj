@@ -16,8 +16,8 @@
 
  (future-fact "notify-subscribe-xmpp"
    (fact "should return a packet"
-     (let [user (feature/a-user-exists)
-           subscribee (feature/a-user-exists)
+     (let [user (existance/a-user-exists)
+           subscribee (existance/a-user-exists)
            subscription (model.subscription/subscribe
                          (:_id user) (:_id subscribee))]
        (notify-subscribe-xmpp {:id "JIKSNU1"} subscription) => packet/packet?))))

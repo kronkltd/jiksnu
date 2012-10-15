@@ -18,6 +18,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -50,7 +51,7 @@
        (with-serialization :xmpp
          (fact "when the format is :xmpp"
            (with-format :xmpp
-             (let [user (feature/a-user-exists)
+             (let [user (existance/a-user-exists)
                    request {:action action}
                    response (action user)]
                (apply-view request response) =>
@@ -62,7 +63,7 @@
    (let [action #'actions.user/fetch-remote]
      (fact "should return an iq query packet map"
        (with-context [:xmpp :xmpp]
-         (let [user (feature/a-user-exists)
+         (let [user (existance/a-user-exists)
                request {:action action}
                response (action user)]
            (apply-view request response) =>
