@@ -70,9 +70,18 @@
   [n]
   (str "subdomain" n ".example.local"))
 
+(defseq :word
+  [n]
+  (str "foo" n))
+
+(defn make-uri
+  [domain path]
+  (let [path (or path "/")]
+   (str "http://" domain path)))
+
 (defseq :uri
   [n]
-  (str "http://" (fseq :domain) "/" n))
+  (make-uri (fseq :domain) (str "/" n)))
 
 (defseq :noun
   [n]

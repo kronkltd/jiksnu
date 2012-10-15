@@ -1,6 +1,8 @@
 (ns jiksnu.actions.feed-source-actions-test
-  (:use [clj-factory.core :only [factory]]
+  (:use [ciste.model :only [get-links]]
+        [clj-factory.core :only [factory fseq]]
         [jiksnu.actions.feed-source-actions :only [add-watcher create]]
+        [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker truthy]])
   (:require [clojure.tools.logging :as log]
@@ -9,6 +11,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
+            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSource))
@@ -28,5 +31,12 @@
  (fact "#'update"
    (let [source (existance/a-record-exists :feed-source)]
      (actions.feed-source/update source) => (partial instance? FeedSource)))
+
+ (fact "#'discover-source"
+   (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+         topic (str url ".atom")]
+     (actions.feed-source/discover-source url) => (partial instance? FeedSource))
+   (provided
+    (model/extract-atom-link url) => {:href topic}))
 
  )
