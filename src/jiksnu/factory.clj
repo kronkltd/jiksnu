@@ -182,7 +182,7 @@
       (assoc :local true)))
 
 (deffactory :conversation
-  {:uri (fseq :uri)
+  {:url (fseq :uri)
    :local true})
 
 (deffactory :activity

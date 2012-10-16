@@ -15,7 +15,7 @@
 (def create-validators
   (validation-set
    (presence-of :_id)
-   (presence-of :uri)
+   (presence-of :url)
    (presence-of :created)
    (presence-of :updated)
 
@@ -69,7 +69,6 @@
        (map model/map->Conversation records))))
 
 
-(defn find-by-uri
+(defn find-by-url
   [conversation]
-  (fetch-all {:uri (:uri conversation)}))
-
+  (fetch-all {:url (:url conversation)}))
