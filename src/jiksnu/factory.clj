@@ -75,7 +75,7 @@
   (str "foo" n))
 
 (defn make-uri
-  [domain path]
+  [domain & [path]]
   (let [path (or path "/")]
    (str "http://" domain path)))
 

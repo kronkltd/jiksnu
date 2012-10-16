@@ -1,10 +1,10 @@
 (ns jiksnu.actions.feed-source-actions-test
   (:use [ciste.model :only [get-links]]
         [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create]]
+        [jiksnu.actions.feed-source-actions :only [add-watcher create set-domain]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [fact future-fact => every-checker truthy]])
+        [midje.sweet :only [=> contains every-checker fact future-fact truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -17,6 +17,17 @@
   (:import jiksnu.model.FeedSource))
 
 (test-environment-fixture
+
+ (fact "#'set-domain"
+   (fact "when the source has a domain"
+     (let [domain (existance/a-record-exists :domain)
+           source (log/spy (factory :feed-source {:domain (:_id domain)}))]
+       (set-domain source) => source))
+   (fact "when the source does not have a domain"
+     (let [domain (existance/a-record-exists :domain)
+           url (make-uri (:_id domain))
+           source (dissoc (factory :feed-source {:topic url}) :domain)]
+       (set-domain source) => (contains {:domain (:_id domain)}))))
 
  (fact "#'add-watcher"
    (let [domain (actions.domain/current-domain)
