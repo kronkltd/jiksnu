@@ -5,14 +5,25 @@
         [clojure.core.incubator :only [-?>>]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
-            [jiksnu.model.conversation :as model.conversation]))
+            [jiksnu.model.conversation :as model.conversation])
+  (:import java.net.URI))
+
+(defn set-local
+  [conversation]
+  (if (contains? conversation :local)
+    conversation
+    (assoc conversation :local
+           (let [url (URI. (:url conversation))]
+             (= (:_id (actions.domain/current-domain))
+                (.getHost url))))))
 
 (defn prepare-create
   [conversation]
   (-> conversation
       set-_id
-      ;; set-local
+      set-local
       set-updated-time
       set-created-time))
 
