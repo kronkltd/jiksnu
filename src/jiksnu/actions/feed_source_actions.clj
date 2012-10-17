@@ -172,14 +172,6 @@
      "hub.topic" (:topic source)
      "hub.verify" "async"}}))
 
-;; TODO: special case local subscriptions
-;; TODO: should take a source
-(defaction subscribe
-  "Send a subscription request to the feed"
-  [source]
-  (send-subscribe source)
-  source)
-
 (defaction remove-watcher
   [source user]
   (model.feed-source/update
@@ -217,6 +209,15 @@
      (catch RuntimeException ex
        (log/error ex)
        (.printStackTrace ex))))
+  source)
+
+;; TODO: special case local subscriptions
+;; TODO: should take a source
+(defaction subscribe
+  "Send a subscription request to the feed"
+  [source]
+  (update source)
+  (send-subscribe source)
   source)
 
 (defn discover-source
