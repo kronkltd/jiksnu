@@ -27,7 +27,7 @@
      (fact "when the url is not local"
        (let [domain (existance/a-record-exists :domain)
              url (make-uri (:_id domain))
-             conversation (factory :conversation {:url (log/spy url)})]
+             conversation (factory :conversation {:url url})]
          (set-local conversation) => (contains {:local false})))))
 
  (fact "#'index"

@@ -21,7 +21,7 @@
  (fact "#'set-domain"
    (fact "when the source has a domain"
      (let [domain (existance/a-record-exists :domain)
-           source (log/spy (factory :feed-source {:domain (:_id domain)}))]
+           source (factory :feed-source {:domain (:_id domain)})]
        (set-domain source) => source))
    (fact "when the source does not have a domain"
      (let [domain (existance/a-record-exists :domain)
