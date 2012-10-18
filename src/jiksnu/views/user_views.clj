@@ -103,6 +103,10 @@
   {:title "Register"
    :body (sections.user/register-form user)})
 
+(defview #'register-page :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Register"}})
+
 ;; show
 
 (defview #'show :model
