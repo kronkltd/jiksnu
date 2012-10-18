@@ -250,6 +250,12 @@
         [:td (link-actions-section link)]])
      links)]])
 
+(defn model-button
+  [user]
+  [:a (when *dynamic*
+        {:data-bind "attr: {href: '/model/users/' + ko.utils.unwrapObservable(_id) + '.model'}"})
+   "Model"])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sections
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -266,6 +272,7 @@
     (when (current-user)
       (list
        [:li (discover-button user)]
+       [:li (model-button user)]
        [:li (update-button user)]
        (when (is-admin?)
          (list
