@@ -20,6 +20,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -497,6 +498,7 @@
                               (when location {:location location}))
                        create)]
           (actions.auth/add-password user password)
+          (actions.key/generate-key-for-user user)
           user)
         (throw+ "user already exists")))
     (throw+ "Missing required params")))

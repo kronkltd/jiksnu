@@ -69,17 +69,6 @@
     ns/updates-from (parse-updates-from user link)
     nil))
 
-(defn register-trigger
-  [action params user]
-  (actions.auth/add-password user (-> params first :password))
-  (actions.key/generate-key-for-user user))
-
-(defn discover-trigger
-  [action params user]
-  (log/info "discover-trigger"))
-
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
 (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
-(add-trigger! #'actions.user/register      #'register-trigger)
-(add-trigger! #'actions.user/discover      #'discover-trigger)
