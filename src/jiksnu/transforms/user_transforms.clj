@@ -31,3 +31,10 @@
   (if (contains? user :local)
     user
     (assoc user :local (= (:domain user) (:_id (actions.domain/current-domain))))))
+
+(defn set-discovered
+  [user]
+  (if (contains? user :discovered)
+    user
+    (assoc user :discovered false)))
+

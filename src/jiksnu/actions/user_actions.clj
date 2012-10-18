@@ -45,12 +45,6 @@
     (if-not (model.user/fetch-by-remote-id id)
       user)))
 
-(defn set-discovered
-  [user]
-  (if (contains? user :discovered)
-    user
-    (assoc user :discovered false)))
-
 (defonce delete-hooks (ref []))
 
 (defn prepare-delete
@@ -150,7 +144,7 @@
       set-updated-time
       set-created-time
       set-update-source
-      set-discovered
+      transforms.user/set-discovered
       transforms.user/set-avatar-url))
 
 (defn get-domain-name
