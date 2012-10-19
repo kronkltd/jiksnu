@@ -52,14 +52,6 @@
   [action request]
   (model.user/fetch-by-jid (:to request)))
 
-;; fetch-updates
-
-(deffilter #'fetch-updates :http
-  [action request]
-  (let [{{id :id} :params} request
-        user (model.user/fetch-by-id (model/make-id id))]
-    (action user)))
-
 ;; index
 
 (deffilter #'index :http
@@ -114,10 +106,9 @@
 
 (deffilter #'update :http
   [action request]
-  (let [{params :params} request
-        {username :username} params
-        user (show username)]
-    (action user params)))
+  (let [{{id :id} :params} request]
+    (if-let [user (model.user/fetch-by-id (model/make-id id))]
+     (action user))))
 
 (deffilter #'update :command
   [action id]

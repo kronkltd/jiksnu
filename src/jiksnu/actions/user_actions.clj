@@ -5,6 +5,7 @@
         [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
+        [jiksnu.actions :only [invoke-action]]
         [jiksnu.session :only [current-user]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
@@ -275,11 +276,6 @@
   [& _]
   (implement))
 
-(defaction fetch-updates
-  [user]
-  ;; TODO: stream action?
-  user)
-
 (defaction user-meta
   "returns a user matching the uri"
   [user]
@@ -344,12 +340,8 @@
 (defaction update
   "Update fields in the user"
   [user params]
-  ;; TODO: injection attack
-  (cm/implement)
-  #_(->> params
-       (map (fn [[k v]] (if (not= v "") [(keyword k) v])))
-       (into user)
-       model.user/update))
+  (invoke-action "feed-source" "update" (:update-source user))
+  user)
 
 ;; TODO: This function should be called at most once per user, per feed
 (defn person->user
@@ -371,12 +363,14 @@
                          (abdera/get-extension-elements ns/statusnet "profile_info")
                          (->> (map #(.getAttributeValue % "local_id")))
                          first)
-            links (abdera/get-links person)
+            links (log/spy (abdera/get-links person))
+            avatar-url nil #_(-?> person (.getLinks "avatar") seq first .getHref str)
             params (merge {:domain domain-name}
                           (when uri {:uri uri})
                           (when username {:username username})
                           (when note {:bio note})
                           (when email {:email email})
+                          (when avatar-url {:avatar-url avatar-url})
                           (when local-id {:local-id local-id})
                           (when name {:display-name name}))
             user (-> {:id id}
@@ -407,7 +401,7 @@
           (add-link user link))
         (log/warn "usermeta has no links"))
       (when (seq avatar-url)
-       (model.user/set-field! user :avatar-url avatar-url)))
+       (model.user/set-field! (log/spy user) :avatar-url avatar-url)))
     (throw+ "Could not fetch user-meta")))
 
 ;; FIXME: This does not work yet
@@ -426,6 +420,26 @@
        (rdf/optional [:?user :foaf/name            :?name])
        (rdf/optional [:?user :dcterms/descriptions :?bio])
        (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
+
+(defn fetch-updates-xmpp
+  [user]
+  ;; TODO: send user timeline request
+  (let [packet (tigase/make-packet
+                {:to (tigase/make-jid user)
+                 :from (tigase/make-jid "" (config :domain))
+                 :type :get
+                 :body (element/make-element
+                        ["pubsub" {"xmlns" ns/pubsub}
+                         ["items" {"node" ns/microblog}]])})]
+    (tigase/deliver-packet! packet)))
+
+(defn parse-magic-public-key
+  [user link]
+  (let [key-string (:href link)
+        [_ n e] (re-matches
+                 #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+                 key-string)]
+    (model.key/set-armored-key (:_id user) n e)))
 
 (defaction discover-user-rdf
   "Discover user information from their rdf feeds"

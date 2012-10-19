@@ -204,9 +204,9 @@
   "Fetch updates for the source"
   [source]
   (task
-   (try
+   #_(try
      (update* source)
-     (catch RuntimeException ex
+     #_(catch RuntimeException ex
        (log/error ex)
        (.printStackTrace ex))))
   source)

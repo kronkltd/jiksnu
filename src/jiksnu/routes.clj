@@ -13,28 +13,7 @@
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.middleware :as jm]
-            ;; [jiksnu.namespace :as ns]
-            [jiksnu.routes.activity-routes :as routes.activity]
             [jiksnu.routes.admin-routes :as routes.admin]
-            [jiksnu.routes.auth-routes :as routes.auth]
-            [jiksnu.routes.comment-routes :as routes.comment]
-            [jiksnu.routes.conversation-routes :as routes.conversation]
-            [jiksnu.routes.domain-routes :as routes.domain]
-            [jiksnu.routes.favorite-routes :as routes.favorite]
-            [jiksnu.routes.feed-source-routes :as routes.feed-source]
-            [jiksnu.routes.group-routes :as routes.group]
-            [jiksnu.routes.like-routes :as routes.like]
-            [jiksnu.routes.message-routes :as routes.message]
-            [jiksnu.routes.pubsub-routes :as routes.pubsub]
-            [jiksnu.routes.salmon-routes :as routes.salmon]
-            [jiksnu.routes.search-routes :as routes.search]
-            [jiksnu.routes.setting-routes :as routes.setting]
-            [jiksnu.routes.site-routes :as routes.site]
-            [jiksnu.routes.stream-routes :as routes.stream]
-            [jiksnu.routes.subscription-routes :as routes.subscription]
-            [jiksnu.routes.tag-routes :as routes.tag]
-            [jiksnu.routes.user-routes :as routes.user]
-            [jiksnu.routes.xmpp-routes :as routes.xmpp]
             jiksnu.sections.layout-sections
             [jiksnu.session :as session]
             [jiksnu.views :as views]
@@ -51,29 +30,32 @@
 
 (def http-routes
   (make-matchers
-   (concat
-    (#'routes.activity/routes)
-    ;; (routes.admin/routes)
-    (#'routes.auth/routes)
-    (#'routes.comment/routes)
-    (#'routes.conversation/routes)
-    (#'routes.domain/routes)
-    (#'routes.favorite/routes)
-    (#'routes.feed-source/routes)
-    (#'routes.group/routes)
-    (#'routes.like/routes)
-    (#'routes.message/routes)
-    (#'routes.pubsub/routes)
-    (#'routes.salmon/routes)
-    (#'routes.search/routes)
-    (#'routes.setting/routes)
-    (#'routes.site/routes)
-    (#'routes.stream/routes)
-    (#'routes.subscription/routes)
-    (#'routes.tag/routes)
-    (#'routes.user/routes)
-    ;; (#'routes.xmpp/routes)
-    )))
+   (map
+    (fn [x]
+      (let [route-sym (symbol (format "jiksnu.routes.%s-routes"))]
+        (require route-sym)
+        (let [route-fn (ns-resolve route-sym 'routes)]
+          (route-fn))))
+    ["activity"
+     "auth"
+     "comment"
+     "conversation"
+     "domain"
+     "favorite"
+     "feed-source"
+     "group"
+     "like"
+     "message"
+     "pubsub"
+     "salmon"
+     "search"
+     "setting"
+     "site"
+     "stream"
+     "subscription"
+     "tag"
+     "user"
+     ])))
 
 (def http-predicates
   [#'pred/request-method-matches?
