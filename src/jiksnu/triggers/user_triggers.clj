@@ -24,27 +24,27 @@
 ;;     (when (:xmpp domain) (fetch-updates-xmpp user))
 ;;     #_(fetch-updates-http user)))
 
-;; (defn parse-avatar
-;;   [user link]
-;;   (when (= (first (:extensions link)) "96")
-;;     (model.user/set-field! user :avatar-url (:href link))))
+(defn parse-avatar
+  [user link]
+  (when (= (first (:extensions link)) "96")
+    (model.user/set-field! (log/spy user) :avatar-url (:href link))))
 
-;; (defn parse-updates-from
-;;   [user link]
-;;   (log/debug "Setting update source")
-;;   (if-let [href (:href link)]
-;;     (let [source (actions.feed-source/find-or-create {:topic (:href link)})]
-;;       (model.user/set-field! user :update-source (:_id source)))
-;;     (throw+ "link must have a href")))
+(defn parse-updates-from
+  [user link]
+  (log/debug "Setting update source")
+  (if-let [href (:href link)]
+    (let [source (actions.feed-source/find-or-create {:topic (:href link)})]
+      (model.user/set-field! user :update-source (:_id source)))
+    (throw+ "link must have a href")))
 
-;; (defn add-link-trigger
-;;   [action [user link] _]
-;;   (condp = (:rel link)
-;;     "magic-public-key" (parse-magic-public-key user link)
-;;     ;; "avatar" (parse-avatar user link)
-;;     ns/updates-from (parse-updates-from user link)
-;;     nil))
+(defn add-link-trigger
+  [action [user link] _]
+  (condp = (:rel link)
+    ;; "magic-public-key" (parse-magic-public-key user link)
+    "avatar" (parse-avatar (log/spy user) link)
+    ns/updates-from (parse-updates-from user link)
+    nil))
 
-;; (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
+(add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 ;; (add-trigger! #'actions.user/create        #'create-trigger)
 ;; (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)

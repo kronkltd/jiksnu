@@ -205,7 +205,7 @@
   [source]
   (task
    (try
-     (update* (log/spy source))
+     (update* source)
      (catch RuntimeException ex
        (log/error ex)
        (.printStackTrace ex))))

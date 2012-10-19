@@ -175,9 +175,9 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (model.user/get-link user
-                                              (:rel link)
-                                              (:type link))]
+  (if-let [existing-link (and nil (model.user/get-link user
+                                                       (:rel link)
+                                                       (:type link)))]
     user
     (add-link* user link)))
 
@@ -347,6 +347,7 @@
 (defn person->user
   "Extract user information from atom element"
   [^Person person]
+  (log/info "converting person to user")
   (let [id (str (.getUri person))
         ;; TODO: check for custom domain field first?
         domain-name (get-domain-name id)
@@ -363,7 +364,7 @@
                          (abdera/get-extension-elements ns/statusnet "profile_info")
                          (->> (map #(.getAttributeValue % "local_id")))
                          first)
-            links (log/spy (abdera/get-links person))
+            links (abdera/get-links person)
             avatar-url nil #_(-?> person (.getLinks "avatar") seq first .getHref str)
             params (merge {:domain domain-name}
                           (when uri {:uri uri})
@@ -376,7 +377,7 @@
             user (-> {:id id}
                      #_(find-or-create-by-remote-id params)
                      (merge params))]
-        (doseq [link links]
+        #_(doseq [link links]
           (add-link user link))
         (model/map->User user))
       (throw+ "could not determine user"))))
@@ -386,22 +387,26 @@
 (defaction update-usermeta
   "Retreive user information from webfinger"
   [user]
+  (log/info "updating usermeta")
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (model.webfinger/fetch-user-meta user)]
     (let [links (model.webfinger/get-links xrd)
-          new-user (assoc user :links links)
-          feed (model.user/fetch-user-feed new-user)
+          user (assoc user :links links)
+          feed (model.user/fetch-user-feed user)
           first-entry (-?> feed .getEntries first)
           user (merge user
                       (-?> (abdera/get-author first-entry feed)
                            person->user))
-          avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)]
+          links (concat links (:links user))
+          
+          ;; avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
+          ]
       (if (seq links)
         (doseq [link links]
-          (add-link user link))
+          (add-link user (log/spy link)))
         (log/warn "usermeta has no links"))
-      (when (seq avatar-url)
-       (model.user/set-field! (log/spy user) :avatar-url avatar-url)))
+      #_(when (seq avatar-url)
+          (model.user/set-field! user :avatar-url avatar-url)))
     (throw+ "Could not fetch user-meta")))
 
 ;; FIXME: This does not work yet
@@ -479,7 +484,7 @@
                ;; TODO: there sould be a different discovered flag for
                ;; each aspect of a domain, and this flag shouldn't be set
                ;; till they've all responded
-               (model.user/set-field! user :discovered true)
+               ;; (model.user/set-field! user :discovered true)
                (model.user/fetch-by-id (:_id user)))
              (do
                ;; Domain not yet discovered
