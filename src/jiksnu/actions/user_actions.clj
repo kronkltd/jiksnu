@@ -366,8 +366,11 @@
                          first)
             links (abdera/get-links person)
             avatar-url nil #_(-?> person (.getLinks "avatar") seq first .getHref str)
-            params (merge {:domain domain-name}
+            params (merge {:domain domain-name
+                           :links links
+                           }
                           (when uri {:uri uri})
+                          
                           (when username {:username username})
                           (when note {:bio note})
                           (when email {:email email})
@@ -403,7 +406,7 @@
           ]
       (if (seq links)
         (doseq [link links]
-          (add-link user (log/spy link)))
+          (add-link user link))
         (log/warn "usermeta has no links"))
       #_(when (seq avatar-url)
           (model.user/set-field! user :avatar-url avatar-url)))

@@ -27,7 +27,7 @@
 (defn parse-avatar
   [user link]
   (when (= (first (:extensions link)) "96")
-    (model.user/set-field! (log/spy user) :avatar-url (:href link))))
+    (model.user/set-field! user :avatar-url (:href link))))
 
 (defn parse-updates-from
   [user link]
@@ -41,10 +41,16 @@
   [action [user link] _]
   (condp = (:rel link)
     ;; "magic-public-key" (parse-magic-public-key user link)
-    "avatar" (parse-avatar (log/spy user) link)
+    "avatar" (parse-avatar user link)
     ns/updates-from (parse-updates-from user link)
     nil))
 
+(defn create-trigger
+  [action _ user]
+  (actions.user/discover user)
+  )
+
+
 (add-trigger! #'actions.user/add-link*     #'add-link-trigger)
-;; (add-trigger! #'actions.user/create        #'create-trigger)
+(add-trigger! #'actions.user/create        #'create-trigger)
 ;; (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
