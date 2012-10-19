@@ -340,7 +340,7 @@
 (defaction update
   "Update fields in the user"
   [user params]
-  (invoke-action "feed-source" "update" (:update-source user))
+  (invoke-action "feed-source" "update" (str (:update-source user)))
   user)
 
 ;; TODO: This function should be called at most once per user, per feed

@@ -49,11 +49,11 @@
 
 ;; fetch-updates
 
-(defview #'fetch-updates :html
-  [request user]
-  (-> (response/redirect-after-post (uri user))
-      (assoc :template false)
-      (assoc :flash "fetching updates")))
+;; (defview #'fetch-updates :html
+;;   [request user]
+;;   (-> (response/redirect-after-post (uri user))
+;;       (assoc :template false)
+;;       (assoc :flash "fetching updates")))
 
 ;; index
 

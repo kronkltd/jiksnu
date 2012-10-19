@@ -30,32 +30,33 @@
 
 (def http-routes
   (make-matchers
-   (map
-    (fn [x]
-      (let [route-sym (symbol (format "jiksnu.routes.%s-routes"))]
-        (require route-sym)
-        (let [route-fn (ns-resolve route-sym 'routes)]
-          (route-fn))))
-    ["activity"
-     "auth"
-     "comment"
-     "conversation"
-     "domain"
-     "favorite"
-     "feed-source"
-     "group"
-     "like"
-     "message"
-     "pubsub"
-     "salmon"
-     "search"
-     "setting"
-     "site"
-     "stream"
-     "subscription"
-     "tag"
-     "user"
-     ])))
+   (reduce concat
+           (map
+     (fn [x]
+       (let [route-sym (symbol (format "jiksnu.routes.%s-routes" x))]
+         (require route-sym)
+         (let [route-fn (ns-resolve route-sym 'routes)]
+           (route-fn))))
+     ["activity"
+      "auth"
+      "comment"
+      "conversation"
+      "domain"
+      "favorite"
+      "feed-source"
+      "group"
+      "like"
+      "message"
+      "pubsub"
+      "salmon"
+      "search"
+      "setting"
+      "site"
+      "stream"
+      "subscription"
+      "tag"
+      "user"
+      ]))))
 
 (def http-predicates
   [#'pred/request-method-matches?
