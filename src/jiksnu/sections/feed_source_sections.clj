@@ -83,8 +83,8 @@
     [:li (update-button source)]
     [:li (subscribe-button source)]
     [:li [:a (if *dynamic*
-               {:data-bind "attr: {href: '/model/feedSources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
-               {:href (format "/model/feedSources/%s.model" (:_id source))})
+               {:data-bind "attr: {href: '/model/feed-sources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+               {:href (format "/model/feed-sources/%s.model" (:_id source))})
           "Model"]]
     [:li (unsubscribe-button source)]
     [:li (delete-button source)]
@@ -223,7 +223,7 @@
    [:td (link-to source)]
    [:td (when (:hub source) "*")]
    #_[:td (:mode source)]
-   [:td (str (:subscription-status source))]
+   [:td (str (:status source))]
    [:td (count (:watchers source))]
    [:td (:updated source)]
    [:td (actions-section source)]])
@@ -291,9 +291,6 @@
          (if *dynamic*
            {:data-bind "text: status"}
            (:status source))]]
-       [:tr
-        [:th "Subscription Status:"]
-        [:td (:subscription-status source)]]
        [:tr
         [:th "Verify Token:"]
         [:td verify-token]]

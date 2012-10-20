@@ -267,6 +267,7 @@
                         "callback" nil
                         "created"  nil
                         "updated"  nil
+                        "status"   nil
                         "domain"   nil
                         "hub"      nil
                         "mode"     nil

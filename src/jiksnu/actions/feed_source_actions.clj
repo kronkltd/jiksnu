@@ -55,7 +55,7 @@
 (defaction confirm
   "Callback for when a remote subscription has been confirmed"
   [source]
-  (model.feed-source/set-field! source :subscription-status "confirmed"))
+  (model.feed-source/set-field! source :status "confirmed"))
 
 (defaction delete
   [source]
@@ -73,7 +73,7 @@
 
         "unsubscribe" (do
                         (log/info "confirming subscription removal")
-                        (model.feed-source/set-field! source :subscription-status "none")
+                        (model.feed-source/set-field! source :status "none")
                         #_(model.feed-source/delete source))
         ;; TODO: This should probably throw
         (cm/implement

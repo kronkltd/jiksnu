@@ -18,15 +18,14 @@
   (validation-set
    (presence-of :_id)
    (presence-of :topic)
-   (presence-of :subscription-status)
+   (presence-of :status)
    (presence-of :created)
    (presence-of :updated)))
 
 (defn prepare
   [params]
   (let [now (time/now)]
-    (-> (merge {:status "unknown"
-                :subscription-status "none"}
+    (-> (merge {:status "none"}
                params)
         set-_id
         set-updated-time
