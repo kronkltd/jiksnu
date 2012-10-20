@@ -41,12 +41,6 @@
            tigase.xml.Element
            tigase.xmpp.JID))
 
-(defn assert-unique
-  [user]
-  (when-let [id (:id user)]
-    (if-not (model.user/fetch-by-remote-id id)
-      user)))
-
 (defonce delete-hooks (ref []))
 
 (defn prepare-delete
@@ -57,12 +51,67 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
+(defn get-source-link
+  [user-meta]
+  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
+    (->> user-meta
+         (cm/query query-str)
+         model/force-coll
+         (keep #(.getAttributeValue % "href"))
+         first)))
+
+
+(defn get-feed-source-from-user-meta
+  [user-meta]
+  (if-let [source-link (get-source-link user-meta)]
+    (let [ch (model/get-source source-link)]
+      (l/wait-for-result ch 5000))
+    (throw+ "could not determine source")))
+
+(defn assert-unique
+  [user]
+  (when-let [id (:id user)]
+    (if-not (model.user/fetch-by-remote-id id)
+      user)))
+
 (defn get-user-meta
   [user]
   (let [id (:id user)
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [um-url (actions.domain/get-user-meta-url domain id)]
       (model.webfinger/fetch-host-meta um-url))))
+
+(defn set-update-source
+  [user]
+  (if (:local user)
+    (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
+                        (:domain user) (:_id user))
+          source  (l/wait-for-result
+                   (model/get-source topic)
+                   5000)]
+      (assoc user :update-source (:_id source)))
+    (if (:update-source user)
+      user
+      ;; look up update source
+      (if-let [user-meta (get-user-meta user)]
+        (if-let [source (get-feed-source-from-user-meta user-meta)]
+          (assoc user :update-source (:_id source))
+          (throw+ "could not get source"))
+        (throw+ "Could not get user meta")))))
+
+(defn prepare-create
+  [user]
+  (-> user
+      set-_id
+      transforms.user/set-id
+      transforms.user/set-url
+      transforms.user/set-local
+      assert-unique
+      set-updated-time
+      set-created-time
+      set-update-source
+      transforms.user/set-discovered
+      transforms.user/set-avatar-url))
 
 (defn get-username-from-atom-property
   ;; passed a document
@@ -99,55 +148,6 @@
         [(get-username-from-identifiers user-meta)])
        (filter identity)
        first))
-
-(defn get-source-link
-  [user-meta]
-  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
-    (->> user-meta
-         (cm/query query-str)
-         model/force-coll
-         (keep #(.getAttributeValue % "href"))
-         first)))
-
-
-(defn get-feed-source-from-user-meta
-  [user-meta]
-  (if-let [source-link (get-source-link user-meta)]
-    (let [ch (model/get-source source-link)]
-      (l/wait-for-result ch 5000))
-    (throw+ "could not determine source")))
-
-(defn set-update-source
-  [user]
-  (if (:local user)
-    (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
-                        (:domain user) (:_id user))
-          source  (l/wait-for-result
-                   (model/get-source topic)
-                   5000)]
-      (assoc user :update-source (:_id source)))
-    (if (:update-source user)
-      user
-      ;; look up update source
-      (if-let [user-meta (get-user-meta user)]
-        (if-let [source (get-feed-source-from-user-meta user-meta)]
-          (assoc user :update-source (:_id source))
-          (throw+ "could not get source"))
-        (throw+ "Could not get user meta")))))
-
-(defn prepare-create
-  [user]
-  (-> user
-      set-_id
-      transforms.user/set-id
-      transforms.user/set-url
-      transforms.user/set-local
-      assert-unique
-      set-updated-time
-      set-created-time
-      set-update-source
-      transforms.user/set-discovered
-      transforms.user/set-avatar-url))
 
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
