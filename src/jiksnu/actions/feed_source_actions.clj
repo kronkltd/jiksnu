@@ -195,8 +195,11 @@
 (defn update*
   [source]
   (if-let [topic (:topic source)]
-    (let [feed (abdera/fetch-feed topic)]
-      (process-feed feed source))
+    (if-let [feed (try
+                    (abdera/fetch-feed topic)
+                    (catch Exception ex))]
+      (process-feed feed source)
+      (throw+ "could not obtain feed"))
     (throw+ {:message "Source does not contain a topic"
              :source source})))
 

@@ -212,8 +212,10 @@
 (defaction delete
   "Delete the user"
   [^User user]
-  (let [user (prepare-delete user)]
-    (model.user/delete user)))
+  (if-let [user (prepare-delete user)]
+    (do (model.user/delete user)
+        user)
+    (throw+ "prepare delete failed")))
 
 (defaction exists?
   [user]
@@ -311,7 +313,9 @@
         domain-name (model.user/get-domain-name id)
         domain (actions.domain/get-discovered {:_id domain-name})
         username (or (abdera/get-extension person ns/poco "preferredUsername")
-                     (get-username {:id id}))]
+                     (get-username {:id id})
+                     ;; TODO: get username from hcard
+                     )]
     (if (and username domain)
       (let [email (.getEmail person)
             name (abdera/get-name person)
@@ -323,23 +327,15 @@
                          (->> (map #(.getAttributeValue % "local_id")))
                          first)
             links (abdera/get-links person)
-            avatar-url nil #_(-?> person (.getLinks "avatar") seq first .getHref str)
-            params (merge {:domain domain-name
-                           :links links
-                           }
-                          (when uri {:uri uri})
-                          
-                          (when username {:username username})
-                          (when note {:bio note})
-                          (when email {:email email})
-                          (when avatar-url {:avatar-url avatar-url})
-                          (when local-id {:local-id local-id})
-                          (when name {:display-name name}))
-            user (-> {:id id}
-                     #_(find-or-create-by-remote-id params)
-                     (merge params))]
-        #_(doseq [link links]
-          (add-link user link))
+            user (merge {:domain domain-name
+                         :id id
+                         :username username
+                         :links links}
+                        (when uri {:uri uri})
+                        (when note {:bio note})
+                        (when email {:email email})
+                        (when local-id {:local-id local-id})
+                        (when name {:display-name name}))]
         (model/map->User user))
       (throw+ "could not determine user"))))
 
@@ -351,26 +347,20 @@
   (log/info "updating usermeta")
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (model.webfinger/fetch-user-meta user)]
-    (let [links (model.webfinger/get-links xrd)
-          user (assoc user :links links)
-          feed (model.user/fetch-user-feed user)
+    (let [webfinger-links (model.webfinger/get-links xrd)
+          feed (model.user/fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
           first-entry (-?> feed .getEntries first)
-          user (merge user
-                      (-?> (abdera/get-author first-entry feed)
-                           person->user))
-          links (concat links (:links user))
-          
-          ;; avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
-          ]
+          new-user (-?> (abdera/get-author first-entry feed)
+                        person->user)
+          links (concat webfinger-links (:links new-user))]
       ;; TODO: only new fields, and only safe ones (maybe)
-      (doseq [[k v] user]
+      (doseq [[k v] new-user]
         (model.user/set-field! user k v))
       (if (seq links)
         (doseq [link links]
           (add-link user link))
         (log/warn "usermeta has no links"))
-      #_(when (seq avatar-url)
-          (model.user/set-field! user :avatar-url avatar-url)))
+      (model.user/fetch-by-id (:_id user)))
     (throw+ "Could not fetch user-meta")))
 
 (defn fetch-updates-xmpp

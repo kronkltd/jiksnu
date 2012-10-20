@@ -25,9 +25,16 @@
 
 ;; delete
 
+(deffilter #'delete :command
+  [action id]
+  (when-let [item (model.user/fetch-by-id (model/make-id id))]
+    (action item)))
+
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id model/make-id model.user/fetch-by-id action))
+  (let [id (:id (:params request))]
+    (when-let [item (model.user/fetch-by-id (model/make-id id))]
+      (action item))))
 
 (deffilter #'delete :xmpp
   [action request]
@@ -37,7 +44,7 @@
 
 (deffilter #'discover :command
   [action id]
-  (let [item (model.user/fetch-by-id (model/make-id id))]
+  (if-let [item (model.user/fetch-by-id (model/make-id id))]
     (action item)))
 
 (deffilter #'discover :http

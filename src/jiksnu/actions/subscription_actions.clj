@@ -146,4 +146,5 @@
                                  (:items (second (get-subscribers user)))
                                  (:items (second (get-subscriptions user))))]
               (doseq [subscription subscriptions]
-                (delete subscription)))))))
+                (delete subscription))
+              user)))))
