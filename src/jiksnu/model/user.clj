@@ -16,8 +16,11 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
             [monger.collection :as mc]
-            [monger.query :as mq])
-  (:import jiksnu.model.Domain
+            [monger.query :as mq]
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.sparql :as sp])
+  (:import java.net.URI
+           jiksnu.model.Domain
            jiksnu.model.User
            tigase.xmpp.BareJID
            tigase.xmpp.JID))
@@ -85,7 +88,7 @@
   [id]
   (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (second (model.user/split-uri id))
+      (second (split-uri id))
       (.getHost uri))))
 
 (defn display-name

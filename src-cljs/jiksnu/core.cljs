@@ -31,8 +31,8 @@
    ;; "waltz.state"        :finest
    ;; "jiksnu.core"        :finest
    ;; "jiksnu.model"       :finest
-   "jiksnu.websocket"   :fine
-   "goog.net.WebSocket" :warning
+   ;; "jiksnu.websocket"   :fine
+   ;; "goog.net.WebSocket" :warning
    })
 
 (defn update-pages

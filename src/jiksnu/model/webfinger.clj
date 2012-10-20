@@ -106,7 +106,7 @@
   [user-meta]
   (try
     (->> user-meta
-         model.webfinger/get-identifiers
+         get-identifiers
          (keep (comp first model.user/split-uri))
          first)
     (catch RuntimeException ex

@@ -118,7 +118,7 @@
   [^User user]
   (if-let [domain-id (or (:domain user)
                          (when-let [id (:id user)]
-                           (get-domain-name id)))]
+                           (model.user/get-domain-name id)))]
     (actions.domain/get-discovered {:_id domain-id})))
 
 
@@ -166,12 +166,12 @@
       (or (if-let [username (.getUserInfo uri)]
             (assoc user :username username))
           (if-let [domain-name (or (:domain user)
-                                   (get-domain-name id))]
+                                   (model.user/get-domain-name id))]
             (let [user (assoc user :domain domain-name)
                   user-meta (get-user-meta user)
                   source (get-feed-source-from-user-meta user-meta)]
               (merge user
-                     {:username (get-username-from-user-meta user-meta)
+                     {:username (model.webfinger/get-username-from-user-meta user-meta)
                       :update-source (:_id source)}))
             (throw+ "Could not determine domain name"))))))
 
@@ -308,7 +308,7 @@
   (log/info "converting person to user")
   (let [id (str (.getUri person))
         ;; TODO: check for custom domain field first?
-        domain-name (get-domain-name id)
+        domain-name (model.user/get-domain-name id)
         domain (actions.domain/get-discovered {:_id domain-name})
         username (or (abdera/get-extension person ns/poco "preferredUsername")
                      (get-username {:id id}))]
@@ -362,6 +362,9 @@
           
           ;; avatar-url (-?> feed (.getLinks "avatar") seq first .getHref str)
           ]
+      ;; TODO: only new fields, and only safe ones (maybe)
+      (doseq [[k v] user]
+        (model.user/set-field! user k v))
       (if (seq links)
         (doseq [link links]
           (add-link user link))
@@ -396,7 +399,7 @@
   ;; TODO: alternately, check user meta
   (let [uri (:foaf-uri user)
         model (rdf/document-to-model uri :xml)
-        query (foaf-query)]
+        query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
 
 (defaction discover-user-xmpp
@@ -417,7 +420,7 @@
        (if (:local user)
          user
          ;; Get domain should, in theory, always return a domain, or else error
-         (let [domain (get-domain user)]
+         (let [domain (actions.domain/get-discovered (get-domain user))]
            (if (:discovered domain)
              (do
                (when (:xmpp domain) (discover-user-xmpp user))

@@ -1,6 +1,8 @@
 (ns jiksnu.model
+  (:use [jayq.util :only [clj->js]])
   (:require [jiksnu.backbone :as backbone]
             [jiksnu.ko :as ko]
+            [jiksnu.logging :as jl]
             [lolg :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
 
@@ -70,12 +72,18 @@
    backbone/Model
    (js-obj
     "type" "Page"
-    "defaults" (js-obj
-                "page"         1
-                "pageSize"     0
-                "items"        []
-                "recordCount"  0
-                "totalRecords" 0)
+    "defaults" (fn [] (js-obj
+                 "page"         1
+                 "pageSize"     0
+                 "items"        (array)
+                 "recordCount"  0
+                 "totalRecords" 0))
+    "popItem" (fn []
+                (this-as this
+                  (let [a (.get this "items")
+                        i (first a)]
+                    (.set this "items" (clj->js (rest a)))
+                    i)))
     "hasNext" (fn []
                 (this-as this
                   (< (* (.page this)
