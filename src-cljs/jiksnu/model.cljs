@@ -165,6 +165,7 @@
                                "uri"          nil
                                "bio"          nil
                                "username"     nil
+                               "location"     ""
                                "domain"       nil
                                "updateSource" nil
                                "links"        (array)
