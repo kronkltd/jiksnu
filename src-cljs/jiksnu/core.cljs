@@ -247,6 +247,13 @@
   [event]
   (handlers/add-notification (.-message event)))
 
+(defmethod ws/process-event "model-updated"
+  [event]
+  (log/info *logger* "model updated")
+  (let [page (.get model/pages "default")
+        id (.-_id (.-body event))]
+    (.addItem page id)))
+
 (defn main
   []
 

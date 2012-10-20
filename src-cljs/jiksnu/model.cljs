@@ -78,6 +78,10 @@
                  "items"        (array)
                  "recordCount"  0
                  "totalRecords" 0))
+    "addItem" (fn [id]
+                (this-as this
+                  (let [a (.get this "items")]
+                    (.set this "items" (clj->js (concat [id] a))))))
     "popItem" (fn []
                 (this-as this
                   (let [a (.get this "items")

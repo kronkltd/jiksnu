@@ -7,6 +7,7 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
+        [jiksnu.actions :only [posted-activities]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clojure.data.json :as json]
@@ -24,6 +25,7 @@
             [jiksnu.session :as session]
             [lamina.core :as l])
   (:import jiksnu.model.User))
+
 
 (defaction direct-message-timeline
   [& _]
@@ -141,7 +143,9 @@
 (defn format-event
   [m]
   (str (json/json-str
-        {:body (format-message-html m)
+        {:body {:action "activity-created"
+                :body m
+                }
          :event "stream-add"
          :stream "public"})
        "\r\n"))
@@ -150,14 +154,12 @@
   [m]
   (#{#'actions.activity/create} (:action m)))
 
-(defn siphon-new-activities
-  [ch]
-  (l/siphon
+(l/siphon
    (->> ciste.core/*actions*
         l/fork
         (l/filter* filter-create)
-        (l/map* format-event))
-   ch))
+        #_(l/map* format-event))
+   posted-activities)
 
 (defn websocket-handler
   [ch request]

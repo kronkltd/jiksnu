@@ -45,6 +45,8 @@
 (add-command! "invoke-action" #'invoke-action)
 
 (defonce connections (ref {}))
+(defonce posted-activities (l/permanent-channel))
+
 
 (defaction connect
   [ch]
@@ -54,6 +56,15 @@
     (dosync
      (alter connections 
             #(assoc-in % [id connection-id] ch)))
+    (l/siphon
+     (l/map*
+      (fn [e]
+        (log/infof "sending update notification to connection: %s" connection-id)
+        (json/json-str {:action "model-updated"
+                        :type "activity"
+                        :body (:records e)}))
+      posted-activities)
+     ch)
     (l/on-closed ch
                  (fn []
                    (log/info "closed")
