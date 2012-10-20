@@ -34,6 +34,20 @@
             "template" (str "http://" domain "/main/xrd?uri={uri}")}
     ["Title" {} "Resource Descriptor"]]])
 
+(defn get-username-from-atom-property
+  ;; passed a document
+  [user-meta]
+  (try
+    (->> user-meta
+         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
+         model/force-coll
+         (keep #(.getValue %))
+         first)
+    ;; TODO: What are the error risks here?
+    (catch RuntimeException ex
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
+
 (defn user-meta
   [lrdd]
   ["XRD" {"xmlns" ns/xrd}
@@ -86,3 +100,26 @@
   (->> (concat (model/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
                (model/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))
+
+(defn get-username-from-identifiers
+  ;; passed a document
+  [user-meta]
+  (try
+    (->> user-meta
+         model.webfinger/get-identifiers
+         (keep (comp first model.user/split-uri))
+         first)
+    (catch RuntimeException ex
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
+
+;; takes a document
+(defn get-username-from-user-meta
+  "return the username component of the user meta"
+  [user-meta]
+  (->> [(get-username-from-atom-property user-meta)]
+       (lazy-cat
+        [(get-username-from-identifiers user-meta)])
+       (filter identity)
+       first))
+

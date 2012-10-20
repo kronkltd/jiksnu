@@ -113,50 +113,6 @@
       transforms.user/set-discovered
       transforms.user/set-avatar-url))
 
-(defn get-username-from-atom-property
-  ;; passed a document
-  [user-meta]
-  (try
-    (->> user-meta
-         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
-         model/force-coll
-         (keep #(.getValue %))
-         first)
-    ;; TODO: What are the error risks here?
-    (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
-
-(defn get-username-from-identifiers
-  ;; passed a document
-  [user-meta]
-  (try
-    (->> user-meta
-         model.webfinger/get-identifiers
-         (keep (comp first model.user/split-uri))
-         first)
-    (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
-
-;; takes a document
-(defn get-username-from-user-meta
-  "return the username component of the user meta"
-  [user-meta]
-  (->> [(get-username-from-atom-property user-meta)]
-       (lazy-cat
-        [(get-username-from-identifiers user-meta)])
-       (filter identity)
-       first))
-
-(defn get-domain-name
-  "Takes a string representing a uri and returns the domain"
-  [id]
-  (let [uri (URI. id)]
-    (if (= "acct" (.getScheme uri))
-      (second (model.user/split-uri id))
-      (.getHost uri))))
-
 (defn get-domain
   "Return the domain of the user"
   [^User user]
@@ -331,6 +287,8 @@
                      :value (:username user)}]}]})
     (throw+ "Not authorative for this resource")))
 
+;; TODO: This is a special case of the discover action for users that
+;; support xmpp discovery
 (defn request-vcard!
   "Send a vcard request to the xmpp endpoint of the user"
   [user]
@@ -338,7 +296,7 @@
     (tigase/deliver-packet! packet)))
 
 (defaction update
-  "Update fields in the user"
+  "Update the user's activities and information."
   [user params]
   (invoke-action "feed-source" "update" (str (:update-source user)))
   user)
@@ -411,23 +369,6 @@
       #_(when (seq avatar-url)
           (model.user/set-field! user :avatar-url avatar-url)))
     (throw+ "Could not fetch user-meta")))
-
-;; FIXME: This does not work yet
-(defn foaf-query
-  "Extract user information from a foaf document"
-  []
-  (sp/defquery
-    (sp/query-set-vars [:?user :?nick :?name :?bio :?img-url])
-    (sp/query-set-type :select)
-    (sp/query-set-pattern
-     (sp/make-pattern
-      [
-       [:?uri    rdf/rdf:type                     :foaf/Document]
-       [:?uri    :foaf:PrimaryTopic    :?user]
-       (rdf/optional [:?user :foaf/nick            :?nick])
-       (rdf/optional [:?user :foaf/name            :?name])
-       (rdf/optional [:?user :dcterms/descriptions :?bio])
-       (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
 
 (defn fetch-updates-xmpp
   [user]

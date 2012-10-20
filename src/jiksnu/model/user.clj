@@ -80,6 +80,14 @@
   (let [[_ _ username domain] (re-find #"(.*:)?([^@]+)@([^\?]+)" uri)]
     (when (and username domain) [username domain])))
 
+(defn get-domain-name
+  "Takes a string representing a uri and returns the domain"
+  [id]
+  (let [uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (second (model.user/split-uri id))
+      (.getHost uri))))
+
 (defn display-name
   [^User user]
   (or (:display-name user)
@@ -234,3 +242,21 @@
   ([] (count-records {}))
   ([params]
      (mc/count collection-name params)))
+
+;; FIXME: This does not work yet
+(defn foaf-query
+  "Extract user information from a foaf document"
+  []
+  (sp/defquery
+    (sp/query-set-vars [:?user :?nick :?name :?bio :?img-url])
+    (sp/query-set-type :select)
+    (sp/query-set-pattern
+     (sp/make-pattern
+      [
+       [:?uri    rdf/rdf:type                     :foaf/Document]
+       [:?uri    :foaf:PrimaryTopic    :?user]
+       (rdf/optional [:?user :foaf/nick            :?nick])
+       (rdf/optional [:?user :foaf/name            :?name])
+       (rdf/optional [:?user :dcterms/descriptions :?bio])
+       (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
+
