@@ -94,12 +94,6 @@
     source
     (create params options)))
 
-(defn get-activities
-  "extract the activities from a feed"
-  [feed source]
-  (map #(actions.activity/entry->activity % feed source)
-       (.getEntries feed)))
-
 (def index*
   (model/make-indexer 'jiksnu.model.feed-source
                       :sort-clause [{:_id 1}]))
@@ -112,25 +106,47 @@
   [source]
   (model.feed-source/set-field! source :updated (time/now)))
 
-(declare process-entries)
 (declare remove-subscription)
 (declare send-unsubscribe)
 
-(defn parse-feed
-  [feed source]
-  (if (or true (seq (:watchers source)))
-    (process-entries feed source)
-    (do (log/warnf "no watchers for %s" (:topic source))
-        (remove-subscription source))))
+(defn get-activities
+  "extract the activities from a feed"
+  [source feed]
+  (map #(actions.activity/entry->activity % feed source)
+       (.getEntries feed)))
 
 (defn process-entries
-  [feed source]
-  ;; (mark-updated source)
-  (doseq [activity (get-activities feed source)]
+  [source feed]
+  (doseq [activity (get-activities source feed)]
     (try (actions.activity/find-or-create activity)
          (catch Exception ex
            (log/error ex)
            (.printStackTrace ex)))))
+
+(defn parse-feed
+  [source feed]
+  (if (or true (seq (:watchers source)))
+    (process-entries source feed)
+    (do (log/warnf "no watchers for %s" (:topic source))
+        (remove-subscription source))))
+
+(defn get-hub-link
+  [feed]
+  (-?> feed
+       (.getLink "hub") 
+       .getHref str))
+
+(defn process-feed
+  [source feed]
+  (let [feed-title (.getTitle feed)]
+    (when-not (= feed-title (:title source))
+      (log/info "updating title")
+      (model.feed-source/set-field! source :title feed-title))
+    ;; TODO: This should be automatic for any transformation
+    (mark-updated source)
+    (if-let [hub-link (get-hub-link feed)]
+      (model.feed-source/set-field! source :hub hub-link))
+    (process-entries source feed)))
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
@@ -179,29 +195,18 @@
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
-(defn process-feed
-  [feed source]
-  (let [feed-title (.getTitle feed)]
-    (when-not (= feed-title (:title source))
-      (log/info "updating title")
-      (model.feed-source/set-field! source :title feed-title))
-    ;; TODO: This should be automatic for any transformation
-    (mark-updated source)
-    (if-let [hub-link (-?> feed (.getLink "hub")
-                           .getHref str)]
-      (model.feed-source/set-field! source :hub hub-link))
-    (process-entries feed source)))
-
 (defn update*
   [source]
-  (if-let [topic (:topic source)]
-    (if-let [feed (try
-                    (abdera/fetch-feed topic)
-                    (catch Exception ex))]
-      (process-feed feed source)
-      (throw+ "could not obtain feed"))
-    (throw+ {:message "Source does not contain a topic"
-             :source source})))
+  (if-not (:local source)
+    (if-let [topic (:topic source)]
+      (if-let [feed (try
+                      (abdera/fetch-feed topic)
+                      (catch Exception ex))]
+        (process-feed source feed)
+        (throw+ "could not obtain feed"))
+      (throw+ {:message "Source does not contain a topic"
+               :source source}))
+    (log/warn "local sources do not need updates")))
 
 (defaction update
   "Fetch updates for the source"
@@ -229,12 +234,6 @@
   (if-let [link (model/extract-atom-link url)]
     (find-or-create {:topic (:href link)})
     (throw+ (format "Could not determine topic url from resource: %s" url))))
-
-(defn discover-source
-  "determines the feed source associated with a url"
-  [url]
-  (when-let [link (model/extract-atom-link url)]
-    (find-or-create {:topic (:href link)})))
 
 (definitializer
   (l/receive-all

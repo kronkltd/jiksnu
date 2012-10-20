@@ -107,7 +107,7 @@
   (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (actions.feed-source/parse-feed feed source)
+      (actions.feed-source/parse-feed source feed)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
 
@@ -116,13 +116,6 @@
   [user
    ;; TODO: get most recent activity
    (implement nil)])
-
-(defn load-activities
-  [^User user]
-  (when user
-    (if-let [feed (model.user/fetch-user-feed user)]
-      (doseq [activity (actions.feed-source/get-activities feed)]
-        (actions.activity/create activity)))))
 
 (defn stream-handler
   [request]
