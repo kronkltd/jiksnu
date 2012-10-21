@@ -109,7 +109,7 @@
          (let [user (existance/a-user-exists)
                author (existance/a-user-exists)
                activity (existance/there-is-an-activity {:modifier "private"
-                                                       :user author})]
+                                                         :user author})]
            (viewable? activity user)) => falsey))))
  
  (fact "#'show"
@@ -118,12 +118,12 @@
        (let [activity (existance/there-is-an-activity)]
          (show activity) => activity
          (provided
-          (viewable? activity) => true)))
+           (viewable? activity) => true)))
      (fact "and the record is not viewable"
        (let [activity (existance/there-is-an-activity)]
          (show activity) => (throws RuntimeException)
          (provided
-          (viewable? activity) => false)))))
+           (viewable? activity) => false)))))
 
  (fact "#'oembed"
    (with-context [:http :html]
