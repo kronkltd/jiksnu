@@ -42,13 +42,6 @@
 
 (test-environment-fixture
 
- (fact "#'get-domain-name"
-   (fact "when given a http uri"
-     (get-domain-name "http://example.com/users/1") => "example.com")
-
-   (fact "when given an acct uri"
-     (get-domain-name "acct:bob@example.com") => "example.com"))
-
  (fact "#'get-username-from-atom-property"
    (fact "when the property has an identifier"
      (let [username (fseq :username)
