@@ -157,10 +157,11 @@
 
 (defaction discover
   [^Domain domain url]
-  (when-not (:local domain)
-    (log/debugf "discovering domain - %s" (:_id domain))
-    (discover* domain url)
-    (model.domain/fetch-by-id (:_id domain))))
+  (if-not (:local domain)
+    (do (log/debugf "discovering domain - %s" (:_id domain))
+        (discover* domain url)
+        (model.domain/fetch-by-id (:_id domain)))
+    (log/warn "local domains do not need to be discovered")))
 
 (defaction create
   [options]
@@ -189,16 +190,17 @@
   (let [domain (find-or-create domain)]
     (if (:discovered domain)
       domain
-      (let [id (:_id domain)]
-        @(if-let [p (dosync
-                     (when-not (get @pending-discovers id)
-                       (let [p (promise)]
-                         (alter pending-discovers #(assoc % id p))
-                         p)))]
-           (do
-             (discover domain)
-             p)
-           (get @pending-discovers id))))))
+      (let [id (:_id domain)
+            p (dosync
+               (when-not (get @pending-discovers id)
+                 (let [p (promise)]
+                   (alter pending-discovers #(assoc % id p))
+                   p)))
+            p (if p
+                (do (future (discover domain)) p)
+                (get @pending-discovers id))]
+        (or (deref p 5000 nil)
+            (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url
   [domain user-uri]
