@@ -34,6 +34,23 @@
             "template" (str "http://" domain "/main/xrd?uri={uri}")}
     ["Title" {} "Resource Descriptor"]]])
 
+(defn get-source-link
+  [user-meta]
+  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
+    (->> user-meta
+         (cm/query query-str)
+         model/force-coll
+         (keep #(.getAttributeValue % "href"))
+         first)))
+
+
+(defn get-feed-source-from-user-meta
+  [user-meta]
+  (if-let [source-link (get-source-link user-meta)]
+    (let [ch (model/get-source source-link)]
+      (l/wait-for-result ch 5000))
+    (throw+ "could not determine source")))
+
 (defn get-username-from-atom-property
   ;; passed a document
   [user-meta]

@@ -51,23 +51,6 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defn get-source-link
-  [user-meta]
-  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
-    (->> user-meta
-         (cm/query query-str)
-         model/force-coll
-         (keep #(.getAttributeValue % "href"))
-         first)))
-
-
-(defn get-feed-source-from-user-meta
-  [user-meta]
-  (if-let [source-link (get-source-link user-meta)]
-    (let [ch (model/get-source source-link)]
-      (l/wait-for-result ch 5000))
-    (throw+ "could not determine source")))
-
 (defn assert-unique
   [user]
   (when-let [id (:id user)]
@@ -94,7 +77,7 @@
       user
       ;; look up update source
       (if-let [user-meta (get-user-meta user)]
-        (if-let [source (get-feed-source-from-user-meta user-meta)]
+        (if-let [source (model.webfinger/get-feed-source-from-user-meta user-meta)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
         (throw+ "Could not get user meta")))))
@@ -476,8 +459,6 @@
     ;; TODO: mass assign vulnerability here
     (update user options)))
 
-;; TODO: this applies only for acct: uris
-;; TODO: use find-or-create
 (defn user-for-uri
   "Returns a user with the passed account uri,
    or creates one if it does not exist."
