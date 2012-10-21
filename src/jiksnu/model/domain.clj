@@ -48,7 +48,7 @@
       (do
         (log/debugf "Creating domain: %s" domain)
         (mc/insert collection-name domain)
-        (log/spy (fetch-by-id (:_id domain))))
+        (fetch-by-id (:_id domain)))
       (throw+ {:type :validation :errors errors}))))
 
 (defn fetch-all

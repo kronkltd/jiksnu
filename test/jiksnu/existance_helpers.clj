@@ -15,8 +15,8 @@
 (def my-password (ref nil))
 
 (defn a-domain-exists
-  []
-  (let [domain (model.domain/create (factory :domain))]
+  [& [options]]
+  (let [domain (model.domain/create (factory :domain {:discovered true}))]
     (set-this :domain domain)
     domain))
 

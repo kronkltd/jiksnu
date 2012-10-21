@@ -5,6 +5,7 @@
         [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
@@ -26,7 +27,7 @@
      (load-site-config)
      (start-application! :test)
 
-     ;; (model/drop-all!)
-     
+     (model/drop-all!)
+     (actions.domain/current-domain)
      ~@body
      (stop-application!)))

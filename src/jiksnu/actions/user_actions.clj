@@ -53,9 +53,11 @@
 
 (defn assert-unique
   [user]
-  (when-let [id (:id user)]
+  (if-let [id (:id user)]
     (if-not (model.user/fetch-by-remote-id id)
-      user)))
+      user
+      (throw+ "already exists"))
+    (throw+ "does not have an id")))
 
 (defn get-user-meta
   [user]
