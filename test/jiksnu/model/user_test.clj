@@ -117,4 +117,4 @@
  (fact "vcard-request"
    (let [user (existance/a-user-exists)]
      (vcard-request user) => packet/packet?))
-)
+ )

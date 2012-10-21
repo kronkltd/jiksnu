@@ -42,36 +42,6 @@
 
 (test-environment-fixture
 
- (fact "#'get-username-from-atom-property"
-   (fact "when the property has an identifier"
-     (let [username (fseq :username)
-           user-meta (string->document
-                      (str
-                       "<XRD><Link><Property type=\"http://apinamespace.org/atom/username\">"
-                       username
-                       "</Property></Link></XRD>"))]
-       (get-username-from-atom-property user-meta) => username)))
-
- (fact "#'get-username-from-user-meta"
-   (fact "when the usermeta has an identifier"
-     (get-username-from-user-meta .user-meta.) => .username.
-     (provided
-      (get-username-from-identifiers .user-meta.) => .username.
-      (get-username-from-atom-property .user-meta.) => nil :times 0))
-   (fact "when the usermeta does not have an identifier"
-     (fact "and the atom link has an identifier"
-       (get-username-from-user-meta .user-meta.) => .username.
-       (provided
-        (get-username-from-identifiers .user-meta.) => nil
-        (get-username-from-atom-property .user-meta.) => .username.))
-     (fact "and the atom link does not have an identifier"
-       (get-username-from-user-meta .user-meta.) => nil
-       (provided
-        (get-username-from-identifiers .user-meta.) => nil
-        (get-username-from-atom-property .user-meta.) => nil))))
-
-
-
  (fact "#'get-username"
    (fact "when given a http uri"
      (let [username (fseq :username)
@@ -84,7 +54,7 @@
            source-link (fseq :uri)]
        (get-username {:id uri}) => (contains {:username username}))
      (provided
-      (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)))
+       (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)))
 
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)
@@ -170,10 +140,7 @@
                                                :domain domain-name
                                                :username "bob"})
            (provided
-            (get-username anything) => "bob"))))))
- 
-
-
+             (get-username anything) => "bob"))))))
 
  (fact "#'find-or-create-by-remote-id"
    (let [username (fseq :username)
@@ -196,7 +163,7 @@
                source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)]
            (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
          (provided
-          (model.webfinger/fetch-host-meta um-url) => (mock-user-meta username domain-name uri source-link))))
+           (model.webfinger/fetch-host-meta um-url) => (mock-user-meta username domain-name uri source-link))))
      (future-fact "when given an acct uri uri"
        (model/drop-all!)
        (let [domain (actions.domain/find-or-create
