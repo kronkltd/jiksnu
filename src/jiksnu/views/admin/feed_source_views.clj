@@ -50,8 +50,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
-          :pages {:default (format-page-info page)}
-          :feedSources (admin-index-section items page)}})
+          :pages {:default (format-page-info page)}}})
 
 (defview #'remove-watcher :html
   [request source]
