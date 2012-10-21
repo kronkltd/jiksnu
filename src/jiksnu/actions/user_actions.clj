@@ -427,7 +427,7 @@
     (let [user (model.user/get-user username)]
       (if-not user
         (let [user (-> {:username username
-                        :domain (config :domain)
+                        :domain (:_id (actions.domain/current-domain))
                         :discovered true
                         :id (str "acct:" username "@" (config :domain))
                         :local true}

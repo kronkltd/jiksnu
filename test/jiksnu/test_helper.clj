@@ -26,7 +26,7 @@
      (load-site-config)
      (start-application! :test)
 
-     (model/drop-all!)
+     ;; (model/drop-all!)
      
      ~@body
      (stop-application!)))
