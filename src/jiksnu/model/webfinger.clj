@@ -1,13 +1,15 @@
 (ns jiksnu.model.webfinger
   (:use [ciste.config :only [config]]
         [ciste.sections.default :only [full-uri]]
-        [clojure.core.incubator :only [-?>]])
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.User))
 

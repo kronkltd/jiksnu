@@ -152,7 +152,7 @@
                                    (model.user/get-domain-name id))]
             (let [user (assoc user :domain domain-name)
                   user-meta (get-user-meta user)
-                  source (get-feed-source-from-user-meta user-meta)]
+                  source (model.webfinger/get-feed-source-from-user-meta user-meta)]
               (merge user
                      {:username (model.webfinger/get-username-from-user-meta user-meta)
                       :update-source (:_id source)}))
