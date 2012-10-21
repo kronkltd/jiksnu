@@ -24,17 +24,9 @@
                      (factory :activity {:update-source (:_id feed-source)}))]
        (create activity) => model/activity?)))
  
- ;; (fact "#'prepare-activity"
- ;;   (fact "should return an activity"
- ;;     (let [user (existance/a-user-exists)]
- ;;       (with-user user
- ;;         (let [args (factory :activity)]
- ;;           (prepare-activity args) => #(valid? % create-validators))))))
-
-
- ;; (fact "#'get-author"
- ;;   (let [user (existance/a-user-exists)
- ;;         activity (existance/there-is-an-activity {:user user})]
- ;;     (get-author activity) => user))
+ (fact "#'get-author"
+   (let [user (existance/a-user-exists)
+         activity (existance/there-is-an-activity {:user user})]
+     (get-author activity) => user))
 
  )

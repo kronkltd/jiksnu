@@ -49,7 +49,7 @@
             (second response) => map?
             (:total-records (second response)) => 1))))))
  
- (fact "#'callback-publish"
+ (future-fact "#'callback-publish"
    (fact "when there is a watched source"
      (with-context [:http :atom]
        (let [user (existance/a-user-exists)
