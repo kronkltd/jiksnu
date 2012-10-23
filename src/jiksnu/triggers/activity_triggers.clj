@@ -53,31 +53,31 @@
 
 (defn create-trigger
   [action params activity]
-  (let [author (actions.activity/get-author activity)
-        mentioned-users (map model.user/fetch-by-id (:mentioned activity))
-        subscribers (map model.subscription/get-actor
-                         (model.subscription/subscribers author))
-        to-notify (->> (concat subscribers mentioned-users)
-                       (filter :local)
-                       (into #{}))]
-    ;; Add item to author's stream
-    (model.item/push author activity)
+  (if activity
+    (let [author (actions.activity/get-author activity)
+          mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
+          subscribers (map model.subscription/get-actor
+                           (model.subscription/subscribers author))
+          to-notify (->> (concat subscribers mentioned-users)
+                         (filter :local)
+                         (into #{}))]
+      ;; Add item to author's stream
+      (model.item/push author activity)
 
-    ;; Add as a comment to parent posts
-    ;; TODO: deprecated
-    #_(if-let [parent (model.activity/fetch-by-id (:parent activity))]
-      (model.activity/add-comment parent activity))
+      ;; Add as a comment to parent posts
+      ;; TODO: deprecated
+      #_(if-let [parent (model.activity/fetch-by-id (:parent activity))]
+          (model.activity/add-comment parent activity))
 
-    ;; Add as comment to irts
-    ;; (doseq [parent parent-activities]
-    ;;   (model.activity/add-comment parent activity))
+      ;; Add as comment to irts
+      ;; (doseq [parent parent-activities]
+      ;;   (model.activity/add-comment parent activity))
 
-    ;; notify users
-    (doseq [user to-notify]
-      (notify-activity user activity))
+      ;; notify users
+      (doseq [user to-notify]
+        (notify-activity user activity))
 
-    ;; TODO: ping feed subscriptions
-
-    ))
+      ;; TODO: ping feed subscriptions
+      )))
 
 (add-trigger! #'create #'create-trigger)

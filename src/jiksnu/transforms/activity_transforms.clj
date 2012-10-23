@@ -153,9 +153,16 @@
 (defn set-mentioned
   [activity]
   (if-let [mentioned-uris (seq (:mentioned-uris activity))]
-    (let [ids (map (fn [uri]
-                     (:_id (actions.user/find-or-create-by-remote-id {:id uri})))
-                   mentioned-uris)]
-      (dissoc (assoc activity :mentioned ids) :mentioned-uris))
+    (try
+      (let [ids (map
+                 (fn [uri]
+                   (try
+                     (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
+                     (catch RuntimeException ex
+                       nil)))
+                 mentioned-uris)]
+        (dissoc (assoc activity :mentioned ids) :mentioned-uris))
+      (catch RuntimeException ex
+        activity))
     activity))
 

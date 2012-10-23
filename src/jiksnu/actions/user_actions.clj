@@ -64,7 +64,10 @@
   (let [id (:id user)
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [um-url (actions.domain/get-user-meta-url domain id)]
-      (model.webfinger/fetch-host-meta um-url))))
+      (try
+        (model.webfinger/fetch-host-meta um-url)
+        (catch RuntimeException ex
+          (log/warnf "could not get user meta: %s" user))))))
 
 (defn set-update-source
   [user]
@@ -152,12 +155,13 @@
             (assoc user :username username))
           (if-let [domain-name (or (:domain user)
                                    (model.user/get-domain-name id))]
-            (let [user (assoc user :domain domain-name)
-                  user-meta (get-user-meta user)
-                  source (model.webfinger/get-feed-source-from-user-meta user-meta)]
-              (merge user
-                     {:username (model.webfinger/get-username-from-user-meta user-meta)
-                      :update-source (:_id source)}))
+            (let [user (assoc user :domain domain-name)]
+              (if-let [user-meta (get-user-meta user)]
+                (let [source (model.webfinger/get-feed-source-from-user-meta user-meta)]
+                  (merge user
+                         {:username (model.webfinger/get-username-from-user-meta user-meta)
+                          :update-source (:_id source)}))
+                (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
 
 (defn get-user-meta-uri

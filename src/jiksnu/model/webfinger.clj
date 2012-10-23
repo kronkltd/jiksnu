@@ -16,7 +16,10 @@
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
-  (cm/fetch-document url))
+  (try
+    (cm/fetch-document url)
+    (catch RuntimeException ex
+      (throw+ "Could not fetch host meta"))))
 
 (defn fetch-user-meta
   "returns a user meta document"
