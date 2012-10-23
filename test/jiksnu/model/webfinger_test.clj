@@ -1,6 +1,6 @@
 (ns jiksnu.model.webfinger-test
   (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory]]
+        [clj-factory.core :only [factory fseq]]
         midje.sweet
         jiksnu.test-helper
         jiksnu.model
@@ -34,7 +34,7 @@
  (fact "#'get-username-from-atom-property"
    (fact "when the property has an identifier"
      (let [username (fseq :username)
-           user-meta (string->document
+           user-meta (cm/string->document
                       (str
                        "<XRD><Link><Property type=\"http://apinamespace.org/atom/username\">"
                        username

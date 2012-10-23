@@ -66,7 +66,6 @@
                                   :per-page (:page-size options 20)))]
        (map model/map->Conversation records))))
 
-
 (defn find-by-url
-  [conversation]
-  (fetch-all {:url (:url conversation)}))
+  [url]
+  (fetch-all {:url url}))
