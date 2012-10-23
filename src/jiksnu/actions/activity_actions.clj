@@ -328,7 +328,7 @@ serialization"
 
 (defaction fetch-by-conversation
   [conversation & [options]]
-  (index {:conversation (:_id conversation)}))
+  (index {:conversation (:_id conversation)} options))
 
 (definitializer
   (require-namespaces

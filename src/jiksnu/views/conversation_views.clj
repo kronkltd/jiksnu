@@ -47,10 +47,10 @@
        [:div {:data-model "conversation"}
        (show-section item)]
             (with-page "activities"
-              (list #_(dump-data)
-                    (pagination-links {})
-                    [:div {:data-bind "with: items"}
-                     (index-section [(Activity.)])]))))]})
+              (list
+               (pagination-links {})
+               [:div {:data-bind "with: items"}
+                (index-section [(Activity.)])]))))]})
 
 (defview #'show :model
   [request item]
@@ -59,7 +59,8 @@
 (defview #'show :viewmodel
   [request item]
   {:body {:targetConversation (:_id item)
-          :pages {:activities (let [page (actions.activity/fetch-by-conversation item)]
+          :pages {:activities (let [page (actions.activity/fetch-by-conversation item
+                                                                                 {:sort-clause {:updated 1}})]
                                 (format-page-info page))}
           :title (or (:title item)
                      "Conversation")}})
