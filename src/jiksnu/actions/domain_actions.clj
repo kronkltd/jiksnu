@@ -197,7 +197,7 @@
                    (alter pending-discovers #(assoc % id p))
                    p)))
             p (if p
-                (do (future (discover domain)) p)
+                (do (discover domain) p)
                 (get @pending-discovers id))]
         (or (deref p 5000 nil)
             (throw+ "Could not discover domain"))))))
