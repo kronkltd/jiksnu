@@ -297,33 +297,32 @@
         ;; TODO: check for custom domain field first?
         domain-name (model.user/get-domain-name id)
         domain (actions.domain/get-discovered {:_id domain-name})
-        username (or (abdera/get-extension person ns/poco "preferredUsername")
+        username (or (abdera/get-username person)
                      (get-username {:id id})
                      ;; TODO: get username from hcard
                      )]
     (if (and username domain)
       (let [email (.getEmail person)
             name (abdera/get-name person)
-            note (abdera/get-extension person ns/poco "note")
+            note (abdera/get-note person)
             uri (str (.getUri person))
             ;; homepage 
             local-id (-> person
                          (abdera/get-extension-elements ns/statusnet "profile_info")
-                         (->> (map #(.getAttributeValue % "local_id")))
+                         (->> (map #(abdera/attr-val % "local_id")))
                          first)
             links (abdera/get-links person)
             user (merge {:domain domain-name
                          :id id
                          :username username
                          :links links}
-                        (when uri {:uri uri})
-                        (when note {:bio note})
-                        (when email {:email email})
+                        (when uri      {:uri uri})
+                        (when note     {:bio note})
+                        (when email    {:email email})
                         (when local-id {:local-id local-id})
-                        (when name {:display-name name}))]
+                        (when name     {:display-name name}))]
         (model/map->User user))
       (throw+ "could not determine user"))))
-
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
@@ -366,6 +365,7 @@
         [_ n e] (re-matches
                  #"data:application/magic-public-key,RSA.(.+)\.(.+)"
                  key-string)]
+    ;; TODO: this should be calling a key action
     (model.key/set-armored-key (:_id user) n e)))
 
 (defaction discover-user-rdf
@@ -376,16 +376,6 @@
         model (rdf/document-to-model uri :xml)
         query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
-
-(defaction discover-user-xmpp
-  [user]
-  (log/info "discover xmpp")
-  (request-vcard! user))
-
-(defaction discover-user-http
-  [user]
-  (log/info "discovering http")
-  (update-usermeta user))
 
 (defaction discover
   "perform a discovery on the user"
@@ -398,11 +388,15 @@
          (let [domain (actions.domain/get-discovered (get-domain user))]
            (if (:discovered domain)
              (do
-               (when (:xmpp domain) (discover-user-xmpp user))
+
+               (when (:xmpp domain)
+                 (request-vcard! user))
+               
                ;; There should be a similar check here so we're not
                ;; hitting xmpp-only services.
                ;; This is really OStatus specific
-               (discover-user-http user)
+               (update-usermeta user)
+
                ;; TODO: there sould be a different discovered flag for
                ;; each aspect of a domain, and this flag shouldn't be set
                ;; till they've all responded
@@ -414,6 +408,7 @@
                (recur (inc try-count)))))))))
   user)
 
+;; TODO: xmpp case of update
 (defaction fetch-remote
   [user]
   (let [domain (get-domain user)]
