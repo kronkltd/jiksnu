@@ -10,6 +10,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.subscription-actions :as actions.admin.subscription]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription])
   (:import org.apache.abdera2.model.Entry))
@@ -25,10 +26,10 @@
              (binding [*dynamic* false]
                (fact "when there are subscriptions"
                  (model/drop-all!)
-                 (let [subscriptions
+                 (let [user (existance/a-user-exists)
+                       subscriptions
                        (doall (map (fn [n]
-                                     (model.subscription/create
-                                      (factory :subscription)))
+                                     (existance/user-has-a-subscription))
                                    (range 15)))
                        request {:action action}
                        response (filter-action action request)]
@@ -47,7 +48,8 @@
          (fact "when the format is :html"
            (with-format :html
              (fact "when there is a subscription"
-               (let [subscription (model.subscription/create (factory :subscription))
+               (let [user (existance/a-user-exists)
+                     subscription (existance/user-has-a-subscription)
                      request {:action action
                               :params {:id (str (:_id subscription))}}
                      response (filter-action action request)]
