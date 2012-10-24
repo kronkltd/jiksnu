@@ -97,7 +97,7 @@
    (fact "when the user is not found"
      (drop!)
      (let [username (fseq :id)
-           domain (actions.domain/find-or-create (factory :domain))]
+           domain (existance/a-domain-exists)]
        (get-user username (:_id domain)) => nil)))
 
  (fact "user-meta-uri"
