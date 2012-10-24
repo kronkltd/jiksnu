@@ -85,7 +85,7 @@
      (fact "and the user does not own the activity"
        (fact "should not delete that activity"
          (let [user (existance/a-user-exists)
-               author (existance/another-user-exists)
+               author (existance/a-remote-user-exists)
                activity (existance/there-is-an-activity {:user author})]
            (with-user user
              (delete activity) => (throws RuntimeException)

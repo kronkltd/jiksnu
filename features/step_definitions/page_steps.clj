@@ -54,7 +54,7 @@
        (println " ")
        (println " ")
        (println " ")
-       (another-user-exists))
+       (a-remote-guser-exists))
 
 (Given #"^I am at the \"(.+)\" page$" [page]
        (println " ")
