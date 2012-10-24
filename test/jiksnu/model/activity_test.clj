@@ -16,6 +16,7 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
+ 
 (test-environment-fixture
 
  (fact "#'create"
