@@ -29,11 +29,16 @@
      (start-application! :test)
 
      (model/drop-all!)
-     (actions.domain/current-domain)
 
      (dosync
       (ref-set r/this {})
       (ref-set r/that {}))
 
-     ~@body
+     (actions.domain/current-domain)
+
+     (try
+       ~@body
+       (catch RuntimeException ex#
+         (log/error "error")
+         ex#))
      (stop-application!)))
