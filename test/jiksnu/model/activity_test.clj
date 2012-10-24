@@ -29,7 +29,5 @@
  (fact "#'get-author"
    (let [user (existance/a-user-exists)
          activity (existance/there-is-an-activity {:user user})]
-     (get-author activity) => user)
-   (provided
-     (actions.domain/get-discovered anything) => .domain.))
+     (get-author activity) => user))
  )
