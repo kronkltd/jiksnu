@@ -7,6 +7,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
+            [jiksnu.referrant :as r]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
 
@@ -29,5 +30,10 @@
 
      (model/drop-all!)
      (actions.domain/current-domain)
+
+     (dosync
+      (ref-set r/this {})
+      (ref-set r/that {}))
+
      ~@body
      (stop-application!)))
