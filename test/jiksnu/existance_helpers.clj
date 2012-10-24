@@ -147,6 +147,8 @@
         record)
       (throw+ (format "could not find %s/create" ns-sym)))))
 
+
+
 (defn a-subscription-exists
   []
   (->> (factory :subscription)
@@ -157,12 +159,14 @@
 (defn this-user-has-a-subscription
   []
   (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
-    (set-this :subscription subscription)))
+    (set-this :subscription subscription)
+    subscription))
 
 (defn user-has-a-subscription
   []
   (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
-    (set-this :subscription subscription)))
+    (set-this :subscription subscription)
+    subscription))
 
 (defn user-posts-activity
   []
