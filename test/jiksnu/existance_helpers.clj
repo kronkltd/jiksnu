@@ -69,6 +69,7 @@
         user (actions.user/create (factory :user
                                            {:domain (:_id domain)
                                             :update-source (:_id source)}))]
+    (model.user/set-field! user :discovered true)
     (set-that :user user)
     user))
 

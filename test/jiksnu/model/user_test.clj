@@ -107,12 +107,11 @@
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
-     (let [domain (actions.domain/find-or-create
-                   (factory :domain
-                            {:links [{:rel "lrdd"
-                                      :template "http://example.com/main/xrd?uri={uri}"}]}))
-           user (existance/a-remote-user-exists {:domain domain})]
-       (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
+     (let [domain (existance/a-remote-domain-exists)]
+       (model.domain/set-field domain :links [{:rel "lrdd"
+                                               :template "http://example.com/main/xrd?uri={uri}"}])
+       (let [user (existance/a-remote-user-exists {:domain domain})]
+         (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
  (fact "vcard-request"
    (let [user (existance/a-user-exists)]
