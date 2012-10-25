@@ -23,6 +23,7 @@
                  [clojurewerkz/elastisch "1.0.0-beta2"
                   :exclusions [com.google.guava/guava]]
                  [com.stuartsierra/lazytest "1.2.3"]
+                 [clj-statsd "0.3.2"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
                  [ clojure-complete "0.2.1"]
                  [clojurewerkz/support "0.7.0-alpha3"
