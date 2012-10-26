@@ -6,6 +6,7 @@
             ;; ciste.formats.default
             [ciste.middleware :as middleware]
             [ciste.predicates :as pred]
+            [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
@@ -84,6 +85,13 @@
                  stream/stream-handler)
   (route/not-found (not-found-msg)))
 
+
+(defn send-stat
+  [handler]
+  (fn [request]
+    (s/increment "requests handled")
+    (handler request)))
+
 (def app
   (http/wrap-ring-handler
    (-> all-routes
@@ -95,4 +103,6 @@
        #_middleware/wrap-log-request
        jm/wrap-dynamic-mode
        (handler/site {:session {:store (ms/session-store)}})
-       jm/wrap-stacktrace)))
+       jm/wrap-stacktrace
+       send-stat
+       )))

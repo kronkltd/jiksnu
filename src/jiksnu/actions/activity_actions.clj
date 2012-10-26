@@ -8,6 +8,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
+            [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.string :as string]
             [clojure.java.io :as io]
@@ -81,6 +82,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (defaction add-link*
   [item link]
+  (s/increment "link added")
   (mc/update "activities" {:_id (:_id item)}
              {:$addToSet {:links link}})
   item)
@@ -140,6 +142,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   "create an activity"
   [{id :id :as params}]
   (let [activity (prepare-create params)]
+    (s/increment "activity created")
     (model.activity/create activity)))
 
 (defaction delete
@@ -286,7 +289,9 @@ serialization"
   "Show an activity"
   [activity]
   (if (viewable? activity)
-    activity
+    (do
+      (s/increment "activity shown")
+      activity)
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))
 

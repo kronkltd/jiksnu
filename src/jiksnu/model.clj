@@ -7,6 +7,7 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -305,5 +306,8 @@
 
 (definitializer
   (alter-var-root #'*base-url* (constantly (format "http://%s" (config :domain))) )
+
+  (s/setup "localhost" 8125)
+  
   (set-database!))
 
