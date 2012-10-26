@@ -1,7 +1,8 @@
 (ns jiksnu.abdera
   (:use [ciste.initializer :only [definitializer]]
         [clojure.core.incubator :only [-?>]])
-  (:require [clj-tigase.element :as element]
+  (:require [clj-statsd :as s]
+            [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns])
   (:import java.io.ByteArrayInputStream
@@ -38,6 +39,7 @@
 
 (defn fetch-resource
   [uri]
+  (s/increment "feed_fetched")
   (.get (AbderaClient.) uri))
 
 (defn fetch-document
