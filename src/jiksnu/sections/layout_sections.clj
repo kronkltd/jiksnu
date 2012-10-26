@@ -238,6 +238,8 @@
      "/assets/js/jquery-1.8.0.min.js"
      "/assets/js/knockout-2.1.0.min.js"
      "/assets/js/bootstrap-2.4.0.min.js"
+     "/assets/js/lightbox.js"
+     "/assets/js/jquery.smooth-scroll.js"
      ;; "/assets/js/knockout.mapping-2.2.3.js"
      "/assets/js/backbone-0.9.2.min.js"
      "/assets/js/knockback-0.15.4.min.js"
@@ -290,6 +292,7 @@
           (p/include-css
            (format "/assets/themes/%s/bootstrap.min.css" theme)
            "/assets/styles/bootstrap-responsive.min.css"
+           "/assets/styles/lightbox.css"
            (format "/assets/themes/classic/standard.css")))
         (links-section request response)))
 
