@@ -11,6 +11,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
+            [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -136,7 +137,9 @@
     ;; This has the side effect of ensuring that the domain is
     ;; created. This should probably be explicitly done elsewhere.
     (if-let [domain (get-domain user)]
-      (model.user/create user)
+      (do
+        (s/increment "user created")
+        (model.user/create user))
       (throw+ "Could not determine domain for user"))))
 
 (defaction find-or-create

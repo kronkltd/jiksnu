@@ -4,7 +4,8 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
@@ -31,6 +32,7 @@
 (defaction create
   [params]
   (let [conversation (prepare-create params)]
+    (s/increment "conversation_created")
     (model.conversation/create conversation)))
 
 (defaction delete

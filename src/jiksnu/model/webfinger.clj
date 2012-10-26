@@ -4,6 +4,7 @@
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
@@ -17,6 +18,7 @@
   [url]
   (log/infof "fetching host meta: %s" url)
   (try
+    (s/increment "xrd_fetched")
     (cm/fetch-document url)
     (catch RuntimeException ex
       (throw+ "Could not fetch host meta"))))
