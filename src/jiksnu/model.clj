@@ -136,6 +136,7 @@
 (defrecord Item                    [])
 (defrecord Key                     [])
 (defrecord Like                    [])
+(defrecord Resource                [])
 (defrecord Subscription            [])
 (defrecord User                    [])
 
@@ -224,6 +225,10 @@
       (rdf/model->format format)
       with-out-str))
 
+(defn add-hook!
+  [r f]
+  (dosync
+   (alter r conj f)))
 
 (defn drop-all!
   "Drop all collections"
@@ -241,6 +246,9 @@
          (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
          (into {})
          (merge {"href" href}))))
+
+
+
 
 (defn ^ObjectId make-id
   "Create an object id from the provided string"

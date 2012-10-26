@@ -1,14 +1,13 @@
 (ns jiksnu.model.activity
   (:use [ciste.config :only [config]]
         [clojure.core.incubator :only [-?>>]]
-        [jiksnu.session :only [current-user current-user-id is-admin?]]
-        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session]
             [monger.collection :as mc]
             [monger.query :as mq])
   (:import jiksnu.model.Activity))
@@ -90,7 +89,7 @@
 (defn privacy-filter
   [user]
   (if user
-    (if (not (is-admin? user))
+    (if (not (session/is-admin? user))
       {:$or [{:public true}
              {:author (:_id user)}]})
     {:public true}))
@@ -119,7 +118,7 @@
   [picture]
   (let [filename (:filename picture)
         tempfile (:tempfile picture)
-        user-id (str (current-user-id))
+        user-id (str (session/current-user-id))
         dest-file (io/file (str user-id "/" filename))]
     (when (and (not= filename "") tempfile)
       (.mkdirs (io/file user-id))

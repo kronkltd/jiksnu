@@ -15,7 +15,6 @@
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
-            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
@@ -35,11 +34,8 @@
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
-           javax.xml.namespace.QName
            jiksnu.model.User
            org.apache.abdera2.model.Person
-           org.apache.commons.codec.binary.Base64
-           tigase.xml.Element
            tigase.xmpp.JID))
 
 (defonce delete-hooks (ref []))
@@ -134,8 +130,7 @@
 (defaction create
   [options]
   (let [user (prepare-create options)]
-    ;; This has the side effect of ensuring that the domain is
-    ;; created. This should probably be explicitly done elsewhere.
+    ;; TODO: This should be part of the set-domain transform
     (if-let [domain (get-domain user)]
       (do
         (s/increment "user created")
@@ -197,6 +192,7 @@
   (let [[username domain] (model.user/split-uri uri)]
     (find-or-create username domain)))
 
+;; TODO: This is the job of the filter
 (defn find-or-create-by-jid
   [^JID jid]
   (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
@@ -486,10 +482,10 @@
     "jiksnu.triggers.user-triggers"
     "jiksnu.views.user-views"])
 
- ;; cascade delete on domain deletion
-  (dosync
-   (alter actions.domain/delete-hooks
-          conj (fn [domain]
-                 (doseq [user (:items (model.user/fetch-by-domain domain))]
-                   (delete user))
-                 domain))))
+  (model/add-hook!
+   actions.domain/delete-hooks
+   (fn [domain]
+     (doseq [user (:items (model.user/fetch-by-domain domain))]
+       (delete user))
+     domain))
+  )

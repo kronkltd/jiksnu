@@ -8,13 +8,11 @@
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session])
-  (:import tigase.xml.Element))
+            [jiksnu.session :as session]))
 
 ;; create
 
