@@ -5,6 +5,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.session :as session]))
 
 ;; create
@@ -40,6 +41,5 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.user/fetch-by-id (model/make-id id))]
+    (if-let [item (model.resource/fetch-by-id (model/make-id id))]
      (action item))))
-

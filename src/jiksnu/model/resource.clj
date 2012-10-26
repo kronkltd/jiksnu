@@ -35,6 +35,10 @@
                                   :per-page (:page-size options 20)))]
        (map model/map->Resource records))))
 
+(defn fetch-by-url
+  [url]
+  (first (:items (fetch-all {:url url}))))
+
 (defn fetch-by-id
   [id]
   (let [id (if (string? id) (model/make-id id) id)]

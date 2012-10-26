@@ -49,6 +49,7 @@
       "like"
       "message"
       "pubsub"
+      "resource"
       "salmon"
       "search"
       "setting"

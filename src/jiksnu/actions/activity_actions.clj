@@ -6,8 +6,7 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]])
-  (:require [aleph.http :as http]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
             [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.string :as string]

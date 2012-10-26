@@ -14,6 +14,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]))
 
 (defonce delete-hooks (ref []))
@@ -36,8 +37,8 @@
 (defaction create
   [params]
   (let [item (prepare-create params)]
-    (s/increment "user created")
-    (model.resource/create user)))
+    (s/increment "resources created")
+    (model.resource/create item)))
 
 (defaction find-or-create
   [params]
@@ -60,6 +61,14 @@
   [& args]
   (apply index* args))
 
+(defaction discover
+  [item]
+  item)
+
+(defaction update
+  [item]
+  item)
+
 (defaction show
   [item]
   item)
@@ -67,7 +76,6 @@
 (definitializer
   (require-namespaces
    ["jiksnu.filters.resource-filters"
-    "jiksnu.helpers.resource-helpers"
-    "jiksnu.sections.resource-sections"
-    "jiksnu.triggers.resource-triggers"
+    ;; "jiksnu.sections.resource-sections"
+    ;; "jiksnu.triggers.resource-triggers"
     "jiksnu.views.resource-views"]))
