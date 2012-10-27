@@ -75,7 +75,7 @@
         (log/debugf "Creating activity: %s" (pr-str params))
         (mc/insert collection-name params)
         (let [item (fetch-by-id (:_id params))]
-          (trace/trace :activity:created item)
+          (trace/trace :activities:created item)
           item))
       (throw+ {:type :validation :errors errors}))))
 
@@ -102,6 +102,7 @@
 
 (defn fetch-by-remote-id
   [id]
+  (trace/trace :activities:fetched id)
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (model/map->Activity activity)))
 
@@ -110,10 +111,12 @@
   (mc/remove collection-name))
 
 (defn delete
-  [activity]
-  (mc/remove-by-id collection-name (:_id activity))
-  activity)
+  [item]
+  (trace/trace :activities:deleted item)
+  (mc/remove-by-id collection-name (:_id item))
+  item)
 
+;; deprecated
 (defn add-comment
   [parent comment]
   (mc/update collection-name
@@ -133,4 +136,5 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
+     (trace/trace :activities:counted 1)
      (mc/count collection-name params)))

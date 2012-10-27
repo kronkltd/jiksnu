@@ -1,12 +1,13 @@
 (ns jiksnu.model.feed-source
-  (:use [jiksnu.model :only [->FeedSource]]
-        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
+  (:use [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
-  (:require [clj-time.core :as time]
+  (:require [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq])
@@ -50,13 +51,6 @@
              (select-keys source [:_id])
              params)
   (fetch-by-id (:_id source)))
-
-;; TODO: generalize this and move it to model
-(defn set-field!
-  "atomically set a field"
-  [source key value]
-  (update source
-    {:$set {key value}}))
 
 (defn push-value!
   [source key value]
