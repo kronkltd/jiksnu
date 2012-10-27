@@ -1,6 +1,7 @@
 (ns jiksnu.model-test
-  (:use [jiksnu.model :only [parse-http-link path-segments rel-filter]]
-        [midje.sweet :only [fact future-fact => every-checker contains]]))
+  (:use [jiksnu.model :only [make-id parse-http-link path-segments rel-filter]]
+        [midje.sweet :only [fact future-fact => every-checker contains]])
+  (:import org.bson.types.ObjectId))
 
 (fact "#'parse-http-link"
   (let [link-string "<http://jonkulp.dyndns-home.com/micro/main/xrd?uri=acct:jonkulp@jonkulp.dyndns-home.com>; rel=\"lrdd\"; type=\"application/xrd+xml\""]
@@ -11,11 +12,14 @@
      (contains {"rel" "lrdd"})
      (contains {"type" "application/xrd+xml"}))))
 
- (fact "#'path-segments"
-   (path-segments "http://example.com/status/users/1") =>
-   '("http://example.com/"
-     "http://example.com/status/"
-     "http://example.com/status/users/"))
+(fact "make-id"
+  (make-id) => (partial instance? ObjectId))
+
+(fact "#'path-segments"
+  (path-segments "http://example.com/status/users/1") =>
+  '("http://example.com/"
+    "http://example.com/status/"
+    "http://example.com/status/users/"))
 
 (fact "#'rel-filter"
   (let [links [{:rel "alternate"}
