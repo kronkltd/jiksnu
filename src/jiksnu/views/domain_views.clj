@@ -101,8 +101,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
-          :pages {:default (format-page-info page)}
-          :domains (doall (index-section items page))}})
+          :pages {:default (format-page-info page)}}})
 
 ;; ping
 
@@ -156,5 +155,4 @@
   [request domain]
   {:body
    {:title (:_id domain)
-    :targetDomain (:_id domain)
-    :domains (index-section [domain])}})
+    :targetDomain (:_id domain)}})
