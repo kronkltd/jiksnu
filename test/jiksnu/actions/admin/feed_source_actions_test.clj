@@ -3,7 +3,8 @@
         [jiksnu.actions.admin.feed-source-actions :only [index]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact =>]])
-  (:require [jiksnu.model.feed-source :as model.feed-source]))
+  (:require [jiksnu.existance-helpers :as existance]
+            [jiksnu.model.feed-source :as model.feed-source]))
 
 (test-environment-fixture
 
@@ -14,8 +15,9 @@
 
    (fact "when there are many sources"
      (fact "should return a limited ammount"
+
        (dotimes [i 25]
-         (model.feed-source/create (factory :feed-source)))
+         (existance/a-feed-source-exists))
 
        ;; TODO: hardcoded configurable value
        (count (:items (index))) => 20)))
