@@ -17,7 +17,7 @@
   (validation-set
    (presence-of   :_id)
    (presence-of   :url)
-   (acceptance-of :local         :accept (partial instance? Boolean))
+   #_(acceptance-of :local         :accept (partial instance? Boolean))
 
    ;; TODO: These should be joda times
    (presence-of   :created)
