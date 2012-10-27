@@ -97,3 +97,9 @@
         (subscription-not-found-error))
       
       (throw (RuntimeException. "Unknown mode type")))))
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.pubsub-filters"
+    ;; "jiksnu.triggers.pubsub-triggers"
+    "jiksnu.views.pubsub-views"]))

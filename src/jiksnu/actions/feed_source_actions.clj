@@ -242,7 +242,6 @@
      (l/enqueue ch (find-or-create {:topic url}))))
   
   (require-namespaces
-   [
-    "jiksnu.filters.feed-source-filters"
+   ["jiksnu.filters.feed-source-filters"
     "jiksnu.triggers.feed-source-triggers"
     "jiksnu.views.feed-source-views"]))
