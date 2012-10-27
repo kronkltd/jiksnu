@@ -66,37 +66,28 @@
   (e/task
    (verify-subscribe-sync subscription)))
 
+(defaction subscribe
+  [params]
+  ;; set up feed subscriber
+  (let [source (actions.feed-source/find-or-create params)]
+    (if (= verify "async")
+      (verify-subscription-async source)
+      (verify-subscribe-sync source))))
+
+(defaction unsubscribe
+  [params]
+  ;; remove feed subscriber
+  (if-let [subscription (model.feed-source/find-record {:topic topic :callback callback})]
+    (actions.feed-source/remove-subscription subscription)
+    (subscription-not-found-error)))
+
 ;; TODO: extract hub params in filter
 (defaction hub-dispatch
   [params]
-  (let [mode (or (get params :hub.mode) (get params "hub.mode"))
-        callback (or (get params :hub.callback) (get params "hub.callback"))
-        challenge (or (get params :hub.challenge) (get params "hub.challenge"))
-        lease-seconds (or (get params :hub.lease_seconds) (get params "hub.lease_seconds"))
-        verify (or (get params :hub.verify) (get params "hub.verify"))
-        verify-token (or (get params :hub.verify_token) (get params "hub.verify_token"))
-        secret (or (get params :hub.secret) (get params "hub.secret"))
-        topic (or (get params :hub.topic) (get params "hub.topic"))]
-    (condp = mode
-      "subscribe"
-      ;; set up feed subscriber
-      (let [source (actions.feed-source/find-or-create
-                    {:topic topic :callback callback}
-                    {:mode mode :challenge challenge
-                     :verify-token verify-token
-                     :lease-seconds lease-seconds})]
-        (if (= verify "async")
-          (verify-subscription-async source)
-          (verify-subscribe-sync source)))
-
-      
-      "unsubscribe"
-      ;; remove feed subscriber
-      (if-let [subscription (model.feed-source/find-record {:topic topic :callback callback})]
-        (actions.feed-source/remove-subscription subscription)
-        (subscription-not-found-error))
-      
-      (throw (RuntimeException. "Unknown mode type")))))
+  (condp = (:mode params)
+    "subscribe"   (subscribe params)
+    "unsubscribe" (unsubscribe params)
+    (throw+ "Unknown mode type")))
 
 (definitializer
   (require-namespaces

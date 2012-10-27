@@ -1,18 +1,18 @@
 (ns jiksnu.filters.pubsub-filters
   (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.pubsub-actions)
-  (:require [jiksnu.model.user :as model.user]))
+        [jiksnu.actions.pubsub-actions :only [hub-dispatch]])
+  (:require [clojure.tools.logging :as log]))
 
-;; (deffilter #'admin-index :http
-;;   [action request]
-;;   (action))
-
-;; TODO: extract hub params
 (deffilter #'hub-dispatch :http
   [action request]
-  (action (:params request)))
-
-;; (deffilter #'subscribe :http
-;;   [action request]
-;;   (-> request :params :id
-;;       model.user/fetch-by-id action))
+  (let [params (:params request)
+        event
+        {:mode          (get params "hub.mode")
+         :callback      (get params "hub.callback")
+         :challenge     (get params "hub.challenge")
+         :lease-seconds (get params "hub.lease_seconds")
+         :verify        (get params "hub.verify")
+         :verify-token  (get params "hub.verify_token")
+         :secret        (get params "hub.secret")
+         :topic         (get params "hub.topic")}]
+    (action event)))
