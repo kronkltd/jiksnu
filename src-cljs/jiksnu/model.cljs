@@ -73,11 +73,11 @@
    (js-obj
     "type" "Page"
     "defaults" (fn [] (js-obj
-                 "page"         1
-                 "pageSize"     0
-                 "items"        (array)
-                 "recordCount"  0
-                 "totalRecords" 0))
+                       "page"         1
+                       "pageSize"     0
+                       "items"        (array)
+                       "recordCount"  0
+                       "totalRecords" 0))
     "addItem" (fn [id]
                 (this-as this
                   (let [a (.get this "items")]
@@ -128,9 +128,9 @@
     "addNotification"
     (fn [message]
       (this-as this
-       (let [notification (model/Notification.)]
-         (.set notification "message" message)
-         (.push this notification)))))))
+        (let [notification (model/Notification.)]
+          (.set notification "message" message)
+          (.push this notification)))))))
 
 
 (def Domain
@@ -171,8 +171,7 @@
                                "links"        (array)
                                "displayName"  nil)
             "idAttribute" "_id"
-            "initialize" initializer
-)))
+            "initialize" initializer)))
 
 (def Users
   (.extend backbone/Collection
@@ -189,8 +188,8 @@
     "idAttribute" "_id"
     "url" (fn [id]
             (this-as
-             this
-             (format "/notice/%s.model" (.-id this))))
+              this
+              (format "/notice/%s.model" (.-id this))))
     "type" "Activity"
     "defaults" (js-obj
                 "_id"           ""
@@ -205,6 +204,8 @@
                 "conversation"  nil
                 "title"         nil
                 "mentioned"     (array)
+                "tags"          (array)
+                "geo"           nil
                 "object"        (js-obj
                                  "object-type" nil)
                 "like-count"    0
@@ -340,27 +341,27 @@
 
 (def ^{:doc "The main view model for the site"} AppViewModel
   (.extend backbone/Model
-   (js-obj
-    "defaults"
-    (js-obj
-     "activities"               activities
-     "authenticationMechanisms" authentication-mechanisms
-     "conversations"            conversations
-     "domains"                  domains
-     "currentUser"              nil
-     "feedSources"              feed-sources
-     "followers"                (array)
-     "following"                (array)
-     "groups"                   groups
-     "pages"                    pages
-     "postForm"                 (PostForm.)
-     "notifications"            notifications
-     "statistics"               nil
-     "subscriptions"            subscriptions
-     "targetActivity"           nil
-     "targetConversation"       nil
-     "targetDomain"             nil
-     "targetFeedSource"         nil
-     "targetUser"               nil
-     "title"                    nil
-     "users"                    users))))
+           (js-obj
+            "defaults"
+            (js-obj
+             "activities"               activities
+             "authenticationMechanisms" authentication-mechanisms
+             "conversations"            conversations
+             "domains"                  domains
+             "currentUser"              nil
+             "feedSources"              feed-sources
+             "followers"                (array)
+             "following"                (array)
+             "groups"                   groups
+             "pages"                    pages
+             "postForm"                 (PostForm.)
+             "notifications"            notifications
+             "statistics"               nil
+             "subscriptions"            subscriptions
+             "targetActivity"           nil
+             "targetConversation"       nil
+             "targetDomain"             nil
+             "targetFeedSource"         nil
+             "targetUser"               nil
+             "title"                    nil
+             "users"                    users))))

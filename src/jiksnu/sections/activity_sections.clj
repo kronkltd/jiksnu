@@ -107,7 +107,7 @@
      (let [def (format-links f)]
        (merge def
               {:href h})))
-   [[:json (sections.user/user-timeline-link user "json")] 
+   [[:json (sections.user/user-timeline-link user "json")]
     [:atom (sections.user/user-timeline-link user "atom")]
     [:as   (sections.user/user-timeline-link user "as")]
     [:n3   (sections.user/user-timeline-link user "n3")]
@@ -226,25 +226,32 @@
 
 (defn maps-section
   [activity]
-  
-  (if-let [geo (:geo activity)]
-    [:div.map-section
-     [:img.map
-      {:alt ""
-       :src
-       ;; TODO: use urly to construct this
-       ;; TODO: Move this to cljs
-       (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-            (:latitude geo)
-            ","
-            (:longitude geo))}]
-     #_[:p "Latitude: " (:latitude geo)]
-     #_[:p "Longitude: " (:longitude geo)]]))
+
+  (if-let [geo (if *dynamic*
+                 {}
+                 (:geo activity))]
+    [:div.map-section (if *dynamic*
+                        {:data-bind "with: geo"})
+     #_[:img.map
+        {:alt ""
+         :src
+         ;; TODO: use urly to construct this
+         ;; TODO: Move this to cljs
+         (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
+              (:latitude geo)
+              ","
+              (:longitude geo))}]
+     [:p "Latitude: " [:span (if *dynamic*
+                               {:data-bind "text: latitude"}
+                               (:latitude geo))]]
+     [:p "Longitude: " [:span (if *dynamic*
+                                {:data-bind "text: longitude"}
+                                (:longitude geo))]]]))
 
 (defn likes-section
   [activity]
   (when-let [likes (if *dynamic*
-                     []
+                     [{}]
                      (model.like/get-likes activity))]
     [:section.likes
      (when *dynamic*
@@ -253,18 +260,28 @@
      [:ul
       (map
        (fn [like]
-         [:li (link-to (model.like/get-actor like))])
+         [:li
+          "Person"
+          #_(link-to (model.like/get-actor like))])
        likes)]]))
 
 (defn tags-section
   [activity]
-  (when-let [tags (:tags activity)]
-    [:div.tags
+  (when-let [tags (if *dynamic*
+                    [{}]
+                    (:tags activity))]
+    [:div.tags (when *dynamic* {:data-bind "visible: tags.length > 0"})
      [:span "Tags: "]
-     [:ul.tags
+     [:ul.tags (when *dynamic*
+                 {:data-bind "foreach: tags"})
       (map
        (fn [tag]
-         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+         [:li [:a (merge {:rel "tag"}
+                         (if *dynamic*
+                           {:data-bind "attr: {href: '/tags/' + $data}, text: $data"}
+                           {:href (str "/tags/" tag) }))
+               (when-not *dynamic*
+                 tag)]])
        tags)]]))
 
 (defn posted-link-section
@@ -294,11 +311,11 @@
     (if *dynamic*
       {:data-bind "text: source"}
       (:source activity))]
-   
+
    ;; TODO: link to the domain
    (when (or *dynamic* (not (:local activity)))
      [:span (when *dynamic*
-             {:data-bind "if: !$data.local"})
+              {:data-bind "if: !$data.local"})
       " via a "
       [:a {:href
            (if *dynamic*
@@ -308,7 +325,7 @@
                   (filter #(= (:type %) "text/html"))
                   first :href))}
        "foreign service"]])
-   
+
    (when-let [id (if *dynamic*
                    (model/make-id)
                    (:conversation activity))]
@@ -321,11 +338,23 @@
               {:href (first (:conversation-uris activity))})
          "in context"]]]))
 
-   (when-let [geo (:geo activity)]
-     (list " near "
-           [:a.geo-link {:href "#"}
-            (:latitude geo) ", "
-            (:longitude geo)]))])
+   (when-let [geo (if *dynamic*
+                    {}
+                    (:geo activity))]
+     [:span (when *dynamic*
+              {:data-bind "with: geo"})
+      " near "
+      [:a.geo-link (when-not *dynamic*
+                     {:href "#"})
+       [:span
+        (if *dynamic*
+          {:data-bind "text: latitude"}
+          (:latitude geo))]
+       ", "
+       [:span
+        (if *dynamic*
+          {:data-bind "text: longitude"}
+          (:longitude geo))]]])])
 
 (defn comments-section
   [activity]
@@ -612,9 +641,9 @@
                      ;; "published" (:published object)
                      ;; "updated" (:updated object)
                      })
-          
+
           :published (:published activity)
-          
+
           :updated (:updated activity)
           :verb (:verb activity)
           :title (:title activity)
