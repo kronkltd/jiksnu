@@ -274,19 +274,19 @@
   [url]
   (let [result (l/result-channel)]
     (l/enqueue pending-conversations [url result])
-    result))
+    (l/wait-for-result result 5000)))
 
 (defn get-source
   [url]
   (let [result (l/result-channel)]
     (l/enqueue pending-sources [url result])
-    result))
+    (l/wait-for-result result 5000)))
 
 (defn get-resource
   [url]
   (let [result (l/result-channel)]
     (l/enqueue pending-resources [url result])
-    result))
+    (l/wait-for-result result 5000)))
 
 ;; Database functions
 

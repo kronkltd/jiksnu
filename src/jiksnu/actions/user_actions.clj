@@ -71,9 +71,7 @@
   (if (:local user)
     (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
                         (:domain user) (:_id user))
-          source  (l/wait-for-result
-                   (model/get-source topic)
-                   5000)]
+          source (model/get-source topic)]
       (assoc user :update-source (:_id source)))
     (if (:update-source user)
       user

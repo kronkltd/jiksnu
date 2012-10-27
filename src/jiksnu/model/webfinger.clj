@@ -54,8 +54,7 @@
 (defn get-feed-source-from-user-meta
   [user-meta]
   (if-let [source-link (get-source-link user-meta)]
-    (let [ch (model/get-source source-link)]
-      (l/wait-for-result ch 5000))
+    (model/get-source source-link)
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property
