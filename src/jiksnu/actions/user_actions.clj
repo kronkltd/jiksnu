@@ -6,7 +6,6 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
-        [jiksnu.session :only [current-user]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
@@ -29,6 +28,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
+            [jiksnu.session :as session]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
@@ -453,7 +453,7 @@
 
 (defaction update-profile
   [options]
-  (let [user (current-user)]
+  (let [user (session/current-user)]
     ;; TODO: mass assign vulnerability here
     (update user options)))
 

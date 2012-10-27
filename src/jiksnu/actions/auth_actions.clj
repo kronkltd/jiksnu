@@ -2,12 +2,12 @@
   (:use [ciste.commands :only [add-command!]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
-        [jiksnu.session :only [current-user set-authenticated-user!]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism])
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
+            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
+            [jiksnu.session :as session])
   (:import org.mindrot.jbcrypt.BCrypt))
 
 ;; TODO: doesn't work yet
@@ -27,7 +27,7 @@
     (if (->> mechanisms
              (map :value)
              (some (partial password-matches? password)))
-      (set-authenticated-user! user)
+      (session/set-authenticated-user! user)
       (throw+ {:type :authentication :message "passwords do not match"}))
     (throw+ {:type :authentication :message "No authentication mechanisms found"})))
 
@@ -60,7 +60,7 @@
 
 (defaction whoami
   []
-  (current-user))
+  (session/current-user))
 
 (add-command! "whoami" #'whoami)
 

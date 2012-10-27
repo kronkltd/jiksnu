@@ -5,11 +5,11 @@
         [ciste.routes :only [resolve-routes]]
         [ciste.views :only [defview]]
         [clojure.core.incubator :only [dissoc-in]]
-        [clojure.data.json :only [read-json]]
-        [jiksnu.session :only [current-user]])
+        [clojure.data.json :only [read-json]])
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.session :as session]
             [lamina.core :as l]))
 
 (defaction invoke-action
@@ -51,7 +51,7 @@
 (defaction connect
   [ch]
   (log/info "connected")
-  (let [id (:_id (current-user))
+  (let [id (:_id (session/current-user))
         connection-id (abdera/new-id)]
     (dosync
      (alter connections 

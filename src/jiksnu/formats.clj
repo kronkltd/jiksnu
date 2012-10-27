@@ -5,8 +5,7 @@
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri title link-to
                                        index-block index-section uri
-                                       delete-button index-line edit-button]]
-        [jiksnu.session :only [current-user]])
+                                       delete-button index-line edit-button]])
   (:require [clj-tigase.core :as tigase]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -15,6 +14,7 @@
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             jiksnu.sections
+            [jiksnu.session :as session]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.vocabularies.foaf :as foaf]))
 
@@ -70,7 +70,7 @@
 
 (defmethod format-as :viewmodel
   [format request response]
-  (let [response (if-let [user (current-user)]
+  (let [response (if-let [user (session/current-user)]
                    (-> response
                        (assoc-in [:body :currentUser] (:_id user)))
                    response)]

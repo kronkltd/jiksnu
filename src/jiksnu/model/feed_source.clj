@@ -23,15 +23,6 @@
    (presence-of :created)
    (presence-of :updated)))
 
-(defn prepare
-  [params]
-  (let [now (time/now)]
-    (-> (merge {:status "none"}
-               params)
-        set-_id
-        set-updated-time
-        set-created-time)))
-
 (defn set-field!
   "Updates user's field to value"
   [user field value]
@@ -59,14 +50,16 @@
 
 (defn create
   [params]
-  (let [params (prepare params)
-        errors (create-validators params)]
+  (let [errors (create-validators params)]
     (if (empty? errors)
       (do
         (log/debugf "Creating feed source: %s" params)
         (mc/insert collection-name params)
         ;; TODO: check no errors
-        (fetch-by-id (:_id params)))
+        (let [item (fetch-by-id (:_id params))]
+          (trace :feed-sources:created item)
+          (s/increment "feed-sources_created")
+          item))
       (throw+ {:type :validation :errors errors}))))
 
 (defn delete

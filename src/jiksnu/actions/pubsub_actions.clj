@@ -1,7 +1,8 @@
 (ns jiksnu.actions.pubsub-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]]
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -51,7 +52,7 @@
                          :hub.verify_token (:verify-token subscription)}
                         (if (:challenge subscription)
                           {:hub.challenge (:challenge subscription)}))
-          url (model/make-subscribe-uri (:callback subscription) params)
+          url (log/spy (model/make-subscribe-uri (:callback subscription) params))
           response-channel (http/http-request {:method :get
                                                :url url
                                                :auto-transform true})]
@@ -69,15 +70,16 @@
 (defaction subscribe
   [params]
   ;; set up feed subscriber
-  (let [source (actions.feed-source/find-or-create params)]
-    (if (= verify "async")
+  (let [source (actions.feed-source/find-or-create (log/spy params))]
+    (if (= (:verify params) "async")
       (verify-subscription-async source)
-      (verify-subscribe-sync source))))
+      (verify-subscribe-sync (log/spy source)))))
 
 (defaction unsubscribe
   [params]
   ;; remove feed subscriber
-  (if-let [subscription (model.feed-source/find-record {:topic topic :callback callback})]
+  (if-let [subscription (model.feed-source/find-record {:topic (:topic params)
+                                                        :callback (:callback params)})]
     (actions.feed-source/remove-subscription subscription)
     (subscription-not-found-error)))
 

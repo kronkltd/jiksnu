@@ -17,11 +17,11 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.subscription :as subscription]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.FeedSource))
@@ -30,18 +30,13 @@
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
-(defn set-domain
-  [source]
-  (if (:domain source)
-    source
-    (let [uri (URI. (:topic source))
-          domain (actions.domain/get-discovered {:_id (.getHost uri)})]
-      (assoc source :domain (:_id domain)))))
-
 (defn prepare-create
   [source]
   (-> source
-      set-domain))
+      transforms.feed-source/set-domain
+      transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time))
 
 (defaction add-watcher
   [source user]
@@ -50,16 +45,22 @@
 
 (defaction watch
   [source]
-  (add-watcher source (current-user)))
-
-(defaction confirm
-  "Callback for when a remote subscription has been confirmed"
-  [source]
-  (model.feed-source/set-field! source :status "confirmed"))
+  (add-watcher source (subscription/current-user)))
 
 (defaction delete
   [source]
   (model.feed-source/delete source))
+
+(defaction confirm-subscribe
+  "Callback for when a remote subscription has been confirmed"
+  [source]
+  (model.feed-source/set-field! source :status "confirmed"))
+
+(defaction confirm-unsubscribe
+  [source]
+  (log/info "confirming subscription removal")
+  (model.feed-source/set-field! source :status "none")
+  #_(model.feed-source/delete source))
 
 (defaction process-updates
   "Handler for PuSh subscription"
@@ -69,22 +70,16 @@
          topic "hub.topic"} params]
     (let [source (model.feed-source/fetch-by-topic topic)]
       (condp = mode
-        "subscribe" (confirm source)
-
-        "unsubscribe" (do
-                        (log/info "confirming subscription removal")
-                        (model.feed-source/set-field! source :status "none")
-                        #_(model.feed-source/delete source))
-        ;; TODO: This should probably throw
-        (cm/implement
-         (log/warn "Unknown mode"))))
+        "subscribe"   (confirm-subscribe source)
+        "unsubscribe" (confirm-ununsubscribe source)
+        (throw+ "Unknown mode")))
     challenge))
 
 (defaction create
   "Create a new feed source record"
   [params options]
-  (let [source (prepare-create params)]
-    (model.feed-source/create source)))
+  (let [params (prepare-create params)]
+    (model.feed-source/create params)))
 
 (defn find-or-create
   [params & [options]]
@@ -140,7 +135,6 @@
   [source feed]
   (let [feed-title (.getTitle feed)]
     (when-not (= feed-title (:title source))
-      (log/info "updating title")
       (model.feed-source/set-field! source :title feed-title))
     ;; TODO: This should be automatic for any transformation
     (mark-updated source)

@@ -3,7 +3,6 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [ciste.model :only [implement]]
-        [jiksnu.session :only [current-user]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -11,7 +10,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session])
   (:import javax.security.sasl.AuthenticationException
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -86,7 +86,7 @@
 (defaction ostatussub-submit
   "User requests a subscription to a uri"
   [uri]
-  (if-let [actor (current-user)]
+  (if-let [actor (session/current-user)]
     (if-let [user  (if (re-matches #".*@.*" uri)
                      ;; uri is an acct uri
                      (actions.user/find-or-create-by-uri uri)
