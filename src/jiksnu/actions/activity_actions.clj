@@ -123,6 +123,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-url
       transforms.activity/set-id
       transforms.activity/set-recipients
+      transforms.activity/set-resources
       transforms.activity/set-mentioned
       transforms.activity/set-conversation))
 

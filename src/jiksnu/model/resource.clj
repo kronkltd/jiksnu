@@ -3,8 +3,10 @@
         [clojure.core.incubator :only [-?>>]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq]))
 
@@ -19,9 +21,7 @@
 
    ;; TODO: These should be joda times
    (presence-of   :created)
-   (presence-of   :updated)
-   ))
-
+   (presence-of   :updated)))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -42,17 +42,20 @@
 (defn fetch-by-id
   [id]
   (let [id (if (string? id) (model/make-id id) id)]
-    (if-let [activity (mc/find-map-by-id collection-name id)]
-      (model/map->Resource activity))))
+    (s/increment "resources fetched")
+    (if-let [item (mc/find-map-by-id collection-name id)]
+      (model/map->Resource item))))
 
 (defn create
-  [item]
-  (let [errors (create-validators item)]
+  [params]
+  (let [errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "Creating resource: %s" (pr-str item))
-        (mc/insert collection-name item)
-        (fetch-by-id (:_id item)))
+        (log/debugf "Creating resource: %s" (pr-str params))
+        (mc/insert collection-name params)
+        (let [item (fetch-by-id (:_id params))]
+          (trace/trace :resource:created item)
+          item))
       (throw+ {:type :validation :errors errors}))))
 
 (defn drop!

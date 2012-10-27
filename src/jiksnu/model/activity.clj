@@ -3,17 +3,21 @@
         [clojure.core.incubator :only [-?>>]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
-  (:require [clojure.java.io :as io]
+  (:require [clj-statsd :as s]
+            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq])
   (:import jiksnu.model.Activity))
 
 (defonce page-size 20)
 (def collection-name "activities")
+
+(def create-probe (trace/probe-channel :activity:created))
 
 (def create-validators
   (validation-set
@@ -64,13 +68,15 @@
       (model/map->Activity activity))))
 
 (defn create
-  [activity]
-  (let [errors (create-validators activity)]
+  [params]
+  (let [errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "Creating activity: %s" (pr-str activity))
-        (mc/insert collection-name activity)
-        (fetch-by-id (:_id activity)))
+        (log/debugf "Creating activity: %s" (pr-str params))
+        (mc/insert collection-name params)
+        (let [item (fetch-by-id (:_id params))]
+          (trace/trace :activity:created item)
+          item))
       (throw+ {:type :validation :errors errors}))))
 
 (defn get-comments

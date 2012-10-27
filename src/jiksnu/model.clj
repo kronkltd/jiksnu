@@ -267,7 +267,8 @@
        first))
 
 (defonce pending-conversations (l/permanent-channel))
-(defonce pending-sources (l/permanent-channel))
+(defonce pending-sources       (l/permanent-channel))
+(defonce pending-resources     (l/permanent-channel))
 
 (defn get-conversation
   [url]
@@ -279,6 +280,12 @@
   [url]
   (let [result (l/result-channel)]
     (l/enqueue pending-sources [url result])
+    result))
+
+(defn get-resource
+  [url]
+  (let [result (l/result-channel)]
+    (l/enqueue pending-resources [url result])
     result))
 
 ;; Database functions

@@ -169,3 +169,12 @@
         activity))
     activity))
 
+(defn set-resources
+  [activity]
+  (let [ids (map
+               (fn [link]
+                 (:_id (model/get-resource link)))
+               (:enclosures activity))]
+    (-> activity
+        (assoc :resources ids)
+        (dissoc :enclosures))))
