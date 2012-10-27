@@ -168,8 +168,6 @@
   [request response]
   [:div (when *dynamic* {:data-bind "with: postForm"})
    [:div (when *dynamic* {:data-bind "if: visible"})
-    [:p
-     (when *dynamic* {:data-bind "text: currentPage"})]
     (when (or *dynamic* (:post-form response))
       (add-form (Activity.)))]])
 
