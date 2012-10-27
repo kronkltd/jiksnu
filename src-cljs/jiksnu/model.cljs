@@ -126,7 +126,7 @@
    backbone/Model
    (js-obj
     "type" "Domain"
-    "url" (fn [] (this-as this (str "/main/domains/" (.-id this))))
+    "url" (fn [] (this-as this (format "/model/domains/%s.model" (.-id this))))
     "defaults" (js-obj "xmpp"       "unknown"
                        "discovered" nil
                        "links"      (array))
