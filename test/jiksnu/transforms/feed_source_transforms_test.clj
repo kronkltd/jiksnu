@@ -5,6 +5,7 @@
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]

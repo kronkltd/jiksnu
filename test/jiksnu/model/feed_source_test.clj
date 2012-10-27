@@ -2,10 +2,13 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.model.feed-source :only [create create-validators prepare
+        [jiksnu.model.feed-source :only [create create-validators
                                          fetch-by-id delete fetch-all]]
-        [midje.sweet :only [anything fact => every-checker throws]])
+        [midje.sweet :only [=> anything fact future-fact every-checker throws]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.existance-helpers :as existance]
+            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source])
   (:import jiksnu.model.FeedSource
            org.bson.types.ObjectId
@@ -15,26 +18,27 @@
 (test-environment-fixture
 
  (fact "#'fetch-by-id"
-   (let [source (model.feed-source/create (factory :feed-source))]
+   (let [source (existance/a-feed-source-exists)]
      (fetch-by-id (:_id source)) => source))
 
  (fact "create"
-   (fact "when given valid parameters"
-     (create (factory :feed-source)) =>
+   (future-fact "when given valid parameters"
+     (create {:_id (model/make-id)}) =>
      (every-checker
       (partial instance? FeedSource)
       #(instance? ObjectId (:_id %))
       #(instance? DateTime (:created %))
-      #(string? (:topic %))))
+      #(string? (:topic %)))
+     (provided
+       (create-validators anything) => []))
 
    (fact "when given invalid parameters"
      (create .params.) => (throws RuntimeException)
      (provided
-       (prepare .params.) => .prepared-params.
-       (create-validators .prepared-params.) => [.error.])))
+       (create-validators .params.) => [.error.])))
 
  (fact "#'delete"
-   (let [source (create (factory :feed-source))]
+   (let [source (existance/a-feed-source-exists)]
      (delete source) => source
      (fetch-by-id (:_id source)) => nil?))
 
