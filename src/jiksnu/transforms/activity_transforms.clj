@@ -5,7 +5,6 @@
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
-            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]))
@@ -121,13 +120,6 @@
     (let [id (format "http://%s/notice/%s" "" #_(:domain (get-author activity)) (:_id activity))]
       (assoc activity :id id))
     activity))
-
-(defn set-conversation
-  [activity]
-  (let [uris (:conversation-uris activity)]
-    (doseq [uri uris]
-      (actions.conversation/find-or-create {:uri uri}))))
-
 
 (defn set-verb
   [activity]
