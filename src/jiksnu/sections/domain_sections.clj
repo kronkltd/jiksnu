@@ -93,7 +93,7 @@
           {:data-bind "text: xmpp"}
           (:xmpp domain))]
    [:td (if *dynamic*
-          {:data-bind "text: discovered"}
+          {:data-bind "text: '' + !!ko.utils.unwrapObservable($data.discovered)"}
           (:discovered domain))]
    [:td
     [:a
@@ -103,7 +103,7 @@
      "Host-Meta"]]
    [:td
     (if *dynamic*
-      {:data-bind "text: links.length"}
+      {:data-bind "text: links().length"}
       (count (:links domain)))]
    #_[:th (actions-section domain)]])
 
