@@ -4,6 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
+        [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -22,7 +23,10 @@
 
 (defn prepare-create
   [domain]
-  domain)
+  (-> domain
+      model.domain/set-discovered
+      set-created-time
+      set-updated-time))
 
 (defn prepare-delete
   ([domain]
@@ -46,11 +50,6 @@
                                                 (:type link))]
     item
     (add-link* item link)))
-
-(defaction create
-  [options]
-  (let [domain (prepare-create options)]
-    (model.domain/create domain)))
 
 (defaction delete
   [domain]
@@ -114,22 +113,6 @@
   [& options]
   (apply index* options))
 
-(defn find-or-create
-  [domain]
-  (or (model.domain/fetch-by-id (:_id domain))
-      (create domain)))
-
-(defn find-or-create-for-url
-  "Return a domain object that matche the domain of the provided url"
-  [url]
-  (let [url-obj (URL. url)]
-    (find-or-create (.getHost url-obj))))
-
-(defn current-domain
-  []
-  (find-or-create {:_id (config :domain)
-                   :local true}))
-
 (defaction ping
   [domain]
   true)
@@ -171,6 +154,29 @@
     (log/debugf "discovering domain - %s" (:_id domain))
     (discover* domain url)
     (model.domain/fetch-by-id (:_id domain))))
+
+(defaction create
+  [options]
+  (let [domain (prepare-create options)]
+    (model.domain/create domain)
+    (discover domain)
+    domain))
+
+(defn find-or-create
+  [domain]
+  (or (model.domain/fetch-by-id (:_id domain))
+      (create domain)))
+
+(defn find-or-create-for-url
+  "Return a domain object that matche the domain of the provided url"
+  [url]
+  (let [url-obj (URL. url)]
+    (find-or-create (.getHost url-obj))))
+
+(defn current-domain
+  []
+  (find-or-create {:_id (config :domain)
+                   :local true}))
 
 (defn get-discovered
   [domain]

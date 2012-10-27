@@ -25,14 +25,7 @@
   [record]
   (if (contains? record :discovered)
     record
-    (assoc record :discovered false)))
-
-(defn prepare
-  [domain]
-  (-> domain
-      set-discovered
-      set-created-time
-      set-updated-time))
+    (assoc record :discovered (:local record))))
 
 (defn drop!
   []
@@ -50,8 +43,7 @@
 
 (defn create
   [domain & [options & _]]
-  (let [domain (prepare domain)
-        errors (create-validators domain)]
+  (let [errors (create-validators domain)]
     (if (empty? errors)
       (do
         (log/debugf "Creating domain: %s" domain)
