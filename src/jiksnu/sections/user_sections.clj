@@ -504,7 +504,7 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id)}"}
+          {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id), title: 'acct:' + ko.utils.unwrapObservable(username) + '@' + ko.utils.unwrapObservable(domain)}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
