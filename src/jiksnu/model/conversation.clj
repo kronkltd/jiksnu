@@ -26,7 +26,11 @@
   ([params]
      (mc/count collection-name params)))
 
-(declare fetch-by-id)
+(defn fetch-by-id
+  [id]
+  (if-let [conversation (mc/find-map-by-id collection-name id)]
+    (model/map->Conversation conversation)
+    (log/warnf "Could not find conversation: %s" id)))
 
 (defn create
   [record]
@@ -49,12 +53,6 @@
 (defn drop!
   []
   (mc/remove collection-name))
-
-(defn fetch-by-id
-  [id]
-  (if-let [conversation (mc/find-map-by-id collection-name id)]
-    (model/map->Conversation conversation)
-    (log/warnf "Could not find conversation: %s" id)))
 
 (defn fetch-all
   ([] (fetch-all {}))
