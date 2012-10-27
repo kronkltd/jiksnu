@@ -91,6 +91,11 @@
   [request arg]
   {:body (sections.subscription/ostatus-sub-form)})
 
+(defview #'ostatussub :viewmodel
+  [request _]
+  {:body
+   {:title "Subscribe"}})
+
 ;; ostatussub-submit
 
 (defview #'ostatussub-submit :html
