@@ -1,4 +1,6 @@
-(ns jiksnu.transforms.feed-source-transforms)
+(ns jiksnu.transforms.feed-source-transforms
+  (:require [jiksnu.actions.domain-actions :as actions.domain])
+  (:import java.net.URI))
 
 (defn set-domain
   [source]
@@ -7,4 +9,3 @@
     (let [uri (URI. (:topic source))
           domain (actions.domain/get-discovered {:_id (.getHost uri)})]
       (assoc source :domain (:_id domain)))))
-

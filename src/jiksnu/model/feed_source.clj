@@ -57,7 +57,7 @@
         (mc/insert collection-name params)
         ;; TODO: check no errors
         (let [item (fetch-by-id (:_id params))]
-          (trace :feed-sources:created item)
+          (trace/trace :feed-sources:created item)
           (s/increment "feed-sources_created")
           item))
       (throw+ {:type :validation :errors errors}))))

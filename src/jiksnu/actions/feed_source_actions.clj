@@ -19,7 +19,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.subscription :as subscription]
+            [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [lamina.core :as l])
@@ -30,11 +30,18 @@
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
+(defn set-status
+  [item]
+  (if (:status item)
+    item
+    (assoc item :status "none")))
+
 (defn prepare-create
   [source]
   (-> source
       transforms.feed-source/set-domain
       transforms/set-_id
+      set-status
       transforms/set-updated-time
       transforms/set-created-time))
 
@@ -45,7 +52,7 @@
 
 (defaction watch
   [source]
-  (add-watcher source (subscription/current-user)))
+  (add-watcher source (session/current-user)))
 
 (defaction delete
   [source]
@@ -71,7 +78,7 @@
     (let [source (model.feed-source/fetch-by-topic topic)]
       (condp = mode
         "subscribe"   (confirm-subscribe source)
-        "unsubscribe" (confirm-ununsubscribe source)
+        "unsubscribe" (confirm-unsubscribe source)
         (throw+ "Unknown mode")))
     challenge))
 
