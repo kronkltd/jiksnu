@@ -7,7 +7,8 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
-            [jiksnu.model.conversation :as model.conversation])
+            [jiksnu.model.conversation :as model.conversation]
+            [lamina.core :as l])
   (:import java.net.URI))
 
 (defn set-local
@@ -55,6 +56,11 @@
   record)
 
 (definitializer
+  (l/receive-all
+   model/pending-conversations
+   (fn [[url ch]]
+     (l/enqueue ch (find-or-create {:url url}))))
+
   (require-namespaces
    ["jiksnu.filters.conversation-filters"
     "jiksnu.triggers.conversation-triggers"

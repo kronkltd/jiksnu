@@ -13,7 +13,6 @@
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
-            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -22,6 +21,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
+            [lamina.core :as l]
             [monger.collection :as mc])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -120,7 +120,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn set-conversation
   [activity]
   (if-let [uri (first (:conversation-uris activity))]
-    (let [conversation (actions.conversation/find-or-create {:uri uri})]
+    (let [ch (model/get-conversation uri)
+          conversation (l/wait-for-result ch 5000)]
       (-> activity
           (assoc :conversation (:_id conversation))
           (dissoc :conversation-uris)))
