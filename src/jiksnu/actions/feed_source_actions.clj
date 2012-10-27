@@ -227,6 +227,12 @@
     (find-or-create {:topic (:href link)})
     (throw+ (format "Could not determine topic url from resource: %s" url))))
 
+(defn discover-source
+  "determines the feed source associated with a url"
+  [url]
+  (when-let [link (model/extract-atom-link url)]
+    (find-or-create {:topic (:href link)})))
+
 (definitializer
   (l/receive-all
    model/pending-sources
