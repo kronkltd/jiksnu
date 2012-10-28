@@ -12,11 +12,19 @@
             [monger.core :as mg])
   (:import jiksnu.model.Domain))
 
+(def collection-name "domains")
+
 (defn host-meta-link
   [domain]
   (str "http://" (:_id domain) "/.well-known/host-meta"))
 
-(def collection-name "domains")
+(defn host-meta-link
+  [domain]
+  (str "http://" (:_id domain) "/.well-known/host-meta"))
+
+(defn pending-domains-key
+  [domain]
+  (str "pending.domains." domain))
 
 (def create-validators
   (validation-set
@@ -86,14 +94,6 @@
    :to (tigase/make-jid "" (:_id domain))
    :from (tigase/make-jid "" (config :domain))
    :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
-
-(defn pending-domains-key
-  [domain]
-  (str "pending.domains." domain))
-
-(defn host-meta-link
-  [domain]
-  (str "http://" (:_id domain) "/.well-known/host-meta"))
 
 (defn count-records
   ([] (count-records {}))
