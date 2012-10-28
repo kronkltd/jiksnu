@@ -289,7 +289,7 @@
    "posted a "
    [:span
     (if *dynamic*
-      {:data-bind "text: $data['object']['object-type']"}
+      {:data-bind "text: ko.utils.unwrapObservable($data['object'])['object-type']"}
       (-> activity :object :object-type))]
 
    ;; TODO: handle other visibilities
