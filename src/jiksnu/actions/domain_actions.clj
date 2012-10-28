@@ -166,8 +166,7 @@
 (defaction create
   [options]
   (let [domain (prepare-create options)]
-    (model.domain/create domain)
-    domain))
+    (model.domain/create domain)))
 
 (defn find-or-create
   [domain]
