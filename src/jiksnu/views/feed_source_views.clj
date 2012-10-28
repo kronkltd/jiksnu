@@ -11,22 +11,22 @@
             [ring.util.response :as response])
   (:import jiksnu.model.FeedSource))
 
-(defview #'update :html
-  [request params]
-  (-> (named-path "index feed-sources")
-      response/redirect-after-post
-      (assoc :template false)))
+;; process-updates
 
 (defview #'process-updates :html
   [request params]
   {:body params
    :template false})
 
+;; remove-subscription
+
 (defview #'remove-subscription :html
   [request params]
   (-> (named-path "index feed-sources")
       response/redirect-after-post
       (assoc :template false)))
+
+;; show
 
 (defview #'show :html
   [request item]
@@ -47,3 +47,11 @@
   [request item]
   {:body {:targetFeedSource (:_id item)
           :title (:title item)}})
+
+;; update
+
+(defview #'update :html
+  [request params]
+  (-> (named-path "index feed-sources")
+      response/redirect-after-post
+      (assoc :template false)))
