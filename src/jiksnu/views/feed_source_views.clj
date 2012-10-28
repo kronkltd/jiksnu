@@ -31,6 +31,12 @@
 
 ;; show
 
+(defn bind-to
+  [property & body]
+  (concat
+   [:div {:data-bind (str "with: " property)}]
+   body))
+
 (defview #'show :html
   [request item]
   {:body
