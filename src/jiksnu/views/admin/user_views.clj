@@ -4,7 +4,8 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.user-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section
+                                bind-to format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -19,10 +20,9 @@
    :viewmodel "/admin/users.viewmodel"
    :body
    (with-page "default"
-     (list (pagination-links page)
-           [:div (if *dynamic*
-              {:data-bind "with: items"})
-       (admin-index-section items page)]))})
+     (pagination-links page)
+     (bind-to "items"
+       (admin-index-section items page)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
@@ -44,12 +44,11 @@
      :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
-     [:div (when *dynamic*
-             {:data-bind "with: targetUser"})
-      (admin-show-section user)
-      (admin-index-block (if *dynamic*
-                           [(Activity.)]
-                           (:items page)) page)]}))
+     (bind-to "targetUser"
+       (admin-show-section user)
+       (admin-index-block (if *dynamic*
+                            [(Activity.)]
+                            (:items page)) page))}))
 
 (defview #'show :model
   [request user]

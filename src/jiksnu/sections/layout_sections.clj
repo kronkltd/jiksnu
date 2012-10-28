@@ -4,7 +4,7 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [dump-data pagination-links]]
+        [jiksnu.sections :only [bind-to dump-data pagination-links]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -125,14 +125,15 @@
 (defn statistics-section
   [request response]
   (let [stats (actions.site/get-stats)]
-    [:div.well.statistics-section (when *dynamic* {:data-bind "with: statistics"})
-     [:table.table.table-compact
-      [:thead
-       [:tr
-        [:th "Collection"]
-        [:th "Count"]]]
-      [:tbody
-       (map (partial statistics-line stats) statistics-info)]]]))
+    [:div.well.statistics-section
+     (bind-to "statistics"
+       [:table.table.table-compact
+        [:thead
+         [:tr
+          [:th "Collection"]
+          [:th "Count"]]]
+        [:tbody
+         (map (partial statistics-line stats) statistics-info)]])]))
 
 (defn devel-warning
   [response]
@@ -167,10 +168,10 @@
 
 (defn new-post-section
   [request response]
-  [:div (when *dynamic* {:data-bind "with: postForm"})
-   [:div (when *dynamic* {:data-bind "if: visible"})
-    (when (or *dynamic* (:post-form response))
-      (add-form (Activity.)))]])
+  (bind-to "postForm"
+    [:div (when *dynamic* {:data-bind "if: visible"})
+     (when (or *dynamic* (:post-form response))
+       (add-form (Activity.)))]))
 
 (defn title-section
   [request response]
@@ -264,9 +265,8 @@
   (let [user (or (:user response)
                  (current-user))]
     (list
-     [:div (when *dynamic*
-             {:data-bind "with: $root.targetUser() || $root.currentUser()"})
-      (user-info-section user)]
+     (bind-to "$root.targetUser() || $root.currentUser()"
+       (user-info-section user))
      (:aside response))))
 
 (defn main-content

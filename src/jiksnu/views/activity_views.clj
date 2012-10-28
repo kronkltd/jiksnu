@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.activity-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info]])
+        [jiksnu.sections :only [bind-to format-page-info]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -88,12 +88,9 @@
 (defview #'show :html
   [request activity]
   {:body
-   [:div (if *dynamic*
-           {:data-bind "with: targetActivity"})
-    (let [activity (if *dynamic*
-                     (Activity.)
-                     activity)]
-      (show-section activity))]
+   (let [activity (if *dynamic* (Activity.) activity)]
+     (bind-to "targetActivity"
+       (show-section activity)))
    :viewmodel (str (named-path "show activity" {:id (:_id activity)}) ".viewmodel")})
 
 (defview #'show :model

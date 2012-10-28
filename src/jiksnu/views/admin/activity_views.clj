@@ -3,7 +3,8 @@
         [ciste.sections.default :only [link-to]]
         [jiksnu.actions.admin.activity-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section dump-data format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [admin-index-section bind-to dump-data
+                                format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Activity))
@@ -14,14 +15,11 @@
    :single true
    :viewmodel "/admin/activities.viewmodel"
    :body
-   (with-page "default"
-     (list (pagination-links response)
-           [:div (when *dynamic*
-                   {:data-bind "with: items"})
-            (let [activities (if *dynamic*
-                               [(Activity.)]
-                               items)]
-              (admin-index-section activities response))]))})
+   (let [activities (if *dynamic* [(Activity.)] items)]
+     (with-page "default"
+       (pagination-links response)
+       (bind-to "items"
+         (admin-index-section activities response))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

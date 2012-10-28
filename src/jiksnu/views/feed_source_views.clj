@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.feed-source-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -31,29 +31,18 @@
 
 ;; show
 
-(defn bind-to
-  [property & body]
-  (concat
-   [:div {:data-bind (str "with: " property)}]
-   body))
-
 (defview #'show :html
   [request item]
-  {:body
-   [:div (if *dynamic*
-           {:data-bind "with: targetFeedSource"})
-    (let [activity (if *dynamic*
-                     (FeedSource.)
-                     item)]
-      (list (show-section item)
-            (with-page "activities"
-              (let [page (actions.activity/fetch-by-feed-source item)
-                    items (if *dynamic* [(Activity.)] (:items page))]
-                (list
-                 (pagination-links (if *dynamic* {} page))
-                 [:div {:data-bind "with: items"}
-                  (index-section items)])))))]
-   :viewmodel (str (named-path "show feed-source" {:id (:_id item)}) ".viewmodel")})
+  (let [page (actions.activity/fetch-by-feed-source item)
+        items (if *dynamic* [(Activity.)] (:items page))]
+    {:body
+     (bind-to "targetFeedSource"
+       (show-section item)
+       (with-page "activities"
+         (pagination-links (if *dynamic* {} page))
+         (bind-to "items"
+           (index-section items))))
+    :viewmodel (str (named-path "show feed-source" {:id (:_id item)}) ".viewmodel")}))
 
 (defview #'show :model
   [request activity]

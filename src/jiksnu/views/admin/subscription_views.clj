@@ -3,7 +3,7 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.subscription-actions :only [index delete show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-show-section
+        [jiksnu.sections :only [admin-index-section admin-show-section bind-to
                                 dump-data format-page-info pagination-links
                                 with-page]])
   (:require [clojure.tools.logging :as log])
@@ -31,13 +31,12 @@
    :viewmodel "/admin/subscriptions.viewmodel"
    :body
    (with-page "default"
-     (list
-      (pagination-links page)
-      [:div {:data-bind "with: items"}
+     (pagination-links page)
+     (bind-to "items"
        (let [subscriptions (if *dynamic*
                              [(Subscription.)]
                              items)]
-         (admin-index-section subscriptions page))]))})
+         (admin-index-section subscriptions page))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

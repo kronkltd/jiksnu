@@ -1,12 +1,13 @@
 (ns jiksnu.sections.subscription-sections
   (:use [ciste.model :only [implement]]
         [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [delete-button full-uri uri title index-line
-                                edit-button         index-block index-section link-to show-section]]
+        [ciste.sections.default :only [delete-button edit-button full-uri
+                                       index-block index-line index-section link-to
+                                       show-section title uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [control-line admin-index-block dump-data
-                                action-link admin-index-line admin-index-section]])
+        [jiksnu.sections :only [action-link admin-index-block admin-index-line
+                                admin-index-section bind-to control-line dump-data]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
@@ -80,14 +81,14 @@
         [:span (if *dynamic*
                  {:data-bind "text: $root.following().length"}
                  (count subscriptions))]]
-       [:div (if *dynamic* {:data-bind "with: $root.subscriptions()"})
-        [:ul (if *dynamic* {:data-bind "foreach: $data"})
-         (map (fn [subscription]
-                [:li {:data-model "subscription"}
-                 [:div {:data-bind "with: target"}
-                  [:div {:data-model "user"}
-                   (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
-                     (sections.user/display-avatar user "24"))]]]) subscriptions)]]
+       (bind-to "$root.subscriptions()"
+         [:ul (if *dynamic* {:data-bind "foreach: $data"})
+          (map (fn [subscription]
+                 [:li {:data-model "subscription"}
+                  (bind-to "target"
+                    [:div {:data-model "user"}
+                     (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
+                       (sections.user/display-avatar user "24"))])]) subscriptions)])
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
@@ -101,21 +102,21 @@
    [:td
     (link-to subscription)]
    [:td
-    [:div {:data-bind "with: from"}
-     [:div {:data-model "user"}
-      (if-let [user (if *dynamic*
-                      (User.)
-                      (model.subscription/get-actor subscription))]
-        (link-to user)
-        "unknown")]]]
+    (bind-to "from"
+      [:div {:data-model "user"}
+       (if-let [user (if *dynamic*
+                       (User.)
+                       (model.subscription/get-actor subscription))]
+         (link-to user)
+         "unknown")])]
    [:td
-    [:div {:data-bind "with: to"}
-     [:div {:data-model "user"}
-      (if-let [user (if *dynamic*
-                      (User.)
-                      (model.subscription/get-target subscription))]
-        (link-to user)
-        "unknown")]]]
+    (bind-to "to"
+      [:div {:data-model "user"}
+       (if-let [user (if *dynamic*
+                       (User.)
+                       (model.subscription/get-target subscription))]
+         (link-to user)
+         "unknown")])]
    [:td (if *dynamic* {:data-bind "text: created"} (:created subscription))]
    [:td (if *dynamic* {:data-bind "text: pending"} (:pending subscription))]
    [:td (if *dynamic* {:data-bind "text: local"} (:local subscription))]
