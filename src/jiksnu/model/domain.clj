@@ -80,10 +80,6 @@
    {:_id (:_id domain)}
    {:$set {field value}}))
 
-;; (defn set-discovered
-;;   [domain]
-;;   (set-field domain :discovered true))
-
 (defn ping-request
   [domain]
   {:type :get
