@@ -98,7 +98,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (def index*
   (model/make-indexer 'jiksnu.model.activity))
 
-
 (defaction index
   [& options]
   (apply index* options))
