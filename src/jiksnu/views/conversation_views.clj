@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.conversation-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [dump-data format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to dump-data format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [ring.util.response :as response])
@@ -22,9 +22,9 @@
                  [(Conversation.)]
                  items)]
      (with-page "default"
-       (list (pagination-links page)
-             [:div (if *dynamic* {:data-bind "with: items"})
-              (doall (index-section items page))])))})
+       (pagination-links page)
+       (bind-to "items"
+         (doall (index-section items page)))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
@@ -38,19 +38,14 @@
 (defview #'show :html
   [request item]
   {:body
-   [:div (if *dynamic*
-           {:data-bind "with: targetConversation"})
-    (let [item (if *dynamic*
-                     (Conversation.)
-                     item)]
-      (list
+   (let [item (if *dynamic* (Conversation.) item)]
+     (bind-to "targetConversation"
        [:div {:data-model "conversation"}
-       (show-section item)]
-            (with-page "activities"
-              (list
-               (pagination-links {})
-               [:div {:data-bind "with: items"}
-                (index-section [(Activity.)])]))))]})
+        (show-section item)]
+       (with-page "activities"
+         (pagination-links {})
+         (bind-to "items"
+           (index-section [(Activity.)])))))})
 
 (defview #'show :model
   [request item]

@@ -4,7 +4,8 @@
                                        index-section link-to title update-button]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block admin-index-line admin-index-section control-line dump-data]])
+        [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block
+                                admin-index-line admin-index-section bind-to control-line dump-data]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
@@ -26,30 +27,30 @@
     [:span (if *dynamic*
              {:data-bind "text: watchers.length"}
              (count (:watchers source)))]]
-   [:div {:data-bind "with: watchers"}
-    [:table.table
-     [:tbody {:data-bind "foreach: $data"}
-      (map
-       (fn [id]
-         (let [user (if *dynamic*
-                      (User.)
-                      (model.user/fetch-by-id id))]
-           [:tr (merge
-                 {:data-model "user"}
-                 #_(if *dynamic*
-                   {:data-bind
-                    (string/join ", "
-                                 ["if: $data"
-                                  "attr: {'data-target': $data}"])}))
-            [:td (link-to user)]
-            [:td
-             (action-link "feed-source" "remove-watcher" (:_id source)
-                          {:target (:_id user)
-                           :icon "trash"
-                           :title "Delete"})]]))
-       (if *dynamic*
-         [""]
-         (:watchers source)))]]]])
+   (bind-to "watchers"
+     [:table.table
+      [:tbody {:data-bind "foreach: $data"}
+       (map
+        (fn [id]
+          (let [user (if *dynamic*
+                       (User.)
+                       (model.user/fetch-by-id id))]
+            [:tr (merge
+                  {:data-model "user"}
+                  #_(if *dynamic*
+                      {:data-bind
+                       (string/join ", "
+                                    ["if: $data"
+                                     "attr: {'data-target': $data}"])}))
+             [:td (link-to user)]
+             [:td
+              (action-link "feed-source" "remove-watcher" (:_id source)
+                           {:target (:_id user)
+                            :icon "trash"
+                            :title "Delete"})]]))
+        (if *dynamic*
+          [""]
+          (:watchers source)))]])])
 
 (defn add-watcher-form
   [source]

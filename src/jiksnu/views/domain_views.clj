@@ -7,7 +7,7 @@
                                               index show host-meta ping ping-response
                                               ping-error]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.domain :as model.domain]
@@ -90,13 +90,11 @@
    :single true
    :viewmodel "/main/domains.viewmodel"
    :body
-   (with-page "default"
-     (list
-      (pagination-links page)
-      [:div (if *dynamic*
-              {:data-bind "with: items"})
-       (let [domains (if *dynamic* [(Domain.)] items)]
-         (index-section domains page))]))})
+   (let [domains (if *dynamic* [(Domain.)] items)]
+     (with-page "default"
+       (pagination-links page)
+       (bind-to "items"
+         (index-section domains page))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
@@ -135,17 +133,15 @@
             :href "/main/domains"
             :title "Domain Index"}]
    :body
-   [:div (if *dynamic*
-           {:data-bind "with: targetDomain"})
-    (show-section domain)
-    [:div {:data-model "domain"}
-     (let [users (if *dynamic*
-                   [(User.)]
-                   (model.user/fetch-by-domain domain))]
-       (with-page "default"
-         [:div (if *dynamic*
-                 {:data-bind "with: items"})
-          (index-section users {:page 1})]))]]})
+   (bind-to "targetDomain"
+     (show-section domain)
+     [:div {:data-model "domain"}
+      (let [users (if *dynamic*
+                    [(User.)]
+                    (model.user/fetch-by-domain domain))]
+        (with-page "default"
+          (bind-to "items"
+            (index-section users {:page 1}))))])})
 
 (defview #'show :model
   [request domain]

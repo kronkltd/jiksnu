@@ -4,7 +4,7 @@
         [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.resource-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [ring.util.response :as response]))
@@ -32,11 +32,9 @@
   {:title "Resources"
    :body
    (with-page "default"
-     (list
-      (pagination-links page)
-      [:div (if *dynamic*
-              {:data-bind "with: items"})
-       (index-section items page)]))})
+     (pagination-links page)
+     (bind-to "items"
+       (index-section items page)))})
 
 (defview #'index :json
   [request {:keys [items] :as page}]

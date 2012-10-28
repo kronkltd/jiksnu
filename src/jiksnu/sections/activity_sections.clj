@@ -10,9 +10,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
         [jiksnu.sections :only [action-link admin-index-line admin-index-block
-                                format-links
-                                admin-index-section bind-property
-                                dump-data control-line pagination-links]]
+                                admin-index-section bind-property bind-to
+                                control-line dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -230,23 +229,23 @@
   (if-let [geo (if *dynamic*
                  {}
                  (:geo activity))]
-    [:div.map-section (if *dynamic*
-                        {:data-bind "with: geo"})
-     #_[:img.map
-        {:alt ""
-         :src
-         ;; TODO: use urly to construct this
-         ;; TODO: Move this to cljs
-         (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-              (:latitude geo)
-              ","
-              (:longitude geo))}]
-     [:p "Latitude: " [:span (if *dynamic*
-                               {:data-bind "text: latitude"}
-                               (:latitude geo))]]
-     [:p "Longitude: " [:span (if *dynamic*
-                                {:data-bind "text: longitude"}
-                                (:longitude geo))]]]))
+    [:div.map-section
+     (bind-to "geo"
+       #_[:img.map
+          {:alt ""
+           :src
+           ;; TODO: use urly to construct this
+           ;; TODO: Move this to cljs
+           (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
+                (:latitude geo)
+                ","
+                (:longitude geo))}]
+       [:p "Latitude: " [:span (if *dynamic*
+                                 {:data-bind "text: latitude"}
+                                 (:latitude geo))]]
+       [:p "Longitude: " [:span (if *dynamic*
+                                  {:data-bind "text: longitude"}
+                                  (:longitude geo))]])]))
 
 (defn likes-section
   [activity]
@@ -358,19 +357,18 @@
 
 (defn comments-section
   [activity]
-  [:div (when *dynamic*
-          {:data-bind "with: comments"})
-   (if-let [comments (if *dynamic*
-                       [(Activity.)]
-                       (seq (second (actions.comment/fetch-comments activity))))]
-     [:section.comments
-      [:ul.unstyled.comments
-       (when *dynamic*
-         {:data-bind "foreach: $data"})
-       (map (fn [comment]
-              [:li
-               (show-comment comment)])
-            comments)]])])
+  (bind-to "comments"
+    (if-let [comments (if *dynamic*
+                        [(Activity.)]
+                        (seq (second (actions.comment/fetch-comments activity))))]
+      [:section.comments
+       [:ul.unstyled.comments
+        (when *dynamic*
+          {:data-bind "foreach: $data"})
+        (map (fn [comment]
+               [:li
+                (show-comment comment)])
+             comments)]])))
 
 (defn poll-form
   [activity]
@@ -517,13 +515,12 @@
   [:tr (merge {:data-model "activity"}
               (when-not *dynamic*
                 { :data-id (:_id activity)}))
-   [:td (when *dynamic*
-          {:data-bind "with: author"})
-    [:div
-     (let [user (if *dynamic*
-                  (User.)
-                  (actions.activity/get-author activity))]
-       (show-section-minimal user))]]
+   [:td
+    (bind-to "author"
+      (let [user (if *dynamic*
+                   (User.)
+                   (actions.activity/get-author activity))]
+        (show-section-minimal user)))]
    [:td (when *dynamic*
           {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
@@ -724,10 +721,9 @@
                {:about activity-uri
                 :data-id (:_id activity)}))
       [:header
-       [:div (when *dynamic*
-               {:data-bind "with: author"})
-        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-          (show-section-minimal user))]
+       (bind-to "author"
+         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+           (show-section-minimal user)))
        (recipients-section activity)]
       [:div.entry-content
        (when (:title activity)
