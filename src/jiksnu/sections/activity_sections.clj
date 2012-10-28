@@ -269,7 +269,7 @@
   (when-let [tags (if *dynamic*
                     [{}]
                     (:tags activity))]
-    [:div.tags (when *dynamic* {:data-bind "visible: tags.length > 0"})
+    [:div.tags (when *dynamic* {:data-bind "visible: ko.utils.unwrapObservable(tags).length > 0"})
      [:span "Tags: "]
      [:ul.tags (when *dynamic*
                  {:data-bind "foreach: tags"})
