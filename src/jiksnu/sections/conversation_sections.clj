@@ -15,6 +15,8 @@
 ;;   [page]
 ;;   (index-section (:items page) page))
 
+;; admin-index-block
+
 (defsection admin-index-block [Conversation :html]
   [records & [options & _]]
   [:table.table
@@ -54,8 +56,8 @@
   [:tr {:data-model "conversation"}
    [:td (link-to item)]
    [:td (if *dynamic*
-          {:data-bind "text: uri"}
-          (:uri item))]
+          {:data-bind "text: url"}
+          (:url item))]
    [:td (if *dynamic*
           {:data-bind "text: created"}
           (:created item))]
@@ -67,3 +69,23 @@
 (defsection index-section [Conversation :html]
   [items & [page]]
   (index-block items page))
+
+(defsection show-section [Conversation :html]
+  [item & [page]]
+  [:table.table
+   [:tbody
+    [:tr
+     [:th "Url"]
+     [:td
+      [:a (if *dynamic*
+            {:data-bind "attr: {href: url}, text: url"})]]]
+    [:tr
+     [:th "Created"]
+     [:td (if *dynamic*
+          {:data-bind "text: created"}
+          (:created item))]]
+    [:tr
+     [:th "Updated"]
+     [:td (if *dynamic*
+          {:data-bind "text: updated"}
+          (:updated item))]]]])

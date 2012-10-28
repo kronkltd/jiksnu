@@ -276,6 +276,7 @@
             "type" "Conversation"
             "defaults" (js-obj
                         "uri" nil
+                        "url" nil
                         "created" nil
                         "updated" nil
                         )

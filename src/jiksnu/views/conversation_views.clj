@@ -33,6 +33,8 @@
           }})
 
 
+;; show
+
 (defview #'show :html
   [request item]
   {:body
@@ -41,7 +43,9 @@
     (let [item (if *dynamic*
                      (Conversation.)
                      item)]
-      (list (show-section item)
+      (list
+       [:div {:data-model "conversation"}
+       (show-section item)]
             (with-page "activities"
               (list #_(dump-data)
                     (pagination-links {})
