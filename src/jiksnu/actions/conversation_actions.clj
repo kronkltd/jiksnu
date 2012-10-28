@@ -6,28 +6,22 @@
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]])
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
-            [lamina.core :as l])
-  (:import java.net.URI))
-
-(defn set-local
-  [conversation]
-  (if (contains? conversation :local)
-    conversation
-    (assoc conversation :local
-           (let [url (URI. (:url conversation))]
-             (= (:_id (actions.domain/current-domain))
-                (.getHost url))))))
+            [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.conversation-transforms :as transforms.conversation]
+            [lamina.core :as l]))
 
 (defn prepare-create
   [conversation]
   (-> conversation
-      set-_id
-      set-local
-      set-updated-time
-      set-created-time))
+      transforms/set-_id
+      transforms.conversation/set-local
+      transforms.conversation/set-update-source
+      transforms/set-updated-time
+      transforms/set-created-time))
 
 (defaction create
   [params]
