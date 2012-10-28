@@ -5,9 +5,11 @@
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.feed-source :as model.feed-source]))
+            [jiksnu.model.feed-source :as model.feed-source]
+            [lamina.core :as l]))
 
 (defn set-local
   [activity]
@@ -126,3 +128,34 @@
   (if (:verb activity)
     activity
     (assoc activity :verb "post")))
+
+;; TODO: this type of job should be done via triggers
+(defn set-recipients
+  "attempt to resolve the recipients"
+  [activity]
+  (let [uris (filter identity (:recipient-uris activity))]
+    (if (empty? uris)
+      (dissoc activity :recipient-uris)
+      (let [users (->> uris
+                       (keep #(:_id (actions.user/find-or-create-by-remote-id {:id %})))) ]
+        (assoc activity :recipients users)))))
+
+(defn set-conversation
+  [activity]
+  (if-let [uri (first (:conversation-uris activity))]
+    (let [ch (model/get-conversation uri)
+          conversation (l/wait-for-result ch 5000)]
+      (-> activity
+          (assoc :conversation (:_id conversation))
+          (dissoc :conversation-uris)))
+    activity))
+
+(defn set-mentioned
+  [activity]
+  (if-let [mentioned-uris (seq (:mentioned-uris activity))]
+    (let [ids (map (fn [uri]
+                     (:_id (actions.user/find-or-create-by-remote-id {:id uri})))
+                   mentioned-uris)]
+      (dissoc (assoc activity :mentioned ids) :mentioned-uris))
+    activity))
+

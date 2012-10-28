@@ -9,29 +9,12 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]))
-
+            [jiksnu.model.activity :as model.activity]))
 
 (test-environment-fixture
  
- (fact "#'set-recipients"
-   (fact "when there are no recipient uris"
-     (fact "should return that activity"
-       (let [activity (factory :activity)]
-         (set-recipients activity) => activity)))
-   (fact "When the activity contains a recipient uri"
-     (let [recipient (existance/a-user-exists)
-           activity (factory :activity {:recipient-uris [(:id recipient)]})]
-       (set-recipients activity) =>
-       (every-checker
-        #(= (:_id recipient) (first (:recipients %)))))))
-
  (fact "#'oembed->activity"
    (let [oembed-str (slurp "test-resources/oembed.json")]
      ;; TODO: complete
@@ -77,7 +60,8 @@
    (fact "when the user is logged in"
      (fact "and it is a valid activity"
        (fact "should return that activity"
-         (let [feed-source (existance/a-feed-source-exists)
+         (let [domain (existance/a-domain-exists)
+               feed-source (existance/a-feed-source-exists)
                user (existance/a-user-exists)]
            (let [activity (factory :activity {:author (:_id user)
                                               :update-source (:_id feed-source)

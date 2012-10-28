@@ -94,17 +94,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
     item
     (add-link* item link)))
 
-;; TODO: this type of job should be done via triggers
-(defn set-recipients
-  "attempt to resolve the recipients"
-  [activity]
-  (let [uris (filter identity (:recipient-uris activity))]
-    (if (empty? uris)
-      (dissoc activity :recipient-uris)
-      (let [users (->> uris
-                       (keep #(:_id (actions.user/find-or-create-by-remote-id {:id %})))) ]
-        (assoc activity :recipients users)))))
-
 (def index*
   (model/make-indexer 'jiksnu.model.activity))
 
@@ -116,25 +105,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn find-by-user
   [user]
   (index {:author (:_id user)}))
-
-(defn set-conversation
-  [activity]
-  (if-let [uri (first (:conversation-uris activity))]
-    (let [ch (model/get-conversation uri)
-          conversation (l/wait-for-result ch 5000)]
-      (-> activity
-          (assoc :conversation (:_id conversation))
-          (dissoc :conversation-uris)))
-    activity))
-
-(defn set-mentioned
-  [activity]
-  (if-let [mentioned-uris (seq (:mentioned-uris activity))]
-    (let [ids (map (fn [uri]
-                     (:_id (actions.user/find-or-create-by-remote-id {:id uri})))
-                   mentioned-uris)]
-      (dissoc (assoc activity :mentioned ids) :mentioned-uris))
-    activity))
 
 (defn prepare-create
   [activity]
@@ -151,10 +121,9 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-parent
       transforms.activity/set-url
       transforms.activity/set-id
-      set-recipients
-      set-mentioned
-      set-conversation
-      ))
+      transforms.activity/set-recipients
+      transforms.activity/set-mentioned
+      transforms.activity/set-conversation))
 
 (defn prepare-post
   [activity]
