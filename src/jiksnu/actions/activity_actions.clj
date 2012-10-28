@@ -335,6 +335,10 @@ serialization"
   [conversation & [options]]
   (index {:conversation (:_id conversation)} options))
 
+(defaction fetch-by-feed-source
+  [source & [options]]
+  (index {:update-source (:_id source)} options))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.activity-filters"
