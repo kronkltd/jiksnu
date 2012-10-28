@@ -293,7 +293,7 @@
       (-> activity :object :object-type))]
 
    ;; TODO: handle other visibilities
-   (when-not (:public activity)
+   #_(when-not (:public activity)
      " privately")
 
    " approximately "
