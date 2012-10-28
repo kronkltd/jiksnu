@@ -77,7 +77,7 @@
          (actions.user/create {:username username :domain domain})
          (if domain
            (when-not (#{"vhost-manager"} domain)
-             (actions.domain/find-or-create domain))
+             (actions.domain/get-discovered domain))
            (throw (RuntimeException. "Could not find domain"))))))
   ([this ^BareJID user ^String password]
      (log/info "addUser")

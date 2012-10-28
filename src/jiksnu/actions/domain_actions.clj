@@ -20,6 +20,7 @@
            jiksnu.model.Domain))
 
 (defonce delete-hooks (ref []))
+(defonce pending-discovers (ref {}))
 
 (defn prepare-create
   [domain]
@@ -81,7 +82,13 @@
 (defaction set-discovered!
   "marks the domain as having been discovered"
   [domain]
-  (model.domain/set-field domain :discovered true))
+  (model.domain/set-field domain :discovered true)
+  (let [id (:_id domain)
+        domain (model.domain/fetch-by-id id)]
+    (when-let [p (get @pending-discovers id)]
+      (let [domain (model.domain/fetch-by-id (:_id domain))]
+        (deliver p domain)))
+    domain))
 
 (defn discover-webfinger
   [^Domain domain url]
@@ -90,9 +97,9 @@
     (if-let [links (model.webfinger/get-links xrd)]
       ;; TODO: do individual updates
       (do
-        (set-discovered! domain)
         (doseq [link links]
           (add-link domain link))
+        (set-discovered! domain)
         domain)
       (throw+  "Host meta does not have any links"))
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
@@ -159,7 +166,6 @@
   [options]
   (let [domain (prepare-create options)]
     (model.domain/create domain)
-    (discover domain)
     domain))
 
 (defn find-or-create
@@ -180,7 +186,19 @@
 
 (defn get-discovered
   [domain]
-  (discover domain nil))
+  (let [domain (model.domain/fetch-by-id (:_id domain))]
+    (if (:discovered domain)
+      domain
+      (let [id (:_id domain)]
+        @(if-let [p (dosync
+                     (when-not (get @pending-discovers id)
+                       (let [p (promise)]
+                         (alter pending-discovers #(assoc % id p))
+                         p)))]
+           (do
+             (discover domain)
+             p)
+           (get @pending-discovers id))))))
 
 (defn get-user-meta-url
   [domain user-uri]

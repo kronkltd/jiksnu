@@ -58,7 +58,7 @@
 (defn get-user-meta
   [user]
   (let [id (:id user)
-        domain (actions.domain/find-or-create {:_id (:domain user)})]
+        domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [um-url (actions.domain/get-user-meta-url domain id)]
       (model.webfinger/fetch-host-meta um-url))))
 
@@ -161,7 +161,7 @@
   (if-let [domain-id (or (:domain user)
                          (when-let [id (:id user)]
                            (get-domain-name id)))]
-    (actions.domain/find-or-create {:_id domain-id})))
+    (actions.domain/get-discovered {:_id domain-id})))
 
 
 
@@ -357,7 +357,7 @@
   (let [id (str (.getUri person))
         ;; TODO: check for custom domain field first?
         domain-name (get-domain-name id)
-        domain (actions.domain/find-or-create {:_id domain-name})
+        domain (actions.domain/get-discovered {:_id domain-name})
         username (or (abdera/get-extension person ns/poco "preferredUsername")
                      (get-username {:id id}))]
     (if (and username domain)
@@ -531,7 +531,7 @@
   "Error callback when user doesn't support xmpp"
   [user]
   (let [domain-name (:domain user)
-        domain (actions.domain/find-or-create domain-name)]
+        domain (actions.domain/get-discovered domain-name)]
     (actions.domain/set-xmpp domain false)
     user))
 
