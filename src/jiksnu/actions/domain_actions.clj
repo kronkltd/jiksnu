@@ -189,13 +189,16 @@
   (let [domain (find-or-create domain)]
     (if (:discovered domain)
       domain
-      (do
-        (discover domain)
-        (let [p (promise)]
-          (dosync
-           (alter pending-discovers #(update-in % [(:_id domain)] concat [p])))
-          pending-discovers
-          p)))))
+      (let [id (:_id domain)]
+        @(if-let [p (dosync
+                     (when-not (get @pending-discovers id)
+                       (let [p (promise)]
+                         (alter pending-discovers #(assoc % id p))
+                         p)))]
+           (do
+             (discover domain)
+             p)
+           (get @pending-discovers id))))))
 
 (defn get-user-meta-url
   [domain user-uri]
