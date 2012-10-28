@@ -107,8 +107,16 @@
     (there-is-an-activity {:modifier  modifier
                            :user user})))
 
-
-
+(defn a-record-exists
+  [type & [opts]]
+  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
+                               (name type)))]
+    (require ns-sym)
+    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
+      (when-let [record (create-fn (factory type opts))]
+        (set-this type record)
+        record)
+      (throw+ (format "could not find %s/create" ns-sym)))))
 
 
 
@@ -136,24 +144,24 @@
     (set-this :feed-subscription feed-subscription)
     feed-subscription))
 
-(defn a-record-exists
-  [type & [opts]]
-  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
-                               (name type)))]
-    (require ns-sym)
-    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
-      (when-let [record (create-fn (factory type opts))]
-        (set-this type record)
-        record)
-      (throw+ (format "could not find %s/create" ns-sym)))))
-
 
 
 (defn a-subscription-exists
-  []
+  [& [options]]
   (->> (factory :subscription)
        model.subscription/create
        (set-this :subscription)))
+
+(defn a-conversation-exists
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        source (or (:update-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists))]
+    (a-record-exists :conversation {:domain (:_id domain)
+                                    :update-source (:_id source)})))
 
 
 (defn this-user-has-a-subscription
