@@ -336,10 +336,7 @@
                             ["dcterms" "http://purl.org/dc/terms/"]]
                            (map
                             (fn [[prefix uri]] (format "%s: %s" prefix uri)))
-                           (string/join " "))}
-             (if *dynamic*
-               (when-let [vm (:viewmodel response)]
-                 {:data-load-model vm})))
+                           (string/join " "))})
       [:head (head-section request response)]
       [:body (body-section request response)]]))})
 

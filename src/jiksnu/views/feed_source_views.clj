@@ -41,8 +41,7 @@
        (with-page "activities"
          (pagination-links (if *dynamic* {} page))
          (bind-to "items"
-           (index-section items))))
-    :viewmodel (str (named-path "show feed-source" {:id (:_id item)}) ".viewmodel")}))
+           (index-section items))))}))
 
 (defview #'show :model
   [request activity]

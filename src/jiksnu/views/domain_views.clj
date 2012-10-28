@@ -88,7 +88,6 @@
   [request {:keys [items] :as page}]
   {:title "Domains"
    :single true
-   :viewmodel "/main/domains.viewmodel"
    :body
    (let [domains (if *dynamic* [(Domain.)] items)]
      (with-page "default"
@@ -128,7 +127,6 @@
   [request domain]
   {:title (:_id domain)
    :single true
-   :viewmodel (format "/main/domains/%s.viewmodel" (:_id domain))
    :links [{:rel "up"
             :href "/main/domains"
             :title "Domain Index"}]

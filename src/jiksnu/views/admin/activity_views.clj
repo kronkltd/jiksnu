@@ -13,7 +13,6 @@
   [request {:keys [items] :as response}]
   {:title "Activities"
    :single true
-   :viewmodel "/admin/activities.viewmodel"
    :body
    (let [activities (if *dynamic* [(Activity.)] items)]
      (with-page "default"

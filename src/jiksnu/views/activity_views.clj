@@ -90,8 +90,7 @@
   {:body
    (let [activity (if *dynamic* (Activity.) activity)]
      (bind-to "targetActivity"
-       (show-section activity)))
-   :viewmodel (str (named-path "show activity" {:id (:_id activity)}) ".viewmodel")})
+       (show-section activity)))})
 
 (defview #'show :model
   [request activity]

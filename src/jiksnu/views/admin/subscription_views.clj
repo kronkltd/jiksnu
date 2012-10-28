@@ -28,7 +28,6 @@
   [request {:keys [items] :as page}]
   {:title "Subscriptions"
    :single true
-   :viewmodel "/admin/subscriptions.viewmodel"
    :body
    (with-page "default"
      (pagination-links page)
@@ -50,7 +49,6 @@
 (defview #'show :html
   [request subscription]
   {:title "Subscription"
-   :viewmodel (str "/admin/subscriptions/" (:_id subscription) ".viewmodel")
    :body (admin-show-section subscription)})
 
 (defview #'show :model

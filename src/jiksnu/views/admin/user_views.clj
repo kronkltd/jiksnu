@@ -17,7 +17,6 @@
   [request {:keys [items] :as page}]
   {:single true
    :title "Users"
-   :viewmodel "/admin/users.viewmodel"
    :body
    (with-page "default"
      (pagination-links page)
@@ -41,7 +40,6 @@
   [request user]
   (let [page (second (actions.stream/user-timeline user))]
     {:title (title user)
-     :viewmodel (format "/admin/users/%s.viewmodel" (:_id user))
      :single true
      :body
      (bind-to "targetUser"

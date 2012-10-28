@@ -13,7 +13,6 @@
   [request {:keys [items] :as page}]
   {:single true
    :title "Groups"
-   :viewmodel "/admin/groups.viewmodel"
    :body
    (with-page "default"
      (pagination-links page)

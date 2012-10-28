@@ -14,7 +14,6 @@
   [request {:keys [items] :as response}]
   {:title "Authentication Mechanisms"
    :single true
-   :viewmodel "/admin/auth.viewmodel"
    :body (with-page "default"
            (pagination-links response)
            (bind-to "items"

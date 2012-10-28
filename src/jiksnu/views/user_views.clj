@@ -60,7 +60,6 @@
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Users"
-   :viewmodel "/users.viewmodel"
    :body
    (with-page "default"
      (pagination-links page)

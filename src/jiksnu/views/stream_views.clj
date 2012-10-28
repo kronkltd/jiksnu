@@ -210,7 +210,6 @@
     {:user user
      :title (:display-name user)
      :post-form true
-     :viewmodel (format "/users/%s.viewmodel" (:_id user))
      :body
      (with-page "default"
        (bind-to "items"

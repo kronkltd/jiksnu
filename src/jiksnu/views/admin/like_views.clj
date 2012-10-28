@@ -11,7 +11,6 @@
   [request {:keys [items] :as response}]
   {:single true
    :title "Likes"
-   :viewmodel "/admin/likes.viewmodel"
    :body
    (with-page "default"
      (list
