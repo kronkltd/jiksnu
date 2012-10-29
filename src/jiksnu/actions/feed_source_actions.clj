@@ -233,7 +233,7 @@
   "determines the feed source associated with a url"
   [url]
   (if-let [link (model/extract-atom-link url)]
-    (find-or-create {:topic (:href link)})
+    (find-or-create {:topic link})
     (throw+ (format "Could not determine topic url from resource: %s" url))))
 
 (definitializer

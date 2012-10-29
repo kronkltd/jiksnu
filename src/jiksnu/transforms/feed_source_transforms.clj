@@ -1,5 +1,6 @@
 (ns jiksnu.transforms.feed-source-transforms
-  (:require [jiksnu.actions.domain-actions :as actions.domain])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain])
   (:import java.net.URI))
 
 (defn set-domain

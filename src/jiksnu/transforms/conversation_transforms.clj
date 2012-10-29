@@ -1,4 +1,5 @@
 (ns jiksnu.transforms.conversation-transforms
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source])
@@ -17,6 +18,9 @@
   [conversation]
   (if (:update-source conversation)
     conversation
-    (assoc conversation :update-source
-           (:_id (actions.feed-source/discover-source (:url conversation))))))
+    (try
+      (let [source (actions.feed-source/discover-source (:url conversation))]
+        (assoc conversation :update-source (:_id source)))
+      (catch RuntimeException ex
+          (throw+ "Could not determine source")))))
 
