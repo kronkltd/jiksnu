@@ -44,6 +44,6 @@
          topic (str url ".atom")]
      (actions.feed-source/discover-source url) => (partial instance? FeedSource))
    (provided
-     (model/extract-atom-link url) => {:href topic}))
+     (model/extract-atom-link url) => topic))
 
  )
