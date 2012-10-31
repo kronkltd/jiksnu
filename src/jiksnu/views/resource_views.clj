@@ -7,7 +7,8 @@
         [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [ring.util.response :as response]))
+            [ring.util.response :as response])
+  (:import jiksnu.model.Resource))
 
 ;; create
 
@@ -31,10 +32,11 @@
   [request {:keys [items] :as page}]
   {:title "Resources"
    :body
-   (with-page "default"
-     (pagination-links page)
-     (bind-to "items"
-       (index-section items page)))})
+   (let [items (if *dynamic* [(Resource.)] items)]
+     (with-page "default"
+       (pagination-links page)
+       (bind-to "items"
+         (doall (index-section items page)))))})
 
 (defview #'index :json
   [request {:keys [items] :as page}]
@@ -50,4 +52,10 @@
 
 (defview #'show :model
   [request item]
-  {:body (doall (show-section item))})
+  {:body item})
+
+(defview #'show :viewmodel
+  [request item]
+  {:body {:targetResource (:_id item)
+          :title (or (:title item) "Resource")}})
+

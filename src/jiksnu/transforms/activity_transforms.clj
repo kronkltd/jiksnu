@@ -170,6 +170,7 @@
   [activity]
   (if-let [ids (->> activity
                     :enclosures
+                    :href
                     (map (comp :_id model/get-resource))
                     seq)]
     (-> activity

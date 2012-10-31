@@ -1,6 +1,6 @@
 (ns jiksnu.routes.resource-routes
   (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.actions.resource-actions :only [index discover update delete]]
+        [jiksnu.actions.resource-actions :only [delete discover index show update]]
         [jiksnu.routes.helpers :only [formatted-path]]))
 
 (add-route! "/resources"              {:named "index resources"})
@@ -8,6 +8,7 @@
 (add-route! "/resources/:id/delete"   {:named "delete resource"})
 (add-route! "/resources/:id/discover" {:named "discover resource"})
 (add-route! "/resources/:id/update"   {:named "update resource"})
+(add-route! "/model/resources/:id"    {:named "resource model"})
 
 (defn routes
   []
@@ -20,4 +21,5 @@
    [[:post   (named-path     "update resource")]   #'update]
    [[:delete (named-path     "show resource")]     #'delete]
    [[:post   (named-path     "delete resource")]   #'delete]
+   [[:get    (formatted-path "resource model")]    #'show]
    ])
