@@ -21,6 +21,7 @@
   [conversation]
   (-> conversation
       transforms/set-_id
+      transforms.conversation/set-domain
       transforms.conversation/set-local
       transforms.conversation/set-update-source
       transforms/set-updated-time

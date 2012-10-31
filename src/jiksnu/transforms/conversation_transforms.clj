@@ -24,3 +24,10 @@
       (catch RuntimeException ex
           (throw+ "Could not determine source")))))
 
+(defn set-domain
+  [source]
+  (if (:domain source)
+    source
+    (let [uri (URI. (:url source))
+          domain (actions.domain/get-discovered {:_id (.getHost uri)})]
+      (assoc source :domain (:_id domain)))))
