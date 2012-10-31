@@ -6,7 +6,8 @@
         [ciste.views :only [defview]]
         [clojure.core.incubator :only [dissoc-in]]
         [clojure.data.json :only [read-json]])
-  (:require [clojure.data.json :as json]
+  (:require [clj-statsd :as s]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.session :as session]
@@ -15,6 +16,7 @@
 (defaction invoke-action
   [model-name action-name id]
   (try
+    (s/increment "actions invoked")
     (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
       (require action-ns)
 
@@ -50,7 +52,7 @@
 
 (defaction connect
   [ch]
-  (log/info "connected")
+  (s/increment "websocket connections established")
   (let [id (:_id (session/current-user))
         connection-id (abdera/new-id)]
     (dosync
@@ -60,6 +62,7 @@
      (l/map*
       (fn [e]
         (log/infof "sending update notification to connection: %s" connection-id)
+        (s/increment "activities pushed")
         (json/json-str {:action "model-updated"
                         :type "activity"
                         :body (:records e)}))

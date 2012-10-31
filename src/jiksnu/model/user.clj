@@ -9,6 +9,7 @@
         [validateur.validation :only [acceptance-of validation-set presence-of]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [jiksnu.abdera :as abdera]
@@ -109,6 +110,7 @@
 (defn fetch-by-id
   "Fetch a user by it's object id"
   [id]
+  (s/increment "users fetched")
   (if-let [user (mc/find-map-by-id collection-name id)]
     (model/map->User user)
     (log/warnf "Could not find user: %s" id)))
@@ -119,6 +121,7 @@
     (if (empty? errors)
       (do
         (log/debugf "Creating user: %s" user)
+        (s/increment "users created")
         (mc/insert collection-name user)
         (fetch-by-id (:_id user)))
       (throw+ {:type :validation
@@ -128,6 +131,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
+     (s/increment "users searched")
      (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
            records (mq/with-collection collection-name
                      (mq/find params)
@@ -156,6 +160,7 @@
   "Updates user's field to value"
   [user field value]
   (log/debugf "setting %s (%s = %s)" (:_id user) field value)
+  (s/increment "users field set")
   (mc/update collection-name
              {:_id (:_id user)}
              {:$set {field value}}))
@@ -187,6 +192,7 @@
 (defn delete
   "Delete the user"
   [user]
+  (s/increment "users deleted")
   (mc/remove-by-id collection-name (:_id user)))
 
 (defn update
@@ -196,6 +202,7 @@
         merged-user (merge {:admin false}
                            old-user new-user)
         user (map->User merged-user)]
+    (s/increment "users updated")
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
@@ -244,6 +251,7 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
+     (s/increment "users counted")
      (mc/count collection-name params)))
 
 ;; FIXME: This does not work yet

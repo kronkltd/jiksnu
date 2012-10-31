@@ -3,7 +3,8 @@
         [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [presence-of valid? validation-set]])
-  (:require [clj-tigase.core :as tigase]
+  (:require [clj-statsd :as s]
+            [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -33,11 +34,13 @@
 
 (defn fetch-by-id
   [id]
+  (s/increment "domains fetched")
   (if-let [domain (mc/find-map-by-id collection-name id)]
     (model/map->Domain domain)))
 
 (defn delete
   [domain]
+  (s/increment "domains deleted" )
   (mc/remove-by-id collection-name (:_id domain))
   domain)
 
@@ -47,6 +50,7 @@
     (if (empty? errors)
       (do
         (log/debugf "Creating domain: %s" domain)
+        (s/increment "domains created")
         (mc/insert collection-name domain)
         (fetch-by-id (:_id domain)))
       (throw+ {:type :validation :errors errors}))))
@@ -55,6 +59,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
+     (s/increment "domains searched")
      ((model/make-fetch-fn model/map->Domain collection-name)
       params options)))
 
@@ -70,6 +75,7 @@
 
 (defn set-field
   [domain field value]
+  (s/increment "domains field set")
   (mc/update collection-name
    {:_id (:_id domain)}
    {:$set {field value}}))
