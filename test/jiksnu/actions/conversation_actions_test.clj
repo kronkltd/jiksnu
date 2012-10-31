@@ -11,10 +11,6 @@
 
 (test-environment-fixture
 
- (fact "#'index"
-   (fact "should return a page structure"
-     (index) => map?))
-
  (fact "#'create"
    (let [domain (existance/a-domain-exists)
          domain-name (:_id domain)
@@ -30,6 +26,10 @@
    (let [conversation (existance/a-conversation-exists)]
      (delete conversation) => map?
      (model.conversation/fetch-by-id (:_id conversation)) => nil))
+
+ (fact "#'index"
+   (fact "should return a page structure"
+     (index) => map?))
 
  (fact "#'show"
    (show .conversation.) => .conversation.)

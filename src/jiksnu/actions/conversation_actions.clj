@@ -3,7 +3,8 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]])
+        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -14,6 +15,8 @@
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [lamina.core :as l]))
 
+(defonce delete-hooks (ref []))
+
 (defn prepare-create
   [conversation]
   (-> conversation
@@ -23,15 +26,23 @@
       transforms/set-updated-time
       transforms/set-created-time))
 
+(defn prepare-delete
+  ([item]
+     (prepare-delete item @delete-hooks))
+  ([item hooks]
+     (if (seq hooks)
+       (recur ((first hooks) item) (rest hooks))
+       item)))
+
 (defaction create
   [params]
   (let [conversation (prepare-create params)]
-    (s/increment "conversation_created")
     (model.conversation/create conversation)))
 
 (defaction delete
-  [conversation]
-  (model.conversation/delete conversation))
+  [item]
+  (let [item (prepare-delete item)]
+    (model.conversation/delete item)))
 
 (def index*
   (model/make-indexer 'jiksnu.model.conversation))
@@ -40,12 +51,25 @@
   [& [params & [options]]]
   (index* params options))
 
+(defaction update
+  [conversation & [options]]
+  (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
+    (actions.feed-source/update source)
+    (throw+ "Could not find update source")))
+
+(defaction discover
+  [conversation & [options]]
+  (log/debugf "Discovering conversation: %s" conversation)
+  conversation)
+
 (defaction find-or-create
-  [options]
-  (if-let [conversation (or (if-let [id (:_id options)] (first (model.conversation/fetch-by-id id)))
-                            (if-let [url (:url options)] (first (model.conversation/find-by-url url))))]
+  [params]
+  (if-let [conversation (or (if-let [id (:_id params)]
+                              (first (model.conversation/fetch-by-id id)))
+                            (if-let [url (:url params)]
+                              (first (:items (model.conversation/find-by-url url)))))]
     conversation
-    (create options)))
+    (create params)))
 
 (defaction show
   [record]
