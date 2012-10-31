@@ -258,7 +258,7 @@
      (side-navigation)
      [:hr]
      (formats-section response)
-     (statistics-section request response)]))
+     #_(statistics-section request response)]))
 
 (defn right-column-section
   [response]
