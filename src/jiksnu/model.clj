@@ -57,16 +57,6 @@
            (.format formatter  date))
     date))
 
-(defn date->twitter
-  [date]
-  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
-    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
-    (.format formatter date)))
-
-(defn prettyify-time
-  [^Date date]
-  (-?>> date (.format (PrettyTime.))))
-
 (defn strip-namespaces
   [val]
   (-?> val
@@ -158,9 +148,7 @@
   "Is the provided object a user?"
   [user] (instance? User user))
 
-(defn drop-collection
-  [klass]
-  (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
+;; index helpers
 
 (defn make-fetch-fn
   [make-fn collection-name]
@@ -207,6 +195,8 @@
                (throw+ "Could not find fetch function"))
              (throw+ "Could not find count function"))))))
 
+;; rdf helpers
+
 (defn triples->model
   [triples]
   (let [model (rdf/build-model)
@@ -217,7 +207,6 @@
       (rdf/model-add-triples triples))
     model))
 
-
 (defn format-triples
   [triples format]
   (-> triples
@@ -225,46 +214,7 @@
       (rdf/model->format format)
       with-out-str))
 
-(defn add-hook!
-  [r f]
-  (dosync
-   (alter r conj f)))
-
-(defn drop-all!
-  "Drop all collections"
-  []
-  (log/debug "dropping all collections")
-  (doseq [entity [Activity AuthenticationMechanism Conversation Domain
-                  FeedSource FeedSubscription
-                  Group Item Key Like Subscription User]]
-    (drop-collection entity)))
-
-(defn parse-http-link
-  [url]
-  (let [[_ href remainder] (re-matches #"<([^>]+)>; (.*)" url)]
-    (->> (string/split remainder #"; ")
-         (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
-         (into {})
-         (merge {"href" href}))))
-
-
-
-
-(defn ^ObjectId make-id
-  "Create an object id from the provided string"
-  ([] (ObjectId.))
-  ([^String id] (ObjectId. id)))
-
-;; this could be more generic
-(defn extract-atom-link
-  "Find the atom link in the page identified by url"
-  [url]
-  (->> url
-       cm/get-links
-       (filter #(= "alternate" (:rel (:attrs %))))
-       (filter #(= "application/atom+xml" (:type (:attrs %))))
-       (map #(-> % :attrs :href))
-       first))
+;; async fetchers
 
 (defonce pending-conversations (l/permanent-channel))
 (defonce pending-sources       (l/permanent-channel))
@@ -290,6 +240,24 @@
 
 ;; Database functions
 
+(defn ^ObjectId make-id
+  "Create an object id from the provided string"
+  ([] (ObjectId.))
+  ([^String id] (ObjectId. id)))
+
+(defn drop-collection
+  [klass]
+  (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
+
+(defn drop-all!
+  "Drop all collections"
+  []
+  (log/debug "dropping all collections")
+  (doseq [entity [Activity AuthenticationMechanism Conversation Domain
+                  FeedSource FeedSubscription
+                  Group Item Key Like Subscription User]]
+    (drop-collection entity)))
+
 (defn set-database!
   "Set the connection for mongo"
   []
@@ -299,7 +267,44 @@
   (let [db (mg/get-db (str (config :database :name)))]
     (mg/set-db! db)))
 
-;; TODO: Find a good place for this
+;; link functions
+
+(defn extract-atom-link
+  "Find the atom link in the page identified by url"
+  [url]
+  (->> url
+       cm/get-links
+       (filter #(= "alternate" (:rel (:attrs %))))
+       (filter #(= "application/atom+xml" (:type (:attrs %))))
+       (map #(-> % :attrs :href))
+       first))
+
+(defn parse-http-link
+  [url]
+  (let [[_ href remainder] (re-matches #"<([^>]+)>; (.*)" url)]
+    (->> (string/split remainder #"; ")
+         (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
+         (into {})
+         (merge {"href" href}))))
+
+;; hooks
+
+(defn add-hook!
+  [r f]
+  (dosync
+   (alter r conj f)))
+
+;; serializers
+
+(defn date->twitter
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
+(defn prettyify-time
+  [^Date date]
+  (-?>> date (.format (PrettyTime.))))
 
 (defn write-json-date
   ([^Date date ^PrintWriter out]
@@ -319,8 +324,12 @@
 (extend ObjectId json/Write-JSON
         {:write-json write-json-object-id})
 
+;; initializer
+
 (definitializer
-  (alter-var-root #'*base-url* (constantly (format "http://%s" (config :domain))) )
+  (let [url (format "http://%s" (config :domain))]
+    (alter-var-root #'*base-url*
+                    (constantly url)))
 
   (s/setup "localhost" 8125)
   
