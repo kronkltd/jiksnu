@@ -21,7 +21,8 @@
             monger.json
             [plaza.rdf.core :as rdf]
             [plaza.rdf.implementations.jena :as jena])
-  (:import com.ocpsoft.pretty.time.PrettyTime
+  (:import com.mongodb.WriteConcern
+           com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
            java.io.PrintWriter
            java.text.SimpleDateFormat
@@ -340,5 +341,8 @@
     (mc/ensure-index "conversations" {:url 1} {:unique true})
 
     (catch RuntimeException ex
-      (.printStackTrace ex))))
+      (.printStackTrace ex)))
+
+  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
+  )
 
