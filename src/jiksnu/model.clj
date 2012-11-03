@@ -324,5 +324,12 @@
 
   (s/setup "localhost" 8125)
   
-  (set-database!))
+  (set-database!)
+
+  (try
+
+    (mc/ensure-index "conversations" {:url 1} {:unique true})
+
+    (catch RuntimeException ex
+      (.printStackTrace ex))))
 

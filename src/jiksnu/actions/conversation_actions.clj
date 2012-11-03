@@ -21,6 +21,7 @@
   [conversation]
   (-> conversation
       transforms/set-_id
+      transforms.conversation/set-domain
       transforms.conversation/set-local
       transforms.conversation/set-update-source
       transforms/set-updated-time
@@ -45,7 +46,8 @@
     (model.conversation/delete item)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation))
+  (model/make-indexer 'jiksnu.model.conversation
+                      :sort-clause {:url 1}))
 
 (defaction index
   [& [params & [options]]]
@@ -63,24 +65,32 @@
   conversation)
 
 (defaction find-or-create
-  [params]
+  [params & [{tries :tries :or {tries 1} :as options}]]
   (if-let [conversation (or (if-let [id (:_id params)]
                               (first (model.conversation/fetch-by-id id)))
                             (if-let [url (:url params)]
-                              (first (:items (model.conversation/find-by-url url)))))]
+                              (first (model.conversation/find-by-url url)))
+                            (try
+                              (create params)
+                              (catch RuntimeException ex
+                                (log/warn "conversation create failed"))))]
     conversation
-    (create params)))
+    (if (< tries 3)
+      (do
+        (log/info "recurring")
+        (find-or-create params (update-in options [:tries] inc)))
+      (throw+ "Could not create conversation"))))
 
 (defaction show
   [record]
   record)
 
-(definitializer
-  (l/receive-all
-   model/pending-conversations
-   (fn [[url ch]]
-     (l/enqueue ch (find-or-create {:url url}))))
+(l/receive-all
+ model/pending-conversations
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:url url}))))
 
+(definitializer
   (require-namespaces
    ["jiksnu.filters.conversation-filters"
     "jiksnu.triggers.conversation-triggers"
