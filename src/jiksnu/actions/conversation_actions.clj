@@ -46,7 +46,8 @@
     (model.conversation/delete item)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation))
+  (model/make-indexer 'jiksnu.model.conversation
+                      :sort-clause {:url 1}))
 
 (defaction index
   [& [params & [options]]]
