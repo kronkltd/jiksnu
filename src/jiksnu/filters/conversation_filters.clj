@@ -34,3 +34,10 @@
     (if-let [item (model.conversation/fetch-by-id (model/make-id id))]
      (action item))))
 
+;; update
+
+(deffilter #'update :command
+  [action id]
+  (let [item (model.conversation/fetch-by-id (model/make-id id))]
+    (action item)))
+
