@@ -52,6 +52,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
+     (s/increment "activities searched")
      (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
            records (mq/with-collection collection-name
                      (mq/find params)
@@ -64,6 +65,7 @@
   [id]
   ;; TODO: Should this always take a string?
   (let [id (if (string? id) (model/make-id id) id)]
+    (s/increment "activities fetched")
     (if-let [activity (mc/find-map-by-id collection-name id)]
       (model/map->Activity activity))))
 
@@ -76,6 +78,7 @@
         (mc/insert collection-name params)
         (let [item (fetch-by-id (:_id params))]
           (trace/trace :activities:created item)
+          (s/increment "activities created")
           item))
       (throw+ {:type :validation :errors errors}))))
 
@@ -90,6 +93,7 @@
 
 (defn update
   [activity]
+  (s/increment "activities updated")
   (mc/save collection-name activity))
 
 (defn privacy-filter
@@ -102,7 +106,6 @@
 
 (defn fetch-by-remote-id
   [id]
-  (trace/trace :activities:fetched id)
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (model/map->Activity activity)))
 
@@ -113,18 +116,21 @@
 (defn delete
   [item]
   (trace/trace :activities:deleted item)
+  (s/increment "activities deleted")
   (mc/remove-by-id collection-name (:_id item))
   item)
 
 ;; deprecated
 (defn add-comment
   [parent comment]
+  (s/increment "comment added")
   (mc/update collection-name
              {:_id (:_id parent)}
              {:$push {:comments (:_id comment)}}))
 
 (defn parse-pictures
   [picture]
+  (s/increment "pictures processed")
   (let [filename (:filename picture)
         tempfile (:tempfile picture)
         user-id (str (session/current-user-id))
@@ -137,4 +143,5 @@
   ([] (count-records {}))
   ([params]
      (trace/trace :activities:counted 1)
+     (s/increment "activitied counted")
      (mc/count collection-name params)))

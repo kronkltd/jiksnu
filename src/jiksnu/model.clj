@@ -223,6 +223,7 @@
 
 (defn get-conversation
   [url]
+  (s/increment "conversations async get")
   (let [result (l/result-channel)]
     (l/enqueue pending-conversations [url result])
     (l/wait-for-result result 5000)))

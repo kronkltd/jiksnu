@@ -141,7 +141,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   "create an activity"
   [{id :id :as params}]
   (let [activity (prepare-create params)]
-    (s/increment "activity created")
     (model.activity/create activity)))
 
 (defaction delete
