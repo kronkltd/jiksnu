@@ -227,6 +227,8 @@
             {:href (str "http://" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
+(defonce scripts-section-hook (ref []))
+
 (defn scripts-section
   [request response]
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
@@ -248,6 +250,10 @@
      "/assets/js/jiksnu.js"
      ;; "/assets/js/jiksnu.advanced.js"
      )
+    (doall
+     (map (fn [hook]
+            (hook request response))
+          @scripts-section-hook))
     [:script {:type "text/javascript"}
      "goog.require('jiksnu.core');"])))
 
