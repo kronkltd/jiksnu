@@ -292,6 +292,7 @@
             "defaults" (js-obj
                         "uri" nil
                         "url" nil
+                        "domain" nil
                         "created" nil
                         "updated" nil
                         )

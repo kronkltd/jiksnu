@@ -5,11 +5,14 @@
                                        index-block index-line index-section link-to
                                        show-section]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-block admin-index-line control-line
+        [jiksnu.sections :only [admin-index-block admin-index-line bind-to control-line
                                 pagination-links]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.model.conversation :as model.conversation])
-  (:import jiksnu.model.Conversation))
+            [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.model.feed-source :as model.feed-source])
+  (:import jiksnu.model.Conversation
+           jiksnu.model.Domain
+           jiksnu.model.FeedSource))
 
 ;; (defsection admin-index-section [Conversation :html]
 ;;   [page]
@@ -74,6 +77,13 @@
   [item & [page]]
   [:table.table
    [:tbody
+    [:tr
+     [:th "Domain"]
+     [:td
+      (let [domain (if *dynamic* (Domain.) (model.feed-source/fetch-by-id (:domain item)))]
+        (bind-to "domain"
+          [:div {:data-model "domain"}
+           (link-to domain)]))]]
     [:tr
      [:th "Url"]
      [:td
