@@ -293,6 +293,7 @@
                         "uri" nil
                         "url" nil
                         "domain" nil
+                        "update-source" nil
                         "created" nil
                         "updated" nil
                         )

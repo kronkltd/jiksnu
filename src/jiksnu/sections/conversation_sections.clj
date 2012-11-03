@@ -98,4 +98,11 @@
      [:th "Updated"]
      [:td (if *dynamic*
           {:data-bind "text: updated"}
-          (:updated item))]]]])
+          (:updated item))]]
+    [:tr
+     [:th "Source"]
+     [:td
+      (let [source (if *dynamic* (FeedSource.)
+                       (model.feed-source/fetch-by-id (:update-source item)))]
+        (bind-to "$data['update-source']"
+          [:div {:data-model "feed-source"} (link-to source)]))]]]])
