@@ -5,10 +5,12 @@
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block
-                                admin-index-line admin-index-section bind-to control-line dump-data]])
+                                admin-index-line admin-index-section bind-to control-line
+                                dropdown-menu dump-data]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))
 
@@ -72,25 +74,31 @@
   [item]
   (action-link "feed-source" "unwatch" (:_id item)))
 
+(defn model-button
+  [item]
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/model/feed-sources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:href (format "/model/feed-sources/%s.model" (:_id item))})
+   "Model"])
+
+(defn get-buttons
+  []
+  (concat
+   [#'model-button]
+   (when (session/current-user)
+     [#'update-button
+      #'subscribe-button
+      #'unsubscribe-button
+      #'watch-button
+      #'unwatch-button])
+   (when (session/is-admin?)
+     [#'delete-button])))
+
 ;; actions-section
 
 (defsection actions-section [FeedSource :html]
-  [source]
-  [:div.btn-group
-   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
-    [:span.caret]
-    ]
-   [:ul.dropdown-menu.pull-right
-    [:li (update-button source)]
-    [:li (subscribe-button source)]
-    [:li [:a (if *dynamic*
-               {:data-bind "attr: {href: '/model/feed-sources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
-               {:href (format "/model/feed-sources/%s.model" (:_id source))})
-          "Model"]]
-    [:li (unsubscribe-button source)]
-    [:li (delete-button source)]
-    [:li (watch-button source)]
-    [:li (unwatch-button source)]]])
+  [item]
+  (dropdown-menu item (get-buttons)))
 
 ;; add-form
 
@@ -105,7 +113,7 @@
     ;; TODO: radio buttons?
     (control-line "Mode" "mode" "text")
     (control-line "User" "user" "text")
-    
+
     [:div.form-actions
      [:button.btn.btn-primary
       {:type "submit"} "Add"]]]])
@@ -251,12 +259,13 @@
   (let [{:keys [topic callback challenge mode hub
                 verify-token lease-seconds created updated]} source]
     [:div {:data-model "feed-source"}
+     (actions-section source)
      [:table.table
       [:tbody
        [:tr
         [:th "Topic:"]
         [:td
-         [:a 
+         [:a
           (if *dynamic*
             {:data-bind "attr: {href: topic}, text: topic"}
             {:href topic})
@@ -308,8 +317,7 @@
            updated)]]
        [:tr
         [:th "Lease Seconds:"]
-        [:td lease-seconds]]]]
-     (actions-section source)]))
+        [:td lease-seconds]]]]]))
 
 (defsection show-section [FeedSource :model]
   [activity & [page]]

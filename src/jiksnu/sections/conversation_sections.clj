@@ -6,7 +6,7 @@
                                        show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line pagination-links]])
+                                bind-to control-line dropdown-menu pagination-links]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -33,6 +33,23 @@
 (defn unsubscribe-button
   [item]
   (action-link "conversation" "unsubscribe" (:_id item)))
+
+(defn get-buttons
+  []
+  (concat
+   (when (session/current-user)
+     [#'subscribe-button
+      #'discover-button
+      #'model-button
+      #'update-button])
+   (when (session/is-admin?)
+     [#'delete-button])))
+
+;; actions-section
+
+(defsection actions-section [Conversation :html]
+  [item]
+  (dropdown-menu item (get-buttons)))
 
 ;; admin-index-section
 
@@ -71,6 +88,8 @@
                      {:about (uri record)}))
       (when-not *dynamic*
         (or (:title options-map) (title record)))]]))
+
+;; index-block
 
 ;; index-block
 
@@ -113,37 +132,39 @@
 
 (defsection show-section [Conversation :html]
   [item & [page]]
-  [:table.table
-   [:tbody
-    [:tr
-     [:th "Domain"]
-     [:td
-      (let [domain (if *dynamic* (Domain.) (model.feed-source/fetch-by-id (:domain item)))]
-        (bind-to "domain"
-          [:div {:data-model "domain"}
-           (link-to domain)]))]]
-    [:tr
-     [:th "Url"]
-     [:td
-      [:a (if *dynamic*
-            {:data-bind "attr: {href: url}, text: url"})]]]
-    [:tr
-     [:th "Created"]
-     [:td (if *dynamic*
-            {:data-bind "text: created"}
-            (:created item))]]
-    [:tr
-     [:th "Updated"]
-     [:td (if *dynamic*
-            {:data-bind "text: updated"}
-            (:updated item))]]
-    [:tr
-     [:th "Source"]
-     [:td
-      (let [source (if *dynamic* (FeedSource.)
-                       (model.feed-source/fetch-by-id (:update-source item)))]
-        (bind-to "$data['update-source']"
-          [:div {:data-model "feed-source"} (link-to source)]))]]]])
+  (list
+   (actions-section item)
+   [:table.table
+    [:tbody
+     [:tr
+      [:th "Domain"]
+      [:td
+       (let [domain (if *dynamic* (Domain.) (model.feed-source/fetch-by-id (:domain item)))]
+         (bind-to "domain"
+           [:div {:data-model "domain"}
+            (link-to domain)]))]]
+     [:tr
+      [:th "Url"]
+      [:td
+       [:a (if *dynamic*
+             {:data-bind "attr: {href: url}, text: url"})]]]
+     [:tr
+      [:th "Created"]
+      [:td (if *dynamic*
+             {:data-bind "text: created"}
+             (:created item))]]
+     [:tr
+      [:th "Updated"]
+      [:td (if *dynamic*
+             {:data-bind "text: updated"}
+             (:updated item))]]
+     [:tr
+      [:th "Source"]
+      [:td
+       (let [source (if *dynamic* (FeedSource.)
+                        (model.feed-source/fetch-by-id (:update-source item)))]
+         (bind-to "$data['update-source']"
+           [:div {:data-model "feed-source"} (link-to source)]))]]]]))
 
 ;; update-button
 
