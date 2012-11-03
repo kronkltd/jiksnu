@@ -77,12 +77,12 @@
   [record]
   record)
 
-(definitializer
-  (l/receive-all
-   model/pending-conversations
-   (fn [[url ch]]
-     (l/enqueue ch (find-or-create {:url url}))))
+(l/receive-all
+ model/pending-conversations
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:url url}))))
 
+(definitializer
   (require-namespaces
    ["jiksnu.filters.conversation-filters"
     "jiksnu.triggers.conversation-triggers"
