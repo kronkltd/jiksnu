@@ -4,7 +4,7 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [dump-data pagination-links]]
+        [jiksnu.sections :only [bind-to dump-data pagination-links]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -46,7 +46,8 @@
      [(named-path "index conversations") "Conversations"]
      ;; [(named-path "index sources")       "Sources"]
      [(named-path "index domains")       "Domains"]
-     [(named-path "index groups")        "Groups"]]]
+     [(named-path "index groups")        "Groups"]
+     [(named-path "index resources")     "Resources"]]]
    
    (when (is-admin?)
      ["Admin"
@@ -124,14 +125,15 @@
 (defn statistics-section
   [request response]
   (let [stats (actions.site/get-stats)]
-    [:div.well.statistics-section (when *dynamic* {:data-bind "with: statistics"})
-     [:table.table.table-compact
-      [:thead
-       [:tr
-        [:th "Collection"]
-        [:th "Count"]]]
-      [:tbody
-       (map (partial statistics-line stats) statistics-info)]]]))
+    [:div.well.statistics-section
+     (bind-to "statistics"
+       [:table.table.table-compact
+        [:thead
+         [:tr
+          [:th "Collection"]
+          [:th "Count"]]]
+        [:tbody
+         (map (partial statistics-line stats) statistics-info)]])]))
 
 (defn devel-warning
   [response]
@@ -166,10 +168,10 @@
 
 (defn new-post-section
   [request response]
-  [:div (when *dynamic* {:data-bind "with: postForm"})
-   [:div (when *dynamic* {:data-bind "if: visible"})
-    (when (or *dynamic* (:post-form response))
-      (add-form (Activity.)))]])
+  (bind-to "postForm"
+    [:div (when *dynamic* {:data-bind "if: visible"})
+     (when (or *dynamic* (:post-form response))
+       (add-form (Activity.)))]))
 
 (defn title-section
   [request response]
@@ -225,6 +227,8 @@
             {:href (str "http://" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
+(defonce scripts-section-hook (ref []))
+
 (defn scripts-section
   [request response]
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
@@ -238,12 +242,18 @@
      "/assets/js/jquery-1.8.0.min.js"
      "/assets/js/knockout-2.1.0.min.js"
      "/assets/js/bootstrap-2.4.0.min.js"
+     "/assets/js/lightbox.js"
+     "/assets/js/jquery.smooth-scroll.js"
      ;; "/assets/js/knockout.mapping-2.2.3.js"
      "/assets/js/backbone-0.9.2.min.js"
      "/assets/js/knockback-0.15.4.min.js"
      "/assets/js/jiksnu.js"
      ;; "/assets/js/jiksnu.advanced.js"
      )
+    (doall
+     (map (fn [hook]
+            (hook request response))
+          @scripts-section-hook))
     [:script {:type "text/javascript"}
      "goog.require('jiksnu.core');"])))
 
@@ -254,16 +264,15 @@
      (side-navigation)
      [:hr]
      (formats-section response)
-     (statistics-section request response)]))
+     #_(statistics-section request response)]))
 
 (defn right-column-section
   [response]
   (let [user (or (:user response)
                  (current-user))]
     (list
-     [:div (when *dynamic*
-             {:data-bind "with: $root.targetUser() || $root.currentUser()"})
-      (user-info-section user)]
+     (bind-to "$root.targetUser() || $root.currentUser()"
+       (user-info-section user))
      (:aside response))))
 
 (defn main-content
@@ -290,6 +299,7 @@
           (p/include-css
            (format "/assets/themes/%s/bootstrap.min.css" theme)
            "/assets/styles/bootstrap-responsive.min.css"
+           "/assets/styles/lightbox.css"
            (format "/assets/themes/classic/standard.css")))
         (links-section request response)))
 
@@ -332,10 +342,7 @@
                             ["dcterms" "http://purl.org/dc/terms/"]]
                            (map
                             (fn [[prefix uri]] (format "%s: %s" prefix uri)))
-                           (string/join " "))}
-             (if *dynamic*
-               (when-let [vm (:viewmodel response)]
-                 {:data-load-model vm})))
+                           (string/join " "))})
       [:head (head-section request response)]
       [:body (body-section request response)]]))})
 

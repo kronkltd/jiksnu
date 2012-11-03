@@ -1,7 +1,9 @@
 (ns jiksnu.sections
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [full-uri title link-to index-block index-section delete-button edit-button uri index-line show-section index-block-type]]
+        [ciste.sections.default :only [delete-button edit-button full-uri index-block
+                                       index-block-type index-line index-section
+                                       link-to show-section title uri]]
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -79,10 +81,18 @@
      [:i {:class (str "icon-" icon)}]
      [:span.button-text title]]))
 
+(defn bind-to
+  [property & body]
+  (if *dynamic*
+    [:div {:data-bind (str "with: " property)}
+     body]
+    body))
+
 (defn with-page
-  [page-name body]
-  [:div {:data-bind (format "with: jiksnu.core.get_page('%s')" page-name)}
-   body])
+  [page-name & body]
+  (apply bind-to
+         (format "jiksnu.core.get_page('%s')" page-name)
+         body))
 
 (defn bind-property
   [property]

@@ -2,10 +2,12 @@
   (:use [ciste.config :only [load-site-config]]
         [ciste.loader :only [process-requires]]
         [ciste.runner :only [start-application! stop-application!]]
-        [slingshot.slingshot :only [try+]])
+        [slingshot.slingshot :only [try+ throw+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
+            [jiksnu.referrant :as r]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
 
@@ -27,6 +29,17 @@
      (start-application! :test)
 
      (model/drop-all!)
-     
-     ~@body
+
+     (dosync
+      (ref-set r/this {})
+      (ref-set r/that {}))
+
+     (actions.domain/current-domain)
+
+     (try
+       ~@body
+       (catch RuntimeException ex#
+         (log/error "error")
+         (throw)
+         ))
      (stop-application!)))

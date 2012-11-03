@@ -1,7 +1,8 @@
 (ns jiksnu.actions.pubsub-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+        [ciste.loader :only [require-namespaces]]
+        [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -51,7 +52,7 @@
                          :hub.verify_token (:verify-token subscription)}
                         (if (:challenge subscription)
                           {:hub.challenge (:challenge subscription)}))
-          url (model/make-subscribe-uri (:callback subscription) params)
+          url (log/spy (model/make-subscribe-uri (:callback subscription) params))
           response-channel (http/http-request {:method :get
                                                :url url
                                                :auto-transform true})]
@@ -66,34 +67,32 @@
   (e/task
    (verify-subscribe-sync subscription)))
 
+(defaction subscribe
+  [params]
+  ;; set up feed subscriber
+  (let [source (actions.feed-source/find-or-create (log/spy params))]
+    (if (= (:verify params) "async")
+      (verify-subscription-async source)
+      (verify-subscribe-sync (log/spy source)))))
+
+(defaction unsubscribe
+  [params]
+  ;; remove feed subscriber
+  (if-let [subscription (model.feed-source/find-record {:topic (:topic params)
+                                                        :callback (:callback params)})]
+    (actions.feed-source/remove-subscription subscription)
+    (subscription-not-found-error)))
+
 ;; TODO: extract hub params in filter
 (defaction hub-dispatch
   [params]
-  (let [mode (or (get params :hub.mode) (get params "hub.mode"))
-        callback (or (get params :hub.callback) (get params "hub.callback"))
-        challenge (or (get params :hub.challenge) (get params "hub.challenge"))
-        lease-seconds (or (get params :hub.lease_seconds) (get params "hub.lease_seconds"))
-        verify (or (get params :hub.verify) (get params "hub.verify"))
-        verify-token (or (get params :hub.verify_token) (get params "hub.verify_token"))
-        secret (or (get params :hub.secret) (get params "hub.secret"))
-        topic (or (get params :hub.topic) (get params "hub.topic"))]
-    (condp = mode
-      "subscribe"
-      ;; set up feed subscriber
-      (let [source (actions.feed-source/find-or-create
-                    {:topic topic :callback callback}
-                    {:mode mode :challenge challenge
-                     :verify-token verify-token
-                     :lease-seconds lease-seconds})]
-        (if (= verify "async")
-          (verify-subscription-async source)
-          (verify-subscribe-sync source)))
+  (condp = (:mode params)
+    "subscribe"   (subscribe params)
+    "unsubscribe" (unsubscribe params)
+    (throw+ "Unknown mode type")))
 
-      
-      "unsubscribe"
-      ;; remove feed subscriber
-      (if-let [subscription (model.feed-source/find-record {:topic topic :callback callback})]
-        (actions.feed-source/remove-subscription subscription)
-        (subscription-not-found-error))
-      
-      (throw (RuntimeException. "Unknown mode type")))))
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.pubsub-filters"
+    ;; "jiksnu.triggers.pubsub-triggers"
+    "jiksnu.views.pubsub-views"]))

@@ -22,6 +22,8 @@
                  [clojurewerkz/quartzite "1.0.0-rc5"]
                  [clojurewerkz/elastisch "1.0.0-beta2"
                   :exclusions [com.google.guava/guava]]
+                 [com.stuartsierra/lazytest "1.2.3"]
+                 [clj-statsd "0.3.2"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
                  [ clojure-complete "0.2.1"]
                  [clojurewerkz/support "0.7.0-alpha3"
@@ -126,6 +128,7 @@
              "-Dfile.encoding=UTF-8"
              ]
   :repositories {
+                 "stuart" "http://stuartsierra.com/maven2"
                  "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
                  "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"
                  }

@@ -160,6 +160,7 @@
 
 (defn create
   [params]
+  (log/debugf "creating key: %s" params)
   (mc/insert collection-name params))
 
 

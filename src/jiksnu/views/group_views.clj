@@ -32,7 +32,6 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Groups"
-   :viewmodel (str (named-path "index groups") ".viewmodel")
    :body
    (with-page "default"
      (list

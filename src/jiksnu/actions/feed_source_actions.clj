@@ -17,11 +17,11 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.FeedSource))
@@ -30,18 +30,20 @@
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
-(defn set-domain
-  [source]
-  (if (:domain source)
-    source
-    (let [uri (URI. (:topic source))
-          domain (actions.domain/find-or-create {:_id (.getHost uri)})]
-      (assoc source :domain (:_id domain)))))
+(defn set-status
+  [item]
+  (if (:status item)
+    item
+    (assoc item :status "none")))
 
 (defn prepare-create
   [source]
   (-> source
-      set-domain))
+      transforms.feed-source/set-domain
+      transforms/set-_id
+      set-status
+      transforms/set-updated-time
+      transforms/set-created-time))
 
 (defaction add-watcher
   [source user]
@@ -50,16 +52,22 @@
 
 (defaction watch
   [source]
-  (add-watcher source (current-user)))
-
-(defaction confirm
-  "Callback for when a remote subscription has been confirmed"
-  [source]
-  (model.feed-source/set-field! source :subscription-status "confirmed"))
+  (add-watcher source (session/current-user)))
 
 (defaction delete
   [source]
   (model.feed-source/delete source))
+
+(defaction confirm-subscribe
+  "Callback for when a remote subscription has been confirmed"
+  [source]
+  (model.feed-source/set-field! source :status "confirmed"))
+
+(defaction confirm-unsubscribe
+  [source]
+  (log/info "confirming subscription removal")
+  (model.feed-source/set-field! source :status "none")
+  #_(model.feed-source/delete source))
 
 (defaction process-updates
   "Handler for PuSh subscription"
@@ -69,22 +77,16 @@
          topic "hub.topic"} params]
     (let [source (model.feed-source/fetch-by-topic topic)]
       (condp = mode
-        "subscribe" (confirm source)
-
-        "unsubscribe" (do
-                        (log/info "confirming subscription removal")
-                        (model.feed-source/set-field! source :subscription-status "none")
-                        #_(model.feed-source/delete source))
-        ;; TODO: This should probably throw
-        (cm/implement
-         (log/warn "Unknown mode"))))
+        "subscribe"   (confirm-subscribe source)
+        "unsubscribe" (confirm-unsubscribe source)
+        (throw+ "Unknown mode")))
     challenge))
 
 (defaction create
   "Create a new feed source record"
   [params options]
-  (let [source (prepare-create params)]
-    (model.feed-source/create source)))
+  (let [params (prepare-create params)]
+    (model.feed-source/create params)))
 
 (defn find-or-create
   [params & [options]]
@@ -93,12 +95,6 @@
                       (model.feed-source/fetch-by-topic (:topic params)))]
     source
     (create params options)))
-
-(defn get-activities
-  "extract the activities from a feed"
-  [feed source]
-  (map #(actions.activity/entry->activity % feed source)
-       (.getEntries feed)))
 
 (def index*
   (model/make-indexer 'jiksnu.model.feed-source
@@ -112,25 +108,46 @@
   [source]
   (model.feed-source/set-field! source :updated (time/now)))
 
-(declare process-entries)
 (declare remove-subscription)
 (declare send-unsubscribe)
 
-(defn parse-feed
-  [feed source]
-  (if (or true (seq (:watchers source)))
-    (process-entries feed source)
-    (do (log/warnf "no watchers for %s" (:topic source))
-        (remove-subscription source))))
+(defn get-activities
+  "extract the activities from a feed"
+  [source feed]
+  (map #(actions.activity/entry->activity % feed source)
+       (.getEntries feed)))
 
 (defn process-entries
-  [feed source]
-  ;; (mark-updated source)
-  (doseq [activity (get-activities feed source)]
+  [source feed]
+  (doseq [activity (get-activities source feed)]
     (try (actions.activity/find-or-create activity)
          (catch Exception ex
            (log/error ex)
            (.printStackTrace ex)))))
+
+(defn parse-feed
+  [source feed]
+  (if (or true (seq (:watchers source)))
+    (process-entries source feed)
+    (do (log/warnf "no watchers for %s" (:topic source))
+        (remove-subscription source))))
+
+(defn get-hub-link
+  [feed]
+  (-?> feed
+       (.getLink "hub") 
+       .getHref str))
+
+(defn process-feed
+  [source feed]
+  (let [feed-title (.getTitle feed)]
+    (when-not (= feed-title (:title source))
+      (model.feed-source/set-field! source :title feed-title))
+    ;; TODO: This should be automatic for any transformation
+    (mark-updated source)
+    (if-let [hub-link (get-hub-link feed)]
+      (model.feed-source/set-field! source :hub hub-link))
+    (process-entries source feed)))
 
 ;; TODO: Rename to unsubscribe and make an action
 (defaction remove-subscription
@@ -179,26 +196,18 @@
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
-(defn process-feed
-  [feed source]
-  (let [feed-title (.getTitle feed)]
-    (when-not (= feed-title (:title source))
-      (log/info "updating title")
-      (model.feed-source/set-field! source :title feed-title))
-    ;; TODO: This should be automatic for any transformation
-    (mark-updated source)
-    (if-let [hub-link (-?> feed (.getLink "hub")
-                           .getHref str)]
-      (model.feed-source/set-field! source :hub hub-link))
-    (process-entries feed source)))
-
 (defn update*
   [source]
-  (if-let [topic (:topic source)]
-    (let [feed (abdera/fetch-feed topic)]
-      (process-feed feed source))
-    (throw+ {:message "Source does not contain a topic"
-             :source source})))
+  (if-not (:local source)
+    (if-let [topic (:topic source)]
+      (if-let [feed (try
+                      (abdera/fetch-feed topic)
+                      (catch Exception ex))]
+        (process-feed source feed)
+        (throw+ "could not obtain feed"))
+      (throw+ {:message "Source does not contain a topic"
+               :source source}))
+    (log/warn "local sources do not need updates")))
 
 (defaction update
   "Fetch updates for the source"
@@ -224,14 +233,8 @@
   "determines the feed source associated with a url"
   [url]
   (if-let [link (model/extract-atom-link url)]
-    (find-or-create {:topic (:href link)})
+    (find-or-create {:topic link})
     (throw+ (format "Could not determine topic url from resource: %s" url))))
-
-(defn discover-source
-  "determines the feed source associated with a url"
-  [url]
-  (when-let [link (model/extract-atom-link url)]
-    (find-or-create {:topic (:href link)})))
 
 (definitializer
   (l/receive-all
@@ -240,7 +243,6 @@
      (l/enqueue ch (find-or-create {:topic url}))))
   
   (require-namespaces
-   [
-    "jiksnu.filters.feed-source-filters"
+   ["jiksnu.filters.feed-source-filters"
     "jiksnu.triggers.feed-source-triggers"
     "jiksnu.views.feed-source-views"]))

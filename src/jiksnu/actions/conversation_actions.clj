@@ -3,30 +3,37 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.domain-actions :as actions.domain]
+        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
-            [lamina.core :as l])
-  (:import java.net.URI))
+            [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.conversation-transforms :as transforms.conversation]
+            [lamina.core :as l]))
 
-(defn set-local
-  [conversation]
-  (if (contains? conversation :local)
-    conversation
-    (assoc conversation :local
-           (let [url (URI. (:url conversation))]
-             (= (:_id (actions.domain/current-domain))
-                (.getHost url))))))
+(defonce delete-hooks (ref []))
 
 (defn prepare-create
   [conversation]
   (-> conversation
-      set-_id
-      set-local
-      set-updated-time
-      set-created-time))
+      transforms/set-_id
+      transforms.conversation/set-domain
+      transforms.conversation/set-local
+      transforms.conversation/set-update-source
+      transforms/set-updated-time
+      transforms/set-created-time))
+
+(defn prepare-delete
+  ([item]
+     (prepare-delete item @delete-hooks))
+  ([item hooks]
+     (if (seq hooks)
+       (recur ((first hooks) item) (rest hooks))
+       item)))
 
 (defaction create
   [params]
@@ -34,33 +41,56 @@
     (model.conversation/create conversation)))
 
 (defaction delete
-  [conversation]
-  (model.conversation/delete conversation))
+  [item]
+  (let [item (prepare-delete item)]
+    (model.conversation/delete item)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation))
+  (model/make-indexer 'jiksnu.model.conversation
+                      :sort-clause {:url 1}))
 
 (defaction index
   [& [params & [options]]]
   (index* params options))
 
+(defaction update
+  [conversation & [options]]
+  (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
+    (actions.feed-source/update source)
+    (throw+ "Could not find update source")))
+
+(defaction discover
+  [conversation & [options]]
+  (log/debugf "Discovering conversation: %s" conversation)
+  conversation)
+
 (defaction find-or-create
-  [options]
-  (if-let [conversation (or (if-let [id (:_id options)] (first (model.conversation/fetch-by-id id)))
-                            (if-let [url (:url options)] (first (model.conversation/find-by-url url))))]
+  [params & [{tries :tries :or {tries 1} :as options}]]
+  (if-let [conversation (or (if-let [id (:_id params)]
+                              (first (model.conversation/fetch-by-id id)))
+                            (if-let [url (:url params)]
+                              (first (model.conversation/find-by-url url)))
+                            (try
+                              (create params)
+                              (catch RuntimeException ex
+                                (log/warn "conversation create failed"))))]
     conversation
-    (create options)))
+    (if (< tries 3)
+      (do
+        (log/info "recurring")
+        (find-or-create params (update-in options [:tries] inc)))
+      (throw+ "Could not create conversation"))))
 
 (defaction show
   [record]
   record)
 
-(definitializer
-  (l/receive-all
-   model/pending-conversations
-   (fn [[url ch]]
-     (l/enqueue ch (find-or-create {:url url}))))
+(l/receive-all
+ model/pending-conversations
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:url url}))))
 
+(definitializer
   (require-namespaces
    ["jiksnu.filters.conversation-filters"
     "jiksnu.triggers.conversation-triggers"

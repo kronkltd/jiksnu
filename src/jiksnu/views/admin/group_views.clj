@@ -3,7 +3,8 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.group-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [admin-index-section bind-to format-page-info
+                                pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.group-sections :as sections.like])
   (:import jiksnu.model.Group))
@@ -12,15 +13,12 @@
   [request {:keys [items] :as page}]
   {:single true
    :title "Groups"
-   :viewmodel "/admin/groups.viewmodel"
    :body
    (with-page "default"
-     (list
-      (pagination-links page)
-      [:div (if *dynamic*
-              {:data-bind "with: items"})
+     (pagination-links page)
+     (bind-to "items"
        (let [items (if *dynamic* [(Group.)] items)]
-         (admin-index-section items page))]))})
+         (admin-index-section items page))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

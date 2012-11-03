@@ -8,13 +8,11 @@
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session])
-  (:import tigase.xml.Element))
+            [jiksnu.session :as session]))
 
 ;; create
 
@@ -25,9 +23,16 @@
 
 ;; delete
 
+(deffilter #'delete :command
+  [action id]
+  (when-let [item (model.user/fetch-by-id (model/make-id id))]
+    (action item)))
+
 (deffilter #'delete :http
   [action request]
-  (-> request :params :id model/make-id model.user/fetch-by-id action))
+  (let [id (:id (:params request))]
+    (when-let [item (model.user/fetch-by-id (model/make-id id))]
+      (action item))))
 
 (deffilter #'delete :xmpp
   [action request]
@@ -37,7 +42,7 @@
 
 (deffilter #'discover :command
   [action id]
-  (let [item (model.user/fetch-by-id (model/make-id id))]
+  (if-let [item (model.user/fetch-by-id (model/make-id id))]
     (action item)))
 
 (deffilter #'discover :http
@@ -51,14 +56,6 @@
 (deffilter #'fetch-remote :xmpp
   [action request]
   (model.user/fetch-by-jid (:to request)))
-
-;; fetch-updates
-
-(deffilter #'fetch-updates :http
-  [action request]
-  (let [{{id :id} :params} request
-        user (model.user/fetch-by-id (model/make-id id))]
-    (action user)))
 
 ;; index
 
@@ -114,10 +111,9 @@
 
 (deffilter #'update :http
   [action request]
-  (let [{params :params} request
-        {username :username} params
-        user (show username)]
-    (action user params)))
+  (let [{{id :id} :params} request]
+    (if-let [user (model.user/fetch-by-id (model/make-id id))]
+     (action user))))
 
 (deffilter #'update :command
   [action id]

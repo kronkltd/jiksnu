@@ -80,22 +80,19 @@
 
  (fact "#'get-key"
    (fact "when the user is nil"
-     (fact "should return nil"
-       (get-key nil) => nil?))
+     (get-key nil) => nil?)
 
    (fact "when a user is provided"
-     (let [user (existance/a-user-exists)]
-
-       (fact "and it does not have a key assigned"
-         (fact "should return nil"
-           (get-key user) => nil))
-       
-       (fact "and it has a key assigned"
-         (actions.key/generate-key-for-user user)
-
-         (fact "should return a key"
-           ;; TODO: specify a public key?
-           (get-key user) => (partial instance? Key))))))
+     (fact "and it does not have a key assigned"
+       (let [user (existance/a-remote-user-exists)
+             user (model.user/fetch-by-id (:_id user))]
+         
+         (get-key user) => nil))
+     
+     (fact "and it has a key assigned"
+       (let [user (existance/a-user-exists)]
+         ;; TODO: specify a public key?
+         (get-key user) => (partial instance? Key)))))
 
  (future-fact "#'signature-valid?"
    (fact "when it is valid"

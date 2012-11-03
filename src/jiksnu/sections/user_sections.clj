@@ -8,15 +8,9 @@
          [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.model :only [with-subject]]
-         [jiksnu.sections :only [action-link
-                                 actions-section
-                                 admin-actions-section
-                                 admin-index-block
-                                 admin-index-line
-                                 admin-index-section
-                                 admin-show-section control-line
-                                 bind-property
-                                 pagination-links]]
+         [jiksnu.sections :only [action-link actions-section admin-actions-section  admin-index-block
+                                 admin-index-line admin-index-section admin-show-section bind-property
+                                 bind-to control-line pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
@@ -326,11 +320,11 @@
           {:href (format "/admin/users/%s" (:_id user))})
      (when-not *dynamic*
        (:_id user))]]
-   [:td (if *dynamic*
-          {:data-bind "with: domain"})
-    [:div {:data-model "domain"}
-     (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
-       (link-to domain))]]
+   [:td
+    (bind-to "domain"
+      [:div {:data-model "domain"}
+       (let [domain (if *dynamic*  (Domain.) (actions.user/get-domain user))]
+         (link-to domain))])]
    [:td (actions-section user)]])
 
 ;; admin-index-section
@@ -363,12 +357,12 @@
     
     [:tr
      [:th  "Domain"]
-     [:td (when *dynamic*
-            {:data-bind "with: domain"})
-      [:div {:data-model "domain"}
-       (let [domain (if *dynamic* (Domain.)
-                        (actions.user/get-domain item))]
-         (link-to domain))]]]
+     [:td
+      (bind-to "domain"
+        [:div {:data-model "domain"}
+         (let [domain (if *dynamic* (Domain.)
+                          (actions.user/get-domain item))]
+           (link-to domain))])]]
     [:tr
      [:th "Bio"]
      [:td (if *dynamic*
@@ -406,12 +400,12 @@
               (:updated item))]]
     [:tr
      [:th "Update Source"]
-     [:td (if *dynamic*
-            {:data-bind "with: updateSource"})
-      (when-let [source (if *dynamic*
-                          (FeedSource.)
-                          (-?> item :update-source model.feed-source/fetch-by-id))]
-        (link-to source))]]]
+     [:td
+      (bind-to "updateSource"
+        (when-let [source (if *dynamic*
+                            (FeedSource.)
+                            (-?> item :update-source model.feed-source/fetch-by-id))]
+          (link-to source)))]]]
    (actions-section item)
    (let [links (if *dynamic*  [{}] (:links item))]
      (links-table links))))
@@ -504,7 +498,7 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id)}"}
+          {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id), title: 'acct:' + ko.utils.unwrapObservable(username) + '@' + ko.utils.unwrapObservable(domain)}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
@@ -584,13 +578,10 @@
      (if *dynamic*
        {:data-bind "text: bio"}
        (:bio user))]
-    [:div (if *dynamic* {:data-bind "with: updateSource"})
-     (let [source (if *dynamic*
-                    (FeedSource.)
-                    ;; TODO: look up source
-                    nil)]
-       [:div {:data-model "feed-source"}
-        (link-to source) ])]
+    (bind-to "updateSource"
+      (let [source (if *dynamic* (FeedSource.) nil)]
+        [:div {:data-model "feed-source"}
+         (link-to source) ]))
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (if-let [key (if *dynamic*

@@ -6,8 +6,8 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]])
-  (:require [aleph.http :as http]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
+            [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.string :as string]
             [clojure.java.io :as io]
@@ -81,6 +81,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (defaction add-link*
   [item link]
+  (s/increment "link added")
   (mc/update "activities" {:_id (:_id item)}
              {:$addToSet {:links link}})
   item)
@@ -96,7 +97,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (def index*
   (model/make-indexer 'jiksnu.model.activity))
-
 
 (defaction index
   [& options]
@@ -122,6 +122,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-url
       transforms.activity/set-id
       transforms.activity/set-recipients
+      transforms.activity/set-resources
       transforms.activity/set-mentioned
       transforms.activity/set-conversation))
 
@@ -286,7 +287,9 @@ serialization"
   "Show an activity"
   [activity]
   (if (viewable? activity)
-    activity
+    (do
+      (s/increment "activity shown")
+      activity)
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))
 
@@ -328,7 +331,11 @@ serialization"
 
 (defaction fetch-by-conversation
   [conversation & [options]]
-  (index {:conversation (:_id conversation)}))
+  (index {:conversation (:_id conversation)} options))
+
+(defaction fetch-by-feed-source
+  [source & [options]]
+  (index {:update-source (:_id source)} options))
 
 (definitializer
   (require-namespaces

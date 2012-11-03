@@ -10,9 +10,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
         [jiksnu.sections :only [action-link admin-index-line admin-index-block
-                                format-links
-                                admin-index-section bind-property
-                                dump-data control-line pagination-links]]
+                                admin-index-section bind-property bind-to
+                                control-line dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -107,7 +106,7 @@
      (let [def (format-links f)]
        (merge def
               {:href h})))
-   [[:json (sections.user/user-timeline-link user "json")] 
+   [[:json (sections.user/user-timeline-link user "json")]
     [:atom (sections.user/user-timeline-link user "atom")]
     [:as   (sections.user/user-timeline-link user "as")]
     [:n3   (sections.user/user-timeline-link user "n3")]
@@ -226,25 +225,32 @@
 
 (defn maps-section
   [activity]
-  
-  (if-let [geo (:geo activity)]
+
+  (if-let [geo (if *dynamic*
+                 {}
+                 (:geo activity))]
     [:div.map-section
-     [:img.map
-      {:alt ""
-       :src
-       ;; TODO: use urly to construct this
-       ;; TODO: Move this to cljs
-       (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-            (:latitude geo)
-            ","
-            (:longitude geo))}]
-     #_[:p "Latitude: " (:latitude geo)]
-     #_[:p "Longitude: " (:longitude geo)]]))
+     (bind-to "geo"
+       #_[:img.map
+          {:alt ""
+           :src
+           ;; TODO: use urly to construct this
+           ;; TODO: Move this to cljs
+           (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
+                (:latitude geo)
+                ","
+                (:longitude geo))}]
+       [:p "Latitude: " [:span (if *dynamic*
+                                 {:data-bind "text: latitude"}
+                                 (:latitude geo))]]
+       [:p "Longitude: " [:span (if *dynamic*
+                                  {:data-bind "text: longitude"}
+                                  (:longitude geo))]])]))
 
 (defn likes-section
   [activity]
   (when-let [likes (if *dynamic*
-                     []
+                     [{}]
                      (model.like/get-likes activity))]
     [:section.likes
      (when *dynamic*
@@ -253,18 +259,28 @@
      [:ul
       (map
        (fn [like]
-         [:li (link-to (model.like/get-actor like))])
+         [:li
+          "Person"
+          #_(link-to (model.like/get-actor like))])
        likes)]]))
 
 (defn tags-section
   [activity]
-  (when-let [tags (:tags activity)]
-    [:div.tags
+  (when-let [tags (if *dynamic*
+                    [{}]
+                    (:tags activity))]
+    [:div.tags (when *dynamic* {:data-bind "visible: ko.utils.unwrapObservable(tags).length > 0"})
      [:span "Tags: "]
-     [:ul.tags
+     [:ul.tags (when *dynamic*
+                 {:data-bind "foreach: tags"})
       (map
        (fn [tag]
-         [:li [:a {:href (str "/tags/" tag) :rel "tag"} tag]])
+         [:li [:a (merge {:rel "tag"}
+                         (if *dynamic*
+                           {:data-bind "attr: {href: '/tags/' + $data}, text: $data"}
+                           {:href (str "/tags/" tag) }))
+               (when-not *dynamic*
+                 tag)]])
        tags)]]))
 
 (defn posted-link-section
@@ -273,11 +289,11 @@
    "posted a "
    [:span
     (if *dynamic*
-      {:data-bind "text: $data['object']['object-type']"}
+      {:data-bind "text: ko.utils.unwrapObservable($data['object'])['object-type']"}
       (-> activity :object :object-type))]
 
    ;; TODO: handle other visibilities
-   (when-not (:public activity)
+   #_(when-not (:public activity)
      " privately")
 
    " approximately "
@@ -294,11 +310,11 @@
     (if *dynamic*
       {:data-bind "text: source"}
       (:source activity))]
-   
+
    ;; TODO: link to the domain
    (when (or *dynamic* (not (:local activity)))
      [:span (when *dynamic*
-             {:data-bind "if: !$data.local"})
+              {:data-bind "if: !$data.local"})
       " via a "
       [:a {:href
            (if *dynamic*
@@ -308,7 +324,7 @@
                   (filter #(= (:type %) "text/html"))
                   first :href))}
        "foreign service"]])
-   
+
    (when-let [id (if *dynamic*
                    (model/make-id)
                    (:conversation activity))]
@@ -321,27 +337,38 @@
               {:href (first (:conversation-uris activity))})
          "in context"]]]))
 
-   (when-let [geo (:geo activity)]
-     (list " near "
-           [:a.geo-link {:href "#"}
-            (:latitude geo) ", "
-            (:longitude geo)]))])
+   (when-let [geo (if *dynamic*
+                    {}
+                    (:geo activity))]
+     [:span (when *dynamic*
+              {:data-bind "with: geo"})
+      " near "
+      [:a.geo-link (when-not *dynamic*
+                     {:href "#"})
+       [:span
+        (if *dynamic*
+          {:data-bind "text: latitude"}
+          (:latitude geo))]
+       ", "
+       [:span
+        (if *dynamic*
+          {:data-bind "text: longitude"}
+          (:longitude geo))]]])])
 
 (defn comments-section
   [activity]
-  [:div (when *dynamic*
-          {:data-bind "with: comments"})
-   (if-let [comments (if *dynamic*
-                       [(Activity.)]
-                       (seq (second (actions.comment/fetch-comments activity))))]
-     [:section.comments
-      [:ul.unstyled.comments
-       (when *dynamic*
-         {:data-bind "foreach: $data"})
-       (map (fn [comment]
-              [:li
-               (show-comment comment)])
-            comments)]])])
+  (bind-to "comments"
+    (if-let [comments (if *dynamic*
+                        [(Activity.)]
+                        (seq (second (actions.comment/fetch-comments activity))))]
+      [:section.comments
+       [:ul.unstyled.comments
+        (when *dynamic*
+          {:data-bind "foreach: $data"})
+        (map (fn [comment]
+               [:li
+                (show-comment comment)])
+             comments)]])))
 
 (defn poll-form
   [activity]
@@ -421,11 +448,15 @@
      (map
       (fn [enclosure]
         [:li
-         [:img.enclosure
-          (merge {:alt ""}
-                 (if *dynamic*
-                   {:data-bind "attr: {src: href}"}
-                   {:src (:href enclosure)}))]])
+         [:a (merge {:rel "lightbox"}
+                    (if *dynamic*
+                      {:data-bind "attr: {href: href}"}
+                      {:href (:href enclosure)}))
+          [:img.enclosure
+           (merge {:alt ""}
+                  (if *dynamic*
+                    {:data-bind "attr: {src: href}"}
+                    {:src (:href enclosure)}))]]])
       enclosures)]))
 
 ;; dynamic sections
@@ -484,13 +515,12 @@
   [:tr (merge {:data-model "activity"}
               (when-not *dynamic*
                 { :data-id (:_id activity)}))
-   [:td (when *dynamic*
-          {:data-bind "with: author"})
-    [:div
-     (let [user (if *dynamic*
-                  (User.)
-                  (actions.activity/get-author activity))]
-       (show-section-minimal user))]]
+   [:td
+    (bind-to "author"
+      (let [user (if *dynamic*
+                   (User.)
+                   (actions.activity/get-author activity))]
+        (show-section-minimal user)))]
    [:td (when *dynamic*
           {:data-bind "text: object['object-type']"})
     (when-not *dynamic*
@@ -608,9 +638,9 @@
                      ;; "published" (:published object)
                      ;; "updated" (:updated object)
                      })
-          
+
           :published (:published activity)
-          
+
           :updated (:updated activity)
           :verb (:verb activity)
           :title (:title activity)
@@ -691,10 +721,9 @@
                {:about activity-uri
                 :data-id (:_id activity)}))
       [:header
-       [:div (when *dynamic*
-               {:data-bind "with: author"})
-        (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-          (show-section-minimal user))]
+       (bind-to "author"
+         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+           (show-section-minimal user)))
        (recipients-section activity)]
       [:div.entry-content
        (when (:title activity)

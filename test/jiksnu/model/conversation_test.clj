@@ -8,6 +8,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]))
 
@@ -18,5 +19,5 @@
    (fact "when there are conversations"
      (let [n 15]
        (dotimes [i n]
-         (actions.conversation/create (factory :conversation)))
+         (existance/a-conversation-exists))
        (count-records) => n))))

@@ -7,6 +7,10 @@
   [request _]
   {:body (sections.setting/edit-form)})
 
+(defview #'edit-page :viewmodel
+  [request _]
+  {:body {:title "Edit Settings"}})
+
 (defview #'update-settings :html
   [request data]
   {:flash "Settings updated"

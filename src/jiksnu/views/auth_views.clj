@@ -70,6 +70,11 @@
        [:div.actions
         [:input.btn.primary {:type "submit" :value "Login"}]]]]]]})
 
+(defview #'login-page :viewmodel
+  [request _]
+  {:body {:title "Login"}}
+  )
+
 ;; logout
 
 (defview #'logout :html

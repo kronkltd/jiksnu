@@ -5,18 +5,18 @@
         [ciste.routes :only [resolve-routes]]
         [ciste.views :only [defview]]
         [clojure.core.incubator :only [dissoc-in]]
-        [clojure.data.json :only [read-json]]
-        [jiksnu.routes :only [http-predicates http-routes]]
-        [jiksnu.routes.admin-routes :only [admin-routes]]
-        [jiksnu.session :only [current-user]])
-  (:require [clojure.data.json :as json]
+        [clojure.data.json :only [read-json]])
+  (:require [clj-statsd :as s]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.session :as session]
             [lamina.core :as l]))
 
 (defaction invoke-action
   [model-name action-name id]
   (try
+    (s/increment "actions invoked")
     (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
       (require action-ns)
 
@@ -46,48 +46,28 @@
 
 (add-command! "invoke-action" #'invoke-action)
 
-(defaction fetch-viewmodel
-  [path options]
-  (let [request {:request-method :get
-                 :uri            (str "/" path)
-                 :params         options
-                 :serialization  :http
-                 :format         :viewmodel}
-        response ((resolve-routes [http-predicates]
-                                  (concat http-routes
-                                          admin-routes))
-                  request)]
-    (if-let [body (:body response)]
-      (let [vm (read-json body)]
-        {:path path
-         :options options
-         :body {:action "update viewmodel"
-                :body vm}})
-      {:body {:action "error"
-              :body "could not find viewmodel"}})))
-
-(deffilter #'fetch-viewmodel :command
-  [action request]
-  (let [[path opt-string] (:args request)]
-    (action (read-json path) (read-json opt-string))))
-
-(defview #'fetch-viewmodel :json
-  [request response]
-  response)
-
-(add-command! "fetch-viewmodel" #'fetch-viewmodel)
-
-
 (defonce connections (ref {}))
+(defonce posted-activities (l/permanent-channel))
+
 
 (defaction connect
   [ch]
-  (log/info "connected")
-  (let [id (:_id (current-user))
+  (s/increment "websocket connections established")
+  (let [id (:_id (session/current-user))
         connection-id (abdera/new-id)]
     (dosync
      (alter connections 
             #(assoc-in % [id connection-id] ch)))
+    (l/siphon
+     (l/map*
+      (fn [e]
+        (log/infof "sending update notification to connection: %s" connection-id)
+        (s/increment "activities pushed")
+        (json/json-str {:action "model-updated"
+                        :type "activity"
+                        :body (:records e)}))
+      posted-activities)
+     ch)
     (l/on-closed ch
                  (fn []
                    (log/info "closed")

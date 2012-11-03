@@ -14,52 +14,25 @@
 
 (def my-password (ref nil))
 
+
+(declare a-feed-source-exists)
+
+
+;; TODO: this part should return the current domain
 (defn a-domain-exists
-  []
-  (let [domain (model.domain/create (factory :domain))]
+  [& [options]]
+  (let [domain (model.domain/create (factory :domain {:discovered true}))]
     (set-this :domain domain)
     domain))
 
-(defn a-feed-source-exists
+(defn a-remote-domain-exists
   [& [options]]
-  (let [domain (or (:domain options)
-                   (get-this :domain)
-                   (a-domain-exists))
-        source (actions.feed-source/create
-                (factory :feed-source
-                         {:topic (format "http://%s/api/statuses/user_timeline/1.atom" (:_id domain))
-                          :hub (format "http://%s/push/hub" (:_id domain))}))]
-    (set-this :feed-source source)
-    source))
+  (let [domain (model.domain/create (factory :domain {:_id (fseq :domain)
+                                                      :discovered true}))]
+    (set-that :domain domain)
+    domain))
 
 
-(defn a-feed-subscription-exists
-  [& [options]]
-  (let [domain (or (:domain options)
-                   (get-this :domain)
-                   (a-domain-exists))
-        feed-subscription (model.feed-subscription/create
-                           (factory :feed-subscription
-                                    {:domain domain}))]
-    (set-this :feed-subscription feed-subscription)
-    feed-subscription))
-
-(defn a-record-exists
-  [type & [opts]]
-  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
-                               (name type)))]
-    (require ns-sym)
-    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
-      (when-let [record (create-fn (factory type opts))]
-        (set-this type record)
-        record)
-      (throw+ (format "could not find %s/create" ns-sym)))))
-
-(defn a-subscription-exists
-  []
-  (->> (factory :subscription)
-       model.subscription/create
-       (set-this :subscription)))
 
 (defn a-user-exists
   ([] (a-user-exists {:discovered true} "hunter2"))
@@ -84,7 +57,7 @@
   [password]
   (a-user-exists {} password))
 
-(defn another-user-exists
+(defn a-remote-user-exists
   [& [options]]
   (log/info "another user")
   (let [domain (or (:domain options)
@@ -96,8 +69,10 @@
         user (actions.user/create (factory :user
                                            {:domain (:_id domain)
                                             :update-source (:_id source)}))]
+    (model.user/set-field! user :discovered true)
     (set-that :user user)
     user))
+
 
 (defn activity-gets-posted
   [& [options]]
@@ -132,17 +107,74 @@
     (there-is-an-activity {:modifier  modifier
                            :user user})))
 
+(defn a-record-exists
+  [type & [opts]]
+  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
+                               (name type)))]
+    (require ns-sym)
+    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
+      (when-let [record (create-fn (factory type opts))]
+        (set-this type record)
+        record)
+      (throw+ (format "could not find %s/create" ns-sym)))))
+
+
+
+(defn a-feed-source-exists
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        source (actions.feed-source/create
+                (factory :feed-source
+                         {:topic (format "http://%s/api/statuses/user_timeline/1.atom" (:_id domain))
+                          :hub (format "http://%s/push/hub" (:_id domain))}))]
+    (set-this :feed-source source)
+    source))
+
+
+(defn a-feed-subscription-exists
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        feed-subscription (model.feed-subscription/create
+                           (factory :feed-subscription
+                                    {:domain domain}))]
+    (set-this :feed-subscription feed-subscription)
+    feed-subscription))
+
+
+
+(defn a-subscription-exists
+  [& [options]]
+  (->> (factory :subscription)
+       model.subscription/create
+       (set-this :subscription)))
+
+(defn a-conversation-exists
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        source (or (:update-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists))]
+    (a-record-exists :conversation {:domain (:_id domain)
+                                    :update-source (:_id source)})))
 
 
 (defn this-user-has-a-subscription
   []
   (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
-    (set-this :subscription subscription)))
+    (set-this :subscription subscription)
+    subscription))
 
 (defn user-has-a-subscription
   []
   (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
-    (set-this :subscription subscription)))
+    (set-this :subscription subscription)
+    subscription))
 
 (defn user-posts-activity
   []

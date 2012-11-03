@@ -9,6 +9,7 @@
         [validateur.validation :only [acceptance-of validation-set presence-of]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [jiksnu.abdera :as abdera]
@@ -16,8 +17,11 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
             [monger.collection :as mc]
-            [monger.query :as mq])
-  (:import jiksnu.model.Domain
+            [monger.query :as mq]
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.sparql :as sp])
+  (:import java.net.URI
+           jiksnu.model.Domain
            jiksnu.model.User
            tigase.xmpp.BareJID
            tigase.xmpp.JID))
@@ -80,6 +84,14 @@
   (let [[_ _ username domain] (re-find #"(.*:)?([^@]+)@([^\?]+)" uri)]
     (when (and username domain) [username domain])))
 
+(defn get-domain-name
+  "Takes a string representing a uri and returns the domain"
+  [id]
+  (let [uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (second (split-uri id))
+      (.getHost uri))))
+
 (defn display-name
   [^User user]
   (or (:display-name user)
@@ -98,6 +110,7 @@
 (defn fetch-by-id
   "Fetch a user by it's object id"
   [id]
+  (s/increment "users fetched")
   (if-let [user (mc/find-map-by-id collection-name id)]
     (model/map->User user)
     (log/warnf "Could not find user: %s" id)))
@@ -108,6 +121,7 @@
     (if (empty? errors)
       (do
         (log/debugf "Creating user: %s" user)
+        (s/increment "users created")
         (mc/insert collection-name user)
         (fetch-by-id (:_id user)))
       (throw+ {:type :validation
@@ -117,6 +131,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
+     (s/increment "users searched")
      (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
            records (mq/with-collection collection-name
                      (mq/find params)
@@ -145,6 +160,7 @@
   "Updates user's field to value"
   [user field value]
   (log/debugf "setting %s (%s = %s)" (:_id user) field value)
+  (s/increment "users field set")
   (mc/update collection-name
              {:_id (:_id user)}
              {:$set {field value}}))
@@ -176,6 +192,7 @@
 (defn delete
   "Delete the user"
   [user]
+  (s/increment "users deleted")
   (mc/remove-by-id collection-name (:_id user)))
 
 (defn update
@@ -185,6 +202,7 @@
         merged-user (merge {:admin false}
                            old-user new-user)
         user (map->User merged-user)]
+    (s/increment "users updated")
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 
@@ -233,4 +251,23 @@
 (defn count-records
   ([] (count-records {}))
   ([params]
+     (s/increment "users counted")
      (mc/count collection-name params)))
+
+;; FIXME: This does not work yet
+(defn foaf-query
+  "Extract user information from a foaf document"
+  []
+  (sp/defquery
+    (sp/query-set-vars [:?user :?nick :?name :?bio :?img-url])
+    (sp/query-set-type :select)
+    (sp/query-set-pattern
+     (sp/make-pattern
+      [
+       [:?uri    rdf/rdf:type                     :foaf/Document]
+       [:?uri    :foaf:PrimaryTopic    :?user]
+       (rdf/optional [:?user :foaf/nick            :?nick])
+       (rdf/optional [:?user :foaf/name            :?name])
+       (rdf/optional [:?user :dcterms/descriptions :?bio])
+       (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
+

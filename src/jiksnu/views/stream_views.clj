@@ -6,7 +6,7 @@
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info with-page pagination-links]]
+        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
@@ -116,15 +116,11 @@
             :title "Next Page"
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
-   :body (with-page "default"
-           (let [activities (if *dynamic*
-                              [(Activity.)]
-                              items)]
-             (list
-              (pagination-links page)
-              [:div (if *dynamic*
-                      {:data-bind "with: items"})
-               (index-section activities page)])))})
+   :body (let [activities (if *dynamic* [(Activity.)] items)]
+           (with-page "default"
+             (pagination-links page)
+             (bind-to "items"
+               (index-section activities page))))})
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
@@ -214,12 +210,10 @@
     {:user user
      :title (:display-name user)
      :post-form true
-     :viewmodel (format "/users/%s.viewmodel" (:_id user))
      :body
      (with-page "default"
-       [:div (when *dynamic*
-               {:data-bind "with: items"})
-        (index-section items page)])
+       (bind-to "items"
+         (index-section items page)))
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model

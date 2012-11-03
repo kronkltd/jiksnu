@@ -2,7 +2,8 @@
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-block admin-index-line control-line dump-data]]
+        [jiksnu.sections :only [admin-index-block admin-index-line
+                                bind-to control-line dump-data]]
         [jiksnu.session :only [current-user]]
         [jiksnu.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log]
@@ -99,12 +100,13 @@
     (if *dynamic*
       {:data-bind "text: _id"}
       (:_id item))]
-   [:td (if *dynamic* {:data-bind "with: user"})
-    [:div {:data-model "user"}
-     (let [user (if *dynamic*
-                  (User.)
-                  (model.user/fetch-by-id (:user item)))]
-       (link-to user))]]
+   [:td
+    (bind-to "user"
+      [:div {:data-model "user"}
+       (let [user (if *dynamic*
+                    (User.)
+                    (model.user/fetch-by-id (:user item)))]
+         (link-to user))])]
    [:td
     (if *dynamic*
       {:data-bind "text: value"}

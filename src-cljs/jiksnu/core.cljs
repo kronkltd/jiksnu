@@ -31,8 +31,8 @@
    ;; "waltz.state"        :finest
    ;; "jiksnu.core"        :finest
    ;; "jiksnu.model"       :finest
-   "jiksnu.websocket"   :fine
-   "goog.net.WebSocket" :warning
+   ;; "jiksnu.websocket"   :fine
+   ;; "goog.net.WebSocket" :warning
    })
 
 (defn update-pages
@@ -226,7 +226,7 @@
 (defmethod ws/process-event "delete"
   [event]
   (log/info *logger* "delete callback")
-  (let [id (.-id event)]
+  #_(let [id (.-id event)]
     (.items _view (_/without (.items _view) id))))
 
 (defmethod ws/process-event "update viewmodel"
@@ -246,6 +246,13 @@
 (defmethod ws/process-event "add notice"
   [event]
   (handlers/add-notification (.-message event)))
+
+(defmethod ws/process-event "model-updated"
+  [event]
+  (log/info *logger* "model updated")
+  (let [page (.get model/pages "default")
+        id (.-_id (.-body event))]
+    (.addItem page id)))
 
 (defn main
   []

@@ -20,6 +20,13 @@
  (def domain-a (actions.domain/current-domain))
  (def user-a (existance/a-user-exists))
 
+ (fact "#'get-domain-name"
+   (fact "when given a http uri"
+     (get-domain-name "http://example.com/users/1") => "example.com")
+
+   (fact "when given an acct uri"
+     (get-domain-name "acct:bob@example.com") => "example.com"))
+
  (fact "#'get-domain"
    (fact "when passed nil"
      (fact "should throw an exception"
@@ -90,7 +97,7 @@
    (fact "when the user is not found"
      (drop!)
      (let [username (fseq :id)
-           domain (actions.domain/find-or-create (factory :domain))]
+           domain (existance/a-domain-exists)]
        (get-user username (:_id domain)) => nil)))
 
  (fact "user-meta-uri"
@@ -100,14 +107,13 @@
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
-     (let [domain (actions.domain/find-or-create
-                   (factory :domain
-                            {:links [{:rel "lrdd"
-                                      :template "http://example.com/main/xrd?uri={uri}"}]}))
-           user (existance/another-user-exists {:domain domain})]
-       (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user)))))
+     (let [domain (existance/a-remote-domain-exists)]
+       (model.domain/set-field domain :links [{:rel "lrdd"
+                                               :template "http://example.com/main/xrd?uri={uri}"}])
+       (let [user (existance/a-remote-user-exists {:domain domain})]
+         (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
  (fact "vcard-request"
    (let [user (existance/a-user-exists)]
      (vcard-request user) => packet/packet?))
-)
+ )

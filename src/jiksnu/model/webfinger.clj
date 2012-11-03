@@ -1,20 +1,27 @@
 (ns jiksnu.model.webfinger
   (:use [ciste.config :only [config]]
         [ciste.sections.default :only [full-uri]]
-        [clojure.core.incubator :only [-?>]])
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.User))
 
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
-  (cm/fetch-document url))
+  (try
+    (s/increment "xrd_fetched")
+    (cm/fetch-document url)
+    (catch RuntimeException ex
+      (throw+ "Could not fetch host meta"))))
 
 (defn fetch-user-meta
   "returns a user meta document"
@@ -33,6 +40,36 @@
    ["Link" {"rel" "lrdd"
             "template" (str "http://" domain "/main/xrd?uri={uri}")}
     ["Title" {} "Resource Descriptor"]]])
+
+(defn get-source-link
+  [user-meta]
+  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
+    (->> user-meta
+         (cm/query query-str)
+         model/force-coll
+         (keep #(.getAttributeValue % "href"))
+         first)))
+
+
+(defn get-feed-source-from-user-meta
+  [user-meta]
+  (if-let [source-link (get-source-link user-meta)]
+    (model/get-source source-link)
+    (throw+ "could not determine source")))
+
+(defn get-username-from-atom-property
+  ;; passed a document
+  [user-meta]
+  (try
+    (->> user-meta
+         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
+         model/force-coll
+         (keep #(.getValue %))
+         first)
+    ;; TODO: What are the error risks here?
+    (catch RuntimeException ex
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
 
 (defn user-meta
   [lrdd]
@@ -86,3 +123,26 @@
   (->> (concat (model/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
                (model/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))
+
+(defn get-username-from-identifiers
+  ;; passed a document
+  [user-meta]
+  (try
+    (->> user-meta
+         get-identifiers
+         (keep (comp first model.user/split-uri))
+         first)
+    (catch RuntimeException ex
+      (log/error "caught error" ex)
+      (.printStackTrace ex))))
+
+;; takes a document
+(defn get-username-from-user-meta
+  "return the username component of the user meta"
+  [user-meta]
+  (->> [(get-username-from-atom-property user-meta)]
+       (lazy-cat
+        [(get-username-from-identifiers user-meta)])
+       (filter identity)
+       first))
+

@@ -4,6 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
+        [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -19,10 +20,14 @@
            jiksnu.model.Domain))
 
 (defonce delete-hooks (ref []))
+(defonce pending-discovers (ref {}))
 
 (defn prepare-create
   [domain]
-  domain)
+  (-> domain
+      model.domain/set-discovered
+      set-created-time
+      set-updated-time))
 
 (defn prepare-delete
   ([domain]
@@ -46,11 +51,6 @@
                                                 (:type link))]
     item
     (add-link* item link)))
-
-(defaction create
-  [options]
-  (let [domain (prepare-create options)]
-    (model.domain/create domain)))
 
 (defaction delete
   [domain]
@@ -82,7 +82,13 @@
 (defaction set-discovered!
   "marks the domain as having been discovered"
   [domain]
-  (model.domain/set-field domain :discovered true))
+  (model.domain/set-field domain :discovered true)
+  (let [id (:_id domain)
+        domain (model.domain/fetch-by-id id)]
+    (when-let [p (get @pending-discovers id)]
+      (let [domain (model.domain/fetch-by-id (:_id domain))]
+        (deliver p domain)))
+    domain))
 
 (defn discover-webfinger
   [^Domain domain url]
@@ -91,9 +97,9 @@
     (if-let [links (model.webfinger/get-links xrd)]
       ;; TODO: do individual updates
       (do
-        (set-discovered! domain)
         (doseq [link links]
           (add-link domain link))
+        (set-discovered! domain)
         domain)
       (throw+  "Host meta does not have any links"))
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
@@ -113,22 +119,6 @@
 (defaction index
   [& options]
   (apply index* options))
-
-(defn find-or-create
-  [domain]
-  (or (model.domain/fetch-by-id (:_id domain))
-      (create domain)))
-
-(defn find-or-create-for-url
-  "Return a domain object that matche the domain of the provided url"
-  [url]
-  (let [url-obj (URL. url)]
-    (find-or-create (.getHost url-obj))))
-
-(defn current-domain
-  []
-  (find-or-create {:_id (config :domain)
-                   :local true}))
 
 (defaction ping
   [domain]
@@ -167,14 +157,49 @@
 
 (defaction discover
   [^Domain domain url]
-  (when-not (:local domain)
-    (log/debugf "discovering domain - %s" (:_id domain))
-    (discover* domain url)
-    (model.domain/fetch-by-id (:_id domain))))
+  (if-not (:local domain)
+    (do (log/debugf "discovering domain - %s" (:_id domain))
+        (discover* domain url)
+        (model.domain/fetch-by-id (:_id domain)))
+    (log/warn "local domains do not need to be discovered")))
+
+(defaction create
+  [options]
+  (let [domain (prepare-create options)]
+    (model.domain/create domain)))
+
+(defn find-or-create
+  [domain]
+  (or (model.domain/fetch-by-id (:_id domain))
+      (create domain)))
+
+(defn find-or-create-for-url
+  "Return a domain object that matche the domain of the provided url"
+  [url]
+  (let [url-obj (URL. url)]
+    (find-or-create (.getHost url-obj))))
+
+(defn current-domain
+  []
+  (find-or-create {:_id (config :domain)
+                   :local true}))
 
 (defn get-discovered
   [domain]
-  (discover domain nil))
+  (let [domain (find-or-create domain)]
+    (if (:discovered domain)
+      domain
+      (let [id (:_id domain)
+            p (dosync
+               (when-not (get @pending-discovers id)
+                 (let [p (promise)]
+                   (alter pending-discovers #(assoc % id p))
+                   p)))
+            p (if p
+                (do (discover domain) p)
+                (get @pending-discovers id))]
+        (or (deref p 5000 nil)
+            (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url
   [domain user-uri]

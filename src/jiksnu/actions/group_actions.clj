@@ -9,7 +9,8 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.model.group :as model.group])
+            [jiksnu.model.group :as model.group]
+            [jiksnu.session :as session])
   (:import jiksnu.model.Group))
 
 (defn prepare-create
@@ -58,7 +59,7 @@
 
 (defaction add
   [params]
-  (if-let [user (current-user)]
+  (if-let [user (session/current-user)]
     (let [params (assoc params :admins [(:_id user)])]
       (if-let [group (create params)]
         (do #_(add-admin group user)

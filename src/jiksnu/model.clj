@@ -7,6 +7,7 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -20,7 +21,8 @@
             monger.json
             [plaza.rdf.core :as rdf]
             [plaza.rdf.implementations.jena :as jena])
-  (:import com.ocpsoft.pretty.time.PrettyTime
+  (:import com.mongodb.WriteConcern
+           com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
            java.io.PrintWriter
            java.text.SimpleDateFormat
@@ -55,16 +57,6 @@
            (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
            (.format formatter  date))
     date))
-
-(defn date->twitter
-  [date]
-  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
-    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
-    (.format formatter date)))
-
-(defn prettyify-time
-  [^Date date]
-  (-?>> date (.format (PrettyTime.))))
 
 (defn strip-namespaces
   [val]
@@ -135,6 +127,7 @@
 (defrecord Item                    [])
 (defrecord Key                     [])
 (defrecord Like                    [])
+(defrecord Resource                [])
 (defrecord Subscription            [])
 (defrecord User                    [])
 
@@ -156,9 +149,7 @@
   "Is the provided object a user?"
   [user] (instance? User user))
 
-(defn drop-collection
-  [klass]
-  (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
+;; index helpers
 
 (defn make-fetch-fn
   [make-fn collection-name]
@@ -205,6 +196,8 @@
                (throw+ "Could not find fetch function"))
              (throw+ "Could not find count function"))))))
 
+;; rdf helpers
+
 (defn triples->model
   [triples]
   (let [model (rdf/build-model)
@@ -215,7 +208,6 @@
       (rdf/model-add-triples triples))
     model))
 
-
 (defn format-triples
   [triples format]
   (-> triples
@@ -223,6 +215,41 @@
       (rdf/model->format format)
       with-out-str))
 
+;; async fetchers
+
+(defonce pending-conversations (l/permanent-channel))
+(defonce pending-sources       (l/permanent-channel))
+(defonce pending-resources     (l/permanent-channel))
+
+(defn get-conversation
+  [url]
+  (s/increment "conversations async get")
+  (let [result (l/result-channel)]
+    (l/enqueue pending-conversations [url result])
+    (l/wait-for-result result 5000)))
+
+(defn get-source
+  [url]
+  (let [result (l/result-channel)]
+    (l/enqueue pending-sources [url result])
+    (l/wait-for-result result 5000)))
+
+(defn get-resource
+  [url]
+  (let [result (l/result-channel)]
+    (l/enqueue pending-resources [url result])
+    (l/wait-for-result result 5000)))
+
+;; Database functions
+
+(defn ^ObjectId make-id
+  "Create an object id from the provided string"
+  ([] (ObjectId.))
+  ([^String id] (ObjectId. id)))
+
+(defn drop-collection
+  [klass]
+  (mc/remove (inf/plural (inf/underscore (.getSimpleName klass)))))
 
 (defn drop-all!
   "Drop all collections"
@@ -233,20 +260,17 @@
                   Group Item Key Like Subscription User]]
     (drop-collection entity)))
 
-(defn parse-http-link
-  [url]
-  (let [[_ href remainder] (re-matches #"<([^>]+)>; (.*)" url)]
-    (->> (string/split remainder #"; ")
-         (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
-         (into {})
-         (merge {"href" href}))))
+(defn set-database!
+  "Set the connection for mongo"
+  []
+  (log/info (str "setting database for " (environment)))
+  ;; TODO: pass connection options
+  (mg/connect!)
+  (let [db (mg/get-db (str (config :database :name)))]
+    (mg/set-db! db)))
 
-(defn ^ObjectId make-id
-  "Create an object id from the provided string"
-  ([] (ObjectId.))
-  ([^String id] (ObjectId. id)))
+;; link functions
 
-;; this could be more generic
 (defn extract-atom-link
   "Find the atom link in the page identified by url"
   [url]
@@ -257,33 +281,32 @@
        (map #(-> % :attrs :href))
        first))
 
-(defonce pending-conversations (l/permanent-channel))
-(defonce pending-sources (l/permanent-channel))
-
-(defn get-conversation
+(defn parse-http-link
   [url]
-  (let [result (l/result-channel)]
-    (l/enqueue pending-conversations [url result])
-    result))
+  (let [[_ href remainder] (re-matches #"<([^>]+)>; (.*)" url)]
+    (->> (string/split remainder #"; ")
+         (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
+         (into {})
+         (merge {"href" href}))))
 
-(defn get-source
-  [url]
-  (let [result (l/result-channel)]
-    (l/enqueue pending-sources [url result])
-    result))
+;; hooks
 
-;; Database functions
+(defn add-hook!
+  [r f]
+  (dosync
+   (alter r conj f)))
 
-(defn set-database!
-  "Set the connection for mongo"
-  []
-  (log/info (str "setting database for " (environment)))
-  ;; TODO: pass connection options
-  (mg/connect!)
-  (let [db (mg/get-db (str (config :database :name)))]
-    (mg/set-db! db)))
+;; serializers
 
-;; TODO: Find a good place for this
+(defn date->twitter
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
+(defn prettyify-time
+  [^Date date]
+  (-?>> date (.format (PrettyTime.))))
 
 (defn write-json-date
   ([^Date date ^PrintWriter out]
@@ -303,7 +326,24 @@
 (extend ObjectId json/Write-JSON
         {:write-json write-json-object-id})
 
+;; initializer
+
 (definitializer
-  (alter-var-root #'*base-url* (constantly (format "http://%s" (config :domain))) )
-  (set-database!))
+  (let [url (format "http://%s" (config :domain))]
+    (alter-var-root #'*base-url*
+                    (constantly url)))
+
+  (s/setup "localhost" 8125)
+  
+  (set-database!)
+
+  (try
+
+    (mc/ensure-index "conversations" {:url 1} {:unique true})
+
+    (catch RuntimeException ex
+      (.printStackTrace ex)))
+
+  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
+  )
 

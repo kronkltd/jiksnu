@@ -3,7 +3,8 @@
         [ciste.sections.default :only [add-form index-block index-section]]
         [jiksnu.actions.admin.auth-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [admin-index-section bind-to format-page-info
+                                pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model])
   (:import jiksnu.model.AuthenticationMechanism))
@@ -13,15 +14,14 @@
   [request {:keys [items] :as response}]
   {:title "Authentication Mechanisms"
    :single true
-   :viewmodel "/admin/auth.viewmodel"
    :body (with-page "default"
-           (list (pagination-links response)
-                 [:div {:data-bind "with: items"}
-                  (admin-index-section (if *dynamic*
-                                         [(AuthenticationMechanism.)]
-                                         items)
-                                       response)
-                  (add-form (model/->AuthenticationMechanism))]))})
+           (pagination-links response)
+           (bind-to "items"
+             (admin-index-section (if *dynamic*
+                                    [(AuthenticationMechanism.)]
+                                    items)
+                                  response)
+             (add-form (model/->AuthenticationMechanism))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

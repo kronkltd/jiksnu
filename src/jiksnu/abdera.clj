@@ -1,7 +1,8 @@
 (ns jiksnu.abdera
   (:use [ciste.initializer :only [definitializer]]
         [clojure.core.incubator :only [-?>]])
-  (:require [clj-tigase.element :as element]
+  (:require [clj-statsd :as s]
+            [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns])
   (:import java.io.ByteArrayInputStream
@@ -38,6 +39,7 @@
 
 (defn fetch-resource
   [uri]
+  (s/increment "feed_fetched")
   (.get (AbderaClient.) uri))
 
 (defn fetch-document
@@ -135,6 +137,8 @@ this is for OSW
            (when (seq extensions) {:extensions extensions})
            (when (seq type)       {:type (str type)}))))
 
+
+
 (defn parse-notice-info
   "extract the notice info from a statusnet element"
   [^Element element]
@@ -145,10 +149,9 @@ this is for OSW
      :source-link source-link
      :local-id local-id}))
 
-
-
-
-
+(defn attr-val
+  [^Element element name]
+  (.getAttributeValue element name))
 
 
 
@@ -194,7 +197,7 @@ this is for OSW
   (map parse-link (.getLinks entry)))
 
 (defn get-author
-  [entry feed]
+  [^Entry entry feed]
   (or
    ;; (.getActor entry)
    (.getAuthor entry)
@@ -202,26 +205,36 @@ this is for OSW
    (if-let [source (.getSource entry)]
      (first (.getAuthors source)))))
 
+
+
+
 (defn get-name
   "Returns the name of the Atom person"
   [^Person person]
   (or (.getSimpleExtension person ns/poco "displayName" "poco" )
       (.getName person)))
 
-
 (defn get-extension-elements
-  [person ns-part local-part]
+  [^Person person ns-part local-part]
   (.getExtensions person (QName. ns-part local-part)))
 
 (defn get-links
-  [person]
+  [^Person person]
   (-> person
       (get-extension-elements ns/atom "link")
       (->> (map parse-link))))
 
 (defn get-extension
-  [person ns-part local-part]
+  [^Person person ns-part local-part]
   (.getSimpleExtension person (QName. ns-part local-part)))
+
+(defn get-username
+  [^Person person]
+  (get-extension person ns/poco "preferredUsername"))
+
+(defn get-note
+  [^Person person]
+  (get-extension person ns/poco "note"))
 
 
 (defn ^Link make-link
@@ -260,12 +273,6 @@ this is for OSW
   "Returns the string representation of a feed from a feed map"
   [m]
   (str (make-feed* m)))
-
-
-
-
-
-
 
 
 

@@ -4,7 +4,7 @@
         [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.user-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info pagination-links with-page]]
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]]
         plaza.rdf.vocabularies.foaf)
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -49,25 +49,22 @@
 
 ;; fetch-updates
 
-(defview #'fetch-updates :html
-  [request user]
-  (-> (response/redirect-after-post (uri user))
-      (assoc :template false)
-      (assoc :flash "fetching updates")))
+;; (defview #'fetch-updates :html
+;;   [request user]
+;;   (-> (response/redirect-after-post (uri user))
+;;       (assoc :template false)
+;;       (assoc :flash "fetching updates")))
 
 ;; index
 
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Users"
-   :viewmodel "/users.viewmodel"
    :body
    (with-page "default"
-     (list
-      (pagination-links page)
-      [:div (if *dynamic*
-              {:data-bind "with: items"})
-       (index-section items page)]))})
+     (pagination-links page)
+     (bind-to "items"
+       (index-section items page)))})
 
 (defview #'index :json
   [request {:keys [items] :as options}]
@@ -77,8 +74,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Users"
-          :pages {:default (format-page-info page)}
-          :users (index-section items page)}})
+          :pages {:default (format-page-info page)}}})
 
 ;; profile
 

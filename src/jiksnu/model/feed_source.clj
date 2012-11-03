@@ -1,12 +1,13 @@
 (ns jiksnu.model.feed-source
-  (:use [jiksnu.model :only [->FeedSource]]
-        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
+  (:use [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
-  (:require [clj-time.core :as time]
+  (:require [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq])
@@ -18,19 +19,9 @@
   (validation-set
    (presence-of :_id)
    (presence-of :topic)
-   (presence-of :subscription-status)
+   (presence-of :status)
    (presence-of :created)
    (presence-of :updated)))
-
-(defn prepare
-  [params]
-  (let [now (time/now)]
-    (-> (merge {:status "unknown"
-                :subscription-status "none"}
-               params)
-        set-_id
-        set-updated-time
-        set-created-time)))
 
 (defn set-field!
   "Updates user's field to value"
@@ -52,13 +43,6 @@
              params)
   (fetch-by-id (:_id source)))
 
-;; TODO: generalize this and move it to model
-(defn set-field!
-  "atomically set a field"
-  [source key value]
-  (update source
-    {:$set {key value}}))
-
 (defn push-value!
   [source key value]
   (update source
@@ -66,14 +50,16 @@
 
 (defn create
   [params]
-  (let [params (prepare params)
-        errors (create-validators params)]
+  (let [errors (create-validators params)]
     (if (empty? errors)
       (do
         (log/debugf "Creating feed source: %s" params)
         (mc/insert collection-name params)
         ;; TODO: check no errors
-        (fetch-by-id (:_id params)))
+        (let [item (fetch-by-id (:_id params))]
+          (trace/trace :feed-sources:created item)
+          (s/increment "feed-sources_created")
+          item))
       (throw+ {:type :validation :errors errors}))))
 
 (defn delete

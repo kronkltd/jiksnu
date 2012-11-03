@@ -6,7 +6,8 @@
                                                          fetch-updates index
                                                          remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-show-section format-page-info pagination-links with-page]]
+        [jiksnu.sections :only [admin-index-section admin-show-section bind-to format-page-info
+                                pagination-links with-page]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])
   (:require [clojure.tools.logging :as log]
@@ -41,17 +42,15 @@
                                [(FeedSource.)]
                                items)]
                  (with-page "default"
-                   (list (pagination-links page)
-                         [:div (if *dynamic*
-                                 {:data-bind "with: items"})
-                          (admin-index-section sources page)])))
+                   (pagination-links page)
+                   (bind-to "items"
+                     (admin-index-section sources page))))
                (add-form (FeedSource.)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
-          :pages {:default (format-page-info page)}
-          :feedSources (admin-index-section items page)}})
+          :pages {:default (format-page-info page)}}})
 
 (defview #'remove-watcher :html
   [request source]
@@ -65,11 +64,11 @@
    :single true
    :body
    (let [source (if *dynamic* (FeedSource.) source)]
-     [:div {:data-bind "with: targetFeedSource"}
-      (admin-show-section source)
-      [:div {:data-model "feed-source"}
-       (index-watchers source)
-       (add-watcher-form source)]])})
+     (bind-to "targetFeedSource"
+       (admin-show-section source)
+       [:div {:data-model "feed-source"}
+        (index-watchers source)
+        (add-watcher-form source)]))})
 
 (defview #'show :model
   [request source]

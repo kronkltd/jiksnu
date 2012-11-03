@@ -143,8 +143,7 @@
 (defn set-conversation
   [activity]
   (if-let [uri (first (:conversation-uris activity))]
-    (let [ch (model/get-conversation uri)
-          conversation (l/wait-for-result ch 5000)]
+    (let [conversation (model/get-conversation uri)]
       (-> activity
           (assoc :conversation (:_id conversation))
           (dissoc :conversation-uris)))
@@ -152,10 +151,29 @@
 
 (defn set-mentioned
   [activity]
-  (if-let [mentioned-uris (seq (:mentioned-uris activity))]
-    (let [ids (map (fn [uri]
-                     (:_id (actions.user/find-or-create-by-remote-id {:id uri})))
-                   mentioned-uris)]
-      (dissoc (assoc activity :mentioned ids) :mentioned-uris))
+  (if-let [ids (->> activity
+                    :mentioned-uris
+                    (map
+                     (fn [uri]
+                       (try
+                         (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
+                         (catch RuntimeException ex
+                           nil))))
+                    (filter identity)
+                    seq)]
+    (-> activity
+        (assoc :mentioned ids)
+        (dissoc :mentioned-uris))
     activity))
 
+(defn set-resources
+  [activity]
+  (if-let [ids (->> activity
+                    :enclosures
+                    :href
+                    (map (comp :_id model/get-resource))
+                    seq)]
+    (-> activity
+        (assoc :resources ids)
+        (dissoc :enclosures))
+    activity))
