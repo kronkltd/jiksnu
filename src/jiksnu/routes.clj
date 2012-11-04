@@ -84,6 +84,7 @@
                  (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/main/events" _
                  stream/stream-handler)
+  (route/resources "/webjars" {:root "META-INF/resources/webjars"})
   (route/not-found (not-found-msg)))
 
 
