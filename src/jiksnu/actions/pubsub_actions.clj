@@ -9,6 +9,7 @@
             [lamina.core :as l]
             [lamina.executor :as e]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]))
 

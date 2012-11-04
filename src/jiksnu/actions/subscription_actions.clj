@@ -66,7 +66,7 @@
 (defaction subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed
-  (if-let [source (model.feed-source/find-by-user user)]
+  (if-let [source (model.feed-source/fetch-by-id (:update-source user))]
     (actions.feed-source/subscribe source)
     (log/info "Could not find source"))
   (-> {:from (:_id actor)
