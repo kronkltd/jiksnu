@@ -52,7 +52,7 @@
                          :hub.verify_token (:verify-token subscription)}
                         (if (:challenge subscription)
                           {:hub.challenge (:challenge subscription)}))
-          url (log/spy (model/make-subscribe-uri (:callback subscription) params))
+          url (model/make-subscribe-uri (:callback subscription) params)
           response-channel (http/http-request {:method :get
                                                :url url
                                                :auto-transform true})]
@@ -70,10 +70,10 @@
 (defaction subscribe
   [params]
   ;; set up feed subscriber
-  (let [source (actions.feed-source/find-or-create (log/spy params))]
+  (let [source (actions.feed-source/find-or-create params)]
     (if (= (:verify params) "async")
       (verify-subscription-async source)
-      (verify-subscribe-sync (log/spy source)))))
+      (verify-subscribe-sync source))))
 
 (defaction unsubscribe
   [params]
