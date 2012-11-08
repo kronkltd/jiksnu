@@ -242,7 +242,10 @@
   (update* item)
   item)
 
+(def discovery-timeout 5000)
+
 (defn get-discovered
+  "Returns a copy of that domain once it's properly discovered"
   [item]
   (let [item (find-or-create item)]
     (if (:discovered item)
@@ -256,7 +259,7 @@
             p (if p
                 (do (discover item) p)
                 (get @pending-discovers id))]
-        (or (deref p 5000 nil)
+        (or (deref p discovery-timeout nil)
             (throw+ "Could not discover feed source"))))))
 
 (l/receive-all
