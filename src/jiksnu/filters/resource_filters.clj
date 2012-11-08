@@ -28,6 +28,13 @@
     (when-let [item (model.resource/fetch-by-id (model/make-id id))]
       (action item))))
 
+;; discover
+
+(deffilter #'discover :command
+  [action id]
+  (if-let [item (model.resource/fetch-by-id id)]
+    (action item)))
+
 ;; index
 
 (deffilter #'index :http

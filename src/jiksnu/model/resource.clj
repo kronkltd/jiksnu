@@ -39,6 +39,15 @@
   [url]
   (first (:items (fetch-all {:url url}))))
 
+(defn set-field!
+  "Updates resource's field to value"
+  [item field value]
+  (log/debugf "setting %s (%s = %s)" (:_id item) field value)
+  (s/increment "resources field set")
+  (mc/update collection-name
+             {:_id (:_id item)}
+             {:$set {field value}}))
+
 (defn fetch-by-id
   [id]
   (let [id (if (string? id) (model/make-id id) id)]

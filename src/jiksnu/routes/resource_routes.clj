@@ -15,6 +15,8 @@
   [
    [[:get    (formatted-path "index resources")]   #'index]
    [[:get    (named-path     "index resources")]   #'index]
+   [[:get    (formatted-path "show resource")]     #'show]
+   [[:get    (named-path     "show resource")]     #'show]
    [[:post   (formatted-path "discover resource")] #'discover]
    [[:post   (named-path     "discover resource")] #'discover]
    [[:post   (formatted-path "update resource")]   #'update]

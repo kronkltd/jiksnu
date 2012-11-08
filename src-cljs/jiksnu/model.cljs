@@ -15,6 +15,7 @@
    "domain"                   "domains"
    "feed-source"              "feedSources"
    "group"                    "groups"
+   "resource"                 "resources"
    "subscription"             "subscriptions"
    "user"                     "users"
    })
@@ -26,8 +27,9 @@
    "authenticationMechanisms"
    "conversations"
    "domains"
-   "groups"
    "feedSources"
+   "groups"
+   "resources"
    "subscriptions"
    "users"])
 
@@ -151,6 +153,29 @@
             "type"    "Domains"
             "urlRoot" "/main/domains/"
             "model"   Domain)))
+
+(def Resource
+  (.extend backbone/Model
+           (js-obj
+            "type" "Resource"
+            "url" (fn []
+                    (this-as this
+                      (format "/model/resources/%s.model" (.-id this))))
+            "defaults" (js-obj
+                        "url"     nil
+                        "status"  nil
+                        "contentType" nil
+                        "created" nil
+                        "updated" nil)
+            "idAttribute" "_id"
+            "initialize"  initializer)))
+
+
+(def Resources
+  (.extend backbone/Collection
+           (js-obj
+            "type"    "Resources"
+            "model"   Resource)))
 
 
 (def User
@@ -338,6 +363,7 @@
 (def notifications (Notifications.))
 (def observables   (js-obj))
 (def pages         (Pages.))
+(def resources     (Resources.))
 (def subscriptions (Subscriptions.))
 (def users         (Users.))
 
@@ -358,12 +384,14 @@
              "pages"                    pages
              "postForm"                 (PostForm.)
              "notifications"            notifications
+             "resources"                resources
              "statistics"               nil
              "subscriptions"            subscriptions
              "targetActivity"           nil
              "targetConversation"       nil
              "targetDomain"             nil
              "targetFeedSource"         nil
+             "targetResource"           nil
              "targetUser"               nil
              "title"                    nil
              "users"                    users))))

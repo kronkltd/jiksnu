@@ -32,18 +32,13 @@
 
 (defonce pending-discovers (ref {}))
 
-(defn set-status
-  [item]
-  (if (:status item)
-    item
-    (assoc item :status "none")))
-
 (defn prepare-create
   [source]
   (-> source
       transforms.feed-source/set-domain
       transforms/set-_id
-      set-status
+      transforms.feed-source/set-status
+      transforms.feed-source/set-resource
       transforms/set-updated-time
       transforms/set-created-time))
 

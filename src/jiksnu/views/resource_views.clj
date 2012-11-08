@@ -50,6 +50,14 @@
 
 ;; show
 
+(defview #'show :html
+  [request item]
+  {:body
+   (let [item (if *dynamic* (Resource.) item)]
+     (bind-to "targetResource"
+       [:div {:data-model "resource"}
+        (show-section item)]))})
+
 (defview #'show :model
   [request item]
   {:body item})

@@ -7,6 +7,7 @@
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clj-http.client :as client]
             [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -63,7 +64,10 @@
 
 (defaction discover
   [item]
-  item)
+  (let [response (client/get (:url item))]
+    (model.resource/set-field! item :status (:status response))
+    (model.resource/set-field! item :contentType (get-in response [:headers "content-type"]))
+    (model.resource/fetch-by-id (:_id item))))
 
 (defaction update
   [item]
