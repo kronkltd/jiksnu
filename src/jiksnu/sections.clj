@@ -137,6 +137,18 @@
                         {:href (str "?page=" (dec page)) }))
    "&larr; Previous"])
 
+(defn dropdown-menu
+  [item buttons]
+  (when (seq buttons)
+    [:div.btn-group.pull-right
+     [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
+      [:span.caret]]
+     [:ul.dropdown-menu.pull-right
+      (map
+       (fn [button-fn]
+         [:li (button-fn item)])
+       buttons)]]))
+
 (defn pagination-links
   [options]
   ;; TODO: page should always be there from now on

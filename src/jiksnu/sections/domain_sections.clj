@@ -5,9 +5,11 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
         [jiksnu.sections :only [action-link admin-index-block
-                                admin-index-line control-line]])
+                                admin-index-line control-line
+                                dropdown-menu]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.sections.link-sections :as sections.link])
+            [jiksnu.sections.link-sections :as sections.link]
+            [jiksnu.session :as session])
   (:import jiksnu.model.Domain))
 
 (defn favicon-link
@@ -21,17 +23,27 @@
   [item]
   (action-link "domain" "discover" (:_id item)))
 
+(defn model-button
+  [item]
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/model/domains/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:href (str (named-path "domain model" {:id (:_id item)}) ".model")})
+   "Model"])
+
+(defn get-buttons
+  []
+  (concat
+   [#'model-button]
+   (when (session/current-user)
+     [#'discover-button])
+   (when (session/is-admin?)
+     [#'delete-button])))
+
 ;; actions-section
 
 (defsection actions-section [Domain :html]
-  [domain & _]
-  [:ul
-   [:li (discover-button domain)]
-   [:li [:a (if *dynamic*
-              {:data-bind "attr: {href: '/model/domains/' + ko.utils.unwrapObservable(_id) + '.model'}"}
-              {:href (str (named-path "domain model" {:id (:_id domain)}) ".model")})
-         "Model"]]
-   [:li (delete-button domain)]])
+  [item]
+  (dropdown-menu item (get-buttons)))
 
 ;; add-form
 
@@ -122,6 +134,7 @@
 (defsection show-section [Domain :html]
   [domain & _]
   [:div {:data-model "domain"}
+   (actions-section domain)
    [:table.table
     [:thead]
     [:tbody
@@ -159,8 +172,6 @@
                  :title (:title license)}
              [:img {:src (:image license)
                     :alt (:title license)}]]]])))]]
-   (when (is-admin?)
-     (actions-section domain))
    (when (seq (:links domain))
      (sections.link/index-section (:links domain)))])
 

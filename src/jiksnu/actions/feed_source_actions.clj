@@ -30,6 +30,8 @@
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
+(defonce pending-discovers (ref {}))
+
 (defn set-status
   [item]
   (if (:status item)
@@ -174,20 +176,22 @@
           "hub.topic" topic
           "hub.verify" "async"}}))))
 
+(defn send-subscribe
+  [source]
+  (if-let [hub (:hub source)]
+    (client/post
+     hub
+     {:throw-exceptions false
+      :form-params
+      {"hub.callback" (named-url "push callback")
+       "hub.mode" "subscribe"
+       "hub.topic" (:topic source)
+       "hub.verify" "async"}})
+    (throw+ "could not find hub")))
+
 (defaction show
   [item]
   item)
-
-(defn send-subscribe
-  [source]
-  (client/post
-   (:hub source)
-   {:throw-exceptions false
-    :form-params
-    {"hub.callback" (named-url "push callback")
-     "hub.mode" "subscribe"
-     "hub.topic" (:topic source)
-     "hub.verify" "async"}}))
 
 (defaction remove-watcher
   [source user]
@@ -196,17 +200,20 @@
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
+(defn get-feed
+  [source]
+  (if-let [topic (:topic source)]
+    (abdera/fetch-feed topic)
+    (throw+ {:message "Source does not contain a topic"
+             :source source})))
+
 (defn update*
   [source]
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (if-let [feed (try
-                      (abdera/fetch-feed topic)
-                      (catch Exception ex))]
+      (if-let [feed (get-feed source)]
         (process-feed source feed)
-        (throw+ "could not obtain feed"))
-      (throw+ {:message "Source does not contain a topic"
-               :source source}))
+        (throw+ "could not obtain feed")))
     (log/warn "local sources do not need updates")))
 
 (defaction update
@@ -236,11 +243,35 @@
     (find-or-create {:topic link})
     (throw+ (format "Could not determine topic url from resource: %s" url))))
 
+(defaction discover
+  [source]
+  
+  )
+
+
+(defn get-discovered
+  [item]
+  (let [item (find-or-create item)]
+    (if (:discovered item)
+      item
+      (let [id (:_id item)
+            p (dosync
+               (when-not (get @pending-discovers id)
+                 (let [p (promise)]
+                   (alter pending-discovers #(assoc % id p))
+                   p)))
+            p (if p
+                (do (discover item) p)
+                (get @pending-discovers id))]
+        (or (deref p 5000 nil)
+            (throw+ "Could not discover feed source"))))))
+
+(l/receive-all
+ model/pending-sources
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:topic url}))))
+
 (definitializer
-  (l/receive-all
-   model/pending-sources
-   (fn [[url ch]]
-     (l/enqueue ch (find-or-create {:topic url}))))
   
   (require-namespaces
    ["jiksnu.filters.feed-source-filters"

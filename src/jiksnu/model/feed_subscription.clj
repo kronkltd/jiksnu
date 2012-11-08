@@ -44,6 +44,15 @@
       (throw+ {:type :validation
                :errors errors}))))
 
+(defn delete
+  "Delete feed source
+
+This will generally not be called"
+  [item]
+  (log/debugf "Deleting subscription for %s" (:topic item))
+  (mc/remove-by-id collection-name (:_id item))
+  item)
+
 (defn fetch-all
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
@@ -54,8 +63,16 @@
                         (mq/paginate :page page :per-page 20))]
          (map model/map->FeedSubscription records)))))
 
+(defn fetch-by-topic
+  "Fetch a single source by it's topic id"
+  [topic]
+  (fetch-all {:topic topic}))
+
 (defn count-records
   ([] (count-records {}))
   ([params]
      (mc/count collection-name)))
 
+(defn drop!
+  []
+  (mc/remove collection-name))

@@ -154,6 +154,8 @@
         #_(l/map* format-event))
    posted-activities)
 
+(l/receive-all posted-activities (fn [_]))
+
 (defn websocket-handler
   [ch request]
   (let [user (session/current-user)]

@@ -32,17 +32,13 @@
        (with-serialization :http
          (fact "when the format is :json"
            (with-format :json
-             (let [feed-source (existance/a-feed-source-exists)
-                   user (existance/a-user-exists {:feed-source feed-source})
-                   activity (existance/there-is-an-activity {:feed-source feed-source
-                                                           :user user})
+             (let [activity (existance/there-is-an-activity)
                    request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
                (apply-view request response) =>
                (every-checker
                 map?
-                :body
                 (comp status/success? :status)
                 (fn [result]
                   (let [body (:body result)]

@@ -10,7 +10,7 @@
          [jiksnu.model :only [with-subject]]
          [jiksnu.sections :only [action-link actions-section admin-actions-section  admin-index-block
                                  admin-index-line admin-index-section admin-show-section bind-property
-                                 bind-to control-line pagination-links]]
+                                 bind-to control-line dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
@@ -190,27 +190,6 @@
 
     person))
 
-(defn user-actions
-  [user]
-  (if-let [authenticated (current-user)]
-    [:div
-     (when (= (:_id user) (:_id authenticated))
-       [:p "This is you"])
-     [:ul.user-actions.buttons
-      [:li (discover-button user)]
-      [:li (update-button user)]
-      [:li [:a
-            (if *dynamic*
-              {:data-bind "attr: {href: '/model/users/' + ko.utils.unwrapObservable(_id) + '.model'}"}
-              {:href (format "/model/users/%s.model" (:_id user))})
-            "Model"]]
-      (when (not= (:_id user) (:_id authenticated))
-        (list
-         [:li (subscribe-button user)]
-         [:li (unsubscribe-button user)]))
-      (when (is-admin?)
-        [:li (delete-button user)])]]))
-
 (defn remote-warning
   [user]
   (when-not (:local user)
@@ -250,6 +229,18 @@
         {:data-bind "attr: {href: '/model/users/' + ko.utils.unwrapObservable(_id) + '.model'}"})
    "Model"])
 
+(defn get-buttons
+  []
+  (concat
+   [#'subscribe-button]
+   (when (current-user)
+     [#'discover-button
+      #'model-button
+      #'update-button])
+   (when (is-admin?)
+     [#'edit-button
+      #'delete-button])))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sections
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -257,21 +248,8 @@
 ;; actions-section
 
 (defsection actions-section [User :html]
-  [user]
-  [:div.btn-group
-   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
-    [:span.caret]]
-   [:ul.dropdown-menu.pull-right
-    [:li (subscribe-button user)]
-    (when (current-user)
-      (list
-       [:li (discover-button user)]
-       [:li (model-button user)]
-       [:li (update-button user)]
-       (when (is-admin?)
-         (list
-          [:li (edit-button user)]
-          [:li (delete-button user)]))))]])
+  [item]
+  (dropdown-menu item (get-buttons)))
 
 ;; admin-actions-section
 
@@ -552,6 +530,7 @@
            (if *dynamic*
              {}
              {:data-id (:_id user)}))
+    (actions-section user)
     [:div (display-avatar user 96)]
     [:p
      [:span.nickname.fn.n
@@ -589,8 +568,7 @@
                    (try+  (model.key/get-key-for-user user)
                           (catch Object ex
                             (log/warn ex))))]
-      (show-section key))
-    (actions-section user)]))
+      (show-section key))]))
 
 (defsection show-section [User :json]
   [user & _]
