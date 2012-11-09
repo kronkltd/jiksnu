@@ -77,12 +77,12 @@
   [item]
   item)
 
-(definitializer
-  (l/receive-all
-   model/pending-resources
-   (fn [[url ch]]
-     (l/enqueue ch (find-or-create {:url url}))))
+(l/receive-all
+ model/pending-resources
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:url url}))))
 
+(definitializer
   (require-namespaces
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"
