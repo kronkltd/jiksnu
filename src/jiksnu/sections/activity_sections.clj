@@ -236,10 +236,15 @@
            :src
            ;; TODO: use urly to construct this
            ;; TODO: Move this to cljs
-           (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-                (:latitude geo)
-                ","
-                (:longitude geo))}]
+           (str "https://maps.googleapis.com/maps/api/staticmap?"
+                (string/join "&amp;"
+                             ["size=200x200"
+                              "zoom=11"
+                              "sensor=true"
+                              (str "markers=color:red|"
+                                   (:latitude geo)
+                                   ","
+                                   (:longitude geo))]))}]
        [:p "Latitude: " [:span (if *dynamic*
                                  {:data-bind "text: latitude"}
                                  (:latitude geo))]]
