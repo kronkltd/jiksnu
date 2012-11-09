@@ -132,6 +132,24 @@
 (defrecord Subscription            [])
 (defrecord User                    [])
 
+(def entity-names
+  [
+   Activity
+   AuthenticationMechanism
+   Conversation
+   Domain
+   FeedSource
+   FeedSubscription
+   Group
+   Item
+   Key
+   Like
+   Resource
+   Subscription
+   User
+   ]
+  )
+
 ;; Entity predicates
 
 (defn activity?
@@ -277,9 +295,8 @@
   "Drop all collections"
   []
   (log/debug "dropping all collections")
-  (doseq [entity [Activity AuthenticationMechanism Conversation Domain
-                  FeedSource FeedSubscription
-                  Group Item Key Like Subscription User]]
+  (doseq [entity entity-names]
+    (log/debugf "dropping %s" entity)
     (drop-collection entity)))
 
 (defn set-database!
