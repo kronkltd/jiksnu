@@ -42,9 +42,18 @@
     (model.resource/create item)))
 
 (defaction find-or-create
-  [params]
-  (or (model.resource/fetch-by-url (:url params))
-      (create params)))
+  [params & [{tries :tries :or {tries 1} :as options}]]
+  (if-let [
+           item (or (model.resource/fetch-by-url (:url params))
+                    (try
+                      (create params)
+                      (catch RuntimeException ex)))]
+    item
+    (if (< tries 3)
+      (do
+        (log/info "recurring")
+        (find-or-create params (assoc options :tries (inc tries))))
+      (throw+ "Could not create conversation"))))
 
 (defaction delete
   "Delete the resource"

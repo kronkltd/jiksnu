@@ -37,7 +37,7 @@
 
 (defn fetch-by-url
   [url]
-  (first (:items (fetch-all {:url url}))))
+  (first (fetch-all {:url url})))
 
 (defn set-field!
   "Updates resource's field to value"
@@ -60,9 +60,9 @@
   (let [errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "Creating resource: %s" (pr-str params))
         (mc/insert collection-name params)
         (let [item (fetch-by-id (:_id params))]
+          (log/debugf "Creating resource: %s" (pr-str item))
           (trace/trace :resource:created item)
           item))
       (throw+ {:type :validation :errors errors}))))
