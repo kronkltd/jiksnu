@@ -36,21 +36,15 @@
     record
     (assoc record :discovered (:local record))))
 
-(defn drop!
-  []
-  (mc/remove collection-name))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
+(def count-records (model/make-counter collection-name))
 
 (defn fetch-by-id
   [id]
   (s/increment "domains fetched")
   (if-let [domain (mc/find-map-by-id collection-name id)]
     (model/map->Domain domain)))
-
-(defn delete
-  [domain]
-  (s/increment "domains deleted" )
-  (mc/remove-by-id collection-name (:_id domain))
-  domain)
 
 (defn create
   [domain & [options & _]]
@@ -94,8 +88,3 @@
    :to (tigase/make-jid "" (:_id domain))
    :from (tigase/make-jid "" (config :domain))
    :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))

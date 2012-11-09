@@ -30,14 +30,9 @@
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
 
-(defn drop!
-  "Drop all keypairs"
-  []
-  (mc/remove collection-name))
-
-(defn delete
-  [record]
-  (mc/remove collection-name record))
+(def count-records (model/make-counter collection-name))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
 
 (defn get-user
   [key]
@@ -226,9 +221,3 @@
   ([] (fetch-all {} {}))
   ([params opts]
      (map model/map->Key (mc/find-maps collection-name params))))
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))
-

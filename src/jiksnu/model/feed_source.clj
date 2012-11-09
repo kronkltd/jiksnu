@@ -62,14 +62,9 @@
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(defn delete
-  "Delete feed source
-
-This will generally not be called"
-  [source]
-  (log/debugf "Deleting source for %s" (:topic source))
-  (mc/remove-by-id collection-name (:_id source))
-  source)
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
+(def count-records (model/make-counter collection-name))
 
 (defn find-record
   [options & args]
@@ -92,8 +87,3 @@ This will generally not be called"
   "Returns the source associated with a user"
   [user]
   (fetch-by-id (:update-source user)))
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))

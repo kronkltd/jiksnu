@@ -23,12 +23,6 @@
    (acceptance-of :local :accept (partial instance? Boolean))
    (presence-of   :update-source)))
 
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (s/increment "conversations_counted")
-     (mc/count collection-name params)))
-
 (defn fetch-by-id
   [id]
   (s/increment "conversations_fetched")
@@ -47,19 +41,9 @@
         (fetch-by-id (:_id record)))
       (throw+ {:type :validation :errors errors}))))
 
-(defn delete
-  [record]
-  (let [record (fetch-by-id (:_id record))]
-    (do
-      (log/debug "deleting conversation")
-      (s/increment "conversations_deleted")
-      (mc/remove collection-name record))
-    record))
-
-(defn drop!
-  []
-  (s/increment "conversations_dropped")
-  (mc/remove collection-name))
+(def count-records (model/make-counter collection-name))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))

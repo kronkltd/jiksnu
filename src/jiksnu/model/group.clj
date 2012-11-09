@@ -14,10 +14,9 @@
 (def collection-name "groups")
 (defonce page-size 20)
 
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))
+(def count-records (model/make-counter collection-name))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
 
 (def create-validators
   (validation-set
@@ -37,16 +36,6 @@
         (fetch-by-id (:_id group)))
       (throw+ {:type :validation
                :errors errors}))))
-
-(defn delete
-  [group]
-  (let [result (mc/remove-by-id collection-name (:_id group))]
-    (if (result/ok? result)
-      group)))
-
-(defn drop!
-  []
-  (mc/remove collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))

@@ -14,6 +14,7 @@
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
@@ -195,6 +196,27 @@
                  :count-fn count-fn#})
                (throw+ "Could not find fetch function"))
              (throw+ "Could not find count function"))))))
+
+(defn make-counter
+  [collection-name]
+  (fn [& [params]]
+     (let [params (or params {})]
+       (trace/trace* (str collection-name ":counted") 1)
+       (s/increment (str collection-name " counted"))
+       (mc/count collection-name params))))
+
+(defn make-deleter
+  [collection-name]
+  (fn [item]
+    (trace/trace* (str collection-name ":deleted") item)
+    (s/increment (str collection-name " deleted"))
+    (mc/remove-by-id collection-name (:_id item))
+    item))
+
+(defn make-dropper
+  [collection-name]
+  (fn []
+    (mc/remove collection-name)))
 
 ;; rdf helpers
 

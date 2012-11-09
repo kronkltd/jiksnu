@@ -67,16 +67,6 @@
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(defn drop!
-  []
-  (mc/remove collection-name))
-
-(defn delete
-  [item]
-  (mc/remove-by-id collection-name (:_id item))
-  item)
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
+(def count-records (model/make-counter collection-name))
