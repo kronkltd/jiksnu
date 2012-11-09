@@ -376,13 +376,6 @@
   
   (set-database!)
 
-  (try
-
-    (mc/ensure-index "conversations" {:url 1} {:unique true})
-
-    (catch RuntimeException ex
-      (.printStackTrace ex)))
-
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
   )
 

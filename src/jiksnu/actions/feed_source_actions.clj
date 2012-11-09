@@ -267,7 +267,8 @@
    (l/enqueue ch (find-or-create {:topic url}))))
 
 (definitializer
-  
+  (model.feed-source/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.feed-source-filters"
     "jiksnu.triggers.feed-source-triggers"

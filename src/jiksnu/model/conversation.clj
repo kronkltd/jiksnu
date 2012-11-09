@@ -61,3 +61,11 @@
 (defn find-by-url
   [url]
   (fetch-all {:url url}))
+
+(defn ensure-indexes
+  []
+
+  (doto collection-name
+    (mc/ensure-index {:url 1} {:unique true}))
+
+  )

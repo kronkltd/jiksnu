@@ -92,6 +92,8 @@
    (l/enqueue ch (find-or-create {:url url}))))
 
 (definitializer
+  (model.resource/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"

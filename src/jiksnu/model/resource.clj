@@ -70,3 +70,8 @@
 (def delete        (model/make-deleter collection-name))
 (def drop!         (model/make-dropper collection-name))
 (def count-records (model/make-counter collection-name))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+   (mc/ensure-index {:url 1} {:unique true})))

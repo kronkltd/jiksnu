@@ -87,3 +87,8 @@
   "Returns the source associated with a user"
   [user]
   (fetch-by-id (:update-source user)))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+   (mc/ensure-index {:topic 1} {:unique true})))
