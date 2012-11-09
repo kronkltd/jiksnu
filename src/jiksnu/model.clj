@@ -105,13 +105,6 @@
   (map (fn [[p o]] [s p o]) pairs))
 
 (jena/init-jena-framework)
-;; TODO: Find a better ns for this
-;; (rdf/register-rdf-ns :dc ns/dc)
-;; (rdf/register-rdf-ns :foaf ns/foaf)
-;; (rdf/register-rdf-ns :sioc ns/sioc)
-;; (rdf/register-rdf-ns :cert ns/cert)
-;; (rdf/register-rdf-ns :aair ns/aair)
-;; (rdf/register-rdf-ns :as ns/as)
 
 (defn force-coll
   [x]
