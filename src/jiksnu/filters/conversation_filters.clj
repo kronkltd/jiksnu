@@ -18,6 +18,13 @@
   [action request]
   (-> request :params :id model.conversation/fetch-by-id action))
 
+;; discover
+
+(deffilter #'discover :command
+  [action id]
+  (if-let [item (model.conversation/fetch-by-id id)]
+    (action item)))
+
 ;; index
 
 (deffilter #'index :http
