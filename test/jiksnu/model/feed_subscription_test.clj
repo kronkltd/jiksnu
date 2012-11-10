@@ -1,9 +1,12 @@
 (ns jiksnu.model.feed-subscription-test
     (:use [clj-factory.core :only [factory]]
           [jiksnu.test-helper :only [test-environment-fixture]]
-          [jiksnu.model.feed-subscription :only [create fetch-all fetch-by-id]]
+          [jiksnu.model.feed-subscription :only [create count-records delete drop!
+                                                 fetch-all fetch-by-id]]
           [midje.sweet :only [every-checker fact future-fact throws =>]])
     (:require [clojure.tools.logging :as log]
+              [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
+              [jiksnu.existance-helpers :as existance]
               [jiksnu.model :as model])
   (:import jiksnu.model.FeedSubscription
            org.bson.types.ObjectId
@@ -13,52 +16,75 @@
 (test-environment-fixture
 
  (fact "#'fetch-by-id"
-   (fact "when the record doesn't exist"
+   (fact "when the item doesn't exist"
      (let [id (model/make-id)]
        (fetch-by-id id) => nil?))
 
-   (fact "when the record exists"
-     (let [record (create (factory :feed-subscription))]
-       (fetch-by-id (:_id record)) => record)))
+   (fact "when the item exists"
+     (let [item (existance/a-feed-subscription-exists)]
+       (fetch-by-id (:_id item)) => item)))
  
  (fact "#'create"
    (fact "when given valid params"
-     (create (factory :feed-subscription)) =>
-     (every-checker
-      map?
-      (partial instance? FeedSubscription)
-      #(instance? ObjectId (:_id %))
-      #(instance? DateTime (:created %))
-      #(instance? DateTime (:updated %))
-      #(string? (:topic %))))
+     (let [params (actions.feed-subscription/prepare-create
+                   (factory :feed-subscription))]
+       (create params)) =>
+       (every-checker
+        map?
+        (partial instance? FeedSubscription)
+        #(instance? ObjectId (:_id %))
+        #(instance? DateTime (:created %))
+        #(instance? DateTime (:updated %))
+        #(string? (:topic %))))
 
    (fact "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
+ (fact "#'drop!"
+   (dotimes [i 1]
+     (existance/a-feed-subscription-exists))
+   (drop!)
+   (count-records) => 0)
+
+ (fact "#'delete"
+   (let [item (existance/a-feed-subscription-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
+
  (fact "#'fetch-all"
-   (fact "when there are no records"
-     (model/drop-all!)
-     
-     (fetch-all) =>
-     (every-checker
+   (fact "when there are no items"
+     (drop!)
+     (fetch-all) => (every-checker
       seq?
       empty?))
 
-   (fact "when there is more than a page"
-     (model/drop-all!)
+   (fact "when there is more than a page of items"
+     (drop!)
 
-     (dotimes [n 25]
-       (create (factory :feed-subscription)))
+     (let [n 25]
+       (dotimes [i n]
+         (existance/a-feed-subscription-exists))
 
-     (fetch-all) =>
-     (every-checker
-      seq?
-      #(fact (count %) => 20))
+       (fetch-all) =>
+       (every-checker
+        seq?
+        #(fact (count %) => 20))
 
-     (fetch-all {} {:page 2}) =>
-     (every-checker
-      seq?
-      #(fact (count %) => 5))))
+       (fetch-all {} {:page 2}) =>
+       (every-checker
+        seq?
+        #(fact (count %) => (- n 20))))))
+
+ (fact "#'count-records"
+   (fact "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (fact "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (existance/a-feed-subscription-exists))
+       (count-records) => n)))
 
  )
 

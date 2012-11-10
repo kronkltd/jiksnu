@@ -1,16 +1,16 @@
 (ns jiksnu.model.user-test
   (:use [ciste.config :only [config with-environment]]
         [clj-factory.core :only [factory fseq]]
-        jiksnu.test-helper
-        jiksnu.model
+        [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.model.user
-        midje.sweet)
+        [midje.sweet :only [=> contains every-checker fact throws truthy falsey]])
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain])
   (:import jiksnu.model.Domain
            jiksnu.model.User))
@@ -61,26 +61,69 @@
      (get-link user "foo" nil) => (contains {:href "bar"})
      (get-link user "baz" nil) => nil))
 
+ (fact "#'fetch-by-id"
+   (fact "when the item doesn't exist"
+     (let [id (model/make-id)]
+       (fetch-by-id id) => nil?))
+
+   (fact "when the item exists"
+     (let [item (existance/a-user-exists)]
+      (fetch-by-id (:_id item)) => item)))
+
  (fact "#'create"
-   (create (actions.user/prepare-create (factory :local-user))) => (partial instance? User))
+   (fact "when given valid params"
+     (let [params (actions.user/prepare-create
+                   (factory :local-user))]
+       (create params) => (partial instance? User)))
 
- ;; TODO: This is a better test for actions
+   (fact "when given invalid params"
+     (create {}) => (throws RuntimeException)))
+
+ (fact "#'drop!"
+   (dotimes [i 1]
+     (existance/a-user-exists))
+   (drop!)
+   (count-records) => 0)
+
+ (fact "#'delete"
+   (let [item (existance/a-user-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
+
  (fact "#'fetch-all"
-   (fact "when there are no users"
-     (fact "should be empty"
-       ;; TODO: all collections should be emptied in background
-       (drop!)
-       (fetch-all {} {}) =>
-       (every-checker
-        empty?)))
+   (fact "when there are no items"
+     (drop!)
+     (fetch-all) => (every-checker
+      seq?
+      empty?))
 
-   (fact "when there are users"
-     (fact "should not be empty"
-       (existance/a-user-exists)
+   (fact "when there is more than a page of items"
+     (drop!)
+
+     (let [n 25]
+       (dotimes [i n]
+         (existance/a-user-exists))
+
        (fetch-all) =>
        (every-checker
         seq?
-        (partial every? user?)))))
+        #(fact (count %) => 20))
+
+       (fetch-all {} {:page 2}) =>
+       (every-checker
+        seq?
+        #(fact (count %) => (- n 20))))))
+
+ (fact "#'count-records"
+   (fact "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (fact "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (existance/a-user-exists))
+       (count-records) => n)))
 
  (fact "#'fetch-by-domain"
    (let [domain (actions.domain/current-domain)

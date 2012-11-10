@@ -2,11 +2,12 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [jiksnu.model.subscription :only [delete drop! create fetch-all
+        [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
                                           fetch-by-id subscribe subscribing?
                                           subscribed?]]
-        [midje.sweet :only [fact => future-fact every-checker truthy]])
+        [midje.sweet :only [fact => future-fact every-checker throws truthy]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
@@ -17,37 +18,70 @@
 
 (test-environment-fixture
 
+ (fact "#'fetch-by-id"
+   (fact "when the item doesn't exist"
+     (let [id (model/make-id)]
+       (fetch-by-id id) => nil?))
+
+   (fact "when the item exists"
+     (let [item (existance/a-subscription-exists)]
+      (fetch-by-id (:_id item)) => item)))
+
+ (fact "#'create"
+   (fact "when given valid params"
+     (let [params (actions.subscription/prepare-create
+                   (factory :subscription))]
+       (create params) => (partial instance? Subscription)))
+
+   (fact "when given invalid params"
+     (create {}) => (throws RuntimeException)))
+
  (fact "#'delete"
-   (drop!)
-   (let [subscription (create (factory :subscription))]
-     (delete subscription)
-     (fetch-by-id (:_id subscription)) => nil))
+   (let [item (existance/a-subscription-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
 
  (fact "#'drop!"
-   (fact "when there are subscriptions"
-     (fact "should delete them all"
-       (let [actor (existance/a-user-exists)
-             user (existance/a-user-exists)]
-         (subscribe (:_id actor) (:_id user))
-         (drop!)
-         (fetch-all) => empty?))))
+   (dotimes [i 1]
+     (existance/a-subscription-exists))
+   (drop!)
+   (count-records) => 0)
 
  (fact "#'fetch-all"
-   (fact "when there are no subscriptions"
-     (fact "should return an empty sequence"
-       (fetch-all) =>
-       (every-checker
-        empty?
-        seq?)))
-   (fact "when there are subscriptions"
-     (dotimes [i 30]
-       (create (factory :subscription)))
-     (fact "should return a sequence of subscriptions"
-       (fetch-all) =>
-       (every-checker
-        (fn [s] (fact (count s) => 20))
-        (fn [s] (every? (partial instance? Subscription) s))))))
+   (fact "when there are no items"
+     (drop!)
+     (fetch-all) => (every-checker
+      seq?
+      empty?))
 
+   (fact "when there is more than a page of items"
+     (drop!)
+
+     (let [n 25]
+       (dotimes [i n]
+         (existance/a-subscription-exists))
+
+       (fetch-all) =>
+       (every-checker
+        seq?
+        #(fact (count %) => 20))
+
+       (fetch-all {} {:page 2}) =>
+       (every-checker
+        seq?
+        #(fact (count %) => (- n 20))))))
+
+ (fact "#'count-records"
+   (fact "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (fact "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (existance/a-subscription-exists))
+       (count-records) => n)))
+ 
  (fact "#'subscribe"
 
    (fact "when the user is logged in"

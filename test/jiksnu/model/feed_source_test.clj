@@ -2,9 +2,9 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.model.feed-source :only [create create-validators
-                                         fetch-by-id delete fetch-all]]
-        [midje.sweet :only [=> anything fact future-fact every-checker throws]])
+        [jiksnu.model.feed-source :only [create create-validators count-records
+                                         delete drop! fetch-all fetch-by-id]]
+        [midje.sweet :only [=> anything every-checker fact future-fact throws]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.existance-helpers :as existance]
@@ -44,5 +44,16 @@
 
  (fact "#'fetch-all"
    (fetch-all) => seq?)
+
+ (fact "#'count-records"
+   (fact "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (fact "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (existance/a-feed-source-exists))
+       (count-records) => n)))
 
  )

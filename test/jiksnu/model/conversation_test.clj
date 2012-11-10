@@ -2,22 +2,84 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.model.conversation :only [count-records]]
-        [midje.sweet :only [fact future-fact =>]]
+        [jiksnu.model.conversation :only [count-records create delete drop! fetch-all fetch-by-id]]
+        [midje.sweet :only [fact future-fact => throws every-checker]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model])
+  (:import jiksnu.model.Conversation))
 
 (test-environment-fixture
+
+ (fact "#'fetch-by-id"
+   (fact "when the item doesn't exist"
+     (let [id (model/make-id)]
+       (fetch-by-id id) => nil?))
+
+   (fact "when the item exists"
+     (let [item (existance/a-conversation-exists)]
+      (fetch-by-id (:_id item)) => item)))
+
+ (fact "#'create"
+   (fact "when given valid params"
+     (let [domain (existance/a-domain-exists)
+           source (existance/a-feed-source-exists)
+           params (actions.conversation/prepare-create
+                   (factory :conversation {:update-source (:_id source)
+                                           :domain (:_id domain)}))]
+       (create params) => (partial instance? Conversation)))
+
+   (fact "when given invalid params"
+     (create {}) => (throws RuntimeException)))
+ 
+ (fact "#'drop!"
+   (dotimes [i 1]
+     (existance/a-conversation-exists))
+   (drop!)
+   (count-records) => 0)
+
+ (fact "#'delete"
+   (let [item (existance/a-conversation-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
+
+ (fact "#'fetch-all"
+   (fact "when there are no items"
+     (drop!)
+     (fetch-all) => (every-checker
+      seq?
+      empty?))
+
+   (fact "when there is more than a page of items"
+     (drop!)
+
+     (let [n 25]
+       (dotimes [i n]
+         (existance/a-conversation-exists))
+
+       (fetch-all) =>
+       (every-checker
+        seq?
+        #(fact (count %) => 20))
+
+       (fetch-all {} {:page 2}) =>
+       (every-checker
+        seq?
+        #(fact (count %) => (- n 20))))))
+
  (fact "#'count-records"
-   (fact "when there aren't any conversations"
+   (fact "when there aren't any items"
+     (drop!)
      (count-records) => 0)
-   (fact "when there are conversations"
+   (fact "when there are items"
+     (drop!)
      (let [n 15]
        (dotimes [i n]
          (existance/a-conversation-exists))
-       (count-records) => n))))
+       (count-records) => n)))
+
+ )
