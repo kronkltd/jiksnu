@@ -184,6 +184,9 @@
 (deffactory :conversation
   {:url (fseq :uri)})
 
+(deffactory :resource
+  {:url (fseq :uri)})
+
 (deffactory :activity
   {:title (fseq :title)
    :content (fseq :content)

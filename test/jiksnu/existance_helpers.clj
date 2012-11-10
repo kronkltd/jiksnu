@@ -4,10 +4,14 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]))
@@ -21,18 +25,24 @@
 ;; TODO: this part should return the current domain
 (defn a-domain-exists
   [& [options]]
-  (let [domain (model.domain/create (factory :domain {:discovered true}))]
+  (let [params (factory :domain {:discovered true})
+        domain (actions.domain/create params)]
     (set-this :domain domain)
     domain))
 
 (defn a-remote-domain-exists
   [& [options]]
-  (let [domain (model.domain/create (factory :domain {:_id (fseq :domain)
-                                                      :discovered true}))]
+  (let [params (factory :domain {:_id (fseq :domain)
+                                 :discovered true})
+        domain (actions.domain/create params)]
     (set-that :domain domain)
     domain))
 
-
+(defn a-resource-exists
+  [& [options]]
+  (let [resource (actions.resource/create (factory :resource))]
+    (set-this :resource resource)
+    resource))
 
 (defn a-user-exists
   ([] (a-user-exists {:discovered true} "hunter2"))
@@ -125,9 +135,13 @@
   (let [domain (or (:domain options)
                    (get-this :domain)
                    (a-domain-exists))
+        resource (or (:resource options)
+                     (get-this :resource)
+                     (a-resource-exists))
         source (actions.feed-source/create
                 (factory :feed-source
-                         {:topic (format "http://%s/api/statuses/user_timeline/1.atom" (:_id domain))
+                         {:resource (:_id resource)
+                          :topic (format "http://%s/api/statuses/user_timeline/1.atom" (:_id domain))
                           :hub (format "http://%s/push/hub" (:_id domain))}))]
     (set-this :feed-source source)
     source))
@@ -148,9 +162,15 @@
 
 (defn a-subscription-exists
   [& [options]]
-  (->> (factory :subscription)
-       model.subscription/create
-       (set-this :subscription)))
+  (let [item (model.subscription/create (factory :subscription))]
+    (set-this :subscription item)
+    item))
+
+(defn a-group-exists
+  [& [options]]
+  (let [item (actions.group/create (factory :group))]
+    (set-this :group item)
+    item))
 
 (defn a-conversation-exists
   [& [options]]
