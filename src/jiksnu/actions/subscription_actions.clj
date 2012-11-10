@@ -4,7 +4,8 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.model :only [implement]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
@@ -15,6 +16,25 @@
   (:import javax.security.sasl.AuthenticationException
            jiksnu.model.Subscription
            jiksnu.model.User))
+
+(defonce delete-hooks (ref []))
+
+(defn prepare-delete
+  ([item]
+     (prepare-delete item @delete-hooks))
+  ([item hooks]
+     (if (seq hooks)
+       (recur ((first hooks) item) (rest hooks))
+       item)))
+
+(defn prepare-create
+  [user]
+  (-> user))
+
+(defaction create
+  [params]
+  (let [params (prepare-create params)]
+    (model.subscription/create params)))
 
 (defaction delete
   "Deletes a subscription.
@@ -54,10 +74,6 @@
 (defaction show
   [item]
   item)
-
-(defaction create
-  [params & options]
-  (model.subscription/create params))
 
 (defaction update
   [subscription]
