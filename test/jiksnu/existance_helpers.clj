@@ -1,5 +1,6 @@
 (ns jiksnu.existance-helpers
   (:use [clj-factory.core :only [factory fseq]]
+        [jiksnu.factory :only [make-uri]]
         [jiksnu.referrant :only [get-this get-that set-this set-that this that]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
@@ -40,7 +41,10 @@
 
 (defn a-resource-exists
   [& [options]]
-  (let [resource (actions.resource/create (factory :resource))]
+  (let [domain (or (:domain options)
+                   (a-domain-exists))
+        params (factory :resource {:url (make-uri (:_id domain))})
+        resource (actions.resource/create params)]
     (set-this :resource resource)
     resource))
 
@@ -136,13 +140,12 @@
                    (get-this :domain)
                    (a-domain-exists))
         resource (or (:resource options)
-                     (get-this :resource)
-                     (a-resource-exists))
+                     (a-resource-exists {:domain domain}))
         source (actions.feed-source/create
                 (factory :feed-source
                          {:resource (:_id resource)
-                          :topic (format "http://%s/api/statuses/user_timeline/1.atom" (:_id domain))
-                          :hub (format "http://%s/push/hub" (:_id domain))}))]
+                          :topic (:url resource)
+                          :hub (make-uri (:_id domain) "/push/hub")}))]
     (set-this :feed-source source)
     source))
 

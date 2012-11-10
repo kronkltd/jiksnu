@@ -10,16 +10,13 @@
 
  (fact "#'index"
    (fact "when there are no sources"
-     (fact "should return an empty sequence"
-       (:items (index)) => empty?))
+     (:items (index)) => empty?)
 
    (fact "when there are many sources"
-     (fact "should return a limited ammount"
+     (dotimes [i 25]
+       (existance/a-feed-source-exists))
 
-       (dotimes [i 25]
-         (existance/a-feed-source-exists))
-
-       ;; TODO: hardcoded configurable value
-       (count (:items (index))) => 20)))
+     ;; TODO: hardcoded configurable value
+     (count (:items (index))) => 20))
 
  )
