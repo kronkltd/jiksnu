@@ -31,6 +31,7 @@
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Resources"
+   :single true
    :body
    (let [items (if *dynamic* [(Resource.)] items)]
      (with-page "default"
