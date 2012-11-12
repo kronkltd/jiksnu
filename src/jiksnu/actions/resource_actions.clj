@@ -81,25 +81,31 @@
   [& args]
   (apply index* args))
 
+(defn process-response
+  [item response]
+  (let [content-type (get-in response [:headers "content-type"])
+        status (:status response)]
+    (model.resource/set-field! item :status status)
+    (model.resource/set-field! item :contentType content-type)))
+
 (defn update*
   [item & [options]]
   (let [url (:url item)]
     (log/debugf "updating resource: %s" url)
-    (client/get url)))
+    (let [response  (client/get url)]
+      (process-response item response)
+      response)))
 
 (defaction update
   [item]
+  (update* item)
   item)
 
 (defaction discover
   [item]
   (log/debugf "discovering resource: %s" item)
   (let [response (update* item)]
-    (let [content-type (get-in response [:headers "content-type"])
-          status (:status response)]
-      (model.resource/set-field! item :status status)
-      (model.resource/set-field! item :contentType content-type)
-      (model.resource/fetch-by-id (:_id item)))))
+    (model.resource/fetch-by-id (:_id item))))
 
 (defaction show
   [item]
