@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-path named-url]]

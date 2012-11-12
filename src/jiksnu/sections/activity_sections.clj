@@ -1,6 +1,5 @@
 (ns jiksnu.sections.activity-sections
   (:use [ciste.core :only [with-format]]
-        [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button edit-button
                                        full-uri index-section show-section-minimal
@@ -13,7 +12,8 @@
                                 admin-index-section bind-property bind-to control-line
                                 dropdown-menu dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.string :as string]
+  (:require [ciste.model :as cm]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
@@ -218,7 +218,7 @@
 
 (defn links-section
   [activity]
-  (implement))
+  (cm/implement))
 
 (defn maps-section
   [activity]
@@ -406,7 +406,7 @@
 
 (defn status-form
   [activity]
-  (implement))
+  (cm/implement))
 
 (defn event-form
   [activity]

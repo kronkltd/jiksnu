@@ -1,7 +1,6 @@
 (ns jiksnu.actions.user-actions-test
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
-        [ciste.model :only [string->document]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [midje.sweet :only [fact future-fact => anything throws contains every-checker]]
@@ -26,7 +25,7 @@
 
 (defn mock-user-meta
   [username domain-name uri source-link]
-  (string->document
+  (cm/string->document
    (format "
 <XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
   <Subject>%s</Subject>

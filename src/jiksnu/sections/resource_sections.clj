@@ -1,13 +1,13 @@
 (ns jiksnu.sections.resource-sections
-    (:use [ciste.model :only [implement]]
-          [ciste.sections :only [defsection]]
+    (:use [ciste.sections :only [defsection]]
           [ciste.sections.default :only [delete-button full-uri uri title index-line
                                          index-block index-line index-section link-to
                                          show-section update-button]]
           [jiksnu.ko :only [*dynamic*]]
           [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line bind-to
                                   control-line dropdown-menu dump-data pagination-links]])
-    (:require [clojure.tools.logging :as log]
+    (:require [ciste.model :as cm]
+              [clojure.tools.logging :as log]
               [jiksnu.model.conversation :as model.conversation]
               [jiksnu.model.feed-source :as model.feed-source]
               [jiksnu.session :as session])

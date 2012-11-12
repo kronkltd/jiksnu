@@ -1,17 +1,17 @@
 (ns jiksnu.actions.message-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
-        [ciste.loader :only [require-namespaces]]))
+        [ciste.loader :only [require-namespaces]])
+  (:require [ciste.model :as cm]))
 
 (defaction inbox-page
   [user]
-  (implement
+  (cm/implement
       [user []]))
 
 (defaction outbox-page
   [user]
-  (implement
+  (cm/implement
       [user []]))
 
 (definitializer

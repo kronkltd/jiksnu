@@ -1,9 +1,9 @@
 (ns jiksnu.actions.like-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]])
-  (:require [clj-time.core :as time]
+  (:require [ciste.model :as cm]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like])

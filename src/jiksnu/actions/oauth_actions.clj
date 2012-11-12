@@ -1,8 +1,8 @@
 (ns jiksnu.actions.oauth-actions
-  (:use [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]))
+  (:use [ciste.core :only [defaction]])
+  (:require [ciste.model :as cm]))
 
 (defaction oauthapps
   "List registered applications"
   []
-  (implement))
+  (cm/implement))

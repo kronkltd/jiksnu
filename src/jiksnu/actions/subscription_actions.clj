@@ -2,9 +2,9 @@
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [ciste.model :only [implement]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clj-statsd :as s]
+  (:require [ciste.model :as cm]
+            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
@@ -53,7 +53,7 @@
 
 (defaction ostatus
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction ostatussub
   [profile]
@@ -65,11 +65,11 @@
 
 (defaction remote-subscribe
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction remote-subscribe-confirm
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction show
   [item]
@@ -77,7 +77,7 @@
 
 (defaction update
   [subscription]
-  (implement))
+  (cm/implement))
 
 (defaction subscribe
   [actor user]
@@ -141,7 +141,7 @@
 (defaction subscribe-confirm
   [user]
   ;; TODO: unmark pending flag
-  (implement))
+  (cm/implement))
 
 (defaction confirm
   [subscription]

@@ -1,9 +1,9 @@
 (ns jiksnu.actions.admin.conversation-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]])
-  (:require [jiksnu.actions.conversation-actions :as actions.conversation]
+  (:require [ciste.model :as cm]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.model :as model]))
 
 (defaction create
@@ -27,7 +27,7 @@
 
 (defaction fetch-updates
   [params]
-  (implement))
+  (cm/implement))
 
 (definitializer
   (require-namespaces

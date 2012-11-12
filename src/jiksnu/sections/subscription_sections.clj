@@ -1,6 +1,5 @@
 (ns jiksnu.sections.subscription-sections
-  (:use [ciste.model :only [implement]]
-        [ciste.sections :only [declare-section defsection]]
+  (:use [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button edit-button full-uri
                                        index-block index-line index-section link-to
                                        show-section title uri]]
@@ -8,7 +7,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link admin-index-block admin-index-line
                                 admin-index-section bind-to control-line dump-data]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.user-sections :as sections.user])

@@ -1,9 +1,9 @@
 (ns jiksnu.actions.admin.group-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]))
 
 (defaction index

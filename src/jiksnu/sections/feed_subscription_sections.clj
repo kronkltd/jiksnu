@@ -1,10 +1,10 @@
 (ns jiksnu.sections.feed-subscription-sections
-  (:use [ciste.model :only [implement]]
-        [ciste.sections :only [defsection]]
+  (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line
                                        index-section link-to update-button]]
         [jiksnu.sections :only [admin-index-block admin-index-line control-line]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSubscription))
 

@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
@@ -218,7 +217,7 @@
 
 (defaction profile
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction user-meta
   "returns a user matching the uri"

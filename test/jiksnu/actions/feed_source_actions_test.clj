@@ -1,11 +1,11 @@
 (ns jiksnu.actions.feed-source-actions-test
-  (:use [ciste.model :only [get-links]]
-        [clj-factory.core :only [factory fseq]]
+  (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.actions.feed-source-actions :only [add-watcher create]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
