@@ -18,8 +18,9 @@
   [url]
   (log/infof "fetching host meta: %s" url)
   (try
-    (s/increment "xrd_fetched")
-    (cm/fetch-document url)
+    (let [resource (model/get-resource url)]
+      (s/increment "xrd_fetched")
+      (cm/fetch-document url))
     (catch RuntimeException ex
       (throw+ "Could not fetch host meta"))))
 

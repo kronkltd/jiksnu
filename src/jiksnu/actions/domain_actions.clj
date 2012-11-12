@@ -68,10 +68,11 @@
 
 (defn fetch-xrd*
   [url]
-  (try
-    (model.webfinger/fetch-host-meta url)
-    (catch RuntimeException ex
-      (log/error "Fetching host meta failed"))))
+  (let [resource (model/get-resource url)]
+    (try
+      (model.webfinger/fetch-host-meta url)
+      (catch RuntimeException ex
+        (log/error "Fetching host meta failed")))))
 
 (defn fetch-xrd
   [domain url]

@@ -60,10 +60,11 @@
   (let [id (:id user)
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [um-url (actions.domain/get-user-meta-url domain id)]
-      (try
-        (model.webfinger/fetch-host-meta um-url)
-        (catch RuntimeException ex
-          (log/warnf "could not get user meta: %s" user))))))
+      (let [resource (model/get-resource um-url)]
+        (try
+          (model.webfinger/fetch-host-meta um-url)
+          (catch RuntimeException ex
+            (log/warnf "could not get user meta: %s" user)))))))
 
 (defn set-update-source
   [user]
