@@ -66,6 +66,7 @@
      [:th "Url"]
      [:th "Status"]
      [:th "Content Type"]
+     [:th "Encoding"]
      [:th "Created"]
      [:th "Updated"]]]
    [:tbody {:data-bind "foreach: $data"}
@@ -86,6 +87,9 @@
    [:td (if *dynamic*
           {:data-bind "text: contentType"}
           (:contentType item))]
+   [:td (if *dynamic*
+          {:data-bind "text: encoding"}
+          (:encoding item))]
    [:td (if *dynamic*
           {:data-bind "text: created"}
           (:created item))]
@@ -130,6 +134,12 @@
        [:div (if *dynamic*
                {:data-bind "text: contentType"}
                (:content-type item))]]]
+     [:tr
+      [:th "Encoding"]
+      [:td
+       [:div (if *dynamic*
+               {:data-bind "text: encoding"}
+               (:encoding item))]]]
      [:tr
       [:th "Created"]
       [:td (if *dynamic*

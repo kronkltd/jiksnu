@@ -162,11 +162,12 @@
                     (this-as this
                       (format "/model/resources/%s.model" (.-id this))))
             "defaults" (js-obj
-                        "url"     nil
-                        "status"  nil
+                        "url"         nil
+                        "status"      nil
                         "contentType" nil
-                        "created" nil
-                        "updated" nil)
+                        "encoding"    nil
+                        "created"     nil
+                        "updated"     nil)
             "idAttribute" "_id"
             "initialize"  initializer)))
 
