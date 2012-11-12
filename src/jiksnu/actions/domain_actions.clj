@@ -11,6 +11,7 @@
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.actions :as actions]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
@@ -138,15 +139,15 @@
   [domain]
   (set-xmpp domain true))
 
-(defn fetch-statusnet-config
-  ([domain] (fetch-statusnet-config domain nil))
-  ([domain context]
-     (when-let [doc (cm/fetch-resource (str "http://" (:_id domain) context "/api/statusnet/config.json"))]
-       (json/read-json doc))))
+(defn statusnet-url
+  [domain]
+  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
 
 (defn discover-statusnet-config
   [domain url]
-  (let [sconfig (fetch-statusnet-config domain)]
+  (let [resource (model/get-resource (statusnet-url domain))
+        response (actions/invoke-action "resource" "update*" (str (:_id resource)))
+        sconfig (json/read-json (:body (:body response)))]
     (model.domain/set-field domain :statusnet-config sconfig)))
 
 (defn discover*
@@ -218,7 +219,6 @@
      :links [{:template template
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
-
 
 (definitializer
   (current-domain)
