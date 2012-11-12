@@ -83,10 +83,14 @@
 
 (defn process-response
   [item response]
-  (let [content-type (get-in response [:headers "content-type"])
+  (let [content-str (get-in response [:headers "content-type"])
         status (:status response)]
     (model.resource/set-field! item :status status)
-    (model.resource/set-field! item :contentType content-type)))
+    (let [[content-type rest] (string/split content-str #"; ?")]
+      (if (seq rest)
+        (if-let [encoding (seq (string/replace rest "charset=" ""))]
+          (model.resource/set-field! item :encoding encoding)))
+      (model.resource/set-field! item :contentType content-type))))
 
 (defn update*
   [item & [options]]
