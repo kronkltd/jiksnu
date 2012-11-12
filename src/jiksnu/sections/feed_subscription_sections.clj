@@ -8,6 +8,8 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.FeedSubscription))
 
+; admin-index-block
+
 (defsection admin-index-block [FeedSubscription :html]
   [subscriptions & [options & _]]
   [:table.table.feed-subscriptions
@@ -17,12 +19,9 @@
    [:tbody
     (map #(admin-index-line % options) subscriptions)]])
 
+;; admin-index-line
+
 (defsection admin-index-line [FeedSubscription :html]
   [subscription & [options & _]]
   [:tr {:data-id (str (:_id subscription)) :data-model "feed-subscription"}
    [:td (str (:_id subscription))]])
-
-(defsection add-form [FeedSubscription :html]
-  [subscription & [options & _]]
-  (implement
-      [:form]))
