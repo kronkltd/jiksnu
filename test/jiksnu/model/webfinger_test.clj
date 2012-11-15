@@ -14,20 +14,20 @@
 
 (test-environment-fixture
 
- (fact "#'get-username-from-user-meta"
+ (fact "#'get-username-from-xrd"
    (fact "when the usermeta has an identifier"
-     (get-username-from-user-meta .user-meta.) => .username.
+     (get-username-from-xrd .user-meta.) => .username.
      (provided
       (get-username-from-identifiers .user-meta.) => .username.
       (get-username-from-atom-property .user-meta.) => nil :times 0))
    (fact "when the usermeta does not have an identifier"
      (fact "and the atom link has an identifier"
-       (get-username-from-user-meta .user-meta.) => .username.
+       (get-username-from-xrd .user-meta.) => .username.
        (provided
         (get-username-from-identifiers .user-meta.) => nil
         (get-username-from-atom-property .user-meta.) => .username.))
      (fact "and the atom link does not have an identifier"
-       (get-username-from-user-meta .user-meta.) => nil
+       (get-username-from-xrd .user-meta.) => nil
        (provided
         (get-username-from-identifiers .user-meta.) => nil
         (get-username-from-atom-property .user-meta.) => nil))))
