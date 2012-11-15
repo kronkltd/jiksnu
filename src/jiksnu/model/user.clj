@@ -231,13 +231,6 @@
                     (get-link user ns/updates-from nil))]
     (:href link)))
 
-(defn fetch-user-feed
-  "returns a feed"
-  [^User user]
-  (-?> user
-       feed-link-uri
-       abdera/fetch-feed))
-
 (defn vcard-request
   [user]
   (let [body (element/make-element

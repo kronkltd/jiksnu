@@ -60,7 +60,7 @@
   (let [xrd (actions.user/fetch-user-meta user)
         links (get-links xrd)
         new-user (assoc user :links links)
-        feed (model.user/fetch-user-feed new-user)
+        feed (actions.user/fetch-user-feed new-user)
         uri (-?> feed .getAuthor .getUri)]
     (doseq [link links]
       (actions.user/add-link user link))

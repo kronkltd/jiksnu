@@ -332,6 +332,14 @@
     (model.webfinger/fetch-host-meta uri)
     (throw (RuntimeException. "Could not determine user-meta link"))))
 
+(defn fetch-user-feed
+  "returns a feed"
+  [^User user]
+  (if-let [url (model.user/feed-link-uri user)]
+    (let [resource (model/get-resource url)]
+      (abdera/fetch-feed url))
+    (throw+ "Could not determine url")))
+
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   "Retreive user information from webfinger"
@@ -340,7 +348,7 @@
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)
-          feed (model.user/fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
+          feed (fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
           first-entry (-?> feed .getEntries first)
           new-user (-?> (abdera/get-author first-entry feed)
                         person->user)
