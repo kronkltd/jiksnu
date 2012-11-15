@@ -7,7 +7,8 @@
         jiksnu.model.webfinger)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.user-actions :as actions.user])
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance])
   (:import jiksnu.model.User
            nu.xom.Document))
 
@@ -45,16 +46,18 @@
  (fact "#'fetch-host-meta"
    (fact "when the url points to a valid XRD document"
      ;; TODO: pick a random domain
-     (let [url "http://kronkltd.net/.well-known/host-meta"]
-       (fetch-host-meta .url.) => (partial instance? Document))
+     (let [resource (existance/a-resource-exists)
+           url (:url resource)]
+       (fetch-host-meta url) => (partial instance? Document))
      (provided
-       (cm/fetch-resource .url.) => "<XRD/>"))
+       (cm/fetch-resource url) => "<XRD/>"))
    
    (fact "when the url does not point to a valid XRD document"
-     (let [url "http://example.com/.well-known/host-meta"]
-       (fetch-host-meta .url.) => (throws Exception))
+     (let [resource (existance/a-resource-exists)
+           url (:url resource)]
+       (fetch-host-meta url) => (throws Exception))
      (provided
-       (cm/fetch-resource .url.) => "")))
+       (cm/fetch-resource url) => "")))
  
  (future-fact "#'get-links"
    (fact "When it has links"
