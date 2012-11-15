@@ -125,7 +125,9 @@ of registered users"
                   (if (= mech "PLAIN")
                     (let [data (.get props "data")
                           [_ username password] (string/split (String. (model.key/decode data) "UTF-8") #"\u0000")]
-                      (actions.auth/login username password))))]
+                      (if-let [user (model.user/get-user username)]
+                        (actions.auth/login user password)
+                        (log/warnf "Could not find user with username: %s" username)))))]
     (do
       (.put props "result" nil)
       (.put props "user-id" (tigase/bare-jid (:username user) (:domain user)))
