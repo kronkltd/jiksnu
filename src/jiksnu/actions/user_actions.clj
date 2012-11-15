@@ -77,7 +77,7 @@
       user
       ;; look up update source
       (if-let [user-meta (get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-user-meta user-meta)]
+        (if-let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
         (throw+ "Could not get user meta")))))
@@ -153,9 +153,9 @@
                                    (model.user/get-domain-name id))]
             (let [user (assoc user :domain domain-name)]
               (if-let [user-meta (get-user-meta user)]
-                (let [source (model.webfinger/get-feed-source-from-user-meta user-meta)]
+                (let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
                   (merge user
-                         {:username (model.webfinger/get-username-from-user-meta user-meta)
+                         {:username (model.webfinger/get-username-from-xrd user-meta)
                           :update-source (:_id source)}))
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))

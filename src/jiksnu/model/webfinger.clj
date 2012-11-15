@@ -36,26 +36,26 @@
     ["Title" {} "Resource Descriptor"]]])
 
 (defn get-source-link
-  [user-meta]
+  [xrd]
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
-    (->> user-meta
+    (->> xrd
          (cm/query query-str)
          model/force-coll
          (keep #(.getAttributeValue % "href"))
          first)))
 
 
-(defn get-feed-source-from-user-meta
-  [user-meta]
-  (if-let [source-link (get-source-link user-meta)]
+(defn get-feed-source-from-xrd
+  [xrd]
+  (if-let [source-link (get-source-link xrd)]
     (model/get-source source-link)
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property
   ;; passed a document
-  [user-meta]
+  [xrd]
   (try
-    (->> user-meta
+    (->> xrd
          (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
          model/force-coll
          (keep #(.getValue %))
@@ -120,9 +120,9 @@
 
 (defn get-username-from-identifiers
   ;; passed a document
-  [user-meta]
+  [xrd]
   (try
-    (->> user-meta
+    (->> xrd
          get-identifiers
          (keep (comp first model.user/split-uri))
          first)
@@ -131,12 +131,12 @@
       (.printStackTrace ex))))
 
 ;; takes a document
-(defn get-username-from-user-meta
+(defn get-username-from-xrd
   "return the username component of the user meta"
-  [user-meta]
-  (->> [(get-username-from-atom-property user-meta)]
+  [xrd]
+  (->> [(get-username-from-atom-property xrd)]
        (lazy-cat
-        [(get-username-from-identifiers user-meta)])
+        [(get-username-from-identifiers xrd)])
        (filter identity)
        first))
 
