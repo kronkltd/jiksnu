@@ -71,7 +71,7 @@
   (let [resource (model/get-resource url)
         response (actions/invoke-action "resource" "update*" (str (:_id resource)))]
     (try
-      (:body response)
+      (cm/string->document (:body (:body response)))
       (catch RuntimeException ex
         (log/error "Fetching host meta failed")))))
 
