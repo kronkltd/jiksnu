@@ -10,6 +10,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
@@ -49,12 +50,17 @@
            template (str "http://" domain-name "/xrd?uri={uri}")
            domain (actions.domain/find-or-create (factory :domain
                                                           {:_id domain-name
+                                                           :discovered true
                                                            :links [{:rel "lrdd" :template template}]}))
            uri (str "http://" domain-name "/users/1")
            source-link (fseq :uri)]
-       (get-username {:id uri}) => (contains {:username username}))
-     (provided
-       (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)))
+       (get-username {:id uri}) => (contains {:username username})
+       (provided
+         (actions.domain/get-discovered domain) => domain
+         (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)
+         ;; (actions.resource/update* anything) => {:body (mock-user-meta username domain-name uri source-link)}
+
+         )))
 
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)
