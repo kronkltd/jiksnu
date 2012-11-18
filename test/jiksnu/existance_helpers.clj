@@ -88,52 +88,6 @@
     user))
 
 
-(defn activity-gets-posted
-  [& [options]]
-  (let [source (or (:feed-source options)
-                   (get-this :feed-source)
-                   (a-feed-source-exists))
-        activity (actions.activity/post (factory :activity
-                                                 {:update-source source}))]
-    (set-this :activity activity)
-    activity))
-
-(defn there-is-an-activity
-  [& [options]]
-  (let [modifier (:modifier options "public")
-        user (or (:user options) (get-this :user) (a-user-exists))]
-    (let [source (or (:feed-source options)
-                     (get-this :feed-source)
-                     (a-feed-source-exists))]
-      (let [activity (session/with-user user
-                       (actions.activity/create
-                        (factory :activity
-                                 {:author (:_id user)
-                                  :update-source (:_id source)
-                                  ;; :local true
-                                  :public (= modifier "public")})))]
-        (set-this :activity activity)
-        activity))))
-
-(defn there-is-an-activity-by-another
-  [modifier]
-  (let [user (actions.user/create (factory :local-user))]
-    (there-is-an-activity {:modifier  modifier
-                           :user user})))
-
-(defn a-record-exists
-  [type & [opts]]
-  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
-                               (name type)))]
-    (require ns-sym)
-    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
-      (when-let [record (create-fn (factory type opts))]
-        (set-this type record)
-        record)
-      (throw+ (format "could not find %s/create" ns-sym)))))
-
-
-
 (defn a-feed-source-exists
   [& [options]]
   (let [domain (or (:domain options)
@@ -148,6 +102,66 @@
                           :hub (make-uri (:_id domain) "/push/hub")}))]
     (set-this :feed-source source)
     source))
+
+(defn a-record-exists
+  [type & [opts]]
+  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
+                               (name type)))]
+    (require ns-sym)
+    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
+      (when-let [record (create-fn (factory type opts))]
+        (set-this type record)
+        record)
+      (throw+ (format "could not find %s/create" ns-sym)))))
+
+(defn a-conversation-exists
+  [& [options]]
+  (let [domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists))
+        source (or (:update-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists))]
+    (a-record-exists :conversation {:domain (:_id domain)
+                                    :update-source (:_id source)})))
+
+
+(defn activity-gets-posted
+  [& [options]]
+  (let [source (or (:feed-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists))
+        activity (actions.activity/post (factory :activity
+                                                 {:update-source source}))]
+    (set-this :activity activity)
+    activity))
+
+(defn there-is-an-activity
+  [& [options]]
+  (let [modifier (:modifier options "public")
+        user (or (:user options) (get-this :user) (a-user-exists))
+        source (or (:feed-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists))
+        conversation (or (:conversation options)
+                         (a-conversation-exists))
+        activity (session/with-user user
+                   (actions.activity/create
+                    (factory :activity
+                             {:author (:_id user)
+                              :update-source (:_id source)
+                              :conversation (:_id conversation)
+                              ;; :local true
+                              :public (= modifier "public")})))]
+    (set-this :activity activity)
+    activity))
+
+(defn there-is-an-activity-by-another
+  [modifier]
+  (let [user (actions.user/create (factory :local-user))]
+    (there-is-an-activity {:modifier  modifier
+                           :user user})))
+
 
 
 (defn a-feed-subscription-exists
@@ -174,18 +188,6 @@
   (let [item (actions.group/create (factory :group))]
     (set-this :group item)
     item))
-
-(defn a-conversation-exists
-  [& [options]]
-  (let [domain (or (:domain options)
-                   (get-this :domain)
-                   (a-domain-exists))
-        source (or (:update-source options)
-                   (get-this :feed-source)
-                   (a-feed-source-exists))]
-    (a-record-exists :conversation {:domain (:_id domain)
-                                    :update-source (:_id source)})))
-
 
 (defn this-user-has-a-subscription
   []

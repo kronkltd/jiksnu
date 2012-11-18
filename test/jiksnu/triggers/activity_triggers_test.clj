@@ -15,9 +15,8 @@
 (test-environment-fixture
 
  (fact "#'notify-activity"
-   (fact "should return a packet"
-     (let [user (existance/a-user-exists)
-           activity (existance/there-is-an-activity {:user user})]
-       (notify-activity user activity) => packet/packet?)))
+   (let [user (existance/a-user-exists)
+         activity (existance/there-is-an-activity {:user user})]
+     (notify-activity user activity) => packet/packet?))
 
  )
