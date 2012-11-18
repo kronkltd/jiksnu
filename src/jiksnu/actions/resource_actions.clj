@@ -16,7 +16,9 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.namespace :as ns]))
+            [jiksnu.namespace :as ns]
+            [net.cgrand.enlive-html :as enlive])
+  (:import java.io.StringReader))
 
 (defonce delete-hooks (ref []))
 
@@ -63,6 +65,14 @@
         item)
     (throw+ "Could not delete record")))
 
+(defn response->tree
+  [response]
+  (enlive/html-resource (StringReader. (:body response))))
+
+(defn get-links
+  [tree]
+  (enlive/select tree [:link]))
+
 (def index*
   (model/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
@@ -71,16 +81,25 @@
   [& args]
   (apply index* args))
 
-(defaction discover
-  [item]
-  (let [response (client/get (:url item))]
-    (model.resource/set-field! item :status (:status response))
-    (model.resource/set-field! item :contentType (get-in response [:headers "content-type"]))
-    (model.resource/fetch-by-id (:_id item))))
+(defn update*
+  [item & [options]]
+  (let [url (:url item)]
+    (log/debugf "updating resource: %s" url)
+    (client/get url)))
 
 (defaction update
   [item]
   item)
+
+(defaction discover
+  [item]
+  (log/debugf "discovering resource: %s" item)
+  (let [response (update* item)]
+    (let [content-type (get-in response [:headers "content-type"])
+          status (:status response)]
+      (model.resource/set-field! item :status status)
+      (model.resource/set-field! item :contentType content-type)
+      (model.resource/fetch-by-id (:_id item)))))
 
 (defaction show
   [item]

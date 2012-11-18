@@ -27,6 +27,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
+    (s/increment "resources searched")
      (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
            records (mq/with-collection collection-name
                      (mq/find params)
@@ -63,7 +64,8 @@
         (mc/insert collection-name params)
         (let [item (fetch-by-id (:_id params))]
           (log/debugf "Creating resource: %s" (pr-str item))
-          (trace/trace :resource:created item)
+          (trace/trace :resources:created item)
+          (s/increment "resources created")
           item))
       (throw+ {:type :validation :errors errors}))))
 
