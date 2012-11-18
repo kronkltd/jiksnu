@@ -195,20 +195,15 @@
     {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
-(defn get-feed
-  [source]
-  (if-let [topic (:topic source)]
-    (abdera/fetch-feed topic)
-    (throw+ {:message "Source does not contain a topic"
-             :source source})))
-
 (defn update*
   [source]
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (if-let [feed (get-feed source)]
-        (process-feed source feed)
-        (throw+ "could not obtain feed")))
+      (let [resource (model/get-resource topic)]
+        (let [response (actions.resource/update* resource)]
+          (if-let [feed (abdera/parse-xml-string (:body response))]
+            (process-feed source feed)
+            (throw+ "could not obtain feed")))))
     (log/warn "local sources do not need updates")))
 
 (defaction update

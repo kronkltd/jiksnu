@@ -57,7 +57,7 @@
 ;; TODO: split the fetching and the processing apart
 (defaction update-usermeta
   [user]
-  (let [xrd (model.webfinger/fetch-user-meta user)
+  (let [xrd (actions.user/fetch-user-meta user)
         links (get-links xrd)
         new-user (assoc user :links links)
         feed (model.user/fetch-user-feed new-user)

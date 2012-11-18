@@ -24,13 +24,6 @@
     (catch RuntimeException ex
       (throw+ "Could not fetch host meta"))))
 
-(defn fetch-user-meta
-  "returns a user meta document"
-  [^User user]
-  (if-let [uri (model.user/user-meta-uri user)]
-    (fetch-host-meta uri)
-    (throw (RuntimeException. "Could not determine user-meta link"))))
-
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
 (defn host-meta

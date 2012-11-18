@@ -134,9 +134,7 @@
    (bind-to "targetDomain"
      (show-section domain)
      [:div {:data-model "domain"}
-      (let [users (if *dynamic*
-                    [(User.)]
-                    (model.user/fetch-by-domain domain))]
+      (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
         (with-page "default"
           (bind-to "items"
             (index-section users {:page 1}))))])})

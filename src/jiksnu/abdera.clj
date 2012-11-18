@@ -39,7 +39,7 @@
 
 (defn fetch-resource
   [uri]
-  (s/increment "feed_fetched")
+  (s/increment "feeds fetched")
   (.get (AbderaClient.) uri))
 
 (defn fetch-document

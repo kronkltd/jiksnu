@@ -17,6 +17,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
+            [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
 
@@ -81,23 +82,55 @@
   [& args]
   (apply index* args))
 
+(defaction add-link*
+  [item link]
+  (mc/update "resources" {:_id (:_id item)}
+    {:$addToSet {:links link}})
+  item)
+
+(defn add-link
+  [item link]
+  (if-let [existing-link (and nil (model.resource/get-link item
+                                                           (:rel link)
+                                                           (:type link)))]
+    item
+    (add-link* item link)))
+
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
-        status (:status response)]
+        status (:status response)
+        location (get-in response [:headers "location"])]
     (model.resource/set-field! item :status status)
+    (when location
+      (let [resource (model/get-resource location)]
+        (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
       (if (seq rest)
-        (if-let [encoding (seq (string/replace rest "charset=" ""))]
-          (model.resource/set-field! item :encoding encoding)))
-      (model.resource/set-field! item :contentType content-type))))
+        (let [encoding (string/replace rest "charset=" "")]
+          (when (seq encoding)
+            (model.resource/set-field! item :encoding encoding))))
+      (model.resource/set-field! item :contentType content-type)
+
+      (condp = content-type
+        "text/html"
+        (do
+          (log/info "parsing html content")
+          (let [tree (response->tree response)]
+            (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
+              (model.resource/set-field! item :title title))
+            (let [links (get-links tree)]
+              (doseq [link links]
+                (add-link item (:attrs link))))))
+        (log/infof "unknown content type: %s" content-type)))))
 
 (defn update*
   [item & [options]]
   (let [url (:url item)]
     (log/debugf "updating resource: %s" url)
-    (let [response  (client/get url)]
-      (process-response item response)
+    (let [response (client/get url {:throw-exceptions false})]
+      (future
+        (process-response item response))
       response)))
 
 (defaction update

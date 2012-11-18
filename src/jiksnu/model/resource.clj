@@ -40,6 +40,10 @@
   [url]
   (first (fetch-all {:url url})))
 
+(defn get-link
+  [item rel content-type]
+  (first (model/rel-filter rel (:links item) content-type)))
+
 (defn set-field!
   "Updates resource's field to value"
   [item field value]

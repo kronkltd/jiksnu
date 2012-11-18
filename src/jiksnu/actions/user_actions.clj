@@ -325,13 +325,20 @@
         (model/map->User user))
       (throw+ "could not determine user"))))
 
+(defn fetch-user-meta
+  "returns a user meta document"
+  [^User user]
+  (if-let [uri (model.user/user-meta-uri user)]
+    (model.webfinger/fetch-host-meta uri)
+    (throw (RuntimeException. "Could not determine user-meta link"))))
+
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   "Retreive user information from webfinger"
   [user]
   (log/info "updating usermeta")
   ;; TODO: This is doing way more than it's supposed to
-  (if-let [xrd (model.webfinger/fetch-user-meta user)]
+  (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)
           feed (model.user/fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
           first-entry (-?> feed .getEntries first)

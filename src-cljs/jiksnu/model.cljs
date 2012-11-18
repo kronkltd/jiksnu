@@ -163,10 +163,13 @@
                       (format "/model/resources/%s.model" (.-id this))))
             "defaults" (js-obj
                         "url"         nil
+                        "title"       nil
                         "status"      nil
                         "contentType" nil
                         "encoding"    nil
+                        "location"    nil
                         "created"     nil
+                        "links"       (array)
                         "updated"     nil)
             "idAttribute" "_id"
             "initialize"  initializer)))

@@ -10,6 +10,7 @@
               [clojure.tools.logging :as log]
               [jiksnu.model.conversation :as model.conversation]
               [jiksnu.model.feed-source :as model.feed-source]
+              [jiksnu.sections.link-sections :as sections.link]
               [jiksnu.session :as session])
     (:import jiksnu.model.Conversation
              jiksnu.model.Domain
@@ -119,6 +120,11 @@
       [:th "Id"]
       [:td ]]
      [:tr
+      [:th "Title"]
+      [:td (if *dynamic*
+             {:data-bind "text: title"}
+             (:title item))]]
+     [:tr
       [:th "Url"]
       [:td (if *dynamic*
              {:data-bind "text: url"}
@@ -128,6 +134,11 @@
       [:td (if *dynamic*
              {:data-bind "text: status"}
              (:status item))]]
+     [:tr
+      [:th "Location"]
+      [:td (if *dynamic*
+             {:data-bind "text: ko.utils.unwrapObservable($data.location)"}
+             (:location item))]]
      [:tr
       [:th "Content Type"]
       [:td
@@ -149,7 +160,10 @@
       [:th "Updated"]
       [:td (if *dynamic*
              {:data-bind "text: updated"}
-             (:updated item))]]]]))
+             (:updated item))]]]]
+   (when-let [links (if *dynamic* [{}] (seq (:links item)))]
+     (bind-to "links"
+       (sections.link/index-section links)))))
 
 ;; update-button
 
