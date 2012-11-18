@@ -41,14 +41,15 @@
      (actions.domain/get-discovered anything) => .domain.))
 
  (fact "#'discover-source"
-   (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
-         resource (existance/a-resource-exists {:url url})
-         topic (str url ".atom")]
-     (actions.feed-source/discover-source url) => (partial instance? FeedSource))
-   (provided
-     (actions.resource/update* resource) => .response.
-     (actions.resource/response->tree .response.) => .tree.
-     (actions.resource/get-links .tree.) => .links.
-     (model/find-atom-link .links.) => topic))
+   (fact "when the source can be discovered"
+     (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+           resource (existance/a-resource-exists {:url url})
+           topic (str url ".atom")]
+       (actions.feed-source/discover-source url) => (partial instance? FeedSource)
+       (provided
+         (actions.resource/update* resource) => .response.
+         (actions.resource/response->tree .response.) => .tree.
+         (actions.resource/get-links .tree.) => .links.
+         (model/find-atom-link .links.) => topic))))
 
  )
