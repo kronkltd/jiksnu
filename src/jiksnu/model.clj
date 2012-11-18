@@ -303,15 +303,20 @@
 
 ;; link functions
 
+(defn find-atom-link
+  [links]
+  (->> links
+       (filter #(= "alternate" (:rel (:attrs %))))
+       (filter #(= "application/atom+xml" (:type (:attrs %))))
+       (map #(-> % :attrs :href))
+       first))
+
 (defn extract-atom-link
   "Find the atom link in the page identified by url"
   [url]
   (->> url
        cm/get-links
-       (filter #(= "alternate" (:rel (:attrs %))))
-       (filter #(= "application/atom+xml" (:type (:attrs %))))
-       (map #(-> % :attrs :href))
-       first))
+       find-atom-link))
 
 (defn parse-http-link
   [url]
