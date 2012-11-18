@@ -13,6 +13,7 @@
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
+            [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
@@ -52,15 +53,13 @@
                                                           {:_id domain-name
                                                            :discovered true
                                                            :links [{:rel "lrdd" :template template}]}))
-           uri (str "http://" domain-name "/users/1")
+           uri (factory/make-uri domain-name "/users/1")
            source-link (fseq :uri)]
        (get-username {:id uri}) => (contains {:username username})
        (provided
-         (actions.domain/get-discovered domain) => domain
-         (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)
-         ;; (actions.resource/update* anything) => {:body (mock-user-meta username domain-name uri source-link)}
-
-         )))
+         (get-user-meta anything) => .xrd.
+         (model.webfinger/get-feed-source-from-xrd .xrd.) => .topic.
+         (model.webfinger/get-username-from-xrd .xrd.) => username)))
 
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)
