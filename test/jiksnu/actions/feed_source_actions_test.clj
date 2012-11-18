@@ -8,6 +8,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
@@ -41,9 +42,13 @@
 
  (fact "#'discover-source"
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+         resource (existance/a-resource-exists {:url url})
          topic (str url ".atom")]
      (actions.feed-source/discover-source url) => (partial instance? FeedSource))
    (provided
-     (model/extract-atom-link url) => topic))
+     (actions.resource/update* resource) => .response.
+     (actions.resource/response->tree .response.) => .tree.
+     (actions.resource/get-links .tree.) => .links.
+     (model/find-atom-link .links.) => topic))
 
  )
