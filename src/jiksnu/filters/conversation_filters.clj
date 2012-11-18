@@ -22,7 +22,7 @@
 
 (deffilter #'discover :command
   [action id]
-  (if-let [item (model.conversation/fetch-by-id id)]
+  (if-let [item (model.conversation/fetch-by-id (model/make-id id))]
     (action item)))
 
 ;; index
