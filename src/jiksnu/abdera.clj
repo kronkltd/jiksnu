@@ -42,10 +42,6 @@
   (s/increment "feeds fetched")
   (.get (AbderaClient.) uri))
 
-(defn fetch-document
-  [uri]
-  (.getDocument (fetch-resource uri)))
-
 (defn fetch-feed
   [uri]
   (log/debugf "Fetching feed: %s" uri)

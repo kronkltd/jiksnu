@@ -8,6 +8,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.helpers.user-helpers :as helpers.user]
+            [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger])
@@ -74,16 +75,16 @@
 (defn discover-webfinger
   [^Domain domain]
   ;; TODO: check https first
-  (if-let [xrd (-> domain
-                   model.domain/host-meta-link
-                   model.webfinger/fetch-host-meta)]
-    (if-let [links (get-links xrd)]
-      ;; TODO: These should call actions
-      (do (model.domain/add-links domain links)
-          (model.domain/set-discovered domain))
-      (log/error "Host meta does not have any links"))
-    (log/error
-     (str "Could not find host meta for domain: " (:_id domain)))))
+  (let [url (model.domain/host-meta-link domain)
+        resource (model/get-resource url)]
+    (if-let [xrd (model.webfinger/fetch-host-meta domain)]
+      (if-let [links (get-links xrd)]
+        ;; TODO: These should call actions
+        (do (model.domain/add-links domain links)
+            (model.domain/set-discovered domain))
+        (log/error "Host meta does not have any links"))
+      (log/error
+       (str "Could not find host meta for domain: " (:_id domain))))))
 
 (definitializer
   (require-namespaces

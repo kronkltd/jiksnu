@@ -68,9 +68,10 @@
 
 (defn fetch-xrd*
   [url]
-  (let [resource (model/get-resource url)]
+  (let [resource (model/get-resource url)
+        response (actions/invoke-action "resource" "update*" (str (:_id resource)))]
     (try
-      (model.webfinger/fetch-host-meta url)
+      (:body response)
       (catch RuntimeException ex
         (log/error "Fetching host meta failed")))))
 
