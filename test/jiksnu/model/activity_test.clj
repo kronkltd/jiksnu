@@ -24,8 +24,10 @@
    (fact "should create the activity"
      (let [domain (existance/a-domain-exists)
            feed-source (existance/a-feed-source-exists)
+           conversation (existance/a-conversation-exists)
            activity (actions.activity/prepare-create
-                     (factory :activity {:update-source (:_id feed-source)}))]
+                     (factory :activity {:conversation (:_id conversation)
+                                         :update-source (:_id feed-source)}))]
        (create activity) => model/activity?)))
  
  (fact "#'get-author"

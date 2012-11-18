@@ -31,7 +31,7 @@
    (presence-of   :update-source)
    (presence-of   [:object :object-type])
    (presence-of   :verb)
-   ;; (presence-of   :conversation)
+   (presence-of   :conversation)
 
    ;; TODO: These should be joda times
    (presence-of   :created)

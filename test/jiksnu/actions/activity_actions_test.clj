@@ -62,11 +62,13 @@
        (fact "should return that activity"
          (let [domain (existance/a-domain-exists)
                feed-source (existance/a-feed-source-exists)
-               user (existance/a-user-exists)]
-           (let [activity (factory :activity {:author (:_id user)
-                                              :update-source (:_id feed-source)
-                                              :local true})]
-             (create activity) => model/activity?))))))
+               conversation (existance/a-conversation-exists)
+               user (existance/a-user-exists)
+               activity (factory :activity {:author        (:_id user)
+                                            :conversation  (:_id conversation)
+                                            :update-source (:_id feed-source)
+                                            :local         true})]
+           (create activity) => model/activity?)))))
 
  (fact "#'post"
    (fact "when the user is not logged in"
