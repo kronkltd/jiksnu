@@ -82,14 +82,14 @@
 (defaction subscribe
   [actor user]
   ;; Set up a feed source to that user's public feed
-  (if-let [source (model.feed-source/fetch-by-id (:update-source user))]
-    (actions.feed-source/subscribe source)
-    (log/info "Could not find source"))
-  (-> {:from (:_id actor)
-       :to (:_id user)
-       :local true
-       :pending true}
-      create))
+  (when-not (:local user)
+    (if-let [source (model.feed-source/fetch-by-id (:update-source user))]
+      (actions.feed-source/subscribe source)
+      (log/info "Could not find source")))
+  (create {:from (:_id actor)
+           :to (:_id user)
+           :local true
+           :pending true}))
 
 (defaction unsubscribed
   [actor user]
