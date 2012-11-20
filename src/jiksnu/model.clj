@@ -251,6 +251,7 @@
 ;; async fetchers
 
 (defonce pending-conversations (l/permanent-channel))
+(defonce pending-create-conversations (l/permanent-channel))
 (defonce pending-sources       (l/permanent-channel))
 (defonce pending-resources     (l/permanent-channel))
 
@@ -260,6 +261,15 @@
   (let [result (l/result-channel)]
     (l/enqueue pending-conversations [url result])
     (l/wait-for-result result 5000)))
+
+(defn create-new-conversation
+  []
+  (s/increment "conversations create new")
+  (let [result (l/result-channel)]
+    (l/enqueue pending-create-conversations result)
+    (l/wait-for-result result 5000)))
+
+
 
 (defn get-source
   [url]

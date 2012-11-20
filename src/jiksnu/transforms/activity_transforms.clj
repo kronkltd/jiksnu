@@ -1,14 +1,17 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
-        [jiksnu.session :only [current-user current-user-id is-admin?]])
+        [jiksnu.session :only [current-user current-user-id is-admin?]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
+            [clojurewerkz.route-one.core :as r]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.user :as model.user]
             [lamina.core :as l]))
 
 (defn set-local
@@ -119,8 +122,11 @@
 (defn set-id
   [activity]
   (if (empty? (:id activity))
-    (let [id (format "http://%s/notice/%s" "" #_(:domain (get-author activity)) (:_id activity))]
-      (assoc activity :id id))
+    (if-let [user (model.activity/get-author activity)]
+      (when (:local activity)
+        (let [id (r/named-url "show activity" {:id (:_id activity)})]
+          (assoc activity :id id)))
+      (throw+ "Could not determine author"))
     activity))
 
 (defn set-verb
@@ -141,13 +147,18 @@
         (assoc activity :recipients users)))))
 
 (defn set-conversation
-  [activity]
-  (if-let [uri (first (:conversation-uris activity))]
-    (let [conversation (model/get-conversation uri)]
-      (-> activity
-          (assoc :conversation (:_id conversation))
-          (dissoc :conversation-uris)))
-    activity))
+  [item]
+  (if (:conversation item)
+    item
+    (let [user (model.user/fetch-by-id (:author item))]
+      (if (:local user)
+        (assoc item :conversation (:_id (model/create-new-conversation)))
+        (if-let [uri (first (:conversation-uris item))]
+          (let [conversation (model/get-conversation uri)]
+            (-> item
+                (assoc :conversation (:_id conversation))
+                (dissoc :conversation-uris)))
+          item)))))
 
 (defn set-mentioned
   [activity]

@@ -21,6 +21,7 @@
   [conversation]
   (-> conversation
       transforms/set-_id
+      transforms.conversation/set-url
       transforms.conversation/set-domain
       transforms.conversation/set-local
       transforms.conversation/set-update-source
@@ -78,17 +79,27 @@
     (if (< tries 3)
       (do
         (log/info "recurring")
-        (find-or-create params (update-in options [:tries] inc)))
+        (find-or-create params (assoc options :tries (inc tries))))
       (throw+ "Could not create conversation"))))
 
 (defaction show
   [record]
   record)
 
-(l/receive-all
- model/pending-conversations
- (fn [[url ch]]
-   (l/enqueue ch (find-or-create {:url url}))))
+(defaction create-new
+  []
+  (create {:local true}))
+
+(defn- enqueue-find-or-create-by-url
+  [[url ch]]
+  (l/enqueue ch (find-or-create {:url url})))
+
+(defn- enqueue-create-local
+  [ch]
+  (l/enqueue ch (create {:local true})))
+
+(l/receive-all model/pending-conversations enqueue-find-or-create-by-url)
+(l/receive-all model/pending-create-conversations enqueue-create-local)
 
 (definitializer
   (require-namespaces
