@@ -25,31 +25,30 @@
          source (existance/a-record-exists :feed-source)]
      (add-watcher source user)) => truthy
      (provided
-       (actions.domain/get-discovered anything) => .domain.))
+      (actions.domain/get-discovered anything) => .domain.))
 
  (fact "#'create"
    (let [params (factory :feed-source)]
      (create params) => (partial instance? FeedSource))
    (provided
-     (actions.domain/get-discovered anything) => .domain.))
+    (actions.domain/get-discovered anything) => .domain.))
 
  (future-fact "#'update"
    (let [domain (existance/a-domain-exists)
          source (existance/a-record-exists :feed-source)]
      (actions.feed-source/update source) => (partial instance? FeedSource))
    (provided
-     (actions.domain/get-discovered anything) => .domain.))
+    (actions.domain/get-discovered anything) => .domain.))
 
  (fact "#'discover-source"
-   (fact "when the source can be discovered"
-     (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
-           resource (existance/a-resource-exists {:url url})
-           topic (str url ".atom")]
-       (actions.feed-source/discover-source url) => (partial instance? FeedSource)
-       (provided
-         (actions.resource/update* resource) => .response.
-         (actions.resource/response->tree .response.) => .tree.
-         (actions.resource/get-links .tree.) => .links.
-         (model/find-atom-link .links.) => topic))))
+   (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+         resource (existance/a-resource-exists {:url url})
+         topic (str url ".atom")]
+     (actions.feed-source/discover-source url) => (partial instance? FeedSource))
+   (provided
+    (actions.resource/update* resource) => .response.
+    (actions.resource/response->tree .response.) => .tree.
+    (actions.resource/get-links .tree.) => .links.
+    (model/find-atom-link .links.) => topic))
 
  )
