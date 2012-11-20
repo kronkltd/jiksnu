@@ -4,7 +4,6 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-http.client :as client]
@@ -17,6 +16,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
@@ -34,9 +35,11 @@
 (defn prepare-create
   [params]
   (-> params
-      set-_id
-      set-updated-time
-      set-created-time))
+      transforms/set-_id
+      transforms.resource/set-local
+      transforms.resource/set-domain
+      transforms/set-updated-time
+      transforms/set-created-time))
 
 (defaction create
   [params]
@@ -126,12 +129,14 @@
 
 (defn update*
   [item & [options]]
-  (let [url (:url item)]
-    (log/debugf "updating resource: %s" url)
-    (let [response (client/get url {:throw-exceptions false})]
-      (future
-        (process-response item response))
-      response)))
+  (if-not (:local item)
+    (let [url (:url item)]
+      (log/debugf "updating resource: %s" url)
+      (let [response (client/get url {:throw-exceptions false})]
+        (future
+          (process-response item response))
+        response))
+    (log/debug "local resource does not need update")))
 
 (defaction update
   [item]
