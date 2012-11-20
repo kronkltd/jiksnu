@@ -6,7 +6,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link admin-index-block admin-index-line
-                                admin-index-section bind-to control-line dump-data]])
+                                admin-index-section bind-to control-line dump-data with-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
@@ -71,7 +71,7 @@
 (defn subscriptions-widget
   [user]
   (when user
-    (let [subscriptions (model.subscription/subscriptions user)]
+    (let [subscriptions (if *dynamic* [(Subscription.)] (model.subscription/subscriptions user))]
       [:div.subscriptions
        [:h3
         [:a (if *dynamic*
@@ -81,14 +81,15 @@
         [:span (if *dynamic*
                  {:data-bind "text: $root.following().length"}
                  (count subscriptions))]]
-       (bind-to "$root.subscriptions()"
-         [:ul (if *dynamic* {:data-bind "foreach: $data"})
-          (map (fn [subscription]
-                 [:li {:data-model "subscription"}
-                  (bind-to "target"
-                    [:div {:data-model "user"}
-                     (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
-                       (sections.user/display-avatar user "24"))])]) subscriptions)])
+       (with-page "subscriptions"
+         (bind-to "items"
+           [:ul (if *dynamic* {:data-bind "foreach: $data"})
+            (map (fn [subscription]
+                   [:li {:data-model "subscription"}
+                    (bind-to "to"
+                      [:div {:data-model "user"}
+                       (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
+                         (sections.user/display-avatar user "24"))])]) subscriptions)]))
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 
@@ -220,15 +221,14 @@
   [item & [options & _]]
   [:li.subscription
    (merge {:data-id (:_id item) :data-model "subscription"})
-   (if-let [user (if *dynamic*
-                   (User.)
-                   (model.subscription/get-target item))]
-     (show-section user)
-     "unknown")])
+   (bind-to "to"
+     (if-let [user (if *dynamic* (User.) (model.subscription/get-target item))]
+       (show-section user)
+       "unknown"))])
 
 (defsection subscriptions-block [Subscription :html]
   [items & [options & _]]
-  [:ul.subscriptions
+  [:ul.subscriptions {:data-bind "foreach: $data"}
    (map (fn [item] (subscriptions-line item options)) items)])
 
 (defsection subscriptions-section [Subscription :html]
@@ -245,7 +245,7 @@
 
 (defsection subscribers-block [Subscription :html]
   [items & [options & _]]
-  [:ul.subscriptions
+  [:ul.subscriptions {:data-bind "foreach: $data"}
    (map (fn [item] (subscribers-line item options)) items)])
 
 (defsection subscribers-section [Subscription :html]
