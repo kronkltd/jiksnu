@@ -3,13 +3,13 @@
         [ciste.config :only [config]]
         [ciste.core :only [defaction with-context]]
         [ciste.initializer :only [definitializer]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.actions :only [posted-activities]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
+            [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -29,15 +29,15 @@
 
 (defaction direct-message-timeline
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction friends-timeline
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction inbox
   [& _]
-  (implement))
+  (cm/implement))
 
 (def public-timeline*
   (model/make-indexer 'jiksnu.model.activity))
@@ -54,7 +54,7 @@
 
 (defaction stream
   []
-  (implement))
+  (cm/implement))
 
 (defn format-message
   [message]
@@ -83,24 +83,24 @@
 
 (defaction user-list
   []
-  (implement))
+  (cm/implement))
 
 (defaction home-timeline
   []
-  (implement))
+  (cm/implement))
 
 (defaction mentions-timeline
   []
-  (implement))
+  (cm/implement))
 
 
 (defaction add
   [options]
-  (implement))
+  (cm/implement))
 
 (defaction add-stream-page
   []
-  (implement))
+  (cm/implement))
 
 (defaction callback-publish
   [feed]
@@ -115,7 +115,7 @@
   [user]
   [user
    ;; TODO: get most recent activity
-   (implement nil)])
+   (cm/implement nil)])
 
 (defn stream-handler
   [request]

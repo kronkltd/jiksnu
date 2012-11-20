@@ -1,11 +1,11 @@
 (ns jiksnu.filters.user-filters
   (:use [ciste.config :only [config]]
         [ciste.filters :only [deffilter]]
-        [ciste.model :only [implement]]
         jiksnu.actions.user-actions
         [jiksnu.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clj-tigase.element :as element]
+  (:require [ciste.model :as cm]
+            [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
@@ -36,7 +36,7 @@
 
 (deffilter #'delete :xmpp
   [action request]
-  (implement))
+  (cm/implement))
 
 ;; discover
 

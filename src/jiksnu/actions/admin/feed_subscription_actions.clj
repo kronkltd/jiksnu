@@ -1,9 +1,9 @@
 (ns jiksnu.actions.admin.feed-subscription-actions
   (:use [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]])
-  (:require [jiksnu.model :as model]
+  (:require [ciste.model :as cm]
+            [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 
 (def index*
@@ -15,11 +15,11 @@
 
 (defaction delete
   [record]
-  (implement))
+  (cm/implement))
 
 (defaction show
   [record]
-  (implement))
+  (cm/implement))
 
 (definitializer
   (require-namespaces

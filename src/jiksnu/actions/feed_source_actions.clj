@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-path named-url]]
@@ -17,6 +16,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.session :as session]
@@ -32,18 +32,13 @@
 
 (defonce pending-discovers (ref {}))
 
-(defn set-status
-  [item]
-  (if (:status item)
-    item
-    (assoc item :status "none")))
-
 (defn prepare-create
   [source]
   (-> source
       transforms.feed-source/set-domain
       transforms/set-_id
-      set-status
+      transforms.feed-source/set-status
+      transforms.feed-source/set-resource
       transforms/set-updated-time
       transforms/set-created-time))
 
@@ -196,24 +191,19 @@
 (defaction remove-watcher
   [source user]
   (model.feed-source/update
-   (select-keys source [:_id])
-   {:$pull {:watchers (:_id user)}})
+    (select-keys source [:_id])
+    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
-
-(defn get-feed
-  [source]
-  (if-let [topic (:topic source)]
-    (abdera/fetch-feed topic)
-    (throw+ {:message "Source does not contain a topic"
-             :source source})))
 
 (defn update*
   [source]
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (if-let [feed (get-feed source)]
-        (process-feed source feed)
-        (throw+ "could not obtain feed")))
+      (let [resource (model/get-resource topic)]
+        (let [response (actions.resource/update* resource)]
+          (if-let [feed (abdera/parse-xml-string (:body response))]
+            (process-feed source feed)
+            (throw+ "could not obtain feed")))))
     (log/warn "local sources do not need updates")))
 
 (defaction update
@@ -239,15 +229,18 @@
 (defn discover-source
   "determines the feed source associated with a url"
   [url]
-  (if-let [link (model/extract-atom-link url)]
-    (find-or-create {:topic link})
-    (throw+ (format "Could not determine topic url from resource: %s" url))))
+  (let [resource (model/get-resource url)
+        response (actions.resource/update* resource)
+        body (actions.resource/response->tree response)
+        links (actions.resource/get-links body)]
+    (if-let [link (model/find-atom-link links)]
+      (find-or-create {:topic link})
+      (throw+ (format "Could not determine topic url from resource: %s" url)))))
 
 (defaction discover
-  [source]
-  
-  )
-
+  [item]
+  (update* item)
+  item)
 
 (defn get-discovered
   [item]
@@ -272,7 +265,8 @@
    (l/enqueue ch (find-or-create {:topic url}))))
 
 (definitializer
-  
+  (model.feed-source/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.feed-source-filters"
     "jiksnu.triggers.feed-source-triggers"

@@ -7,26 +7,27 @@
         jiksnu.model.webfinger)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.user-actions :as actions.user])
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.existance-helpers :as existance])
   (:import jiksnu.model.User
            nu.xom.Document))
 
 (test-environment-fixture
 
- (fact "#'get-username-from-user-meta"
+ (fact "#'get-username-from-xrd"
    (fact "when the usermeta has an identifier"
-     (get-username-from-user-meta .user-meta.) => .username.
+     (get-username-from-xrd .user-meta.) => .username.
      (provided
       (get-username-from-identifiers .user-meta.) => .username.
       (get-username-from-atom-property .user-meta.) => nil :times 0))
    (fact "when the usermeta does not have an identifier"
      (fact "and the atom link has an identifier"
-       (get-username-from-user-meta .user-meta.) => .username.
+       (get-username-from-xrd .user-meta.) => .username.
        (provided
         (get-username-from-identifiers .user-meta.) => nil
         (get-username-from-atom-property .user-meta.) => .username.))
      (fact "and the atom link does not have an identifier"
-       (get-username-from-user-meta .user-meta.) => nil
+       (get-username-from-xrd .user-meta.) => nil
        (provided
         (get-username-from-identifiers .user-meta.) => nil
         (get-username-from-atom-property .user-meta.) => nil))))
@@ -45,16 +46,18 @@
  (fact "#'fetch-host-meta"
    (fact "when the url points to a valid XRD document"
      ;; TODO: pick a random domain
-     (let [url "http://kronkltd.net/.well-known/host-meta"]
-       (fetch-host-meta .url.) => (partial instance? Document))
+     (let [resource (existance/a-resource-exists)
+           url (:url resource)]
+       (fetch-host-meta url) => (partial instance? Document))
      (provided
-       (cm/fetch-resource .url.) => "<XRD/>"))
+       (cm/fetch-resource url) => "<XRD/>"))
    
    (fact "when the url does not point to a valid XRD document"
-     (let [url "http://example.com/.well-known/host-meta"]
-       (fetch-host-meta .url.) => (throws Exception))
+     (let [resource (existance/a-resource-exists)
+           url (:url resource)]
+       (fetch-host-meta url) => (throws Exception))
      (provided
-       (cm/fetch-resource .url.) => "")))
+       (cm/fetch-resource url) => "")))
  
  (future-fact "#'get-links"
    (fact "When it has links"

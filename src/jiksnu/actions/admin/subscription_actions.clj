@@ -1,9 +1,9 @@
 (ns jiksnu.actions.admin.subscription-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
@@ -12,7 +12,7 @@
 
 (defaction create
   [params & options]
-  (implement))
+  (cm/implement))
 
 (defaction show
   [subscription]

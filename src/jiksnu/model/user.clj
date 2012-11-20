@@ -193,7 +193,8 @@
   "Delete the user"
   [user]
   (s/increment "users deleted")
-  (mc/remove-by-id collection-name (:_id user)))
+  (mc/remove-by-id collection-name (:_id user))
+  user)
 
 (defn update
   [^User new-user]
@@ -229,13 +230,6 @@
   (if-let [link (or (get-link user ns/updates-from "application/atom+xml")
                     (get-link user ns/updates-from nil))]
     (:href link)))
-
-(defn fetch-user-feed
-  "returns a feed"
-  [^User user]
-  (-?> user
-       feed-link-uri
-       abdera/fetch-feed))
 
 (defn vcard-request
   [user]

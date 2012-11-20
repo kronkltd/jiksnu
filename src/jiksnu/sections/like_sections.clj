@@ -3,6 +3,7 @@
         [ciste.sections.default :only [actions-section index-line
                                        index-block index-section
                                        delete-button link-to]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-line admin-index-block
                                 admin-index-section]])
   (:require [clojure.tools.logging :as log]
@@ -63,7 +64,8 @@
      [:th "Activity"]
      [:th "Updated"]
      [:th "Actions"]]]
-   [:tbody
+   [:tbody (when *dynamic*
+             {:data-bind "foreach: $data"})
     (map index-line likes)]])
 
 

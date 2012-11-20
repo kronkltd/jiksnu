@@ -1,11 +1,11 @@
 (ns jiksnu.routes.webfinger-routes-test
   (:use [ciste.config :only [config]]
-        [ciste.model :only [fetch-resource query string->document]]
         [jiksnu.model :only [rel-filter]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [every-checker fact]])
-  (:require [clojure.data.json :as json]
+  (:require [ciste.model :as cm]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [ring.mock.request :as mock]))
 
@@ -19,10 +19,10 @@
           (every-checker
            #(= 200 (:status %))
            #(= "application/xrds+xml" (-> % :headers (get "Content-Type")))
-           #(let [body (string->document (:body %))]
+           #(let [body (cm/string->document (:body %))]
               (and
                ;; has at least 1 lrdd link
-               (seq (query "//*[local-name() = 'Link'][@rel = 'lrdd']" body)))))))
+               (seq (cm/query "//*[local-name() = 'Link'][@rel = 'lrdd']" body)))))))
 
  (fact "host meta json"
    (->> "/.well-known/host-meta.json"

@@ -1,13 +1,13 @@
 (ns jiksnu.actions.group-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.session :only [current-user]]
         [jiksnu.transforms :only [set-_id set-created-time
                                   set-updated-time]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.session :as session])
@@ -22,7 +22,7 @@
 
 (defaction add-admin
   [group user]
-  (implement))
+  (cm/implement))
 
 (defaction create
   [params]
@@ -55,7 +55,7 @@
 
 (defaction user-list
   [user]
-  (implement))
+  (cm/implement))
 
 (defaction add
   [params]

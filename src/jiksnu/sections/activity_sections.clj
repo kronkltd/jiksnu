@@ -1,6 +1,5 @@
 (ns jiksnu.sections.activity-sections
   (:use [ciste.core :only [with-format]]
-        [ciste.model :only [implement]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button edit-button
                                        full-uri index-section show-section-minimal
@@ -9,11 +8,12 @@
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.model :only [with-subject]]
-        [jiksnu.sections :only [action-link admin-index-line admin-index-block
-                                admin-index-section bind-property bind-to
-                                control-line dump-data format-links pagination-links]]
+        [jiksnu.sections :only [action-link actions-section admin-index-line admin-index-block
+                                admin-index-section bind-property bind-to control-line
+                                dropdown-menu dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.string :as string]
+  (:require [ciste.model :as cm]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
@@ -179,28 +179,25 @@
    [:i.icon-comment]
    [:span.button-text "Comment"]])
 
-(defn post-actions
+(defn model-button
   [activity]
-  (if-let [user (session/current-user)]
-    [:div.btn-group.actions-menu
-     [:a.dropdown-toggle.btn {:data-toggle "dropdown" :href "#"}
-      [:span.caret]]
-     [:ul.dropdown-menu.pull-right
-      [:li
-       [:a (when *dynamic*
-             {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"})
-        "Model"]]
-      (map
-       (fn [x] [:li x])
-       (concat
-        (list (like-button activity)
-              (comment-button activity))
-        (when (or (model.activity/author? activity user)
-                  (session/is-admin?))
-          (list (edit-button activity)
-                (delete-button activity)))
-        (when (session/is-admin?)
-          (list (update-button activity)))))]]))
+  [:a (when *dynamic*
+        {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"})
+   "Model"])
+
+(defn get-buttons
+  []
+  (concat
+   [#'model-button]
+   (when (session/current-user)
+     [#'like-button
+      #'comment-button])
+   (when (or #_(model.activity/author? activity user)
+             (session/is-admin?))
+     [#'edit-button
+      #'delete-button])
+   (when (session/is-admin?)
+     [#'update-button])))
 
 (defn recipients-section
   [activity]
@@ -221,7 +218,7 @@
 
 (defn links-section
   [activity]
-  (implement))
+  (cm/implement))
 
 (defn maps-section
   [activity]
@@ -236,10 +233,15 @@
            :src
            ;; TODO: use urly to construct this
            ;; TODO: Move this to cljs
-           (str "https://maps.googleapis.com/maps/api/staticmap?size=200x200&zoom=11&sensor=true&markers=color:red|"
-                (:latitude geo)
-                ","
-                (:longitude geo))}]
+           (str "https://maps.googleapis.com/maps/api/staticmap?"
+                (string/join "&amp;"
+                             ["size=200x200"
+                              "zoom=11"
+                              "sensor=true"
+                              (str "markers=color:red|"
+                                   (:latitude geo)
+                                   ","
+                                   (:longitude geo))]))}]
        [:p "Latitude: " [:span (if *dynamic*
                                  {:data-bind "text: latitude"}
                                  (:latitude geo))]]
@@ -404,7 +406,7 @@
 
 (defn status-form
   [activity]
-  (implement))
+  (cm/implement))
 
 (defn event-form
   [activity]
@@ -460,6 +462,14 @@
       enclosures)]))
 
 ;; dynamic sections
+
+;; actions-section
+
+(defsection actions-section [Activity :html]
+  [item]
+  (dropdown-menu item (get-buttons)))
+
+;; add-form
 
 (defsection add-form [Activity :html]
   [activity & _]
@@ -530,7 +540,7 @@
    [:td (if *dynamic*
           {:data-bind "text: title"}
           (:title activity))]
-   [:td (post-actions activity)]])
+   [:td (actions-section activity)]])
 
 ;; admin-index-section
 
@@ -721,6 +731,7 @@
                {:about activity-uri
                 :data-id (:_id activity)}))
       [:header
+       (actions-section activity)
        (bind-to "author"
          (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
            (show-section-minimal user)))
@@ -748,8 +759,7 @@
          maps-section
          tags-section
          posted-link-section
-         comments-section])
-       [:div.pull-right (post-actions activity)]]])))
+         comments-section])]])))
 
 (defsection show-section [Activity :model]
   [activity & [page]]

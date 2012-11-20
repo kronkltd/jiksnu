@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
@@ -61,10 +60,11 @@
   (let [id (:id user)
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [um-url (actions.domain/get-user-meta-url domain id)]
-      (try
-        (model.webfinger/fetch-host-meta um-url)
-        (catch RuntimeException ex
-          (log/warnf "could not get user meta: %s" user))))))
+      (let [resource (model/get-resource um-url)]
+        (try
+          (model.webfinger/fetch-host-meta um-url)
+          (catch RuntimeException ex
+            (log/warnf "could not get user meta: %s" user)))))))
 
 (defn set-update-source
   [user]
@@ -77,7 +77,7 @@
       user
       ;; look up update source
       (if-let [user-meta (get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-user-meta user-meta)]
+        (if-let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
         (throw+ "Could not get user meta")))))
@@ -153,9 +153,9 @@
                                    (model.user/get-domain-name id))]
             (let [user (assoc user :domain domain-name)]
               (if-let [user-meta (get-user-meta user)]
-                (let [source (model.webfinger/get-feed-source-from-user-meta user-meta)]
+                (let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
                   (merge user
-                         {:username (model.webfinger/get-username-from-user-meta user-meta)
+                         {:username (model.webfinger/get-username-from-xrd user-meta)
                           :update-source (:_id source)}))
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
@@ -218,7 +218,7 @@
 
 (defaction profile
   [& _]
-  (implement))
+  (cm/implement))
 
 (defaction user-meta
   "returns a user matching the uri"
@@ -325,15 +325,31 @@
         (model/map->User user))
       (throw+ "could not determine user"))))
 
+(defn fetch-user-meta
+  "returns a user meta document"
+  [^User user]
+  (if-let [uri (model.user/user-meta-uri user)]
+    (let [resource (model/get-resource uri)]
+      (model.webfinger/fetch-host-meta uri))
+    (throw (RuntimeException. "Could not determine user-meta link"))))
+
+(defn fetch-user-feed
+  "returns a feed"
+  [^User user]
+  (if-let [url (model.user/feed-link-uri user)]
+    (let [resource (model/get-resource url)]
+      (abdera/fetch-feed url))
+    (throw+ "Could not determine url")))
+
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   "Retreive user information from webfinger"
   [user]
   (log/info "updating usermeta")
   ;; TODO: This is doing way more than it's supposed to
-  (if-let [xrd (model.webfinger/fetch-user-meta user)]
+  (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)
-          feed (model.user/fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
+          feed (fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
           first-entry (-?> feed .getEntries first)
           new-user (-?> (abdera/get-author first-entry feed)
                         person->user)

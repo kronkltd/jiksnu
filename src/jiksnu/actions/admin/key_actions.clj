@@ -1,9 +1,9 @@
 (ns jiksnu.actions.admin.key-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]])
-  (:require [jiksnu.actions.key-actions :as actions.key]))
+  (:require [ciste.model :as cm]
+            [jiksnu.actions.key-actions :as actions.key]))
 
 (defaction create
   [options]

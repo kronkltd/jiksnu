@@ -23,10 +23,9 @@
   [user & options]
   (apply fetch-all {:user (:_id user)} options))
 
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
+(def count-records (model/make-counter collection-name))
 
 (defn fetch-by-id
   [id]

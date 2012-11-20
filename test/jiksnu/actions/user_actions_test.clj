@@ -1,7 +1,6 @@
 (ns jiksnu.actions.user-actions-test
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
-        [ciste.model :only [string->document]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [midje.sweet :only [fact future-fact => anything throws contains every-checker]]
@@ -11,8 +10,10 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
+            [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
@@ -26,7 +27,7 @@
 
 (defn mock-user-meta
   [username domain-name uri source-link]
-  (string->document
+  (cm/string->document
    (format "
 <XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\">
   <Subject>%s</Subject>
@@ -50,12 +51,15 @@
            template (str "http://" domain-name "/xrd?uri={uri}")
            domain (actions.domain/find-or-create (factory :domain
                                                           {:_id domain-name
+                                                           :discovered true
                                                            :links [{:rel "lrdd" :template template}]}))
-           uri (str "http://" domain-name "/users/1")
+           uri (factory/make-uri domain-name "/users/1")
            source-link (fseq :uri)]
-       (get-username {:id uri}) => (contains {:username username}))
-     (provided
-       (model.webfinger/fetch-host-meta anything) => (mock-user-meta username domain-name uri source-link)))
+       (get-username {:id uri}) => (contains {:username username})
+       (provided
+         (get-user-meta anything) => .xrd.
+         (model.webfinger/get-feed-source-from-xrd .xrd.) => .topic.
+         (model.webfinger/get-username-from-xrd .xrd.) => username)))
 
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)

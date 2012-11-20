@@ -38,14 +38,11 @@
   [request {:keys [items] :as page}]
   {:title "Feed Sources"
    :single true
-   :body (list (let [sources (if *dynamic*
-                               [(FeedSource.)]
-                               items)]
-                 (with-page "default"
-                   (pagination-links page)
-                   (bind-to "items"
-                     (admin-index-section sources page))))
-               (add-form (FeedSource.)))})
+   :body (let [sources (if *dynamic* [(FeedSource.)] items)]
+           (with-page "default"
+             (pagination-links page)
+             (bind-to "items"
+               (admin-index-section sources page))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

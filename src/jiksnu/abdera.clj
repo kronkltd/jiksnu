@@ -39,12 +39,8 @@
 
 (defn fetch-resource
   [uri]
-  (s/increment "feed_fetched")
+  (s/increment "feeds fetched")
   (.get (AbderaClient.) uri))
-
-(defn fetch-document
-  [uri]
-  (.getDocument (fetch-resource uri)))
 
 (defn fetch-feed
   [uri]
@@ -54,7 +50,7 @@
 (defn not-namespace
   "Filter for map entries that do not represent namespaces"
   [[k v]]
-  (not (= k :xmlns)))
+  (not= k :xmlns))
 
 
 
@@ -190,7 +186,7 @@ this is for OSW
   (let [author (.getAuthor entry)]
     ;; TODO: This is wasteful, why am I doing this?
     (let [uri (.getUri author)]
-      (URI. (.toString uri)))))
+      (URI. (str uri)))))
 
 (defn parse-links
   [^Entry entry]

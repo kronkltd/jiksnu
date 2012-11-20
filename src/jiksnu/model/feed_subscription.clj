@@ -44,14 +44,9 @@
       (throw+ {:type :validation
                :errors errors}))))
 
-(defn delete
-  "Delete feed source
-
-This will generally not be called"
-  [item]
-  (log/debugf "Deleting subscription for %s" (:topic item))
-  (mc/remove-by-id collection-name (:_id item))
-  item)
+(def count-records (model/make-counter collection-name))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -67,12 +62,3 @@ This will generally not be called"
   "Fetch a single source by it's topic id"
   [topic]
   (fetch-all {:topic topic}))
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name)))
-
-(defn drop!
-  []
-  (mc/remove collection-name))

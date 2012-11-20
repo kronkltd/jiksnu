@@ -7,6 +7,7 @@
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clj-http.client :as client]
             [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -15,7 +16,10 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.namespace :as ns]))
+            [jiksnu.namespace :as ns]
+            [monger.collection :as mc]
+            [net.cgrand.enlive-html :as enlive])
+  (:import java.io.StringReader))
 
 (defonce delete-hooks (ref []))
 
@@ -41,9 +45,18 @@
     (model.resource/create item)))
 
 (defaction find-or-create
-  [params]
-  (or (model.resource/fetch-by-url (:url params))
-      (create params)))
+  [params & [{tries :tries :or {tries 1} :as options}]]
+  (if-let [
+           item (or (model.resource/fetch-by-url (:url params))
+                    (try
+                      (create params)
+                      (catch RuntimeException ex)))]
+    item
+    (if (< tries 3)
+      (do
+        (log/info "recurring")
+        (find-or-create params (assoc options :tries (inc tries))))
+      (throw+ "Could not create conversation"))))
 
 (defaction delete
   "Delete the resource"
@@ -53,6 +66,14 @@
         item)
     (throw+ "Could not delete record")))
 
+(defn response->tree
+  [response]
+  (enlive/html-resource (StringReader. (:body response))))
+
+(defn get-links
+  [tree]
+  (enlive/select tree [:link]))
+
 (def index*
   (model/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
@@ -61,23 +82,79 @@
   [& args]
   (apply index* args))
 
-(defaction discover
-  [item]
+(defaction add-link*
+  [item link]
+  (mc/update "resources" {:_id (:_id item)}
+    {:$addToSet {:links link}})
   item)
+
+(defn add-link
+  [item link]
+  (if-let [existing-link (and nil (model.resource/get-link item
+                                                           (:rel link)
+                                                           (:type link)))]
+    item
+    (add-link* item link)))
+
+(defn process-response
+  [item response]
+  (let [content-str (get-in response [:headers "content-type"])
+        status (:status response)
+        location (get-in response [:headers "location"])]
+    (model.resource/set-field! item :status status)
+    (when location
+      (let [resource (model/get-resource location)]
+        (model.resource/set-field! item :location location)))
+    (let [[content-type rest] (string/split content-str #"; ?")]
+      (if (seq rest)
+        (let [encoding (string/replace rest "charset=" "")]
+          (when (seq encoding)
+            (model.resource/set-field! item :encoding encoding))))
+      (model.resource/set-field! item :contentType content-type)
+
+      (condp = content-type
+        "text/html"
+        (do
+          (log/info "parsing html content")
+          (let [tree (response->tree response)]
+            (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
+              (model.resource/set-field! item :title title))
+            (let [links (get-links tree)]
+              (doseq [link links]
+                (add-link item (:attrs link))))))
+        (log/infof "unknown content type: %s" content-type)))))
+
+(defn update*
+  [item & [options]]
+  (let [url (:url item)]
+    (log/debugf "updating resource: %s" url)
+    (let [response (client/get url {:throw-exceptions false})]
+      (future
+        (process-response item response))
+      response)))
 
 (defaction update
   [item]
+  (update* item)
   item)
+
+(defaction discover
+  [item]
+  (log/debugf "discovering resource: %s" item)
+  (let [response (update* item)]
+    (model.resource/fetch-by-id (:_id item))))
 
 (defaction show
   [item]
   item)
 
+(l/receive-all
+ model/pending-resources
+ (fn [[url ch]]
+   (l/enqueue ch (find-or-create {:url url}))))
+
 (definitializer
-  (l/receive-all
-   model/pending-resources
-   (fn [[url ch]]
-     (l/enqueue ch (find-or-create {:url url}))))
+  (model.resource/ensure-indexes)
 
   (require-namespaces
    ["jiksnu.filters.resource-filters"

@@ -7,9 +7,9 @@
 
 (def collection-name "items")
 
-(defn drop!
-  []
-  (mc/remove collection-name))
+(def count-records (model/make-counter collection-name))
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
 
 (defn index
   [user]

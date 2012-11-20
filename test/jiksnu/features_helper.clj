@@ -1,7 +1,6 @@
 (ns jiksnu.features-helper
   (:use aleph.http
         aleph.formats
-        [ciste.model :only [implement]]
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
@@ -15,10 +14,10 @@
   (:require [aleph.http :as http]
             [ciste.config :as c]
             [ciste.core :as core]
+            [ciste.model :as cm]
             [ciste.runner :as runner]
             [ciste.sections.default :as sections]
             [ciste.service.aleph :as aleph]
-            [clj-http.client :as client]
             [clj-webdriver.core :as webdriver]
             [clojure.data.json :as json]
             [clojure.string :as string]

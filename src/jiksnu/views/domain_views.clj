@@ -1,6 +1,5 @@
 (ns jiksnu.views.domain-views
-  (:use [ciste.model :only [implement]]
-        [ciste.views :only [defview]]
+  (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section
                                        show-section]]
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
@@ -8,7 +7,8 @@
                                               ping-error]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -110,13 +110,13 @@
 
 (defview #'ping-error :xmpp
   [request _]
-  (implement))
+  (cm/implement))
 
 ;; ping-response
 
 (defview #'ping-response :xmpp
   [request _domain]
-  (implement)
+  (cm/implement)
   #_{:status 303
      :template false
      :headers {"Location" (named-path "index domains")}})
@@ -134,9 +134,7 @@
    (bind-to "targetDomain"
      (show-section domain)
      [:div {:data-model "domain"}
-      (let [users (if *dynamic*
-                    [(User.)]
-                    (model.user/fetch-by-domain domain))]
+      (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
         (with-page "default"
           (bind-to "items"
             (index-section users {:page 1}))))])})

@@ -31,7 +31,7 @@
    (presence-of   :update-source)
    (presence-of   [:object :object-type])
    (presence-of   :verb)
-   ;; (presence-of   :conversation)
+   (presence-of   :conversation)
 
    ;; TODO: These should be joda times
    (presence-of   :created)
@@ -109,16 +109,9 @@
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (model/map->Activity activity)))
 
-(defn drop!
-  []
-  (mc/remove collection-name))
-
-(defn delete
-  [item]
-  (trace/trace :activities:deleted item)
-  (s/increment "activities deleted")
-  (mc/remove-by-id collection-name (:_id item))
-  item)
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
+(def count-records (model/make-counter collection-name))
 
 ;; deprecated
 (defn add-comment
@@ -139,9 +132,5 @@
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
 
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (trace/trace :activities:counted 1)
-     (s/increment "activitied counted")
-     (mc/count collection-name params)))
+
+

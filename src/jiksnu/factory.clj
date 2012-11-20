@@ -74,9 +74,13 @@
   [n]
   (str "foo" n))
 
+(defseq :path
+  [n]
+  (str "/resources/" n))
+
 (defn make-uri
   [domain & [path]]
-  (let [path (or path "/")]
+  (let [path (or path (fseq :path))]
    (str "http://" domain path)))
 
 (defseq :uri
@@ -182,6 +186,9 @@
       (assoc :local true)))
 
 (deffactory :conversation
+  {:url (fseq :uri)})
+
+(deffactory :resource
   {:url (fseq :uri)})
 
 (deffactory :activity

@@ -31,6 +31,7 @@
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Resources"
+   :single true
    :body
    (let [items (if *dynamic* [(Resource.)] items)]
      (with-page "default"
@@ -49,6 +50,14 @@
           :pages {:default (format-page-info page)}}})
 
 ;; show
+
+(defview #'show :html
+  [request item]
+  {:body
+   (let [item (if *dynamic* (Resource.) item)]
+     (bind-to "targetResource"
+       [:div {:data-model "resource"}
+        (show-section item)]))})
 
 (defview #'show :model
   [request item]

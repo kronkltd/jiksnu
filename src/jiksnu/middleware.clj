@@ -24,28 +24,28 @@
   [handler]
   (fn [request]
     (try+
-      (handler request)
-      (catch [:type :authentication] ex
-        (auth-exception ex))
-      (catch [:type :permission] ex
-        (auth-exception ex))
-      (catch LoginException ex
-        (auth-exception ex)))))
+     (handler request)
+     (catch [:type :authentication] ex
+       (auth-exception ex))
+     (catch [:type :permission] ex
+       (auth-exception ex))
+     (catch LoginException ex
+       (auth-exception ex)))))
 
 (defn wrap-stacktrace
   [handler]
   (fn [request]
     (try
-     (handler request)
-     (catch Exception ex
-       (try
-         (let [st (with-out-str (print-stack-trace ex))]
-           (println st)
-           {:status 500
-           :headers {"content-type" "text/plain"}
-           :body st})
-         (catch Exception ex
-           (log/fatalf "Error parsing exception: %s" (str ex))))))))
+      (handler request)
+      (catch Exception ex
+        (try
+          (let [st (with-out-str (print-stack-trace ex))]
+            (println st)
+            {:status 500
+             :headers {"content-type" "text/plain"}
+             :body st})
+          (catch Exception ex
+            (log/fatalf "Error parsing exception: %s" (str ex))))))))
 
 (defn default-html-mode
   []

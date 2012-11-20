@@ -14,6 +14,7 @@
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
@@ -104,13 +105,6 @@
   (map (fn [[p o]] [s p o]) pairs))
 
 (jena/init-jena-framework)
-;; TODO: Find a better ns for this
-;; (rdf/register-rdf-ns :dc ns/dc)
-;; (rdf/register-rdf-ns :foaf ns/foaf)
-;; (rdf/register-rdf-ns :sioc ns/sioc)
-;; (rdf/register-rdf-ns :cert ns/cert)
-;; (rdf/register-rdf-ns :aair ns/aair)
-;; (rdf/register-rdf-ns :as ns/as)
 
 (defn force-coll
   [x]
@@ -130,6 +124,24 @@
 (defrecord Resource                [])
 (defrecord Subscription            [])
 (defrecord User                    [])
+
+(def entity-names
+  [
+   Activity
+   AuthenticationMechanism
+   Conversation
+   Domain
+   FeedSource
+   FeedSubscription
+   Group
+   Item
+   Key
+   Like
+   Resource
+   Subscription
+   User
+   ]
+  )
 
 ;; Entity predicates
 
@@ -196,6 +208,27 @@
                (throw+ "Could not find fetch function"))
              (throw+ "Could not find count function"))))))
 
+(defn make-counter
+  [collection-name]
+  (fn [& [params]]
+     (let [params (or params {})]
+       (trace/trace* (str collection-name ":counted") 1)
+       (s/increment (str collection-name " counted"))
+       (mc/count collection-name params))))
+
+(defn make-deleter
+  [collection-name]
+  (fn [item]
+    (trace/trace* (str collection-name ":deleted") item)
+    (s/increment (str collection-name " deleted"))
+    (mc/remove-by-id collection-name (:_id item))
+    item))
+
+(defn make-dropper
+  [collection-name]
+  (fn []
+    (mc/remove collection-name)))
+
 ;; rdf helpers
 
 (defn triples->model
@@ -255,9 +288,8 @@
   "Drop all collections"
   []
   (log/debug "dropping all collections")
-  (doseq [entity [Activity AuthenticationMechanism Conversation Domain
-                  FeedSource FeedSubscription
-                  Group Item Key Like Subscription User]]
+  (doseq [entity entity-names]
+    (log/debugf "dropping %s" entity)
     (drop-collection entity)))
 
 (defn set-database!
@@ -271,15 +303,20 @@
 
 ;; link functions
 
+(defn find-atom-link
+  [links]
+  (->> links
+       (filter #(= "alternate" (:rel (:attrs %))))
+       (filter #(= "application/atom+xml" (:type (:attrs %))))
+       (map #(-> % :attrs :href))
+       first))
+
 (defn extract-atom-link
   "Find the atom link in the page identified by url"
   [url]
   (->> url
        cm/get-links
-       (filter #(= "alternate" (:rel (:attrs %))))
-       (filter #(= "application/atom+xml" (:type (:attrs %))))
-       (map #(-> % :attrs :href))
-       first))
+       find-atom-link))
 
 (defn parse-http-link
   [url]
@@ -336,13 +373,6 @@
   (s/setup "localhost" 8125)
   
   (set-database!)
-
-  (try
-
-    (mc/ensure-index "conversations" {:url 1} {:unique true})
-
-    (catch RuntimeException ex
-      (.printStackTrace ex)))
 
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
   )

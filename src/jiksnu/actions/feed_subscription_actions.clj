@@ -2,7 +2,6 @@
     (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.model :only [implement]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-path named-url]]
@@ -11,7 +10,6 @@
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
-            [clj-http.client :as client]
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]

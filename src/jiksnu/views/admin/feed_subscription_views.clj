@@ -14,10 +14,8 @@
    :single true
    :body
    (with-page "default"
-     (list
-      (pagination-links response)
-      (admin-index-section items response)
-      (add-form (model/->FeedSubscription))))})
+     (pagination-links response)
+     (admin-index-section items response))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

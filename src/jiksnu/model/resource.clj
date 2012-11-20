@@ -27,6 +27,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
+    (s/increment "resources searched")
      (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
            records (mq/with-collection collection-name
                      (mq/find params)
@@ -37,7 +38,20 @@
 
 (defn fetch-by-url
   [url]
-  (first (:items (fetch-all {:url url}))))
+  (first (fetch-all {:url url})))
+
+(defn get-link
+  [item rel content-type]
+  (first (model/rel-filter rel (:links item) content-type)))
+
+(defn set-field!
+  "Updates resource's field to value"
+  [item field value]
+  (log/debugf "setting %s (%s = %s)" (:_id item) field value)
+  (s/increment "resources field set")
+  (mc/update collection-name
+             {:_id (:_id item)}
+             {:$set {field value}}))
 
 (defn fetch-by-id
   [id]
@@ -51,23 +65,19 @@
   (let [errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "Creating resource: %s" (pr-str params))
         (mc/insert collection-name params)
         (let [item (fetch-by-id (:_id params))]
-          (trace/trace :resource:created item)
+          (log/debugf "Creating resource: %s" (pr-str item))
+          (trace/trace :resources:created item)
+          (s/increment "resources created")
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(defn drop!
+(def delete        (model/make-deleter collection-name))
+(def drop!         (model/make-dropper collection-name))
+(def count-records (model/make-counter collection-name))
+
+(defn ensure-indexes
   []
-  (mc/remove collection-name))
-
-(defn delete
-  [item]
-  (mc/remove-by-id collection-name (:_id item))
-  item)
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))
+  (doto collection-name
+   (mc/ensure-index {:url 1} {:unique true})))

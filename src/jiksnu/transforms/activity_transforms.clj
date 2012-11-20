@@ -155,10 +155,11 @@
                     :mentioned-uris
                     (map
                      (fn [uri]
-                       (try
-                         (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
-                         (catch RuntimeException ex
-                           nil))))
+                       (let [resource (model/get-resource uri)]
+                         (try
+                           (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
+                           (catch RuntimeException ex
+                             nil)))))
                     (filter identity)
                     seq)]
     (-> activity
@@ -170,9 +171,11 @@
   [activity]
   (if-let [ids (->> activity
                     :enclosures
-                    :href
-                    (map (comp :_id model/get-resource))
-                    seq)]
+                    (map :href)
+                    (map (fn [url]
+                           (:_id (model/get-resource url))))
+                    seq
+                    doall)]
     (-> activity
         (assoc :resources ids)
         (dissoc :enclosures))

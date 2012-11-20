@@ -9,6 +9,9 @@
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.existance-helpers :as existance]
+            [jiksnu.factory :as factory]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]))
@@ -40,7 +43,7 @@
        (every-checker
         #(= domain %)
         (fn [_] (nil? (model.domain/fetch-by-id (:_id domain))))))))
- 
+
  (fact "#'discover-onesocialweb"
    (fact "when there is no url context"
      (fact "should send a packet to that domain"
@@ -60,45 +63,50 @@
          (deliver-packet! anything) => nil :times 1))))
 
  (fact "#'discover-webfinger"
-   (let [domain (model.domain/create (factory :domain))
+   (let [domain (existance/a-domain-exists)
          id      (:_id domain)]
      (fact "when there is no url context"
-       (let [url nil]
-         (discover-webfinger domain url) => (contains {:_id (:_id domain)})
+       (let [url (factory/make-uri id "/1")
+             hm-url (factory/make-uri id "/.well-known/host-meta")
+             resource (existance/a-resource-exists {:url hm-url})]
+         (discover-webfinger domain url) => (contains {:_id id})
          (provided
-           (model.webfinger/fetch-host-meta anything) => (cm/string->document "<XRD/>"))))
-
+           (actions.resource/update* resource) => {:body "<XRD/>"})))
      (fact "when there is a url context"
        (let [url     (format "http://%s/status/users/1"                     id)
              hm-bare (format "http://%s/.well-known/host-meta"              id)
              hm1     (format "http://%s/status/.well-known/host-meta"       id)
-             hm2     (format "http://%s/status/users/.well-known/host-meta" id)]
+             hm2     (format "http://%s/status/users/.well-known/host-meta" id)
+             resource      (model/get-resource url)
+             resource-bare (model/get-resource hm-bare)
+             resource1     (model/get-resource hm1)
+             resource2     (model/get-resource hm2)]
          (fact "and the bare domain has a host-meta"
-           (discover-webfinger domain url) => (contains {:_id (:_id domain)})
+           (discover-webfinger domain url) => (contains {:_id id})
            (provided
-             (model.webfinger/fetch-host-meta anything) => (cm/string->document "<XRD/>")))
-
+             (actions.resource/update* resource-bare) => {:body "<XRD/>"}))
          (fact "and the bare domain does not have a host meta"
            (fact "and none of the subpaths have host metas"
              (fact "should raise an exception"
                (discover-webfinger domain url) => (throws RuntimeException)
                (provided
-                 (model.webfinger/fetch-host-meta hm-bare) => nil
-                 (model.webfinger/fetch-host-meta hm1) => nil
-                 (model.webfinger/fetch-host-meta hm2) => nil)))
+                 (actions.resource/update* resource-bare) => {:body nil}
+                 (actions.resource/update* resource1) => {:body nil}
+                 (actions.resource/update* resource2) => {:body nil})))
            (fact "and one of the subpaths has a host meta"
              (fact "should update the host meta path"
                ;; FIXME: this isn't being checked
-               (discover-webfinger domain url) => (contains {:_id (:_id domain)})
+               (discover-webfinger domain url) => (contains {:_id id})
                (provided
-                 (model.webfinger/fetch-host-meta hm-bare) => nil
-                 (model.webfinger/fetch-host-meta hm1) => (cm/string->document "<XRD/>")))))))))
- 
+                 (actions.resource/update* resource-bare) => {:body nil}
+                 (actions.resource/update* resource1) => {:body nil}
+                 (actions.resource/update* resource2) => {:body "<XRD/>"}))))))))
+
  (fact "#'get-user-meta-url"
    (fact "when the domain doesn't exist"
      (fact "should return nil"
        (get-user-meta-url nil "acct:foo@example.com") => nil?)))
- 
+
  (fact "#'host-meta"
    (host-meta) =>
    (every-checker
@@ -108,5 +116,5 @@
 
  (fact "#'show"
    (show .domain.) => .domain.)
- 
+
  )
