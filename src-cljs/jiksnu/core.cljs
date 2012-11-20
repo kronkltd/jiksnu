@@ -148,7 +148,7 @@
             (log/finer *logger* (format "cached observable found: %s(%s)" model-name id))
             o)
           (get-model* model-name id)))
-      (throw (js/Error. "Not a string")))
+      (throw (js/Error. (str id " is not a string"))))
     (log/warn *logger* "id is undefined")))
 
 (def get-activity                 (partial get-model "activities"))
