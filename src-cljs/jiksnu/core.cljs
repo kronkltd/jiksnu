@@ -89,7 +89,7 @@
   (def _m data)
   (update-pages     data)
   (update-title     data)
-  (update-items     data)
+  ;; (update-items     data)
   (update-currents  data)
   (update-page-info data)
   (update-post-form data)
