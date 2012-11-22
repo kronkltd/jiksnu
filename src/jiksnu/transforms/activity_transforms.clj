@@ -151,16 +151,15 @@
   [item]
   (if (:conversation item)
     item
-    (if-let [id (:author item)]
-      (let [user (model.user/fetch-by-id id)]
-        (if (:local user)
-          (assoc item :conversation (:_id (model/create-new-conversation)))
-          (if-let [uri (first (:conversation-uris item))]
-            (let [conversation (model/get-conversation uri)]
-              (-> item
-                           (assoc :conversation (:_id conversation))
-                           (dissoc :conversation-uris)))
-            item)))
+    (if-let [user (model.activity/get-author item)]
+      (if (:local user)
+        (assoc item :conversation (:_id (model/create-new-conversation)))
+        (if-let [uri (first (:conversation-uris item))]
+          (let [conversation (model/get-conversation uri)]
+            (-> item
+                (assoc :conversation (:_id conversation))
+                (dissoc :conversation-uris)))
+          item))
       (throw+ "could not determine author"))))
 
 (defn set-mentioned
