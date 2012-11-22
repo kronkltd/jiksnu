@@ -44,13 +44,11 @@
 (defaction create
   [params]
   (let [item (prepare-create params)]
-    (s/increment "resources created")
     (model.resource/create item)))
 
 (defaction find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
-  (if-let [
-           item (or (model.resource/fetch-by-url (:url params))
+  (if-let [item (or (model.resource/fetch-by-url (:url params))
                     (try
                       (create params)
                       (catch RuntimeException ex)))]
@@ -59,7 +57,7 @@
       (do
         (log/info "recurring")
         (find-or-create params (assoc options :tries (inc tries))))
-      (throw+ "Could not create conversation"))))
+      (throw+ "Could not create resource"))))
 
 (defaction delete
   "Delete the resource"
@@ -67,7 +65,7 @@
   (if-let [item (prepare-delete item)]
     (do (model.resource/delete item)
         item)
-    (throw+ "Could not delete record")))
+    (throw+ "Could not delete resource")))
 
 (defn response->tree
   [response]
@@ -146,7 +144,7 @@
 
 (defaction discover
   [item]
-  (log/debugf "discovering resource: %s" item)
+  (log/debugf "discovering resource: %s" (prn-str item))
   (let [response (update* item)]
     (model.resource/fetch-by-id (:_id item))))
 
