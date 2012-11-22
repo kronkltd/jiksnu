@@ -73,9 +73,12 @@
   (let [resource (model/get-resource url)
         response (model/update-resource resource)]
     (try
-      (cm/string->document (:body response))
+      (if-let [body (:body response)]
+        (cm/string->document body)
+        (throw+ "Document did not contain any data"))
       (catch RuntimeException ex
-        (log/error "Fetching host meta failed")))))
+        (log/error "Fetching host meta failed")
+        (.printStackTrace ex)))))
 
 (defn fetch-xrd
   [domain url]

@@ -22,7 +22,7 @@
    (fact "when given valid options"
      (fact "and the domain does not already exist"
        (model.domain/drop!)
-       (let [options {:_id (fseq :domain)}]
+       (let [options (prepare-create {:_id (fseq :domain)})]
          (create options) => model/domain?))
      ;; TODO: already exists
      )
@@ -38,7 +38,7 @@
        (delete domain) => nil?))
 
    (fact "when the domain exists"
-     (let [domain (actions.domain/find-or-create (factory :domain))]
+     (let [domain (existance/a-domain-exists)]
        (delete domain) =>
        (every-checker
         #(= domain %)
@@ -48,7 +48,7 @@
    (fact "when there is no url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
-             domain (model.domain/create (factory :domain))
+             domain (existance/a-domain-exists)
              url nil]
          (discover-onesocialweb domain url) => domain)
        (provided
@@ -56,7 +56,7 @@
    (fact "when there is a url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
-             domain (model.domain/create (factory :domain))
+             domain (existance/a-domain-exists)
              url (str "http://" (:_id domain) "/status/users/1")]
          (discover-onesocialweb domain url) => domain)
        (provided
@@ -65,42 +65,39 @@
  (fact "#'discover-webfinger"
    (let [domain (existance/a-domain-exists)
          id      (:_id domain)]
+
      (fact "when there is no url context"
        (let [url (factory/make-uri id "/1")
-             hm-url (factory/make-uri id "/.well-known/host-meta")
-             resource (existance/a-resource-exists {:url hm-url})]
+             hm-url (factory/make-uri id "/.well-known/host-meta")]
          (discover-webfinger domain url) => (contains {:_id id})
          (provided
-           (actions.resource/update* resource) => {:body "<XRD/>"})))
+           (fetch-xrd* hm-url) => (cm/string->document "<XRD/>"))))
+
      (fact "when there is a url context"
        (let [url     (format "http://%s/status/users/1"                     id)
              hm-bare (format "http://%s/.well-known/host-meta"              id)
              hm1     (format "http://%s/status/.well-known/host-meta"       id)
-             hm2     (format "http://%s/status/users/.well-known/host-meta" id)
-             resource      (model/get-resource url)
-             resource-bare (model/get-resource hm-bare)
-             resource1     (model/get-resource hm1)
-             resource2     (model/get-resource hm2)]
+             hm2     (format "http://%s/status/users/.well-known/host-meta" id)]
          (fact "and the bare domain has a host-meta"
            (discover-webfinger domain url) => (contains {:_id id})
            (provided
-             (actions.resource/update* resource-bare) => {:body "<XRD/>"}))
+             (fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
          (fact "and the bare domain does not have a host meta"
            (fact "and none of the subpaths have host metas"
              (fact "should raise an exception"
                (discover-webfinger domain url) => (throws RuntimeException)
                (provided
-                 (actions.resource/update* resource-bare) => {:body nil}
-                 (actions.resource/update* resource1) => {:body nil}
-                 (actions.resource/update* resource2) => {:body nil})))
+                 (fetch-xrd* hm-bare) => nil
+                 (fetch-xrd* hm1)     => nil
+                 (fetch-xrd* hm2)     => nil)))
            (fact "and one of the subpaths has a host meta"
              (fact "should update the host meta path"
                ;; FIXME: this isn't being checked
                (discover-webfinger domain url) => (contains {:_id id})
                (provided
-                 (actions.resource/update* resource-bare) => {:body nil}
-                 (actions.resource/update* resource1) => {:body nil}
-                 (actions.resource/update* resource2) => {:body "<XRD/>"}))))))))
+                 (fetch-xrd* hm-bare) => nil
+                 (fetch-xrd* hm1)     => nil
+                 (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")))))))))
 
  (fact "#'get-user-meta-url"
    (fact "when the domain doesn't exist"
