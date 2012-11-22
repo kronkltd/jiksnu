@@ -525,9 +525,7 @@
                 { :data-id (:_id activity)}))
    [:td
     (bind-to "author"
-      (let [user (if *dynamic*
-                   (User.)
-                   (actions.activity/get-author activity))]
+      (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
         (show-section-minimal user)))]
    [:td (when *dynamic*
           {:data-bind "text: object['object-type']"})
@@ -708,7 +706,7 @@
 
     ;; TODO: test for the presence of a like
     :favorited false
-    :user (let [user (actions.activity/get-author activity)]
+    :user (let [user (model.activity/get-author activity)]
             (show-section user))
     :statusnet_html (:content activity)}
    (when-let [conversation (first (:conversation-uris activity))]

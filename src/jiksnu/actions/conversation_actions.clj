@@ -21,12 +21,12 @@
   [conversation]
   (-> conversation
       transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time
       transforms.conversation/set-url
       transforms.conversation/set-domain
       transforms.conversation/set-local
-      transforms.conversation/set-update-source
-      transforms/set-updated-time
-      transforms/set-created-time))
+      transforms.conversation/set-update-source))
 
 (defn prepare-delete
   ([item]
@@ -47,9 +47,7 @@
     (model.conversation/delete item)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation
-                      ;; :sort-clause {:url 1}
-                      ))
+  (model/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
   [& [params & [options]]]

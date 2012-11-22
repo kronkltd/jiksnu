@@ -80,7 +80,7 @@
   "Process a salmon envelope in the context of a user"
   [user envelope]
   (if-let [activity (extract-activity envelope)]
-    (if-let [actor (actions.activity/get-author activity)]
+    (if-let [actor (model.activity/get-author activity)]
       (if-let [pub-key (get-key actor)]
         (if (or (signature-valid? envelope pub-key)
                 (when (not (config :salmon :verify))

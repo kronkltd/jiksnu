@@ -121,7 +121,7 @@
        (let [envelope (-> (valid-envelope-stream) stream->envelope)
              user (-> envelope
                       extract-activity
-                      actions.activity/get-author)]
+                      model.activity/get-author)]
          (actions.user/discover user)
          (let [sig (:sig envelope)
                n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0="

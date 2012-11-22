@@ -31,13 +31,6 @@
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
 
-;; Since every activity requires an author, might want to throw an
-;; exception here.
-(defn get-author
-  "Fetch the author of the activity"
-  [activity]
-  (model.user/fetch-by-id (:author activity)))
-
 (defn parse-reply-to
   "extract the ref value of a link and set that as a parent id
 
@@ -325,7 +318,7 @@ serialization"
             :title (:title activity)
             :url (:url activity)
             :html (:content activity)}
-           (let [author (get-author activity)]
+           (let [author (model.activity/get-author activity)]
              {:author_name (:name author)
               :author_url (:uri author)}))))
 
