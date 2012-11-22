@@ -1,7 +1,7 @@
 (ns jiksnu.model.feed-source
   (:use [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
+        [validateur.validation :only [acceptance-of validation-set presence-of]])
   (:require [clj-statsd :as s]
             [clj-time.core :as time]
             [clojure.string :as string]
@@ -19,6 +19,8 @@
   (validation-set
    (presence-of :_id)
    (presence-of :topic)
+   (presence-of :domain)
+   (acceptance-of :local         :accept (partial instance? Boolean))
    (presence-of :status)
    (presence-of :created)
    (presence-of :updated)))
