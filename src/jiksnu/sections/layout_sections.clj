@@ -294,6 +294,8 @@
            (str (when (:title response)
                   (str (:title response) " - "))
                 (config :site :name)))]
+        [:meta {:name "viewport"
+                :content "width=device-width, initial-scale=1.0"}]
         (let [theme (config :site :theme)]
           (p/include-css
            (format "/assets/themes/%s/bootstrap.min.css" theme)
