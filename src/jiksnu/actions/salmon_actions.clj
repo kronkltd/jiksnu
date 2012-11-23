@@ -12,6 +12,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.net.URI

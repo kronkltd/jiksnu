@@ -261,7 +261,7 @@
 (defn async-op
   [ch params]
   (let [p (promise)]
-    (log/infof "enqueuing %s << %s" ch params)
+    (log/infof "enqueuing %s << %s" ch (prn-str params))
     (l/enqueue ch [p params])
     (or (deref p default-timeout nil)
         (throw+ "timeout"))))

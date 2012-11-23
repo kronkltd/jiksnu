@@ -17,6 +17,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.session :as session]
@@ -138,7 +139,11 @@
 
 (defn process-feed
   [source feed]
-  (let [feed-title (.getTitle feed)]
+  (let [feed-title (.getTitle feed)
+        author (abdera/get-feed-author feed)]
+    (when author
+      (log/spy (actions.user/person->user author))
+      )
     (when-not (= feed-title (:title source))
       (model.feed-source/set-field! source :title feed-title))
     ;; TODO: This should be automatic for any transformation

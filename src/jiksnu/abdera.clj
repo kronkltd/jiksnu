@@ -180,12 +180,16 @@ this is for OSW
   [^Entry entry]
   (map parse-link (.getLinks entry)))
 
-(defn get-author
+
+(defn get-feed-author
+  [^Feed feed]
+  (if feed (first (.getAuthors feed))))
+
+(defn ^Person get-author
   [^Entry entry feed]
   (or
-   ;; (.getActor entry)
    (.getAuthor entry)
-   (if feed (first (.getAuthors feed)))
+   (get-feed-author feed)
    (if-let [source (.getSource entry)]
      (first (.getAuthors source)))))
 
