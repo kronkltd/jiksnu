@@ -14,6 +14,7 @@
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
+            [lamina.time :as time]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -250,18 +251,29 @@
 
 ;; async fetchers
 
-(defonce pending-conversations (l/permanent-channel))
-(defonce pending-create-conversations (l/permanent-channel))
-(defonce pending-sources       (l/permanent-channel))
-(defonce pending-resources     (l/permanent-channel))
-(defonce pending-update-resources (l/permanent-channel))
+(defonce pending-conversations (l/channel*
+                                :permanent? true
+                                :description "pending-conversations"))
+(defonce pending-create-conversations (l/channel*
+                                       :permanent? true
+                                       :description "pending-create-conversations"))
+(defonce pending-sources (l/channel*
+                          :permanent? true
+                          :description "pending-sources"))
+(defonce pending-resources (l/channel*
+                            :permanent? true
+                            :description "pending-resources"))
+(defonce pending-update-resources (l/channel*
+                                   :permanent? true
+                                   :description "pending-update-resources"))
 
-(def default-timeout 5000)
+(def default-timeout (time/minutes 5))
 
 (defn async-op
   [ch params]
-  (let [p (promise)]
-    (log/infof "enqueuing %s << %s" ch (prn-str params))
+  (let [p (promise)
+        description (lamina.core.utils/description (lamina.core.channel/receiver-node ch))]
+    (log/infof "enqueuing #<Channel \"%s\"> << %s" description (prn-str params))
     (l/enqueue ch [p params])
     (or (deref p default-timeout nil)
         (throw+ "timeout"))))
