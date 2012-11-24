@@ -70,7 +70,7 @@
         ;; jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
-  :hooks [leiningen.cljsbuild]
+  ;; :hooks [leiningen.cljsbuild]
   :cljsbuild {:repl-listen-port 9001
               :builds
               [

@@ -2,12 +2,14 @@
   (:use [jiksnu.action-helpers :only [expand-url]]
         [jiksnu.existance-helpers :only [a-user-exists my-password]]
         [jiksnu.referrant :only [get-this get-that]]
+        [midje.sweet :only [fact =not=> throws]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]))
+            [jiksnu.session :as session])
+  (:import org.openqa.selenium.ElementNotVisibleException))
 
 (defn do-click-button
   [class-name]
@@ -25,10 +27,16 @@
 (defn do-click-button-for-that-type
   [button-name type]
   (if-let [record (get-that type)]
-    (let [button (webdriver/find-element-under
-                  (str "*[data-id='" (:_id record) "']")
+    (let [id (:_id record)
+          selector (format "[data-id='%s']" id)
+          button (webdriver/find-element-under
+                  selector
                   (webdriver.core/by-class-name (str button-name "-button")))]
-      (webdriver/click button))
+      (fact
+        (try (webdriver/click button)
+             (catch ElementNotVisibleException ex
+               (throw+ (format "could not find button %s under context %s"
+                               button-name selector)))) =not=> (throws)))
     (throw+ (format "Could not find 'that' record for %s" type))))
 
 (defn do-click-link
