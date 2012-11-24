@@ -35,7 +35,8 @@ Scenario: Posting an activity, unauthenticated
 
 Scenario: Posting an activity, normal user
   Given I am logged in
+  And there are no activities
   And I am at the "home" page
   When I type "foobar" into the "content" field
   And I submit that form
-  Then that activity should be created
+  Then there should be 1 activity

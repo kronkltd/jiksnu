@@ -61,7 +61,7 @@
 (defmacro check-response
   [& body]
   `(and (not (fact ~@body))
-        #_(throw (RuntimeException. "failed"))))
+        (throw (RuntimeException. "failed"))))
 
 (defn log-response
   []

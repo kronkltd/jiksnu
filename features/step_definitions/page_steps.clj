@@ -7,6 +7,8 @@
 (use 'jiksnu.request-helpers)
 (use 'jiksnu.response-helpers)
 (use 'clj-webdriver.taxi)
+(use 'midje.sweet)
+(use 'jiksnu.referrant)
 (require '[jiksnu.model.activity :as model.activity])
 (require '[clojure.tools.logging :as log])
 
@@ -53,6 +55,9 @@
 
 (Given #"^I am not logged in$" []
        (am-not-logged-in))
+
+(Given #"^there are no activities" []
+       (model.activity/drop!))
 
 (Given #"^there is a (.+) activity$" [type]
        (there-is-an-activity {:modifier type}))
@@ -264,6 +269,12 @@
       (response-should-be-sucsessful))
 
 (Then #"^that activity should be created$" []
+      (check-response
+       (let [activity (get-that :activity)
+             id (:_id activity)]
+         (model.activity/fetch-by-id id) => truthy)))
+
+(Then #"^there should be (\d+) activity" [n]
       (check-response
        (model.activity/count-records) => 1))
 
