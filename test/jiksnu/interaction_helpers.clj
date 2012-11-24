@@ -4,8 +4,10 @@
         [jiksnu.referrant :only [get-this get-that]]
         [midje.sweet :only [fact =not=> throws]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clj-webdriver.taxi :as webdriver]
+  (:require [clj-http.client :as client]
+            [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session])
@@ -59,13 +61,22 @@
   []
   (do-enter-field (:username (get-this :user)) "username"))
 
+(defn do-http-login
+  [username password]
+  (client/post (expand-url "/main/login")
+               {:form-params {"username" username
+                              "password" password}}))
+
 (defn do-login
   []
-  (webdriver/to (expand-url "/main/login"))
-
-  (do-enter-username)
-  (do-enter-password)
-  (webdriver/click "input[type='submit']")
+  (let [response (do-http-login (:username (get-this :user)) @my-password)]
+    (if-let [cookies (seq (:cookies response))]
+            (doseq [[n m] cookies]
+              (let [cookie {:name n
+                            :value (:value m)
+                            :path (:path m)}]
+                (webdriver/add-cookie cookie)))
+            (throw+ "Does not contain any cookies")))
   (session/set-authenticated-user! (get-this :user)))
 
 (defn a-normal-user-is-logged-in
