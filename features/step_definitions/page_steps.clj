@@ -16,11 +16,6 @@
                     (before-hook))))
 
 
-(alter-var-root #'cucumber.runtime.clj/-disposeWorld
-                (fn [_]
-                  (fn [_]
-                    (after-hook))))
-
 ;; Given
 
 ;; (Given #"^a domain exists$" []

@@ -151,7 +151,7 @@
 
   :plugins [[lein-cljsbuild "0.2.7"]
             [codox "0.6.1"]
-            [lein-cucumber "1.0.0"]  
+            [lein-cucumber "1.0.1"]
             [lein-lesscss "1.2"]
             [lein-midje "2.0.0-SNAPSHOT"]]
   )
