@@ -67,7 +67,7 @@
 
 (defn am-not-logged-in
   []
-  nil)
+  (webdriver/delete-all-cookies))
 
 (defn an-admin-is-logged-in
   []
