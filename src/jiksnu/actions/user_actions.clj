@@ -345,7 +345,6 @@
 (defaction update-usermeta
   "Retreive user information from webfinger"
   [user]
-  (log/info "updating usermeta")
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)

@@ -74,7 +74,6 @@
 
 (defn a-remote-user-exists
   [& [options]]
-  (log/info "another user")
   (let [domain (or (:domain options)
                    (get-that :domain)
                    (a-domain-exists))
