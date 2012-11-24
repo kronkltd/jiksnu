@@ -67,16 +67,22 @@
                {:form-params {"username" username
                               "password" password}}))
 
+(defonce user-cookies (ref {}))
+
 (defn do-login
   []
-  (let [response (do-http-login (:username (get-this :user)) @my-password)]
-    (if-let [cookies (seq (:cookies response))]
-            (doseq [[n m] cookies]
-              (let [cookie {:name n
-                            :value (:value m)
-                            :path (:path m)}]
-                (webdriver/add-cookie cookie)))
-            (throw+ "Does not contain any cookies")))
+  (if-let [cookies (or (seq @user-cookies)
+                    (let [response (do-http-login (:username (get-this :user)) @my-password)]
+                      (seq (:cookies response))))]
+    (do
+      (dosync
+       (ref-set user-cookies cookies))
+      (doseq [[n m] cookies]
+       (let [cookie {:name n
+                     :value (:value m)
+                     :path (:path m)}]
+         (webdriver/add-cookie cookie))))
+    (throw+ "Does not contain any cookies"))
   (session/set-authenticated-user! (get-this :user)))
 
 (defn a-normal-user-is-logged-in
