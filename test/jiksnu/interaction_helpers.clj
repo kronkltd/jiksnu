@@ -87,7 +87,7 @@
 
 (defn a-normal-user-is-logged-in
   []
-  (a-user-exists)
+  ;; (a-user-exists)
   (do-login))
 
 (defn am-not-logged-in
