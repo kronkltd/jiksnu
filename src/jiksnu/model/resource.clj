@@ -45,13 +45,14 @@
   (first (model/rel-filter rel (:links item) content-type)))
 
 (defn set-field!
-  "Updates resource's field to value"
+  "Updates item's field to value"
   [item field value]
-  (log/debugf "setting %s (%s = %s)" (:_id item) field value)
-  (s/increment "resources field set")
-  (mc/update collection-name
-             {:_id (:_id item)}
-             {:$set {field value}}))
+  (when-not (= (get item field) value)
+    (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+    (s/increment (str collection-name " field set"))
+    (mc/update collection-name
+      {:_id (:_id item)}
+      {:$set {field value}})))
 
 (defn fetch-by-id
   [id]

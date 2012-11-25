@@ -157,13 +157,14 @@
             (.getDomain jid)))
 
 (defn set-field!
-  "Updates user's field to value"
-  [user field value]
-  (log/debugf "setting %s (%s = %s)" (:_id user) field value)
-  (s/increment "users field set")
-  (mc/update collection-name
-             {:_id (:_id user)}
-             {:$set {field value}}))
+  "Updates item's field to value"
+  [item field value]
+  (when-not (= (get item field) value)
+    (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+    (s/increment (str collection-name " field set"))
+    (mc/update collection-name
+      {:_id (:_id item)}
+      {:$set {field value}})))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
