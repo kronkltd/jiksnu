@@ -63,9 +63,8 @@
                  [slingshot "0.10.3"]]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [
-        jiksnu.model
         jiksnu.xmpp.plugin
-        jiksnu.xmpp.channels
+        ;; jiksnu.xmpp.channels
         jiksnu.xmpp.user-repository
         ]
   :hooks [leiningen.cljsbuild]
