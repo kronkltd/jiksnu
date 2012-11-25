@@ -1,7 +1,8 @@
-(ns jiksnu.xmpp.user-repository
+(ns jiksnu.xmpp.impl.user-repository
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]])
+        [ciste.sections.default :only [show-section]]
+        jiksnu.xmpp.user-repository)
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clojure.stacktrace :as stacktrace]
@@ -13,6 +14,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
+            [lamina.core :as l]
             [monger.collection :as mc])
   (:import tigase.db.AuthorizationException
            tigase.db.AuthRepository
@@ -57,7 +59,7 @@
    ks def))
 
 (defn handle-add-user
-  [[result ^BareJID bare password]]
+  [[result [^BareJID bare password]]]
   (log/info "add user")
   (deliver result
            (let [username (.getLocalpart bare)
@@ -67,43 +69,46 @@
                (if domain
                  (when-not (#{"vhost-manager"} domain)
                    (actions.domain/get-discovered domain))
-                 (throw (RuntimeException. "Could not find domain")))))))
+                 #_(throw (RuntimeException. "Could not find domain")))))))
 
 (defn handle-count-users
   [[result domain]]
-  (if domain
-    (model.user/count-records {:domain domain})
-    (model.user/count-records)))
+  (deliver result
+           (if domain
+             (model.user/count-records {:domain domain})
+             (model.user/count-records))))
 
-(defn handle-othr-auth
+(defn handle-other-auth
   [[result props]]
-    (if-let [user (let [mech (.get props AuthRepository/MACHANISM_KEY)]
-                  (if (= mech "PLAIN")
-                    (let [data (.get props "data")
-                          [_ username password] (string/split (String. (model.key/decode data) "UTF-8") #"\u0000")]
-                      (if-let [user (model.user/get-user username)]
-                        (actions.auth/login user password)
-                        (log/warnf "Could not find user with username: %s" username)))))]
-    (do
-      (.put props "result" nil)
-      (.put props "user-id" (tigase/bare-jid (:username user) (:domain user)))
-      true)))
+  (deliver result
+           (if-let [user (let [mech (.get props AuthRepository/MACHANISM_KEY)]
+                           (if (= mech "PLAIN")
+                             (let [data (.get props "data")
+                                   [_ username password] (string/split (String. (model.key/decode data) "UTF-8") #"\u0000")]
+                               (if-let [user (model.user/get-user username)]
+                                 (actions.auth/login user password)
+                                 (log/warnf "Could not find user with username: %s" username)))))]
+             (do
+               (.put props "result" nil)
+               (.put props "user-id" (tigase/bare-jid (:username user) (:domain user)))
+               true))))
 
 (defn handle-get-data
   [[result [^BareJID user-id ^String subnode ^String key ^String def]]]
-  (try
-       (log/infof "get data - %s - %s" subnode key)
-       (let [user (find-user user-id)
-             ks (key-seq subnode key)]
-         (get-data user ks def))
-       (catch Exception ex
-         (log/error ex)
-         (stacktrace/print-cause-trace ex))))
+  (deliver result
+           (try
+             (log/infof "get data - %s - %s" subnode key)
+             (let [user (find-user user-id)
+                   ks (key-seq subnode key)]
+               (get-data user ks def))
+             (catch Exception ex
+               (log/error ex)
+               (stacktrace/print-cause-trace ex)))))
 
 (defn handle-user-exists
   [result [user]]
-    (log/info "user exists")
-  (not (nil? (model.user/fetch-by-jid user))))
+  (log/info "user exists")
+  (deliver result (not (nil? (model.user/fetch-by-jid user)))))
 
 
 (l/receive-all add-user-ch handle-add-user)
