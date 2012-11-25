@@ -81,7 +81,7 @@
       (if-let [links (get-links xrd)]
         ;; TODO: These should call actions
         (do (model.domain/add-links domain links)
-            (model.domain/set-discovered domain))
+            (actions.domain/set-discovered! domain))
         (log/error "Host meta does not have any links"))
       (log/error
        (str "Could not find host meta for domain: " (:_id domain))))))
