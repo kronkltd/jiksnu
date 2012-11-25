@@ -202,9 +202,9 @@
       (config :site :name)]
      ;; (navbar-search-form)
      [:ul.nav.pull-right (sections.auth/login-section response)]
-     [:div.navbar-text.connection-info.pull-right]
-     [:div.navbar-text.pull-right
-      (if *dynamic* "dynamic" "static")]]]])
+     #_[:div.navbar-text.connection-info.pull-right]
+     #_[:div.navbar-text.pull-right
+        (if *dynamic* "dynamic" "static")]]]])
 
 (defn links-section
   [request response]
@@ -294,6 +294,8 @@
            (str (when (:title response)
                   (str (:title response) " - "))
                 (config :site :name)))]
+        [:meta {:name "viewport"
+                :content "width=device-width, initial-scale=1.0"}]
         (let [theme (config :site :theme)]
           (p/include-css
            (format "/assets/themes/%s/bootstrap.min.css" theme)

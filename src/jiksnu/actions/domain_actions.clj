@@ -4,7 +4,6 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
-        [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -15,6 +14,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.domain-transforms :as transforms.domain]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -26,9 +27,10 @@
 (defn prepare-create
   [domain]
   (-> domain
-      model.domain/set-discovered
-      set-created-time
-      set-updated-time))
+      transforms.domain/set-local
+      transforms.domain/set-discovered
+      transforms/set-created-time
+      transforms/set-updated-time))
 
 (defn prepare-delete
   ([domain]
@@ -69,11 +71,14 @@
 (defn fetch-xrd*
   [url]
   (let [resource (model/get-resource url)
-        response (actions/invoke-action "resource" "update*" (str (:_id resource)))]
+        response (model/update-resource resource)]
     (try
-      (cm/string->document (:body (:body response)))
+      (if-let [body (:body response)]
+        (cm/string->document body)
+        (throw+ "Document did not contain any data"))
       (catch RuntimeException ex
-        (log/error "Fetching host meta failed")))))
+        (log/error "Fetching host meta failed")
+        (.printStackTrace ex)))))
 
 (defn fetch-xrd
   [domain url]
@@ -172,9 +177,9 @@
     (model.domain/create domain)))
 
 (defn find-or-create
-  [domain]
-  (or (model.domain/fetch-by-id (:_id domain))
-      (create domain)))
+  [params]
+  (or (model.domain/fetch-by-id (:_id params))
+      (create params)))
 
 (defn find-or-create-for-url
   "Return a domain object that matche the domain of the provided url"
@@ -211,7 +216,6 @@
         (filter #(= (:rel %) "lrdd"))
         (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
         first))
-
 
 (defaction host-meta
   []

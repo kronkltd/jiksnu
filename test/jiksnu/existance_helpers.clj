@@ -5,6 +5,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -74,7 +75,6 @@
 
 (defn a-remote-user-exists
   [& [options]]
-  (log/info "another user")
   (let [domain (or (:domain options)
                    (get-that :domain)
                    (a-domain-exists))
@@ -95,10 +95,12 @@
                    (get-this :domain)
                    (a-domain-exists))
         resource (or (:resource options)
-                     (a-resource-exists {:domain domain}))
+                     (a-resource-exists {:url (make-uri (:_id domain) (str (fseq :path) ".atom"))
+                                         :domain domain}))
         source (actions.feed-source/create
                 (factory :feed-source
                          {:resource (:_id resource)
+                          :domain (:_id domain)
                           :topic (:url resource)
                           :hub (make-uri (:_id domain) "/push/hub")}))]
     (set-this :feed-source source)
@@ -106,14 +108,19 @@
 
 (defn a-record-exists
   [type & [opts]]
-  (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
-                               (name type)))]
-    (require ns-sym)
-    (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
-      (when-let [record (create-fn (factory type opts))]
-        (set-this type record)
-        record)
-      (throw+ (format "could not find %s/create" ns-sym)))))
+  (let [specialized-name (format "a-%s-exists" (name type))
+        ;; FIXME: This is reporting a user for some reason
+        specialized-var (ns-resolve (the-ns 'jiksnu.existance-helpers) (symbol specialized-name))]
+    (if specialized-var
+      (apply specialized-var opts)
+      (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
+                                   (name type)))]
+        (require ns-sym)
+        (if-let [create-fn (ns-resolve (the-ns ns-sym) 'create)]
+          (when-let [record (create-fn (factory type opts))]
+            (set-this type record)
+            record)
+          (throw+ (format "could not find %s/create" ns-sym)))))))
 
 (defn a-conversation-exists
   [& [options]]
@@ -122,10 +129,12 @@
                    (a-domain-exists))
         source (or (:update-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))]
-    (a-record-exists :conversation {:domain (:_id domain)
-                                    :update-source (:_id source)})))
-
+                   (a-feed-source-exists))
+        conversation (actions.conversation/create
+                      (factory :conversation {:domain (:_id domain)
+                                              :update-source (:_id source)}))]
+    (set-this :conversation conversation)
+    conversation))
 
 (defn activity-gets-posted
   [& [options]]
@@ -140,16 +149,20 @@
 (defn there-is-an-activity
   [& [options]]
   (let [modifier (:modifier options "public")
-        user (or (:user options) (get-this :user) (a-user-exists))
+        domain (or (:domain options) (a-domain-exists))
+        user (or (:user options) (get-this :user) (a-user-exists {:domain domain}))
         source (or (:feed-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))
+                   (a-feed-source-exists {:domain domain}))
         conversation (or (:conversation options)
-                         (a-conversation-exists))
+                         (a-conversation-exists {:source source}))
+        resource (or (:resource options)
+                     (a-resource-exists {:domain domain}))
         activity (session/with-user user
                    (actions.activity/create
                     (factory :activity
                              {:author (:_id user)
+                              :id (:url resource)
                               :update-source (:_id source)
                               :conversation (:_id conversation)
                               ;; :local true

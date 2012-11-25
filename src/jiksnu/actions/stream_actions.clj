@@ -119,7 +119,6 @@
 
 (defn stream-handler
   [request]
-  (log/info "Openening connection stream")
   (let [stream (l/channel)]
     (l/siphon
      (->> ciste.core/*actions*
@@ -127,7 +126,6 @@
           (l/map* format-message)
           (l/map* (fn [m] (str m "\r\n"))))
      stream)
-    (log/debug "stream set up")
     {:status 200
      :headers {"content-type" "application/json"}
      :body stream}))

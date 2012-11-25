@@ -12,6 +12,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.net.URI
@@ -80,7 +81,7 @@
   "Process a salmon envelope in the context of a user"
   [user envelope]
   (if-let [activity (extract-activity envelope)]
-    (if-let [actor (actions.activity/get-author activity)]
+    (if-let [actor (model.activity/get-author activity)]
       (if-let [pub-key (get-key actor)]
         (if (or (signature-valid? envelope pub-key)
                 (when (not (config :salmon :verify))

@@ -4,7 +4,6 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
@@ -20,6 +19,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
+            [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [lamina.core :as l]
             [monger.collection :as mc])
@@ -30,13 +30,6 @@
            org.apache.abdera2.model.Element))
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
-
-;; Since every activity requires an author, might want to throw an
-;; exception here.
-(defn get-author
-  "Fetch the author of the activity"
-  [activity]
-  (model.user/fetch-by-id (:author activity)))
 
 (defn parse-reply-to
   "extract the ref value of a link and set that as a parent id
@@ -109,14 +102,14 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn prepare-create
   [activity]
   (-> activity
-      set-_id
+      transforms/set-_id
       transforms.activity/set-title
       transforms.activity/set-object-id
       transforms.activity/set-public
       transforms.activity/set-remote
       transforms.activity/set-tags
-      set-created-time
-      set-updated-time
+      transforms/set-created-time
+      transforms/set-updated-time
       transforms.activity/set-object-type
       transforms.activity/set-parent
       transforms.activity/set-url
@@ -325,7 +318,7 @@ serialization"
             :title (:title activity)
             :url (:url activity)
             :html (:content activity)}
-           (let [author (get-author activity)]
+           (let [author (model.activity/get-author activity)]
              {:author_name (:name author)
               :author_url (:uri author)}))))
 

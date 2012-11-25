@@ -1,5 +1,6 @@
 (ns jiksnu.routes.xmpp-routes
-  (:use [ciste.routes :only [escape-route]])
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.routes :only [escape-route]])
   (:require [clojure.string :as string]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
@@ -8,7 +9,8 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.sub]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.namespace :as ns]))
+            [jiksnu.namespace :as ns]
+            [jiksnu.xmpp.plugin :as plugin]))
 
 (def xmpp-routes
   (map
@@ -107,3 +109,6 @@
     #_[{:method :result
         :pubsub false} #'actions.domain/ping-response]]))
 
+(definitializer
+  (dosync
+   (ref-set plugin/xmpp-routes xmpp-routes)))

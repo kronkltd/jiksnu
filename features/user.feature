@@ -58,10 +58,10 @@ Scenario: User index delete button, authenticated
 #   And that user should be deleted
 #   And I should be at the "user index" page
 
-Scenario: User index subscribe button, unauthenticated
-  Given I am not logged in
-  And another user exists
-  When I go to the "user index" page
-  And I click the "subscribe" button for that user
-  Then I should be at the "ostatus subscription" page
+# Scenario: User index subscribe button, unauthenticated
+#   Given I am not logged in
+#   And another user exists
+#   When I go to the "user index" page
+#   And I click the "subscribe" button for that user
+#   Then I should be at the "ostatus subscription" page
 

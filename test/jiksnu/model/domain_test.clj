@@ -1,37 +1,32 @@
 (ns jiksnu.model.domain-test
   (:use [clj-factory.core :only [factory]]
-        [clj-tigase.element :only [element?]]
-        [clj-tigase.packet :only [packet?]]
-        [midje.sweet :only [fact => contains every-checker]]
+        [midje.sweet :only [=> contains every-checker fact]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model.domain :only [create drop! ping-request
                                     pending-domains-key]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
-            [jiksnu.actions.domain-actions :as actions.domain])
+  (:require [clj-tigase.element :as e]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.existance-helpers :as existance]
+            [jiksnu.model :as model])
   (:import jiksnu.model.Domain))
-
 
 (test-environment-fixture
  
- (fact "ping-request"
-   (fact "should return a ping packet"
-     (drop!)
-     (let [domain (create (factory :domain))]
-       (ping-request domain) => (contains {:body element?}))))
+ (fact "#'ping-request"
+   (drop!)
+   (let [domain (existance/a-domain-exists)]
+     (ping-request domain) => (contains {:body e/element?})))
 
  (fact "pending-domains-key"
    (fact "should return a key name"
      (drop!)
-     (let [domain (create (factory :domain))]
+     (let [domain (existance/a-domain-exists)]
        (pending-domains-key domain) => string?)))
 
  (fact "#'create"
-   (create (factory :domain)) =>
+   (create (actions.domain/prepare-create (factory :domain))) =>
    (every-checker
-    (partial instance? Domain)
-    )
-           
-   )
+    (partial instance? Domain)))
 
  )

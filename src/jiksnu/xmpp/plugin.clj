@@ -1,12 +1,11 @@
 (ns jiksnu.xmpp.plugin
   (:use [ciste.config :only [config]]
-        ciste.routes
-        jiksnu.model
-        jiksnu.routes)
+        [ciste.routes :only [resolve-routes lazier]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [jiksnu.routes.xmpp-routes :as routes.xmpp])
+            [jiksnu.model :as model]
+            [jiksnu.predicates :as predicates])
   (:import java.util.Queue
            tigase.server.Packet
            tigase.xmpp.JID
@@ -41,11 +40,13 @@
   (log/debug (str "offering packet: " packet))
   (.offer queue packet))
 
+(defonce xmpp-routes (ref []))
+
 (defn main-handler
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
                                :format :xmpp} request)
-        route-fn (resolve-routes [xmpp-predicates] (lazier routes.xmpp/xmpp-routes))]
+        route-fn (resolve-routes [predicates/xmpp] (lazier @xmpp-routes))]
     (route-fn merged-request)))
 
 (defn -process
