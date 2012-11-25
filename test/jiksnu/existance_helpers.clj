@@ -5,6 +5,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -107,9 +108,9 @@
 
 (defn a-record-exists
   [type & [opts]]
-  (let [specialized-name (format "a-%s-exists" type)
-        specialized-var (resolve (symbol specialized-name))
-        ]
+  (let [specialized-name (format "a-%s-exists" (name type))
+        ;; FIXME: This is reporting a user for some reason
+        specialized-var (ns-resolve (the-ns 'jiksnu.existance-helpers) (symbol specialized-name))]
     (if specialized-var
       (apply specialized-var opts)
       (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
@@ -128,10 +129,12 @@
                    (a-domain-exists))
         source (or (:update-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))]
-    (a-record-exists :conversation {:domain (:_id domain)
-                                    :update-source (:_id source)})))
-
+                   (a-feed-source-exists))
+        conversation (actions.conversation/create
+                      (factory :conversation {:domain (:_id domain)
+                                              :update-source (:_id source)}))]
+    (set-this :conversation conversation)
+    conversation))
 
 (defn activity-gets-posted
   [& [options]]

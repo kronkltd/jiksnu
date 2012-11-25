@@ -59,12 +59,12 @@
 
 (compojure/defroutes all-routes
   (compojure/GET "/api/help/test.json" _ "OK")
-  (jm/wrap-authentication-handler
-   (compojure/ANY "/admin*" request
-                  (if (session/is-admin?)
-                    ((resolve-routes [predicates/http] routes.admin/admin-routes) request)
-                    ;; TODO: move this somewhere else
-                    (throw+ {:type :authentication :message "Must be admin"}))))
+  (compojure/ANY "/admin*" request
+                 (if (session/is-admin?)
+                   ((middleware/wrap-log-request
+                     (resolve-routes [predicates/http] routes.admin/admin-routes)) request)
+                   ;; TODO: move this somewhere else
+                   (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
   (compojure/GET "/websocket" _
@@ -89,7 +89,7 @@
        file-info/wrap-file-info
        jm/wrap-user-binding
        middleware/wrap-http-serialization
-       #_middleware/wrap-log-request
+       middleware/wrap-log-request
        jm/wrap-dynamic-mode
        (handler/site {:session {:store (ms/session-store)}})
        jm/wrap-stacktrace

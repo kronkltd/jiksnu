@@ -32,11 +32,13 @@
 
 (defview #'login :text
   [request user]
-  {:body (format "logged in as %s" (:username user))})
+  {:session {:id (:_id user)}
+   :body (format "logged in as %s" (:username user))})
 
 (defview #'login :json
   [request user]
-  {:body (format "logged in as %s" (:username user))})
+  {:session {:id (:_id user)}
+   :body (format "logged in as %s" (:username user))})
 
 ;; login-page
 

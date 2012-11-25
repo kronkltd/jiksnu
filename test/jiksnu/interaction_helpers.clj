@@ -1,7 +1,7 @@
 (ns jiksnu.interaction-helpers
   (:use [jiksnu.action-helpers :only [expand-url]]
         [jiksnu.existance-helpers :only [a-user-exists my-password]]
-        [jiksnu.referrant :only [get-this get-that]]
+        [jiksnu.referrant :only [get-this get-that set-this]]
         [midje.sweet :only [fact =not=> throws]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-http.client :as client]
@@ -71,19 +71,23 @@
 
 (defn do-login
   []
-  (if-let [cookies (or (seq @user-cookies)
-                    (let [response (do-http-login (:username (get-this :user)) @my-password)]
-                      (seq (:cookies response))))]
-    (do
-      (dosync
-       (ref-set user-cookies cookies))
-      (doseq [[n m] cookies]
-       (let [cookie {:name n
-                     :value (:value m)
-                     :path (:path m)}]
-         (webdriver/add-cookie cookie))))
-    (throw+ "Does not contain any cookies"))
-  (session/set-authenticated-user! (get-this :user)))
+  (let [user (get-this :user)]
+    (if-let [cookies (or (seq @user-cookies)
+                         (do
+                           (log/info "getting new session")
+                           (let [response (do-http-login (:username user) @my-password)]
+                            (seq (:cookies response)))))]
+      (do
+        (dosync
+         (ref-set user-cookies cookies))
+        (doseq [[n m] cookies]
+          (let [cookie {:name n
+                        :value (:value m)
+                        :path (:path m)}]
+            (webdriver/add-cookie cookie))
+          user))
+      (throw+ "Does not contain any cookies")))
+  #_(session/set-authenticated-user! (get-this :user)))
 
 (defn a-normal-user-is-logged-in
   []
@@ -96,11 +100,7 @@
 
 (defn an-admin-is-logged-in
   []
-  (a-user-exists)
-  (-> (get-this :user)
-      (assoc :admin true)
-      actions.user/update
-      session/set-authenticated-user!)
-  (do-login))
-
-
+  (let [user (a-user-exists)]
+    (model.user/set-field! user :admin true)
+    (set-this :user (model.user/fetch-by-id (:_id user)))
+    (do-login)))
