@@ -720,6 +720,15 @@
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
 
+(def post-sections
+  [#'enclosures-section
+   ;; #'links-section
+   #'likes-section
+   #'maps-section
+   #'tags-section
+   #'posted-link-section
+   #'comments-section])
+
 (defsection show-section [Activity :html]
   [activity & _]
   (list
@@ -751,15 +760,7 @@
         (map (fn [irt]
                [:a {:href irt :rel "nofollow"} irt])
              (:irts activity))]
-       (map
-        #(% activity)
-        [enclosures-section
-         ;; links-section
-         likes-section
-         maps-section
-         tags-section
-         posted-link-section
-         comments-section])]])))
+       (map #(% activity) post-sections)]])))
 
 (defsection show-section [Activity :model]
   [activity & [page]]
