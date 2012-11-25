@@ -110,9 +110,7 @@
                      ;; uri is a http uri
                      (actions.user/find-or-create-by-remote-id {:id uri}))]
       (subscribe actor user)
-      (throw+ {:type :validation :message "Could not determine user"
-               ;; TODO: list failed fields
-               }))
+      (throw+ {:type :validation :message "Could not determine user"}))
     (throw+ {:type :authentication :message "must be logged in"})))
 
 (defaction subscribed
@@ -130,7 +128,6 @@
   [user]
   [user (index {:from (:_id user)})])
 
-
 (defaction unsubscribe
   "User unsubscribes from another user"
   [actor target]
@@ -147,6 +144,21 @@
   [subscription]
   (model.subscription/confirm subscription))
 
+(defn setup-delete-hooks*
+  [user]
+  (let [subscriptions (concat
+                       (:items (second (get-subscribers user)))
+                       (:items (second (get-subscriptions user))))]
+    (doseq [subscription subscriptions]
+      (delete subscription))
+    user))
+
+(defn setup-delete-hooks
+  []
+  (dosync
+   (alter actions.user/delete-hooks
+          conj setup-delete-hooks*)))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.subscription-filters"
@@ -154,13 +166,4 @@
     "jiksnu.triggers.subscription-triggers"
     "jiksnu.views.subscription-views"])
 
-  (dosync
-   (alter actions.user/delete-hooks
-          conj
-          (fn [user]
-            (let [subscriptions (concat
-                                 (:items (second (get-subscribers user)))
-                                 (:items (second (get-subscriptions user))))]
-              (doseq [subscription subscriptions]
-                (delete subscription))
-              user)))))
+  (setup-delete-hooks))
