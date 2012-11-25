@@ -37,16 +37,6 @@
   (.newEntry abdera))
 
 
-(defn fetch-resource
-  [uri]
-  (s/increment "feeds fetched")
-  (.get (AbderaClient.) uri))
-
-(defn fetch-feed
-  [uri]
-  (log/debugf "Fetching feed: %s" uri)
-  (.getRoot (fetch-resource uri)))
-
 (defn not-namespace
   "Filter for map entries that do not represent namespaces"
   [[k v]]
@@ -133,21 +123,19 @@ this is for OSW
            (when (seq extensions) {:extensions extensions})
            (when (seq type)       {:type (str type)}))))
 
-
+(defn attr-val
+  [^Element element name]
+  (.getAttributeValue element name))
 
 (defn parse-notice-info
   "extract the notice info from a statusnet element"
   [^Element element]
-  (let [source (.getAttributeValue element "source")
-        local-id (.getAttributeValue element "local_id")
-        source-link (.getAttributeValue element "source_link")]
+  (let [source (attr-val element "source")
+        local-id (attr-val element "local_id")
+        source-link (attr-val element "source_link")]
     {:source source
      :source-link source-link
      :local-id local-id}))
-
-(defn attr-val
-  [^Element element name]
-  (.getAttributeValue element name))
 
 
 
@@ -165,7 +153,7 @@ this is for OSW
      (let [count-qname (QName.
                         "http://purl.org/syndication/thread/1.0"
                         "count" )]
-       (if-let [count-attr (.getAttributeValue link count-qname)]
+       (if-let [count-attr (attr-val link count-qname)]
          (Integer/parseInt count-attr))))
    0))
 
@@ -270,9 +258,6 @@ this is for OSW
   [m]
   (str (make-feed* m)))
 
-
-
-
 (defn parse-stream
   [stream]
   (try
@@ -284,9 +269,6 @@ this is for OSW
 (defn stream->feed
   [stream]
   (.getRoot (parse-stream stream)))
-
-
-
 
 (defn parse-xml-string
   "Converts a string to an Abdera entry"

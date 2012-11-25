@@ -45,10 +45,10 @@
   
   (let [mentioned-domain (.getHost (URI. uri))
         link (model/extract-atom-link uri)
-        mentioned-user-params (-> link
-                                  abdera/fetch-feed
-                                  .getAuthor
-                                  actions.user/person->user)]
+        source (model/get-source link)
+        resource (model/get-resource link)
+        feed (abdera/parse-xml-string (model/update-resource resource))
+        mentioned-user-params (-> feed .getAuthor actions.user/person->user)]
     (actions.user/find-or-create-by-remote-id {:id uri} {})))
 
 (defn create-trigger
