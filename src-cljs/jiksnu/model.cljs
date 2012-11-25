@@ -321,12 +321,13 @@
            (js-obj
             "type" "Conversation"
             "defaults" (js-obj
-                        "uri" nil
-                        "url" nil
-                        "domain" nil
+                        "uri"           nil
+                        "url"           nil
+                        "domain"        nil
                         "update-source" nil
-                        "created" nil
-                        "updated" nil
+                        "lastUpdated"   nil
+                        "created"       nil
+                        "updated"       nil
                         )
             "url" (fn []
                     (this-as this

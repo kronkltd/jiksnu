@@ -100,8 +100,9 @@
     [:tr
      [:th "Id"]
      [:th "Url"]
-     [:th "Created"]
-     [:th "Updated"]]]
+     #_[:th "Created"]
+     [:th "Last Updated"]
+     [:th "Record Updated"]]]
    [:tbody {:data-bind "foreach: $data"}
     (doall (map #(index-line % page) items))]])
 
@@ -116,9 +117,12 @@
           {:data-bind "attr: {href: url}, text: url"})
      (when-not *dynamic*
        (:url item))]]
-   [:td (if *dynamic*
+   #_[:td (if *dynamic*
           {:data-bind "text: created"}
           (:created item))]
+   [:td (if *dynamic*
+          {:data-bind "text: lastUpdated"}
+          (:lastUpdated item))]
    [:td (if *dynamic*
           {:data-bind "text: updated"}
           (:updated item))]

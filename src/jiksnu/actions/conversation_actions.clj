@@ -6,6 +6,7 @@
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
@@ -56,7 +57,9 @@
 (defaction update
   [conversation & [options]]
   (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
-    (actions.feed-source/update source)
+    (do
+      (model.conversation/set-field! conversation :lastUpdated (time/now))
+      (actions.feed-source/update source))
     (throw+ "Could not find update source")))
 
 (defaction discover
