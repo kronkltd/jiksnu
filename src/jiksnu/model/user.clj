@@ -32,15 +32,15 @@
 (def create-validators
   (validation-set
    (presence-of   :_id)
-   (presence-of   :id)
-   (acceptance-of :username   :accept string?)
-   (acceptance-of :domain     :accept string?)
-   (presence-of   :url)
+   (acceptance-of :id           :accept string?)
+   (acceptance-of :username     :accept string?)
+   (acceptance-of :domain       :accept string?)
+   (acceptance-of :url          :accept string?)
    (presence-of   :created)
    (presence-of   :updated)
    (presence-of   :update-source)
    (presence-of   :avatar-url)
-   (acceptance-of :local      :accept (partial instance? Boolean))))
+   (acceptance-of :local         :accept (partial instance? Boolean))))
 
 (defn salmon-link
   [user]
