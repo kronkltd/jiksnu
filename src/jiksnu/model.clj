@@ -254,6 +254,7 @@
 (defonce pending-create-conversations (l/permanent-channel))
 (defonce pending-sources       (l/permanent-channel))
 (defonce pending-resources     (l/permanent-channel))
+(defonce pending-update-resources (l/permanent-channel))
 
 (def default-timeout 5000)
 
@@ -296,6 +297,10 @@
   (let [result (l/result-channel)]
     (l/enqueue pending-resources [url result])
     (l/wait-for-result result 5000)))
+
+(defn update-resource
+  [resource]
+  (async-op pending-update-resources resource))
 
 ;; Database functions
 
