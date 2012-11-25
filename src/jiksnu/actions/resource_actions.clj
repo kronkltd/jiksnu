@@ -126,12 +126,15 @@
                 (add-link item (:attrs link))))))
         (log/infof "unknown content type: %s" content-type)))))
 
+(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
+
 (defn update*
   [item & [options]]
   (if-not (:local item)
     (let [url (:url item)]
       (log/debugf "updating resource: %s" url)
       (let [response (client/get url {:throw-exceptions false
+                                      :headers {"User Agent" user-agent}
                                       :insecure? true})]
         (future
           (process-response item response))
