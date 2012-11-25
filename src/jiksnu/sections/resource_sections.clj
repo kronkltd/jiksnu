@@ -64,11 +64,12 @@
    [:thead
     [:tr
      [:th "Id"]
+     [:th "Domain"]
      [:th "Url"]
      [:th "Status"]
      [:th "Content Type"]
      [:th "Encoding"]
-     [:th "Created"]
+     #_[:th "Created"]
      [:th "Updated"]]]
    [:tbody {:data-bind "foreach: $data"}
     (doall (map #(index-line % page) items))]])
@@ -79,6 +80,9 @@
   [item & [page]]
   [:tr {:data-model "resource"}
    [:td (link-to item)]
+   [:td (if *dynamic*
+          {:data-bind "text: domain"}
+          (:domain item))]
    [:td (if *dynamic*
           {:data-bind "text: url"}
           (:url item))]
@@ -91,7 +95,7 @@
    [:td (if *dynamic*
           {:data-bind "text: encoding"}
           (:encoding item))]
-   [:td (if *dynamic*
+   #_[:td (if *dynamic*
           {:data-bind "text: created"}
           (:created item))]
    [:td (if *dynamic*

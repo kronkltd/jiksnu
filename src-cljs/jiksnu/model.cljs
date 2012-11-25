@@ -164,6 +164,7 @@
             "defaults" (js-obj
                         "url"         nil
                         "title"       nil
+                        "domain"      nil
                         "status"      nil
                         "contentType" nil
                         "encoding"    nil
