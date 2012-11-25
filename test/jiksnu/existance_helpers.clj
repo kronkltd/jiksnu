@@ -94,10 +94,12 @@
                    (get-this :domain)
                    (a-domain-exists))
         resource (or (:resource options)
-                     (a-resource-exists {:domain domain}))
+                     (a-resource-exists {:url (make-uri (:_id domain) (str (fseq :path) ".atom"))
+                                         :domain domain}))
         source (actions.feed-source/create
                 (factory :feed-source
                          {:resource (:_id resource)
+                          :domain (:_id domain)
                           :topic (:url resource)
                           :hub (make-uri (:_id domain) "/push/hub")}))]
     (set-this :feed-source source)
@@ -139,16 +141,20 @@
 (defn there-is-an-activity
   [& [options]]
   (let [modifier (:modifier options "public")
-        user (or (:user options) (get-this :user) (a-user-exists))
+        domain (or (:domain options) (a-domain-exists))
+        user (or (:user options) (get-this :user) (a-user-exists {:domain domain}))
         source (or (:feed-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))
+                   (a-feed-source-exists {:domain domain}))
         conversation (or (:conversation options)
-                         (a-conversation-exists))
+                         (a-conversation-exists {:source source}))
+        resource (or (:resource options)
+                     (a-resource-exists {:domain domain}))
         activity (session/with-user user
                    (actions.activity/create
                     (factory :activity
                              {:author (:_id user)
+                              :id (:url resource)
                               :update-source (:_id source)
                               :conversation (:_id conversation)
                               ;; :local true
