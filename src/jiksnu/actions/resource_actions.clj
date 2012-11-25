@@ -154,10 +154,16 @@
   [item]
   item)
 
-(l/receive-all
- model/pending-resources
- (fn [[url ch]]
-   (l/enqueue ch (find-or-create {:url url}))))
+(defn handle-pending-resources
+  [[url ch]]
+  (l/enqueue ch (find-or-create {:url url})))
+
+(defn handle-pending-update-resources
+  [[p item]]
+  (deliver p (update* item)))
+
+(l/receive-all model/pending-resources        handle-pending-resources)
+(l/receive-all model/pending-update-resources handle-pending-update-resources)
 
 (definitializer
   (model.resource/ensure-indexes)
