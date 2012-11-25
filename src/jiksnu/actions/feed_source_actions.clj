@@ -113,7 +113,11 @@
 (defn get-activities
   "extract the activities from a feed"
   [source feed]
-  (map #(actions.activity/entry->activity % feed source)
+  (keep (fn [entry]
+          (try
+            (actions.activity/entry->activity entry feed source)
+            (catch RuntimeException ex
+              (.printStackTrace ex))))
        (.getEntries feed)))
 
 (defn process-entries
