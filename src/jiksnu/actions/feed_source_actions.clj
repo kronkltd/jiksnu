@@ -35,12 +35,13 @@
 (defn prepare-create
   [source]
   (-> source
-      transforms.feed-source/set-domain
       transforms/set-_id
-      transforms.feed-source/set-status
-      transforms.feed-source/set-resource
       transforms/set-updated-time
-      transforms/set-created-time))
+      transforms/set-created-time
+      transforms.feed-source/set-domain
+      transforms.feed-source/set-local
+      transforms.feed-source/set-status
+      transforms.feed-source/set-resource))
 
 (defaction add-watcher
   [source user]
