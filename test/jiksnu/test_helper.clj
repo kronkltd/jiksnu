@@ -37,5 +37,5 @@
 
      (actions.domain/current-domain)
 
-     (fact ~@body =not=> (throws))
+     (fact (do ~@body) =not=> (throws))
      (stop-application!)))
