@@ -71,9 +71,9 @@
 (defn fetch-xrd*
   [url]
   (let [resource (model/get-resource url)
-        response (actions/invoke-action "resource" "update*" (str (:_id resource)))]
+        response (model/update-resource resource)]
     (try
-      (cm/string->document (:body (:body response)))
+      (cm/string->document (:body response))
       (catch RuntimeException ex
         (log/error "Fetching host meta failed")))))
 
@@ -213,7 +213,6 @@
         (filter #(= (:rel %) "lrdd"))
         (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
         first))
-
 
 (defaction host-meta
   []

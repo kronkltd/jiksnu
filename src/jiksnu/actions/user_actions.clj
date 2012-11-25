@@ -61,7 +61,7 @@
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [url (actions.domain/get-user-meta-url domain id)]
       (let [resource (model/get-resource url)
-            response (model/update-resource url)]
+            response (model/update-resource resource)]
         (cm/string->document (:body response))))))
 
 (defn set-update-source
