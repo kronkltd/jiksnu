@@ -17,7 +17,9 @@
   (if (:domain source)
     source
     (let [uri (URI. (:topic source))
-          domain (actions.domain/get-discovered {:_id (.getHost uri)})]
+          domain-name (.getHost uri)
+          domain (actions.domain/get-discovered
+                  (actions.domain/find-or-create {:_id domain-name}))]
       (assoc source :domain (:_id domain)))))
 
 (defn set-status
