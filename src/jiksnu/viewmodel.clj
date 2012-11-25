@@ -1,13 +1,13 @@
 (ns jiksnu.viewmodel
   (:use [ciste.commands :only [add-command!]]
         [ciste.core :only [defaction]]
-        
-        [jiksnu.routes :only [http-predicates http-routes]]
-        [jiksnu.routes.admin-routes :only [admin-routes]]
         [ciste.filters :only [deffilter filter-action]]
         [ciste.routes :only [resolve-routes]]
         [ciste.views :only [defview]]
-        [clojure.data.json :only [read-json]]))
+        [clojure.data.json :only [read-json]]
+        [jiksnu.predicates :as predicates]
+        [jiksnu.routes :only [http-routes]]
+        [jiksnu.routes.admin-routes :only [admin-routes]]))
 
 (defaction fetch-viewmodel
   [path options]
@@ -16,7 +16,7 @@
                  :params         options
                  :serialization  :http
                  :format         :viewmodel}
-        response ((resolve-routes [http-predicates]
+        response ((resolve-routes [predicates/http]
                                   (concat http-routes
                                           admin-routes))
                   request)]

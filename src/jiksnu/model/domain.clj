@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [presence-of valid? validation-set]])
+        [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
   (:require [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -18,23 +18,17 @@
   [domain]
   (str "http://" (:_id domain) "/.well-known/host-meta"))
 
-(defn host-meta-link
-  [domain]
-  (str "http://" (:_id domain) "/.well-known/host-meta"))
-
 (defn pending-domains-key
   [domain]
   (str "pending.domains." domain))
 
 (def create-validators
   (validation-set
-   (presence-of :_id)))
-
-(defn set-discovered
-  [record]
-  (if (contains? record :discovered)
-    record
-    (assoc record :discovered (:local record))))
+   (presence-of   :_id)
+   (presence-of   :created)
+   (presence-of   :updated)
+   (acceptance-of :local      :accept (partial instance? Boolean))
+   (acceptance-of :discovered :accept (partial instance? Boolean))))
 
 (def delete        (model/make-deleter collection-name))
 (def drop!         (model/make-dropper collection-name))

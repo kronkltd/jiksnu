@@ -32,27 +32,24 @@
    (bind-to "watchers"
      [:table.table
       [:tbody {:data-bind "foreach: $data"}
-       (map
-        (fn [id]
-          (let [user (if *dynamic*
-                       (User.)
-                       (model.user/fetch-by-id id))]
-            [:tr (merge
-                  {:data-model "user"}
-                  #_(if *dynamic*
-                      {:data-bind
-                       (string/join ", "
-                                    ["if: $data"
-                                     "attr: {'data-target': $data}"])}))
-             [:td (link-to user)]
-             [:td
-              (action-link "feed-source" "remove-watcher" (:_id source)
-                           {:target (:_id user)
-                            :icon "trash"
-                            :title "Delete"})]]))
-        (if *dynamic*
-          [""]
-          (:watchers source)))]])])
+       (let [watchers (if *dynamic* [""] (:watchers source))]
+         (map
+          (fn [id]
+            (let [user (if *dynamic* (User.) (model.user/fetch-by-id id))]
+              [:tr (merge
+                    {:data-model "user"}
+                    #_(if *dynamic*
+                        {:data-bind
+                         (string/join ", "
+                                      ["if: $data"
+                                       "attr: {'data-target': $data}"])}))
+               [:td (link-to user)]
+               [:td
+                (action-link "feed-source" "remove-watcher" (:_id source)
+                             {:target (:_id user)
+                              :icon "trash"
+                              :title "Delete"})]]))
+          watchers))]])])
 
 (defn add-watcher-form
   [source]
@@ -271,6 +268,12 @@
             {:href topic})
           (when-not *dynamic*
             topic)]]]
+       [:tr
+        [:th "Domain:"]
+        [:td
+         (if *dynamic*
+           {:data-bind "text: domain"}
+           (:domain source))]]
        [:tr
         [:th "Hub:"]
         [:td [:a (if *dynamic*

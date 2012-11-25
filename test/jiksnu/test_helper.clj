@@ -2,6 +2,7 @@
   (:use [ciste.config :only [load-site-config]]
         [ciste.loader :only [process-requires]]
         [ciste.runner :only [start-application! stop-application!]]
+        midje.sweet
         [slingshot.slingshot :only [try+ throw+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -36,10 +37,5 @@
 
      (actions.domain/current-domain)
 
-     (try
-       ~@body
-       (catch RuntimeException ex#
-         (log/error "error")
-         (throw)
-         ))
+     (fact (do ~@body) =not=> (throws))
      (stop-application!)))

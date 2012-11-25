@@ -24,7 +24,7 @@
 (defn notify-activity
   [recipient ^Activity activity]
   (log/info (str "Sending notice to: " (model.user/get-uri recipient false)))
-  (let [author (actions.activity/get-author activity)
+  (let [author (model.activity/get-author activity)
         ele (element/make-element
              ["body" {}
               (str (model.user/get-uri author false) ":  "
@@ -45,16 +45,16 @@
   
   (let [mentioned-domain (.getHost (URI. uri))
         link (model/extract-atom-link uri)
-        mentioned-user-params (-> link
-                                  abdera/fetch-feed
-                                  .getAuthor
-                                  actions.user/person->user)]
+        source (model/get-source link)
+        resource (model/get-resource link)
+        feed (abdera/parse-xml-string (model/update-resource resource))
+        mentioned-user-params (-> feed .getAuthor actions.user/person->user)]
     (actions.user/find-or-create-by-remote-id {:id uri} {})))
 
 (defn create-trigger
   [action params activity]
   (if activity
-    (let [author (actions.activity/get-author activity)
+    (let [author (model.activity/get-author activity)
           mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
           subscribers (map model.subscription/get-actor
                            (model.subscription/subscribers author))

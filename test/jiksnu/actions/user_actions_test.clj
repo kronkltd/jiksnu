@@ -171,7 +171,7 @@
                source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)]
            (find-or-create-by-remote-id {:id uri}) => (partial instance? User))
          (provided
-           (model.webfinger/fetch-host-meta um-url) => (mock-user-meta username domain-name uri source-link))))
+           (actions.user/get-user-meta anything) => (mock-user-meta username domain-name uri source-link))))
      (future-fact "when given an acct uri uri"
        (model/drop-all!)
        (let [domain (actions.domain/find-or-create

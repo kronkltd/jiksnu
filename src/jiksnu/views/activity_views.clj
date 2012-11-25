@@ -94,7 +94,7 @@
 
 (defview #'show :model
   [request activity]
-  {:body (show-section activity)})
+  {:body (doall (show-section activity))})
 
 (defview #'show :n3
   [request activity]

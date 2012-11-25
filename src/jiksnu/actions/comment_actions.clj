@@ -51,7 +51,7 @@
   (tigase/make-packet
    {:type :get
     :from (tigase/make-jid "" (config :domain))
-    :to (tigase/make-jid (actions.activity/get-author activity))
+    :to (tigase/make-jid (model.activity/get-author activity))
     :body
     (element/make-element
      ["pubsub" {"xmlns" ns/pubsub}
@@ -64,7 +64,7 @@
 ;; This should be a trigger
 (defaction fetch-comments-remote
   [activity]
-  (let [author (actions.activity/get-author activity)
+  (let [author (model.activity/get-author activity)
         domain (model.user/get-domain author)]
     (when (:xmpp domain)
       (tigase/deliver-packet! (comment-request activity)))))

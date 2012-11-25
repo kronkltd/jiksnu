@@ -1,13 +1,17 @@
 (ns jiksnu.interaction-helpers
   (:use [jiksnu.action-helpers :only [expand-url]]
         [jiksnu.existance-helpers :only [a-user-exists my-password]]
-        [jiksnu.referrant :only [get-this get-that]]
+        [jiksnu.referrant :only [get-this get-that set-this]]
+        [midje.sweet :only [fact =not=> throws]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clj-webdriver.taxi :as webdriver]
+  (:require [clj-http.client :as client]
+            [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]))
+            [jiksnu.session :as session])
+  (:import org.openqa.selenium.ElementNotVisibleException))
 
 (defn do-click-button
   [class-name]
@@ -25,10 +29,16 @@
 (defn do-click-button-for-that-type
   [button-name type]
   (if-let [record (get-that type)]
-    (let [button (webdriver/find-element-under
-                  (str "*[data-id='" (:_id record) "']")
+    (let [id (:_id record)
+          selector (format "[data-id='%s']" id)
+          button (webdriver/find-element-under
+                  selector
                   (webdriver.core/by-class-name (str button-name "-button")))]
-      (webdriver/click button))
+      (fact
+        (try (webdriver/click button)
+             (catch ElementNotVisibleException ex
+               (throw+ (format "could not find button %s under context %s"
+                               button-name selector)))) =not=> (throws)))
     (throw+ (format "Could not find 'that' record for %s" type))))
 
 (defn do-click-link
@@ -51,31 +61,46 @@
   []
   (do-enter-field (:username (get-this :user)) "username"))
 
+(defn do-http-login
+  [username password]
+  (client/post (expand-url "/main/login")
+               {:form-params {"username" username
+                              "password" password}}))
+
+(defonce user-cookies (ref {}))
+
 (defn do-login
   []
-  (webdriver/to (expand-url "/main/login"))
-
-  (do-enter-username)
-  (do-enter-password)
-  (webdriver/click "input[type='submit']")
-  (session/set-authenticated-user! (get-this :user)))
+  (let [user (get-this :user)]
+    (if-let [cookies (or (seq @user-cookies)
+                         (do
+                           (log/info "getting new session")
+                           (let [response (do-http-login (:username user) @my-password)]
+                            (seq (:cookies response)))))]
+      (do
+        (dosync
+         (ref-set user-cookies cookies))
+        (doseq [[n m] cookies]
+          (let [cookie {:name n
+                        :value (:value m)
+                        :path (:path m)}]
+            (webdriver/add-cookie cookie))
+          user))
+      (throw+ "Does not contain any cookies")))
+  #_(session/set-authenticated-user! (get-this :user)))
 
 (defn a-normal-user-is-logged-in
   []
-  (a-user-exists)
+  ;; (a-user-exists)
   (do-login))
 
 (defn am-not-logged-in
   []
-  nil)
+  (webdriver/delete-all-cookies))
 
 (defn an-admin-is-logged-in
   []
-  (a-user-exists)
-  (-> (get-this :user)
-      (assoc :admin true)
-      actions.user/update
-      session/set-authenticated-user!)
-  (do-login))
-
-
+  (let [user (a-user-exists)]
+    (model.user/set-field! user :admin true)
+    (set-this :user (model.user/fetch-by-id (:_id user)))
+    (do-login)))

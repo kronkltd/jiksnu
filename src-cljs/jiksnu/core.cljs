@@ -89,7 +89,7 @@
   (def _m data)
   (update-pages     data)
   (update-title     data)
-  (update-items     data)
+  ;; (update-items     data)
   (update-currents  data)
   (update-page-info data)
   (update-post-form data)
@@ -148,7 +148,7 @@
             (log/finer *logger* (format "cached observable found: %s(%s)" model-name id))
             o)
           (get-model* model-name id)))
-      (throw (js/Error. "Not a string")))
+      (throw (js/Error. (str id " is not a string"))))
     (log/warn *logger* "id is undefined")))
 
 (def get-activity                 (partial get-model "activities"))

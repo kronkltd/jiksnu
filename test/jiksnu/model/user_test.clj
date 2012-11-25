@@ -36,17 +36,13 @@
        (get-domain user-a) => domain-a)))
 
  (fact "#'local?"
-   (fact "when passed a user user"
+   (fact "when passed a user"
      (fact "and it's domain is the same as the current domain"
-       (fact "should be true"
-         (let [domain (actions.domain/current-domain)
-               user (factory :local-user)]
-           (local? user) => truthy)))
+       (let [user (existance/a-user-exists)]
+         (local? user) => true))
      (fact "and it's domain is different from the current domain"
-       (fact "should be false"
-         (let [domain (model.domain/create (factory :domain))
-               user (factory :user {:domain (:_id domain)})]
-           (local? user) => falsey)))))
+       (let [user (existance/a-remote-user-exists)]
+         (local? user) => false))))
 
  (fact "split-uri"
    (split-uri "bob@example.com") => ["bob" "example.com"]

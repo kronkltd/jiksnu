@@ -4,7 +4,6 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-http.client :as client]
@@ -17,6 +16,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
@@ -34,29 +35,30 @@
 (defn prepare-create
   [params]
   (-> params
-      set-_id
-      set-updated-time
-      set-created-time))
+      transforms/set-_id
+      transforms.resource/set-local
+      transforms.resource/set-domain
+      transforms/set-updated-time
+      transforms/set-created-time))
 
 (defaction create
   [params]
   (let [item (prepare-create params)]
-    (s/increment "resources created")
     (model.resource/create item)))
 
 (defaction find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
-  (if-let [
-           item (or (model.resource/fetch-by-url (:url params))
+  (if-let [item (or (model.resource/fetch-by-url (:url params))
                     (try
                       (create params)
-                      (catch RuntimeException ex)))]
+                      (catch RuntimeException ex
+                        (.printStackTrace ex))))]
     item
     (if (< tries 3)
       (do
         (log/info "recurring")
         (find-or-create params (assoc options :tries (inc tries))))
-      (throw+ "Could not create conversation"))))
+      (throw+ "Could not create resource"))))
 
 (defaction delete
   "Delete the resource"
@@ -64,7 +66,7 @@
   (if-let [item (prepare-delete item)]
     (do (model.resource/delete item)
         item)
-    (throw+ "Could not delete record")))
+    (throw+ "Could not delete resource")))
 
 (defn response->tree
   [response]
@@ -124,14 +126,20 @@
                 (add-link item (:attrs link))))))
         (log/infof "unknown content type: %s" content-type)))))
 
+(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
+
 (defn update*
   [item & [options]]
-  (let [url (:url item)]
-    (log/debugf "updating resource: %s" url)
-    (let [response (client/get url {:throw-exceptions false})]
-      (future
-        (process-response item response))
-      response)))
+  (if-not (:local item)
+    (let [url (:url item)]
+      (log/debugf "updating resource: %s" url)
+      (let [response (client/get url {:throw-exceptions false
+                                      :headers {"User Agent" user-agent}
+                                      :insecure? true})]
+        (future
+          (process-response item response))
+        response))
+    (log/debug "local resource does not need update")))
 
 (defaction update
   [item]
@@ -140,7 +148,7 @@
 
 (defaction discover
   [item]
-  (log/debugf "discovering resource: %s" item)
+  (log/debugf "discovering resource: %s" (prn-str item))
   (let [response (update* item)]
     (model.resource/fetch-by-id (:_id item))))
 
@@ -148,10 +156,16 @@
   [item]
   item)
 
-(l/receive-all
- model/pending-resources
- (fn [[url ch]]
-   (l/enqueue ch (find-or-create {:url url}))))
+(defn handle-pending-resources
+  [[url ch]]
+  (l/enqueue ch (find-or-create {:url url})))
+
+(defn handle-pending-update-resources
+  [[p item]]
+  (deliver p (update* item)))
+
+(l/receive-all model/pending-resources        handle-pending-resources)
+(l/receive-all model/pending-update-resources handle-pending-update-resources)
 
 (definitializer
   (model.resource/ensure-indexes)

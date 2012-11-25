@@ -14,6 +14,7 @@
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
+            [lamina.time :as time]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -250,9 +251,32 @@
 
 ;; async fetchers
 
-(defonce pending-conversations (l/permanent-channel))
-(defonce pending-sources       (l/permanent-channel))
-(defonce pending-resources     (l/permanent-channel))
+(defonce pending-conversations (l/channel*
+                                :permanent? true
+                                :description "pending-conversations"))
+(defonce pending-create-conversations (l/channel*
+                                       :permanent? true
+                                       :description "pending-create-conversations"))
+(defonce pending-sources (l/channel*
+                          :permanent? true
+                          :description "pending-sources"))
+(defonce pending-resources (l/channel*
+                            :permanent? true
+                            :description "pending-resources"))
+(defonce pending-update-resources (l/channel*
+                                   :permanent? true
+                                   :description "pending-update-resources"))
+
+(def default-timeout (time/minutes 5))
+
+(defn async-op
+  [ch params]
+  (let [p (promise)
+        description (lamina.core.utils/description (lamina.core.channel/receiver-node ch))]
+    (log/infof "enqueuing #<Channel \"%s\"> << %s" description (prn-str params))
+    (l/enqueue ch [p params])
+    (or (deref p default-timeout nil)
+        (throw+ "timeout"))))
 
 (defn get-conversation
   [url]
@@ -260,6 +284,15 @@
   (let [result (l/result-channel)]
     (l/enqueue pending-conversations [url result])
     (l/wait-for-result result 5000)))
+
+(defn create-new-conversation
+  []
+  (s/increment "conversations create new")
+  (let [result (l/result-channel)]
+    (l/enqueue pending-create-conversations result)
+    (l/wait-for-result result 5000)))
+
+
 
 (defn get-source
   [url]
@@ -272,6 +305,10 @@
   (let [result (l/result-channel)]
     (l/enqueue pending-resources [url result])
     (l/wait-for-result result 5000)))
+
+(defn update-resource
+  [resource]
+  (async-op pending-update-resources resource))
 
 ;; Database functions
 

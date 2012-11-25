@@ -4,6 +4,8 @@
         [jiksnu.action-helpers :only [fetch-page fetch-page-browser page-names]]
         [jiksnu.referrant :only [get-this get-that]])
   (:require [ciste.model :as cm]
+            [clj-webdriver.taxi :as webdriver]
+            [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]))
 
 (defn go-to-the-page

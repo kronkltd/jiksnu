@@ -59,12 +59,10 @@
   [user]
   (let [id (:id user)
         domain (actions.domain/get-discovered {:_id (:domain user)})]
-    (if-let [um-url (actions.domain/get-user-meta-url domain id)]
-      (let [resource (model/get-resource um-url)]
-        (try
-          (model.webfinger/fetch-host-meta um-url)
-          (catch RuntimeException ex
-            (log/warnf "could not get user meta: %s" user)))))))
+    (if-let [url (actions.domain/get-user-meta-url domain id)]
+      (let [resource (model/get-resource url)
+            response (model/update-resource resource)]
+        (cm/string->document (:body response))))))
 
 (defn set-update-source
   [user]
@@ -109,7 +107,7 @@
 (defaction add-link*
   [user link]
   (mc/update "users" {:_id (:_id user)}
-             {:$addToSet {:links link}})
+    {:$addToSet {:links link}})
   user)
 
 (defn add-link
@@ -169,17 +167,16 @@
 
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
-  ;; params is never used
-  ([user params]
-     (if-let [id (:id user)]
-       (if-let [domain (get-domain user)]
+  ([params options]
+     (if-let [id (:id params)]
+       (if-let [domain (get-domain params)]
          (if-let [domain (if (:discovered domain) domain (actions.domain/discover domain id))]
-           (let [user (assoc user :domain (:_id domain))]
+           (let [params (assoc params :domain (:_id domain))]
              (or (model.user/fetch-by-remote-id id)
-                 (let [user (if (:username user)
-                              user
-                              (get-username user))]
-                   (create user))))
+                 (let [params (if (:username params)
+                                params
+                                (get-username params))]
+                   (create params))))
            ;; this should never happen
            (throw+ "domain has not been disovered"))
          (throw+ "could not determine domain"))
@@ -337,15 +334,15 @@
   "returns a feed"
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
-    (let [resource (model/get-resource url)]
-      (abdera/fetch-feed url))
+    (let [resource (model/get-resource url)
+          response (model/update-resource resource)]
+      (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   "Retreive user information from webfinger"
   [user]
-  (log/info "updating usermeta")
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)
@@ -398,31 +395,31 @@
   "perform a discovery on the user"
   [^User user & [options & _]]
   (future (loop [try-count (get options :try-count 1)]
-     (when (< try-count 5)
-       (if (:local user)
-         user
-         ;; Get domain should, in theory, always return a domain, or else error
-         (let [domain (actions.domain/get-discovered (get-domain user))]
-           (if (:discovered domain)
-             (do
+            (when (< try-count 5)
+              (if (:local user)
+                user
+                ;; Get domain should, in theory, always return a domain, or else error
+                (let [domain (actions.domain/get-discovered (get-domain user))]
+                  (if (:discovered domain)
+                    (do
 
-               (when (:xmpp domain)
-                 (request-vcard! user))
-               
-               ;; There should be a similar check here so we're not
-               ;; hitting xmpp-only services.
-               ;; This is really OStatus specific
-               (update-usermeta user)
+                      (when (:xmpp domain)
+                        (request-vcard! user))
 
-               ;; TODO: there sould be a different discovered flag for
-               ;; each aspect of a domain, and this flag shouldn't be set
-               ;; till they've all responded
-               ;; (model.user/set-field! user :discovered true)
-               (model.user/fetch-by-id (:_id user)))
-             (do
-               ;; Domain not yet discovered
-               (actions.domain/discover domain)
-               (recur (inc try-count)))))))))
+                      ;; There should be a similar check here so we're not
+                      ;; hitting xmpp-only services.
+                      ;; This is really OStatus specific
+                      (update-usermeta user)
+
+                      ;; TODO: there sould be a different discovered flag for
+                      ;; each aspect of a domain, and this flag shouldn't be set
+                      ;; till they've all responded
+                      ;; (model.user/set-field! user :discovered true)
+                      (model.user/fetch-by-id (:_id user)))
+                    (do
+                      ;; Domain not yet discovered
+                      (actions.domain/discover domain)
+                      (recur (inc try-count)))))))))
   user)
 
 ;; TODO: xmpp case of update

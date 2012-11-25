@@ -70,7 +70,7 @@
      ch)
     (l/on-closed ch
                  (fn []
-                   (log/info "closed")
+                   (log/debugf "closed connection: %s" connection-id)
                    (dosync
                     (alter connections #(dissoc-in % [id connection-id])))))
     connection-id))

@@ -164,6 +164,7 @@
             "defaults" (js-obj
                         "url"         nil
                         "title"       nil
+                        "domain"      nil
                         "status"      nil
                         "contentType" nil
                         "encoding"    nil
@@ -228,6 +229,7 @@
                 "links"         (array)
                 "source"        "unknown"
                 "comments"      (array)
+                "resources"     (array)
                 "comment-count" 0
                 "created"       nil
                 "conversation"  nil

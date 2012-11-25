@@ -1,16 +1,18 @@
 (ns jiksnu.formats
-    (:use [ciste.core :only [serialize-as with-format]]
+  (:use [ciste.core :only [serialize-as with-format]]
         [ciste.config :only [config]]
         [ciste.formats :only [format-as]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri title link-to
                                        index-block index-section uri
-                                       delete-button index-line edit-button]])
+                                       delete-button index-line edit-button]]
+        [jiksnu.sections :only [format-page-info]])
   (:require [clj-tigase.core :as tigase]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             jiksnu.sections
@@ -71,11 +73,15 @@
 (defmethod format-as :viewmodel
   [format request response]
   (let [response (if-let [user (session/current-user)]
-                   (-> response
-                       (assoc-in [:body :currentUser] (:_id user)))
+                   (let [[_ subscriptions] (actions.subscription/get-subscriptions user)
+                         [_ subscribers] (actions.subscription/get-subscribers user)]
+                     (-> response
+                         (assoc-in [:body :pages "subscribers"] (format-page-info subscribers))
+                         (assoc-in [:body :pages "subscriptions"] (format-page-info subscriptions))
+                         (assoc-in [:body :currentUser] (:_id user))))
                    response)]
     (with-format :json
-     (doall (format-as :json request response)))))
+      (doall (format-as :json request response)))))
 
 (defmethod format-as :xml
   [format request response]

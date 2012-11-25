@@ -131,6 +131,3 @@
     (when (and (not= filename "") tempfile)
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
-
-
-

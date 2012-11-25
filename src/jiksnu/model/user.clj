@@ -32,15 +32,15 @@
 (def create-validators
   (validation-set
    (presence-of   :_id)
-   (presence-of   :id)
-   (acceptance-of :username   :accept string?)
-   (acceptance-of :domain     :accept string?)
-   (presence-of   :url)
+   (acceptance-of :id           :accept string?)
+   (acceptance-of :username     :accept string?)
+   (acceptance-of :domain       :accept string?)
+   (acceptance-of :url          :accept string?)
    (presence-of   :created)
    (presence-of   :updated)
    (presence-of   :update-source)
    (presence-of   :avatar-url)
-   (acceptance-of :local      :accept (partial instance? Boolean))))
+   (acceptance-of :local         :accept (partial instance? Boolean))))
 
 (defn salmon-link
   [user]
@@ -157,18 +157,21 @@
             (.getDomain jid)))
 
 (defn set-field!
-  "Updates user's field to value"
-  [user field value]
-  (log/debugf "setting %s (%s = %s)" (:_id user) field value)
-  (s/increment "users field set")
-  (mc/update collection-name
-             {:_id (:_id user)}
-             {:$set {field value}}))
+  "Updates item's field to value"
+  [item field value]
+  (when-not (= (get item field) value)
+    (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+    (s/increment (str collection-name " field set"))
+    (mc/update collection-name
+      {:_id (:_id item)}
+      {:$set {field value}})))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
   [uri]
-  (apply get-user (split-uri uri)))
+  (let [[username domain-name] (split-uri uri)]
+    (when (and username domain-name)
+      (get-user username domain-name))))
 
 (defn fetch-by-remote-id
   "Fetch user by their id value"
