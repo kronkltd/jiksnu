@@ -4,9 +4,12 @@
 (defn index-line
   [link]
   [:tr
-   [:td (if *dynamic*
-          {:data-bind "text: href"}
-          (:href link))]
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: href}, text: href"}
+          {:href (:href link)})
+     (when-not *dynamic*
+       (:href link))]]
    [:td (if *dynamic*
           {:data-bind "text: rel"}
           (:rel link))]
