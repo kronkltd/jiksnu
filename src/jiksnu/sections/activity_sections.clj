@@ -701,8 +701,8 @@
     :created_at (model/date->twitter (.toDate (:created activity)))
     :source (:source activity)
     :id (:_id activity)
-    :in_reply_to_user_id nil
-    :in_reply_to_screen_name nil
+    ;; :in_reply_to_user_id nil
+    ;; :in_reply_to_screen_name nil
 
     ;; TODO: test for the presence of a like
     :favorited false
@@ -711,7 +711,7 @@
     :statusnet_html (:content activity)}
    (when-let [conversation (first (:conversation-uris activity))]
      {:statusnet_conversation_id conversation})
-   (when-let [irt (first (:irts activity))]
+   (let [irt (first (:irts activity))]
      {:in_reply_to_status_id irt})
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
