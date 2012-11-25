@@ -4,7 +4,6 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
-        [jiksnu.transforms :only [set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -15,6 +14,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.domain-transforms :as transforms.domain]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -26,9 +27,10 @@
 (defn prepare-create
   [domain]
   (-> domain
-      model.domain/set-discovered
-      set-created-time
-      set-updated-time))
+      transforms.domain/set-local
+      transforms.domain/set-discovered
+      transforms/set-created-time
+      transforms/set-updated-time))
 
 (defn prepare-delete
   ([domain]

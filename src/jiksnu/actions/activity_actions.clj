@@ -4,7 +4,6 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
@@ -20,6 +19,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
+            [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [lamina.core :as l]
             [monger.collection :as mc])
@@ -109,14 +109,14 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defn prepare-create
   [activity]
   (-> activity
-      set-_id
+      transforms/set-_id
       transforms.activity/set-title
       transforms.activity/set-object-id
       transforms.activity/set-public
       transforms.activity/set-remote
       transforms.activity/set-tags
-      set-created-time
-      set-updated-time
+      transforms/set-created-time
+      transforms/set-updated-time
       transforms.activity/set-object-type
       transforms.activity/set-parent
       transforms.activity/set-url
