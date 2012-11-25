@@ -5,19 +5,16 @@
   (:require [aleph.http :as http]
             ;; ciste.formats.default
             [ciste.middleware :as middleware]
-            [ciste.predicates :as pred]
             [clj-statsd :as s]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.middleware :as jm]
+            [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
-            jiksnu.sections.layout-sections
             [jiksnu.session :as session]
-            [jiksnu.views :as views]
             [ring.middleware.file :as file]
             [monger.ring.session-store :as ms]
             [ring.middleware.file-info :as file-info]
@@ -60,26 +57,16 @@
       "user"
       ]))))
 
-(def http-predicates
-  [#'pred/request-method-matches?
-   #'pred/path-matches?])
-
-(def xmpp-predicates
-  [#'pred/type-matches?
-   #'pred/node-matches?
-   #'pred/name-matches?
-   #'pred/ns-matches?])
-
 (compojure/defroutes all-routes
   (compojure/GET "/api/help/test.json" _ "OK")
   (jm/wrap-authentication-handler
    (compojure/ANY "/admin*" request
                   (if (session/is-admin?)
-                    ((resolve-routes [http-predicates] routes.admin/admin-routes) request)
+                    ((resolve-routes [predicates/http] routes.admin/admin-routes) request)
                     ;; TODO: move this somewhere else
                     (throw+ {:type :authentication :message "Must be admin"}))))
   (middleware/wrap-log-request
-   (resolve-routes [http-predicates] http-routes))
+   (resolve-routes [predicates/http] http-routes))
   (compojure/GET "/websocket" _
                  (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/main/events" _
