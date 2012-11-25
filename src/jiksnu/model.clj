@@ -255,6 +255,15 @@
 (defonce pending-sources       (l/permanent-channel))
 (defonce pending-resources     (l/permanent-channel))
 
+(def default-timeout 5000)
+
+(defn async-op
+  [ch params]
+  (let [timeout default-timeout
+        result (l/result-channel)]
+    (l/enqueue ch [result params])
+    (l/wait-for-result result timeout)))
+
 (defn get-conversation
   [url]
   (s/increment "conversations async get")

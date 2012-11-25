@@ -46,7 +46,7 @@
   [queue request]
   (let [merged-request (merge {:serialization :xmpp
                                :format :xmpp} request)
-        route-fn (resolve-routes [predicates/xmpp] (lazier routes.xmpp/xmpp-routes))]
+        route-fn (resolve-routes [predicates/xmpp] (lazier @xmpp-routes))]
     (route-fn merged-request)))
 
 (defn -process
