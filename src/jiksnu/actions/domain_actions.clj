@@ -177,9 +177,9 @@
     (model.domain/create domain)))
 
 (defn find-or-create
-  [domain]
-  (or (model.domain/fetch-by-id (:_id domain))
-      (create domain)))
+  [params]
+  (or (model.domain/fetch-by-id (:_id params))
+      (create params)))
 
 (defn find-or-create-for-url
   "Return a domain object that matche the domain of the provided url"
