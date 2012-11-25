@@ -132,7 +132,8 @@
   (if-not (:local item)
     (let [url (:url item)]
       (log/debugf "updating resource: %s" url)
-      (let [response (client/get url {:throw-exceptions false})]
+      (let [response (client/get url {:throw-exceptions false
+                                      :insecure? true})]
         (future
           (process-response item response))
         response))
