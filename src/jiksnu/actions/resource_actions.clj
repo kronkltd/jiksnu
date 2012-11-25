@@ -51,7 +51,8 @@
   (if-let [item (or (model.resource/fetch-by-url (:url params))
                     (try
                       (create params)
-                      (catch RuntimeException ex)))]
+                      (catch RuntimeException ex
+                        (.printStackTrace ex))))]
     item
     (if (< tries 3)
       (do
