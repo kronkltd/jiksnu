@@ -88,6 +88,14 @@
   [record]
   record)
 
+(defaction add-activity
+  [conversation activity]
+  (let [lu (:lastUpdated conversation)
+        c (:created activity)]
+    (when (or (not lu)
+              (time/before? lu c))
+      (update conversation))))
+
 (defaction create-new
   []
   (create {:local true}))

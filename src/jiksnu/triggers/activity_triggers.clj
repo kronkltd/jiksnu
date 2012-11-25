@@ -10,9 +10,11 @@
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
@@ -63,6 +65,9 @@
                          (into #{}))]
       ;; Add item to author's stream
       (model.item/push author activity)
+
+      (let [conversation (model.conversation/fetch-by-id (:conversation activity))]
+        (actions.conversation/add-activity conversation activity))
 
       ;; Add as a comment to parent posts
       ;; TODO: deprecated
