@@ -4,6 +4,7 @@
   (:require [jiksnu.actions.subscription-actions :as sub]))
 
 (add-route! "/users/:id/subscribers"   {:named "user subscribers"})
+(add-route! "/users/:id/subscriptions" {:named "user subscriptions"})
 (add-route! "/model/subscriptions/:id" {:named "subscription model"})
 
 (defn routes
@@ -17,7 +18,7 @@
    [[:post   "/main/unsubscribe"]                            #'sub/unsubscribe]
    [[:delete "/subscriptions/:id"]                           #'sub/delete]
    [[:get    "/users/:id/subscriptions.:format"]             #'sub/get-subscriptions]
-   [[:get    "/users/:id/subscriptions"]                     #'sub/get-subscriptions]
+   [[:get    (named-path "user subscriptions")]              #'sub/get-subscriptions]
    [[:get    "/users/:id/subscribers.:format"]               #'sub/get-subscribers]
    [[:get    (named-path "user subscribers")]                #'sub/get-subscribers]
    [[:post   "/users/:id/unsubscribe"]                       #'sub/unsubscribe]

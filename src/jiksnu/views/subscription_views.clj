@@ -65,7 +65,7 @@
   {:title "Subscriptions"
    :formats (subscription-formats user)
    :body
-   (if [items (if *dynamic* [(Subscription.)] items)]
+   (if-let [items (seq (if *dynamic* [(Subscription.)] items))]
      (with-page "default"
        (pagination-links response)
        (bind-to "items"

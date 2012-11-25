@@ -1,5 +1,6 @@
 (ns jiksnu.routes.subscription-routes-test
   (:use [clj-factory.core :only [factory fseq]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker truthy]])
@@ -31,8 +32,9 @@
               #(status/redirect? (:status %)))))))
 
  (fact "get-subscriptions"
-   (let [user (existance/a-user-exists)]
-     (-> (mock/request :get (format "/%s/subscriptions" (:username user)))
+   (let [user (existance/a-user-exists)
+         path (named-path "user subscriptions" {:id (str (:_id user))})]
+     (-> (mock/request :get path)
          response-for)) =>
          (every-checker
           map?
