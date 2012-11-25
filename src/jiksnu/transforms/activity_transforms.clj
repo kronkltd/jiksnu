@@ -54,7 +54,9 @@
     (let [params (dissoc params :parent)]
       (if-let [uri (:parent-uri params)]
         (let [resource (model/get-resource uri)]
-          ;; TODO: set parent
+          (if-let [parent (model.activity/fetch-by-remote-id uri)]
+            (assoc params :parent (:_id parent))
+            params)
           params)
         params))
     params))
