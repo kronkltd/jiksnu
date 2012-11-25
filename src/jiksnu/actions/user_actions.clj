@@ -337,8 +337,9 @@
   "returns a feed"
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
-    (let [resource (model/get-resource url)]
-      (abdera/fetch-feed url))
+    (let [resource (model/get-resource url)
+          response (model/update-resource resource)]
+      (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 
 ;; TODO: Collect all changes and update the user once.
