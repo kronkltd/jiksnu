@@ -42,7 +42,6 @@
   (log/infof "password handler - %s - %s" (pr-str ks) def)
   (:password user))
 
-
 (defmethod get-data [:public :vcard-temp :vCard]
   [user ks def]
   (log/info "Vcard handler")
@@ -60,7 +59,7 @@
 (defn handle-add-user
   [[result ^BareJID bare password]]
   (log/info "add user")
-  (enqueue result
+  (deliver result
            (let [username (.getLocalpart bare)
                  domain (.getDomain bare)]
              (if (and username domain)
@@ -74,10 +73,7 @@
   [[result domain]]
   (if domain
     (model.user/count-records {:domain domain})
-    (model.user/count-records)
-    )
-
-  )
+    (model.user/count-records)))
 
 (defn handle-othr-auth
   [[result props]]

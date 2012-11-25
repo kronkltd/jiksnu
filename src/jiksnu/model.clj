@@ -260,9 +260,14 @@
 (defn async-op
   [ch params]
   (let [timeout default-timeout
-        result (l/result-channel)]
+        result (promise)]
+    (log/infof "enqueuing %s << %s" ch params)
     (l/enqueue ch [result params])
-    (l/wait-for-result result timeout)))
+    (let [response (deref result default-timeout ::not-found)]
+      (if (not= response ::not-found)
+        (do (log/info "response")
+            response)
+        (throw+ "timeout")))))
 
 (defn get-conversation
   [url]
