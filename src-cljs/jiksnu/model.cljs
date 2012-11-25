@@ -228,6 +228,7 @@
                 "links"         (array)
                 "source"        "unknown"
                 "comments"      (array)
+                "resources"     (array)
                 "comment-count" 0
                 "created"       nil
                 "conversation"  nil

@@ -32,6 +32,7 @@
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
+           jiksnu.model.Resource
            jiksnu.model.User
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.ExtensibleElement))
@@ -441,25 +442,22 @@
 
 (defn enclosures-section
   [activity]
-  (when-let [enclosures (if *dynamic*
-                          [{:href ""}]
-                          (seq (:enclosures activity)))]
+  (when-let [resources (if *dynamic* [(Resource.)] (:resources activity))]
     [:ul.unstyled
-     (when *dynamic*
-       {:data-bind "foreach: enclosures"})
+     (when *dynamic* {:data-bind "foreach: resources"})
      (map
-      (fn [enclosure]
-        [:li
+      (fn [resource]
+        [:li {:data-model "resource"}
          [:a (merge {:rel "lightbox"}
                     (if *dynamic*
-                      {:data-bind "attr: {href: href}"}
-                      {:href (:href enclosure)}))
+                      {:data-bind "attr: {href: url}"}
+                      {:href (:url resource)}))
           [:img.enclosure
            (merge {:alt ""}
                   (if *dynamic*
-                    {:data-bind "attr: {src: href}"}
-                    {:src (:href enclosure)}))]]])
-      enclosures)]))
+                    {:data-bind "attr: {src: url}"}
+                    {:src (:url resource)}))]]])
+      resources)]))
 
 ;; dynamic sections
 
