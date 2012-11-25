@@ -26,7 +26,7 @@
     (if-let [domain (if (:local item)
                       (actions.domain/current-domain)
                       (when-let [uri (URI. (:url item))]
-                        (.getHost uri)))]
+                        (actions.domain/find-or-create {:_id (.getHost uri)})))]
       (assoc item :domain (:_id domain))
       (throw+ "Could not determine domain"))))
 
