@@ -26,6 +26,7 @@
 (defonce sasl-mechs (into-array String ["PLAIN"]))
 
 (defmulti get-data (fn [user ks def] ks))
+
 (defonce add-user-ch (l/channel* :transactional? true :permanent? true))
 (defonce get-data-ch (l/channel* :transactional? true :permanent? true))
 (defonce count-users-ch (l/channel* :transactional? true :permanent? true))
@@ -91,7 +92,6 @@ subnode."
      (.getData this user subnode key nil))
   ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
      (model/async-op get-data-ch [user-id subnode key def])))
-
 
 (defn -userExists
   "checks whether the user (or repository top node) exists in the database."
