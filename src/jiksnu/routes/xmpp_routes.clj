@@ -1,5 +1,6 @@
 (ns jiksnu.routes.xmpp-routes
-  (:use [ciste.routes :only [escape-route]])
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.routes :only [escape-route]])
   (:require [clojure.string :as string]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
