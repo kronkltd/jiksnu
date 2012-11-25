@@ -83,9 +83,12 @@
    [:td (if *dynamic*
           {:data-bind "text: domain"}
           (:domain item))]
-   [:td (if *dynamic*
-          {:data-bind "text: url"}
-          (:url item))]
+   [:td
+    [:a (when *dynamic*
+          {:data-bind "attr: {href: url}, text: url"})
+     (when-not *dynamic*
+       [:a {:href (:url item)}
+        (:url item)])]]
    [:td (if *dynamic*
           {:data-bind "text: status"}
           (:status item))]
