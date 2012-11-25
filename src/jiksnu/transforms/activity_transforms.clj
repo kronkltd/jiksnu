@@ -123,9 +123,10 @@
   [activity]
   (if (empty? (:id activity))
     (if-let [user (model.activity/get-author activity)]
-      (when (:local activity)
+      (if (:local activity)
         (let [id (r/named-url "show activity" {:id (:_id activity)})]
-          (assoc activity :id id)))
+          (assoc activity :id id))
+        (throw+ "is not local and does not have an id"))
       (throw+ "Could not determine author"))
     activity))
 
@@ -150,15 +151,17 @@
   [item]
   (if (:conversation item)
     item
-    (let [user (model.user/fetch-by-id (:author item))]
-      (if (:local user)
-        (assoc item :conversation (:_id (model/create-new-conversation)))
-        (if-let [uri (first (:conversation-uris item))]
-          (let [conversation (model/get-conversation uri)]
-            (-> item
-                (assoc :conversation (:_id conversation))
-                (dissoc :conversation-uris)))
-          item)))))
+    (if-let [id (:author item)]
+      (let [user (model.user/fetch-by-id id)]
+        (if (:local user)
+          (assoc item :conversation (:_id (model/create-new-conversation)))
+          (if-let [uri (first (:conversation-uris item))]
+            (let [conversation (model/get-conversation uri)]
+              (-> item
+                           (assoc :conversation (:_id conversation))
+                           (dissoc :conversation-uris)))
+            item)))
+      (throw+ "could not determine author"))))
 
 (defn set-mentioned
   [activity]
