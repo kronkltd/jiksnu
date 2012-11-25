@@ -167,17 +167,16 @@
 
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
-  ;; params is never used
-  ([user params]
-     (if-let [id (:id user)]
-       (if-let [domain (get-domain user)]
+  ([params options]
+     (if-let [id (:id params)]
+       (if-let [domain (get-domain params)]
          (if-let [domain (if (:discovered domain) domain (actions.domain/discover domain id))]
-           (let [user (assoc user :domain (:_id domain))]
+           (let [params (assoc params :domain (:_id domain))]
              (or (model.user/fetch-by-remote-id id)
-                 (let [user (if (:username user)
-                              user
-                              (get-username user))]
-                   (create user))))
+                 (let [params (if (:username params)
+                                params
+                                (get-username params))]
+                   (create params))))
            ;; this should never happen
            (throw+ "domain has not been disovered"))
          (throw+ "could not determine domain"))
