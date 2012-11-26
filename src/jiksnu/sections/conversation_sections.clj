@@ -9,6 +9,7 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.session :as session])
   (:import jiksnu.model.Conversation
@@ -99,10 +100,12 @@
    [:thead
     [:tr
      [:th "Id"]
+     [:th "Domain"]
      [:th "Url"]
      #_[:th "Created"]
      [:th "Last Updated"]
-     [:th "Record Updated"]]]
+     [:th "Record Updated"]
+     [:th "Actions"]]]
    [:tbody {:data-bind "foreach: $data"}
     (doall (map #(index-line % page) items))]])
 
@@ -112,6 +115,11 @@
   [item & [page]]
   [:tr {:data-model "conversation"}
    [:td (link-to item)]
+   [:td
+    (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
+      (bind-to "domain"
+        [:div {:data-model "domain"}
+         (link-to domain)]))]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: url}, text: url"})
@@ -126,7 +134,7 @@
    [:td (if *dynamic*
           {:data-bind "text: updated"}
           (:updated item))]
-   #_[:td (actions-section item)]])
+   [:td (actions-section item)]])
 
 ;; index-section
 
