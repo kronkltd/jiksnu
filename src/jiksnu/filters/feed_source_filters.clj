@@ -3,10 +3,12 @@
         [jiksnu.actions.feed-source-actions :only [process-updates
                                                    update
                                                    delete
+                                                   index
                                                    show
                                                    subscribe
                                                    remove-subscription
-                                                   watch]])
+                                                   watch]]
+        [jiksnu.filters :only [parse-page parse-sorting]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]))
@@ -17,6 +19,14 @@
   [action id]
   (let [item (model.feed-source/fetch-by-id (model/make-id id))]
     (action item)))
+
+;; index
+
+(deffilter #'index :http
+  [action request]
+  (action {} (merge {}
+                    (parse-page request)
+                    (parse-sorting request))))
 
 ;; process-updates
 
