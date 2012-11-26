@@ -330,7 +330,15 @@ serialization"
   [source & [options]]
   (index {:update-source (:_id source)} options))
 
+(defn handle-delete-hook
+  [user]
+  (doseq [activity (:items (find-by-user user))]
+    (delete activity))
+  user)
+
 (definitializer
+  (model.activity/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.activity-filters"
     "jiksnu.sections.activity-sections"
@@ -340,7 +348,4 @@ serialization"
   ;; cascade delete on domain deletion
   (dosync
    (alter actions.user/delete-hooks
-          conj (fn [user]
-                 (doseq [activity (:items (find-by-user user))]
-                   (delete activity))
-                 user))))
+          conj #'handle-delete-hook)))

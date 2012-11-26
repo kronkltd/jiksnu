@@ -131,3 +131,8 @@
     (when (and (not= filename "") tempfile)
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+    (mc/ensure-index {:id 1} {:unique true})))
