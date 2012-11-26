@@ -29,7 +29,8 @@
 
 (defview #'delete :html
   [request _]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)
       (assoc :flash "user has been deleted")))
 
@@ -37,7 +38,8 @@
 
 (defview #'discover :html
   [request user]
-  (-> (response/redirect-after-post "/users")
+  (-> (named-path "index users")
+      response/redirect-after-post
       (assoc :template false)
       (assoc :flash "discovering user")))
 
@@ -87,7 +89,8 @@
 
 (defview #'register :html
   [request user]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)
       (assoc :flash "user has been created")
       (assoc :session {:id (:_id user)})))

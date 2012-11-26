@@ -18,7 +18,7 @@
   {:status 303
    :template false
    :session {:pending-id (:_id user)}
-   :headers {"Location" "/main/password"}})
+   :headers {"Location" (named-path "password page")}})
 
 ;; login
 
@@ -62,7 +62,7 @@
        [:div.actions
         [:input.btn.primary {:type "submit" :value "Login"}]]]]]
     [:div
-     [:form {:method "post" :action "/main/guest-login"}
+     [:form {:method "post" :action (named-path "guest login page")}
       [:fieldset
        [:legend "Guest Login"]
        [:div.clearfix
