@@ -77,8 +77,14 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     ((model/make-fetch-fn model/map->FeedSource collection-name)
-      params options)))
+     (s/increment (str collection-name " searched"))
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (:page options 1)
+                                  :per-page (:page-size options 20)))]
+       (map model/map->FeedSource records))))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

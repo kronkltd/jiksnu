@@ -97,7 +97,7 @@
 
 (def index*
   (model/make-indexer 'jiksnu.model.feed-source
-                      :sort-clause [{:_id 1}]))
+                      :sort-clause {:created -1}))
 
 (defaction index
   [& options]

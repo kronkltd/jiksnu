@@ -14,6 +14,23 @@
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
 
+;; index
+
+(defview #'index :html
+  [request {:keys [items] :as page}]
+  {:title "Feed Sources"
+   :body
+   (let [items (if *dynamic* [(FeedSource.)] items)]
+     (with-page "default"
+       (pagination-links page)
+       (bind-to "items"
+         (doall (index-section items page)))))})
+
+(defview #'index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Feed Sources"
+          :pages {:default (format-page-info page)}}})
+
 ;; process-updates
 
 (defview #'process-updates :html

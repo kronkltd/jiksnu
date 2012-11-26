@@ -211,7 +211,10 @@
      [:th "Watchers"]
      [:th "Updated"]
      [:th "Actions"]]]
-   [:tbody (map index-line sources)]])
+   [:tbody
+    (when *dynamic*
+      {:data-bind "foreach: $data"})
+    (map index-line sources)]])
 
 (defsection index-block [FeedSource :viewmodel]
   [items & [page]]
@@ -224,14 +227,29 @@
 (defsection index-line [FeedSource :html]
   [source & _]
   [:tr {:data-model "feed-source"}
-   [:td (:title source)]
-   [:td (:domain source)]
    [:td (link-to source)]
-   [:td (when (:hub source) "*")]
+   [:td (if *dynamic*
+          {:data-bind "text: domain"}
+          (:domain source))]
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: topic}, text: topic"}
+          {:href (:topic source)})
+     (when-not *dynamic*
+       (:topic source))]]
+   [:td (if *dynamic*
+          {:data-bind "text: hub"}
+          (:hub source))]
    #_[:td (:mode source)]
-   [:td (str (:status source))]
-   [:td (count (:watchers source))]
-   [:td (:updated source)]
+   [:td (if *dynamic*
+          {:data-bind "text: status"}
+          (str (:status source)))]
+   [:td (if *dynamic*
+          {:data-bind "text: ko.utils.unwrapObservable(watchers).length"}
+          (count (:watchers source)))]
+   [:td (if *dynamic*
+          {:data-bind "text: updated"}
+          (:updated source))]
    [:td (actions-section source)]])
 
 ;; index-section
@@ -245,7 +263,7 @@
 (defsection link-to [FeedSource :html]
   [source & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: _id"}
+        {:data-bind "attr: {href: '/main/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: title"}
         {:href (str "/admin/feed-sources/" (:_id source))})
    (:topic source)])
 
