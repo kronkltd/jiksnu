@@ -83,7 +83,7 @@
      [:th "Discovered"]
      [:th "Host Meta"]
      [:th "# Links"]
-     #_[:th "Actions"]]]
+     [:th "Actions"]]]
    [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map index-line domains)]])
 
@@ -117,7 +117,7 @@
     (if *dynamic*
       {:data-bind "text: links().length"}
       (count (:links domain)))]
-   #_[:th (actions-section domain)]])
+   [:th (actions-section domain)]])
 
 ;; link-to
 
