@@ -98,6 +98,27 @@
     item
     (add-link* item link)))
 
+(defn process-response-html
+  [item response]
+  (log/info "parsing html content")
+  (let [tree (response->tree response)]
+    (let [properties (reduce merge
+                             (map
+                              (fn [meta]
+                                (let [attrs (:attrs (log/spy meta))
+                                      property (:property attrs)
+                                      content (:content attrs)]
+                                  (when (and property content)
+                                    {property content})))
+                              (enlive/select tree [:meta])))]
+      (model.resource/set-field! item :properties properties)
+      )
+    (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
+      (model.resource/set-field! item :title title))
+    (let [links (get-links tree)]
+      (doseq [link links]
+        (add-link item (:attrs link))))))
+
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
@@ -115,15 +136,7 @@
       (model.resource/set-field! item :contentType content-type)
 
       (condp = content-type
-        "text/html"
-        (do
-          (log/info "parsing html content")
-          (let [tree (response->tree response)]
-            (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
-              (model.resource/set-field! item :title title))
-            (let [links (get-links tree)]
-              (doseq [link links]
-                (add-link item (:attrs link))))))
+        "text/html" (process-response-html item response)
         (log/infof "unknown content type: %s" content-type)))))
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")

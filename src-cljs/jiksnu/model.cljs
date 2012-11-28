@@ -170,6 +170,7 @@
                         "encoding"    nil
                         "location"    nil
                         "created"     nil
+                        "properties"  nil
                         "links"       (array)
                         "updated"     nil)
             "idAttribute" "_id"
