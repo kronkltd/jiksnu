@@ -41,6 +41,7 @@
       transforms/set-created-time
       transforms.feed-source/set-domain
       transforms.feed-source/set-local
+      transforms.feed-source/set-hub
       transforms.feed-source/set-status
       transforms.feed-source/set-resource))
 
