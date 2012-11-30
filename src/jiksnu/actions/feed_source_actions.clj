@@ -271,10 +271,12 @@
         (or (deref p discovery-timeout nil)
             (throw+ "Could not discover feed source"))))))
 
+(defn handle-pending-sources
+  [[url ch]]
+  (l/enqueue ch (find-or-create {:topic url})))
+
 (l/receive-all
- model/pending-sources
- (fn [[url ch]]
-   (l/enqueue ch (find-or-create {:topic url}))))
+ model/pending-sources handle-pending-sources)
 
 (definitializer
   (model.feed-source/ensure-indexes)
