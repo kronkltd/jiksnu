@@ -18,9 +18,9 @@
   [source]
   (actions.feed-source/delete source))
 
-(defaction remove-subscription
+(defaction unsubscribe
   [& options]
-  (apply actions.feed-source/remove-subscription options))
+  (apply actions.feed-source/unsubscribe options))
 
 (defaction fetch-updates
   [& args]

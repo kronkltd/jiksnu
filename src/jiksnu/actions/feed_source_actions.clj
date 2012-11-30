@@ -108,7 +108,7 @@
   [source]
   (model.feed-source/set-field! source :updated (time/now)))
 
-(declare remove-subscription)
+(declare unsubscribe)
 (declare send-unsubscribe)
 
 (defn get-activities
@@ -134,12 +134,12 @@
   (if (or true (seq (:watchers source)))
     (process-entries source feed)
     (do (log/warnf "no watchers for %s" (:topic source))
-        (remove-subscription source))))
+        (unsubscribe source))))
 
 (defn get-hub-link
   [feed]
   (-?> feed
-       (.getLink "hub") 
+       (.getLink "hub")
        .getHref str))
 
 (defn process-feed
@@ -157,8 +157,7 @@
       (model.feed-source/set-field! source :hub hub-link))
     (process-entries source feed)))
 
-;; TODO: Rename to unsubscribe and make an action
-(defaction remove-subscription
+(defaction unsubscribe
   "Action if user makes action to unsubscribe from remote source"
   [source]
   (send-unsubscribe
@@ -228,13 +227,12 @@
        (.printStackTrace ex))))
   source)
 
-;; TODO: special case local subscriptions
-;; TODO: should take a source
 (defaction subscribe
   "Send a subscription request to the feed"
   [source]
-  (update source)
-  (send-subscribe source)
+  (when-not (:local source)
+    (update source)
+    (send-subscribe source))
   source)
 
 (defn discover-source

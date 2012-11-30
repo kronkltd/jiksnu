@@ -38,9 +38,9 @@
   {:body params
    :template false})
 
-;; remove-subscription
+;; unsubscribe
 
-(defview #'remove-subscription :html
+(defview #'unsubscribe :html
   [request params]
   (-> (named-path "index feed-sources")
       response/redirect-after-post

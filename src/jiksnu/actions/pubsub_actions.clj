@@ -22,7 +22,7 @@
 (defn subscription-not-valid-error
   "Error response for invalid subscription"
   []
-  
+
   )
 
 ;; TODO: move to sections
@@ -81,7 +81,7 @@
   ;; remove feed subscriber
   (if-let [subscription (model.feed-source/find-record {:topic (:topic params)
                                                         :callback (:callback params)})]
-    (actions.feed-source/remove-subscription subscription)
+    (actions.feed-source/unsubscribe subscription)
     (subscription-not-found-error)))
 
 ;; TODO: extract hub params in filter

@@ -6,7 +6,7 @@
                                                    index
                                                    show
                                                    subscribe
-                                                   remove-subscription
+                                                   unsubscribe
                                                    watch]]
         [jiksnu.filters :only [parse-page parse-sorting]])
   (:require [jiksnu.model :as model]
@@ -34,9 +34,9 @@
   [action request]
   (-> request :params action))
 
-;; remove-subscription
+;; unsubscribe
 
-(deffilter #'remove-subscription :http
+(deffilter #'unsubscribe :http
   [action request]
   (if-let [source (-> request :params :id model/make-id model.feed-source/fetch-by-id)]
     (action source)))
