@@ -125,7 +125,7 @@
    (let [domain (actions.domain/current-domain)
          user (existance/a-user-exists)]
      (fetch-by-domain domain) => (contains user)))
- 
+
  (fact "#'get-user"
    (fact "when the user is found"
      (let [user (existance/a-user-exists)
@@ -147,7 +147,7 @@
 
    (fact "when the user's domain has a lrdd link"
      (let [domain (existance/a-remote-domain-exists)]
-       (model.domain/set-field domain :links [{:rel "lrdd"
+       (model.domain/set-field! domain :links [{:rel "lrdd"
                                                :template "http://example.com/main/xrd?uri={uri}"}])
        (let [user (existance/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
