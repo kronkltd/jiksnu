@@ -8,26 +8,19 @@
             [jiksnu.routes.helpers :as rh])
   (:import java.net.URI))
 
-(defn set-local
-  [conversation]
-  (if (contains? conversation :local)
-    conversation
-    (assoc conversation :local
-           (let [url (URI. (:url conversation))]
-             (= (:_id (actions.domain/current-domain))
-                (.getHost url))))))
-
 (defn set-update-source
   [conversation]
   (if (:update-source conversation)
     conversation
     (if-let [url (:url conversation)]
-      (let [resource (model/get-resource url)]
+      (let [resource (model/get-resource url)
+            atom-url (rh/formatted-url "show conversation" {:id (:_id conversation)} "atom")]
         (if-let [source (if (:local resource)
-                       (model/get-source (rh/formatted-url "show conversation" {:id (:_id conversation)} "atom"))
-                       (try
-                         (actions.feed-source/discover-source url)
-                         (catch RuntimeException ex)))]
+                          (model/get-source atom-url)
+                          (try
+                            (actions.feed-source/discover-source url)
+                            (catch RuntimeException ex
+                              (log/warn ex))))]
           (assoc conversation :update-source (:_id source))
           (throw+ "could not determine source")))
       (throw+ "Could not determine url"))))

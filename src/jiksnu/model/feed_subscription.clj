@@ -16,12 +16,26 @@
 (def create-validators
   (validation-set
    (presence-of :_id)
-   (presence-of :topic)))
+   (presence-of :url)
+   (presence-of :callback)
+   (presence-of :domain)
+   (acceptance-of :local         :accept (partial instance? Boolean))
+
+   (presence-of :created)
+   (presence-of :updated)))
+
+(defn set-field!
+  "Update field to value"
+  [item field value]
+  (log/debugf "setting %s (%s = %s)" (:_id item) field value)
+  (mc/update collection-name
+             {:_id (:_id item)}
+             {:$set {field value}}))
 
 (defn fetch-by-id
   [id]
-  (if-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSubscription record)))
+  (if-let [item (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSubscription item)))
 
 (defn prepare
   [params]
@@ -33,14 +47,16 @@
      params)))
 
 (defn create
-  [params & [options & _]]
-  (let [params (prepare params)
-        errors (create-validators params)]
+  [params]
+  (let [errors (create-validators params)]
     (if (empty? errors)
-      (let [result (mc/insert collection-name params)]
-        (if (result/ok? result)
-          (fetch-by-id (:_id params))
-          (throw+ {:type :error})))
+      (do
+        (log/debugf "Creating feed source: %s" params)
+
+        (let [result (mc/insert collection-name params)]
+         (if (result/ok? result)
+           (fetch-by-id (:_id params))
+           (throw+ {:type :error}))))
       (throw+ {:type :validation
                :errors errors}))))
 

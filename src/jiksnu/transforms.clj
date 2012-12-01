@@ -21,3 +21,9 @@
     record
     (assoc record :updated (time/now))))
 
+(defn set-local
+  [item]
+  (if (contains? item :local)
+    item
+    (let [resource (model/get-resource (:url item))]
+      (assoc item :local (:local resource)))))

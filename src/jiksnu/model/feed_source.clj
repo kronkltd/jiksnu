@@ -26,17 +26,17 @@
    (presence-of :updated)))
 
 (defn set-field!
-  "Updates user's field to value"
-  [user field value]
-  (log/debugf "setting %s (%s = %s)" (:_id user) field value)
+  "Update field to value"
+  [item field value]
+  (log/debugf "setting %s (%s = %s)" (:_id item) field value)
   (mc/update collection-name
-             {:_id (:_id user)}
+             {:_id (:_id item)}
              {:$set {field value}}))
 
 (defn fetch-by-id
   [id]
-  (when-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSource record)))
+  (when-let [item (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSource item)))
 
 (defn update
   [source params]
