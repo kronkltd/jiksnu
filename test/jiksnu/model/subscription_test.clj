@@ -104,8 +104,9 @@
    (fact "when the user is subscribed"
      (fact "should return true"
        (let [subscription (existance/a-subscription-exists)
-             actor (model.subscription/get-actor subscription)
-             target (model.subscription/get-target subscription)]
+             ;; NB: We're reversing these because we want to check the reverse
+             target (model.subscription/get-actor subscription)
+             actor (model.subscription/get-target subscription)]
          (subscribed? actor target) => true)))
 
    (fact "when the user is not subscribed"

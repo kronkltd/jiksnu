@@ -48,7 +48,7 @@
   (let [params (prepare-create params)]
     (if-let [item (model.resource/create params)]
       (do
-        (future (update item))
+        #_(future (update item))
         item)
       (throw+ "Could not create record"))))
 

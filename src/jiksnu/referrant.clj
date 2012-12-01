@@ -11,7 +11,7 @@
 
 (defn set-this
   [k v]
-  (log/debugf "setting this %s to %s" k v)
+  (log/debugf "setting this %s to %s" k (prn-str v))
   (dosync
    (alter this assoc k v)))
 
@@ -22,7 +22,7 @@
 
 (defn set-that
   [k v]
-  (log/debugf "setting that %s to %s" k v)
+  (log/debugf "setting that %s to %s" k (prn-str v))
   (dosync
    (alter that assoc k v)))
 

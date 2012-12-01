@@ -85,13 +85,17 @@
 
 (defn subscribing?
   "Does the actor have a subscription to the user"
-  [actor user]
-  (mc/any? collection-name {:from actor :to user}))
+  [actor target]
+  (let [params {:from (:_id actor)
+                :to (:_id target)}]
+    (mc/any? collection-name params)))
 
 (defn subscribed?
   "Does the user have a subscription to the actor"
-  [actor user]
-  (mc/any? collection-name {:from user :to actor}))
+  [actor target]
+  (let [params {:from (:_id target)
+                :to (:_id actor)}]
+    (mc/any? collection-name params)))
 
 (defn get-actor
   [subscription]
