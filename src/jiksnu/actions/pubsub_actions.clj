@@ -59,7 +59,7 @@
   (if-let [subscription (model.feed-source/find-record {:topic (:topic params)
                                                         :callback (:callback params)})]
     (actions.feed-source/unsubscribe subscription)
-    (subscription-not-found-error)))
+    (throw+ "subscription not found")))
 
 (defaction hub-dispatch
   "Handle pubsub requests against hub endpoint"
