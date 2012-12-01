@@ -90,7 +90,7 @@
 (defaction set-discovered!
   "marks the domain as having been discovered"
   [domain]
-  (model.domain/set-field domain :discovered true)
+  (model.domain/set-field! domain :discovered true)
   (let [id (:_id domain)
         domain (model.domain/fetch-by-id id)]
     (when-let [p (get @pending-discovers id)]
@@ -135,12 +135,12 @@
 ;; Occurs if the ping request caused an error
 (defaction ping-error
   [domain]
-  (model.domain/set-field domain :xmpp false)
+  (model.domain/set-field! domain :xmpp false)
   false)
 
 (defaction set-xmpp
   [domain value]
-  (model.domain/set-field domain :xmpp false))
+  (model.domain/set-field! domain :xmpp false))
 
 (defaction ping-response
   [domain]
@@ -155,7 +155,7 @@
   (let [resource (model/get-resource (statusnet-url domain))
         response (actions/invoke-action "resource" "update*" (str (:_id resource)))
         sconfig (json/read-json (:body (:body response)))]
-    (model.domain/set-field domain :statusnet-config sconfig)))
+    (model.domain/set-field! domain :statusnet-config sconfig)))
 
 (defn discover*
   [domain url]
