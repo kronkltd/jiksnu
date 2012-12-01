@@ -9,6 +9,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
@@ -184,7 +185,7 @@
   (let [domain (or (:domain options)
                    (get-this :domain)
                    (a-domain-exists))
-        feed-subscription (model.feed-subscription/create
+        feed-subscription (actions.feed-subscription/create
                            (factory :feed-subscription
                                     {:domain domain}))]
     (set-this :feed-subscription feed-subscription)
@@ -206,13 +207,15 @@
 
 (defn this-user-has-a-subscription
   []
-  (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
+  (let [subscription (model.subscription/create
+                      (factory :subscription {:actor (:_id (get-this :user))}))]
     (set-this :subscription subscription)
     subscription))
 
 (defn user-has-a-subscription
   []
-  (let [subscription (model.subscription/create (factory :subscription {:actor (:_id (get-this :user))}))]
+  (let [subscription (model.subscription/create
+                      (factory :subscription {:actor (:_id (get-this :user))}))]
     (set-this :subscription subscription)
     subscription))
 

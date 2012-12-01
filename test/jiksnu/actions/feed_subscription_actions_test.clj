@@ -1,6 +1,7 @@
 (ns jiksnu.actions.feed-subscription-actions-test
   (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-subscription-actions :only [create delete exists? index]]
+        [jiksnu.actions.feed-subscription-actions :only [create delete exists? index
+                                                         prepare-create]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact falsey future-fact truthy anything]])
@@ -27,7 +28,7 @@
    )
 
  (fact "#'create"
-   (let [params (factory :feed-subscription)]
+   (let [params (prepare-create (factory :feed-subscription))]
      (create params) => (partial instance? FeedSubscription)
      )
    )
@@ -36,5 +37,5 @@
    (model.feed-subscription/drop!)
    (:items (index)) => []
    )
- 
+
  )
