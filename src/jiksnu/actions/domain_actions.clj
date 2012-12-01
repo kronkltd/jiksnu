@@ -16,6 +16,7 @@
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
+            [lamina.core :as l]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -225,6 +226,12 @@
      :links [{:template template
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
+
+(defn- handle-pending-get-domain
+  [[p domain-name]]
+  (deliver p (find-or-create {:_id domain-name})))
+
+(l/receive-all model/pending-get-domain handle-pending-get-domain)
 
 (definitializer
   (current-domain)

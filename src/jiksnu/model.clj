@@ -261,6 +261,9 @@
 
 ;; async fetchers
 
+(defonce pending-get-domain (l/channel*
+                             :permanent? true
+                             :description "pending-get-domain"))
 (defonce pending-conversations (l/channel*
                                 :permanent? true
                                 :description "pending-conversations"))
@@ -302,7 +305,9 @@
     (l/enqueue pending-create-conversations result)
     (l/wait-for-result result 5000)))
 
-
+(defn get-domain
+  [domain-name]
+  (async-op pending-get-domain domain-name))
 
 (defn get-source
   [url]

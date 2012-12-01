@@ -1,7 +1,8 @@
 (ns jiksnu.transforms
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model])
+  (:import java.net.URI))
 
 (defn set-_id
   [record]
