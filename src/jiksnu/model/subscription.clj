@@ -59,14 +59,13 @@
             (map model/map->Subscription)))))
 
 (defn create
-  [subscription & options]
-  (let [subscription (prepare subscription)
-        errors (create-validators subscription)]
+  [params & [options]]
+  (let [errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "creating subscription: %s" (pr-str subscription))
-        (mc/insert collection-name subscription)
-        (fetch-by-id (:_id subscription)))
+        (log/debugf "creating subscription: %s" (pr-str params))
+        (mc/insert collection-name params)
+        (fetch-by-id (:_id params)))
       (throw+ {:type :validation :errors errors}))))
 
 (defn subscribe
