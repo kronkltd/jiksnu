@@ -12,7 +12,8 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
-            [lamina.core :as l]))
+            [lamina.core :as l])
+  (:import java.net.URI))
 
 (defn set-local
   [activity]
@@ -171,17 +172,23 @@
           item))
       (throw+ "could not determine author"))))
 
+(defn- set-mentioned*
+  [uri]
+  (let [uri-obj (URI. uri)
+        scheme (.getScheme uri-obj)]
+    (if (#{"http" "https"} scheme)
+      (let [resource (model/get-resource uri)]
+        (try
+          (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
+          (catch RuntimeException ex
+            nil)))
+      (actions.user/find-or-create-by-uri uri))))
+
 (defn set-mentioned
   [activity]
   (if-let [ids (->> activity
                     :mentioned-uris
-                    (map
-                     (fn [uri]
-                       (let [resource (model/get-resource uri)]
-                         (try
-                           (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
-                           (catch RuntimeException ex
-                             nil)))))
+                    (map set-mentioned*)
                     (filter identity)
                     seq)]
     (-> activity

@@ -107,14 +107,14 @@
                   "domain" "text"
                   :value (:domain user))
 
-    (control-line "Display Name" 
+    (control-line "Display Name"
                   "display-name" "text"
                   :value (:display-name user))
-    
+
     (control-line "First Name:"
                   "first-name" "text"
                   :value (:first-name user) )
-    
+
     (control-line "Last Name"
                   "last-name" "text"
                   :vaue (:last-name user))
@@ -153,7 +153,8 @@
 
 (defn user->person
   [user]
-  (let [author-uri (model.user/get-uri user)
+  (let [author-uri (or (:url user)
+                       (model.user/get-uri user))
         name (or (:name user)
                  (:display-name user)
                  (str (:first-name user) " " (:last-name user)))
@@ -161,7 +162,7 @@
         person (.newAuthor abdera/abdera-factory)]
     (doto person
       (.setName name)
-      
+
       (.addSimpleExtension ns/as   "object-type"       "activity" ns/person)
       (.addSimpleExtension ns/atom "id"                ""         id)
       (.addSimpleExtension ns/atom "uri"               ""         author-uri)
@@ -173,7 +174,7 @@
                        (.setRel "avatar")
                        (.setMimeType "image/jpeg")))
       (.addExtension (doto (.newLink abdera/abdera-factory)
-                       (.setHref (full-uri user))
+                       (.setHref author-uri)
                        (.setRel "alternate")
                        (.setMimeType "text/html")))
 
@@ -332,7 +333,7 @@
      [:td (if *dynamic*
             {:data-bind "text: username"}
             (:username item))]]
-    
+
     [:tr
      [:th  "Domain"]
      [:td

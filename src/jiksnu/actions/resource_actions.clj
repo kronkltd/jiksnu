@@ -104,21 +104,28 @@
     item
     (add-link* item link)))
 
+(defn meta->property
+  "Convert a meta element to a property map"
+  [meta]
+  (let [attrs (:attrs meta)
+        property (:property attrs)
+        content (:content attrs)]
+    (when (and property content)
+      {property content})))
+
+(defn get-meta-properties
+  "Get a map of all the meta properties in the document"
+  [tree]
+  (->> (enlive/select tree [:meta])
+       (map meta->property)
+       (reduce merge)))
+
 (defn process-response-html
   [item response]
   (log/info "parsing html content")
   (let [tree (response->tree response)]
-    (let [properties (reduce merge
-                             (map
-                              (fn [meta]
-                                (let [attrs (:attrs (log/spy meta))
-                                      property (:property attrs)
-                                      content (:content attrs)]
-                                  (when (and property content)
-                                    {property content})))
-                              (enlive/select tree [:meta])))]
-      (model.resource/set-field! item :properties properties)
-      )
+    (let [properties (get-meta-properties tree)]
+      (model.resource/set-field! item :properties properties))
     (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
       (model.resource/set-field! item :title title))
     (let [links (get-links tree)]
