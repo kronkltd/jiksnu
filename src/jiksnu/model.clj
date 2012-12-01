@@ -230,6 +230,16 @@
   (fn []
     (mc/remove collection-name)))
 
+(defn make-set-field!
+  [collection-name]
+  (fn [item field value]
+    (when-not (= (get item field) value)
+      (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+      (s/increment (str collection-name " field set"))
+      (mc/update collection-name
+        {:_id (:_id item)}
+        {:$set {field value}}))))
+
 ;; rdf helpers
 
 (defn triples->model
@@ -408,7 +418,7 @@
                     (constantly url)))
 
   (s/setup "localhost" 8125)
-  
+
   (set-database!)
 
   (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)

@@ -24,12 +24,7 @@
    (presence-of :updated)
    (presence-of :_id)))
 
-(defn prepare
-  [subscription]
-  (-> subscription
-      set-_id
-      set-updated-time
-      set-created-time))
+(def set-field! (model/make-set-field! collection-name))
 
 (defn drop!
   []

@@ -24,13 +24,7 @@
    (presence-of :created)
    (presence-of :updated)))
 
-(defn set-field!
-  "Update field to value"
-  [item field value]
-  (log/debugf "setting %s (%s = %s)" (:_id item) field value)
-  (mc/update collection-name
-             {:_id (:_id item)}
-             {:$set {field value}}))
+(def set-field!    (model/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]

@@ -30,15 +30,7 @@
     (model/map->Conversation conversation)
     (log/warnf "Could not find conversation: %s" id)))
 
-(defn set-field!
-  "Updates item's field to value"
-  [item field value]
-  (when-not (= (get item field) value)
-    (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
-    (s/increment (str collection-name " field set"))
-    (mc/update collection-name
-      {:_id (:_id item)}
-      {:$set {field value}})))
+(def set-field! (model/make-set-field! collection-name))
 
 (defn create
   [record]

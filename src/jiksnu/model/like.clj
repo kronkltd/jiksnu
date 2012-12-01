@@ -27,6 +27,8 @@
       set-created-time
       set-updated-time))
 
+(def set-field! (model/make-set-field! collection-name))
+
 (defn drop!
   []
   (mc/remove collection-name))

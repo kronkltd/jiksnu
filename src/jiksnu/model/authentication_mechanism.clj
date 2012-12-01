@@ -7,6 +7,8 @@
 
 (def collection-name "authentication_mechanisms")
 
+(def set-field! (model/make-set-field! collection-name))
+
 (defn create
   [options]
   (log/debugf "creating auth mechanism: %s" options)

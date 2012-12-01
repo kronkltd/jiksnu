@@ -14,9 +14,10 @@
 (def collection-name "groups")
 (defonce page-size 20)
 
-(def count-records (model/make-counter collection-name))
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
+(def set-field!    (model/make-set-field! collection-name))
+(def count-records (model/make-counter    collection-name))
+(def delete        (model/make-deleter    collection-name))
+(def drop!         (model/make-dropper    collection-name))
 
 (def create-validators
   (validation-set

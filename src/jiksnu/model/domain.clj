@@ -69,12 +69,7 @@
   ;; TODO: This should push only if the link is not yet there
   (mc/update collection-name {:$pushAll {:links links}}))
 
-(defn set-field
-  [domain field value]
-  (s/increment "domains field set")
-  (mc/update collection-name
-   {:_id (:_id domain)}
-   {:$set {field value}}))
+(def set-field! (model/make-set-field! collection-name))
 
 (defn ping-request
   [domain]

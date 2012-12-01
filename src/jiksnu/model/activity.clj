@@ -38,6 +38,8 @@
    (presence-of   :updated)
    ))
 
+(def set-field! (model/make-set-field! collection-name))
+
 (defn get-author
   [activity]
   (-> activity
