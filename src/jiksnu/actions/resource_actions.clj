@@ -41,10 +41,16 @@
       transforms/set-updated-time
       transforms/set-created-time))
 
+(declare update)
+
 (defaction create
   [params]
-  (let [item (prepare-create params)]
-    (model.resource/create item)))
+  (let [params (prepare-create params)]
+    (if-let [item (model.resource/create params)]
+      (do
+        (future (update item))
+        item)
+      (throw+ "Could not create record"))))
 
 (defaction find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
