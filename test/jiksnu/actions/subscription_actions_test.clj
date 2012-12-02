@@ -34,39 +34,29 @@
 
  (fact "get-subscribers"
    (fact "when there are subscribers"
-     (fact "should not be empty"
-       (let [user (existance/a-user-exists)
-             subscriber (existance/a-user-exists)
-             subscription (model.subscription/create
-                           (factory :subscription
-                                    {:from (:_id subscriber)
-                                     :to (:_id user)}))]
-         (get-subscribers user) =>
-         (every-checker
-          vector?
-          (comp (partial instance? User) first)
-          (fn [[_ {:keys [items] :as page}]]
-            (fact
-              (doseq [subscription items]
-                subscription => (partial instance? Subscription)))))))))
+     (let [subscription (existance/a-subscription-exists)
+           target (model.subscription/get-target subscription)]
+       (get-subscribers target) =>
+       (every-checker
+        vector?
+        (comp (partial instance? User) first)
+        (fn [[_ {:keys [items] :as page}]]
+          (fact
+            (doseq [subscription items]
+              subscription => (partial instance? Subscription))))))))
 
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
-     (fact "should return a sequence of subscriptions"
-       (let [user (existance/a-user-exists)
-             subscribee (existance/a-user-exists)
-             subscription (model.subscription/create
-                           (factory :subscription
-                                    {:from (:_id user)
-                                     :to (:_id subscribee)}))]
-         (get-subscriptions user) =>
-         (every-checker
-          vector?
-          #(= user (first %))
-          (fn [response]
-            (let [subscriptions (second response)]
-              (fact
-                subscriptions =>  map?
-                (:items subscriptions) =>
-                (partial every? (partial instance? Subscription))))))))))
+     (let [subscription (existance/a-subscription-exists)
+           actor (model.subscription/get-actor subscription)]
+       (get-subscriptions actor) =>
+       (every-checker
+        vector?
+        #(= actor (first %))
+        (fn [response]
+          (let [subscriptions (second response)]
+            (fact
+              subscriptions =>  map?
+              (:items subscriptions) =>
+              (partial every? (partial instance? Subscription)))))))))
  )

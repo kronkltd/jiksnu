@@ -119,7 +119,7 @@
 
 (defaction subscribed
   [actor user]
-  (model.subscription/create
+  (create
    {:from (:_id actor)
     :to (:_id user)
     :local false}))
