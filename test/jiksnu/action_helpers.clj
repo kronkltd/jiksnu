@@ -5,7 +5,8 @@
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [lamina.core :only [permanent-channel]]
         [midje.sweet :only [fact]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]
+            jiksnu.routes))
 
 (def page-names
   {
