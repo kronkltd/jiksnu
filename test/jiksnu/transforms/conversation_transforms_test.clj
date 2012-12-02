@@ -12,24 +12,6 @@
 
 (test-environment-fixture
 
- (fact "#'set-local"
-   (fact "when the local flag is already set"
-     (let [conversation-1 (factory :conversation {:local true})
-           conversation-2 (factory :conversation {:local false})]
-       (set-local conversation-1) => conversation-1
-       (set-local conversation-2) => conversation-2))
-   (fact "when the local flag is not set"
-     (fact "when the url is local"
-       (let [domain (actions.domain/current-domain)
-             url (make-uri (:_id domain))
-             conversation (factory :conversation {:url url})]
-         (set-local conversation) => (contains {:local true})))
-     (fact "when the url is not local"
-       (let [domain (existance/a-domain-exists)
-             url (make-uri (:_id domain))
-             conversation (factory :conversation {:url url})]
-         (set-local conversation) => (contains {:local false})))))
-
  (fact "#'set-update-source"
    (fact "when the update source is set"
      (let [source (existance/a-feed-source-exists)

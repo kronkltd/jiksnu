@@ -1,7 +1,5 @@
 (ns jiksnu.helpers.subscription-helpers-test
-  (:use [ciste.config :only [with-environment]]
-        clj-factory.core
-        jiksnu.test-helper
+  (:use [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.helpers.subscription-helpers
         midje.sweet)
   (:require [clj-tigase.element :as element]
@@ -15,19 +13,9 @@
 (test-environment-fixture
 
  (fact "subscriber-response-element"
-   (fact "should"
-     (let [user (existance/a-user-exists)
-           subscribee (existance/a-user-exists)
-           subscription (model.subscription/subscribe
-                         (:_id user) (:_id subscribee))]
-       (let [response (subscriber-response-element subscription)]
-         response => vector?))))
+   (let [subscription (existance/a-subscription-exists)]
+     (subscriber-response-element subscription) => vector?))
 
  (fact "subscribe-request"
-   (fact "should"
-     (let [user (existance/a-user-exists)
-           subscribee (existance/a-user-exists)
-           subscription (model.subscription/subscribe
-                         (:_id user) (:_id subscribee))]
-       (let [response (subscribe-request subscription)]
-         response => vector?)))))
+   (let [subscription (existance/a-subscription-exists)]
+     (subscribe-request subscription) => vector?)))
