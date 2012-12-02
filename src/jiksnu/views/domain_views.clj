@@ -67,7 +67,7 @@
       ["XRD" {"xmlns" ns/xrd
               "xmlns:hm" ns/host-meta}
        ["hm:Host" domain]
-       ["Subject" domain] 
+       ["Subject" domain]
        (map
         (fn [{:keys [title rel href template] :as link}]
           [:Link (merge {}
@@ -139,7 +139,7 @@
               (with-page "users"
                 (pagination-links {})
                 (bind-to "items"
-                  (index-section [(User.)]))))])})
+                  (index-section users))))])})
 
 (defview #'show :model
   [request domain]
