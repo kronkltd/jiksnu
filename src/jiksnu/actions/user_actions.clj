@@ -226,15 +226,15 @@
        :alias full-uri
        :links
        [
-        {:rel ns/wf-profile 
+        {:rel ns/wf-profile
          :type "text/html"
          :href full-uri}
-        
+
         {:rel ns/hcard
          :type "text/html"
          :href full-uri}
 
-        {:rel ns/xfn 
+        {:rel ns/xfn
          :type "text/html"
          :href full-uri}
 
@@ -255,18 +255,18 @@
         {:rel ns/salmon-mention :href (model.user/salmon-link user)}
         {:rel ns/oid-provider   :href full-uri}
         {:rel ns/osw-service    :href (str "xmpp:" (:username user) "@" (:domain user))}
-        
+
 
         {:rel "magic-public-key"
          :href (-> user
                    model.key/get-key-for-user
                    model.key/magic-key-string)}
 
-        {:rel ns/ostatus-subscribe 
+        {:rel ns/ostatus-subscribe
          :template (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}
 
 
-        {:rel ns/twitter-username 
+        {:rel ns/twitter-username
          :href (str "http://" (config :domain) "/api/")
          :property [{:type "http://apinamespace.org/twitter/username"
                      :value (:username user)}]}]})
@@ -291,7 +291,8 @@
   "Extract user information from atom element"
   [^Person person]
   (log/info "converting person to user")
-  (let [id (str (.getUri person))
+  (let [id (or (abdera/get-extension person ns/atom "id")
+               (str (.getUri person)))
         ;; TODO: check for custom domain field first?
         domain-name (model.user/get-domain-name id)
         domain (actions.domain/get-discovered {:_id domain-name})
@@ -303,8 +304,8 @@
       (let [email (.getEmail person)
             name (abdera/get-name person)
             note (abdera/get-note person)
-            uri (str (.getUri person))
-            ;; homepage 
+            url (str (.getUri person))
+            ;; homepage
             local-id (-> person
                          (abdera/get-extension-elements ns/statusnet "profile_info")
                          (->> (map #(abdera/attr-val % "local_id")))
@@ -314,7 +315,7 @@
                          :id id
                          :username username
                          :links links}
-                        (when uri      {:uri uri})
+                        (when url      {:url url})
                         (when note     {:bio note})
                         (when email    {:email email})
                         (when local-id {:local-id local-id})

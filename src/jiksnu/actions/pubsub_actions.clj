@@ -28,7 +28,7 @@
             url (model/make-subscribe-uri (:callback params) params)
             ;; TODO: handle this in resources?
             response-channel (http/http-request {:method :get
-                                                 :url (log/spy url)
+                                                 :url url
                                                  :auto-transform true})]
         (let [response @response-channel]
           (if (= 200 (:status response))
