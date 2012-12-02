@@ -267,15 +267,15 @@
 (defonce pending-get-domain (l/channel*
                              :permanent? true
                              :description "pending-get-domain"))
+(defonce pending-get-source (l/channel*
+                             :permanent? true
+                             :description "pending-get-source"))
 (defonce pending-conversations (l/channel*
                                 :permanent? true
                                 :description "pending-conversations"))
 (defonce pending-create-conversations (l/channel*
                                        :permanent? true
                                        :description "pending-create-conversations"))
-(defonce pending-sources (l/channel*
-                          :permanent? true
-                          :description "pending-sources"))
 (defonce pending-resources (l/channel*
                             :permanent? true
                             :description "pending-resources"))
@@ -312,9 +312,7 @@
 
 (defn get-source
   [url]
-  (let [result (l/result-channel)]
-    (l/enqueue pending-sources [url result])
-    (l/wait-for-result result 5000)))
+  (async-op pending-get-source url))
 
 (defn get-resource
   [url]

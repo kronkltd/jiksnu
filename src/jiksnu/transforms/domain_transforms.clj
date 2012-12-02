@@ -1,4 +1,5 @@
-(ns jiksnu.transforms.domain-transforms)
+(ns jiksnu.transforms.domain-transforms
+  (:use [ciste.config :only [config]]))
 
 (defn set-discovered
   [item]
@@ -10,5 +11,5 @@
   [item]
   (if (contains? item :local)
     item
-    (assoc item :local false)))
+    (assoc item :local (= (:_id item) (config :domain)))))
 
