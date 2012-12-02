@@ -29,7 +29,7 @@
                  (let [user (existance/a-user-exists)
                        subscriptions
                        (doall (map (fn [n]
-                                     (existance/user-has-a-subscription))
+                                     (existance/a-subscription-exists))
                                    (range 15)))
                        request {:action action}
                        response (filter-action action request)]
@@ -48,8 +48,7 @@
          (fact "when the format is :html"
            (with-format :html
              (fact "when there is a subscription"
-               (let [user (existance/a-user-exists)
-                     subscription (existance/user-has-a-subscription)
+               (let [subscription (existance/a-subscription-exists)
                      request {:action action
                               :params {:id (str (:_id subscription))}}
                      response (filter-action action request)]
@@ -57,5 +56,5 @@
                  (every-checker
                   map?
                   (comp status/redirect? :status))))))))))
- 
+
  )
