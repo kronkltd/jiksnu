@@ -70,8 +70,15 @@
   [params]
   (let [source (model/get-source (:topic params))]
     (if (:local source)
-      (create {:source (:_id source)
-               :url (:topic source)})
+      (let [params (merge {:source (:_id source)
+                           :callback (:callback params)
+                           :verify-token (:verify-token params)
+                           :url (:topic source)}
+                          (when-let [lease (:lease-seconds params)]
+                            {:lease-seconds lease})
+                          (when-let [secret (:secret params)]
+                            {:secret secret}))]
+        (create params))
       (throw+ "Hub not authoritative for source"))))
 
 (definitializer

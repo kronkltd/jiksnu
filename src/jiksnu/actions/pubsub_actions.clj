@@ -15,17 +15,16 @@
 
 (defn verify-subscribe-sync
   "Verify subscription request in this thread"
-  [source params]
+  [feed-subscription params]
   (if-let [callback (:callback params)]
-    (if (:topic source)
+    (if (:url feed-subscription)
       ;; sending verification request
-      (let [params (merge {:hub.mode          (:mode source)
-                           :hub.topic         (:topic source)
-                           :hub.lease_seconds (:lease-seconds source)
-                           :hub.verify_token  (:verify-token source)}
-                          (if (:challenge source)
-                            {:hub.challenge (:challenge source)}))
-            url (model/make-subscribe-uri (:callback params) params)
+      (let [params {:hub.mode          "subscribe"
+                    :hub.topic         (:url feed-subscription)
+                    :hub.lease_seconds (:lease-seconds feed-subscription)
+                    :hub.challenge     (:challenge feed-subscription)
+                    :hub.verify_token  (:verify-token feed-subscription)}
+            url (model/make-subscribe-uri (:callback feed-subscription) params)
             ;; TODO: handle this in resources?
             response-channel (http/http-request {:method :get
                                                  :url url
@@ -34,7 +33,7 @@
           (if (= 200 (:status response))
             {:status 204}
             {:status 404})))
-      (throw+ "feed source is not valid"))
+      (throw+ "feed subscription is not valid"))
     (throw+ "Could not determine callback url")))
 
 (defaction verify-subscription-async
