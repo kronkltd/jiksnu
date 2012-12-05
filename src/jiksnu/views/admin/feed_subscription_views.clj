@@ -2,7 +2,8 @@
   (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.feed-subscription-actions :only [delete index show]]
-        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [admin-index-section bind-to format-page-info
+                                pagination-links with-page]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [ring.util.response :as response]))
@@ -15,14 +16,13 @@
    :body
    (with-page "default"
      (pagination-links response)
-     (admin-index-section items response))})
+     (bind-to "items"
+      (admin-index-section items response)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Subscriptions"
           :pages {:default (format-page-info page)}}})
-
-
 
 ;; (defview #'show :html
 ;;   [request subscription]

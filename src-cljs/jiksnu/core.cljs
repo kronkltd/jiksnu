@@ -24,7 +24,8 @@
 
 (def class-names
   ["Activity" "AuthenticationMechanism" "Conversation"
-   "Domain" "Subscription" "FeedSource" "Resource" "User"])
+   "Domain" "Subscription" "FeedSource" "FeedSubscription"
+   "Resource" "User"])
 
 (def logging-levels
   {
@@ -40,8 +41,7 @@
   (when-let [pages (.-pages data)]
     (let [page-model (.get _model "pages")]
       (doseq [pair (js->clj pages)]
-        (let [[k v] pair
-              ]
+        (let [[k v] pair]
           (log/info *logger* k)
           (let [page (clj->js (assoc v :id k))]
            (.add page-model page)))))))
@@ -156,6 +156,7 @@
 (def get-conversation             (partial get-model "conversations"))
 (def get-domain                   (partial get-model "domains"))
 (def get-feed-source              (partial get-model "feedSources"))
+(def get-feed-subscription        (partial get-model "feedSubscriptions"))
 (def get-group                    (partial get-model "groups"))
 (def get-subscription             (partial get-model "subscriptions"))
 (def get-user                     (partial get-model "users"))
@@ -259,9 +260,9 @@
 
   (doseq [[k v] logging-levels]
     (log/set-level (log/get-logger k) v))
-  
+
   ;; (log/start-display (log/fancy-output))
-  
+
   (log/start-display (log/console-output))
 
   (log/info *logger* "init")
@@ -273,7 +274,7 @@
 
   (set! _router (Router.))
   (.start (.-history js/Backbone) (js-obj "pushState" true))
-  
+
   (handlers/setup-handlers)
 
   (set! _model (model/AppViewModel.))
@@ -291,7 +292,7 @@
   (ko/apply-bindings _view)
 
   (.addClass ($ :html) "bound")
-    
+
   #_(stats/fetch-statistics _view))
 
 (main)

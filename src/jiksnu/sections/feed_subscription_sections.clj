@@ -2,6 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button show-section index-line
                                        index-section link-to update-button]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-block admin-index-line control-line]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
@@ -15,13 +16,18 @@
   [:table.table.feed-subscriptions
    [:thead
     [:tr
-     [:th "Id"]]]
-   [:tbody
+     [:th "Id"]
+     [:th "Url"]]]
+   [:tbody (when *dynamic*
+             {:data-bind "foreach: $data"})
     (map #(admin-index-line % options) subscriptions)]])
 
 ;; admin-index-line
 
 (defsection admin-index-line [FeedSubscription :html]
-  [subscription & [options & _]]
-  [:tr {:data-id (str (:_id subscription)) :data-model "feed-subscription"}
-   [:td (str (:_id subscription))]])
+  [item & [options & _]]
+  [:tr {:data-model "feed-subscription"}
+   [:td (str (:_id item))]
+   [:td (if *dynamic*
+          {:data-bind "text: url"}
+          (:url item))]])

@@ -14,6 +14,7 @@
    "conversation"             "conversations"
    "domain"                   "domains"
    "feed-source"              "feedSources"
+   "feed-subscription"        "feedSubscriptions"
    "group"                    "groups"
    "resource"                 "resources"
    "subscription"             "subscriptions"
@@ -28,6 +29,7 @@
    "conversations"
    "domains"
    "feedSources"
+   "feedSubscriptions"
    "groups"
    "resources"
    "subscriptions"
@@ -316,6 +318,23 @@
             "type" "FeedSources"
             "model" FeedSource)))
 
+(def FeedSubscription
+  (.extend backbone/Model
+           (js-obj
+            "type" "FeedSubscription"
+            "url" (fn []
+                    (this-as this
+                      (format "/model/feedSubscriptions/%s.model" (.-id this))))
+            "defaults" (js-obj
+                        "url"    nil)
+            "idAttribute" "_id"
+            "initialize" initializer)))
+
+(def FeedSubscriptions
+  (.extend backbone/Collection
+           (js-obj
+            "type" "FeedSubscription"
+            "model" FeedSubscription)))
 
 (def Conversation
   (.extend backbone/Model
@@ -367,6 +386,7 @@
 (def conversations  (Conversations.))
 (def domains       (Domains.))
 (def feed-sources  (FeedSources.))
+(def feed-subscriptions (FeedSubscriptions.))
 (def groups        (Groups.))
 (def notifications (Notifications.))
 (def observables   (js-obj))
@@ -386,6 +406,7 @@
              "domains"                  domains
              "currentUser"              nil
              "feedSources"              feed-sources
+             "feedSubscriptions"        feed-subscriptions
              "followers"                (array)
              "following"                (array)
              "groups"                   groups
