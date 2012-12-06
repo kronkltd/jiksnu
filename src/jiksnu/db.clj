@@ -17,10 +17,10 @@
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
+            [monger.db :as db]
             [monger.query :as mq]
             monger.joda-time
-            monger.json
-            )
+            monger.json)
   (:import com.mongodb.WriteConcern
            com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
@@ -43,9 +43,7 @@
   "Drop all collections"
   []
   (log/debug "dropping all collections")
-  (doseq [entity [] #_entity-names]
-    (log/debugf "dropping %s" entity)
-    (drop-collection entity)))
+  (db/drop-db))
 
 (defn set-database!
   "Set the connection for mongo"

@@ -21,6 +21,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            [jiksnu.rdf :as rdf]
             [net.cgrand.enlive-html :as enlive]))
 
 (test-environment-fixture
@@ -122,7 +123,7 @@
                     (fact
                       (let [body (:body response)]
                         body => (partial every? vector?)
-                        (let [m (model/triples->model body)]
+                        (let [m (rdf/triples->model body)]
                           m => truthy)))))))))))))
 
  )

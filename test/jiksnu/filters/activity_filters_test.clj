@@ -18,6 +18,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]))
@@ -44,7 +45,7 @@
                                     :body element
                                     })
                            request (packet/make-request packet)]
-                       (filter-action action request) => activity?)))))))))))
+                       (filter-action action request) => model/activity?)))))))))))
 
  (fact "filter-action #'actions.activity/show"
    (let [action #'actions.activity/show]
@@ -65,7 +66,7 @@
                    request (packet/make-request packet)]
                (filter-action action request) =>
                (every-checker
-                activity?))))))))
+                model/activity?))))))))
 
  (fact "filter-action #'actions.activity/oembed"
    (let [action #'actions.activity/oembed]

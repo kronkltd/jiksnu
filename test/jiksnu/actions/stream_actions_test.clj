@@ -32,9 +32,7 @@
          (every-checker
           map?
           #(seq? (:items %))
-          #(= 1 (:total-records %))
-          ;; #(every? activity? (first %))
-          )))))
+          #(= 1 (:total-records %)))))))
 
  (fact "#'user-timeline"
    (fact "when the user has activities"

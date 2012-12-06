@@ -15,7 +15,8 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util])
   (:import jiksnu.model.FeedSource))
 
 (test-environment-fixture

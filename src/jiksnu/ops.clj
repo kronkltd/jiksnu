@@ -19,7 +19,7 @@
   [ch params]
   (let [p (promise)
         description (lamina.core.utils/description (lamina.core.channel/receiver-node ch))]
-    (log/infof "enqueuing #<Channel \"%s\"> << %s" description (prn-str params))
+    (log/debugf "enqueuing #<Channel \"%s\"> << %s" description (pr-str params))
     (l/enqueue ch [p params])
     (or (deref p default-timeout nil)
         (throw+ "timeout"))))
