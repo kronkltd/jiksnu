@@ -12,6 +12,7 @@
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
@@ -192,8 +193,8 @@
   [[p item]]
   (deliver p (update* item)))
 
-(l/receive-all model/pending-get-resource     handle-pending-get-resource)
-(l/receive-all model/pending-update-resources handle-pending-update-resources)
+(l/receive-all ch/pending-get-resource     handle-pending-get-resource)
+(l/receive-all ch/pending-update-resources handle-pending-update-resources)
 
 (definitializer
   (model.resource/ensure-indexes)

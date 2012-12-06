@@ -139,7 +139,7 @@
                      (merge sort-clause)
                      (mq/paginate :page (:page options 1)
                                   :per-page (:page-size options 20)))]
-       (map map->User records))))
+       (map model/map->User records))))
 
 (defn get-user
   "Find a user by username and domain"
@@ -198,7 +198,7 @@
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)
-        user (map->User merged-user)]
+        user (model/map->User merged-user)]
     (s/increment "users updated")
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))

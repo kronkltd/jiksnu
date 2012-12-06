@@ -11,6 +11,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
@@ -18,6 +19,7 @@
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
@@ -74,7 +76,7 @@
 (defn fetch-xrd*
   [url]
   (let [resource (ops/get-resource url)
-        response (model/update-resource resource)]
+        response (ops/update-resource resource)]
     (try
       (if-let [body (:body response)]
         (cm/string->document body)
@@ -85,7 +87,7 @@
 
 (defn fetch-xrd
   [domain url]
-  (if-let [xrd (->> url model/path-segments rest
+  (if-let [xrd (->> url util/path-segments rest
                     (map #(str % ".well-known/host-meta"))
                     (cons (model.domain/host-meta-link domain))
                     (keep fetch-xrd*) first)]
@@ -238,7 +240,7 @@
   [[p domain-name]]
   (deliver p (find-or-create {:_id domain-name})))
 
-(l/receive-all model/pending-get-domain handle-pending-get-domain)
+(l/receive-all ch/pending-get-domain handle-pending-get-domain)
 
 (definitializer
   (current-domain)

@@ -59,7 +59,7 @@
           (if-let [parent (model.activity/fetch-by-remote-id uri)]
             (assoc params :parent (:_id parent))
             (do
-              (model/update-resource resource)
+              (ops/update-resource resource)
               params))
           params)
         params))

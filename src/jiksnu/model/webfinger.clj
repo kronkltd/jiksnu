@@ -11,6 +11,7 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.User))
@@ -41,7 +42,7 @@
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
     (->> xrd
          (cm/query query-str)
-         model/force-coll
+         util/force-coll
          (keep #(.getAttributeValue % "href"))
          first)))
 
@@ -58,7 +59,7 @@
   (try
     (->> xrd
          (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
-         model/force-coll
+         util/force-coll
          (keep #(.getValue %))
          first)
     ;; TODO: What are the error risks here?
@@ -109,14 +110,14 @@
   [xrd]
   (->> xrd
        (cm/query "//*[local-name() = 'Link']")
-       model/force-coll
+       util/force-coll
        (map parse-link)))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
   [xrd]
-  (->> (concat (model/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
-               (model/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
+  (->> (concat (util/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
+               (util/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))
 
 (defn get-username-from-identifiers

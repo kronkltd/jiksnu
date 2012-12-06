@@ -9,6 +9,7 @@
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -109,8 +110,8 @@
   [ch]
   (l/enqueue ch (create {:local true})))
 
-(l/receive-all model/pending-get-conversation handle-get-conversation)
-(l/receive-all model/pending-create-conversations enqueue-create-local)
+(l/receive-all ch/pending-get-conversation handle-get-conversation)
+(l/receive-all ch/pending-create-conversations enqueue-create-local)
 
 (definitializer
   (require-namespaces

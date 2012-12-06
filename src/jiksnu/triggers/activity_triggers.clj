@@ -48,7 +48,7 @@
         link (model/extract-atom-link uri)
         source (ops/get-source link)
         resource (ops/get-resource link)
-        feed (abdera/parse-xml-string (model/update-resource resource))
+        feed (abdera/parse-xml-string (ops/update-resource resource))
         mentioned-user-params (-> feed .getAuthor actions.user/person->user)]
     (actions.user/find-or-create-by-remote-id {:id uri} {})))
 

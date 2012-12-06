@@ -63,7 +63,7 @@
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [url (actions.domain/get-user-meta-url domain id)]
       (let [resource (ops/get-resource url)
-            response (model/update-resource resource)]
+            response (ops/update-resource resource)]
         (cm/string->document (:body response))))))
 
 (defn set-update-source
@@ -338,7 +338,7 @@
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
     (let [resource (ops/get-resource url)
-          response (model/update-resource resource)]
+          response (ops/update-resource resource)]
       (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 

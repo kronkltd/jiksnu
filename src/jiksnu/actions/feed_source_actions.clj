@@ -18,6 +18,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.ops :as ops]
@@ -271,7 +272,7 @@
   [[p url]]
   (deliver p (find-or-create {:topic url})))
 
-(l/receive-all model/pending-get-source handle-pending-get-source)
+(l/receive-all ch/pending-get-source handle-pending-get-source)
 (l/receive-all pending-entries process-entry)
 
 (definitializer
