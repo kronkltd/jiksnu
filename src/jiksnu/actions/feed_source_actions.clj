@@ -31,7 +31,18 @@
   ^{:doc "Channel containing list of sources to be updated"}
   pending-updates (l/permanent-channel))
 
+(defonce pending-entries
+  (l/permanent-channel))
+
 (defonce pending-discovers (ref {}))
+
+(def discovery-timeout 5000)
+
+(defn get-hub-link
+  [feed]
+  (-?> feed
+       (.getLink "hub")
+       .getHref str))
 
 (defn prepare-create
   [source]
@@ -113,36 +124,19 @@
 (declare unsubscribe)
 (declare send-unsubscribe)
 
-(defn get-activities
-  "extract the activities from a feed"
-  [source feed]
-  (keep (fn [entry]
-          (try
-            (actions.activity/entry->activity entry feed source)
-            (catch RuntimeException ex
-              (.printStackTrace ex))))
-        (.getEntries feed)))
-
-(defn process-entries
-  [source feed]
-  (doseq [activity (get-activities source feed)]
-    (try (actions.activity/find-or-create activity)
-         (catch Exception ex
-           (log/error ex)
-           (.printStackTrace ex)))))
+(defn process-entry
+  [[feed source entry]]
+  (let [params (actions.activity/entry->activity entry feed source)]
+    (actions.activity/find-or-create params)))
 
 (defn parse-feed
   [source feed]
+  ;; TODO: use watched? fn
   (if (or true (seq (:watchers source)))
-    (process-entries source feed)
+    (doseq [entry (.getEntries feed)]
+      (l/enqueue pending-entries [feed source entry]))
     (do (log/warnf "no watchers for %s" (:topic source))
         (unsubscribe source))))
-
-(defn get-hub-link
-  [feed]
-  (-?> feed
-       (.getLink "hub")
-       .getHref str))
 
 (defn process-feed
   [source feed]
@@ -157,7 +151,7 @@
     (mark-updated source)
     (if-let [hub-link (get-hub-link feed)]
       (model.feed-source/set-field! source :hub hub-link))
-    (process-entries source feed)))
+    (parse-feed source feed)))
 
 (defaction unsubscribe
   "Action if user makes action to unsubscribe from remote source"
@@ -203,8 +197,8 @@
 (defaction remove-watcher
   [source user]
   #_(model.feed-source/update
-    (select-keys source [:_id])
-    {:$pull {:watchers (:_id user)}})
+      (select-keys source [:_id])
+      {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defn update*
@@ -253,8 +247,6 @@
   (update* item)
   item)
 
-(def discovery-timeout 5000)
-
 (defn get-discovered
   "Returns a copy of that domain once it's properly discovered"
   [item]
@@ -277,8 +269,8 @@
   [[p url]]
   (deliver p (find-or-create {:topic url})))
 
-(l/receive-all
- model/pending-get-source handle-pending-get-source)
+(l/receive-all model/pending-get-source handle-pending-get-source)
+(l/receive-all pending-entries process-entry)
 
 (definitializer
   (model.feed-source/ensure-indexes)

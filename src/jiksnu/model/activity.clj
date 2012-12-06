@@ -54,14 +54,8 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (s/increment "activities searched")
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map model/map->Activity records))))
+     ((model/make-fetch-fn model/map->Activity collection-name)
+      params options)))
 
 (defn fetch-by-id
   [id]

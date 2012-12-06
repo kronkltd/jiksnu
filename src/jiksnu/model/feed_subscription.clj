@@ -20,8 +20,7 @@
    (presence-of :url)
    (presence-of :callback)
    (presence-of :domain)
-   (acceptance-of :local         :accept (partial instance? Boolean))
-
+   (acceptance-of :local   :accept (partial instance? Boolean))
    (presence-of :created)
    (presence-of :updated)))
 
@@ -54,14 +53,8 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (s/increment (str collection-name " searched"))
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map model/map->FeedSubscription records))))
+     ((model/make-fetch-fn model/map->FeedSubscription collection-name)
+      params options)))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"
