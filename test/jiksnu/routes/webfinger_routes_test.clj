@@ -41,6 +41,6 @@
              (= (config :domain) (:host body))
 
              ;; has a lrdd link
-             (rel-filter "lrdd" (:links body))))))
+             (util/rel-filter "lrdd" (:links body))))))
 
  )
