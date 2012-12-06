@@ -45,7 +45,7 @@
 
 (defn get-link
   [item rel content-type]
-  (first (model/rel-filter rel (:links item) content-type)))
+  (first (util/rel-filter rel (:links item) content-type)))
 
 (def set-field! (templates/make-set-field! collection-name))
 

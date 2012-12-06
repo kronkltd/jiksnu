@@ -102,7 +102,7 @@
 
 (defn get-link
   [user rel content-type]
-  (first (model/rel-filter rel (:links user) content-type)))
+  (first (util/rel-filter rel (:links user) content-type)))
 
 (defn drop!
   []

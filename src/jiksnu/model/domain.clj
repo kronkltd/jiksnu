@@ -9,6 +9,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates :as templates]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.core :as mg])
   (:import jiksnu.model.Domain))
@@ -62,7 +63,7 @@
 
 (defn get-link
   [item rel content-type]
-  (first (model/rel-filter rel (:links item) content-type)))
+  (first (util/rel-filter rel (:links item) content-type)))
 
 ;; TODO: add the links to the list
 (defn add-links
