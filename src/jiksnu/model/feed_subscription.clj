@@ -72,3 +72,8 @@
   "Fetch a single source by it's topic id"
   [topic]
   (fetch-all {:topic topic}))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+    (mc/ensure-index {:url 1 :callback 1} {:unique true})))

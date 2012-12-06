@@ -82,6 +82,8 @@
       (throw+ "Hub not authoritative for source"))))
 
 (definitializer
+  (model.feed-subscription/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.feed-subscription-filters"
     "jiksnu.triggers.feed-subscription-triggers"
