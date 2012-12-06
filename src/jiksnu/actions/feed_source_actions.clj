@@ -47,7 +47,7 @@
 
 (defaction add-watcher
   [source user]
-  (model.feed-source/push-value! source :watchers (:_id user))
+  #_(model.feed-source/push-value! source :watchers (:_id user))
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defaction watch
@@ -202,7 +202,7 @@
 
 (defaction remove-watcher
   [source user]
-  (model.feed-source/update
+  #_(model.feed-source/update
     (select-keys source [:_id])
     {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))

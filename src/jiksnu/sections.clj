@@ -141,7 +141,7 @@
   [item property]
   (if *dynamic*
     (list
-     "<!-- ko text: " (name property) " -->"
+     (format "<!-- ko text: %s -->" (name property))
      "<!-- /ko -->")
     (str (get item (keyword property)))))
 

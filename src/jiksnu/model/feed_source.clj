@@ -32,10 +32,10 @@
   (when-let [item (mc/find-map-by-id collection-name id)]
     (model/map->FeedSource item)))
 
-(defn push-value!
-  [source key value]
-  (update source
-    {:$addToSet {key value}}))
+;; (defn push-value!
+;;   [source key value]
+;;   (update source
+;;     {:$addToSet {key value}}))
 
 (defn create
   [params]

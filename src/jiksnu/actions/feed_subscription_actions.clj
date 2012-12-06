@@ -8,8 +8,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.transforms :as transforms]
-            [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [lamina.core :as l]))
 
 (defn prepare-create
   [item]

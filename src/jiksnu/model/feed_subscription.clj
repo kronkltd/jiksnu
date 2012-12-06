@@ -1,10 +1,11 @@
 (ns jiksnu.model.feed-subscription
   (:use [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
-  (:require [clj-time.core :as time]
-            [clojure.string :as string]
+  (:require [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
