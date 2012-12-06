@@ -1,4 +1,31 @@
-(ns jiksnu.rdf)
+(ns jiksnu.rdf
+  (:use [clojure.core.incubator :only [-?> -?>>]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [ciste.model :as cm]
+            [clj-statsd :as s]
+            [clojure.string :as string]
+            [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
+            [inflections.core :as inf]
+            [jiksnu.db :as db]
+            [jiksnu.namespace :as ns]
+            [jiksnu.util :as util]
+            [lamina.core :as l]
+            [lamina.time :as time]
+            [lamina.trace :as trace]
+            [plaza.rdf.core :as rdf]
+            [plaza.rdf.implementations.jena :as jena])
+  (:import com.mongodb.WriteConcern
+           com.ocpsoft.pretty.time.PrettyTime
+           java.io.FileNotFoundException
+           java.io.PrintWriter
+           java.text.SimpleDateFormat
+           java.util.Date
+           java.net.URL
+           lamina.core.channel.Channel
+           org.bson.types.ObjectId
+           org.joda.time.DateTime
+           java.io.StringReader))
 
 (def rdf-prefixes
   [["activity" ns/as]

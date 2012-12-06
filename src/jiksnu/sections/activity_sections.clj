@@ -27,7 +27,7 @@
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [jiksnu.xmpp.element :as element]
-            [plaza.rdf.core :as rdf]
+            [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import java.io.StringWriter
            javax.xml.namespace.QName
@@ -297,7 +297,7 @@
 
    ;; TODO: handle other visibilities
    #_(when-not (:public activity)
-     " privately")
+       " privately")
 
    " approximately "
    [:time {:datetime (model/format-date (:published activity))
@@ -779,21 +779,21 @@
 
 (defsection show-section [Activity :rdf]
   [activity & _]
-  (rdf/with-rdf-ns ""
+  (plaza/with-rdf-ns ""
     (let [{:keys [id created content]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
-          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
+          user-res (plaza/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
       (concat
-       (with-subject uri
+       (rdf/with-subject uri
          [
           [[ns/rdf  :type]        [ns/sioc "Post"]]
-          [[ns/as   :verb]        (rdf/l "post")]
+          [[ns/as   :verb]        (plaza/l "post")]
           [[ns/sioc :has_creator] user-res]
           [[ns/sioc :has_owner]   user-res]
           [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (rdf/date (.toDate created))]])
-       (when content [[uri [ns/sioc  :content]    (rdf/l content)]])))))
+          [[ns/dc   :published]   (plaza/date (.toDate created))]])
+       (when content [[uri [ns/sioc  :content]    (plaza/l content)]])))))
 
 (defsection show-section [Activity :viewmodel]
   [activity & [page]]

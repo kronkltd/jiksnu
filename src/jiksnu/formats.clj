@@ -15,9 +15,9 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
+            [jiksnu.rdf :as rdf]
             jiksnu.sections
             [jiksnu.session :as session]
-            [plaza.rdf.core :as rdf]
             [plaza.rdf.vocabularies.foaf :as foaf]))
 
 (defmethod format-as :as
@@ -60,14 +60,14 @@
 
 (defmethod format-as :n3
   [request format response]
-  (-> response 
-      (assoc :body (model/format-triples (:body response) :n3))
+  (-> response
+      (assoc :body (rdf/format-triples (:body response) :n3))
       (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
 
 (defmethod format-as :rdf
   [request format response]
   (-> response
-      (assoc :body (model/format-triples (:body response) :xml-abbrev))
+      (assoc :body (rdf/format-triples (:body response) :xml-abbrev))
       (assoc-in [:headers "Content-Type"] "application/rdf+xml; charset=utf-8")))
 
 (defmethod format-as :viewmodel

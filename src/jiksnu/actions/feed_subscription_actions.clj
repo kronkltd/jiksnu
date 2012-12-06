@@ -7,6 +7,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.ops :as ops]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [lamina.core :as l]))

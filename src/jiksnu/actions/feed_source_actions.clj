@@ -26,6 +26,7 @@
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
+            [jiksnu.util :as util]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.FeedSource))
@@ -241,7 +242,7 @@
         response (actions.resource/update* resource)
         body (actions.resource/response->tree response)
         links (actions.resource/get-links body)]
-    (if-let [link (model/find-atom-link links)]
+    (if-let [link (util/find-atom-link links)]
       (find-or-create {:topic link})
       (throw+ (format "Could not determine topic url from resource: %s" url)))))
 

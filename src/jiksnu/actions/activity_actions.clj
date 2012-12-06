@@ -18,10 +18,12 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [monger.collection :as mc])
   (:import javax.xml.namespace.QName

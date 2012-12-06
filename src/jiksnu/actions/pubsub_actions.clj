@@ -12,7 +12,8 @@
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.templates :as templates]))
+            [jiksnu.templates :as templates]
+            [jiksnu.util :as util]))
 
 (defn verify-subscribe-sync
   "Verify subscription request in this thread"
@@ -25,7 +26,7 @@
                     :hub.lease_seconds (:lease-seconds feed-subscription)
                     :hub.challenge     (:challenge feed-subscription)
                     :hub.verify_token  (:verify-token feed-subscription)}
-            url (templates/make-subscribe-uri (:callback feed-subscription) params)
+            url (util/make-subscribe-uri (:callback feed-subscription) params)
             ;; TODO: handle this in resources?
             response-channel (http/http-request {:method :get
                                                  :url url

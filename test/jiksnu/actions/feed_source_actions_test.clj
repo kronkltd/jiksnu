@@ -49,6 +49,6 @@
     (actions.resource/update* resource) => .response.
     (actions.resource/response->tree .response.) => .tree.
     (actions.resource/get-links .tree.) => .links.
-    (model/find-atom-link .links.) => topic))
+    (util/find-atom-link .links.) => topic))
 
  )
