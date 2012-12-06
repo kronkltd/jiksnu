@@ -4,8 +4,8 @@
   (:require [jiksnu.actions.feed-subscription-actions :as feed-subscription]))
 
 (add-route! "/main/feed-subscriptions"      {:named "index feed-subscriptions"})
-(add-route! "/main/feed-subscriptions/:id"  {:named "show feed-subscriptions"})
-(add-route! "/model/feedSubscriptions/:id" {:named "feed-subscriptions model"})
+(add-route! "/main/feed-subscriptions/:id"  {:named "show feed-subscription"})
+(add-route! "/model/feedSubscriptions/:id" {:named "feed-subscription model"})
 
 (defn routes
   []

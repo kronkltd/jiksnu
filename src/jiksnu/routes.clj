@@ -42,6 +42,7 @@
       "domain"
       "favorite"
       "feed-source"
+      "feed-subscription"
       "group"
       "like"
       "message"

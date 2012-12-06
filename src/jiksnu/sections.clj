@@ -137,6 +137,14 @@
                         {:href (str "?page=" (dec page)) }))
    "&larr; Previous"])
 
+(defn display-property
+  [item property]
+  (if *dynamic*
+    (list
+     "<!-- ko text: " (name property) " -->"
+     "<!-- /ko -->")
+    (str (get item (keyword property)))))
+
 (defn dropdown-menu
   [item buttons]
   (when (seq buttons)

@@ -326,7 +326,9 @@
                     (this-as this
                       (format "/model/feedSubscriptions/%s.model" (.-id this))))
             "defaults" (js-obj
-                        "url"    nil)
+                        "domain"   nil
+                        "callback" nil
+                        "url"      nil)
             "idAttribute" "_id"
             "initialize" initializer)))
 
