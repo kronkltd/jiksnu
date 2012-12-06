@@ -26,11 +26,12 @@
 ;; TODO: show domain, format :jrd
 (defaction host-meta
   []
-  (let [template (get-xrd-template)
+  (let [domain (actions.domain/current-domain)
+        template (get-xrd-template)
         links [{:template template
                 :rel "lrdd"
                 :title "Resource Descriptor"}]]
-    {:host domain
+    {:host (:_id domain)
      :links links}))
 
 ;; TODO: show user, format :jrd
@@ -42,11 +43,11 @@
        (apply model.user/get-user )))
 
 ;; TODO: move to user actions and ensure property is always set
-(defn get-user-meta-uri
-  [user]
-  (let [domain (model.user/get-domain user)]
-    (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-url domain (:id user)))))
+;; (defn get-user-meta-uri
+;;   [user]
+;;   (let [domain (model.user/get-domain user)]
+;;     (or (:user-meta-uri user)
+;;         (actions.domain/get-user-meta-url domain (:id user)))))
 
 ;; TODO: is this being called anymore?
 (defn get-links
