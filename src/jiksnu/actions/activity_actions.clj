@@ -167,7 +167,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   (-?> entry
        (.getExtension (QName. ns/as "verb" "activity"))
        .getText
-       model/strip-namespaces))
+       util/strip-namespaces))
 
 (defn parse-entry
   [^Entry entry]
@@ -216,7 +216,7 @@ serialization"
            object-element (.getExtension entry (QName. ns/as "object"))
            object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
                                 (-?> entry (.getExtension activity-object-type)))
-                            .getText model/strip-namespaces)
+                            .getText util/strip-namespaces)
            object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))]
        (let [opts (apply merge
                          (when published         {:published published})

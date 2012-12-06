@@ -31,6 +31,7 @@
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [jiksnu.transforms.user-transforms :as transforms.user]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
@@ -496,7 +497,7 @@
     "jiksnu.triggers.user-triggers"
     "jiksnu.views.user-views"])
 
-  (model/add-hook!
+  (util/add-hook!
    actions.domain/delete-hooks
    (fn [domain]
      (doseq [user (:items (model.user/fetch-by-domain domain))]

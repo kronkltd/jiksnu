@@ -164,7 +164,7 @@
     item
     (if-let [user (model.activity/get-author item)]
       (if (:local user)
-        (assoc item :conversation (:_id (model/create-new-conversation)))
+        (assoc item :conversation (:_id (ops/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
           (let [conversation (ops/get-conversation uri)]
             (-> item
