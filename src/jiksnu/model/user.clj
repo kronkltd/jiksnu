@@ -3,7 +3,6 @@
         [clj-gravatar.core :only [gravatar-image]]
         [clojure.core.incubator :only [-?> -?>>]]
         [clojurewerkz.route-one.core :only [named-url]]
-        [jiksnu.model :only [make-id rel-filter map->User]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of validation-set presence-of]])
@@ -16,6 +15,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.query :as mq]
             [plaza.rdf.core :as rdf]

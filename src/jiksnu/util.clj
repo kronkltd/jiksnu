@@ -1,0 +1,127 @@
+(ns jiksnu.util)
+
+(defn format-date
+  "This is a dirty little function to get a properly formatted date."
+  ;; TODO: Get more control of passed dates
+  [^Date date]
+  ;; TODO: Time for a protocol
+  (condp = (class date)
+    String (DateTime/parse date)
+    DateTime date
+    Date (let [formatter (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'")]
+           (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+           (.format formatter  date))
+    date))
+
+(defn strip-namespaces
+  [val]
+  (-?> val
+       (string/replace #"http://activitystrea.ms/schema/1.0/" "")
+       (string/replace #"http://ostatus.org/schema/1.0/" "")))
+
+(defn path-segments
+  [url]
+  (if url
+    (let [url-obj (URL. url)
+          path (.getPath url-obj)
+          ps (string/split path #"/")
+          ;; TODO: get scheme
+          bare (str "http://" (.getHost url-obj))]
+      (map #(str bare % "/")
+           (reductions (fn [s1 s2] (string/join "/" [s1 s2]))
+                       (drop-last ps))))
+    []))
+
+(defn rel-filter
+  "returns all the links in the collection where the rel value matches the
+   supplied value"
+  ([rel links] (rel-filter rel links nil))
+  ([rel links content-type]
+     (filter (fn [link]
+               (and (= (:rel link) rel)
+                    (or (not content-type) (= (:type link) content-type))))
+             links)))
+
+;; TODO: I'm sure this exists somewhere else
+;; all this is really doing is assembling a uri
+(defn make-subscribe-uri
+  [url options]
+  (str url "?"
+       (string/join
+        "&"
+        (map
+         (fn [[k v]] (str (name k) "=" v))
+         options))))
+
+(defn force-coll
+  [x]
+  (if (coll? x)
+    x (list x)))
+
+(defn ^ObjectId make-id
+  "Create an object id from the provided string"
+  ([] (ObjectId.))
+  ([^String id] (ObjectId. id)))
+
+;; link functions
+
+(defn find-atom-link
+  [links]
+  (->> links
+       (filter #(= "alternate" (:rel (:attrs %))))
+       (filter #(= "application/atom+xml" (:type (:attrs %))))
+       (map #(-> % :attrs :href))
+       first))
+
+(defn extract-atom-link
+  "Find the atom link in the page identified by url"
+  [url]
+  (->> url
+       cm/get-links
+       find-atom-link))
+
+(defn parse-http-link
+  [url]
+  (let [[_ href remainder] (re-matches #"<([^>]+)>; (.*)" url)]
+    (->> (string/split remainder #"; ")
+         (map #(let [[_ k v] (re-matches #"(.*)=\"(.*)\"" %)] [k v]))
+         (into {})
+         (merge {"href" href}))))
+
+;; hooks
+
+(defn add-hook!
+  [r f]
+  (dosync
+   (alter r conj f)))
+
+;; serializers
+
+(defn date->twitter
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE MMM d HH:mm:ss Z yyyy")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
+(defn prettyify-time
+  [^Date date]
+  (-?>> date (.format (PrettyTime.))))
+
+(defn write-json-date
+  ([^Date date ^PrintWriter out]
+     (write-json-date date out false))
+  ([^Date date ^PrintWriter out escape-unicode?]
+     (let [formatted-date (.format (SimpleDateFormat. "yyyy-MM-dd'T'hh:mm:ss'Z'") date)]
+       (.print out (str "\"" formatted-date "\"")))))
+
+(defn write-json-object-id
+  ([id ^PrintWriter out]
+     (write-json-object-id id out false))
+  ([id ^PrintWriter out escape-unicode]
+     (.print out (str "\"" id "\""))))
+
+(extend Date json/Write-JSON
+        {:write-json write-json-date})
+(extend ObjectId json/Write-JSON
+        {:write-json write-json-object-id})
+

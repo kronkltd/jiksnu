@@ -1,6 +1,7 @@
 (ns jiksnu.model.authentication-mechanism
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.util :as util]
             [monger.core :as mg]
             [monger.collection :as mc])
   (:import jiksnu.model.AuthenticationMechanism))
@@ -31,7 +32,7 @@
 
 (defn fetch-by-id
   [id]
-  (let [id (if (string? id) (model/make-id id) id)]
+  (let [id (if (string? id) (util/make-id id) id)]
     (if-let [item (mc/find-map-by-id collection-name id)]
       (model/map->AuthenticationMechanism item))))
 

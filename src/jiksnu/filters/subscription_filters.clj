@@ -11,13 +11,14 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 ;; delete
 
 (deffilter #'delete :command
   [action id]
-  (let [item (model.subscription/fetch-by-id (model/make-id id))]
+  (let [item (model.subscription/fetch-by-id (util/make-id id))]
     (action item)))
 
 (deffilter #'delete :http
@@ -30,7 +31,7 @@
   [action request]
   (let [{{:keys [username id]} :params} request]
     (if-let [user (or (when username (model.user/get-user username))
-                      (when id (model.user/fetch-by-id (model/make-id id))))]
+                      (when id (model.user/fetch-by-id (util/make-id id))))]
       (action user))))
 
 (deffilter #'get-subscribers :xmpp
@@ -44,7 +45,7 @@
   [action request]
   (let [{{:keys [username id]} :params} request]
     (if-let [user (or (when username (model.user/get-user username))
-                      (when id (model.user/fetch-by-id (model/make-id id))))]
+                      (when id (model.user/fetch-by-id (util/make-id id))))]
      (action user))))
 
 (deffilter #'get-subscriptions :xmpp
@@ -87,7 +88,7 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.subscription/fetch-by-id (model/make-id id))]
+    (if-let [item (model.subscription/fetch-by-id (util/make-id id))]
      (action item))))
 
 ;; subscribe
@@ -96,7 +97,7 @@
   [action request]
   (let [params (:params request)]
     (if-let [id (or (:id params) (:subscribeto params))]
-      (if-let [target (-> id model/make-id model.user/fetch-by-id)]
+      (if-let [target (-> id util/make-id model.user/fetch-by-id)]
         (if-let [actor (current-user)]
           (action actor target)
           {:view false
@@ -126,7 +127,7 @@
   (if-let [actor (current-user)]
     (let [params (:params request)]
       (if-let [target (-?> (or (:id params) (:unsubscribeto params))
-                           model/make-id
+                           util/make-id
                            model.user/fetch-by-id)]
         (action actor target)
         (throw+ "User not found")))

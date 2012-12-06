@@ -7,7 +7,8 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.existance-helpers :as existance]
-            [jiksnu.model :as model])
+            [jiksnu.model :as model]
+            [jiksnu.util :as util])
   (:import jiksnu.model.FeedSubscription
            org.bson.types.ObjectId
            org.joda.time.DateTime
@@ -17,7 +18,7 @@
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"

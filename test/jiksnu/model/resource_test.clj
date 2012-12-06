@@ -10,14 +10,15 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model])
+            [jiksnu.model :as model]
+            [jiksnu.util :as util])
   (:import jiksnu.model.Resource))
 
 (test-environment-fixture
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
@@ -32,7 +33,7 @@
 
    (fact "when given invalid params"
      (create {}) => (throws RuntimeException)))
- 
+
  (fact "#'delete"
    (let [item (existance/a-resource-exists)]
      (delete item) => item

@@ -4,7 +4,8 @@
         [jiksnu.filters :only [parse-page parse-sorting]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.model.conversation :as model.conversation]))
+            [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.util :as util]))
 
 ;; create
 
@@ -22,7 +23,7 @@
 
 (deffilter #'discover :command
   [action id]
-  (if-let [item (model.conversation/fetch-by-id (model/make-id id))]
+  (if-let [item (model.conversation/fetch-by-id (util/make-id id))]
     (action item)))
 
 ;; index
@@ -38,13 +39,13 @@
 (deffilter #'show :http
   [action request]
   (if-let [id (:id (:params request))]
-    (if-let [item (model.conversation/fetch-by-id (model/make-id id))]
+    (if-let [item (model.conversation/fetch-by-id (util/make-id id))]
      (action item))))
 
 ;; update
 
 (deffilter #'update :command
   [action id]
-  (let [item (model.conversation/fetch-by-id (model/make-id id))]
+  (let [item (model.conversation/fetch-by-id (util/make-id id))]
     (action item)))
 

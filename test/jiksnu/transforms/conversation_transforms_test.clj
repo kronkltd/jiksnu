@@ -9,7 +9,8 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.model :as model]
-            [jiksnu.model.conversation :as model.conversation]))
+            [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.util :as util]))
 
 (test-environment-fixture
 
@@ -24,7 +25,7 @@
        (fact "and the source can be discovered"
          (let [params {:url (:topic source)
                        ;; This is set by the other transform
-                       :_id (model/make-id)}
+                       :_id (util/make-id)}
                conversation (-> (factory :conversation params)
                                 (dissoc :update-source))
                url (:url conversation)]

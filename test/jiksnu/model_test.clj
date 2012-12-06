@@ -1,14 +1,19 @@
 (ns jiksnu.model-test
-  (:use [jiksnu.model :only [make-id parse-http-link path-segments rel-filter]]
-        [midje.sweet :only [fact future-fact => every-checker contains]])
+  (:use [midje.sweet :only [fact future-fact => every-checker contains]])
+  (:require [jiksnu.util :as util])
   (:import org.bson.types.ObjectId))
 
 (fact "#'parse-http-link"
-  (let [link-string "<http://jonkulp.dyndns-home.com/micro/main/xrd?uri=acct:jonkulp@jonkulp.dyndns-home.com>; rel=\"lrdd\"; type=\"application/xrd+xml\""]
-    
+  (let [uri "acct:jonkulp@jonkulp.dyndns-home.com"
+        url (str "http://jonkulp.dyndns-home.com/micro/main/xrd?uri=" uri)
+        rel "lrdd"
+        content-type "application/xrd+xml"
+        link-string (format "<%s>; rel=\"%s\"; type=\"%s\""
+                            url rel content-type)]
+
     (parse-http-link link-string) =>
     (every-checker
-     (contains {"href" "http://jonkulp.dyndns-home.com/micro/main/xrd?uri=acct:jonkulp@jonkulp.dyndns-home.com"})
+     (contains {"href" url})
      (contains {"rel" "lrdd"})
      (contains {"type" "application/xrd+xml"}))))
 

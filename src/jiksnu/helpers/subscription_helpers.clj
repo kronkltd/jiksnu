@@ -1,10 +1,10 @@
 (ns jiksnu.helpers.subscription-helpers
   (:use ciste.sections.default
-        clj-tigase.core
-        [jiksnu.model :only [format-date]])
+        clj-tigase.core)
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 (defn subscriber-response-element
   [subscription]

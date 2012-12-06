@@ -1,14 +1,15 @@
 (ns jiksnu.transforms
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
-            [jiksnu.model :as model])
+            [jiksnu.model :as model]
+            [jiksnu.util :as util])
   (:import java.net.URI))
 
 (defn set-_id
   [record]
   (if (:_id record)
     record
-    (assoc record :_id (model/make-id))))
+    (assoc record :_id (util/make-id))))
 
 (defn set-created-time
   [record]

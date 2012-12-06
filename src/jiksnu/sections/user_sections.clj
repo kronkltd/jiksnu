@@ -8,7 +8,6 @@
          [clojure.core.incubator :only [-?>]]
          [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.model :only [with-subject]]
          [jiksnu.sections :only [action-link actions-section admin-actions-section
                                  admin-index-block admin-index-line admin-index-section
                                  admin-show-section bind-property bind-to control-line
@@ -30,6 +29,7 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]
             [plaza.rdf.core :as rdf]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain

@@ -13,19 +13,20 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.activity-sections :as sections.activity])
+            [jiksnu.sections.activity-sections :as sections.activity]
+            [jiksnu.util :as util])
   (:import tigase.xml.Element))
 
 ;; delete
 
 (deffilter #'delete :command
   [action id]
-  (let [item (model.activity/fetch-by-id (model/make-id id))]
+  (let [item (model.activity/fetch-by-id (util/make-id id))]
     (action item)))
 
 (deffilter #'delete :http
   [action request]
-  (if-let [id (try (-> request :params :id model/make-id)
+  (if-let [id (try (-> request :params :id util/make-id)
                    (catch RuntimeException ex))]
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
@@ -74,7 +75,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id model/make-id
+  (-> request :params :id util/make-id
       model.activity/fetch-by-id action))
 
 (deffilter #'show :xmpp

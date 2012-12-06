@@ -6,6 +6,7 @@
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq]))
@@ -49,7 +50,7 @@
 
 (defn fetch-by-id
   [id]
-  (let [id (if (string? id) (model/make-id id) id)]
+  (let [id (if (string? id) (util/make-id id) id)]
     (s/increment "resources fetched")
     (if-let [item (mc/find-map-by-id collection-name id)]
       (model/map->Resource item))))

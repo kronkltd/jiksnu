@@ -11,7 +11,8 @@
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain])
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.util :as util])
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
@@ -59,7 +60,7 @@
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"

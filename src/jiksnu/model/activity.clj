@@ -9,6 +9,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq])
@@ -60,7 +61,7 @@
 (defn fetch-by-id
   [id]
   ;; TODO: Should this always take a string?
-  (let [id (if (string? id) (model/make-id id) id)]
+  (let [id (if (string? id) (util/make-id id) id)]
     (s/increment "activities fetched")
     (if-let [activity (mc/find-map-by-id collection-name id)]
       (model/map->Activity activity))))

@@ -5,7 +5,6 @@
         [ciste.filters :only [filter-action]]
         [ciste.sections.default :only [index-section]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [jiksnu.model :only [activity?]]
         [jiksnu.routes :only [app]]
         [jiksnu.session :only [with-user]]
         ;; jiksnu.xmpp.element
@@ -20,7 +19,8 @@
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 (test-environment-fixture
 
@@ -66,7 +66,7 @@
                (filter-action action request) =>
                (every-checker
                 activity?))))))))
- 
+
  (fact "filter-action #'actions.activity/oembed"
    (let [action #'actions.activity/oembed]
      (fact "when the serialization is :http"

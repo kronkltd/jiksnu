@@ -13,7 +13,8 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util])
   (:import jiksnu.model.User
            jiksnu.model.Subscription))
 
@@ -21,7 +22,7 @@
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"

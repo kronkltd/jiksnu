@@ -7,13 +7,14 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.model :as model]
-            [jiksnu.model.group :as model.group]))
+            [jiksnu.model.group :as model.group]
+            [jiksnu.util :as util]))
 
 (test-environment-fixture
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
@@ -49,5 +50,5 @@
      (every-checker
       seq?
       #(fact (count %) => 20))))
- 
+
  )
