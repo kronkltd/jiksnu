@@ -1,26 +1,15 @@
 (ns jiksnu.actions.feed-subscription-actions
-  (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>]]
-        [clojurewerkz.route-one.core :only [named-path named-url]]
-        [jiksnu.session :only [current-user]]
-        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
-  (:require [aleph.http :as http]
-            [ciste.model :as cm]
-            [clj-time.core :as time]
-            [clojure.string :as string]
+  (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
 (defn prepare-create
   [item]
