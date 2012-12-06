@@ -37,14 +37,6 @@
   (.newEntry abdera))
 
 
-(defn not-namespace
-  "Filter for map entries that do not represent namespaces"
-  [[k v]]
-  (not= k :xmlns))
-
-
-
-
 
 
 (defn get-text
@@ -280,47 +272,6 @@ this is for OSW
   (let [stream (ByteArrayInputStream. (.getBytes entry-string "UTF-8"))
         parsed (parse-stream stream)]
     (.getRoot parsed)))
-
-;; (defn get-author-id
-;;   [author]
-;;   (let [uri (.getUri author)
-;;         domain (.getHost uri)
-;;         name (or (.getUserInfo uri)
-;;                  (.getName author))]
-;;     (str name "@" domain)))
-
-;; (defn parse-object-element
-;;   [element]
-;;   #_(let [object (make-object element)]
-;;       {:object {:object-type (str (.getObjectType object))
-;;                 :links (parse-links object)}
-;;        :id (str (.getId object))
-;;        :updated (.getUpdated object)
-;;        :published (.getPublished object)
-;;        :content (.getContent object)}))
-
-;; Deprecated
-;; (defn parse-json-element
-;;   "Takes a json object representing an Abdera element and converts it to
-;; an Element"
-;;   ([activity]
-;;      (parse-json-element activity ""))
-;;   ([{children :children
-;;      attributes :attributes
-;;      element-name :name
-;;      :as activity} bound-ns]
-;;      (let [xmlns (or (:xmlns attributes) bound-ns)
-;;            qname (QName. xmlns element-name)
-;;            element (.newExtensionElement abdera-factory qname)
-;;            filtered (filter not-namespace attributes)]
-;;        (doseq [[k v] filtered]
-;;          (.setAttributeValue element (name k) v))
-;;        (doseq [child children]
-;;          (if (map? child)
-;;            (.addExtension element (parse-json-element child xmlns))
-;;            (when (string? child)
-;;              (.setText element child))))
-;;        element)))
 
 (definitializer
   (defonce ^Abdera abdera (Abdera/getInstance))

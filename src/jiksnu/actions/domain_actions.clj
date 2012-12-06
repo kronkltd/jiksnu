@@ -83,10 +83,15 @@
 
 (defn fetch-xrd
   [domain url]
-  (->> url model/path-segments rest
-       (map #(str % ".well-known/host-meta"))
-       (cons (model.domain/host-meta-link domain))
-       (keep fetch-xrd*) first))
+  (if-let [xrd (->> url model/path-segments rest
+                    (map #(str % ".well-known/host-meta"))
+                    (cons (model.domain/host-meta-link domain))
+                    (keep fetch-xrd*) first)]
+    xrd
+    (throw+
+     {:message "could not determine host meta"
+      :domain domain
+      :url url})))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"

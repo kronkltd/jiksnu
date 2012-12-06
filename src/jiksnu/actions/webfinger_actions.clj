@@ -17,15 +17,21 @@
            jiksnu.model.Domain
            jiksnu.model.User))
 
+(defn get-xrd-template
+  []
+  (let [domain (actions.domain/current-domain)]
+    ;; TODO: Check ssl mode
+    (format "http://%s/main/xrd?uri={uri}" (:_id domain))))
+
 ;; TODO: show domain, format :jrd
 (defaction host-meta
   []
-  (let [domain (config :domain)
-        template (str "http://" domain "/main/xrd?uri={uri}")]
+  (let [template (get-xrd-template)
+        links [{:template template
+                :rel "lrdd"
+                :title "Resource Descriptor"}]]
     {:host domain
-     :links [{:template template
-              :rel "lrdd"
-              :title "Resource Descriptor"}]}))
+     :links links}))
 
 ;; TODO: show user, format :jrd
 ;; TODO: should take a user
@@ -62,11 +68,11 @@
         links (get-links xrd)
         new-user (assoc user :links links)
         feed (actions.user/fetch-user-feed new-user)
-        uri (-?> feed .getAuthor .getUri)]
+        uri (-?> feed .getAuthor .getUri str)]
     (doseq [link links]
       (actions.user/add-link user link))
     (-> user
-        (assoc :id (str uri))
+        (assoc :id uri)
         (assoc :discovered true)
         ;; TODO: set fields
         actions.user/update)))
