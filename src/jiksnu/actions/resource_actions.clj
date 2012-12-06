@@ -16,6 +16,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
@@ -83,7 +85,7 @@
   (enlive/select tree [:link]))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.resource
+  (templates/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
 
 (defaction index
@@ -139,7 +141,7 @@
         location (get-in response [:headers "location"])]
     (model.resource/set-field! item :status status)
     (when location
-      (let [resource (model/get-resource location)]
+      (let [resource (ops/get-resource location)]
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
       (if (seq rest)

@@ -9,6 +9,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
@@ -39,7 +40,7 @@
    (presence-of   :updated)
    ))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn get-author
   [activity]
@@ -55,7 +56,7 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     ((model/make-fetch-fn model/map->Activity collection-name)
+     ((templates/make-fetch-fn model/map->Activity collection-name)
       params options)))
 
 (defn fetch-by-id
@@ -106,9 +107,9 @@
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (model/map->Activity activity)))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
 
 ;; deprecated
 (defn add-comment

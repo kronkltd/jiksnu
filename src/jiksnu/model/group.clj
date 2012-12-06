@@ -5,6 +5,7 @@
         [validateur.validation :only [validation-set presence-of]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
@@ -14,10 +15,10 @@
 (def collection-name "groups")
 (defonce page-size 20)
 
-(def set-field!    (model/make-set-field! collection-name))
-(def count-records (model/make-counter    collection-name))
-(def delete        (model/make-deleter    collection-name))
-(def drop!         (model/make-dropper    collection-name))
+(def set-field!    (templates/make-set-field! collection-name))
+(def count-records (templates/make-counter    collection-name))
+(def delete        (templates/make-deleter    collection-name))
+(def drop!         (templates/make-dropper    collection-name))
 
 (def create-validators
   (validation-set

@@ -6,6 +6,7 @@
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
@@ -46,7 +47,7 @@
   [item rel content-type]
   (first (model/rel-filter rel (:links item) content-type)))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]
@@ -68,9 +69,9 @@
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
 
 (defn ensure-indexes
   []

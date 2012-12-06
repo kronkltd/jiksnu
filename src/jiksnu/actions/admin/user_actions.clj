@@ -5,14 +5,15 @@
         [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.templates :as templates]))
 
 (defaction create
   [options]
   (actions.user/create options))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.user))
+  (templates/make-indexer 'jiksnu.model.user))
 
 (defaction index
   [& [params & [options & _]]]

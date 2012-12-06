@@ -6,7 +6,8 @@
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.model.key :as model.key])
+            [jiksnu.model.key :as model.key]
+            [jiksnu.templates :as templates])
   (:import jiksnu.model.User))
 
 (defaction create
@@ -21,7 +22,7 @@
   [record] record)
 
 (def index*
-  (model/make-indexer 'jiksnu.model.key
+  (templates/make-indexer 'jiksnu.model.key
                       :sort-clause [{:_id 1}]))
 
 (defaction index

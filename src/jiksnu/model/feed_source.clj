@@ -7,6 +7,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -25,7 +26,7 @@
    (presence-of :created)
    (presence-of :updated)))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]
@@ -50,9 +51,9 @@
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(def count-records (model/make-counter collection-name))
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn find-record
   [options & args]

@@ -12,6 +12,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
+            [jiksnu.ops :as ops]
             [lamina.core :as l])
   (:import java.net.URI))
 
@@ -54,7 +55,7 @@
   (if (empty? (:parent params))
     (let [params (dissoc params :parent)]
       (if-let [uri (:parent-uri params)]
-        (let [resource (model/get-resource uri)]
+        (let [resource (ops/get-resource uri)]
           (if-let [parent (model.activity/fetch-by-remote-id uri)]
             (assoc params :parent (:_id parent))
             (do
@@ -165,7 +166,7 @@
       (if (:local user)
         (assoc item :conversation (:_id (model/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
-          (let [conversation (model/get-conversation uri)]
+          (let [conversation (ops/get-conversation uri)]
             (-> item
                 (assoc :conversation (:_id conversation))
                 (dissoc :conversation-uris)))
@@ -177,7 +178,7 @@
   (let [uri-obj (URI. uri)
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
-      (let [resource (model/get-resource uri)]
+      (let [resource (ops/get-resource uri)]
         (try
           (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
           (catch RuntimeException ex
@@ -202,7 +203,7 @@
                     :enclosures
                     (map :href)
                     (map (fn [url]
-                           (:_id (model/get-resource url))))
+                           (:_id (ops/get-resource url))))
                     seq
                     doall)]
     (-> activity

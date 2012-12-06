@@ -7,6 +7,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [lamina.core :as l]))
 
@@ -38,7 +39,7 @@
     (create params options)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.feed-subscription
+  (templates/make-indexer 'jiksnu.model.feed-subscription
                       :sort-clause [{:_id 1}]))
 
 (defaction index
@@ -56,7 +57,7 @@
 (defaction subscription-request
   "Handle a request for a new subscription to a local source"
   [params]
-  (let [source (model/get-source (:topic params))]
+  (let [source (ops/get-source (:topic params))]
     (if (:local source)
       (let [params (merge {:source (:_id source)
                            :callback (:callback params)

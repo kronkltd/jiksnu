@@ -14,6 +14,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [lamina.core :as l]
@@ -71,7 +73,7 @@
 
 (defn fetch-xrd*
   [url]
-  (let [resource (model/get-resource url)
+  (let [resource (ops/get-resource url)
         response (model/update-resource resource)]
     (try
       (if-let [body (:body response)]
@@ -127,7 +129,7 @@
   domain)
 
 (def index*
-  (model/make-indexer 'jiksnu.model.domain
+  (templates/make-indexer 'jiksnu.model.domain
                       :sort-clause {:username 1}))
 
 (defaction index
@@ -158,7 +160,7 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (let [resource (model/get-resource (statusnet-url domain))
+  (let [resource (ops/get-resource (statusnet-url domain))
         response (actions/invoke-action "resource" "update*" (str (:_id resource)))
         sconfig (json/read-json (:body (:body response)))]
     (model.domain/set-field! domain :statusnet-config sconfig)))

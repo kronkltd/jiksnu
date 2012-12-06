@@ -10,6 +10,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
+            [jiksnu.ops :as ops]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.User))
@@ -18,7 +19,7 @@
   [url]
   (log/infof "fetching host meta: %s" url)
   (try
-    (let [resource (model/get-resource url)]
+    (let [resource (ops/get-resource url)]
       (s/increment "xrd_fetched")
       (cm/fetch-document url))
     (catch RuntimeException ex
@@ -48,7 +49,7 @@
 (defn get-feed-source-from-xrd
   [xrd]
   (if-let [source-link (get-source-link xrd)]
-    (model/get-source source-link)
+    (ops/get-source source-link)
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property

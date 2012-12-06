@@ -15,6 +15,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
+            [jiksnu.templates :as templates]
             [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.query :as mq]
@@ -156,7 +157,7 @@
   (get-user (.getLocalpart jid)
             (.getDomain jid)))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"

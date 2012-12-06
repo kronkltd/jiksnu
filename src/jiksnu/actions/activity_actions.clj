@@ -19,6 +19,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [lamina.core :as l]
@@ -89,7 +90,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
     (add-link* item link)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction index
   [& options]
@@ -210,7 +211,7 @@ serialization"
            enclosures (-?> (.getLinks entry "enclosure")
                            (->> (map abdera/parse-link))
                            (into #{}))
-           
+
            tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
            object-element (.getExtension entry (QName. ns/as "object"))
            object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))

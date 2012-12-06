@@ -5,6 +5,7 @@
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -24,7 +25,7 @@
    (presence-of :created)
    (presence-of :updated)))
 
-(def set-field!    (model/make-set-field! collection-name))
+(def set-field!    (templates/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]
@@ -45,15 +46,15 @@
       (throw+ {:type :validation
                :errors errors}))))
 
-(def count-records (model/make-counter collection-name))
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     ((model/make-fetch-fn model/map->FeedSubscription collection-name)
+     ((templates/make-fetch-fn model/map->FeedSubscription collection-name)
       params options)))
 
 (defn fetch-by-topic

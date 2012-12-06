@@ -11,7 +11,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger])
+            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
@@ -83,7 +84,7 @@
   [^Domain domain]
   ;; TODO: check https first
   (let [url (model.domain/host-meta-link domain)
-        resource (model/get-resource url)]
+        resource (ops/get-resource url)]
     (if-let [xrd (model.webfinger/fetch-host-meta domain)]
       (if-let [links (get-links xrd)]
         ;; TODO: These should call actions

@@ -4,7 +4,8 @@
         [ciste.loader :only [require-namespaces]])
   (:require [ciste.model :as cm]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model]
+            [jiksnu.templates :as templates]))
 
 (defaction create
   [options]
@@ -19,7 +20,7 @@
   (actions.conversation/show options))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation))
+  (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
   [& [params & [options & _]]]

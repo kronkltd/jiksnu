@@ -3,7 +3,8 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.model :as model])
+            [jiksnu.model :as model]
+            [jiksnu.ops :as ops])
   (:import java.net.URI))
 
 (defn set-hub
@@ -18,7 +19,7 @@
   [item]
   (if (:resource item)
     item
-    (let [resource (model/get-resource (:topic item))]
+    (let [resource (ops/get-resource (:topic item))]
       (assoc item :resource (:_id resource)))))
 
 (defn set-domain

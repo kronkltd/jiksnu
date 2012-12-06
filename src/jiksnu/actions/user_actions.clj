@@ -27,7 +27,9 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
@@ -60,7 +62,7 @@
   (let [id (:id user)
         domain (actions.domain/get-discovered {:_id (:domain user)})]
     (if-let [url (actions.domain/get-user-meta-url domain id)]
-      (let [resource (model/get-resource url)
+      (let [resource (ops/get-resource url)
             response (model/update-resource resource)]
         (cm/string->document (:body response))))))
 
@@ -69,7 +71,7 @@
   (if (:local user)
     (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
                         (:domain user) (:_id user))
-          source (model/get-source topic)]
+          source (ops/get-source topic)]
       (assoc user :update-source (:_id source)))
     (if (:update-source user)
       user
@@ -206,7 +208,7 @@
   (model.user/fetch-by-id (:_id user)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.user
+  (templates/make-indexer 'jiksnu.model.user
                       :sort-clause {:username 1}))
 
 (defaction index
@@ -327,7 +329,7 @@
   "returns a user meta document"
   [^User user]
   (if-let [uri (model.user/user-meta-uri user)]
-    (let [resource (model/get-resource uri)]
+    (let [resource (ops/get-resource uri)]
       (model.webfinger/fetch-host-meta uri))
     (throw (RuntimeException. "Could not determine user-meta link"))))
 
@@ -335,7 +337,7 @@
   "returns a feed"
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
-    (let [resource (model/get-resource url)
+    (let [resource (ops/get-resource url)
           response (model/update-resource resource)]
       (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))

@@ -23,6 +23,7 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [lamina.core :as l])
   (:import jiksnu.model.User))
 
@@ -40,7 +41,7 @@
   (cm/implement))
 
 (def public-timeline*
-  (model/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction public-timeline
   [& [params & [options & _]]]

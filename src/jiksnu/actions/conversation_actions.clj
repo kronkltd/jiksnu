@@ -12,6 +12,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [lamina.core :as l]))
@@ -48,7 +49,7 @@
     (model.conversation/delete item)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation))
+  (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
   [& [params & [options]]]

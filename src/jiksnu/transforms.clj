@@ -2,6 +2,7 @@
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.ops :as ops]
             [jiksnu.util :as util])
   (:import java.net.URI))
 
@@ -27,7 +28,7 @@
   [item]
   (if (contains? item :local)
     item
-    (let [resource (model/get-resource (:url item))]
+    (let [resource (ops/get-resource (:url item))]
       (assoc item :local (:local resource)))))
 
 (defn set-domain
@@ -36,13 +37,13 @@
     source
     (let [uri (URI. (:url source))
           domain-name (.getHost uri)
-          domain (model/get-domain domain-name)]
+          domain (ops/get-domain domain-name)]
       (assoc source :domain (:_id domain)))))
 
 (defn set-resource
   [item]
   (if (:resource item)
     item
-    (let [resource (model/get-resource (:url item))]
+    (let [resource (ops/get-resource (:url item))]
       (assoc item :resource (:_id resource)))))
 

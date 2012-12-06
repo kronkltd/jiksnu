@@ -1,6 +1,7 @@
 (ns jiksnu.model.authentication-mechanism
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [jiksnu.util :as util]
             [monger.core :as mg]
             [monger.collection :as mc])
@@ -8,7 +9,7 @@
 
 (def collection-name "authentication_mechanisms")
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn create
   [options]
@@ -26,9 +27,9 @@
   [user & options]
   (apply fetch-all {:user (:_id user)} options))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
 
 (defn fetch-by-id
   [id]

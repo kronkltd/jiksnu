@@ -5,10 +5,11 @@
         [ciste.loader :only [require-namespaces]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]))
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.templates :as templates]))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction index
   [& [params & [options]]]

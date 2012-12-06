@@ -5,10 +5,11 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]))
+            [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.templates :as templates]))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.feed-source))
+  (templates/make-indexer 'jiksnu.model.feed-source))
 
 (defaction index
   [& options]

@@ -9,6 +9,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
+            [jiksnu.templates :as templates]
             [monger.collection :as mc]
             [monger.query :as mq])
   (:import jiksnu.model.Subscription))
@@ -24,7 +25,7 @@
    (presence-of :updated)
    (presence-of :_id)))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn drop!
   []

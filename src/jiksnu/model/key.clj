@@ -3,6 +3,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
+            [jiksnu.templates :as templates]
             [monger.collection :as mc])
   (:import java.net.URI
            java.io.ByteArrayInputStream
@@ -30,9 +31,9 @@
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
 
-(def count-records (model/make-counter collection-name))
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn get-user
   [key]

@@ -6,6 +6,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            [jiksnu.templates :as templates]
             [monger.collection :as mc]
             [monger.result :as result])
   (:import jiksnu.model.Like))
@@ -27,7 +28,7 @@
       set-created-time
       set-updated-time))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn drop!
   []

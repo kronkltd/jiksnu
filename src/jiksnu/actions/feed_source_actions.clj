@@ -20,7 +20,9 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [lamina.core :as l])
@@ -110,7 +112,7 @@
     (create params options)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.feed-source
+  (templates/make-indexer 'jiksnu.model.feed-source
                       :sort-clause {:created -1}))
 
 (defaction index
@@ -205,7 +207,7 @@
   [source]
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (let [resource (model/get-resource topic)]
+      (let [resource (ops/get-resource topic)]
         (let [response (actions.resource/update* resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)
@@ -234,7 +236,7 @@
 (defn discover-source
   "determines the feed source associated with a url"
   [url]
-  (let [resource (model/get-resource url)
+  (let [resource (ops/get-resource url)
         response (actions.resource/update* resource)
         body (actions.resource/response->tree response)
         links (actions.resource/get-links body)]

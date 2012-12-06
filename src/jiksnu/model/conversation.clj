@@ -5,6 +5,7 @@
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq])
@@ -30,7 +31,7 @@
     (model/map->Conversation conversation)
     (log/warnf "Could not find conversation: %s" id)))
 
-(def set-field! (model/make-set-field! collection-name))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn create
   [record]
@@ -43,9 +44,9 @@
         (fetch-by-id (:_id record)))
       (throw+ {:type :validation :errors errors}))))
 
-(def count-records (model/make-counter collection-name))
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))

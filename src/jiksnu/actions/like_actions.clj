@@ -6,7 +6,8 @@
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.model.like :as model.like])
+            [jiksnu.model.like :as model.like]
+            [jiksnu.templates :as templates])
   (:import jiksnu.model.Like))
 
 (defn admin-index
@@ -30,7 +31,7 @@
     :created (time/now)}))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.like))
+  (templates/make-indexer 'jiksnu.model.like))
 
 (defaction index
   [& options]
