@@ -15,6 +15,7 @@
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -31,7 +32,7 @@
          (fact "when the format is :atom"
            (with-format :atom
              (fact "when there are activities"
-               (model/drop-all!)
+               (db/drop-all!)
                (let [user (existance/a-user-exists)]
                  (dotimes [n 25]
                    (existance/there-is-an-activity {:user user})))
@@ -53,7 +54,7 @@
            (with-format :html
              (binding [*dynamic* false]
                (fact "when there are activities"
-                 (model/drop-all!)
+                 (db/drop-all!)
                  (let [user (existance/a-user-exists)
                        ;; TODO: This used to be set to 25, I need a
                        ;; good way to make sure I have the right
@@ -89,7 +90,7 @@
            (with-format :html
              (binding [*dynamic* false]
                (fact "when that user has activities"
-                 (model/drop-all!)
+                 (db/drop-all!)
                  (let [user (existance/a-user-exists)
                        activity (existance/there-is-an-activity {:user user})
                        request {:action action
@@ -104,11 +105,11 @@
                            #(get-in % [:attrs :data-id])
                            (enlive/select doc [(enlive/attr? :data-id)])) =>
                            (contains (str (:_id activity))))))))))))
-         
+
          (fact "when the format is :n3"
            (with-format :n3
              (fact "when that user has activities"
-               (model/drop-all!)
+               (db/drop-all!)
                (let [user (existance/a-user-exists)
                      activity (existance/there-is-an-activity {:user user})
                      request {:action action
@@ -123,5 +124,5 @@
                         body => (partial every? vector?)
                         (let [m (model/triples->model body)]
                           m => truthy)))))))))))))
- 
+
  )

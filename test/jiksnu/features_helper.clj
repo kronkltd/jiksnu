@@ -26,6 +26,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             jiksnu.factory
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -64,7 +65,7 @@
                       ;; :htmlunit
                       })
         (ciste.loader/process-requires)
-        (model/drop-all!)
+        (db/drop-all!)
         (.addShutdownHook
          (Runtime/getRuntime)
          (Thread. (fn [] (after-hook))))

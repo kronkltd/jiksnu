@@ -10,7 +10,7 @@
   [subscription]
   (let [subscriber (model.user/fetch-by-id (:from subscription))]
     ["subscriber" {"node" ns/microblog
-                   "created" (format-date (:created subscription))
+                   "created" (util/format-date (:created subscription))
                    "jid" (str (:username subscriber) "@"
                               (:domain subscriber))}]))
 
@@ -20,7 +20,7 @@
         created (:created subscription)]
     ["subscription" {"node" ns/microblog
                      "subscription" "subscribed"
-                     "created" (format-date created)
+                     "created" (util/format-date created)
                      "jid" (str (:username subscribee) "@"
                                 (:domain subscribee))}]))
 

@@ -12,6 +12,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -27,7 +28,7 @@
          (fact "when the format is :as"
            (with-format :as
              (fact "when the user has subscriptions"
-               (model/drop-all!)
+               (db/drop-all!)
                (let [subscription (existance/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)
                      request {:action action}
@@ -42,7 +43,7 @@
          (fact "when the format is :html"
            (with-format :html
              (fact "when the user has subscriptions"
-               (model/drop-all!)
+               (db/drop-all!)
                (let [subscription (existance/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)
                      request {:action action

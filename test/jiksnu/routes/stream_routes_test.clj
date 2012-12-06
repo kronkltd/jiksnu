@@ -9,6 +9,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -21,7 +22,7 @@
 
  (fact "public-timeline-http-route"
    (fact "when there are no activities"
-     (model/drop-all!)
+     (db/drop-all!)
 
      (-> (mock/request :get "/")
          response-for) =>

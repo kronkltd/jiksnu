@@ -23,6 +23,7 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
+            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
@@ -300,14 +301,14 @@
        " privately")
 
    " approximately "
-   [:time {:datetime (model/format-date (:published activity))
-           :title (model/format-date (:published activity))
+   [:time {:datetime (util/format-date (:published activity))
+           :title (util/format-date (:published activity))
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
                (when *dynamic*
-                 {:data-bind "text: created, attr: {href: '/notice/' + ko.utils.unwrapObservable(_id)}"}))
+                 {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
      (when-not *dynamic*
-       (-> activity :created .toDate model/prettyify-time))]]
+       (-> activity :created .toDate util/prettyify-time))]]
    " using "
    [:span
     (if *dynamic*
@@ -713,7 +714,7 @@
   (merge
    {:text (:title activity)
     :truncated false
-    :created_at (model/date->twitter (.toDate (:created activity)))
+    :created_at (util/date->twitter (.toDate (:created activity)))
     :source (:source activity)
     :id (:_id activity)
     ;; :in_reply_to_user_id nil
@@ -811,7 +812,7 @@
    [:text (h/h (or (:title activity)
                    (:content activity)))]
    [:truncated "false"]
-   [:created_at (-?> activity :published .toDate model/date->twitter)]
+   [:created_at (-?> activity :published .toDate util/date->twitter)]
    [:source (:source activity)]
    [:id (:_id activity)]
    [:in_reply_to_status_id]

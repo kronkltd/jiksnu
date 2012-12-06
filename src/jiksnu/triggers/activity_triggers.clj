@@ -19,7 +19,8 @@
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.ops :as ops])
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util])
   (:import java.net.URI
            jiksnu.model.Activity
            jiksnu.model.User))
@@ -45,7 +46,7 @@
   [uri]
   ;; uri here is a page, potentially containing information about a user
   (let [mentioned-domain (.getHost (URI. uri))
-        link (model/extract-atom-link uri)
+        link (util/extract-atom-link uri)
         source (ops/get-source link)
         resource (ops/get-resource link)
         feed (abdera/parse-xml-string (ops/update-resource resource))

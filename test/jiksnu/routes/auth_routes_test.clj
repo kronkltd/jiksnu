@@ -7,6 +7,7 @@
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [ring.mock.request :as mock]))
 
@@ -14,7 +15,7 @@
 
  (fact "login"
    (fact "when given correct parameters"
-     (model/drop-all!)
+     (db/drop-all!)
      (let [username (fseq :username)
            password (fseq :password)
            user (actions.user/register {:username username
