@@ -172,6 +172,6 @@
   [id]
   (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (second (util/split-uri id))
+      (second (split-uri id))
       (.getHost uri))))
 

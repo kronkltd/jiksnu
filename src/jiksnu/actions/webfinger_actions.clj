@@ -12,7 +12,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.ops :as ops])
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain

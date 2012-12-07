@@ -147,7 +147,7 @@
 (defn fetch-by-uri
   "Fetch user by their acct uri"
   [uri]
-  (let [[username domain-name] (split-uri uri)]
+  (let [[username domain-name] (util/split-uri uri)]
     (when (and username domain-name)
       (get-user username domain-name))))
 

@@ -132,7 +132,7 @@
 (deffilter #'user-meta :http
   [action request]
   (->> request :params :uri
-       model.user/split-uri
+       util/split-uri
        (apply model.user/get-user)
        action))
 

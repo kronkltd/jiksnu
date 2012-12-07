@@ -126,7 +126,7 @@
   (try
     (->> xrd
          get-identifiers
-         (keep (comp first model.user/split-uri))
+         (keep (comp first util/split-uri))
          first)
     (catch RuntimeException ex
       (log/error "caught error" ex)
