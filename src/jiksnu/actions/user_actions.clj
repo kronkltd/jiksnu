@@ -70,7 +70,7 @@
   [^User user]
   (if-let [domain-id (or (:domain user)
                          (when-let [id (:id user)]
-                           (model.user/get-domain-name id)))]
+                           (util/get-domain-name id)))]
     (actions.domain/get-discovered {:_id domain-id})))
 
 
@@ -121,7 +121,7 @@
       (or (if-let [username (.getUserInfo uri)]
             (assoc user :username username))
           (if-let [domain-name (or (:domain user)
-                                   (model.user/get-domain-name id))]
+                                   (util/get-domain-name id))]
             (let [user (assoc user :domain domain-name)]
               (if-let [xrd (ops/get-user-meta user)]
                 (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
@@ -267,7 +267,7 @@
   (let [id (or (abdera/get-extension person ns/atom "id")
                (str (.getUri person)))
         ;; TODO: check for custom domain field first?
-        domain-name (model.user/get-domain-name id)
+        domain-name (util/get-domain-name id)
         domain (actions.domain/get-discovered {:_id domain-name})
         username (or (abdera/get-username person)
                      (get-username {:id id})

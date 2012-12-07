@@ -8,6 +8,11 @@
    :permanent? true
    :description "pending-get-conversation"))
 
+(defonce pending-get-discovered
+  (l/channel*
+   :permanent? true
+   :description "pending-get-discovered"))
+
 (defonce pending-get-domain
   (l/channel*
    :permanent? true

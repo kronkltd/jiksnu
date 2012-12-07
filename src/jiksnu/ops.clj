@@ -39,6 +39,10 @@
   [domain-name]
   (async-op ch/pending-get-domain domain-name))
 
+(defn get-discovered
+  [domain]
+  (async-op ch/pending-get-discovered domain))
+
 (defn get-source
   [url]
   (async-op ch/pending-get-source url))

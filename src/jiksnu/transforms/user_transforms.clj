@@ -2,13 +2,14 @@
   (:use [ciste.config :only [config]]
         [clj-gravatar.core :only [gravatar-image]]
         [clojurewerkz.route-one.core :only [named-url]]
+        [jiksnu.routes.helpers :only [formatted-url]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]))
-
 
 (defn set-id
   [user]
@@ -60,12 +61,12 @@
 (defn set-update-source
   [user]
   (if (:local user)
-    (let [topic (formatted-url "user timeline" {:id (str (:_id user))} :atom)
+    (let [topic (formatted-url "user timeline" {:id (str (:_id user))} "atom")
           source (ops/get-source topic)]
       (assoc user :update-source (:_id source)))
     (if (:update-source user)
       user
-      (if-let [xrd (get-user-meta user)]
+      (if-let [xrd (ops/get-user-meta user)]
         (if-let [source (model.webfinger/get-feed-source-from-xrd xrd)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
@@ -75,7 +76,7 @@
   [item]
   (if (:user-meta-link item)
     item
-    (let [id (:id user)
+    (let [id (:id item)
           domain-name (:domain item)
           domain (ops/get-discovered (model.domain/fetch-by-id domain-name))]
       (if-let [url (actions.domain/get-user-meta-url domain id)]
