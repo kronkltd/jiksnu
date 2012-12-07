@@ -28,6 +28,7 @@
            java.io.PrintWriter
            java.text.SimpleDateFormat
            java.util.Date
+           java.net.URI
            java.net.URL
            lamina.core.channel.Channel
            org.bson.types.ObjectId
@@ -171,6 +172,6 @@
   [id]
   (let [uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (second (split-uri id))
+      (second (util/split-uri id))
       (.getHost uri))))
 

@@ -18,16 +18,16 @@
 
  (fact "show"
    (with-context [:http :html]
-    (let [domain (existance/a-domain-exists)]
-      (-> (mock/request :get (uri domain))
-          response-for) =>
-      (every-checker
-       map?
-       (comp status/success? :status)
-       (fn [response]
-         (let [body (h/html (:body response))]
-           (fact
-             body => (re-pattern (str (:_id domain))))))))))
+     (let [domain (existance/a-domain-exists)]
+       (-> (mock/request :get (uri domain))
+           response-for) =>
+           (every-checker
+            map?
+            (comp status/success? :status)
+            (fn [response]
+              (let [body (h/html (:body response))]
+                (fact
+                  body => (re-pattern (str (:_id domain))))))))))
 
  (fact "#'webfinger-host-meta"
    (fact "should return a XRD document"

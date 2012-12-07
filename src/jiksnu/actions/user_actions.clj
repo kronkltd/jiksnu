@@ -117,7 +117,7 @@
   (let [id (:id user)
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (assoc user :username (first (model.user/split-uri id)))
+      (assoc user :username (first (util/split-uri id)))
       (or (if-let [username (.getUserInfo uri)]
             (assoc user :username username))
           (if-let [domain-name (or (:domain user)
@@ -157,7 +157,7 @@
 
 (defn find-or-create-by-uri
   [uri]
-  (let [[username domain] (model.user/split-uri uri)]
+  (let [[username domain] (util/split-uri uri)]
     (find-or-create username domain)))
 
 ;; TODO: This is the job of the filter
@@ -180,7 +180,7 @@
 
 (def index*
   (templates/make-indexer 'jiksnu.model.user
-                      :sort-clause {:username 1}))
+                          :sort-clause {:username 1}))
 
 (defaction index
   [& options]
@@ -448,7 +448,7 @@
   "Returns a user with the passed account uri,
    or creates one if it does not exist."
   [uri]
-  (->> uri model.user/split-uri
+  (->> uri util/split-uri
        (apply find-or-create)))
 
 (defaction xmpp-service-unavailable

@@ -45,11 +45,6 @@
        (let [user (existance/a-remote-user-exists)]
          (local? user) => false))))
 
- (fact "split-uri"
-   (split-uri "bob@example.com") => ["bob" "example.com"]
-   (split-uri "acct:bob@example.com") => ["bob" "example.com"]
-   (split-uri "http://example.com/bob") => nil)
-
  (fact "display-name"
    (display-name .user.) => string?)
 
@@ -65,7 +60,7 @@
 
    (fact "when the item exists"
      (let [item (existance/a-user-exists)]
-      (fetch-by-id (:_id item)) => item)))
+       (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
    (fact "when given valid params"
@@ -91,8 +86,8 @@
    (fact "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
-      seq?
-      empty?))
+                     seq?
+                     empty?))
 
    (fact "when there is more than a page of items"
      (drop!)
@@ -149,7 +144,7 @@
    (fact "when the user's domain has a lrdd link"
      (let [domain (existance/a-remote-domain-exists)]
        (model.domain/set-field! domain :links [{:rel "lrdd"
-                                               :template "http://example.com/main/xrd?uri={uri}"}])
+                                                :template "http://example.com/main/xrd?uri={uri}"}])
        (let [user (existance/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
