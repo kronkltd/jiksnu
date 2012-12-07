@@ -46,3 +46,8 @@
   (l/channel*
    :permanent? true
    :description "Channel for newly posted activities"))
+
+(defonce pending-get-user-meta
+  (l/channel*
+   :permanent? true
+   :description "get-user-meta"))

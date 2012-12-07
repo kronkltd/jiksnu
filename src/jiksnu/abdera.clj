@@ -14,6 +14,7 @@
            org.apache.abdera2.factory.Factory
            org.apache.abdera2.model.Element
            org.apache.abdera2.model.Entry
+           org.apache.abdera2.model.ExtensibleElement
            org.apache.abdera2.model.Feed
            org.apache.abdera2.model.Link
            org.apache.abdera2.model.Person
@@ -56,6 +57,11 @@
   [^Element element]
   (= (.getName element) "acl-rule"))
 
+(defn get-extension
+  [^ExtensibleElement element
+   ^String ns-part
+   ^String local-part]
+  (.getExtension element (QName. ns-part local-part)))
 
 
 (defn get-entries

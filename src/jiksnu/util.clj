@@ -159,3 +159,18 @@
 (extend ObjectId json/Write-JSON
         {:write-json write-json-object-id})
 
+(defn split-uri
+  "accepts a uri in the form of username@domain or scheme:username@domain and
+   returns a vector containing both the username and the domain"
+  [uri]
+  (let [[_ _ username domain] (re-find #"(.*:)?([^@]+)@([^\?]+)" uri)]
+    (when (and username domain) [username domain])))
+
+(defn get-domain-name
+  "Takes a string representing a uri and returns the domain"
+  [id]
+  (let [uri (URI. id)]
+    (if (= "acct" (.getScheme uri))
+      (second (split-uri id))
+      (.getHost uri))))
+

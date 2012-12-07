@@ -52,3 +52,6 @@
   [resource]
   (async-op ch/pending-update-resources resource))
 
+(defn get-user-meta
+  [user]
+  (async-op ch/pending-get-user-meta user))

@@ -5,7 +5,6 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -30,6 +29,7 @@
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
+            [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
             [monger.collection :as mc]
@@ -50,50 +50,18 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defn assert-unique
-  [user]
-  (if-let [id (:id user)]
-    (if-not (model.user/fetch-by-remote-id id)
-      user
-      (throw+ "already exists"))
-    (throw+ "does not have an id")))
-
-(defn get-user-meta
-  [user]
-  (let [id (:id user)
-        domain (actions.domain/get-discovered {:_id (:domain user)})]
-    (if-let [url (actions.domain/get-user-meta-url domain id)]
-      (let [resource (ops/get-resource url)
-            response (ops/update-resource resource)]
-        (cm/string->document (:body response))))))
-
-(defn set-update-source
-  [user]
-  (if (:local user)
-    (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
-                        (:domain user) (:_id user))
-          source (ops/get-source topic)]
-      (assoc user :update-source (:_id source)))
-    (if (:update-source user)
-      user
-      ;; look up update source
-      (if-let [user-meta (get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
-          (assoc user :update-source (:_id source))
-          (throw+ "could not get source"))
-        (throw+ "Could not get user meta")))))
-
 (defn prepare-create
   [user]
   (-> user
-      set-_id
+      transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time
+      transforms.user/set-domain
       transforms.user/set-id
       transforms.user/set-url
       transforms.user/set-local
-      assert-unique
-      set-updated-time
-      set-created-time
-      set-update-source
+      transforms.user/assert-unique
+      transforms.user/set-update-source
       transforms.user/set-discovered
       transforms.user/set-avatar-url))
 
@@ -106,7 +74,6 @@
     (actions.domain/get-discovered {:_id domain-id})))
 
 
-
 (defaction add-link*
   [user link]
   (mc/update "users" {:_id (:_id user)}
@@ -115,7 +82,7 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (and nil (model.user/get-link user
+  (if-let [existing-link (log/spy (model.user/get-link user
                                                        (:rel link)
                                                        (:type link)))]
     user
@@ -127,19 +94,22 @@
 
 
 (defaction create
-  [options]
-  (let [user (prepare-create options)]
-    ;; TODO: This should be part of the set-domain transform
-    (if-let [domain (get-domain user)]
-      (do
-        (s/increment "user created")
-        (model.user/create user))
-      (throw+ "Could not determine domain for user"))))
+  [params]
+  (let [item (prepare-create params)]
+    (model.user/create item)))
 
 (defaction find-or-create
   [username domain]
   (or (model.user/get-user username domain)
       (create {:username username :domain domain})))
+
+(defn get-user-meta
+  "Returns an enlive document for the user's xrd file"
+  [user]
+  (if-let [url (:user-meta-link user)]
+    (-> url ops/get-resource ops/update-resource
+        :body cm/string->document)
+    (throw+ "User does not have a meta link")))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
@@ -153,10 +123,10 @@
           (if-let [domain-name (or (:domain user)
                                    (model.user/get-domain-name id))]
             (let [user (assoc user :domain domain-name)]
-              (if-let [user-meta (get-user-meta user)]
-                (let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
+              (if-let [xrd (ops/get-user-meta user)]
+                (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
                   (merge user
-                         {:username (model.webfinger/get-username-from-xrd user-meta)
+                         {:username (model.webfinger/get-username-from-xrd xrd)
                           :update-source (:_id source)}))
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
