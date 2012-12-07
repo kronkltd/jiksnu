@@ -32,3 +32,17 @@
   (l/channel*
    :permanent? true
    :description "pending-update-resources"))
+
+(defonce
+  ^{:doc "Channel containing list of sources to be updated"}
+  pending-updates (l/permanent-channel))
+
+(defonce pending-entries
+  (l/channel*
+   :permanent? true
+   :description "All atom entries that are seen come through here"))
+
+(defonce posted-activities
+  (l/channel*
+   :permanent? true
+   :description "Channel for newly posted activities"))

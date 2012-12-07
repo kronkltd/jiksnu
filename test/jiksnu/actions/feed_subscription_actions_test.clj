@@ -23,19 +23,14 @@
    (let [item (existance/a-feed-subscription-exists)]
      (delete item)
 
-     (exists? item) => falsey
-     )
-   )
+     (exists? item) => falsey))
 
  (fact "#'create"
    (let [params (prepare-create (factory :feed-subscription))]
-     (create params) => (partial instance? FeedSubscription)
-     )
-   )
+     (create params) => (partial instance? FeedSubscription)))
 
  (fact "#'index"
    (model.feed-subscription/drop!)
-   (:items (index)) => []
-   )
+   (:items (index)) => [])
 
  )

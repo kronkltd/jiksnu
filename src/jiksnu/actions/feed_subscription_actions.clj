@@ -41,7 +41,7 @@
 
 (def index*
   (templates/make-indexer 'jiksnu.model.feed-subscription
-                      :sort-clause [{:_id 1}]))
+                          :sort-clause {:_id 1}))
 
 (defaction index
   [& options]

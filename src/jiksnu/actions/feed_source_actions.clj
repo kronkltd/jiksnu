@@ -31,13 +31,6 @@
   (:import java.net.URI
            jiksnu.model.FeedSource))
 
-(defonce
-  ^{:doc "Channel containing list of sources to be updated"}
-  pending-updates (l/permanent-channel))
-
-(defonce pending-entries
-  (l/permanent-channel))
-
 (defonce pending-discovers (ref {}))
 
 (def discovery-timeout 5000)
@@ -115,7 +108,7 @@
 
 (def index*
   (templates/make-indexer 'jiksnu.model.feed-source
-                      :sort-clause {:created -1}))
+                          :sort-clause {:created -1}))
 
 (defaction index
   [& options]
@@ -138,7 +131,7 @@
   ;; TODO: use watched? fn
   (if (or true (seq (:watchers source)))
     (doseq [entry (.getEntries feed)]
-      (l/enqueue pending-entries [feed source entry]))
+      (l/enqueue ch/pending-entries [feed source entry]))
     (do (log/warnf "no watchers for %s" (:topic source))
         (unsubscribe source))))
 
@@ -274,7 +267,7 @@
   (deliver p (find-or-create {:topic url})))
 
 (l/receive-all ch/pending-get-source handle-pending-get-source)
-(l/receive-all pending-entries process-entry)
+(l/receive-all ch/pending-entries process-entry)
 
 (definitializer
   (model.feed-source/ensure-indexes)

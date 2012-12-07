@@ -6,7 +6,6 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.actions :only [posted-activities]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -17,6 +16,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -149,11 +149,10 @@
 (l/siphon
    (->> ciste.core/*actions*
         l/fork
-        (l/filter* filter-create)
-        #_(l/map* format-event))
-   posted-activities)
+        (l/filter* filter-create))
+   ch/posted-activities)
 
-(l/receive-all posted-activities (fn [_]))
+(l/receive-all ch/posted-activities identity)
 
 (defn websocket-handler
   [ch request]
