@@ -210,7 +210,7 @@ this is for OSW
       (get-extension-elements ns/atom "link")
       (->> (map parse-link))))
 
-(defn get-extension
+(defn get-simple-extension
   [^Person person ns-part local-part]
   (.getSimpleExtension person (QName. ns-part local-part)))
 

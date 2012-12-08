@@ -167,8 +167,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   "Returns the verb of the entry"
   [^Entry entry]
   (-?> entry
-       (abdera/get-extension ns/as "verb")
-       .getText
+       (abdera/get-simple-extension ns/as "verb")
        util/strip-namespaces))
 
 (defn parse-entry

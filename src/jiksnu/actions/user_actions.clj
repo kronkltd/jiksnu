@@ -82,9 +82,9 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (log/spy (model.user/get-link user
-                                                       (:rel link)
-                                                       (:type link)))]
+  (if-let [existing-link (model.user/get-link user
+                                              (:rel link)
+                                              (:type link))]
     user
     (add-link* user link)))
 
@@ -264,7 +264,7 @@
   "Extract user information from atom element"
   [^Person person]
   (log/info "converting person to user")
-  (let [id (or (abdera/get-extension person ns/atom "id")
+  (let [id (or (abdera/get-simple-extension person ns/atom "id")
                (str (.getUri person)))
         ;; TODO: check for custom domain field first?
         domain-name (util/get-domain-name id)
