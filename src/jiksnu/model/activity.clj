@@ -1,6 +1,7 @@
 (ns jiksnu.model.activity
   (:use [ciste.config :only [config]]
         [clojure.core.incubator :only [-?>>]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [clj-statsd :as s]
@@ -14,7 +15,8 @@
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           org.bson.types.ObjectId))
 
 (defonce page-size 20)
 (def collection-name "activities")
@@ -23,17 +25,17 @@
 
 (def create-validators
   (validation-set
-   (presence-of   :_id)
-   (presence-of   :id)
-   (presence-of   :title)
-   (presence-of   :author)
-   (presence-of   :content)
-   (acceptance-of :local         :accept (partial instance? Boolean))
-   (acceptance-of :public        :accept (partial instance? Boolean))
-   (presence-of   :update-source)
-   (presence-of   [:object :object-type])
-   (presence-of   :verb)
-   (presence-of   :conversation)
+   (type-of :_id                   ObjectId)
+   (type-of :id                    String)
+   (type-of :title                 String)
+   (type-of :author                ObjectId)
+   (type-of :content               String)
+   (type-of :local                 Boolean)
+   (type-of :public                Boolean)
+   (type-of :update-source         ObjectId)
+   (type-of [:object :object-type] String)
+   (type-of :verb                  String)
+   (type-of :conversation          ObjectId)
 
    ;; TODO: These should be joda times
    (presence-of   :created)
@@ -43,6 +45,7 @@
 (def set-field! (templates/make-set-field! collection-name))
 
 (defn get-author
+  "Returns the user that is the author of this activity"
   [activity]
   (-> activity
       :author

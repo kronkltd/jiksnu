@@ -11,6 +11,7 @@
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-http.client :as client]
+            [clj-statsd :as s]
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -122,33 +123,36 @@
 (declare send-unsubscribe)
 
 (defn process-entry
+  "Create an activity from an atom entry"
   [[feed source entry]]
   (let [params (actions.activity/entry->activity entry feed source)]
     (actions.activity/find-or-create params)))
 
-(defn parse-feed
+(defn watched?
+  "Returns true if the source has any watchers"
+  [source]
+  (or true (seq (:watchers source))))
+
+(defn process-feed
   [source feed]
-  ;; TODO: use watched? fn
-  (if (or true (seq (:watchers source)))
+  (s/increment "feeds processed")
+
+  (let [author (abdera/get-feed-author feed)]
+    (when author
+      (log/spy (actions.user/person->user author))))
+
+  (let [feed-title (.getTitle feed)]
+    (when-not (= feed-title (:title source))
+      (model.feed-source/set-field! source :title feed-title)))
+
+  (if-let [hub-link (get-hub-link feed)]
+    (model.feed-source/set-field! source :hub hub-link))
+
+  (if (watched? source)
     (doseq [entry (.getEntries feed)]
       (l/enqueue ch/pending-entries [feed source entry]))
     (do (log/warnf "no watchers for %s" (:topic source))
         (unsubscribe source))))
-
-(defn process-feed
-  [source feed]
-  (let [feed-title (.getTitle feed)
-        author (abdera/get-feed-author feed)]
-    (when author
-      (log/spy (actions.user/person->user author))
-      )
-    (when-not (= feed-title (:title source))
-      (model.feed-source/set-field! source :title feed-title))
-    ;; TODO: This should be automatic for any transformation
-    (mark-updated source)
-    (if-let [hub-link (get-hub-link feed)]
-      (model.feed-source/set-field! source :hub hub-link))
-    (parse-feed source feed)))
 
 (defaction unsubscribe
   "Action if user makes action to unsubscribe from remote source"
