@@ -40,7 +40,7 @@
 
 (def index*
   (templates/make-indexer 'jiksnu.model.group
-                      :sort-clause [{:username 1}]))
+                          :sort-clause {:username 1}))
 
 (defaction index
   [& options]

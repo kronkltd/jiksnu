@@ -4,16 +4,13 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
-        [clojurewerkz.route-one.core :only [named-path named-url]]
-        [jiksnu.session :only [current-user]]
+        [clojurewerkz.route-one.core :only [named-url]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
-            [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
             [clj-time.core :as time]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -245,8 +242,7 @@
 
 (defaction discover
   [item]
-  (update* item)
-  item)
+  (update item))
 
 (defn get-discovered
   "Returns a copy of that domain once it's properly discovered"
