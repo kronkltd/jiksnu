@@ -1,5 +1,7 @@
 (ns jiksnu.util-test
-  (:use [midje.sweet :only [fact future-fact => every-checker contains]])
+  (:use [jiksnu.test-helper :only [test-environment-fixture]]
+        jiksnu.util
+        [midje.sweet :only [fact future-fact => every-checker contains]])
   (:require [jiksnu.util :as util])
   (:import org.bson.types.ObjectId))
 

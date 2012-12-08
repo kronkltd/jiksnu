@@ -216,11 +216,11 @@ this is for OSW
 
 (defn get-username
   [^Person person]
-  (get-extension person ns/poco "preferredUsername"))
+  (get-simple-extension person ns/poco "preferredUsername"))
 
 (defn get-note
   [^Person person]
-  (get-extension person ns/poco "note"))
+  (get-simple-extension person ns/poco "note"))
 
 
 (defn ^Link make-link

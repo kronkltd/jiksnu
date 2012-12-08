@@ -13,7 +13,9 @@
             [lamina.trace :as trace]))
 
 ;; TODO: Config option
-(def default-timeout (time/minutes 5))
+(def default-timeout
+  #_(time/minutes 5)
+  (time/seconds 30))
 
 (defn async-op
   [ch params]

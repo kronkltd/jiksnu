@@ -19,6 +19,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -458,6 +459,12 @@
         domain (actions.domain/get-discovered domain-name)]
     (actions.domain/set-xmpp domain false)
     user))
+
+(defn handle-pending-get-user-meta
+  [[p user]]
+  (deliver p (get-user-meta user)))
+
+(l/receive-all ch/pending-get-user-meta handle-pending-get-user-meta)
 
 (definitializer
   (require-namespaces
