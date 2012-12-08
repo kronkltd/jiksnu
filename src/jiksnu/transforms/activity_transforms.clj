@@ -34,21 +34,24 @@
 
 (defn set-url
   [activity]
-  (if (and (:local activity)
-           (empty? (:url activity)))
-    (assoc activity :url (str "http://" (config :domain) "/notice/" (:_id activity)))
-    activity))
+  (if (seq (:url activity))
+    activity
+    (if (:local activity)
+      (assoc activity :url (named-url "show activity" {:id (:_id activity)}))
+      (throw+ "Could not determine activity url"))))
 
 (defn set-object-type
   [activity]
-  (assoc-in
-   activity [:object :object-type]
-   (if-let [object-type (:object-type (:object activity))]
-     (-> object-type
-         ;; strip namespaces
-         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
-         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
-     "note")))
+  (if (seq (get-in activity [:object :object-type]))
+    activity
+    (let [type (if-let [object-type (:object-type (:object activity))]
+               (-> object-type
+                   ;; strip namespaces
+                   (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+                   (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+               "note")]
+      (assoc-in
+       activity [:object :object-type] type))))
 
 (defn set-parent
   [params]
@@ -147,6 +150,21 @@
     activity
     (assoc activity :verb "post")))
 
+(defn set-recipients*
+  [uri]
+  (let [user (actions.user/find-or-create-by-remote-id {:id uri})]
+    (:_id user)))
+
+(defn- set-mentioned*
+  [uri]
+  (let [uri-obj (URI. uri)
+        scheme (.getScheme uri-obj)]
+    (if (#{"http" "https"} scheme)
+      (let [resource (ops/get-resource uri)
+            user (actions.user/find-or-create-by-remote-id {:id uri})]
+        (:_id user))
+      (actions.user/find-or-create-by-uri uri))))
+
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients
   "attempt to resolve the recipients"
@@ -154,8 +172,7 @@
   (let [uris (filter identity (:recipient-uris activity))]
     (if (empty? uris)
       (dissoc activity :recipient-uris)
-      (let [users (->> uris
-                       (keep #(:_id (actions.user/find-or-create-by-remote-id {:id %})))) ]
+      (let [users (keep set-recipients* uris)]
         (assoc activity :recipients users)))))
 
 (defn set-conversation
@@ -172,18 +189,6 @@
                 (dissoc :conversation-uris)))
           item))
       (throw+ "could not determine author"))))
-
-(defn- set-mentioned*
-  [uri]
-  (let [uri-obj (URI. uri)
-        scheme (.getScheme uri-obj)]
-    (if (#{"http" "https"} scheme)
-      (let [resource (ops/get-resource uri)]
-        (try
-          (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
-          (catch RuntimeException ex
-            nil)))
-      (actions.user/find-or-create-by-uri uri))))
 
 (defn set-mentioned
   [activity]
@@ -203,7 +208,9 @@
                     :enclosures
                     (map :href)
                     (map (fn [url]
-                           (:_id (ops/get-resource url))))
+                           (let [resource (ops/get-resource url)]
+                             (ops/update-resource resource)
+                             (:_id resource))))
                     seq
                     doall)]
     (-> activity
