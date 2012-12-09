@@ -34,12 +34,6 @@
 
 (def discovery-timeout (time/seconds 30))
 
-(defn get-hub-link
-  [feed]
-  (-?> feed
-       (.getLink "hub")
-       .getHref str))
-
 (defn prepare-create
   [source]
   (-> source
@@ -143,7 +137,7 @@
     (when-not (= feed-title (:title source))
       (model.feed-source/set-field! source :title feed-title)))
 
-  (if-let [hub-link (get-hub-link feed)]
+  (if-let [hub-link (abdera/get-hub-link feed)]
     (model.feed-source/set-field! source :hub hub-link))
 
   (if (watched? source)
