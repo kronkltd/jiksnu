@@ -49,10 +49,15 @@
      "note")))
 
 (defn set-parent
-  [activity]
-  (if (= (:parent activity) "")
-    (dissoc activity :parent)
-    activity))
+  [params]
+  (if (empty? (:parent params))
+    (let [params (dissoc params :parent)]
+      (if-let [uri (:parent-uri params)]
+        (let [resource (model/get-resource uri)]
+          ;; TODO: set parent
+          params)
+        params))
+    params))
 
 (defn set-source
   [activity]
