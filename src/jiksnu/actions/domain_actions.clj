@@ -207,7 +207,7 @@
             p (if p
                 (do (discover domain) p)
                 (get @pending-discovers id))]
-        (or (deref p (5000000) nil)
+        (or (deref p 5000000 nil)
             (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url

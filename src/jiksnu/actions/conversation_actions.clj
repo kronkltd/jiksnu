@@ -100,15 +100,15 @@
   []
   (create {:local true}))
 
-(defn- enqueue-find-or-create-by-url
-  [[url ch]]
-  (l/enqueue ch (find-or-create {:url url})))
+(defn- handle-get-conversation
+  [[p url]]
+  (deliver p (find-or-create {:url url})))
 
 (defn- enqueue-create-local
   [ch]
   (l/enqueue ch (create {:local true})))
 
-(l/receive-all model/pending-conversations enqueue-find-or-create-by-url)
+(l/receive-all model/pending-get-conversation handle-get-conversation)
 (l/receive-all model/pending-create-conversations enqueue-create-local)
 
 (definitializer

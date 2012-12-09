@@ -182,15 +182,15 @@
   [item]
   item)
 
-(defn handle-pending-resources
-  [[url ch]]
-  (l/enqueue ch (find-or-create {:url url})))
+(defn handle-pending-get-resource
+  [[p url]]
+  (deliver p (find-or-create {:url url})))
 
 (defn handle-pending-update-resources
   [[p item]]
   (deliver p (update* item)))
 
-(l/receive-all model/pending-resources        handle-pending-resources)
+(l/receive-all model/pending-get-resource     handle-pending-get-resource)
 (l/receive-all model/pending-update-resources handle-pending-update-resources)
 
 (definitializer

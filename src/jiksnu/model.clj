@@ -264,24 +264,31 @@
 
 ;; async fetchers
 
-(defonce pending-get-domain (l/channel*
-                             :permanent? true
-                             :description "pending-get-domain"))
-(defonce pending-get-source (l/channel*
-                             :permanent? true
-                             :description "pending-get-source"))
-(defonce pending-conversations (l/channel*
-                                :permanent? true
-                                :description "pending-conversations"))
-(defonce pending-create-conversations (l/channel*
-                                       :permanent? true
-                                       :description "pending-create-conversations"))
-(defonce pending-resources (l/channel*
-                            :permanent? true
-                            :description "pending-resources"))
-(defonce pending-update-resources (l/channel*
-                                   :permanent? true
-                                   :description "pending-update-resources"))
+(defonce pending-get-conversation
+  (l/channel*
+   :permanent? true
+   :description "pending-get-conversation"))
+(defonce pending-get-domain
+  (l/channel*
+   :permanent? true
+   :description "pending-get-domain"))
+(defonce pending-get-resource
+  (l/channel*
+   :permanent? true
+   :description "pending-get-resource"))
+(defonce pending-get-source
+  (l/channel*
+   :permanent? true
+   :description "pending-get-source"))
+
+(defonce pending-create-conversations
+  (l/channel*
+   :permanent? true
+   :description "pending-create-conversations"))
+(defonce pending-update-resources
+  (l/channel*
+   :permanent? true
+   :description "pending-update-resources"))
 
 (defn async-op
   [ch params]
@@ -292,19 +299,17 @@
     (or (deref p default-timeout nil)
         (throw+ "timeout"))))
 
-(defn get-conversation
-  [url]
-  (s/increment "conversations async get")
-  (let [result (l/result-channel)]
-    (l/enqueue pending-conversations [url result])
-    (l/wait-for-result result 5000)))
-
 (defn create-new-conversation
   []
   (s/increment "conversations create new")
   (let [result (l/result-channel)]
     (l/enqueue pending-create-conversations result)
     (l/wait-for-result result 5000)))
+
+
+(defn get-conversation
+  [url]
+  (async-op pending-get-conversation url))
 
 (defn get-domain
   [domain-name]
@@ -316,9 +321,8 @@
 
 (defn get-resource
   [url]
-  (let [result (l/result-channel)]
-    (l/enqueue pending-resources [url result])
-    (l/wait-for-result result 5000)))
+  (async-op pending-get-resource url))
+
 
 (defn update-resource
   [resource]

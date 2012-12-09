@@ -70,7 +70,8 @@
   [params]
   (let [source (model/get-source (:topic params))]
     (if (:local source)
-      (create {:source (:_id source)})
+      (create {:source (:_id source)
+               :url (:topic source)})
       (throw+ "Hub not authoritative for source"))))
 
 (definitializer

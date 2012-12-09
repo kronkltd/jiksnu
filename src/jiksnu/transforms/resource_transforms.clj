@@ -13,7 +13,7 @@
     item
     (if-let [url (:url item)]
       (if-let [domain-name (.getHost (URI. url))]
-        (assoc item :local 
+        (assoc item :local
                (= (:_id (actions.domain/current-domain))
                   domain-name))
         (throw+ "Could not determine domain name from url"))
