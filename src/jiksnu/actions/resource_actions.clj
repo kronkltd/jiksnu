@@ -41,6 +41,7 @@
       transforms/set-_id
       transforms.resource/set-local
       transforms.resource/set-domain
+      transforms.resource/set-location
       transforms/set-updated-time
       transforms/set-created-time))
 

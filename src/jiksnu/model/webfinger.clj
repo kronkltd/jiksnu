@@ -14,15 +14,21 @@
             [jiksnu.util :as util]
             [lamina.core :as l])
   (:import java.net.URI
-           jiksnu.model.User))
+           jiksnu.model.User
+           nu.xom.Document))
 
 (defn fetch-host-meta
   [url]
   (log/infof "fetching host meta: %s" url)
   (try
-    (let [resource (ops/get-resource url)]
+    (let [resource (ops/get-resource url)
+          response (ops/update-resource resource)]
       (s/increment "xrd_fetched")
-      (cm/fetch-document url))
+      (cm/fetch-document url)
+      (if (:status response)
+        (cm/string->document (:body response))
+        )
+      )
     (catch RuntimeException ex
       (throw+ "Could not fetch host meta"))))
 
@@ -48,7 +54,8 @@
 
 
 (defn get-feed-source-from-xrd
-  [xrd]
+  [^Document xrd]
+  (log/spy (.toXML xrd))
   (if-let [source-link (get-source-link xrd)]
     (ops/get-source source-link)
     (throw+ "could not determine source")))

@@ -134,8 +134,8 @@
   [source feed]
   (s/increment "feeds processed")
 
-  (let [author (abdera/get-feed-author feed)]
-    (when author
+  (when-let [author (abdera/get-feed-author feed)]
+    (let [author-id (log/spy (.getId author))]
       (log/spy (actions.user/person->user author))))
 
   (let [feed-title (.getTitle feed)]

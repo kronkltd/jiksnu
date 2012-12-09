@@ -161,7 +161,7 @@
   (let [uri-obj (URI. uri)
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
-      (let [resource (ops/get-resource uri)
+      (let [resource (log/spy (ops/update-resource (log/spy (ops/get-resource (log/spy uri)))))
             user (actions.user/find-or-create-by-remote-id {:id uri})]
         (:_id user))
       (actions.user/find-or-create-by-uri uri))))

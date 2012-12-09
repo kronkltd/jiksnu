@@ -223,7 +223,7 @@ serialization"
                          .getText util/strip-namespaces)
         object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
         params (apply merge
-                      parsed-entry
+                      (dissoc parsed-entry :extensions)
                       (when content           {:content content})
                       (when updated           {:updated updated})
                       ;; (when (seq recipients) {:recipients (string/join ", " recipients)})

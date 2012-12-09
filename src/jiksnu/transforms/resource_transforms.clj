@@ -4,6 +4,7 @@
             [clojurewerkz.route-one.core :as r]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
+            [jiksnu.ops :as ops]
             [jiksnu.routes.helpers :as rh])
   (:import java.net.URI))
 
@@ -30,4 +31,9 @@
       (assoc item :domain (:_id domain))
       (throw+ "Could not determine domain"))))
 
-
+(defn set-location
+  [item]
+  (if-let [location (:location item)]
+    (let [resource (ops/get-resource (ops/get-resource location))]
+      item)
+    item))
