@@ -1,5 +1,6 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
+        [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]

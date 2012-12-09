@@ -27,10 +27,16 @@
   [user]
   (if (:avatar-url user)
     user
-    (assoc user :avatar-url
-           (if (:email user)
-             (gravatar-image (:email user))
-             (format "http://%s/assets/images/default-avatar.jpg" (config :domain))))))
+    (if-let [avatar-link (first (keep
+                                 (fn [link]
+                                   (if (= (:rel link) "avatar")
+                                     (:href link)))
+                                 (:links user)))]
+      (assoc user :avatar-url avatar-link)
+      (assoc user :avatar-url
+             (if (:email user)
+               (gravatar-image (:email user))
+               (format "http://%s/assets/images/default-avatar.jpg" (config :domain)))))))
 
 (defn set-local
   [user]

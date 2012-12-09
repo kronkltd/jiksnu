@@ -79,7 +79,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [item link]
   (s/increment "link added")
   (mc/update "activities" {:_id (:_id item)}
-             {:$addToSet {:links link}})
+    {:$addToSet {:links link}})
   item)
 
 ;; FIXME: this is always hitting the else branch
@@ -178,13 +178,18 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
    :published  (.getPublished entry)
    :updated    (.getUpdated entry)
    :content    (.getContent entry)
+   :url        (str (.getAlternateLinkResolvedHref entry))
    :extensions (.getExtensions entry)})
+
+(defonce latest-entry (ref nil))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
   [^Entry entry & [feed source]]
-  (let [{:keys [extensions content id title published updated]}
+  (dosync
+   (ref-set latest-entry entry))
+  (let [{:keys [extensions content id title published updated] :as parsed-entry}
         (parse-entry entry)
         original-activity (model.activity/fetch-by-remote-id id)
         verb (get-verb entry)
@@ -192,9 +197,7 @@ serialization"
                  (abdera/get-author feed)
                  actions.user/person->user
                  actions.user/find-or-create-by-remote-id)
-        extension-maps (->> extensions
-                            (map parse-extension-element)
-                            doall)
+        extension-maps (doall (map parse-extension-element extensions))
         links (seq (abdera/parse-links entry))
 
         irts (seq (abdera/parse-irts entry))
@@ -220,31 +223,31 @@ serialization"
                          .getText util/strip-namespaces)
         object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
         params (apply merge
-                    (when published         {:published published})
-                    (when content           {:content content})
-                    (when updated           {:updated updated})
-                    ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
-                    (when title             {:title title})
-                    (when irts              {:irts irts})
-                    (when (seq links)       {:links links})
-                    (when (seq conversation-uris)
-                      {:conversation-uris conversation-uris})
-                    (when (seq mentioned-uris)
-                      {:mentioned-uris mentioned-uris})
-                    (when (seq enclosures)
-                      {:enclosures enclosures})
-                    (when (seq tags)
-                      {:tags tags})
-                    (when verb              {:verb verb})
-                    {:id id
-                     :author (:_id user)
-                     :update-source (:_id source)
-                     ;; TODO: try to read
-                     :public true
-                     :object (merge (when object-type {:object-type object-type})
-                                    (when object-id {:id object-id}))
-                     :comment-count (abdera/get-comment-count entry)}
-                    extension-maps)]
+                      parsed-entry
+                      (when content           {:content content})
+                      (when updated           {:updated updated})
+                      ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
+                      (when title             {:title title})
+                      (when irts              {:irts irts})
+                      (when (seq links)       {:links links})
+                      (when (seq conversation-uris)
+                        {:conversation-uris conversation-uris})
+                      (when (seq mentioned-uris)
+                        {:mentioned-uris mentioned-uris})
+                      (when (seq enclosures)
+                        {:enclosures enclosures})
+                      (when (seq tags)
+                        {:tags tags})
+                      (when verb              {:verb verb})
+                      {:id id
+                       :author (:_id user)
+                       :update-source (:_id source)
+                       ;; TODO: try to read
+                       :public true
+                       :object (merge (when object-type {:object-type object-type})
+                                      (when object-id {:id object-id}))
+                       :comment-count (abdera/get-comment-count entry)}
+                      extension-maps)]
     (model/map->Activity params)))
 
 ;; TODO: rename to publish

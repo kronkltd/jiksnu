@@ -202,6 +202,7 @@
 (deffactory :activity
   {:title (fseq :title)
    :content (fseq :content)
+   :url (fseq :uri)
    :author #'user-id
    :verb "post"})
 

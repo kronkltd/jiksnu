@@ -278,6 +278,7 @@
       (let [email (.getEmail person)
             name (abdera/get-name person)
             note (abdera/get-note person)
+            user-meta (actions.domain/get-user-meta-url domain id)
             url (str (.getUri person))
             ;; homepage
             local-id (-> person
@@ -287,6 +288,7 @@
             links (abdera/get-links person)
             user (merge {:domain domain-name
                          :id id
+                         :user-meta-link user-meta
                          :username username
                          :links links}
                         (when url      {:url url})
