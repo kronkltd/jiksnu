@@ -74,12 +74,13 @@
   [params]
   (let [{challenge "hub.challenge"
          mode "hub.mode"
-         topic "hub.topic"} params]
-    (let [source (model.feed-source/fetch-by-topic topic)]
-      (condp = mode
-        "subscribe"   (confirm-subscribe source)
-        "unsubscribe" (confirm-unsubscribe source)
-        (throw+ "Unknown mode")))
+         topic "hub.topic"} params
+         source (model.feed-source/fetch-by-topic topic)
+         dispatch-fn (condp = mode
+                       "subscribe"   #'confirm-subscribe
+                       "unsubscribe" #'confirm-unsubscribe
+                       (throw+ "Unknown mode"))]
+    (dispatch-fn source)
     challenge))
 
 (defaction create
@@ -90,9 +91,10 @@
 
 (defn find-or-create
   [params & [options]]
-  (if-let [source (or (if-let [id  (:_id params)]
+  (if-let [source (or (if-let [id (:_id params)]
                         (model.feed-source/fetch-by-id id))
-                      (model.feed-source/fetch-by-topic (:topic params)))]
+                      (if-let [topic (:topic params)]
+                        (model.feed-source/fetch-by-topic topic)))]
     source
     (create params options)))
 
@@ -119,7 +121,7 @@
             (actions.activity/entry->activity entry feed source)
             (catch RuntimeException ex
               (.printStackTrace ex))))
-       (.getEntries feed)))
+        (.getEntries feed)))
 
 (defn process-entries
   [source feed]

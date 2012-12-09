@@ -32,13 +32,6 @@
   (when-let [item (mc/find-map-by-id collection-name id)]
     (model/map->FeedSource item)))
 
-(defn update
-  [source params]
-  (mc/update collection-name
-             (select-keys source [:_id])
-             params)
-  (fetch-by-id (:_id source)))
-
 (defn push-value!
   [source key value]
   (update source
@@ -51,16 +44,15 @@
       (do
         (log/debugf "Creating feed source: %s" params)
         (mc/insert collection-name params)
-        ;; TODO: check no errors
         (let [item (fetch-by-id (:_id params))]
           (trace/trace :feed-sources:created item)
           (s/increment "feed-sources_created")
           item))
       (throw+ {:type :validation :errors errors}))))
 
+(def count-records (model/make-counter collection-name))
 (def delete        (model/make-deleter collection-name))
 (def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
 
 (defn find-record
   [options & args]

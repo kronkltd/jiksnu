@@ -5,7 +5,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-section bind-to format-page-info
                                 pagination-links with-page]])
-  (:require [jiksnu.actions.activity-actions :as actions.activity]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [ring.util.response :as response])
   (:import jiksnu.model.FeedSubscription))
