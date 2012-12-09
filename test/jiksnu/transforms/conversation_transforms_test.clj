@@ -1,6 +1,6 @@
 (ns jiksnu.transforms.conversation-transforms-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.transforms.conversation-transforms :only [set-local set-update-source]]
+        [jiksnu.transforms.conversation-transforms :only [set-update-source]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains fact anything]])
@@ -44,5 +44,5 @@
          (set-update-source conversation) => (contains {:update-source .id.})
          (provided
            (actions.feed-source/discover-source anything) => {:_id .id.})))))
- 
+
  )
