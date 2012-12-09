@@ -121,12 +121,12 @@
       (assoc user :username (first (util/split-uri id)))
       (or (if-let [username (.getUserInfo uri)]
             (assoc user :username username))
-          (if-let [domain-name (or (:domain user)
-                                   (util/get-domain-name id))]
-            (let [domain (actions.domain/find-or-create domain-name)
+          (if-let [domain-name (log/spy (or (:domain user)
+                                            (util/get-domain-name id)))]
+            (let [domain (actions.domain/find-or-create {:_id domain-name})
                   user (assoc user :domain domain-name)
-                  user-meta-link (actions.domain/get-user-meta-url domain id)
-                  user (assoc user :user-meta-link user-meta-link)]
+                  user-meta-link (log/spy (actions.domain/get-user-meta-url domain id))
+                  user (assoc user :user-meta-link (log/spy user-meta-link))]
               (if-let [xrd (ops/get-user-meta user)]
                 (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
                   (merge user

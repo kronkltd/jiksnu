@@ -10,7 +10,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
@@ -21,6 +20,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.User
@@ -61,7 +61,7 @@
            source-link (fseq :uri)]
        (get-username {:id uri}) => (contains {:username username})
        (provided
-         (get-user-meta anything) => .xrd.
+         (ops/get-user-meta anything) => .xrd.
          (model.webfinger/get-feed-source-from-xrd .xrd.) => .topic.
          (model.webfinger/get-username-from-xrd .xrd.) => username)))
 
@@ -73,7 +73,8 @@
                             {:_id domain-name
                              :links [{:rel "lrdd" :template template}]}))
            uri (str "acct:bob@" domain-name)]
-       (get-username {:id uri}) => (contains {:username "bob"}))))
+       (get-username {:id uri}) => (contains {:username "bob"})))
+   )
 
  (fact "#'get-domain"
    (fact "when the domain already exists"
