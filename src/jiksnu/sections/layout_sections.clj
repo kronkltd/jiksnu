@@ -48,7 +48,7 @@
      [(named-path "index domains")       "Domains"]
      [(named-path "index groups")        "Groups"]
      [(named-path "index resources")     "Resources"]]]
-   
+
    (when (is-admin?)
      ["Admin"
       [["/admin/activities"         "Activities"]
@@ -244,6 +244,7 @@
      "/assets/js/bootstrap-2.4.0.min.js"
      "/assets/js/lightbox.js"
      "/assets/js/jquery.smooth-scroll.min.js"
+     "/assets/js/jquery.fitvids.js"
      "/webjars/backbone/0.9.2/backbone-min.js"
      "/assets/js/knockback-0.15.4.min.js"
      "/assets/js/jiksnu.js"

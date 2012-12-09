@@ -30,7 +30,7 @@
 (def logging-levels
   {
    ;; "waltz.state"        :finest
-   ;; "jiksnu.core"        :finest
+   "jiksnu.core"        :warning
    ;; "jiksnu.model"       :finest
    ;; "jiksnu.websocket"   :fine
    ;; "goog.net.WebSocket" :warning
@@ -293,6 +293,7 @@
 
   (.addClass ($ :html) "bound")
 
+  (.fitVids ($ ".video-embed"))
   #_(stats/fetch-statistics _view))
 
 (main)

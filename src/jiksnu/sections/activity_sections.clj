@@ -458,12 +458,13 @@
          [:div {:data-bind "if: properties"}
           ;; [:p {:data-bind "text: ko.utils.unwrapObservable(properties)['og:type']"}]
           [:div (if *dynamic*
-                  {:data-bind "if: ko.utils.unwrapObservable(properties)['og:type'] === 'video'"})
-           [:iframe
-            (merge {:frameborder "0"
-                    :allowfullscreen "allowfullscreen"}
-                   (if *dynamic*
-                     {:data-bind "attr: {src: ko.utils.unwrapObservable(properties)['og:video'], height: ko.utils.unwrapObservable(properties)['og:video:height'], width: ko.utils.unwrapObservable(properties)['og:video:width']}"}))]]]
+                  {:data-bind "if: ko.utils.properties()['og:type'] === 'video'"})
+           [:div.video-embed
+            [:iframe
+             (merge {:frameborder "0"
+                     :allowfullscreen "allowfullscreen"}
+                    (if *dynamic*
+                      {:data-bind "attr: {src: properties()['og:video']}"}))]]]]
          [:a (merge {:rel "lightbox"}
                     (if *dynamic*
                       {:data-bind "attr: {href: url}"}
