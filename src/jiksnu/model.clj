@@ -39,6 +39,9 @@
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
                    :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
 
+;; TODO: Config option
+(def default-timeout (time/minutes 5))
+
 (def rdf-prefixes
   [["activity" ns/as]
    ["sioc" ns/sioc]
@@ -279,8 +282,6 @@
 (defonce pending-update-resources (l/channel*
                                    :permanent? true
                                    :description "pending-update-resources"))
-
-(def default-timeout (time/minutes 5))
 
 (defn async-op
   [ch params]
