@@ -1,10 +1,12 @@
 (ns jiksnu.model.feed-subscription
   (:use [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [presence-of valid? validation-set]])
-  (:require [clj-time.core :as time]
-            [clojure.string :as string]
+        [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
+  (:require [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
@@ -16,49 +18,51 @@
 (def create-validators
   (validation-set
    (presence-of :_id)
-   (presence-of :topic)))
+   (presence-of :url)
+   (presence-of :callback)
+   (presence-of :domain)
+   (acceptance-of :local   :accept (partial instance? Boolean))
+   (presence-of :created)
+   (presence-of :updated)))
+
+(def set-field!    (templates/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]
-  (if-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSubscription record)))
-
-(defn prepare
-  [params]
-  (let [now (time/now)]
-    (merge
-     {:_id (model/make-id)
-      :created now
-      :updated now}
-     params)))
+  (if-let [item (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSubscription item)))
 
 (defn create
-  [params & [options & _]]
-  (let [params (prepare params)
-        errors (create-validators params)]
+  [params]
+  (let [errors (create-validators params)]
     (if (empty? errors)
-      (let [result (mc/insert collection-name params)]
-        (if (result/ok? result)
-          (fetch-by-id (:_id params))
-          (throw+ {:type :error})))
+      (do
+        (log/debugf "Creating feed subscription: %s" params)
+        (mc/insert collection-name params)
+        (let [item (fetch-by-id (:_id params))]
+          (trace/trace :feed-subscriptions:created item)
+          (s/increment "feed-subscriptions_created")
+          item))
       (throw+ {:type :validation
                :errors errors}))))
 
-(def count-records (model/make-counter collection-name))
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (let [page (get options :page 1)]
-       (let [records (mq/with-collection collection-name
-                        (mq/find params)
-                        (mq/paginate :page page :per-page 20))]
-         (map model/map->FeedSubscription records)))))
+     ((templates/make-fetch-fn model/map->FeedSubscription collection-name)
+      params options)))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"
   [topic]
   (fetch-all {:topic topic}))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+    (mc/ensure-index {:url 1 :callback 1} {:unique true})))

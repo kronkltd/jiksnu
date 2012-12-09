@@ -48,7 +48,7 @@
     [[:get    (formatted-path "admin show feed-source")]   #'admin.feed-source/show]
     [[:get    (named-path "admin show feed-source")]       #'admin.feed-source/show]
     [[:post   "/admin/feed-sources/:id/delete"]            #'admin.feed-source/delete]
-    [[:post   "/admin/feed-sources/:id/unsubscribe"]       #'admin.feed-source/remove-subscription]
+    [[:post   "/admin/feed-sources/:id/unsubscribe"]       #'admin.feed-source/unsubscribe]
     [[:post   "/admin/feed-sources/:id/update"]            #'admin.feed-source/fetch-updates]
     [[:post   "/admin/feed-sources/:id/watchers"]          #'admin.feed-source/add-watcher]
     [[:post   "/admin/feed-sources/:id/watchers/delete"]   #'admin.feed-source/remove-watcher]
@@ -68,14 +68,14 @@
     [[:delete "/admin/likes/:id.:format"]                  #'admin.like/delete]
     [[:delete "/admin/likes/:id"]                          #'admin.like/delete]
     [[:post   "/admin/likes/:id/delete"]                   #'admin.like/delete]
-        
+
     [[:get    "/admin/keys.:format"]                       #'admin.key/index]
     [[:get    "/admin/keys"]                               #'admin.key/index]
     [[:post   "/admin/keys"]                               #'admin.key/create]
     [[:get    "/admin/keys/:id.:format"]                   #'admin.key/show]
     [[:get    "/admin/keys/:id"]                           #'admin.key/show]
     [[:post   "/admin/keys/:id/delete"]                    #'admin.key/delete]
-    
+
     [[:get    "/admin/subscriptions.:format"]              #'admin.sub/index]
     [[:get    "/admin/subscriptions"]                      #'admin.sub/index]
     [[:post   "/admin/subscriptions"]                      #'admin.sub/create]

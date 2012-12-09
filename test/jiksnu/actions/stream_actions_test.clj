@@ -10,6 +10,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -31,13 +32,11 @@
          (every-checker
           map?
           #(seq? (:items %))
-          #(= 1 (:total-records %))
-          ;; #(every? activity? (first %))
-          )))))
+          #(= 1 (:total-records %)))))))
 
  (fact "#'user-timeline"
    (fact "when the user has activities"
-     (model/drop-all!)
+     (db/drop-all!)
      (let [user (existance/a-user-exists)
            activity (existance/there-is-an-activity)]
        (user-timeline user) =>
@@ -48,7 +47,7 @@
             (first response) => user
             (second response) => map?
             (:total-records (second response)) => 1))))))
- 
+
  (future-fact "#'callback-publish"
    (fact "when there is a watched source"
      (with-context [:http :atom]

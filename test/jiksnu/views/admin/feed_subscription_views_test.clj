@@ -3,12 +3,14 @@
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
+        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [every-checker fact future-fact =>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.feed-subscription-actions :as actions.admin.feed-subscription]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 
 (test-environment-fixture
@@ -18,17 +20,17 @@
        (with-serialization :http
          (fact "when the format is :html"
            (with-format :html
-             (let [feed-subscription (model.feed-subscription/create
-                                      (factory :feed-subscription))
-                   request {:action action}
-                   response (filter-action action request)]
-               (apply-view request response) =>
-               (every-checker
-                map?
-                (comp status/success? :status)
-                (fn [result]
-                  (let [body (h/html (:body result))]
-                    (fact
-                      body => (re-pattern
-                               (str (:_id feed-subscription))))))))))))))
+             (binding [*dynamic* false]
+               (let [feed-subscription (existance/a-feed-subscription-exists)
+                     request {:action action}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (every-checker
+                  map?
+                  (comp status/success? :status)
+                  (fn [result]
+                    (let [body (h/html (:body result))]
+                      (fact
+                        body => (re-pattern
+                                 (str (:_id feed-subscription)))))))))))))))
  )

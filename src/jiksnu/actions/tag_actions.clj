@@ -4,14 +4,8 @@
         [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]))
-
-;; (def index*
-;;   (model/make-indexer 'jiksnu.model.tag))
-
-;; (defaction index
-;;   [& options]
-;;   (apply index* options))
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.templates :as templates]))
 
 (defaction show
   [tag]

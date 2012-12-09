@@ -12,7 +12,8 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]))
+            [jiksnu.session :as session]
+            [jiksnu.util :as util]))
 
 ;; create
 
@@ -25,13 +26,13 @@
 
 (deffilter #'delete :command
   [action id]
-  (when-let [item (model.user/fetch-by-id (model/make-id id))]
+  (when-let [item (model.user/fetch-by-id (util/make-id id))]
     (action item)))
 
 (deffilter #'delete :http
   [action request]
   (let [id (:id (:params request))]
-    (when-let [item (model.user/fetch-by-id (model/make-id id))]
+    (when-let [item (model.user/fetch-by-id (util/make-id id))]
       (action item))))
 
 (deffilter #'delete :xmpp
@@ -42,13 +43,13 @@
 
 (deffilter #'discover :command
   [action id]
-  (if-let [item (model.user/fetch-by-id (model/make-id id))]
+  (if-let [item (model.user/fetch-by-id (util/make-id id))]
     (action item)))
 
 (deffilter #'discover :http
   [action request]
   (let [{{id :id} :params} request
-        user (model.user/fetch-by-id (model/make-id id))]
+        user (model.user/fetch-by-id (util/make-id id))]
     (action user)))
 
 ;; fetch-remote
@@ -97,7 +98,7 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [user (model.user/fetch-by-id (model/make-id id))]
+    (if-let [user (model.user/fetch-by-id (util/make-id id))]
      (action user))))
 
 ;; TODO: This action is working off of a jid
@@ -112,12 +113,12 @@
 (deffilter #'update :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [user (model.user/fetch-by-id (model/make-id id))]
+    (if-let [user (model.user/fetch-by-id (util/make-id id))]
      (action user))))
 
 (deffilter #'update :command
   [action id]
-  (let [item (model.user/fetch-by-id (model/make-id id))]
+  (let [item (model.user/fetch-by-id (util/make-id id))]
     (action item)))
 
 ;; update-profile
@@ -131,7 +132,7 @@
 (deffilter #'user-meta :http
   [action request]
   (->> request :params :uri
-       model.user/split-uri
+       util/split-uri
        (apply model.user/get-user)
        action))
 

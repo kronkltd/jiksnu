@@ -11,11 +11,17 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
+            [jiksnu.util :as util]
+            [lamina.core :as l]
+            [lamina.time :as time]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -70,8 +76,8 @@
 
 (defn fetch-xrd*
   [url]
-  (let [resource (model/get-resource url)
-        response (model/update-resource resource)]
+  (let [resource (ops/get-resource url)
+        response (ops/update-resource resource)]
     (try
       (if-let [body (:body response)]
         (cm/string->document body)
@@ -82,15 +88,20 @@
 
 (defn fetch-xrd
   [domain url]
-  (->> url model/path-segments rest
-       (map #(str % ".well-known/host-meta"))
-       (cons (model.domain/host-meta-link domain))
-       (keep fetch-xrd*) first))
+  (if-let [xrd (->> url util/path-segments rest
+                    (map #(str % ".well-known/host-meta"))
+                    (cons (model.domain/host-meta-link domain))
+                    (keep fetch-xrd*) first)]
+    xrd
+    (throw+
+     {:message "could not determine host meta"
+      :domain domain
+      :url url})))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"
   [domain]
-  (model.domain/set-field domain :discovered true)
+  (model.domain/set-field! domain :discovered true)
   (let [id (:_id domain)
         domain (model.domain/fetch-by-id id)]
     (when-let [p (get @pending-discovers id)]
@@ -121,7 +132,7 @@
   domain)
 
 (def index*
-  (model/make-indexer 'jiksnu.model.domain
+  (templates/make-indexer 'jiksnu.model.domain
                       :sort-clause {:username 1}))
 
 (defaction index
@@ -135,12 +146,12 @@
 ;; Occurs if the ping request caused an error
 (defaction ping-error
   [domain]
-  (model.domain/set-field domain :xmpp false)
+  (model.domain/set-field! domain :xmpp false)
   false)
 
 (defaction set-xmpp
   [domain value]
-  (model.domain/set-field domain :xmpp false))
+  (model.domain/set-field! domain :xmpp false))
 
 (defaction ping-response
   [domain]
@@ -152,10 +163,10 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (let [resource (model/get-resource (statusnet-url domain))
+  (let [resource (ops/get-resource (statusnet-url domain))
         response (actions/invoke-action "resource" "update*" (str (:_id resource)))
         sconfig (json/read-json (:body (:body response)))]
-    (model.domain/set-field domain :statusnet-config sconfig)))
+    (model.domain/set-field! domain :statusnet-config sconfig)))
 
 (defn discover*
   [domain url]
@@ -206,7 +217,7 @@
             p (if p
                 (do (discover domain) p)
                 (get @pending-discovers id))]
-        (or (deref p 5000 nil)
+        (or (deref p (time/seconds 30) nil)
             (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url
@@ -225,6 +236,12 @@
      :links [{:template template
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
+
+(defn- handle-pending-get-domain
+  [[p domain-name]]
+  (deliver p (find-or-create {:_id domain-name})))
+
+(l/receive-all ch/pending-get-domain handle-pending-get-domain)
 
 (definitializer
   (current-domain)

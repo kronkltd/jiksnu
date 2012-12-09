@@ -9,6 +9,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -18,10 +19,10 @@
             [ring.mock.request :as mock]))
 
 (test-environment-fixture
- 
+
  (fact "public-timeline-http-route"
    (fact "when there are no activities"
-     (model/drop-all!)
+     (db/drop-all!)
 
      (-> (mock/request :get "/")
          response-for) =>
@@ -35,8 +36,6 @@
      (let [user (existance/a-user-exists)]
        (dotimes [n 10]
          (existance/there-is-an-activity {:user user}))
-       
-       (model.subscription/create (factory :subscription {:actor (:_id user)}))
 
        (fact "when the user is not authenticated"
          (-> (mock/request :get "/")
@@ -71,7 +70,7 @@
      (let [user (existance/a-user-exists)]
        (dotimes [n 10]
          (existance/there-is-an-activity {:user user}))
-       
+
        (-> (mock/request :get (format "/%s" (:username user)))
            as-user response-for)) =>
            (every-checker
@@ -82,7 +81,7 @@
      (let [user (existance/a-user-exists)]
        (dotimes [n 10]
          (existance/there-is-an-activity {:user user}))
-       
+
        (-> (mock/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
            (as-user user) response-for)) =>
            (every-checker

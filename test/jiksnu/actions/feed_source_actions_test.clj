@@ -1,11 +1,12 @@
 (ns jiksnu.actions.feed-source-actions-test
   (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create]]
+        [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-feed]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
+            [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -15,7 +16,8 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util])
   (:import jiksnu.model.FeedSource))
 
 (test-environment-fixture
@@ -40,6 +42,13 @@
    (provided
     (actions.domain/get-discovered anything) => .domain.))
 
+ (fact "#'process-feed"
+   (let [source (existance/a-feed-source-exists)
+         feed (abdera/make-feed*
+               {:title (fseq :title)
+                :entries []})]
+     (process-feed source feed) => nil))
+
  (fact "#'discover-source"
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (existance/a-resource-exists {:url url})
@@ -49,6 +58,6 @@
     (actions.resource/update* resource) => .response.
     (actions.resource/response->tree .response.) => .tree.
     (actions.resource/get-links .tree.) => .links.
-    (model/find-atom-link .links.) => topic))
+    (util/find-atom-link .links.) => topic))
 
  )

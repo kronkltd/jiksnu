@@ -4,34 +4,38 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
-        [clojurewerkz.route-one.core :only [named-path named-url]]
-        [jiksnu.session :only [current-user]]
+        [clojurewerkz.route-one.core :only [named-url]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
-            [ciste.model :as cm]
             [clj-http.client :as client]
-            [clj-time.core :as time]
-            [clojure.string :as string]
+            [clj-statsd :as s]
+            [clj-time.core :as clj-time]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
-            [lamina.core :as l])
+            [jiksnu.util :as util]
+            [lamina.core :as l]
+            [lamina.time :as time])
   (:import java.net.URI
-           jiksnu.model.FeedSource))
-
-(defonce
-  ^{:doc "Channel containing list of sources to be updated"}
-  pending-updates (l/permanent-channel))
+           jiksnu.model.FeedSource
+           jiksnu.model.User
+           org.apache.abdera2.model.Feed))
 
 (defonce pending-discovers (ref {}))
+
+(def discovery-timeout (time/seconds 30))
 
 (defn prepare-create
   [source]
@@ -41,16 +45,21 @@
       transforms/set-created-time
       transforms.feed-source/set-domain
       transforms.feed-source/set-local
+      transforms.feed-source/set-hub
       transforms.feed-source/set-status
       transforms.feed-source/set-resource))
 
 (defaction add-watcher
-  [source user]
-  (model.feed-source/push-value! source :watchers (:_id user))
+  [^FeedSource source ^User user]
+  ;; {:pre [(instance? FeedSource source)
+  ;;        (instance? User user)]
+  ;;  :post [(instance? FeedSource %)]}
+  #_(model.feed-source/push-value! source :watchers (:_id user))
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defaction watch
   [source]
+  ;; {:pre [(instance? FeedSource source)]}
   (add-watcher source (session/current-user)))
 
 (defaction delete
@@ -73,12 +82,13 @@
   [params]
   (let [{challenge "hub.challenge"
          mode "hub.mode"
-         topic "hub.topic"} params]
-    (let [source (model.feed-source/fetch-by-topic topic)]
-      (condp = mode
-        "subscribe"   (confirm-subscribe source)
-        "unsubscribe" (confirm-unsubscribe source)
-        (throw+ "Unknown mode")))
+         topic "hub.topic"} params
+         source (model.feed-source/fetch-by-topic topic)
+         dispatch-fn (condp = mode
+                       "subscribe"   #'confirm-subscribe
+                       "unsubscribe" #'confirm-unsubscribe
+                       (throw+ "Unknown mode"))]
+    (dispatch-fn source)
     challenge))
 
 (defaction create
@@ -89,15 +99,16 @@
 
 (defn find-or-create
   [params & [options]]
-  (if-let [source (or (if-let [id  (:_id params)]
+  (if-let [source (or (if-let [id (:_id params)]
                         (model.feed-source/fetch-by-id id))
-                      (model.feed-source/fetch-by-topic (:topic params)))]
+                      (if-let [topic (:topic params)]
+                        (model.feed-source/fetch-by-topic topic)))]
     source
     (create params options)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.feed-source
-                      :sort-clause [{:_id 1}]))
+  (templates/make-indexer 'jiksnu.model.feed-source
+                          :sort-clause {:created -1}))
 
 (defaction index
   [& options]
@@ -105,55 +116,46 @@
 
 (defn mark-updated
   [source]
-  (model.feed-source/set-field! source :updated (time/now)))
+  (model.feed-source/set-field! source :updated (clj-time/now)))
 
-(declare remove-subscription)
+(declare unsubscribe)
 (declare send-unsubscribe)
 
-(defn get-activities
-  "extract the activities from a feed"
-  [source feed]
-  (map #(actions.activity/entry->activity % feed source)
-       (.getEntries feed)))
+(defn process-entry
+  "Create an activity from an atom entry"
+  [[feed source entry]]
+  (let [params (actions.activity/entry->activity entry feed source)]
+    (actions.activity/find-or-create params)))
 
-(defn process-entries
-  [source feed]
-  (doseq [activity (get-activities source feed)]
-    (try (actions.activity/find-or-create activity)
-         (catch Exception ex
-           (log/error ex)
-           (.printStackTrace ex)))))
-
-(defn parse-feed
-  [source feed]
-  (if (or true (seq (:watchers source)))
-    (process-entries source feed)
-    (do (log/warnf "no watchers for %s" (:topic source))
-        (remove-subscription source))))
-
-(defn get-hub-link
-  [feed]
-  (-?> feed
-       (.getLink "hub") 
-       .getHref str))
+(defn watched?
+  "Returns true if the source has any watchers"
+  [source]
+  (or true (seq (:watchers source))))
 
 (defn process-feed
-  [source feed]
-  (let [feed-title (.getTitle feed)
-        author (abdera/get-feed-author feed)]
-    (when author
-      (log/spy (actions.user/person->user author))
-      )
-    (when-not (= feed-title (:title source))
-      (model.feed-source/set-field! source :title feed-title))
-    ;; TODO: This should be automatic for any transformation
-    (mark-updated source)
-    (if-let [hub-link (get-hub-link feed)]
-      (model.feed-source/set-field! source :hub hub-link))
-    (process-entries source feed)))
+  [^FeedSource source ^Feed feed]
+  {:pre [(instance? FeedSource source)
+         (instance? Feed feed)]}
+  (s/increment "feeds processed")
 
-;; TODO: Rename to unsubscribe and make an action
-(defaction remove-subscription
+  (when-let [author (abdera/get-feed-author feed)]
+    (let [author-id (log/spy (abdera/get-simple-extension author ns/atom "id"))]
+      (log/spy (actions.user/person->user author))))
+
+  (let [feed-title (.getTitle feed)]
+    (when-not (= feed-title (:title source))
+      (model.feed-source/set-field! source :title feed-title)))
+
+  (if-let [hub-link (abdera/get-hub-link feed)]
+    (model.feed-source/set-field! source :hub hub-link))
+
+  (if (watched? source)
+    (doseq [entry (.getEntries feed)]
+      (l/enqueue ch/pending-entries [feed source entry]))
+    (do (log/warnf "no watchers for %s" (:topic source))
+        (unsubscribe source))))
+
+(defaction unsubscribe
   "Action if user makes action to unsubscribe from remote source"
   [source]
   (send-unsubscribe
@@ -196,16 +198,16 @@
 
 (defaction remove-watcher
   [source user]
-  (model.feed-source/update
-    (select-keys source [:_id])
-    {:$pull {:watchers (:_id user)}})
+  #_(model.feed-source/update
+      (select-keys source [:_id])
+      {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defn update*
   [source]
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (let [resource (model/get-resource topic)]
+      (let [resource (ops/get-resource topic)]
         (let [response (actions.resource/update* resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)
@@ -223,32 +225,28 @@
        (.printStackTrace ex))))
   source)
 
-;; TODO: special case local subscriptions
-;; TODO: should take a source
 (defaction subscribe
   "Send a subscription request to the feed"
   [source]
-  (update source)
-  (send-subscribe source)
+  (when-not (:local source)
+    (update source)
+    (send-subscribe source))
   source)
 
 (defn discover-source
   "determines the feed source associated with a url"
   [url]
-  (let [resource (model/get-resource url)
+  (let [resource (ops/get-resource url)
         response (actions.resource/update* resource)
         body (actions.resource/response->tree response)
         links (actions.resource/get-links body)]
-    (if-let [link (model/find-atom-link links)]
+    (if-let [link (util/find-atom-link links)]
       (find-or-create {:topic link})
       (throw+ (format "Could not determine topic url from resource: %s" url)))))
 
 (defaction discover
   [item]
-  (update* item)
-  item)
-
-(def discovery-timeout 5000)
+  (update item))
 
 (defn get-discovered
   "Returns a copy of that domain once it's properly discovered"
@@ -268,10 +266,12 @@
         (or (deref p discovery-timeout nil)
             (throw+ "Could not discover feed source"))))))
 
-(l/receive-all
- model/pending-sources
- (fn [[url ch]]
-   (l/enqueue ch (find-or-create {:topic url}))))
+(defn handle-pending-get-source
+  [[p url]]
+  (deliver p (find-or-create {:topic url})))
+
+(l/receive-all ch/pending-get-source handle-pending-get-source)
+(l/receive-all ch/pending-entries process-entry)
 
 (definitializer
   (model.feed-source/ensure-indexes)

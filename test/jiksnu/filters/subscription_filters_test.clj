@@ -10,7 +10,8 @@
             [jiksnu.actions.user-actions :as actions.user]
             jiksnu.filters.subscription-filters
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 (test-environment-fixture
 
@@ -40,14 +41,14 @@
             (let [request {:params {:subscribeto .id.}}]
               (filter-action action request) => truthy
               (provided
-                (model.user/fetch-by-id (model/make-id .id.)) => .target.
+                (model.user/fetch-by-id (util/make-id .id.)) => .target.
                 (session/current-user) => .actor.
                 (subscribe .actor. .target.) => truthy)))
           (fact "when the user is not authenticated"
             (let [request {:params {:subscribeto .id.}}]
               (filter-action action request) => (throws RuntimeException)
               (provided
-                (model.user/fetch-by-id (model/make-id .id.)) => nil
+                (model.user/fetch-by-id (util/make-id .id.)) => nil
                 (session/current-user) => .actor. :times 0
                 (subscribe .actor. .target.) => nil :times 0))))
         (fact "when a user matching the subscribeto param is not found"
@@ -55,7 +56,7 @@
             (filter-action action request) => (throws RuntimeException)
             (provided
               (session/current-user) => .actor. :times 0
-              (model.user/fetch-by-id (model/make-id .id.)) => nil
+              (model.user/fetch-by-id (util/make-id .id.)) => nil
               (subscribe .actor. .target.) => nil :times 0)))))))
 
    (fact "#'filter-action [#'get-subscribers :xmpp]"

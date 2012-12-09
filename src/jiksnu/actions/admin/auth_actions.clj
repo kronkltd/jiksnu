@@ -3,10 +3,11 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.model :as model]
-            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]))
+            [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
+            [jiksnu.templates :as templates]))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.authentication-mechanism))
+  (templates/make-indexer 'jiksnu.model.authentication-mechanism))
 
 (defaction index
   [& options]

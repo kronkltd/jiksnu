@@ -1,9 +1,8 @@
 (ns jiksnu.model.user
-  (:use [ciste.config :only [config]] 
+  (:use [ciste.config :only [config]]
         [clj-gravatar.core :only [gravatar-image]]
         [clojure.core.incubator :only [-?> -?>>]]
         [clojurewerkz.route-one.core :only [named-url]]
-        [jiksnu.model :only [make-id rel-filter map->User]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of validation-set presence-of]])
@@ -16,6 +15,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
+            [jiksnu.templates :as templates]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.query :as mq]
             [plaza.rdf.core :as rdf]
@@ -77,21 +78,6 @@
   [user]
   (str "http://" (config :domain) (uri user)))
 
-(defn split-uri
-  "accepts a uri in the form of username@domain or scheme:username@domain and
-   returns a vector containing both the username and the domain"
-  [uri]
-  (let [[_ _ username domain] (re-find #"(.*:)?([^@]+)@([^\?]+)" uri)]
-    (when (and username domain) [username domain])))
-
-(defn get-domain-name
-  "Takes a string representing a uri and returns the domain"
-  [id]
-  (let [uri (URI. id)]
-    (if (= "acct" (.getScheme uri))
-      (second (split-uri id))
-      (.getHost uri))))
-
 (defn display-name
   [^User user]
   (or (:display-name user)
@@ -101,7 +87,7 @@
 
 (defn get-link
   [user rel content-type]
-  (first (model/rel-filter rel (:links user) content-type)))
+  (first (util/rel-filter rel (:links user) content-type)))
 
 (defn drop!
   []
@@ -138,7 +124,7 @@
                      (merge sort-clause)
                      (mq/paginate :page (:page options 1)
                                   :per-page (:page-size options 20)))]
-       (map map->User records))))
+       (map model/map->User records))))
 
 (defn get-user
   "Find a user by username and domain"
@@ -156,20 +142,12 @@
   (get-user (.getLocalpart jid)
             (.getDomain jid)))
 
-(defn set-field!
-  "Updates item's field to value"
-  [item field value]
-  (when-not (= (get item field) value)
-    (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
-    (s/increment (str collection-name " field set"))
-    (mc/update collection-name
-      {:_id (:_id item)}
-      {:$set {field value}})))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
   [uri]
-  (let [[username domain-name] (split-uri uri)]
+  (let [[username domain-name] (util/split-uri uri)]
     (when (and username domain-name)
       (get-user username domain-name))))
 
@@ -205,7 +183,7 @@
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)
-        user (map->User merged-user)]
+        user (model/map->User merged-user)]
     (s/increment "users updated")
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))

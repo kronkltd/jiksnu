@@ -70,6 +70,14 @@
   [n]
   (str "subdomain" n ".example.local"))
 
+(defseq :secret-key
+  [n]
+  "c06531d7c862cad32a3c5356f1195b8965ae4ffc38c5e559f962ed1acb765831")
+
+(defseq :verify-token
+  [n]
+  "3c53c56289b940c416296690f95abb45")
+
 (defseq :word
   [n]
   (str "foo" n))
@@ -194,6 +202,7 @@
 (deffactory :activity
   {:title (fseq :title)
    :content (fseq :content)
+   :url (fseq :uri)
    :author #'user-id
    :verb "post"})
 
@@ -208,7 +217,8 @@
    :hub (fseq :uri)})
 
 (deffactory :feed-subscription
-  {:topic (fseq :uri)})
+  {:url (fseq :uri)
+   :callback (fseq :uri)})
 
 (deffactory :group
   {:nickname (fseq :group-name)})

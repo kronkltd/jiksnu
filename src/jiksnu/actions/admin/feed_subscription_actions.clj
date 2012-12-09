@@ -4,10 +4,11 @@
         [ciste.loader :only [require-namespaces]])
   (:require [ciste.model :as cm]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]))
+            [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.templates :as templates]))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.feed-subscription))
+  (templates/make-indexer 'jiksnu.model.feed-subscription))
 
 (defaction index
   [& options]

@@ -10,6 +10,7 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.channels :as ch]
             [jiksnu.session :as session]
             [lamina.core :as l]))
 
@@ -47,32 +48,32 @@
 (add-command! "invoke-action" #'invoke-action)
 
 (defonce connections (ref {}))
-(defonce posted-activities (l/permanent-channel))
 
+(defn connection-opened
+  [connection-id e]
+  (log/infof "sending update notification to connection: %s" connection-id)
+  (s/increment "activities pushed")
+  (json/json-str {:action "model-updated"
+                  :type "activity"
+                  :body (:records e)}))
+
+(defn connection-closed
+  [id connection-id]
+  (log/debugf "closed connection: %s" connection-id)
+  (dosync
+   (alter connections #(dissoc-in % [id connection-id]))))
 
 (defaction connect
   [ch]
   (s/increment "websocket connections established")
-  (let [id (:_id (session/current-user))
+  (let [user-id (:_id (session/current-user))
         connection-id (abdera/new-id)]
     (dosync
-     (alter connections 
-            #(assoc-in % [id connection-id] ch)))
+     (alter connections #(assoc-in % [user-id connection-id] ch)))
     (l/siphon
-     (l/map*
-      (fn [e]
-        (log/infof "sending update notification to connection: %s" connection-id)
-        (s/increment "activities pushed")
-        (json/json-str {:action "model-updated"
-                        :type "activity"
-                        :body (:records e)}))
-      posted-activities)
+     (l/map* (partial connection-opened connection-id) ch/posted-activities)
      ch)
-    (l/on-closed ch
-                 (fn []
-                   (log/debugf "closed connection: %s" connection-id)
-                   (dosync
-                    (alter connections #(dissoc-in % [id connection-id])))))
+    (l/on-closed ch (partial connection-closed user-id connection-id))
     connection-id))
 
 (deffilter #'connect :command

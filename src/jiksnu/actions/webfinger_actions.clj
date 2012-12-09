@@ -11,36 +11,38 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger])
+            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
            jiksnu.model.User))
 
+(defn get-xrd-template
+  []
+  (let [domain (actions.domain/current-domain)]
+    ;; TODO: Check ssl mode
+    (format "http://%s/main/xrd?uri={uri}" (:_id domain))))
+
 ;; TODO: show domain, format :jrd
 (defaction host-meta
   []
-  (let [domain (config :domain)
-        template (str "http://" domain "/main/xrd?uri={uri}")]
-    {:host domain
-     :links [{:template template
-              :rel "lrdd"
-              :title "Resource Descriptor"}]}))
+  (let [domain (actions.domain/current-domain)
+        template (get-xrd-template)
+        links [{:template template
+                :rel "lrdd"
+                :title "Resource Descriptor"}]]
+    {:host (:_id domain)
+     :links links}))
 
 ;; TODO: show user, format :jrd
 ;; TODO: should take a user
 (defaction user-meta
   [uri]
   (->> uri
-       model.user/split-uri
+       util/split-uri
        (apply model.user/get-user )))
-
-;; TODO: move to user actions and ensure property is always set
-(defn get-user-meta-uri
-  [user]
-  (let [domain (model.user/get-domain user)]
-    (or (:user-meta-uri user)
-        (actions.domain/get-user-meta-url domain (:id user)))))
 
 ;; TODO: is this being called anymore?
 (defn get-links
@@ -62,11 +64,11 @@
         links (get-links xrd)
         new-user (assoc user :links links)
         feed (actions.user/fetch-user-feed new-user)
-        uri (-?> feed .getAuthor .getUri)]
+        uri (-?> feed .getAuthor .getUri str)]
     (doseq [link links]
       (actions.user/add-link user link))
     (-> user
-        (assoc :id (str uri))
+        (assoc :id uri)
         (assoc :discovered true)
         ;; TODO: set fields
         actions.user/update)))
@@ -76,7 +78,7 @@
   [^Domain domain]
   ;; TODO: check https first
   (let [url (model.domain/host-meta-link domain)
-        resource (model/get-resource url)]
+        resource (ops/get-resource url)]
     (if-let [xrd (model.webfinger/fetch-host-meta domain)]
       (if-let [links (get-links xrd)]
         ;; TODO: These should call actions

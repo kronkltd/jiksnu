@@ -5,15 +5,17 @@
         [midje.sweet :only [fact => every-checker future-fact]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.model :as model]
-            [jiksnu.model.group :as model.group]))
+            [jiksnu.model.group :as model.group]
+            [jiksnu.util :as util]))
 
 (test-environment-fixture
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
@@ -27,13 +29,13 @@
 
  (fact "#'fetch-all"
    (fact "when there are no items"
-     (model/drop-all!)
+     (db/drop-all!)
      (fetch-all) =>
      (every-checker
       empty?))
 
    (fact "when there are less than a page"
-     (model/drop-all!)
+     (db/drop-all!)
      (dotimes [n 19]
        (actions.group/create (factory :group)))
      (fetch-all) =>
@@ -42,12 +44,12 @@
       #(fact (count %) => 19)))
 
    (fact "when there is more than a page"
-     (model/drop-all!)
+     (db/drop-all!)
      (dotimes [n 21]
        (actions.group/create (factory :group)))
      (fetch-all) =>
      (every-checker
       seq?
       #(fact (count %) => 20))))
- 
+
  )

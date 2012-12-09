@@ -3,14 +3,15 @@
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section add-form
                                         edit-button delete-button link-to index-line
-                                        show-section-minimal update-button index-block index-section]]
+                                        show-section-minimal update-button index-block
+                                        index-section]]
          [clojure.core.incubator :only [-?>]]
          [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.model :only [with-subject]]
-         [jiksnu.sections :only [action-link actions-section admin-actions-section  admin-index-block
-                                 admin-index-line admin-index-section admin-show-section bind-property
-                                 bind-to control-line dropdown-menu pagination-links]]
+         [jiksnu.sections :only [action-link actions-section admin-actions-section
+                                 admin-index-block admin-index-line admin-index-section
+                                 admin-show-section bind-property bind-to control-line
+                                 dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
@@ -28,7 +29,9 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [plaza.rdf.core :as rdf]
+            [jiksnu.rdf :as rdf]
+            [jiksnu.util :as util]
+            [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
@@ -70,7 +73,7 @@
   ([user] (display-avatar user 48))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind "attr: {href: \"/users/\" + ko.utils.unwrapObservable(_id), title: displayName}"}
+               {:data-bind "attr: {href: \"/users/\" + _id(), title: displayName}"}
                {:href (full-uri user)
                 :title (:name user)})
       (display-avatar-img user size)]))
@@ -107,14 +110,14 @@
                   "domain" "text"
                   :value (:domain user))
 
-    (control-line "Display Name" 
+    (control-line "Display Name"
                   "display-name" "text"
                   :value (:display-name user))
-    
+
     (control-line "First Name:"
                   "first-name" "text"
                   :value (:first-name user) )
-    
+
     (control-line "Last Name"
                   "last-name" "text"
                   :vaue (:last-name user))
@@ -153,7 +156,8 @@
 
 (defn user->person
   [user]
-  (let [author-uri (model.user/get-uri user)
+  (let [author-uri (or (:url user)
+                       (model.user/get-uri user))
         name (or (:name user)
                  (:display-name user)
                  (str (:first-name user) " " (:last-name user)))
@@ -161,7 +165,7 @@
         person (.newAuthor abdera/abdera-factory)]
     (doto person
       (.setName name)
-      
+
       (.addSimpleExtension ns/as   "object-type"       "activity" ns/person)
       (.addSimpleExtension ns/atom "id"                ""         id)
       (.addSimpleExtension ns/atom "uri"               ""         author-uri)
@@ -173,7 +177,7 @@
                        (.setRel "avatar")
                        (.setMimeType "image/jpeg")))
       (.addExtension (doto (.newLink abdera/abdera-factory)
-                       (.setHref (full-uri user))
+                       (.setHref author-uri)
                        (.setRel "alternate")
                        (.setMimeType "text/html")))
 
@@ -321,9 +325,9 @@
   [item & [response & _]]
   (list
    [:table.table (merge {:data-model "user"}
-                (if *dynamic*
-                  {}
-                  {:data-id (:_id item)}))
+                        (if *dynamic*
+                          {}
+                          {:data-id (:_id item)}))
     [:tr
      [:th]
      [:td (display-avatar item)]]
@@ -332,7 +336,7 @@
      [:td (if *dynamic*
             {:data-bind "text: username"}
             (:username item))]]
-    
+
     [:tr
      [:th  "Domain"]
      [:td
@@ -349,33 +353,33 @@
     [:tr
      [:th  "Location"]
      [:td (if *dynamic*
-              (bind-property "location")
-              (:location item))]]
+            (bind-property "location")
+            (:location item))]]
     [:tr
      [:th  "Url"]
      [:td (if *dynamic*
-              (bind-property "url")
-              (:url item))]]
+            (bind-property "url")
+            (:url item))]]
     [:tr
      [:th  "Id"]
      [:td (if *dynamic*
-              (bind-property "id")
-              (:id item))]]
+            (bind-property "id")
+            (:id item))]]
     [:tr
      [:th  "Discovered"]
      [:td (if *dynamic*
-              (bind-property "discovered")
-              (:discovered item))]]
+            (bind-property "discovered")
+            (:discovered item))]]
     [:tr
      [:th  "Created"]
      [:td (if *dynamic*
-              (bind-property "created")
-              (:created item))]]
+            (bind-property "created")
+            (:created item))]]
     [:tr
      [:th "Updated"]
      [:td (if *dynamic*
-              {:data-bind "text: updated"}
-              (:updated item))]]
+            {:data-bind "text: updated"}
+            (:updated item))]]
     [:tr
      [:th "Update Source"]
      [:td
@@ -476,14 +480,14 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/remote-user/' + ko.utils.unwrapObservable(username) + '@' + ko.utils.unwrapObservable(domain), title: 'acct:' + ko.utils.unwrapObservable(username) + '@' + ko.utils.unwrapObservable(domain)}"}
+          {:data-bind "attr: {href: '/remote-user/' + username() + '@' + domain(), title: 'acct:' + username() + '@' + domain()}"}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
                      {:data-bind "attr: {about: url}, text: displayName"}
                      {:about (uri record)}))
       (when-not *dynamic*
-       (or (:title options-map) (title record)))] ]))
+        (or (:title options-map) (title record)))]]))
 
 (defsection show-section-minimal [User :html]
   [user & _]
@@ -590,40 +594,39 @@
                 mkp (try (model.key/get-key-for-user user)
                          (catch Exception ex))
                 document-uri (str (full-uri user) ".rdf")
-                user-uri (rdf/rdf-resource (str (full-uri user) "#me"))
-                acct-uri (rdf/rdf-resource (model.user/get-uri user))]
-    (rdf/with-rdf-ns ""
+                user-uri (plaza/rdf-resource (str (full-uri user) "#me"))
+                acct-uri (plaza/rdf-resource (model.user/get-uri user))]
+    (plaza/with-rdf-ns ""
       (concat
        ;; TODO: describing the document should be the relm of the view
-       (with-subject document-uri
+       (rdf/with-subject document-uri
          [[[ns/rdf  :type]                    [ns/foaf :PersonalProfileDocument]]
-          [[ns/foaf :title]                   (rdf/l (str display-name "'s Profile"))]
+          [[ns/foaf :title]                   (plaza/l (str display-name "'s Profile"))]
           [[ns/foaf :maker]                   user-uri]
           [[ns/foaf :primaryTopic]            user-uri]])
 
-       (with-subject user-uri
-         (concat [[[ns/rdf  :type]                  [ns/foaf :Person]]
-                  [[ns/foaf :weblog]                (rdf/rdf-resource (full-uri user))]
-                  [[ns/foaf :holdsAccount]          acct-uri]]
-                 (when mkp          [[(rdf/rdf-resource (str ns/cert "key")) (rdf/rdf-resource (str (full-uri user) "#key"))]])
-                 (when username     [[[ns/foaf :nick]                        (rdf/l username)]])
-                 (when name         [[[ns/foaf :name]                        (rdf/l name)]])
-                 (when url          [[[ns/foaf :homepage]                    (rdf/rdf-resource url)]])
-                 (when avatar-url   [[[ns/foaf :img]                         (rdf/rdf-resource avatar-url)]])
-                 (when email        [[[ns/foaf :mbox]                        (rdf/rdf-resource (str "mailto:" email))]])
-                 (when display-name [[[ns/foaf :name]                        (rdf/l display-name)]])
-                 (when first-name   [[[ns/foaf :givenName]                   (rdf/l first-name)]])
-                 (when last-name    [[[ns/foaf :familyName]                  (rdf/l last-name)]])))
+       (rdf/with-subject user-uri
+         (concat
+          [[[ns/rdf  :type]                  [ns/foaf :Person]]
+           [[ns/foaf :weblog]                (plaza/rdf-resource (full-uri user))]
+           [[ns/foaf :holdsAccount]          acct-uri]]
+          (when mkp          [[(plaza/rdf-resource     (str ns/cert "key"))
+                               (plaza/rdf-resource     (str (full-uri user) "#key"))]])
+          (when username     [[[ns/foaf :nick]       (plaza/l username)]])
+          (when name         [[[ns/foaf :name]       (plaza/l name)]])
+          (when url          [[[ns/foaf :homepage]   (plaza/rdf-resource url)]])
+          (when avatar-url   [[[ns/foaf :img]        (plaza/rdf-resource avatar-url)]])
+          (when email        [[[ns/foaf :mbox]       (plaza/rdf-resource (str "mailto:" email))]])
+          (when display-name [[[ns/foaf :name]       (plaza/l display-name)]])
+          (when first-name   [[[ns/foaf :givenName]  (plaza/l first-name)]])
+          (when last-name    [[[ns/foaf :familyName] (plaza/l last-name)]])))
 
-       ;; (when mkp (show-section mkp)))
-
-       (with-subject acct-uri
+       (rdf/with-subject acct-uri
          [[[ns/rdf  :type]                    [ns/sioc "UserAccount"]]
-          [[ns/foaf :accountServiceHomepage]  (rdf/rdf-resource (full-uri user))]
-          [[ns/foaf :accountName]             (rdf/l (:username user))]
-          [[ns/foaf :accountProfilePage]      (rdf/rdf-resource (full-uri user))]
-          [[ns/sioc :account_of]              user-uri]])
-       ))))
+          [[ns/foaf :accountServiceHomepage]  (plaza/rdf-resource (full-uri user))]
+          [[ns/foaf :accountName]             (plaza/l (:username user))]
+          [[ns/foaf :accountProfilePage]      (plaza/rdf-resource (full-uri user))]
+          [[ns/sioc :account_of]              user-uri]])))))
 
 (defsection show-section [User :model]
   [item & [page]]
@@ -631,7 +634,7 @@
        ;; item
 
        (map (fn [[k v]] [(camelize (name k) :lower)
-                        v]))
+                         v]))
        (into {})))
 
 (defsection show-section [User :viewmodel]
@@ -639,7 +642,7 @@
   (->> #_(dissoc (dissoc item :links) :_id)
        item
        (map (fn [[k v]] [(camelize (name k) :lower)
-                        v]))
+                         v]))
        (into {})))
 
 (defsection show-section [User :xml]
@@ -670,8 +673,8 @@
        [:middle (:middle-name user)]
        ]
       (when avatar-url
-         ["photo"
-          ["uri" avatar-url]])])))
+        ["photo"
+         ["uri" avatar-url]])])))
 
 ;; title
 

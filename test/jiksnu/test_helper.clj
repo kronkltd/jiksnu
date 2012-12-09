@@ -7,6 +7,7 @@
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.referrant :as r]
             [net.cgrand.enlive-html :as enlive])
@@ -29,7 +30,7 @@
      (load-site-config)
      (start-application! :test)
 
-     (model/drop-all!)
+     (db/drop-all!)
 
      (dosync
       (ref-set r/this {})

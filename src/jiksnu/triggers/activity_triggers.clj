@@ -10,13 +10,17 @@
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.item :as model.item]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util])
   (:import java.net.URI
            jiksnu.model.Activity
            jiksnu.model.User))
@@ -41,13 +45,11 @@
   "Create a user representing the unknown user uri"
   [uri]
   ;; uri here is a page, potentially containing information about a user
-  
-  
   (let [mentioned-domain (.getHost (URI. uri))
-        link (model/extract-atom-link uri)
-        source (model/get-source link)
-        resource (model/get-resource link)
-        feed (abdera/parse-xml-string (model/update-resource resource))
+        link (util/extract-atom-link uri)
+        source (ops/get-source link)
+        resource (ops/get-resource link)
+        feed (abdera/parse-xml-string (ops/update-resource resource))
         mentioned-user-params (-> feed .getAuthor actions.user/person->user)]
     (actions.user/find-or-create-by-remote-id {:id uri} {})))
 
@@ -63,6 +65,9 @@
                          (into #{}))]
       ;; Add item to author's stream
       (model.item/push author activity)
+
+      (let [conversation (model.conversation/fetch-by-id (:conversation activity))]
+        (actions.conversation/add-activity conversation activity))
 
       ;; Add as a comment to parent posts
       ;; TODO: deprecated

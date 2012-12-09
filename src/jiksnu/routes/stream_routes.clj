@@ -3,15 +3,16 @@
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.stream-actions :as stream]))
 
-(add-route! "/"                        {:named "public timeline"})
-(add-route! "/:username"               {:named "local user timeline"})
-(add-route! "/:username/all"           {:named "home timeline"})
-(add-route! "/:username/microsummary"  {:named "user microsummary"})
-(add-route! "/:username/streams"       {:named "user stream index"})
-(add-route! "/main/push/callback"      {:named "callback publish"})
-(add-route! "/api/statuses/mentions"   {:named "mentions timeline api"})
-(add-route! "/users/:id"               {:named "user profile"})
-(add-route! "/groups/:name"            {:named "group profile"})
+(add-route! "/"                               {:named "public timeline"})
+(add-route! "/:username"                      {:named "local user timeline"})
+(add-route! "/:username/all"                  {:named "home timeline"})
+(add-route! "/:username/microsummary"         {:named "user microsummary"})
+(add-route! "/:username/streams"              {:named "user stream index"})
+(add-route! "/main/push/callback"             {:named "callback publish"})
+(add-route! "/api/statuses/mentions"          {:named "mentions timeline api"})
+(add-route! "/users/:id"                      {:named "user profile"})
+(add-route! "/groups/:name"                   {:named "group profile"})
+(add-route! "/api/statuses/user_timeline/:id" {:named "user timeline"})
 
 (defn routes
   []
@@ -37,5 +38,5 @@
    [[:post   "/api/direct_messages.:format"]            #'stream/direct-message-timeline]
    ;; [[:get    "/api/mentions"]                                     #'stream/mentions-timeline]
    [[:get    "/api/statuses/public_timeline.:format"]   #'stream/public-timeline]
-   [[:get    "/api/statuses/user_timeline/:id.:format"] #'stream/user-timeline]
+   [[:get    (formatted-path "user timeline")]          #'stream/user-timeline]
    ])

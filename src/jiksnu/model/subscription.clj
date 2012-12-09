@@ -9,6 +9,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
+            [jiksnu.templates :as templates]
             [monger.collection :as mc]
             [monger.query :as mq])
   (:import jiksnu.model.Subscription))
@@ -24,12 +25,7 @@
    (presence-of :updated)
    (presence-of :_id)))
 
-(defn prepare
-  [subscription]
-  (-> subscription
-      set-_id
-      set-updated-time
-      set-created-time))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn drop!
   []
@@ -64,19 +60,14 @@
             (map model/map->Subscription)))))
 
 (defn create
-  [subscription & options]
-  (let [subscription (prepare subscription)
-        errors (create-validators subscription)]
+  [params & [options]]
+  (let [errors (create-validators params)]
     (if (empty? errors)
       (do
-        (log/debugf "creating subscription: %s" (pr-str subscription))
-        (mc/insert collection-name subscription)
-        (fetch-by-id (:_id subscription)))
+        (log/debugf "creating subscription: %s" (pr-str params))
+        (mc/insert collection-name params)
+        (fetch-by-id (:_id params)))
       (throw+ {:type :validation :errors errors}))))
-
-(defn subscribe
-  [actor user]
-  (create {:from actor :to user :pending true}))
 
 ;; TODO: use set-field
 (defn confirm
@@ -95,13 +86,17 @@
 
 (defn subscribing?
   "Does the actor have a subscription to the user"
-  [actor user]
-  (mc/any? collection-name {:from actor :to user}))
+  [actor target]
+  (let [params {:from (:_id actor)
+                :to (:_id target)}]
+    (mc/any? collection-name params)))
 
 (defn subscribed?
   "Does the user have a subscription to the actor"
-  [actor user]
-  (mc/any? collection-name {:from user :to actor}))
+  [actor target]
+  (let [params {:from (:_id target)
+                :to (:_id actor)}]
+    (mc/any? collection-name params)))
 
 (defn get-actor
   [subscription]

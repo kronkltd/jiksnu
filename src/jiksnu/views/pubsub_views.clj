@@ -2,7 +2,8 @@
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         [jiksnu.actions.pubsub-actions :only [hub-dispatch]])
-  (:require [jiksnu.model.user :as model.user]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.user :as model.user]))
 
 ;; (defview #'callback :html
 ;;   [request params]
@@ -14,8 +15,9 @@
 ;;   {:body (index-section subscriptions)})
 
 (defview #'hub-dispatch :html
-  [request _]
-  {:template :false})
+  [request response]
+  {:template false
+   :status 204})
 
 ;; (defview #'hub-publish :html
 ;;   [request response]

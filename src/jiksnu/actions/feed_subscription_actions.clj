@@ -1,24 +1,14 @@
 (ns jiksnu.actions.feed-subscription-actions
-    (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>]]
-        [clojurewerkz.route-one.core :only [named-path named-url]]
-        [jiksnu.session :only [current-user]]
-        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
-  (:require [aleph.http :as http]
-            [ciste.model :as cm]
-            [clj-time.core :as time]
-            [clojure.string :as string]
+  (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.session :as session]
+            [jiksnu.ops :as ops]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [lamina.core :as l]))
 
@@ -27,7 +17,9 @@
   (-> item
       transforms/set-_id
       transforms/set-updated-time
-      transforms/set-created-time))
+      transforms/set-created-time
+      transforms/set-local
+      transforms/set-domain))
 
 (defaction delete
   [subscription]
@@ -48,8 +40,8 @@
     (create params options)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.feed-subscription
-                      :sort-clause [{:_id 1}]))
+  (templates/make-indexer 'jiksnu.model.feed-subscription
+                          :sort-clause {:_id 1}))
 
 (defaction index
   [& options]
@@ -63,7 +55,25 @@
   [item]
   (model.feed-subscription/fetch-by-id (:_id item)))
 
+(defaction subscription-request
+  "Handle a request for a new subscription to a local source"
+  [params]
+  (let [source (ops/get-source (:topic params))]
+    (if (:local source)
+      (let [params (merge {:source (:_id source)
+                           :callback (:callback params)
+                           :verify-token (:verify-token params)
+                           :url (:topic source)}
+                          (when-let [lease (:lease-seconds params)]
+                            {:lease-seconds lease})
+                          (when-let [secret (:secret params)]
+                            {:secret secret}))]
+        (create params))
+      (throw+ "Hub not authoritative for source"))))
+
 (definitializer
+  (model.feed-subscription/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.feed-subscription-filters"
     "jiksnu.triggers.feed-subscription-triggers"

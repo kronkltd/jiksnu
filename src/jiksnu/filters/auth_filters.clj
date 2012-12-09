@@ -6,7 +6,8 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 ;; guest-login
 
@@ -44,14 +45,14 @@
 
 (deffilter #'password-page :http
   [action request]
-  (-> request :session :pending-id model/make-id model.user/fetch-by-id action))
+  (-> request :session :pending-id util/make-id model.user/fetch-by-id action))
 
 ;; show
 
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.auth/fetch-by-id (model/make-id id))]
+    (if-let [item (model.auth/fetch-by-id (util/make-id id))]
      (action item))))
 
 ;; verify-credentials

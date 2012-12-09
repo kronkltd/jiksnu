@@ -14,6 +14,7 @@
    "conversation"             "conversations"
    "domain"                   "domains"
    "feed-source"              "feedSources"
+   "feed-subscription"        "feedSubscriptions"
    "group"                    "groups"
    "resource"                 "resources"
    "subscription"             "subscriptions"
@@ -28,6 +29,7 @@
    "conversations"
    "domains"
    "feedSources"
+   "feedSubscriptions"
    "groups"
    "resources"
    "subscriptions"
@@ -170,6 +172,7 @@
                         "encoding"    nil
                         "location"    nil
                         "created"     nil
+                        "properties"  nil
                         "links"       (array)
                         "updated"     nil)
             "idAttribute" "_id"
@@ -315,18 +318,38 @@
             "type" "FeedSources"
             "model" FeedSource)))
 
+(def FeedSubscription
+  (.extend backbone/Model
+           (js-obj
+            "type" "FeedSubscription"
+            "url" (fn []
+                    (this-as this
+                      (format "/model/feedSubscriptions/%s.model" (.-id this))))
+            "defaults" (js-obj
+                        "domain"   nil
+                        "callback" nil
+                        "url"      nil)
+            "idAttribute" "_id"
+            "initialize" initializer)))
+
+(def FeedSubscriptions
+  (.extend backbone/Collection
+           (js-obj
+            "type" "FeedSubscription"
+            "model" FeedSubscription)))
 
 (def Conversation
   (.extend backbone/Model
            (js-obj
             "type" "Conversation"
             "defaults" (js-obj
-                        "uri" nil
-                        "url" nil
-                        "domain" nil
+                        "uri"           nil
+                        "url"           nil
+                        "domain"        nil
                         "update-source" nil
-                        "created" nil
-                        "updated" nil
+                        "lastUpdated"   nil
+                        "created"       nil
+                        "updated"       nil
                         )
             "url" (fn []
                     (this-as this
@@ -365,6 +388,7 @@
 (def conversations  (Conversations.))
 (def domains       (Domains.))
 (def feed-sources  (FeedSources.))
+(def feed-subscriptions (FeedSubscriptions.))
 (def groups        (Groups.))
 (def notifications (Notifications.))
 (def observables   (js-obj))
@@ -384,6 +408,7 @@
              "domains"                  domains
              "currentUser"              nil
              "feedSources"              feed-sources
+             "feedSubscriptions"        feed-subscriptions
              "followers"                (array)
              "following"                (array)
              "groups"                   groups

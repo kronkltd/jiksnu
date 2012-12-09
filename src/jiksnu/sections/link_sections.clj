@@ -4,11 +4,14 @@
 (defn index-line
   [link]
   [:tr
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: href}, text: href"}
+          {:href (:href link)})
+     (when-not *dynamic*
+       (:href link))]]
    [:td (if *dynamic*
-          {:data-bind "text: href"}
-          (:href link))]
-   [:td (if *dynamic*
-          {:data-bind "text: rel"}
+          {:data-bind "text: (typeof($data.rel) === 'undefined') ? '' : ko.utils.unwrapObservable(rel)"}
           (:rel link))]
    [:td (if *dynamic*
           {:data-bind "text: (typeof($data.type) === 'undefined') ? '' : ko.utils.unwrapObservable(type)"}

@@ -5,7 +5,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
         [jiksnu.sections :only [action-link admin-index-block
-                                admin-index-line control-line
+                                admin-index-line bind-to
+                                control-line
                                 dropdown-menu]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.link-sections :as sections.link]
@@ -83,7 +84,7 @@
      [:th "Discovered"]
      [:th "Host Meta"]
      [:th "# Links"]
-     #_[:th "Actions"]]]
+     [:th "Actions"]]]
    [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map index-line domains)]])
 
@@ -117,7 +118,7 @@
     (if *dynamic*
       {:data-bind "text: links().length"}
       (count (:links domain)))]
-   #_[:th (actions-section domain)]])
+   [:th (actions-section domain)]])
 
 ;; link-to
 
@@ -172,8 +173,9 @@
                  :title (:title license)}
              [:img {:src (:image license)
                     :alt (:title license)}]]]])))]]
-   (when (seq (:links domain))
-     (sections.link/index-section (:links domain)))])
+   (when-let [links (if *dynamic* [{}] (seq (:links domain)))]
+     (bind-to "links"
+       (sections.link/index-section links)))])
 
 (defsection show-section [Domain :model]
   [item & [page]]

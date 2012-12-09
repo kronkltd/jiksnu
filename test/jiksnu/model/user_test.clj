@@ -11,7 +11,8 @@
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain])
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.util :as util])
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
@@ -19,13 +20,6 @@
 
  (def domain-a (actions.domain/current-domain))
  (def user-a (existance/a-user-exists))
-
- (fact "#'get-domain-name"
-   (fact "when given a http uri"
-     (get-domain-name "http://example.com/users/1") => "example.com")
-
-   (fact "when given an acct uri"
-     (get-domain-name "acct:bob@example.com") => "example.com"))
 
  (fact "#'get-domain"
    (fact "when passed nil"
@@ -44,11 +38,6 @@
        (let [user (existance/a-remote-user-exists)]
          (local? user) => false))))
 
- (fact "split-uri"
-   (split-uri "bob@example.com") => ["bob" "example.com"]
-   (split-uri "acct:bob@example.com") => ["bob" "example.com"]
-   (split-uri "http://example.com/bob") => nil)
-
  (fact "display-name"
    (display-name .user.) => string?)
 
@@ -59,12 +48,12 @@
 
  (fact "#'fetch-by-id"
    (fact "when the item doesn't exist"
-     (let [id (model/make-id)]
+     (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
      (let [item (existance/a-user-exists)]
-      (fetch-by-id (:_id item)) => item)))
+       (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
    (fact "when given valid params"
@@ -90,8 +79,8 @@
    (fact "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
-      seq?
-      empty?))
+                     seq?
+                     empty?))
 
    (fact "when there is more than a page of items"
      (drop!)
@@ -125,7 +114,7 @@
    (let [domain (actions.domain/current-domain)
          user (existance/a-user-exists)]
      (fetch-by-domain domain) => (contains user)))
- 
+
  (fact "#'get-user"
    (fact "when the user is found"
      (let [user (existance/a-user-exists)
@@ -147,8 +136,8 @@
 
    (fact "when the user's domain has a lrdd link"
      (let [domain (existance/a-remote-domain-exists)]
-       (model.domain/set-field domain :links [{:rel "lrdd"
-                                               :template "http://example.com/main/xrd?uri={uri}"}])
+       (model.domain/set-field! domain :links [{:rel "lrdd"
+                                                :template "http://example.com/main/xrd?uri={uri}"}])
        (let [user (existance/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 

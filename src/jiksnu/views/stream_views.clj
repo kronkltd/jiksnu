@@ -105,7 +105,7 @@
 
 (defview #'public-timeline :json
   [request {:keys [items] :as page}]
-  {:body (map show-section items page)})
+  {:body (index-section items page)})
 
 (defview #'public-timeline :html
   [request {:keys [items] :as page}]

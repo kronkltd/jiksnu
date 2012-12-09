@@ -133,9 +133,12 @@
              (:title item))]]
      [:tr
       [:th "Url"]
-      [:td (if *dynamic*
-             {:data-bind "text: url"}
-             (:url item))]]
+      [:td
+       [:a (if *dynamic*
+             {:data-bind "attr: {href: url}, text: url"}
+             {:href (:url item)})
+        (when-not *dynamic*
+          (:url item))]]]
      [:tr
       [:th "Status"]
       [:td (if *dynamic*

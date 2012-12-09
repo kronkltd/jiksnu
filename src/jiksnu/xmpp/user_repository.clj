@@ -8,6 +8,8 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [monger.collection :as mc])
   (:import tigase.db.AuthorizationException
@@ -39,7 +41,7 @@
 (defn -addUser
   "This addUser method allows to add new user to repository."
   [this ^BareJID user & [^String password]]
-  (model/async-op add-user-ch [user password]))
+  (ops/async-op add-user-ch [user password]))
 
 
 (defn -digestAuth
@@ -52,7 +54,7 @@
   "This method is only used by the server statistics component to report number
 of registered users"
   [^UserRepository this & [^String domain]]
-  (model/async-op count-users-ch domain))
+  (ops/async-op count-users-ch domain))
 
 (defn -initRepository
   "The method is called to initialize the data repository."
@@ -67,7 +69,7 @@ of registered users"
 
 (defn -otherAuth
   [this props]
-  (model/async-op count-users-ch props))
+  (ops/async-op count-users-ch props))
 
 ;; plain auth
 
@@ -91,9 +93,9 @@ subnode."
   ([^UserRepository this ^BareJID user ^String subnode ^String key]
      (.getData this user subnode key nil))
   ([^UserRepository this ^BareJID user-id ^String subnode ^String key ^String def]
-     (model/async-op get-data-ch [user-id subnode key def])))
+     (ops/async-op get-data-ch [user-id subnode key def])))
 
 (defn -userExists
   "checks whether the user (or repository top node) exists in the database."
   [this ^BareJID user]
-  (model/async-op user-exists-ch [user]))
+  (ops/async-op user-exists-ch [user]))

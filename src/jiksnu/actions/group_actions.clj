@@ -10,7 +10,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
-            [jiksnu.session :as session])
+            [jiksnu.session :as session]
+            [jiksnu.templates :as templates])
   (:import jiksnu.model.Group))
 
 (defn prepare-create
@@ -38,8 +39,8 @@
   group)
 
 (def index*
-  (model/make-indexer 'jiksnu.model.group
-                      :sort-clause [{:username 1}]))
+  (templates/make-indexer 'jiksnu.model.group
+                          :sort-clause {:username 1}))
 
 (defaction index
   [& options]

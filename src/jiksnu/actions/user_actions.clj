@@ -5,7 +5,6 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -20,6 +19,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -27,8 +27,12 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
+            [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
@@ -47,50 +51,18 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defn assert-unique
-  [user]
-  (if-let [id (:id user)]
-    (if-not (model.user/fetch-by-remote-id id)
-      user
-      (throw+ "already exists"))
-    (throw+ "does not have an id")))
-
-(defn get-user-meta
-  [user]
-  (let [id (:id user)
-        domain (actions.domain/get-discovered {:_id (:domain user)})]
-    (if-let [url (actions.domain/get-user-meta-url domain id)]
-      (let [resource (model/get-resource url)
-            response (model/update-resource resource)]
-        (cm/string->document (:body response))))))
-
-(defn set-update-source
-  [user]
-  (if (:local user)
-    (let [topic (format "http://%s/api/statuses/user_timeline/%s.atom"
-                        (:domain user) (:_id user))
-          source (model/get-source topic)]
-      (assoc user :update-source (:_id source)))
-    (if (:update-source user)
-      user
-      ;; look up update source
-      (if-let [user-meta (get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
-          (assoc user :update-source (:_id source))
-          (throw+ "could not get source"))
-        (throw+ "Could not get user meta")))))
-
 (defn prepare-create
   [user]
   (-> user
-      set-_id
+      transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time
+      transforms.user/set-domain
       transforms.user/set-id
       transforms.user/set-url
       transforms.user/set-local
-      assert-unique
-      set-updated-time
-      set-created-time
-      set-update-source
+      transforms.user/assert-unique
+      transforms.user/set-update-source
       transforms.user/set-discovered
       transforms.user/set-avatar-url))
 
@@ -99,9 +71,8 @@
   [^User user]
   (if-let [domain-id (or (:domain user)
                          (when-let [id (:id user)]
-                           (model.user/get-domain-name id)))]
+                           (util/get-domain-name id)))]
     (actions.domain/get-discovered {:_id domain-id})))
-
 
 
 (defaction add-link*
@@ -112,9 +83,9 @@
 
 (defn add-link
   [user link]
-  (if-let [existing-link (and nil (model.user/get-link user
-                                                       (:rel link)
-                                                       (:type link)))]
+  (if-let [existing-link (model.user/get-link user
+                                              (:rel link)
+                                              (:type link))]
     user
     (add-link* user link)))
 
@@ -124,19 +95,22 @@
 
 
 (defaction create
-  [options]
-  (let [user (prepare-create options)]
-    ;; TODO: This should be part of the set-domain transform
-    (if-let [domain (get-domain user)]
-      (do
-        (s/increment "user created")
-        (model.user/create user))
-      (throw+ "Could not determine domain for user"))))
+  [params]
+  (let [item (prepare-create params)]
+    (model.user/create item)))
 
 (defaction find-or-create
   [username domain]
   (or (model.user/get-user username domain)
       (create {:username username :domain domain})))
+
+(defn get-user-meta
+  "Returns an enlive document for the user's xrd file"
+  [user]
+  (if-let [url (:user-meta-link user)]
+    (-> url ops/get-resource ops/update-resource
+        :body cm/string->document)
+    (throw+ "User does not have a meta link")))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
@@ -144,16 +118,19 @@
   (let [id (:id user)
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (assoc user :username (first (model.user/split-uri id)))
+      (assoc user :username (first (util/split-uri id)))
       (or (if-let [username (.getUserInfo uri)]
             (assoc user :username username))
-          (if-let [domain-name (or (:domain user)
-                                   (model.user/get-domain-name id))]
-            (let [user (assoc user :domain domain-name)]
-              (if-let [user-meta (get-user-meta user)]
-                (let [source (model.webfinger/get-feed-source-from-xrd user-meta)]
+          (if-let [domain-name (log/spy (or (:domain user)
+                                            (util/get-domain-name id)))]
+            (let [domain (actions.domain/find-or-create {:_id domain-name})
+                  user (assoc user :domain domain-name)
+                  user-meta-link (log/spy (actions.domain/get-user-meta-url domain id))
+                  user (assoc user :user-meta-link (log/spy user-meta-link))]
+              (if-let [xrd (ops/get-user-meta user)]
+                (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
                   (merge user
-                         {:username (model.webfinger/get-username-from-xrd user-meta)
+                         {:username (model.webfinger/get-username-from-xrd xrd)
                           :update-source (:_id source)}))
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
@@ -184,7 +161,7 @@
 
 (defn find-or-create-by-uri
   [uri]
-  (let [[username domain] (model.user/split-uri uri)]
+  (let [[username domain] (util/split-uri uri)]
     (find-or-create username domain)))
 
 ;; TODO: This is the job of the filter
@@ -206,8 +183,8 @@
   (model.user/fetch-by-id (:_id user)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.user
-                      :sort-clause {:username 1}))
+  (templates/make-indexer 'jiksnu.model.user
+                          :sort-clause {:username 1}))
 
 (defaction index
   [& options]
@@ -226,15 +203,15 @@
        :alias full-uri
        :links
        [
-        {:rel ns/wf-profile 
+        {:rel ns/wf-profile
          :type "text/html"
          :href full-uri}
-        
+
         {:rel ns/hcard
          :type "text/html"
          :href full-uri}
 
-        {:rel ns/xfn 
+        {:rel ns/xfn
          :type "text/html"
          :href full-uri}
 
@@ -255,18 +232,18 @@
         {:rel ns/salmon-mention :href (model.user/salmon-link user)}
         {:rel ns/oid-provider   :href full-uri}
         {:rel ns/osw-service    :href (str "xmpp:" (:username user) "@" (:domain user))}
-        
+
 
         {:rel "magic-public-key"
          :href (-> user
                    model.key/get-key-for-user
                    model.key/magic-key-string)}
 
-        {:rel ns/ostatus-subscribe 
+        {:rel ns/ostatus-subscribe
          :template (str "http://" (config :domain) "/main/ostatussub?profile={uri}")}
 
 
-        {:rel ns/twitter-username 
+        {:rel ns/twitter-username
          :href (str "http://" (config :domain) "/api/")
          :property [{:type "http://apinamespace.org/twitter/username"
                      :value (:username user)}]}]})
@@ -291,9 +268,10 @@
   "Extract user information from atom element"
   [^Person person]
   (log/info "converting person to user")
-  (let [id (str (.getUri person))
+  (let [id (or (abdera/get-simple-extension person ns/atom "id")
+               (str (.getUri person)))
         ;; TODO: check for custom domain field first?
-        domain-name (model.user/get-domain-name id)
+        domain-name (util/get-domain-name id)
         domain (actions.domain/get-discovered {:_id domain-name})
         username (or (abdera/get-username person)
                      (get-username {:id id})
@@ -303,8 +281,9 @@
       (let [email (.getEmail person)
             name (abdera/get-name person)
             note (abdera/get-note person)
-            uri (str (.getUri person))
-            ;; homepage 
+            user-meta (actions.domain/get-user-meta-url domain id)
+            url (str (.getUri person))
+            ;; homepage
             local-id (-> person
                          (abdera/get-extension-elements ns/statusnet "profile_info")
                          (->> (map #(abdera/attr-val % "local_id")))
@@ -312,9 +291,10 @@
             links (abdera/get-links person)
             user (merge {:domain domain-name
                          :id id
+                         :user-meta-link user-meta
                          :username username
                          :links links}
-                        (when uri      {:uri uri})
+                        (when url      {:url url})
                         (when note     {:bio note})
                         (when email    {:email email})
                         (when local-id {:local-id local-id})
@@ -326,7 +306,7 @@
   "returns a user meta document"
   [^User user]
   (if-let [uri (model.user/user-meta-uri user)]
-    (let [resource (model/get-resource uri)]
+    (let [resource (ops/get-resource uri)]
       (model.webfinger/fetch-host-meta uri))
     (throw (RuntimeException. "Could not determine user-meta link"))))
 
@@ -334,8 +314,8 @@
   "returns a feed"
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
-    (let [resource (model/get-resource url)
-          response (model/update-resource resource)]
+    (let [resource (ops/get-resource url)
+          response (ops/update-resource resource)]
       (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 
@@ -474,7 +454,7 @@
   "Returns a user with the passed account uri,
    or creates one if it does not exist."
   [uri]
-  (->> uri model.user/split-uri
+  (->> uri util/split-uri
        (apply find-or-create)))
 
 (defaction xmpp-service-unavailable
@@ -485,6 +465,12 @@
     (actions.domain/set-xmpp domain false)
     user))
 
+(defn handle-pending-get-user-meta
+  [[p user]]
+  (deliver p (get-user-meta user)))
+
+(l/receive-all ch/pending-get-user-meta handle-pending-get-user-meta)
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.user-filters"
@@ -493,7 +479,7 @@
     "jiksnu.triggers.user-triggers"
     "jiksnu.views.user-views"])
 
-  (model/add-hook!
+  (util/add-hook!
    actions.domain/delete-hooks
    (fn [domain]
      (doseq [user (:items (model.user/fetch-by-domain domain))]

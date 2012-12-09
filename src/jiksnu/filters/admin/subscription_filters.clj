@@ -3,7 +3,8 @@
         jiksnu.actions.admin.subscription-actions)
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.model.subscription :as model.subscription]))
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.util :as util]))
 
 (deffilter #'create :http
   [action request]
@@ -16,12 +17,12 @@
 
 (deffilter #'show :http
   [action request]
-  (action (-> request :params :id model/make-id model.subscription/fetch-by-id)))
+  (action (-> request :params :id util/make-id model.subscription/fetch-by-id)))
 
 (deffilter #'delete :http
   [action request]
-  (action (-> request :params :id model/make-id model.subscription/fetch-by-id)))
+  (action (-> request :params :id util/make-id model.subscription/fetch-by-id)))
 
 (deffilter #'update :http
   [action request]
-  (action (-> request :params :id model/make-id model.subscription/fetch-by-id)))
+  (action (-> request :params :id util/make-id model.subscription/fetch-by-id)))

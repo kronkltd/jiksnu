@@ -11,6 +11,8 @@
 (defn routes
   []
   [
+   [[:get (named-path     "index feed-sources")]  #'feed-source/index]
+   [[:get (formatted-path "index feed-sources")]  #'feed-source/index]
    [[:get (named-path     "show feed-source")]  #'feed-source/show]
    [[:get (formatted-path "show feed-source")]  #'feed-source/show]
    [[:get (named-path     "push callback")]     #'feed-source/process-updates]

@@ -12,6 +12,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
@@ -27,10 +28,9 @@
          (fact "when the format is :as"
            (with-format :as
              (fact "when the user has subscriptions"
-               (model/drop-all!)
-               (let [user (existance/a-user-exists)
-                     subscription (model.subscription/create (factory :subscription
-                                                                      {:from (:_id user)}))
+               (db/drop-all!)
+               (let [subscription (existance/a-subscription-exists)
+                     actor (model.subscription/get-actor subscription)
                      request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>
@@ -43,13 +43,11 @@
          (fact "when the format is :html"
            (with-format :html
              (fact "when the user has subscriptions"
-               (model/drop-all!)
-               (let [user (existance/a-user-exists)
-                     subscription (model.subscription/create
-                                   (factory :subscription
-                                            {:from (:_id user)}))
+               (db/drop-all!)
+               (let [subscription (existance/a-subscription-exists)
+                     actor (model.subscription/get-actor subscription)
                      request {:action action
-                              :params {:id (str (:_id user))}}
+                              :params {:id (str (:_id actor))}}
                      response (filter-action action request)]
                  (apply-view request response) =>
                  (every-checker
@@ -65,23 +63,18 @@
        (with-serialization :xmpp
          (with-format :xmpp
            ;; TODO: this should be an error packet
-          (fact "when there is not a subscription"
-            (fact "should return an error packet"
-              (apply-view request nil) => packet/packet?))
-          
-          (fact "when there is a subscription"
-            (let [user (existance/a-user-exists)
-                  subscribee (existance/a-user-exists)
-                  record (factory :subscription {:from (:_id user)
-                                                 :to (:_id subscribee)})
-                  request {:action #'actions.subscription/unsubscribe
-                           :format :xmpp
-                           :id "Foo"}
-                  response (apply-view request record)]
+           (fact "when there is not a subscription"
 
-              (fact "should return a packet map"
-                response => map?)
+             (apply-view request nil) => packet/packet?)
 
-              (fact "should have an id"
-                (:id response) => truthy))))))))
-)
+           (fact "when there is a subscription"
+             (let [subscription (existance/a-subscription-exists)
+                   request {:action #'actions.subscription/unsubscribe
+                            :format :xmpp
+                            :id "Foo"}]
+
+               (apply-view request subscription) =>
+               (every-checker
+                map?
+                truthy))))))))
+ )

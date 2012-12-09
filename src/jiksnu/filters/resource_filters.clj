@@ -6,7 +6,8 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.session :as session]))
+            [jiksnu.session :as session]
+            [jiksnu.util :as util]))
 
 ;; create
 
@@ -19,13 +20,13 @@
 
 (deffilter #'delete :command
   [action id]
-  (when-let [item (model.resource/fetch-by-id (model/make-id id))]
+  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
     (action item)))
 
 (deffilter #'delete :http
   [action request]
   (let [id (:id (:params request))]
-    (when-let [item (model.resource/fetch-by-id (model/make-id id))]
+    (when-let [item (model.resource/fetch-by-id (util/make-id id))]
       (action item))))
 
 ;; discover
@@ -48,13 +49,13 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.resource/fetch-by-id (model/make-id id))]
+    (if-let [item (model.resource/fetch-by-id (util/make-id id))]
      (action item))))
 
 ;; update
 
 (deffilter #'update* :command
   [action id]
-  (when-let [item (model.resource/fetch-by-id (model/make-id id))]
+  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
     (action item)))
 

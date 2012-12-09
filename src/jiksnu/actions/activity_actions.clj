@@ -18,9 +18,12 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [monger.collection :as mc])
   (:import javax.xml.namespace.QName
@@ -76,7 +79,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [item link]
   (s/increment "link added")
   (mc/update "activities" {:_id (:_id item)}
-             {:$addToSet {:links link}})
+    {:$addToSet {:links link}})
   item)
 
 ;; FIXME: this is always hitting the else branch
@@ -89,7 +92,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
     (add-link* item link)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction index
   [& options]
@@ -103,13 +106,13 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   [activity]
   (-> activity
       transforms/set-_id
+      transforms/set-created-time
+      transforms/set-updated-time
       transforms.activity/set-title
       transforms.activity/set-object-id
       transforms.activity/set-public
       transforms.activity/set-remote
       transforms.activity/set-tags
-      transforms/set-created-time
-      transforms/set-updated-time
       transforms.activity/set-object-type
       transforms.activity/set-parent
       transforms.activity/set-url
@@ -132,9 +135,9 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
 (defaction create
   "create an activity"
-  [{id :id :as params}]
-  (let [activity (prepare-create params)]
-    (model.activity/create activity)))
+  [params]
+  (let [item (prepare-create params)]
+    (model.activity/create item)))
 
 (defaction delete
   "delete an activity"
@@ -164,86 +167,88 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
   "Returns the verb of the entry"
   [^Entry entry]
   (-?> entry
-       (.getExtension (QName. ns/as "verb" "activity"))
-       .getText
-       model/strip-namespaces))
+       (abdera/get-simple-extension ns/as "verb")
+       util/strip-namespaces))
 
 (defn parse-entry
+  "initial step of parsing an entry"
   [^Entry entry]
-  {:id (str (.getId entry))
-   :title (.getTitle entry)
-   :published (.getPublished entry)
-   :updated (.getUpdated entry)
-   :content (.getContent entry)
+  {:id         (str (.getId entry))
+   :title      (.getTitle entry)
+   :published  (.getPublished entry)
+   :updated    (.getUpdated entry)
+   :content    (.getContent entry)
+   :url        (str (.getAlternateLinkResolvedHref entry))
    :extensions (.getExtensions entry)})
+
+(defonce latest-entry (ref nil))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
-  ([entry] (entry->activity entry nil nil))
-  ([^Entry entry feed source]
-     (let [{:keys [extensions content id title published updated]}
-           (parse-entry entry)
-           original-activity (model.activity/fetch-by-remote-id id)
-           verb (get-verb entry)
-           user (-> entry
-                    (abdera/get-author feed)
-                    actions.user/person->user
-                    actions.user/find-or-create-by-remote-id)
-           extension-maps (->> extensions
-                               (map parse-extension-element)
-                               doall)
-           links (seq (abdera/parse-links entry))
+  [^Entry entry & [feed source]]
+  (dosync
+   (ref-set latest-entry entry))
+  (let [{:keys [extensions content id title published updated] :as parsed-entry}
+        (parse-entry entry)
+        original-activity (model.activity/fetch-by-remote-id id)
+        verb (get-verb entry)
+        user (-> entry
+                 (abdera/get-author feed)
+                 actions.user/person->user
+                 actions.user/find-or-create-by-remote-id)
+        extension-maps (doall (map parse-extension-element extensions))
+        links (seq (abdera/parse-links entry))
 
-           irts (seq (abdera/parse-irts entry))
+        irts (seq (abdera/parse-irts entry))
 
-           ;; TODO: Extract this pattern
-           mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
-                                        (.getLinks entry "ostatus:attention"))
+        ;; TODO: Extract this pattern
+        mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
+                                     (.getLinks entry "ostatus:attention"))
+                             (map abdera/get-href)
+                             (into #{}))
+
+        conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
                                 (map abdera/get-href)
                                 (into #{}))
 
-           conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
-                                   (map abdera/get-href)
-                                   (into #{}))
+        enclosures (-?> (.getLinks entry "enclosure")
+                        (->> (map abdera/parse-link))
+                        (into #{}))
 
-           enclosures (-?> (.getLinks entry "enclosure")
-                           (->> (map abdera/parse-link))
-                           (into #{}))
-           
-           tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
-           object-element (.getExtension entry (QName. ns/as "object"))
-           object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
-                                (-?> entry (.getExtension activity-object-type)))
-                            .getText model/strip-namespaces)
-           object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))]
-       (let [opts (apply merge
-                         (when published         {:published published})
-                         (when content           {:content content})
-                         (when updated           {:updated updated})
-                         ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
-                         (when title             {:title title})
-                         (when irts              {:irts irts})
-                         (when (seq links)       {:links links})
-                         (when (seq conversation-uris)
-                           {:conversation-uris conversation-uris})
-                         (when (seq mentioned-uris)
-                           {:mentioned-uris mentioned-uris})
-                         (when (seq enclosures)
-                           {:enclosures enclosures})
-                         (when (seq tags)
-                           {:tags tags})
-                         (when verb              {:verb verb})
-                         {:id id
-                          :author (:_id user)
-                          :update-source (:_id source)
-                          ;; TODO: try to read
-                          :public true
-                          :object (merge (when object-type {:object-type object-type})
-                                         (when object-id {:id object-id}))
-                          :comment-count (abdera/get-comment-count entry)}
-                         extension-maps)]
-         (model/map->Activity opts)))))
+        tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
+        object-element (abdera/get-extension entry ns/as "object")
+        object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
+                             (-?> entry (.getExtension activity-object-type)))
+                         .getText util/strip-namespaces)
+        object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
+        params (apply merge
+                      (dissoc parsed-entry :extensions)
+                      (when content           {:content content})
+                      (when updated           {:updated updated})
+                      ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
+                      (when title             {:title title})
+                      (when irts              {:irts irts})
+                      (when (seq links)       {:links links})
+                      (when (seq conversation-uris)
+                        {:conversation-uris conversation-uris})
+                      (when (seq mentioned-uris)
+                        {:mentioned-uris mentioned-uris})
+                      (when (seq enclosures)
+                        {:enclosures enclosures})
+                      (when (seq tags)
+                        {:tags tags})
+                      (when verb              {:verb verb})
+                      {:id id
+                       :author (:_id user)
+                       :update-source (:_id source)
+                       ;; TODO: try to read
+                       :public true
+                       :object (merge (when object-type {:object-type object-type})
+                                      (when object-id {:id object-id}))
+                       :comment-count (abdera/get-comment-count entry)}
+                      extension-maps)]
+    (model/map->Activity params)))
 
 ;; TODO: rename to publish
 (defaction post
@@ -330,7 +335,15 @@ serialization"
   [source & [options]]
   (index {:update-source (:_id source)} options))
 
+(defn handle-delete-hook
+  [user]
+  (doseq [activity (:items (find-by-user user))]
+    (delete activity))
+  user)
+
 (definitializer
+  (model.activity/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.activity-filters"
     "jiksnu.sections.activity-sections"
@@ -340,7 +353,4 @@ serialization"
   ;; cascade delete on domain deletion
   (dosync
    (alter actions.user/delete-hooks
-          conj (fn [user]
-                 (doseq [activity (:items (find-by-user user))]
-                   (delete activity))
-                 user))))
+          conj #'handle-delete-hook)))

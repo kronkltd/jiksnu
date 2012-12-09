@@ -8,6 +8,8 @@
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.core :as mg])
   (:import jiksnu.model.Domain))
@@ -30,9 +32,9 @@
    (acceptance-of :local      :accept (partial instance? Boolean))
    (acceptance-of :discovered :accept (partial instance? Boolean))))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
 
 (defn fetch-by-id
   [id]
@@ -56,12 +58,12 @@
   ([params] (fetch-all params {}))
   ([params options]
      (s/increment "domains searched")
-     ((model/make-fetch-fn model/map->Domain collection-name)
+     ((templates/make-fetch-fn model/map->Domain collection-name)
       params options)))
 
 (defn get-link
   [item rel content-type]
-  (first (model/rel-filter rel (:links item) content-type)))
+  (first (util/rel-filter rel (:links item) content-type)))
 
 ;; TODO: add the links to the list
 (defn add-links
@@ -69,12 +71,7 @@
   ;; TODO: This should push only if the link is not yet there
   (mc/update collection-name {:$pushAll {:links links}}))
 
-(defn set-field
-  [domain field value]
-  (s/increment "domains field set")
-  (mc/update collection-name
-   {:_id (:_id domain)}
-   {:$set {field value}}))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn ping-request
   [domain]

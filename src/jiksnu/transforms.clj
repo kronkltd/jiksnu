@@ -1,13 +1,16 @@
 (ns jiksnu.transforms
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
-            [jiksnu.model :as model]))
+            [jiksnu.model :as model]
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util])
+  (:import java.net.URI))
 
 (defn set-_id
   [record]
   (if (:_id record)
     record
-    (assoc record :_id (model/make-id))))
+    (assoc record :_id (util/make-id))))
 
 (defn set-created-time
   [record]
@@ -20,4 +23,27 @@
   (if (:updated record)
     record
     (assoc record :updated (time/now))))
+
+(defn set-local
+  [item]
+  (if (contains? item :local)
+    item
+    (let [resource (ops/get-resource (:url item))]
+      (assoc item :local (:local resource)))))
+
+(defn set-domain
+  [source]
+  (if (:domain source)
+    source
+    (let [uri (URI. (:url source))
+          domain-name (.getHost uri)
+          domain (ops/get-domain domain-name)]
+      (assoc source :domain (:_id domain)))))
+
+(defn set-resource
+  [item]
+  (if (:resource item)
+    item
+    (let [resource (ops/get-resource (:url item))]
+      (assoc item :resource (:_id resource)))))
 

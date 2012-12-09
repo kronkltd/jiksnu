@@ -7,7 +7,6 @@
                                        index-line index-section update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.model :only [with-subject]]
         [jiksnu.sections :only [action-link actions-section admin-index-line admin-index-block
                                 admin-index-section bind-property bind-to control-line
                                 dropdown-menu dump-data format-links pagination-links]]
@@ -24,10 +23,12 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
+            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
+            [jiksnu.util :as util]
             [jiksnu.xmpp.element :as element]
-            [plaza.rdf.core :as rdf]
+            [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import java.io.StringWriter
            javax.xml.namespace.QName
@@ -297,17 +298,17 @@
 
    ;; TODO: handle other visibilities
    #_(when-not (:public activity)
-     " privately")
+       " privately")
 
    " approximately "
-   [:time {:datetime (model/format-date (:published activity))
-           :title (model/format-date (:published activity))
+   [:time {:datetime (util/format-date (:published activity))
+           :title (util/format-date (:published activity))
            :property "dc:published"}
     [:a (merge {:href (uri activity)}
                (when *dynamic*
-                 {:data-bind "text: created, attr: {href: '/notice/' + ko.utils.unwrapObservable(_id)}"}))
+                 {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
      (when-not *dynamic*
-       (-> activity :created .toDate model/prettyify-time))]]
+       (-> activity :created .toDate util/prettyify-time))]]
    " using "
    [:span
     (if *dynamic*
@@ -329,7 +330,7 @@
        "foreign service"]])
 
    (when-let [id (if *dynamic*
-                   (model/make-id)
+                   (util/make-id)
                    (:conversation activity))]
      (list
       " "
@@ -448,6 +449,22 @@
      (map
       (fn [resource]
         [:li {:data-model "resource"}
+         ;; [:p (if *dynamic*
+         ;;       {:data-bind "text: title"}
+         ;;       (:title resource))]
+         ;; [:p (if *dynamic*
+         ;;       {:data-bind "text: contentType"}
+         ;;       (:contentType resource))]
+         [:div {:data-bind "if: properties"}
+          ;; [:p {:data-bind "text: ko.utils.unwrapObservable(properties)['og:type']"}]
+          [:div (if *dynamic*
+                  {:data-bind "if: ko.utils.properties()['og:type'] === 'video'"})
+           [:div.video-embed
+            [:iframe
+             (merge {:frameborder "0"
+                     :allowfullscreen "allowfullscreen"}
+                    (if *dynamic*
+                      {:data-bind "attr: {src: properties()['og:video']}"}))]]]]
          [:a (merge {:rel "lightbox"}
                     (if *dynamic*
                       {:data-bind "attr: {href: url}"}
@@ -698,11 +715,11 @@
   (merge
    {:text (:title activity)
     :truncated false
-    :created_at (model/date->twitter (.toDate (:created activity)))
+    :created_at (util/date->twitter (.toDate (:created activity)))
     :source (:source activity)
     :id (:_id activity)
-    :in_reply_to_user_id nil
-    :in_reply_to_screen_name nil
+    ;; :in_reply_to_user_id nil
+    ;; :in_reply_to_screen_name nil
 
     ;; TODO: test for the presence of a like
     :favorited false
@@ -711,7 +728,7 @@
     :statusnet_html (:content activity)}
    (when-let [conversation (first (:conversation-uris activity))]
      {:statusnet_conversation_id conversation})
-   (when-let [irt (first (:irts activity))]
+   (let [irt (first (:irts activity))]
      {:in_reply_to_status_id irt})
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
@@ -764,21 +781,21 @@
 
 (defsection show-section [Activity :rdf]
   [activity & _]
-  (rdf/with-rdf-ns ""
+  (plaza/with-rdf-ns ""
     (let [{:keys [id created content]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
-          user-res (rdf/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
+          user-res (plaza/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
       (concat
-       (with-subject uri
+       (rdf/with-subject uri
          [
           [[ns/rdf  :type]        [ns/sioc "Post"]]
-          [[ns/as   :verb]        (rdf/l "post")]
+          [[ns/as   :verb]        (plaza/l "post")]
           [[ns/sioc :has_creator] user-res]
           [[ns/sioc :has_owner]   user-res]
           [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (rdf/date (.toDate created))]])
-       (when content [[uri [ns/sioc  :content]    (rdf/l content)]])))))
+          [[ns/dc   :published]   (plaza/date (.toDate created))]])
+       (when content [[uri [ns/sioc  :content]    (plaza/l content)]])))))
 
 (defsection show-section [Activity :viewmodel]
   [activity & [page]]
@@ -796,7 +813,7 @@
    [:text (h/h (or (:title activity)
                    (:content activity)))]
    [:truncated "false"]
-   [:created_at (-?> activity :published .toDate model/date->twitter)]
+   [:created_at (-?> activity :published .toDate util/date->twitter)]
    [:source (:source activity)]
    [:id (:_id activity)]
    [:in_reply_to_status_id]

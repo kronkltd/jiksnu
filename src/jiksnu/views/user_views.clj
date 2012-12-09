@@ -2,6 +2,7 @@
   (:use [ciste.core :only [with-format]]
         [ciste.views :only [defview]]
         [ciste.sections.default :only [uri index-section show-section]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         jiksnu.actions.user-actions
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]]
@@ -29,7 +30,8 @@
 
 (defview #'delete :html
   [request _]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)
       (assoc :flash "user has been deleted")))
 
@@ -37,7 +39,8 @@
 
 (defview #'discover :html
   [request user]
-  (-> (response/redirect-after-post "/users")
+  (-> (named-path "index users")
+      response/redirect-after-post
       (assoc :template false)
       (assoc :flash "discovering user")))
 
@@ -87,7 +90,8 @@
 
 (defview #'register :html
   [request user]
-  (-> (response/redirect-after-post "/")
+  (-> (named-path "public timeline")
+      response/redirect-after-post
       (assoc :template false)
       (assoc :flash "user has been created")
       (assoc :session {:id (:_id user)})))

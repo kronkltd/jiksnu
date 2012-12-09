@@ -2,10 +2,14 @@
   (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.feed-subscription-actions :only [delete index show]]
-        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]])
-  (:require [jiksnu.actions.activity-actions :as actions.activity]
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [admin-index-section bind-to format-page-info
+                                pagination-links with-page]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [ring.util.response :as response]))
+            [ring.util.response :as response])
+  (:import jiksnu.model.FeedSubscription))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
@@ -13,16 +17,16 @@
    :status 200
    :single true
    :body
-   (with-page "default"
-     (pagination-links response)
-     (admin-index-section items response))})
+   (let [items (if *dynamic* [(FeedSubscription.)] items)]
+     (with-page "default"
+       (pagination-links response)
+       (bind-to "items"
+         (admin-index-section items response))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Subscriptions"
           :pages {:default (format-page-info page)}}})
-
-
 
 ;; (defview #'show :html
 ;;   [request subscription]

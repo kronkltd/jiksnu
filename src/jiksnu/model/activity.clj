@@ -1,6 +1,7 @@
 (ns jiksnu.model.activity
   (:use [ciste.config :only [config]]
         [clojure.core.incubator :only [-?>>]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [clj-statsd :as s]
@@ -9,10 +10,13 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
+            [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           org.bson.types.ObjectId))
 
 (defonce page-size 20)
 (def collection-name "activities")
@@ -21,24 +25,27 @@
 
 (def create-validators
   (validation-set
-   (presence-of   :_id)
-   (presence-of   :id)
-   (presence-of   :title)
-   (presence-of   :author)
-   (presence-of   :content)
-   (acceptance-of :local         :accept (partial instance? Boolean))
-   (acceptance-of :public        :accept (partial instance? Boolean))
-   (presence-of   :update-source)
-   (presence-of   [:object :object-type])
-   (presence-of   :verb)
-   (presence-of   :conversation)
+   (type-of :_id                   ObjectId)
+   (type-of :id                    String)
+   (type-of :title                 String)
+   (type-of :author                ObjectId)
+   (type-of :content               String)
+   (type-of :local                 Boolean)
+   (type-of :public                Boolean)
+   (type-of :update-source         ObjectId)
+   (type-of [:object :object-type] String)
+   (type-of :verb                  String)
+   (type-of :conversation          ObjectId)
 
    ;; TODO: These should be joda times
    (presence-of   :created)
    (presence-of   :updated)
    ))
 
+(def set-field! (templates/make-set-field! collection-name))
+
 (defn get-author
+  "Returns the user that is the author of this activity"
   [activity]
   (-> activity
       :author
@@ -46,25 +53,19 @@
 
 (defn get-link
   [user rel content-type]
-  (first (model/rel-filter rel (:links user) content-type)))
+  (first (util/rel-filter rel (:links user) content-type)))
 
 (defn fetch-all
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     (s/increment "activities searched")
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map model/map->Activity records))))
+     ((templates/make-fetch-fn model/map->Activity collection-name)
+      params options)))
 
 (defn fetch-by-id
   [id]
   ;; TODO: Should this always take a string?
-  (let [id (if (string? id) (model/make-id id) id)]
+  (let [id (if (string? id) (util/make-id id) id)]
     (s/increment "activities fetched")
     (if-let [activity (mc/find-map-by-id collection-name id)]
       (model/map->Activity activity))))
@@ -109,9 +110,9 @@
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (model/map->Activity activity)))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
 
 ;; deprecated
 (defn add-comment
@@ -131,3 +132,8 @@
     (when (and (not= filename "") tempfile)
       (.mkdirs (io/file user-id))
       (io/copy tempfile dest-file))))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+    (mc/ensure-index {:id 1} {:unique true})))

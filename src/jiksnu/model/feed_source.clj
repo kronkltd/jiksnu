@@ -7,6 +7,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -25,30 +26,17 @@
    (presence-of :created)
    (presence-of :updated)))
 
-(defn set-field!
-  "Updates user's field to value"
-  [user field value]
-  (log/debugf "setting %s (%s = %s)" (:_id user) field value)
-  (mc/update collection-name
-             {:_id (:_id user)}
-             {:$set {field value}}))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]
-  (when-let [record (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSource record)))
+  (when-let [item (mc/find-map-by-id collection-name id)]
+    (model/map->FeedSource item)))
 
-(defn update
-  [source params]
-  (mc/update collection-name
-             (select-keys source [:_id])
-             params)
-  (fetch-by-id (:_id source)))
-
-(defn push-value!
-  [source key value]
-  (update source
-    {:$addToSet {key value}}))
+;; (defn push-value!
+;;   [source key value]
+;;   (update source
+;;     {:$addToSet {key value}}))
 
 (defn create
   [params]
@@ -57,16 +45,15 @@
       (do
         (log/debugf "Creating feed source: %s" params)
         (mc/insert collection-name params)
-        ;; TODO: check no errors
         (let [item (fetch-by-id (:_id params))]
           (trace/trace :feed-sources:created item)
           (s/increment "feed-sources_created")
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn find-record
   [options & args]
@@ -77,8 +64,14 @@
   ([] (fetch-all {}))
   ([params] (fetch-all params {}))
   ([params options]
-     ((model/make-fetch-fn model/map->FeedSource collection-name)
-      params options)))
+     (s/increment (str collection-name " searched"))
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (:page options 1)
+                                  :per-page (:page-size options 20)))]
+       (map model/map->FeedSource records))))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

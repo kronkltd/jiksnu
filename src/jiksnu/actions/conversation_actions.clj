@@ -6,11 +6,14 @@
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [lamina.core :as l]))
@@ -25,7 +28,7 @@
       transforms/set-created-time
       transforms.conversation/set-url
       transforms.conversation/set-domain
-      transforms.conversation/set-local
+      transforms/set-local
       transforms.conversation/set-update-source))
 
 (defn prepare-delete
@@ -47,7 +50,7 @@
     (model.conversation/delete item)))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.conversation))
+  (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
   [& [params & [options]]]
@@ -56,7 +59,9 @@
 (defaction update
   [conversation & [options]]
   (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
-    (actions.feed-source/update source)
+    (do
+      (model.conversation/set-field! conversation :lastUpdated (time/now))
+      (actions.feed-source/update source))
     (throw+ "Could not find update source")))
 
 (defaction discover
@@ -85,20 +90,28 @@
   [record]
   record)
 
+(defaction add-activity
+  [conversation activity]
+  (let [lu (:lastUpdated conversation)
+        c (:created activity)]
+    (when (or (not lu)
+              (time/before? lu c))
+      (update conversation))))
+
 (defaction create-new
   []
   (create {:local true}))
 
-(defn- enqueue-find-or-create-by-url
-  [[url ch]]
-  (l/enqueue ch (find-or-create {:url url})))
+(defn- handle-get-conversation
+  [[p url]]
+  (deliver p (find-or-create {:url url})))
 
 (defn- enqueue-create-local
   [ch]
   (l/enqueue ch (create {:local true})))
 
-(l/receive-all model/pending-conversations enqueue-find-or-create-by-url)
-(l/receive-all model/pending-create-conversations enqueue-create-local)
+(l/receive-all ch/pending-get-conversation handle-get-conversation)
+(l/receive-all ch/pending-create-conversations enqueue-create-local)
 
 (definitializer
   (require-namespaces

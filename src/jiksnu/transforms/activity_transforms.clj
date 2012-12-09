@@ -1,5 +1,6 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
+        [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
@@ -12,7 +13,9 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
-            [lamina.core :as l]))
+            [jiksnu.ops :as ops]
+            [lamina.core :as l])
+  (:import java.net.URI))
 
 (defn set-local
   [activity]
@@ -32,27 +35,39 @@
 
 (defn set-url
   [activity]
-  (if (and (:local activity)
-           (empty? (:url activity)))
-    (assoc activity :url (str "http://" (config :domain) "/notice/" (:_id activity)))
-    activity))
+  (if (seq (:url activity))
+    activity
+    (if (:local activity)
+      (assoc activity :url (named-url "show activity" {:id (:_id activity)}))
+      (throw+ "Could not determine activity url"))))
 
 (defn set-object-type
   [activity]
-  (assoc-in
-   activity [:object :object-type]
-   (if-let [object-type (:object-type (:object activity))]
-     (-> object-type
-         ;; strip namespaces
-         (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
-         (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
-     "note")))
+  (if (seq (get-in activity [:object :object-type]))
+    activity
+    (let [type (if-let [object-type (:object-type (:object activity))]
+               (-> object-type
+                   ;; strip namespaces
+                   (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+                   (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+               "note")]
+      (assoc-in
+       activity [:object :object-type] type))))
 
 (defn set-parent
-  [activity]
-  (if (= (:parent activity) "")
-    (dissoc activity :parent)
-    activity))
+  [params]
+  (if (empty? (:parent params))
+    (let [params (dissoc params :parent)]
+      (if-let [uri (:parent-uri params)]
+        (let [resource (ops/get-resource uri)]
+          (if-let [parent (model.activity/fetch-by-remote-id uri)]
+            (assoc params :parent (:_id parent))
+            (do
+              (ops/update-resource resource)
+              params))
+          params)
+        params))
+    params))
 
 (defn set-source
   [activity]
@@ -136,6 +151,21 @@
     activity
     (assoc activity :verb "post")))
 
+(defn set-recipients*
+  [uri]
+  (let [user (actions.user/find-or-create-by-remote-id {:id uri})]
+    (:_id user)))
+
+(defn- set-mentioned*
+  [uri]
+  (let [uri-obj (URI. uri)
+        scheme (.getScheme uri-obj)]
+    (if (#{"http" "https"} scheme)
+      (let [resource (log/spy (ops/update-resource (log/spy (ops/get-resource (log/spy uri)))))
+            user (actions.user/find-or-create-by-remote-id {:id uri})]
+        (:_id user))
+      (actions.user/find-or-create-by-uri uri))))
+
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients
   "attempt to resolve the recipients"
@@ -143,8 +173,7 @@
   (let [uris (filter identity (:recipient-uris activity))]
     (if (empty? uris)
       (dissoc activity :recipient-uris)
-      (let [users (->> uris
-                       (keep #(:_id (actions.user/find-or-create-by-remote-id {:id %})))) ]
+      (let [users (keep set-recipients* uris)]
         (assoc activity :recipients users)))))
 
 (defn set-conversation
@@ -153,9 +182,9 @@
     item
     (if-let [user (model.activity/get-author item)]
       (if (:local user)
-        (assoc item :conversation (:_id (model/create-new-conversation)))
+        (assoc item :conversation (:_id (ops/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
-          (let [conversation (model/get-conversation uri)]
+          (let [conversation (ops/get-conversation uri)]
             (-> item
                 (assoc :conversation (:_id conversation))
                 (dissoc :conversation-uris)))
@@ -166,13 +195,7 @@
   [activity]
   (if-let [ids (->> activity
                     :mentioned-uris
-                    (map
-                     (fn [uri]
-                       (let [resource (model/get-resource uri)]
-                         (try
-                           (:_id (actions.user/find-or-create-by-remote-id {:id uri}))
-                           (catch RuntimeException ex
-                             nil)))))
+                    (map set-mentioned*)
                     (filter identity)
                     seq)]
     (-> activity
@@ -186,7 +209,9 @@
                     :enclosures
                     (map :href)
                     (map (fn [url]
-                           (:_id (model/get-resource url))))
+                           (let [resource (ops/get-resource url)]
+                             (ops/update-resource resource)
+                             (:_id resource))))
                     seq
                     doall)]
     (-> activity

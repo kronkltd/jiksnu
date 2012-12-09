@@ -8,7 +8,8 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 (deffilter #'callback-publish :http
   [action request]
@@ -60,7 +61,7 @@
   (let [{{:keys [id username] :as params} :params} request
         acct-id (:* params)]
     (if-let [user (or (and acct-id (model.user/fetch-by-uri acct-id))
-                      (and id (model.user/fetch-by-id (model/make-id id)))
+                      (and id (model.user/fetch-by-id (util/make-id id)))
                       (and username (model.user/get-user username)))]
       (action user))))
 

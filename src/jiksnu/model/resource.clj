@@ -6,6 +6,8 @@
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
+            [jiksnu.templates :as templates]
+            [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq]))
@@ -43,21 +45,13 @@
 
 (defn get-link
   [item rel content-type]
-  (first (model/rel-filter rel (:links item) content-type)))
+  (first (util/rel-filter rel (:links item) content-type)))
 
-(defn set-field!
-  "Updates item's field to value"
-  [item field value]
-  (when-not (= (get item field) value)
-    (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
-    (s/increment (str collection-name " field set"))
-    (mc/update collection-name
-      {:_id (:_id item)}
-      {:$set {field value}})))
+(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-id
   [id]
-  (let [id (if (string? id) (model/make-id id) id)]
+  (let [id (if (string? id) (util/make-id id) id)]
     (s/increment "resources fetched")
     (if-let [item (mc/find-map-by-id collection-name id)]
       (model/map->Resource item))))
@@ -75,9 +69,9 @@
           item))
       (throw+ {:type :validation :errors errors}))))
 
-(def delete        (model/make-deleter collection-name))
-(def drop!         (model/make-dropper collection-name))
-(def count-records (model/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter collection-name))
 
 (defn ensure-indexes
   []

@@ -10,6 +10,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.admin.group-actions :as actions.admin.group]
             [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.group :as model.group]
@@ -27,7 +28,7 @@
            (with-format :html
              (binding [*dynamic* false]
                (fact "when there are groups"
-                 (model/drop-all!)
+                 (db/drop-all!)
                  (let [groups (doall
                                (map (fn [n]
                                       (actions.group/create (factory :group)))

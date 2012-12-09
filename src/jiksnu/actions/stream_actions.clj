@@ -6,7 +6,6 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.actions :only [posted-activities]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -17,12 +16,14 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [lamina.core :as l])
   (:import jiksnu.model.User))
 
@@ -40,7 +41,7 @@
   (cm/implement))
 
 (def public-timeline*
-  (model/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction public-timeline
   [& [params & [options & _]]]
@@ -107,7 +108,7 @@
   (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (actions.feed-source/parse-feed source feed)
+      (actions.feed-source/process-feed source feed)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
 
@@ -148,11 +149,10 @@
 (l/siphon
    (->> ciste.core/*actions*
         l/fork
-        (l/filter* filter-create)
-        #_(l/map* format-event))
-   posted-activities)
+        (l/filter* filter-create))
+   ch/posted-activities)
 
-(l/receive-all posted-activities (fn [_]))
+(l/receive-all ch/posted-activities identity)
 
 (defn websocket-handler
   [ch request]

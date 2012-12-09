@@ -13,6 +13,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             jiksnu.filters.stream-filters
@@ -24,11 +25,11 @@
            jiksnu.model.User))
 
 (test-environment-fixture
-   
+
  (fact "filter-action #'actions.stream/public-timeline :xmpp"
    (with-serialization :xmpp
      (fact "when there are no activities"
-      (model/drop-all!)
+      (db/drop-all!)
       (let [user (existance/a-user-exists)
             element nil
             packet (tigase/make-packet
@@ -42,9 +43,8 @@
         (every-checker
          map?
          (comp empty? :items)
-         #(= 0 (:total-records %))
-         )))
-     
+         #(= 0 (:total-records %)))))
+
      (fact "when there are activities"
        (let [author (existance/a-user-exists)]
          (with-user author

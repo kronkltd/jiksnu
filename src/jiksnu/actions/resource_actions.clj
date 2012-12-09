@@ -12,10 +12,13 @@
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
+            [jiksnu.ops :as ops]
+            [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
@@ -38,13 +41,20 @@
       transforms/set-_id
       transforms.resource/set-local
       transforms.resource/set-domain
+      transforms.resource/set-location
       transforms/set-updated-time
       transforms/set-created-time))
 
+(declare update)
+
 (defaction create
   [params]
-  (let [item (prepare-create params)]
-    (model.resource/create item)))
+  (let [params (prepare-create params)]
+    (if-let [item (model.resource/create params)]
+      (do
+        #_(future (update item))
+        item)
+      (throw+ "Could not create record"))))
 
 (defaction find-or-create
   [params & [{tries :tries :or {tries 1} :as options}]]
@@ -77,7 +87,7 @@
   (enlive/select tree [:link]))
 
 (def index*
-  (model/make-indexer 'jiksnu.model.resource
+  (templates/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
 
 (defaction index
@@ -98,6 +108,34 @@
     item
     (add-link* item link)))
 
+(defn meta->property
+  "Convert a meta element to a property map"
+  [meta]
+  (let [attrs (:attrs meta)
+        property (:property attrs)
+        content (:content attrs)]
+    (when (and property content)
+      {property content})))
+
+(defn get-meta-properties
+  "Get a map of all the meta properties in the document"
+  [tree]
+  (->> (enlive/select tree [:meta])
+       (map meta->property)
+       (reduce merge)))
+
+(defn process-response-html
+  [item response]
+  (log/info "parsing html content")
+  (let [tree (response->tree response)]
+    (let [properties (get-meta-properties tree)]
+      (model.resource/set-field! item :properties properties))
+    (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
+      (model.resource/set-field! item :title title))
+    (let [links (get-links tree)]
+      (doseq [link links]
+        (add-link item (:attrs link))))))
+
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
@@ -105,7 +143,7 @@
         location (get-in response [:headers "location"])]
     (model.resource/set-field! item :status status)
     (when location
-      (let [resource (model/get-resource location)]
+      (let [resource (ops/get-resource location)]
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
       (if (seq rest)
@@ -115,15 +153,7 @@
       (model.resource/set-field! item :contentType content-type)
 
       (condp = content-type
-        "text/html"
-        (do
-          (log/info "parsing html content")
-          (let [tree (response->tree response)]
-            (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
-              (model.resource/set-field! item :title title))
-            (let [links (get-links tree)]
-              (doseq [link links]
-                (add-link item (:attrs link))))))
+        "text/html" (process-response-html item response)
         (log/infof "unknown content type: %s" content-type)))))
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
@@ -156,16 +186,16 @@
   [item]
   item)
 
-(defn handle-pending-resources
-  [[url ch]]
-  (l/enqueue ch (find-or-create {:url url})))
+(defn handle-pending-get-resource
+  [[p url]]
+  (deliver p (find-or-create {:url url})))
 
 (defn handle-pending-update-resources
   [[p item]]
   (deliver p (update* item)))
 
-(l/receive-all model/pending-resources        handle-pending-resources)
-(l/receive-all model/pending-update-resources handle-pending-update-resources)
+(l/receive-all ch/pending-get-resource     handle-pending-get-resource)
+(l/receive-all ch/pending-update-resources handle-pending-update-resources)
 
 (definitializer
   (model.resource/ensure-indexes)

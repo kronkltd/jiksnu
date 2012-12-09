@@ -1,16 +1,16 @@
 (ns jiksnu.helpers.subscription-helpers
   (:use ciste.sections.default
-        clj-tigase.core
-        [jiksnu.model :only [format-date]])
+        clj-tigase.core)
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 (defn subscriber-response-element
   [subscription]
   (let [subscriber (model.user/fetch-by-id (:from subscription))]
     ["subscriber" {"node" ns/microblog
-                   "created" (format-date (:created subscription))
+                   "created" (util/format-date (:created subscription))
                    "jid" (str (:username subscriber) "@"
                               (:domain subscriber))}]))
 
@@ -20,7 +20,7 @@
         created (:created subscription)]
     ["subscription" {"node" ns/microblog
                      "subscription" "subscribed"
-                     "created" (format-date created)
+                     "created" (util/format-date created)
                      "jid" (str (:username subscribee) "@"
                                 (:domain subscribee))}]))
 

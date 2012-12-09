@@ -2,21 +2,26 @@
   (:use [aleph.formats :only [channel-buffer->string]]
         [aleph.http :only [sync-http-request]]
         [clj-webdriver.taxi :only [to]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [lamina.core :only [permanent-channel]]
         [midje.sweet :only [fact]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]
+            jiksnu.routes
+            [lamina.time :as time]))
+
+(def default-sleep-time (time/seconds 5))
 
 (def page-names
   {
-   "home"                           "/"
-   "login"                          "/main/login"
+   "home"                           (named-path "public timeline")
+   "login"                          (named-path "login page")
    "ostatus sub"                    "/main/ostatussub"
    "host-meta"                      "/.well-known/host-meta"
    "subscription index"             "/admin/subscriptions"
    "edit profile"                   "/main/profile"
    "user admin"                     "/admin/users"
-   "user index"                     "/users"
-   "domain index"                   "/main/domains"
+   "user index"                     (named-path "index users")
+   "domain index"                   (named-path "index domains")
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"
    "like admin index"               "/admin/likes"
@@ -36,7 +41,7 @@
 
 (defn do-wait
   []
-  (Thread/sleep 5000))
+  (Thread/sleep default-sleep-time))
 
 (defn do-wait-forever
   []

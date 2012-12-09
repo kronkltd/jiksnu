@@ -92,6 +92,10 @@
      (bind-to "targetActivity"
        (show-section activity)))})
 
+(defview #'show :json
+  [request activity]
+  {:body (show-section activity)})
+
 (defview #'show :model
   [request activity]
   {:body (doall (show-section activity))})

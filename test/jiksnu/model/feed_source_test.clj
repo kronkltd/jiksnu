@@ -9,7 +9,8 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source])
+            [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.util :as util])
   (:import jiksnu.model.FeedSource
            org.bson.types.ObjectId
            org.joda.time.DateTime
@@ -23,7 +24,7 @@
 
  (fact "create"
    (future-fact "when given valid parameters"
-     (create {:_id (model/make-id)}) =>
+     (create {:_id (util/make-id)}) =>
      (every-checker
       (partial instance? FeedSource)
       #(instance? ObjectId (:_id %))

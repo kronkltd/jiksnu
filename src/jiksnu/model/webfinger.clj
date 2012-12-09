@@ -10,24 +10,34 @@
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
             [lamina.core :as l])
   (:import java.net.URI
-           jiksnu.model.User))
+           jiksnu.model.User
+           nu.xom.Document))
 
 (defn fetch-host-meta
   [url]
+  {:pre [(string? url)]
+   :post [(instance? Document %)]}
   (log/infof "fetching host meta: %s" url)
-  (try
-    (let [resource (model/get-resource url)]
-      (s/increment "xrd_fetched")
-      (cm/fetch-document url))
-    (catch RuntimeException ex
-      (throw+ "Could not fetch host meta"))))
+  (or
+   (try
+     (let [resource (ops/get-resource url)
+           response (ops/update-resource resource)]
+       (s/increment "xrd_fetched")
+       (when (= 200 (:status response))
+         (cm/string->document (:body response))))
+     (catch RuntimeException ex))
+   (throw+ "Could not fetch host meta")))
 
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
 (defn host-meta
   [domain]
+  {:pre [(model/domain? domain)]
+   :post [(vector? %)]}
   ["XRD" {"xmlns" ns/xrd
           "xmlns:hm" ns/host-meta}
    ["hm:Host" domain]
@@ -37,27 +47,29 @@
 
 (defn get-source-link
   [xrd]
+  {:pre [(instance? Document xrd)]
+   :post [(string? %)]}
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
     (->> xrd
          (cm/query query-str)
-         model/force-coll
+         util/force-coll
          (keep #(.getAttributeValue % "href"))
          first)))
 
 
 (defn get-feed-source-from-xrd
-  [xrd]
+  [^Document xrd]
+  (log/spy (.toXML xrd))
   (if-let [source-link (get-source-link xrd)]
-    (model/get-source source-link)
+    (ops/get-source source-link)
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property
-  ;; passed a document
-  [xrd]
+  [^Document xrd]
   (try
     (->> xrd
          (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
-         model/force-coll
+         util/force-coll
          (keep #(.getValue %))
          first)
     ;; TODO: What are the error risks here?
@@ -108,14 +120,14 @@
   [xrd]
   (->> xrd
        (cm/query "//*[local-name() = 'Link']")
-       model/force-coll
+       util/force-coll
        (map parse-link)))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
   [xrd]
-  (->> (concat (model/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
-               (model/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
+  (->> (concat (util/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
+               (util/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))
 
 (defn get-username-from-identifiers
@@ -124,7 +136,7 @@
   (try
     (->> xrd
          get-identifiers
-         (keep (comp first model.user/split-uri))
+         (keep (comp first util/split-uri))
          first)
     (catch RuntimeException ex
       (log/error "caught error" ex)

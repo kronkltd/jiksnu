@@ -10,6 +10,7 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
@@ -66,7 +67,7 @@
       ["XRD" {"xmlns" ns/xrd
               "xmlns:hm" ns/host-meta}
        ["hm:Host" domain]
-       ["Subject" domain] 
+       ["Subject" domain]
        (map
         (fn [{:keys [title rel href template] :as link}]
           [:Link (merge {}
@@ -130,14 +131,15 @@
    :links [{:rel "up"
             :href "/main/domains"
             :title "Domain Index"}]
-   :body
-   (bind-to "targetDomain"
-     (show-section domain)
-     [:div {:data-model "domain"}
-      (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
-        (with-page "default"
-          (bind-to "items"
-            (index-section users {:page 1}))))])})
+   :body (bind-to "targetDomain"
+           (show-section domain)
+           [:div
+            [:h3 "Users"]
+            (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
+              (with-page "users"
+                (pagination-links {})
+                (bind-to "items"
+                  (index-section users))))])})
 
 (defview #'show :model
   [request domain]
@@ -145,6 +147,9 @@
 
 (defview #'show :viewmodel
   [request domain]
-  {:body
-   {:title (:_id domain)
-    :targetDomain (:_id domain)}})
+  (let [id (:_id domain)]
+    {:body
+     {:title id
+      :pages {:users (let [page (actions.user/index {:domain id})]
+                       (format-page-info page))}
+      :targetDomain (:_id domain)}}))

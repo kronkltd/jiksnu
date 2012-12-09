@@ -9,17 +9,18 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.db :as db]
             [jiksnu.existance-helpers :as existance]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]))
 
 (test-environment-fixture
- 
+
  (fact "#'oembed->activity"
    (let [oembed-str (slurp "test-resources/oembed.json")]
      ;; TODO: complete
      oembed-str => string?))
- 
+
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
          domain (actions.domain/find-or-create (factory :domain
@@ -35,7 +36,7 @@
          (let [entry (show-section (model/map->Activity
                                     (factory :activity {:author (:_id user)})))]
            (entry->activity entry) => model/activity?)))
-     
+
      (future-fact "when coming from an identi.ca feed"
        (fact "should parse the published field"
          (let [feed (abdera/load-file "identica-update.xml")
@@ -44,7 +45,7 @@
 
  (fact "#'find-by-user"
    (fact "when the user has activities"
-     (model/drop-all!)
+     (db/drop-all!)
      (let [user (existance/a-user-exists)
            activity (existance/there-is-an-activity {:user user})]
        (find-by-user user) =>
@@ -113,7 +114,7 @@
                activity (existance/there-is-an-activity {:modifier "private"
                                                          :user author})]
            (viewable? activity user)) => falsey))))
- 
+
  (fact "#'show"
    (fact "when the record exists"
      (fact "and the record is viewable"

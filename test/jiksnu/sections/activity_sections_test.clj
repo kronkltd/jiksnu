@@ -33,35 +33,19 @@
     vector?
     #(= :form (first %))))
 
- ;; TODO: acl-link
- ;; TODO: show-comment
- ;; TODO: comment-link-item
- ;; TODO: index-formats
- ;; TODO: timeline-formats
- ;; TODO: pictures-section
- ;; TODO: tag-section
- ;; TODO: location-section
- ;; TODO: add-button-section
- ;; TODO: privacy select
- ;; TODO: post-actions
- ;; TODO: recipients-section
- ;; TODO: links section
- ;; TODO: tags section
-
  (fact "#'posted-link-section"
    (let [user (existance/a-user-exists)
          activity (existance/there-is-an-activity)]
      (posted-link-section activity) =>
      (every-checker
       #(h/html %))))
- 
+
  (fact "#'uri Activity"
-   (fact "should be a string"
-     ;; TODO: not a good test
-     (with-context [:http :html]
-       (uri .activity.)) =>
-       (every-checker
-        string?)))
+   ;; TODO: not a good test
+   (with-context [:http :html]
+     (uri .activity.)) =>
+     (every-checker
+      string?))
 
  (fact "index-block"
    (fact "when the context is [:http :rdf]"
@@ -72,7 +56,7 @@
           (partial every? (fn [t]
                             (and (vector? t)
                                  (= 3 (count t))))))))))
- 
+
  (fact "index-section"
    (fact "when the context is [:http :rdf]"
      (with-context [:http :rdf]
@@ -84,24 +68,22 @@
               (fact
                 t => vector?
                 (count t) => 3))))))))
- 
+
  (fact "#'show-section Activity :atom"
-   (fact "should return an abdera entry"
+   (let [activity (existance/there-is-an-activity)]
      (with-context [:http :atom]
-       (let [activity (existance/there-is-an-activity)]
-         (show-section activity) =>
-         (every-checker
-          (fn [response]
-            (fact
-              response => (partial instance? Entry)
-              (.getId response) => (partial instance? IRI)
-              (.getUpdated response) => (partial instance? DateTime)
-              (.getTitle response) => string?
-              (.getAuthor response) => (partial instance? Person))))))))
+       (show-section activity)) =>
+       (every-checker
+        (fn [response]
+          (fact
+            response => (partial instance? Entry)
+            (.getId response) => (partial instance? IRI)
+            (.getUpdated response) => (partial instance? DateTime)
+            (.getTitle response) => string?
+            (.getAuthor response) => (partial instance? Person))))))
 
  (fact "#'show-section Activity :xmpp"
-   (fact "should return an element"
+   (let [activity (existance/there-is-an-activity)]
      (with-context [:xmpp :xmpp]
-       (let [activity (existance/there-is-an-activity)]
-         (show-section activity)) => element/element?)))
+       (show-section activity))) => element/element?)
 )
