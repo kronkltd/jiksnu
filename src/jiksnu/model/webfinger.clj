@@ -19,23 +19,25 @@
 
 (defn fetch-host-meta
   [url]
+  {:pre [(string? url)]
+   :post [(instance? Document %)]}
   (log/infof "fetching host meta: %s" url)
-  (try
-    (let [resource (ops/get-resource url)
-          response (ops/update-resource resource)]
-      (s/increment "xrd_fetched")
-      (cm/fetch-document url)
-      (if (:status response)
-        (cm/string->document (:body response))
-        )
-      )
-    (catch RuntimeException ex
-      (throw+ "Could not fetch host meta"))))
+  (or
+   (try
+     (let [resource (ops/get-resource url)
+           response (ops/update-resource resource)]
+       (s/increment "xrd_fetched")
+       (when (= 200 (:status response))
+         (cm/string->document (:body response))))
+     (catch RuntimeException ex))
+   (throw+ "Could not fetch host meta")))
 
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
 (defn host-meta
   [domain]
+  {:pre [(model/domain? domain)]
+   :post [(vector? %)]}
   ["XRD" {"xmlns" ns/xrd
           "xmlns:hm" ns/host-meta}
    ["hm:Host" domain]
@@ -45,6 +47,8 @@
 
 (defn get-source-link
   [xrd]
+  {:pre [(instance? Document xrd)]
+   :post [(string? %)]}
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
     (->> xrd
          (cm/query query-str)
@@ -61,8 +65,7 @@
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property
-  ;; passed a document
-  [xrd]
+  [^Document xrd]
   (try
     (->> xrd
          (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")

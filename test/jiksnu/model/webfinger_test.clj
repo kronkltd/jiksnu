@@ -8,11 +8,28 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance])
+            [jiksnu.existance-helpers :as existance]
+            [jiksnu.ops :as ops])
   (:import jiksnu.model.User
            nu.xom.Document))
 
 (test-environment-fixture
+
+ (fact "#'fetch-host-meta"
+   (let [resource (existance/a-resource-exists)
+         url (:url resource)]
+     (fact "when the url is nil"
+       (fetch-host-meta nil) => (throws AssertionError))
+     (fact "when the url points to a valid XRD document"
+       (fetch-host-meta url) => (partial instance? Document)
+       (provided
+         (ops/update-resource resource) => {:status 200
+                                            :body "<XRD/>"}))
+     (fact "when the url does not point to a valid XRD document"
+       (fetch-host-meta url) => (throws RuntimeException)
+       (provided
+         (ops/update-resource resource) => {:status 404
+                                            :body "<html><body><p>Not Found</p></body></html>"}))))
 
  (fact "#'get-username-from-xrd"
    (fact "when the usermeta has an identifier"
@@ -42,26 +59,8 @@
                        "</Property></Link></XRD>"))]
        (get-username-from-atom-property user-meta) => username)))
 
- ;; TODO: Mock these, don't actually request
- (fact "#'fetch-host-meta"
-   (fact "when the url points to a valid XRD document"
-     ;; TODO: pick a random domain
-     (let [resource (existance/a-resource-exists)
-           url (:url resource)]
-       (fetch-host-meta url) => (partial instance? Document))
-     (provided
-       (cm/fetch-resource url) => "<XRD/>"))
-   
-   (fact "when the url does not point to a valid XRD document"
-     (let [resource (existance/a-resource-exists)
-           url (:url resource)]
-       (fetch-host-meta url) => (throws Exception))
-     (provided
-       (cm/fetch-resource url) => "")))
- 
  (future-fact "#'get-links"
    (fact "When it has links"
      (let [xrd nil]
        (get-links xrd)) => seq?))
-
  )
