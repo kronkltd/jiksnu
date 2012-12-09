@@ -35,7 +35,7 @@
         #(instance? ObjectId (:_id %))
         #(instance? DateTime (:created %))
         #(instance? DateTime (:updated %))
-        #(string? (:topic %))))
+        #(string? (:url %))))
 
    (fact "when given invalid params"
      (create {}) => (throws RuntimeException)))
