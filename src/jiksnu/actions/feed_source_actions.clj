@@ -10,7 +10,7 @@
   (:require [aleph.http :as http]
             [clj-http.client :as client]
             [clj-statsd :as s]
-            [clj-time.core :as time]
+            [clj-time.core :as clj-time]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -109,7 +109,7 @@
 
 (defn mark-updated
   [source]
-  (model.feed-source/set-field! source :updated (time/now)))
+  (model.feed-source/set-field! source :updated (clj-time/now)))
 
 (declare unsubscribe)
 (declare send-unsubscribe)
