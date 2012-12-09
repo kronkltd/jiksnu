@@ -31,6 +31,9 @@
   [user]
   (-> user))
 
+(def index*
+  (model/make-indexer 'jiksnu.model.subscription))
+
 (defaction create
   [params]
   (let [params (prepare-create params)]
@@ -43,9 +46,6 @@
    In most cases, use the user-specific versions. (unsubscribe)"
   [subscription]
   (model.subscription/delete subscription))
-
-(def index*
-  (model/make-indexer 'jiksnu.model.subscription))
 
 (defaction index
   [& options]
@@ -106,7 +106,7 @@
     (if-let [user  (if (re-matches #".*@.*" uri)
                      ;; uri is an acct uri
                      (actions.user/find-or-create-by-uri uri)
-                     
+
                      ;; uri is a http uri
                      (actions.user/find-or-create-by-remote-id {:id uri}))]
       (subscribe actor user)
