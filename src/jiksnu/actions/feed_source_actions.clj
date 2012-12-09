@@ -25,13 +25,14 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.time :as time])
   (:import java.net.URI
            jiksnu.model.FeedSource))
 
 (defonce pending-discovers (ref {}))
 
-(def discovery-timeout 5000)
+(def discovery-timeout (time/seconds 30))
 
 (defn get-hub-link
   [feed]

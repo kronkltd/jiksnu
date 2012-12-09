@@ -6,7 +6,10 @@
         [lamina.core :only [permanent-channel]]
         [midje.sweet :only [fact]])
   (:require [clojure.tools.logging :as log]
-            jiksnu.routes))
+            jiksnu.routes
+            [lamina.time :as time]))
+
+(def default-sleep-time (time/seconds 5))
 
 (def page-names
   {
@@ -38,7 +41,7 @@
 
 (defn do-wait
   []
-  (Thread/sleep 5000))
+  (Thread/sleep default-sleep-time))
 
 (defn do-wait-forever
   []

@@ -21,6 +21,7 @@
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
             [lamina.core :as l]
+            [lamina.time :as time]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -216,7 +217,7 @@
             p (if p
                 (do (discover domain) p)
                 (get @pending-discovers id))]
-        (or (deref p 5000000 nil)
+        (or (deref p (time/seconds 30) nil)
             (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url

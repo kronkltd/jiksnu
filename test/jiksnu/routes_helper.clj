@@ -11,6 +11,7 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
+            [lamina.time :as time]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as mock]
             [ring.util.codec :as codec])
@@ -18,7 +19,7 @@
 
 (defn response-for
   "Run a request against the main handler and wait for the response"
-  ([request] (response-for request 5000))
+  ([request] (response-for request (time/seconds 5)))
   ([request timeout]
      (let [ch (channel)]
        (r/app ch request)
