@@ -19,6 +19,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
@@ -28,7 +29,9 @@
             [lamina.core :as l]
             [lamina.time :as time])
   (:import java.net.URI
-           jiksnu.model.FeedSource))
+           jiksnu.model.FeedSource
+           jiksnu.model.User
+           org.apache.abdera2.model.Feed))
 
 (defonce pending-discovers (ref {}))
 
@@ -47,12 +50,16 @@
       transforms.feed-source/set-resource))
 
 (defaction add-watcher
-  [source user]
+  [^FeedSource source ^User user]
+  ;; {:pre [(instance? FeedSource source)
+  ;;        (instance? User user)]
+  ;;  :post [(instance? FeedSource %)]}
   #_(model.feed-source/push-value! source :watchers (:_id user))
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defaction watch
   [source]
+  ;; {:pre [(instance? FeedSource source)]}
   (add-watcher source (session/current-user)))
 
 (defaction delete
@@ -126,11 +133,13 @@
   (or true (seq (:watchers source))))
 
 (defn process-feed
-  [source feed]
+  [^FeedSource source ^Feed feed]
+  {:pre [(instance? FeedSource source)
+         (instance? Feed feed)]}
   (s/increment "feeds processed")
 
   (when-let [author (abdera/get-feed-author feed)]
-    (let [author-id (log/spy (.getId author))]
+    (let [author-id (log/spy (abdera/get-simple-extension author ns/atom "id"))]
       (log/spy (actions.user/person->user author))))
 
   (let [feed-title (.getTitle feed)]
