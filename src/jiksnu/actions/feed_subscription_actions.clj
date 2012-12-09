@@ -63,6 +63,14 @@
   [item]
   (model.feed-subscription/fetch-by-id (:_id item)))
 
+(defaction subscription-request
+  "Handle a request for a new subscription to a local source"
+  [params]
+  (let [source (model/get-source (:topic params))]
+    (if (:local source)
+      (create {:source (:_id source)})
+      (throw+ "Hub not authoritative for source"))))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.feed-subscription-filters"

@@ -13,79 +13,56 @@
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]))
 
-;; TODO: break into components and actually perform validation
-(defn valid?
-  "How could this ever go wrong?"
-  [_] true)
-
-;; TODO: move to sections
-(defn subscription-not-valid-error
-  "Error response for invalid subscription"
-  []
-
-  )
-
-;; TODO: move to sections
-(defn subscription-not-found-error
-  []
-  {:mode "error"
-   :message "not found"})
-
-
-
-
-
-
-
-
-
-
-
 (defn verify-subscribe-sync
   "Verify subscription request in this thread"
-  [subscription]
-  (if (and (valid? (:topic subscription))
-           (valid? (:callback subscription)))
-    ;; sending verification request
-    (let [params (merge {:hub.mode (:mode subscription)
-                         :hub.topic (:topic subscription)
-                         :hub.lease_seconds (:lease-seconds subscription)
-                         :hub.verify_token (:verify-token subscription)}
-                        (if (:challenge subscription)
-                          {:hub.challenge (:challenge subscription)}))
-          url (model/make-subscribe-uri (:callback subscription) params)
-          response-channel (http/http-request {:method :get
-                                               :url url
-                                               :auto-transform true})]
-      (let [response @response-channel]
-        (if (= 200 (:status response))
-          {:status 204}
-          {:status 404})))
-    (subscription-not-valid-error)))
+  [source params]
+  (if-let [callback (:callback params)]
+    (if (:topic source)
+      ;; sending verification request
+      (let [params (merge {:hub.mode          (:mode source)
+                           :hub.topic         (:topic source)
+                           :hub.lease_seconds (:lease-seconds source)
+                           :hub.verify_token  (:verify-token source)}
+                          (if (:challenge source)
+                            {:hub.challenge (:challenge source)}))
+            url (model/make-subscribe-uri (:callback params) params)
+            ;; TODO: handle this in resources?
+            response-channel (http/http-request {:method :get
+                                                 :url (log/spy url)
+                                                 :auto-transform true})]
+        (let [response @response-channel]
+          (if (= 200 (:status response))
+            {:status 204}
+            {:status 404})))
+      (throw+ "feed source is not valid"))
+    (throw+ "Could not determine callback url")))
 
 (defaction verify-subscription-async
-  [subscription]
+  "asynchronous verification of hub subscription"
+  [subscription params]
   (e/task
    (verify-subscribe-sync subscription)))
 
 (defaction subscribe
+  "Set up a remote subscription to a local source"
   [params]
-  ;; set up feed subscriber
-  (let [source (actions.feed-source/find-or-create params)]
-    (if (= (:verify params) "async")
-      (verify-subscription-async source)
-      (verify-subscribe-sync source))))
+  (let [subscription (actions.feed-subscription/subscription-request params)
+        dispatch-fn (if (= (:verify params) "async")
+                      verify-subscription-async
+                      verify-subscribe-sync)]
+    (dispatch-fn subscription params)))
 
 (defaction unsubscribe
+  "Remove a remote subscription to a local source"
   [params]
-  ;; remove feed subscriber
+  ;; TODO: This should be doing a fsub removal
   (if-let [subscription (model.feed-source/find-record {:topic (:topic params)
                                                         :callback (:callback params)})]
     (actions.feed-source/unsubscribe subscription)
     (subscription-not-found-error)))
 
-;; TODO: extract hub params in filter
 (defaction hub-dispatch
+  "Handle pubsub requests against hub endpoint"
   [params]
   (condp = (:mode params)
     "subscribe"   (subscribe params)
