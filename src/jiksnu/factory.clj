@@ -208,7 +208,8 @@
    :hub (fseq :uri)})
 
 (deffactory :feed-subscription
-  {:topic (fseq :uri)})
+  {:url (fseq :uri)
+   :callback (fseq :uri)})
 
 (deffactory :group
   {:nickname (fseq :group-name)})

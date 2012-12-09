@@ -1,13 +1,13 @@
 (ns jiksnu.model.feed-subscription-test
-    (:use [clj-factory.core :only [factory]]
-          [jiksnu.test-helper :only [test-environment-fixture]]
-          [jiksnu.model.feed-subscription :only [create count-records delete drop!
-                                                 fetch-all fetch-by-id]]
-          [midje.sweet :only [every-checker fact future-fact throws =>]])
-    (:require [clojure.tools.logging :as log]
-              [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
-              [jiksnu.existance-helpers :as existance]
-              [jiksnu.model :as model])
+  (:use [clj-factory.core :only [factory]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.model.feed-subscription :only [create count-records delete drop!
+                                               fetch-all fetch-by-id]]
+        [midje.sweet :only [every-checker fact future-fact throws =>]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
+            [jiksnu.existance-helpers :as existance]
+            [jiksnu.model :as model])
   (:import jiksnu.model.FeedSubscription
            org.bson.types.ObjectId
            org.joda.time.DateTime
@@ -23,7 +23,7 @@
    (fact "when the item exists"
      (let [item (existance/a-feed-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
- 
+
  (fact "#'create"
    (fact "when given valid params"
      (let [params (actions.feed-subscription/prepare-create
@@ -55,8 +55,8 @@
    (fact "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
-      seq?
-      empty?))
+                     seq?
+                     empty?))
 
    (fact "when there is more than a page of items"
      (drop!)

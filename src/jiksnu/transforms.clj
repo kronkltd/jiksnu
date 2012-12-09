@@ -27,3 +27,20 @@
     item
     (let [resource (model/get-resource (:url item))]
       (assoc item :local (:local resource)))))
+
+(defn set-domain
+  [source]
+  (if (:domain source)
+    source
+    (let [uri (URI. (:url source))
+          domain-name (.getHost uri)
+          domain (model/get-domain domain-name)]
+      (assoc source :domain (:_id domain)))))
+
+(defn set-resource
+  [item]
+  (if (:resource item)
+    item
+    (let [resource (model/get-resource (:url item))]
+      (assoc item :resource (:_id resource)))))
+

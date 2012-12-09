@@ -1,5 +1,5 @@
 (ns jiksnu.actions.feed-subscription-actions
-    (:use [ciste.config :only [config]]
+  (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
@@ -27,7 +27,9 @@
   (-> item
       transforms/set-_id
       transforms/set-updated-time
-      transforms/set-created-time))
+      transforms/set-created-time
+      transforms/set-local
+      transforms/set-domain))
 
 (defaction delete
   [subscription]
