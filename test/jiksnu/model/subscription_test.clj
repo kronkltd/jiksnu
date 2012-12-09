@@ -3,7 +3,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
-                                          fetch-by-id subscribe subscribing?
+                                          fetch-by-id subscribing?
                                           subscribed?]]
         [midje.sweet :only [fact => future-fact every-checker throws truthy]])
   (:require [clojure.tools.logging :as log]
@@ -12,6 +12,7 @@
             [jiksnu.existance-helpers :as existance]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
+            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User
            jiksnu.model.Subscription))
@@ -25,7 +26,7 @@
 
    (fact "when the item exists"
      (let [item (existance/a-subscription-exists)]
-      (fetch-by-id (:_id item)) => item)))
+       (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
    (fact "when given valid params"
@@ -51,8 +52,8 @@
    (fact "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
-      seq?
-      empty?))
+                     seq?
+                     empty?))
 
    (fact "when there is more than a page of items"
      (drop!)
@@ -81,51 +82,35 @@
        (dotimes [i n]
          (existance/a-subscription-exists))
        (count-records) => n)))
- 
- (fact "#'subscribe"
-
-   (fact "when the user is logged in"
-     (fact "and the subscription doesn't exist"
-       (fact "should return a Subscription"
-         (drop!)
-         (let [actor (existance/a-user-exists)
-               user (existance/a-user-exists)]
-           (subscribe (:_id actor) (:_id user)) =>
-           (every-checker
-            truthy
-            (partial instance? Subscription)))))))
 
  (fact "#'subscribing?"
 
    (fact "when the user is subscribing"
      (fact "should return true"
-       (let [actor (existance/a-user-exists)
-             user (existance/a-user-exists)]
-         (subscribe actor user)
-         (let [response (subscribing? actor user)]
-           response => truthy))))
+       (let [subscription (existance/a-subscription-exists)
+             actor (model.subscription/get-actor subscription)
+             target (model.subscription/get-target subscription)]
+         (subscribing? actor target) => true)))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
        (let [actor (existance/a-user-exists)
-             user (existance/a-user-exists)]
-         (let [response (subscribing? actor user)]
-           response =not=> truthy)))))
+             target (existance/a-user-exists)]
+
+         (subscribing? actor target) => false))))
 
  (fact "#'subscribed?"
 
    (fact "when the user is subscribed"
      (fact "should return true"
-       (let [actor (existance/a-user-exists)
-             user (existance/a-user-exists)]
-         (subscribe user actor)
-         (let [response (subscribed? actor user)]
-           response => truthy))))
+       (let [subscription (existance/a-subscription-exists)
+             actor (model.subscription/get-actor subscription)
+             target (model.subscription/get-target subscription)]
+         (subscribed? actor target) => true)))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
        (let [actor (existance/a-user-exists)
-             user (existance/a-user-exists)]
-         (let [response (subscribed? actor user)]
-           response =not=> truthy)))))
-)
+             target (existance/a-user-exists)]
+         (subscribed? actor target) => false))))
+ )

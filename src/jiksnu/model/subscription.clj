@@ -68,10 +68,6 @@
         (fetch-by-id (:_id params)))
       (throw+ {:type :validation :errors errors}))))
 
-(defn subscribe
-  [actor user]
-  (create {:from actor :to user :pending true}))
-
 ;; TODO: use set-field
 (defn confirm
   [subscription]

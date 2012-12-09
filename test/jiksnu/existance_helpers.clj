@@ -10,6 +10,7 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
@@ -193,7 +194,7 @@
 
 (defn a-subscription-exists
   [& [options]]
-  (let [item (model.subscription/create (factory :subscription))]
+  (let [item (actions.subscription/create (factory :subscription))]
     (set-this :subscription item)
     item))
 
