@@ -26,13 +26,13 @@
             (fact
               (let [body (h/html (:body req))]
                 body => #"subscription"))))))
- 
+
  (fact "delete"
-   (let [subscription (model.subscription/create (factory :subscription))]
+   (let [subscription (existance/a-subscription-exists)]
      (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
          as-admin response-for) =>
          (every-checker
           map?
           (comp status/redirect? :status))))
- 
+
  )

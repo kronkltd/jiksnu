@@ -28,7 +28,7 @@
          (let [body (h/html (:body response))]
            (fact
              body => (re-pattern (str (:_id domain))))))))))
- 
+
  (fact "#'webfinger-host-meta"
    (fact "should return a XRD document"
      (-> (mock/request :get "/.well-known/host-meta")

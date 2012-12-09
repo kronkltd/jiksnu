@@ -9,6 +9,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.feed-subscription-actions :as actions.admin.feed-subscription]
+            [jiksnu.existance-helpers :as existance]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 
 (test-environment-fixture
@@ -18,8 +19,7 @@
        (with-serialization :http
          (fact "when the format is :html"
            (with-format :html
-             (let [feed-subscription (model.feed-subscription/create
-                                      (factory :feed-subscription))
+             (let [feed-subscription (existance/a-feed-subscription-exists)
                    request {:action action}
                    response (filter-action action request)]
                (apply-view request response) =>
