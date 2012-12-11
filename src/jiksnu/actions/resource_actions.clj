@@ -164,7 +164,7 @@
     (let [url (:url item)]
       (log/debugf "updating resource: %s" url)
       (let [response (client/get url {:throw-exceptions false
-                                      :headers {"User Agent" user-agent}
+                                      :headers {"User-Agent" user-agent}
                                       :insecure? true})]
         (future
           (process-response item response))
