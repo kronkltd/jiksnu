@@ -33,7 +33,7 @@
 
 (deffilter #'discover :command
   [action id]
-  (if-let [item (model.resource/fetch-by-id id)]
+  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
     (action item)))
 
 ;; index
@@ -55,6 +55,12 @@
 ;; update
 
 (deffilter #'update* :command
+  [action id]
+  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
+    (action item)))
+
+
+(deffilter #'update :command
   [action id]
   (when-let [item (model.resource/fetch-by-id (util/make-id id))]
     (action item)))
