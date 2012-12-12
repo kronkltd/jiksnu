@@ -449,16 +449,9 @@
      (map
       (fn [resource]
         [:li {:data-model "resource"}
-         ;; [:p (if *dynamic*
-         ;;       {:data-bind "text: title"}
-         ;;       (:title resource))]
-         ;; [:p (if *dynamic*
-         ;;       {:data-bind "text: contentType"}
-         ;;       (:contentType resource))]
          [:div {:data-bind "if: properties"}
-          ;; [:p {:data-bind "text: ko.utils.unwrapObservable(properties)['og:type']"}]
           [:div (if *dynamic*
-                  {:data-bind "if: ko.utils.properties()['og:type'] === 'video'"})
+                  {:data-bind "if: properties()['og:type'] === 'video'"})
            [:div.video-embed
             [:iframe
              (merge {:frameborder "0"
@@ -475,8 +468,6 @@
                     {:data-bind "attr: {src: url}"}
                     {:src (:url resource)}))]]])
       resources)]))
-
-;; dynamic sections
 
 ;; actions-section
 
