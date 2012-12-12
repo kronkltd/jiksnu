@@ -42,6 +42,9 @@
    (presence-of   :updated)
    ))
 
+(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 (def set-field! (templates/make-set-field! collection-name))
 
 (defn get-author
@@ -109,10 +112,6 @@
   [id]
   (if-let [activity (mc/find-one-as-map collection-name {:id id})]
     (model/map->Activity activity)))
-
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-(def count-records (templates/make-counter collection-name))
 
 ;; deprecated
 (defn add-comment

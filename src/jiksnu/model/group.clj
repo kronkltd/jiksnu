@@ -3,7 +3,8 @@
                                   set-updated-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates :as templates]
             [monger.collection :as mc]
@@ -13,12 +14,8 @@
   (:import jiksnu.model.Group))
 
 (def collection-name "groups")
-(defonce page-size 20)
-
-(def set-field!    (templates/make-set-field! collection-name))
-(def count-records (templates/make-counter    collection-name))
-(def delete        (templates/make-deleter    collection-name))
-(def drop!         (templates/make-dropper    collection-name))
+(def maker           #'model/map->Group)
+(def page-size       20)
 
 (def create-validators
   (validation-set
@@ -26,7 +23,27 @@
    (presence-of :created)
    (presence-of :updated)))
 
-(declare fetch-by-id)
+(def count-records (templates/make-counter    collection-name))
+(def delete        (templates/make-deleter    collection-name))
+(def drop!         (templates/make-dropper    collection-name))
+(def set-field!    (templates/make-set-field! collection-name))
+
+(defn fetch-all
+  [& [params options]]
+  (s/increment (str collection-name "_searched"))
+  (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+        records (mq/with-collection collection-name
+                  (mq/find params)
+                  (merge sort-clause)
+                  (mq/paginate :page (:page options 1)
+                               :per-page (:page-size options 20)))]
+    (map maker records)))
+
+(defn fetch-by-id
+  [id]
+  (s/increment (str collection-name "_fetched"))
+  (when-let [item (mc/find-map-by-id collection-name id)]
+    (model/map->Group item)))
 
 (defn create
   [group]
@@ -39,22 +56,7 @@
       (throw+ {:type :validation
                :errors errors}))))
 
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (let [page (get options :page 1)]
-       (let [records  (mq/with-collection collection-name
-                        (mq/find params)
-                        (mq/paginate :page page :per-page 20))]
-         (map model/map->Group records)))))
-
-(defn fetch-by-id
-  [id]
-  (if-let [group (mc/find-map-by-id collection-name id)]
-    (model/map->Group group)))
-
 (defn fetch-by-name
   [name]
-  (model/map->Group (mc/find-one-as-map "groups"{:nickname name})))
+  (model/map->Group (mc/find-one-as-map "groups" {:nickname name})))
 

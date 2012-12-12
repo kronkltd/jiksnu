@@ -8,6 +8,7 @@
             [clojure.string :as string]
             [clojurewerkz.route-one.core :as r]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -157,14 +158,22 @@
     (:_id user)))
 
 (defn- set-mentioned*
-  [uri]
-  (let [uri-obj (URI. uri)
+  [url]
+  (let [uri-obj (URI. url)
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
-      (let [resource (log/spy (ops/update-resource (log/spy (ops/get-resource (log/spy uri)))))
-            user (actions.user/find-or-create-by-remote-id {:id uri})]
-        (:_id user))
-      (actions.user/find-or-create-by-uri uri))))
+      (let [resource (log/spy (ops/get-resource (log/spy url)))
+            response (log/spy (ops/update-resource resource))
+            actor (or (try
+                        (actions.user/find-or-create-by-remote-id {:id url})
+                        (catch RuntimeException ex
+                          (.printStackTrace ex)))
+                      (try
+                        (actions.group/find-or-create {:url url})
+                        (catch RuntimeException ex
+                          (.printStackTrace ex))))]
+        (:_id actor))
+      (:_id (actions.user/find-or-create-by-uri url)))))
 
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients

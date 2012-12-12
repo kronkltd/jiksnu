@@ -306,10 +306,11 @@ serialization"
 
 (defn find-or-create
   [params]
-  (if-let [activity (or (model.activity/fetch-by-remote-id (:id params))
-                        (and (:_id params)
-                             (model.activity/fetch-by-id (:_id params))))]
-    activity
+  (if-let [item (or (when-let [id (:id params)]
+                      (model.activity/fetch-by-remote-id id))
+                    (when-let [id (:_id params)]
+                      (model.activity/fetch-by-id id)))]
+    item
     (create params)))
 
 ;; TODO: show action with :oembed format
