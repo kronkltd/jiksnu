@@ -10,7 +10,9 @@
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
-            [monger.query :as mq]))
+            [monger.query :as mq]
+            [net.cgrand.enlive-html :as enlive])
+  (:import java.io.StringReader))
 
 (defonce page-size 20)
 (def collection-name "resources")
@@ -77,3 +79,28 @@
   []
   (doto collection-name
    (mc/ensure-index {:url 1} {:unique true})))
+
+(defn response->tree
+  [response]
+  (enlive/html-resource (StringReader. (:body response))))
+
+(defn get-links
+  [tree]
+  (enlive/select tree [:link]))
+
+(defn meta->property
+  "Convert a meta element to a property map"
+  [meta]
+  (let [attrs (:attrs meta)
+        property (:property attrs)
+        content (:content attrs)]
+    (when (and property content)
+      {property content})))
+
+(defn get-meta-properties
+  "Get a map of all the meta properties in the document"
+  [tree]
+  (->> (enlive/select tree [:meta])
+       (map meta->property)
+       (reduce merge)))
+

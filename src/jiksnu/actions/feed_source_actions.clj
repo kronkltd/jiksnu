@@ -19,6 +19,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
@@ -238,8 +239,8 @@
   [url]
   (let [resource (ops/get-resource url)
         response (actions.resource/update* resource)
-        body (actions.resource/response->tree response)
-        links (actions.resource/get-links body)]
+        body (model.resource/response->tree response)
+        links (model.resource/get-links body)]
     (if-let [link (util/find-atom-link links)]
       (find-or-create {:topic link})
       (throw+ (format "Could not determine topic url from resource: %s" url)))))

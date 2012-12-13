@@ -22,8 +22,9 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
-            [net.cgrand.enlive-html :as enlive])
-  (:import java.io.StringReader))
+            [net.cgrand.enlive-html :as enlive]))
+
+(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 
 (defonce delete-hooks (ref []))
 
@@ -45,15 +46,11 @@
       transforms/set-updated-time
       transforms/set-created-time))
 
-(declare update)
-
 (defaction create
   [params]
   (let [params (prepare-create params)]
     (if-let [item (model.resource/create params)]
-      (do
-        #_(future (update item))
-        item)
+      item
       (throw+ "Could not create record"))))
 
 (defaction find-or-create
@@ -78,14 +75,6 @@
         item)
     (throw+ "Could not delete resource")))
 
-(defn response->tree
-  [response]
-  (enlive/html-resource (StringReader. (:body response))))
-
-(defn get-links
-  [tree]
-  (enlive/select tree [:link]))
-
 (def index*
   (templates/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
@@ -108,42 +97,34 @@
     item
     (add-link* item link)))
 
-(defn meta->property
-  "Convert a meta element to a property map"
-  [meta]
-  (let [attrs (:attrs meta)
-        property (:property attrs)
-        content (:content attrs)]
-    (when (and property content)
-      {property content})))
+(declare update)
 
-(defn get-meta-properties
-  "Get a map of all the meta properties in the document"
-  [tree]
-  (->> (enlive/select tree [:meta])
-       (map meta->property)
-       (reduce merge)))
+(defmulti process-response-content (fn [content-type item response] content-type))
 
-(defn process-response-html
-  [item response]
+(defmethod process-response-content :default
+  [content-type item response]
+  (log/infof "unknown content type: %s" content-type))
+
+(defmethod process-response-content "text/html"
+  [content-type item response]
   (log/info "parsing html content")
-  (let [tree (response->tree response)]
-    (let [properties (get-meta-properties tree)]
+  (let [tree (model.resource/response->tree response)]
+    (let [properties (model.resource/get-meta-properties tree)]
       (model.resource/set-field! item :properties properties))
     (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
       (model.resource/set-field! item :title title))
-    (let [links (get-links tree)]
+    (let [links (model.resource/get-links tree)]
       (doseq [link links]
         (add-link item (:attrs link))))))
 
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
-        status (:status response)
-        location (get-in response [:headers "location"])]
+        status (:status response)]
     (model.resource/set-field! item :status status)
-    (when location
+    (when-let [location (get-in response [:headers "location"])]
       (let [resource (ops/get-resource location)]
+        (update resource)
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
       (if (seq rest)
@@ -151,12 +132,7 @@
           (when (seq encoding)
             (model.resource/set-field! item :encoding encoding))))
       (model.resource/set-field! item :contentType content-type)
-
-      (condp = content-type
-        "text/html" (process-response-html item response)
-        (log/infof "unknown content type: %s" content-type)))))
-
-(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
+      (process-response-content content-type item response))))
 
 (defn update*
   [item & [options]]

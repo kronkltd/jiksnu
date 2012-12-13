@@ -16,6 +16,7 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util])
   (:import jiksnu.model.FeedSource))
@@ -56,8 +57,8 @@
      (actions.feed-source/discover-source url) => (partial instance? FeedSource))
    (provided
     (actions.resource/update* resource) => .response.
-    (actions.resource/response->tree .response.) => .tree.
-    (actions.resource/get-links .tree.) => .links.
+    (model.resource/response->tree .response.) => .tree.
+    (model.resource/get-links .tree.) => .links.
     (util/find-atom-link .links.) => topic))
 
  )
