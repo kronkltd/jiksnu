@@ -116,7 +116,7 @@
   "Given a url, try to determine the username of the owning user"
   [user]
   ;; {:pre [(instance? User user)]}
-  (let [id (:id user)
+  (let [id (:url user)
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
       (assoc user :username (first (util/split-uri id)))
