@@ -8,6 +8,7 @@
   (:require [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
@@ -137,14 +138,19 @@
 (defn update*
   [item & [options]]
   (if-not (:local item)
-    (let [url (:url item)]
-      (log/debugf "updating resource: %s" url)
-      (let [response (client/get url {:throw-exceptions false
-                                      :headers {"User-Agent" user-agent}
-                                      :insecure? true})]
-        (future
-          (process-response item response))
-        response))
+    (let [last-updated (:lastUpdated item)]
+      (if (or (nil? last-updated)
+              (time/after? last-updated (-> 5 time/minutes time/ago)))
+        (let [url (:url item)]
+          (log/debugf "updating resource: %s" url)
+          (model.resource/set-field! item :lastUpdated (time/now))
+          (let [response (client/get url {:throw-exceptions false
+                                          :headers {"User-Agent" user-agent}
+                                          :insecure? true})]
+            (future
+              (process-response item response))
+            response))
+        (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))
 
 (defaction update

@@ -14,6 +14,7 @@
             [jiksnu.util :as util]
             [lamina.core :as l])
   (:import java.net.URI
+           jiksnu.model.FeedSource
            jiksnu.model.User
            nu.xom.Document))
 
@@ -60,7 +61,7 @@
 (defn get-feed-source-from-xrd
   [^Document xrd]
   {:pre [(instance? Document xrd)]
-   :post [(string? %)]}
+   :post [(instance? FeedSource %)]}
   (if-let [source-link (get-source-link xrd)]
     (ops/get-source source-link)
     (throw+ "could not determine source")))
