@@ -59,7 +59,6 @@
 
 (defn get-feed-source-from-xrd
   [^Document xrd]
-  (log/spy (.toXML xrd))
   (if-let [source-link (get-source-link xrd)]
     (ops/get-source source-link)
     (throw+ "could not determine source")))

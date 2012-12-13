@@ -162,8 +162,8 @@
   (let [uri-obj (URI. url)
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
-      (let [resource (log/spy (ops/get-resource (log/spy url)))
-            response (log/spy (ops/update-resource resource))
+      (let [resource (ops/get-resource url)
+            response (ops/update-resource resource)
             actor (or (try
                         (actions.user/find-or-create-by-remote-id {:id url})
                         (catch RuntimeException ex

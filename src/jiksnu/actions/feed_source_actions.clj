@@ -140,7 +140,7 @@
   (s/increment "feeds processed")
 
   (when-let [author (abdera/get-feed-author feed)]
-    (let [author-id (log/spy (abdera/get-simple-extension author ns/atom "id"))]
+    (let [author-id (abdera/get-simple-extension author ns/atom "id")]
       (log/spy (actions.user/person->user author))))
 
   (let [feed-title (.getTitle feed)]

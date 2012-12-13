@@ -91,9 +91,9 @@
 
 (defn add-link
   [item link]
-  (if-let [existing-link (and nil (model.resource/get-link item
-                                                           (:rel link)
-                                                           (:type link)))]
+  (if-let [existing-link (model.resource/get-link item
+                                                  (:rel link)
+                                                  (:type link))]
     item
     (add-link* item link)))
 
