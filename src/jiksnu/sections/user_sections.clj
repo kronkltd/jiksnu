@@ -484,7 +484,7 @@
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: displayName"}
+                     {:data-bind "attr: {about: url}, text: displayName() || username()"}
                      {:about (uri record)}))
       (when-not *dynamic*
         (or (:title options-map) (title record)))]]))
