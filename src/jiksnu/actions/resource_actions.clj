@@ -185,5 +185,5 @@
   (require-namespaces
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"
-    ;; "jiksnu.triggers.resource-triggers"
+    "jiksnu.triggers.resource-triggers"
     "jiksnu.views.resource-views"]))
