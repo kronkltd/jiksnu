@@ -47,6 +47,7 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"
                    :exclusions [xml-apis]]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
+                 [org.clojars.runa/clj-schema "0.7.1"]
                  [org.clojure/clojure "1.4.0"]
                  [org.clojure/core.cache "0.5.0"]
                  [org.clojure/tools.logging "0.2.3"]
