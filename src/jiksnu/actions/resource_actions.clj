@@ -140,7 +140,7 @@
   (if-not (:local item)
     (let [last-updated (:lastUpdated item)]
       (if (or (nil? last-updated)
-              (time/after? last-updated (-> 5 time/minutes time/ago)))
+              (time/after? (-> 5 time/minutes time/ago) last-updated))
         (let [url (:url item)]
           (log/debugf "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
