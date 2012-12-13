@@ -115,6 +115,7 @@
 (defn get-username
   "Given a url, try to determine the username of the owning user"
   [user]
+  {:pre [(instance? User user)]}
   (let [id (:id user)
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
@@ -137,6 +138,7 @@
 
 (defn get-user-meta-uri
   [user]
+  {:pre [(instance? User user)]}
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
         ;; TODO: should update uri in this case
@@ -161,17 +163,20 @@
 
 (defn find-or-create-by-uri
   [uri]
+  {:pre [(string? uri)]}
   (let [[username domain] (util/split-uri uri)]
     (find-or-create username domain)))
 
 ;; TODO: This is the job of the filter
 (defn find-or-create-by-jid
   [^JID jid]
+  {:pre [(instance? JID jid)]}
   (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
 
 (defaction delete
   "Delete the user"
   [^User user]
+  ;; {:pre [(instance? User user)]}
   (if-let [user (prepare-delete user)]
     (do (model.user/delete user)
         user)
@@ -179,6 +184,7 @@
 
 (defaction exists?
   [user]
+  ;; {:pre [(instance? User user)]}
   ;; TODO: No need to actually fetch the record
   (model.user/fetch-by-id (:_id user)))
 
@@ -217,6 +223,7 @@
 
         {:rel ns/updates-from
          :type "application/atom+xml"
+         ;; TODO: use formatted-uri
          :href (str "http://" (config :domain) "/api/statuses/user_timeline/" (:_id user) ".atom")}
 
         {:rel ns/updates-from
@@ -267,8 +274,8 @@
   [^Person person]
   {:id (abdera/get-simple-extension person ns/atom "id")
    :email (.getEmail person)
-   :url (str (.getUri person))
-   :display-name (abdera/get-name person)
+   :uri (str (.getUri person))
+   :name (abdera/get-name person)
    :note (abdera/get-note person)
    :username (abdera/get-username person)
    :local-id (-> person
@@ -293,13 +300,7 @@
                         {:domain domain-name
                          :id (or id url)
                          :user-meta-link user-meta
-                         :username username
-                         :links links}
-                        (when url      {:url url})
-                        (when note     {:bio note})
-                        (when email    {:email email})
-                        (when local-id {:local-id local-id})
-                        (when name     {:display-name name}))]
+                         :username username})]
         (model/map->User user))
       (throw+ "could not determine user"))))
 
