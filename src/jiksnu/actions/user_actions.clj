@@ -5,6 +5,7 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -410,7 +411,7 @@
 (defaction discover
   "perform a discovery on the user"
   [^User user & [options & _]]
-  (future (discover* user options))
+  (task (discover* user options))
   user)
 
 ;; TODO: xmpp case of update

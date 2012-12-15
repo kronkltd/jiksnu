@@ -4,6 +4,7 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-http.client :as client]
@@ -147,7 +148,7 @@
           (let [response (client/get url {:throw-exceptions false
                                           :headers {"User-Agent" user-agent}
                                           :insecure? true})]
-            (future
+            (task
               (process-response item response))
             response))
         (log/warn "Resource has already been updated")))

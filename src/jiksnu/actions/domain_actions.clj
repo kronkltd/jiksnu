@@ -21,6 +21,7 @@
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
             [lamina.core :as l]
+            [lamina.executor :only [task]]
             [lamina.time :as time]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
@@ -170,9 +171,9 @@
 
 (defn discover*
   [domain url]
-  (future (discover-webfinger domain url))
-  (future (discover-onesocialweb domain url))
-  (future (discover-statusnet-config domain url)))
+  (task (discover-webfinger domain url))
+  (task (discover-onesocialweb domain url))
+  (task (discover-statusnet-config domain url)))
 
 (defaction discover
   [^Domain domain url]
@@ -183,9 +184,9 @@
     (log/warn "local domains do not need to be discovered")))
 
 (defaction create
-  [options]
-  (let [domain (prepare-create options)]
-    (model.domain/create domain)))
+  [params]
+  (let [item (prepare-create params)]
+    (model.domain/create item)))
 
 (defn find-or-create
   [params]
