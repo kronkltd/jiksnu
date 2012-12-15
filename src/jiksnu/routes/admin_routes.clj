@@ -13,8 +13,7 @@
             [jiksnu.actions.admin.setting-actions :as admin.setting]
             [jiksnu.actions.admin.subscription-actions :as admin.sub]
             [jiksnu.actions.admin.user-actions :as admin.user]
-            [jiksnu.actions.admin.worker-actions :as admin.worker]
-            [jiksnu.actions.admin-actions :as admin]))
+            [jiksnu.actions.admin.worker-actions :as admin.worker]))
 
 (add-route! "/admin/activities"        {:named "admin activity index"})
 (add-route! "/admin/conversations"     {:named "admin conversation index"})
@@ -27,8 +26,6 @@
 (def admin-routes
   (make-matchers
    [
-    [[:get    "/admin"]                                    #'admin/index]
-
     [[:get    "/admin/activities.:format"]                 #'admin.activity/index]
     [[:get    (named-path "admin activity index")]         #'admin.activity/index]
 
