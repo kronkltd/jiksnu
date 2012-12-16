@@ -131,9 +131,10 @@
                    (a-domain-exists))
         source (or (:update-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))
+                   (a-feed-source-exists {:domain domain}))
         conversation (actions.conversation/create
                       (factory :conversation {:domain (:_id domain)
+                                              :local (:local domain)
                                               :update-source (:_id source)}))]
     (set-this :conversation conversation)
     conversation))

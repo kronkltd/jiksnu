@@ -31,6 +31,7 @@
            source (mock/a-feed-source-exists)
            params (actions.conversation/prepare-create
                    (factory :conversation {:update-source (:_id source)
+                                           :local false
                                            :domain (:_id domain)}))]
        (create params) => (partial instance? Conversation)))
 
