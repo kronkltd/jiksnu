@@ -5,10 +5,8 @@
         [midje.sweet :only [fact falsey future-fact => every-checker contains]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.like :as model.like]
-            [ring.mock.request :as mock]))
+            [jiksnu.model.like :as model.like]))
 
 (test-environment-fixture
 
