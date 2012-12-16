@@ -171,15 +171,15 @@
   item)
 
 (defn handle-pending-get-resource
-  [[p url]]
-  (l/enqueue p (find-or-create {:url url})))
+  [url]
+  (find-or-create {:url url}))
 
 (defn handle-pending-update-resources
-  [[p item]]
-  (l/enqueue p (update* item)))
+  [item]
+  (update* item))
 
-(l/receive-all ch/pending-get-resource     handle-pending-get-resource)
-(l/receive-all ch/pending-update-resources handle-pending-update-resources)
+(l/receive-all ch/pending-get-resource     (ops/op-handler handle-pending-get-resource))
+(l/receive-all ch/pending-update-resources (ops/op-handler handle-pending-update-resources))
 
 (definitializer
   (model.resource/ensure-indexes)

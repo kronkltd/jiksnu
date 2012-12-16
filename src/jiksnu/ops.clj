@@ -23,13 +23,22 @@
 
 (defn op-error
   [ex]
-  (log/errorf "op error: " ex)
+  (log/errorf "op error: %s" ex)
   (log/spy ex))
 
 (defn op-success
   [ex]
-  (log/infof "result realized: " ex)
+  (log/infof "result realized: %s" ex)
   (log/spy ex))
+
+(defn op-handler
+  [f]
+  (fn [[result params]]
+    (try
+      (let [val (f params)]
+        (l/enqueue result val))
+      (catch RuntimeException ex
+        (l/error result ex)))))
 
 (defn async-op
   [ch params]

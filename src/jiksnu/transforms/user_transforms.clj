@@ -69,11 +69,11 @@
   (if (:local user)
     (let [topic (formatted-url "user timeline" {:id (str (:_id user))} "atom")
           source (ops/get-source topic)]
-      (assoc user :update-source (:_id source)))
+      (assoc user :update-source (:_id @source)))
     (if (:update-source user)
       user
       (if-let [xrd (ops/get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-xrd xrd)]
+        (if-let [source (model.webfinger/get-feed-source-from-xrd @xrd)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
         (throw+ "Could not get user meta")))))
@@ -85,6 +85,6 @@
     (let [id (:id item)
           domain-name (:domain item)
           domain (ops/get-discovered (model.domain/fetch-by-id domain-name))]
-      (if-let [url (actions.domain/get-user-meta-url domain id)]
+      (if-let [url (actions.domain/get-user-meta-url @domain id)]
         (assoc item :user-meta-link url)
         (throw+ "Could not determine use meta link")))))
