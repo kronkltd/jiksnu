@@ -1,5 +1,6 @@
 (ns jiksnu.model.conversation
   (:use [ciste.config :only [config]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of presence-of
                                       validation-set]])
@@ -10,7 +11,9 @@
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq])
-  (:import jiksnu.model.Conversation))
+  (:import jiksnu.model.Conversation
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (def collection-name "conversations")
 (def maker #'model/map->Conversation)
@@ -18,13 +21,13 @@
 
 (def create-validators
   (validation-set
-   (presence-of :_id)
-   (presence-of :url)
-   (presence-of :created)
-   (presence-of :updated)
-   (presence-of :domain)
-   (acceptance-of :local :accept (partial instance? Boolean))
-   (presence-of   :update-source)))
+   (type-of :_id           ObjectId)
+   (type-of :url           String)
+   (type-of :created       DateTime)
+   (type-of :updated       DateTime)
+   (type-of :domain        String)
+   (type-of :local         Boolean)
+   (type-of :update-source ObjectId)))
 
 (def count-records (templates/make-counter    collection-name))
 (def delete        (templates/make-deleter    collection-name))

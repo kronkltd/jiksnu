@@ -51,8 +51,7 @@
    ex)
   (.printStackTrace ex))
 
-(l/receive-all (trace/probe-channel "errors:handled")
-               handle-errors)
+(l/receive-all (trace/probe-channel "errors:handled") handle-errors)
 
 (deffilter #'invoke-action :command
   [action request]
@@ -101,21 +100,17 @@
 
 (defview #'connect :json
   [request response]
-  {:body {
-          :connection-id response}})
+  {:body {:connection-id response}})
 
 (add-command! "connect" #'connect)
 
 (defn all-channels
   []
-  (reduce concat (map vals (vals @connections)))
-  )
+  (reduce concat (map vals (vals @connections))))
 
 (defn alert-all
   [message]
   (doseq [ch (all-channels)]
-    (l/enqueue ch (json/json-str {:action "add notice"
-                                  :message message
-                                  }))
-    )
-  )
+    (let [response (json/json-str {:action "add notice"
+                                   :message message})]
+      (l/enqueue ch response))))

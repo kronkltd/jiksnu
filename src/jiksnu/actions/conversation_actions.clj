@@ -2,7 +2,7 @@
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>>]]
+        [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
@@ -23,14 +23,14 @@
 
 (defn prepare-create
   [conversation]
-  (-> conversation
-      transforms/set-_id
-      transforms/set-updated-time
-      transforms/set-created-time
-      transforms.conversation/set-url
-      transforms.conversation/set-domain
-      transforms/set-local
-      transforms.conversation/set-update-source))
+  (-?> conversation
+       transforms/set-_id
+       transforms/set-updated-time
+       transforms/set-created-time
+       transforms.conversation/set-url
+       transforms.conversation/set-domain
+       transforms/set-local
+       transforms.conversation/set-update-source))
 
 (defn prepare-delete
   ([item]
@@ -42,8 +42,9 @@
 
 (defaction create
   [params]
-  (let [conversation (prepare-create params)]
-    (model.conversation/create conversation)))
+  (if-let [conversation (prepare-create params)]
+    (model.conversation/create conversation)
+    (throw+ "Could not prepare conversation")))
 
 (defaction delete
   [item]
