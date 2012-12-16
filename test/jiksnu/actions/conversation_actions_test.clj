@@ -6,24 +6,24 @@
         [midje.sweet :only [=> contains fact]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model.conversation :as model.conversation]))
 
 (test-environment-fixture
 
  (fact "#'create"
-   (let [domain (existance/a-domain-exists)
+   (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)
          url (make-uri domain-name)
-         source (existance/a-feed-source-exists {:domain domain
-                                                 :url url})
+         source (mock/a-feed-source-exists {:domain domain
+                                            :url url})
          params (factory :conversation {:domain domain-name
                                         :url url
                                         :update-source source})]
      (create params)) => map?)
 
  (fact "#'delete"
-   (let [conversation (existance/a-conversation-exists)]
+   (let [conversation (mock/a-conversation-exists)]
      (delete conversation) => map?
      (model.conversation/fetch-by-id (:_id conversation)) => nil))
 
@@ -33,5 +33,5 @@
 
  (fact "#'show"
    (show .conversation.) => .conversation.)
- 
+
  )

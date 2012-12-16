@@ -4,7 +4,7 @@
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [every-checker fact future-fact =>]])
   (:require [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 
@@ -26,7 +26,7 @@
      (db/drop-all!)
 
      (dotimes [n 25]
-       (existance/a-feed-subscription-exists))
+       (mock/a-feed-subscription-exists))
 
      (index) =>
      (every-checker

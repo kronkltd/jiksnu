@@ -9,7 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]))
 
@@ -21,7 +21,7 @@
        (let [activity (factory :activity)]
          (set-recipients activity) => activity)))
    (fact "When the activity contains a recipient uri"
-     (let [recipient (existance/a-user-exists)
+     (let [recipient (mock/a-user-exists)
            activity (factory :activity {:recipient-uris [(:id recipient)]})]
        (set-recipients activity) =>
        (every-checker

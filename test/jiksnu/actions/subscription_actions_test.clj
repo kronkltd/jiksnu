@@ -1,7 +1,7 @@
 (ns jiksnu.actions.subscription-actions-test
   (:use [clj-factory.core :only [factory]]
         jiksnu.actions.subscription-actions
-        [jiksnu.existance-helpers :as existance]
+        [jiksnu.mock :as mock]
         [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.model
         [jiksnu.session :only [with-user]]
@@ -20,21 +20,21 @@
  (fact "subscribe"
    (fact "when the user is not already subscribed"
      (fact "should return a subscription"
-       (let [user (existance/a-user-exists)
-             subscribee (existance/a-user-exists)]
+       (let [user (mock/a-user-exists)
+             subscribee (mock/a-user-exists)]
          (model.subscription/drop!)
          (with-user user
            (subscribe user subscribee) => subscription?)))))
 
  (fact "subscribed"
    (fact "should return a subscription"
-     (let [user (existance/a-user-exists)
-           subscribee (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)
+           subscribee (mock/a-user-exists)]
        (subscribed user subscribee) => subscription?)))
 
  (fact "get-subscribers"
    (fact "when there are subscribers"
-     (let [subscription (existance/a-subscription-exists)
+     (let [subscription (mock/a-subscription-exists)
            target (model.subscription/get-target subscription)]
        (get-subscribers target) =>
        (every-checker
@@ -47,7 +47,7 @@
 
  (fact "get-subscriptions"
    (fact "when there are subscriptions"
-     (let [subscription (existance/a-subscription-exists)
+     (let [subscription (mock/a-subscription-exists)
            actor (model.subscription/get-actor subscription)]
        (get-subscriptions actor) =>
        (every-checker

@@ -8,7 +8,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -24,16 +24,16 @@
 
  (fact "update"
    (fact "when the user is authenticated"
-     (let [author (existance/a-user-exists)
+     (let [author (mock/a-user-exists)
            content (fseq :content)
            data (json/json-str
                  {:content content})]
        data => string?)))
- 
+
  (fact "show-http-route"
    (fact "when the user is not authenticated"
      (fact "and the activity does not exist"
-       (let [author (existance/a-user-exists)
+       (let [author (mock/a-user-exists)
              activity (factory :activity)]
          (->> (str "/notice/" (:_id activity))
               (mock/request :get)
@@ -41,7 +41,7 @@
               (contains {:status 404})))
 
      (fact "and there are activities"
-       (let [activity (existance/there-is-an-activity)]
+       (let [activity (mock/there-is-an-activity)]
          (->> (str "/notice/" (:_id activity))
               (mock/request :get)
               response-for) =>
@@ -52,17 +52,17 @@
                    (:body response) => (re-pattern (str (:_id activity)))))))))
    (fact "when the user is authenticated"
      (fact "when a private activity exists"
-       (let [activity (existance/there-is-an-activity {:modifier "private"})]
+       (let [activity (mock/there-is-an-activity {:modifier "private"})]
          (-> (mock/request :get (str "/notice/" (:_id activity)))
              as-user response-for) =>
              (every-checker
               map?
               (comp status/redirect? :status))))))
- 
+
  (future-fact "oembed"
    (fact "when the format is json"
-     (let [user (existance/a-user-exists)
-           activity (existance/there-is-an-activity)]
+     (let [user (mock/a-user-exists)
+           activity (mock/there-is-an-activity)]
        (-> (mock/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=json&url=" (full-uri activity))))
            response-for) =>
@@ -72,7 +72,7 @@
               (fact
                 (:status response) => status/success?)))))
    (fact "when the format is xml"
-     (let [activity (existance/there-is-an-activity)]
+     (let [activity (mock/there-is-an-activity)]
        (-> (mock/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=xml&url=" (full-uri activity))))
            response-for) =>

@@ -10,7 +10,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]))
 
@@ -28,7 +28,7 @@
                                                          :links [{:rel "lrdd"
                                                                   :template (str "http://" domain-name "/lrdd?uri={uri}")}]
                                                          :_id domain-name}))
-         user (existance/a-user-exists {:domain domain})]
+         user (mock/a-user-exists {:domain domain})]
 
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
@@ -46,8 +46,8 @@
  (fact "#'find-by-user"
    (fact "when the user has activities"
      (db/drop-all!)
-     (let [user (existance/a-user-exists)
-           activity (existance/there-is-an-activity {:user user})]
+     (let [user (mock/a-user-exists)
+           activity (mock/there-is-an-activity {:user user})]
        (find-by-user user) =>
        (every-checker
         map?
@@ -61,10 +61,10 @@
    (fact "when the user is logged in"
      (fact "and it is a valid activity"
        (fact "should return that activity"
-         (let [domain (existance/a-domain-exists)
-               feed-source (existance/a-feed-source-exists)
-               conversation (existance/a-conversation-exists)
-               user (existance/a-user-exists)
+         (let [domain (mock/a-domain-exists)
+               feed-source (mock/a-feed-source-exists)
+               conversation (mock/a-conversation-exists)
+               user (mock/a-user-exists)
                activity (factory :activity {:author        (:_id user)
                                             :conversation  (:_id conversation)
                                             :update-source (:_id feed-source)
@@ -80,57 +80,57 @@
    (fact "when the activity exists"
      (fact "and the user owns the activity"
        (fact "should delete that activity"
-         (let [user (existance/a-user-exists)]
+         (let [user (mock/a-user-exists)]
            (with-user user
-             (let [activity (existance/there-is-an-activity {:user user})]
+             (let [activity (mock/there-is-an-activity {:user user})]
                (delete activity) => activity
                (model.activity/fetch-by-id (:_id activity)) => nil)))))
      (fact "and the user does not own the activity"
        (fact "should not delete that activity"
-         (let [user (existance/a-user-exists)
-               author (existance/a-remote-user-exists)
-               activity (existance/there-is-an-activity {:user author})]
+         (let [user (mock/a-user-exists)
+               author (mock/a-remote-user-exists)
+               activity (mock/there-is-an-activity {:user author})]
            (with-user user
              (delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity))))))
 
  (fact "#'viewable?"
    (fact "When it is public"
-     (let [activity (existance/there-is-an-activity)]
+     (let [activity (mock/there-is-an-activity)]
        (viewable? activity .user.)) => truthy)
    (fact "when it is not public"
      (fact "when the user is the author"
-       (let [user (existance/a-user-exists)
-             activity (existance/there-is-an-activity {:user user})]
+       (let [user (mock/a-user-exists)
+             activity (mock/there-is-an-activity {:user user})]
          (viewable? activity user)) => truthy)
      (fact "when the user is not the author"
        (fact "when the user is an admin"
-         (let [user (existance/a-user-exists {:admin true})
-               activity (existance/there-is-an-activity {:modifier "private"})]
+         (let [user (mock/a-user-exists {:admin true})
+               activity (mock/there-is-an-activity {:modifier "private"})]
            (viewable? activity user)) => truthy)
        (fact "when the user is not an admin"
-         (let [user (existance/a-user-exists)
-               author (existance/a-user-exists)
-               activity (existance/there-is-an-activity {:modifier "private"
-                                                         :user author})]
+         (let [user (mock/a-user-exists)
+               author (mock/a-user-exists)
+               activity (mock/there-is-an-activity {:modifier "private"
+                                                    :user author})]
            (viewable? activity user)) => falsey))))
 
  (fact "#'show"
    (fact "when the record exists"
      (fact "and the record is viewable"
-       (let [activity (existance/there-is-an-activity)]
+       (let [activity (mock/there-is-an-activity)]
          (show activity) => activity
          (provided
            (viewable? activity) => true)))
      (fact "and the record is not viewable"
-       (let [activity (existance/there-is-an-activity)]
+       (let [activity (mock/there-is-an-activity)]
          (show activity) => (throws RuntimeException)
          (provided
            (viewable? activity) => false)))))
 
  (fact "#'oembed"
    (with-context [:http :html]
-     (let [activity (existance/there-is-an-activity)]
+     (let [activity (mock/there-is-an-activity)]
        (oembed activity) =>
        (every-checker
         map?

@@ -8,7 +8,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
@@ -18,7 +18,7 @@
 
  (fact "show"
    (with-context [:http :html]
-     (let [domain (existance/a-domain-exists)]
+     (let [domain (mock/a-domain-exists)]
        (-> (mock/request :get (uri domain))
            response-for) =>
            (every-checker

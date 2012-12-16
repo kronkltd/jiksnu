@@ -6,7 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
@@ -17,7 +17,7 @@
 (test-environment-fixture
 
  (fact "index page"
-   (let [subscription (existance/a-subscription-exists)]
+   (let [subscription (mock/a-subscription-exists)]
      (-> (mock/request :get "/admin/subscriptions")
          as-admin response-for) =>
          (every-checker
@@ -28,7 +28,7 @@
                 body => #"subscription"))))))
 
  (fact "delete"
-   (let [subscription (existance/a-subscription-exists)]
+   (let [subscription (mock/a-subscription-exists)]
      (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
          as-admin response-for) =>
          (every-checker

@@ -1,4 +1,4 @@
-(ns jiksnu.existance-helpers
+(ns jiksnu.mock
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.referrant :only [get-this get-that set-this set-that this that]]
@@ -112,7 +112,7 @@
   [type & [opts]]
   (let [specialized-name (format "a-%s-exists" (name type))
         ;; FIXME: This is reporting a user for some reason
-        specialized-var (ns-resolve (the-ns 'jiksnu.existance-helpers) (symbol specialized-name))]
+        specialized-var (ns-resolve (the-ns 'jiksnu.mock) (symbol specialized-name))]
     (if specialized-var
       (apply specialized-var opts)
       (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"

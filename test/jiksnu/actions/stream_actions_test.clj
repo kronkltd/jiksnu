@@ -11,7 +11,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -27,7 +27,7 @@
        (public-timeline) => (comp empty? :items)))
    (fact "when there are activities"
      (fact "should return a seq of activities"
-       (let [activity (existance/there-is-an-activity)]
+       (let [activity (mock/there-is-an-activity)]
          (public-timeline) =>
          (every-checker
           map?
@@ -37,8 +37,8 @@
  (fact "#'user-timeline"
    (fact "when the user has activities"
      (db/drop-all!)
-     (let [user (existance/a-user-exists)
-           activity (existance/there-is-an-activity)]
+     (let [user (mock/a-user-exists)
+           activity (mock/there-is-an-activity)]
        (user-timeline user) =>
        (every-checker
         vector?
@@ -51,8 +51,8 @@
  (future-fact "#'callback-publish"
    (fact "when there is a watched source"
      (with-context [:http :atom]
-       (let [user (existance/a-user-exists)
-             source (existance/a-feed-source-exists)
+       (let [user (mock/a-user-exists)
+             source (mock/a-feed-source-exists)
              activity (model/map->Activity
                        (factory :activity {:id (fseq :uri)}))
              feed (abdera/make-feed* {:links

@@ -8,7 +8,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.util :as util])
@@ -22,13 +22,13 @@
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
-     (let [item (existance/a-conversation-exists)]
-      (fetch-by-id (:_id item)) => item)))
+     (let [item (mock/a-conversation-exists)]
+       (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
    (fact "when given valid params"
-     (let [domain (existance/a-domain-exists)
-           source (existance/a-feed-source-exists)
+     (let [domain (mock/a-domain-exists)
+           source (mock/a-feed-source-exists)
            params (actions.conversation/prepare-create
                    (factory :conversation {:update-source (:_id source)
                                            :domain (:_id domain)}))]
@@ -39,12 +39,12 @@
 
  (fact "#'drop!"
    (dotimes [i 1]
-     (existance/a-conversation-exists))
+     (mock/a-conversation-exists))
    (drop!)
    (count-records) => 0)
 
  (fact "#'delete"
-   (let [item (existance/a-conversation-exists)]
+   (let [item (mock/a-conversation-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
@@ -52,15 +52,15 @@
    (fact "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
-      seq?
-      empty?))
+                     seq?
+                     empty?))
 
    (fact "when there is more than a page of items"
      (drop!)
 
      (let [n 25]
        (dotimes [i n]
-         (existance/a-conversation-exists))
+         (mock/a-conversation-exists))
 
        (fetch-all) =>
        (every-checker
@@ -80,7 +80,7 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/a-conversation-exists))
+         (mock/a-conversation-exists))
        (count-records) => n)))
 
  )

@@ -7,7 +7,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
@@ -40,7 +40,7 @@
 
 (defn as-user
   ([m]
-     (let [user (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)]
        (as-user m user)))
   ([m user]
      (let [password (fseq :password)]

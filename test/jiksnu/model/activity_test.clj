@@ -10,30 +10,30 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
- 
+
 (test-environment-fixture
 
  (fact "#'create"
-   (let [domain (existance/a-domain-exists)
-         feed-source (existance/a-feed-source-exists)
-         conversation (existance/a-conversation-exists)
+   (let [domain (mock/a-domain-exists)
+         feed-source (mock/a-feed-source-exists)
+         conversation (mock/a-conversation-exists)
          id (factory/make-uri (:_id domain) (fseq :path))
          activity (actions.activity/prepare-create
                    (factory :activity {:conversation (:_id conversation)
                                        :id id
                                        :update-source (:_id feed-source)}))]
      (create activity) => model/activity?))
- 
+
  (fact "#'get-author"
-   (let [user (existance/a-user-exists)
-         activity (existance/there-is-an-activity {:user user})]
+   (let [user (mock/a-user-exists)
+         activity (mock/there-is-an-activity {:user user})]
      (get-author activity) => user))
 
  (fact "#'count-records"
@@ -44,7 +44,7 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/there-is-an-activity))
+         (mock/there-is-an-activity))
        (count-records) => n)))
 
 

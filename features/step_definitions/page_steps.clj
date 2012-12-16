@@ -1,6 +1,6 @@
 (use 'jiksnu.action-helpers)
 (use 'jiksnu.assertion-helpers)
-(use 'jiksnu.existance-helpers)
+(use 'jiksnu.mock)
 (use 'jiksnu.features-helper)
 (use 'jiksnu.interaction-helpers)
 (use 'jiksnu.navigation-helpers)

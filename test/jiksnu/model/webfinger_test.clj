@@ -8,7 +8,7 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.ops :as ops])
   (:import jiksnu.model.User
            nu.xom.Document))
@@ -16,7 +16,7 @@
 (test-environment-fixture
 
  (fact "#'fetch-host-meta"
-   (let [resource (existance/a-resource-exists)
+   (let [resource (mock/a-resource-exists)
          url (:url resource)]
      (fact "when the url is nil"
        (fetch-host-meta nil) => (throws AssertionError))
@@ -35,19 +35,19 @@
    (fact "when the usermeta has an identifier"
      (get-username-from-xrd .user-meta.) => .username.
      (provided
-      (get-username-from-identifiers .user-meta.) => .username.
-      (get-username-from-atom-property .user-meta.) => nil :times 0))
+       (get-username-from-identifiers .user-meta.) => .username.
+       (get-username-from-atom-property .user-meta.) => nil :times 0))
    (fact "when the usermeta does not have an identifier"
      (fact "and the atom link has an identifier"
        (get-username-from-xrd .user-meta.) => .username.
        (provided
-        (get-username-from-identifiers .user-meta.) => nil
-        (get-username-from-atom-property .user-meta.) => .username.))
+         (get-username-from-identifiers .user-meta.) => nil
+         (get-username-from-atom-property .user-meta.) => .username.))
      (fact "and the atom link does not have an identifier"
        (get-username-from-xrd .user-meta.) => nil
        (provided
-        (get-username-from-identifiers .user-meta.) => nil
-        (get-username-from-atom-property .user-meta.) => nil))))
+         (get-username-from-identifiers .user-meta.) => nil
+         (get-username-from-atom-property .user-meta.) => nil))))
 
  (fact "#'get-username-from-atom-property"
    (fact "when the property has an identifier"

@@ -13,7 +13,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
@@ -29,7 +29,7 @@
            (with-format :as
              (fact "when the user has subscriptions"
                (db/drop-all!)
-               (let [subscription (existance/a-subscription-exists)
+               (let [subscription (mock/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)
                      request {:action action}
                      response (filter-action action request)]
@@ -44,7 +44,7 @@
            (with-format :html
              (fact "when the user has subscriptions"
                (db/drop-all!)
-               (let [subscription (existance/a-subscription-exists)
+               (let [subscription (mock/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)
                      request {:action action
                               :params {:id (str (:_id actor))}}
@@ -68,7 +68,7 @@
              (apply-view request nil) => packet/packet?)
 
            (fact "when there is a subscription"
-             (let [subscription (existance/a-subscription-exists)
+             (let [subscription (mock/a-subscription-exists)
                    request {:action #'actions.subscription/unsubscribe
                             :format :xmpp
                             :id "Foo"}]

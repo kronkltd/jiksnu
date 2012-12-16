@@ -8,7 +8,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.util :as util])
@@ -22,8 +22,8 @@
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
-     (let [item (existance/a-resource-exists)]
-      (fetch-by-id (:_id item)) => item)))
+     (let [item (mock/a-resource-exists)]
+       (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
    (fact "when given valid params"
@@ -35,7 +35,7 @@
      (create {}) => (throws RuntimeException)))
 
  (fact "#'delete"
-   (let [item (existance/a-resource-exists)]
+   (let [item (mock/a-resource-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
@@ -43,14 +43,14 @@
    (fact "when there are no records"
      (drop!)
      (fetch-all) => (every-checker
-      seq?
-      empty?))
+                     seq?
+                     empty?))
 
    (fact "when there is more than a page"
      (drop!)
 
      (dotimes [n 25]
-       (existance/a-resource-exists))
+       (mock/a-resource-exists))
 
      (fetch-all) =>
      (every-checker
@@ -70,7 +70,7 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/a-resource-exists))
+         (mock/a-resource-exists))
        (count-records) => n)))
 
  )

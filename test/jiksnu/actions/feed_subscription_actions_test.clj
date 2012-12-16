@@ -9,7 +9,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -20,7 +20,7 @@
 (test-environment-fixture
 
  (fact "#'delete"
-   (let [item (existance/a-feed-subscription-exists)]
+   (let [item (mock/a-feed-subscription-exists)]
      (delete item)
 
      (exists? item) => falsey))

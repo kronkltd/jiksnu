@@ -7,21 +7,21 @@
   (:require [clj-tigase.element :as e]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model])
   (:import jiksnu.model.Domain))
 
 (test-environment-fixture
- 
+
  (fact "#'ping-request"
    (drop!)
-   (let [domain (existance/a-domain-exists)]
+   (let [domain (mock/a-domain-exists)]
      (ping-request domain) => (contains {:body e/element?})))
 
  (fact "pending-domains-key"
    (fact "should return a key name"
      (drop!)
-     (let [domain (existance/a-domain-exists)]
+     (let [domain (mock/a-domain-exists)]
        (pending-domains-key domain) => string?)))
 
  (fact "#'create"

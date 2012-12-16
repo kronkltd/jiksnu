@@ -4,7 +4,7 @@
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.existance-helpers :only [my-password]]
+        [jiksnu.mock :only [my-password]]
         [jiksnu.referrant :only [this that get-this get-that set-this set-that]]
         [lamina.core :only [permanent-channel read-channel* siphon]]
         [lamina.executor :only [task]]

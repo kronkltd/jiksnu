@@ -9,7 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
@@ -26,7 +26,7 @@
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
-     (let [item (existance/a-subscription-exists)]
+     (let [item (mock/a-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
@@ -39,13 +39,13 @@
      (create {}) => (throws RuntimeException)))
 
  (fact "#'delete"
-   (let [item (existance/a-subscription-exists)]
+   (let [item (mock/a-subscription-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
  (fact "#'drop!"
    (dotimes [i 1]
-     (existance/a-subscription-exists))
+     (mock/a-subscription-exists))
    (drop!)
    (count-records) => 0)
 
@@ -61,7 +61,7 @@
 
      (let [n 25]
        (dotimes [i n]
-         (existance/a-subscription-exists))
+         (mock/a-subscription-exists))
 
        (fetch-all) =>
        (every-checker
@@ -81,22 +81,22 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/a-subscription-exists))
+         (mock/a-subscription-exists))
        (count-records) => n)))
 
  (fact "#'subscribing?"
 
    (fact "when the user is subscribing"
      (fact "should return true"
-       (let [subscription (existance/a-subscription-exists)
+       (let [subscription (mock/a-subscription-exists)
              actor (model.subscription/get-actor subscription)
              target (model.subscription/get-target subscription)]
          (subscribing? actor target) => true)))
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
-       (let [actor (existance/a-user-exists)
-             target (existance/a-user-exists)]
+       (let [actor (mock/a-user-exists)
+             target (mock/a-user-exists)]
 
          (subscribing? actor target) => false))))
 
@@ -104,7 +104,7 @@
 
    (fact "when the user is subscribed"
      (fact "should return true"
-       (let [subscription (existance/a-subscription-exists)
+       (let [subscription (mock/a-subscription-exists)
              ;; NB: We're reversing these because we want to check the reverse
              target (model.subscription/get-actor subscription)
              actor (model.subscription/get-target subscription)]
@@ -112,7 +112,7 @@
 
    (fact "when the user is not subscribed"
      (fact "should return a false value"
-       (let [actor (existance/a-user-exists)
-             target (existance/a-user-exists)]
+       (let [actor (mock/a-user-exists)
+             target (mock/a-user-exists)]
          (subscribed? actor target) => false))))
  )

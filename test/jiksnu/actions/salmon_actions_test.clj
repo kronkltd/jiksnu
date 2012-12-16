@@ -10,7 +10,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
@@ -84,13 +84,13 @@
 
    (fact "when a user is provided"
      (fact "and it does not have a key assigned"
-       (let [user (existance/a-remote-user-exists)
+       (let [user (mock/a-remote-user-exists)
              user (model.user/fetch-by-id (:_id user))]
-         
+
          (get-key user) => nil))
-     
+
      (fact "and it has a key assigned"
-       (let [user (existance/a-user-exists)]
+       (let [user (mock/a-user-exists)]
          ;; TODO: specify a public key?
          (get-key user) => (partial instance? Key)))))
 

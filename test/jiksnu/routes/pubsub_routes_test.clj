@@ -9,7 +9,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
@@ -22,8 +22,8 @@
 (test-environment-fixture
 
  (fact "subscription request"
-   (let [domain (existance/a-domain-exists)
-         source (existance/a-feed-source-exists
+   (let [domain (mock/a-domain-exists)
+         source (mock/a-feed-source-exists
                  {:domain (actions.domain/current-domain)})
          topic-url (:topic source)
          callback-url (factory/make-uri (:_id domain))

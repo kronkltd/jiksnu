@@ -10,7 +10,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -38,7 +38,7 @@
        (delete domain) => nil?))
 
    (fact "when the domain exists"
-     (let [domain (existance/a-domain-exists)]
+     (let [domain (mock/a-domain-exists)]
        (delete domain) =>
        (every-checker
         #(= domain %)
@@ -48,7 +48,7 @@
    (fact "when there is no url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
-             domain (existance/a-domain-exists)
+             domain (mock/a-domain-exists)
              url nil]
          (discover-onesocialweb domain url) => domain)
        (provided
@@ -56,14 +56,14 @@
    (fact "when there is a url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
-             domain (existance/a-domain-exists)
+             domain (mock/a-domain-exists)
              url (str "http://" (:_id domain) "/status/users/1")]
          (discover-onesocialweb domain url) => domain)
        (provided
          (deliver-packet! anything) => nil :times 1))))
 
  (fact "#'discover-webfinger"
-   (let [domain (existance/a-domain-exists)
+   (let [domain (mock/a-domain-exists)
          id      (:_id domain)]
 
      (fact "when there is no url context"

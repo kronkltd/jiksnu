@@ -10,7 +10,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.admin.like-actions :as actions.admin.like]
             [jiksnu.actions.like-actions :as actions.like]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -25,8 +25,8 @@
        (with-serialization :http
          (fact "when the format is :html"
            (with-format :html
-             (let [user (existance/a-user-exists)
-                   activity (existance/there-is-an-activity)
+             (let [user (mock/a-user-exists)
+                   activity (mock/there-is-an-activity)
                    like (actions.like/like-activity activity user)
                    request {:action action
                             :params {:id (str (:_id like))}}

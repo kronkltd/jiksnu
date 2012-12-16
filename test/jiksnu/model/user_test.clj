@@ -8,7 +8,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -19,7 +19,7 @@
 (test-environment-fixture
 
  (def domain-a (actions.domain/current-domain))
- (def user-a (existance/a-user-exists))
+ (def user-a (mock/a-user-exists))
 
  (fact "#'get-domain"
    (fact "when passed nil"
@@ -32,10 +32,10 @@
  (fact "#'local?"
    (fact "when passed a user"
      (fact "and it's domain is the same as the current domain"
-       (let [user (existance/a-user-exists)]
+       (let [user (mock/a-user-exists)]
          (local? user) => true))
      (fact "and it's domain is different from the current domain"
-       (let [user (existance/a-remote-user-exists)]
+       (let [user (mock/a-remote-user-exists)]
          (local? user) => false))))
 
  (fact "display-name"
@@ -52,7 +52,7 @@
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
-     (let [item (existance/a-user-exists)]
+     (let [item (mock/a-user-exists)]
        (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
@@ -66,12 +66,12 @@
 
  (fact "#'drop!"
    (dotimes [i 1]
-     (existance/a-user-exists))
+     (mock/a-user-exists))
    (drop!)
    (count-records) => 0)
 
  (fact "#'delete"
-   (let [item (existance/a-user-exists)]
+   (let [item (mock/a-user-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
@@ -87,7 +87,7 @@
 
      (let [n 25]
        (dotimes [i n]
-         (existance/a-user-exists))
+         (mock/a-user-exists))
 
        (fetch-all) =>
        (every-checker
@@ -107,17 +107,17 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/a-user-exists))
+         (mock/a-user-exists))
        (count-records) => n)))
 
  (fact "#'fetch-by-domain"
    (let [domain (actions.domain/current-domain)
-         user (existance/a-user-exists)]
+         user (mock/a-user-exists)]
      (fetch-by-domain domain) => (contains user)))
 
  (fact "#'get-user"
    (fact "when the user is found"
-     (let [user (existance/a-user-exists)
+     (let [user (mock/a-user-exists)
            username (:username user)
            domain (actions.user/get-domain user)]
        (get-user username (:_id domain)) => user))
@@ -125,23 +125,23 @@
    (fact "when the user is not found"
      (drop!)
      (let [username (fseq :id)
-           domain (existance/a-domain-exists)]
+           domain (mock/a-domain-exists)]
        (get-user username (:_id domain)) => nil)))
 
  (fact "user-meta-uri"
    (fact "when the user's domain does not have a lrdd link"
      (model.domain/drop!)
-     (let [user (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)]
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
-     (let [domain (existance/a-remote-domain-exists)]
+     (let [domain (mock/a-remote-domain-exists)]
        (model.domain/set-field! domain :links [{:rel "lrdd"
                                                 :template "http://example.com/main/xrd?uri={uri}"}])
-       (let [user (existance/a-remote-user-exists {:domain domain})]
+       (let [user (mock/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
  (fact "vcard-request"
-   (let [user (existance/a-user-exists)]
+   (let [user (mock/a-user-exists)]
      (vcard-request user) => packet/packet?))
  )

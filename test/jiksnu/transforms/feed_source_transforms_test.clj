@@ -8,7 +8,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -18,11 +18,11 @@
 
  (fact "#'set-domain"
    (fact "when the source has a domain"
-     (let [domain (existance/a-record-exists :domain)
+     (let [domain (mock/a-record-exists :domain)
            source (factory :feed-source {:domain (:_id domain)})]
        (set-domain source) => source))
    (fact "when the source does not have a domain"
-     (let [domain (existance/a-record-exists :domain)
+     (let [domain (mock/a-record-exists :domain)
            url (make-uri (:_id domain))
            source (dissoc (factory :feed-source {:topic url}) :domain)]
        (set-domain source) => (contains {:domain (:_id domain)})))
@@ -30,4 +30,4 @@
    (provided
      (actions.domain/get-discovered anything) => {:_id (:_id domain)}))
 
-)
+ )

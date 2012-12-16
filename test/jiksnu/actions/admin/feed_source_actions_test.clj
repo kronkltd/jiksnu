@@ -3,7 +3,7 @@
         [jiksnu.actions.admin.feed-source-actions :only [index]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact =>]])
-  (:require [jiksnu.existance-helpers :as existance]
+  (:require [jiksnu.mock :as mock]
             [jiksnu.model.feed-source :as model.feed-source]))
 
 (test-environment-fixture
@@ -14,7 +14,7 @@
 
    (fact "when there are many sources"
      (dotimes [i 25]
-       (existance/a-feed-source-exists))
+       (mock/a-feed-source-exists))
 
      ;; TODO: hardcoded configurable value
      (count (:items (index))) => 20))

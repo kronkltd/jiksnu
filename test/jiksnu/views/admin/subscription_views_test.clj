@@ -11,7 +11,7 @@
             [hiccup.core :as h]
             [jiksnu.actions.admin.subscription-actions :as actions.admin.subscription]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription])
   (:import org.apache.abdera2.model.Entry))
@@ -27,10 +27,10 @@
              (binding [*dynamic* false]
                (fact "when there are subscriptions"
                  (db/drop-all!)
-                 (let [user (existance/a-user-exists)
+                 (let [user (mock/a-user-exists)
                        subscriptions
                        (doall (map (fn [n]
-                                     (existance/a-subscription-exists))
+                                     (mock/a-subscription-exists))
                                    (range 15)))
                        request {:action action}
                        response (filter-action action request)]
@@ -49,7 +49,7 @@
          (fact "when the format is :html"
            (with-format :html
              (fact "when there is a subscription"
-               (let [subscription (existance/a-subscription-exists)
+               (let [subscription (mock/a-subscription-exists)
                      request {:action action
                               :params {:id (str (:_id subscription))}}
                      response (filter-action action request)]

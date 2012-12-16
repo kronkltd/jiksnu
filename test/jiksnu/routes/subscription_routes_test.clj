@@ -7,7 +7,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
@@ -32,7 +32,7 @@
               #(status/redirect? (:status %)))))))
 
  (fact "get-subscriptions"
-   (let [user (existance/a-user-exists)
+   (let [user (mock/a-user-exists)
          path (named-path "user subscriptions" {:id (str (:_id user))})]
      (-> (mock/request :get path)
          response-for)) =>
