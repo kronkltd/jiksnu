@@ -238,13 +238,13 @@
 (defn discover-source
   "determines the feed source associated with a url"
   [url]
-  (let [resource (ops/get-resource url)
-        response (actions.resource/update* resource)
-        body (model.resource/response->tree response)
-        links (model.resource/get-links body)]
-    (if-let [link (util/find-atom-link links)]
-      (find-or-create {:topic link})
-      (throw+ (format "Could not determine topic url from resource: %s" url)))))
+  (let [resource (actions.resource/find-or-create {:url url})]
+    (if-let [response (actions.resource/update* resource)]
+      (let [body (model.resource/response->tree response)
+            links (model.resource/get-links body)]
+        (if-let [link (util/find-atom-link links)]
+          (find-or-create {:topic link})
+          (throw+ (format "Could not determine topic url from resource: %s" url)))))))
 
 (defaction discover
   [item]
