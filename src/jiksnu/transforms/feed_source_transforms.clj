@@ -3,6 +3,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model :as model]
             [jiksnu.ops :as ops])
   (:import java.net.URI))
@@ -19,7 +20,7 @@
   [item]
   (if (:resource item)
     item
-    (let [resource (ops/get-resource (:topic item))]
+    (let [resource (actions.resource/find-or-create {:url (:topic item)})]
       (assoc item :resource (:_id resource)))))
 
 (defn set-domain

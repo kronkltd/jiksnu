@@ -218,8 +218,7 @@
                     :enclosures
                     (map :href)
                     (map (fn [url]
-                           (let [resource (ops/get-resource url)]
-                             (ops/update-resource @resource)
+                           (let [resource (actions.resource/find-or-create {:url url})]
                              (:_id @resource))))
                     seq
                     doall)]
