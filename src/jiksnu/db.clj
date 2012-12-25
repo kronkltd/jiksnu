@@ -1,15 +1,10 @@
 (ns jiksnu.db
-  (:use [ciste.config :only [config describe-config environment]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clj-statsd :as s]
-            [clojure.tools.logging :as log]
+  (:use [ciste.config :only [config describe-config environment]])
+  (:require [clojure.tools.logging :as log]
             [inflections.core :as inf]
-            [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
-            [monger.db :as db]
-            monger.joda-time
-            monger.json))
+            [monger.db :as db]))
 
 ;; Database functions
 
