@@ -115,7 +115,7 @@
 (defn get-username
   "Given a url, try to determine the username of the owning user"
   [user]
-  {:pre [(instance? User user)]}
+  ;; {:pre [(instance? User user)]}
   (let [id (:id user)
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
@@ -274,7 +274,7 @@
   [^Person person]
   {:id (abdera/get-simple-extension person ns/atom "id")
    :email (.getEmail person)
-   :uri (str (.getUri person))
+   :url (str (.getUri person))
    :name (abdera/get-name person)
    :note (abdera/get-note person)
    :username (abdera/get-username person)
