@@ -263,34 +263,35 @@
   (invoke-action "feed-source" "update" (str (:update-source user)))
   user)
 
+(defn parse-person
+  [^Person person]
+  {:id (abdera/get-simple-extension person ns/atom "id")
+   :email (.getEmail person)
+   :url (str (.getUri person))
+   :display-name (abdera/get-name person)
+   :note (abdera/get-note person)
+   :username (abdera/get-username person)
+   :local-id (-> person
+                 (abdera/get-extension-elements ns/statusnet "profile_info")
+                 (->> (map #(abdera/attr-val % "local_id")))
+                 first)
+   :links (abdera/get-links person)})
+
 ;; TODO: This function should be called at most once per user, per feed
 (defn person->user
   "Extract user information from atom element"
   [^Person person]
   (log/info "converting person to user")
-  (let [id (or (abdera/get-simple-extension person ns/atom "id")
-               (str (.getUri person)))
-        ;; TODO: check for custom domain field first?
-        domain-name (util/get-domain-name id)
-        domain (actions.domain/get-discovered {:_id domain-name})
-        username (or (abdera/get-username person)
-                     (get-username {:id id})
-                     ;; TODO: get username from hcard
-                     )]
+  (let [{:keys [id username url]
+         :as params} (parse-person person)
+         domain-name (util/get-domain-name (or id url))
+         domain (actions.domain/get-discovered {:_id domain-name})
+         username (or username (get-username {:id id}))]
     (if (and username domain)
-      (let [email (.getEmail person)
-            name (abdera/get-name person)
-            note (abdera/get-note person)
-            user-meta (actions.domain/get-user-meta-url domain id)
-            url (str (.getUri person))
-            ;; homepage
-            local-id (-> person
-                         (abdera/get-extension-elements ns/statusnet "profile_info")
-                         (->> (map #(abdera/attr-val % "local_id")))
-                         first)
-            links (abdera/get-links person)
-            user (merge {:domain domain-name
-                         :id id
+      (let [user-meta (actions.domain/get-user-meta-url domain id)
+            user (merge params
+                        {:domain domain-name
+                         :id (or id url)
                          :user-meta-link user-meta
                          :username username
                          :links links}

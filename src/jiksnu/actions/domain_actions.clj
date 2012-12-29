@@ -222,11 +222,12 @@
 
 (defn get-user-meta-url
   [domain user-uri]
-  (-?>> domain
-        :links
-        (filter #(= (:rel %) "lrdd"))
-        (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
-        first))
+  (when user-uri
+    (-?>> domain
+          :links
+          (filter #(= (:rel %) "lrdd"))
+          (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
+          first)))
 
 (defaction host-meta
   []
