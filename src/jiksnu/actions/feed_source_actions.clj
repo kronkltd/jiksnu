@@ -141,7 +141,7 @@
 
   (when-let [author (abdera/get-feed-author feed)]
     (let [author-id (abdera/get-simple-extension author ns/atom "id")]
-      (log/spy (actions.user/person->user author))))
+      (actions.user/parse-person author)))
 
   (let [feed-title (.getTitle feed)]
     (when-not (= feed-title (:title source))
