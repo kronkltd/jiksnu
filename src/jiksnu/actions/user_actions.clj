@@ -295,7 +295,7 @@
          domain (actions.domain/get-discovered {:_id domain-name})
          username (or username (get-username {:id id}))]
     (if (and username domain)
-      (let [user-meta (actions.domain/get-user-meta-url domain id)
+      (let [user-meta (actions.domain/get-user-meta-url domain url)
             user (merge params
                         {:domain domain-name
                          :id (or id url)
