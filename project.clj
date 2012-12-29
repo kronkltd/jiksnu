@@ -3,10 +3,10 @@
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
-  :dependencies [[aleph "0.3.0-SNAPSHOT"
+  :dependencies [[aleph "0.3.0-beta8"
                   :exclusions [lamina]]
                  [cheshire "4.0.2"]
-                 [ciste/ciste-core "0.4.0-SNAPSHOT"
+                 [ciste "0.4.0-SNAPSHOT"
                   :exclusions [joda-time
                                xalan]]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
