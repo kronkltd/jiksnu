@@ -95,17 +95,6 @@
   (str (.getHref link)))
 
 (defn parse-link
-  "extract the node element from links
-
-this is for OSW
-"
-  [^Link link]
-  (if-let [href (get-href link)]
-    (when (and (re-find #"^.+@.+$" href)
-               (not (re-find #"node=" href)))
-      href)))
-
-(defn parse-link
   "Returns a map representing the link element"
   [^Link link]
   (let [type (try (str (.getMimeType link)) (catch Exception ex))

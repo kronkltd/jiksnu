@@ -175,3 +175,18 @@
       (second (split-uri id))
       (.getHost uri))))
 
+(defn parse-link
+  [link]
+  (let [rel (.getAttributeValue link "rel")
+        template (.getAttributeValue link "template")
+        href (.getAttributeValue link "href")
+        type (.getAttributeValue link "type")
+        lang (.getAttributeValue link "lang")
+        title (if-let [title-element (.getFirstChildElement link "Title" ns/xrd)]
+                (.getValue title-element))]
+    (merge (when rel      {:rel rel})
+           (when template {:template template})
+           (when href     {:href href})
+           (when type     {:type type})
+           (when title {:title title})
+           (when lang     {:lang lang}))))

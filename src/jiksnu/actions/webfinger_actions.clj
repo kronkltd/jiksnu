@@ -73,21 +73,6 @@
         ;; TODO: set fields
         actions.user/update)))
 
-;; TODO: split the fetching and the processing apart
-(defn discover-webfinger
-  [^Domain domain]
-  ;; TODO: check https first
-  (let [url (model.domain/host-meta-link domain)
-        resource (ops/get-resource url)]
-    (if-let [xrd (model.webfinger/fetch-host-meta domain)]
-      (if-let [links (get-links xrd)]
-        ;; TODO: These should call actions
-        (do (model.domain/add-links domain links)
-            (actions.domain/set-discovered! domain))
-        (log/error "Host meta does not have any links"))
-      (log/error
-       (str "Could not find host meta for domain: " (:_id domain))))))
-
 (definitializer
   (require-namespaces
    ["jiksnu.filters.webfinger-filters"

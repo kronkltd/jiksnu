@@ -46,9 +46,10 @@
     ["Title" {} "Resource Descriptor"]]])
 
 (defn get-source-link
+  "Returns a update link from a user meta"
   [xrd]
   {:pre [(instance? Document xrd)]
-   :post [(string? %)]}
+   :post [(or (nil? %) (string? %))]}
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
     (->> xrd
          (cm/query query-str)
@@ -56,32 +57,31 @@
          (keep #(.getAttributeValue % "href"))
          first)))
 
-
 (defn get-feed-source-from-xrd
   [^Document xrd]
+  {:pre [(instance? Document xrd)]
+   :post [(string? %)]}
   (if-let [source-link (get-source-link xrd)]
     (ops/get-source source-link)
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property
   [^Document xrd]
-  (try
+  {:pre [(instance? Document xrd)]
+   :post [(or (nil? %) (string? %))]}
+  (let [query-str (str "//*[local-name() = 'Property']"
+                       "[@type = 'http://apinamespace.org/atom/username']")]
     (->> xrd
-         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
+         (cm/query query-str)
          util/force-coll
-         (keep #(.getValue %))
-         first)
-    ;; TODO: What are the error risks here?
-    (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
+         (keep (fn [prop] (when prop (.getValue prop))))
+         first)))
 
 (defn user-meta
   [lrdd]
   ["XRD" {"xmlns" ns/xrd}
    ["Subject" {} (:subject lrdd)]
    ["Alias" {} (:alias lrdd)]
-
    ;; Pull the links from a global ref that various plugins can write to
    (map
     (fn [link]
@@ -99,28 +99,12 @@
         (:properties link))])
     (:links lrdd))])
 
-(defn parse-link
-  [link]
-  (let [rel (.getAttributeValue link "rel")
-        template (.getAttributeValue link "template")
-        href (.getAttributeValue link "href")
-        type (.getAttributeValue link "type")
-        lang (.getAttributeValue link "lang")
-        title (if-let [title-element (.getFirstChildElement link "Title" ns/xrd)]
-                (.getValue title-element))]
-    (merge (when rel      {:rel rel})
-           (when template {:template template})
-           (when href     {:href href})
-           (when type     {:type type})
-           (when title {:title title})
-           (when lang     {:lang lang}))))
-
 (defn get-links
   [xrd]
   (->> xrd
        (cm/query "//*[local-name() = 'Link']")
        util/force-coll
-       (map parse-link)))
+       (map util/parse-link)))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
