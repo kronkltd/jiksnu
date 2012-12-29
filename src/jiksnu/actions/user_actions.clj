@@ -140,7 +140,7 @@
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
         ;; TODO: should update uri in this case
-        (actions.domain/get-user-meta-url domain (:id user)))))
+        (actions.domain/get-user-meta-url domain (:url user)))))
 
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
