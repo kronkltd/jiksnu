@@ -282,7 +282,7 @@
   "Extract user information from atom element"
   [^Person person]
   (log/info "converting person to user")
-  (let [{:keys [id username url]
+  (let [{:keys [id username url links note email local-id]
          :as params} (parse-person person)
          domain-name (util/get-domain-name (or id url))
          domain (actions.domain/get-discovered {:_id domain-name})
