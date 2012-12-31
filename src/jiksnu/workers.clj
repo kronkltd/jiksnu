@@ -2,7 +2,6 @@
   (:use [ciste.core :only [*actions*]]
         [ciste.workers :only [defworker stopping?]]
         lamina.core)
-  
   (:require [clojure.tools.logging :as log]))
 
 (defworker :gndn
