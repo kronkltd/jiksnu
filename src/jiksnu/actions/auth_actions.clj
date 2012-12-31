@@ -60,14 +60,12 @@
 (add-command! "whoami" #'whoami)
 
 (defn add-password
+  "Create a new auth mechanism with the type password that has the crypted password"
   [user password]
-  ;; Create a new authentication mechanism with the type password
-  ;; that has the crypted password
-  (let [salt (crypt/gen-salt)]
-    (model.authentication-mechanism/create
-     {:type "password"
-      :value (crypt/ecrypt salt password)
-      :user (:_id user)})))
+  (model.authentication-mechanism/create
+   {:type "password"
+    :value (crypt/encrypt password)
+    :user (:_id user)}))
 
 (definitializer
   (require-namespaces
