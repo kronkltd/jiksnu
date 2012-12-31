@@ -287,7 +287,7 @@
   {:id (abdera/get-simple-extension person ns/atom "id")
    :email (.getEmail person)
    :url (str (.getUri person))
-   :name (abdera/get-name person)
+   :display-name (abdera/get-name person)
    :note (abdera/get-note person)
    :username (abdera/get-username person)
    :local-id (-> person
