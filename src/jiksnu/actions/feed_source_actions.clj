@@ -37,6 +37,7 @@
 
 (defonce pending-discovers (ref {}))
 
+;; TODO: Config option
 (def discovery-timeout (time/seconds 30))
 
 (defn prepare-create

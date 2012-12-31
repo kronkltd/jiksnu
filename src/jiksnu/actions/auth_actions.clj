@@ -55,8 +55,7 @@
 
 (defaction show
   [mech]
-  mech
-  )
+  mech)
 
 (defaction whoami
   []
