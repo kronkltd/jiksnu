@@ -9,7 +9,6 @@
             [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.string :as string]
-            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
