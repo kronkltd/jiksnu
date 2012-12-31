@@ -87,6 +87,7 @@
 (defn make-dropper
   [collection-name]
   (fn []
+    (trace/trace* (str collection-name ":dropped") collection-name)
     (mc/remove collection-name)))
 
 (defn make-set-field!
@@ -99,3 +100,11 @@
         {:_id (:_id item)}
         {:$set {field value}}))))
 
+(defn make-add-link*
+  [collection-name]
+  (fn [item link]
+    (trace/trace* (str collection-name ":linkAdded") item)
+    (mc/update collection-name
+      (select-keys item #{:_id})
+      {:$addToSet {:links link}})
+    item))

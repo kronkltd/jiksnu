@@ -51,6 +51,10 @@
       transforms.feed-source/set-status
       transforms.feed-source/set-resource))
 
+(def index*
+  (templates/make-indexer 'jiksnu.model.feed-source
+                          :sort-clause {:created -1}))
+
 (defaction add-watcher
   [^FeedSource source ^User user]
   ;; {:pre [(instance? FeedSource source)
@@ -107,10 +111,6 @@
                         (model.feed-source/fetch-by-topic topic)))]
     source
     (create params options)))
-
-(def index*
-  (templates/make-indexer 'jiksnu.model.feed-source
-                          :sort-clause {:created -1}))
 
 (defaction index
   [& options]

@@ -49,11 +49,7 @@
        (recur ((first hooks) domain) (rest hooks))
        domain)))
 
-(defaction add-link*
-  [item link]
-  (mc/update "domains" {:_id (:_id item)}
-             {:$addToSet {:links link}})
-  item)
+(def add-link* (templates/make-add-link* model.domain/collection-name))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link

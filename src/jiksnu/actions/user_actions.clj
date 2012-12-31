@@ -69,6 +69,8 @@
       transforms.user/set-discovered
       transforms.user/set-avatar-url))
 
+(def add-link* (templates/make-add-link* model.user/collection-name))
+
 (defn get-domain
   "Return the domain of the user"
   [^User user]
@@ -76,13 +78,6 @@
                          (when-let [id (:id user)]
                            (util/get-domain-name id)))]
     (actions.domain/get-discovered {:_id domain-id})))
-
-
-(defaction add-link*
-  [user link]
-  (mc/update "users" {:_id (:_id user)}
-    {:$addToSet {:links link}})
-  user)
 
 (defn add-link
   [user link]

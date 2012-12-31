@@ -45,6 +45,8 @@
       transforms/set-updated-time
       transforms/set-created-time))
 
+(def add-link* (templates/make-add-link* model.resource/collection-name))
+
 (defaction create
   [params]
   (let [params (prepare-create params)]
@@ -81,12 +83,6 @@
 (defaction index
   [& args]
   (apply index* args))
-
-(defaction add-link*
-  [item link]
-  (mc/update "resources" {:_id (:_id item)}
-    {:$addToSet {:links link}})
-  item)
 
 (defn add-link
   [item link]

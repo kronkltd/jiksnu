@@ -75,12 +75,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
       nil)))
 
-(defaction add-link*
-  [item link]
-  (s/increment "link added")
-  (mc/update "activities" {:_id (:_id item)}
-    {:$addToSet {:links link}})
-  item)
+(def add-link* (templates/make-add-link* model.activity/collection-name))
+(def index*    (templates/make-indexer 'jiksnu.model.activity))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -90,9 +86,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
                                                   (:type link))]
     item
     (add-link* item link)))
-
-(def index*
-  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction index
   [& options]

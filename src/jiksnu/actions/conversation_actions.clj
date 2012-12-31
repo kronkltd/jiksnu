@@ -52,8 +52,7 @@
   (let [item (prepare-delete item)]
     (model.conversation/delete item)))
 
-(def index*
-  (templates/make-indexer 'jiksnu.model.conversation))
+(def index* (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
   [& [params & [options]]]
