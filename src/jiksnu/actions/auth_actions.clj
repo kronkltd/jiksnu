@@ -7,17 +7,13 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
-            [jiksnu.session :as session])
-  (:import org.mindrot.jbcrypt.BCrypt))
+            [jiksnu.session :as session]
+            [noir.util.crypt :as crypt]))
 
 ;; TODO: doesn't work yet
 (defaction guest-login
   [user]
   user)
-
-(defn password-matches?
-  [password hash]
-  (BCrypt/checkpw password hash))
 
 (defaction login
   [user password]
@@ -26,7 +22,7 @@
                             {:user (:_id user)}))]
     (if (->> mechanisms
              (map :value)
-             (some (partial password-matches? password)))
+             (some (partial crypt/compare password)))
       (session/set-authenticated-user! user)
       (throw+ {:type :authentication :message "passwords do not match"}))
     (throw+ {:type :authentication :message "No authentication mechanisms found"})))
@@ -67,10 +63,10 @@
   [user password]
   ;; Create a new authentication mechanism with the type password
   ;; that has the crypted password
-  (let [salt (BCrypt/gensalt)]
+  (let [salt (crypt/gen-salt)]
     (model.authentication-mechanism/create
      {:type "password"
-      :value (BCrypt/hashpw password salt)
+      :value (crypt/ecrypt salt password)
       :user (:_id user)})))
 
 (definitializer
