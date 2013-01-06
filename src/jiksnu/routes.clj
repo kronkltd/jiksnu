@@ -1,13 +1,12 @@
 (ns jiksnu.routes
-  (:use [ciste.routes :only [make-matchers resolve-routes]]
+  (:use [ciste.config :only [config]]
+        [ciste.routes :only [make-matchers resolve-routes]]
         [clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
-            ;; ciste.formats.default
             [ciste.middleware :as middleware]
             [clj-airbrake.core :as airbrake]
-
             [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
@@ -20,6 +19,7 @@
             [jiksnu.session :as session]
             [ring.middleware.file :as file]
             [monger.ring.session-store :as ms]
+            [noir.util.middleware :as nm]
             [ring.middleware.file-info :as file-info]
             [ring.middleware.stacktrace :as stacktrace]
             [ring.util.response :as response])
@@ -96,5 +96,6 @@
        jm/wrap-dynamic-mode
        (handler/site {:session {:store (ms/session-store)}})
        (wrap-airbrake (config :airbrake :key))
+       ;; (nm/wrap-canonical-host (config :domain))
        jm/wrap-stacktrace
        jm/wrap-stat-logging)))
