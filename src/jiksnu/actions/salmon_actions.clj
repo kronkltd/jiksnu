@@ -3,7 +3,8 @@
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?> -?>>]])
+        [clojure.core.incubator :only [-?> -?>>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
