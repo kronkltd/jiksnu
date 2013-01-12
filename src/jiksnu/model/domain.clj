@@ -63,7 +63,9 @@
 (defn add-links
   [domain links]
   ;; TODO: This should push only if the link is not yet there
-  (mc/update collection-name {:$pushAll {:links links}}))
+  (mc/update collection-name
+    (select-keys domain #{:_id})
+    {:$pushAll {:links links}}))
 
 (def set-field! (templates/make-set-field! collection-name))
 

@@ -53,25 +53,22 @@
     resource))
 
 (defn a-user-exists
-  ([] (a-user-exists {:discovered true
-                      :password (fseq :password)}))
-  ([options]
-     (a-user-exists options nil))
-  ([opts password]
-     (let [password (or (:password opts) password)
-           user (actions.user/register
-                 {:username (fseq :username)
-                  :password password
-                  :display-name (fseq :name)
-                  :accepted true})
-           user (if (:admin opts)
-                  (do (model.user/set-field! user :admin true)
-                      (assoc user :admin true))
-                  user)]
-       (set-this :user user)
-       (dosync
-        (ref-set my-password password))
-       user)))
+  [& [opts]]
+  (let [password (or (:password opts)
+                     (fseq :password))
+        user (actions.user/register
+              {:username (fseq :username)
+               :password password
+               :display-name (fseq :name)
+               :accepted true})
+        user (if (:admin opts)
+               (do (model.user/set-field! user :admin true)
+                   (assoc user :admin true))
+               user)]
+    (set-this :user user)
+    (dosync
+     (ref-set my-password password))
+    user))
 
 (defn a-user-exists-with-password
   [password]

@@ -135,9 +135,11 @@
        (user-meta-uri user) => (throws RuntimeException)))
 
    (fact "when the user's domain has a lrdd link"
-     (let [domain (mock/a-remote-domain-exists)]
-       (model.domain/set-field! domain :links [{:rel "lrdd"
-                                                :template "http://example.com/main/xrd?uri={uri}"}])
+     (let [domain (mock/a-remote-domain-exists)
+           links [{:rel "lrdd"
+                   :template "http://example.com/main/xrd?uri={uri}"}]]
+       (model.domain/add-links domain links)
+
        (let [user (mock/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
