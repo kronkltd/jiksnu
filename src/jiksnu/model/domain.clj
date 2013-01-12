@@ -35,17 +35,16 @@
    (type-of :local      Boolean)
    (type-of :discovered Boolean)))
 
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-(def count-records (templates/make-counter collection-name))
-
 (defn fetch-by-id
   [id]
   (s/increment "domains fetched")
   (if-let [domain (mc/find-map-by-id collection-name id)]
     (model/map->Domain domain)))
 
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
+(def count-records (templates/make-counter collection-name))
+(def create        (templates/make-create  collection-name #'fetch-by-id #'create-validators))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))
