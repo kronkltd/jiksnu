@@ -7,8 +7,22 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
-            [jiksnu.templates :as templates])
+            [jiksnu.templates :as templates]
+            [jiksnu.transforms :as transforms])
   (:import jiksnu.model.Like))
+
+(defn prepare-create
+  [activity]
+  (-> activity
+      transforms/set-_id
+      transforms/set-created-time
+      transforms/set-updated-time))
+
+(defaction create
+  "create an activity"
+  [params]
+  (let [item (prepare-create params)]
+    (model.like/create item)))
 
 (defn admin-index
   [request]
@@ -24,7 +38,7 @@
 
 (defaction like-activity
   [activity user]
-  (model.like/create
+  (create
    {:user (:_id user)
     :activity (:_id activity)
     ;; TODO: created flag set lower
