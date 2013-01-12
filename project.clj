@@ -97,7 +97,7 @@
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :dependencies
-              [[midje "1.5.0-alpha6"
+              [[midje "1.5-alpha6"
                  :exclusions [joda-time]]
                [ring-mock "0.1.3"]
                [clj-webdriver "0.6.0-alpha11"]]}}

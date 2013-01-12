@@ -8,7 +8,15 @@
             [clojure.tools.logging :as log]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.session :as session]
+            [jiksnu.transforms :as transforms]
             [noir.util.crypt :as crypt]))
+
+(defn prepare-create
+  [activity]
+  (-> activity
+      transforms/set-_id
+      transforms/set-created-time
+      transforms/set-updated-time))
 
 ;; TODO: doesn't work yet
 (defaction guest-login
@@ -59,13 +67,19 @@
 
 (add-command! "whoami" #'whoami)
 
+(defaction create
+  "create an activity"
+  [params]
+  (let [item (prepare-create params)]
+    (model.authentication-mechanism/create item)))
+
 (defn add-password
   "Create a new auth mechanism with the type password that has the crypted password"
   [user password]
-  (model.authentication-mechanism/create
-   {:type "password"
-    :value (crypt/encrypt password)
-    :user (:_id user)}))
+  (let [params {:type "password"
+                :value (crypt/encrypt password)
+                :user (:_id user)}]
+    (create params)))
 
 (definitializer
   (require-namespaces

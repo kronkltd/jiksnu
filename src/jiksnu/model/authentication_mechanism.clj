@@ -7,7 +7,8 @@
             [jiksnu.util :as util]
             [monger.core :as mg]
             [monger.collection :as mc])
-  (:import jiksnu.model.AuthenticationMechanism))
+  (:import jiksnu.model.AuthenticationMechanism
+           org.bson.types.ObjectId))
 
 (def collection-name "authentication_mechanisms")
 
@@ -15,7 +16,7 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id        String)
+   (type-of :_id        ObjectId)
    ;; (type-of :created    DateTime)
    ;; (type-of :updated    DateTime)
    ;; (type-of :local      Boolean)

@@ -120,7 +120,7 @@
           (log/debugf "Creating %s: %s" collection-name (pr-str params))
           (mc/insert collection-name params)
           (let [item (fetcher (:_id params))]
-            (trace/trace (str collection-name ":created") item)
+            (trace/trace* (str collection-name ":created") item)
             (s/increment (str collection-name "_created"))
             item))
         (throw+ {:type :validation :errors errors})))))

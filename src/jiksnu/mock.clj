@@ -53,11 +53,13 @@
     resource))
 
 (defn a-user-exists
-  ([] (a-user-exists {:discovered true} "hunter2"))
+  ([] (a-user-exists {:discovered true
+                      :password (fseq :password)}))
   ([options]
-     (a-user-exists options "hunter2"))
+     (a-user-exists options nil))
   ([opts password]
-     (let [user (actions.user/register
+     (let [password (or (:password opts) password)
+           user (actions.user/register
                  {:username (fseq :username)
                   :password password
                   :display-name (fseq :name)
