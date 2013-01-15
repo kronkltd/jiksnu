@@ -161,10 +161,10 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (let [resource (ops/get-resource (statusnet-url domain))
-        response (actions/invoke-action "resource" "update*" (str (:_id resource)))
-        sconfig (json/read-json (:body (:body response)))]
-    (model.domain/set-field! domain :statusnet-config sconfig)))
+  (let [resource (ops/get-resource (statusnet-url domain))]
+    (if-let [response (actions.resource/update* resource)]
+      (let [sconfig (json/read-json (:body (:body response)))]
+        (model.domain/set-field! domain :statusnet-config sconfig)))))
 
 (defmacro safe-task
   [& body]
