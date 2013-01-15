@@ -9,28 +9,29 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
+            [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [hiccup.core :as hiccup])
   (:import jiksnu.model.User
            nu.xom.Document))
 
+(defn mock-xrd-with-username
+  [username]
+  (cm/string->document
+   (hiccup/html
+    [:XRD
+     [:Link
+      [:Property {:type "http://apinamespace.org/atom/username"}
+       username]]])))
+
+(defn mock-xrd-with-subject
+  [subject]
+  (cm/string->document
+   (hiccup/html
+    [:XRD
+     [:Subject subject]])))
+
 (test-environment-fixture
-
- (defn mock-xrd-with-username
-   [username]
-   (cm/string->document
-    (hiccup/html
-     [:XRD
-      [:Link
-       [:Property {:type "http://apinamespace.org/atom/username"}
-        username]]])))
-
- (defn mock-xrd-with-subject
-   [subject]
-   (cm/string->document
-    (hiccup/html
-     [:XRD
-      [:Subject subject]])))
 
  (fact "#'get-username-from-xrd"
    (fact "when the usermeta has an identifier"
@@ -69,7 +70,7 @@
  (fact "#'get-username-from-identifiers"
    (let [subject "acct:foo@bar.baz"
          xrd (mock-xrd-with-subject subject)]
-     (get-username-from-identifiers) => "foo"))
+     (get-username-from-identifiers xrd) => "foo"))
 
  (fact "#'get-username-from-xrd"
    (let [username (fseq :username)
@@ -83,14 +84,26 @@
          (get-username-from-atom-property user-meta) => nil :times 0))
      (fact "when the usermeta does not have an identifier"
        (fact "and the atom link has an identifier"
-         (get-username-from-xrd .user-meta.) => .username.
-         (provided
-           (get-username-from-identifiers .user-meta.) => nil
-           (get-username-from-atom-property .user-meta.) => .username.))
+         (let [user-meta (cm/string->document
+                          (hiccup/html
+                           [:XRD
+                            [:Link {:ref ns/updates-from
+                                    :type "application/atom+xml"
+                                    :href ""}]]))]
+           (get-username-from-xrd user-meta) => .username.
+           (provided
+             (get-username-from-identifiers user-meta) => nil
+             (get-username-from-atom-property user-meta) => .username.)))
        (fact "and the atom link does not have an identifier"
-         (get-username-from-xrd .user-meta.) => nil
-         (provided
-           (get-username-from-identifiers .user-meta.) => nil
-           (get-username-from-atom-property .user-meta.) => nil)))))
+         (let [user-meta (cm/string->document
+                          (hiccup/html
+                           [:XRD
+                            [:Link {:ref ns/updates-from
+                                    :type "application/atom+xml"
+                                    :href ""}]]))]
+           (get-username-from-xrd user-meta) => nil
+           (provided
+             (get-username-from-identifiers user-meta) => nil
+             (get-username-from-atom-property user-meta) => nil))))))
 
  )
