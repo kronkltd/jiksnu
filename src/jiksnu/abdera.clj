@@ -3,6 +3,7 @@
         [clojure.core.incubator :only [-?>]])
   (:require [clj-statsd :as s]
             [clj-tigase.element :as element]
+            [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [lamina.trace :as trace])
   (:import java.io.ByteArrayInputStream
