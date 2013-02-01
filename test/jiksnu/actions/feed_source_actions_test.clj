@@ -1,6 +1,9 @@
 (ns jiksnu.actions.feed-source-actions-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-feed]]
+  (:use [ciste.core :only [with-context]]
+        [ciste.sections.default :only [show-section]]
+        [clj-factory.core :only [factory fseq]]
+        [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-entry
+                                                   process-feed]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
@@ -42,6 +45,20 @@
      (actions.feed-source/update source) => (partial instance? FeedSource))
    (provided
      (actions.domain/get-discovered anything) => .domain.))
+
+ (fact "#'process-entry"
+   (with-context [:http :atom]
+     (let [user (mock/a-user-exists)
+           activity (model/map->Activity (factory :activity
+                                                  {:id (fseq :uri)}))
+           author (show-section user)
+           entry (show-section activity)
+           feed (abdera/make-feed*
+                 {:title (fseq :title)
+                  :entries [entry]
+                  :author author})
+           source (mock/a-feed-source-exists)]
+       (process-entry [feed source entry]) => model/activity?)))
 
  (fact "#'process-feed"
    (let [source (mock/a-feed-source-exists)
