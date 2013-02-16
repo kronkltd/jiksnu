@@ -54,7 +54,6 @@
                (apply-view request response) =>
                (every-checker
                 map?
-                :body
                 (comp status/success? :status)
                 (fn [result]
                   (let [body (:body result)]
