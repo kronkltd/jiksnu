@@ -98,15 +98,14 @@
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :dependencies
-              [[midje "1.5-alpha9"
-                 :exclusions [joda-time]]
-               [ring-mock "0.1.3"]
+              [[midje         "1.5-beta1"]
+               [ring-mock     "0.1.3"]
                [clj-webdriver "0.6.0-alpha11"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
   :plugins [[lein-cljsbuild "0.2.7"]
-            [codox "0.6.1"]
-            [lein-cucumber "1.0.1"]
-            [lein-lesscss "1.2"]
-            [lein-midje "3.0-alpha3"]]
+            [codox          "0.6.1"]
+            [lein-cucumber  "1.0.1"]
+            [lein-lesscss   "1.2"]
+            [lein-midje     "3.0-beta1"]]
   )
