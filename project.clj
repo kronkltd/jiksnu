@@ -51,6 +51,7 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"
                    :exclusions [xml-apis]]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
+                 [org.bovinegenius/exploding-fish "0.3.1"]
                  [org.clojars.runa/clj-schema "0.7.1"]
                  [org.clojure/clojure "1.4.0"]
                  [org.clojure/core.cache "0.5.0"]
@@ -89,7 +90,7 @@
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"]
-  :repositories {"stuart" "http://stuartsierra.com/maven2"
+  :repositories {"stuart"                "http://stuartsierra.com/maven2"
                  "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
                  "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"}
   :warn-on-reflection false

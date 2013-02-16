@@ -1,5 +1,6 @@
 (ns jiksnu.util-test
-  (:use [jiksnu.test-helper :only [test-environment-fixture]]
+  (:use [clj-factory.core :only [fseq]]
+        [jiksnu.test-helper :only [test-environment-fixture]]
         jiksnu.util
         [midje.sweet :only [fact future-fact => every-checker contains]])
   (:require [jiksnu.util :as util])
@@ -8,11 +9,20 @@
 (test-environment-fixture
 
  (fact "#'get-domain-name"
-   (fact "when given a http uri"
-     (get-domain-name "http://example.com/users/1") => "example.com")
+   (let [domain-name (fseq :domain)]
+     (fact "when given a http uri"
+       (let [uri (str "http://" domain-name "/users/1")]
+         (get-domain-name uri) => domain-name))
 
-   (fact "when given an acct uri"
-     (get-domain-name "acct:bob@example.com") => "example.com"))
+     (fact "when given an acct uri"
+       (let [uri (str "acct:bob@" domain-name)]
+         (get-domain-name uri) => domain-name))
+
+     (fact "when given a urn"
+       (let [uri (str "urn:X-dfrn:"
+                      domain-name
+                      ":1:4735de37f18b820836fbe17890b33f90781d4fe275236094751be3fc163b40b4")]
+         (get-domain-name uri) => domain-name))))
 
  (fact "make-id"
    (make-id) => (partial instance? ObjectId))

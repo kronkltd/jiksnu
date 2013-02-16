@@ -20,6 +20,7 @@
             [monger.query :as mq]
             monger.joda-time
             monger.json
+            [org.bovinegenius.exploding-fish :as uri]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.implementations.jena :as jena])
   (:import com.mongodb.WriteConcern
@@ -170,10 +171,14 @@
 (defn get-domain-name
   "Takes a string representing a uri and returns the domain"
   [id]
-  (let [uri (URI. id)]
-    (if (= "acct" (.getScheme uri))
-      (second (split-uri id))
-      (.getHost uri))))
+  (let [{:keys [path scheme] :as uri} (uri/uri id)]
+    (cond
+     (#{"acct"} scheme) (second (split-uri id))
+     (#{"urn"}  scheme) (let [parts (string/split path #":")
+                              nid (nth parts 0)]
+                          (condp = nid
+                            "X-dfrn" (nth parts 1)))
+     :default           (:host uri))))
 
 (defn parse-link
   [link]
