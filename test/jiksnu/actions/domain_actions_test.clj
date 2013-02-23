@@ -18,6 +18,17 @@
 
 (test-environment-fixture
 
+ (fact "#'create"
+   (fact "when given valid options"
+     (fact "and the domain does not already exist"
+       (model.domain/drop!)
+       (let [options (prepare-create {:_id (fseq :domain)})]
+         (create options) => model/domain?))
+     ;; TODO: already exists
+     )
+   ;; TODO: invalid options
+   )
+
  (fact "#'delete"
 
    ;; There is no reason this shouldn't be a success
@@ -39,17 +50,17 @@
        (let [action #'discover
              domain (mock/a-domain-exists)
              url nil]
-         (discover-onesocialweb domain url) => domain)
-       (provided
-         (deliver-packet! anything) => nil :times 1)))
+         (discover-onesocialweb domain url) => domain
+         (provided
+           (deliver-packet! anything) => nil :times 1))))
    (fact "when there is a url context"
      (fact "should send a packet to that domain"
        (let [action #'discover
              domain (mock/a-domain-exists)
              url (str "http://" (:_id domain) "/status/users/1")]
-         (discover-onesocialweb domain url) => domain)
-       (provided
-         (deliver-packet! anything) => nil :times 1))))
+         (discover-onesocialweb domain url) => domain
+         (provided
+           (deliver-packet! anything) => nil :times 1)))))
 
  (fact "#'discover-webfinger"
    (let [domain (mock/a-domain-exists)
