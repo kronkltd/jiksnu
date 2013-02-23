@@ -99,13 +99,21 @@
                (:_id response) => (:_id domain))))))))
 
  (fact "#'create"
-   (fact "when the params ar nil"
-     (create nil) => (throws RuntimeException))
+   (fact "when the params are nil"
+     (let [params nil]
+       (create params) => (throws RuntimeException)))
    (fact "empty map"
-     (create {}) => (throws RuntimeException))
+     (let [params {}]
+       (create params) => (throws RuntimeException)))
    (fact "local user"
-     (create {:username (fseq :username)
-              :domain (config :domain)}) => model/user?))
+     (let [params {:username (fseq :username)
+                   :domain (config :domain)}]
+       (create params) => model/user?))
+   (fact "when the params contain links"
+     (let [params {:username (fseq :username)
+                   :domain (config :domain)
+                   :links [{:href (fseq :uri) :rel "alternate"}]}]
+       (create params) => model/user?)))
 
  (fact "#'index"
    (index) => map?)

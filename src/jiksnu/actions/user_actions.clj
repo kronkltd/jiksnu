@@ -94,9 +94,15 @@
 
 
 (defaction create
+  "create an activity"
   [params]
-  (let [item (prepare-create params)]
-    (model.user/create item)))
+  (let [links (:links params)
+        item (dissoc params :links)
+        item (prepare-create item)
+        item (model.user/create item)]
+    (doseq [link links]
+      (add-link item link))
+    (model.user/fetch-by-id (:_id item))))
 
 (defaction find-or-create
   [username domain]
