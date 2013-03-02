@@ -219,7 +219,8 @@
                     (map :href)
                     (map (fn [url]
                            (let [resource (actions.resource/find-or-create {:url url})]
-                             (:_id @resource))))
+                             (future (actions.resource/update resource))
+                             (:_id resource))))
                     seq
                     doall)]
     (-> activity
