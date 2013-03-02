@@ -6,7 +6,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.util :as util]))
@@ -19,12 +19,12 @@
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
-     (let [item (existance/a-group-exists)]
-      (fetch-by-id (:_id item)) => item)))
+     (let [item (mock/a-group-exists)]
+       (fetch-by-id (:_id item)) => item)))
 
  (fact "#'delete"
    (fact "when the item exists"
-     (let [item (existance/a-group-exists)]
+     (let [item (mock/a-group-exists)]
        (delete item) =>  item)))
 
  (fact "#'fetch-all"

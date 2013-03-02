@@ -10,13 +10,13 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
@@ -24,7 +24,7 @@
    (fact "when there are no activities"
      (db/drop-all!)
 
-     (-> (mock/request :get "/")
+     (-> (req/request :get "/")
          response-for) =>
          (every-checker
           map?
@@ -33,19 +33,19 @@
           ))
 
    (fact "when there are activities"
-     (let [user (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)]
        (dotimes [n 10]
-         (existance/there-is-an-activity {:user user}))
+         (mock/there-is-an-activity {:user user}))
 
        (fact "when the user is not authenticated"
-         (-> (mock/request :get "/")
+         (-> (req/request :get "/")
              response-for) =>
              (every-checker
               map?
               (comp status/success? :status)))
 
        (fact "when the the request is for n3"
-         (-> (mock/request :get "/api/statuses/public_timeline.n3")
+         (-> (req/request :get "/api/statuses/public_timeline.n3")
              response-for) =>
              (every-checker
               map?
@@ -55,7 +55,7 @@
               ))
 
        (fact "when the user is authenticated"
-         (-> (mock/request :get "/")
+         (-> (req/request :get "/")
              as-user
              response-for) =>
              (every-checker
@@ -67,22 +67,22 @@
 
    (fact "html"
 
-     (let [user (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)]
        (dotimes [n 10]
-         (existance/there-is-an-activity {:user user}))
+         (mock/there-is-an-activity {:user user}))
 
-       (-> (mock/request :get (format "/%s" (:username user)))
+       (-> (req/request :get (format "/%s" (:username user)))
            as-user response-for)) =>
            (every-checker
             map?
             (comp status/success? :status)))
 
    (fact "n3"
-     (let [user (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)]
        (dotimes [n 10]
-         (existance/there-is-an-activity {:user user}))
+         (mock/there-is-an-activity {:user user}))
 
-       (-> (mock/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
+       (-> (req/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
            (as-user user) response-for)) =>
            (every-checker
             map?

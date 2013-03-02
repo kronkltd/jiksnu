@@ -4,7 +4,9 @@
         [jiksnu.session :only [with-user-id]]
         [slingshot.slingshot :only [try+ throw+]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.ko :as ko])
+            [clj-statsd :as s]
+            [jiksnu.ko :as ko]
+            [lamina.trace :as trace])
   (:import javax.security.auth.login.LoginException))
 
 (defn wrap-user-binding
@@ -38,6 +40,7 @@
     (try
       (handler request)
       (catch Exception ex
+        (trace/trace "errors:handled" ex)
         (try
           (let [st (with-out-str (print-stack-trace ex))]
             (println st)
@@ -45,6 +48,7 @@
              :headers {"content-type" "text/plain"}
              :body st})
           (catch Exception ex
+            #_(trace/trace "errors:handled" ex)
             (log/fatalf "Error parsing exception: %s" (str ex))))))))
 
 (defn default-html-mode
@@ -58,3 +62,9 @@
       (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly (default-html-mode))))]
         (binding [ko/*dynamic* dynamic?]
           (handler request))))))
+
+(defn wrap-stat-logging
+  [handler]
+  (fn [request]
+    (s/increment "requests handled")
+    (handler request)))

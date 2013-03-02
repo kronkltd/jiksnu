@@ -1,6 +1,7 @@
 (ns jiksnu.model.resource
   (:use [ciste.config :only [config]]
         [clojure.core.incubator :only [-?>>]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [clj-statsd :as s]
@@ -10,21 +11,23 @@
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
-            [monger.query :as mq]))
+            [monger.query :as mq]
+            [net.cgrand.enlive-html :as enlive])
+  (:import java.io.StringReader
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (defonce page-size 20)
 (def collection-name "resources")
 
 (def create-validators
   (validation-set
-   (presence-of   :_id)
-   (presence-of   :url)
-   (presence-of   :domain)
-   (acceptance-of :local         :accept (partial instance? Boolean))
-
-   ;; TODO: These should be joda times
-   (presence-of   :created)
-   (presence-of   :updated)))
+   (type-of :_id     ObjectId)
+   (type-of :url     String)
+   (type-of :domain  String)
+   (type-of :local   Boolean)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -56,24 +59,37 @@
     (if-let [item (mc/find-map-by-id collection-name id)]
       (model/map->Resource item))))
 
-(defn create
-  [params]
-  (let [errors (create-validators params)]
-    (if (empty? errors)
-      (do
-        (mc/insert collection-name params)
-        (let [item (fetch-by-id (:_id params))]
-          (log/debugf "Creating resource: %s" (pr-str item))
-          (trace/trace :resources:created item)
-          (s/increment "resources created")
-          item))
-      (throw+ {:type :validation :errors errors}))))
-
+(def count-records (templates/make-counter collection-name))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 (def delete        (templates/make-deleter collection-name))
 (def drop!         (templates/make-dropper collection-name))
-(def count-records (templates/make-counter collection-name))
 
 (defn ensure-indexes
   []
   (doto collection-name
    (mc/ensure-index {:url 1} {:unique true})))
+
+(defn response->tree
+  [response]
+  (enlive/html-resource (StringReader. (:body response))))
+
+(defn get-links
+  [tree]
+  (enlive/select tree [:link]))
+
+(defn meta->property
+  "Convert a meta element to a property map"
+  [meta]
+  (let [attrs (:attrs meta)
+        property (:property attrs)
+        content (:content attrs)]
+    (when (and property content)
+      {property content})))
+
+(defn get-meta-properties
+  "Get a map of all the meta properties in the document"
+  [tree]
+  (->> (enlive/select tree [:meta])
+       (map meta->property)
+       (reduce merge)))
+

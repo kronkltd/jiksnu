@@ -3,10 +3,10 @@
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
-  :dependencies [[aleph "0.3.0-SNAPSHOT"
+  :dependencies [[aleph "0.3.0-beta8"
                   :exclusions [lamina]]
                  [cheshire "4.0.2"]
-                 [ciste/ciste-core "0.4.0-SNAPSHOT"
+                 [ciste "0.4.0-SNAPSHOT"
                   :exclusions [joda-time
                                xalan]]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
@@ -16,6 +16,8 @@
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-swank "0.4.0-SNAPSHOT"]
                  [clj-factory "0.2.1"]
+                 [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
+                 [clj-stacktrace "0.2.5"]
                  [clojurewerkz/route-one "1.0.0-SNAPSHOT"]
                  [clojurewerkz/urly "1.0.0"
                   :exclusions [com.google.guava/guava]]
@@ -25,15 +27,17 @@
                  [com.stuartsierra/lazytest "1.2.3"]
                  [clj-statsd "0.3.2"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
-                 [ clojure-complete "0.2.1"]
+                 [clojure-complete "0.2.1"]
                  [clojurewerkz/support "0.7.0-alpha3"
                   :exclusions [com.google.guava/guava]]
                  [com.cemerick/friend "0.0.9"
                   :exclusions [net.sourceforge.nekohtml/nekohtml]]
                  [com.novemberain/monger "1.2.0-alpha1"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
+                 [domina "1.0.0"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-alpha4"]
+                 [lib-noir "0.2.0"]
                  [lolg "0.1.0-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
@@ -47,6 +51,8 @@
                  [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"
                    :exclusions [xml-apis]]
                  [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
+                 [org.bovinegenius/exploding-fish "0.3.1"]
+                 [org.clojars.runa/clj-schema "0.7.1"]
                  [org.clojure/clojure "1.4.0"]
                  [org.clojure/core.cache "0.5.0"]
                  [org.clojure/tools.logging "0.2.3"]
@@ -63,7 +69,8 @@
                  [ring "1.1.1"]
                  [ring/ring-core "1.1.1"]
                  [ring-basic-authentication "0.0.1"]
-                 [slingshot "0.10.3"]]
+                 [slingshot "0.10.3"]
+                 [table "0.3.2"]]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [jiksnu.xmpp.plugin
         ;; jiksnu.xmpp.channels
@@ -83,7 +90,7 @@
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
              "-Dfile.encoding=UTF-8"]
-  :repositories {"stuart" "http://stuartsierra.com/maven2"
+  :repositories {"stuart"                "http://stuartsierra.com/maven2"
                  "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
                  "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"}
   :warn-on-reflection false
@@ -91,15 +98,14 @@
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :dependencies
-              [[midje "1.5.0-SNAPSHOT"
-                 :exclusions [joda-time]]
-               [ring-mock "0.1.3"]
+              [[midje         "1.5-beta1"]
+               [ring-mock     "0.1.3"]
                [clj-webdriver "0.6.0-alpha11"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
   :plugins [[lein-cljsbuild "0.2.7"]
-            [codox "0.6.1"]
-            [lein-cucumber "1.0.1"]
-            [lein-lesscss "1.2"]
-            [lein-midje "2.0.0-SNAPSHOT"]]
+            [codox          "0.6.1"]
+            [lein-cucumber  "1.0.1"]
+            [lein-lesscss   "1.2"]
+            [lein-midje     "3.0-beta1"]]
   )

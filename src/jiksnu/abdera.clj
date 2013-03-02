@@ -4,9 +4,9 @@
   (:require [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [jiksnu.namespace :as ns])
+            [jiksnu.namespace :as ns]
+            [lamina.trace :as trace])
   (:import java.io.ByteArrayInputStream
-           java.io.StringWriter
            java.net.URI
            javax.xml.namespace.QName
            org.apache.abdera2.Abdera
@@ -95,20 +95,10 @@
   (str (.getHref link)))
 
 (defn parse-link
-  "extract the node element from links
-
-this is for OSW
-"
-  [^Link link]
-  (if-let [href (get-href link)]
-    (when (and (re-find #"^.+@.+$" href)
-               (not (re-find #"node=" href)))
-      href)))
-
-(defn parse-link
   "Returns a map representing the link element"
   [^Link link]
-  (let [type (try (str (.getMimeType link)) (catch Exception ex))
+  (let [type (try (str (.getMimeType link)) (catch Exception ex
+                                              (trace/trace "errors:handled" ex)))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
@@ -134,8 +124,6 @@ this is for OSW
     {:source source
      :source-link source-link
      :local-id local-id}))
-
-
 
 (defn parse-irts
   "Get the in-reply-to uris"
@@ -185,13 +173,19 @@ this is for OSW
 
 (defn ^Person get-author
   [^Entry entry feed]
-  (or
-   (.getAuthor entry)
-   (get-feed-author feed)
-   (if-let [source (.getSource entry)]
-     (first (.getAuthors source)))))
+  (or (.getAuthor entry)
+      (get-feed-author feed)
+      (-?> entry .getSource .getAuthors first)))
 
-
+(defn ^Person make-person
+  "Takes a map of params and returns an initialized person object"
+  [{:keys [name extensions] :as params}]
+  (let [person (.newAuthor abdera-factory)]
+    (when name
+      (.setName person name))
+    (doseq [extension extensions]
+      (.addExtension (:ns extension) (:local extension) (:prefix extension) (:element extension)))
+    person))
 
 
 (defn get-name
@@ -265,8 +259,8 @@ this is for OSW
   (try
     (let [parser abdera-parser]
       (.parse parser stream))
-    (catch IllegalStateException e
-      (log/error e))))
+    (catch IllegalStateException ex
+      (trace/trace "errors:handled" ex))))
 
 (defn stream->feed
   [stream]

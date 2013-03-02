@@ -1,6 +1,6 @@
 (ns jiksnu.interaction-helpers
   (:use [jiksnu.action-helpers :only [expand-url]]
-        [jiksnu.existance-helpers :only [a-user-exists my-password]]
+        [jiksnu.mock :only [a-user-exists my-password]]
         [jiksnu.referrant :only [get-this get-that set-this]]
         [midje.sweet :only [fact =not=> throws]]
         [slingshot.slingshot :only [throw+]])

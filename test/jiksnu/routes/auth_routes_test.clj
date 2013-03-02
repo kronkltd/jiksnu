@@ -9,7 +9,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.model :as model]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
@@ -21,7 +21,7 @@
            user (actions.user/register {:username username
                                         :password password
                                         :accepted true})]
-       (-> (mock/request :post "/main/login")
+       (-> (req/request :post "/main/login")
            (assoc :content-type "application/x-www-form-urlencoded")
            (assoc :body
              (formats/bytes->input-stream

@@ -2,28 +2,28 @@
   (:use [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
+            [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
-            [jiksnu.actions.domain-actions :as actions.domain]
+            [lamina.trace :as trace]
             [jiksnu.channels :as ch]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
-  (:import java.io.StringReader))
+  (:import jiksnu.model.Resource))
+
+(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 
 (defonce delete-hooks (ref []))
 
@@ -43,17 +43,16 @@
       transforms.resource/set-domain
       transforms.resource/set-location
       transforms/set-updated-time
-      transforms/set-created-time))
+      transforms/set-created-time
+      transforms/set-no-links))
 
-(declare update)
+(def add-link* (templates/make-add-link* model.resource/collection-name))
 
 (defaction create
   [params]
   (let [params (prepare-create params)]
     (if-let [item (model.resource/create params)]
-      (do
-        #_(future (update item))
-        item)
+      item
       (throw+ "Could not create record"))))
 
 (defaction find-or-create
@@ -62,7 +61,7 @@
                     (try
                       (create params)
                       (catch RuntimeException ex
-                        (.printStackTrace ex))))]
+                        (trace/trace "errors:handled" ex))))]
     item
     (if (< tries 3)
       (do
@@ -78,14 +77,6 @@
         item)
     (throw+ "Could not delete resource")))
 
-(defn response->tree
-  [response]
-  (enlive/html-resource (StringReader. (:body response))))
-
-(defn get-links
-  [tree]
-  (enlive/select tree [:link]))
-
 (def index*
   (templates/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
@@ -94,56 +85,42 @@
   [& args]
   (apply index* args))
 
-(defaction add-link*
-  [item link]
-  (mc/update "resources" {:_id (:_id item)}
-    {:$addToSet {:links link}})
-  item)
-
 (defn add-link
   [item link]
-  (if-let [existing-link (and nil (model.resource/get-link item
-                                                           (:rel link)
-                                                           (:type link)))]
+  (if-let [existing-link (model.resource/get-link item
+                                                  (:rel link)
+                                                  (:type link))]
     item
     (add-link* item link)))
 
-(defn meta->property
-  "Convert a meta element to a property map"
-  [meta]
-  (let [attrs (:attrs meta)
-        property (:property attrs)
-        content (:content attrs)]
-    (when (and property content)
-      {property content})))
+(declare update)
 
-(defn get-meta-properties
-  "Get a map of all the meta properties in the document"
-  [tree]
-  (->> (enlive/select tree [:meta])
-       (map meta->property)
-       (reduce merge)))
+(defmulti process-response-content (fn [content-type item response] content-type))
 
-(defn process-response-html
-  [item response]
-  (log/info "parsing html content")
-  (let [tree (response->tree response)]
-    (let [properties (get-meta-properties tree)]
+(defmethod process-response-content :default
+  [content-type item response]
+  (log/infof "unknown content type: %s" content-type))
+
+(defmethod process-response-content "text/html"
+  [content-type item response]
+  (log/debug "parsing html content")
+  (let [tree (model.resource/response->tree response)]
+    (let [properties (model.resource/get-meta-properties tree)]
       (model.resource/set-field! item :properties properties))
     (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
       (model.resource/set-field! item :title title))
-    (let [links (get-links tree)]
+    (let [links (model.resource/get-links tree)]
       (doseq [link links]
         (add-link item (:attrs link))))))
 
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
-        status (:status response)
-        location (get-in response [:headers "location"])]
+        status (:status response)]
     (model.resource/set-field! item :status status)
-    (when location
-      (let [resource (ops/get-resource location)]
+    (when-let [location (get-in response [:headers "location"])]
+      (let [resource (find-or-create {:url location})]
+        (update resource)
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]
       (if (seq rest)
@@ -151,24 +128,26 @@
           (when (seq encoding)
             (model.resource/set-field! item :encoding encoding))))
       (model.resource/set-field! item :contentType content-type)
-
-      (condp = content-type
-        "text/html" (process-response-html item response)
-        (log/infof "unknown content type: %s" content-type)))))
-
-(def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
+      (process-response-content content-type item response))))
 
 (defn update*
   [item & [options]]
+  {:pre [(instance? Resource item)]}
   (if-not (:local item)
-    (let [url (:url item)]
-      (log/debugf "updating resource: %s" url)
-      (let [response (client/get url {:throw-exceptions false
-                                      :headers {"User Agent" user-agent}
-                                      :insecure? true})]
-        (future
-          (process-response item response))
-        response))
+    (let [last-updated (:lastUpdated item)]
+      (if (or (:force options)
+              (nil? last-updated)
+              (time/after? (-> 5 time/minutes time/ago) last-updated))
+        (let [url (:url item)]
+          (log/debugf "updating resource: %s" url)
+          (model.resource/set-field! item :lastUpdated (time/now))
+          (let [response (client/get url {:throw-exceptions false
+                                          :headers {"User-Agent" user-agent}
+                                          :insecure? true})]
+            (task
+              (process-response item response))
+            response))
+        (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))
 
 (defaction update
@@ -187,15 +166,15 @@
   item)
 
 (defn handle-pending-get-resource
-  [[p url]]
-  (deliver p (find-or-create {:url url})))
+  [url]
+  (find-or-create {:url url}))
 
 (defn handle-pending-update-resources
-  [[p item]]
-  (deliver p (update* item)))
+  [item]
+  (update* item))
 
-(l/receive-all ch/pending-get-resource     handle-pending-get-resource)
-(l/receive-all ch/pending-update-resources handle-pending-update-resources)
+(l/receive-all ch/pending-get-resource     (ops/op-handler handle-pending-get-resource))
+(l/receive-all ch/pending-update-resources (ops/op-handler handle-pending-update-resources))
 
 (definitializer
   (model.resource/ensure-indexes)
@@ -203,5 +182,5 @@
   (require-namespaces
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"
-    ;; "jiksnu.triggers.resource-triggers"
+    "jiksnu.triggers.resource-triggers"
     "jiksnu.views.resource-views"]))

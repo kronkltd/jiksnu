@@ -9,7 +9,6 @@
             [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.string :as string]
-            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
@@ -37,8 +36,7 @@
 (defn parse-reply-to
   "extract the ref value of a link and set that as a parent id
 
-This is a byproduct of OneSocialWeb's incorrect use of the ref value
-"
+This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [^Element element]
   (let [parent-id (.getAttributeValue element "ref")]
     {:parent-uri parent-id}))
@@ -75,12 +73,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 
       nil)))
 
-(defaction add-link*
-  [item link]
-  (s/increment "link added")
-  (mc/update "activities" {:_id (:_id item)}
-    {:$addToSet {:links link}})
-  item)
+(def add-link* (templates/make-add-link* model.activity/collection-name))
+(def index*    (templates/make-indexer 'jiksnu.model.activity))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -90,9 +84,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
                                                   (:type link))]
     item
     (add-link* item link)))
-
-(def index*
-  (templates/make-indexer 'jiksnu.model.activity))
 
 (defaction index
   [& options]
@@ -120,7 +111,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
       transforms.activity/set-recipients
       transforms.activity/set-resources
       transforms.activity/set-mentioned
-      transforms.activity/set-conversation))
+      transforms.activity/set-conversation
+      transforms/set-no-links))
 
 (defn prepare-post
   [activity]
@@ -136,8 +128,13 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value
 (defaction create
   "create an activity"
   [params]
-  (let [item (prepare-create params)]
-    (model.activity/create item)))
+  (let [links (:links params)
+        item (dissoc params :links)
+        item (prepare-create item)
+        item (model.activity/create item)]
+    (doseq [link links]
+      (add-link item link))
+    (model.activity/fetch-by-id (:_id item))))
 
 (defaction delete
   "delete an activity"
@@ -306,10 +303,11 @@ serialization"
 
 (defn find-or-create
   [params]
-  (if-let [activity (or (model.activity/fetch-by-remote-id (:id params))
-                        (and (:_id params)
-                             (model.activity/fetch-by-id (:_id params))))]
-    activity
+  (if-let [item (or (when-let [id (:id params)]
+                      (model.activity/fetch-by-remote-id id))
+                    (when-let [id (:_id params)]
+                      (model.activity/fetch-by-id id)))]
+    item
     (create params)))
 
 ;; TODO: show action with :oembed format

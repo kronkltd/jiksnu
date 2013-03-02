@@ -69,6 +69,15 @@
         (throw+ "Could not create group")))
     (throw+ {:type :authentication})))
 
+(defn find-or-create
+  [params]
+  (if-let [item (or (when-let [id (:id params)]
+                      (model.group/fetch-all {:id id}))
+                    (when-let [id (:_id params)]
+                      (model.group/fetch-by-id id)))]
+    item
+    (create params)))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.group-filters"

@@ -1,4 +1,4 @@
-(ns jiksnu.existance-helpers
+(ns jiksnu.mock
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.referrant :only [get-this get-that set-this set-that this that]]
@@ -53,23 +53,22 @@
     resource))
 
 (defn a-user-exists
-  ([] (a-user-exists {:discovered true} "hunter2"))
-  ([options]
-     (a-user-exists options "hunter2"))
-  ([opts password]
-     (let [user (actions.user/register
-                 {:username (fseq :username)
-                  :password password
-                  :display-name (fseq :name)
-                  :accepted true})
-           user (if (:admin opts)
-                  (do (model.user/set-field! user :admin true)
-                      (assoc user :admin true))
-                  user)]
-       (set-this :user user)
-       (dosync
-        (ref-set my-password password))
-       user)))
+  [& [opts]]
+  (let [password (or (:password opts)
+                     (fseq :password))
+        user (actions.user/register
+              {:username (fseq :username)
+               :password password
+               :display-name (fseq :name)
+               :accepted true})
+        user (if (:admin opts)
+               (do (model.user/set-field! user :admin true)
+                   (assoc user :admin true))
+               user)]
+    (set-this :user user)
+    (dosync
+     (ref-set my-password password))
+    user))
 
 (defn a-user-exists-with-password
   [password]
@@ -94,10 +93,17 @@
 (defn a-feed-source-exists
   [& [options]]
   (let [domain (or (:domain options)
-                   (get-this :domain)
-                   (a-domain-exists))
+                   (if (:local options)
+                     (actions.domain/current-domain)
+                     (or (when-not (:local options)
+                           (get-this :domain))
+                         (a-domain-exists
+                          (select-keys options #{:local})))))
+
+
         resource (or (:resource options)
-                     (a-resource-exists {:url (make-uri (:_id domain) (str (fseq :path) ".atom"))
+                     (a-resource-exists {:url (make-uri (:_id domain)
+                                                        (str (fseq :path) ".atom"))
                                          :domain domain}))
         source (actions.feed-source/create
                 (factory :feed-source
@@ -112,7 +118,7 @@
   [type & [opts]]
   (let [specialized-name (format "a-%s-exists" (name type))
         ;; FIXME: This is reporting a user for some reason
-        specialized-var (ns-resolve (the-ns 'jiksnu.existance-helpers) (symbol specialized-name))]
+        specialized-var (ns-resolve (the-ns 'jiksnu.mock) (symbol specialized-name))]
     (if specialized-var
       (apply specialized-var opts)
       (let [ns-sym (symbol (format "jiksnu.actions.%s-actions"
@@ -131,9 +137,10 @@
                    (a-domain-exists))
         source (or (:update-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))
+                   (a-feed-source-exists {:domain domain}))
         conversation (actions.conversation/create
                       (factory :conversation {:domain (:_id domain)
+                                              :local (:local domain)
                                               :update-source (:_id source)}))]
     (set-this :conversation conversation)
     conversation))
@@ -142,7 +149,7 @@
   [& [options]]
   (let [source (or (:feed-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))
+                   (a-feed-source-exists (select-keys options #{:local})))
         activity (actions.activity/post (factory :activity
                                                  {:update-source source}))]
     (set-this :activity activity)
@@ -151,7 +158,9 @@
 (defn there-is-an-activity
   [& [options]]
   (let [modifier (:modifier options "public")
-        domain (or (:domain options) (a-domain-exists))
+        domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists (select-keys options #{:local})))
         user (or (:user options) (get-this :user) (a-user-exists {:domain domain}))
         source (or (:feed-source options)
                    (get-this :feed-source)
@@ -184,10 +193,11 @@
   [& [options]]
   (let [domain (or (:domain options)
                    (get-this :domain)
-                   (a-domain-exists))
+                   (a-domain-exists (select-keys options #{:local})))
         feed-subscription (actions.feed-subscription/create
                            (factory :feed-subscription
-                                    {:domain domain}))]
+                                    {:domain (:_id domain)
+                                     :local (:local domain)}))]
     (set-this :feed-subscription feed-subscription)
     feed-subscription))
 

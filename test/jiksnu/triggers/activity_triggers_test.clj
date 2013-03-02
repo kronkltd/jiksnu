@@ -8,15 +8,15 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 
  (fact "#'notify-activity"
-   (let [user (existance/a-user-exists)
-         activity (existance/there-is-an-activity {:user user})]
+   (let [user (mock/a-user-exists)
+         activity (mock/there-is-an-activity {:user user})]
      (notify-activity user activity) => packet/packet?))
 
  )

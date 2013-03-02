@@ -138,7 +138,7 @@
   [actor target]
   (if-let [subscription (model.subscription/find-by-users actor target)]
     (model.subscription/unsubscribe actor target)
-    (throw (RuntimeException. "Subscription not found"))))
+    (throw+ "Subscription not found")))
 
 (defaction subscribe-confirm
   [user]

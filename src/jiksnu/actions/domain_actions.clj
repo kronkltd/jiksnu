@@ -4,6 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -11,6 +12,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -22,6 +24,7 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as time]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -30,13 +33,18 @@
 (defonce delete-hooks (ref []))
 (defonce pending-discovers (ref {}))
 
+(defn statusnet-url
+  [domain]
+  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
+
 (defn prepare-create
   [domain]
   (-> domain
       transforms.domain/set-local
       transforms.domain/set-discovered
       transforms/set-created-time
-      transforms/set-updated-time))
+      transforms/set-updated-time
+      transforms/set-no-links))
 
 (defn prepare-delete
   ([domain]
@@ -46,11 +54,7 @@
        (recur ((first hooks) domain) (rest hooks))
        domain)))
 
-(defaction add-link*
-  [item link]
-  (mc/update "domains" {:_id (:_id item)}
-             {:$addToSet {:links link}})
-  item)
+(def add-link* (templates/make-add-link* model.domain/collection-name))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -66,25 +70,16 @@
   (let [domain (prepare-delete domain)]
     (model.domain/delete domain)))
 
-(defn discover-onesocialweb
-  [domain url]
-  (-> domain
-      model.domain/ping-request
-      tigase/make-packet
-      tigase/deliver-packet!)
-  domain)
-
 (defn fetch-xrd*
   [url]
-  (let [resource (ops/get-resource url)
-        response (ops/update-resource resource)]
+  (let [resource (actions.resource/find-or-create {:url url})
+        response (actions.resource/update* resource {:force true})]
     (try
       (if-let [body (:body response)]
-        (cm/string->document body)
-        (throw+ "Document did not contain any data"))
+        (cm/string->document body))
       (catch RuntimeException ex
         (log/error "Fetching host meta failed")
-        (.printStackTrace ex)))))
+        (trace/trace "errors:handled" ex)))))
 
 (defn fetch-xrd
   [domain url]
@@ -108,20 +103,6 @@
       (let [domain (model.domain/fetch-by-id (:_id domain))]
         (deliver p domain)))
     domain))
-
-(defn discover-webfinger
-  [^Domain domain url]
-  ;; TODO: check https first
-  (if-let [xrd (fetch-xrd domain url) ]
-    (if-let [links (model.webfinger/get-links xrd)]
-      ;; TODO: do individual updates
-      (do
-        (doseq [link links]
-          (add-link domain link))
-        (set-discovered! domain)
-        domain)
-      (throw+  "Host meta does not have any links"))
-    (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
 (defaction edit-page
   [domain]
@@ -157,22 +138,48 @@
   [domain]
   (set-xmpp domain true))
 
-(defn statusnet-url
-  [domain]
-  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
+(defn discover-webfinger
+  [^Domain domain url]
+  ;; TODO: check https first
+  (if-let [xrd (fetch-xrd domain url) ]
+    (if-let [links (model.webfinger/get-links xrd)]
+      ;; TODO: do individual updates
+      (do
+        (doseq [link links]
+          (add-link domain link))
+        (set-discovered! domain)
+        domain)
+      (throw+ "Host meta does not have any links"))
+    (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
+
+(defn discover-onesocialweb
+  [domain url]
+  (-> domain
+      model.domain/ping-request
+      tigase/make-packet
+      tigase/deliver-packet!)
+  domain)
 
 (defn discover-statusnet-config
   [domain url]
-  (let [resource (ops/get-resource (statusnet-url domain))
-        response (actions/invoke-action "resource" "update*" (str (:_id resource)))
-        sconfig (json/read-json (:body (:body response)))]
-    (model.domain/set-field! domain :statusnet-config sconfig)))
+  (let [resource (ops/get-resource (statusnet-url domain))]
+    (if-let [response (actions.resource/update* resource)]
+      (let [sconfig (json/read-json (:body (:body response)))]
+        (model.domain/set-field! domain :statusnet-config sconfig)))))
+
+(defmacro safe-task
+  [& body]
+  `(task
+    (try
+      ~@body
+      (catch RuntimeException ex#
+        (trace/trace "errors:handled" ex#)))))
 
 (defn discover*
   [domain url]
-  (future (discover-webfinger domain url))
-  (future (discover-onesocialweb domain url))
-  (future (discover-statusnet-config domain url)))
+  (safe-task (discover-webfinger domain url))
+  (safe-task (discover-onesocialweb domain url))
+  (safe-task (discover-statusnet-config domain url)))
 
 (defaction discover
   [^Domain domain url]
@@ -183,9 +190,9 @@
     (log/warn "local domains do not need to be discovered")))
 
 (defaction create
-  [options]
-  (let [domain (prepare-create options)]
-    (model.domain/create domain)))
+  [params]
+  (let [item (prepare-create params)]
+    (model.domain/create item)))
 
 (defn find-or-create
   [params]
@@ -195,8 +202,7 @@
 (defn find-or-create-for-url
   "Return a domain object that matche the domain of the provided url"
   [url]
-  (let [url-obj (URL. url)]
-    (find-or-create (.getHost url-obj))))
+  (find-or-create (util/get-domain-name url)))
 
 (defn current-domain
   []
@@ -217,16 +223,17 @@
             p (if p
                 (do (discover domain) p)
                 (get @pending-discovers id))]
-        (or (deref p (time/seconds 30) nil)
+        (or (deref p (time/seconds 300) nil)
             (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url
   [domain user-uri]
-  (-?>> domain
-        :links
-        (filter #(= (:rel %) "lrdd"))
-        (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
-        first))
+  (when user-uri
+    (-?>> domain
+          :links
+          (filter #(= (:rel %) "lrdd"))
+          (map #(string/replace (:template %) #"\{uri\}" (codec/url-encode user-uri)))
+          first)))
 
 (defaction host-meta
   []
@@ -237,11 +244,24 @@
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
 
-(defn- handle-pending-get-domain
-  [[p domain-name]]
-  (deliver p (find-or-create {:_id domain-name})))
+(defmacro defreceiver
+  [ch args & body]
+  (let [handle-name (symbol (format "handle2-%s" (str ch)))]
+    `(do
+       (defn ~handle-name
+         [p ~args]
+         (l/enqueue p ~@body))
+       (l/receive-all ~ch ~handle-name))))
 
-(l/receive-all ch/pending-get-domain handle-pending-get-domain)
+(defn- handle-pending-get-domain
+  [domain-name]
+  (find-or-create {:_id domain-name}))
+
+(l/receive-all ch/pending-get-domain (ops/op-handler handle-pending-get-domain))
+
+;; (defreceiver ch/pending-get-domain
+;;   [domain-name]
+;;   (find-or-create {:_id domain-name}))
 
 (definitializer
   (current-domain)

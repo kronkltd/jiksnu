@@ -7,7 +7,7 @@
         [midje.sweet :only [=> anything every-checker fact future-fact throws]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.util :as util])
@@ -19,7 +19,7 @@
 (test-environment-fixture
 
  (fact "#'fetch-by-id"
-   (let [source (existance/a-feed-source-exists)]
+   (let [source (mock/a-feed-source-exists)]
      (fetch-by-id (:_id source)) => source))
 
  (fact "create"
@@ -39,7 +39,7 @@
        (create-validators .params.) => [.error.])))
 
  (fact "#'delete"
-   (let [source (existance/a-feed-source-exists)]
+   (let [source (mock/a-feed-source-exists)]
      (delete source) => source
      (fetch-by-id (:_id source)) => nil?))
 
@@ -54,7 +54,7 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/a-feed-source-exists))
+         (mock/a-feed-source-exists))
        (count-records) => n)))
 
  )

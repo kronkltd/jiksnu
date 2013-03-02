@@ -16,5 +16,5 @@
 
  (future-fact "notify-subscribe-xmpp"
    (fact "should return a packet"
-     (let [subscription (existance/a-subscription-exists)]
+     (let [subscription (mock/a-subscription-exists)]
        (notify-subscribe-xmpp {:id "JIKSNU1"} subscription) => packet/packet?))))

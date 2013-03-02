@@ -19,6 +19,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
@@ -27,7 +28,8 @@
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.time :as time])
+            [lamina.time :as time]
+            [lamina.trace :as trace])
   (:import java.net.URI
            jiksnu.model.FeedSource
            jiksnu.model.User
@@ -35,6 +37,7 @@
 
 (defonce pending-discovers (ref {}))
 
+;; TODO: Config option
 (def discovery-timeout (time/seconds 30))
 
 (defn prepare-create
@@ -47,7 +50,12 @@
       transforms.feed-source/set-local
       transforms.feed-source/set-hub
       transforms.feed-source/set-status
-      transforms.feed-source/set-resource))
+      transforms.feed-source/set-resource
+      transforms/set-no-links))
+
+(def index*
+  (templates/make-indexer 'jiksnu.model.feed-source
+                          :sort-clause {:created -1}))
 
 (defaction add-watcher
   [^FeedSource source ^User user]
@@ -106,10 +114,6 @@
     source
     (create params options)))
 
-(def index*
-  (templates/make-indexer 'jiksnu.model.feed-source
-                          :sort-clause {:created -1}))
-
 (defaction index
   [& options]
   (apply index* options))
@@ -136,11 +140,16 @@
   [^FeedSource source ^Feed feed]
   {:pre [(instance? FeedSource source)
          (instance? Feed feed)]}
+  (trace/trace "feeds:processed" feed)
   (s/increment "feeds processed")
 
   (when-let [author (abdera/get-feed-author feed)]
-    (let [author-id (log/spy (abdera/get-simple-extension author ns/atom "id"))]
-      (log/spy (actions.user/person->user author))))
+    (let [author-id (abdera/get-simple-extension author ns/atom "id")]
+      (let [params (actions.user/parse-person author)
+            user (actions.user/find-or-create-by-remote-id
+                  {:id (:url params)})
+            id (:_id user)]
+        (model.feed-source/set-field! source :author id))))
 
   (let [feed-title (.getTitle feed)]
     (when-not (= feed-title (:title source))
@@ -205,13 +214,15 @@
 
 (defn update*
   [source]
+  {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (let [resource (ops/get-resource topic)]
-        (let [response (actions.resource/update* resource)]
+      (if-let [resource (actions.resource/find-or-create {:url topic})]
+        (when-let [response (actions.resource/update* resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)
-            (throw+ "could not obtain feed")))))
+            (throw+ "could not obtain feed")))
+        (throw+ "Could not get resource for topic")))
     (log/warn "local sources do not need updates")))
 
 (defaction update
@@ -221,8 +232,7 @@
    (try
      (update* source)
      (catch RuntimeException ex
-       (log/error ex)
-       (.printStackTrace ex))))
+       (trace/trace "errors:handled" ex))))
   source)
 
 (defaction subscribe
@@ -236,13 +246,13 @@
 (defn discover-source
   "determines the feed source associated with a url"
   [url]
-  (let [resource (ops/get-resource url)
-        response (actions.resource/update* resource)
-        body (actions.resource/response->tree response)
-        links (actions.resource/get-links body)]
-    (if-let [link (util/find-atom-link links)]
-      (find-or-create {:topic link})
-      (throw+ (format "Could not determine topic url from resource: %s" url)))))
+  (let [resource (actions.resource/find-or-create {:url url})]
+    (if-let [response (actions.resource/update* resource)]
+      (let [body (model.resource/response->tree response)
+            links (model.resource/get-links body)]
+        (if-let [link (util/find-atom-link links)]
+          (find-or-create {:topic link})
+          (throw+ (format "Could not determine topic url from resource: %s" url)))))))
 
 (defaction discover
   [item]
@@ -267,10 +277,10 @@
             (throw+ "Could not discover feed source"))))))
 
 (defn handle-pending-get-source
-  [[p url]]
-  (deliver p (find-or-create {:topic url})))
+  [url]
+  (find-or-create {:topic url}))
 
-(l/receive-all ch/pending-get-source handle-pending-get-source)
+(l/receive-all ch/pending-get-source (ops/op-handler handle-pending-get-source))
 (l/receive-all ch/pending-entries process-entry)
 
 (definitializer

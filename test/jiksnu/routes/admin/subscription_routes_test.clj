@@ -6,19 +6,19 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [hiccup.core :as h]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "index page"
-   (let [subscription (existance/a-subscription-exists)]
-     (-> (mock/request :get "/admin/subscriptions")
+   (let [subscription (mock/a-subscription-exists)]
+     (-> (req/request :get "/admin/subscriptions")
          as-admin response-for) =>
          (every-checker
           (comp status/success? :status)
@@ -28,8 +28,8 @@
                 body => #"subscription"))))))
 
  (fact "delete"
-   (let [subscription (existance/a-subscription-exists)]
-     (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
+   (let [subscription (mock/a-subscription-exists)]
+     (-> (req/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
          as-admin response-for) =>
          (every-checker
           map?

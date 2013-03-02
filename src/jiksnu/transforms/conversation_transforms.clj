@@ -4,9 +4,9 @@
             [clojurewerkz.route-one.core :as r]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            [jiksnu.model :as model]
-            [jiksnu.ops :as ops]
-            [jiksnu.routes.helpers :as rh])
+            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.routes.helpers :as rh]
+            [lamina.trace :as trace])
   (:import java.net.URI))
 
 (defn set-update-source
@@ -14,14 +14,15 @@
   (if (:update-source conversation)
     conversation
     (if-let [url (:url conversation)]
-      (let [resource (ops/get-resource url)
-            atom-url (rh/formatted-url "show conversation" {:id (:_id conversation)} "atom")]
+      (let [resource (actions.resource/find-or-create {:url url})]
         (if-let [source (if (:local resource)
-                          (ops/get-source atom-url)
+                          (let [atom-url (rh/formatted-url "show conversation"
+                                                           {:id (:_id conversation)} "atom")]
+                            (actions.feed-source/find-or-create {:topic atom-url}))
                           (try
                             (actions.feed-source/discover-source url)
                             (catch RuntimeException ex
-                              (log/warn ex))))]
+                              (trace/trace "errors:handled" ex))))]
           (assoc conversation :update-source (:_id source))
           (throw+ "could not determine source")))
       (throw+ "Could not determine url"))))

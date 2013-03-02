@@ -6,6 +6,7 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -24,7 +25,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.trace :as trace])
   (:import jiksnu.model.User))
 
 
@@ -108,7 +110,9 @@
   (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (actions.feed-source/process-feed source feed)
+      (do
+        (task (actions.feed-source/process-feed source feed))
+        true)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
 
@@ -168,7 +172,7 @@
                                            :name name
                                            :args args})
                            (catch RuntimeException ex
-                             (.printStackTrace ex)
+                             (trace/trace "errors:handled" ex)
                              {:body (json/json-str {:action "error"
                                                     :message (str ex)})}))]
              (l/enqueue ch (:body resp))

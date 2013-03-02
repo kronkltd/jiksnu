@@ -6,7 +6,7 @@
             [clojure.string :as string]
             [lamina.core :as l]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (defn request-oembed-resource
   []
@@ -15,7 +15,7 @@
 (defn request-stream
   [stream-name]
   (let [ch (:body @(http/http-request
-                    (mock/request :get (expand-url (page-names stream-name))) 3000))]
+                    (req/request :get (expand-url (page-names stream-name))) 3000))]
     (l/siphon ch that-stream)
     (Thread/sleep 3000)))
 

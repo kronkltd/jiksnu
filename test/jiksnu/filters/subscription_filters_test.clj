@@ -23,14 +23,14 @@
         {:params {:id .id.}}) => truthy
       (provided
         (model.subscription/fetch-by-id .id.) => .subscription.
-        (delete .subscription.) => truthy))
+        (delete .subscription.) => true))
      (fact "when a subscription matching the id param is not found"
        (filter-action
         #'delete
         {:params {:id .id.}}) => nil
          (provided
            (model.subscription/fetch-by-id .id.) => nil
-           (delete .subscription.) => truthy :times 0))))
+           (delete .subscription.) => true :times 0))))
 
  (fact "filter-action #'subscribe :http"
    (let [action #'subscribe]
@@ -43,7 +43,7 @@
               (provided
                 (model.user/fetch-by-id (util/make-id .id.)) => .target.
                 (session/current-user) => .actor.
-                (subscribe .actor. .target.) => truthy)))
+                (subscribe .actor. .target.) => true)))
           (fact "when the user is not authenticated"
             (let [request {:params {:subscribeto .id.}}]
               (filter-action action request) => (throws RuntimeException)
@@ -67,7 +67,7 @@
          {:to .jid.}) => truthy
         (provided
           (model.user/fetch-by-jid .jid.) => .user.
-          (get-subscribers .user.) => truthy))
+          (get-subscribers .user.) => true))
        (fact "when a user matching the to param is not found"
          (filter-action
           #'get-subscribers
@@ -84,7 +84,7 @@
              (filter-action action request) => truthy
              (provided
                (model.user/fetch-by-jid .jid.) => .user.
-               (get-subscriptions .user.) => truthy)))
+               (get-subscriptions .user.) => true)))
          (fact "when a user matching the to param is not found"
            (let [request {:to .jid.}]
              (filter-action action request) => nil

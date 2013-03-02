@@ -10,7 +10,7 @@
             jiksnu.filters.stream-filters
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 

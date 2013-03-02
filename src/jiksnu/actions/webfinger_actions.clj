@@ -3,21 +3,54 @@
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>]])
-  (:require [clojure.tools.logging :as log]
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [ciste.model :as cm]
+            [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [lamina.trace :as trace])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
-           jiksnu.model.User))
+           jiksnu.model.User
+           nu.xom.Document))
+
+(defn fetch-host-meta
+  [url]
+  {:pre [(string? url)]
+   :post [(instance? Document %)]}
+  (log/infof "fetching host meta: %s" url)
+  (or
+   (try
+     (let [resource (actions.resource/find-or-create {:url url})
+           response (actions.resource/update* resource)]
+       (s/increment "xrd_fetched")
+       (when (= 200 (:status response))
+         (cm/string->document (:body response))))
+     (catch RuntimeException ex
+       (trace/trace "errors:handled" ex)))
+   (throw+ "Could not fetch host meta")))
+
+(defn fetch-host-meta
+  [url]
+  {:pre [(string? url)]
+   :post [(instance? Document %)]}
+  (log/infof "fetching host meta: %s" url)
+  (or
+   (try
+     (let [resource (ops/get-resource url)
+           response (ops/update-resource resource)]
+       (s/increment "xrd_fetched")
+       (when (= 200 (:status response))
+         (cm/string->document (:body response))))
+     (catch RuntimeException ex
+       (trace/trace "errors:handled" ex)))
+   (throw+ "Could not fetch host meta")))
 
 (defn get-xrd-template
   []
@@ -43,50 +76,6 @@
   (->> uri
        util/split-uri
        (apply model.user/get-user )))
-
-;; TODO: is this being called anymore?
-(defn get-links
-  [xrd]
-  #_(let [links (force-coll (s/query "//xrd:Link" bound-ns xrd))]
-      (map
-       (fn [link]
-         {:rel (s/query "string(@rel)" bound-ns link)
-          :template (s/query "string(@template)" bound-ns link)
-          :href (s/query "string(@href)" bound-ns link)
-          :lang (s/query "string(@lang)" bound-ns link)})
-       links)))
-
-;; TODO: Collect all changes and update the user once.
-;; TODO: split the fetching and the processing apart
-(defaction update-usermeta
-  [user]
-  (let [xrd (actions.user/fetch-user-meta user)
-        links (get-links xrd)
-        new-user (assoc user :links links)
-        feed (actions.user/fetch-user-feed new-user)
-        uri (-?> feed .getAuthor .getUri str)]
-    (doseq [link links]
-      (actions.user/add-link user link))
-    (-> user
-        (assoc :id uri)
-        (assoc :discovered true)
-        ;; TODO: set fields
-        actions.user/update)))
-
-;; TODO: split the fetching and the processing apart
-(defn discover-webfinger
-  [^Domain domain]
-  ;; TODO: check https first
-  (let [url (model.domain/host-meta-link domain)
-        resource (ops/get-resource url)]
-    (if-let [xrd (model.webfinger/fetch-host-meta domain)]
-      (if-let [links (get-links xrd)]
-        ;; TODO: These should call actions
-        (do (model.domain/add-links domain links)
-            (actions.domain/set-discovered! domain))
-        (log/error "Host meta does not have any links"))
-      (log/error
-       (str "Could not find host meta for domain: " (:_id domain))))))
 
 (definitializer
   (require-namespaces

@@ -2,7 +2,7 @@
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>>]]
+        [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
@@ -13,23 +13,25 @@
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.ops :as ops]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
 (defonce delete-hooks (ref []))
 
 (defn prepare-create
   [conversation]
-  (-> conversation
-      transforms/set-_id
-      transforms/set-updated-time
-      transforms/set-created-time
-      transforms.conversation/set-url
-      transforms.conversation/set-domain
-      transforms/set-local
-      transforms.conversation/set-update-source))
+  (-?> conversation
+       transforms/set-_id
+       transforms/set-updated-time
+       transforms/set-created-time
+       transforms.conversation/set-url
+       transforms.conversation/set-domain
+       transforms/set-local
+       transforms.conversation/set-update-source))
 
 (defn prepare-delete
   ([item]
@@ -41,16 +43,16 @@
 
 (defaction create
   [params]
-  (let [conversation (prepare-create params)]
-    (model.conversation/create conversation)))
+  (if-let [conversation (prepare-create params)]
+    (model.conversation/create conversation)
+    (throw+ "Could not prepare conversation")))
 
 (defaction delete
   [item]
   (let [item (prepare-delete item)]
     (model.conversation/delete item)))
 
-(def index*
-  (templates/make-indexer 'jiksnu.model.conversation))
+(def index* (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction index
   [& [params & [options]]]
@@ -78,7 +80,7 @@
                             (try
                               (create params)
                               (catch RuntimeException ex
-                                (log/warn "conversation create failed"))))]
+                                (trace/trace "errors:handled" ex))))]
     conversation
     (if (< tries 3)
       (do
@@ -103,14 +105,14 @@
   (create {:local true}))
 
 (defn- handle-get-conversation
-  [[p url]]
-  (deliver p (find-or-create {:url url})))
+  [url]
+  (find-or-create {:url url}))
 
 (defn- enqueue-create-local
   [ch]
   (l/enqueue ch (create {:local true})))
 
-(l/receive-all ch/pending-get-conversation handle-get-conversation)
+(l/receive-all ch/pending-get-conversation (ops/op-handler handle-get-conversation))
 (l/receive-all ch/pending-create-conversations enqueue-create-local)
 
 (definitializer

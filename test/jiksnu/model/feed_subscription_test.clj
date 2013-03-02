@@ -6,7 +6,7 @@
         [midje.sweet :only [every-checker fact future-fact throws =>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.util :as util])
   (:import jiksnu.model.FeedSubscription
@@ -22,13 +22,13 @@
        (fetch-by-id id) => nil?))
 
    (fact "when the item exists"
-     (let [item (existance/a-feed-subscription-exists)]
+     (let [item (mock/a-feed-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
 
  (fact "#'create"
    (fact "when given valid params"
      (let [params (actions.feed-subscription/prepare-create
-                   (factory :feed-subscription))]
+                   (factory :feed-subscription {:local false}))]
        (create params)) =>
        (every-checker
         map?
@@ -43,12 +43,12 @@
 
  (fact "#'drop!"
    (dotimes [i 1]
-     (existance/a-feed-subscription-exists))
+     (mock/a-feed-subscription-exists))
    (drop!)
    (count-records) => 0)
 
  (fact "#'delete"
-   (let [item (existance/a-feed-subscription-exists)]
+   (let [item (mock/a-feed-subscription-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
@@ -64,7 +64,7 @@
 
      (let [n 25]
        (dotimes [i n]
-         (existance/a-feed-subscription-exists))
+         (mock/a-feed-subscription-exists))
 
        (fetch-all) =>
        (every-checker
@@ -84,7 +84,7 @@
      (drop!)
      (let [n 15]
        (dotimes [i n]
-         (existance/a-feed-subscription-exists))
+         (mock/a-feed-subscription-exists))
        (count-records) => n)))
 
  )

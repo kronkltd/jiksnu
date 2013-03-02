@@ -8,13 +8,16 @@
             [clojure.string :as string]
             [clojurewerkz.route-one.core :as r]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.trace :as trace])
   (:import java.net.URI))
 
 (defn set-local
@@ -59,11 +62,11 @@
   (if (empty? (:parent params))
     (let [params (dissoc params :parent)]
       (if-let [uri (:parent-uri params)]
-        (let [resource (ops/get-resource uri)]
+        (let [resource (actions.resource/find-or-create {:url uri})]
           (if-let [parent (model.activity/fetch-by-remote-id uri)]
             (assoc params :parent (:_id parent))
             (do
-              (ops/update-resource resource)
+              (actions.resource/update* resource)
               params))
           params)
         params))
@@ -157,14 +160,20 @@
     (:_id user)))
 
 (defn- set-mentioned*
-  [uri]
-  (let [uri-obj (URI. uri)
+  [url]
+  (let [uri-obj (URI. url)
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
-      (let [resource (log/spy (ops/update-resource (log/spy (ops/get-resource (log/spy uri)))))
-            user (actions.user/find-or-create-by-remote-id {:id uri})]
-        (:_id user))
-      (actions.user/find-or-create-by-uri uri))))
+      (let [actor (or (try
+                        (actions.user/find-or-create-by-remote-id {:id url})
+                        (catch RuntimeException ex
+                          (trace/trace "errors:handled" ex)))
+                      (try
+                        (actions.group/find-or-create {:url url})
+                        (catch RuntimeException ex
+                          (trace/trace "errors:handled" ex))))]
+        (:_id actor))
+      (:_id (actions.user/find-or-create-by-uri url)))))
 
 ;; TODO: this type of job should be done via triggers
 (defn set-recipients
@@ -182,11 +191,11 @@
     item
     (if-let [user (model.activity/get-author item)]
       (if (:local user)
-        (assoc item :conversation (:_id (ops/create-new-conversation)))
+        (assoc item :conversation (:_id @(ops/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
           (let [conversation (ops/get-conversation uri)]
             (-> item
-                (assoc :conversation (:_id conversation))
+                (assoc :conversation (:_id @conversation))
                 (dissoc :conversation-uris)))
           item))
       (throw+ "could not determine author"))))
@@ -209,8 +218,8 @@
                     :enclosures
                     (map :href)
                     (map (fn [url]
-                           (let [resource (ops/get-resource url)]
-                             (ops/update-resource resource)
+                           (let [resource (actions.resource/find-or-create {:url url})]
+                             (future (actions.resource/update resource))
                              (:_id resource))))
                     seq
                     doall)]

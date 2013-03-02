@@ -10,7 +10,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.feed-subscription-actions :as actions.admin.feed-subscription]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 
 (test-environment-fixture
@@ -21,7 +21,7 @@
          (fact "when the format is :html"
            (with-format :html
              (binding [*dynamic* false]
-               (let [feed-subscription (existance/a-feed-subscription-exists)
+               (let [feed-subscription (mock/a-feed-subscription-exists)
                      request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>

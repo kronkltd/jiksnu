@@ -1,10 +1,12 @@
 (ns jiksnu.routes
-  (:use [ciste.routes :only [make-matchers resolve-routes]]
+  (:use [ciste.config :only [config]]
+        [ciste.routes :only [make-matchers resolve-routes]]
+        [clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
-            ;; ciste.formats.default
             [ciste.middleware :as middleware]
+            [clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
@@ -17,46 +19,53 @@
             [jiksnu.session :as session]
             [ring.middleware.file :as file]
             [monger.ring.session-store :as ms]
+            [noir.util.middleware :as nm]
             [ring.middleware.file-info :as file-info]
             [ring.middleware.stacktrace :as stacktrace]
             [ring.util.response :as response])
   (:import javax.security.auth.login.LoginException))
 
+(airbrake/set-host! "localhost:3000")
+
 (defn not-found-msg
   []
   "Not Found")
 
+(def route-modules
+  ["activity"
+   "auth"
+   "comment"
+   "conversation"
+   "domain"
+   "favorite"
+   "feed-source"
+   "feed-subscription"
+   "group"
+   "like"
+   "message"
+   "pubsub"
+   "resource"
+   "salmon"
+   "search"
+   "setting"
+   "site"
+   "stream"
+   "subscription"
+   "tag"
+   "user"])
+
+(defn load-module
+  [module-name]
+  (let [route-sym (symbol (format "jiksnu.routes.%s-routes" module-name))]
+    (require route-sym)
+    (let [route-fn (ns-resolve route-sym 'routes)]
+      (route-fn))))
+
 (def http-routes
-  (make-matchers
-   (reduce concat
-           (map
-     (fn [x]
-       (let [route-sym (symbol (format "jiksnu.routes.%s-routes" x))]
-         (require route-sym)
-         (let [route-fn (ns-resolve route-sym 'routes)]
-           (route-fn))))
-     ["activity"
-      "auth"
-      "comment"
-      "conversation"
-      "domain"
-      "favorite"
-      "feed-source"
-      "feed-subscription"
-      "group"
-      "like"
-      "message"
-      "pubsub"
-      "resource"
-      "salmon"
-      "search"
-      "setting"
-      "site"
-      "stream"
-      "subscription"
-      "tag"
-      "user"
-      ]))))
+  (->> route-modules
+       (map load-module)
+       (reduce concat)
+       make-matchers))
 
 (compojure/defroutes all-routes
   (compojure/GET "/api/help/test.json" _ "OK")
@@ -75,13 +84,6 @@
   (route/resources "/webjars" {:root "META-INF/resources/webjars"})
   (route/not-found (not-found-msg)))
 
-
-(defn send-stat
-  [handler]
-  (fn [request]
-    (s/increment "requests handled")
-    (handler request)))
-
 (def app
   (http/wrap-ring-handler
    (-> all-routes
@@ -93,6 +95,7 @@
        middleware/wrap-log-request
        jm/wrap-dynamic-mode
        (handler/site {:session {:store (ms/session-store)}})
+       (wrap-airbrake (config :airbrake :key))
+       ;; (nm/wrap-canonical-host (config :domain))
        jm/wrap-stacktrace
-       send-stat
-       )))
+       jm/wrap-stat-logging)))

@@ -1,5 +1,6 @@
 (ns jiksnu.model.subscription
   (:use [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
   (:require [clj-tigase.core :as tigase]
@@ -12,18 +13,20 @@
             [jiksnu.templates :as templates]
             [monger.collection :as mc]
             [monger.query :as mq])
-  (:import jiksnu.model.Subscription))
+  (:import jiksnu.model.Subscription
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (def collection-name "subscriptions")
 (def default-page-size 20)
 
 (def create-validators
   (validation-set
-   (presence-of :from)
-   (presence-of :to)
-   (presence-of :created)
-   (presence-of :updated)
-   (presence-of :_id)))
+   (type-of :from    ObjectId)
+   (type-of :to      ObjectId)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)
+   (type-of :_id     ObjectId)))
 
 (def set-field! (templates/make-set-field! collection-name))
 
@@ -59,15 +62,7 @@
               (mq/paginate :page page :per-page page-size))
             (map model/map->Subscription)))))
 
-(defn create
-  [params & [options]]
-  (let [errors (create-validators params)]
-    (if (empty? errors)
-      (do
-        (log/debugf "creating subscription: %s" (pr-str params))
-        (mc/insert collection-name params)
-        (fetch-by-id (:_id params)))
-      (throw+ {:type :validation :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 ;; TODO: use set-field
 (defn confirm

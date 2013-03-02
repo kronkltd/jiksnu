@@ -9,14 +9,14 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "auth admin index"
 
    (fact "When not authenticated"
-     (-> (mock/request :get "/admin/auth")
+     (-> (req/request :get "/admin/auth")
          response-for) =>
          (every-checker
           map?
@@ -25,11 +25,11 @@
    (future-fact "When authenticated as an admin"
      (let [user (actions.user/create (factory :user {:admin true}))]
        (with-user user
-         (-> (mock/request :get "/admin/auth")
+         (-> (req/request :get "/admin/auth")
             response-for))) =>
            (every-checker
             map?
             (comp status/success? :status))))
- 
+
  )
 

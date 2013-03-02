@@ -20,7 +20,8 @@
 
 (defview #'callback-publish :html
   [request params]
-  {:status 200
+  {:status 202
+
    :template false})
 
 ;; direct-message-timeline

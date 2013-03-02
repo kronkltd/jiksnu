@@ -7,7 +7,7 @@
         [midje.sweet :only [contains every-checker fact future-fact =>]])
   (:require [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
@@ -22,7 +22,7 @@
        (with-serialization :http
          (fact "when the serialization is :html"
            (with-format :html
-             (let [domain (existance/a-domain-exists)]
+             (let [domain (mock/a-domain-exists)]
                (let [request {:action action
                               :params {:id (:_id domain)}}
                      response (filter-action action request)]

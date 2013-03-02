@@ -4,11 +4,9 @@
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [fact falsey future-fact => every-checker contains]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.existance-helpers :as existance]
-            [jiksnu.features-helper :as feature]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.like :as model.like]
-            [ring.mock.request :as mock]))
+            [jiksnu.model.like :as model.like]))
 
 (test-environment-fixture
 
@@ -19,8 +17,8 @@
       seq?)))
 
  (future-fact "#'delete"
-   (let [user (existance/a-user-exists)
-         activity (existance/there-is-an-activity)
+   (let [user (mock/a-user-exists)
+         activity (mock/there-is-an-activity)
          like (model.like/create (factory :like
                                           {:user (:_id user)
                                            :activity (:_id activity)}))]

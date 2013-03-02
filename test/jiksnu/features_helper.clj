@@ -4,7 +4,7 @@
         [clj-factory.core :only [factory fseq]]
         clj-webdriver.taxi
         [clojure.core.incubator :only [-?>]]
-        [jiksnu.existance-helpers :only [my-password]]
+        [jiksnu.mock :only [my-password]]
         [jiksnu.referrant :only [this that get-this get-that set-this set-that]]
         [lamina.core :only [permanent-channel read-channel* siphon]]
         [lamina.executor :only [task]]
@@ -37,7 +37,7 @@
             [jiksnu.model.user :as model.user]
             jiksnu.routes
             [jiksnu.session :as session]
-            [ring.mock.request :as mock])
+            [ring.mock.request :as req])
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User))

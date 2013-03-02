@@ -1,22 +1,18 @@
 (ns jiksnu.transforms.resource-transforms
-  (:use [slingshot.slingshot :only [throw+]])
+  (:use [ciste.config :only [config]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
-            [clojurewerkz.route-one.core :as r]
-            [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.model :as model]
             [jiksnu.ops :as ops]
-            [jiksnu.routes.helpers :as rh])
-  (:import java.net.URI))
+            [jiksnu.util :as util]))
 
 (defn set-local
   [item]
   (if (contains? item :local)
     item
     (if-let [url (:url item)]
-      (if-let [domain-name (.getHost (URI. url))]
+      (if-let [domain-name (util/get-domain-name url)]
         (assoc item :local
-               (= (:_id (actions.domain/current-domain))
-                  domain-name))
+               (= (config :domain) domain-name))
         (throw+ "Could not determine domain name from url"))
       (throw+ "Could not determine url"))))
 
@@ -24,16 +20,17 @@
   [item]
   (if (:domain item)
     item
-    (if-let [domain (if (:local item)
-                      (actions.domain/current-domain)
-                      (when-let [uri (URI. (:url item))]
-                        (actions.domain/find-or-create {:_id (.getHost uri)})))]
-      (assoc item :domain (:_id domain))
+    (if-let [domain-name (if (:local item)
+                           (config :domain)
+                           (util/get-domain-name (:url item)))]
+      (assoc item :domain domain-name)
       (throw+ "Could not determine domain"))))
 
 (defn set-location
   [item]
   (if-let [location (:location item)]
-    (let [resource (ops/get-resource (ops/get-resource location))]
+    ;; TODO: handle this as a content handler
+    (let [resource (ops/get-resource location)]
+      (ops/update-resource @resource)
       item)
     item))

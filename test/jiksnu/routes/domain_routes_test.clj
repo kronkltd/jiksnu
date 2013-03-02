@@ -8,18 +8,18 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "show"
    (with-context [:http :html]
-     (let [domain (existance/a-domain-exists)]
-       (-> (mock/request :get (uri domain))
+     (let [domain (mock/a-domain-exists)]
+       (-> (req/request :get (uri domain))
            response-for) =>
            (every-checker
             map?
@@ -31,7 +31,7 @@
 
  (fact "#'webfinger-host-meta"
    (fact "should return a XRD document"
-     (-> (mock/request :get "/.well-known/host-meta")
+     (-> (req/request :get "/.well-known/host-meta")
          response-for) =>
          (every-checker
           map?

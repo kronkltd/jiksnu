@@ -1,31 +1,12 @@
 (ns jiksnu.rdf
-  (:use [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
-            [clj-statsd :as s]
-            [clojure.string :as string]
-            [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
-            [inflections.core :as inf]
-            [jiksnu.db :as db]
-            [jiksnu.namespace :as ns]
-            [jiksnu.util :as util]
-            [lamina.core :as l]
-            [lamina.time :as time]
-            [lamina.trace :as trace]
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.implementations.jena :as jena])
-  (:import com.mongodb.WriteConcern
-           com.ocpsoft.pretty.time.PrettyTime
-           java.io.FileNotFoundException
-           java.io.PrintWriter
-           java.text.SimpleDateFormat
-           java.util.Date
-           java.net.URL
-           lamina.core.channel.Channel
-           org.bson.types.ObjectId
-           org.joda.time.DateTime
-           java.io.StringReader))
+  (:require [jiksnu.namespace :as ns]
+            [plaza.rdf.core :as plaza]
+            [plaza.rdf.implementations.jena :as jena]))
+
+;; TODO: The rdf backend should be configurable and this should be
+;; initialized in the definitializer. I'm not certain that clj-plaza
+;; will support this.
+(jena/init-jena-framework)
 
 (def rdf-prefixes
   [["activity" ns/as]
@@ -40,24 +21,22 @@
   [s pairs]
   (map (fn [[p o]] [s p o]) pairs))
 
-(jena/init-jena-framework)
-
 ;; rdf helpers
 
 (defn triples->model
   [triples]
-  (let [model (rdf/build-model)
-        j-model (rdf/to-java model)]
+  (let [model (plaza/build-model)
+        j-model (plaza/to-java model)]
     (doseq [[prefix uri] rdf-prefixes]
       (.setNsPrefix j-model prefix uri))
-    (rdf/with-model model
-      (rdf/model-add-triples triples))
+    (plaza/with-model model
+      (plaza/model-add-triples triples))
     model))
 
 (defn format-triples
   [triples format]
   (-> triples
       triples->model
-      (rdf/model->format format)
+      (plaza/model->format format)
       with-out-str))
 

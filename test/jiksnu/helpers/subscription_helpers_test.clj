@@ -4,7 +4,7 @@
         midje.sweet)
   (:require [clj-tigase.element :as element]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
@@ -13,9 +13,9 @@
 (test-environment-fixture
 
  (fact "subscriber-response-element"
-   (let [subscription (existance/a-subscription-exists)]
+   (let [subscription (mock/a-subscription-exists)]
      (subscriber-response-element subscription) => vector?))
 
  (fact "subscribe-request"
-   (let [subscription (existance/a-subscription-exists)]
+   (let [subscription (mock/a-subscription-exists)]
      (subscribe-request subscription) => vector?)))

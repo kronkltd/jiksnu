@@ -12,25 +12,12 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.trace :as trace])
   (:import java.net.URI
+           jiksnu.model.FeedSource
            jiksnu.model.User
            nu.xom.Document))
-
-(defn fetch-host-meta
-  [url]
-  {:pre [(string? url)]
-   :post [(instance? Document %)]}
-  (log/infof "fetching host meta: %s" url)
-  (or
-   (try
-     (let [resource (ops/get-resource url)
-           response (ops/update-resource resource)]
-       (s/increment "xrd_fetched")
-       (when (= 200 (:status response))
-         (cm/string->document (:body response))))
-     (catch RuntimeException ex))
-   (throw+ "Could not fetch host meta")))
 
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
@@ -46,9 +33,10 @@
     ["Title" {} "Resource Descriptor"]]])
 
 (defn get-source-link
+  "Returns a update link from a user meta"
   [xrd]
   {:pre [(instance? Document xrd)]
-   :post [(string? %)]}
+   :post [(or (nil? %) (string? %))]}
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
     (->> xrd
          (cm/query query-str)
@@ -56,33 +44,30 @@
          (keep #(.getAttributeValue % "href"))
          first)))
 
-
 (defn get-feed-source-from-xrd
   [^Document xrd]
-  (log/spy (.toXML xrd))
+  {:pre [(instance? Document xrd)]
+   :post [(instance? FeedSource %)]}
   (if-let [source-link (get-source-link xrd)]
-    (ops/get-source source-link)
-    (throw+ "could not determine source")))
+    @(ops/get-source source-link)))
 
 (defn get-username-from-atom-property
   [^Document xrd]
-  (try
+  {:pre [(instance? Document xrd)]
+   :post [(or (nil? %) (string? %))]}
+  (let [query-str (str "//*[local-name() = 'Property']"
+                       "[@type = 'http://apinamespace.org/atom/username']")]
     (->> xrd
-         (cm/query "//*[local-name() = 'Property'][@type = 'http://apinamespace.org/atom/username']")
+         (cm/query query-str)
          util/force-coll
-         (keep #(.getValue %))
-         first)
-    ;; TODO: What are the error risks here?
-    (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
+         (keep (fn [prop] (when prop (.getValue prop))))
+         first)))
 
 (defn user-meta
   [lrdd]
   ["XRD" {"xmlns" ns/xrd}
    ["Subject" {} (:subject lrdd)]
    ["Alias" {} (:alias lrdd)]
-
    ;; Pull the links from a global ref that various plugins can write to
    (map
     (fn [link]
@@ -100,52 +85,39 @@
         (:properties link))])
     (:links lrdd))])
 
-(defn parse-link
-  [link]
-  (let [rel (.getAttributeValue link "rel")
-        template (.getAttributeValue link "template")
-        href (.getAttributeValue link "href")
-        type (.getAttributeValue link "type")
-        lang (.getAttributeValue link "lang")
-        title (if-let [title-element (.getFirstChildElement link "Title" ns/xrd)]
-                (.getValue title-element))]
-    (merge (when rel      {:rel rel})
-           (when template {:template template})
-           (when href     {:href href})
-           (when type     {:type type})
-           (when title {:title title})
-           (when lang     {:lang lang}))))
-
 (defn get-links
   [xrd]
+  {:pre [(instance? Document xrd)]}
   (->> xrd
        (cm/query "//*[local-name() = 'Link']")
        util/force-coll
-       (map parse-link)))
+       (map util/parse-link)))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
   [xrd]
+  {:pre [(instance? Document xrd)]
+   :post [(coll? %)]}
   (->> (concat (util/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
                (util/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))
 
 (defn get-username-from-identifiers
-  ;; passed a document
   [xrd]
+  {:pre [(instance? Document xrd)]}
   (try
     (->> xrd
          get-identifiers
          (keep (comp first util/split-uri))
          first)
     (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
+      (trace/trace "errors:handled" ex))))
 
 ;; takes a document
 (defn get-username-from-xrd
   "return the username component of the user meta"
   [xrd]
+  {:pre [(instance? Document xrd)]}
   (->> [(get-username-from-atom-property xrd)]
        (lazy-cat
         [(get-username-from-identifiers xrd)])

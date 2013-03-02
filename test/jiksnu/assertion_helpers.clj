@@ -6,7 +6,8 @@
                                       page-names that-stream]]
         [jiksnu.referrant :only [get-that get-this]]
         [lamina.core :only [read-channel*]]
-        [midje.sweet :only [=> =not=> contains fact future-fact truthy]]
+        [midje.sweet :only [=> =not=> checker contains defchecker fact
+                            future-fact truthy]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
@@ -17,6 +18,12 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session])
   (:import org.openqa.selenium.NoSuchElementException))
+
+(defchecker has-match?
+  [selector]
+  (checker
+   [actual]
+   (webdriver/exists? selector)))
 
 (defn should-be-admin
   []
@@ -62,6 +69,7 @@
 (defn should-not-be-logged-in
   []
   (check-response
+   ;; nil => (has-match? ".unauthenticated")
    (webdriver/exists? ".unauthenticated") => truthy))
 
 (defn should-not-see-class

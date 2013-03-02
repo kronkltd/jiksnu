@@ -16,7 +16,7 @@
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -32,7 +32,7 @@
        (with-serialization :http
          (fact "when the format is :json"
            (with-format :json
-             (let [activity (existance/there-is-an-activity)
+             (let [activity (mock/there-is-an-activity)
                    request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
@@ -47,14 +47,13 @@
                                {:title (:title activity)}))))))))
          (fact "when the format is :xml"
            (with-format :xml
-             (let [activity (existance/there-is-an-activity)
+             (let [activity (mock/there-is-an-activity)
                    request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
                (apply-view request response) =>
                (every-checker
                 map?
-                :body
                 (comp status/success? :status)
                 (fn [result]
                   (let [body (:body result)]

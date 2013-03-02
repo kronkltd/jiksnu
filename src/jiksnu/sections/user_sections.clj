@@ -31,6 +31,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.rdf :as rdf]
             [jiksnu.util :as util]
+            [lamina.trace :as trace]
             [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
@@ -162,9 +163,14 @@
                  (:display-name user)
                  (str (:first-name user) " " (:last-name user)))
         id (or (:id user) author-uri)
-        person (.newAuthor abdera/abdera-factory)]
+        extensions [{:ns ns/as
+                     :local "object-type"
+                     :prefix "activity"
+                     :element ns/person}]
+        params {:name name
+                :extension extensions}
+        person (abdera/make-person params)]
     (doto person
-      (.setName name)
 
       (.addSimpleExtension ns/as   "object-type"       "activity" ns/person)
       (.addSimpleExtension ns/atom "id"                ""         id)
@@ -484,7 +490,7 @@
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: displayName"}
+                     {:data-bind "attr: {about: url}, text: displayName() || username()"}
                      {:about (uri record)}))
       (when-not *dynamic*
         (or (:title options-map) (title record)))]]))
@@ -571,7 +577,7 @@
                    (Key.)
                    (try+  (model.key/get-key-for-user user)
                           (catch Object ex
-                            (log/warn ex))))]
+                            (trace/trace "errors:handled" ex))))]
       (show-section key))]))
 
 (defsection show-section [User :json]
@@ -592,7 +598,8 @@
   (let [{:keys [url display-name avatar-url first-name
                 last-name username name email]} user
                 mkp (try (model.key/get-key-for-user user)
-                         (catch Exception ex))
+                         (catch Exception ex
+                           (trace/trace "errors:handled" ex)))
                 document-uri (str (full-uri user) ".rdf")
                 user-uri (plaza/rdf-resource (str (full-uri user) "#me"))
                 acct-uri (plaza/rdf-resource (model.user/get-uri user))]

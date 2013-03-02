@@ -29,6 +29,7 @@
 
 (def collection-name "users")
 (def default-page-size 20)
+(def maker model/map->User)
 
 (def create-validators
   (validation-set
@@ -43,9 +44,25 @@
    (presence-of   :avatar-url)
    (acceptance-of :local         :accept (partial instance? Boolean))))
 
+(def count-records (templates/make-counter    collection-name))
+(def delete        (templates/make-deleter    collection-name))
+(def drop!         (templates/make-dropper    collection-name))
+(def set-field! (templates/make-set-field! collection-name))
+
 (defn salmon-link
   [user]
-  (str "http://" (:domain user) "/main/salmon/user/" (:_id user)))
+  (named-url "user salmon" {:id (:_id user)}))
+
+(defn get-uri
+  ([^User user] (get-uri user true))
+  ([^User user use-scheme?]
+     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
+
+(defn image-link
+  [user]
+  (or (:avatar-url user)
+      (when (:email user) (gravatar-image (:email user)))
+      (gravatar-image (get-uri user false))))
 
 ;; TODO: Move this to actions and make it find-or-create
 (defn get-domain
@@ -60,11 +77,6 @@
       (if-let [domain (get-domain user)]
         (:local domain)
         (throw+ (format "Could not determine domain for user: %s" user)))))
-
-(defn get-uri
-  ([^User user] (get-uri user true))
-  ([^User user use-scheme?]
-     (str (when use-scheme? "acct:") (:username user) "@" (:domain user))))
 
 (defn uri
   "returns the relative path to the user's profile page"
@@ -89,29 +101,15 @@
   [user rel content-type]
   (first (util/rel-filter rel (:links user) content-type)))
 
-(defn drop!
-  []
-  (mc/remove collection-name))
-
 (defn fetch-by-id
   "Fetch a user by it's object id"
   [id]
   (s/increment "users fetched")
   (if-let [user (mc/find-map-by-id collection-name id)]
-    (model/map->User user)
+    (maker user)
     (log/warnf "Could not find user: %s" id)))
 
-(defn create
-  [user]
-  (let [errors (create-validators user)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating user: %s" user)
-        (s/increment "users created")
-        (mc/insert collection-name user)
-        (fetch-by-id (:_id user)))
-      (throw+ {:type :validation
-               :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -124,7 +122,7 @@
                      (merge sort-clause)
                      (mq/paginate :page (:page options 1)
                                   :per-page (:page-size options 20)))]
-       (map model/map->User records))))
+       (map maker records))))
 
 (defn get-user
   "Find a user by username and domain"
@@ -133,7 +131,7 @@
      (if-let [user (mc/find-one-as-map collection-name
                                        {:username username
                                         :domain domain})]
-       (model/map->User user))))
+       (maker user))))
 
 ;; deprecated
 ;; TODO: Split the jid into it's parts and fetch.
@@ -141,8 +139,6 @@
   [jid]
   (get-user (.getLocalpart jid)
             (.getDomain jid)))
-
-(def set-field! (templates/make-set-field! collection-name))
 
 (defn fetch-by-uri
   "Fetch user by their acct uri"
@@ -155,7 +151,7 @@
   "Fetch user by their id value"
   [uri]
   (if-let [user (mc/find-one-as-map collection-name {:id uri})]
-    (model/map->User user)))
+    (maker user)))
 
 (defn fetch-by-domain
   ([domain] (fetch-by-domain domain {}))
@@ -170,20 +166,13 @@
         domain (tigase/get-domain user)]
     (:nodes (get-user id))))
 
-(defn delete
-  "Delete the user"
-  [user]
-  (s/increment "users deleted")
-  (mc/remove-by-id collection-name (:_id user))
-  user)
-
 (defn update
   [^User new-user]
   (log/infof "updating user: %s" new-user)
   (let [old-user (get-user (:username new-user) (:domain new-user))
         merged-user (merge {:admin false}
                            old-user new-user)
-        user (model/map->User merged-user)]
+        user (maker merged-user)]
     (s/increment "users updated")
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
@@ -195,15 +184,8 @@
     (if-let [lrdd-link (get-link domain "lrdd" nil)]
       (let [template (:template lrdd-link)]
         (string/replace template "{uri}" (get-uri user)))
-      (throw (RuntimeException. "could not find lrdd link")))
-    (throw (RuntimeException. "could not determine domain"))))
-
-(defn image-link
-  [user]
-  (or (:avatar-url user)
-      (when (:email user) (gravatar-image (:email user)))
-      (gravatar-image (get-uri user false))))
-
+      (throw+ "could not find lrdd link"))
+    (throw+ "could not determine domain")))
 
 ;; TODO: This should check for an associated source
 (defn feed-link-uri
@@ -223,12 +205,6 @@
                     :body body}]
     (tigase/make-packet packet-map)))
 
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (s/increment "users counted")
-     (mc/count collection-name params)))
-
 ;; FIXME: This does not work yet
 (defn foaf-query
   "Extract user information from a foaf document"
@@ -245,4 +221,3 @@
        (rdf/optional [:?user :foaf/name            :?name])
        (rdf/optional [:?user :dcterms/descriptions :?bio])
        (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
-

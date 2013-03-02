@@ -16,7 +16,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -32,7 +32,7 @@
          (fact "when the format is :xmpp"
            (with-format :xmpp
              (fact "when the user is logged in"
-               (let [user (existance/a-user-exists)]
+               (let [user (mock/a-user-exists)]
                  (with-user user
                    (fact "and it is a valid activity"
                      (let [activity (factory :activity)
@@ -51,9 +51,9 @@
    (let [action #'actions.activity/show]
      (fact "when the serialization is :xmpp"
        (with-serialization :xmpp
-         (let [author (existance/a-user-exists)]
+         (let [author (mock/a-user-exists)]
            (with-user author
-             (let [activity (existance/there-is-an-activity)
+             (let [activity (mock/there-is-an-activity)
                    packet-map {:from (tigase/make-jid author)
                                :to (tigase/make-jid author)
                                :type :get

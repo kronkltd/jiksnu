@@ -5,6 +5,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.ops :as ops]
@@ -58,7 +59,7 @@
 (defaction subscription-request
   "Handle a request for a new subscription to a local source"
   [params]
-  (let [source (ops/get-source (:topic params))]
+  (let [source (actions.feed-source/find-or-create {:topic (:topic params)})]
     (if (:local source)
       (let [params (merge {:source (:_id source)
                            :callback (:callback params)

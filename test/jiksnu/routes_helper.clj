@@ -7,13 +7,13 @@
             [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.existance-helpers :as existance]
+            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
             [lamina.time :as time]
             [net.cgrand.enlive-html :as enlive]
-            [ring.mock.request :as mock]
+            [ring.mock.request :as req]
             [ring.util.codec :as codec])
   (:import java.io.StringReader))
 
@@ -27,7 +27,7 @@
 
 (defn get-auth-cookie
   [username password]
-  (-?> (mock/request :post "/main/login")
+  (-?> (req/request :post "/main/login")
        (assoc :params {:username username
                        :password password})
        response-for
@@ -40,7 +40,7 @@
 
 (defn as-user
   ([m]
-     (let [user (existance/a-user-exists)]
+     (let [user (mock/a-user-exists)]
        (as-user m user)))
   ([m user]
      (let [password (fseq :password)]

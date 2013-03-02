@@ -14,12 +14,12 @@
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
  (future-fact "delete"
      (let [like (model.like/create (factory :like))]
-     (-> (mock/request :post (str "/admin/likes/" (:_id like) "/delete"))
+     (-> (req/request :post (str "/admin/likes/" (:_id like) "/delete"))
          as-admin response-for) =>
          (every-checker
           map?

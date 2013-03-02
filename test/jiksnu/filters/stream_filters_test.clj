@@ -14,13 +14,11 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
-            [jiksnu.existance-helpers :as existance]
-            [jiksnu.features-helper :as feature]
+            [jiksnu.mock :as mock]
             jiksnu.filters.stream-filters
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock])
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -29,24 +27,24 @@
  (fact "filter-action #'actions.stream/public-timeline :xmpp"
    (with-serialization :xmpp
      (fact "when there are no activities"
-      (db/drop-all!)
-      (let [user (existance/a-user-exists)
-            element nil
-            packet (tigase/make-packet
-                    {:from (tigase/make-jid user)
-                     :to (tigase/make-jid user)
-                     :type :get
-                     :body element})
-            request (assoc (packet/make-request packet)
-                      :serialization :xmpp)]
-        (filter-action #'actions.stream/public-timeline request) =>
-        (every-checker
-         map?
-         (comp empty? :items)
-         #(= 0 (:total-records %)))))
+       (db/drop-all!)
+       (let [user (mock/a-user-exists)
+             element nil
+             packet (tigase/make-packet
+                     {:from (tigase/make-jid user)
+                      :to (tigase/make-jid user)
+                      :type :get
+                      :body element})
+             request (assoc (packet/make-request packet)
+                       :serialization :xmpp)]
+         (filter-action #'actions.stream/public-timeline request) =>
+         (every-checker
+          map?
+          (comp empty? :items)
+          #(= 0 (:total-records %)))))
 
      (fact "when there are activities"
-       (let [author (existance/a-user-exists)]
+       (let [author (mock/a-user-exists)]
          (with-user author
            (let [element nil
                  packet (tigase/make-packet
@@ -57,7 +55,7 @@
                           :body element})
                  request (assoc (packet/make-request packet)
                            :serialization :xmpp)
-                 activity (existance/there-is-an-activity)]
+                 activity (mock/there-is-an-activity)]
              (filter-action #'actions.stream/public-timeline request) =>
              (every-checker
               map?
@@ -69,7 +67,7 @@
      (fact "when the serialization is :http"
        (with-serialization :http
          (fact "when the user exists"
-           (let [user (existance/a-user-exists)
+           (let [user (mock/a-user-exists)
                  request {:params {:id (str (:_id user))}}]
              (filter-action action request) => .response.
              (provided

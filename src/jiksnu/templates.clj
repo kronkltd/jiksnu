@@ -87,15 +87,40 @@
 (defn make-dropper
   [collection-name]
   (fn []
+    (trace/trace* (str collection-name ":dropped") collection-name)
     (mc/remove collection-name)))
 
 (defn make-set-field!
   [collection-name]
   (fn [item field value]
-    (when-not (= (get item field) value)
-      (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
-      (s/increment (str collection-name " field set"))
-      (mc/update collection-name
-        {:_id (:_id item)}
-        {:$set {field value}}))))
+    (if (not= field :links)
+      (when-not (= (get item field) value)
+        (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+        (s/increment (str collection-name " field set"))
+        (mc/update collection-name
+          {:_id (:_id item)}
+          {:$set {field value}}))
+      (throw+ "can not set links values"))))
 
+(defn make-add-link*
+  [collection-name]
+  (fn [item link]
+    (trace/trace* (str collection-name ":linkAdded") item)
+    (mc/update collection-name
+      (select-keys item #{:_id})
+      {:$addToSet {:links link}})
+    item))
+
+(defn make-create
+  [collection-name fetcher validator]
+  (fn [params]
+    (let [errors (validator params)]
+      (if (empty? errors)
+        (do
+          (log/debugf "Creating %s: %s" collection-name (pr-str params))
+          (mc/insert collection-name params)
+          (let [item (fetcher (:_id params))]
+            (trace/trace* (str collection-name ":created") item)
+            (s/increment (str collection-name "_created"))
+            item))
+        (throw+ {:type :validation :errors errors})))))

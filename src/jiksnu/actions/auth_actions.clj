@@ -7,17 +7,21 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
-            [jiksnu.session :as session])
-  (:import org.mindrot.jbcrypt.BCrypt))
+            [jiksnu.session :as session]
+            [jiksnu.transforms :as transforms]
+            [noir.util.crypt :as crypt]))
+
+(defn prepare-create
+  [activity]
+  (-> activity
+      transforms/set-_id
+      transforms/set-created-time
+      transforms/set-updated-time))
 
 ;; TODO: doesn't work yet
 (defaction guest-login
   [user]
   user)
-
-(defn password-matches?
-  [password hash]
-  (BCrypt/checkpw password hash))
 
 (defaction login
   [user password]
@@ -26,7 +30,7 @@
                             {:user (:_id user)}))]
     (if (->> mechanisms
              (map :value)
-             (some (partial password-matches? password)))
+             (some (partial crypt/compare password)))
       (session/set-authenticated-user! user)
       (throw+ {:type :authentication :message "passwords do not match"}))
     (throw+ {:type :authentication :message "No authentication mechanisms found"})))
@@ -55,8 +59,7 @@
 
 (defaction show
   [mech]
-  mech
-  )
+  mech)
 
 (defaction whoami
   []
@@ -64,15 +67,19 @@
 
 (add-command! "whoami" #'whoami)
 
+(defaction create
+  "create an activity"
+  [params]
+  (let [item (prepare-create params)]
+    (model.authentication-mechanism/create item)))
+
 (defn add-password
+  "Create a new auth mechanism with the type password that has the crypted password"
   [user password]
-  ;; Create a new authentication mechanism with the type password
-  ;; that has the crypted password
-  (let [salt (BCrypt/gensalt)]
-    (model.authentication-mechanism/create
-     {:type "password"
-      :value (BCrypt/hashpw password salt)
-      :user (:_id user)})))
+  (let [params {:type "password"
+                :value (crypt/encrypt password)
+                :user (:_id user)}]
+    (create params)))
 
 (definitializer
   (require-namespaces

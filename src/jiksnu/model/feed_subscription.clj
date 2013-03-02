@@ -1,5 +1,6 @@
 (ns jiksnu.model.feed-subscription
-  (:use [slingshot.slingshot :only [throw+]]
+  (:use [jiksnu.validators :only [type-of]]
+        [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
   (:require [clj-statsd :as s]
             [clj-time.core :as time]
@@ -11,19 +12,21 @@
             [monger.core :as mg]
             [monger.query :as mq]
             [monger.result :as result])
-  (:import jiksnu.model.FeedSubscription))
+  (:import jiksnu.model.FeedSubscription
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (def collection-name "feed_subscriptions")
 
 (def create-validators
   (validation-set
-   (presence-of :_id)
-   (presence-of :url)
-   (presence-of :callback)
-   (presence-of :domain)
-   (acceptance-of :local   :accept (partial instance? Boolean))
-   (presence-of :created)
-   (presence-of :updated)))
+   (type-of :_id      ObjectId)
+   (type-of :url      String)
+   (type-of :callback String)
+   (type-of :domain   String)
+   (type-of :local    Boolean)
+   (type-of :created  DateTime)
+   (type-of :updated  DateTime)))
 
 (def set-field!    (templates/make-set-field! collection-name))
 
@@ -32,21 +35,8 @@
   (if-let [item (mc/find-map-by-id collection-name id)]
     (model/map->FeedSubscription item)))
 
-(defn create
-  [params]
-  (let [errors (create-validators params)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating feed subscription: %s" params)
-        (mc/insert collection-name params)
-        (let [item (fetch-by-id (:_id params))]
-          (trace/trace :feed-subscriptions:created item)
-          (s/increment "feed-subscriptions_created")
-          item))
-      (throw+ {:type :validation
-               :errors errors}))))
-
 (def count-records (templates/make-counter collection-name))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 (def delete        (templates/make-deleter collection-name))
 (def drop!         (templates/make-dropper collection-name))
 

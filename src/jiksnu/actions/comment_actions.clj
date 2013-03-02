@@ -10,7 +10,8 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]))
+            [jiksnu.namespace :as ns]
+            [lamina.trace :as trace]))
 
 ;; TODO: What id should be used here?
 (defn comment-node-uri
@@ -42,7 +43,8 @@
                         #_(map (fn [irt]
                                (try
                                  (actions.activity/find-or-create-by-remote-id {:id irt})
-                                 (catch RuntimeException ex (log/warn ex))))
+                                 (catch RuntimeException ex
+                                   (trace/trace "errors:handled" ex))))
                              (:irts activity)))]
     [activity comments]))
 

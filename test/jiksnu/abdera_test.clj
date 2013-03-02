@@ -3,7 +3,7 @@
         [clj-factory.core :only [fseq]]
         [jiksnu.abdera :only [abdera-factory new-id get-text new-entry]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [fact future-fact => every-checker]])
+        [midje.sweet :only [=> every-checker fact]])
   (:require [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName
            org.apache.abdera2.model.Entry))
@@ -31,4 +31,6 @@
 
  (fact "new-entry"
    (fact "should return an entry"
-     (new-entry) => (partial instance? Entry))))
+     (new-entry) => (partial instance? Entry)))
+
+ )

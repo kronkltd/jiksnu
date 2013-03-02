@@ -1,6 +1,7 @@
 (ns jiksnu.model.domain
   (:use [ciste.config :only [config]]
         [jiksnu.transforms :only [set-updated-time set-created-time]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
   (:require [clj-statsd :as s]
@@ -12,7 +13,9 @@
             [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.core :as mg])
-  (:import jiksnu.model.Domain))
+  (:import jiksnu.model.Domain
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (def collection-name "domains")
 
@@ -26,15 +29,11 @@
 
 (def create-validators
   (validation-set
-   (presence-of   :_id)
-   (presence-of   :created)
-   (presence-of   :updated)
-   (acceptance-of :local      :accept (partial instance? Boolean))
-   (acceptance-of :discovered :accept (partial instance? Boolean))))
-
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-(def count-records (templates/make-counter collection-name))
+   (type-of :_id        String)
+   (type-of :created    DateTime)
+   (type-of :updated    DateTime)
+   (type-of :local      Boolean)
+   (type-of :discovered Boolean)))
 
 (defn fetch-by-id
   [id]
@@ -42,16 +41,10 @@
   (if-let [domain (mc/find-map-by-id collection-name id)]
     (model/map->Domain domain)))
 
-(defn create
-  [domain & [options & _]]
-  (let [errors (create-validators domain)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating domain: %s" domain)
-        (s/increment "domains created")
-        (mc/insert collection-name domain)
-        (fetch-by-id (:_id domain)))
-      (throw+ {:type :validation :errors errors}))))
+(def count-records (templates/make-counter collection-name))
+(def create        (templates/make-create  collection-name #'fetch-by-id #'create-validators))
+(def delete        (templates/make-deleter collection-name))
+(def drop!         (templates/make-dropper collection-name))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -69,7 +62,9 @@
 (defn add-links
   [domain links]
   ;; TODO: This should push only if the link is not yet there
-  (mc/update collection-name {:$pushAll {:links links}}))
+  (mc/update collection-name
+    (select-keys domain #{:_id})
+    {:$pushAll {:links links}}))
 
 (def set-field! (templates/make-set-field! collection-name))
 
