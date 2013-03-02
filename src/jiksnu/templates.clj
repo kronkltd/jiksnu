@@ -93,12 +93,14 @@
 (defn make-set-field!
   [collection-name]
   (fn [item field value]
-    (when-not (= (get item field) value)
-      (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
-      (s/increment (str collection-name " field set"))
-      (mc/update collection-name
-        {:_id (:_id item)}
-        {:$set {field value}}))))
+    (if (not= field :links)
+      (when-not (= (get item field) value)
+        (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+        (s/increment (str collection-name " field set"))
+        (mc/update collection-name
+          {:_id (:_id item)}
+          {:$set {field value}}))
+      (throw+ "can not set links values"))))
 
 (defn make-add-link*
   [collection-name]
