@@ -20,8 +20,9 @@
 
 (deffilter #'delete :command
   [action id]
-  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
-    (action item)))
+  (when-let [obj-id (try (util/make-id id) (catch RuntimeException _))]
+    (when-let [item (model.resource/fetch-by-id obj-id)]
+      (action item))))
 
 (deffilter #'delete :http
   [action request]
@@ -56,8 +57,9 @@
 
 (deffilter #'update* :command
   [action id]
-  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
-    (action item)))
+  (when-let [obj-id (try (util/make-id id) (catch RuntimeException _))]
+    (when-let [item (model.resource/fetch-by-id obj-id)]
+      (action item))))
 
 
 (deffilter #'update :command

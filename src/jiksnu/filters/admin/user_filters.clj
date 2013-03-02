@@ -23,9 +23,6 @@
 (deffilter #'show :http
   [action request]
   (if-let [id (-?> request :params :id)]
-    (if-let [obj-id (try (util/make-id id)
-                         (catch RuntimeException ex
-                           (trace/trace "errors:handled" ex)))]
+    (if-let [obj-id (try (util/make-id id) (catch RuntimeException ex))]
       (if-let [record (model.user/fetch-by-id obj-id)]
         (action record)))))
-

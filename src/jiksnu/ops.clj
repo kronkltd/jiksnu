@@ -44,9 +44,7 @@
   (let [result (l/expiring-result default-timeout)]
     (log/debugf "enqueuing #<Channel \"%s\"> << %s" (channel-description ch) (pr-str params))
     (l/enqueue ch [result params])
-    (l/on-realized result
-                   op-success
-                   op-error)
+    (l/on-realized result op-success op-error)
     result))
 
 (defn create-new-conversation

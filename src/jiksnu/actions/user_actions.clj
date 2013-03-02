@@ -315,9 +315,8 @@
   "returns a user meta document"
   [^User user]
   (if-let [uri (model.user/user-meta-uri user)]
-    (let [resource (actions.resource/find-or-create {:url uri})]
-      (actions.webfinger/fetch-host-meta uri))
-    (throw (RuntimeException. "Could not determine user-meta link"))))
+    (actions.webfinger/fetch-host-meta uri)
+    (throw+ "Could not determine user-meta link")))
 
 (defn fetch-user-feed
   "returns a feed"

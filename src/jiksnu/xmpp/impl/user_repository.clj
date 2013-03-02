@@ -70,7 +70,7 @@
                (if domain
                  (when-not (#{"vhost-manager"} domain)
                    (actions.domain/get-discovered domain))
-                 #_(throw (RuntimeException. "Could not find domain")))))))
+                 #_(throw+ "Could not find domain"))))))
 
 (defn handle-count-users
   [[result domain]]

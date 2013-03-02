@@ -94,10 +94,10 @@
               "unfollow" (actions.subscription/unsubscribed actor user)
               "post" (actions.activity/remote-create [activity])
               (log/info (str "other: " verb))))
-          (throw (RuntimeException. "signature is not valid")))
-        (throw (RuntimeException. "Could not find key")))
-      (throw (RuntimeException. "could not determine actor")))
-    (throw (RuntimeException. "Could not extract activity"))))
+          (throw+ "signature is not valid"))
+        (throw+ "Could not find key"))
+      (throw+ "could not determine actor"))
+    (throw+ "Could not extract activity")))
 
 (definitializer
   (require-namespaces
