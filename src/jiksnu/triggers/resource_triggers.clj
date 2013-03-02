@@ -3,10 +3,11 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]))
 
 (defn add-link-trigger
-  [action [user link] _]
+  [action [item link] _]
   (condp = (:rel link)
     "alternate" (if (= (:type link) "application/atom+xml")
                   (let [source (ops/get-source (:href link))]
