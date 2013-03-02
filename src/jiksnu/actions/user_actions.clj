@@ -421,22 +421,21 @@
   ;; TODO: should we check reg-enabled here?
   ;; verify submission.
   (if (and username password)
-    (let [user (model.user/get-user username)]
-      (if-not user
-        (let [user (-> {:username username
-                        :domain (:_id (actions.domain/current-domain))
-                        :discovered true
-                        :id (str "acct:" username "@" (config :domain))
-                        :local true}
-                       (merge (when email {:email email})
-                              (when display-name {:display-name display-name})
-                              (when bio {:bio bio})
-                              (when location {:location location}))
-                       create)]
-          (actions.auth/add-password user password)
-          (actions.key/generate-key-for-user user)
-          user)
-        (throw+ "user already exists")))
+    (if-let [user (model.user/get-user username)]
+      (throw+ "user already exists")
+      (let [params (merge {:username username
+                           :domain (:_id (actions.domain/current-domain))
+                           :discovered true
+                           :id (str "acct:" username "@" (config :domain))
+                           :local true}
+                          (when email {:email email})
+                          (when display-name {:display-name display-name})
+                          (when bio {:bio bio})
+                          (when location {:location location}))
+            user (create params)]
+        (actions.auth/add-password user password)
+        (actions.key/generate-key-for-user user)
+        user))
     (throw+ "Missing required params")))
 
 (defaction register-page
