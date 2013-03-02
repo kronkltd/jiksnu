@@ -26,37 +26,41 @@
   []
   "Not Found")
 
+(def route-modules
+  ["activity"
+   "auth"
+   "comment"
+   "conversation"
+   "domain"
+   "favorite"
+   "feed-source"
+   "feed-subscription"
+   "group"
+   "like"
+   "message"
+   "pubsub"
+   "resource"
+   "salmon"
+   "search"
+   "setting"
+   "site"
+   "stream"
+   "subscription"
+   "tag"
+   "user"])
+
+(defn load-module
+  [module-name]
+  (let [route-sym (symbol (format "jiksnu.routes.%s-routes" module-name))]
+    (require route-sym)
+    (let [route-fn (ns-resolve route-sym 'routes)]
+      (route-fn))))
+
 (def http-routes
-  (make-matchers
-   (reduce concat
-           (map
-     (fn [x]
-       (let [route-sym (symbol (format "jiksnu.routes.%s-routes" x))]
-         (require route-sym)
-         (let [route-fn (ns-resolve route-sym 'routes)]
-           (route-fn))))
-     ["activity"
-      "auth"
-      "comment"
-      "conversation"
-      "domain"
-      "favorite"
-      "feed-source"
-      "feed-subscription"
-      "group"
-      "like"
-      "message"
-      "pubsub"
-      "resource"
-      "salmon"
-      "search"
-      "setting"
-      "site"
-      "stream"
-      "subscription"
-      "tag"
-      "user"
-      ]))))
+  (->> route-modules
+       (map load-module)
+       (reduce concat)
+       make-matchers))
 
 (compojure/defroutes all-routes
   (compojure/GET "/api/help/test.json" _ "OK")
