@@ -16,7 +16,7 @@
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-swank "0.4.0-SNAPSHOT"]
                  [clj-factory "0.2.1"]
-                 [clj-airbrake "2.0.0"]
+                 [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [clj-stacktrace "0.2.5"]
                  [clojurewerkz/route-one "1.0.0-SNAPSHOT"]
                  [clojurewerkz/urly "1.0.0"
