@@ -62,6 +62,13 @@
          (provided
            (deliver-packet! anything) => nil :times 1)))))
 
+ (fact "#'discover-statusnet-config"
+   (let [domain (mock/a-domain-exists)
+         url (fseq :uri)]
+     (discover-statusnet-config domain url) => nil
+     (provided
+       (actions.resource/update* anything) => {:body "{}"})))
+
  (fact "#'discover-webfinger"
    (let [domain (mock/a-domain-exists)
          id      (:_id domain)]
