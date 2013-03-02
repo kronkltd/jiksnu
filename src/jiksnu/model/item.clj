@@ -14,6 +14,8 @@
 (def delete        (templates/make-deleter collection-name))
 (def drop!         (templates/make-dropper collection-name))
 
+;; (def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
+
 (defn index
   [user]
   (mc/find-maps collection-name {:user (:_id user)}))

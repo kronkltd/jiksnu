@@ -62,15 +62,7 @@
               (mq/paginate :page page :per-page page-size))
             (map model/map->Subscription)))))
 
-(defn create
-  [params & [options]]
-  (let [errors (create-validators params)]
-    (if (empty? errors)
-      (do
-        (log/debugf "creating subscription: %s" (pr-str params))
-        (mc/insert collection-name params)
-        (fetch-by-id (:_id params)))
-      (throw+ {:type :validation :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 ;; TODO: use set-field
 (defn confirm

@@ -45,16 +45,7 @@
   (if-let [domain (mc/find-map-by-id collection-name id)]
     (model/map->Domain domain)))
 
-(defn create
-  [domain & [options & _]]
-  (let [errors (create-validators domain)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating domain: %s" domain)
-        (s/increment "domains created")
-        (mc/insert collection-name domain)
-        (fetch-by-id (:_id domain)))
-      (throw+ {:type :validation :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))

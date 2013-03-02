@@ -48,16 +48,7 @@
   (when-let [item (mc/find-map-by-id collection-name id)]
     (model/map->Group item)))
 
-(defn create
-  [group]
-  (let [errors (create-validators group)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating group: %s" (pr-str group))
-        (mc/insert "groups" group)
-        (fetch-by-id (:_id group)))
-      (throw+ {:type :validation
-               :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-by-name
   [name]

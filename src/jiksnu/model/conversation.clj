@@ -51,16 +51,7 @@
   (when-let [item (mc/find-map-by-id collection-name id)]
     (maker item)))
 
-(defn create
-  [params]
-  (let [errors (create-validators params)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating conversation: %s" params)
-        (s/increment (str collection-name "_created"))
-        (mc/insert collection-name params)
-        (fetch-by-id (:_id params)))
-      (throw+ {:type :validation :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn find-by-url
   [url]

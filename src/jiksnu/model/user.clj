@@ -109,17 +109,7 @@
     (maker user)
     (log/warnf "Could not find user: %s" id)))
 
-(defn create
-  [user]
-  (let [errors (create-validators user)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating user: %s" user)
-        (s/increment "users created")
-        (mc/insert collection-name user)
-        (fetch-by-id (:_id user)))
-      (throw+ {:type :validation
-               :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))

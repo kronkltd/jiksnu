@@ -46,18 +46,7 @@
     (mc/remove-by-id collection-name (:_id like))
     like))
 
-(defn create
-  [params & [options & _]]
-  (let [params (prepare params)
-        errors (create-validators params)]
-    (if (empty? errors)
-      (do
-        (log/debugf "Creating like: %s" params)
-        (let [result (mc/insert collection-name params)]
-          (if (result/ok? result)
-            (fetch-by-id (:_id params))
-            (throw+ {:type :write-error :result result}))))
-      (throw+ {:type :validation :errors errors}))))
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 ;; TODO: get-like
 

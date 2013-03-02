@@ -108,3 +108,17 @@
       (select-keys item #{:_id})
       {:$addToSet {:links link}})
     item))
+
+(defn make-create
+  [collection-name fetcher validator]
+  (fn [params]
+    (let [errors (validator params)]
+      (if (empty? errors)
+        (do
+          (log/debugf "Creating %s: %s" collection-name (pr-str params))
+          (mc/insert collection-name params)
+          (let [item (fetcher (:_id params))]
+            (trace/trace (str collection-name ":created") item)
+            (s/increment (str collection-name "_created"))
+            item))
+        (throw+ {:type :validation :errors errors})))))

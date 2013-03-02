@@ -18,17 +18,6 @@
 
 (test-environment-fixture
 
- (fact "#'create"
-   (fact "when given valid options"
-     (fact "and the domain does not already exist"
-       (model.domain/drop!)
-       (let [options (prepare-create {:_id (fseq :domain)})]
-         (create options) => model/domain?))
-     ;; TODO: already exists
-     )
-   ;; TODO: invalid options
-   )
-
  (fact "#'delete"
 
    ;; There is no reason this shouldn't be a success
