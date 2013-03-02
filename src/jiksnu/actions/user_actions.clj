@@ -320,7 +320,7 @@
   "returns a user meta document"
   [^User user]
   (if-let [uri (model.user/user-meta-uri user)]
-    (let [resource (ops/get-resource uri)]
+    (let [resource (actions.resource/find-or-create {:url uri})]
       (actions.webfinger/fetch-host-meta uri))
     (throw (RuntimeException. "Could not determine user-meta link"))))
 

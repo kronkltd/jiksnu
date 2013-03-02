@@ -7,6 +7,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
@@ -25,6 +26,7 @@
    (let [params {:verify "async"}]
      (actions.pubsub/subscribe params) => .response.
      (provided
+       (actions.feed-subscription/subscription-request params) => .subscription.
        (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
  (fact "#'hub-dispatch"
