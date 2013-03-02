@@ -52,15 +52,16 @@
      (let [username (fseq :username)
            domain-name (fseq :domain)
            template (str "http://" domain-name "/xrd?uri={uri}")
-           domain (actions.domain/find-or-create (factory :domain
-                                                          {:_id domain-name
-                                                           :discovered true
-                                                           :links [{:rel "lrdd"
-                                                                    :template template}]}))
+           links [{:rel "lrdd" :template template}]
+           domain (actions.domain/find-or-create
+                   (factory :domain
+                            {:_id domain-name
+                             :discovered true
+                             :links links}))
            uri (factory/make-uri domain-name "/users/1")]
        (get-username {:id uri}) => (contains {:username username})
        (provided
-         (ops/get-user-meta anything) => .xrd.
+         (actions.user/get-user-meta anything) => .xrd.
          (model.webfinger/get-feed-source-from-xrd .xrd.) => .topic.
          (model.webfinger/get-username-from-xrd .xrd.) => username)))
 

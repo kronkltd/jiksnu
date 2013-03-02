@@ -9,6 +9,7 @@
             [clojurewerkz.route-one.core :as r]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.group-actions :as actions.group]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -61,11 +62,11 @@
   (if (empty? (:parent params))
     (let [params (dissoc params :parent)]
       (if-let [uri (:parent-uri params)]
-        (let [resource (ops/get-resource uri)]
+        (let [resource (actions.resource/find-or-create {:url uri})]
           (if-let [parent (model.activity/fetch-by-remote-id uri)]
             (assoc params :parent (:_id parent))
             (do
-              (ops/update-resource @resource)
+              (actions.resource/update* resource)
               params))
           params)
         params))
@@ -163,9 +164,7 @@
   (let [uri-obj (URI. url)
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
-      (let [resource (ops/get-resource url)
-            response (ops/update-resource @resource)
-            actor (or (try
+      (let [actor (or (try
                         (actions.user/find-or-create-by-remote-id {:id url})
                         (catch RuntimeException ex
                           (trace/trace "errors:handled" ex)))

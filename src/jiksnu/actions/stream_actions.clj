@@ -6,6 +6,7 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?>]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
@@ -109,7 +110,9 @@
   (if-let [topic (-?> feed (abdera/rel-filter-feed "self")
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (actions.feed-source/process-feed source feed)
+      (do
+        (task (actions.feed-source/process-feed source feed))
+        true)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
 

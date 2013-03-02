@@ -2,7 +2,6 @@
   (:use [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])

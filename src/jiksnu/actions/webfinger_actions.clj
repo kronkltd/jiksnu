@@ -27,8 +27,8 @@
   (log/infof "fetching host meta: %s" url)
   (or
    (try
-     (let [resource (ops/get-resource url)
-           response @(ops/update-resource @resource)]
+     (let [resource (actions.resource/find-or-create {:url url})
+           response (actions.resource/update* resource)]
        (s/increment "xrd_fetched")
        (when (= 200 (:status response))
          (cm/string->document (:body response))))

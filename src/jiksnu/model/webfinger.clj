@@ -49,7 +49,7 @@
   {:pre [(instance? Document xrd)]
    :post [(instance? FeedSource %)]}
   (if-let [source-link (get-source-link xrd)]
-    (ops/get-source source-link)
+    @(ops/get-source source-link)
     (throw+ "could not determine source")))
 
 (defn get-username-from-atom-property

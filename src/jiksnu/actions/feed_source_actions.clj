@@ -210,7 +210,7 @@
   {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (if-let [resource (ops/get-resource topic)]
+      (if-let [resource (actions.resource/find-or-create {:url topic})]
         (when-let [response (actions.resource/update* @resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)

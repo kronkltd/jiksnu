@@ -20,6 +20,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
@@ -111,32 +112,32 @@
   [user]
   ;; {:pre [(instance? User user)]}
   (if-let [url (:user-meta-link user)]
-    (let [resource (ops/get-resource url)
-          response (ops/update-resource @resource)]
-      (if-let [body (:body @response)]
+    (let [resource (actions.resource/find-or-create {:url url})
+          response (actions.resource/update* resource)]
+      (if-let [body (:body response)]
         (cm/string->document body)))
     (throw+ "User does not have a meta link")))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
-  [user]
-  ;; {:pre [(instance? User user)]}
-  (let [id (or (:id user)
-               (:url user))
+  [params]
+  ;; {:pre [(instance? User params)]}
+  (let [id (or (:id params)
+               (:url params))
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (assoc user :username (first (util/split-uri id)))
+      (assoc params :username (first (util/split-uri id)))
       (or (if-let [username (.getUserInfo uri)]
-            (assoc user :username username))
-          (if-let [domain-name (or (:domain user)
+            (assoc params :username username))
+          (if-let [domain-name (or (:domain params)
                                    (util/get-domain-name id))]
             (let [domain (actions.domain/find-or-create {:_id domain-name})
-                  user (assoc user :domain domain-name)
+                  params (assoc params :domain domain-name)
                   user-meta-link (actions.domain/get-user-meta-url domain id)
-                  user (assoc user :user-meta-link user-meta-link)]
-              (if-let [xrd (ops/get-user-meta user)]
-                (let [source (model.webfinger/get-feed-source-from-xrd @xrd)]
-                  (merge user
+                  params (assoc params :user-meta-link user-meta-link)]
+              (if-let [xrd (get-user-meta params)]
+                (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
+                  (merge params
                          {:username (model.webfinger/get-username-from-xrd xrd)
                           :update-source (:_id source)}))
                 (throw+ "could not get user meta")))
@@ -155,7 +156,8 @@
   ([params options]
      (if-let [id (:id params)]
        (if-let [domain (get-domain params)]
-         (if-let [domain (if (:discovered domain) domain (actions.domain/discover domain id))]
+         (if-let [domain (if (:discovered domain)
+                           domain (actions.domain/discover domain id))]
            (let [params (assoc params :domain (:_id domain))]
              (or (model.user/fetch-by-remote-id id)
                  (let [params (if (:username params)
@@ -326,9 +328,9 @@
   "returns a feed"
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
-    (let [resource (ops/get-resource url)
-          response (ops/update-resource @resource)]
-      (abdera/parse-xml-string (:body @response)))
+    (let [resource (actions.resource/find-or-create {:url url})
+          response (actions.resource/update* resource)]
+      (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 
 ;; TODO: Collect all changes and update the user once.

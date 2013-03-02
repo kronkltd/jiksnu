@@ -34,6 +34,7 @@
 (defn set-location
   [item]
   (if-let [location (:location item)]
-    (let [resource (ops/get-resource (ops/get-resource location))]
+    (let [resource (ops/get-resource location)]
+      (ops/update-resource @resource)
       item)
     item))

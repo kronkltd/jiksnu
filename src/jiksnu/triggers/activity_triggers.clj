@@ -11,6 +11,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.actions.conversation-actions :as actions.conversation]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model.activity :as model.activity]
@@ -40,18 +41,6 @@
                                      :id "JIKSNU1"
                                      :body ele})]
     (tigase/deliver-packet! message)))
-
-(defn parse-unknown-mention
-  "Create a user representing the unknown user uri"
-  [uri]
-  ;; uri here is a page, potentially containing information about a user
-  (let [mentioned-domain (.getHost (URI. uri))
-        link (util/extract-atom-link uri)
-        source (ops/get-source link)
-        resource (ops/get-resource link)
-        feed (abdera/parse-xml-string (ops/update-resource resource))
-        mentioned-user-params (-> feed .getAuthor actions.user/person->user)]
-    (actions.user/find-or-create-by-remote-id {:id uri} {})))
 
 (defn create-trigger
   [action params activity]
