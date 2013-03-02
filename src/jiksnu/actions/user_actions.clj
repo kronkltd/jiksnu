@@ -373,35 +373,39 @@
         query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
 
+(defn discover*
+  [^User user & [options & _]]
+  (loop [try-count (get options :try-count 1)]
+    (when (< try-count 5)
+      (if (:local user)
+        user
+        ;; Get domain should, in theory, always return a domain, or else error
+        (let [domain (actions.domain/get-discovered (get-domain user))]
+          (if (:discovered domain)
+            (do
+
+              (when (:xmpp domain)
+                (request-vcard! user))
+
+              ;; There should be a similar check here so we're not
+              ;; hitting xmpp-only services.
+              ;; This is really OStatus specific
+              (update-usermeta user)
+
+              ;; TODO: there sould be a different discovered flag for
+              ;; each aspect of a domain, and this flag shouldn't be set
+              ;; till they've all responded
+              ;; (model.user/set-field! user :discovered true)
+              (model.user/fetch-by-id (:_id user)))
+            (do
+              ;; Domain not yet discovered
+              (actions.domain/discover domain)
+              (recur (inc try-count)))))))))
+
 (defaction discover
   "perform a discovery on the user"
   [^User user & [options & _]]
-  (future (loop [try-count (get options :try-count 1)]
-            (when (< try-count 5)
-              (if (:local user)
-                user
-                ;; Get domain should, in theory, always return a domain, or else error
-                (let [domain (actions.domain/get-discovered (get-domain user))]
-                  (if (:discovered domain)
-                    (do
-
-                      (when (:xmpp domain)
-                        (request-vcard! user))
-
-                      ;; There should be a similar check here so we're not
-                      ;; hitting xmpp-only services.
-                      ;; This is really OStatus specific
-                      (update-usermeta user)
-
-                      ;; TODO: there sould be a different discovered flag for
-                      ;; each aspect of a domain, and this flag shouldn't be set
-                      ;; till they've all responded
-                      ;; (model.user/set-field! user :discovered true)
-                      (model.user/fetch-by-id (:_id user)))
-                    (do
-                      ;; Domain not yet discovered
-                      (actions.domain/discover domain)
-                      (recur (inc try-count)))))))))
+  (future (discover* user options))
   user)
 
 ;; TODO: xmpp case of update
