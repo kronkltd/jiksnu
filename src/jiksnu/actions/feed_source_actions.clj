@@ -270,7 +270,7 @@
 
 (defn handle-pending-get-source
   [[p url]]
-  (deliver p (find-or-create {:topic url})))
+  (l/enqueue p (find-or-create {:topic url})))
 
 (l/receive-all ch/pending-get-source handle-pending-get-source)
 (l/receive-all ch/pending-entries process-entry)

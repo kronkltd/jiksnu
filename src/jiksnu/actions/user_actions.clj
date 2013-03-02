@@ -471,7 +471,7 @@
 
 (defn handle-pending-get-user-meta
   [[p user]]
-  (deliver p (get-user-meta user)))
+  (l/enqueue p (get-user-meta user)))
 
 (l/receive-all ch/pending-get-user-meta handle-pending-get-user-meta)
 

@@ -172,11 +172,11 @@
 
 (defn handle-pending-get-resource
   [[p url]]
-  (deliver p (find-or-create {:url url})))
+  (l/enqueue p (find-or-create {:url url})))
 
 (defn handle-pending-update-resources
   [[p item]]
-  (deliver p (update* item)))
+  (l/enqueue p (update* item)))
 
 (l/receive-all ch/pending-get-resource     handle-pending-get-resource)
 (l/receive-all ch/pending-update-resources handle-pending-update-resources)

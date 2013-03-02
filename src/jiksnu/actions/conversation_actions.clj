@@ -105,7 +105,7 @@
 
 (defn- handle-get-conversation
   [[p url]]
-  (deliver p (find-or-create {:url url})))
+  (l/enqueue p (find-or-create {:url url})))
 
 (defn- enqueue-create-local
   [ch]

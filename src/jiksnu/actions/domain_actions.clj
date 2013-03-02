@@ -246,12 +246,12 @@
     `(do
        (defn ~handle-name
          [p ~args]
-         (deliver p ~@body))
+         (l/enqueue p ~@body))
        (l/receive-all ~ch ~handle-name))))
 
 (defn- handle-pending-get-domain
   [[p domain-name]]
-  (deliver p (find-or-create {:_id domain-name})))
+  (l/enqueue p (find-or-create {:_id domain-name})))
 
 (l/receive-all ch/pending-get-domain handle-pending-get-domain)
 
