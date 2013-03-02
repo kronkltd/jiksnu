@@ -36,22 +36,6 @@
        (trace/trace "errors:handled" ex)))
    (throw+ "Could not fetch host meta")))
 
-(defn fetch-host-meta
-  [url]
-  {:pre [(string? url)]
-   :post [(instance? Document %)]}
-  (log/infof "fetching host meta: %s" url)
-  (or
-   (try
-     (let [resource (ops/get-resource url)
-           response (ops/update-resource resource)]
-       (s/increment "xrd_fetched")
-       (when (= 200 (:status response))
-         (cm/string->document (:body response))))
-     (catch RuntimeException ex
-       (trace/trace "errors:handled" ex)))
-   (throw+ "Could not fetch host meta")))
-
 (defn get-xrd-template
   []
   (let [domain (actions.domain/current-domain)]
