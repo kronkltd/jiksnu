@@ -14,12 +14,8 @@
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.trace :as trace]
-            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.channels :as ch]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
@@ -111,7 +107,7 @@
 
 (defmethod process-response-content "text/html"
   [content-type item response]
-  (log/info "parsing html content")
+  (log/debug "parsing html content")
   (let [tree (model.resource/response->tree response)]
     (let [properties (model.resource/get-meta-properties tree)]
       (model.resource/set-field! item :properties properties))

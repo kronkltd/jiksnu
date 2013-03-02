@@ -49,7 +49,7 @@
    "development"
    "/"
    ex)
-  (.printStackTrace ex))
+  #_(.printStackTrace ex))
 
 (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
 

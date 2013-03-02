@@ -24,12 +24,11 @@
 (defn op-error
   [ex]
   (log/errorf "op error: %s" ex)
-  (log/spy ex))
+  (trace/trace "errors:handled" ex))
 
 (defn op-success
   [ex]
-  #_(log/infof "result realized: %s" (pr-str ex))
-  (log/spy ex))
+  #_(log/infof "result realized: %s" (.getMessage ex)))
 
 (defn op-handler
   [f]
