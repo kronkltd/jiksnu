@@ -4,6 +4,7 @@
         [jiksnu.session :only [with-user-id]]
         [slingshot.slingshot :only [try+ throw+]])
   (:require [clojure.tools.logging :as log]
+            [clj-statsd :as s]
             [jiksnu.ko :as ko])
   (:import javax.security.auth.login.LoginException))
 
@@ -58,3 +59,9 @@
       (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly (default-html-mode))))]
         (binding [ko/*dynamic* dynamic?]
           (handler request))))))
+
+(defn wrap-stat-logging
+  [handler]
+  (fn [request]
+    (s/increment "requests handled")
+    (handler request)))

@@ -75,13 +75,6 @@
   (route/resources "/webjars" {:root "META-INF/resources/webjars"})
   (route/not-found (not-found-msg)))
 
-
-(defn send-stat
-  [handler]
-  (fn [request]
-    (s/increment "requests handled")
-    (handler request)))
-
 (def app
   (http/wrap-ring-handler
    (-> all-routes
@@ -94,5 +87,4 @@
        jm/wrap-dynamic-mode
        (handler/site {:session {:store (ms/session-store)}})
        jm/wrap-stacktrace
-       send-stat
-       )))
+       jm/wrap-stat-logging)))
