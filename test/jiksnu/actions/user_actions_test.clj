@@ -52,12 +52,11 @@
      (let [username (fseq :username)
            domain-name (fseq :domain)
            template (str "http://" domain-name "/xrd?uri={uri}")
-           links [{:rel "lrdd" :template template}]
-           domain (actions.domain/find-or-create
-                   (factory :domain
-                            {:_id domain-name
-                             :discovered true
-                             :links links}))
+           links []
+           domain (-> (factory :domain {:_id domain-name
+                                        :discovered true})
+                      actions.domain/find-or-create
+                      (actions.domain/add-link {:rel "lrdd" :template template}))
            uri (factory/make-uri domain-name "/users/1")]
        (get-username {:id uri}) => (contains {:username username})
        (provided
@@ -68,10 +67,9 @@
    (fact "when given an acct uri"
      (let [domain-name (fseq :domain)
            template (str "http://" domain-name "/xrd?uri={uri}")
-           domain (actions.domain/find-or-create
-                   (factory :domain
-                            {:_id domain-name
-                             :links [{:rel "lrdd" :template template}]}))
+           domain (-> (factory :domain {:_id domain-name})
+                      actions.domain/find-or-create
+                      (actions.domain/add-link {:rel "lrdd" :template template}))
            uri (str "acct:bob@" domain-name)]
        (get-username {:id uri}) => (contains {:username "bob"})))
    )
@@ -171,8 +169,8 @@
                domain (actions.domain/find-or-create
                        (factory :domain
                                 {:_id domain-name
-                                 :links [{:rel "lrdd" :template template}]
                                  :discovered true}))
+               domain (actions.domain/add-link domain {:rel "lrdd" :template template})
                uri (str "http://" domain-name "/user/1")
                um-url (format "http://%s/xrd?uri=%s"
                               domain-name

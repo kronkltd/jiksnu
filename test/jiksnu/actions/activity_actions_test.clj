@@ -23,11 +23,13 @@
 
  (fact "entry->activity"
    (let [domain-name (fseq :domain)
-         domain (actions.domain/find-or-create (factory :domain
-                                                        {:discovered true
-                                                         :links [{:rel "lrdd"
-                                                                  :template (str "http://" domain-name "/lrdd?uri={uri}")}]
-                                                         :_id domain-name}))
+         domain (-> (factory :domain
+                             {:discovered true
+                              :_id domain-name})
+                    actions.domain/find-or-create
+                    (actions.domain/add-link {:rel "lrdd"
+                                              :template
+                                              (str "http://" domain-name "/lrdd?uri={uri}")}))
          user (mock/a-user-exists {:domain domain})]
 
      ;; TODO: Load elements from resources

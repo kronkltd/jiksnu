@@ -25,9 +25,9 @@
      (let [domain (mock/a-record-exists :domain)
            url (make-uri (:_id domain))
            source (dissoc (factory :feed-source {:topic url}) :domain)]
-       (set-domain source) => (contains {:domain (:_id domain)})))
+       (set-domain source) => (contains {:domain (:_id domain)})
 
-   (provided
-     (actions.domain/get-discovered anything) => {:_id (:_id domain)}))
+       (provided
+         (actions.domain/get-discovered anything) => {:_id (:_id domain)}))))
 
  )

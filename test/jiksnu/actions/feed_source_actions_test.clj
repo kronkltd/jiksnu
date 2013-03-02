@@ -54,11 +54,11 @@
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (mock/a-resource-exists {:url url})
          topic (str url ".atom")]
-     (actions.feed-source/discover-source url) => (partial instance? FeedSource))
-   (provided
-     (actions.resource/update* resource) => .response.
-     (model.resource/response->tree .response.) => .tree.
-     (model.resource/get-links .tree.) => .links.
-     (util/find-atom-link .links.) => topic))
+     (actions.feed-source/discover-source url) => (partial instance? FeedSource)
+     (provided
+       (actions.resource/update* resource) => .response.
+       (model.resource/response->tree .response.) => .tree.
+       (model.resource/get-links .tree.) => .links.
+       (util/find-atom-link .links.) => topic)))
 
  )
