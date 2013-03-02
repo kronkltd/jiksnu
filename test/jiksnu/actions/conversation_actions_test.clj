@@ -19,7 +19,8 @@
                                             :url url})
          params (factory :conversation {:domain domain-name
                                         :url url
-                                        :update-source source})]
+                                        :local (:local domain)
+                                        :update-source (:_id source)})]
      (create params)) => map?)
 
  (fact "#'delete"
