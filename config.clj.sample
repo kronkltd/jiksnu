@@ -3,6 +3,7 @@
  :default
 
  {:admins ["admin"]
+  :airbrake {:key ""}
   :ciste.services.nrepl/port 7888,
   :database {:host "localhost"},
   :debug false,
