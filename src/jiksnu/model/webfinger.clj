@@ -49,8 +49,7 @@
   {:pre [(instance? Document xrd)]
    :post [(instance? FeedSource %)]}
   (if-let [source-link (get-source-link xrd)]
-    @(ops/get-source source-link)
-    (throw+ "could not determine source")))
+    @(ops/get-source source-link)))
 
 (defn get-username-from-atom-property
   [^Document xrd]
@@ -88,6 +87,7 @@
 
 (defn get-links
   [xrd]
+  {:pre [(instance? Document xrd)]}
   (->> xrd
        (cm/query "//*[local-name() = 'Link']")
        util/force-coll
@@ -96,13 +96,15 @@
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
   [xrd]
+  {:pre [(instance? Document xrd)]
+   :post [(coll? %)]}
   (->> (concat (util/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
                (util/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
        (map #(.getValue %))))
 
 (defn get-username-from-identifiers
-  ;; passed a document
   [xrd]
+  {:pre [(instance? Document xrd)]}
   (try
     (->> xrd
          get-identifiers
@@ -115,6 +117,7 @@
 (defn get-username-from-xrd
   "return the username component of the user meta"
   [xrd]
+  {:pre [(instance? Document xrd)]}
   (->> [(get-username-from-atom-property xrd)]
        (lazy-cat
         [(get-username-from-identifiers xrd)])

@@ -2,15 +2,15 @@
   (:use [ciste.config :only [config]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.ops :as ops])
-  (:import java.net.URI))
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]))
 
 (defn set-local
   [item]
   (if (contains? item :local)
     item
     (if-let [url (:url item)]
-      (if-let [domain-name (.getHost (URI. url))]
+      (if-let [domain-name (util/get-domain-name url)]
         (assoc item :local
                (= (config :domain) domain-name))
         (throw+ "Could not determine domain name from url"))
@@ -22,8 +22,7 @@
     item
     (if-let [domain-name (if (:local item)
                            (config :domain)
-                           (when-let [uri (URI. (:url item))]
-                             (.getHost uri)))]
+                           (util/get-domain-name (:url item)))]
       (assoc item :domain domain-name)
       (throw+ "Could not determine domain"))))
 

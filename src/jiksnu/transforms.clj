@@ -34,8 +34,7 @@
   [item]
   (if (:domain item)
     item
-    (let [uri (URI. (:url item))
-          domain-name (.getHost uri)
+    (let [domain-name (util/get-domain-name (:url item))
           domain (ops/get-domain domain-name)]
       (assoc item :domain (:_id @domain)))))
 

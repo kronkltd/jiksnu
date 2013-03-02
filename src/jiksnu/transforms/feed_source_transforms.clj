@@ -5,7 +5,8 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model :as model]
-            [jiksnu.ops :as ops])
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util])
   (:import java.net.URI))
 
 (defn set-hub
@@ -27,8 +28,7 @@
   [source]
   (if (:domain source)
     source
-    (let [uri (URI. (:topic source))
-          domain-name (.getHost uri)
+    (let [domain-name (util/get-domain-name (:topic source))
           domain (actions.domain/get-discovered
                   (actions.domain/find-or-create {:_id domain-name}))]
       (assoc source :domain (:_id domain)))))

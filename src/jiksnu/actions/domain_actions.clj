@@ -33,6 +33,10 @@
 (defonce delete-hooks (ref []))
 (defonce pending-discovers (ref {}))
 
+(defn statusnet-url
+  [domain]
+  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
+
 (defn prepare-create
   [domain]
   (-> domain
@@ -65,22 +69,13 @@
   (let [domain (prepare-delete domain)]
     (model.domain/delete domain)))
 
-(defn discover-onesocialweb
-  [domain url]
-  (-> domain
-      model.domain/ping-request
-      tigase/make-packet
-      tigase/deliver-packet!)
-  domain)
-
 (defn fetch-xrd*
   [url]
   (let [resource (actions.resource/find-or-create {:url url})
         response (actions.resource/update* resource {:force true})]
     (try
-      (let [body (:body response)]
-        (cm/string->document body)
-        (throw+ "Document did not contain any data"))
+      (if-let [body (:body response)]
+        (cm/string->document body))
       (catch RuntimeException ex
         (log/error "Fetching host meta failed")
         (trace/trace "errors:handled" ex)))))
@@ -171,11 +166,19 @@
         sconfig (json/read-json (:body (:body response)))]
     (model.domain/set-field! domain :statusnet-config sconfig)))
 
+(defmacro safe-task
+  [& body]
+  `(task
+    (try
+      ~@body
+      (catch RuntimeException ex#
+        (trace/trace "errors:handled" ex#)))))
+
 (defn discover*
   [domain url]
-  (task (discover-webfinger domain url))
-  (task (discover-onesocialweb domain url))
-  (task (discover-statusnet-config domain url)))
+  (safe-task (discover-webfinger domain url))
+  (safe-task (discover-onesocialweb domain url))
+  (safe-task (discover-statusnet-config domain url)))
 
 (defaction discover
   [^Domain domain url]
@@ -198,8 +201,7 @@
 (defn find-or-create-for-url
   "Return a domain object that matche the domain of the provided url"
   [url]
-  (let [url-obj (URL. url)]
-    (find-or-create (.getHost url-obj))))
+  (find-or-create (util/get-domain-name url)))
 
 (defn current-domain
   []
@@ -220,7 +222,7 @@
             p (if p
                 (do (discover domain) p)
                 (get @pending-discovers id))]
-        (or (deref p (time/seconds 30) nil)
+        (or (deref p (time/seconds 300) nil)
             (throw+ "Could not discover domain"))))))
 
 (defn get-user-meta-url
