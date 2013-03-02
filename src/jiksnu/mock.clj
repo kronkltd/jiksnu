@@ -188,7 +188,8 @@
                    (a-domain-exists))
         feed-subscription (actions.feed-subscription/create
                            (factory :feed-subscription
-                                    {:domain domain}))]
+                                    {:domain (:_id domain)
+                                     :local (:local domain)}))]
     (set-this :feed-subscription feed-subscription)
     feed-subscription))
 
