@@ -168,11 +168,15 @@
   (let [[username domain] (util/split-uri uri)]
     (find-or-create username domain)))
 
+(defn split-jid
+  [^JID jid]
+  [(tigase/get-id jid) (tigase/get-domain jid)])
+
 ;; TODO: This is the job of the filter
 (defn find-or-create-by-jid
   [^JID jid]
   {:pre [(instance? JID jid)]}
-  (find-or-create (tigase/get-id jid) (tigase/get-domain jid)))
+  (apply find-or-create (split-jid jid)))
 
 (defaction delete
   "Delete the user"
