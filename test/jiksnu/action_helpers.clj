@@ -4,7 +4,8 @@
         [clj-webdriver.taxi :only [to]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [lamina.core :only [permanent-channel]]
-        [midje.sweet :only [fact]])
+        [midje.sweet :only [fact]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             jiksnu.routes
             [lamina.time :as time]))
@@ -65,8 +66,11 @@
 
 (defmacro check-response
   [& body]
-  `(and (not (fact ~@body))
-        (throw (RuntimeException. "failed"))))
+  `(try (and (not (fact ~@body))
+             (throw+ "failed"))
+        (catch RuntimeException ex#
+          (.printStackTrace ex#)
+          (throw+ ex#))))
 
 (defn log-response
   []
