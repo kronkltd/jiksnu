@@ -25,7 +25,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [monger.collection :as mc]
-            [net.cgrand.enlive-html :as enlive]))
+            [net.cgrand.enlive-html :as enlive])
+  (:import jiksnu.model.Resource))
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")
 
@@ -139,6 +140,7 @@
 
 (defn update*
   [item & [options]]
+  {:pre [(instance? Resource item)]}
   (if-not (:local item)
     (let [last-updated (:lastUpdated item)]
       (if (or (nil? last-updated)
