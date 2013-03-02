@@ -1,5 +1,6 @@
 (ns jiksnu.model.like
   (:use [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
   (:require [clojure.tools.logging :as log]

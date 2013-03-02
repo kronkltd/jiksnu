@@ -1,6 +1,7 @@
 (ns jiksnu.model.resource
   (:use [ciste.config :only [config]]
         [clojure.core.incubator :only [-?>>]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [clj-statsd :as s]
@@ -12,21 +13,21 @@
             [monger.collection :as mc]
             [monger.query :as mq]
             [net.cgrand.enlive-html :as enlive])
-  (:import java.io.StringReader))
+  (:import java.io.StringReader
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (defonce page-size 20)
 (def collection-name "resources")
 
 (def create-validators
   (validation-set
-   (presence-of   :_id)
-   (presence-of   :url)
-   (presence-of   :domain)
-   (acceptance-of :local         :accept (partial instance? Boolean))
-
-   ;; TODO: These should be joda times
-   (presence-of   :created)
-   (presence-of   :updated)))
+   (type-of :_id     ObjectId)
+   (type-of :url     String)
+   (type-of :domain  String)
+   (type-of :local   Boolean)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (defn fetch-all
   ([] (fetch-all {}))

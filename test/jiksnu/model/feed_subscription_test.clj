@@ -28,7 +28,7 @@
  (fact "#'create"
    (fact "when given valid params"
      (let [params (actions.feed-subscription/prepare-create
-                   (factory :feed-subscription))]
+                   (factory :feed-subscription {:local false}))]
        (create params)) =>
        (every-checker
         map?

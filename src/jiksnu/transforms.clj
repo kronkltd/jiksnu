@@ -28,7 +28,7 @@
   (if (contains? item :local)
     item
     (let [resource (ops/get-resource (:url item))]
-      (assoc item :local (:local resource)))))
+      (assoc item :local (:local @resource)))))
 
 (defn set-domain
   [item]
@@ -37,12 +37,12 @@
     (let [uri (URI. (:url item))
           domain-name (.getHost uri)
           domain (ops/get-domain domain-name)]
-      (assoc item :domain (:_id domain)))))
+      (assoc item :domain (:_id @domain)))))
 
 (defn set-resource
   [item]
   (if (:resource item)
     item
     (let [resource (ops/get-resource (:url item))]
-      (assoc item :resource (:_id resource)))))
+      (assoc item :resource (:_id @resource)))))
 

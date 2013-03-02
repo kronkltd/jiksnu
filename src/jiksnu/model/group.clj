@@ -1,6 +1,7 @@
 (ns jiksnu.model.group
   (:use [jiksnu.transforms :only [set-_id set-created-time
                                   set-updated-time]]
+        [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
   (:require [clj-statsd :as s]
@@ -11,7 +12,9 @@
             [monger.core :as mg]
             [monger.query :as mq]
             [monger.result :as result])
-  (:import jiksnu.model.Group))
+  (:import jiksnu.model.Group
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (def collection-name "groups")
 (def maker           #'model/map->Group)
@@ -19,9 +22,9 @@
 
 (def create-validators
   (validation-set
-   (presence-of :_id)
-   (presence-of :created)
-   (presence-of :updated)))
+   (type-of :_id     ObjectId)
+   (type-of :created DateTime)
+   (type-of :updated DateTime)))
 
 (def count-records (templates/make-counter    collection-name))
 (def delete        (templates/make-deleter    collection-name))
