@@ -34,8 +34,10 @@
                   :exclusions [net.sourceforge.nekohtml/nekohtml]]
                  [com.novemberain/monger "1.2.0-alpha1"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
+                 [domina "1.0.0"]
                  [hiccup "1.0.0"]
                  [jayq "0.1.0-alpha4"]
+                 [lib-noir "0.2.0"]
                  [lolg "0.1.0-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
@@ -66,7 +68,8 @@
                  [ring "1.1.1"]
                  [ring/ring-core "1.1.1"]
                  [ring-basic-authentication "0.0.1"]
-                 [slingshot "0.10.3"]]
+                 [slingshot "0.10.3"]
+                 [table "0.3.2"]]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [jiksnu.xmpp.plugin
         ;; jiksnu.xmpp.channels
