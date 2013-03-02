@@ -6,36 +6,53 @@
         [ciste.views :only [defview]]
         [clojure.core.incubator :only [dissoc-in]]
         [clojure.data.json :only [read-json]])
-  (:require [clj-statsd :as s]
+  (:require [clj-airbrake.core :as airbrake]
+            [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.channels :as ch]
             [jiksnu.session :as session]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
 (defaction invoke-action
   [model-name action-name id]
   (try
-    (s/increment "actions invoked")
     (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
       (require action-ns)
 
       (if-let [action (ns-resolve action-ns (symbol action-name))]
         (let [body (with-serialization :command (filter-action action id))]
-          {:message "action invoked"
-           :model model-name
-           :action action-name
-           :id id
-           :body body})
+          (let [response {:message "action invoked"
+                          :model model-name
+                          :action action-name
+                          :id id
+                          :body body}]
+            (s/increment "actions invoked")
+            (trace/trace "actions:invoked" response)
+            response))
         (do
           (log/warnf "could not find action for: %s(%s) => %s"
                      model-name id action-name)
           {:message "action not found"
            :action "error"})))
     (catch RuntimeException ex
-      (log/error ex)
-      (.printStackTrace ex))))
+      (trace/trace "errors:handled" ex))))
+
+(defn handle-errors
+  [ex]
+  (println "handling error")
+  (airbrake/notify
+   "d61e18dac7af78220e52697e5b08dd5a"
+   ;; *environment*
+   "development"
+   "/"
+   ex)
+  (.printStackTrace ex))
+
+(l/receive-all (trace/probe-channel "errors:handled")
+               handle-errors)
 
 (deffilter #'invoke-action :command
   [action request]
@@ -51,11 +68,13 @@
 
 (defn connection-opened
   [connection-id e]
-  (log/infof "sending update notification to connection: %s" connection-id)
-  (s/increment "activities pushed")
-  (json/json-str {:action "model-updated"
+  (let [response {:action "model-updated"
                   :type "activity"
-                  :body (:records e)}))
+                  :body (:records e)}]
+    (log/infof "sending update notification to connection: %s" connection-id)
+    (s/increment "activities pushed")
+    (trace/trace "activities:pushed" (assoc response :connection-id connection-id))
+    (json/json-str response)))
 
 (defn connection-closed
   [id connection-id]

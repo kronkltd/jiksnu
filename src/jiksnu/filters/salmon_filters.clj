@@ -2,7 +2,8 @@
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.tools.logging :as log]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user]
+            [lamina.trace :as trace]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; salmon
@@ -14,5 +15,5 @@
         user (-> request :params :id model.user/fetch-by-id)]
     (try (action user envelope)
          (catch RuntimeException ex
-           (log/error (.getMessage ex))))))
+           (trace/trace "errors:handled" ex)))))
 

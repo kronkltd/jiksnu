@@ -6,7 +6,8 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.model :as model]
             [jiksnu.ops :as ops]
-            [jiksnu.routes.helpers :as rh])
+            [jiksnu.routes.helpers :as rh]
+            [lamina.trace :as trace])
   (:import java.net.URI))
 
 (defn set-update-source
@@ -21,7 +22,7 @@
                           (try
                             (actions.feed-source/discover-source url)
                             (catch RuntimeException ex
-                              (log/warn ex))))]
+                              (trace/trace "errors:handled" ex))))]
           (assoc conversation :update-source (:_id source))
           (throw+ "could not determine source")))
       (throw+ "Could not determine url"))))

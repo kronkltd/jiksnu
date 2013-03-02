@@ -24,7 +24,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.trace :as trace])
   (:import jiksnu.model.User))
 
 
@@ -168,7 +169,7 @@
                                            :name name
                                            :args args})
                            (catch RuntimeException ex
-                             (.printStackTrace ex)
+                             (trace/trace "errors:handled" ex)
                              {:body (json/json-str {:action "error"
                                                     :message (str ex)})}))]
              (l/enqueue ch (:body resp))

@@ -4,7 +4,8 @@
   (:require [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [jiksnu.namespace :as ns])
+            [jiksnu.namespace :as ns]
+            [lamina.trace :as trace])
   (:import java.io.ByteArrayInputStream
            java.io.StringWriter
            java.net.URI
@@ -97,7 +98,8 @@
 (defn parse-link
   "Returns a map representing the link element"
   [^Link link]
-  (let [type (try (str (.getMimeType link)) (catch Exception ex))
+  (let [type (try (str (.getMimeType link)) (catch Exception ex
+                                              (trace/trace "errors:handled" ex)))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
@@ -254,8 +256,8 @@
   (try
     (let [parser abdera-parser]
       (.parse parser stream))
-    (catch IllegalStateException e
-      (log/error e))))
+    (catch IllegalStateException ex
+      (trace/trace "errors:handled" ex))))
 
 (defn stream->feed
   [stream]

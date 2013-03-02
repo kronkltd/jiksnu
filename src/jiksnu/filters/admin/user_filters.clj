@@ -6,7 +6,8 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util]
+            [lamina.trace :as trace]))
 
 ;; index
 
@@ -24,7 +25,7 @@
   (if-let [id (-?> request :params :id)]
     (if-let [obj-id (try (util/make-id id)
                          (catch RuntimeException ex
-                           (log/error ex)))]
+                           (trace/trace "errors:handled" ex)))]
       (if-let [record (model.user/fetch-by-id obj-id)]
         (action record)))))
 

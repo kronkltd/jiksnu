@@ -15,7 +15,8 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.trace :as trace])
   (:import java.net.URI))
 
 (defn set-local
@@ -167,11 +168,11 @@
             actor (or (try
                         (actions.user/find-or-create-by-remote-id {:id url})
                         (catch RuntimeException ex
-                          (.printStackTrace ex)))
+                          (trace/trace "errors:handled" ex)))
                       (try
                         (actions.group/find-or-create {:url url})
                         (catch RuntimeException ex
-                          (.printStackTrace ex))))]
+                          (trace/trace "errors:handled" ex))))]
         (:_id actor))
       (:_id (actions.user/find-or-create-by-uri url)))))
 

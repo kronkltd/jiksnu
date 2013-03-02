@@ -13,6 +13,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
@@ -61,7 +62,7 @@
                     (try
                       (create params)
                       (catch RuntimeException ex
-                        (.printStackTrace ex))))]
+                        (trace/trace "errors:handled" ex))))]
     item
     (if (< tries 3)
       (do

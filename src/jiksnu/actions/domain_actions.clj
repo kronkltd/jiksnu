@@ -4,6 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
@@ -21,8 +22,8 @@
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.executor :only [task]]
             [lamina.time :as time]
+            [lamina.trace :as trace]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
@@ -85,7 +86,7 @@
         (throw+ "Document did not contain any data"))
       (catch RuntimeException ex
         (log/error "Fetching host meta failed")
-        (.printStackTrace ex)))))
+        (trace/trace "errors:handled" ex)))))
 
 (defn fetch-xrd
   [domain url]
@@ -239,11 +240,24 @@
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
 
+(defmacro defreceiver
+  [ch args & body]
+  (let [handle-name (symbol (format "handle2-%s" (str ch)))]
+    `(do
+       (defn ~handle-name
+         [p ~args]
+         (deliver p ~@body))
+       (l/receive-all ~ch ~handle-name))))
+
 (defn- handle-pending-get-domain
   [[p domain-name]]
   (deliver p (find-or-create {:_id domain-name})))
 
 (l/receive-all ch/pending-get-domain handle-pending-get-domain)
+
+;; (defreceiver ch/pending-get-domain
+;;   [domain-name]
+;;   (find-or-create {:_id domain-name}))
 
 (definitializer
   (current-domain)

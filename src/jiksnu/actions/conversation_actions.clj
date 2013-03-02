@@ -16,7 +16,8 @@
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
 (defonce delete-hooks (ref []))
 
@@ -78,7 +79,7 @@
                             (try
                               (create params)
                               (catch RuntimeException ex
-                                (log/warn "conversation create failed"))))]
+                                (trace/trace "errors:handled" ex))))]
     conversation
     (if (< tries 3)
       (do

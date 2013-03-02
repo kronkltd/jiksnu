@@ -12,7 +12,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [lamina.trace :as trace])
   (:import java.net.URI
            jiksnu.model.FeedSource
            jiksnu.model.User
@@ -30,7 +31,8 @@
        (s/increment "xrd_fetched")
        (when (= 200 (:status response))
          (cm/string->document (:body response))))
-     (catch RuntimeException ex))
+     (catch RuntimeException ex
+       (trace/trace "errors:handled" ex)))
    (throw+ "Could not fetch host meta")))
 
 ;; This function is a little too view-y. The proper representation of
@@ -123,8 +125,7 @@
          (keep (comp first util/split-uri))
          first)
     (catch RuntimeException ex
-      (log/error "caught error" ex)
-      (.printStackTrace ex))))
+      (trace/trace "errors:handled" ex))))
 
 ;; takes a document
 (defn get-username-from-xrd

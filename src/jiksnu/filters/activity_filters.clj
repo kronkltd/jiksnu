@@ -14,7 +14,8 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [lamina.trace :as trace])
   (:import tigase.xml.Element))
 
 ;; delete
@@ -27,7 +28,8 @@
 (deffilter #'delete :http
   [action request]
   (if-let [id (try (-> request :params :id util/make-id)
-                   (catch RuntimeException ex))]
+                   (catch RuntimeException ex
+                     (trace/trace "errors:handled" ex)))]
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 

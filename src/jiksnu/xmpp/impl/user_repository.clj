@@ -15,6 +15,7 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [monger.collection :as mc])
   (:import tigase.db.AuthorizationException
            tigase.db.AuthRepository
@@ -102,8 +103,7 @@
                    ks (key-seq subnode key)]
                (get-data user ks def))
              (catch Exception ex
-               (log/error ex)
-               (stacktrace/print-cause-trace ex)))))
+               (trace/trace "errors:handled" ex)))))
 
 (defn handle-user-exists
   [result [user]]

@@ -28,7 +28,8 @@
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.time :as time])
+            [lamina.time :as time]
+            [lamina.trace :as trace])
   (:import java.net.URI
            jiksnu.model.FeedSource
            jiksnu.model.User
@@ -208,11 +209,12 @@
   [source]
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (let [resource (ops/get-resource topic)]
-        (let [response (actions.resource/update* resource)]
+      (if-let [resource (ops/get-resource topic)]
+        (when-let [response (actions.resource/update* resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)
-            (throw+ "could not obtain feed")))))
+            (throw+ "could not obtain feed")))
+        (throw+ "Could not get resource for topic")))
     (log/warn "local sources do not need updates")))
 
 (defaction update
@@ -222,8 +224,7 @@
    (try
      (update* source)
      (catch RuntimeException ex
-       (log/error ex)
-       (.printStackTrace ex))))
+       (trace/trace "errors:handled" ex))))
   source)
 
 (defaction subscribe
