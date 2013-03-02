@@ -27,7 +27,7 @@
                  [com.stuartsierra/lazytest "1.2.3"]
                  [clj-statsd "0.3.2"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
-                 [ clojure-complete "0.2.1"]
+                 [clojure-complete "0.2.1"]
                  [clojurewerkz/support "0.7.0-alpha3"
                   :exclusions [com.google.guava/guava]]
                  [com.cemerick/friend "0.0.9"
@@ -97,7 +97,7 @@
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :dependencies
-              [[midje "1.5-alpha6"
+              [[midje "1.5-alpha7"
                  :exclusions [joda-time]]
                [ring-mock "0.1.3"]
                [clj-webdriver "0.6.0-alpha11"]]}}
@@ -107,5 +107,5 @@
             [codox "0.6.1"]
             [lein-cucumber "1.0.1"]
             [lein-lesscss "1.2"]
-            [lein-midje "3.0-alpha2"]]
+            [lein-midje "3.0-alpha3"]]
   )
