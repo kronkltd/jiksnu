@@ -1,5 +1,6 @@
 (ns jiksnu.actions
   (:use [ciste.commands :only [add-command!]]
+        [ciste.config :only [*environment*]]
         [ciste.core :only [defaction with-serialization]]
         [ciste.filters :only [deffilter filter-action]]
         [ciste.routes :only [resolve-routes]]
@@ -14,7 +15,8 @@
             [jiksnu.channels :as ch]
             [jiksnu.session :as session]
             [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [lamina.trace :as trace])
+  (:import clojure.lang.ExceptionInfo))
 
 (defaction invoke-action
   [model-name action-name id]
@@ -43,12 +45,17 @@
 (defn handle-errors
   [ex]
   (println "handling error")
-  (airbrake/notify
-   "d61e18dac7af78220e52697e5b08dd5a"
-   ;; *environment*
-   "development"
-   "/"
-   ex))
+  (let [data (if (instance? ExceptionInfo ex)
+               (.getData ex) {})]
+   (airbrake/notify
+    "d61e18dac7af78220e52697e5b08dd5a"
+    (name @*environment*)
+    ;; "development"
+    "/"
+    ex
+    {:url "foo"
+     :params (into {} (map (fn [[k v]] {k (pr-str v)})
+                           (:environment data)))})))
 
 (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
 
