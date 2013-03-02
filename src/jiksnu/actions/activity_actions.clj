@@ -36,8 +36,7 @@
 (defn parse-reply-to
   "extract the ref value of a link and set that as a parent id
 
-This is a byproduct of OneSocialWeb's incorrect use of the ref value
-"
+This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [^Element element]
   (let [parent-id (.getAttributeValue element "ref")]
     {:parent-uri parent-id}))
