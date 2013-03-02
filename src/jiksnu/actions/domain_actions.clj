@@ -12,6 +12,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -78,8 +79,8 @@
 
 (defn fetch-xrd*
   [url]
-  (let [resource (ops/get-resource url)
-        response (ops/update-resource resource)]
+  (let [resource (actions.resource/find-or-create {:url url})
+        response (actions.resource/update* resource)]
     (try
       (if-let [body (:body response)]
         (cm/string->document body)
