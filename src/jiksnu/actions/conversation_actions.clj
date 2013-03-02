@@ -13,6 +13,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.ops :as ops]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
@@ -105,14 +106,14 @@
   (create {:local true}))
 
 (defn- handle-get-conversation
-  [[p url]]
-  (l/enqueue p (find-or-create {:url url})))
+  [url]
+  (find-or-create {:url url}))
 
 (defn- enqueue-create-local
   [ch]
   (l/enqueue ch (create {:local true})))
 
-(l/receive-all ch/pending-get-conversation handle-get-conversation)
+(l/receive-all ch/pending-get-conversation (ops/op-handler handle-get-conversation))
 (l/receive-all ch/pending-create-conversations enqueue-create-local)
 
 (definitializer

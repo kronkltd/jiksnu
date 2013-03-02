@@ -250,10 +250,10 @@
        (l/receive-all ~ch ~handle-name))))
 
 (defn- handle-pending-get-domain
-  [[p domain-name]]
-  (l/enqueue p (find-or-create {:_id domain-name})))
+  [domain-name]
+  (find-or-create {:_id domain-name}))
 
-(l/receive-all ch/pending-get-domain handle-pending-get-domain)
+(l/receive-all ch/pending-get-domain (ops/op-handler handle-pending-get-domain))
 
 ;; (defreceiver ch/pending-get-domain
 ;;   [domain-name]

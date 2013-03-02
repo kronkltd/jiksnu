@@ -109,9 +109,12 @@
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
   [user]
+  ;; {:pre [(instance? User user)]}
   (if-let [url (:user-meta-link user)]
-    (-> url ops/get-resource ops/update-resource
-        :body cm/string->document)
+    (let [resource (ops/get-resource url)
+          response (ops/update-resource @resource)]
+      (if-let [body (:body @response)]
+        (cm/string->document body)))
     (throw+ "User does not have a meta link")))
 
 (defn get-username
@@ -132,7 +135,7 @@
                   user-meta-link (actions.domain/get-user-meta-url domain id)
                   user (assoc user :user-meta-link user-meta-link)]
               (if-let [xrd (ops/get-user-meta user)]
-                (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
+                (let [source (model.webfinger/get-feed-source-from-xrd @xrd)]
                   (merge user
                          {:username (model.webfinger/get-username-from-xrd xrd)
                           :update-source (:_id source)}))
@@ -324,8 +327,8 @@
   [^User user]
   (if-let [url (model.user/feed-link-uri user)]
     (let [resource (ops/get-resource url)
-          response (ops/update-resource resource)]
-      (abdera/parse-xml-string (:body response)))
+          response (ops/update-resource @resource)]
+      (abdera/parse-xml-string (:body @response)))
     (throw+ "Could not determine url")))
 
 ;; TODO: Collect all changes and update the user once.
@@ -471,10 +474,10 @@
     user))
 
 (defn handle-pending-get-user-meta
-  [[p user]]
-  (l/enqueue p (get-user-meta user)))
+  [user]
+  (get-user-meta user))
 
-(l/receive-all ch/pending-get-user-meta handle-pending-get-user-meta)
+(l/receive-all ch/pending-get-user-meta (ops/op-handler handle-pending-get-user-meta))
 
 (definitializer
   (require-namespaces

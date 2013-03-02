@@ -207,10 +207,11 @@
 
 (defn update*
   [source]
+  {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
       (if-let [resource (ops/get-resource topic)]
-        (when-let [response (actions.resource/update* resource)]
+        (when-let [response (actions.resource/update* @resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)
             (throw+ "could not obtain feed")))
@@ -269,10 +270,10 @@
             (throw+ "Could not discover feed source"))))))
 
 (defn handle-pending-get-source
-  [[p url]]
-  (l/enqueue p (find-or-create {:topic url})))
+  [url]
+  (find-or-create {:topic url}))
 
-(l/receive-all ch/pending-get-source handle-pending-get-source)
+(l/receive-all ch/pending-get-source (ops/op-handler handle-pending-get-source))
 (l/receive-all ch/pending-entries process-entry)
 
 (definitializer

@@ -126,7 +126,7 @@
         status (:status response)]
     (model.resource/set-field! item :status status)
     (when-let [location (get-in response [:headers "location"])]
-      (let [resource (ops/get-resource location)]
+      (let [resource (find-or-create {:url location})]
         (update resource)
         (model.resource/set-field! item :location location)))
     (let [[content-type rest] (string/split content-str #"; ?")]

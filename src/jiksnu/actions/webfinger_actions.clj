@@ -28,7 +28,7 @@
   (or
    (try
      (let [resource (ops/get-resource url)
-           response (ops/update-resource resource)]
+           response @(ops/update-resource @resource)]
        (s/increment "xrd_fetched")
        (when (= 200 (:status response))
          (cm/string->document (:body response))))

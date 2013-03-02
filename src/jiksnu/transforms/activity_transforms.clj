@@ -65,7 +65,7 @@
           (if-let [parent (model.activity/fetch-by-remote-id uri)]
             (assoc params :parent (:_id parent))
             (do
-              (ops/update-resource resource)
+              (ops/update-resource @resource)
               params))
           params)
         params))
@@ -164,7 +164,7 @@
         scheme (.getScheme uri-obj)]
     (if (#{"http" "https"} scheme)
       (let [resource (ops/get-resource url)
-            response (ops/update-resource resource)
+            response (ops/update-resource @resource)
             actor (or (try
                         (actions.user/find-or-create-by-remote-id {:id url})
                         (catch RuntimeException ex
@@ -192,11 +192,11 @@
     item
     (if-let [user (model.activity/get-author item)]
       (if (:local user)
-        (assoc item :conversation (:_id (ops/create-new-conversation)))
+        (assoc item :conversation (:_id @(ops/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
           (let [conversation (ops/get-conversation uri)]
             (-> item
-                (assoc :conversation (:_id conversation))
+                (assoc :conversation (:_id @conversation))
                 (dissoc :conversation-uris)))
           item))
       (throw+ "could not determine author"))))
@@ -220,8 +220,8 @@
                     (map :href)
                     (map (fn [url]
                            (let [resource (ops/get-resource url)]
-                             (ops/update-resource resource)
-                             (:_id resource))))
+                             (ops/update-resource @resource)
+                             (:_id @resource))))
                     seq
                     doall)]
     (-> activity

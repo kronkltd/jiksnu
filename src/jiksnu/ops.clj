@@ -28,7 +28,7 @@
 
 (defn op-success
   [ex]
-  (log/infof "result realized: %s" ex)
+  #_(log/infof "result realized: %s" (pr-str ex))
   (log/spy ex))
 
 (defn op-handler
