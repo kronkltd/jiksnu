@@ -138,6 +138,7 @@
   [^FeedSource source ^Feed feed]
   {:pre [(instance? FeedSource source)
          (instance? Feed feed)]}
+  (trace/trace "feeds:processed" feed)
   (s/increment "feeds processed")
 
   (when-let [author (abdera/get-feed-author feed)]
@@ -211,7 +212,7 @@
   (if-not (:local source)
     (if-let [topic (:topic source)]
       (if-let [resource (actions.resource/find-or-create {:url topic})]
-        (when-let [response (actions.resource/update* @resource)]
+        (when-let [response (actions.resource/update* resource)]
           (if-let [feed (abdera/parse-xml-string (:body response))]
             (process-feed source feed)
             (throw+ "could not obtain feed")))

@@ -124,8 +124,6 @@
      :source-link source-link
      :local-id local-id}))
 
-
-
 (defn parse-irts
   "Get the in-reply-to uris"
   [^Entry entry]
@@ -174,13 +172,19 @@
 
 (defn ^Person get-author
   [^Entry entry feed]
-  (or
-   (.getAuthor entry)
-   (get-feed-author feed)
-   (if-let [source (.getSource entry)]
-     (first (.getAuthors source)))))
+  (or (.getAuthor entry)
+      (get-feed-author feed)
+      (-?> entry .getSource .getAuthors first)))
 
-
+(defn ^Person make-person
+  "Takes a map of params and returns an initialized person object"
+  [{:keys [name extensions] :as params}]
+  (let [person (.newAuthor abdera-factory)]
+    (when name
+      (.setName person name))
+    (doseq [extension extensions]
+      (.addExtension (:ns extension) (:local extension) (:prefix extension) (:element extension)))
+    person))
 
 
 (defn get-name

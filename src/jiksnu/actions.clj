@@ -48,8 +48,7 @@
    ;; *environment*
    "development"
    "/"
-   ex)
-  #_(.printStackTrace ex))
+   ex))
 
 (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
 

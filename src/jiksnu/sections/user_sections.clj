@@ -163,9 +163,14 @@
                  (:display-name user)
                  (str (:first-name user) " " (:last-name user)))
         id (or (:id user) author-uri)
-        person (.newAuthor abdera/abdera-factory)]
+        extensions [{:ns ns/as
+                     :local "object-type"
+                     :prefix "activity"
+                     :element ns/person}]
+        params {:name name
+                :extension extensions}
+        person (abdera/make-person params)]
     (doto person
-      (.setName name)
 
       (.addSimpleExtension ns/as   "object-type"       "activity" ns/person)
       (.addSimpleExtension ns/atom "id"                ""         id)
