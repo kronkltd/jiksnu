@@ -1,7 +1,7 @@
 (ns jiksnu.actions.admin.group-actions-test
-    (:use [jiksnu.test-helper :only [test-environment-fixture]]
-          [jiksnu.actions.admin.group-actions :only [index]]
-          [midje.sweet :only [fact future-fact => every-checker]] ))
+    (:use [jiksnu.actions.admin.group-actions :only [index]]
+          [jiksnu.test-helper :only [test-environment-fixture]]
+          [midje.sweet :only [=> every-checker fact]] ))
 
 (test-environment-fixture
 

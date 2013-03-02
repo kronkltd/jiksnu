@@ -57,8 +57,7 @@
                                                            :discovered true
                                                            :links [{:rel "lrdd"
                                                                     :template template}]}))
-           uri (factory/make-uri domain-name "/users/1")
-           source-link (fseq :uri)]
+           uri (factory/make-uri domain-name "/users/1")]
        (get-username {:id uri}) => (contains {:username username})
        (provided
          (ops/get-user-meta anything) => .xrd.
