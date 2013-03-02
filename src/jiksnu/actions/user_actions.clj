@@ -20,6 +20,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
@@ -315,7 +316,7 @@
   [^User user]
   (if-let [uri (model.user/user-meta-uri user)]
     (let [resource (ops/get-resource uri)]
-      (model.webfinger/fetch-host-meta uri))
+      (actions.webfinger/fetch-host-meta uri))
     (throw (RuntimeException. "Could not determine user-meta link"))))
 
 (defn fetch-user-feed

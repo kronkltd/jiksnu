@@ -19,22 +19,6 @@
            jiksnu.model.User
            nu.xom.Document))
 
-(defn fetch-host-meta
-  [url]
-  {:pre [(string? url)]
-   :post [(instance? Document %)]}
-  (log/infof "fetching host meta: %s" url)
-  (or
-   (try
-     (let [resource (ops/get-resource url)
-           response (ops/update-resource resource)]
-       (s/increment "xrd_fetched")
-       (when (= 200 (:status response))
-         (cm/string->document (:body response))))
-     (catch RuntimeException ex
-       (trace/trace "errors:handled" ex)))
-   (throw+ "Could not fetch host meta")))
-
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
 (defn host-meta

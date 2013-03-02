@@ -3,21 +3,38 @@
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
-        [clojure.core.incubator :only [-?>]])
-  (:require [clojure.tools.logging :as log]
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [throw+]])
+  (:require [ciste.model :as cm]
+            [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [lamina.trace :as trace])
   (:import java.net.URI
            java.net.URL
            jiksnu.model.Domain
-           jiksnu.model.User))
+           jiksnu.model.User
+           nu.xom.Document))
+
+(defn fetch-host-meta
+  [url]
+  {:pre [(string? url)]
+   :post [(instance? Document %)]}
+  (log/infof "fetching host meta: %s" url)
+  (or
+   (try
+     (let [resource (ops/get-resource url)
+           response (ops/update-resource resource)]
+       (s/increment "xrd_fetched")
+       (when (= 200 (:status response))
+         (cm/string->document (:body response))))
+     (catch RuntimeException ex
+       (trace/trace "errors:handled" ex)))
+   (throw+ "Could not fetch host meta")))
 
 (defn get-xrd-template
   []
