@@ -134,7 +134,8 @@
   {:pre [(instance? Resource item)]}
   (if-not (:local item)
     (let [last-updated (:lastUpdated item)]
-      (if (or (nil? last-updated)
+      (if (or (:force options)
+              (nil? last-updated)
               (time/after? (-> 5 time/minutes time/ago) last-updated))
         (let [url (:url item)]
           (log/debugf "updating resource: %s" url)

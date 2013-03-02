@@ -76,9 +76,9 @@
 (defn fetch-xrd*
   [url]
   (let [resource (actions.resource/find-or-create {:url url})
-        response (actions.resource/update* resource)]
+        response (actions.resource/update* resource {:force true})]
     (try
-      (if-let [body (:body response)]
+      (let [body (:body response)]
         (cm/string->document body)
         (throw+ "Document did not contain any data"))
       (catch RuntimeException ex
