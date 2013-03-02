@@ -15,12 +15,12 @@
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
  (fact "index"
    (let [feed-subscription (mock/a-feed-subscription-exists)]
-     (-> (mock/request :get "/admin/feed-subscriptions")
+     (-> (req/request :get "/admin/feed-subscriptions")
          as-admin response-for) =>
          (every-checker
           map?

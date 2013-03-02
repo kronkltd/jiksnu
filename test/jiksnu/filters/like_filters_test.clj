@@ -10,7 +10,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.util :as util]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 

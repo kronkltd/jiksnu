@@ -14,7 +14,7 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [net.cgrand.enlive-html :as enlive]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
@@ -22,7 +22,7 @@
    (fact "html"
      (let [user (mock/a-user-exists)]
        (mock/there-is-an-activity {:user user})
-       (-> (mock/request :get (named-path "admin show user" {:id (:_id user)}))
+       (-> (req/request :get (named-path "admin show user" {:id (:_id user)}))
            as-admin response-for) =>
            (every-checker
             map?

@@ -14,7 +14,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [net.cgrand.enlive-html :as enlive]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
@@ -23,7 +23,7 @@
      (fact "when it is a remote user"
        (let [username (fseq :username)
              domain-name (fseq :domain)]
-         (-> (mock/request :post "/main/ostatussub")
+         (-> (req/request :post "/main/ostatussub")
              (assoc :params {:profile
                              (format "acct:%s@%s" username domain-name)})
              response-for) =>
@@ -34,7 +34,7 @@
  (fact "get-subscriptions"
    (let [user (mock/a-user-exists)
          path (named-path "user subscriptions" {:id (str (:_id user))})]
-     (-> (mock/request :get path)
+     (-> (req/request :get path)
          response-for)) =>
          (every-checker
           map?

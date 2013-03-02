@@ -37,7 +37,7 @@
             [jiksnu.model.user :as model.user]
             jiksnu.routes
             [jiksnu.session :as session]
-            [ring.mock.request :as mock])
+            [ring.mock.request :as req])
   (:import jiksnu.model.Activity
            jiksnu.model.Domain
            jiksnu.model.User))

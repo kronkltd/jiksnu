@@ -7,7 +7,7 @@
         [midje.sweet :only [every-checker fact future-fact =>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 
 (test-environment-fixture

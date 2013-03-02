@@ -6,22 +6,22 @@
         [midje.sweet :only [every-checker fact future-fact => ]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "index page"
    (->> (named-path "index users")
-        (mock/request :get)
+        (req/request :get)
         response-for) =>
         (every-checker
          map?
          (comp status/success? :status)
          (comp string? :body)))
- 
+
  (fact "registration page"
    (->> (named-path "register page")
-        (mock/request :get)
+        (req/request :get)
         response-for) =>
         (every-checker
          map?

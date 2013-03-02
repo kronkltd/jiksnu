@@ -15,7 +15,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
-            [ring.mock.request :as mock])
+            [ring.mock.request :as req])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -36,14 +36,14 @@
        (let [author (mock/a-user-exists)
              activity (factory :activity)]
          (->> (str "/notice/" (:_id activity))
-              (mock/request :get)
+              (req/request :get)
               response-for) =>
               (contains {:status 404})))
 
      (fact "and there are activities"
        (let [activity (mock/there-is-an-activity)]
          (->> (str "/notice/" (:_id activity))
-              (mock/request :get)
+              (req/request :get)
               response-for) =>
               (every-checker
                (comp status/success? :status)
@@ -53,7 +53,7 @@
    (fact "when the user is authenticated"
      (fact "when a private activity exists"
        (let [activity (mock/there-is-an-activity {:modifier "private"})]
-         (-> (mock/request :get (str "/notice/" (:_id activity)))
+         (-> (req/request :get (str "/notice/" (:_id activity)))
              as-user response-for) =>
              (every-checker
               map?
@@ -63,7 +63,7 @@
    (fact "when the format is json"
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]
-       (-> (mock/request :get (with-context [:http :html]
+       (-> (req/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=json&url=" (full-uri activity))))
            response-for) =>
            (every-checker
@@ -73,7 +73,7 @@
                 (:status response) => status/success?)))))
    (fact "when the format is xml"
      (let [activity (mock/there-is-an-activity)]
-       (-> (mock/request :get (with-context [:http :html]
+       (-> (req/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=xml&url=" (full-uri activity))))
            response-for) =>
            (every-checker

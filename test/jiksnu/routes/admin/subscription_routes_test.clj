@@ -12,13 +12,13 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [hiccup.core :as h]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "index page"
    (let [subscription (mock/a-subscription-exists)]
-     (-> (mock/request :get "/admin/subscriptions")
+     (-> (req/request :get "/admin/subscriptions")
          as-admin response-for) =>
          (every-checker
           (comp status/success? :status)
@@ -29,7 +29,7 @@
 
  (fact "delete"
    (let [subscription (mock/a-subscription-exists)]
-     (-> (mock/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
+     (-> (req/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
          as-admin response-for) =>
          (every-checker
           map?

@@ -7,14 +7,14 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.util :as util]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "Requesting the host meta"
    (fact "returns the host meta as xml"
      (->> "/.well-known/host-meta"
-          (mock/request :get)
+          (req/request :get)
           response-for) =>
           (every-checker
            #(= 200 (:status %))
@@ -26,7 +26,7 @@
 
  (fact "host meta json"
    (->> "/.well-known/host-meta.json"
-        (mock/request :get)
+        (req/request :get)
         response-for) =>
         (every-checker
          #(= 200 (:status %))

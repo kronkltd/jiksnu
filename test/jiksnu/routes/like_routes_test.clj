@@ -8,17 +8,17 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (future-fact "delete html"
    (let [like (model.like/create (factory :like))]
-     (-> (mock/request :post (format "/likes/%s/delete" (:_id like)))
+     (-> (req/request :post (format "/likes/%s/delete" (:_id like)))
          as-admin response-for) =>
          (every-checker
           map?
           (comp status/redirect? :status))
          (model.like/fetch-by-id (:_id like)) => nil))
- 
+
  )

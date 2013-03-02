@@ -16,7 +16,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
@@ -24,7 +24,7 @@
    (fact "when there are no activities"
      (db/drop-all!)
 
-     (-> (mock/request :get "/")
+     (-> (req/request :get "/")
          response-for) =>
          (every-checker
           map?
@@ -38,14 +38,14 @@
          (mock/there-is-an-activity {:user user}))
 
        (fact "when the user is not authenticated"
-         (-> (mock/request :get "/")
+         (-> (req/request :get "/")
              response-for) =>
              (every-checker
               map?
               (comp status/success? :status)))
 
        (fact "when the the request is for n3"
-         (-> (mock/request :get "/api/statuses/public_timeline.n3")
+         (-> (req/request :get "/api/statuses/public_timeline.n3")
              response-for) =>
              (every-checker
               map?
@@ -55,7 +55,7 @@
               ))
 
        (fact "when the user is authenticated"
-         (-> (mock/request :get "/")
+         (-> (req/request :get "/")
              as-user
              response-for) =>
              (every-checker
@@ -71,7 +71,7 @@
        (dotimes [n 10]
          (mock/there-is-an-activity {:user user}))
 
-       (-> (mock/request :get (format "/%s" (:username user)))
+       (-> (req/request :get (format "/%s" (:username user)))
            as-user response-for)) =>
            (every-checker
             map?
@@ -82,7 +82,7 @@
        (dotimes [n 10]
          (mock/there-is-an-activity {:user user}))
 
-       (-> (mock/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
+       (-> (req/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
            (as-user user) response-for)) =>
            (every-checker
             map?

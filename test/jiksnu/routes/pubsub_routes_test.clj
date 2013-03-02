@@ -17,7 +17,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [net.cgrand.enlive-html :as enlive]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
@@ -34,7 +34,7 @@
                  "hub.callback"     callback-url
                  "hub.mode"         "subscribe"}]
 
-     (-> (mock/request :post (named-path "hub dispatch"))
+     (-> (req/request :post (named-path "hub dispatch"))
          (assoc :params params)
          response-for) =>
          (every-checker

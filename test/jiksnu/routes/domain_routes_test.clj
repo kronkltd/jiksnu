@@ -12,14 +12,14 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (fact "show"
    (with-context [:http :html]
      (let [domain (mock/a-domain-exists)]
-       (-> (mock/request :get (uri domain))
+       (-> (req/request :get (uri domain))
            response-for) =>
            (every-checker
             map?
@@ -31,7 +31,7 @@
 
  (fact "#'webfinger-host-meta"
    (fact "should return a XRD document"
-     (-> (mock/request :get "/.well-known/host-meta")
+     (-> (req/request :get "/.well-known/host-meta")
          response-for) =>
          (every-checker
           map?
