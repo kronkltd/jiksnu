@@ -108,20 +108,6 @@
         (deliver p domain)))
     domain))
 
-(defn discover-webfinger
-  [^Domain domain url]
-  ;; TODO: check https first
-  (if-let [xrd (fetch-xrd domain url) ]
-    (if-let [links (model.webfinger/get-links xrd)]
-      ;; TODO: do individual updates
-      (do
-        (doseq [link links]
-          (add-link domain link))
-        (set-discovered! domain)
-        domain)
-      (throw+  "Host meta does not have any links"))
-    (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
-
 (defaction edit-page
   [domain]
   domain)
@@ -156,9 +142,27 @@
   [domain]
   (set-xmpp domain true))
 
-(defn statusnet-url
-  [domain]
-  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
+(defn discover-webfinger
+  [^Domain domain url]
+  ;; TODO: check https first
+  (if-let [xrd (fetch-xrd domain url) ]
+    (if-let [links (model.webfinger/get-links xrd)]
+      ;; TODO: do individual updates
+      (do
+        (doseq [link links]
+          (add-link domain link))
+        (set-discovered! domain)
+        domain)
+      (throw+ "Host meta does not have any links"))
+    (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
+
+(defn discover-onesocialweb
+  [domain url]
+  (-> domain
+      model.domain/ping-request
+      tigase/make-packet
+      tigase/deliver-packet!)
+  domain)
 
 (defn discover-statusnet-config
   [domain url]
