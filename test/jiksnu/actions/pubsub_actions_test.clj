@@ -23,14 +23,14 @@
 
  (fact "#'subscribe"
    (let [params {:verify "async"}]
-     (subscribe params) => .response.
+     (actions.pubsub/subscribe params) => .response.
      (provided
-       (verify-subscribe-async subscription params) => .response.)))
+       (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
  (fact "#'hub-dispatch"
    (let [params {:mode "subscribe"}]
-     (hub-dispatch params) => .response.
+     (actions.pubsub/hub-dispatch params) => .response.
      (provided
-       (subscribe params) => .response.)))
+       (actions.pubsub/subscribe params) => .response.)))
 
  )

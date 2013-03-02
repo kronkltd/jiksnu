@@ -78,6 +78,10 @@
   [n]
   "3c53c56289b940c416296690f95abb45")
 
+(defseq :lease-seconds
+  [n]
+  2000)
+
 (defseq :word
   [n]
   (str "foo" n))

@@ -94,10 +94,17 @@
 (defn a-feed-source-exists
   [& [options]]
   (let [domain (or (:domain options)
-                   (get-this :domain)
-                   (a-domain-exists))
+                   (if (:local options)
+                     (actions.domain/current-domain)
+                     (or (when-not (:local options)
+                           (get-this :domain))
+                         (a-domain-exists
+                          (select-keys options #{:local})))))
+
+
         resource (or (:resource options)
-                     (a-resource-exists {:url (make-uri (:_id domain) (str (fseq :path) ".atom"))
+                     (a-resource-exists {:url (make-uri (:_id domain)
+                                                        (str (fseq :path) ".atom"))
                                          :domain domain}))
         source (actions.feed-source/create
                 (factory :feed-source
@@ -143,7 +150,7 @@
   [& [options]]
   (let [source (or (:feed-source options)
                    (get-this :feed-source)
-                   (a-feed-source-exists))
+                   (a-feed-source-exists (select-keys options #{:local})))
         activity (actions.activity/post (factory :activity
                                                  {:update-source source}))]
     (set-this :activity activity)
@@ -152,7 +159,9 @@
 (defn there-is-an-activity
   [& [options]]
   (let [modifier (:modifier options "public")
-        domain (or (:domain options) (a-domain-exists))
+        domain (or (:domain options)
+                   (get-this :domain)
+                   (a-domain-exists (select-keys options #{:local})))
         user (or (:user options) (get-this :user) (a-user-exists {:domain domain}))
         source (or (:feed-source options)
                    (get-this :feed-source)
@@ -185,7 +194,7 @@
   [& [options]]
   (let [domain (or (:domain options)
                    (get-this :domain)
-                   (a-domain-exists))
+                   (a-domain-exists (select-keys options #{:local})))
         feed-subscription (actions.feed-subscription/create
                            (factory :feed-subscription
                                     {:domain (:_id domain)

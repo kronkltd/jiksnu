@@ -1,7 +1,7 @@
 (ns jiksnu.actions.feed-subscription-actions-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.actions.feed-subscription-actions :only [create delete exists? index
-                                                         prepare-create]]
+                                                         prepare-create subscription-request]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact falsey future-fact truthy anything]])
@@ -32,5 +32,15 @@
  (fact "#'index"
    (model.feed-subscription/drop!)
    (:items (index)) => [])
+
+ (fact "#'subscription-request"
+   (let [topic (fseq :uri)
+         source (mock/a-feed-source-exists {:local true})
+         params {:callback (fseq :uri)
+                 :verify-token (fseq :verify-token)
+                 :lease-seconds (fseq :lease-seconds)
+                 :secret (fseq :secret-key)
+                 :topic (:topic source)}]
+     (subscription-request params)) => (partial instance? FeedSubscription))
 
  )
