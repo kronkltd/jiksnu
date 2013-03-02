@@ -455,13 +455,6 @@
     ;; TODO: mass assign vulnerability here
     (update user options)))
 
-(defn user-for-uri
-  "Returns a user with the passed account uri,
-   or creates one if it does not exist."
-  [uri]
-  (->> uri util/split-uri
-       (apply find-or-create)))
-
 (defaction xmpp-service-unavailable
   "Error callback when user doesn't support xmpp"
   [user]
