@@ -88,3 +88,4 @@
       (if-let [url (actions.domain/get-user-meta-url @domain id)]
         (assoc item :user-meta-link url)
         (throw+ "Could not determine use meta link")))))
+

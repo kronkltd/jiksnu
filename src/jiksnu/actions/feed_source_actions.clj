@@ -50,7 +50,8 @@
       transforms.feed-source/set-local
       transforms.feed-source/set-hub
       transforms.feed-source/set-status
-      transforms.feed-source/set-resource))
+      transforms.feed-source/set-resource
+      transforms/set-no-links))
 
 (def index*
   (templates/make-indexer 'jiksnu.model.feed-source

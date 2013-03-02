@@ -43,7 +43,8 @@
       transforms.domain/set-local
       transforms.domain/set-discovered
       transforms/set-created-time
-      transforms/set-updated-time))
+      transforms/set-updated-time
+      transforms/set-no-links))
 
 (defn prepare-delete
   ([domain]

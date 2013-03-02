@@ -67,7 +67,8 @@
       transforms.user/assert-unique
       transforms.user/set-update-source
       transforms.user/set-discovered
-      transforms.user/set-avatar-url))
+      transforms.user/set-avatar-url
+      transforms/set-no-links))
 
 (def add-link* (templates/make-add-link* model.user/collection-name))
 

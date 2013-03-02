@@ -43,7 +43,8 @@
       transforms.resource/set-domain
       transforms.resource/set-location
       transforms/set-updated-time
-      transforms/set-created-time))
+      transforms/set-created-time
+      transforms/set-no-links))
 
 (def add-link* (templates/make-add-link* model.resource/collection-name))
 

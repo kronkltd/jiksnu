@@ -1,4 +1,5 @@
 (ns jiksnu.transforms
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.ops :as ops]
@@ -45,3 +46,8 @@
     (let [resource (ops/get-resource (:url item))]
       (assoc item :resource (:_id @resource)))))
 
+(defn set-no-links
+  [item]
+  (if (seq (:links item))
+    (throw+ "Can not create item with links. Create record then add links")
+    item))
