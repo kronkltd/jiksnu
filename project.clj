@@ -70,7 +70,8 @@
                  [ring/ring-core "1.1.1"]
                  [ring-basic-authentication "0.0.1"]
                  [slingshot "0.10.3"]
-                 [table "0.3.2"]]
+                 [table "0.3.2"]
+                 [tigase/tigase-server "5.1.4"]]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [jiksnu.xmpp.plugin
         ;; jiksnu.xmpp.channels
@@ -92,6 +93,7 @@
              "-Dfile.encoding=UTF-8"]
   :repositories {"stuart"                "http://stuartsierra.com/maven2"
                  "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
+                 "tigase-snapshots" "http://maven.tigase.org/"
                  "apache-repo-snapshots" "https://repository.apache.org/content/repositories/snapshots"}
   :warn-on-reflection false
 
