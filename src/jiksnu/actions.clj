@@ -7,7 +7,7 @@
         [ciste.views :only [defview]]
         [clojure.core.incubator :only [dissoc-in]]
         [clojure.data.json :only [read-json]])
-  (:require [clj-airbrake.core :as airbrake]
+  (:require #_[clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -47,7 +47,7 @@
   (println "handling error")
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
-   (airbrake/notify
+   #_(airbrake/notify
     "d61e18dac7af78220e52697e5b08dd5a"
     (name @*environment*)
     ;; "development"
