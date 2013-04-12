@@ -144,12 +144,12 @@
   (s/increment "feeds processed")
 
   (when-let [author (abdera/get-feed-author feed)]
-    (let [author-id (abdera/get-simple-extension author ns/atom "id")]
-      (let [params (actions.user/parse-person author)
-            user (actions.user/find-or-create-by-remote-id
-                  {:id (:url params)})
-            id (:_id user)]
-        (model.feed-source/set-field! source :author id))))
+    (let [author-id (abdera/get-simple-extension author ns/atom "id")
+          params (actions.user/parse-person author)
+          user (actions.user/find-or-create-by-remote-id
+                (assoc params :id (:url params)))
+          id (:_id user)]
+      (model.feed-source/set-field! source :author id)))
 
   (let [feed-title (.getTitle feed)]
     (when-not (= feed-title (:title source))

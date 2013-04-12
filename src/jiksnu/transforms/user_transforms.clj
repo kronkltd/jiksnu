@@ -5,6 +5,7 @@
         [jiksnu.routes.helpers :only [formatted-url]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]

@@ -70,7 +70,10 @@
       transforms.user/set-avatar-url
       transforms/set-no-links))
 
-(def add-link* (templates/make-add-link* model.user/collection-name))
+(defaction add-link*
+  [item link]
+  ((templates/make-add-link* model.user/collection-name)
+   item link))
 
 (defn get-domain
   "Return the domain of the user"
@@ -97,9 +100,9 @@
   "create an activity"
   [params]
   (let [links (:links params)
-        item (dissoc params :links)
-        item (prepare-create item)
-        item (model.user/create item)]
+        params (dissoc params :links)
+        params (prepare-create params)
+        item (model.user/create params)]
     (doseq [link links]
       (add-link item link))
     (model.user/fetch-by-id (:_id item))))
@@ -109,11 +112,18 @@
   (or (model.user/get-user username domain)
       (create {:username username :domain domain})))
 
+(defn get-user-meta-uri
+  [user]
+  (let [domain (get-domain user)]
+    (or (:user-meta-uri user)
+        ;; TODO: should update uri in this case
+        (actions.domain/get-user-meta-url domain (:url user)))))
+
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
   [user]
   ;; {:pre [(instance? User user)]}
-  (if-let [url (:user-meta-link user)]
+  (if-let [url (get-user-meta-uri user)]
     (let [resource (actions.resource/find-or-create {:url url})
           response (actions.resource/update* resource)]
       (if-let [body (:body response)]
@@ -144,14 +154,6 @@
                           :update-source (:_id source)}))
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
-
-(defn get-user-meta-uri
-  [user]
-  {:pre [(instance? User user)]}
-  (let [domain (get-domain user)]
-    (or (:user-meta-uri user)
-        ;; TODO: should update uri in this case
-        (actions.domain/get-user-meta-url domain (:url user)))))
 
 (defn find-or-create-by-remote-id
   ([user] (find-or-create-by-remote-id user {}))
