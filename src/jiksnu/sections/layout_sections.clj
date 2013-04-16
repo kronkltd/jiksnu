@@ -238,14 +238,14 @@
       "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
     (p/include-js
      "/assets/js/modernizr-2.6.1.js"
-     "/webjars/underscorejs/1.4.2/underscore-min.js"
-     "/webjars/jquery/1.8.2/jquery.min.js"
-     "/webjars/knockout/2.2.0/knockout-2.2.0.js"
+     "/webjars/underscorejs/1.4.4/underscore.min.js"
+     "/webjars/jquery/1.9.1/jquery.min.js"
+     "/webjars/knockout/2.2.1/knockout.js"
      "/assets/js/bootstrap-2.4.0.min.js"
      "/assets/js/lightbox.js"
      "/assets/js/jquery.smooth-scroll.min.js"
      "/assets/js/jquery.fitvids.js"
-     "/webjars/backbone/0.9.2/backbone-min.js"
+     "/webjars/backbonejs/1.0.0/backbone.min.js"
      "/assets/js/knockback-0.15.4.min.js"
      "/assets/js/jiksnu.js"
      ;; "/assets/js/jiksnu.advanced.js"
