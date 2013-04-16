@@ -49,10 +49,8 @@
  (fact "#'process-entry"
    (with-context [:http :atom]
      (let [user (mock/a-user-exists)
-           activity (model/map->Activity (factory :activity
-                                                  {:id (fseq :uri)}))
            author (show-section user)
-           entry (show-section activity)
+           entry (show-section (factory :activity {:id (fseq :uri)}))
            feed (abdera/make-feed*
                  {:title (fseq :title)
                   :entries [entry]

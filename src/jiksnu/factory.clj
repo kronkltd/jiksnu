@@ -1,6 +1,6 @@
 (ns jiksnu.factory
   (:use [ciste.config :only [config]]
-        [clj-factory.core :only [defseq deffactory fseq factory]])
+        [clj-factory.core :only [defseq deffactory defrecordfactory fseq factory]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
@@ -10,6 +10,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
@@ -178,7 +179,7 @@
   {:_id (fseq :domain)
    :local false})
 
-(deffactory :user
+(defrecordfactory :user model/map->User
   (let [password (fseq :password)
         first-name (fseq :name)
         last-name (fseq :surname)
@@ -193,30 +194,30 @@
      :first-name first-name
      :last-name last-name}))
 
-(deffactory :local-user
+(defrecordfactory :local-user model/map->User
   (-> (factory :user {:domain (config :domain)})
       (assoc :local true)))
 
-(deffactory :conversation
+(defrecordfactory :conversation model/map->Conversation
   {:url (fseq :uri)})
 
-(deffactory :resource
+(defrecordfactory :resource model/map->Resource
   {:url (fseq :uri)})
 
-(deffactory :activity
+(defrecordfactory :activity model/map->Activity
   {:title (fseq :title)
    :content (fseq :content)
    :url (fseq :uri)
    :author #'user-id
    :verb "post"})
 
-(deffactory :subscription
+(defrecordfactory :subscription model/map->Subscription
   {:to #'user-id
    :local true
    :from #'user-id
    :created #'time/now})
 
-(deffactory :feed-source
+(defrecordfactory :feed-source model/map->FeedSource
   {:topic (fseq :uri)
    :hub (fseq :uri)})
 

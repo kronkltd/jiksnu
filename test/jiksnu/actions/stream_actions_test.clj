@@ -53,8 +53,7 @@
      (with-context [:http :atom]
        (let [user (mock/a-user-exists)
              source (mock/a-feed-source-exists)
-             activity (model/map->Activity
-                       (factory :activity {:id (fseq :uri)}))
+             activity (factory :activity {:id (fseq :uri)})
              feed (abdera/make-feed* {:links
                                       [{:rel "self"
                                         :href (:topic source)}]

@@ -28,7 +28,7 @@
 (test-environment-fixture
 
  (future-fact "#'like-button"
-   (like-button (model/map->Activity (factory :activity))) =>
+   (like-button (factory :activity)) =>
    (every-checker
     vector?
     #(= :form (first %))))

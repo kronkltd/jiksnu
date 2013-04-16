@@ -35,8 +35,7 @@
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
        (with-context [:http :atom]
-         (let [entry (show-section (model/map->Activity
-                                    (factory :activity {:author (:_id user)})))]
+         (let [entry (show-section (factory :activity {:author (:_id user)}))]
            (entry->activity entry) => model/activity?)))
 
      (future-fact "when coming from an identi.ca feed"
