@@ -169,20 +169,26 @@
                 x)))))
 
 
+(defn modelInit
+  [element value-accessor all-bindings data context]
+  (let [properties (value-accessor)
+        model-name (model/collection-name (.-type properties))
+        model-ob (get-model model-name data)
+        unwrapped (ko/unwrap-observable model-ob)
+        child-binding (.createChildContext context unwrapped)]
+    (if unwrapped
+      (.applyBindingsToDescendants js/ko child-binding element))
+    (js-obj
+     "controlsDescendantBindings" true)))
+
+(defn modelUpdate
+  [element value-accessor all-bindings data context]
+  (.attr (js/$ element) "data-id" data))
+
 (aset ko/binding-handlers "withModel"
       (js-obj
-       "init" (fn [element value-accessor all-bindings data context]
-                (let [properties (value-accessor)
-                      model-name (model/collection-name (.-type properties))
-                      model-ob (get-model model-name data)
-                      unwrapped (ko/unwrap-observable model-ob)
-                      child-binding (.createChildContext context unwrapped)]
-                  (if unwrapped
-                    (.applyBindingsToDescendants js/ko child-binding element))
-                  (js-obj
-                   "controlsDescendantBindings" true)))
-       "update" (fn [element value-accessor all-bindings data context]
-                  (.attr (js/$ element) "data-id" data))))
+       "init" modelInit
+       "update" modelUpdate))
 
 (defvar DataModelProvider
   [this]
@@ -202,17 +208,19 @@
                                "type" model-name)))
                (.getBindings underlying-provider node context)))))))
 
+(defn- parse-route*
+  [a]
+  (if (seq a)
+    (let [r (string/split a "=")]
+      [(str (first r))
+       (str (second r))])))
+
 (defn parse-route
   [path-string]
   (log/finest (format "parsing route: %s" path-string))
   (let [[route args] (string/split path-string "?")
         pairs (string/split (str args) "&")
-        args-array (map (fn [a]
-                          (if (seq a)
-                            (let [r (string/split a "=")]
-                              [(str (first r))
-                               (str (second r))])))
-                        pairs)
+        args-array (map parse-route* pairs)
         args-map (into {} args-array)]
     [(str route) args-map]))
 
