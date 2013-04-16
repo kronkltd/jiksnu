@@ -107,12 +107,11 @@
 
 (defn find-or-create
   [params & [options]]
-  (if-let [source (or (if-let [id (:_id params)]
-                        (model.feed-source/fetch-by-id id))
-                      (if-let [topic (:topic params)]
-                        (model.feed-source/fetch-by-topic topic)))]
-    source
-    (create params options)))
+  (or (if-let [id (:_id params)]
+        (model.feed-source/fetch-by-id id))
+      (if-let [topic (:topic params)]
+        (model.feed-source/fetch-by-topic topic))
+      (create params options)))
 
 (defaction index
   [& options]
