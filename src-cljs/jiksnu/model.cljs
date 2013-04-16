@@ -273,12 +273,11 @@
            (js-obj
             "type" "Subscription"
             "defaults" (js-obj
-                        "from" nil
-                        "to" nil
+                        "from"    nil
+                        "to"      nil
                         "created" nil
                         "pending" nil
-                        "local" nil
-                        )
+                        "local"   nil)
             "url" (fn []
                     (this-as this
                       (format "/model/subscriptions/%s.model" (.-id this))))
