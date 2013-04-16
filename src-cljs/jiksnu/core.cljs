@@ -266,14 +266,15 @@
 (defn main
   []
 
-  (doseq [[k v] logging-levels]
-    (log/set-level (log/get-logger k) v))
+  ;; (doseq [[k v] logging-levels]
+  ;;   (log/set-level (log/get-logger k) v))
 
   ;; (log/start-display (log/fancy-output))
 
   (log/start-display (log/console-output))
 
   (log/info *logger* "init")
+
   (try
     (ws/set-view _view)
     (ws/connect)
