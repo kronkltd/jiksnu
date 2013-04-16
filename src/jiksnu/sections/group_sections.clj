@@ -5,7 +5,8 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [actions-section admin-show-section
                                 admin-index-block admin-index-line
-                                admin-index-section bind-property control-line]])
+                                admin-index-section bind-property control-line
+                                dump-data]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Group))
@@ -69,8 +70,7 @@
   [:tr (merge {:data-model "group"}
               (if *dynamic*
                 {:data-bind "attr: {'data-id': _id}"}
-                {:data-id (:_id group)}
-                ))
+                {:data-id (:_id group)}))
    [:td
     (if *dynamic*
       (bind-property "nickname")
@@ -83,8 +83,7 @@
     (if *dynamic*
       (bind-property "homepage")
       (:homepage group))]
-   [:td (actions-section group)]
-   ])
+   [:td (actions-section group)]])
 
 ;; admin-index-section
 
@@ -127,7 +126,7 @@
     [:p
      [:a.url.entry-title
       (if *dynamic*
-        {:data-bind "attr: {href: '/groups/' + nickname}"}
+        {:data-bind "attr: {href: '/groups/' + nickname()}"}
         {:href (str "/groups/" (:nickname group))})
       [:img {:src (:avatar-url group) }]
       [:span.nickname
@@ -172,5 +171,5 @@
 
 (defn user-groups
   [user]
-  
+
   )

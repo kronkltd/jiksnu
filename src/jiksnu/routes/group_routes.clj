@@ -7,6 +7,7 @@
 (add-route! "/groups/new" {:named "new group"})
 ;; (add-route! "/:username/groups" {:named "index user groups"})
 (add-route! "/groups/:name/edit" {:named "edit group"})
+(add-route! "/model/groups/:id"     {:named "group model"})
 
 (defn routes
   []
@@ -21,4 +22,6 @@
    ;; [[:get  (named-path     "index user groups")]         #'group/user-list]
    ;; [[:get    "/search/group"]                            #'group/search-page]
    ;; [[:post   "/search/group"]                            #'group/search]
+   [[:get    (formatted-path "group model")]          #'group/show]
+
    ])

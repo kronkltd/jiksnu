@@ -1,12 +1,13 @@
 (ns jiksnu.views.group-views
   (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section add-form]]
+        [ciste.sections.default :only [index-section add-form show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.actions.group-actions :only [add create edit-page index
-                                             new-page user-list]]
+                                             new-page show user-list]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [format-page-info pagination-links with-page]])
-  (:require [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Group))
 
 (defview #'add :html
@@ -34,14 +35,18 @@
   {:title "Groups"
    :body
    (with-page "default"
-     (list
-      (pagination-links response)
-      (index-section (if *dynamic*
-                            [(Group.)]
-                            items) response)
-           [:p
-            [:a {:href (named-path "new group")}
-             "Create a new group"]]))})
+     (let [items (if *dynamic* [(Group.)] items)]
+       (list
+        (pagination-links response)
+        (index-section items response)
+        [:p
+         [:a {:href (named-path "new group")}
+          "Create a new group"]])))})
+
+(defview #'index :json
+  [request {:keys [items] :as page}]
+  {:body
+   {:items (index-section items page)}})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
@@ -53,6 +58,23 @@
   [request group]
   {:title "Create New Group"
    :body (add-form group)})
+
+;; show
+
+(defview #'show :model
+  [request item]
+  {:body (doall (show-section item))})
+
+(defview #'show :viewmodel
+  [request item]
+  (let [id (:_id item)]
+    {:body
+     {:title (:nickname item)
+      :pages {:activities (let [page (actions.activity/index {:group id})]
+                            (format-page-info page))}
+      :targetGroup (:_id item)}}))
+
+
 
 (defview #'user-list :html
   [request user]

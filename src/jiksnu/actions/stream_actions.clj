@@ -82,7 +82,7 @@
 (defaction group-timeline
   [group]
   ;; TODO: implement
-  [group []])
+  [group (actions.activity/index)])
 
 (defaction user-list
   []

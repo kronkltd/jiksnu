@@ -258,6 +258,16 @@
 (def Group
   (.extend backbone/Model
            (js-obj
+            "defaults" (js-obj
+                        "from"     nil
+                        "to"       nil
+                        "homepage" ""
+                        "fullname" ""
+                        "nickname" "")
+            "url" (fn [id]
+                    (this-as
+                      this
+                      (format "/model/groups/%s.model" (.-id this))))
             "idAttribute" "_id"
             "type" "Group"
             "initialize" initializer)))

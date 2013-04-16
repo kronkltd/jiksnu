@@ -46,6 +46,17 @@
           (show-section group)
           (index-section items page))})
 
+(defview #'group-timeline :json
+  [request [group {:keys [items] :as page}]]
+  {:body group})
+
+(defview #'group-timeline :viewmodel
+  [request data]
+  (let [[group {:keys [items] :as page}] data]
+    {:body {:title (:nickname group)
+            :pages {:default (format-page-info page)}
+            :targetGroup (:_id group)}}))
+
 ;; home-timeline
 
 (defview #'home-timeline :html
