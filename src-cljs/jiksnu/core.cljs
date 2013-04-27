@@ -24,7 +24,7 @@
 
 (def class-names
   ["Activity" "AuthenticationMechanism" "Conversation"
-   "Domain" "Subscription" "FeedSource" "FeedSubscription"
+   "Domain" "Group" "Subscription" "FeedSource" "FeedSubscription"
    "Resource" "User"])
 
 (def logging-levels

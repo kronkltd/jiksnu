@@ -431,6 +431,7 @@
              "targetConversation"       nil
              "targetDomain"             nil
              "targetFeedSource"         nil
+             "targetGroup"              nil
              "targetResource"           nil
              "targetUser"               nil
              "title"                    nil

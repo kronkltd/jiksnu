@@ -42,9 +42,13 @@
   [request [group {:keys [items] :as page}]]
   {:title (str (:nickname group) " group")
    :post-form true
-   :body (list
-          (show-section group)
-          (index-section items page))})
+   :body
+   (bind-to "targetGroup"
+     (show-section group)
+     (with-page "default"
+       (pagination-links (if *dynamic* {} page))
+       (bind-to "items"
+         (index-section items))))})
 
 (defview #'group-timeline :json
   [request [group {:keys [items] :as page}]]
