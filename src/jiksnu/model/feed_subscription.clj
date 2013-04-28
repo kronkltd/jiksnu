@@ -17,6 +17,8 @@
            org.joda.time.DateTime))
 
 (def collection-name "feed_subscriptions")
+(def maker           #'model/map->FeedSubscription)
+(def page-size       20)
 
 (def create-validators
   (validation-set
@@ -28,17 +30,12 @@
    (type-of :created  DateTime)
    (type-of :updated  DateTime)))
 
-(def set-field!    (templates/make-set-field! collection-name))
-
-(defn fetch-by-id
-  [id]
-  (if-let [item (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSubscription item)))
-
-(def count-records (templates/make-counter collection-name))
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))

@@ -124,3 +124,11 @@
             (s/increment (str collection-name "_created"))
             item))
         (throw+ {:type :validation :errors errors})))))
+
+(defn make-fetch-by-id
+  [collection-name maker]
+  (fn [id]
+    (s/increment (str collection-name "_fetched"))
+    (when-let [item (mc/find-map-by-id collection-name id)]
+      (maker item))))
+

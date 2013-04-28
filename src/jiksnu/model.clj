@@ -48,6 +48,7 @@
 (defrecord FeedSource              [])
 (defrecord FeedSubscription        [])
 (defrecord Group                   [])
+(defrecord GroupMembership         [])
 (defrecord Item                    [])
 (defrecord Key                     [])
 (defrecord Like                    [])
@@ -64,6 +65,7 @@
    FeedSource
    FeedSubscription
    Group
+   GroupMembership
    Item
    Key
    Like

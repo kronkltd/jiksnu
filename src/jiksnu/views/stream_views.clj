@@ -45,7 +45,7 @@
    :body
    (bind-to "targetGroup"
      (show-section group)
-     (with-page "default"
+     #_(with-page "default"
        (pagination-links (if *dynamic* {} page))
        (bind-to "items"
          (index-section items))))})
@@ -59,6 +59,7 @@
   (let [[group {:keys [items] :as page}] data]
     {:body {:title (:nickname group)
             :pages {:default (format-page-info page)}
+            :postForm {:visible true}
             :targetGroup (:_id group)}}))
 
 ;; home-timeline

@@ -17,8 +17,9 @@
            org.bson.types.ObjectId
            org.joda.time.DateTime))
 
-(defonce page-size 20)
 (def collection-name "resources")
+(def maker           #'model/map->Resource)
+(def page-size       20)
 
 (def create-validators
   (validation-set
@@ -28,6 +29,13 @@
    (type-of :local   Boolean)
    (type-of :created DateTime)
    (type-of :updated DateTime)))
+
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -40,7 +48,7 @@
                      (merge sort-clause)
                      (mq/paginate :page (:page options 1)
                                   :per-page (:page-size options 20)))]
-       (map model/map->Resource records))))
+       (map maker records))))
 
 (defn fetch-by-url
   [url]
@@ -49,20 +57,6 @@
 (defn get-link
   [item rel content-type]
   (first (util/rel-filter rel (:links item) content-type)))
-
-(def set-field! (templates/make-set-field! collection-name))
-
-(defn fetch-by-id
-  [id]
-  (let [id (if (string? id) (util/make-id id) id)]
-    (s/increment "resources fetched")
-    (if-let [item (mc/find-map-by-id collection-name id)]
-      (model/map->Resource item))))
-
-(def count-records (templates/make-counter collection-name))
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
 
 (defn ensure-indexes
   []

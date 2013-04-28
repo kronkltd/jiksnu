@@ -1,9 +1,8 @@
 (ns jiksnu.model.activity
   (:use [ciste.config :only [config]]
-        [clojure.core.incubator :only [-?>>]]
         [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of acceptance-of]])
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clj-statsd :as s]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
@@ -47,33 +46,33 @@
 (def drop!         (templates/make-dropper collection-name))
 (def set-field! (templates/make-set-field! collection-name))
 
+(defn fetch-by-id
+  [id]
+  ;; TODO: Should this always take a string?
+  (let [id (if (string? id) (util/make-id id) id)]
+    (s/increment (str collection-name " fetched"))
+    (if-let [item (mc/find-map-by-id collection-name id)]
+      (maker item))))
+
+(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
+
+(defn fetch-all
+  ([] (fetch-all {}))
+  ([params] (fetch-all params {}))
+  ([params options]
+     ((templates/make-fetch-fn maker collection-name)
+      params options)))
+
+(defn get-link
+  [user rel content-type]
+  (first (util/rel-filter rel (:links user) content-type)))
+
 (defn get-author
   "Returns the user that is the author of this activity"
   [activity]
   (-> activity
       :author
       model.user/fetch-by-id))
-
-(defn get-link
-  [user rel content-type]
-  (first (util/rel-filter rel (:links user) content-type)))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     ((templates/make-fetch-fn model/map->Activity collection-name)
-      params options)))
-
-(defn fetch-by-id
-  [id]
-  ;; TODO: Should this always take a string?
-  (let [id (if (string? id) (util/make-id id) id)]
-    (s/increment "activities fetched")
-    (if-let [activity (mc/find-map-by-id collection-name id)]
-      (model/map->Activity activity))))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn get-comments
   [activity]
@@ -99,8 +98,8 @@
 
 (defn fetch-by-remote-id
   [id]
-  (if-let [activity (mc/find-one-as-map collection-name {:id id})]
-    (model/map->Activity activity)))
+  (if-let [item (mc/find-one-as-map collection-name {:id id})]
+    (maker item)))
 
 ;; deprecated
 (defn add-comment

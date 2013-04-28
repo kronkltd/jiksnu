@@ -18,14 +18,12 @@
            org.joda.time.DateTime))
 
 (def collection-name "domains")
+(def maker           #'model/map->Domain)
+(def page-size       20)
 
 (defn host-meta-link
   [domain]
   (str "http://" (:_id domain) "/.well-known/host-meta"))
-
-(defn pending-domains-key
-  [domain]
-  (str "pending.domains." domain))
 
 (def create-validators
   (validation-set
@@ -38,8 +36,8 @@
 (defn fetch-by-id
   [id]
   (s/increment "domains fetched")
-  (if-let [domain (mc/find-map-by-id collection-name id)]
-    (model/map->Domain domain)))
+  (if-let [item (mc/find-map-by-id collection-name id)]
+    (maker item)))
 
 (def count-records (templates/make-counter collection-name))
 (def create        (templates/make-create  collection-name #'fetch-by-id #'create-validators))
@@ -51,7 +49,7 @@
   ([params] (fetch-all params {}))
   ([params options]
      (s/increment "domains searched")
-     ((templates/make-fetch-fn model/map->Domain collection-name)
+     ((templates/make-fetch-fn maker collection-name)
       params options)))
 
 (defn get-link

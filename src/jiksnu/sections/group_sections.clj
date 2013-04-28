@@ -161,12 +161,18 @@
 (defsection show-section [Group :html]
   [group & _]
   [:div
-   [:div
+   [:div {:data-model "group"}
+    [:p (bind-property "fullname")]
+    [:p (bind-property "homepage")]
+    [:p (bind-property "location")]
+    [:p (bind-property "aliases")]
+    [:p (bind-property "created")]
+    [:p (bind-property "updated")]
     [:p "Admins " (count (:admins group))]
     [:ul
      (map
       (fn [admin]
-        (link-to (model.user/fetch-by-id)))
+        (link-to (model.user/fetch-by-id admin)))
       (:admins group))]]])
 
 (defn user-groups

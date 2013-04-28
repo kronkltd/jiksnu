@@ -44,10 +44,12 @@
    (presence-of   :avatar-url)
    (acceptance-of :local         :accept (partial instance? Boolean))))
 
-(def count-records (templates/make-counter    collection-name))
-(def delete        (templates/make-deleter    collection-name))
-(def drop!         (templates/make-dropper    collection-name))
-(def set-field! (templates/make-set-field! collection-name))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
 
 (defn salmon-link
   [user]
@@ -100,16 +102,6 @@
 (defn get-link
   [user rel content-type]
   (first (util/rel-filter rel (:links user) content-type)))
-
-(defn fetch-by-id
-  "Fetch a user by it's object id"
-  [id]
-  (s/increment "users fetched")
-  (if-let [user (mc/find-map-by-id collection-name id)]
-    (maker user)
-    (log/warnf "Could not find user: %s" id)))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))
