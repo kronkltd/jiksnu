@@ -19,6 +19,7 @@
 
 (defonce page-size 20)
 (def collection-name "activities")
+(def maker model/map->Activity)
 
 (def create-probe (trace/probe-channel :activity:created))
 
