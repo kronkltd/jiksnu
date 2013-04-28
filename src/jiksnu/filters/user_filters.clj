@@ -114,7 +114,7 @@
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id (util/make-id id))]
-     (action user))))
+     (action user {:force true}))))
 
 (deffilter #'update :command
   [action id]
