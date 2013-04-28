@@ -101,18 +101,6 @@
   [content-type item response]
   (log/infof "unknown content type: %s" content-type))
 
-(defmethod process-response-content "text/html"
-  [content-type item response]
-  (log/debug "parsing html content")
-  (let [tree (model.resource/response->tree response)]
-    (let [properties (model.resource/get-meta-properties tree)]
-      (model.resource/set-field! item :properties properties))
-    (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
-      (model.resource/set-field! item :title title))
-    (let [links (model.resource/get-links tree)]
-      (doseq [link links]
-        (add-link item (:attrs link))))))
-
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
@@ -135,7 +123,7 @@
   {:pre [(instance? Resource item)]}
   (if-not (:local item)
     (let [last-updated (:lastUpdated item)]
-      (if (or (:force options)
+      (if (or (:force (log/spy options))
               (nil? last-updated)
               (time/after? (-> 5 time/minutes time/ago) last-updated))
         (let [url (:url item)]
@@ -145,7 +133,10 @@
                                           :headers {"User-Agent" user-agent}
                                           :insecure? true})]
             (task
-              (process-response item response))
+             (try
+               (process-response item response)
+               (catch RuntimeException ex
+                 (.printStackTrace ex))))
             response))
         (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))
@@ -183,4 +174,8 @@
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"
     "jiksnu.triggers.resource-triggers"
-    "jiksnu.views.resource-views"]))
+    "jiksnu.views.resource-views"
+    "jiksnu.handlers.atom"
+    "jiksnu.handlers.html"
+    "jiksnu.handlers.xrd"
+    ]))

@@ -64,6 +64,7 @@
   (.getExtension element (QName. ns-part local-part)))
 
 
+
 (defn get-entries
   [^Feed feed]
   (-> feed .getEntries seq))
@@ -86,6 +87,10 @@
 (defn add-link
   [^Feed feed link]
   (.addLink feed (make-link link)))
+
+(defn get-feed-updated
+  [^Feed feed]
+  (.getUpdated feed))
 
 
 
@@ -167,9 +172,12 @@
   (map parse-link (.getLinks entry)))
 
 
+
 (defn get-feed-author
   [^Feed feed]
   (if feed (first (.getAuthors feed))))
+
+
 
 (defn ^Person get-author
   [^Entry entry feed]

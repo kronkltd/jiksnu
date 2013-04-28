@@ -44,13 +44,13 @@
 (deffilter #'discover :command
   [action id]
   (if-let [item (model.user/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
 (deffilter #'discover :http
   [action request]
-  (let [{{id :id} :params} request
-        user (model.user/fetch-by-id (util/make-id id))]
-    (action user)))
+  (let [{{id :id} :params} request]
+    (if-let [user (model.user/fetch-by-id (util/make-id id))]
+      (action user {:force true}))))
 
 ;; fetch-remote
 
@@ -119,7 +119,7 @@
 (deffilter #'update :command
   [action id]
   (let [item (model.user/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
 ;; update-profile
 

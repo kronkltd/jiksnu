@@ -62,12 +62,12 @@
 (deffilter #'update :command
   [action id]
   (let [item (model.feed-source/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
 (deffilter #'update :http
   [action request]
   (if-let [source (-> request :params :id util/make-id model.feed-source/fetch-by-id)]
-    (action source)))
+    (action source {:force true})))
 
 ;; watch
 

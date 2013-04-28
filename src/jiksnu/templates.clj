@@ -95,7 +95,7 @@
   (fn [item field value]
     (if (not= field :links)
       (when-not (= (get item field) value)
-        (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
+        (log/debugf "setting %s(%s): (%s = %s)" collection-name (:_id item) field (pr-str value))
         (s/increment (str collection-name " field set"))
         (mc/update collection-name
           {:_id (:_id item)}

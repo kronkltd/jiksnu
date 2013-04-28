@@ -113,6 +113,10 @@
         (model.feed-source/fetch-by-topic topic))
       (create params options)))
 
+(defn find-by-resource
+  [resource]
+  (model.feed-source/find-record {:resource (:_id resource)}))
+
 (defaction index
   [& options]
   (apply index* options))
@@ -212,24 +216,21 @@
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defn update*
-  [source]
+  [source & [options]]
   {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
       (if-let [resource (actions.resource/find-or-create {:url topic})]
-        (when-let [response (actions.resource/update* resource)]
-          (if-let [feed (abdera/parse-xml-string (:body response))]
-            (process-feed source feed)
-            (throw+ "could not obtain feed")))
+        (actions.resource/update* resource (log/spy options))
         (throw+ "Could not get resource for topic")))
     (log/warn "local sources do not need updates")))
 
 (defaction update
   "Fetch updates for the source"
-  [source]
+  [source & [options]]
   (task
    (try
-     (update* source)
+     (update* source options)
      (catch RuntimeException ex
        (trace/trace "errors:handled" ex))))
   source)
