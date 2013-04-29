@@ -108,9 +108,10 @@
     (model.user/fetch-by-id (:_id item))))
 
 (defaction find-or-create
-  [username domain]
-  (or (model.user/get-user username domain)
-      (create {:username username :domain domain})))
+  [params]
+  (let [{:keys [username domain]} params]
+    (or (model.user/get-user username domain)
+        (create params))))
 
 (defn get-user-meta-uri
   [user]
@@ -176,8 +177,9 @@
 (defn find-or-create-by-uri
   [uri]
   {:pre [(string? uri)]}
-  (let [[username domain] (util/split-uri uri)]
-    (find-or-create username domain)))
+  (let [[username domain] (log/spy (util/split-uri uri))]
+    (find-or-create {:username username
+                     :domain domain})))
 
 (defn split-jid
   [^JID jid]
@@ -187,7 +189,9 @@
 (defn find-or-create-by-jid
   [^JID jid]
   {:pre [(instance? JID jid)]}
-  (apply find-or-create (split-jid jid)))
+  (let [[username domain] (split-jid jid)]
+    (find-or-create {:username username
+                     :domain domain})))
 
 (defaction delete
   "Delete the user"
