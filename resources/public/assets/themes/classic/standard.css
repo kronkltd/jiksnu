@@ -34,15 +34,17 @@ avatar {
 article {
   display: block;
   position: relative;
-  border-bottom: 1px solid black;
   padding-left: 60px;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
 }
 article .photo {
   position: absolute;
   top: 3px;
   left: 0;
+}
+*[data-model='conversation'] {
+  border-bottom: 1px solid black;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
 }
 .comments {
   margin-left: -35px;

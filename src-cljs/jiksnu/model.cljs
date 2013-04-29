@@ -358,6 +358,7 @@
                         "update-source" nil
                         "lastUpdated"   nil
                         "created"       nil
+                        "activities"    nil
                         "updated"       nil
                         )
             "url" (fn []

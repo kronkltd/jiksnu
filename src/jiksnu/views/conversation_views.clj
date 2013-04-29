@@ -8,6 +8,7 @@
         [jiksnu.sections :only [bind-to dump-data format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.sections.conversation-sections :as sections.conversation]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
@@ -39,15 +40,16 @@
    (let [item (if *dynamic* (Conversation.) item)]
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
+        (sections.conversation/show-details item)
         (show-section item)]
-       (with-page "activities"
-         (pagination-links {})
-         (bind-to "items"
-           (index-section [(Activity.)])))))})
+       ))})
 
 (defview #'show :model
   [request item]
-  {:body item})
+  (let [page (actions.activity/fetch-by-conversation item
+                                                     {:sort-clause {:updated 1}})
+        page (assoc page :items (map :_id (:items page)))]
+    {:body (assoc item :activities page)}))
 
 (defview #'show :viewmodel
   [request item]

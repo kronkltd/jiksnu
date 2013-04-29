@@ -5,16 +5,20 @@
                                        show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line dropdown-menu pagination-links]])
+                                bind-to control-line dropdown-menu dump-data pagination-links with-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session])
-  (:import jiksnu.model.Conversation
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation
            jiksnu.model.Domain
-           jiksnu.model.FeedSource))
+           jiksnu.model.FeedSource
+           jiksnu.model.User))
 
 (defn discover-button
   [item]
@@ -94,6 +98,11 @@
 
 ;; index-block
 
+(defsection index-block [Conversation :html]
+  [items & [page]]
+  [:div {:data-bind "foreach: $data"}
+   (map index-line items)])
+
 ;; (defsection index-block [Conversation :html]
 ;;   [items & [page]]
 ;;   [:table.table
@@ -136,6 +145,11 @@
 ;;           (:updated item))]
 ;;    [:td (actions-section item)]])
 
+(defsection index-line [Conversation :html]
+  [item & [page]]
+  [:div {:data-model "conversation"}
+   (show-section item page)])
+
 ;; index-section
 
 (defsection index-section [Conversation :html]
@@ -144,7 +158,7 @@
 
 ;; show-section
 
-(defsection show-section [Conversation :html]
+(defn show-details
   [item & [page]]
   (list
    (actions-section item)
@@ -177,7 +191,58 @@
       [:td
        (let [source (if *dynamic* (FeedSource.) (model.feed-source/fetch-by-id (:update-source item)))]
          (bind-to "$data['update-source']"
-           [:div {:data-model "feed-source"} (link-to source)]))]]]]))
+           [:div {:data-model "feed-source"} (link-to source)]))]]]])
+  )
+
+;; (defn comments-section
+;;   [activity]
+;;   (bind-to "comments"
+;;     (if-let [comments (if *dynamic*
+;;                         [(Activity.)]
+;;                         (seq (second (actions.comment/fetch-comments activity))))]
+;;       [:section.comments
+;;        [:ul.unstyled.comments
+;;         (when *dynamic*
+;;           {:data-bind "foreach: $data"})
+;;         (map (fn [comment]
+;;                [:li
+;;                 (show-comment comment)])
+;;              comments)]])))
+
+(defn show-comment
+  [activity]
+  (let [author (if *dynamic*
+                 (User.)
+                 #_(model.activity/get-author activity))]
+    [:div.comment {:data-model "activity"}
+     [:p
+      [:span (when *dynamic*
+               {:data-bind "with: author"})
+       [:span {:data-model "user"}
+        (sections.user/display-avatar author)
+        (link-to author)]]
+      ": "
+      [:span
+       (if *dynamic*
+         {:data-bind "text: title"}
+         (h/h (:title activity)))]]
+     #_[:p (posted-link-section activity)]]))
+
+(defsection show-section [Conversation :html]
+  [item & [page]]
+  (list
+   #_(show-details item page)
+   (bind-to "activities"
+     (bind-to "$data.items[0]"
+       (show-section (Activity.)))
+     [:section.comments {:data-bind "with: $data.items.slice(1)"}
+      [:ul.unstyled.comments {:data-bind "foreach: $data"}
+       (let [items [(Activity.)]]
+         (map show-comment
+              items))
+       ]
+      ]
+     )))
 
 ;; update-button
 

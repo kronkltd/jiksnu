@@ -359,21 +359,6 @@
           {:data-bind "text: longitude"}
           (:longitude geo))]]])])
 
-(defn comments-section
-  [activity]
-  (bind-to "comments"
-    (if-let [comments (if *dynamic*
-                        [(Activity.)]
-                        (seq (second (actions.comment/fetch-comments activity))))]
-      [:section.comments
-       [:ul.unstyled.comments
-        (when *dynamic*
-          {:data-bind "foreach: $data"})
-        (map (fn [comment]
-               [:li
-                (show-comment comment)])
-             comments)]])))
-
 (defn poll-form
   [activity]
   (list
@@ -731,7 +716,7 @@
    #'maps-section
    #'tags-section
    #'posted-link-section
-   #'comments-section])
+   ])
 
 (defsection show-section [Activity :html]
   [activity & _]
