@@ -94,47 +94,47 @@
 
 ;; index-block
 
-(defsection index-block [Conversation :html]
-  [items & [page]]
-  [:table.table
-   [:thead
-    [:tr
-     [:th "Id"]
-     [:th "Domain"]
-     [:th "Url"]
-     #_[:th "Created"]
-     [:th "Last Updated"]
-     [:th "Record Updated"]
-     [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: $data"}
-    (doall (map #(index-line % page) items))]])
+;; (defsection index-block [Conversation :html]
+;;   [items & [page]]
+;;   [:table.table
+;;    [:thead
+;;     [:tr
+;;      [:th "Id"]
+;;      [:th "Domain"]
+;;      [:th "Url"]
+;;      #_[:th "Created"]
+;;      [:th "Last Updated"]
+;;      [:th "Record Updated"]
+;;      [:th "Actions"]]]
+;;    [:tbody {:data-bind "foreach: $data"}
+;;     (doall (map #(index-line % page) items))]])
 
 ;; index-line
 
-(defsection index-line [Conversation :html]
-  [item & [page]]
-  [:tr {:data-model "conversation"}
-   [:td (link-to item)]
-   [:td
-    (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
-      (bind-to "domain"
-        [:div {:data-model "domain"}
-         (link-to domain)]))]
-   [:td
-    [:a (if *dynamic*
-          {:data-bind "attr: {href: url}, text: url"})
-     (when-not *dynamic*
-       (:url item))]]
-   #_[:td (if *dynamic*
-          {:data-bind "text: created"}
-          (:created item))]
-   [:td (if *dynamic*
-          {:data-bind "text: lastUpdated"}
-          (:lastUpdated item))]
-   [:td (if *dynamic*
-          {:data-bind "text: updated"}
-          (:updated item))]
-   [:td (actions-section item)]])
+;; (defsection index-line [Conversation :html]
+;;   [item & [page]]
+;;   [:tr {:data-model "conversation"}
+;;    [:td (link-to item)]
+;;    [:td
+;;     (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
+;;       (bind-to "domain"
+;;         [:div {:data-model "domain"}
+;;          (link-to domain)]))]
+;;    [:td
+;;     [:a (if *dynamic*
+;;           {:data-bind "attr: {href: url}, text: url"})
+;;      (when-not *dynamic*
+;;        (:url item))]]
+;;    #_[:td (if *dynamic*
+;;           {:data-bind "text: created"}
+;;           (:created item))]
+;;    [:td (if *dynamic*
+;;           {:data-bind "text: lastUpdated"}
+;;           (:lastUpdated item))]
+;;    [:td (if *dynamic*
+;;           {:data-bind "text: updated"}
+;;           (:updated item))]
+;;    [:td (actions-section item)]])
 
 ;; index-section
 

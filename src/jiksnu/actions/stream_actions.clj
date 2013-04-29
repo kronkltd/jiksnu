@@ -43,7 +43,7 @@
   (cm/implement))
 
 (def public-timeline*
-  (templates/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction public-timeline
   [& [params & [options & _]]]

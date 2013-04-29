@@ -14,7 +14,8 @@
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.sections.activity-sections :as sections.activity])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation))
 
 ;; callback-publish
 
@@ -133,11 +134,11 @@
             :title "Next Page"
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
-   :body (let [activities (if *dynamic* [(Activity.)] items)]
+   :body (let [items (if *dynamic* [(Conversation.)] items)]
            (with-page "default"
              (pagination-links page)
              (bind-to "items"
-               (index-section activities page))))})
+               (index-section items page))))})
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
