@@ -30,10 +30,10 @@
 (def logging-levels
   {
    ;; "waltz.state"        :finest
-   "jiksnu.core"        :warning
-   ;; "jiksnu.model"       :finest
-   ;; "jiksnu.websocket"   :fine
-   ;; "goog.net.WebSocket" :warning
+   "jiksnu.core"        :finest
+   "jiksnu.model"       :finest
+   "jiksnu.websocket"   :fine
+   "goog.net.WebSocket" :warning
    })
 
 (defn update-pages
@@ -266,8 +266,8 @@
 (defn main
   []
 
-  ;; (doseq [[k v] logging-levels]
-  ;;   (log/set-level (log/get-logger k) v))
+  (doseq [[k v] logging-levels]
+    (log/set-level (log/get-logger k) v))
 
   ;; (log/start-display (log/fancy-output))
 
@@ -293,6 +293,7 @@
   (aset js/window "_view" _view)
 
   (doseq [model-name model-names]
+    (log/fine *logger* (str "initializing model: " model-name))
     (aset model/observables model-name (js-obj)))
 
   (set! (.-instance ko/binding-provider)
