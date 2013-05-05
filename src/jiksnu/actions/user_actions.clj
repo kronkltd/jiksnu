@@ -117,23 +117,25 @@
   [user]
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
+        (when-let [id (:id user)] (actions.domain/get-user-meta-url domain id))
         ;; TODO: should update uri in this case
         (actions.domain/get-user-meta-url domain (:url user)))))
 
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
-  [user]
+  [user & [options]]
   ;; {:pre [(instance? User user)]}
   (if-let [url (get-user-meta-uri user)]
     (let [resource (actions.resource/find-or-create {:url url})
           response (actions.resource/update* resource)]
       (if-let [body (:body response)]
-        (cm/string->document body)))
+        (cm/string->document body)
+        (throw+ "Could not get response")))
     (throw+ "User does not have a meta link")))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
-  [params]
+  [params & [options]]
   ;; {:pre [(instance? User params)]}
   (let [id (or (:id params)
                (:url params))
@@ -148,11 +150,8 @@
                   params (assoc params :domain domain-name)
                   user-meta-link (actions.domain/get-user-meta-url domain id)
                   params (assoc params :user-meta-link user-meta-link)]
-              (if-let [xrd (get-user-meta params)]
-                (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
-                  (merge params
-                         {:username (model.webfinger/get-username-from-xrd xrd)
-                          :update-source (:_id source)}))
+              (if-let [xrd (get-user-meta params options)]
+                (actions.webfinger/set-source-from-xrd params xrd)
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
 
@@ -167,7 +166,7 @@
              (or (model.user/fetch-by-remote-id id)
                  (let [params (if (:username params)
                                 params
-                                (get-username params))]
+                                (get-username params options))]
                    (create params))))
            ;; this should never happen
            (throw+ "domain has not been disovered"))

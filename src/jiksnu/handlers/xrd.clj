@@ -12,8 +12,10 @@
   [content-type item response]
   (log/spy item)
   (log/spy response)
-  (let [body (:body response)]
-
+  (if-let [body (:body response)]
+    (if-let [xrd (cm/string->document body)]
+      (log/spy xrd)
+      )
     )
   )
 

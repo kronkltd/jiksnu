@@ -63,7 +63,7 @@
   (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
     (do
       (model.conversation/set-field! conversation :lastUpdated (time/now))
-      (actions.feed-source/update source))
+      (actions.feed-source/update source options))
     (throw+ "Could not find update source")))
 
 (defaction discover

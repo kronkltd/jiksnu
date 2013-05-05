@@ -47,5 +47,5 @@
 (deffilter #'update :command
   [action id]
   (let [item (model.conversation/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
