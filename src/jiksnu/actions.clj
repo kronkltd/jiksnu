@@ -44,18 +44,18 @@
 
 (defn handle-errors
   [ex]
-  (println "handling error")
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
-   #_(airbrake/notify
-    "d61e18dac7af78220e52697e5b08dd5a"
-    (name @*environment*)
-    ;; "development"
-    "/"
-    ex
-    {:url "foo"
-     :params (into {} (map (fn [[k v]] {k (pr-str v)})
-                           (:environment data)))})))
+    (.printStackTrace ex)
+    #_(airbrake/notify
+       "d61e18dac7af78220e52697e5b08dd5a"
+       (name @*environment*)
+       ;; "development"
+       "/"
+       ex
+       {:url "foo"
+        :params (into {} (map (fn [[k v]] {k (pr-str v)})
+                              (:environment data)))})))
 
 (deffilter #'invoke-action :command
   [action request]
