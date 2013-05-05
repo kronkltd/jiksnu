@@ -57,8 +57,6 @@
      :params (into {} (map (fn [[k v]] {k (pr-str v)})
                            (:environment data)))})))
 
-(l/receive-all (trace/probe-channel "errors:handled") handle-errors)
-
 (deffilter #'invoke-action :command
   [action request]
   (apply action (:args request)))
@@ -71,29 +69,29 @@
 
 (defonce connections (ref {}))
 
-(defn connection-opened
+(defn transform-activities
   [connection-id e]
   (let [response {:action "model-updated"
+                  :connection-id connection-id
                   :type "activity"
                   :body (:records e)}]
-    (trace/trace "activities:pushed" (assoc response :connection-id connection-id))
+    (trace/trace "activities:pushed" response)
     (json/json-str response)))
 
-(l/receive-all (trace/probe-channel "activities:pushed")
-               (fn [response]
-                 (log/infof "sending update notification to connection: %s"
-                            (:connection-id response))
-                 (s/increment "activities pushed")))
+(defn transform-conversations
+  [connection-id e]
+  (let [response {:action "model-updated"
+                  :connection-id connection-id
+                  :type "conversation"
+                  :body (:records e)}]
+    (trace/trace "conversations:pushed" response)
+    (json/json-str response)))
 
 (defn connection-closed
   [id connection-id]
   (log/debugf "closed connection: %s" connection-id)
   (dosync
    (alter connections #(dissoc-in % [id connection-id]))))
-
-(defn siphon-activities
-  [ch]
-  )
 
 (defaction connect
   [ch]
@@ -102,9 +100,15 @@
         connection-id (abdera/new-id)]
     (dosync
      (alter connections #(assoc-in % [user-id connection-id] ch)))
-    (-> (partial connection-opened connection-id)
+
+    (-> (partial transform-activities connection-id)
         (l/map* ch/posted-activities)
         (l/siphon ch))
+
+    (-> (partial transform-conversations connection-id)
+        (l/map* ch/posted-conversations)
+        (l/siphon ch))
+
     (l/on-closed ch (partial connection-closed user-id connection-id))
     connection-id))
 
@@ -128,3 +132,17 @@
     (let [response (json/json-str {:action "add notice"
                                    :message message})]
       (l/enqueue ch response))))
+
+(l/receive-all (trace/probe-channel "errors:handled") handle-errors)
+
+(l/receive-all (trace/probe-channel "activities:pushed")
+               (fn [response]
+                 (log/infof "sending update notification to connection: %s"
+                            (:connection-id response))
+                 (s/increment "activities pushed")))
+
+(l/receive-all (trace/probe-channel "conversations:pushed")
+               (fn [response]
+                 (log/infof "sending update notification to connection: %s"
+                            (:connection-id response))
+                 (s/increment "conversations pushed")))

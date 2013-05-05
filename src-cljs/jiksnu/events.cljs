@@ -38,7 +38,10 @@
 (defmethod ws/process-event "model-updated"
   [event]
   (log/info *logger* "model updated")
-  (let [page (.get model/pages "default")
-        id (.-_id (.-body event))]
-    (.addItem page id)))
+  (if-let [type (.-type event)]
+    (if-let [page (.get model/pages (model/collection-name type))]
+      (let [id (.-_id (.-body event))]
+        (.addItem page id))
+      (log/severe "could not determine page"))
+    (log/severe "event does not heve a type")))
 

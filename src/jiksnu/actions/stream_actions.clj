@@ -16,6 +16,7 @@
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.helpers.user-helpers :as helpers.user]
@@ -146,18 +147,6 @@
          :stream "public"})
        "\r\n"))
 
-(defn filter-create
-  [m]
-  (#{#'actions.activity/create} (:action m)))
-
-(l/siphon
-   (->> ciste.core/*actions*
-        l/fork
-        (l/filter* filter-create))
-   ch/posted-activities)
-
-(l/receive-all ch/posted-activities identity)
-
 (defn websocket-handler
   [ch request]
   (let [user (session/current-user)]
@@ -178,6 +167,26 @@
              (l/enqueue ch (:body resp))
              (l/enqueue ch (json/json-str {:action "error"
                                            :message "no command found"})))))))))
+
+;; Create events for each created activity
+
+(l/siphon
+   (->> ciste.core/*actions*
+        l/fork
+        (l/filter* (comp #{#'actions.activity/create} :action)))
+   ch/posted-activities)
+
+(l/receive-all ch/posted-activities identity)
+
+;; Create events for each created conversation
+
+(l/siphon
+   (->> ciste.core/*actions*
+        l/fork
+        (l/filter* (comp #{#'actions.conversation/create} :action)))
+   ch/posted-conversations)
+
+(l/receive-all ch/posted-conversations identity)
 
 (definitializer
   (require-namespaces

@@ -52,6 +52,11 @@
    :permanent? true
    :description "Channel for newly posted activities"))
 
+(defonce posted-conversations
+  (l/channel*
+   :permanent? true
+   :description "Channel for newly posted conversations"))
+
 (defonce pending-get-user-meta
   (l/channel*
    :permanent? true
