@@ -8,40 +8,6 @@
 
 (def *logger* (log/get-logger "jiksnu.model"))
 
-(def observables   (js-obj))
-
-(def class-names
-  ["Activity" "AuthenticationMechanism" "Conversation"
-   "Domain" "Group" "Subscription" "FeedSource" "FeedSubscription"
-   "Resource" "User"])
-
-(def collection-name
-  {"activity"                 "activities"
-   "authentication-mechanism" "authenticationMechanisms"
-   "conversation"             "conversations"
-   "domain"                   "domains"
-   "feed-source"              "feedSources"
-   "feed-subscription"        "feedSubscriptions"
-   "group"                    "groups"
-   "resource"                 "resources"
-   "subscription"             "subscriptions"
-   "user"                     "users"
-   })
-
-(def
-  ^{:doc "The list of model names"}
-  model-names
-  ["activities"
-   "authenticationMechanisms"
-   "conversations"
-   "domains"
-   "feedSources"
-   "feedSubscriptions"
-   "groups"
-   "resources"
-   "subscriptions"
-   "users"])
-
 (def
   ^{:doc "The main backbone model"}
   _model)
@@ -49,6 +15,31 @@
 (def
   ^{:doc "This is the main view model bound to the page"}
   _view)
+
+(def observables   (js-obj))
+
+(def names
+  [["activity"                 "activities"               "Activity"]
+   ["authentication-mechanism" "authenticationMechanisms" "AuthenticationMechanism" ]
+   ["conversation"             "conversations"            "Conversation"]
+   ["domain"                   "domains"                  "Domain" ]
+   ["feed-source"              "feedSources"              "FeedSource" ]
+   ["feed-subscription"        "feedSubscriptions"        "FeedSubscription"]
+   ["group"                    "groups"                   "Group" ]
+   ["resource"                 "resources"                "Resource"]
+   ["subscription"             "subscriptions"            "Subscription"]
+   ["user"                     "users"                    "User"]])
+
+(def class-names (map #(nth % 2) names))
+
+(def
+  ^{:doc "The list of model names"}
+  model-names (map #(nth % 1) names))
+
+(def collection-name
+  (->> names
+       (map (fn [[k v _]] [k v]))
+       (into {})))
 
 (defn load-model
   [model-name id om]
