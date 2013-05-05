@@ -8,6 +8,13 @@
 
 (def *logger* (log/get-logger "jiksnu.model"))
 
+(def observables   (js-obj))
+
+(def class-names
+  ["Activity" "AuthenticationMechanism" "Conversation"
+   "Domain" "Group" "Subscription" "FeedSource" "FeedSubscription"
+   "Resource" "User"])
+
 (def collection-name
   {"activity"                 "activities"
    "authentication-mechanism" "authenticationMechanisms"
@@ -38,6 +45,62 @@
 (def
   ^{:doc "The main backbone model"}
   _model)
+
+(def
+  ^{:doc "This is the main view model bound to the page"}
+  _view)
+
+(defn load-model
+  [model-name id om]
+  (log/finer *logger* (format "not loaded: %s(%s)" model-name id))
+  (let [coll (.get _model model-name)]
+    (.add coll (js-obj "_id" id))
+    (let [m (.get coll id)]
+      (.fetch m)
+      (let [o (.viewModel js/kb m)]
+        (aset om id o)
+        o))))
+
+(defn init-observable
+  [model-name id om m]
+  (let [a (.-attributes m)
+        o (.observable js/ko a)]
+    (log/finer *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
+    (aset om id o)
+    o))
+
+(defn get-model*
+  "Inintialize a new model reference based on the params when a cached ref is not found"
+  [model-name id]
+  (log/finer *logger* (format "observable not found: %s(%s)" model-name id))
+  (if-let [coll (.get _model model-name)]
+    (let [om (aget observables model-name)]
+      (if-let [m (.get coll id)]
+        (init-observable model-name id om m)
+        (load-model model-name id om)))
+    (log/severe *logger* "could not get collection")))
+
+
+(defn get-model
+  "Given a model name and an id, return an observable representing that model"
+  [model-name id]
+  (if id
+    (if (= (type id) js/String)
+      (let [om (aget observables model-name)]
+        (if-let [o (aget om id)]
+          (do
+            (log/finer *logger* (format "cached observable found: %s(%s)" model-name id))
+            o)
+          (get-model* model-name id)))
+      (throw (js/Error. (str id " is not a string"))))
+    (log/warn *logger* "id is undefined")))
+
+(defn get-page
+  [name]
+  (first (.filter (.pages _view)
+            (fn [x]
+              (if (= (.id x) name)
+                x)))))
 
 (defn receive-model
   "Load data into the model store"
@@ -132,7 +195,7 @@
     "addNotification"
     (fn [message]
       (this-as this
-        (let [notification (model/Notification.)]
+        (let [notification (Notification.)]
           (.set notification "message" message)
           (.push this notification)))))))
 
@@ -401,7 +464,6 @@
 (def feed-subscriptions (FeedSubscriptions.))
 (def groups        (Groups.))
 (def notifications (Notifications.))
-(def observables   (js-obj))
 (def pages         (Pages.))
 (def resources     (Resources.))
 (def subscriptions (Subscriptions.))

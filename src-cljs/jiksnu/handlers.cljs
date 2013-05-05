@@ -2,6 +2,7 @@
   (:use [jayq.core :only [$ css ]]
         [jiksnu.model :only [_model]])
   (:require [jiksnu.logging :as log]
+            [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]
             [jayq.core :as jayq]))
 

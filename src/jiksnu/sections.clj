@@ -91,7 +91,7 @@
 (defn with-page
   [page-name & body]
   (apply bind-to
-         (format "jiksnu.core.get_page('%s')" page-name)
+         (format "jiksnu.model.get_page('%s')" page-name)
          body))
 
 (defn bind-property
