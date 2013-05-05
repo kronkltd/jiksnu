@@ -76,16 +76,24 @@
   (let [response {:action "model-updated"
                   :type "activity"
                   :body (:records e)}]
-    (log/infof "sending update notification to connection: %s" connection-id)
-    (s/increment "activities pushed")
     (trace/trace "activities:pushed" (assoc response :connection-id connection-id))
     (json/json-str response)))
+
+(l/receive-all (trace/probe-channel "activities:pushed")
+               (fn [response]
+                 (log/infof "sending update notification to connection: %s"
+                            (:connection-id response))
+                 (s/increment "activities pushed")))
 
 (defn connection-closed
   [id connection-id]
   (log/debugf "closed connection: %s" connection-id)
   (dosync
    (alter connections #(dissoc-in % [id connection-id]))))
+
+(defn siphon-activities
+  [ch]
+  )
 
 (defaction connect
   [ch]
@@ -94,9 +102,9 @@
         connection-id (abdera/new-id)]
     (dosync
      (alter connections #(assoc-in % [user-id connection-id] ch)))
-    (l/siphon
-     (l/map* (partial connection-opened connection-id) ch/posted-activities)
-     ch)
+    (-> (partial connection-opened connection-id)
+        (l/map* ch/posted-activities)
+        (l/siphon ch))
     (l/on-closed ch (partial connection-closed user-id connection-id))
     connection-id))
 

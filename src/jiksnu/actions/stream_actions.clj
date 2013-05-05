@@ -177,8 +177,7 @@
                                                     :message (str ex)})}))]
              (l/enqueue ch (:body resp))
              (l/enqueue ch (json/json-str {:action "error"
-                                           :message "no command found"}))))))))
-  #_(siphon-new-activities ch))
+                                           :message "no command found"})))))))))
 
 (definitializer
   (require-namespaces
