@@ -46,7 +46,7 @@
    :body
    (bind-to "targetGroup"
      (show-section group)
-     #_(with-page "default"
+     #_(with-page "conversations"
        (pagination-links (if *dynamic* {} page))
        (bind-to "items"
          (index-section items))))})
@@ -59,7 +59,7 @@
   [request data]
   (let [[group {:keys [items] :as page}] data]
     {:body {:title (:nickname group)
-            :pages {:default (format-page-info page)}
+            :pages {:conversations (format-page-info page)}
             :postForm {:visible true}
             :targetGroup (:_id group)}}))
 
@@ -135,7 +135,7 @@
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
    :body (let [items (if *dynamic* [(Conversation.)] items)]
-           (with-page "default"
+           (with-page "conversations"
              (pagination-links page)
              (bind-to "items"
                (index-section items page))))})
@@ -156,7 +156,7 @@
   {:single false
    :body
    {:title "Public Timeline"
-    :pages {:default (format-page-info page)}
+    :pages {:conversations (format-page-info page)}
     :postForm {:visible true}}})
 
 (defview #'public-timeline :xml
@@ -229,7 +229,7 @@
      :title (:display-name user)
      :post-form true
      :body
-     (with-page "default"
+     (with-page "conversations"
        (bind-to "items"
          (index-section items page)))
      :formats (sections.activity/timeline-formats user)}))
@@ -262,7 +262,7 @@
   {:body
    {:users (index-section [user])
     :title (title user)
-    :pages {:default (format-page-info page)}
+    :pages {:conversations (format-page-info page)}
     :targetUser (:_id user)
     :activities (index-section (:items page))}})
 
