@@ -80,7 +80,7 @@
       (let [om (aget observables model-name)]
         (if-let [o (aget om id)]
           (do
-            (log/finer *logger* (format "cached observable found: %s(%s)" model-name id))
+            (log/finest *logger* (format "cached observable found: %s(%s)" model-name id))
             o)
           (get-model* model-name id)))
       (throw (js/Error. (str id " is not a string"))))
