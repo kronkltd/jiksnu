@@ -18,7 +18,7 @@
 
 (deffilter #'delete :command
   [action id]
-  (let [item (model.feed-source/fetch-by-id (util/make-id id))]
+  (if-let [item (model.feed-source/fetch-by-id (util/make-id id))]
     (action item)))
 
 ;; index
@@ -36,6 +36,11 @@
   (-> request :params action))
 
 ;; unsubscribe
+
+(deffilter #'unsubscribe :command
+  [action id]
+  (if-let [item (model.feed-source/fetch-by-id (util/make-id id))]
+    (action item)))
 
 (deffilter #'unsubscribe :http
   [action request]
