@@ -24,7 +24,7 @@
 
 (defn make-fetch-fn
   [make-fn collection-name]
-  (fn [params options]
+  (fn [& [params & [options]]]
     (s/increment (str collection-name " searched"))
     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
           records (mq/with-collection collection-name

@@ -37,6 +37,7 @@
 (def set-field!    (templates/make-set-field!  collection-name))
 (def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
 (def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn find-record
   [options & args]

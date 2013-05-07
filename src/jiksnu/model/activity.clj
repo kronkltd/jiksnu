@@ -42,11 +42,6 @@
    (presence-of   :updated)
    ))
 
-(def count-records (templates/make-counter collection-name))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-(def set-field! (templates/make-set-field! collection-name))
-
 (defn fetch-by-id
   [id]
   ;; TODO: Should this always take a string?
@@ -55,14 +50,12 @@
     (if-let [item (mc/find-map-by-id collection-name id)]
       (maker item))))
 
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     ((templates/make-fetch-fn maker collection-name)
-      params options)))
+(def count-records (templates/make-counter    collection-name))
+(def delete        (templates/make-deleter    collection-name))
+(def drop!         (templates/make-dropper    collection-name))
+(def set-field!    (templates/make-set-field! collection-name))
+(def create        (templates/make-create     collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn   collection-name maker))
 
 (defn get-link
   [user rel content-type]

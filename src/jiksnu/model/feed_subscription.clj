@@ -36,13 +36,7 @@
 (def set-field!    (templates/make-set-field!  collection-name))
 (def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
 (def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     ((templates/make-fetch-fn model/map->FeedSubscription collection-name)
-      params options)))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

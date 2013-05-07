@@ -39,18 +39,11 @@
   (if-let [item (mc/find-map-by-id collection-name id)]
     (maker item)))
 
-(def count-records (templates/make-counter collection-name))
-(def create        (templates/make-create  collection-name #'fetch-by-id #'create-validators))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (s/increment "domains searched")
-     ((templates/make-fetch-fn maker collection-name)
-      params options)))
+(def count-records (templates/make-counter  collection-name))
+(def create        (templates/make-create   collection-name #'fetch-by-id #'create-validators))
+(def delete        (templates/make-deleter  collection-name))
+(def drop!         (templates/make-dropper  collection-name))
+(def fetch-all     (templates/make-fetch-fn collection-name maker))
 
 (defn get-link
   [item rel content-type]
