@@ -138,18 +138,21 @@
   [domain]
   (set-xmpp domain true))
 
+(defn set-links-from-xrd
+  [domain xrd]
+  (if-let [links (model.webfinger/get-links xrd)]
+    (doseq [link links]
+      (add-link domain link))
+    (throw+ "Host meta does not have any links")))
+
 (defn discover-webfinger
   [^Domain domain url]
   ;; TODO: check https first
   (if-let [xrd (fetch-xrd domain url) ]
-    (if-let [links (model.webfinger/get-links xrd)]
-      ;; TODO: do individual updates
-      (do
-        (doseq [link links]
-          (add-link domain link))
-        (set-discovered! domain)
-        domain)
-      (throw+ "Host meta does not have any links"))
+    (do
+      (set-links-from-xrd domain xrd)
+      (set-discovered! domain)
+      domain)
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
 (defn discover-onesocialweb
