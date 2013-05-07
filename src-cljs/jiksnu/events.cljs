@@ -39,9 +39,12 @@
   [event]
   (log/info *logger* "model updated")
   (if-let [type (.-type event)]
-    (if-let [page (.get model/pages (model/collection-name type))]
+    (if-let [page (.get model/pages type)]
       (let [id (.-_id (.-body event))]
         (.addItem page id))
-      (log/severe "could not determine page"))
-    (log/severe "event does not heve a type")))
+      (do (log/severe "could not determine page")
+          (jl/spy event)))
+    (log/severe "event does not heve a type"))
+  (let [])
+  )
 

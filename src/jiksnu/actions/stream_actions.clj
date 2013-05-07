@@ -5,7 +5,7 @@
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
-        [clojure.core.incubator :only [-?>]]
+        [clojure.core.incubator :only [-?> -?>>]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
@@ -154,12 +154,16 @@
      ch
      (fn [m]
        (session/with-user-id (:_id user)
-         (let [[name & args] (string/split m #" ")]
+         (let [[name & args] (string/split (log/spy m) #" ")]
            (if-let [resp (try
                            (parse-command {:format :json
                                            :channel ch
                                            :name name
-                                           :args args})
+                                           :args (-?>> args
+                                                       (filter identity)
+                                                       seq
+                                                       (map json/read-json)
+                                                      )})
                            (catch RuntimeException ex
                              (trace/trace "errors:handled" ex)
                              {:body (json/json-str {:action "error"

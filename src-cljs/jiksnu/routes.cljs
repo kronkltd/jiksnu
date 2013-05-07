@@ -29,5 +29,5 @@
             "routes" (js-obj "*actions" "defaultRoute")
             "defaultRoute" (fn [path-string]
                              (log/fine *logger* "default route")
-                             (ws/send "fetch-viewmodel" (parse-route path-string))))))
+                             (apply ws/send "fetch-viewmodel" (parse-route path-string))))))
 

@@ -56,15 +56,15 @@
 
 (defn queue-message
   [command & [args]]
-  (log/info *logger* (format "queuing message: %s(%s)" command args))
+  (log/info *logger* (format "queuing message: %s %s" command args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 
 (defn send
-  [command & [args]]
+  [command & args]
   (if (state/in? ws-state :idle)
     (let [message (->> args
-                       (map #(.stringify js/JSON (clj->js %)))
+                       (apply map #(.stringify js/JSON (clj->js %)))
                        (string/join " ")
                        (str command " "))]
       (state/trigger ws-state :send message))

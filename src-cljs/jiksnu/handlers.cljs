@@ -28,9 +28,7 @@
         target (when target-element
                  (.data target-element "target"))]
     (let [message (str action " >> " model "(" id ")")]
-      (ws/send (str "invoke-action " model " " action " " id
-                    (if target
-                      (str " " target))))
+      (ws/send "invoke-action" model action id (when target target))
       (add-notification message))
     (halt e)))
 

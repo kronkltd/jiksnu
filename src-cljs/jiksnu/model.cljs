@@ -3,6 +3,7 @@
   (:require [jiksnu.backbone :as backbone]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as jl]
+            [jiksnu.websocket :as ws]
             [lolg :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
 
@@ -42,6 +43,7 @@
        (into {})))
 
 (defn load-model
+  "Load the model from the server"
   [model-name id om]
   (log/finer *logger* (format "not loaded: %s(%s)" model-name id))
   (let [coll (.get _model model-name)]
@@ -64,7 +66,7 @@
     (aset observable-model id observable)
     observable))
 
-(defn get-model*
+(defn- get-model*
   "Inintialize a new model reference based on the params when a cached ref is not found"
   [model-name id]
   (log/finer *logger* (format "observable not found: %s(%s)" model-name id))
@@ -105,6 +107,23 @@
     (let [n (.-type this)]
       (log/finer *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
 
+
+(def Model
+  (.extend
+   backbone/Model
+   (js-obj
+    "initialize" initializer
+    "stub" "STUB"
+    "idAttribute" "_id"
+    "fetch" (fn []
+              (this-as this
+                (ws/send "get-model" (.-stub this) (.-id this))))
+    "url" (fn [] (this-as this
+                   (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
+
+
+
+
 (defvar Statistics
   [this]
   (doto this
@@ -122,16 +141,6 @@
   (doto this
     (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
-
-(def Model
-  (.extend
-   backbone/Model
-   (js-obj
-    "initialize" initializer
-    "stub" "STUB"
-    "idAttribute" "_id"
-    "url" (fn [] (this-as this
-                   (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
 
 (def Page
   (.extend

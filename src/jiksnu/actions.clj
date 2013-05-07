@@ -14,6 +14,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.channels :as ch]
             [jiksnu.session :as session]
+            [jiksnu.templates :as templates]
             [lamina.core :as l]
             [lamina.trace :as trace])
   (:import clojure.lang.ExceptionInfo))
@@ -121,6 +122,25 @@
   {:body {:connection-id response}})
 
 (add-command! "connect" #'connect)
+
+(defaction get-model
+  [model-name id]
+  #_(log/debugf "getting model %s(%s)" model-name id)
+  (log/spy ((templates/make-fetch-by-id model-name identity) id)))
+
+(deffilter #'get-model :command
+  [action request]
+  (let [[model-name id] (:args request)]
+    (action model-name id)))
+
+(defview #'get-model :json
+  [request response]
+  {:body {:action "model-updated"
+          :type (first (:args request))
+          :body [(log/spy response)]}})
+
+(add-command! "get-model" #'get-model)
+
 
 (defn all-channels
   []

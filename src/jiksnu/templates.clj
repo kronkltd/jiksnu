@@ -5,6 +5,8 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
+            [jiksnu.util :as util
+             ]
             [lamina.core :as l]
             [lamina.trace :as trace]
             [monger.collection :as mc]
@@ -126,9 +128,15 @@
         (throw+ {:type :validation :errors errors})))))
 
 (defn make-fetch-by-id
-  [collection-name maker]
-  (fn [id]
-    (s/increment (str collection-name "_fetched"))
-    (when-let [item (mc/find-map-by-id collection-name id)]
-      (maker item))))
+  ([collection-name maker]
+     (make-fetch-by-id collection-name maker true))
+  ([collection-name maker convert-id]
+     (fn [id]
+       (let [id (if (and convert-id (instance? String id))
+                  (util/make-id id) id)]
+         (log/debugf "fetching %s(%s)" collection-name id)
+         (trace/trace* (str collection-name ":fetched") id)
+         (s/increment (str collection-name "_fetched"))
+         (when-let [item (mc/find-map-by-id collection-name (log/spy id))]
+           (maker item))))))
 
