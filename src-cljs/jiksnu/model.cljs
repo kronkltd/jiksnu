@@ -131,9 +131,7 @@
     "stub" "STUB"
     "idAttribute" "_id"
     "url" (fn [] (this-as this
-                   (format "/model/%s/%s.model" (.-stub this) (.-id this))))
-
-    )))
+                   (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
 
 (def Page
   (.extend
@@ -179,7 +177,7 @@
    Model
    (js-obj
     "type" "Domain"
-    "url" (fn [] (this-as this (format "/model/domains/%s.model" (.-id this))))
+    "stub" "domains"
     "defaults" (js-obj "xmpp"       "unknown"
                        "discovered" nil
                        "links"      (array)))))
@@ -189,9 +187,7 @@
    Model
    (js-obj
     "type" "Resource"
-    "url" (fn []
-            (this-as this
-              (format "/model/resources/%s.model" (.-id this))))
+    "stub" "resources"
     "defaults" (js-obj
                 "url"         nil
                 "title"       nil
@@ -210,9 +206,7 @@
    Model
    (js-obj
     "type" "User"
-    "url" (fn []
-            (this-as this
-              (format "/model/users/%s.model" (.-id this))))
+    "stub" "users"
     "defaults" (js-obj "url"          nil
                        "avatarUrl"    nil
                        "uri"          nil
@@ -228,12 +222,8 @@
   (.extend
    Model
    (js-obj
-    "idAttribute" "_id"
-    "url" (fn [id]
-            (this-as
-              this
-              (format "/notice/%s.model" (.-id this))))
     "type" "Activity"
+    "stub" "activities"
     "defaults" (js-obj
                 "_id"           ""
                 "author"        ""
@@ -260,41 +250,34 @@
   (.extend
    Model
    (js-obj
+    "type" "Group"
+    "stub" "groups"
     "defaults" (js-obj
                 "from"     nil
                 "to"       nil
                 "homepage" ""
                 "fullname" ""
-                "nickname" "")
-    "url" (fn [id]
-            (this-as
-              this
-              (format "/model/groups/%s.model" (.-id this))))
-    "type" "Group")))
+                "nickname" ""))))
 
 (def Subscription
   (.extend
    Model
    (js-obj
     "type" "Subscription"
+    "stub" "subscriptions"
     "defaults" (js-obj
                 "from"    nil
                 "to"      nil
                 "created" nil
                 "pending" nil
-                "local"   nil)
-    "url" (fn []
-            (this-as this
-              (format "/model/subscriptions/%s.model" (.-id this)))))))
+                "local"   nil))))
 
 (def FeedSource
   (.extend
    Model
    (js-obj
     "type" "FeedSource"
-    "url" (fn []
-            (this-as this
-              (format "/model/feed-sources/%s.model" (.-id this))))
+    "stub" "feed-sources"
     "defaults" (js-obj
                 "callback" nil
                 "created"  nil
@@ -312,9 +295,7 @@
    Model
    (js-obj
     "type" "FeedSubscription"
-    "url" (fn []
-            (this-as this
-              (format "/model/feedSubscriptions/%s.model" (.-id this))))
+    "stub" "feed-subscriptions"
     "defaults" (js-obj
                 "domain"   nil
                 "callback" nil
@@ -325,6 +306,7 @@
    Model
    (js-obj
     "type" "Conversation"
+    "stub" "conversations"
     "defaults" (js-obj
                 "uri"           nil
                 "url"           nil
@@ -333,23 +315,17 @@
                 "lastUpdated"   nil
                 "created"       nil
                 "activities"    nil
-                "updated"       nil)
-    "url" (fn []
-            (this-as this
-              (format "/model/conversations/%s.model" (.-id this)))))))
+                "updated"       nil))))
 
 (def AuthenticationMechanism
   (.extend
    Model
    (js-obj
     "type"        "AuthenticationMechanism"
+    "stub"        "authenticationMechanisms"
     "defaults" (js-obj
                 "user" nil
-                "value" nil
-                )
-    "url" (fn []
-            (this-as this
-              (format "/model/authenticationMechanisms/%s.model" (.-id this)))))))
+                "value" nil))))
 
 
 
@@ -445,12 +421,8 @@
 (def Users
   (.extend backbone/Collection
            (js-obj
-            "idAttribute" "_id"
             "type"        "Users"
             "model"       User)))
-
-
-
 
 (def activities    (Activities.))
 (def authentication-mechanisms (AuthenticationMechanisms.))
