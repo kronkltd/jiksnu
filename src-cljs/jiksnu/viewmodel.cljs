@@ -1,15 +1,15 @@
 (ns jiksnu.viewmodel
   (:use [jayq.util :only [clj->js]]
-        [jiksnu.model :only [_model _view class-names model-names
-                             receive-model]])
-  (:require [lolg :as log]))
+        [jiksnu.model :only [_model _view class-names model-names]])
+  (:require [lolg :as log]
+            [jiksnu.model :as model]))
 
 (def *logger* (log/get-logger "jiksnu.viewmodel"))
 
 (defn update-pages
   [data]
   (when-let [pages (.-pages data)]
-    (let [page-model (.get _model "pages")]
+    (let [page-model (.get model/_model "pages")]
       (doseq [pair (js->clj pages)]
         (let [[k v] pair]
           (log/info *logger* k)
@@ -21,7 +21,7 @@
   [data]
   (doseq [key model-names]
     (when-let [items (aget data key)]
-      (let [coll (.get _model key)]
+      (let [coll (.get model/_model key)]
         (doseq [item items]
           (.add coll item))))))
 
@@ -31,13 +31,13 @@
   (doseq [model-name class-names]
     (let [key (str "target" model-name)]
       (when-let [id (aget data key)]
-        (.set _model key id)))))
+        (.set model/_model key id)))))
 
 (defn update-page-info
   "Set page info data"
   [data]
   (when-let [page-info (.-pageInfo data)]
-    (let [p (.get _model "pageInfo")]
+    (let [p (.get model/_model "pageInfo")]
       (.set p page-info))))
 
 (defn update-post-form
@@ -51,12 +51,12 @@
   "set the title of the page"
   [data]
   (when-let [title (.-title data)]
-    (.set _model "title" title)))
+    (.set model/_model "title" title)))
 
 (defn update-currents
   [data]
   (when-let [currentUser (.-currentUser data)]
-    (.set _model "currentUser" currentUser)))
+    (.set model/_model "currentUser" currentUser)))
 
 (defn process-viewmodel
   "Callback handler when a viewmodel is loaded"

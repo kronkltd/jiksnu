@@ -23,12 +23,12 @@
 ;; index helpers
 
 (defn make-fetch-fn
-  [make-fn collection-name]
+  [collection-name make-fn]
   (fn [& [params & [options]]]
     (s/increment (str collection-name " searched"))
     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
           records (mq/with-collection collection-name
-                    (mq/find params)
+                    (mq/find (log/spy params))
                     (merge sort-clause)
                     (mq/paginate :page (:page options 1)
                                  :per-page (:page-size options 20)))]

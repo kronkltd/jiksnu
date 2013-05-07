@@ -45,20 +45,24 @@
   [model-name id om]
   (log/finer *logger* (format "not loaded: %s(%s)" model-name id))
   (let [coll (.get _model model-name)]
+    ;; Create an empty model
     (.add coll (js-obj "_id" id))
     (let [m (.get coll id)]
+      ;; Get it from the server
       (.fetch m)
       (let [o (.viewModel js/kb m)]
+        ;; cache it for the object model
         (aset om id o)
         o))))
 
 (defn init-observable
-  [model-name id om m]
-  (let [a (.-attributes m)
-        o (.observable js/ko a)]
+  "Store an observable copy of the model in the model cache"
+  [model-name id observable-model model]
+  (let [attributes (.-attributes model)
+        observable (.observable js/ko attributes)]
     (log/finer *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
-    (aset om id o)
-    o))
+    (aset observable-model id observable)
+    observable))
 
 (defn get-model*
   "Inintialize a new model reference based on the params when a cached ref is not found"
@@ -87,21 +91,15 @@
     (log/warn *logger* "id is undefined")))
 
 (defn get-page
+  "Returns the page for the name from the view's page info"
   [name]
   (first (.filter (.pages _view)
             (fn [x]
               (if (= (.id x) name)
                 x)))))
 
-(defn receive-model
-  "Load data into the model store"
-  [coll id o data d]
-  (let [resp (.add coll data)
-        m (.get coll id)
-        a (.-attributes m)]
-    (o a)))
-
 (defn initializer
+  "used for logging initialization of a model"
   [m coll]
   (this-as this
     (let [n (.-type this)]
@@ -125,9 +123,21 @@
     (ko/assoc-observable "visible" false)
     (ko/assoc-observable "currentPage" "note")))
 
-(def Page
+(def Model
   (.extend
    backbone/Model
+   (js-obj
+    "initialize" initializer
+    "stub" "STUB"
+    "idAttribute" "_id"
+    "url" (fn [] (this-as this
+                   (format "/model/%s/%s.model" (.-stub this) (.-id this))))
+
+    )))
+
+(def Page
+  (.extend
+   Model
    (js-obj
     "type" "Page"
     "defaults" (fn [] (js-obj
@@ -150,22 +160,11 @@
                 (this-as this
                   (< (* (.page this)
                         (.pageSize this))
-                     (.totalRecords this))))
-    "initialize" initializer)))
-
-(def Pages
-  (.extend
-   backbone/Collection
-   (js-obj
-    "model" Page
-    "type" "Pages"
-    "getPage" (fn [name]
-                (this-as this
-                  (.get this name))))))
+                     (.totalRecords this)))))))
 
 (def Notification
   (.extend
-   backbone/Model
+   Model
    (js-obj
     "type" "Notification"
     "dismiss" (fn []
@@ -175,102 +174,59 @@
                "message" ""
                "level"   ""))))
 
-(def Notifications
-  (.extend
-   backbone/Collection
-   (js-obj
-    "model" Notification
-    "type" "Notifications"
-
-    ;; Add a new notification
-    "addNotification"
-    (fn [message]
-      (this-as this
-        (let [notification (Notification.)]
-          (.set notification "message" message)
-          (.push this notification)))))))
-
-
 (def Domain
   (.extend
-   backbone/Model
+   Model
    (js-obj
     "type" "Domain"
     "url" (fn [] (this-as this (format "/model/domains/%s.model" (.-id this))))
     "defaults" (js-obj "xmpp"       "unknown"
                        "discovered" nil
-                       "links"      (array))
-    "idAttribute" "_id"
-    "initialize" initializer)))
-
-(def Domains
-  (.extend backbone/Collection
-           (js-obj
-            "type"    "Domains"
-            "urlRoot" "/main/domains/"
-            "model"   Domain)))
+                       "links"      (array)))))
 
 (def Resource
-  (.extend backbone/Model
-           (js-obj
-            "type" "Resource"
-            "url" (fn []
-                    (this-as this
-                      (format "/model/resources/%s.model" (.-id this))))
-            "defaults" (js-obj
-                        "url"         nil
-                        "title"       nil
-                        "domain"      nil
-                        "status"      nil
-                        "contentType" nil
-                        "encoding"    nil
-                        "location"    nil
-                        "created"     nil
-                        "properties"  nil
-                        "links"       (array)
-                        "updated"     nil)
-            "idAttribute" "_id"
-            "initialize"  initializer)))
-
-
-(def Resources
-  (.extend backbone/Collection
-           (js-obj
-            "type"    "Resources"
-            "model"   Resource)))
-
+  (.extend
+   Model
+   (js-obj
+    "type" "Resource"
+    "url" (fn []
+            (this-as this
+              (format "/model/resources/%s.model" (.-id this))))
+    "defaults" (js-obj
+                "url"         nil
+                "title"       nil
+                "domain"      nil
+                "status"      nil
+                "contentType" nil
+                "encoding"    nil
+                "location"    nil
+                "created"     nil
+                "properties"  nil
+                "links"       (array)
+                "updated"     nil))))
 
 (def User
-  (.extend backbone/Model
-           (js-obj
-            "type" "User"
-            "url" (fn []
-                    (this-as this
-                      (format "/model/users/%s.model" (.-id this))))
-            "defaults" (js-obj "url"          nil
-                               "avatarUrl"    nil
-                               "uri"          nil
-                               "bio"          nil
-                               "username"     nil
-                               "location"     ""
-                               "domain"       nil
-                               "updateSource" nil
-                               "links"        (array)
-                               "displayName"  nil)
-            "idAttribute" "_id"
-            "initialize" initializer)))
-
-(def Users
-  (.extend backbone/Collection
-           (js-obj
-            "idAttribute" "_id"
-            "type"        "Users"
-            "model"       User)))
-
+  (.extend
+   Model
+   (js-obj
+    "type" "User"
+    "url" (fn []
+            (this-as this
+              (format "/model/users/%s.model" (.-id this))))
+    "defaults" (js-obj "url"          nil
+                       "avatarUrl"    nil
+                       "uri"          nil
+                       "bio"          nil
+                       "username"     nil
+                       "location"     ""
+                       "domain"       nil
+                       "updateSource" nil
+                       "links"        (array)
+                       "displayName"  nil))))
 
 (def Activity
   (.extend
-   backbone/Model
+   Model
    (js-obj
     "idAttribute" "_id"
     "url" (fn [id]
@@ -298,8 +254,111 @@
                                  "object-type" nil)
                 "like-count"    0
                 "updateSource" nil
-                "enclosures"    (array))
-    "initialize" initializer)))
+                "enclosures"    (array)))))
+
+(def Group
+  (.extend
+   Model
+   (js-obj
+    "defaults" (js-obj
+                "from"     nil
+                "to"       nil
+                "homepage" ""
+                "fullname" ""
+                "nickname" "")
+    "url" (fn [id]
+            (this-as
+              this
+              (format "/model/groups/%s.model" (.-id this))))
+    "type" "Group")))
+
+(def Subscription
+  (.extend
+   Model
+   (js-obj
+    "type" "Subscription"
+    "defaults" (js-obj
+                "from"    nil
+                "to"      nil
+                "created" nil
+                "pending" nil
+                "local"   nil)
+    "url" (fn []
+            (this-as this
+              (format "/model/subscriptions/%s.model" (.-id this)))))))
+
+(def FeedSource
+  (.extend
+   Model
+   (js-obj
+    "type" "FeedSource"
+    "url" (fn []
+            (this-as this
+              (format "/model/feed-sources/%s.model" (.-id this))))
+    "defaults" (js-obj
+                "callback" nil
+                "created"  nil
+                "updated"  nil
+                "status"   nil
+                "domain"   nil
+                "hub"      nil
+                "mode"     nil
+                "topic"    nil
+                "watchers" (array)
+                "title"    "Feed"))))
+
+(def FeedSubscription
+  (.extend
+   Model
+   (js-obj
+    "type" "FeedSubscription"
+    "url" (fn []
+            (this-as this
+              (format "/model/feedSubscriptions/%s.model" (.-id this))))
+    "defaults" (js-obj
+                "domain"   nil
+                "callback" nil
+                "url"      nil))))
+
+(def Conversation
+  (.extend
+   Model
+   (js-obj
+    "type" "Conversation"
+    "defaults" (js-obj
+                "uri"           nil
+                "url"           nil
+                "domain"        nil
+                "update-source" nil
+                "lastUpdated"   nil
+                "created"       nil
+                "activities"    nil
+                "updated"       nil)
+    "url" (fn []
+            (this-as this
+              (format "/model/conversations/%s.model" (.-id this)))))))
+
+(def AuthenticationMechanism
+  (.extend
+   Model
+   (js-obj
+    "type"        "AuthenticationMechanism"
+    "defaults" (js-obj
+                "user" nil
+                "value" nil
+                )
+    "url" (fn []
+            (this-as this
+              (format "/model/authenticationMechanisms/%s.model" (.-id this)))))))
+
+
+
+
+
+
+
+
+
 
 (def ^{:doc "collection of activities"}
   Activities
@@ -309,117 +368,11 @@
             "urlRoot" "/main/notices/"
             "model" Activity)))
 
-(def Group
-  (.extend backbone/Model
-           (js-obj
-            "defaults" (js-obj
-                        "from"     nil
-                        "to"       nil
-                        "homepage" ""
-                        "fullname" ""
-                        "nickname" "")
-            "url" (fn [id]
-                    (this-as
-                      this
-                      (format "/model/groups/%s.model" (.-id this))))
-            "idAttribute" "_id"
-            "type" "Group"
-            "initialize" initializer)))
-
-(def Groups
+(def AuthenticationMechanisms
   (.extend backbone/Collection
            (js-obj
-            "model" Group
-            "type" "Groups")))
-
-(def Subscription
-  (.extend backbone/Model
-           (js-obj
-            "type" "Subscription"
-            "defaults" (js-obj
-                        "from"    nil
-                        "to"      nil
-                        "created" nil
-                        "pending" nil
-                        "local"   nil)
-            "url" (fn []
-                    (this-as this
-                      (format "/model/subscriptions/%s.model" (.-id this))))
-            "idAttribute" "_id"
-            "initialize" initializer)))
-
-(def Subscriptions
-  (.extend backbone/Collection
-           (js-obj
-            "model" Subscription
-            "type" "Subscriptions")))
-
-(def FeedSource
-  (.extend backbone/Model
-           (js-obj
-            "type" "FeedSource"
-            "url" (fn []
-                    (this-as this
-                      (format "/model/feed-sources/%s.model" (.-id this))))
-            "defaults" (js-obj
-                        "callback" nil
-                        "created"  nil
-                        "updated"  nil
-                        "status"   nil
-                        "domain"   nil
-                        "hub"      nil
-                        "mode"     nil
-                        "topic"    nil
-                        "watchers" (array)
-                        "title"    "Feed")
-            "idAttribute" "_id"
-            "initialize" initializer)))
-
-(def FeedSources
-  (.extend backbone/Collection
-           (js-obj
-            "type" "FeedSources"
-            "model" FeedSource)))
-
-(def FeedSubscription
-  (.extend backbone/Model
-           (js-obj
-            "type" "FeedSubscription"
-            "url" (fn []
-                    (this-as this
-                      (format "/model/feedSubscriptions/%s.model" (.-id this))))
-            "defaults" (js-obj
-                        "domain"   nil
-                        "callback" nil
-                        "url"      nil)
-            "idAttribute" "_id"
-            "initialize" initializer)))
-
-(def FeedSubscriptions
-  (.extend backbone/Collection
-           (js-obj
-            "type" "FeedSubscription"
-            "model" FeedSubscription)))
-
-(def Conversation
-  (.extend backbone/Model
-           (js-obj
-            "type" "Conversation"
-            "defaults" (js-obj
-                        "uri"           nil
-                        "url"           nil
-                        "domain"        nil
-                        "update-source" nil
-                        "lastUpdated"   nil
-                        "created"       nil
-                        "activities"    nil
-                        "updated"       nil
-                        )
-            "url" (fn []
-                    (this-as this
-                      (format "/model/conversations/%s.model" (.-id this))))
-            "idAttribute" "_id"
-            "initialize" initializer)))
+            "type" "AuthenticationMechanisms"
+            "model" AuthenticationMechanism)))
 
 (def Conversations
   (.extend backbone/Collection
@@ -427,25 +380,77 @@
             "type" "Conversations"
             "model" Conversation)))
 
-(def AuthenticationMechanism
-  (.extend backbone/Model
-           (js-obj
-            "type"        "AuthenticationMechanism"
-            "idAttribute" "_id"
-            "defaults" (js-obj
-                        "user" nil
-                        "value" nil
-                        )
-            "url" (fn []
-                    (this-as this
-                      (format "/model/authenticationMechanisms/%s.model" (.-id this))))
-            "initialize"  initializer)))
-
-(def AuthenticationMechanisms
+(def Domains
   (.extend backbone/Collection
            (js-obj
-            "type" "AuthenticationMechanisms"
-            "model" AuthenticationMechanism)))
+            "type"    "Domains"
+            "urlRoot" "/main/domains/"
+            "model"   Domain)))
+
+(def FeedSources
+  (.extend backbone/Collection
+           (js-obj
+            "type" "FeedSources"
+            "model" FeedSource)))
+
+(def FeedSubscriptions
+  (.extend backbone/Collection
+           (js-obj
+            "type" "FeedSubscription"
+            "model" FeedSubscription)))
+
+(def Groups
+  (.extend backbone/Collection
+           (js-obj
+            "model" Group
+            "type" "Groups")))
+
+(def Notifications
+  (.extend
+   backbone/Collection
+   (js-obj
+    "model" Notification
+    "type" "Notifications"
+
+    ;; Add a new notification
+    "addNotification"
+    (fn [message]
+      (this-as this
+        (let [notification (Notification.)]
+          (.set notification "message" message)
+          (.push this notification)))))))
+
+(def Pages
+  (.extend
+   backbone/Collection
+   (js-obj
+    "model" Page
+    "type" "Pages"
+    "getPage" (fn [name]
+                (this-as this
+                  (.get this name))))))
+
+(def Resources
+  (.extend backbone/Collection
+           (js-obj
+            "type"    "Resources"
+            "model"   Resource)))
+
+(def Subscriptions
+  (.extend backbone/Collection
+           (js-obj
+            "model" Subscription
+            "type" "Subscriptions")))
+
+(def Users
+  (.extend backbone/Collection
+           (js-obj
+            "idAttribute" "_id"
+            "type"        "Users"
+            "model"       User)))
+
+
+
 
 (def activities    (Activities.))
 (def authentication-mechanisms (AuthenticationMechanisms.))
