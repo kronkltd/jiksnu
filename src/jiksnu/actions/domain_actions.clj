@@ -118,7 +118,7 @@
 
 (defaction index
   [& options]
-  (apply index* (log/spy options)))
+  (apply index* options))
 
 (defaction ping
   [domain]

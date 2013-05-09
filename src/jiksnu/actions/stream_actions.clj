@@ -154,20 +154,20 @@
      ch
      (fn [m]
        (session/with-user-id (:_id user)
-         (let [[name & args] (string/split (log/spy m) #" ")]
-           (if-let [resp (try
-                           (parse-command {:format :json
-                                           :channel ch
-                                           :name name
-                                           :args (-?>> args
-                                                       (filter identity)
-                                                       seq
-                                                       (map json/read-json)
-                                                      )})
-                           (catch RuntimeException ex
-                             (trace/trace "errors:handled" ex)
-                             {:body (json/json-str {:action "error"
-                                                    :message (str ex)})}))]
+         (let [[name & args] (string/split m #" ")]
+           (if-let [resp
+                    (try
+                      (parse-command {:format :json
+                                      :channel ch
+                                      :name name
+                                      :args (-?>> args
+                                                  (filter identity)
+                                                  seq
+                                                  (map json/read-json))})
+                      (catch RuntimeException ex
+                        (trace/trace "errors:handled" ex)
+                        {:body (json/json-str {:action "error"
+                                               :message (str ex)})}))]
              (l/enqueue ch (:body resp))
              (l/enqueue ch (json/json-str {:action "error"
                                            :message "no command found"})))))))))

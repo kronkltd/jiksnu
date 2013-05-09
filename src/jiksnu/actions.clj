@@ -125,8 +125,8 @@
 
 (defaction get-model
   [model-name id]
-  #_(log/debugf "getting model %s(%s)" model-name id)
-  (log/spy ((templates/make-fetch-by-id model-name identity) id)))
+  (log/debugf "getting model %s(%s)" model-name id)
+  ((templates/make-fetch-by-id model-name identity) id))
 
 (deffilter #'get-model :command
   [action request]
@@ -137,7 +137,7 @@
   [request response]
   {:body {:action "model-updated"
           :type (first (:args request))
-          :body [(log/spy response)]}})
+          :body response}})
 
 (add-command! "get-model" #'get-model)
 

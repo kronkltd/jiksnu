@@ -221,7 +221,7 @@
   (if-not (:local source)
     (if-let [topic (:topic source)]
       (if-let [resource (actions.resource/find-or-create {:url topic})]
-        (actions.resource/update* resource (log/spy options))
+        (actions.resource/update* resource options)
         (throw+ "Could not get resource for topic")))
     (log/warn "local sources do not need updates")))
 

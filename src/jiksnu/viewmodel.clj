@@ -32,7 +32,7 @@
 
 (deffilter #'fetch-viewmodel :command
   [action request]
-  (let [[path opt-string] (:args (log/spy request))]
+  (let [[path opt-string] (:args request)]
     (action path opt-string)))
 
 (defview #'fetch-viewmodel :json

@@ -38,13 +38,8 @@
 (defmethod ws/process-event "model-updated"
   [event]
   (log/info *logger* "model updated")
-  (if-let [type (.-type event)]
-    (if-let [page (.get model/pages type)]
-      (let [id (.-_id (.-body event))]
-        (.addItem page id))
-      (do (log/severe "could not determine page")
-          (jl/spy event)))
-    (log/severe "event does not heve a type"))
-  (let [])
-  )
+  (let [data (.-body event)
+        id (.-_id data)
+        type (.-type event)]
+    (model/set-model type id (jl/spy data))))
 

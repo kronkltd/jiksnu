@@ -42,6 +42,13 @@
        (map (fn [[k v _]] [k v]))
        (into {})))
 
+(defn set-model
+  [model-name id data]
+  (if-let [coll (.get _model model-name)]
+    (if-let [m (.get coll id)]
+      (.set m data))
+    (log/warn (str "no collection named: " model-name))))
+
 (defn load-model
   "Load the model from the server"
   [model-name id om]

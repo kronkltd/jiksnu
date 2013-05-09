@@ -11,14 +11,8 @@
 
 (defmethod actions.resource/process-response-content "application/xrd+xml"
   [content-type item response]
-  (log/spy item)
-  (log/spy response)
   (if-let [body (:body response)]
     (if-let [xrd (cm/string->document body)]
-      (let [links (model.webfinger/get-links (log/spy xrd))]
-        (log/spy links)
-        )
-      )
-    )
-  )
+      (let [links (model.webfinger/get-links xrd)]
+        (log/spy links)))))
 

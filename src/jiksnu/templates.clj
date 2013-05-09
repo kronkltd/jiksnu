@@ -30,7 +30,7 @@
     (s/increment (str collection-name " searched"))
     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
           records (mq/with-collection collection-name
-                    (mq/find (log/spy params))
+                    (mq/find params)
                     (merge sort-clause)
                     (mq/paginate :page (:page options 1)
                                  :per-page (:page-size options 20)))]
@@ -137,6 +137,6 @@
          (log/debugf "fetching %s(%s)" collection-name id)
          (trace/trace* (str collection-name ":fetched") id)
          (s/increment (str collection-name "_fetched"))
-         (when-let [item (mc/find-map-by-id collection-name (log/spy id))]
+         (when-let [item (mc/find-map-by-id collection-name id)]
            (maker item))))))
 

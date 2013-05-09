@@ -176,7 +176,7 @@
 (defn find-or-create-by-uri
   [uri]
   {:pre [(string? uri)]}
-  (let [[username domain] (log/spy (util/split-uri uri))]
+  (let [[username domain] (util/split-uri uri)]
     (find-or-create {:username username
                      :domain domain})))
 
@@ -394,7 +394,7 @@
 
 (defn discover*
   [^User user & [options & _]]
-  (let [force (:force (log/spy options))]
+  (let [force (:force options)]
     (loop [try-count (get options :try-count 1)]
       (when (< try-count 5)
         (if (:local user)
@@ -425,7 +425,7 @@
 (defaction discover
   "perform a discovery on the user"
   [^User user & [options & _]]
-  (task (discover* user (log/spy options)))
+  (task (discover* user options))
   user)
 
 ;; TODO: xmpp case of update

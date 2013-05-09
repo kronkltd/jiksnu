@@ -123,7 +123,7 @@
   {:pre [(instance? Resource item)]}
   (if-not (:local item)
     (let [last-updated (:lastUpdated item)]
-      (if (or (:force (log/spy options))
+      (if (or (:force options)
               (nil? last-updated)
               (time/after? (-> 5 time/minutes time/ago) last-updated))
         (let [url (:url item)]
