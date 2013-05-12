@@ -52,15 +52,15 @@
      (let [username (fseq :username)
            domain-name (fseq :domain)
            template (str "http://" domain-name "/xrd?uri={uri}")
-           links []
            domain (-> (factory :domain {:_id domain-name
                                         :discovered true})
                       actions.domain/find-or-create
                       (actions.domain/add-link {:rel "lrdd" :template template}))
-           uri (factory/make-uri domain-name "/users/1")]
-       (get-username {:id uri}) => (contains {:username username})
+           uri (factory/make-uri domain-name "/users/1")
+           params {:id uri}]
+       (get-username params) => (contains {:username username})
        (provided
-         (actions.user/get-user-meta anything) => .xrd.
+         (actions.user/get-user-meta anything anything) => .xrd.
          (model.webfinger/get-feed-source-from-xrd .xrd.) => .topic.
          (model.webfinger/get-username-from-xrd .xrd.) => username)))
 
@@ -173,6 +173,7 @@
      (fact "when given a http uri"
        (fact "when the domain is discovered"
          (db/drop-all!)
+
          (let [username (fseq :username)
                domain (actions.domain/find-or-create
                        (factory :domain
@@ -187,7 +188,8 @@
                mock-um (mock-user-meta username domain-name uri source-link)]
            (find-or-create-by-remote-id {:id uri}) => (partial instance? User)
            (provided
-             (actions.user/get-user-meta anything) => mock-um))))
+            (actions.user/get-user-meta anything anything) => mock-um))))
+
      (future-fact "when given an acct uri uri"
        (db/drop-all!)
        (let [domain (actions.domain/find-or-create

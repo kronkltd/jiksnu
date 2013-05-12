@@ -141,9 +141,13 @@
                (:url params))
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (assoc params :username (first (util/split-uri id)))
+      (do
+        (log/debug "acct uri")
+        (assoc params :username (first (util/split-uri id))))
       (or (if-let [username (.getUserInfo uri)]
-            (assoc params :username username))
+            (do
+              (log/debugf "username: %s" username)
+              (assoc params :username username)))
           (if-let [domain-name (or (:domain params)
                                    (util/get-domain-name id))]
             (let [domain (actions.domain/find-or-create {:_id domain-name})
@@ -156,22 +160,21 @@
             (throw+ "Could not determine domain name"))))))
 
 (defn find-or-create-by-remote-id
-  ([user] (find-or-create-by-remote-id user {}))
-  ([params options]
-     (if-let [id (:id params)]
-       (if-let [domain (get-domain params)]
-         (if-let [domain (if (:discovered domain)
-                           domain (actions.domain/discover domain id))]
-           (let [params (assoc params :domain (:_id domain))]
-             (or (model.user/fetch-by-remote-id id)
-                 (let [params (if (:username params)
-                                params
-                                (get-username params options))]
-                   (create params))))
-           ;; this should never happen
-           (throw+ "domain has not been disovered"))
-         (throw+ "could not determine domain"))
-       (throw+ "User does not have an id"))))
+  [params & [options]]
+  (if-let [id (:id (log/spy params))]
+    (if-let [domain (get-domain params)]
+      (if-let [domain (if (:discovered domain)
+                        domain (actions.domain/discover domain id))]
+        (let [params (assoc params :domain (:_id domain))]
+          (or (model.user/fetch-by-remote-id id)
+              (let [params (if (:username params)
+                             params
+                             (get-username params options))]
+                (create params))))
+        ;; this should never happen
+        (throw+ "domain has not been disovered"))
+      (throw+ "could not determine domain"))
+    (throw+ "User does not have an id")))
 
 (defn find-or-create-by-uri
   [uri]
