@@ -13,6 +13,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.channels :as ch]
+            [jiksnu.model :as model]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [lamina.core :as l]
@@ -125,8 +126,17 @@
 
 (defaction get-model
   [model-name id]
-  (log/debugf "getting model %s(%s)" model-name id)
-  ((templates/make-fetch-by-id model-name identity) id))
+  ;; (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
+  ;;   (require action-ns)
+  ;;   (let [maker (ns-resolve action-ns 'maker)]
+
+      (log/debugf "getting model %s(%s)" model-name id)
+      (let [item ((templates/make-fetch-by-id model-name identity) id)]
+        (log/spy :info item)
+        )
+
+      ;; ))
+  )
 
 (deffilter #'get-model :command
   [action request]

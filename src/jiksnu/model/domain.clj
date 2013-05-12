@@ -33,17 +33,12 @@
    (type-of :local      Boolean)
    (type-of :discovered Boolean)))
 
-(defn fetch-by-id
-  [id]
-  (s/increment "domains fetched")
-  (if-let [item (mc/find-map-by-id collection-name id)]
-    (maker item)))
-
 (def count-records (templates/make-counter  collection-name))
 (def create        (templates/make-create   collection-name #'fetch-by-id #'create-validators))
 (def delete        (templates/make-deleter  collection-name))
 (def drop!         (templates/make-dropper  collection-name))
 (def fetch-all     (templates/make-fetch-fn collection-name maker))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker false))
 
 (defn get-link
   [item rel content-type]

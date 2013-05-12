@@ -231,18 +231,16 @@
 (defsection show-section [Conversation :html]
   [item & [page]]
   (list
-   #_(show-details item page)
-   (bind-to "activities"
-     (bind-to "$data.items[0]"
-       (show-section (Activity.)))
-     [:section.comments {:data-bind "with: $data.items.slice(1)"}
-      [:ul.unstyled.comments {:data-bind "foreach: $data"}
-       (let [items [(Activity.)]]
-         (map show-comment
-              items))
-       ]
-      ]
-     )))
+   ;; (show-details item page)
+   ;; (dump-data)
+   (with-page "conversation-' + $data._id() + '"
+     (bind-to "activities"
+       (bind-to "$data.items[0]"
+         (show-section (Activity.)))
+       [:section.comments {:data-bind "with: $data.items.slice(1)"}
+        [:ul.unstyled.comments {:data-bind "foreach: $data"}
+         (let [items [(Activity.)]]
+           (map show-comment items))]]))))
 
 ;; update-button
 

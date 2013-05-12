@@ -46,8 +46,14 @@
   [model-name id data]
   (if-let [coll (.get _model model-name)]
     (if-let [m (.get coll id)]
-      (.set m data))
-    (log/warn (str "no collection named: " model-name))))
+      (do
+        (.set m data)
+        (let [om (aget observables model-name)]
+          (let [o (.viewModel js/kb m)]
+            ;; cache it for the object model
+            (aset om id o)
+            o))))
+    (log/fine (str "no collection named: " model-name))))
 
 (defn load-model
   "Load the model from the server"
@@ -124,7 +130,7 @@
     "idAttribute" "_id"
     "fetch" (fn []
               (this-as this
-                (ws/send "get-model" (.-stub this) (.-id this))))
+                (ws/send "get-model" (.-type this) (.-id this))))
     "url" (fn [] (this-as this
                    (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
 
