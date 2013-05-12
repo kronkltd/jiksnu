@@ -56,7 +56,7 @@
 
 (defn queue-message
   [command & [args]]
-  (log/info *logger* (format "queuing message: %s %s" command args))
+  (log/finer *logger* (format "queuing message: %s %s" command args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 
@@ -141,9 +141,9 @@
 
   (defstate :queued
     (in []
-        (log/finer *logger* "queued")
+        (log/finest *logger* "queued")
         (text $interface "queued"))
-    (out [] (log/info "not queued"))))
+    (out [] (log/finest "not queued"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Events
@@ -173,7 +173,7 @@
     [m command & args]
     (state/transition ws-state :idle :sending)
     (let [message (str command (when (seq args) (apply str " " args)))]
-      (log/info *logger* (format "sending message: %s" message))
+      (log/fine *logger* (format "sending message: %s" message))
       (emit! @default-connection message))
     (state/transition ws-state :sending :idle))
 

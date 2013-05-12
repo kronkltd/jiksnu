@@ -19,7 +19,7 @@
 
 (defmethod ws/process-event "update viewmodel"
   [event]
-  (log/info *logger* "updating viewmodel")
+  (log/fine *logger* "updating viewmodel")
   (vm/process-viewmodel (.-body event)))
 
 (defmethod ws/process-event "error"
@@ -37,7 +37,7 @@
 
 (defmethod ws/process-event "model-updated"
   [event]
-  (log/info *logger* "model updated")
+  (log/fine *logger* "model updated")
   (let [data (.-body event)
         id (.-_id data)
         type (.-type event)]

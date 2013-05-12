@@ -25,7 +25,7 @@
    ;; "waltz.state"        :finest
    "jiksnu.core"        :fine
    ;; "jiksnu.model"       :finer
-   ;; "jiksnu.websocket"   :fine
+    "jiksnu.websocket"   :fine
    "goog.net.WebSocket" :warning
    })
 
