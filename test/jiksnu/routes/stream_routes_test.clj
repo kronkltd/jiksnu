@@ -60,7 +60,9 @@
              response-for) =>
              (every-checker
               map?
-              (comp status/success? :status))))))
+              (comp status/success? :status)))
+
+       )))
 
 
  (fact "user timeline"

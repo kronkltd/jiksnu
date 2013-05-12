@@ -69,21 +69,30 @@
                 t => vector?
                 (count t) => 3))))))))
 
- (fact "#'show-section Activity :atom"
-   (let [activity (mock/there-is-an-activity)]
-     (with-context [:http :atom]
-       (show-section activity)) =>
-       (every-checker
-        (fn [response]
-          (fact
-            response => (partial instance? Entry)
-            (.getId response) => (partial instance? IRI)
-            (.getUpdated response) => (partial instance? DateTime)
-            (.getTitle response) => string?
-            (.getAuthor response) => (partial instance? Person))))))
+ (fact "#'show-section Activity"
+   (fact ":atom"
+     (let [activity (mock/there-is-an-activity)]
+       (with-context [:http :atom]
+         (show-section activity)) =>
+         (every-checker
+          (fn [response]
+            (fact
+              response => (partial instance? Entry)
+              (.getId response) => (partial instance? IRI)
+              (.getUpdated response) => (partial instance? DateTime)
+              (.getTitle response) => string?
+              (.getAuthor response) => (partial instance? Person))))))
 
- (fact "#'show-section Activity :xmpp"
-   (let [activity (mock/there-is-an-activity)]
-     (with-context [:xmpp :xmpp]
-       (show-section activity))) => element/element?)
+   (fact ":html"
+     (let [activity (mock/there-is-an-activity)]
+       (with-context [:http :html]
+         (show-section activity) =>
+         (every-checker
+          (fn [response]
+            response => vector?)))))
+
+   (fact ":xmpp"
+     (let [activity (mock/there-is-an-activity)]
+       (with-context [:xmpp :xmpp]
+         (show-section activity))) => element/element?))
  )

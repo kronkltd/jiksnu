@@ -26,6 +26,7 @@
 
  (fact "filter-action #'actions.stream/public-timeline :xmpp"
    (with-serialization :xmpp
+
      (fact "when there are no activities"
        (db/drop-all!)
        (let [user (mock/a-user-exists)
@@ -58,9 +59,14 @@
                  activity (mock/there-is-an-activity)]
              (filter-action #'actions.stream/public-timeline request) =>
              (every-checker
-              map?
-              #(every? model/activity? (:items %))
-              #(= 1 (:total-records %)))))))))
+              (fn [response]
+                response => map?
+                (let [items (:items response)]
+                  (doseq [item items]
+                    (class item) => Activity)))
+              #(= 1 (:total-records %)))))))
+
+     ))
 
  (fact "filter-action #'actions.stream/user-timeline"
    (let [action #'actions.stream/user-timeline]
