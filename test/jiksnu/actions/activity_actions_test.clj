@@ -139,21 +139,21 @@
 
  (fact "#'fetch-by-conversation"
    (fact "when there are matching activities"
-     (let [conversation (mock/a-conversation-exists)]
+     (let [conversation (mock/a-conversation-exists)
+           activity (mock/there-is-an-activity {:conversation conversation})]
        (fetch-by-conversation conversation) =>
        (fn [response]
          (fact
-           (count response) => 1
-           )
-         )
-       )
-     )
+           (count (:items response)) => 1)))))
 
-   )
-
- ;; (fact "#'fetch-by-conversations"
- ;;   (fact "when there are matching activities"
-
- ;;     )
- ;;   )
+ (fact "#'fetch-by-conversations"
+   (fact "when there are matching activities"
+     (let [conversation1 (mock/a-conversation-exists)
+           conversation2 (mock/a-conversation-exists)
+           activity1 (mock/there-is-an-activity {:conversation conversation1})
+           activity2 (mock/there-is-an-activity {:conversation conversation2})]
+       (fetch-by-conversations [(:_id conversation1) (:_id conversation2)]) =>
+       (fn [response]
+         (fact
+           (count (:items response)) => 2)))))
  )
