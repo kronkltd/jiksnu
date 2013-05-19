@@ -156,8 +156,8 @@
 (defsection index-section [Conversation :atom]
   [items & [page]]
   (let [ids (map :_id items)
-        activities (actions.activity/fetch-by-conversations items)]
-   (index-block (log/spy :info activities))))
+        page (actions.activity/fetch-by-conversations ids)]
+    (index-block (:items page) page)))
 
 (defsection index-section [Conversation :html]
   [items & [page]]

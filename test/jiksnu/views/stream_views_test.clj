@@ -36,8 +36,11 @@
 
              (fact "when there are conversations"
                (db/drop-all!)
-               (let [n 1
-                     items (doall (for [i (range n)] (mock/a-conversation-exists)))
+               (let [n 20
+                     items (doall (for [i (range n)]
+                                    (let [conversation (mock/a-conversation-exists)]
+                                      (mock/there-is-an-activity {:conversation conversation})
+                                      conversation)))
                      request {:action action}
                      response (filter-action action request)]
 
@@ -48,86 +51,86 @@
                      (:template response) => false
                      (let [formatted (format-as :atom request response)
                            feed (abdera/parse-xml-string (:body formatted))]
-                       (count (.getEntries feed)) => 20)))))
+                       (count (.getEntries feed)) => n)))))
              ))
 
-         ;; (fact "when the format is :html"
-         ;;   (with-format :html
+         (fact "when the format is :html"
+           (with-format :html
 
-         ;;     (fact "when dynamic is false"
-         ;;       (binding [*dynamic* false]
+             (fact "when dynamic is false"
+               (binding [*dynamic* false]
 
-         ;;         (fact "when there are conversations"
-         ;;           (db/drop-all!)
-         ;;           (let [n 1
-         ;;                 items (doall (for [i (range n)] (mock/a-conversation-exists)))
-         ;;                 request {:action action}
-         ;;                 response (filter-action action request)]
+                 (fact "when there are conversations"
+                   (db/drop-all!)
+                   (let [n 20
+                         items (doall (for [i (range n)] (mock/a-conversation-exists)))
+                         request {:action action}
+                         response (filter-action action request)]
 
-         ;;             (apply-view request response) =>
-         ;;             (fn [response]
-         ;;               (fact
-         ;;                 response => map?
-         ;;                 (let [resp-str (h/html (:body response))]
-         ;;                   resp-str => string?)
-         ;;                 (let [doc (hiccup->doc [:bogus (:body response)])]
-         ;;                   (let [elts (select-by-model doc "conversation")]
-         ;;                     (count elts) => n
+                     (apply-view request response) =>
+                     (fn [response]
+                       (fact
+                         response => map?
+                         (let [resp-str (h/html (:body response))]
+                           resp-str => string?)
+                         (let [doc (hiccup->doc [:bogus (:body response)])]
+                           (let [elts (select-by-model doc "conversation")]
+                             (count elts) => n
 
-         ;;                     (let [ids (->> elts
-         ;;                                    (map #(get-in % [:attrs :data-id]))
-         ;;                                    (into #{}))]
-         ;;                       (count ids) => n
-         ;;                       (doseq [item items]
-         ;;                         (let [id (str (:_id item))]
-         ;;                           ids => (contains id))))))))
-         ;;             ))
-         ;;         ))
-         ;;     ))
+                             (let [ids (->> elts
+                                            (map #(get-in % [:attrs :data-id]))
+                                            (into #{}))]
+                               (count ids) => n
+                               (doseq [item items]
+                                 (let [id (str (:_id item))]
+                                   ids => (contains id))))))))
+                     ))
+                 ))
+             ))
          ))))
 
- ;; (fact "apply-view #'user-timeline"
- ;;   (let [action #'user-timeline]
- ;;     (fact "when the serialization is :http"
- ;;       (with-serialization :http
+ (fact "apply-view #'user-timeline"
+   (let [action #'user-timeline]
+     (fact "when the serialization is :http"
+       (with-serialization :http
 
- ;;         (fact "when the format is :html"
- ;;           (with-format :html
- ;;             (binding [*dynamic* false]
- ;;               (fact "when that user has activities"
- ;;                 (db/drop-all!)
- ;;                 (let [user (mock/a-user-exists)
- ;;                       activity (mock/there-is-an-activity {:user user})
- ;;                       request {:action action
- ;;                                :params {:id (str (:_id user))}}
- ;;                       response (filter-action action request)]
- ;;                   (apply-view request response) =>
- ;;                   (every-checker
- ;;                    (fn [response]
- ;;                      (let [doc (hiccup->doc (:body response))]
- ;;                        (fact
- ;;                          (map
- ;;                           #(get-in % [:attrs :data-id])
- ;;                           (enlive/select doc [(enlive/attr? :data-id)])) =>
- ;;                           (contains (str (:_id activity))))))))))))
+         (fact "when the format is :html"
+           (with-format :html
+             (binding [*dynamic* false]
+               (fact "when that user has activities"
+                 (db/drop-all!)
+                 (let [user (mock/a-user-exists)
+                       activity (mock/there-is-an-activity {:user user})
+                       request {:action action
+                                :params {:id (str (:_id user))}}
+                       response (filter-action action request)]
+                   (apply-view request response) =>
+                   (every-checker
+                    (fn [response]
+                      (let [doc (hiccup->doc (:body response))]
+                        (fact
+                          (map
+                           #(get-in % [:attrs :data-id])
+                           (enlive/select doc [(enlive/attr? :data-id)])) =>
+                           (contains (str (:_id activity))))))))))))
 
- ;;         (fact "when the format is :n3"
- ;;           (with-format :n3
- ;;             (fact "when that user has activities"
- ;;               (db/drop-all!)
- ;;               (let [user (mock/a-user-exists)
- ;;                     activity (mock/there-is-an-activity {:user user})
- ;;                     request {:action action
- ;;                              :params {:id (str (:_id user))}}
- ;;                     response (filter-action action request)]
- ;;                 (apply-view request response) =>
- ;;                 (every-checker
- ;;                  map?
- ;;                  (fn [response]
- ;;                    (fact
- ;;                      (let [body (:body response)]
- ;;                        body => (partial every? vector?)
- ;;                        (let [m (rdf/triples->model body)]
- ;;                          m => truthy)))))))))))))
+         (fact "when the format is :n3"
+           (with-format :n3
+             (fact "when that user has activities"
+               (db/drop-all!)
+               (let [user (mock/a-user-exists)
+                     activity (mock/there-is-an-activity {:user user})
+                     request {:action action
+                              :params {:id (str (:_id user))}}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (every-checker
+                  map?
+                  (fn [response]
+                    (fact
+                      (let [body (:body response)]
+                        body => (partial every? vector?)
+                        (let [m (rdf/triples->model body)]
+                          m => truthy)))))))))))))
 
  )
