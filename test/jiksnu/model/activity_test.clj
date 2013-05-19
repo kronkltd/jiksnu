@@ -33,20 +33,29 @@
      (create activity) => model/activity?))
 
  (fact "#'get-author"
-   (let [user (mock/a-user-exists)
-         activity (mock/there-is-an-activity {:user user})]
-     (get-author activity) => user))
+
+   (fact "when given an empty activity"
+     (let [item (Activity.)]
+       (get-author item) => nil))
+
+   (fact "when given a real activity"
+     (let [user (mock/a-user-exists)
+           activity (mock/there-is-an-activity {:user user})]
+       (get-author activity) => user))
+   )
 
  (fact "#'count-records"
+
    (fact "when there aren't any items"
      (drop!)
      (count-records) => 0)
+
    (fact "when there are conversations"
      (drop!)
      (let [n 15]
        (dotimes [i n]
          (mock/there-is-an-activity))
-       (count-records) => n)))
-
+       (count-records) => n))
+   )
 
  )

@@ -1,6 +1,6 @@
 (ns jiksnu.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context]]
+        [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [index-block index-section
                                        show-section uri]]
         [clj-factory.core :only [factory]]
@@ -13,12 +13,14 @@
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.ko :as ko]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.User
+  (:import jiksnu.model.Activity
+           jiksnu.model.User
            org.apache.abdera2.common.iri.IRI
            org.apache.abdera2.model.Entry
            org.apache.abdera2.model.Person
@@ -34,11 +36,34 @@
     #(= :form (first %))))
 
  (fact "#'posted-link-section"
-   (let [user (mock/a-user-exists)
-         activity (mock/there-is-an-activity)]
-     (posted-link-section activity) =>
-     (every-checker
-      #(h/html %))))
+   (fact "when the serialization is :http"
+     (with-serialization :http
+
+       (fact "when the format is :html"
+         (with-format :html
+
+           (fact "when dynamic is false"
+             (binding [ko/*dynamic* false]
+
+               (fact "when given an empty activity"
+                 (let [item (Activity.)]
+                   (posted-link-section item) =>
+                   (fn [response]
+                     (fact
+                       (let [resp-str (h/html response)]
+                         resp-str => string?)))))
+
+               (fact "when given a real activity"
+                 (let [activity (mock/there-is-an-activity)]
+                   (posted-link-section activity) =>
+                   (fn [response]
+                     (fact
+                       (let [resp-str (h/html response)]
+                         resp-str => string?)))))
+               ))
+           ))
+       ))
+   )
 
  (fact "#'uri Activity"
    ;; TODO: not a good test
@@ -57,7 +82,7 @@
                             (and (vector? t)
                                  (= 3 (count t))))))))))
 
- (fact "index-section"
+ (fact "#'index-section Activity"
    (fact "when the context is [:http :rdf]"
      (with-context [:http :rdf]
        (let [activity (mock/there-is-an-activity)]
@@ -70,29 +95,50 @@
                 (count t) => 3))))))))
 
  (fact "#'show-section Activity"
-   (fact ":atom"
-     (let [activity (mock/there-is-an-activity)]
-       (with-context [:http :atom]
-         (show-section activity)) =>
-         (every-checker
-          (fn [response]
-            (fact
-              response => (partial instance? Entry)
-              (.getId response) => (partial instance? IRI)
-              (.getUpdated response) => (partial instance? DateTime)
-              (.getTitle response) => string?
-              (.getAuthor response) => (partial instance? Person))))))
+   (fact "when the serialization is :http"
+     (with-serialization :http
 
-   (fact ":html"
-     (let [activity (mock/there-is-an-activity)]
-       (with-context [:http :html]
-         (show-section activity) =>
-         (every-checker
-          (fn [response]
-            response => vector?)))))
+       (fact "when the format is :atom"
+         (with-format :atom
+
+          (let [activity (mock/there-is-an-activity)]
+            (show-section activity) =>
+            (fn [response]
+              (fact
+                response => (partial instance? Entry)
+                (.getId response) => (partial instance? IRI)
+                (.getUpdated response) => (partial instance? DateTime)
+                (.getTitle response) => string?
+                (.getAuthor response) => (partial instance? Person))))))
+
+       (fact "when the format is :html"
+         (with-format :html
+
+           (fact "when dynamic is false"
+             (binding [ko/*dynamic* false]
+
+               (fact "when given an empty activity"
+                 (let [item (Activity.)]
+                   (show-section item) =>
+                   (fn [response]
+                     (fact
+                       (let [resp-str (h/html response)]
+                         resp-str => string?)))))
+
+               (fact "when given a real activity"
+                 (let [activity (mock/there-is-an-activity)]
+                   (show-section activity) =>
+                   (fn [response]
+                     (fact
+                       (let [resp-str (h/html response)]
+                         resp-str => string?)))))
+               ))
+           ))
+       ))
 
    (fact ":xmpp"
      (let [activity (mock/there-is-an-activity)]
        (with-context [:xmpp :xmpp]
-         (show-section activity))) => element/element?))
+         (show-section activity))) => element/element?)
+   )
  )

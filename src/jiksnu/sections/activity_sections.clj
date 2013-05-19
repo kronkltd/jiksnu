@@ -300,20 +300,28 @@
    #_(when-not (:public activity)
        " privately")
 
-   " approximately "
-   [:time {:datetime (util/format-date (:published activity))
-           :title (util/format-date (:published activity))
-           :property "dc:published"}
-    [:a (merge {:href (uri activity)}
-               (when *dynamic*
-                 {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
-     (when-not *dynamic*
-       (-> activity :created .toDate util/prettyify-time))]]
-   " using "
-   [:span
-    (if *dynamic*
-      {:data-bind "text: source"}
-      (:source activity))]
+   (let [published (:published activity)]
+     (when (or *dynamic* published)
+       (let [formatted-pub (util/format-date published)]
+         (list
+          " approximately "
+          [:time {:datetime formatted-pub
+                  :title formatted-pub
+                  :property "dc:published"}
+           [:a (merge {:href (uri activity)}
+                      (when *dynamic*
+                        {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
+            (when-not *dynamic*
+              (-> published .toDate util/prettyify-time))]]))))
+
+   (let [source (:source activity)]
+     (when (or *dynamic* source)
+       (list
+        " using "
+        [:span
+         (if *dynamic*
+           {:data-bind "text: source"}
+           source)])))
 
    ;; TODO: link to the domain
    (when (or *dynamic* (not (:local activity)))

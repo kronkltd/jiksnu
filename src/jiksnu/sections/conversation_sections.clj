@@ -5,7 +5,8 @@
                                        show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line dropdown-menu dump-data pagination-links with-page]])
+                                bind-to control-line dropdown-menu dump-data pagination-links
+                                with-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

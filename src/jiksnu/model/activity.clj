@@ -1,5 +1,6 @@
 (ns jiksnu.model.activity
   (:use [ciste.config :only [config]]
+        [clojure.core.incubator :only [-?>]]
         [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of]])
@@ -64,7 +65,7 @@
 (defn get-author
   "Returns the user that is the author of this activity"
   [activity]
-  (-> activity
+  (-?> activity
       :author
       model.user/fetch-by-id))
 
