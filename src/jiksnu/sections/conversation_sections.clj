@@ -231,17 +231,31 @@
 
 (defsection show-section [Conversation :html]
   [item & [page]]
-  (list
-   ;; (show-details item page)
-   ;; (dump-data)
-   (with-page "conversation-' + $data._id() + '"
-     (bind-to "activities"
-       (bind-to "$data.items[0]"
-         (show-section (Activity.)))
-       [:section.comments {:data-bind "with: $data.items.slice(1)"}
-        [:ul.unstyled.comments {:data-bind "foreach: $data"}
-         (let [items [(Activity.)]]
-           (map show-comment items))]]))))
+  (let [about-uri (full-uri item)]
+    [:div
+     (merge {:data-model "conversation"}
+            (when-not *dynamic*
+              {:about about-uri
+               :data-id (:_id item)}))
+     ;; (show-details item page)
+     ;; (dump-data)
+     (with-page "conversation-' + $data._id() + '"
+       (bind-to "activities"
+         (bind-to "$data.items[0]"
+           (if-let [item (if *dynamic*
+                             (Activity.)
+                             ;; TODO: actually fetch the activity here
+                             nil)]
+             (show-section item)
+             [:p "The parent activity for this conversation could not be found"]))
+         (let [items (if *dynamic*
+                       [(Activity.)]
+                       ;; TODO: Actually fetch the activities here
+                       [])]
+           (when (seq items)
+             [:section.comments {:data-bind "with: $data.items.slice(1)"}
+              [:ul.unstyled.comments {:data-bind "foreach: $data"}
+               (map show-comment items)]]))))]))
 
 ;; update-button
 

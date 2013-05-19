@@ -18,7 +18,7 @@
   (-> hiccup-seq
       h/html
       StringReader.
-      enlive/html-resource))
+      enlive/xml-resource))
 
 (defmacro test-environment-fixture
   [& body]
