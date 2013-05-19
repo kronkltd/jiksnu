@@ -7,7 +7,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
+        [jiksnu.test-helper :only [hiccup->doc select-by-model test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
         [midje.sweet :only [every-checker fact future-fact => contains truthy]])
   (:require [clojure.string :as string]
@@ -30,6 +30,7 @@
    (let [action #'public-timeline]
      (fact "when the serialization is :http"
        (with-serialization :http
+
          (fact "when the format is :atom"
            (with-format :atom
              (fact "when there are activities"
@@ -53,34 +54,38 @@
 
          (fact "when the format is :html"
            (with-format :html
-             (binding [*dynamic* false]
-               (fact "when there are activities"
-                 (db/drop-all!)
-                 (let [user (mock/a-user-exists)
-                       ;; TODO: This used to be set to 25, I need a
-                       ;; good way to make sure I have the right
-                       ;; amount of records returned in the default
-                       ;; page.
-                       activities (doall
-                                   (for [n (range 20)]
-                                     (mock/there-is-an-activity {:user user})))
-                       request {:action action}
-                       response (filter-action action request)]
-                   (apply-view request response) =>
-                   (every-checker
-                    map?
-                    (fn [response]
-                      (fact
-                        (let [doc (hiccup->doc (:body response))
-                              activity-elements (->> [(enlive/attr= :data-model "activity")]
-                                                     (enlive/select doc))
-                              ids (->> activity-elements
-                                       (map #(get-in % [:attrs :data-id]))
-                                       (into #{}))]
-                          (doseq [activity activities]
-                            (let [id (str (:_id activity))]
-                              (ids id) => truthy))
-                          (count activity-elements) => 20)))))))))))))
+
+             (fact "when dynamic is false"
+               (binding [*dynamic* false]
+
+                 (fact "when there are conversations"
+                   (db/drop-all!)
+                   (let [n 1
+                         items (doall (for [i (range n)] (mock/a-conversation-exists)))
+                         request {:action action}
+                         response (filter-action action request)]
+
+                     (apply-view request response) =>
+                     (fn [response]
+                       (fact
+                         response => map?
+                         (let [resp-str (h/html (:body response))]
+                           resp-str => string?)
+                         (let [doc (hiccup->doc [:bogus (:body response)])]
+                           (let [elts (select-by-model doc "conversation")]
+                             (count elts) => n
+
+                             (let [ids (->> elts
+                                            (map #(get-in % [:attrs :data-id]))
+                                            (into #{}))]
+                               (count ids) => n
+                               (doseq [item items]
+                                 (let [id (str (:_id item))]
+                                   ids => (contains id))))))))
+                     ))
+                 ))
+             ))
+         ))))
 
  (fact "apply-view #'user-timeline"
    (let [action #'user-timeline]

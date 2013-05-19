@@ -148,8 +148,7 @@
 
 (defsection index-line [Conversation :html]
   [item & [page]]
-  [:div {:data-model "conversation"}
-   (show-section item page)])
+  (show-section item page))
 
 ;; index-section
 

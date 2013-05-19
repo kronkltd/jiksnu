@@ -20,6 +20,11 @@
       StringReader.
       enlive/xml-resource))
 
+(defn select-by-model
+  [doc model-name]
+  (->> [(enlive/attr= :data-model model-name)]
+       (enlive/select doc)))
+
 (defmacro test-environment-fixture
   [& body]
   `(do

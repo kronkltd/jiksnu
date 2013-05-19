@@ -127,7 +127,8 @@
                   (if *dynamic*
                     {:data-bind "attr: {href: '?page=' + (1 + $data.page())}"}
                     {:href (str "?page=" (inc page))}))
-   "Next &rarr;"])
+   "Next "
+   [:i.icon-right-arrow]])
 
 (defn prev-link
   [page]
@@ -135,7 +136,7 @@
                       (if *dynamic*
                         {:data-bind "attr: {href: '?page=' + (0 + $data.page() - 1)}"}
                         {:href (str "?page=" (dec page)) }))
-   "&larr; Previous"])
+   [:i.icon-left-arrow] " Previous"])
 
 (defn display-property
   [item property]
