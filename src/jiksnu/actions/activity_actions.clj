@@ -329,6 +329,12 @@ serialization"
   [conversation & [options]]
   (index {:conversation (:_id conversation)} options))
 
+(defaction fetch-by-conversations
+  [ids & [options]]
+  ;; TODO: implement
+  []
+  )
+
 (defaction fetch-by-feed-source
   [source & [options]]
   (index {:update-source (:_id source)} options))

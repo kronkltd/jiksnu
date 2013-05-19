@@ -136,4 +136,24 @@
        (every-checker
         map?
         (comp string? :html)))))
+
+ (fact "#'fetch-by-conversation"
+   (fact "when there are matching activities"
+     (let [conversation (mock/a-conversation-exists)]
+       (fetch-by-conversation conversation) =>
+       (fn [response]
+         (fact
+           (count response) => 1
+           )
+         )
+       )
+     )
+
+   )
+
+ ;; (fact "#'fetch-by-conversations"
+ ;;   (fact "when there are matching activities"
+
+ ;;     )
+ ;;   )
  )

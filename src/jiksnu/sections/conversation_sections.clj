@@ -10,6 +10,7 @@
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -151,6 +152,12 @@
   (show-section item page))
 
 ;; index-section
+
+(defsection index-section [Conversation :atom]
+  [items & [page]]
+  (let [ids (map :_id items)
+        activities (actions.activity/fetch-by-conversations items)]
+   (index-block (log/spy :info activities))))
 
 (defsection index-section [Conversation :html]
   [items & [page]]
