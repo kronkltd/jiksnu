@@ -54,7 +54,7 @@
                  ;; TODO: parse and check model
 
                  (let [body (:body response)]
-                   body => (partial every? vector?)))))
+                   body => string?))))
 
        (fact "when the user is authenticated"
          (-> (req/request :get "/")
