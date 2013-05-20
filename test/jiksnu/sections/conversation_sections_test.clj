@@ -26,6 +26,44 @@
 
 (test-environment-fixture
 
+ (fact "#'index-block Conversation"
+   (fact "when the serialization is :http"
+     (with-serialization :http
+
+       (fact "when the format is :rdf"
+         (with-format :rdf
+
+           (fact "when given real conversations"
+             (let [n 5
+                   items (doall (for [i (range n)]
+                                  (mock/a-conversation-exists)))]
+               (index-block items) =>
+               (fn [response]
+                 (fact
+                   response => seq?
+                   response => (partial every? vector?)
+                   response => (partial every? #(= (count %) 3))
+
+                   )))))))))
+
+ (fact "#'index-section Conversation"
+   (fact "when the serialization is :http"
+     (with-serialization :http
+
+       (fact "when the format is :rdf"
+         (with-format :rdf
+
+           (fact "when given real conversations"
+             (let [n 5
+                   items (doall (for [i (range n)]
+                                  (mock/a-conversation-exists)))]
+               (index-section items) =>
+               (fn [response]
+                 (fact
+                   response => seq?
+                   response => (partial every? vector?)
+                   response => (partial every? #(= (count %) 3)))))))))))
+
  (fact "#'show-section Conversation"
    (fact "when the serialization is :http"
      (with-serialization :http

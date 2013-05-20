@@ -123,6 +123,10 @@
 ;;    [:tbody {:data-bind "foreach: $data"}
 ;;     (doall (map #(index-line % page) items))]])
 
+(defsection index-block [Conversation :rdf]
+  [items & [response & _]]
+  (apply concat (map #(index-line % response) items)))
+
 ;; index-line
 
 ;; (defsection index-line [Conversation :html]
@@ -273,6 +277,7 @@
       (rdf/with-subject uri
         [
          [[ns/rdf :type] [ns/sioc "Conversation"]]
+         [[ns/dc :updated] (plaza/date (.toDate (:updated item)))]
          ]))))
 
 ;; update-button
