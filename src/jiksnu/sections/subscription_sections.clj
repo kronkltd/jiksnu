@@ -71,7 +71,9 @@
 (defn subscriptions-widget
   [user]
   (when user
-    (let [subscriptions (if *dynamic* [(Subscription.)] (model.subscription/subscriptions user))]
+    (let [subscriptions (if *dynamic*
+                          [(Subscription.)]
+                          (model.subscription/subscriptions user))]
       [:div.subscriptions
        [:h3
         [:a (if *dynamic*
@@ -83,12 +85,14 @@
                  (count subscriptions))]]
        (with-page "subscriptions"
          (bind-to "items"
-           [:ul (if *dynamic* {:data-bind "foreach: $data"})
+           [:ul (when *dynamic* {:data-bind "foreach: $data"})
             (map (fn [subscription]
                    [:li {:data-model "subscription"}
                     (bind-to "to"
                       [:div {:data-model "user"}
-                       (let [user (if *dynamic* (User.) (model.subscription/get-target subscription))]
+                       (let [user (if *dynamic*
+                                    (User.)
+                                    (model.subscription/get-target subscription))]
                          (sections.user/display-avatar user "24"))])]) subscriptions)]))
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
@@ -141,7 +145,7 @@
      [:th "pending"]
      [:th "local"]
      [:th "Actions"]]]
-   [:tbody (if *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (map #(admin-index-line % options) items)]])
 
 (defsection admin-index-block [Subscription :viewmodel]

@@ -105,7 +105,7 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div {:data-bind "foreach: $data"}
+  [:div (when *dynamic* {:data-bind "foreach: $data"})
    (map index-line items)])
 
 ;; (defsection index-block [Conversation :html]
@@ -266,8 +266,8 @@
                        ;; TODO: Actually fetch the activities here
                        [])]
            (when (seq items)
-             [:section.comments {:data-bind "with: $data.items.slice(1)"}
-              [:ul.unstyled.comments {:data-bind "foreach: $data"}
+             [:section.comments (when *dynamic* {:data-bind "with: $data.items.slice(1)"})
+              [:ul.unstyled.comments (when *dynamic* {:data-bind "foreach: $data"})
                (map show-comment items)]]))))]))
 
 (defsection show-section [Conversation :rdf]

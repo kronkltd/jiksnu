@@ -3,9 +3,10 @@
         [clj-factory.core :only [fseq]]
         [jiksnu.actions.webfinger-actions :only [host-meta]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [fact future-fact => truthy every-checker]])
+        [midje.sweet :only [fact future-fact => truthy every-checker throws]])
   (:require [clojure.tools.logging :as log]
             jiksnu.factory
+            [jiksnu.mock :as mock]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]))
 

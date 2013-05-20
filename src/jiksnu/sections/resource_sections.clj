@@ -14,7 +14,6 @@
               [jiksnu.session :as session])
     (:import jiksnu.model.Conversation
              jiksnu.model.Domain
-             
              jiksnu.model.FeedSource
              jiksnu.model.Resource))
 
@@ -71,7 +70,7 @@
      [:th "Encoding"]
      #_[:th "Created"]
      [:th "Updated"]]]
-   [:tbody {:data-bind "foreach: $data"}
+   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
     (doall (map #(index-line % page) items))]])
 
 ;; index-line

@@ -206,7 +206,7 @@
   (let [ids (if *dynamic*
               [nil]
               (:mentioned activity))]
-    [:ul.unstyled {:data-bind "foreach: mentioned"}
+    [:ul.unstyled (when *dynamic* {:data-bind "foreach: mentioned"})
      (map
       (fn [id]
         [:li {:data-model "user"}
@@ -342,7 +342,7 @@
                    (:conversation activity))]
      (list
       " "
-      [:span {:data-bind "with: conversation"}
+      [:span (when *dynamic* {:data-bind "with: conversation"})
        [:span {:data-model "conversation"}
         [:a (if *dynamic*
               {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
@@ -442,8 +442,9 @@
      (map
       (fn [resource]
         [:li {:data-model "resource"}
-         [:div {:data-bind "if: properties"}
-          [:div (if *dynamic*
+         [:div (when *dynamic*
+                 {:data-bind "if: properties"})
+          [:div (when *dynamic*
                   {:data-bind "if: properties()['og:type'] === 'video'"})
            [:div.video-embed
             [:iframe
