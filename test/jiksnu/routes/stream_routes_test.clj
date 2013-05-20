@@ -47,12 +47,14 @@
        (fact "when the the request is for n3"
          (-> (req/request :get "/api/statuses/public_timeline.n3")
              response-for) =>
-             (every-checker
-              map?
-              (comp status/success? :status)
-              (comp string? :body)
-              ;; TODO: parse and check model
-              ))
+             (fn [response]
+               (fact
+                 response => map?
+                 (:status response) => status/success?
+                 ;; TODO: parse and check model
+
+                 (let [body (:body response)]
+                   body => (partial every? vector?)))))
 
        (fact "when the user is authenticated"
          (-> (req/request :get "/")
@@ -61,9 +63,8 @@
              (every-checker
               map?
               (comp status/success? :status)))
-
-       )))
-
+       ))
+   )
 
  (fact "user timeline"
 

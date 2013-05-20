@@ -14,8 +14,11 @@
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.namespace :as ns]
+            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
-            [jiksnu.session :as session])
+            [jiksnu.session :as session]
+            [plaza.rdf.core :as plaza])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain
@@ -147,9 +150,9 @@
 ;;           (:updated item))]
 ;;    [:td (actions-section item)]])
 
-(defsection index-line [Conversation :html]
-  [item & [page]]
-  (show-section item page))
+;; (defsection index-line [Conversation :html]
+;;   [item & [page]]
+;;   (show-section item page))
 
 ;; index-section
 
@@ -159,9 +162,9 @@
         page (actions.activity/fetch-by-conversations ids)]
     (index-block (:items page) page)))
 
-(defsection index-section [Conversation :html]
-  [items & [page]]
-  (index-block items page))
+;; (defsection index-section [Conversation :html]
+;;   [items & [page]]
+;;   (index-block items page))
 
 ;; show-section
 
@@ -262,6 +265,15 @@
              [:section.comments {:data-bind "with: $data.items.slice(1)"}
               [:ul.unstyled.comments {:data-bind "foreach: $data"}
                (map show-comment items)]]))))]))
+
+(defsection show-section [Conversation :rdf]
+  [item & [page]]
+  (plaza/with-rdf-ns ""
+    (let [uri (full-uri item)]
+      (rdf/with-subject uri
+        [
+         [[ns/rdf :type] [ns/sioc "Conversation"]]
+         ]))))
 
 ;; update-button
 

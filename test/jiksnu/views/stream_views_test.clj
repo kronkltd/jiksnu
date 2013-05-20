@@ -87,6 +87,23 @@
                      ))
                  ))
              ))
+
+         (fact "when the format is :n3"
+           (with-format :n3
+
+             (fact "when there are conversations"
+               (db/drop-all!)
+               (let [n 1
+                     items (doall (for [i (range n)] (mock/a-conversation-exists)))
+                     request {:action action}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (fn [response]
+                   (fact
+                     response => map?
+                     (let [body (:body response)]
+                       body => (partial every? vector?))))))
+             ))
          ))))
 
  (fact "apply-view #'user-timeline"

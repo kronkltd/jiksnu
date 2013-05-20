@@ -76,6 +76,17 @@
                    ))
                ))
            ))
+
+       (fact "when the format is :rdf"
+         (with-format :rdf
+
+           (fact "when given a real conversation"
+             (let [item (mock/a-conversation-exists)]
+
+               (show-section item) =>
+               (fn [response]
+                 response => (partial every? vector?))))
+           ))
        ))
    )
  )
