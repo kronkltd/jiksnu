@@ -18,16 +18,32 @@
 
  (fact "show"
    (with-context [:http :html]
-     (let [domain (mock/a-domain-exists)]
-       (-> (req/request :get (uri domain))
-           response-for) =>
-           (every-checker
-            map?
-            (comp status/success? :status)
-            (fn [response]
-              (let [body (h/html (:body response))]
-                (fact
-                  body => (re-pattern (str (:_id domain))))))))))
+     (let [domain (mock/a-domain-exists)
+           user (mock/a-user-exists {:domain domain})]
+
+       (fact "when requesting the default page"
+         (-> (req/request :get (uri domain))
+             response-for) =>
+             (fn [response]
+               (fact
+                 response => map?
+                 (:status response) => status/success?
+                 (let [body (h/html (:body response))]
+                   body => (re-pattern (str (:_id domain)))))))
+
+       (fact "when requesting the second page of users"
+         (let [path (str (uri domain)
+                         "?page=2")]
+           (-> (req/request :get path)
+                     response-for)) =>
+                     (fn [response]
+                       (fact
+                         response => map?
+                         (:status response) => status/success?
+                         (let [body (h/html (:body response))]
+                           body => (re-pattern (str (:_id domain)))))))
+
+             )))
 
  (fact "#'webfinger-host-meta"
    (fact "should return a XRD document"

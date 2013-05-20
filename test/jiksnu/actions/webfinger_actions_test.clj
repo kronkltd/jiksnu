@@ -11,7 +11,7 @@
             [jiksnu.model.webfinger :as model.webfinger]))
 
 (test-environment-fixture
- (fact "#'fetch-host-meta"
+ (future-fact "#'fetch-host-meta"
    (let [resource (mock/a-resource-exists)
          url (:url resource)]
      (fact "when the url is nil"
