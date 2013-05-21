@@ -183,8 +183,9 @@
 
 (defn model-button
   [activity]
-  [:a (when *dynamic*
-        {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"})
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:href (format "/model/activities/%s.model" (str (:_id activity)))})
    "Model"])
 
 (defn get-buttons
@@ -744,14 +745,11 @@
            (show-section-minimal user)))
        (recipients-section activity)]
       [:div.entry-content
-       #_(when (:title activity)
-         [:h1.entry-title {:property "dc:title"}
-          (:title activity)])
        [:p (merge {:property "dc:title"}
                   (when *dynamic*
                     {:data-bind "text: title"}))
         (when-not *dynamic*
-          (or #_(:title activity)
+          (or (:title activity)
               (:content activity)))]]
       [:div
        [:ul.unstyled

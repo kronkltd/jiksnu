@@ -67,9 +67,10 @@
          {:title title
           :class (string/join " " [(str action "-button")])
           ;; :data-model model
-          :data-action action}
+          }
          (if *dynamic*
-           {:href "#"}
+           {:href "#"
+            :data-action action}
            {:href (str "/main/confirm"
                        "?action=" action
                        "&model=" model

@@ -46,9 +46,6 @@ article .photo {
   margin-bottom: 20px;
   padding-bottom: 10px;
 }
-.comments {
-  margin-left: -35px;
-}
 .comments .comment {
   display: block;
   position: relative;

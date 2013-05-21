@@ -266,7 +266,7 @@
            (when-let [comments (next items)]
              [:section.comments (when *dynamic* {:data-bind "with: $data.items.slice(1)"})
               [:ul.unstyled.comments (when *dynamic* {:data-bind "foreach: $data"})
-               (map show-comment items)]]))))]))
+               (map show-comment comments)]]))))]))
 
 (defsection show-section [Conversation :rdf]
   [item & [page]]
