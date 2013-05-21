@@ -76,7 +76,7 @@
                          (let [resp-str (h/html (:body response))]
                            resp-str => string?)
                          (let [doc (hiccup->doc [:bogus (:body response)])]
-                           (let [elts (select-by-model doc "conversation")]
+                           (let [elts (enlive/select doc [:.conversation-section])]
                              (count elts) => n
 
                              (let [ids (->> elts
