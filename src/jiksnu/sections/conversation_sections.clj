@@ -11,6 +11,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -227,7 +228,7 @@
   [activity]
   (let [author (if *dynamic*
                  (User.)
-                 #_(model.activity/get-author activity))]
+                 (model.activity/get-author activity))]
     [:div.comment {:data-model "activity"}
      [:p
       [:span (when *dynamic*
@@ -245,7 +246,7 @@
 (defsection show-section [Conversation :html]
   [item & [page]]
   (let [about-uri (full-uri item)]
-    [:div
+    [:div.conversation-section
      (merge {:data-model "conversation"}
             (when-not *dynamic*
               {:about about-uri
@@ -253,19 +254,16 @@
      ;; (show-details item page)
      ;; (dump-data)
      (with-page "conversation-' + $data._id() + '"
-       (bind-to "activities"
-         (bind-to "$data.items[0]"
-           (if-let [item (if *dynamic*
-                             (Activity.)
-                             ;; TODO: actually fetch the activity here
-                             nil)]
-             (show-section item)
-             [:p "The parent activity for this conversation could not be found"]))
-         (let [items (if *dynamic*
-                       [(Activity.)]
-                       ;; TODO: Actually fetch the activities here
-                       [])]
-           (when (seq items)
+       (let [items (if *dynamic*
+                     [(Activity.) (Activity.)]
+                     ;; TODO: actually fetch the activity here
+                     (:items (actions.activity/fetch-by-conversation item)))]
+         (bind-to "activities"
+           (if-let [item (first items)]
+             (bind-to "$data.items[0]"
+               (show-section item))
+             [:p "The parent activity for this conversation could not be found"])
+           (when-let [comments (next items)]
              [:section.comments (when *dynamic* {:data-bind "with: $data.items.slice(1)"})
               [:ul.unstyled.comments (when *dynamic* {:data-bind "foreach: $data"})
                (map show-comment items)]]))))]))

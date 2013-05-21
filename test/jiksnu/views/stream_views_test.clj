@@ -64,6 +64,8 @@
                    (db/drop-all!)
                    (let [n 20
                          items (doall (for [i (range n)] (mock/a-conversation-exists)))
+                         activities (doall (for [item items]
+                                             (mock/there-is-an-activity {:conversation item})))
                          request {:action action}
                          response (filter-action action request)]
 
@@ -83,8 +85,9 @@
                                (count ids) => n
                                (doseq [item items]
                                  (let [id (str (:_id item))]
-                                   ids => (contains id))))))))
-                     ))
+                                   ids => (contains id)))))
+                           (let [elts (select-by-model doc "activity")]
+                             (count elts) => n))))))
                  ))
              ))
 

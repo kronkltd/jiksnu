@@ -744,7 +744,7 @@
            (show-section-minimal user)))
        (recipients-section activity)]
       [:div.entry-content
-       (when (:title activity)
+       #_(when (:title activity)
          [:h1.entry-title {:property "dc:title"}
           (:title activity)])
        [:p (merge {:property "dc:title"}

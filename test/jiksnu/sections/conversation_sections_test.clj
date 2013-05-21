@@ -4,7 +4,7 @@
         [ciste.sections.default :only [index-block index-section
                                        show-section uri]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
+        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture select-by-model]]
         jiksnu.sections.conversation-sections
         [midje.sweet :only [fact future-fact => every-checker]])
   (:require [clj-tigase.element :as element]
@@ -90,7 +90,8 @@
                ))
 
            (fact "when given a real conversation"
-             (let [item (mock/a-conversation-exists)]
+             (let [item (mock/a-conversation-exists)
+                   activity (mock/there-is-an-activity {:conversation item})]
 
                (fact "when dynamic is false"
                  (binding [ko/*dynamic* false]
@@ -105,13 +106,14 @@
                          (count doc) => 1
                          doc => (partial every? map?)
 
-                         (let [conv-elts (->> [(enlive/attr= :data-model "conversation")]
-                                              (enlive/select doc))]
+                         (let [conv-elts (enlive/select doc [:.conversation-section])]
                            (count conv-elts) => 1
 
                            (doseq [elt conv-elts]
-                             (get-in elt [:attrs :data-id]) => (str (:_id item)))))))
-                   ))
+                             (get-in elt [:attrs :data-id]) => (str (:_id item))))
+
+                         (let [conv-elts (select-by-model doc "activity")]
+                           (count conv-elts) => 1))))))
                ))
            ))
 

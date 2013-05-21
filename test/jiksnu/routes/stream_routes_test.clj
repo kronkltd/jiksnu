@@ -60,9 +60,10 @@
          (-> (req/request :get "/")
              as-user
              response-for) =>
-             (every-checker
-              map?
-              (comp status/success? :status)))
+             (fn [response]
+               (fact
+                 response => map?
+                 (:status response) => status/success?)))
        ))
    )
 
