@@ -14,5 +14,5 @@
   (if-let [body (:body response)]
     (if-let [xrd (cm/string->document body)]
       (let [links (model.webfinger/get-links xrd)]
-        (log/spy links)))))
+        links))))
 

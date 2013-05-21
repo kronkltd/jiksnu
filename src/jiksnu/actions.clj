@@ -132,8 +132,7 @@
 
       (log/debugf "getting model %s(%s)" model-name id)
       (let [item ((templates/make-fetch-by-id model-name identity) id)]
-        (log/spy :info item)
-        )
+        item)
 
       ;; ))
   )

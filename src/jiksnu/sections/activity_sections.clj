@@ -438,11 +438,11 @@
 
 (defn enclosures-section
   [activity]
-  (when-let [resources (log/spy :info (if *dynamic*
-                          [(Resource.)]
-                          (map
-                           model.resource/fetch-by-id
-                           (log/spy :info (:resources activity)))))]
+  (when-let [resources (if *dynamic*
+                         [(Resource.)]
+                         (map
+                          model.resource/fetch-by-id
+                          (:resources activity)))]
     [:ul.unstyled
      (when *dynamic* {:data-bind "foreach: resources"})
      (map

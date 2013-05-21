@@ -161,7 +161,7 @@
 
 (defn find-or-create-by-remote-id
   [params & [options]]
-  (if-let [id (:id (log/spy params))]
+  (if-let [id (:id params)]
     (if-let [domain (get-domain params)]
       (if-let [domain (if (:discovered domain)
                         domain (actions.domain/discover domain id))]
