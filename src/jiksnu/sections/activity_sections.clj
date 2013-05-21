@@ -21,6 +21,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.like :as model.like]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.rdf :as rdf]
@@ -437,7 +438,11 @@
 
 (defn enclosures-section
   [activity]
-  (when-let [resources (if *dynamic* [(Resource.)] (:resources activity))]
+  (when-let [resources (log/spy :info (if *dynamic*
+                          [(Resource.)]
+                          (map
+                           model.resource/fetch-by-id
+                           (log/spy :info (:resources activity)))))]
     [:ul.unstyled
      (when *dynamic* {:data-bind "foreach: resources"})
      (map
@@ -463,6 +468,15 @@
                     {:data-bind "attr: {src: url}"}
                     {:src (:url resource)}))]]])
       resources)]))
+
+(def post-sections
+  [#'enclosures-section
+   ;; #'links-section
+   #'likes-section
+   #'maps-section
+   #'tags-section
+   #'posted-link-section
+   ])
 
 ;; actions-section
 
@@ -719,15 +733,6 @@
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
 
-(def post-sections
-  [#'enclosures-section
-   ;; #'links-section
-   #'likes-section
-   #'maps-section
-   #'tags-section
-   #'posted-link-section
-   ])
-
 (defsection show-section [Activity :html]
   [activity & _]
   (list
@@ -740,8 +745,8 @@
                 :data-id (:_id activity)}))
       [:header
        (actions-section activity)
-       (bind-to "author"
-         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+       (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
+         (bind-to "author"
            (show-section-minimal user)))
        (recipients-section activity)]
       [:div.entry-content
@@ -751,12 +756,7 @@
         (when-not *dynamic*
           (or (:title activity)
               (:content activity)))]]
-      [:div
-       [:ul.unstyled
-        (map (fn [irt]
-               [:a {:href irt :rel "nofollow"} irt])
-             (:irts activity))]
-       (map #(% activity) post-sections)]])))
+      (map #(% activity) post-sections)])))
 
 (defsection show-section [Activity :model]
   [activity & [page]]
