@@ -71,7 +71,12 @@
                  [slingshot "0.10.3"]
                  [table "0.3.2"]
                  [tigase/tigase-server "5.1.4"]
-                 [net.thegeez/google-closure-library "0.0-1698"]]
+                 [net.thegeez/google-closure-library "0.0-1698"]
+                 [clj-webdriver "0.6.0"]
+                 [xml-apis "1.4.01"]
+                 [org.apache.httpcomponents/httpcore "4.2.3"]
+
+]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [jiksnu.xmpp.plugin
         ;; jiksnu.xmpp.channels
@@ -102,7 +107,7 @@
               :dependencies
               [[midje         "1.5-beta1"]
                [ring-mock     "0.1.3"]
-               [clj-webdriver "0.6.0-alpha11"]]}}
+               ]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
   :plugins [[lein-cljsbuild "0.2.7"]
