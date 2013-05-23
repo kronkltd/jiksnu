@@ -1,13 +1,7 @@
 (ns jiksnu.ops
-  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
-            [clojure.string :as string]
-            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [inflections.core :as inf]
             [jiksnu.channels :as ch]
-            [jiksnu.db :as db]
-            [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [lamina.time :as time]
             [lamina.trace :as trace]))

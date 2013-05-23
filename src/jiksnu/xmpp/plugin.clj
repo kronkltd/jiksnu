@@ -4,7 +4,6 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
             [jiksnu.predicates :as predicates])
   (:import java.util.Queue
            tigase.server.Packet
