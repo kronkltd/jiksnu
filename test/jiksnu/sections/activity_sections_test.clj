@@ -21,7 +21,7 @@
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera.common.iri.IRI
+           org.apache.abdera.i18n.iri.IRI
            org.apache.abdera.model.Entry
            org.apache.abdera.model.Person
            org.joda.time.DateTime
