@@ -5,8 +5,8 @@
                                        show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line dropdown-menu dump-data pagination-links
-                                with-page]])
+                                bind-to control-line display-property dropdown-menu dump-data
+                                pagination-links with-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -62,22 +62,46 @@
   [item]
   (dropdown-menu item (get-buttons)))
 
-;; admin-index-section
-
-;; (defsection admin-index-section [Conversation :html]
-;;   [page]
-;;   (index-section (:items page) page))
-
 ;; admin-index-block
 
 (defsection admin-index-block [Conversation :html]
-  [records & [options & _]]
+  [items & [page]]
   [:table.table
    [:thead
     [:tr
-     [:th "Title"]]]
-   [:tbody
-    (map #(admin-index-line % options) records)]])
+     [:th "Id"]
+     [:th "Domain"]
+     [:th "Url"]
+     #_[:th "Created"]
+     [:th "Last Updated"]
+     [:th "Record Updated"]
+     [:th "Actions"]]]
+   [:tbody {:data-bind "foreach: $data"}
+    (doall (map #(admin-index-line % page) items))]])
+
+;; admin-index-line
+
+(defsection admin-index-line [Conversation :html]
+  [item & [page]]
+  [:tr {:data-model "conversation"}
+   [:td (link-to item)]
+   [:td
+    (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
+      (bind-to "domain"
+        [:div {:data-model "domain"}
+         (link-to domain)]))]
+   [:td
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: url}, text: url"}
+          {:href (:url item)})
+     (when-not *dynamic*
+       (:url item))]]
+   #_[:td (if *dynamic*
+          {:data-bind "text: created"}
+          (:created item))]
+   [:td (display-property item :lastUpdated)]
+   [:td (display-property item :updated)]
+   [:td (actions-section item)]])
 
 ;; delete-button
 
@@ -88,19 +112,17 @@
 ;; link-to
 
 (defsection link-to [Conversation :html]
-  [record & options]
+  [item & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
-          {:href (uri record)})
+          {:href (uri item)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
                      {:data-bind "attr: {about: uri}, text: _id"}
-                     {:about (uri record)}))
+                     {:about (uri item)}))
       (when-not *dynamic*
-        (or (:title options-map) (title record)))]]))
-
-;; index-block
+        (or (:title options-map) (title item)))]]))
 
 ;; index-block
 
@@ -109,55 +131,9 @@
   [:div (when *dynamic* {:data-bind "foreach: $data"})
    (map index-line items)])
 
-;; (defsection index-block [Conversation :html]
-;;   [items & [page]]
-;;   [:table.table
-;;    [:thead
-;;     [:tr
-;;      [:th "Id"]
-;;      [:th "Domain"]
-;;      [:th "Url"]
-;;      #_[:th "Created"]
-;;      [:th "Last Updated"]
-;;      [:th "Record Updated"]
-;;      [:th "Actions"]]]
-;;    [:tbody {:data-bind "foreach: $data"}
-;;     (doall (map #(index-line % page) items))]])
-
 (defsection index-block [Conversation :rdf]
   [items & [response & _]]
   (apply concat (map #(index-line % response) items)))
-
-;; index-line
-
-;; (defsection index-line [Conversation :html]
-;;   [item & [page]]
-;;   [:tr {:data-model "conversation"}
-;;    [:td (link-to item)]
-;;    [:td
-;;     (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
-;;       (bind-to "domain"
-;;         [:div {:data-model "domain"}
-;;          (link-to domain)]))]
-;;    [:td
-;;     [:a (if *dynamic*
-;;           {:data-bind "attr: {href: url}, text: url"})
-;;      (when-not *dynamic*
-;;        (:url item))]]
-;;    #_[:td (if *dynamic*
-;;           {:data-bind "text: created"}
-;;           (:created item))]
-;;    [:td (if *dynamic*
-;;           {:data-bind "text: lastUpdated"}
-;;           (:lastUpdated item))]
-;;    [:td (if *dynamic*
-;;           {:data-bind "text: updated"}
-;;           (:updated item))]
-;;    [:td (actions-section item)]])
-
-;; (defsection index-line [Conversation :html]
-;;   [item & [page]]
-;;   (show-section item page))
 
 ;; index-section
 
@@ -166,10 +142,6 @@
   (let [ids (map :_id items)
         page (actions.activity/fetch-by-conversations ids)]
     (index-block (:items page) page)))
-
-;; (defsection index-section [Conversation :html]
-;;   [items & [page]]
-;;   (index-block items page))
 
 ;; show-section
 
@@ -190,21 +162,22 @@
       [:th "Url"]
       [:td
        [:a (if *dynamic*
-             {:data-bind "attr: {href: url}, text: url"})]]]
+             {:data-bind "attr: {href: url}, text: url"}
+             {:href (:url item)})
+        (when-not *dynamic*
+          (:url item))]]]
      [:tr
       [:th "Created"]
-      [:td (if *dynamic*
-             {:data-bind "text: created"}
-             (:created item))]]
+      [:td (display-property item :created)]]
      [:tr
       [:th "Updated"]
-      [:td (if *dynamic*
-             {:data-bind "text: updated"}
-             (:updated item))]]
+      [:td (display-property item :updated)]]
      [:tr
       [:th "Source"]
       [:td
-       (let [source (if *dynamic* (FeedSource.) (model.feed-source/fetch-by-id (:update-source item)))]
+       (let [source (if *dynamic*
+                      (FeedSource.)
+                      (model.feed-source/fetch-by-id (:update-source item)))]
          (bind-to "$data['update-source']"
            [:div {:data-model "feed-source"} (link-to source)]))]]]])
   )
