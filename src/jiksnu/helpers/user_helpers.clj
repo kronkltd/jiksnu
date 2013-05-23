@@ -9,6 +9,6 @@
             [jiksnu.model.webfinger :as model.webfinger])
   (:import javax.xml.namespace.QName
            jiksnu.model.User
-           org.apache.abdera2.model.Entry
+           org.apache.abdera.model.Entry
            tigase.xml.Element))
 

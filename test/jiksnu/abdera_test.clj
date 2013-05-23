@@ -6,7 +6,7 @@
         [midje.sweet :only [=> every-checker fact]])
   (:require [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName
-           org.apache.abdera2.model.Entry))
+           org.apache.abdera.model.Entry))
 
 (test-environment-fixture
 

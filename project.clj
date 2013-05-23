@@ -18,6 +18,9 @@
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [clj-stacktrace "0.2.5"]
+                 [clj-statsd "0.3.2"]
+                 [clj-http "0.7.2"
+                 ]
                  [clojurewerkz/route-one "1.0.0-SNAPSHOT"]
                  [clojurewerkz/urly "1.0.0"
                   :exclusions [com.google.guava/guava]]
@@ -25,7 +28,6 @@
                  [clojurewerkz/elastisch "1.0.0-beta2"
                   :exclusions [com.google.guava/guava]]
                  [com.stuartsierra/lazytest "1.2.3"]
-                 [clj-statsd "0.3.2"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
                  [clojure-complete "0.2.1"]
                  [clojurewerkz/support "0.7.0-alpha3"
@@ -44,12 +46,9 @@
                  [net.kronkltd/waltz "0.1.2-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [oauthentic "0.0.6"]
-                 [org.apache.abdera2/abdera2-client "2.0-SNAPSHOT"
-                  :exclusions [org.apache.httpcomponents/httpmime
-                               com.google.guava/guava]]
-                 [org.apache.abdera2/abdera2-core "2.0-SNAPSHOT"
-                   :exclusions [xml-apis]]
-                 [org.apache.abdera2/abdera2-ext "2.0-SNAPSHOT"]
+                 [org.apache.abdera/abdera-client "1.1.3"]
+                 ;; [org.apache.abdera/abdera-core "1.1.3"]
+                 ;; [org.apache.abdera/abdera-ext "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.1"]
                  [org.clojars.runa/clj-schema "0.7.1"]
                  [org.clojure/clojure "1.4.0"]
@@ -73,8 +72,8 @@
                  [tigase/tigase-server "5.1.4"]
                  [net.thegeez/google-closure-library "0.0-1698"]
                  [clj-webdriver "0.6.0"]
-                 [xml-apis "1.4.01"]
-                 [org.apache.httpcomponents/httpcore "4.2.3"]
+                 #_[xml-apis "1.4.01"]
+                 #_[org.apache.httpcomponents/httpclient "4.2.5"]
 
 ]
   ;; :exclusions [org.clojure/google-closure-library]

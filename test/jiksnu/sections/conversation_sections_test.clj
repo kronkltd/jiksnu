@@ -18,9 +18,9 @@
             [jiksnu.model.user :as model.user]
             [net.cgrand.enlive-html :as enlive])
   (:import jiksnu.model.Conversation
-           org.apache.abdera2.common.iri.IRI
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.Person
+           org.apache.abdera.common.iri.IRI
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.Person
            org.joda.time.DateTime
            tigase.xml.Element))
 

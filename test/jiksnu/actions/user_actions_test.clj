@@ -24,7 +24,7 @@
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.User
-           org.apache.abdera2.model.Person))
+           org.apache.abdera.model.Person))
 
 (defn mock-user-meta
   [username domain-name uri source-link]

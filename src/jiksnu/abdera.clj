@@ -9,16 +9,16 @@
   (:import java.io.ByteArrayInputStream
            java.net.URI
            javax.xml.namespace.QName
-           org.apache.abdera2.Abdera
-           org.apache.abdera2.ext.thread.ThreadHelper
-           org.apache.abdera2.factory.Factory
-           org.apache.abdera2.model.Element
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.ExtensibleElement
-           org.apache.abdera2.model.Feed
-           org.apache.abdera2.model.Link
-           org.apache.abdera2.model.Person
-           org.apache.abdera2.protocol.client.AbderaClient
+           org.apache.abdera.Abdera
+           ;; org.apache.abdera.ext.thread.ThreadHelper
+           org.apache.abdera.factory.Factory
+           org.apache.abdera.model.Element
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.ExtensibleElement
+           org.apache.abdera.model.Feed
+           org.apache.abdera.model.Link
+           org.apache.abdera.model.Person
+           org.apache.abdera.protocol.client.AbderaClient
            org.apache.axiom.util.UIDGenerator))
 
 (declare make-link)
@@ -133,7 +133,7 @@
 (defn parse-irts
   "Get the in-reply-to uris"
   [^Entry entry]
-  (->> (ThreadHelper/getInReplyTos entry)
+  (->> [] #_(ThreadHelper/getInReplyTos entry)
        (map #(str (.getHref %)))
        (filter identity)))
 

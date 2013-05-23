@@ -16,7 +16,7 @@
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             jiksnu.views.stream-views)
-  (:import org.apache.abdera2.model.Entry))
+  (:import org.apache.abdera.model.Entry))
 
 (test-environment-fixture
 

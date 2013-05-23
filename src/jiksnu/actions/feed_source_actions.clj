@@ -33,7 +33,7 @@
   (:import java.net.URI
            jiksnu.model.FeedSource
            jiksnu.model.User
-           org.apache.abdera2.model.Feed))
+           org.apache.abdera.model.Feed))
 
 (defonce pending-discovers (ref {}))
 

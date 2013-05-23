@@ -14,7 +14,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription])
-  (:import org.apache.abdera2.model.Entry))
+  (:import org.apache.abdera.model.Entry))
 
 (test-environment-fixture
 

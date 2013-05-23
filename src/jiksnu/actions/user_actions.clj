@@ -41,7 +41,7 @@
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
            jiksnu.model.User
-           org.apache.abdera2.model.Person
+           org.apache.abdera.model.Person
            tigase.xmpp.JID))
 
 (defonce delete-hooks (ref []))

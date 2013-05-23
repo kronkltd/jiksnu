@@ -38,7 +38,7 @@
            jiksnu.model.FeedSource
            jiksnu.model.Key
            jiksnu.model.User
-           org.apache.abdera2.model.Entry))
+           org.apache.abdera.model.Entry))
 
 (defn user-timeline-link
   [user format]

@@ -28,8 +28,8 @@
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.Element))
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.Element))
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
 

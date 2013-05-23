@@ -36,8 +36,8 @@
            jiksnu.model.Activity
            jiksnu.model.Resource
            jiksnu.model.User
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.ExtensibleElement))
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.ExtensibleElement))
 
 (defn like-button
   [activity]
