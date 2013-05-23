@@ -77,10 +77,6 @@
 
 ;; Entity predicates
 
-(defn activity?
-  [activity]
-  (instance? Activity activity))
-
 (defn domain?
   [domain]
   (instance? Domain domain))

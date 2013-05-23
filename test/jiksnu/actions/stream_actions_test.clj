@@ -17,7 +17,8 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Conversation))
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation))
 
 (test-environment-fixture
 
@@ -65,7 +66,7 @@
                                         :href (:topic source)}]
                                       :entries (index-section [activity])})]
          (actions.feed-source/add-watcher source user)
-         activity => model/activity?
+         activity => (partial instance? Activity)
          (callback-publish feed)
          (model.activity/fetch-by-remote-id (:id activity)) => truthy))))
 

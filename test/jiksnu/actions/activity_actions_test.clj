@@ -12,7 +12,8 @@
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]))
+            [jiksnu.model.activity :as model.activity])
+  (:import jiksnu.model.Activity))
 
 (test-environment-fixture
 
@@ -36,13 +37,13 @@
      (fact "should return an Activity"
        (with-context [:http :atom]
          (let [entry (show-section (factory :activity {:author (:_id user)}))]
-           (entry->activity entry) => model/activity?)))
+           (entry->activity entry) => (partial instance? Activity))))
 
      (future-fact "when coming from an identi.ca feed"
        (fact "should parse the published field"
          (let [feed (abdera/load-file "identica-update.xml")
                entry (first (abdera/get-entries feed))]
-           (entry->activity entry) => model/activity?)))))
+           (entry->activity entry) => (partial instance? Activity))))))
 
  (fact "#'find-by-user"
    (fact "when the user has activities"
@@ -56,7 +57,7 @@
           (fact
             (:total-records response) => 1
             (count (:items response)) => 1
-            (:items response) => (partial every? model/activity?)))))))
+            (:items response) => (partial every? (partial instance? Activity))))))))
 
  (fact "#'create"
    (fact "when the user is logged in"
@@ -70,7 +71,7 @@
                                             :conversation  (:_id conversation)
                                             :update-source (:_id feed-source)
                                             :local         true})]
-           (create activity) => model/activity?)))))
+           (create activity) => (partial instance? Activity))))))
 
  (fact "#'post"
    (fact "when the user is not logged in"

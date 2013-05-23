@@ -30,7 +30,7 @@
                                        :id id
                                        :local false
                                        :update-source (:_id feed-source)}))]
-     (create activity) => model/activity?))
+     (create activity) => (partial instance? Activity)))
 
  (fact "#'get-author"
 
