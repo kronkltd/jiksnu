@@ -2,9 +2,9 @@
   (:use [clj-factory.core :only [fseq]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [midje.sweet :only [=> every-checker fact]])
-  (:require [jiksnu.mock :as mock]
-           )
+  (:require [jiksnu.mock :as mock])
   (:import
+   jiksnu.model.Activity
    jiksnu.model.Domain
    jiksnu.model.Resource
    jiksnu.model.User
@@ -17,6 +17,10 @@
  ))
 
 (test-environment-fixture
+
+ (fact "#'activity-gets-posted"
+   (mock/activity-gets-posted) => (partial instance? Activity)
+   )
 
  (fact
 

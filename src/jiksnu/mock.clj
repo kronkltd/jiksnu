@@ -151,7 +151,7 @@
                    (get-this :feed-source)
                    (a-feed-source-exists (select-keys options #{:local})))
         activity (actions.activity/post (factory :activity
-                                                 {:update-source source}))]
+                                                 {:update-source (:_id source)}))]
     (set-this :activity activity)
     activity))
 
