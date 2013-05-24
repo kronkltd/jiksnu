@@ -24,7 +24,7 @@
                  ;;  :exclusions [com.google.guava/guava]]
                  ;; [com.stuartsierra/lazytest "1.2.3"]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
-                 ;; [clojure-complete "0.2.1"]
+                 [clojure-complete "0.2.3"]
                  [clojurewerkz/support "0.16.0"]
                  ;; [com.cemerick/friend "0.0.9"]
                  [com.novemberain/monger "1.6.0-beta2"]

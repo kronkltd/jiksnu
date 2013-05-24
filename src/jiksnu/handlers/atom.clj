@@ -2,6 +2,7 @@
   (:use [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
+            [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -17,7 +18,7 @@
     (if-let [feed (abdera/parse-xml-string (:body response))]
       (let [feed-updated (abdera/get-feed-updated feed)
             source-updated (:updated source)]
-        (if (time/after? feed-updated source-updated)
+        (if (time/after? (coerce/to-date-time feed-updated) (coerce/to-date-time source-updated))
           (actions.feed-source/process-feed source feed)
           (log/warn "feed is up to date")))
       (throw+ "could not obtain feed"))))

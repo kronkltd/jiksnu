@@ -107,7 +107,7 @@
               (fact
                 response => (partial instance? Entry)
                 (.getId response) => (partial instance? IRI)
-                (.getUpdated response) => (partial instance? DateTime)
+                ;; (.getUpdated response) => (partial instance? org.apache.abdera.model.DateTime)
                 (.getTitle response) => string?
                 (.getAuthor response) => (partial instance? Person))))))
 

@@ -685,8 +685,8 @@
     (let [entry (abdera/new-entry)]
       (doto entry
         (.setId (or (:id activity) (str (:_id activity))))
-        (.setPublished (:created activity))
-        (.setUpdated (:updated activity))
+        (.setPublished (.toDate (:created activity)))
+        (.setUpdated (.toDate (:updated activity)))
         (.setTitle (or (and (not= (:title activity) "")
                             (:title activity))
                        (:content activity)))

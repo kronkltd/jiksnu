@@ -8,6 +8,7 @@
   (:require [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
+            [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -125,7 +126,7 @@
     (let [last-updated (:lastUpdated item)]
       (if (or (:force options)
               (nil? last-updated)
-              (time/after? (-> 5 time/minutes time/ago) last-updated))
+              (time/after? (-> 5 time/minutes time/ago) (coerce/to-date-time last-updated)))
         (let [url (:url item)]
           (log/debugf "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
