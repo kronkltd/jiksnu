@@ -102,7 +102,9 @@
     :title "Public Timeline"
     :totalItems (:total-records page)
     :items
-    (index-section items page)}})
+    (let [activity-page (actions.activity/fetch-by-conversations
+                         (map :_id items))]
+      (index-section (:items activity-page) activity-page))}})
 
 (defview #'public-timeline :atom
   [request {:keys [items] :as page}]
@@ -123,7 +125,9 @@
 
 (defview #'public-timeline :json
   [request {:keys [items] :as page}]
-  {:body (index-section items page)})
+  {:body (let [activity-page (actions.activity/fetch-by-conversations
+                         (map :_id items))]
+      (index-section (:items activity-page) activity-page))})
 
 (defview #'public-timeline :html
   [request {:keys [items] :as page}]

@@ -581,7 +581,7 @@
 
 (defsection index-block [Activity]
   [items & [page]]
-  (map #(index-line % page) items))
+  (doall (map #(index-line % page) items)))
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
