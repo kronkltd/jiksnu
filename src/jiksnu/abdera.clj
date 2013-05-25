@@ -3,6 +3,7 @@
         [clojure.core.incubator :only [-?>]])
   (:require [clj-statsd :as s]
             [clj-tigase.element :as element]
+            [clj-time.coerce :as coerce]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [lamina.trace :as trace])
@@ -248,7 +249,7 @@
       (let [{:keys [uri name version]} generator]
         (.setGenerator feed uri name version)))
     (when id (.setId feed id))
-    (when updated (.setUpdated feed updated))
+    (when updated (.setUpdated feed (coerce/to-date updated)))
     (when author (.addExtension feed author))
     (doseq [link links]
       (add-link feed link))
