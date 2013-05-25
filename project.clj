@@ -43,7 +43,7 @@
                  ;; [org.apache.abdera/abdera-core "1.1.3"]
                  ;; [org.apache.abdera/abdera-ext "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.3"]
-                 [org.clojars.runa/clj-schema "0.9.3"]
+                 ;; [org.clojars.runa/clj-schema "0.9.3"]
                  [org.clojure/clojure "1.5.0"]
                  ;; [org.clojure/core.cache "0.5.0"]
                  [org.clojure/tools.logging "0.2.3"]
