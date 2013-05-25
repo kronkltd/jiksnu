@@ -36,14 +36,16 @@
      ;; TODO: Load elements from resources
      (fact "should return an Activity"
        (with-context [:http :atom]
-         (let [entry (show-section (factory :activity {:author (:_id user)}))]
+         (let [activity (mock/there-is-an-activity {:user user})
+               entry (show-section activity)]
            (entry->activity entry) => (partial instance? Activity))))
 
      (future-fact "when coming from an identi.ca feed"
        (fact "should parse the published field"
          (let [feed (abdera/load-file "identica-update.xml")
                entry (first (abdera/get-entries feed))]
-           (entry->activity entry) => (partial instance? Activity))))))
+           (entry->activity entry) => (partial instance? Activity))))
+     ))
 
  (fact "#'find-by-user"
    (fact "when the user has activities"

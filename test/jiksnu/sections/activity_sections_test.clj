@@ -101,15 +101,29 @@
        (fact "when the format is :atom"
          (with-format :atom
 
-          (let [activity (mock/there-is-an-activity)]
-            (show-section activity) =>
-            (fn [response]
-              (fact
-                response => (partial instance? Entry)
-                (.getId response) => (partial instance? IRI)
-                ;; (.getUpdated response) => (partial instance? org.apache.abdera.model.DateTime)
-                (.getTitle response) => string?
-                (.getAuthor response) => (partial instance? Person))))))
+           (fact "when given a real activity"
+             (let [activity (mock/there-is-an-activity)]
+               (show-section activity) =>
+               (fn [response]
+                 (fact
+                   response => (partial instance? Entry)
+                   (.getId response) => (partial instance? IRI)
+                   ;; (.getUpdated response) => (partial instance? org.apache.abdera.model.DateTime)
+                   (.getTitle response) => string?
+                   (.getAuthor response) => (partial instance? Person)))))
+
+           (fact "when given a partial activity"
+             (let [activity (factory :activity)]
+               (show-section activity) =>
+               (fn [response]
+                 (fact
+                   response => (partial instance? Entry)
+
+                   )
+                 )
+               )
+             )
+           ))
 
        (fact "when the format is :html"
          (with-format :html

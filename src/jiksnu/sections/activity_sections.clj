@@ -683,10 +683,12 @@
   [^Activity activity & _]
   (if-let [user (model.activity/get-author activity)]
     (let [entry (abdera/new-entry)]
+      (when-let [created (:created activity)]
+        (.setPublished entry (.toDate created)))
+      (when-let [updated (:updated activity)]
+        (.setUpdated entry (.toDate updated)))
       (doto entry
         (.setId (or (:id activity) (str (:_id activity))))
-        (.setPublished (.toDate (:created activity)))
-        (.setUpdated (.toDate (:updated activity)))
         (.setTitle (or (and (not= (:title activity) "")
                             (:title activity))
                        (:content activity)))
