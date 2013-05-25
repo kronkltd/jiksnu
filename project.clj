@@ -28,6 +28,7 @@
                  [clojurewerkz/support "0.16.0"]
                  ;; [com.cemerick/friend "0.0.9"]
                  [com.novemberain/monger "1.6.0-beta2"]
+                 [com.novemberain/validateur "1.4.0"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.3"]
                  [jayq "2.3.0"]
