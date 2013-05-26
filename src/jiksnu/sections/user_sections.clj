@@ -597,9 +597,9 @@
   [user & _]
   (let [{:keys [url display-name avatar-url first-name
                 last-name username name email]} user
-                mkp (try (model.key/get-key-for-user user)
-                         (catch Exception ex
-                           (trace/trace "errors:handled" ex)))
+                mkp (try+ (model.key/get-key-for-user user)
+                          (catch Exception ex
+                            (trace/trace "errors:handled" ex)))
                 document-uri (str (full-uri user) ".rdf")
                 user-uri (plaza/rdf-resource (str (full-uri user) "#me"))
                 acct-uri (plaza/rdf-resource (model.user/get-uri user))]

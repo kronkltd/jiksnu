@@ -13,6 +13,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.actions :as actions]
             [jiksnu.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
@@ -35,6 +36,7 @@
   ["activity"
    "auth"
    "comment"
+   "confirm"
    "conversation"
    "domain"
    "favorite"

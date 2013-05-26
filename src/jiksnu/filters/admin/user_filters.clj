@@ -2,7 +2,8 @@
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.admin.user-actions
-        [jiksnu.filters :only [parse-page parse-sorting]])
+        [jiksnu.filters :only [parse-page parse-sorting]]
+        [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
@@ -23,6 +24,6 @@
 (deffilter #'show :http
   [action request]
   (if-let [id (-?> request :params :id)]
-    (if-let [obj-id (try (util/make-id id) (catch RuntimeException ex))]
+    (if-let [obj-id (try+ (util/make-id id) (catch RuntimeException ex))]
       (if-let [record (model.user/fetch-by-id obj-id)]
         (action record)))))

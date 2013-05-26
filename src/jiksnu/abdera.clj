@@ -1,6 +1,7 @@
 (ns jiksnu.abdera
   (:use [ciste.initializer :only [definitializer]]
-        [clojure.core.incubator :only [-?>]])
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [try+]])
   (:require [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clj-time.coerce :as coerce]
@@ -103,8 +104,9 @@
 (defn parse-link
   "Returns a map representing the link element"
   [^Link link]
-  (let [type (try (str (.getMimeType link)) (catch Exception ex
-                                              (trace/trace "errors:handled" ex)))
+  (let [type (try+ (str (.getMimeType link))
+                   (catch Exception ex
+                     (trace/trace "errors:handled" ex)))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))

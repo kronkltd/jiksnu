@@ -173,7 +173,7 @@
   [^User user]
   (if (:discovered user)
     (get-key-for-user-id (:_id user))
-    (throw+ "user is not discovered")))
+    (throw+ {:message "user is not discovered"})))
 
 ;; TODO: this should accept a keypair hash
 (defn set-armored-key

@@ -4,9 +4,11 @@
         [ciste.core :only [defaction with-serialization]]
         [ciste.filters :only [deffilter filter-action]]
         [ciste.routes :only [resolve-routes]]
+        [ciste.sections.default :only [link-to]]
         [ciste.views :only [defview]]
         [clojure.core.incubator :only [dissoc-in]]
-        [clojure.data.json :only [read-json]])
+        [clojure.data.json :only [read-json]]
+        [slingshot.slingshot :only [try+]])
   (:require #_[clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.data.json :as json]
@@ -46,9 +48,11 @@
 
 (defn handle-errors
   [ex]
-  (let [data (if (instance? ExceptionInfo ex)
+  (log/spy :info (class ex))
+  (let [data (if (instance? ExceptionInfo (log/spy :info ex))
                (.getData ex) {})]
-    (.printStackTrace ex)
+    (log/error ex)
+    #_(.printStackTrace ex)
     #_(airbrake/notify
        "d61e18dac7af78220e52697e5b08dd5a"
        (name @*environment*)
@@ -126,16 +130,13 @@
 
 (defaction get-model
   [model-name id]
-  ;; (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
-  ;;   (require action-ns)
-  ;;   (let [maker (ns-resolve action-ns 'maker)]
-
+  (let [model-ns (symbol (str "jiksnu.model." model-name))]
+    (log/spy :info model-ns)
+    (require model-ns)
+    (let [fetcher (ns-resolve model-ns 'fetch-by-id)]
       (log/debugf "getting model %s(%s)" model-name id)
-      (let [item ((templates/make-fetch-by-id model-name identity) id)]
-        item)
-
-      ;; ))
-  )
+      (let [item ((log/spy :info fetcher) id)]
+        item))))
 
 (deffilter #'get-model :command
   [action request]
@@ -150,6 +151,28 @@
 
 (add-command! "get-model" #'get-model)
 
+(defaction confirm
+  [action model id]
+  (when-let [item (log/spy :info (get-model (log/spy :info model) (log/spy :info id)))]
+    {:item item
+     :action action}))
+
+(deffilter #'confirm :http
+  [action request]
+  (let [params (:params request)]
+    (action (:action params)
+            (:model params)
+            (:id params))))
+
+(defview #'confirm :html
+  [request response]
+  {:body
+   [:div
+    [:p "Confirm"]
+    (link-to (:item response))
+    ]
+
+   })
 
 (defn all-channels
   []

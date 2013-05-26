@@ -45,11 +45,7 @@
                                :per-page (:page-size options 20)))]
     (map maker records)))
 
-(defn fetch-by-id
-  [id]
-  (s/increment (str collection-name "_fetched"))
-  (when-let [item (mc/find-map-by-id collection-name id)]
-    (maker item)))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
 
 (def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 

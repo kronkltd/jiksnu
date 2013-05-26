@@ -1,7 +1,8 @@
 (ns jiksnu.filters.activity-filters
   (:use [ciste.config :only [config]]
         [ciste.filters :only [deffilter]]
-        jiksnu.actions.activity-actions)
+        jiksnu.actions.activity-actions
+        [slingshot.slingshot :only [try+]])
   (:require [aleph.http :as http]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -26,9 +27,9 @@
 
 (deffilter #'delete :http
   [action request]
-  (if-let [id (try (-> request :params :id util/make-id)
-                   (catch RuntimeException ex
-                     (trace/trace "errors:handled" ex)))]
+  (if-let [id (try+ (-> request :params :id util/make-id)
+                    (catch RuntimeException ex
+                      (trace/trace "errors:handled" ex)))]
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 

@@ -8,7 +8,7 @@
         [lamina.core :only [read-channel*]]
         [midje.sweet :only [=> =not=> checker contains defchecker fact
                             future-fact truthy]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
             [clojure.data.json :as json]
@@ -153,9 +153,9 @@
   [button-name]
   (if-let [user (get-that :user)]
     (check-response
-     (try (webdriver/find-element-under (format "*[data-id='%s']" (str (:_id user)))
-                                        (webdriver.core/by-class-name (str button-name "-button")))
-          (catch NoSuchElementException ex nil)) =not=> truthy)
+     (try+ (webdriver/find-element-under (format "*[data-id='%s']" (str (:_id user)))
+                                         (webdriver.core/by-class-name (str button-name "-button")))
+           (catch NoSuchElementException ex nil)) =not=> truthy)
     (throw+ "no 'that' user")))
 
 (defn should-see-subscription-list
@@ -191,8 +191,8 @@
     (check-response
      (let [ns-str (str "jiksnu.model." (name type) "/fetch-by-id")
            find-fn (resolve (symbol ns-str))]
-       (try (find-fn (:_id record))
-            (catch RuntimeException ex nil)) =not=> truthy))
+       (try+ (find-fn (:_id record))
+             (catch RuntimeException ex nil)) =not=> truthy))
     (throw+ (format "Could not find 'that' record for %s" type))))
 
 (defn this-type-should-be-deleted
@@ -201,8 +201,8 @@
     (check-response
      (let [ns-str (str "jiksnu.model." (name type) "/fetch-by-id")
            find-fn (resolve (symbol ns-str))]
-       (try (find-fn (:_id record))
-            (catch RuntimeException ex nil)) =not=> truthy))
+       (try+ (find-fn (:_id record))
+             (catch RuntimeException ex nil)) =not=> truthy))
     (throw+ (format "Could not find 'this' record for %s" type))))
 
 (defn domain-should-be-deleted

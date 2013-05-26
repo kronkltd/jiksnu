@@ -2,7 +2,7 @@
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.resource-actions
         [jiksnu.filters :only [parse-page parse-sorting]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
@@ -20,7 +20,7 @@
 
 (deffilter #'delete :command
   [action id]
-  (when-let [obj-id (try (util/make-id id) (catch RuntimeException _))]
+  (when-let [obj-id (try+ (util/make-id id) (catch RuntimeException _))]
     (when-let [item (model.resource/fetch-by-id obj-id)]
       (action item))))
 
@@ -57,7 +57,7 @@
 
 (deffilter #'update* :command
   [action id]
-  (when-let [obj-id (try (util/make-id id) (catch RuntimeException _))]
+  (when-let [obj-id (try+ (util/make-id id) (catch RuntimeException _))]
     (when-let [item (model.resource/fetch-by-id obj-id)]
       (action item))))
 
