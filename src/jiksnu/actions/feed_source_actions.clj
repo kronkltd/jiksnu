@@ -50,7 +50,7 @@
       transforms.feed-source/set-local
       transforms.feed-source/set-hub
       transforms.feed-source/set-status
-      transforms.feed-source/set-resource
+      ;; transforms.feed-source/set-resource
       transforms/set-no-links))
 
 (def index*
@@ -115,7 +115,7 @@
 
 (defn find-by-resource
   [resource]
-  (model.feed-source/find-record {:resource (:_id resource)}))
+  (model.feed-source/find-record {:url (:url resource)}))
 
 (defaction index
   [& options]

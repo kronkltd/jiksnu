@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
-        [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
@@ -11,12 +10,9 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [lamina.core :as l]
             [lamina.trace :as trace])
   (:import java.net.URI))
 
@@ -41,7 +37,7 @@
   (if (seq (:url activity))
     activity
     (if (:local activity)
-      (assoc activity :url (named-url "show activity" {:id (:_id activity)}))
+      (assoc activity :url (r/named-url "show activity" {:id (:_id activity)}))
       (throw+ "Could not determine activity url"))))
 
 (defn set-object-type
@@ -62,13 +58,12 @@
   (if (empty? (:parent params))
     (let [params (dissoc params :parent)]
       (if-let [uri (:parent-uri params)]
-        (let [resource (actions.resource/find-or-create {:url uri})]
-          (if-let [parent (model.activity/fetch-by-remote-id uri)]
-            (assoc params :parent (:_id parent))
-            (do
-              (actions.resource/update* resource)
-              params))
-          params)
+        (if-let [parent (model.activity/fetch-by-remote-id uri)]
+          (assoc params :parent (:_id parent))
+          (let [resource (actions.resource/find-or-create {:url uri})]
+            ;; TODO: This isn't actually setting the parent
+            (actions.resource/update* resource)
+            params))
         params))
     params))
 
