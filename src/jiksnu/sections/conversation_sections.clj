@@ -154,7 +154,7 @@
      [:tr
       [:th "Domain"]
       [:td
-       (let [domain (if *dynamic* (Domain.) (model.feed-source/fetch-by-id (:domain item)))]
+       (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
          (bind-to "domain"
            [:div {:data-model "domain"}
             (link-to domain)]))]]
@@ -257,3 +257,8 @@
   [item & _]
   (action-link "conversation" "update" (:_id item)))
 
+;; uri
+
+(defsection uri [Conversation]
+  [item & _]
+  (format "/main/conversations/%s" (:_id item)))
