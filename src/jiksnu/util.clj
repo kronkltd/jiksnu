@@ -156,10 +156,8 @@
   ([id ^PrintWriter out escape-unicode]
      (.print out (str "\"" id "\""))))
 
-(extend Date json/Write-JSON
-        {:write-json write-json-date})
-(extend ObjectId json/Write-JSON
-        {:write-json write-json-object-id})
+(extend Date json/JSONWriter {:-write write-json-date})
+(extend ObjectId json/JSONWriter {:-write write-json-object-id})
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and

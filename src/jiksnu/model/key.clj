@@ -1,6 +1,6 @@
 (ns jiksnu.model.key
   (:use [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
@@ -173,7 +173,13 @@
   [^User user]
   (if (:discovered user)
     (get-key-for-user-id (:_id user))
-    (throw+ {:message "user is not discovered"})))
+    (try+
+     (throw+ {:message "user is not discovered"})
+     (catch Object ex
+             (log/spy :info &throw-context)
+             (throw+)
+       )
+     )))
 
 ;; TODO: this should accept a keypair hash
 (defn set-armored-key

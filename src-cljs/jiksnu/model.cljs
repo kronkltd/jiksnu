@@ -130,7 +130,13 @@
     "idAttribute" "_id"
     "fetch" (fn []
               (this-as this
-                (ws/send "get-model" (.-type this) (.-id this))))
+                (let [model-name (first
+                                  (first
+                                   (filter
+                                    (fn [[_ _ class-name]]
+                                      (= class-name (.-type this)))
+                                    names)))]
+                  (ws/send "get-model" model-name (.-id this)))))
     "url" (fn [] (this-as this
                    (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
 

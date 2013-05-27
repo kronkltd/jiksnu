@@ -573,12 +573,14 @@
          (link-to source) ]))
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-    (if-let [key (if *dynamic*
-                   (Key.)
-                   (try+  (model.key/get-key-for-user user)
-                          (catch Object ex
-                            (trace/trace "errors:handled" ex))))]
-      (show-section key))]))
+    (when (:discovered user)
+      (if-let [key (if *dynamic*
+                     (Key.)
+                     (try+  (model.key/get-key-for-user user)
+                            (catch Object ex
+                              (trace/trace "errors:handled" ex)
+                              nil)))]
+               (show-section key)))]))
 
 (defsection show-section [User :json]
   [user & _]

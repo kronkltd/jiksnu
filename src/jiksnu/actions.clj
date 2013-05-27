@@ -24,7 +24,7 @@
 
 (defaction invoke-action
   [model-name action-name id]
-  (try
+  (try+
     (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
       (require action-ns)
 
@@ -44,6 +44,7 @@
           {:message "action not found"
            :action "error"})))
     (catch RuntimeException ex
+      (log/spy :info &throw-context)
       (trace/trace "errors:handled" ex))))
 
 (defn handle-errors

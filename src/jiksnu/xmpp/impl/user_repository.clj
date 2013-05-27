@@ -2,7 +2,8 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
-        jiksnu.xmpp.user-repository)
+        jiksnu.xmpp.user-repository
+        [slingshot.slingshot :only [try+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clojure.stacktrace :as stacktrace]
@@ -97,12 +98,13 @@
 (defn handle-get-data
   [[result [^BareJID user-id ^String subnode ^String key ^String def]]]
   (deliver result
-           (try
+           (try+
              (log/infof "get data - %s - %s" subnode key)
              (let [user (find-user user-id)
                    ks (key-seq subnode key)]
                (get-data user ks def))
              (catch Exception ex
+               (log/spy :info &throw-context)
                (trace/trace "errors:handled" ex)))))
 
 (defn handle-user-exists
