@@ -43,16 +43,19 @@
 
 (defn set-model
   [model-name id data]
-  (if-let [coll (.get _model model-name)]
-    (if-let [m (.get coll id)]
-      (do
-        (.set m data)
-        (let [om (aget observables model-name)]
-          (let [o (.viewModel js/kb m)]
-            ;; cache it for the object model
-            (aset om id o)
-            o))))
-    (log/fine (str "no collection named: " model-name))))
+  (if-let [coll-name (collection-name model-name)]
+    (if-let [coll (.get _model coll-name)]
+      (if-let [m (.get coll id)]
+        (do
+          (.set m data)
+          (if-let [om (aget observables coll-name)]
+            (let [o (.viewModel js/kb m)]
+              ;; cache it for the object model
+              (aset om id o)
+              o)
+            (log/warn (str "Could not find observable model for: " coll-name)))))
+      (log/fine (str "no collection named: " coll-name)))
+    (log/warn (str "Could find collection for: " model-name))))
 
 (defn load-model
   "Load the model from the server"

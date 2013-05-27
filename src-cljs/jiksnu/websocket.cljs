@@ -1,6 +1,5 @@
 (ns jiksnu.websocket
-  (:use [jayq.core :only [$ css inner prepend text]]
-        [jayq.util :only [clj->js]])
+  (:use [jayq.core :only [$ css inner prepend text]])
   (:require [clojure.string :as string]
             [goog.events :as events]
             [goog.net.WebSocket :as websocket]
