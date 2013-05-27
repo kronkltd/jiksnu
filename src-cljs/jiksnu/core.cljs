@@ -1,6 +1,5 @@
 (ns jiksnu.core
-  (:use [jayq.core :only [$]]
-        [jayq.util :only [clj->js]])
+  (:use [jayq.core :only [$]])
   (:require [jiksnu.handlers :as handlers]
             [jiksnu.ko :as ko]
             [clojure.string :as string]

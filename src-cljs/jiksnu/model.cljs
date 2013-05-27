@@ -1,5 +1,4 @@
 (ns jiksnu.model
-  (:use [jayq.util :only [clj->js]])
   (:require [jiksnu.backbone :as backbone]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as jl]

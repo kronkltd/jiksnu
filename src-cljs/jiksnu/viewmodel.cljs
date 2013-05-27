@@ -1,6 +1,5 @@
 (ns jiksnu.viewmodel
-  (:use [jayq.util :only [clj->js]]
-        [jiksnu.model :only [_model _view class-names model-names]])
+  (:use [jiksnu.model :only [_model _view class-names model-names]])
   (:require [lolg :as log]
             [jiksnu.model :as model]))
 

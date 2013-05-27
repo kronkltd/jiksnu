@@ -1,5 +1,4 @@
-(ns jiksnu.logging
-  (:use [jayq.util :only [clj->js]]))
+(ns jiksnu.logging)
 
 (def console js/console)
 
