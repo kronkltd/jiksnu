@@ -110,6 +110,7 @@
 (defn get-page
   "Returns the page for the name from the view's page info"
   [name]
+  (log/info *logger* (str "getting page: " name))
   (first (.filter (.pages _view)
             (fn [x]
               (if (= (.id x) name)

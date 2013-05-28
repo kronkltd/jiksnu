@@ -47,6 +47,7 @@
 
 (defn modelInit
   [element value-accessor all-bindings data context]
+  (log/info "initializing model")
   (let [properties (value-accessor)
         model-name (model/collection-name (.-type properties))
         model-ob (model/get-model model-name data)
@@ -107,6 +108,7 @@
   (.addClass ($ :html) "bound")
 
   (.fitVids ($ ".video-embed"))
+
   #_(stats/fetch-statistics model/_view))
 
 (main)
