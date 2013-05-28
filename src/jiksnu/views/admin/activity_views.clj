@@ -15,7 +15,7 @@
    :single true
    :body
    (let [activities (if *dynamic* [(Activity.)] items)]
-     (with-page "default"
+     (with-page "activities"
        (pagination-links response)
        (bind-to "items"
          (admin-index-section activities response))))})

@@ -34,7 +34,7 @@
   [request {:keys [items] :as response}]
   {:title "Groups"
    :body
-   (with-page "default"
+   (with-page "groups"
      (let [items (if *dynamic* [(Group.)] items)]
        (list
         (pagination-links response)

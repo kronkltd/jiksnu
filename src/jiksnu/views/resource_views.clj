@@ -34,7 +34,7 @@
    :single true
    :body
    (let [items (if *dynamic* [(Resource.)] items)]
-     (with-page "default"
+     (with-page "resources"
        (pagination-links page)
        (bind-to "items"
          (doall (index-section items page)))))})

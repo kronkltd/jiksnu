@@ -21,7 +21,7 @@
   {:title "Feed Sources"
    :body
    (let [items (if *dynamic* [(FeedSource.)] items)]
-     (with-page "default"
+     (with-page "feed-sources"
        (pagination-links page)
        (bind-to "items"
          (doall (index-section items page)))))})

@@ -18,7 +18,7 @@
   {:single true
    :title "Users"
    :body
-   (with-page "default"
+   (with-page "users"
      (pagination-links page)
      (bind-to "items"
        (admin-index-section items page)))})

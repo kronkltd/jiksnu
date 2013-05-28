@@ -91,7 +91,7 @@
    :single true
    :body
    (let [domains (if *dynamic* [(Domain.)] items)]
-     (with-page "default"
+     (with-page "domains"
        (pagination-links page)
        (bind-to "items"
          (index-section domains page))))})

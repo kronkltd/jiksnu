@@ -111,10 +111,12 @@
   "Returns the page for the name from the view's page info"
   [name]
   (log/info *logger* (str "getting page: " name))
-  (first (.filter (.pages _view)
-            (fn [x]
-              (if (= (.id x) name)
-                x)))))
+  (if-let [page (first (.filter (.pages _view)
+                             (fn [x]
+                               (if (= (.id x) name)
+                                 x))))]
+    (jl/spy page)
+    (log/warn *logger* (str "Could not find page: " name))))
 
 (defn initializer
   "used for logging initialization of a model"

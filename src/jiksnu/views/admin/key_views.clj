@@ -7,7 +7,7 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:body
-   (with-page "default"
+   (with-page "keys"
      (list
       (pagination-links response)
       (admin-index-section items response)))

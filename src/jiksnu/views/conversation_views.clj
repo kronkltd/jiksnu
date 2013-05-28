@@ -22,7 +22,7 @@
    (let [items (if *dynamic*
                  [(Conversation.)]
                  items)]
-     (with-page "default"
+     (with-page "conversations"
        (pagination-links page)
        (bind-to "items"
          (doall (index-section items page)))))})

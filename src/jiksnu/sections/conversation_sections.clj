@@ -224,7 +224,7 @@
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
-     ;; (show-details item page)
+     (show-details item page)
      ;; (dump-data)
      (with-page "conversation-' + $data._id() + '"
        (let [items (if *dynamic*

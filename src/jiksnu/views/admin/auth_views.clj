@@ -14,7 +14,7 @@
   [request {:keys [items] :as response}]
   {:title "Authentication Mechanisms"
    :single true
-   :body (with-page "default"
+   :body (with-page "mechanisms"
            (pagination-links response)
            (bind-to "items"
              (admin-index-section (if *dynamic*

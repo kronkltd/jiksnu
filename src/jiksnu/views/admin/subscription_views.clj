@@ -29,7 +29,7 @@
   {:title "Subscriptions"
    :single true
    :body
-   (with-page "default"
+   (with-page "subscriptions"
      (pagination-links page)
      (bind-to "items"
        (let [subscriptions (if *dynamic*

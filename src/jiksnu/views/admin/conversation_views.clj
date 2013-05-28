@@ -10,7 +10,7 @@
   {:title "Conversations"
    :single true
    :body
-   (with-page "default"
+   (with-page "conversations"
      (list (pagination-links response)
            (admin-index-section items response)))})
 

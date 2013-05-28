@@ -39,7 +39,7 @@
   {:title "Feed Sources"
    :single true
    :body (let [sources (if *dynamic* [(FeedSource.)] items)]
-           (with-page "default"
+           (with-page "feed-sources"
              (pagination-links page)
              (bind-to "items"
                (admin-index-section sources page))))})

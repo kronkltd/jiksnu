@@ -12,7 +12,7 @@
   {:single true
    :title "Likes"
    :body
-   (with-page "default"
+   (with-page "likes"
      (list
       (pagination-links response)
       (admin-index-section

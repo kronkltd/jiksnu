@@ -64,7 +64,7 @@
   [request {:keys [items] :as page}]
   {:title "Users"
    :body
-   (with-page "default"
+   (with-page "users"
      (pagination-links page)
      (bind-to "items"
        (index-section items page)))})

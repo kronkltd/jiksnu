@@ -14,7 +14,7 @@
   {:single true
    :title "Groups"
    :body
-   (with-page "default"
+   (with-page "groups"
      (pagination-links page)
      (bind-to "items"
        (let [items (if *dynamic* [(Group.)] items)]
