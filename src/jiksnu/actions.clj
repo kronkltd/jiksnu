@@ -49,8 +49,7 @@
 
 (defn handle-errors
   [ex]
-  (log/spy :info (class ex))
-  (let [data (if (instance? ExceptionInfo (log/spy :info ex))
+  (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
     (log/error ex)
     #_(.printStackTrace ex)
@@ -132,12 +131,10 @@
 (defaction get-model
   [model-name id]
   (let [model-ns (symbol (str "jiksnu.model." model-name))]
-    (log/spy :info model-ns)
     (require model-ns)
     (let [fetcher (ns-resolve model-ns 'fetch-by-id)]
       (log/debugf "getting model %s(%s)" model-name id)
-      (let [item ((log/spy :info fetcher) id)]
-        item))))
+      (fetcher id))))
 
 (deffilter #'get-model :command
   [action request]
@@ -154,7 +151,7 @@
 
 (defaction confirm
   [action model id]
-  (when-let [item (log/spy :info (get-model (log/spy :info model) (log/spy :info id)))]
+  (when-let [item (get-model model id)]
     {:item item
      :action action}))
 
