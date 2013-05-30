@@ -47,7 +47,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Resources"
-          :pages {:default (format-page-info page)}}})
+          :pages {:resources (format-page-info page)}}})
 
 ;; show
 

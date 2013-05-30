@@ -128,7 +128,7 @@
       (if *dynamic*
         {:data-bind "attr: {href: '/groups/' + nickname()}"}
         {:href (str "/groups/" (:nickname group))})
-      [:img {:src (:avatar-url group) }]
+      [:img {:src (:avatarUrl group) }]
       [:span.nickname
        [:span
         (if *dynamic*

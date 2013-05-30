@@ -27,5 +27,5 @@
   [request {:keys [items] :as page}]
   {:body
    {:title "Authentication Mechanisms"
-    :pages {:default (format-page-info page)}
+    :pages {:authMechanisms (format-page-info page)}
     :authenticationMechanisms (admin-index-section items page)}})

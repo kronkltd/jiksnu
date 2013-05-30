@@ -147,43 +147,41 @@
 
 (defn show-details
   [item & [page]]
-  (list
-   (actions-section item)
-   [:table.table
-    [:tbody
-     [:tr
-      [:th "Domain"]
-      [:td
-       (if-let [domain (if *dynamic*
-                         (Domain.)
-                         (if-let [domain-name (:domain item)]
-                           (model.domain/fetch-by-id domain-name)))]
-         (bind-to "domain"
-           [:div {:data-model "domain"}
-            (link-to domain)]))]]
-     [:tr
-      [:th "Url"]
-      [:td
-       [:a (if *dynamic*
-             {:data-bind "attr: {href: url}, text: url"}
-             {:href (:url item)})
-        (when-not *dynamic*
-          (:url item))]]]
-     [:tr
-      [:th "Created"]
-      [:td (display-property item :created)]]
-     [:tr
-      [:th "Updated"]
-      [:td (display-property item :updated)]]
-     [:tr
-      [:th "Source"]
-      [:td
-       (let [source (if *dynamic*
-                      (FeedSource.)
-                      (if-let [id (:update-source item)]
-                        (model.feed-source/fetch-by-id id)))]
-         (bind-to "$data['update-source']"
-           [:div {:data-model "feed-source"} (link-to source)]))]]]]))
+  [:table.table
+   [:tbody
+    [:tr
+     [:th "Domain"]
+     [:td
+      (if-let [domain (if *dynamic*
+                        (Domain.)
+                        (if-let [domain-name (:domain item)]
+                          (model.domain/fetch-by-id domain-name)))]
+        (bind-to "domain"
+          [:div {:data-model "domain"}
+           (link-to domain)]))]]
+    [:tr
+     [:th "Url"]
+     [:td
+      [:a (if *dynamic*
+            {:data-bind "attr: {href: url}, text: url"}
+            {:href (:url item)})
+       (when-not *dynamic*
+         (:url item))]]]
+    [:tr
+     [:th "Created"]
+     [:td (display-property item :created)]]
+    [:tr
+     [:th "Updated"]
+     [:td (display-property item :updated)]]
+    [:tr
+     [:th "Source"]
+     [:td
+      (let [source (if *dynamic*
+                     (FeedSource.)
+                     (if-let [id (:update-source item)]
+                       (model.feed-source/fetch-by-id id)))]
+        (bind-to "$data['update-source']"
+          [:div {:data-model "feed-source"} (link-to source)]))]]]])
 
 ;; (defn comments-section
 ;;   [activity]
@@ -227,6 +225,7 @@
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
+     (actions-section item)
      ;; (show-details item page)
      ;; (dump-data)
      (with-page "conversation-' + $data._id() + '"

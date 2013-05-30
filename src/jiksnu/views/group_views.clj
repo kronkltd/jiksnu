@@ -51,7 +51,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Groups"
-          :pages {:default (format-page-info page)}
+          :pages {:groups (format-page-info page)}
           :groups (index-section items page)}})
 
 (defview #'new-page :html

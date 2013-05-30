@@ -70,7 +70,6 @@
        make-matchers))
 
 (compojure/defroutes all-routes
-  (compojure/GET "/api/help/test.json" _ "OK")
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
@@ -83,21 +82,23 @@
                  (http/wrap-aleph-handler stream/websocket-handler))
   (compojure/GET "/main/events" _
                  stream/stream-handler)
-  (route/resources "/webjars" {:root "META-INF/resources/webjars"})
   (route/not-found (not-found-msg)))
 
 (def app
   (http/wrap-ring-handler
-   (-> all-routes
-       jm/wrap-authentication-handler
-       (file/wrap-file "resources/public/")
-       file-info/wrap-file-info
-       jm/wrap-user-binding
-       middleware/wrap-http-serialization
-       middleware/wrap-log-request
-       jm/wrap-dynamic-mode
-       (handler/site {:session {:store (ms/session-store)}})
-       #_(wrap-airbrake (config :airbrake :key))
-       ;; (nm/wrap-canonical-host (config :domain))
-       jm/wrap-stacktrace
-       jm/wrap-stat-logging)))
+   (compojure/routes
+    (route/resources "/webjars" {:root "META-INF/resources/webjars"})
+    (compojure/GET "/api/help/test.json" _ "OK")
+    (-> all-routes
+        jm/wrap-authentication-handler
+        (file/wrap-file "resources/public/")
+        file-info/wrap-file-info
+        jm/wrap-user-binding
+        middleware/wrap-http-serialization
+        middleware/wrap-log-request
+        jm/wrap-dynamic-mode
+        (handler/site {:session {:store (ms/session-store)}})
+        #_(wrap-airbrake (config :airbrake :key))
+        ;; (nm/wrap-canonical-host (config :domain))
+        jm/wrap-stacktrace
+        jm/wrap-stat-logging))))

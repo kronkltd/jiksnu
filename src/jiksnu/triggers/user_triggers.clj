@@ -27,7 +27,7 @@
 (defn parse-avatar
   [user link]
   (when (= (first (:extensions link)) "96")
-    (model.user/set-field! user :avatar-url (:href link))))
+    (model.user/set-field! user :avatarUrl (:href link))))
 
 (defn parse-updates-from
   [user link]

@@ -21,7 +21,7 @@
   {:title "Feed Sources"
    :body
    (let [items (if *dynamic* [(FeedSource.)] items)]
-     (with-page "feed-sources"
+     (with-page "feedSources"
        (pagination-links page)
        (bind-to "items"
          (doall (index-section items page)))))})
@@ -29,7 +29,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
-          :pages {:default (format-page-info page)}}})
+          :pages {:feedSources (format-page-info page)}}})
 
 ;; process-updates
 

@@ -26,15 +26,15 @@
 
 (defn set-avatar-url
   [user]
-  (if (:avatar-url user)
+  (if (:avatarUrl user)
     user
     (if-let [avatar-link (first (keep
                                  (fn [link]
                                    (if (= (:rel link) "avatar")
                                      (:href link)))
                                  (:links user)))]
-      (assoc user :avatar-url avatar-link)
-      (assoc user :avatar-url
+      (assoc user :avatarUrl avatar-link)
+      (assoc user :avatarUrl
              (if (:email user)
                (gravatar-image (:email user))
                (format "http://%s/assets/images/default-avatar.jpg" (config :domain)))))))

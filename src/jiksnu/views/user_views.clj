@@ -77,7 +77,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Users"
-          :pages {:default (format-page-info page)}}})
+          :pages {:users (format-page-info page)}}})
 
 ;; profile
 

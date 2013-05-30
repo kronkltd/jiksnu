@@ -41,7 +41,7 @@
   [request {:keys [items] :as page}]
   {:body {:title "Subscriptions"
           :items (map :_id items)
-          :pages {:default (format-page-info page)}
+          :pages {:subscriptions (format-page-info page)}
           :subscriptions (doall (admin-index-section items page))}})
 
 ;; show

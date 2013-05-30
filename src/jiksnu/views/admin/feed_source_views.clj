@@ -39,7 +39,7 @@
   {:title "Feed Sources"
    :single true
    :body (let [sources (if *dynamic* [(FeedSource.)] items)]
-           (with-page "feed-sources"
+           (with-page "feedSources"
              (pagination-links page)
              (bind-to "items"
                (admin-index-section sources page))))})
@@ -47,7 +47,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
-          :pages {:default (format-page-info page)}}})
+          :pages {:feedSources (format-page-info page)}}})
 
 (defview #'remove-watcher :html
   [request source]

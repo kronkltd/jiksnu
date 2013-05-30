@@ -17,7 +17,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Conversations"
-          :pages {:default (format-page-info page)}}})
+          :pages {:conversations (format-page-info page)}}})
 
 
 

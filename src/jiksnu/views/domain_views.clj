@@ -99,7 +99,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
-          :pages {:default (format-page-info page)}}})
+          :pages {:domains (format-page-info page)}}})
 
 ;; ping
 

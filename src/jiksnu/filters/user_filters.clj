@@ -173,7 +173,7 @@
 ;;                     :first-name first-name
 ;;                     :last-name last-name
 ;;                     :url url
-;;                     :avatar-url avatar-url}))))
+;;                     :avatarUrl avatar-url}))))
 
 ;; (deffilter #'update-hub :http
 ;;   [action request]

@@ -46,7 +46,7 @@
 (defview #'get-subscribers :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body {:user (show-section user)
-          :pages {:default (format-page-info page)}}})
+          :pages {:subscribers (format-page-info page)}}})
 
 (defview #'get-subscribers :xmpp
   [request [user {:keys [items] :as response}]]
@@ -79,7 +79,7 @@
   [request [user {:keys [items] :as page}]]
   {:body
    {:targetUser (:_id user)
-    :pages {:default (format-page-info page)}}})
+    :pages {:subscriptions (format-page-info page)}}})
 
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]

@@ -179,7 +179,7 @@
       (.addSimpleExtension ns/poco "displayName"       "poco"     (title user))
 
       (.addExtension (doto (.newLink abdera/abdera-factory)
-                       (.setHref (:avatar-url user))
+                       (.setHref (:avatarUrl user))
                        (.setRel "avatar")
                        (.setMimeType "image/jpeg")))
       (.addExtension (doto (.newLink abdera/abdera-factory)
@@ -588,7 +588,7 @@
    :id (:_id user)
    :screen_name (:username user)
    :url (:id user)
-   :profile_image_url (:avatar-url user)
+   :profile_image_url (:avatarUrl user)
    :protected false})
 
 (defsection show-section [User :model]
@@ -662,7 +662,7 @@
    [:screen_name (:username user)]
    [:location (:location user)]
    [:description (:bio user)]
-   [:profile_image_url (h/h (:avatar-url user))]
+   [:profile_image_url (h/h (:avatarUrl user))]
    [:url (:url user)]
    [:protected "false"]])
 

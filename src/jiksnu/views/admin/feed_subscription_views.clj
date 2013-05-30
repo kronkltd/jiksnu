@@ -26,7 +26,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Subscriptions"
-          :pages {:default (format-page-info page)}}})
+          :pages {:feedSubscriptions (format-page-info page)}}})
 
 ;; (defview #'show :html
 ;;   [request subscription]

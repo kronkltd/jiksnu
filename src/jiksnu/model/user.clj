@@ -41,7 +41,7 @@
    (presence-of   :created)
    (presence-of   :updated)
    (presence-of   :update-source)
-   (presence-of   :avatar-url)
+   (presence-of   :avatarUrl)
    (acceptance-of :local         :accept (partial instance? Boolean))))
 
 (def count-records (templates/make-counter     collection-name))
@@ -62,7 +62,7 @@
 
 (defn image-link
   [user]
-  (or (:avatar-url user)
+  (or (:avatarUrl user)
       (when (:email user) (gravatar-image (:email user)))
       (gravatar-image (get-uri user false))))
 

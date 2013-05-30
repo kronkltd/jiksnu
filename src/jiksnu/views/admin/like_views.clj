@@ -23,7 +23,7 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Likes"
-          :pages {:default (format-page-info page)}
+          :pages {:likes (format-page-info page)}
           :likes (admin-index-section items page)}})
 
 (defview #'delete :html
