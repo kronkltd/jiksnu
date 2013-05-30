@@ -41,5 +41,5 @@
   (let [data (.-body event)
         id (.-_id data)
         type (.-type event)]
-    (model/set-model type id (jl/spy data))))
+    (model/set-model type id data)))
 
