@@ -154,7 +154,10 @@
      [:tr
       [:th "Domain"]
       [:td
-       (let [domain (if *dynamic* (Domain.) (model.domain/fetch-by-id (:domain item)))]
+       (if-let [domain (if *dynamic*
+                         (Domain.)
+                         (if-let [domain-name (:domain item)]
+                           (model.domain/fetch-by-id domain-name)))]
          (bind-to "domain"
            [:div {:data-model "domain"}
             (link-to domain)]))]]
@@ -177,10 +180,10 @@
       [:td
        (let [source (if *dynamic*
                       (FeedSource.)
-                      (model.feed-source/fetch-by-id (:update-source item)))]
+                      (if-let [id (:update-source item)]
+                        (model.feed-source/fetch-by-id id)))]
          (bind-to "$data['update-source']"
-           [:div {:data-model "feed-source"} (link-to source)]))]]]])
-  )
+           [:div {:data-model "feed-source"} (link-to source)]))]]]]))
 
 ;; (defn comments-section
 ;;   [activity]
