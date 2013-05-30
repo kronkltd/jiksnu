@@ -15,7 +15,7 @@
                  [clj-statsd "0.3.2"]
                  [clj-time "0.5.1"]
                  [clj-http "0.7.2"]
-                 [clojurewerkz/route-one "1.0.0-SNAPSHOT"]
+                 [clojurewerkz/route-one "1.0.0-beta2"]
                  [clojurewerkz/urly "1.0.0"
                   :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
