@@ -3,6 +3,7 @@
         [ciste.routes :only [make-matchers resolve-routes]]
         #_[clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
+        [ring.middleware.resource :only [wrap-resource]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.middleware :as middleware]
@@ -70,6 +71,10 @@
        make-matchers))
 
 (compojure/defroutes all-routes
+  (compojure/GET "/websocket" _
+                 (http/wrap-aleph-handler stream/websocket-handler))
+  (compojure/GET "/main/events" _
+                 stream/stream-handler)
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
@@ -78,10 +83,6 @@
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
-  (compojure/GET "/websocket" _
-                 (http/wrap-aleph-handler stream/websocket-handler))
-  (compojure/GET "/main/events" _
-                 stream/stream-handler)
   (route/not-found (not-found-msg)))
 
 (def app
@@ -101,4 +102,6 @@
         #_(wrap-airbrake (config :airbrake :key))
         ;; (nm/wrap-canonical-host (config :domain))
         jm/wrap-stacktrace
-        jm/wrap-stat-logging))))
+        jm/wrap-stat-logging
+        ;; (wrap-resource "/META-INF/resources")
+))))
