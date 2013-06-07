@@ -47,7 +47,6 @@
 
 (defn modelInit
   [element value-accessor all-bindings data context]
-  (log/info "initializing model")
   (let [properties (value-accessor)
         model-name (model/collection-name (.-type properties))
         model-ob (model/get-model model-name data)
@@ -82,7 +81,7 @@
   (try
     (ws/set-view model/_view)
     (ws/connect)
-    (catch js/Exception ex
+    (catch js/Error ex
       (log/severe *logger* ex)))
 
   (set! _router (routes/Router.))
@@ -97,7 +96,6 @@
   (aset js/window "_view" model/_view)
 
   (doseq [model-name model/model-names]
-    #_(log/fine *logger* (str "initializing model: " model-name))
     (aset model/observables model-name (js-obj)))
 
   (set! (.-instance ko/binding-provider)
@@ -106,8 +104,6 @@
   (ko/apply-bindings model/_view)
 
   (.addClass ($ :html) "bound")
-
-  (.fitVids ($ ".video-embed"))
 
   #_(stats/fetch-statistics model/_view))
 

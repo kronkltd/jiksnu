@@ -234,19 +234,18 @@
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
     (list
     [:script {:type "text/javascript"}
-     (format
-      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
+     ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
+     (format "WEBSOCKET_PATH = '%s';" websocket-path)
+     "var CLOSURE_NO_DEPS = true;"]
     (p/include-js
-     "/assets/js/modernizr-2.6.1.js"
+     ;; "/assets/js/modernizr-2.6.1.js"
      "/assets/js/underscore/1.4.4/underscore.min.js"
      "/assets/js/jquery/1.10.1/jquery.min.js"
      "/assets/js/knockout/2.2.1/knockout.min.js"
-     "/assets/js/bootstrap-2.4.0.min.js"
-     "/assets/js/lightbox.js"
+     "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"
      "/assets/js/backbone/1.0.0/backbone.min.js"
      "/assets/js/knockback/0.17.2/knockback.min.js"
-     "/assets/js/jiksnu.js"
-     )
+     "/assets/js/jiksnu.js")
     (doall
      (map (fn [hook]
             (hook request response))
@@ -296,10 +295,11 @@
                 :content "width=device-width, initial-scale=1.0"}]
         (let [theme (config :site :theme)]
           (p/include-css
-           (format "/assets/themes/%s/bootstrap.min.css" theme)
-           "/assets/styles/bootstrap-responsive.min.css"
-           "/assets/styles/lightbox.css"
-           (format "/assets/themes/classic/standard.css")))
+           (if (= theme "classic")
+             "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
+             (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
+           "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css"
+           "/assets/themes/classic/standard.css"))
         (links-section request response)))
 
 (defn body-section
