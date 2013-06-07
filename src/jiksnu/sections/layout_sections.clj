@@ -298,8 +298,8 @@
            (if (= theme "classic")
              "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
              (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-           "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css"
-           "/assets/themes/classic/standard.css"))
+           "/assets/themes/classic/standard.css"
+           "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css"))
         (links-section request response)))
 
 (defn body-section
