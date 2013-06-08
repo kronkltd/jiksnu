@@ -21,5 +21,5 @@
   []
   [
    [{:name "conversations"}     {:action #'conversation/index}]
-   [{:name "conversations-:id"} {:action #'activity/fetch-by-conversation}]
+   [{:name "conversation-:id"} {:action #'activity/fetch-by-conversation}]
    ])

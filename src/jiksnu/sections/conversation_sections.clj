@@ -237,11 +237,13 @@
                      (:items (actions.activity/fetch-by-conversation item)))]
          (if-let [item (first items)]
            (bind-to "$data.items()[0]"
-             (show-section item))
+             (dump-data)
+             #_(show-section item))
            [:p "The parent activity for this conversation could not be found"])
-         (when-let [comments (next items)]
+         #_(when-let [comments (next items)]
            [:section.comments.clearfix (when *dynamic* {:data-bind "with: $data.items().slice(1)"})
-            [:div (when *dynamic* {:data-bind "foreach: $data"})
+            (dump-data)
+            [:div #_(when *dynamic* {:data-bind "if: $data"})
              (map show-comment comments)]])))]))
 
 (defsection show-section [Conversation :rdf]

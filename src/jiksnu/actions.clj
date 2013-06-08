@@ -28,12 +28,10 @@
 (defn name-path-matches?
   [request matcher]
   (if-let [path (:name matcher)]
-    (let [request (assoc request :path (:name request))
+    (let [request (assoc request :uri (:name request))
           pattern (clout/route-compile path)]
-      (if-let [route-params (clout/route-matches
-                                   (log/spy :info pattern)
-                                   (log/spy :info request))]
-        (log/spy :info (#'compojure/assoc-route-params request (log/spy :info route-params)))))))
+      (if-let [route-params (clout/route-matches pattern request)]
+        (#'compojure/assoc-route-params request route-params)))))
 
 (defonce connections (ref {}))
 
@@ -143,8 +141,7 @@
                  :serialization :page
                  :name page-name
                  :args args}]
-    ((resolve-routes @*page-predicates* @*page-matchers*)
-     (log/spy :info request))))
+    ((resolve-routes @*page-predicates* @*page-matchers*) request)))
 
 (defaction invoke-action
   [model-name action-name id]

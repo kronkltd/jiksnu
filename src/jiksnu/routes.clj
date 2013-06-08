@@ -65,7 +65,7 @@
     (when-let [page-fn (ns-resolve route-sym 'pages)]
       (when-let [matchers (page-fn)]
         (dosync
-         (alter actions/*page-matchers* concat (log/spy :info matchers)))))
+         (alter actions/*page-matchers* concat matchers))))
 
     (let [route-fn (ns-resolve route-sym 'routes)]
       (route-fn))))

@@ -11,6 +11,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
@@ -37,8 +38,7 @@
 
 (deffilter #'fetch-by-conversation :page
   [action request]
-  (log/spy request)
-  (when-let [conversation nil]
+  (when-let [conversation (model.conversation/fetch-by-id (:id (:params request)))]
     (action conversation)))
 
 ;; oembed

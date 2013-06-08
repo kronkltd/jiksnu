@@ -522,11 +522,13 @@
 
 (defn create-page
   [name]
-  (log/fine *logger* (format "Creating page: %s" name))
+  (log/info *logger* (format "Creating page: %s" name))
   (.add pages (js-obj "id" name))
   (when-let [page (.get pages name)]
     (log/fine *logger* (format "Fetching page: %s" name))
     (.fetch page)
+    ;; (let [pages (aset (.pages _view) name (.viewModel js/kb page))]
+    ;;   (.pages _view pages))
     page))
 
 (defn get-page
@@ -538,9 +540,11 @@
                     first)]
     (do
       (log/info *logger* "found")
-      page)
-    (do (create-page name)
-        ;; TODO: return the observable
+      (jl/spy page))
+    (do
+
+      (create-page name)
+      ;; TODO: return the observable
         (if-let [found (-> (.pages _view)
                          (.filter (by-name name))
                          first)]
