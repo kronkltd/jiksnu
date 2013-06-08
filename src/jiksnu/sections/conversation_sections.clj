@@ -128,7 +128,7 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div (when *dynamic* {:data-bind "foreach: $data"})
+  [:div.conversations (when *dynamic* {:data-bind "foreach: $data"})
    (map index-line items)])
 
 (defsection index-block [Conversation :rdf]
@@ -203,25 +203,29 @@
   (let [author (if *dynamic*
                  (User.)
                  (model.activity/get-author activity))]
-    [:div.comment {:data-model "activity"}
-     [:p
-      [:span (when *dynamic*
-               {:data-bind "with: author"})
-       [:span {:data-model "user"}
+    [:div.comment (merge {:data-model "activity"}
+                               (if *dynamic*
+                                 {}
+                                 {:data-id (:_id author)}))
+     [:span (when *dynamic*
+              {:data-bind "with: author"})
+      [:span {:data-model "user"}
+       [:a.pull-left
         (sections.user/display-avatar author)
-        (link-to author)]]
-      ": "
-      [:span
-       (if *dynamic*
-         {:data-bind "text: title"}
-         (h/h (:title activity)))]]
-     #_[:p (posted-link-section activity)]]))
+        ]
+       (link-to author)]]
+     ": "
+     [:span
+      (if *dynamic*
+        {:data-bind "text: title"}
+        (h/h (:title activity)))]]))
 
 (defsection show-section [Conversation :html]
   [item & [page]]
   (let [about-uri (full-uri item)]
     [:div.conversation-section
-     (merge {:data-model "conversation"}
+     (merge {:data-model "conversation"
+             :typeof "sioc:Container"}
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
@@ -239,8 +243,8 @@
                (show-section item))
              [:p "The parent activity for this conversation could not be found"])
            (when-let [comments (next items)]
-             [:section.comments (when *dynamic* {:data-bind "with: $data.items.slice(1)"})
-              [:ul.unstyled.comments (when *dynamic* {:data-bind "foreach: $data"})
+             [:section.comments.clearfix (when *dynamic* {:data-bind "with: $data.items.slice(1)"})
+              [:div (when *dynamic* {:data-bind "foreach: $data"})
                (map show-comment comments)]]))))]))
 
 (defsection show-section [Conversation :rdf]

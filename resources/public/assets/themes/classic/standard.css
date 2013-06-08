@@ -27,30 +27,24 @@ h1 {
 .bound #content {
   display: block;
 }
+.avatar-section {
+  margin-right: 10px;
+}
 avatar {
   height: 48px;
   width: 48px;
-}
-article {
-  display: block;
-  position: relative;
-  padding-left: 60px;
-}
-article .photo {
-  position: absolute;
-  top: 3px;
-  left: 0;
 }
 .conversation-section {
   border-bottom: 1px solid black;
   margin-bottom: 20px;
   padding-bottom: 10px;
+  min-height: 64px;
 }
-.comments .comment {
+.comment {
   display: block;
   position: relative;
-  padding-left: 60px;
-  min-height: 50px;
+  padding-left: 74px;
+  min-height: 64px;
 }
 .tags ul {
   display: inline;

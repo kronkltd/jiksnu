@@ -71,7 +71,7 @@
             {:src (model.user/image-link user)}))])
 
 (defn display-avatar
-  ([user] (display-avatar user 48))
+  ([user] (display-avatar user 64))
   ([user size]
      [:a.url (if *dynamic*
                {:data-bind "attr: {href: \"/users/\" + _id(), title: displayName}"}

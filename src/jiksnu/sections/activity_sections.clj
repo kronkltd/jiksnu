@@ -742,28 +742,32 @@
 
 (defsection show-section [Activity :html]
   [activity & _]
-  (list
-   (let [activity-uri (uri activity)]
-     [:article.hentry.notice
-      (merge {:typeof "sioc:Post"
-              :data-model "activity"}
-             (when-not *dynamic*
-               {:about activity-uri
-                :data-id (:_id activity)}))
+  (let [activity-uri (uri activity)
+        user (if *dynamic*
+               (User.)
+               (model.activity/get-author activity))]
+    [:article.hentry
+     (merge {:typeof "sioc:Post"
+             :data-model "activity"}
+            (when-not *dynamic*
+              {:about activity-uri
+               :data-id (:_id activity)}))
+     (actions-section activity)
+     [:div.pull-left.avatar-section
+      (bind-to "author"
+        (sections.user/display-avatar user))]
+     [:div
       [:header
-       (actions-section activity)
-       (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-         (bind-to "author"
-           (show-section-minimal user)))
+       (link-to user)
        (recipients-section activity)]
       [:div.entry-content
-       [:p (merge {:property "dc:title"}
-                  (when *dynamic*
-                    {:data-bind "text: title"}))
-        (when-not *dynamic*
-          (or (:title activity)
-              (:content activity)))]]
-      (map #(% activity) post-sections)])))
+       (merge {:property "dc:title"}
+              (when *dynamic*
+                {:data-bind "text: title"}))
+       (when-not *dynamic*
+         (or (:title activity)
+             (:content activity)))]
+      (map #(% activity) post-sections)]]))
 
 (defsection show-section [Activity :model]
   [activity & [page]]
