@@ -40,6 +40,18 @@
   [request activity]
   {:body (edit-form activity)})
 
+;; fetch-by-conversations
+
+(defview #'fetch-by-conversations :json
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+                          :type (first (:args request))
+                          :body response}}))
+
 ;; oembed
 
 (defview #'oembed :json

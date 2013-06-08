@@ -211,8 +211,7 @@
               {:data-bind "with: author"})
       [:span {:data-model "user"}
        [:a.pull-left
-        (sections.user/display-avatar author)
-        ]
+        (sections.user/display-avatar author)]
        (link-to author)]]
      ": "
      [:span

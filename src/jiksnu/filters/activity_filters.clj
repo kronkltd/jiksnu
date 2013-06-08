@@ -33,6 +33,14 @@
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 
+;; fetch-by-conversation
+
+(deffilter #'fetch-by-conversation :page
+  [action request]
+  (log/spy request)
+  (when-let [conversation nil]
+    (action conversation)))
+
 ;; oembed
 
 (deffilter #'oembed :http

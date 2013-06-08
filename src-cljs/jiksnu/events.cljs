@@ -24,7 +24,9 @@
 
 (defmethod ws/process-event "error"
   [event]
-  (log/severe *logger* (.-message event)))
+  (log/severe *logger* (.-message event))
+  #_(throw (.-message event))
+  )
 
 (defmethod ws/process-event "connect"
   [event]
