@@ -185,6 +185,7 @@
    Model
    (js-obj
     "type" "Page"
+    "idAttribute" "id"
     "defaults" (fn [] (js-obj
                        "page"         1
                        "pageSize"     0
@@ -201,6 +202,9 @@
                         i (first a)]
                     (.set this "items" (clj->js (rest a)))
                     i)))
+    "fetch" (fn []
+              (this-as this
+                (ws/send "get-page" (.get this "id"))))
     "hasNext" (fn []
                 (this-as this
                   (< (* (.page this)
@@ -522,7 +526,11 @@
 (defn create-page
   [name]
   (log/fine *logger* (format "Creating page: %s" name))
-  (.set pages (js-obj "id" name)))
+  (.set pages (js-obj "id" name))
+  (let [page (.get pages name)]
+    (log/fine *logger* (format "Fetching page: %s" name))
+    (.fetch page)
+    page))
 
 (defn get-page
   "Returns the page for the name from the view's page info"
@@ -538,7 +546,4 @@
         ;; TODO: return the observable
         (-> (.pages _view)
             (.filter (by-name name))
-            first)
-
-
-        )))
+            first))))

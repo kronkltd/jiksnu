@@ -14,8 +14,7 @@
       (let [[k v] pair]
         (log/fine *logger* (format "adding page: %s" k))
         (let [page (clj->js (assoc v :id k))]
-          (.add model/pages (jl/spy page)
-                (js-obj "at" k)))))))
+          (.set model/pages (jl/spy page)))))))
 
 (defn update-items
   "Adds all the data to their respective models"
