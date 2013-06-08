@@ -147,7 +147,8 @@
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
   {:body
-   (with-format :rdf (doall (index-section items page)))
+   (with-format :rdf
+     (doall (index-section items page)))
    :template :false})
 
 (defview #'public-timeline :rdf
@@ -157,10 +158,9 @@
 
 (defview #'public-timeline :viewmodel
   [request {:keys [items] :as page}]
-  {:single false
-   :body
-   {:title "Public Timeline"
-    :pages {:conversations (format-page-info page)}
+  {:body
+   {:single false
+    :title "Public Timeline"
     :postForm {:visible true}}})
 
 (defview #'public-timeline :xml

@@ -105,6 +105,8 @@
 
   (.addClass ($ :html) "bound")
 
-  #_(stats/fetch-statistics model/_view))
+  #_(stats/fetch-statistics model/_view)
+
+  (log/info *logger* "init finished"))
 
 (main)

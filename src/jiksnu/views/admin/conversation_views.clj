@@ -2,17 +2,21 @@
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.conversation-actions :only [index show]]
-        [jiksnu.sections :only [admin-index-section format-page-info pagination-links with-page]])
-  (:require [jiksnu.model.conversation :as model.conversation]))
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [admin-index-section pagination-links with-page]])
+  (:import jiksnu.model.Conversation))
 
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Conversations"
    :single true
    :body
-   (with-page "conversations"
-     (list (pagination-links response)
-           (admin-index-section items response)))})
+   (let [items (if *dynamic*
+                 [(Conversation.)]
+                 items)]
+     (with-page "conversations"
+       (pagination-links response)
+       (doall (admin-index-section items response))))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

@@ -137,7 +137,8 @@
 
 (defview #'connect :json
   [request response]
-  {:body {:connection-id response}})
+  {:body {:action "connect"
+          :connection-id response}})
 
 (add-command! "connect" #'connect)
 

@@ -26,6 +26,11 @@
   [event]
   (log/severe *logger* (.-message event)))
 
+(defmethod ws/process-event "connect"
+  [event]
+
+  )
+
 (defmethod ws/process-event :default
   [event]
   (log/info *logger* (format "No match found: %s" event))
