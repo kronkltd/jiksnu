@@ -186,4 +186,4 @@
               (process-event parsed-event)
               (state/transition ws-state :receiving :idle)
               parsed-event)))
-      (log/warn *logger* "undefined event"))))
+      (log/warning *logger* "undefined event"))))

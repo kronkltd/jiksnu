@@ -76,7 +76,7 @@
      [:th "Last Updated"]
      [:th "Record Updated"]
      [:th "Actions"]]]
-   [:tbody {:data-bind "foreach: $data"}
+   [:tbody {:data-bind "foreach: items"}
     (doall (map #(admin-index-line % page) items))]])
 
 ;; admin-index-line
@@ -231,21 +231,19 @@
                :data-id (:_id item)}))
      (actions-section item)
      ;; (show-details item page)
-     ;; (dump-data)
      (with-page "conversation-' + $data._id() + '"
        (let [items (if *dynamic*
                      [(Activity.) (Activity.)]
                      ;; TODO: actually fetch the activity here
                      (:items (actions.activity/fetch-by-conversation item)))]
-         (bind-to "activities"
-           (if-let [item (first items)]
-             (bind-to "$data.items[0]"
-               (show-section item))
-             [:p "The parent activity for this conversation could not be found"])
-           (when-let [comments (next items)]
-             [:section.comments.clearfix (when *dynamic* {:data-bind "with: $data.items.slice(1)"})
-              [:div (when *dynamic* {:data-bind "foreach: $data"})
-               (map show-comment comments)]]))))]))
+         (if-let [item (first items)]
+           (bind-to "$data.items()[0]"
+             (show-section item))
+           [:p "The parent activity for this conversation could not be found"])
+         (when-let [comments (next items)]
+           [:section.comments.clearfix (when *dynamic* {:data-bind "with: $data.items().slice(1)"})
+            [:div (when *dynamic* {:data-bind "foreach: $data"})
+             (map show-comment comments)]])))]))
 
 (defsection show-section [Conversation :rdf]
   [item & [page]]

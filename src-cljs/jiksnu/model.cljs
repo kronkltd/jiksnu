@@ -62,8 +62,7 @@
 (defn init-observable
   "Store an observable copy of the model in the model cache"
   [model-name id observable-model model]
-  (let [attributes (.-attributes model)
-        observable (.observable js/ko attributes)]
+  (let [observable (.viewModel js/kb model)]
     (log/finer *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
     (aset observable-model id observable)
     observable))
@@ -78,13 +77,11 @@
         (do
           (.set m data)
           (if-let [om (aget ko/observables coll-name)]
-            (let [o (.viewModel js/kb m)]
-              ;; cache it for the object model
-              (aset om id o)
-              o)
-            (log/warn (str "Could not find observable model for: " coll-name)))))
+            (init-observable model-name id om m)
+            (log/warning (str "Could not find observable model for: " coll-name))))
+        (log/warning *logger* "Could not get model"))
       (log/fine (str "no collection named: " coll-name)))
-    (log/warn (str "Could find collection for: " model-name))))
+    (log/warning (str "Could find collection for: " model-name))))
 
 (defn load-model
   "Load the model from the server"
@@ -128,7 +125,7 @@
             o)
           (get-model* model-name id)))
       (throw (js/Error. (str id " is not a string"))))
-    (log/warn *logger* "id is undefined")))
+    (log/warning *logger* "id is undefined")))
 
 ;; Models
 
@@ -526,8 +523,8 @@
 (defn create-page
   [name]
   (log/fine *logger* (format "Creating page: %s" name))
-  (.set pages (js-obj "id" name))
-  (let [page (.get pages name)]
+  (.add pages (js-obj "id" name))
+  (when-let [page (.get pages name)]
     (log/fine *logger* (format "Fetching page: %s" name))
     (.fetch page)
     page))
