@@ -18,7 +18,7 @@
    :single true
    :body
    (let [items (if *dynamic* [(FeedSubscription.)] items)]
-     (with-page "feed-subscriptions"
+     (with-page "feedSubscriptions"
        (pagination-links response)
        (bind-to "items"
          (admin-index-section items response))))})
