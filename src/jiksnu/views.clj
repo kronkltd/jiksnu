@@ -40,3 +40,7 @@
 (defmethod serialize-as :command
   [serialization response]
   response)
+
+(defmethod serialize-as :page
+  [serialization response]
+  (json/read-json (:body response)))

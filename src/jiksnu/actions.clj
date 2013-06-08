@@ -10,10 +10,12 @@
         [clojure.data.json :only [read-json]]
         [slingshot.slingshot :only [try+]])
   (:require #_[clj-airbrake.core :as airbrake]
+            [ciste.predicates :as pred]
             [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.session :as session]
@@ -148,6 +150,64 @@
           :body response}})
 
 (add-command! "get-model" #'get-model)
+
+(defaction conversations
+  [& args]
+  (log/spy :info args)
+  (actions.conversation/index))
+
+(deffilter #'conversations :page
+  [action request]
+  (action)
+  )
+
+(defview #'conversations :json
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:name (:name request)
+                         :items (map :_id items)}
+                        )]
+    {:body {:action "page-updated"
+                          :type (first (:args request))
+                          :body response}}))
+
+(def
+  ^{:dynamic true
+    :doc "The sequence of predicates used for command dispatch.
+          By default, commands are dispatched by name."}
+  *page-predicates*
+  (ref [#'pred/name-matches?]))
+
+(def
+  ^{:dynamic true}
+  *page-matchers*
+  (ref [
+        [{:name "conversations"} {:action #'conversations}]
+        ]))
+
+(defaction get-page
+  [page-name & args]
+  (log/infof "Getting page: %s" page-name)
+  (let [request {:format :json
+                 :serialization :page
+                 :name page-name
+                 :args args}]
+    ((resolve-routes @*page-predicates* @*page-matchers*)
+     (log/spy :info request))))
+
+(deffilter #'get-page :command
+  [action request]
+  (apply action (:args (log/spy :info request))))
+
+(defview #'get-page :json
+  [request response]
+  {:body response})
+
+(add-command! "get-page" #'get-page)
+
+
+
 
 (defaction confirm
   [action model id]

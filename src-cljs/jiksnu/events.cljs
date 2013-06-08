@@ -43,3 +43,12 @@
         type (.-type event)]
     (model/set-model type id data)))
 
+(defmethod ws/process-event "page-updated"
+  [event]
+  (log/info *logger* "page updated")
+  (let [data (.-body event)
+        id (.-id data)
+        type (.-type event)]
+    (jl/spy data)
+    #_(model/set-model type id data)))
+
