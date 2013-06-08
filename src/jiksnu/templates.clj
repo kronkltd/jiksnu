@@ -52,7 +52,7 @@
       {:items records
        :page page
        :page-size page-size
-       :total-records record-count
+       :totalRecords record-count
        :args options})))
 
 (defmacro make-indexer

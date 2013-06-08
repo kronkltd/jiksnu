@@ -170,6 +170,7 @@
                                                :message (str ex)})}))]
              (l/enqueue ch (:body resp))
              (l/enqueue ch (json/json-str {:action "error"
+                                           :request request
                                            :message "no command found"})))))))))
 
 ;; Create events for each created activity

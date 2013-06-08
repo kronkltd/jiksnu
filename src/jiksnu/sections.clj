@@ -165,7 +165,7 @@
   (let [page (get options :page 1)
         page-size (get options :page-size 20)
         ;; If no total, no pagination
-        total-records (get options :total-records 0)]
+        total-records (get options :totalRecords 0)]
     [:div
      [:div.pull-left
       (prev-link page)]

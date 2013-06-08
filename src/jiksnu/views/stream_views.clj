@@ -100,7 +100,7 @@
    ;; TODO: assign the generator in the formatter
    {:generator "Jiksnu ${VERSION}"
     :title "Public Timeline"
-    :totalItems (:total-records page)
+    :totalItems (:totalRecords page)
     :items
     (let [activity-page (actions.activity/fetch-by-conversations
                          (map :_id items))]

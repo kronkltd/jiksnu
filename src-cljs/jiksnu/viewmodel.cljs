@@ -12,11 +12,14 @@
   (when-let [pages (.-pages data)]
     (doseq [pair (js->clj pages)]
       (let [[k v] pair]
-        (log/fine *logger* (format "adding page: %s" k))
         (let [page (clj->js (assoc v :id k))]
           (if-let [m (.get model/pages k)]
-            (.set m (jl/spy page))
-            (.add model/pages (jl/spy page))))))))
+            (do
+              (log/fine *logger* (format "setting existing page: %s" k))
+              (.set m page))
+            (do
+              (log/fine *logger* (format "adding page: %s" k))
+              (.add model/pages page))))))))
 
 (defn update-items
   "Adds all the data to their respective models"

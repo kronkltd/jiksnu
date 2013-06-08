@@ -61,7 +61,7 @@
              (fn [response]
                (fact
                  response => map?
-                 (:total-records response) => 0
+                 (:totalRecords response) => 0
                  (let [items (:items response)]
                    items => empty?)))))
 
@@ -82,7 +82,7 @@
                  (fn [response]
                    (fact
                      response => map?
-                     (:total-records response) => 1
+                     (:totalRecords response) => 1
                      (let [items (:items response)]
                        (doseq [item items]
                          (class item) => Conversation))))))))

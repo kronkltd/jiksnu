@@ -39,7 +39,7 @@
                   (fn [response]
                     (let [body (:body response)]
                       (fact
-                        (:totalItems body) => (:total-records response)))))))))
+                        (:totalItems body) => (:totalRecords response)))))))))
          (fact "when the format is :html"
            (with-format :html
              (fact "when the user has subscriptions"

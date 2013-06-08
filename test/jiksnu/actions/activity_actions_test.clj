@@ -57,7 +57,7 @@
         map?
         (fn [response]
           (fact
-            (:total-records response) => 1
+            (:totalRecords response) => 1
             (count (:items response)) => 1
             (:items response) => (partial every? (partial instance? Activity))))))))
 

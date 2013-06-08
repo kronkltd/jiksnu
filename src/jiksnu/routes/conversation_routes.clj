@@ -15,3 +15,10 @@
    [[:get (named-path     "show conversation")]  #'conversation/show]
    [[:get (formatted-path "conversation model")] #'conversation/show]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "conversations"} {:action #'conversation/index}]
+   ]
+  )

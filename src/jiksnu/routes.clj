@@ -61,6 +61,12 @@
   [module-name]
   (let [route-sym (symbol (format "jiksnu.routes.%s-routes" module-name))]
     (require route-sym)
+
+    (when-let [page-fn (ns-resolve route-sym 'pages)]
+      (when-let [matchers (page-fn)]
+        (dosync
+         (alter actions/*page-matchers* concat (log/spy :info matchers)))))
+
     (let [route-fn (ns-resolve route-sym 'routes)]
       (route-fn))))
 

@@ -27,6 +27,16 @@
        (bind-to "items"
          (doall (index-section items page)))))})
 
+(defview #'index :json
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:name (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+                          :type (first (:args request))
+                          :body response}}))
+
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Conversations"

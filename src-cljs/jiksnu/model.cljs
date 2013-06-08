@@ -536,11 +536,11 @@
   (if-let [page (-> (.pages _view)
                     (.filter (by-name name))
                     first)]
-    (do
-      (log/info *logger* "found page")
-      (jl/spy page))
+    page
     (do (create-page name)
         ;; TODO: return the observable
-        (-> (.pages _view)
-            (.filter (by-name name))
-            first))))
+        (if-let [found (-> (.pages _view)
+                         (.filter (by-name name))
+                         first)]
+          found
+          (log/warning *logger* "could not find page even after creating")))))

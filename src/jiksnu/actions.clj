@@ -15,7 +15,6 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
-            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.session :as session]
@@ -151,27 +150,6 @@
 
 (add-command! "get-model" #'get-model)
 
-(defaction conversations
-  [& args]
-  (log/spy :info args)
-  (actions.conversation/index))
-
-(deffilter #'conversations :page
-  [action request]
-  (action)
-  )
-
-(defview #'conversations :json
-  [request response]
-  (let [items (:items response)
-        response (merge response
-                        {:name (:name request)
-                         :items (map :_id items)}
-                        )]
-    {:body {:action "page-updated"
-                          :type (first (:args request))
-                          :body response}}))
-
 (def
   ^{:dynamic true
     :doc "The sequence of predicates used for command dispatch.
@@ -182,9 +160,7 @@
 (def
   ^{:dynamic true}
   *page-matchers*
-  (ref [
-        [{:name "conversations"} {:action #'conversations}]
-        ]))
+  (ref []))
 
 (defaction get-page
   [page-name & args]

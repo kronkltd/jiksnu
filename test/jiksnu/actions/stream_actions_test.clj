@@ -35,7 +35,7 @@
           (fn [response]
             (fact
               response => map?
-              (:total-records response) => 1
+              (:totalRecords response) => 1
               (let [items (:items response)]
                 items => seq?
                 (doseq [item items]
@@ -53,7 +53,7 @@
           (fact
             (first response) => user
             (second response) => map?
-            (:total-records (second response)) => 1))))))
+            (:totalRecords (second response)) => 1))))))
 
  (future-fact "#'callback-publish"
    (fact "when there is a watched source"

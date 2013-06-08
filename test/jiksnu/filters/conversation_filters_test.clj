@@ -42,7 +42,7 @@
            (every-checker
             map?
             (comp empty? :items)
-            #(= 0 (:total-records %))
+            #(= 0 (:totalRecords %))
             )
            )))))
  )

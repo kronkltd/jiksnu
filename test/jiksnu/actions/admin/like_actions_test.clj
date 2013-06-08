@@ -12,20 +12,20 @@
    (index) =>
    (every-checker
     #(fact (:page %) => 1)
-    #(fact (:total-records %) => 0))
+    #(fact (:totalRecords %) => 0))
 
    (index {} {:page 2}) =>
    (every-checker
     #(fact (:page %) => 2)
-    #(fact (:total-records %) => 0)))
+    #(fact (:totalRecords %) => 0)))
 
 
  (future-fact "#'delete"
    (let [like (model.like/create (factory :like))]
      (delete like)
      (model.like/fetch-by-id (:_id like)) => falsey
-     
+
      )
-   
+
    )
  )
