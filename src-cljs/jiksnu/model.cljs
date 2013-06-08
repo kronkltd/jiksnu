@@ -16,19 +16,27 @@
   ^{:doc "This is the main view model bound to the page"}
   _view)
 
-(def observables   (js-obj))
-
 (def names
-  [["activity"                 "activities"               "Activity"]
-   ["authentication-mechanism" "authenticationMechanisms" "AuthenticationMechanism" ]
-   ["conversation"             "conversations"            "Conversation"]
-   ["domain"                   "domains"                  "Domain" ]
-   ["feed-source"              "feedSources"              "FeedSource" ]
-   ["feed-subscription"        "feedSubscriptions"        "FeedSubscription"]
-   ["group"                    "groups"                   "Group" ]
-   ["resource"                 "resources"                "Resource"]
-   ["subscription"             "subscriptions"            "Subscription"]
-   ["user"                     "users"                    "User"]])
+  [["activity"                 "activities"
+    "Activity"                 "Activities"]
+   ["authentication-mechanism" "authenticationMechanisms"
+    "AuthenticationMechanism"  "AuthenticationMechanisms"]
+   ["conversation"             "conversations"
+    "Conversation"             "Conversations"]
+   ["domain"                   "domains"
+    "Domain"                   "Domains"]
+   ["feed-source"              "feedSources"
+    "FeedSource"               "FeedSources"]
+   ["feed-subscription"        "feedSubscriptions"
+    "FeedSubscription"         "FeedSubscriptions"]
+   ["group"                    "groups"
+    "Group"                    "Groups"]
+   ["resource"                 "resources"
+    "Resource"                 "Resources"]
+   ["subscription"             "subscriptions"
+    "Subscription"             "Subscriptions"]
+   ["user"                     "users"
+    "User"                     "Users"]])
 
 (def class-names (map #(nth % 2) names))
 
@@ -41,6 +49,27 @@
        (map (fn [[k v _]] [k v]))
        (into {})))
 
+;; Filter predicates
+
+(defn by-name
+  [name]
+  (fn [x]
+    (when (= (.id x) name)
+      x)))
+
+;; Observable operations
+
+(defn init-observable
+  "Store an observable copy of the model in the model cache"
+  [model-name id observable-model model]
+  (let [attributes (.-attributes model)
+        observable (.observable js/ko attributes)]
+    (log/finer *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
+    (aset observable-model id observable)
+    observable))
+
+;; Model Operations
+
 (defn set-model
   [model-name id data]
   (if-let [coll-name (collection-name model-name)]
@@ -48,7 +77,7 @@
       (if-let [m (.get coll id)]
         (do
           (.set m data)
-          (if-let [om (aget observables coll-name)]
+          (if-let [om (aget ko/observables coll-name)]
             (let [o (.viewModel js/kb m)]
               ;; cache it for the object model
               (aset om id o)
@@ -60,7 +89,7 @@
 (defn load-model
   "Load the model from the server"
   [model-name id om]
-  (log/finer *logger* (format "not loaded: %s(%s)" model-name id))
+  (log/finest *logger* (format "not loaded: %s(%s)" model-name id))
   (let [coll (.get _model model-name)]
     ;; Create an empty model
     (.add coll (js-obj "_id" id))
@@ -72,33 +101,27 @@
         (aset om id o)
         o))))
 
-(defn init-observable
-  "Store an observable copy of the model in the model cache"
-  [model-name id observable-model model]
-  (let [attributes (.-attributes model)
-        observable (.observable js/ko attributes)]
-    (log/finer *logger* (format "setting observable (already loaded): %s(%s)" model-name id))
-    (aset observable-model id observable)
-    observable))
+(defn get-observable
+  [model-name]
+  (aget ko/observables model-name))
 
 (defn- get-model*
   "Inintialize a new model reference based on the params when a cached ref is not found"
   [model-name id]
-  (log/finer *logger* (format "observable not found: %s(%s)" model-name id))
+  (log/finest *logger* (format "observable not found: %s(%s)" model-name id))
   (if-let [coll (.get _model model-name)]
-    (let [om (aget observables model-name)]
+    (let [om (get-observable model-name)]
       (if-let [m (.get coll id)]
         (init-observable model-name id om m)
         (load-model model-name id om)))
     (log/severe *logger* "could not get collection")))
-
 
 (defn get-model
   "Given a model name and an id, return an observable representing that model"
   [model-name id]
   (if id
     (if (= (type id) js/String)
-      (let [om (aget observables model-name)]
+      (let [om (get-observable model-name)]
         (if-let [o (aget om id)]
           (do
             (log/finest *logger* (format "cached observable found: %s(%s)" model-name id))
@@ -107,22 +130,14 @@
       (throw (js/Error. (str id " is not a string"))))
     (log/warn *logger* "id is undefined")))
 
-(defn get-page
-  "Returns the page for the name from the view's page info"
-  [name]
-  (log/info *logger* (str "getting page: " name))
-  (if-let [page (-> (.pages _view)
-                    (.filter (fn [x] (if (= (.id x) name) x)))
-                    first)]
-    page
-    (log/warning *logger* (str "Could not find page: " name))))
+;; Models
 
 (defn initializer
   "used for logging initialization of a model"
   [m coll]
   (this-as this
     (let [n (.-type this)]
-      (log/finer *logger* (format "creating %s: %s" n (.stringify js/JSON m))))))
+      (log/finer *logger* (format "Creating record: %s%s" n (.stringify js/JSON m))))))
 
 
 (def Model
@@ -191,6 +206,7 @@
                   (< (* (.page this)
                         (.pageSize this))
                      (.totalRecords this)))))))
+
 
 (def Notification
   (.extend
@@ -359,14 +375,7 @@
                 "user" nil
                 "value" nil))))
 
-
-
-
-
-
-
-
-
+;; Collections
 
 (def ^{:doc "collection of activities"}
   Activities
@@ -456,6 +465,9 @@
             "type"        "Users"
             "model"       User)))
 
+;; Collection references
+;; TODO: remove
+
 (def activities    (Activities.))
 (def authentication-mechanisms (AuthenticationMechanisms.))
 (def conversations  (Conversations.))
@@ -469,33 +481,64 @@
 (def subscriptions (Subscriptions.))
 (def users         (Users.))
 
+;; Viewmodel
+
 (def ^{:doc "The main view model for the site"} AppViewModel
-  (.extend backbone/Model
-           (js-obj
-            "defaults"
-            (js-obj
-             "activities"               activities
-             "authenticationMechanisms" authentication-mechanisms
-             "conversations"            conversations
-             "domains"                  domains
-             "currentUser"              nil
-             "feedSources"              feed-sources
-             "feedSubscriptions"        feed-subscriptions
-             "followers"                (array)
-             "following"                (array)
-             "groups"                   groups
-             "pages"                    pages
-             "postForm"                 (PostForm.)
-             "notifications"            notifications
-             "resources"                resources
-             "statistics"               nil
-             "subscriptions"            subscriptions
-             "targetActivity"           nil
-             "targetConversation"       nil
-             "targetDomain"             nil
-             "targetFeedSource"         nil
-             "targetGroup"              nil
-             "targetResource"           nil
-             "targetUser"               nil
-             "title"                    nil
-             "users"                    users))))
+  (let [defaults (js-obj
+                  "activities"               activities
+                  "authenticationMechanisms" authentication-mechanisms
+                  "conversations"            conversations
+                  "domains"                  domains
+                  "currentUser"              nil
+                  "feedSources"              feed-sources
+                  "feedSubscriptions"        feed-subscriptions
+                  "followers"                (array)
+                  "following"                (array)
+                  "groups"                   groups
+                  "pages"                    pages
+                  "postForm"                 (PostForm.)
+                  "notifications"            notifications
+                  "resources"                resources
+                  "statistics"               nil
+                  "subscriptions"            subscriptions
+                  "targetActivity"           nil
+                  "targetConversation"       nil
+                  "targetDomain"             nil
+                  "targetFeedSource"         nil
+                  "targetGroup"              nil
+                  "targetResource"           nil
+                  "targetUser"               nil
+                  "title"                    nil
+                  "users"                    users)]
+    ;; (doseq [[model-name collection-name class-name] names]
+    ;;   (aset defaults name nil))
+    (.extend backbone/Model
+             (js-obj
+              "defaults" defaults))))
+
+
+;; Page operations
+
+(defn create-page
+  [name]
+  (log/fine *logger* (format "Creating page: %s" name))
+  (.set pages (js-obj "id" name)))
+
+(defn get-page
+  "Returns the page for the name from the view's page info"
+  [name]
+  (log/info *logger* (str "getting page: " name))
+  (if-let [page (-> (.pages _view)
+                    (.filter (by-name name))
+                    first)]
+    (do
+      (log/info *logger* "found page")
+      (jl/spy page))
+    (do (create-page name)
+        ;; TODO: return the observable
+        (-> (.pages _view)
+            (.filter (by-name name))
+            first)
+
+
+        )))

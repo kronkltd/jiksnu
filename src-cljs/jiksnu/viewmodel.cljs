@@ -1,19 +1,21 @@
 (ns jiksnu.viewmodel
   (:use [jiksnu.model :only [_model _view class-names model-names]])
   (:require [lolg :as log]
+            [jiksnu.logging :as jl]
             [jiksnu.model :as model]))
 
 (def *logger* (log/get-logger "jiksnu.viewmodel"))
 
 (defn update-pages
   [data]
+  (log/finest *logger* "Updating pages")
   (when-let [pages (.-pages data)]
-    (let [page-model (.get model/_model "pages")]
-      (doseq [pair (js->clj pages)]
-        (let [[k v] pair]
-          (log/info *logger* k)
-          (let [page (clj->js (assoc v :id k))]
-           (.add page-model page)))))))
+    (doseq [pair (js->clj pages)]
+      (let [[k v] pair]
+        (log/fine *logger* (format "adding page: %s" k))
+        (let [page (clj->js (assoc v :id k))]
+          (.add model/pages (jl/spy page)
+                (js-obj "at" k)))))))
 
 (defn update-items
   "Adds all the data to their respective models"

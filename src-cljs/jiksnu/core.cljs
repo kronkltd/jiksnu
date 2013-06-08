@@ -24,7 +24,7 @@
    ;; "waltz.state"        :finest
    "jiksnu.core"        :fine
    ;; "jiksnu.events"    :finest
-   ;; "jiksnu.model"       :finer
+   "jiksnu.model"       :finer
    ;; "jiksnu.websocket"   :fine
    "goog.net.WebSocket" :warning
    })
@@ -96,7 +96,7 @@
   (aset js/window "_view" model/_view)
 
   (doseq [model-name model/model-names]
-    (aset model/observables model-name (js-obj)))
+    (aset ko/observables model-name (js-obj)))
 
   (set! (.-instance ko/binding-provider)
         (providers/DataModelProvider.))

@@ -1,5 +1,7 @@
 (ns jiksnu.ko)
 
+(def observables   (js-obj))
+
 (def binding-handlers (.-bindingHandlers js/ko))
 (def binding-provider (.-bindingProvider js/ko))
 

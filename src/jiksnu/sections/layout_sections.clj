@@ -240,11 +240,11 @@
     (p/include-js
      ;; "/assets/js/modernizr-2.6.1.js"
      "/assets/js/underscore/1.4.4/underscore.min.js"
-     "/assets/js/jquery/1.10.1/jquery.min.js"
-     "/assets/js/knockout/2.2.1/knockout.min.js"
+     "/assets/js/jquery/1.10.1/jquery.js"
+     "/assets/js/knockout/2.2.1/knockout.js"
      "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"
      "/assets/js/backbone/1.0.0/backbone.min.js"
-     "/assets/js/knockback/0.17.2/knockback.min.js"
+     "/assets/js/knockback/0.17.2/knockback.js"
      "/assets/js/jiksnu.js")
     (doall
      (map (fn [hook]
