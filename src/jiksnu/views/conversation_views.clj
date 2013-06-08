@@ -31,7 +31,7 @@
   [request response]
   (let [items (:items response)
         response (merge response
-                        {:name (:name request)
+                        {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "page-updated"
                           :type (first (:args request))

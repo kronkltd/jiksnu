@@ -49,6 +49,6 @@
   (let [data (.-body event)
         id (.-id data)
         type (.-type event)]
-    (jl/spy data)
-    #_(model/set-model type id data)))
-
+    (if-let [page (.get model/pages id)]
+      (.set page (jl/spy data))
+      (log/warning *logger* "Could not find page in collection"))))

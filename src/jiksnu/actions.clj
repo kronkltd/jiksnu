@@ -23,6 +23,20 @@
             [lamina.trace :as trace])
   (:import clojure.lang.ExceptionInfo))
 
+(defonce connections (ref {}))
+
+(defonce
+  ^{:dynamic true
+    :doc "The sequence of predicates used for command dispatch.
+          By default, commands are dispatched by name."}
+  *page-predicates*
+  (ref [#'pred/name-matches?]))
+
+(defonce
+  ^{:dynamic true}
+  *page-matchers*
+  (ref []))
+
 (defaction invoke-action
   [model-name action-name id]
   (try+
@@ -73,8 +87,6 @@
   {:body data})
 
 (add-command! "invoke-action" #'invoke-action)
-
-(defonce connections (ref {}))
 
 (defn transform-activities
   [connection-id e]
@@ -150,18 +162,6 @@
 
 (add-command! "get-model" #'get-model)
 
-(def
-  ^{:dynamic true
-    :doc "The sequence of predicates used for command dispatch.
-          By default, commands are dispatched by name."}
-  *page-predicates*
-  (ref [#'pred/name-matches?]))
-
-(def
-  ^{:dynamic true}
-  *page-matchers*
-  (ref []))
-
 (defaction get-page
   [page-name & args]
   (log/infof "Getting page: %s" page-name)
@@ -174,7 +174,7 @@
 
 (deffilter #'get-page :command
   [action request]
-  (apply action (:args (log/spy :info request))))
+  (apply action (:args request)))
 
 (defview #'get-page :json
   [request response]

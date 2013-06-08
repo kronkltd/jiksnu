@@ -16,12 +16,7 @@
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
-  {:body {:title "Conversations"
-          :pages {:conversations (format-page-info page)}}})
-
-
-
-
+  {:body {:title "Conversations"}})
 
 (defview #'show :html
   [request conversation]
