@@ -338,6 +338,7 @@
                 "updated"  nil
                 "status"   nil
                 "domain"   nil
+                "challenge" nil
                 "hub"      nil
                 "mode"     nil
                 "topic"    nil
