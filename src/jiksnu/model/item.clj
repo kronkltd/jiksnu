@@ -1,11 +1,13 @@
 (ns jiksnu.model.item
+  (:use [jiksnu.validators :only [type-of]]
+        [validateur.validation :only [acceptance-of presence-of
+                                      validation-set]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.templates :as templates]
             [monger.collection :as mc])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Item))
+  (:import jiksnu.model.Item
+           org.bson.types.ObjectId))
 
 (def collection-name "items")
 (def maker #'model/map->Item)

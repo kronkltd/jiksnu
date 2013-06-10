@@ -1,6 +1,8 @@
 (ns jiksnu.model.key
   (:use [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+ try+]])
+        [slingshot.slingshot :only [throw+ try+]]
+        [validateur.validation :only [acceptance-of presence-of
+                                      validation-set]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
