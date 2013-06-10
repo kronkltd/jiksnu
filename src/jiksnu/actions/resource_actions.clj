@@ -126,9 +126,10 @@
     (let [last-updated (:lastUpdated item)]
       (if (or (:force options)
               (nil? last-updated)
-              (time/after? (-> 5 time/minutes time/ago) (coerce/to-date-time last-updated)))
+              (time/after? (-> 5 time/minutes time/ago)
+                           (coerce/to-date-time last-updated)))
         (let [url (:url item)]
-          (log/debugf "updating resource: %s" url)
+          (log/infof "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
           (let [response (client/get url {:throw-exceptions false
                                           :headers {"User-Agent" user-agent}
@@ -136,7 +137,7 @@
             (task
              (try
                (process-response item response)
-               (catch RuntimeException ex
+               (catch Exception ex
                  (.printStackTrace ex))))
             response))
         (log/warn "Resource has already been updated")))

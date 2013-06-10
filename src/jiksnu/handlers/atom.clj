@@ -14,11 +14,13 @@
 (defmethod actions.resource/process-response-content "application/atom+xml"
   [content-type item response]
   (log/debug "parsing atom content")
-  (let [source (actions.feed-source/find-by-resource item)]
+  (if-let [source (actions.feed-source/find-by-resource item)]
     (if-let [feed (abdera/parse-xml-string (:body response))]
-      (let [feed-updated (abdera/get-feed-updated feed)
+      (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
             source-updated (:updated source)]
-        (if (time/after? (coerce/to-date-time feed-updated) (coerce/to-date-time source-updated))
+        (if (or (not (and feed-updated source-updated))
+                (time/after? feed-updated source-updated))
           (actions.feed-source/process-feed source feed)
           (log/warn "feed is up to date")))
-      (throw+ "could not obtain feed"))))
+      (throw+ "could not obtain feed"))
+    (throw+ "could not get source")))
