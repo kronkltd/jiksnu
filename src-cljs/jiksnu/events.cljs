@@ -52,10 +52,10 @@
 
 (defmethod ws/process-event "page-updated"
   [event]
-  (log/info *logger* "page updated")
+  (log/fine *logger* "page updated")
   (let [data (.-body event)
         id (.-id data)
         type (.-type event)]
     (if-let [page (.get model/pages id)]
-      (.set page (jl/spy data))
+      (.set page data)
       (log/warning *logger* "Could not find page in collection"))))

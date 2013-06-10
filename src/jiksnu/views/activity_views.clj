@@ -49,8 +49,7 @@
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "page-updated"
-                          :type (first (:args request))
-                          :body response}}))
+            :body response}}))
 
 ;; oembed
 

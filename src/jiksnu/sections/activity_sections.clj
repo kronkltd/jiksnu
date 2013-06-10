@@ -755,11 +755,14 @@
      (actions-section activity)
      [:div.pull-left.avatar-section
       (bind-to "author"
-        (sections.user/display-avatar user))]
+        [:div {:data-model "user"}
+         (sections.user/display-avatar user)])]
      [:div
       [:header
-       (link-to user)
-       (recipients-section activity)]
+       (bind-to "author"
+         [:div {:data-model "user"}
+          (link-to user)])
+       #_(recipients-section activity)]
       [:div.entry-content
        (merge {:property "dc:title"}
               (when *dynamic*

@@ -182,6 +182,7 @@
    Model
    (js-obj
     "type" "Page"
+    "loaded" false
     "idAttribute" "id"
     "defaults" (fn [] (js-obj
                        "page"         1
@@ -201,7 +202,9 @@
                     i)))
     "fetch" (fn []
               (this-as this
-                (ws/send "get-page" (.get this "id"))))
+                (when-not (.-loaded this)
+                  (aset this "loaded" true)
+                  (ws/send "get-page" (.get this "id")))))
     "hasNext" (fn []
                 (this-as this
                   (< (* (.page this)
@@ -522,10 +525,10 @@
 
 (defn create-page
   [name]
-  (log/info *logger* (format "Creating page: %s" name))
+  (log/fine *logger* (format "Creating page: %s" name))
   (.add pages (js-obj "id" name))
   (when-let [page (.get pages name)]
-    (log/fine *logger* (format "Fetching page: %s" name))
+    (log/finer *logger* (format "Fetching page: %s" name))
     (.fetch page)
     ;; (let [pages (aset (.pages _view) name (.viewModel js/kb page))]
     ;;   (.pages _view pages))
@@ -534,21 +537,20 @@
 (defn get-page
   "Returns the page for the name from the view's page info"
   [name]
-  (log/info *logger* (str "getting page: " name))
+  (log/fine *logger* (str "getting page: " name))
   (if-let [page (-> (.pages _view)
                     (.filter (by-name name))
                     first)]
     (do
-      (log/info *logger* "found")
-      (jl/spy page))
+      (log/finer *logger* "found")
+      page)
     (do
-
       (create-page name)
       ;; TODO: return the observable
-        (if-let [found (-> (.pages _view)
+      (if-let [found (-> (.pages _view)
                          (.filter (by-name name))
                          first)]
-          (do
-            (log/info *logger* "created")
-            found)
-          (log/warning *logger* "could not find page even after creating")))))
+        (do
+          (log/finer *logger* "created")
+          found)
+        (log/fine *logger* "could not find page even after creating")))))

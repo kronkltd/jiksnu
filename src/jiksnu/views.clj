@@ -60,7 +60,7 @@
   [request response]
   {:body {:action "model-updated"
           :type (first (:args request))
-          :body response}})
+          :body (dissoc response :links)}})
 
 (defview #'actions/get-page :json
   [request response]
