@@ -294,8 +294,7 @@
 (defsection admin-index-line [User :html]
   [user & [page & _]]
   [:tr (merge {:data-model "user"}
-              (if *dynamic*
-                {}
+              (when-not *dynamic*
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
    [:td
@@ -567,10 +566,11 @@
      (if *dynamic*
        {:data-bind "text: bio"}
        (:bio user))]
-    (bind-to "updateSource"
-      (let [source (if *dynamic* (FeedSource.) nil)]
-        [:div {:data-model "feed-source"}
-         (link-to source) ]))
+    [:p
+     (bind-to "updateSource"
+       (let [source (if *dynamic* (FeedSource.) nil)]
+         [:div {:data-model "feed-source"}
+          (link-to source) ]))]
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (when (:discovered user)

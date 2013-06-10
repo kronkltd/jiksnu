@@ -220,23 +220,19 @@
                 [(Activity.) (Activity.)]
                 (:items (actions.activity/fetch-by-conversation item)))]
     [:div.conversation-section
-     (merge {:data-model "conversation"
-             :typeof "sioc:Container"}
+     (merge {:typeof "sioc:Container"}
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
-     (actions-section item)
-     ;; (show-details item page)
-     (with-page "conversation-' + $data._id() + '"
+     (with-page "conversation-' + $data + '"
        (if-let [item (first items)]
-         (bind-to "$data.items()[0]"
+         (bind-to "items()[0]"
            (show-section item))
          [:p "The parent activity for this conversation could not be found"])
        (when-let [comments (next items)]
          [:section.comments.clearfix
-          (bind-to "$data.items().slice(1)"
-            [:div (when *dynamic* {:data-bind "foreach: $data"})
-             (map show-comment comments)])]))]))
+          [:div (when *dynamic* {:data-bind "foreach: items().slice(1)"})
+           (map show-comment comments)]]))]))
 
 (defsection show-section [Conversation :rdf]
   [item & [page]]

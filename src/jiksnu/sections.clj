@@ -85,8 +85,10 @@
 (defn bind-to
   [property & body]
   (if *dynamic*
-    [:div {:data-bind (str "with: " property)}
-     body]
+    (list
+     (format "<!-- ko with: %s -->" (name property))
+     body
+     "<!-- /ko -->")
     body))
 
 (defn with-page
@@ -126,7 +128,7 @@
   [page]
   [:a.next (merge {:rel "next"}
                   (if *dynamic*
-                    {:data-bind "attr: {href: '?page=' + (1 + $data.page())}"}
+                    {:data-bind "attr: {href: '?page=' + (1 + page())}"}
                     {:href (str "?page=" (inc page))}))
    "Next "
    [:i.icon-right-arrow]])
@@ -135,7 +137,7 @@
   [page]
   [:a.previous (merge {:rel "prev"}
                       (if *dynamic*
-                        {:data-bind "attr: {href: '?page=' + (0 + $data.page() - 1)}"}
+                        {:data-bind "attr: {href: '?page=' + (0 + page() - 1)}"}
                         {:href (str "?page=" (dec page)) }))
    [:i.icon-left-arrow] " Previous"])
 
@@ -176,10 +178,10 @@
                  page)]
       ". (showing " [:span
                      (if *dynamic*
-                       {:data-bind "text: (($data.page() - 1) * $data.pageSize()) + 1"}
+                       {:data-bind "text: ((page() - 1) * pageSize()) + 1"}
                        (inc (* (dec page) page-size)))]
       " to " [:span (if *dynamic*
-                      {:data-bind "text: ($data.page() * $data.pageSize())"}
+                      {:data-bind "text: (page() * pageSize())"}
                       (* page page-size))]
       " of " [:span (if *dynamic*
                       {:data-bind "text: totalRecords"}
