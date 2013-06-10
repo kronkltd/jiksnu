@@ -58,9 +58,13 @@
   [& [params & [options]]]
   (index* params options))
 
+(defn get-update-source
+  [item]
+  (model.feed-source/fetch-by-id (:update-source item)))
+
 (defaction update
   [conversation & [options]]
-  (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
+  (if-let [source (get-update-source conversation)]
     (do
       (model.conversation/set-field! conversation :lastUpdated (time/now))
       (actions.feed-source/update source options))

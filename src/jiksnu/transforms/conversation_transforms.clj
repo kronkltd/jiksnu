@@ -10,20 +10,20 @@
   (:import java.net.URI))
 
 (defn set-update-source
-  [conversation]
-  (if (:update-source conversation)
-    conversation
-    (if-let [url (:url conversation)]
-      (let [resource (actions.resource/find-or-create {:url url})]
+  [item]
+  (if (:update-source item)
+    item
+    (if-let [url (:url item)]
+      (let [resource (actions.resource/find-or-create {:url url})
+            id (:_id item)
+            atom-url (rh/formatted-url "show conversation" {:id id} "atom")]
         (if-let [source (if (:local resource)
-                          (let [atom-url (rh/formatted-url "show conversation"
-                                                           {:id (:_id conversation)} "atom")]
-                            (actions.feed-source/find-or-create {:topic atom-url}))
+                          (actions.feed-source/find-or-create {:topic atom-url})
                           (try
                             (actions.feed-source/discover-source url)
                             (catch RuntimeException ex
                               (trace/trace "errors:handled" ex))))]
-          (assoc conversation :update-source (:_id source))
+          (assoc item :update-source (:_id source))
           (throw+ "could not determine source")))
       (throw+ "Could not determine url"))))
 
