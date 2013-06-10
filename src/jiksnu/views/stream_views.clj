@@ -46,7 +46,7 @@
    :body
    (bind-to "targetGroup"
      (show-section group)
-     #_(with-page "conversations"
+     (with-page "group-' + $data + '"
        (pagination-links (if *dynamic* {} page))
        (bind-to "items"
          (index-section items))))})

@@ -55,7 +55,7 @@
     {:body
      (bind-to "targetFeedSource"
        (show-section item)
-       (with-page "activities"
+       (with-page "feedSource-' + $data + '"
          (pagination-links (if *dynamic* {} page))
          (bind-to "items"
            (index-section items))))}))
@@ -67,11 +67,7 @@
 (defview #'show :viewmodel
   [request item]
   {:body {:targetFeedSource (:_id item)
-          :title (:title item)
-          :pages {:activities
-                  (let [page (actions.activity/fetch-by-feed-source item
-                                                                    {:sort-clause {:updated 1}})]
-                    (format-page-info page))}}})
+          :title (:title item)}})
 
 ;; update
 
