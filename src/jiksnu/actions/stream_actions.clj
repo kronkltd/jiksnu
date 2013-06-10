@@ -152,48 +152,53 @@
     (l/receive-all
      ch
      (fn [m]
-       (session/with-user-id (:_id user)
-         (let [[name & args] (string/split m #" ")
-               request {:format :json
-                        :channel ch
-                        :name name
-                        :args (-?>> args
-                                    (filter identity)
-                                    seq
-                                    (map json/read-json))}
-               message (or (try
-                             (:body (parse-command request))
-                             (catch RuntimeException ex
-                               (trace/trace "errors:handled" ex)
-                               (json/json-str {:action "error"
-                                               :message (str ex)})))
-                           (let [event {:action "error"
-                                        :request request
-                                        :message "no command found"}]
-                             (json/json-str event)))]
-           (l/enqueue ch message)))))))
+       (future (session/with-user-id (:_id user)
+                 (let [[name & args] (string/split m #" ")
+                request {:format :json
+                         :channel ch
+                         :name name
+                         :args (-?>> args
+                                     (filter identity)
+                                     seq
+                                     (map json/read-json))}
+                message (or (try
+                              (:body (parse-command request))
+                              (catch RuntimeException ex
+                                (trace/trace "errors:handled" ex)
+                                (json/json-str {:action "error"
+                                                :message (str ex)})))
+                            (let [event {:action "error"
+                                         ;; :request request
+                                         :message "no command found"}]
+                              (json/json-str event)))]
+            (l/enqueue ch message))))))))
 
-;; Create events for each created activity
+(defn init-receivers
+  []
 
-(l/siphon
- (->> ciste.core/*actions*
-      l/fork
-      (l/filter* (comp #{#'actions.activity/create} :action)))
- ch/posted-activities)
+  ;; Create events for each created activity
 
-(l/receive-all ch/posted-activities identity)
+  (l/siphon
+   (->> ciste.core/*actions*
+        l/fork
+        (l/filter* (comp #{#'actions.activity/create} :action)))
+   ch/posted-activities)
 
-;; Create events for each created conversation
+  (l/receive-all ch/posted-activities identity)
 
-(l/siphon
- (->> ciste.core/*actions*
-      l/fork
-      (l/filter* (comp #{#'actions.conversation/create} :action)))
- ch/posted-conversations)
+  ;; Create events for each created conversation
 
-(l/receive-all ch/posted-conversations identity)
+  (l/siphon
+   (->> ciste.core/*actions*
+        l/fork
+        (l/filter* (comp #{#'actions.conversation/create} :action)))
+   ch/posted-conversations)
+
+  (l/receive-all ch/posted-conversations identity))
 
 (definitializer
   (require-namespaces
    ["jiksnu.filters.stream-filters"
-    "jiksnu.views.stream-views"]))
+    "jiksnu.views.stream-views"])
+  (init-receivers)
+  )
