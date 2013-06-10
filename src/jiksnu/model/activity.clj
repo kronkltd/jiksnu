@@ -43,20 +43,13 @@
    (presence-of   :updated)
    ))
 
-(defn fetch-by-id
-  [id]
-  ;; TODO: Should this always take a string?
-  (let [id (if (string? id) (util/make-id id) id)]
-    (s/increment (str collection-name " fetched"))
-    (if-let [item (mc/find-map-by-id collection-name id)]
-      (maker item))))
-
-(def count-records (templates/make-counter    collection-name))
-(def delete        (templates/make-deleter    collection-name))
-(def drop!         (templates/make-dropper    collection-name))
-(def set-field!    (templates/make-set-field! collection-name))
-(def create        (templates/make-create     collection-name #'fetch-by-id #'create-validators))
-(def fetch-all     (templates/make-fetch-fn   collection-name maker))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn get-link
   [user rel content-type]

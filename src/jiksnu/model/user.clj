@@ -50,6 +50,7 @@
 (def set-field!    (templates/make-set-field!  collection-name))
 (def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
 (def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn salmon-link
   [user]
@@ -102,19 +103,6 @@
 (defn get-link
   [user rel content-type]
   (first (util/rel-filter rel (:links user) content-type)))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (s/increment "users searched")
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map maker records))))
 
 (defn get-user
   "Find a user by username and domain"
