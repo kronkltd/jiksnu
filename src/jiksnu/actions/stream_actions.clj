@@ -141,8 +141,7 @@
   [m]
   (str (json/json-str
         {:body {:action "activity-created"
-                :body m
-                }
+                :body m}
          :event "stream-add"
          :stream "public"})
        "\r\n"))
@@ -153,26 +152,26 @@
     (l/receive-all
      ch
      (fn [m]
-       (future
-         (session/with-user-id (:_id user)
-           (let [[name & args] (string/split m #" ")]
-             (if-let [resp
-                      (try
-                        (parse-command {:format :json
-                                        :channel ch
-                                        :name name
-                                        :args (-?>> args
-                                                    (filter identity)
-                                                    seq
-                                                    (map json/read-json))})
-                        (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex)
-                          {:body (json/json-str {:action "error"
-                                                 :message (str ex)})}))]
-               (l/enqueue ch (:body resp))
-               (l/enqueue ch (json/json-str {:action "error"
-                                             :request request
-                                             :message "no command found"}))))))))))
+       (session/with-user-id (:_id user)
+         (let [[name & args] (string/split m #" ")
+               request {:format :json
+                        :channel ch
+                        :name name
+                        :args (-?>> args
+                                    (filter identity)
+                                    seq
+                                    (map json/read-json))}
+               message (or (try
+                             (:body (parse-command request))
+                             (catch RuntimeException ex
+                               (trace/trace "errors:handled" ex)
+                               (json/json-str {:action "error"
+                                               :message (str ex)})))
+                           (let [event {:action "error"
+                                        :request request
+                                        :message "no command found"}]
+                             (json/json-str event)))]
+           (l/enqueue ch message)))))))
 
 ;; Create events for each created activity
 
