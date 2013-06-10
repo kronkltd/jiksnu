@@ -36,19 +36,7 @@
 (def set-field!    (templates/make-set-field!  collection-name))
 (def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
 (def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-    (s/increment "resources searched")
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map maker records))))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn fetch-by-url
   [url]
@@ -86,4 +74,3 @@
   (->> (enlive/select tree [:meta])
        (map meta->property)
        (reduce merge)))
-

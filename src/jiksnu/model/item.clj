@@ -8,24 +8,20 @@
            jiksnu.model.Item))
 
 (def collection-name "items")
+(def maker #'model/map->Item)
+(def default-page-size 20)
 
-(def set-field! (templates/make-set-field! collection-name))
-(def count-records (templates/make-counter collection-name))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
+(def create-validators
+  (validation-set
+   (type-of :_id           ObjectId)))
 
-;; (def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-
-(defn index
-  [user]
-  (mc/find-maps collection-name {:user (:_id user)}))
-
-(defn fetch-activities
-  [user]
-  (doall
-   (filter identity (map
-                     #(-> % :activity model.activity/fetch-by-id)
-                     (index user)))))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn push
   [user activity]

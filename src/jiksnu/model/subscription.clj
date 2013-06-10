@@ -18,6 +18,7 @@
            org.joda.time.DateTime))
 
 (def collection-name "subscriptions")
+(def maker #'model/map->Subscription)
 (def default-page-size 20)
 
 (def create-validators
@@ -28,41 +29,17 @@
    (type-of :updated DateTime)
    (type-of :_id     ObjectId)))
 
-(def set-field! (templates/make-set-field! collection-name))
-
-(defn drop!
-  []
-  (mc/remove collection-name))
-
-(defn delete
-  [subscription]
-  (mc/remove-by-id collection-name (:_id subscription))
-  subscription)
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn find-record
   [args]
   (model/map->Subscription (mc/find-one-as-map collection-name args)))
-
-(defn fetch-by-id
-  [id]
-  (if-let [subscription (mc/find-map-by-id collection-name id)]
-    (model/map->Subscription subscription)
-    (log/warnf "Could not find subscription with id: %s" id)))
-
-(defn fetch-all
-  "Fetch all users"
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (let [page (get options :page 1)
-           page-size (get options :page-size default-page-size)]
-       (->> (mq/with-collection collection-name
-              (mq/find params)
-              ;; TODO: sorting
-              (mq/paginate :page page :per-page page-size))
-            (map model/map->Subscription)))))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
 
 ;; TODO: use set-field
 (defn confirm
@@ -140,8 +117,3 @@
     :body (element/make-element
            "pubsub" {"xmlns" ns/pubsub}
            ["subscribers" {"node" ns/microblog}])}))
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name params)))

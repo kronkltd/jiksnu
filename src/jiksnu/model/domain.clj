@@ -33,12 +33,13 @@
    (type-of :local      Boolean)
    (type-of :discovered Boolean)))
 
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
 (def fetch-by-id   (templates/make-fetch-by-id collection-name maker false))
-(def count-records (templates/make-counter  collection-name))
-(def create        (templates/make-create   collection-name #'fetch-by-id #'create-validators))
-(def delete        (templates/make-deleter  collection-name))
-(def drop!         (templates/make-dropper  collection-name))
-(def fetch-all     (templates/make-fetch-fn collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn get-link
   [item rel content-type]
@@ -51,8 +52,6 @@
   (mc/update collection-name
     (select-keys domain #{:_id})
     {:$pushAll {:links links}}))
-
-(def set-field! (templates/make-set-field! collection-name))
 
 (defn ping-request
   [domain]
