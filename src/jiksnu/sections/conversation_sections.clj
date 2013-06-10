@@ -96,9 +96,7 @@
           {:href (:url item)})
      (when-not *dynamic*
        (:url item))]]
-   #_[:td (if *dynamic*
-          {:data-bind "text: created"}
-          (:created item))]
+   ;; [:td (display-property item :created)]
    [:td (display-property item :lastUpdated)]
    [:td (display-property item :updated)]
    [:td (actions-section item)]])
@@ -204,24 +202,23 @@
                  (User.)
                  (model.activity/get-author activity))]
     [:div.comment (merge {:data-model "activity"}
-                               (if *dynamic*
-                                 {}
-                                 {:data-id (:_id author)}))
-     [:span (when *dynamic*
-              {:data-bind "with: author"})
-      [:span {:data-model "user"}
-       [:a.pull-left
-        (sections.user/display-avatar author)]
-       (link-to author)]]
+                         (when-not *dynamic*
+                           {:data-id (:_id author)}))
+     (bind-to "author"
+       [:span {:data-model "user"}
+        [:a.pull-left
+         (sections.user/display-avatar author)]
+        (link-to author)])
      ": "
-     [:span
-      (if *dynamic*
-        {:data-bind "text: title"}
-        (h/h (:title activity)))]]))
+     [:span.comment-content
+      (display-property activity "title")]]))
 
 (defsection show-section [Conversation :html]
   [item & [page]]
-  (let [about-uri (full-uri item)]
+  (let [about-uri (full-uri item)
+        items (if *dynamic*
+                [(Activity.) (Activity.)]
+                (:items (actions.activity/fetch-by-conversation item)))]
     [:div.conversation-section
      (merge {:data-model "conversation"
              :typeof "sioc:Container"}
@@ -231,18 +228,15 @@
      (actions-section item)
      ;; (show-details item page)
      (with-page "conversation-' + $data._id() + '"
-       (let [items (if *dynamic*
-                     [(Activity.) (Activity.)]
-                     ;; TODO: actually fetch the activity here
-                     (:items (actions.activity/fetch-by-conversation item)))]
-         (if-let [item (first items)]
-           (bind-to "$data.items()[0]"
-             (show-section item))
-           [:p "The parent activity for this conversation could not be found"])
-         #_(when-let [comments (next items)]
-           [:section.comments.clearfix (when *dynamic* {:data-bind "with: $data.items().slice(1)"})
-            [:div #_(when *dynamic* {:data-bind "if: $data"})
-             (map show-comment comments)]])))]))
+       (if-let [item (first items)]
+         (bind-to "$data.items()[0]"
+           (show-section item))
+         [:p "The parent activity for this conversation could not be found"])
+       (when-let [comments (next items)]
+         [:section.comments.clearfix
+          (bind-to "$data.items().slice(1)"
+            [:div (when *dynamic* {:data-bind "foreach: $data"})
+             (map show-comment comments)])]))]))
 
 (defsection show-section [Conversation :rdf]
   [item & [page]]
