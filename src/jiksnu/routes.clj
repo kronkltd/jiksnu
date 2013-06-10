@@ -4,7 +4,8 @@
         #_[clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
         [ring.middleware.resource :only [wrap-resource]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+]]
+        tidy-up.core)
   (:require [aleph.http :as http]
             [ciste.middleware :as middleware]
             #_[clj-airbrake.core :as airbrake]
@@ -109,5 +110,6 @@
         ;; (nm/wrap-canonical-host (config :domain))
         jm/wrap-stacktrace
         jm/wrap-stat-logging
+        ;; wrap-tidy-up
         ;; (wrap-resource "/META-INF/resources")
 ))))

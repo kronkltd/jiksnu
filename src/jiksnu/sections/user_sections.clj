@@ -11,7 +11,7 @@
          [jiksnu.sections :only [action-link actions-section admin-actions-section
                                  admin-index-block admin-index-line admin-index-section
                                  admin-show-section bind-property bind-to control-line
-                                 dropdown-menu pagination-links]]
+                                 display-property dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
@@ -543,34 +543,19 @@
     [:div (display-avatar user 96)]
     [:p
      [:span.nickname.fn.n
-      [:span
-       (if *dynamic*
-         {:data-bind "text: displayName"}
-         (:display-name user))]]
+      (display-property user :displayName)]
      " ("
-     [:span
-      (if *dynamic*
-        {:data-bind "text: username"}
-        (:username user))]
+     (display-property user :username)
      "@"
-     [:span
-      (if *dynamic*
-        {:data-bind "text: domain"}
-        (link-to (actions.user/get-domain user)))] ")"]
+     (display-property user :domain)
+     ")"]
     [:div.adr
-     [:p.locality
-      (if *dynamic*
-        {:data-bind "text: location"}
-        (:location user))]]
-    [:p.note
-     (if *dynamic*
-       {:data-bind "text: bio"}
-       (:bio user))]
-    [:p
-     (bind-to "updateSource"
-       (let [source (if *dynamic* (FeedSource.) nil)]
-         [:div {:data-model "feed-source"}
-          (link-to source) ]))]
+     [:p.locality (display-property user :location)]]
+    [:p.note (display-property user :bio)]
+    (if-let [source (if *dynamic* (FeedSource.) nil)]
+      (bind-to "updateSource"
+        [:div {:data-model "feed-source"}
+         (link-to source) ]))
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
     (when (:discovered user)

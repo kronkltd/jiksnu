@@ -265,6 +265,7 @@
                        "bio"          nil
                        "username"     nil
                        "location"     ""
+                       "local"        false
                        "domain"       nil
                        "updateSource" nil
                        "links"        (array)
@@ -288,6 +289,7 @@
                 "comment-count" 0
                 "created"       nil
                 "conversation"  nil
+                "local"        false
                 "title"         nil
                 "mentioned"     (array)
                 "tags"          (array)

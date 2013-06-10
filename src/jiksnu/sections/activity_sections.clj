@@ -346,15 +346,14 @@
                    (:conversation activity))]
      (list
       " "
-      [:span (when *dynamic* {:data-bind "with: conversation"})
-       [:span {:data-model "conversation"}
-        (let [conversation (if *dynamic*
-                             (Conversation.)
-                             (model.conversation/fetch-by-id (:conversation activity)))]
+      (let [conversation (if *dynamic*
+                           (Conversation.)
+                           (model.conversation/fetch-by-id (:conversation activity)))]
+        (bind-to "conversation"
           [:a (if *dynamic*
-                {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
+                {:data-bind "attr: {href: '/main/conversations/' + $data}"}
                 {:href (uri conversation)})
-           "in context"])]]))
+           "in context"]))))
 
    (when-let [geo (if *dynamic*
                     {}

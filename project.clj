@@ -50,6 +50,7 @@
                  [ring "1.2.0-beta3"]
                  [ring/ring-core "1.2.0-beta3"]
                  [ring-basic-authentication "0.0.1"]
+                 [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.10.3"]
                  [tigase/tigase-server "5.2.0-beta1"]
                  ;; [net.thegeez/google-closure-library "0.0-1698"]

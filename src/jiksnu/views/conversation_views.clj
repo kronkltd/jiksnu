@@ -49,9 +49,8 @@
    (let [item (if *dynamic* (Conversation.) item)]
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
-        (sections.conversation/show-details item)
-        (show-section item)]
-       ))})
+        (sections.conversation/show-details item)]
+       (show-section item)))})
 
 (defview #'show :model
   [request item]

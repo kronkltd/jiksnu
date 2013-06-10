@@ -26,7 +26,8 @@
             [jiksnu.sections.group-sections :as sections.group]
             [jiksnu.sections.subscription-sections :as sections.subscription]
             [jiksnu.sections.user-sections :as sections.user])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 (def statistics-info
   [["activities"        "Activities"]
@@ -264,8 +265,10 @@
 
 (defn right-column-section
   [response]
-  (let [user (or (:user response)
-                 (current-user))]
+  (let [user (if *dynamic*
+               (User.)
+               (or (:user response)
+                  (current-user)))]
     (list
      (bind-to "$root.targetUser() || $root.currentUser()"
        (user-info-section user))
