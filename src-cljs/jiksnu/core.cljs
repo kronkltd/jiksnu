@@ -72,7 +72,7 @@
   (doseq [[k v] logging-levels]
     (log/set-level (log/get-logger k) v))
 
-  ;; (log/start-display (log/fancy-output))
+  ;; (log/start-display (log/fancy-output "foo"))
 
   (log/start-display (log/console-output))
 
