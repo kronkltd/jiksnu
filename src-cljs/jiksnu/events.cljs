@@ -44,7 +44,7 @@
 
 (defmethod ws/process-event "model-updated"
   [event]
-  (log/fine *logger* "model updated")
+  (log/finest *logger* "model updated")
   (let [data (.-body event)
         id (.-_id data)
         type (.-type event)]
@@ -52,7 +52,7 @@
 
 (defmethod ws/process-event "page-updated"
   [event]
-  (log/fine *logger* "page updated")
+  (log/finest *logger* "page updated")
   (let [data (.-body event)
         id (.-id data)
         type (.-type event)]

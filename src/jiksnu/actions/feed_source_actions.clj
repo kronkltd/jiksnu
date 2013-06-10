@@ -115,7 +115,7 @@
 
 (defn find-by-resource
   [resource]
-  (model.feed-source/find-record {:url (:url resource)}))
+  (model.feed-source/fetch-all {:topic (:url resource)}))
 
 (defaction index
   [& options]

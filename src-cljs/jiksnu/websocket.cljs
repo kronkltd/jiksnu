@@ -181,8 +181,9 @@
     (if event
       (do (state/transition ws-state :idle :receiving)
           (let [message (.-message event)]
-            (log/fine *logger* (format "Receiving message: %s" message))
             (let [parsed-event (parse-json message)]
+              (when (.isLoggable *logger* goog.debug.Logger.Level.FINE)
+                (.debug js/console "Receiving message" parsed-event))
               (process-event parsed-event)
               (state/transition ws-state :receiving :idle)
               parsed-event)))

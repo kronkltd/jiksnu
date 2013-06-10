@@ -79,7 +79,9 @@
           (if-let [om (aget ko/observables coll-name)]
             (init-observable model-name id om m)
             (log/warning (str "Could not find observable model for: " coll-name))))
-        (log/warning *logger* "Could not get model"))
+        (do
+          (.add coll data)
+          (.get coll id)))
       (log/fine (str "no collection named: " coll-name)))
     (log/warning (str "Could find collection for: " model-name))))
 
