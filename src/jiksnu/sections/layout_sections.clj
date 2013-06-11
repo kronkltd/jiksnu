@@ -97,22 +97,25 @@
    [:ul
     [:li [:a {:href "#"} "#"]]]])
 
+(defn formats-section*
+  [format]
+  [:li.format-line
+   [:a {:href (:href format)}
+    (when (:icon format)
+      [:span.format-icon
+       [:img {:alt ""
+              :src (str "/assets/themes/classic/" (:icon format))}]])
+    [:span.format-label (:label format)]]])
+
 (defn formats-section
   [response]
-  (when (:formats response)
+  (when-let [formats (if *dynamic*
+                       [{}]
+                       (:formats response))]
     [:div.well
      [:h3 "Formats"]
      [:ul.unstyled
-      (map
-       (fn [format]
-         [:li.format-line
-          [:a {:href (:href format)}
-           (when (:icon format)
-             [:span.format-icon
-              [:img {:alt ""
-                     :src (str "/assets/themes/classic/" (:icon format))}]])
-           [:span.format-label (:label format)]]])
-       (:formats response))]]))
+      (map formats-section* formats)]]))
 
 (defn statistics-line
   [stats [model-name label]]
