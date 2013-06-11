@@ -24,8 +24,8 @@
    ;; "waltz.state"        :finest
    ;; "jiksnu.core"        :fine
    ;; "jiksnu.events"    :finest
-   "jiksnu.model"       :finer
-   "jiksnu.websocket"   :fine
+   ;; "jiksnu.model"       :fine
+   ;; "jiksnu.websocket"   :fine
    "goog.net.WebSocket" :warning
    })
 
@@ -79,7 +79,6 @@
   (log/info *logger* "init")
 
   (try
-    (ws/set-view model/_view)
     (ws/connect)
     (catch js/Error ex
       (log/severe *logger* ex)))
@@ -103,10 +102,6 @@
 
   (ko/apply-bindings model/_view)
 
-  (.addClass ($ :html) "bound")
-
-  #_(stats/fetch-statistics model/_view)
-
-  (log/info *logger* "init finished"))
+  (.addClass ($ :html) "bound"))
 
 (main)

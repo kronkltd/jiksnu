@@ -14,8 +14,8 @@
 (defmethod ws/process-event "delete"
   [event]
   (log/info *logger* "delete callback")
-  #_(let [id (.-id event)]
-    (.items model/_view (_/without (.items _view) id))))
+
+  )
 
 (defmethod ws/process-event "update viewmodel"
   [event]

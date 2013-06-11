@@ -18,12 +18,6 @@
 (def ws-state (state/machine "websocket state"))
 ;; (state/set-debug ws-state false)
 (state/set ws-state :closed)
-(def _view)
-
-(defn set-view
-  [view]
-  (set! _view view))
-
 
 (defn parse-json
   [s]

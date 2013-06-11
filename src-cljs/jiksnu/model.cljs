@@ -189,7 +189,7 @@
     "defaults" (fn [] (js-obj
                        "page"         1
                        "pageSize"     0
-                       "items"        (array)
+                       "items"        (array) #_(backbone/Collection.)
                        "recordCount"  0
                        "totalRecords" 0))
     "addItem" (fn [id]
@@ -535,12 +535,12 @@
   (when-let [page (.get pages name)]
     (log/finer *logger* (format "Fetching page: %s" name))
     (.fetch page)
-    ;; (let [pages (aset (.pages _view) name (.viewModel js/kb page))]
-    ;;   (.pages _view pages))
     page))
 
 (defn get-page
-  "Returns the page for the name from the view's page info"
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
   [name]
   (log/fine *logger* (str "getting page: " name))
   (if-let [page (-> (.pages _view)
