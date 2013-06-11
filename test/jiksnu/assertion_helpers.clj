@@ -178,7 +178,7 @@
 (defn name-should-be
   [display-name]
   (check-response
-   (model.user/fetch-by-id (:_id (get-this :user))) => (contains {:display-name display-name})))
+   (model.user/fetch-by-id (:_id (get-this :user))) => (contains {:name display-name})))
 
 (defn subscription-should-be-deleted
   []

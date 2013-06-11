@@ -3,7 +3,8 @@
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-block admin-index-line
-                                bind-to control-line dump-data]]
+                                bind-to control-line display-property
+                                dump-data]]
         [jiksnu.session :only [current-user]]
         [jiksnu.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log]
@@ -19,10 +20,8 @@
      (if *dynamic* {:data-bind "with: currentUser"})
      [:span {:data-model "user"}
       (display-avatar-img user 18)
-      [:span
-       (if *dynamic*
-         {:data-bind "text: displayName"}
-         (:display-name user))]]] [:b.caret]]
+      (display-property user :name)]]
+    [:b.caret]]
    [:ul.dropdown-menu
     [:li
      [:a.settings-link {:href "/main/settings"} "Settings"]

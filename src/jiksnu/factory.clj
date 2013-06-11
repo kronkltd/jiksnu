@@ -42,7 +42,7 @@
   [n]
   (str "user-" n))
 
-(defseq :name
+(defseq :givenName
   [n]
   (rand-nth
    ["Alice" "Bob" "Carol" "Daniel"
@@ -59,9 +59,9 @@
     "Skywalker" "Bluth" "Adama" "Dumbledore"
     "Attreides"]))
 
-(defseq :display-name
+(defseq :name
   [n]
-  (str (fseq :name) " " (fseq :surname)))
+  (str (fseq :givenName) " " (fseq :surname)))
 
 (defseq :password
   [n]
@@ -181,16 +181,15 @@
 
 (defrecordfactory :user model/map->User
   (let [password (fseq :password)
-        first-name (fseq :name)
+        first-name (fseq :givenName)
         last-name (fseq :surname)
-        display-name (str first-name " " last-name)
+        name (str first-name " " last-name)
         username (fseq :username)]
     {:username username
      :domain #'domain-id
      :email (fseq :email)
-     :name display-name
+     :name name
      ;; :update-source #'source-id
-     :display-name display-name
      :first-name first-name
      :last-name last-name}))
 

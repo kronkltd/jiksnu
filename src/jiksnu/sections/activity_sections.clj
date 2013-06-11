@@ -761,7 +761,7 @@
        (bind-to "author"
          [:div {:data-model "user"}
           (link-to user)])
-       #_(recipients-section activity)]
+       (recipients-section activity)]
       [:div.entry-content
        (merge {:property "dc:title"}
               (when *dynamic*

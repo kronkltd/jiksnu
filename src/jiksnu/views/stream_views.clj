@@ -230,7 +230,7 @@
                 [(Activity.)]
                 items)]
     {:user user
-     :title (:display-name user)
+     :title (:name user)
      :post-form true
      :body
      (with-page "conversations"

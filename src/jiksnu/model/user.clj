@@ -95,7 +95,7 @@
 
 (defn display-name
   [^User user]
-  (or (:display-name user)
+  (or (:name user)
       (when (and (:first-name user) (:last-name user))
         (str (:first-name user) " " (:last-name user)))
       (get-uri user)))

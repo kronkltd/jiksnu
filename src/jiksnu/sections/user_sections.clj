@@ -113,7 +113,7 @@
 
     (control-line "Display Name"
                   "display-name" "text"
-                  :value (:display-name user))
+                  :value (:name user))
 
     (control-line "First Name:"
                   "first-name" "text"
@@ -160,7 +160,6 @@
   (let [author-uri (or (:url user)
                        (model.user/get-uri user))
         name (or (:name user)
-                 (:display-name user)
                  (str (:first-name user) " " (:last-name user)))
         id (or (:id user) author-uri)
         extensions [{:ns ns/as
@@ -516,7 +515,7 @@
             :username (:username user)
             :domain (:domain user)
             :published (:updated user)
-            ;; :name {:formatted (:display-name user)
+            ;; :name {:formatted (:name user)
             ;;        :familyName (:last-name user)
             ;;        :givenName (:first-name user)}
             }
@@ -569,7 +568,7 @@
 
 (defsection show-section [User :json]
   [user & _]
-  {:name (:display-name user)
+  {:name (:name user)
    :id (:_id user)
    :screen_name (:username user)
    :url (:id user)
@@ -643,7 +642,7 @@
   [user & options]
   [:user
    [:id (:_id user)]
-   [:name (:display-name user)]
+   [:name (:name user)]
    [:screen_name (:username user)]
    [:location (:location user)]
    [:description (:bio user)]
@@ -658,7 +657,7 @@
     (h/html
      ["vcard"
       {"xmlns" ns/vcard}
-      ["fn" ["text" (:display-name user)]]
+      ["fn" ["text" (:name user)]]
       [:nickname (:username user)]
       [:url (:url user)]
       [:n
@@ -675,7 +674,6 @@
 (defsection title [User]
   [user & options]
   (or (:name user)
-      (:display-name user)
       (:first-name user)
       (model.user/get-uri user)))
 

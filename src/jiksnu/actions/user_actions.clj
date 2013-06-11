@@ -297,7 +297,7 @@
   {:id (abdera/get-simple-extension person ns/atom "id")
    :email (.getEmail person)
    :url (str (.getUri person))
-   :display-name (abdera/get-name person)
+   :name (abdera/get-name person)
    :note (abdera/get-note person)
    :username (abdera/get-username person)
    :local-id (-> person
@@ -440,7 +440,7 @@
 
 (defaction register
   "Register a new user"
-  [{:keys [username password email display-name location bio] :as options}]
+  [{:keys [username password email name location bio] :as options}]
   ;; TODO: should we check reg-enabled here?
   ;; verify submission.
   (if (and username password)
@@ -452,7 +452,7 @@
                            :id (str "acct:" username "@" (config :domain))
                            :local true}
                           (when email {:email email})
-                          (when display-name {:display-name display-name})
+                          (when name {:name name})
                           (when bio {:bio bio})
                           (when location {:location location}))
             user (create params)]

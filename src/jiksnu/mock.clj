@@ -57,7 +57,7 @@
         user (actions.user/register
               {:username (fseq :username)
                :password password
-               :display-name (fseq :name)
+               :name (fseq :name)
                :accepted true})
         user (if (:admin opts)
                (do (model.user/set-field! user :admin true)

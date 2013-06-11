@@ -38,8 +38,7 @@
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
-  {:body {:title "Conversations"
-          :pages {:conversations (format-page-info page)}}})
+  {:body {:title "Conversations"}})
 
 ;; show
 
@@ -50,20 +49,19 @@
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
         (sections.conversation/show-details item)]
-       (show-section item)))})
+       (with-page "conversation-' + $data +'"
+         (let [items (if *dynamic*
+                       [(Activity.)]
+                       (:items (actions.activity/fetch-by-conversation item)))]
+           (bind-to "items"
+             (index-section items))))))})
 
 (defview #'show :model
   [request item]
-  (let [page (actions.activity/fetch-by-conversation item
-                                                     {:sort-clause {:updated 1}})
-        page (assoc page :items (map :_id (:items page)))]
-    {:body (assoc item :activities page)}))
+  {:body item})
 
 (defview #'show :viewmodel
   [request item]
   {:body {:targetConversation (:_id item)
-          :pages {:activities (let [page (actions.activity/fetch-by-conversation item
-                                                                                 {:sort-clause {:updated 1}})]
-                                (format-page-info page))}
           :title (or (:title item)
                      "Conversation")}})
