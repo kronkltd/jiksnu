@@ -152,7 +152,7 @@
     (l/receive-all
      ch
      (fn [m]
-       (log/infof "this happens on the io thread: %s" m)
+       (log/info m)
        (future (session/with-user-id (:_id user)
                  (let [[name & args] (string/split m #" ")
                        request {:format :json
@@ -172,7 +172,7 @@
                                                 ;; :request request
                                                 :message "no command found"}]
                                      (json/json-str event)))]
-                   (log/debug "enqueue message:")
+                   ;; (log/debug "enqueue message:")
                    (l/enqueue ch message))))))))
 
 (defn init-receivers

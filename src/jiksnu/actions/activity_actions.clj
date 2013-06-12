@@ -29,7 +29,9 @@
            jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera.model.Entry
-           org.apache.abdera.model.Element))
+           org.apache.abdera.model.Element
+           org.jsoup.Jsoup
+           org.jsoup.safety.Whitelist))
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
 
@@ -182,7 +184,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 
 (defn sanitize
   [input]
-  (Jsoup/clean input (Whitelist/basic)))
+  (Jsoup/clean input (Whitelist/none)))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json

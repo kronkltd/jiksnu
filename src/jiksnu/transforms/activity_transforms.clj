@@ -38,7 +38,9 @@
     activity
     (if (:local activity)
       (assoc activity :url (r/named-url "show activity" {:id (:_id activity)}))
-      (throw+ "Could not determine activity url"))))
+      (if (:id activity)
+        (assoc activity :url (:id activity))
+        (throw+ "Could not determine activity url")))))
 
 (defn set-object-type
   [activity]
