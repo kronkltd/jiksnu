@@ -180,6 +180,10 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 
 (defonce latest-entry (ref nil))
 
+(defn sanitize
+  [input]
+  (Jsoup/clean input (Whitelist/basic)))
+
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
@@ -221,7 +225,7 @@ serialization"
         object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
         params (apply merge
                       (dissoc parsed-entry :extensions)
-                      (when content           {:content content})
+                      (when content           {:content (sanitize content)})
                       (when updated           {:updated updated})
                       ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
                       (when title             {:title title})

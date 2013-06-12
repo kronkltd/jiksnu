@@ -38,6 +38,7 @@
                  [org.clojure/clojure "1.5.1"]
                  [org.clojure/tools.logging "0.2.3"]
                  [org.clojure/data.json "0.2.2"]
+                 [org.jsoup/jsoup "1.7.2"]
                  [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.7.5"]
                  [org.slf4j/slf4j-log4j12 "1.7.5"]

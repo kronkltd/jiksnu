@@ -14,7 +14,7 @@
 (defmethod actions.resource/process-response-content "application/atom+xml"
   [content-type item response]
   (log/debug "parsing atom content")
-  (if-let [source (actions.feed-source/find-by-resource item)]
+  (if-let [source (first (actions.feed-source/find-by-resource item))]
     (if-let [feed (abdera/parse-xml-string (:body response))]
       (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
             source-updated (:updated source)]
