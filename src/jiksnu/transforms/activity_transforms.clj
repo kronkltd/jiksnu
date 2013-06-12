@@ -1,6 +1,7 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
@@ -216,7 +217,7 @@
                     (map :href)
                     (map (fn [url]
                            (let [resource (actions.resource/find-or-create {:url url})]
-                             (future (actions.resource/update resource))
+                             (actions.resource/update resource)
                              (:_id resource))))
                     seq
                     doall)]

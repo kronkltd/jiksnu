@@ -173,11 +173,12 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   "initial step of parsing an entry"
   [^Entry entry]
   {:id         (str (.getId entry))
+   :url        (str (.getAlternateLinkResolvedHref entry))
    :title      (.getTitle entry)
+   :content    (.getContent entry)
    :published  (.getPublished entry)
    :updated    (.getUpdated entry)
-   :content    (.getContent entry)
-   :url        (str (.getAlternateLinkResolvedHref entry))
+   :links      (abdera/parse-links entry)
    :extensions (.getExtensions entry)})
 
 (defonce latest-entry (ref nil))
@@ -192,7 +193,7 @@ serialization"
   [^Entry entry & [feed source]]
   (dosync
    (ref-set latest-entry entry))
-  (let [{:keys [extensions content id title published updated] :as parsed-entry}
+  (let [{:keys [extensions content id title published updated links] :as parsed-entry}
         (parse-entry entry)
         original-activity (model.activity/fetch-by-remote-id id)
         verb (get-verb entry)
@@ -201,7 +202,6 @@ serialization"
                  actions.user/person->user
                  actions.user/find-or-create-by-remote-id)
         extension-maps (doall (map parse-extension-element extensions))
-        links (seq (abdera/parse-links entry))
 
         irts (seq (abdera/parse-irts entry))
 

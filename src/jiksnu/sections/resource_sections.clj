@@ -105,7 +105,7 @@
    [:td (if *dynamic*
           {:data-bind "text: updated"}
           (:updated item))]
-   #_[:td (actions-section item)]])
+   [:td (actions-section item)]])
 
 ;; link-to
 

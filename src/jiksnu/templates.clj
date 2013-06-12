@@ -5,8 +5,7 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
-            [jiksnu.util :as util
-             ]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace]
             [monger.collection :as mc]
@@ -38,22 +37,23 @@
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]
-  (fn [& [{:as params} & [{:as options} & _]]]
-    (let [options (or options {})
-          page (get options :page 1)
-          criteria {:sort-clause (or (:sort-clause options)
-                                     sort-clause)
-                    :page page
-                    :page-size page-size
-                    :skip (* (dec page) page-size)
-                    :limit page-size}
-          record-count (count-fn params)
-          records (fetch-fn params criteria)]
-      {:items records
-       :page page
-       :page-size page-size
-       :totalRecords record-count
-       :args options})))
+  (trace/instrument
+   (fn [& [{:as params} & [{:as options} & _]]]
+     (let [options (or options {})
+           page (get options :page 1)
+           criteria {:sort-clause (or (:sort-clause options)
+                                      sort-clause)
+                     :page page
+                     :page-size page-size
+                     :skip (* (dec page) page-size)
+                     :limit page-size}
+           record-count (count-fn params)
+           records (fetch-fn params criteria)]
+       {:items records
+        :page page
+        :page-size page-size
+        :totalRecords record-count
+        :args options}))))
 
 (defmacro make-indexer
   [namespace-sym & options]
@@ -115,28 +115,31 @@
 
 (defn make-create
   [collection-name fetcher validator]
-  (fn [params]
-    (let [errors (validator params)]
-      (if (empty? errors)
-        (do
-          (log/debugf "Creating %s: %s" collection-name (pr-str params))
-          (mc/insert collection-name params)
-          (let [item (fetcher (:_id params))]
-            (trace/trace* (str collection-name ":created") item)
-            (s/increment (str collection-name "_created"))
-            item))
-        (throw+ {:type :validation :errors errors})))))
+  (trace/instrument
+   (fn [params]
+     (let [errors (validator params)]
+       (if (empty? errors)
+         (do
+           (log/debugf "Creating %s: %s" collection-name (pr-str params))
+           (mc/insert collection-name params)
+           (let [item (fetcher (:_id params))]
+             (trace/trace* (str collection-name ":created") item)
+             (s/increment (str collection-name "_created"))
+             item))
+         (throw+ {:type :validation :errors errors}))))
+   {:name (keyword (str collection-name "-created"))}))
 
 (defn make-fetch-by-id
   ([collection-name maker]
      (make-fetch-by-id collection-name maker true))
   ([collection-name maker convert-id]
-     (fn [id]
-       (let [id (if (and convert-id (instance? String id))
-                  (util/make-id id) id)]
-         (log/debugf "fetching %s(%s)" collection-name id)
-         (trace/trace* (str collection-name ":fetched") id)
-         (s/increment (str collection-name "_fetched"))
-         (when-let [item (mc/find-map-by-id collection-name id)]
-           (maker item))))))
+     (trace/instrument
+      (fn [id]
+        (let [id (if (and convert-id (instance? String id))
+                   (util/make-id id) id)]
+          (log/debugf "fetching %s(%s)" collection-name id)
+          (trace/trace* (str collection-name ":fetched") id)
+          (s/increment (str collection-name "_fetched"))
+          (when-let [item (mc/find-map-by-id collection-name id)]
+            (maker item)))))))
 

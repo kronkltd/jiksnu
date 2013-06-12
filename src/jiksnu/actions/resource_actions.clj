@@ -1,11 +1,13 @@
 (ns jiksnu.actions.resource-actions
-  (:use [ciste.core :only [defaction]]
+  (:use [aleph.formats :only [channel-buffer->string]]
+        [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.actions :only [invoke-action]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [aleph.http :as http]
+            [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
             [clj-time.coerce :as coerce]
@@ -36,7 +38,7 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defn prepare-create
+(trace/defn-instrumented prepare-create
   [params]
   (-> params
       transforms/set-_id
@@ -117,7 +119,8 @@
           (when (seq encoding)
             (model.resource/set-field! item :encoding encoding))))
       (model.resource/set-field! item :contentType content-type)
-      (process-response-content content-type item response))))
+      (let [response (assoc response :body (channel-buffer->string (:body response)))]
+        (process-response-content content-type item response)))))
 
 (defn update*
   [item & [options]]
@@ -131,12 +134,15 @@
         (let [url (:url item)]
           (log/infof "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
-          (let [response (client/get url {:throw-exceptions false
-                                          :headers {"User-Agent" user-agent}
-                                          :insecure? true})]
+          (let [response (http/http-request
+                          {:url url
+                           :method :get
+                           :throw-exceptions false
+                           :headers {"User-Agent" user-agent}
+                           :insecure? true})]
             (task
              (try
-               (process-response item response)
+               (process-response item @response)
                (catch Exception ex
                  (.printStackTrace ex))))
             response))
