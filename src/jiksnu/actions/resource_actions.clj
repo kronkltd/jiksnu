@@ -119,8 +119,7 @@
           (when (seq encoding)
             (model.resource/set-field! item :encoding encoding))))
       (model.resource/set-field! item :contentType content-type)
-      (let [response (assoc response :body (channel-buffer->string (:body response)))]
-        (process-response-content content-type item response)))))
+      (process-response-content content-type item response))))
 
 (defn update*
   [item & [options]]
@@ -138,6 +137,7 @@
                           {:url url
                            :method :get
                            :throw-exceptions false
+                           :auto-transform true
                            :headers {"User-Agent" user-agent}
                            :insecure? true})]
             (task

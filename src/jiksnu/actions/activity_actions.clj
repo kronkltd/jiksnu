@@ -337,7 +337,10 @@ serialization"
 
 (defaction fetch-by-conversations
   [ids & [options]]
-  (index {:conversation {:$in ids}} options))
+  (index {:conversation {:$in ids}}
+         (merge
+          {:sort-clause {:updated 1}}
+          options)))
 
 (defaction fetch-by-feed-source
   [source & [options]]

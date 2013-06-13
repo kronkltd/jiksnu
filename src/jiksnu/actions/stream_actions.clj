@@ -112,7 +112,7 @@
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
       (do
-        (task (actions.feed-source/process-feed source feed))
+        (actions.feed-source/process-feed source feed)
         true)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
@@ -152,28 +152,27 @@
     (l/receive-all
      ch
      (fn [m]
-       (log/info m)
-       (future (session/with-user-id (:_id user)
-                 (let [[name & args] (string/split m #" ")
-                       request {:format :json
-                                :channel ch
-                                :name name
-                                :args (-?>> args
-                                            (filter identity)
-                                            seq
-                                            (map json/read-json))}
-                       message (or (try
-                                     (:body (parse-command request))
-                                     (catch RuntimeException ex
-                                       (trace/trace "errors:handled" ex)
-                                       (json/json-str {:action "error"
-                                                       :message (str ex)})))
-                                   (let [event {:action "error"
-                                                ;; :request request
-                                                :message "no command found"}]
-                                     (json/json-str event)))]
-                   ;; (log/debug "enqueue message:")
-                   (l/enqueue ch message))))))))
+       (session/with-user-id (:_id user)
+         (let [[name & args] (string/split m #" ")
+               request {:format :json
+                        :channel ch
+                        :name name
+                        :args (-?>> args
+                                    (filter identity)
+                                    seq
+                                    (map json/read-json))}
+               message (or (try
+                             (:body (parse-command request))
+                             (catch RuntimeException ex
+                               (trace/trace "errors:handled" ex)
+                               (json/json-str {:action "error"
+                                               :message (str ex)})))
+                           (let [event {:action "error"
+                                        ;; :request request
+                                        :message "no command found"}]
+                             (json/json-str event)))]
+           ;; (log/debug "enqueue message:")
+           (l/enqueue ch message)))))))
 
 (defn init-receivers
   []
