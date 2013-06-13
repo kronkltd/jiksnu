@@ -25,7 +25,7 @@
 
 (defn make-fetch-fn
   [collection-name make-fn]
-  (trace/instrumented
+  (trace/instrument
    (fn [& [params & [options]]]
      (s/increment (str collection-name " searched"))
      (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
@@ -39,7 +39,7 @@
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]
-  (trace/instrumented
+  (trace/instrument
    (fn [& [{:as params} & [{:as options} & _]]]
      (let [options (or options {})
            page (get options :page 1)
@@ -56,7 +56,7 @@
         :page-size page-size
         :totalRecords record-count
         :args options}))
-   {:name (str collection-name "-indexer")}))
+   {:name "indexer"}))
 
 (defmacro make-indexer
   [namespace-sym & options]
