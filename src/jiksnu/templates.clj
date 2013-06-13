@@ -135,7 +135,7 @@
              item))
          (throw+ {:type :validation :errors errors})))
      {:name (str collection-name "-created")})
-   {:name (keyword (str collection-name "-creator"))}))
+   {:name (str collection-name "-creator")}))
 
 (defn make-fetch-by-id
   ([collection-name maker]
