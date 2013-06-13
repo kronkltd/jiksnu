@@ -25,19 +25,21 @@
 
 (defn make-fetch-fn
   [collection-name make-fn]
-  (fn [& [params & [options]]]
-    (s/increment (str collection-name " searched"))
-    (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-          records (mq/with-collection collection-name
-                    (mq/find params)
-                    (merge sort-clause)
-                    (mq/paginate :page (:page options 1)
-                                 :per-page (:page-size options 20)))]
-      (map make-fn records))))
+  (trace/instrumented
+   (fn [& [params & [options]]]
+     (s/increment (str collection-name " searched"))
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (:page options 1)
+                                  :per-page (:page-size options 20)))]
+       (map make-fn records)))
+   {:name (str collection-name "-searcher")}))
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]
-  (trace/instrument
+  (trace/instrumented
    (fn [& [{:as params} & [{:as options} & _]]]
      (let [options (or options {})
            page (get options :page 1)
@@ -53,7 +55,8 @@
         :page page
         :page-size page-size
         :totalRecords record-count
-        :args options}))))
+        :args options}))
+   {:name (str collection-name "-indexer")}))
 
 (defmacro make-indexer
   [namespace-sym & options]
@@ -72,11 +75,13 @@
 
 (defn make-counter
   [collection-name]
-  (fn [& [params]]
+  (trace/instrument
+   (fn [& [params]]
      (let [params (or params {})]
        (trace/trace* (str collection-name ":counted") 1)
        (s/increment (str collection-name " counted"))
-       (mc/count collection-name params))))
+       (mc/count collection-name params)))
+   {:name (str collection-name "-counter")}))
 
 (defn make-deleter
   [collection-name]
@@ -94,15 +99,17 @@
 
 (defn make-set-field!
   [collection-name]
-  (fn [item field value]
-    (if (not= field :links)
-      (when-not (= (get item field) value)
-        (log/debugf "setting %s(%s): (%s = %s)" collection-name (:_id item) field (pr-str value))
-        (s/increment (str collection-name " field set"))
-        (mc/update collection-name
-          {:_id (:_id item)}
-          {:$set {field value}}))
-      (throw+ "can not set links values"))))
+  (trace/instrument
+   (fn [item field value]
+     (if (not= field :links)
+       (when-not (= (get item field) value)
+         (log/debugf "setting %s(%s): (%s = %s)" collection-name (:_id item) field (pr-str value))
+         (s/increment (str collection-name " field set"))
+         (mc/update collection-name
+           {:_id (:_id item)}
+           {:$set {field value}}))
+       (throw+ "can not set links values")))
+   {:name (str collection-name "-setter")}))
 
 (defn make-add-link*
   [collection-name]
@@ -126,8 +133,9 @@
              (trace/trace* (str collection-name ":created") item)
              (s/increment (str collection-name "_created"))
              item))
-         (throw+ {:type :validation :errors errors}))))
-   {:name (keyword (str collection-name "-created"))}))
+         (throw+ {:type :validation :errors errors})))
+     {:name (str collection-name "-created")})
+   {:name (keyword (str collection-name "-creator"))}))
 
 (defn make-fetch-by-id
   ([collection-name maker]
@@ -135,11 +143,12 @@
   ([collection-name maker convert-id]
      (trace/instrument
       (fn [id]
-        (let [id (if (and convert-id (instance? String id))
+        (let [id (if (and convert-id (string? id))
                    (util/make-id id) id)]
           (log/debugf "fetching %s(%s)" collection-name id)
           (trace/trace* (str collection-name ":fetched") id)
-          (s/increment (str collection-name "_fetched"))
+          ;; (s/increment (str collection-name "_fetched"))
           (when-let [item (mc/find-map-by-id collection-name id)]
-            (maker item)))))))
+            (maker item))))
+      {:name (str collection-name "-fetcher")})))
 
