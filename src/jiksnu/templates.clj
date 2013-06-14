@@ -78,7 +78,6 @@
    (fn [& [params]]
       (let [params (or params {})]
         (trace/trace* (str collection-name ":counted") 1)
-        (s/increment (str collection-name " counted"))
         (mc/count collection-name params)))
    {:name (keyword (str collection-name ":counter"))}))
 
@@ -86,7 +85,6 @@
   [collection-name]
   (fn [item]
     (trace/trace* (str collection-name ":deleted") item)
-    (s/increment (str collection-name " deleted"))
     (mc/remove-by-id collection-name (:_id item))
     item))
 
@@ -103,7 +101,6 @@
      (if (not= field :links)
        (when-not (= (get item field) value)
          (log/debugf "setting %s(%s): (%s = %s)" collection-name (:_id item) field (pr-str value))
-         (s/increment (str collection-name " field set"))
          (mc/update collection-name
            {:_id (:_id item)}
            {:$set {field value}}))
@@ -130,7 +127,6 @@
            (mc/insert collection-name params)
            (let [item (fetcher (:_id params))]
              (trace/trace* (str collection-name ":created") item)
-             (s/increment (str collection-name "_created"))
              item))
          (throw+ {:type :validation :errors errors}))))
    {:name (keyword (str collection-name ":creator"))}))
@@ -145,7 +141,6 @@
                    (util/make-id id) id)]
           (log/debugf "fetching %s(%s)" collection-name id)
           (trace/trace* (str collection-name ":fetched") id)
-          ;; (s/increment (str collection-name "_fetched"))
           (when-let [item (mc/find-map-by-id collection-name id)]
             (maker item))))
       {:name (keyword (str collection-name ":fetcher"))})))
