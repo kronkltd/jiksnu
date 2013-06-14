@@ -213,15 +213,13 @@ serialization"
                              (filter (complement #{"http://activityschema.org/collection/public"}))
                              (into #{}))
 
-        conversation-uris (-?>> entry
-                                (.getLinks "ostatus:conversation")
+        conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
                                 (map abdera/get-href)
                                 (into #{}))
 
-        enclosures (-?> entry
-                        (.getLinks "enclosure")
-                        (->> (map abdera/parse-link))
-                        (into #{}))
+        enclosures (-?> (.getLinks entry "enclosure")
+                        (->> (map abdera/parse-link)
+                             (into #{})))
 
         tags (->> entry
                   abdera/parse-tags
