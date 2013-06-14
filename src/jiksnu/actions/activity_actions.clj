@@ -213,20 +213,29 @@ serialization"
                              (filter (complement #{"http://activityschema.org/collection/public"}))
                              (into #{}))
 
-        conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
+        conversation-uris (-?>> entry
+                                (.getLinks "ostatus:conversation")
                                 (map abdera/get-href)
                                 (into #{}))
 
-        enclosures (-?> (.getLinks entry "enclosure")
+        enclosures (-?> entry
+                        (.getLinks "enclosure")
                         (->> (map abdera/parse-link))
                         (into #{}))
 
-        tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
+        tags (->> entry
+                  abdera/parse-tags
+                  (filter (complement #{""}))
+                  seq)
         object-element (abdera/get-extension entry ns/as "object")
-        object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
-                             (-?> entry (.getExtension activity-object-type)))
-                         .getText util/strip-namespaces)
-        object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
+        object-type (-?> (or (-?> object-element
+                                  (.getFirstChild activity-object-type))
+                             (-?> entry
+                                  (.getExtension activity-object-type)))
+                         .getText
+                         util/strip-namespaces)
+        object-id (-?> object-element
+                       (.getFirstChild (QName. ns/atom "id")))
         params (apply merge
                       (dissoc parsed-entry :extensions)
                       (when content           {:content (sanitize content)})
