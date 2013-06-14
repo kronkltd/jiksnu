@@ -4,6 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
+        [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
@@ -95,7 +96,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [user]
   (index {:author (:_id user)}))
 
-(defn prepare-create
+(defn-instrumented prepare-create
   [activity]
   (-> activity
       transforms/set-_id
@@ -209,6 +210,7 @@ serialization"
         mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
                                      (.getLinks entry "ostatus:attention"))
                              (map abdera/get-href)
+                             (filter (complement #{"http://activityschema.org/collection/public"}))
                              (into #{}))
 
         conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
