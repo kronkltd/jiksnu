@@ -42,8 +42,7 @@
   [item] item)
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.key
-                      :sort-clause [{:_id 1}]))
+  (templates/make-indexer 'jiksnu.model.key))
 
 (defaction index
   [& options]

@@ -31,8 +31,8 @@
            records (mq/with-collection collection-name
                      (mq/find params)
                      (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
+                     (mq/paginate :page (get options :page 1)
+                                  :per-page (get options :page-size 20)))]
        (map make-fn records)))
    {:name (keyword (str collection-name ":searcher"))}))
 
