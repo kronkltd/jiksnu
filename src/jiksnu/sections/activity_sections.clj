@@ -654,13 +654,13 @@
           :object (let [object (:object activity)]
                     {:displayName (:title activity)
                      :id (:id object)
-                     :objectType (:object-type object)
+                     :type (:object-type object)
                      :content (:content object)
                      :url (:id object)
                      :tags (map
                             (fn [tag]
-                              {:displayName tag
-                               :objectType "http://activityschema.org/object/hashtag"})
+                              {:name tag
+                               :type "http://activityschema.org/object/hashtag"})
                             (:tags activity))
                      ;; "published" (:published object)
                      ;; "updated" (:updated object)
@@ -679,7 +679,7 @@
          (when (:conversation-uris activity)
            {:context {:conversations (first (:conversation-uris activity))}})
          (if-let [geo (:geo activity)]
-           {:location {:objectType "place"
+           {:location {:type "place"
                        :latitude (:latitude geo)
                        :longitude (:longitude geo)}})))
 

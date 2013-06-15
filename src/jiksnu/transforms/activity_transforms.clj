@@ -45,16 +45,16 @@
 
 (defn set-object-type
   [activity]
-  (if (seq (get-in activity [:object :object-type]))
+  (if (seq (get-in activity [:object :type]))
     activity
-    (let [type (if-let [object-type (:object-type (:object activity))]
-               (-> object-type
-                   ;; strip namespaces
-                   (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
-                   (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
-               "note")]
+    (let [type (if-let [object-type (:type (:object activity))]
+                 (-> object-type
+                     ;; strip namespaces
+                     (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+                     (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+                 "note")]
       (assoc-in
-       activity [:object :object-type] type))))
+       activity [:object :type] type))))
 
 (defn set-parent
   [params]

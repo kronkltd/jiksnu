@@ -256,7 +256,7 @@ serialization"
                        :update-source (:_id source)
                        ;; TODO: try to read
                        :public true
-                       :object (merge (when object-type {:object-type object-type})
+                       :object (merge (when object-type {:type object-type})
                                       (when object-id {:id object-id}))
                        :comment-count (abdera/get-comment-count entry)}
                       extension-maps)]

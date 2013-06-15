@@ -28,7 +28,7 @@
     (actions.activity/post
      (-> params
          (assoc :parent (:_id parent))
-         (assoc-in [:object :object-type] "comment")))))
+         (assoc-in [:object :type] "comment")))))
 
 (defaction comment-response
   [activities]
