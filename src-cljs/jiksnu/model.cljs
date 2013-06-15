@@ -285,30 +285,32 @@
    (js-obj
     "type" "Activity"
     "stub" "activities"
-    "defaults" (js-obj
-                "_id"           ""
-                "author"        ""
-                "uri"           ""
-                "url"           nil
-                "links"         (array)
-                       "loaded" false
-                "source"        "unknown"
-                "comments"      (array)
-                "resources"     (array)
-                "comment-count" 0
-                "created"       nil
-                "published"     nil
-                "conversation"  nil
-                "local"        false
-                "title"         nil
-                "mentioned"     (array)
-                "tags"          (array)
-                "geo"           nil
-                "object"        (js-obj
-                                 "object-type" nil)
-                "like-count"    0
-                "updateSource" nil
-                "enclosures"    (array)))))
+    "defaults"
+    (fn []
+      (js-obj
+       "_id"           ""
+       "author"        ""
+       "uri"           ""
+       "url"           nil
+       "links"         (array)
+       "loaded"        false
+       "source"        "unknown"
+       "comments"      (array)
+       "resources"     (array)
+       "comment-count" 0
+       "created"       nil
+       "published"     nil
+       "conversation"  nil
+       "local"        false
+       "title"         nil
+       "mentioned"     (array)
+       "tags"          (array)
+       "geo"           nil
+       "object"        (js-obj
+                        "type" nil)
+       "like-count"    0
+       "updateSource" nil
+       "enclosures"    (array))))))
 
 (def Group
   (.extend
@@ -417,8 +419,9 @@
 (def Conversations
   (.extend backbone/Collection
            (js-obj
-            "type" "Conversations"
-            "model" Conversation)))
+            ;; "localStroage" (js/Store. "conversations")
+            "type"         "Conversations"
+            "model"        Conversation)))
 
 (def Domains
   (.extend backbone/Collection
@@ -485,8 +488,9 @@
 (def Users
   (.extend backbone/Collection
            (js-obj
-            "type"        "Users"
-            "model"       User)))
+            ;; "localStorage" (js/Store. "users")
+            "type"         "Users"
+            "model"        User)))
 
 ;; Collection references
 ;; TODO: remove
