@@ -77,7 +77,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
       nil)))
 
 (def add-link* (templates/make-add-link* model.activity/collection-name))
-(def index*    (templates/make-indexer 'jiksnu.model.activity))
+(def index*    (templates/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link

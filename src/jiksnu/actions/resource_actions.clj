@@ -133,18 +133,22 @@
         (let [url (:url item)]
           (log/infof "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
-          (let [response (http/http-request
-                          {:url url
-                           :method :get
-                           :throw-exceptions false
-                           :auto-transform true
-                           :headers {"User-Agent" user-agent}
-                           :insecure? true})]
-            (task
-             (try
-               (process-response item @response)
-               (catch Exception ex
-                 (.printStackTrace ex))))
+          (let [response @(http/http-request
+                           {:url url
+                            :method :get
+                            :throw-exceptions false
+                            ;; :auto-transform true
+                            :headers {"User-Agent" user-agent}
+                            :insecure? true})
+                body (:body response)
+                buffer (if (l/channel? (log/spy :info body))
+                           (->> body
+                                l/channel->lazy-seq
+                                aleph.formats/channel-buffers->channel-buffer)
+                           body)
+                body-str (aleph.formats/channel-buffer->string buffer)
+                response (assoc response :body body-str)]
+            (process-response item response)
             response))
         (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))

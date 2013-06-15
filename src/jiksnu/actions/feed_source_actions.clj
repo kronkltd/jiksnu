@@ -6,6 +6,7 @@
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-url]]
         [lamina.executor :only [task]]
+        [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clj-http.client :as client]
@@ -243,7 +244,7 @@
     (send-subscribe source))
   source)
 
-(defn discover-source
+(defn-instrumented discover-source
   "determines the feed source associated with a url"
   [url]
   (let [resource (actions.resource/find-or-create {:url url})]

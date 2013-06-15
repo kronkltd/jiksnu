@@ -314,7 +314,7 @@
                   :property "dc:published"}
            [:a (merge {:href (uri activity)}
                       (when *dynamic*
-                        {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
+                        {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
             (when-not *dynamic*
               (-> published .toDate util/prettyify-time))]]))))
 
@@ -687,8 +687,8 @@
   [^Activity activity & _]
   (if-let [user (model.activity/get-author activity)]
     (let [entry (abdera/new-entry)]
-      (when-let [created (:created activity)]
-        (.setPublished entry (.toDate created)))
+      (when-let [published (:published activity)]
+        (.setPublished entry (.toDate published)))
       (when-let [updated (:updated activity)]
         (.setUpdated entry (.toDate updated)))
       (doto entry
@@ -721,7 +721,7 @@
   (merge
    {:text (:title activity)
     :truncated false
-    :created_at (util/date->twitter (.toDate (:created activity)))
+    :created_at (util/date->twitter (.toDate (:published activity)))
     :source (:source activity)
     :id (:_id activity)
     ;; :in_reply_to_user_id nil
@@ -778,7 +778,7 @@
 (defsection show-section [Activity :rdf]
   [activity & _]
   (plaza/with-rdf-ns ""
-    (let [{:keys [id created content]} activity
+    (let [{:keys [id published content]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
           user-res (plaza/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
@@ -790,7 +790,7 @@
           [[ns/sioc :has_creator] user-res]
           [[ns/sioc :has_owner]   user-res]
           [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (plaza/date (.toDate created))]])
+          [[ns/dc   :published]   (plaza/date (.toDate published))]])
        (when content [[uri [ns/sioc  :content]    (plaza/l content)]])))))
 
 (defsection show-section [Activity :viewmodel]

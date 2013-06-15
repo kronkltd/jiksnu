@@ -83,6 +83,15 @@
                            (util/get-domain-name id)))]
     (actions.domain/get-discovered {:_id domain-id})))
 
+(defn parse-magic-public-key
+  [user link]
+  (let [key-string (:href link)
+        [_ n e] (re-matches
+                 #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+                 key-string)]
+    ;; TODO: this should be calling a key action
+    (model.key/set-armored-key (:_id user) n e)))
+
 (defn add-link
   [user link]
   (if-let [existing-link (model.user/get-link user
@@ -90,11 +99,6 @@
                                               (:type link))]
     user
     (add-link* user link)))
-
-
-
-
-
 
 (defaction create
   "create an activity"
@@ -376,15 +380,6 @@
                         ["pubsub" {"xmlns" ns/pubsub}
                          ["items" {"node" ns/microblog}]])})]
     (tigase/deliver-packet! packet)))
-
-(defn parse-magic-public-key
-  [user link]
-  (let [key-string (:href link)
-        [_ n e] (re-matches
-                 #"data:application/magic-public-key,RSA.(.+)\.(.+)"
-                 key-string)]
-    ;; TODO: this should be calling a key action
-    (model.key/set-armored-key (:_id user) n e)))
 
 (defaction discover-user-rdf
   "Discover user information from their rdf feeds"

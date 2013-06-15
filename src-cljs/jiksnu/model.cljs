@@ -290,6 +290,7 @@
                 "resources"     (array)
                 "comment-count" 0
                 "created"       nil
+                "published"     nil
                 "conversation"  nil
                 "local"        false
                 "title"         nil
