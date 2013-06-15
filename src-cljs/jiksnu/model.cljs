@@ -184,10 +184,10 @@
    Model
    (js-obj
     "type" "Page"
-    "loaded" false
     "idAttribute" "id"
     "defaults" (fn [] (js-obj
                        "page"         1
+                       "loaded" false
                        "pageSize"     0
                        "items"        (array) #_(backbone/Collection.)
                        "recordCount"  0
@@ -224,6 +224,7 @@
                   (.remove (.-collection this) this)))
     "default" (js-obj
                "message" ""
+                       "loaded" false
                "level"   ""))))
 
 (def Domain
@@ -234,6 +235,7 @@
     "stub" "domains"
     "defaults" (js-obj "xmpp"       "unknown"
                        "discovered" nil
+                       "loaded" false
                        "created"    nil
                        "updated"    nil
                        "links"      (array)))))
@@ -248,6 +250,7 @@
                 "url"         nil
                 "title"       nil
                 "domain"      nil
+                       "loaded" false
                 "status"      nil
                 "contentType" nil
                 "encoding"    nil
@@ -269,6 +272,7 @@
                        "bio"          nil
                        "username"     nil
                        "location"     ""
+                       "loaded" false
                        "local"        false
                        "domain"       nil
                        "updateSource" nil
@@ -287,6 +291,7 @@
                 "uri"           ""
                 "url"           nil
                 "links"         (array)
+                       "loaded" false
                 "source"        "unknown"
                 "comments"      (array)
                 "resources"     (array)
@@ -314,6 +319,7 @@
     "defaults" (js-obj
                 "from"     nil
                 "to"       nil
+                       "loaded" false
                 "homepage" ""
                 "fullname" ""
                 "nickname" ""))))
@@ -327,6 +333,7 @@
     "defaults" (js-obj
                 "from"    nil
                 "to"      nil
+                       "loaded" false
                 "created" nil
                 "pending" nil
                 "local"   nil))))
@@ -340,6 +347,7 @@
     "defaults" (js-obj
                 "callback" nil
                 "created"  nil
+                       "loaded" false
                 "updated"  nil
                 "status"   nil
                 "domain"   nil
@@ -358,6 +366,7 @@
     "stub" "feed-subscriptions"
     "defaults" (js-obj
                 "domain"   nil
+                       "loaded" false
                 "callback" nil
                 "url"      nil))))
 
@@ -371,6 +380,7 @@
                 "uri"           nil
                 "url"           nil
                 "domain"        nil
+                       "loaded" false
                 "update-source" nil
                 "lastUpdated"   nil
                 "created"       nil
@@ -385,6 +395,7 @@
     "stub"        "authenticationMechanisms"
     "defaults" (js-obj
                 "user" nil
+                       "loaded" false
                 "value" nil))))
 
 ;; Collections

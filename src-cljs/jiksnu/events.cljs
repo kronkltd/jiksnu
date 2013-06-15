@@ -57,5 +57,6 @@
         id (.-id data)
         type (.-type event)]
     (if-let [page (.get model/pages id)]
-      (.set page data)
+      (do (.set page data)
+          (.set page "loaded" "true"))
       (log/warning *logger* "Could not find page in collection"))))

@@ -95,7 +95,10 @@
   [page-name & body]
   (apply bind-to
          (format "jiksnu.model.get_page('%s')" page-name)
-         body))
+         (list
+          "<!-- ko if: loaded -->"
+          body
+          "<!-- /ko -->")))
 
 (defn bind-property
   [property]

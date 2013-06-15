@@ -45,26 +45,24 @@
 (def get-subscription             (partial model/get-model "subscriptions"))
 (def get-user                     (partial model/get-model "users"))
 
-(defn modelInit
+(defn model-init
   [element value-accessor all-bindings data context]
-  (let [properties (value-accessor)
-        model-name (model/collection-name (.-type properties))
-        model-ob (model/get-model model-name data)
-        unwrapped (ko/unwrap-observable model-ob)
-        child-binding (.createChildContext context unwrapped)]
-    (if unwrapped
+  (let [model-name (model/collection-name (.-type (value-accessor)))
+        model-vm (model/get-model model-name data)
+        child-binding (.createChildContext context model-vm)]
+    (when true #_(.loaded model-vm)
       (.applyBindingsToDescendants js/ko child-binding element))
     (js-obj
      "controlsDescendantBindings" true)))
 
-(defn modelUpdate
+(defn model-update
   [element value-accessor all-bindings data context]
-  (.attr (js/$ element) "data-id" data))
+  (.data (js/$ element) "id" data))
 
 (aset ko/binding-handlers "withModel"
       (js-obj
-       "init" modelInit
-       "update" modelUpdate))
+       "init" model-init
+       "update" model-update))
 
 (defn main
   []
