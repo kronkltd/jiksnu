@@ -511,7 +511,7 @@
             :id (or id (model.user/get-uri user))
             :url (or (:url user)
                      (full-uri user))
-            :objectType "person"
+            :type "person"
             :username (:username user)
             :domain (:domain user)
             :published (:updated user)

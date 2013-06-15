@@ -34,7 +34,7 @@
    (type-of :local                 Boolean)
    (type-of :public                Boolean)
    (type-of :update-source         ObjectId)
-   (type-of [:object :object-type] String)
+   (type-of [:object :type]        String)
    (type-of :verb                  String)
    (type-of :conversation          ObjectId)
 

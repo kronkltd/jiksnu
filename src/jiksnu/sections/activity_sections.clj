@@ -297,8 +297,8 @@
    "posted a "
    [:span
     (if *dynamic*
-      {:data-bind "text: ko.utils.unwrapObservable($data['object'])['object-type']"}
-      (-> activity :object :object-type))]
+      {:data-bind "text: object.type"}
+      (-> activity :object :type))]
 
    ;; TODO: handle other visibilities
    #_(when-not (:public activity)
@@ -549,9 +549,9 @@
       (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
         (show-section-minimal user)))]
    [:td (when *dynamic*
-          {:data-bind "text: object['object-type']"})
+          {:data-bind "text: object.type"})
     (when-not *dynamic*
-      (-> activity :object :object-type))]
+      (-> activity :object :type))]
    [:td (when-not *dynamic*
           (if (-> activity :public) "public" "private"))]
    [:td (if *dynamic*
@@ -652,9 +652,9 @@
           :id (:id activity)
           :local-id (:_id activity)
           :object (let [object (:object activity)]
-                    {:displayName (:title activity)
+                    {:name (:title activity)
                      :id (:id object)
-                     :type (:object-type object)
+                     :type (:type object)
                      :content (:content object)
                      :url (:id object)
                      :tags (map

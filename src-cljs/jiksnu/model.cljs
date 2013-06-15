@@ -234,6 +234,8 @@
     "stub" "domains"
     "defaults" (js-obj "xmpp"       "unknown"
                        "discovered" nil
+                       "created"    nil
+                       "updated"    nil
                        "links"      (array)))))
 
 (def Resource
