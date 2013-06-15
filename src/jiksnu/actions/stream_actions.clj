@@ -163,7 +163,7 @@
                                     (map json/read-json))}
                message (or (try
                              (:body (parse-command request))
-                             (catch RuntimeException ex
+                             (catch Exception ex
                                (trace/trace "errors:handled" ex)
                                (json/json-str {:action "error"
                                                :message (str ex)})))

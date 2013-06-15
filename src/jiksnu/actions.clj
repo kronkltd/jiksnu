@@ -7,7 +7,7 @@
         [ciste.sections.default :only [link-to]]
         [clojure.core.incubator :only [dissoc-in]]
         [clojure.data.json :only [read-json]]
-        [slingshot.slingshot :only [try+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require #_[clj-airbrake.core :as airbrake]
             [ciste.predicates :as pred]
             [clj-statsd :as s]
@@ -141,7 +141,8 @@
                  :serialization :page
                  :name page-name
                  :args args}]
-    ((resolve-routes @*page-predicates* @*page-matchers*) request)))
+    (or ((resolve-routes @*page-predicates* @*page-matchers*) request)
+        (throw+ "page not found"))))
 
 (defaction invoke-action
   [model-name action-name id]
