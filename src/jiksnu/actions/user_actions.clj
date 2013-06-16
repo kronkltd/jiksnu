@@ -481,24 +481,10 @@
     (actions.domain/set-xmpp domain false)
     user))
 
-(defn handle-pending-get-user-meta
-  [user]
-  (get-user-meta user))
-
-(l/receive-all ch/pending-get-user-meta (ops/op-handler handle-pending-get-user-meta))
-
 (definitializer
   (require-namespaces
    ["jiksnu.filters.user-filters"
     "jiksnu.helpers.user-helpers"
     "jiksnu.sections.user-sections"
     "jiksnu.triggers.user-triggers"
-    "jiksnu.views.user-views"])
-
-  (util/add-hook!
-   actions.domain/delete-hooks
-   (fn [domain]
-     (doseq [user (:items (model.user/fetch-by-domain domain))]
-       (delete user))
-     domain))
-  )
+    "jiksnu.views.user-views"]))

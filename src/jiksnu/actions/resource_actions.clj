@@ -168,17 +168,6 @@
   [item]
   item)
 
-(defn handle-pending-get-resource
-  [url]
-  (find-or-create {:url url}))
-
-(defn handle-pending-update-resources
-  [item]
-  (update* item))
-
-(l/receive-all ch/pending-get-resource     (ops/op-handler handle-pending-get-resource))
-(l/receive-all ch/pending-update-resources (ops/op-handler handle-pending-update-resources))
-
 (definitializer
   (model.resource/ensure-indexes)
 

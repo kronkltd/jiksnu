@@ -277,18 +277,8 @@
         (or (deref p discovery-timeout nil)
             (throw+ "Could not discover feed source"))))))
 
-(defn handle-pending-get-source
-  [url]
-  (find-or-create {:topic url}))
-
-(defn init-receivers
-  []
-  (l/receive-all ch/pending-get-source (ops/op-handler handle-pending-get-source))
-  (l/receive-all ch/pending-entries process-entry))
-
 (definitializer
   (model.feed-source/ensure-indexes)
-  (init-receivers)
 
   (require-namespaces
    ["jiksnu.filters.feed-source-filters"

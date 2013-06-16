@@ -1,2 +1,4 @@
-(ns jiksnu.triggers.feed-subscription-triggers)
+(ns jiksnu.triggers.feed-subscription-triggers
+  (:use         [ciste.initializer :only [definitializer]]
+))
 

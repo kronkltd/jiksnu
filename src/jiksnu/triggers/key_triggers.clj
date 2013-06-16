@@ -1,2 +1,5 @@
-(ns jiksnu.triggers.key-triggers)
+(ns jiksnu.triggers.key-triggers
+  (:use         [ciste.initializer :only [definitializer]]
+)
+  )
 

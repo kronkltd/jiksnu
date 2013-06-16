@@ -146,58 +146,43 @@
          :stream "public"})
        "\r\n"))
 
+(defn handle-message
+  [request]
+  (or (try
+        (:body (parse-command request))
+        (catch Exception ex
+          (trace/trace "errors:handled" ex)
+          (json/json-str {:action "error"
+                          :message (str ex)})))
+      (let [event {:action "error"
+                   ;; :request request
+                   :message "no command found"}]
+        (json/json-str event))))
+
+(defn process-args
+  [args]
+  (-?>> args
+        (filter identity)
+        seq
+        (map json/read-json)))
+
 (defn websocket-handler
   [ch request]
-  (let [user (session/current-user)]
+  (let [id (session/current-user-id)]
     (l/receive-all
      ch
      (fn [m]
-       (session/with-user-id (:_id user)
-         (let [[name & args] (string/split m #" ")
-               request {:format :json
-                        :channel ch
-                        :name name
-                        :args (-?>> args
-                                    (filter identity)
-                                    seq
-                                    (map json/read-json))}
-               message (or (try
-                             (:body (parse-command request))
-                             (catch Exception ex
-                               (trace/trace "errors:handled" ex)
-                               (json/json-str {:action "error"
-                                               :message (str ex)})))
-                           (let [event {:action "error"
-                                        ;; :request request
-                                        :message "no command found"}]
-                             (json/json-str event)))]
-           ;; (log/debug "enqueue message:")
-           (l/enqueue ch message)))))))
-
-(defn init-receivers
-  []
-
-  ;; Create events for each created activity
-  ;; (l/siphon
-  ;;  (->> ciste.core/*actions*
-  ;;       l/fork
-  ;;       (l/filter* (comp #{#'actions.activity/create} :action)))
-  ;;  ch/posted-activities)
-  ;; (l/receive-all ch/posted-activities identity)
-
-  ;; Create events for each created conversation
-  ;; (l/siphon
-  ;;  (->> ciste.core/*actions*
-  ;;       l/fork
-  ;;       (l/filter* (comp #{#'actions.conversation/create} :action)))
-  ;;  ch/posted-conversations)
-  ;; (l/receive-all ch/posted-conversations identity)
-
-  )
+       (session/with-user-id id
+         (let [[name & args] (string/split m #" ")]
+           (->> {:format :json
+                 :channel ch
+                 :name name
+                 :args (process-args args)}
+                handle-message
+                (l/enqueue ch))))))))
 
 (definitializer
   (require-namespaces
    ["jiksnu.filters.stream-filters"
-    "jiksnu.views.stream-views"])
-  (init-receivers)
-  )
+    "jiksnu.triggers.stream-triggers"
+    "jiksnu.views.stream-views"]))

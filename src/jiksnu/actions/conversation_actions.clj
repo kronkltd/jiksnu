@@ -108,17 +108,6 @@
   []
   (create {:local true}))
 
-(defn- handle-get-conversation
-  [url]
-  (find-or-create {:url url}))
-
-(defn- enqueue-create-local
-  [ch]
-  (l/enqueue ch (create {:local true})))
-
-(l/receive-all ch/pending-get-conversation (ops/op-handler handle-get-conversation))
-(l/receive-all ch/pending-create-conversations enqueue-create-local)
-
 (definitializer
   (require-namespaces
    ["jiksnu.filters.conversation-filters"

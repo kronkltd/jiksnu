@@ -174,7 +174,7 @@
 (add-command! "get-model" #'get-model)
 (add-command! "get-page" #'get-page)
 
-(defn set-handlers
+(defn init-handlers
   []
   (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
 
@@ -190,4 +190,4 @@
                               (:connection-id response))
                    (s/increment "conversations pushed"))))
 
-(set-handlers)
+(init-handlers)

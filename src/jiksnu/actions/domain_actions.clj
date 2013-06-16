@@ -248,25 +248,6 @@
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
 
-(defmacro defreceiver
-  [ch args & body]
-  (let [handle-name (symbol (format "handle2-%s" (str ch)))]
-    `(do
-       (defn ~handle-name
-         [p ~args]
-         (l/enqueue p ~@body))
-       (l/receive-all ~ch ~handle-name))))
-
-(defn- handle-pending-get-domain
-  [domain-name]
-  (find-or-create {:_id domain-name}))
-
-(l/receive-all ch/pending-get-domain (ops/op-handler handle-pending-get-domain))
-
-;; (defreceiver ch/pending-get-domain
-;;   [domain-name]
-;;   (find-or-create {:_id domain-name}))
-
 (definitializer
   (current-domain)
   (require-namespaces

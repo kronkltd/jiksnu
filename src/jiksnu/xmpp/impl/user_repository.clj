@@ -112,12 +112,12 @@
   (log/info "user exists")
   (deliver result (not (nil? (model.user/fetch-by-jid user)))))
 
+(defn init-handlers
+  []
+  (l/receive-all add-user-ch handle-add-user)
+  (l/receive-all get-data-ch handle-get-data)
+  (l/receive-all count-users-ch handle-count-users)
+  (l/receive-all other-auth-ch handle-other-auth)
+  (l/receive-all user-exists-ch handle-user-exists))
 
-(l/receive-all add-user-ch handle-add-user)
-(l/receive-all get-data-ch handle-get-data)
-(l/receive-all count-users-ch handle-count-users)
-(l/receive-all other-auth-ch handle-other-auth)
-(l/receive-all user-exists-ch handle-user-exists)
-
-
-
+(init-handlers)
