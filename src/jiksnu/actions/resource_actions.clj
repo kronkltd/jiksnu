@@ -141,7 +141,7 @@
                             :headers {"User-Agent" user-agent}
                             :insecure? true})
                 body (:body response)
-                buffer (if (l/channel? (log/spy :info body))
+                buffer (if (l/channel? body)
                            (->> body
                                 l/channel->lazy-seq
                                 aleph.formats/channel-buffers->channel-buffer)
