@@ -77,10 +77,11 @@
      (with-context [:http :rdf]
        (let [activity (mock/there-is-an-activity)]
          (index-block [activity]) =>
-         (every-checker
-          (partial every? (fn [t]
-                            (and (vector? t)
-                                 (= 3 (count t))))))))))
+         (fn [response]
+           (fact
+             response => (partial every? (fn [t]
+                                           (and (vector? t)
+                                                (= 3 (count t)))))))))))
 
  (fact "#'index-section Activity"
    (fact "when the context is [:http :rdf]"

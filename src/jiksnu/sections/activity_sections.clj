@@ -784,13 +784,18 @@
           user-res (plaza/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
       (concat
        (rdf/with-subject uri
-         [
-          [[ns/rdf  :type]        [ns/sioc "Post"]]
-          [[ns/as   :verb]        (plaza/l "post")]
-          [[ns/sioc :has_creator] user-res]
-          [[ns/sioc :has_owner]   user-res]
-          [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (plaza/date (.toDate published))]])
+         (concat
+          [
+           [[ns/rdf  :type]        [ns/sioc "Post"]]
+           [[ns/as   :verb]        (plaza/l "post")]
+           [[ns/sioc :has_creator] user-res]
+           [[ns/sioc :has_owner]   user-res]
+           [[ns/as   :author]      user-res]
+           ]
+          (when-let [lit (-?> published .toDate plaza/date)]
+            [
+             [[ns/dc   :published]   lit]
+             ])))
        (when content [[uri [ns/sioc  :content]    (plaza/l content)]])))))
 
 (defsection show-section [Activity :viewmodel]
