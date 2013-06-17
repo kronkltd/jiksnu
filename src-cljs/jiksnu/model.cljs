@@ -521,6 +521,7 @@
                   "feedSubscriptions"        feed-subscriptions
                   "followers"                (array)
                   "following"                (array)
+                  "formats"                  (array)
                   "groups"                   groups
                   "pages"                    pages
                   "postForm"                 (PostForm.)

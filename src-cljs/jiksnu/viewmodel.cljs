@@ -52,25 +52,16 @@
     (if-let [visible (.-visible post-form)]
       (.visible (.postForm _view) visible))))
 
-(defn update-title
-  "set the title of the page"
-  [data]
-  (when-let [title (.-title data)]
-    (.set model/_model "title" title)))
-
-(defn update-currents
-  [data]
-  (when-let [currentUser (.-currentUser data)]
-    (.set model/_model "currentUser" currentUser)))
-
 (defn process-viewmodel
   "Callback handler when a viewmodel is loaded"
   [data]
   ;; (def _m data)
+  (.set model/_model "title"       (.-title data))
+  (.set model/_model "formats"     (.-formats data))
+  (.set model/_model "currentUser" (.-currentUser data))
   (update-pages     data)
   (update-title     data)
   ;; (update-items     data)
-  (update-currents  data)
   (update-page-info data)
   (update-post-form data)
   (update-targets   data))

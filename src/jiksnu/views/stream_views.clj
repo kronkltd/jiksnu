@@ -139,7 +139,7 @@
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
    :body (let [items (if *dynamic* [(Conversation.)] items)]
-           (with-page "conversations"
+           (with-page "public-timeline"
              (pagination-links page)
              (bind-to "items"
                (index-section items page))))})
@@ -161,6 +161,7 @@
   {:body
    {:single false
     :title "Public Timeline"
+    :formats (sections.activity/index-formats items)
     :postForm {:visible true}}})
 
 (defview #'public-timeline :xml
@@ -226,16 +227,15 @@
 
 (defview #'user-timeline :html
   [request [user {:keys [items] :as page}]]
-  (let [items (if *dynamic*
-                [(Activity.)]
-                items)]
+  (let [items (if *dynamic* [(Activity.)] items)]
     {:user user
      :title (:name user)
      :post-form true
      :body
-     (with-page "conversations"
-       (bind-to "items"
-         (index-section items page)))
+     [:div
+      (with-page "conversations"
+        (bind-to "items"
+          (index-section items page)))]
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model

@@ -4,7 +4,7 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to dump-data pagination-links]]
+        [jiksnu.sections :only [bind-to display-property dump-data pagination-links]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -100,12 +100,17 @@
 (defn formats-section*
   [format]
   [:li.format-line
-   [:a {:href (:href format)}
-    (when (:icon format)
-      [:span.format-icon
-       [:img {:alt ""
-              :src (str "/assets/themes/classic/" (:icon format))}]])
-    [:span.format-label (:label format)]]])
+   [:a
+    (if *dynamic*
+      {:data-bind "attr: {href: href}"}
+      {:href (:href format)})
+    [:span.format-icon
+     [:img (merge {:alt ""}
+                  #_(if *dynamic*
+                    {:data-bind "attr: {src: '/assets/themes/classic/' + icon}"}
+                    {:src (str "/assets/themes/classic/" (:icon format))}))]]
+    [:span.format-label
+     (display-property format :label)]]])
 
 (defn formats-section
   [response]
@@ -115,6 +120,8 @@
     [:div.well
      [:h3 "Formats"]
      [:ul.unstyled
+      (when *dynamic*
+        {:data-bind "foreach: formats"})
       (map formats-section* formats)]]))
 
 (defn statistics-line
@@ -257,15 +264,6 @@
     [:script {:type "text/javascript"}
      "goog.require('jiksnu.core');"])))
 
-(defn left-column-section
-  [request response]
-  (let [user (current-user)]
-    [:aside#left-column.sidebar
-     (side-navigation)
-     [:hr]
-     (formats-section response)
-     #_(statistics-section request response)]))
-
 (defn right-column-section
   [response]
   (let [user (if *dynamic*
@@ -289,41 +287,25 @@
     [:p "Copyright © 2011 KRONK Ltd."]
     [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
 
-(defn head-section
-  [request response]
-  (list [:meta {:charset "UTF-8"}]
-        [:title {:property "dc:title"}
-         (when-not *dynamic*
-           (str (when (:title response)
-                  (str (:title response) " - "))
-                (config :site :name)))]
-        [:meta {:name "viewport"
-                :content "width=device-width, initial-scale=1.0"}]
-        (let [theme (config :site :theme)]
-          (p/include-css
-           (if (= theme "classic")
-             "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
-             (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-           "/assets/themes/classic/standard.css"
-           "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css"))
-        (links-section request response)))
+(defn style-section
+  []
+  (let [theme (config :site :theme)]
+    (p/include-css
+     (if (= theme "classic")
+       "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
+       (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
+     "/assets/themes/classic/standard.css"
+     "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css")))
 
-(defn body-section
-  [request response]
-  (list
-   (navbar-section request response)
-   [:div.container-fluid
-    #_(fork-me-link)
-    [:div.row-fluid
-     [:div.span2
-      (left-column-section request response)]
-     [:div#content.span10
-      [:div.row-fluid
-       (if-not (:single response)
-         (list [:div.span10 (main-content request response)]
-               [:div.span2 (right-column-section response)])
-         [:div.span12 (main-content request response)])]]]]
-   (scripts-section request response)))
+(defn get-prefixes
+  []
+  (->> [["foaf" ns/foaf]
+        ["dc" ns/dc]
+        ["sioc" ns/sioc]
+        ["dcterms" "http://purl.org/dc/terms/"]]
+       (map
+        (fn [[prefix uri]] (format "%s: %s" prefix uri)))
+       (string/join " ")))
 
 (defn page-template-content
   [request response]
@@ -341,15 +323,35 @@
               ;; :version "HTML+RDFa 1.1"
               :lang "en"
               :xml:lang "en"
-              :prefix (->> [["foaf" ns/foaf]
-                            ["dc" ns/dc]
-                            ["sioc" ns/sioc]
-                            ["dcterms" "http://purl.org/dc/terms/"]]
-                           (map
-                            (fn [[prefix uri]] (format "%s: %s" prefix uri)))
-                           (string/join " "))})
-      [:head (head-section request response)]
-      [:body (body-section request response)]]))})
+              :prefix (get-prefixes) })
+      [:head
+       [:meta {:charset "UTF-8"}]
+       [:title {:property "dc:title"}
+        (when-not *dynamic*
+          (str (when (:title response)
+                 (str (:title response) " - "))
+               (config :site :name)))]
+       [:meta {:name "viewport"
+               :content "width=device-width, initial-scale=1.0"}]
+       (style-section)
+       (links-section request response)]
+      [:body
+       (navbar-section request response)
+       [:div.container-fluid
+        [:div.row-fluid
+         [:div.span2
+          [:aside#left-column.sidebar
+           (side-navigation)
+           [:hr]
+           (formats-section response)
+           #_(statistics-section request response)]]
+         [:div#content.span10
+          [:div.row-fluid
+           (if-not (:single response)
+             (list [:div.span10 (main-content request response)]
+                   [:div.span2 (right-column-section response)])
+             [:div.span12 (main-content request response)])]]]]
+       (scripts-section request response)]]))})
 
 
 (defmethod apply-template :html
