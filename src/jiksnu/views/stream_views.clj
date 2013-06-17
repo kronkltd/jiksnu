@@ -144,6 +144,15 @@
              (bind-to "items"
                (index-section items page))))})
 
+(defview #'public-timeline :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
   {:body

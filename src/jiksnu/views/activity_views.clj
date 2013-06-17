@@ -42,7 +42,7 @@
 
 ;; fetch-by-conversations
 
-(defview #'fetch-by-conversation :json
+(defview #'fetch-by-conversation :page
   [request response]
   (let [items (:items response)
         response (merge response

@@ -47,6 +47,10 @@
   (let [page (or (-?> request :params :page Integer/parseInt) 1)]
     (action {} {:page page})))
 
+(deffilter #'public-timeline :page
+  [action request]
+  (action))
+
 (deffilter #'public-timeline :xmpp
   [action request]
   (action))

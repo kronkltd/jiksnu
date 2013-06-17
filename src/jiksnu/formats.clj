@@ -52,6 +52,11 @@
       (assoc-in [:headers "Content-Type"] "application/json")
       (assoc :body (json/json-str (:body response)))))
 
+(defmethod format-as :page
+  [format request response]
+  (with-format :json
+    (doall (format-as :json request response))))
+
 (defmethod format-as :model
   [format request response]
   (with-format :json

@@ -20,6 +20,6 @@
 (defn pages
   []
   [
-   [{:name "conversations"}     {:action #'conversation/index}]
+   [{:name "conversations"}    {:action #'conversation/index}]
    [{:name "conversation-:id"} {:action #'activity/fetch-by-conversation}]
    ])

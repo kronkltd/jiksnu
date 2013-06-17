@@ -60,8 +60,6 @@
   (.set model/_model "formats"     (.-formats data))
   (.set model/_model "currentUser" (.-currentUser data))
   (update-pages     data)
-  (update-title     data)
-  ;; (update-items     data)
   (update-page-info data)
   (update-post-form data)
   (update-targets   data))

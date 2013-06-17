@@ -27,7 +27,7 @@
        (bind-to "items"
          (doall (index-section items page)))))})
 
-(defview #'index :json
+(defview #'index :page
   [request response]
   (let [items (:items response)
         response (merge response

@@ -137,7 +137,7 @@
 (defaction get-page
   [page-name & args]
   (log/debugf "Getting page: %s" page-name)
-  (let [request {:format :json
+  (let [request {:format :page
                  :serialization :page
                  :name page-name
                  :args args}]

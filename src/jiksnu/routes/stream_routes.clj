@@ -40,3 +40,9 @@
    [[:get    "/api/statuses/public_timeline.:format"]   #'stream/public-timeline]
    [[:get    (formatted-path "user timeline")]          #'stream/user-timeline]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "public-timeline"} {:action #'stream/public-timeline}]
+   ])
