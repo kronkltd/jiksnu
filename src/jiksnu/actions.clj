@@ -151,19 +151,18 @@
       (require action-ns)
 
       (if-let [action (ns-resolve action-ns (symbol action-name))]
-        (let [body (with-serialization :command (filter-action action id))]
-          (let [response {:message "action invoked"
-                          :model model-name
-                          :action action-name
-                          :id id
-                          :body body}]
-            (s/increment "actions invoked")
-            (trace/trace "actions:invoked" response)
-            response))
+        (let [body (with-serialization :command (filter-action action id))
+              response {:message "action invoked"
+                        :model model-name
+                        :action action-name
+                        :id id
+                        :body body}]
+          (trace/trace "actions:invoked" response)
+          response)
         (do
           (log/warnf "could not find action for: %s(%s) => %s"
                      model-name id action-name)
-          {:message "action not found"
+          {:message (format "action not found: %s" action-name)
            :action "error"})))
     (catch RuntimeException ex
       (log/spy :info &throw-context)
@@ -177,6 +176,10 @@
 (defn init-handlers
   []
   (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
+
+  (l/receive-all (trace/probe-channel "actions:invoked")
+                 (fn [response]
+                   (s/increment "actions invoked")))
 
   (l/receive-all (trace/probe-channel "activities:pushed")
                  (fn [response]

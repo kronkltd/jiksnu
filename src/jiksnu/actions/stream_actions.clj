@@ -52,8 +52,6 @@
                             {:sort-clause {:updated -1}}
                             options)))
 
-(add-command! "list-activities" #'public-timeline)
-
 (declare user-timeline)
 
 (defaction stream
@@ -180,6 +178,8 @@
                  :args (process-args args)}
                 handle-message
                 (l/enqueue ch))))))))
+
+(add-command! "list-activities" #'public-timeline)
 
 (definitializer
   (require-namespaces
