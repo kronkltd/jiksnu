@@ -55,10 +55,18 @@
 
 (defn page-init
   [element value-accessor all-bindings data context]
-  ;; (ko/set-dom-data element with-model-key (js-obj))
   (when-let [page-name (.-type (value-accessor))]
-    (.applyBindingsToDescendants js/ko (model/get-page page-name) element)
-    )
+    (.applyBindingsToDescendants js/ko (model/get-page page-name) element))
+  (js-obj
+     "controlsDescendantBindings" true))
+
+(defn sub-page-init
+  [element value-accessor all-bindings data context]
+  (let [model-elt (.closest ($ element) "*[data-id]")
+        id (.data model-elt "id")
+        model-name (.data model-elt "model")]
+    (when-let [page-name (.-type (value-accessor))]
+      (.applyBindingsToDescendants js/ko (model/get-sub-page model-name id page-name) element)))
   (js-obj
      "controlsDescendantBindings" true))
 
@@ -90,30 +98,11 @@
 
 (defn page-update
   [element value-accessor all-bindings data context]
-  (log/info *logger* "updating page")
-  #_(let [model-name (model/collection-name (.-type (value-accessor)))
-        model-vm (model/get-model model-name data)
-        model-data (ko/get-dom-data element with-model-key)
-        should-display (.loaded model-vm)
-        saved-nodes (.-savedNodes model-data)
-        needs-refresh (or (not saved-nodes)
-                          (not= should-display (.-displayed model-data)))]
-    (when needs-refresh
-      (when-not saved-nodes
-        (aset model-data "savedNodes"
-              (ko/clone-nodes
-               (.childNodes (.-virtualElements js/ko) element)
-               true)))
-      (if should-display
-        (when saved-nodes
-          (.setDomNodeChildren (.-virtualElements js/ko)
-                               element
-                               (ko/clone-nodes saved-nodes))
-          (let [child-binding (.createChildContext context model-vm)]
-            (.attr (js/$ element) "data-id" data)
-            (.applyBindingsToDescendants js/ko child-binding element)))
-        (.emptyNode (.-virtualElements js/ko) element))
-      (aset model-data "displayed" should-display))))
+  (log/info *logger* "updating page"))
+
+(defn sub-page-update
+  [element value-accessor all-bindings data context]
+  (log/info *logger* "updating sub page"))
 
 (aset ko/binding-handlers "withModel"
       (js-obj
@@ -124,6 +113,11 @@
       (js-obj
        "init" page-init
        "update" page-update))
+
+(aset ko/binding-handlers "withSubPage"
+      (js-obj
+       "init" sub-page-init
+       "update" sub-page-update))
 
 (defn main
   []
@@ -161,6 +155,9 @@
 
   (set! (.-instance ko/binding-provider)
         (providers/PageProvider.))
+
+  (set! (.-instance ko/binding-provider)
+        (providers/SubPageProvider.))
 
   (ko/apply-bindings model/_view)
 

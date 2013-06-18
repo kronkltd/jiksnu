@@ -557,6 +557,15 @@
     (.fetch page)
     page))
 
+(defn create-sub-page
+  [model-name id name]
+  (log/fine *logger* (format "Creating sub page: %s(%s) => %s" model-name id name))
+  (.add sub-pages (js-obj "id" name))
+  (when-let [sub-page (.get sub-pages name)]
+    (log/finer *logger* (format "Fetching sub page: %s(%s) => %s" name))
+    (.fetch sub-page)
+    sub-page))
+
 (defn get-page
   "Returns the page for the name from the view's page info.
 
@@ -579,3 +588,30 @@ Returns a viewmodel"
           (log/finer *logger* "created")
           found)
         (log/fine *logger* "could not find page even after creating")))))
+
+(defn get-sub-page
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
+  [model-name id name]
+  (log/fine *logger* (str "getting sub page: " name))
+  #_(if-let [page (-?> (.subPages _view)
+                     (aget model-name)
+                     (aget id)
+                     (.filter (by-name name))
+                     first)]
+    (do
+      (log/finer *logger* "found")
+      page)
+    (do
+      (create-sub-page model-name id name)
+      ;; TODO: return the observable
+      (if-let [found (-?> (.subPages _view)
+                          (aget model-name)
+                          (aget id)
+                          (.filter (by-name name))
+                          first)]
+        (do
+          (log/finer *logger* "created")
+          found)
+        (log/fine *logger* "could not find sub page even after creating")))))

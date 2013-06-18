@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.feed-source-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.feed-source :as model.feed-source]

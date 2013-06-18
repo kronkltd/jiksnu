@@ -6,7 +6,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
                                 bind-to control-line display-property dropdown-menu dump-data
-                                pagination-links with-page]])
+                                pagination-links with-page with-sub-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -222,11 +222,12 @@
                 [(Activity.) (Activity.)]
                 (:items (actions.activity/fetch-by-conversation item)))]
     [:div.conversation-section
-     (merge {:typeof "sioc:Container"}
+     (merge {:typeof "sioc:Container"
+             :data-model "conversation"}
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
-     (with-sub-page "conversations"
+     (with-sub-page "activities"
        (if-let [item (first items)]
          (bind-to "items()[0]"
            (show-section item))
