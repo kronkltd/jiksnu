@@ -40,3 +40,18 @@
 (defn unwrap-observable
   [o]
   (.unwrapObservable (.-utils js/ko) o))
+
+(defn get-dom-data
+  [element key]
+  (.get (.-domData (.-utils js/ko)) element key))
+
+(defn set-dom-data
+  [element key value]
+  (.set (.-domData (.-utils js/ko)) element key value))
+
+(defn clone-nodes
+  ([nodes]
+     (clone-nodes nodes true))
+  ([nodes should-clean]
+     (.cloneNodes (.-utils js/ko)
+                  nodes should-clean)))

@@ -76,6 +76,7 @@
       (if-let [m (.get coll id)]
         (do
           (.set m data)
+          (.set m "loaded" true)
           (if-let [om (aget ko/observables coll-name)]
             (init-observable model-name id om m)
             (log/warning (str "Could not find observable model for: " coll-name))))

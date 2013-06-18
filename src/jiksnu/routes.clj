@@ -1,5 +1,6 @@
 (ns jiksnu.routes
-  (:use [ciste.config :only [config]]
+  (:use [ciste.commands :only [add-command!]]
+        [ciste.config :only [config]]
         [ciste.routes :only [make-matchers resolve-routes]]
         #_[clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
@@ -113,5 +114,3 @@
         ;; wrap-tidy-up
         ;; (wrap-resource "/META-INF/resources")
 ))))
-
-(add-command! "fetch-viewmodel" #'jiksnu.viewmodel/fetch-viewmodel)

@@ -38,3 +38,5 @@
 (defview #'fetch-viewmodel :json
   [request response]
   response)
+
+(add-command! "fetch-viewmodel" #'jiksnu.viewmodel/fetch-viewmodel)

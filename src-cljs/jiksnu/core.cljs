@@ -45,19 +45,41 @@
 (def get-subscription             (partial model/get-model "subscriptions"))
 (def get-user                     (partial model/get-model "users"))
 
+(def with-model-key "__ko_withModelData")
+
 (defn model-init
   [element value-accessor all-bindings data context]
-  (let [model-name (model/collection-name (.-type (value-accessor)))
-        model-vm (model/get-model model-name data)
-        child-binding (.createChildContext context model-vm)]
-    (when true #_(.loaded model-vm)
-      (.applyBindingsToDescendants js/ko child-binding element))
-    (js-obj
-     "controlsDescendantBindings" true)))
+  (ko/set-dom-data element with-model-key (js-obj))
+  (.attr (js/$ element) "data-id" data)
+  (js-obj
+   "controlsDescendantBindings" true))
 
 (defn model-update
   [element value-accessor all-bindings data context]
-  (.data (js/$ element) "id" data))
+  (let [model-name (model/collection-name (.-type (value-accessor)))
+        model-vm (model/get-model model-name data)
+        model-data (ko/get-dom-data element with-model-key)
+        should-display (.loaded model-vm)
+        saved-nodes (.-savedNodes model-data)
+        needs-refresh (or (not saved-nodes)
+                          (not= should-display (.-didDisplayOnLastUpdate model-data)))]
+    (when needs-refresh
+      (when-not saved-nodes
+        (aset model-data "savedNodes"
+              (ko/clone-nodes
+               (.childNodes (.-virtualElements js/ko) element)
+               true)))
+      (if should-display
+        (do
+          (when saved-nodes
+            (.setDomNodeChildren (.-virtualElements js/ko)
+                                 element
+                                 (ko/clone-nodes saved-nodes))
+            (let [child-binding (.createChildContext context model-vm)]
+              (.applyBindingsToDescendants js/ko child-binding element))))
+        (.emptyNode (.-virtualElements js/ko) element))
+      (aset model-data "didDisplayOnLastUpdate" should-display)
+      )))
 
 (aset ko/binding-handlers "withModel"
       (js-obj
