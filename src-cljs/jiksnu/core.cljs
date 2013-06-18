@@ -56,8 +56,11 @@
 (defn page-init
   [element value-accessor all-bindings data context]
   ;; (ko/set-dom-data element with-model-key (js-obj))
+  (when-let [page-name (.-type (value-accessor))]
+    (.applyBindingsToDescendants js/ko (model/get-page page-name) element)
+    )
   (js-obj
-   "controlsDescendantBindings" true))
+     "controlsDescendantBindings" true))
 
 (defn model-update
   [element value-accessor all-bindings data context]

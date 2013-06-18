@@ -49,7 +49,7 @@
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
         (sections.conversation/show-details item)]
-       (with-page "conversation-' + $data +'"
+       (with-sub-page "conversations"
          (let [items (if *dynamic*
                        [(Activity.)]
                        (:items (actions.activity/fetch-by-conversation item)))]

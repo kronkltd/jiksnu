@@ -226,7 +226,7 @@
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
-     (with-page "conversation-' + $data + '"
+     (with-sub-page "conversations"
        (if-let [item (first items)]
          (bind-to "items()[0]"
            (show-section item))

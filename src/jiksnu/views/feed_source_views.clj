@@ -55,7 +55,7 @@
     {:body
      (bind-to "targetFeedSource"
        (show-section item)
-       (with-page "feedSource-' + $data + '"
+       (with-sub-page "feedSources"
          (pagination-links (if *dynamic* {} page))
          (bind-to "items"
            (index-section items))))}))

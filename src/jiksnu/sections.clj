@@ -93,12 +93,13 @@
 
 (defn with-page
   [page-name & body]
-  (apply bind-to
-         (format "jiksnu.model.get_page('%s')" page-name)
-         (list
-          "<!-- ko if: loaded -->"
-          body
-          "<!-- /ko -->")))
+  [:div {:data-page page-name}
+   body])
+
+(defn with-sub-page
+  [page-name & body]
+  [:div {:data-sub-page page-name}
+   body])
 
 (defn bind-property
   [property]
