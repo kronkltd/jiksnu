@@ -50,7 +50,12 @@
 (defn model-init
   [element value-accessor all-bindings data context]
   (ko/set-dom-data element with-model-key (js-obj))
-  (.attr (js/$ element) "data-id" data)
+  (js-obj
+   "controlsDescendantBindings" true))
+
+(defn page-init
+  [element value-accessor all-bindings data context]
+  ;; (ko/set-dom-data element with-model-key (js-obj))
   (js-obj
    "controlsDescendantBindings" true))
 
@@ -62,7 +67,7 @@
         should-display (.loaded model-vm)
         saved-nodes (.-savedNodes model-data)
         needs-refresh (or (not saved-nodes)
-                          (not= should-display (.-didDisplayOnLastUpdate model-data)))]
+                          (not= should-display (.-displayed model-data)))]
     (when needs-refresh
       (when-not saved-nodes
         (aset model-data "savedNodes"
@@ -70,21 +75,52 @@
                (.childNodes (.-virtualElements js/ko) element)
                true)))
       (if should-display
-        (do
-          (when saved-nodes
-            (.setDomNodeChildren (.-virtualElements js/ko)
-                                 element
-                                 (ko/clone-nodes saved-nodes))
-            (let [child-binding (.createChildContext context model-vm)]
-              (.applyBindingsToDescendants js/ko child-binding element))))
+        (when saved-nodes
+          (.setDomNodeChildren (.-virtualElements js/ko)
+                               element
+                               (ko/clone-nodes saved-nodes))
+          (let [child-binding (.createChildContext context model-vm)]
+            (.attr (js/$ element) "data-id" data)
+            (.applyBindingsToDescendants js/ko child-binding element)))
         (.emptyNode (.-virtualElements js/ko) element))
-      (aset model-data "didDisplayOnLastUpdate" should-display)
-      )))
+      (aset model-data "displayed" should-display))))
+
+(defn page-update
+  [element value-accessor all-bindings data context]
+  (log/info *logger* "updating page")
+  #_(let [model-name (model/collection-name (.-type (value-accessor)))
+        model-vm (model/get-model model-name data)
+        model-data (ko/get-dom-data element with-model-key)
+        should-display (.loaded model-vm)
+        saved-nodes (.-savedNodes model-data)
+        needs-refresh (or (not saved-nodes)
+                          (not= should-display (.-displayed model-data)))]
+    (when needs-refresh
+      (when-not saved-nodes
+        (aset model-data "savedNodes"
+              (ko/clone-nodes
+               (.childNodes (.-virtualElements js/ko) element)
+               true)))
+      (if should-display
+        (when saved-nodes
+          (.setDomNodeChildren (.-virtualElements js/ko)
+                               element
+                               (ko/clone-nodes saved-nodes))
+          (let [child-binding (.createChildContext context model-vm)]
+            (.attr (js/$ element) "data-id" data)
+            (.applyBindingsToDescendants js/ko child-binding element)))
+        (.emptyNode (.-virtualElements js/ko) element))
+      (aset model-data "displayed" should-display))))
 
 (aset ko/binding-handlers "withModel"
       (js-obj
        "init" model-init
        "update" model-update))
+
+(aset ko/binding-handlers "withPage"
+      (js-obj
+       "init" page-init
+       "update" page-update))
 
 (defn main
   []
@@ -119,6 +155,9 @@
 
   (set! (.-instance ko/binding-provider)
         (providers/DataModelProvider.))
+
+  (set! (.-instance ko/binding-provider)
+        (providers/PageProvider.))
 
   (ko/apply-bindings model/_view)
 
