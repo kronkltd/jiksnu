@@ -113,3 +113,5 @@
         ;; wrap-tidy-up
         ;; (wrap-resource "/META-INF/resources")
 ))))
+
+(add-command! "fetch-viewmodel" #'jiksnu.viewmodel/fetch-viewmodel)

@@ -38,6 +38,3 @@
 (defview #'fetch-viewmodel :json
   [request response]
   response)
-
-(add-command! "fetch-viewmodel" #'fetch-viewmodel)
-

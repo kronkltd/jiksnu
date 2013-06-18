@@ -1,19 +1,23 @@
 (ns jiksnu.actions.site-actions
-  (:use [ciste.commands :only [add-command!]]
-        [ciste.initializer :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]])
   (:require [clojure.string :as string]
             [inflections.core :as inf]))
 
-(defaction service
-  [id]
-  ;; get user
-  true)
+(defn get-config
+  [path]
+  (->> (string/split path #"/")
+       (map keyword)
+       (apply ciste.config/config)))
 
-(defaction rsd
+(defaction get-environment
   []
-  true)
+  (ciste.config/environment))
+
+;; (defn get-load
+;;   []
+;;   (str (core.host/get-load-average)))
 
 (defaction get-stats
   []
@@ -27,33 +31,18 @@
               [(inf/camelize (name k) :lower) (sym)])))
        (into {})))
 
-
-(defaction get-environment
-  []
-  (ciste.config/environment))
-
-(defn get-config
-  [path]
-  (->> (string/split path #"/")
-       (map keyword)
-       (apply ciste.config/config)))
-
-;; (defn get-load
-;;   []
-;;   (str (core.host/get-load-average)))
-
 (defn ping
   []
   "pong")
 
+(defaction rsd
+  []
+  true)
 
-
-(add-command! "get-environment" #'get-environment)
-(add-command! "get-stats" #'get-stats)
-;; (add-command! "get-load" #'get-load)
-(add-command! "config" #'get-config)
-(add-command! "ping" #'ping)
-
+(defaction service
+  [id]
+  ;; get user
+  true)
 
 (definitializer
   (require-namespaces
