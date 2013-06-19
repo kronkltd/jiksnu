@@ -9,54 +9,24 @@
         [clojure.data.json :only [read-json]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require #_[clj-airbrake.core :as airbrake]
-            [ciste.predicates :as pred]
             [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [clout.core :as clout]
-            [compojure.core :as compojure]
             [jiksnu.abdera :as abdera]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
+            [jiksnu.predicates :as pred]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [lamina.core :as l]
             [lamina.trace :as trace])
   (:import clojure.lang.ExceptionInfo))
 
-
-(defn name-path-matches?
-  [request matcher]
-  (if-let [path (:name matcher)]
-    (let [request (assoc request :uri (:name request))
-          pattern (clout/route-compile path)]
-      (if-let [route-params (clout/route-matches pattern request)]
-        (#'compojure/assoc-route-params request route-params)))))
-
 (defonce connections (ref {}))
-
-(defonce
-  ^{:dynamic true
-    :doc "The sequence of predicates used for command dispatch.
-          By default, commands are dispatched by name."}
-  *page-predicates*
-  (ref [#'name-path-matches?]))
-
-(defonce
-  ^{:dynamic true}
-  *page-matchers*
-  (ref []))
 
 (defn all-channels
   []
   (reduce concat (map vals (vals @connections))))
-
-(defn alert-all
-  [message]
-  (doseq [ch (all-channels)]
-    (let [response (json/json-str {:action "add notice"
-                                   :message message})]
-      (l/enqueue ch response))))
 
 (defn handle-errors
   [ex]
@@ -101,6 +71,13 @@
 
 (declare get-model)
 
+(defaction alert-all
+  [message]
+  (doseq [ch (all-channels)]
+    (let [response (json/json-str {:action "add notice"
+                                   :message message})]
+      (l/enqueue ch response))))
+
 (defaction confirm
   [action model id]
   (when-let [item (get-model model id)]
@@ -141,7 +118,20 @@
                  :serialization :page
                  :name page-name
                  :args args}]
-    (or ((resolve-routes @*page-predicates* @*page-matchers*) request)
+    (or ((resolve-routes @pred/*page-predicates*
+                         @pred/*page-matchers*) request)
+        (throw+ "page not found"))))
+
+(defaction get-sub-page
+  [item page-name & args]
+  (log/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
+  (let [request {:format :page
+                 :serialization :page
+                 :name page-name
+                 :item item
+                 :args args}]
+    (or ((resolve-routes @pred/*sub-page-predicates*
+                         @pred/*sub-page-matchers*) request)
         (throw+ "page not found"))))
 
 (defaction invoke-action
@@ -169,9 +159,10 @@
       (trace/trace "errors:handled" ex))))
 
 (add-command! "invoke-action" #'invoke-action)
-(add-command! "connect" #'connect)
-(add-command! "get-model" #'get-model)
-(add-command! "get-page" #'get-page)
+(add-command! "connect"       #'connect)
+(add-command! "get-model"     #'get-model)
+(add-command! "get-page"      #'get-page)
+(add-command! "get-sub-page"  #'get-sub-page)
 
 (defn init-handlers
   []

@@ -167,13 +167,6 @@ Returns a viewmodel"
   (let [page (get-sub-page-obj model-name id name)]
     (.viewModel js/kb page)))
 
-(defn extend-page-model
-  [& args]
-  (fn []
-    (_/extend
-        (apply js-obj args)
-      (.defaults (.-prototype PageModel)))))
-
 ;; Models
 
 (defn initializer
@@ -262,6 +255,13 @@ Returns a viewmodel"
                      (js-obj
                       "pages" (Pages.))
                    (.defaults (.-prototype Model)))))))
+
+(defn extend-page-model
+  [& args]
+  (fn []
+    (_/extend
+        (apply js-obj args)
+      (.defaults (.-prototype PageModel)))))
 
 (def Notification
   (.extend

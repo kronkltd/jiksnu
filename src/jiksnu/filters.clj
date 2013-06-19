@@ -35,6 +35,10 @@
   [action request]
   (apply action (:args request)))
 
+(deffilter #'actions/get-sub-page :command
+  [action request]
+  (apply action (:args request)))
+
 (deffilter #'actions/invoke-action :command
   [action request]
   (apply action (:args request)))
