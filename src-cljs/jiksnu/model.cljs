@@ -624,7 +624,7 @@ Returns a viewmodel"
       page
       (do (.add coll (js-obj "id" name))
           (let [m (.get coll name)]
-            (.fetch m)
+            (ws/send "get-sub-page" model-name id name)
             m)))))
 
 (defn get-sub-page
