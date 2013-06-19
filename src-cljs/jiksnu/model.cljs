@@ -106,6 +106,18 @@
   [model-name]
   (aget ko/observables model-name))
 
+(defn get-model-obj
+  [model-name id]
+  (if-let [coll-name (collection-name model-name)]
+    (if-let [coll (.get _model coll-name)]
+      (if-let [m (.get coll id)]
+        m
+        (do
+          (log/warning *logger* "Creating model")
+          (.add coll "_id" id)))
+      (log/warning *logger* (str "Could not get collection: " coll-name)))
+    (log/warning *logger* (str "Could find collection for: " model-name))))
+
 (defn- get-model*
   "Inintialize a new model reference based on the params when a cached ref is not found"
   [model-name id]
@@ -130,6 +142,37 @@
           (get-model* model-name id)))
       (throw (js/Error. (str id " is not a string"))))
     (log/warning *logger* "id is undefined")))
+
+(defn get-sub-page-obj
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
+  [model-name id name]
+  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
+  (let [m (get-model-obj model-name id)
+        coll (.get m "pages")]
+    (if-let [page (.get coll name)]
+      page
+      (do (.add coll (js-obj "id" name))
+          (let [m (.get coll name)]
+            (ws/send "get-sub-page" model-name id name)
+            m)))))
+
+(defn get-sub-page
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
+  [model-name id name]
+  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
+  (let [page (get-sub-page-obj model-name id name)]
+    (.viewModel js/kb page)))
+
+(defn extend-page-model
+  [& args]
+  (fn []
+    (_/extend
+        (apply js-obj args)
+      (.defaults (.-prototype PageModel)))))
 
 ;; Models
 
@@ -219,13 +262,6 @@
                      (js-obj
                       "pages" (Pages.))
                    (.defaults (.-prototype Model)))))))
-
-(defn extend-page-model
-  [& args]
-  (fn []
-    (_/extend
-        (apply js-obj args)
-      (.defaults (.-prototype PageModel)))))
 
 (def Notification
   (.extend
@@ -600,38 +636,3 @@ Returns a viewmodel"
           found)
         (log/fine *logger* "could not find page even after creating")))))
 
-(defn get-model-obj
-  [model-name id]
-  (if-let [coll-name (collection-name model-name)]
-    (if-let [coll (.get _model coll-name)]
-      (if-let [m (.get coll id)]
-        m
-        (do
-          (log/warning *logger* "Creating model")
-          (.add coll "_id" id)))
-      (log/warning *logger* (str "Could not get collection: " coll-name)))
-    (log/warning *logger* (str "Could find collection for: " model-name))))
-
-(defn get-sub-page-obj
-  "Returns the page for the name from the view's page info.
-
-Returns a viewmodel"
-  [model-name id name]
-  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
-  (let [m (get-model-obj model-name id)
-        coll (.get m "pages")]
-    (if-let [page (.get coll name)]
-      page
-      (do (.add coll (js-obj "id" name))
-          (let [m (.get coll name)]
-            (ws/send "get-sub-page" model-name id name)
-            m)))))
-
-(defn get-sub-page
-  "Returns the page for the name from the view's page info.
-
-Returns a viewmodel"
-  [model-name id name]
-  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
-  (let [page (get-sub-page-obj model-name id name)]
-    (.viewModel js/kb page)))
