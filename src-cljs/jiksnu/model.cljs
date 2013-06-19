@@ -214,6 +214,13 @@
                         (.pageSize this))
                      (.totalRecords this)))))))
 
+(def SubPage
+  (.extend
+   Page
+   (js-obj
+    "type" "SubPage"
+
+    )))
 
 (def Notification
   (.extend
@@ -505,6 +512,7 @@
 (def groups        (Groups.))
 (def notifications (Notifications.))
 (def pages         (Pages.))
+(def sub-pages     (SubPages.))
 (def resources     (Resources.))
 (def subscriptions (Subscriptions.))
 (def users         (Users.))
@@ -525,6 +533,7 @@
                   "formats"                  (array)
                   "groups"                   groups
                   "pages"                    pages
+                  "subPages"                 sub-pages
                   "postForm"                 (PostForm.)
                   "notifications"            notifications
                   "resources"                resources
@@ -594,8 +603,8 @@ Returns a viewmodel"
 
 Returns a viewmodel"
   [model-name id name]
-  (log/fine *logger* (str "getting sub page: " name))
-  #_(if-let [page (-?> (.subPages _view)
+  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
+  (if-let [page (-?> (.subPages _view)
                      (aget model-name)
                      (aget id)
                      (.filter (by-name name))
