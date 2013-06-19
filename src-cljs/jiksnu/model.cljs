@@ -1,5 +1,6 @@
 (ns jiksnu.model
-  (:require [jiksnu.backbone :as backbone]
+  (:require [goog.json :as json]
+            [jiksnu.backbone :as backbone]
             [jiksnu.ko :as ko]
             [jiksnu.logging :as jl]
             [jiksnu.websocket :as ws]
@@ -137,8 +138,12 @@
   [m coll]
   (this-as this
     (let [n (.-type this)]
-      (log/finer *logger* (format "Creating record: %s%s" n (.stringify js/JSON m))))))
+      (log/finer *logger* (format "Creating record: %s%s" n (json/serialize m))))))
 
+(def Collection
+  (.extend
+   backbone/Collection
+   (js-obj)))
 
 (def Model
   (.extend
@@ -147,6 +152,7 @@
     "initialize" initializer
     "stub" "STUB"
     "idAttribute" "_id"
+    "defaults" (fn [] (js-obj))
     "fetch" (fn []
               (this-as this
                 (let [model-name (first
@@ -159,40 +165,20 @@
     "url" (fn [] (this-as this
                    (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
 
-
-
-
-(defvar Statistics
-  [this]
-  (doto this
-    (ko/assoc-observable "activities")
-    (ko/assoc-observable "conversations")
-    (ko/assoc-observable "domains")
-    (ko/assoc-observable "groups")
-    (ko/assoc-observable "feedSources")
-    (ko/assoc-observable "feedSubscriptions")
-    (ko/assoc-observable "subscriptions")
-    (ko/assoc-observable "users")))
-
-(defvar PostForm
-  [this]
-  (doto this
-    (ko/assoc-observable "visible" false)
-    (ko/assoc-observable "currentPage" "note")))
-
 (def Page
   (.extend
    Model
    (js-obj
     "type" "Page"
     "idAttribute" "id"
-    "defaults" (fn [] (js-obj
-                       "page"         1
-                       "loaded" false
-                       "pageSize"     0
-                       "items"        (array) #_(backbone/Collection.)
-                       "recordCount"  0
-                       "totalRecords" 0))
+    "defaults" (fn []
+                 (js-obj
+                  "page"         1
+                  "loaded" false
+                  "pageSize"     0
+                  "items"        (array)
+                  "recordCount"  0
+                  "totalRecords" 0))
     "addItem" (fn [id]
                 (this-as this
                   (let [a (.get this "items")]
@@ -214,47 +200,67 @@
                         (.pageSize this))
                      (.totalRecords this)))))))
 
-(def SubPage
+(def Pages
   (.extend
-   Page
+   Collection
    (js-obj
-    "type" "SubPage"
+    "model" Page
+    "type" "Pages"
+    "getPage" (fn [name]
+                (this-as this
+                  (.get this name))))))
 
-    )))
+(def PageModel
+  (.extend
+   Model
+   (js-obj
+    "defaults" (fn []
+                 (_/extend
+                     (js-obj
+                      "pages" (Pages.))
+                   (.defaults (.-prototype Model)))))))
+
+(defn extend-page-model
+  [& args]
+  (fn []
+    (_/extend
+        (apply js-obj args)
+      (.defaults (.-prototype PageModel)))))
 
 (def Notification
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Notification"
     "dismiss" (fn []
                 (this-as this
                   (.remove (.-collection this) this)))
-    "default" (js-obj
+    "default" (extend-page-model
                "message" ""
-                       "loaded" false
+               "loaded" false
                "level"   ""))))
 
 (def Domain
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Domain"
     "stub" "domains"
-    "defaults" (js-obj "xmpp"       "unknown"
-                       "discovered" nil
-                       "loaded" false
-                       "created"    nil
-                       "updated"    nil
-                       "links"      (array)))))
+    "defaults" (extend-page-model
+                "xmpp"       "unknown"
+                "discovered" nil
+                "loaded" false
+                "created"    nil
+                "updated"    nil
+                "links"      (array)))))
 
 (def Resource
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Resource"
     "stub" "resources"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "url"         nil
                 "title"       nil
                 "domain"      nil
@@ -270,77 +276,77 @@
 
 (def User
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "User"
     "stub" "users"
-    "defaults" (js-obj "url"          nil
-                       "avatarUrl"    nil
-                       "uri"          nil
-                       "bio"          nil
-                       "username"     nil
-                       "location"     ""
-                       "loaded" false
-                       "local"        false
-                       "domain"       nil
-                       "updateSource" nil
-                       "links"        (array)
-                       "displayName"  nil))))
+    "defaults" (extend-page-model
+                "url"          nil
+                "avatarUrl"    nil
+                "uri"          nil
+                "bio"          nil
+                "username"     nil
+                "location"     ""
+                "loaded" false
+                "local"        false
+                "domain"       nil
+                "updateSource" nil
+                "links"        (array)
+                "displayName"  nil))))
 
 (def Activity
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Activity"
     "stub" "activities"
     "defaults"
-    (fn []
-      (js-obj
-       "_id"           ""
-       "author"        ""
-       "uri"           ""
-       "url"           nil
-       "links"         (array)
-       "loaded"        false
-       "source"        "unknown"
-       "comments"      (array)
-       "resources"     (array)
-       "comment-count" 0
-       "created"       nil
-       "published"     nil
-       "conversation"  nil
-       "local"        false
-       "title"         nil
-       "mentioned"     (array)
-       "tags"          (array)
-       "geo"           nil
-       "object"        (js-obj
-                        "type" nil)
-       "like-count"    0
-       "updateSource" nil
-       "enclosures"    (array))))))
+    (extend-page-model
+     "_id"           ""
+     "author"        ""
+     "uri"           ""
+     "url"           nil
+     "links"         (array)
+     "loaded"        false
+     "source"        "unknown"
+     "comments"      (array)
+     "resources"     (array)
+     "comment-count" 0
+     "created"       nil
+     "published"     nil
+     "conversation"  nil
+     "local"        false
+     "title"         nil
+     "mentioned"     (array)
+     "tags"          (array)
+     "geo"           nil
+     "object"        (js-obj
+                      "type" nil)
+     "like-count"    0
+     "updateSource" nil
+     "enclosures"    (array)))))
 
 (def Group
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Group"
     "stub" "groups"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "from"     nil
                 "to"       nil
-                       "loaded" false
+                "loaded" false
                 "homepage" ""
                 "fullname" ""
                 "nickname" ""))))
 
 (def Subscription
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Subscription"
     "stub" "subscriptions"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "from"    nil
                 "to"      nil
                        "loaded" false
@@ -350,14 +356,14 @@
 
 (def FeedSource
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "FeedSource"
     "stub" "feed-sources"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "callback" nil
                 "created"  nil
-                       "loaded" false
+                "loaded" false
                 "updated"  nil
                 "status"   nil
                 "domain"   nil
@@ -370,11 +376,11 @@
 
 (def FeedSubscription
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "FeedSubscription"
     "stub" "feed-subscriptions"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "domain"   nil
                        "loaded" false
                 "callback" nil
@@ -382,11 +388,11 @@
 
 (def Conversation
   (.extend
-   Model
+   PageModel
    (js-obj
     "type" "Conversation"
     "stub" "conversations"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "uri"           nil
                 "url"           nil
                 "domain"        nil
@@ -399,14 +405,32 @@
 
 (def AuthenticationMechanism
   (.extend
-   Model
+   PageModel
    (js-obj
     "type"        "AuthenticationMechanism"
     "stub"        "authenticationMechanisms"
-    "defaults" (js-obj
+    "defaults" (extend-page-model
                 "user" nil
-                       "loaded" false
+                "loaded" false
                 "value" nil))))
+
+(defvar Statistics
+  [this]
+  (doto this
+    (ko/assoc-observable "activities")
+    (ko/assoc-observable "conversations")
+    (ko/assoc-observable "domains")
+    (ko/assoc-observable "groups")
+    (ko/assoc-observable "feedSources")
+    (ko/assoc-observable "feedSubscriptions")
+    (ko/assoc-observable "subscriptions")
+    (ko/assoc-observable "users")))
+
+(defvar PostForm
+  [this]
+  (doto this
+    (ko/assoc-observable "visible" false)
+    (ko/assoc-observable "currentPage" "note")))
 
 ;; Collections
 
@@ -471,16 +495,6 @@
           (.set notification "message" message)
           (.push this notification)))))))
 
-(def Pages
-  (.extend
-   backbone/Collection
-   (js-obj
-    "model" Page
-    "type" "Pages"
-    "getPage" (fn [name]
-                (this-as this
-                  (.get this name))))))
-
 (def Resources
   (.extend backbone/Collection
            (js-obj
@@ -496,7 +510,6 @@
 (def Users
   (.extend backbone/Collection
            (js-obj
-            ;; "localStorage" (js/Store. "users")
             "type"         "Users"
             "model"        User)))
 
@@ -512,7 +525,6 @@
 (def groups        (Groups.))
 (def notifications (Notifications.))
 (def pages         (Pages.))
-(def sub-pages     (SubPages.))
 (def resources     (Resources.))
 (def subscriptions (Subscriptions.))
 (def users         (Users.))
@@ -533,7 +545,6 @@
                   "formats"                  (array)
                   "groups"                   groups
                   "pages"                    pages
-                  "subPages"                 sub-pages
                   "postForm"                 (PostForm.)
                   "notifications"            notifications
                   "resources"                resources
@@ -566,15 +577,6 @@
     (.fetch page)
     page))
 
-(defn create-sub-page
-  [model-name id name]
-  (log/fine *logger* (format "Creating sub page: %s(%s) => %s" model-name id name))
-  (.add sub-pages (js-obj "id" name))
-  (when-let [sub-page (.get sub-pages name)]
-    (log/finer *logger* (format "Fetching sub page: %s(%s) => %s" name))
-    (.fetch sub-page)
-    sub-page))
-
 (defn get-page
   "Returns the page for the name from the view's page info.
 
@@ -598,29 +600,38 @@ Returns a viewmodel"
           found)
         (log/fine *logger* "could not find page even after creating")))))
 
+(defn get-model-obj
+  [model-name id]
+  (if-let [coll-name (collection-name model-name)]
+    (if-let [coll (.get _model coll-name)]
+      (if-let [m (.get coll id)]
+        m
+        (do
+          (log/warning *logger* "Creating model")
+          (.add coll "_id" id)))
+      (log/warning *logger* (str "Could not get collection: " coll-name)))
+    (log/warning *logger* (str "Could find collection for: " model-name))))
+
+(defn get-sub-page-obj
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
+  [model-name id name]
+  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
+  (let [m (get-model-obj model-name id)
+        coll (.get m "pages")]
+    (if-let [page (.get coll name)]
+      page
+      (do (.add coll (js-obj "id" name))
+          (let [m (.get coll name)]
+            (.fetch m)
+            m)))))
+
 (defn get-sub-page
   "Returns the page for the name from the view's page info.
 
 Returns a viewmodel"
   [model-name id name]
   (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
-  (if-let [page (-?> (.subPages _view)
-                     (aget model-name)
-                     (aget id)
-                     (.filter (by-name name))
-                     first)]
-    (do
-      (log/finer *logger* "found")
-      page)
-    (do
-      (create-sub-page model-name id name)
-      ;; TODO: return the observable
-      (if-let [found (-?> (.subPages _view)
-                          (aget model-name)
-                          (aget id)
-                          (.filter (by-name name))
-                          first)]
-        (do
-          (log/finer *logger* "created")
-          found)
-        (log/fine *logger* "could not find sub page even after creating")))))
+  (let [page (get-sub-page-obj model-name id name)]
+    (.viewModel js/kb page)))

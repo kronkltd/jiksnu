@@ -35,16 +35,6 @@
     (log/info *logger* (format "Fetching viewmodel: %s" url))
     (.getJSON js/jQuery url vm/process-viewmodel)))
 
-(def get-activity                 (partial model/get-model "activities"))
-(def get-authentication-mechanism (partial model/get-model "authenticationMechanisms"))
-(def get-conversation             (partial model/get-model "conversations"))
-(def get-domain                   (partial model/get-model "domains"))
-(def get-feed-source              (partial model/get-model "feedSources"))
-(def get-feed-subscription        (partial model/get-model "feedSubscriptions"))
-(def get-group                    (partial model/get-model "groups"))
-(def get-subscription             (partial model/get-model "subscriptions"))
-(def get-user                     (partial model/get-model "users"))
-
 (def with-model-key "__ko_withModelData")
 
 (defn model-init
@@ -52,23 +42,6 @@
   (ko/set-dom-data element with-model-key (js-obj))
   (js-obj
    "controlsDescendantBindings" true))
-
-(defn page-init
-  [element value-accessor all-bindings data context]
-  (when-let [page-name (.-type (value-accessor))]
-    (.applyBindingsToDescendants js/ko (model/get-page page-name) element))
-  (js-obj
-     "controlsDescendantBindings" true))
-
-(defn sub-page-init
-  [element value-accessor all-bindings data context]
-  (let [model-elt (.closest ($ element) "*[data-id]")
-        id (.data model-elt "id")
-        model-name (.data model-elt "model")]
-    (when-let [page-name (.-type (value-accessor))]
-      (.applyBindingsToDescendants js/ko (model/get-sub-page model-name id page-name) element)))
-  (js-obj
-     "controlsDescendantBindings" true))
 
 (defn model-update
   [element value-accessor all-bindings data context]
@@ -96,23 +69,40 @@
         (.emptyNode (.-virtualElements js/ko) element))
       (aset model-data "displayed" should-display))))
 
-(defn page-update
-  [element value-accessor all-bindings data context]
-  (log/info *logger* "updating page"))
-
-(defn sub-page-update
-  [element value-accessor all-bindings data context]
-  (log/info *logger* "updating sub page"))
-
 (aset ko/binding-handlers "withModel"
       (js-obj
        "init" model-init
        "update" model-update))
 
+(defn page-init
+  [element value-accessor all-bindings data context]
+  (when-let [page-name (.-type (value-accessor))]
+    (.applyBindingsToDescendants js/ko (model/get-page page-name) element))
+  (js-obj
+     "controlsDescendantBindings" true))
+
+(defn page-update
+  [element value-accessor all-bindings data context]
+  (log/info *logger* "updating page"))
+
 (aset ko/binding-handlers "withPage"
       (js-obj
        "init" page-init
        "update" page-update))
+
+(defn sub-page-init
+  [element value-accessor all-bindings data context]
+  (let [model-elt (.closest ($ element) "*[data-id]")
+        id (.data model-elt "id")
+        model-name (.data model-elt "model")]
+    (when-let [page-name (.-type (value-accessor))]
+      (.applyBindingsToDescendants js/ko (model/get-sub-page model-name id page-name) element)))
+  (js-obj
+     "controlsDescendantBindings" true))
+
+(defn sub-page-update
+  [element value-accessor all-bindings data context]
+  (log/info *logger* "updating sub page"))
 
 (aset ko/binding-handlers "withSubPage"
       (js-obj

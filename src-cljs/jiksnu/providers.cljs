@@ -55,8 +55,8 @@
            (fn [node context]
              (if-let [page-name (.data ($ node) "sub-page")]
                (if-let [data (.-$data context)]
-                 (jl/spy (js-obj
-                   "withSubPage" (js-obj
-                                  "type" page-name))))
+                 (js-obj
+                  "withSubPage" (js-obj
+                                 "type" page-name)))
                (.getBindings underlying-provider node context)))))))
 
