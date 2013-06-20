@@ -3,6 +3,7 @@
         [ciste.config :only [*environment*]]
         [ciste.core :only [defaction with-serialization]]
         [ciste.filters :only [filter-action]]
+        [ciste.initializer :only [definitializer]]
         [ciste.routes :only [resolve-routes]]
         [ciste.sections.default :only [link-to]]
         [clojure.core.incubator :only [dissoc-in]]
@@ -108,12 +109,12 @@
   (let [model-ns (symbol (str "jiksnu.model." model-name))]
     (require model-ns)
     (let [fetcher (ns-resolve model-ns 'fetch-by-id)]
-      (log/debugf "getting model %s(%s)" model-name id)
+      ;; (log/debugf "getting model %s(%s)" model-name id)
       (fetcher id))))
 
 (defaction get-page
   [page-name & args]
-  (log/debugf "Getting page: %s" page-name)
+  ;; (log/debugf "Getting page: %s" page-name)
   (let [request {:format :page
                  :serialization :page
                  :name page-name
@@ -124,7 +125,7 @@
 
 (defaction get-sub-page
   [item page-name & args]
-  (log/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
+  ;; (log/debugf "Getting sub-page: %s(%s) => %s" (class item) (:_id item) page-name)
   (let [request {:format :page
                  :serialization :page
                  :name page-name
@@ -184,4 +185,5 @@
                               (:connection-id response))
                    (s/increment "conversations pushed"))))
 
-(init-handlers)
+(definitializer
+  (init-handlers))

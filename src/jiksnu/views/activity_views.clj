@@ -48,7 +48,9 @@
         response (merge response
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
+    {:body {:action "sub-page-updated"
+            :model "conversation"
+            :id (:_id (:item request))
             :body response}}))
 
 ;; oembed

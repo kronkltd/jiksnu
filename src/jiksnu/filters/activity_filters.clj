@@ -38,7 +38,7 @@
 
 (deffilter #'fetch-by-conversation :page
   [action request]
-  (when-let [conversation (model.conversation/fetch-by-id (:id (:params request)))]
+  (when-let [conversation (:item request)]
     (action conversation)))
 
 ;; oembed

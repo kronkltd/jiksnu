@@ -66,6 +66,10 @@
   [request response]
   {:body response})
 
+(defview #'actions/get-sub-page :json
+  [request response]
+  {:body response})
+
 (defview #'actions/confirm :html
   [request response]
   {:body

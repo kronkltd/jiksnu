@@ -2,7 +2,8 @@
   (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.actions.conversation-actions :as conversation]))
+            [jiksnu.actions.conversation-actions :as conversation])
+  (:import jiksnu.model.Conversation))
 
 (add-route! "/main/conversations"     {:named "index conversations"})
 (add-route! "/main/conversations/:id" {:named "show conversation"})
@@ -22,4 +23,11 @@
   [
    [{:name "conversations"}    {:action #'conversation/index}]
    [{:name "conversation-:id"} {:action #'activity/fetch-by-conversation}]
+   ])
+
+(defn sub-pages
+  []
+  [
+   [{:type Conversation
+     :name "activities"}    {:action #'activity/fetch-by-conversation}]
    ])

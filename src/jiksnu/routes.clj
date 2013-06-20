@@ -69,6 +69,11 @@
         (dosync
          (alter predicates/*page-matchers* concat matchers))))
 
+    (when-let [page-fn (ns-resolve route-sym 'sub-pages)]
+      (when-let [matchers (page-fn)]
+        (dosync
+         (alter predicates/*sub-page-matchers* concat matchers))))
+
     (let [route-fn (ns-resolve route-sym 'routes)]
       (route-fn))))
 

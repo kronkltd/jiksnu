@@ -11,6 +11,11 @@
       (if-let [route-params (clout/route-matches pattern request)]
         (#'compojure/assoc-route-params request route-params)))))
 
+(defn item-class-matches
+  [request matcher]
+  (when (= (:type matcher) (class (:item request)))
+    request))
+
 (def http
   [#'pred/request-method-matches?
    #'pred/path-matches?])
@@ -33,7 +38,8 @@
     :doc "The sequence of predicates used for command dispatch.
           By default, commands are dispatched by name."}
   *sub-page-predicates*
-  (ref [#'name-path-matches?]))
+  (ref [#'item-class-matches
+        #'name-path-matches?]))
 
 (defonce
   ^{:dynamic true}

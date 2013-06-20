@@ -1,7 +1,8 @@
 (ns jiksnu.filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]])
-  (:require [jiksnu.actions :as actions]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.actions :as actions]))
 
 (defn parse-page
   [request]
@@ -37,7 +38,9 @@
 
 (deffilter #'actions/get-sub-page :command
   [action request]
-  (apply action (:args request)))
+  (let [[model-name id page-name] (:args request)]
+    (if-let [item (actions/get-model model-name id)]
+      (action item page-name))))
 
 (deffilter #'actions/invoke-action :command
   [action request]
