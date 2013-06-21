@@ -328,7 +328,8 @@ Returns a viewmodel"
                 "domain"       nil
                 "updateSource" nil
                 "links"        (array)
-                "displayName"  nil))))
+                "displayName" nil
+                "name"  nil))))
 
 (def Activity
   (.extend

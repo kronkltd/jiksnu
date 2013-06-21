@@ -484,11 +484,12 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/remote-user/' + username() + '@' + domain(), title: 'acct:' + username() + '@' + domain()}"}
+          {:data-bind (str "attr: {href: '/remote-user/' + username() + '@' + domain(), "
+                           "title: 'acct:' + username() + '@' + domain()}")}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: displayName() || username()"}
+                     {:data-bind "attr: {about: url}, text: name"}
                      {:about (uri record)}))
       (when-not *dynamic*
         (or (:title options-map) (title record)))]]))

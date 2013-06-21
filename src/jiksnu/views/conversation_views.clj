@@ -48,13 +48,13 @@
    (let [item (if *dynamic* (Conversation.) item)]
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
-        (sections.conversation/show-details item)]
-       (with-sub-page "conversations"
-         (let [items (if *dynamic*
-                       [(Activity.)]
-                       (:items (actions.activity/fetch-by-conversation item)))]
-           (bind-to "items"
-             (index-section items))))))})
+        (sections.conversation/show-details item)
+        (with-sub-page "activities"
+          (let [items (if *dynamic*
+                        [(Activity.)]
+                        (:items (actions.activity/fetch-by-conversation item)))]
+            (bind-to "items"
+              (index-section items))))]))})
 
 (defview #'show :model
   [request item]
