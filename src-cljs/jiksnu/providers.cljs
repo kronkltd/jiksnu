@@ -20,7 +20,8 @@
                (if-let [data (.-$data context)]
                  (js-obj
                   "withModel" (js-obj
-                               "type" model-name)))
+                               "type" model-name))
+                 (log/warning *logger* "Could not get data"))
                (.getBindings underlying-provider node context)))))))
 
 
