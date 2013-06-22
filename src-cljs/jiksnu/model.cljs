@@ -188,7 +188,8 @@ Returns a viewmodel"
     "initialize" initializer
     "stub" "STUB"
     "idAttribute" "_id"
-    "defaults" (fn [] (js-obj))
+    "defaults" (fn [] (js-obj
+                       "loaded" false))
     "fetch" (fn []
               (this-as this
                 (let [model-name (first
@@ -253,6 +254,7 @@ Returns a viewmodel"
     "defaults" (fn []
                  (_/extend
                      (js-obj
+                      "_id"   nil
                       "pages" (Pages.))
                    (.defaults (.-prototype Model)))))))
 
@@ -273,7 +275,6 @@ Returns a viewmodel"
                   (.remove (.-collection this) this)))
     "default" (extend-page-model
                "message" ""
-               "loaded" false
                "level"   ""))))
 
 (def Domain
@@ -285,7 +286,6 @@ Returns a viewmodel"
     "defaults" (extend-page-model
                 "xmpp"       "unknown"
                 "discovered" nil
-                "loaded" false
                 "created"    nil
                 "updated"    nil
                 "links"      (array)))))
@@ -300,7 +300,6 @@ Returns a viewmodel"
                 "url"         nil
                 "title"       nil
                 "domain"      nil
-                       "loaded" false
                 "status"      nil
                 "contentType" nil
                 "encoding"    nil
@@ -319,14 +318,17 @@ Returns a viewmodel"
     "defaults" (extend-page-model
                 "url"          nil
                 "avatarUrl"    nil
+                "id"           nil
                 "uri"          nil
                 "bio"          nil
                 "username"     nil
+                "discovered"  nil
                 "location"     ""
-                "loaded" false
                 "local"        false
                 "domain"       nil
                 "updateSource" nil
+                "created"      nil
+                "updated"      nil
                 "links"        (array)
                 "displayName" nil
                 "name"  nil))))
@@ -344,7 +346,6 @@ Returns a viewmodel"
      "uri"           ""
      "url"           nil
      "links"         (array)
-     "loaded"        false
      "source"        "unknown"
      "comments"      (array)
      "resources"     (array)
@@ -372,7 +373,6 @@ Returns a viewmodel"
     "defaults" (extend-page-model
                 "from"     nil
                 "to"       nil
-                "loaded" false
                 "homepage" ""
                 "fullname" ""
                 "nickname" ""))))
@@ -386,7 +386,6 @@ Returns a viewmodel"
     "defaults" (extend-page-model
                 "from"    nil
                 "to"      nil
-                       "loaded" false
                 "created" nil
                 "pending" nil
                 "local"   nil))))
@@ -400,7 +399,6 @@ Returns a viewmodel"
     "defaults" (extend-page-model
                 "callback" nil
                 "created"  nil
-                "loaded" false
                 "updated"  nil
                 "status"   nil
                 "domain"   nil
@@ -419,7 +417,6 @@ Returns a viewmodel"
     "stub" "feed-subscriptions"
     "defaults" (extend-page-model
                 "domain"   nil
-                       "loaded" false
                 "callback" nil
                 "url"      nil))))
 
@@ -433,7 +430,6 @@ Returns a viewmodel"
                 "uri"           nil
                 "url"           nil
                 "domain"        nil
-                       "loaded" false
                 "update-source" nil
                 "lastUpdated"   nil
                 "created"       nil
@@ -448,7 +444,6 @@ Returns a viewmodel"
     "stub"        "authenticationMechanisms"
     "defaults" (extend-page-model
                 "user" nil
-                "loaded" false
                 "value" nil))))
 
 (defvar Statistics

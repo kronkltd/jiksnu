@@ -5,7 +5,7 @@
         [jiksnu.actions.admin.user-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [admin-index-section admin-index-block admin-show-section
-                                bind-to format-page-info pagination-links with-page]])
+                                bind-to dump-data format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -30,23 +30,21 @@
    {:title "Users"
     :site {:name (config :site :name)}
     :showPostForm false
-    :notifications []
-    :pages {:users (format-page-info page)}
-    :users (doall (admin-index-section items))}})
+    :notifications []}})
 
 ;; show
 
 (defview #'show :html
   [request user]
-  (let [page (second (actions.stream/user-timeline user))]
+  (let [page (second (actions.stream/user-timeline user))
+        items (if *dynamic* [(Activity.)] (:items page))]
     {:title (title user)
      :single true
      :body
      (bind-to "targetUser"
        (admin-show-section user)
-       (admin-index-block (if *dynamic*
-                            [(Activity.)]
-                            (:items page)) page))}))
+       [:div {:data-model "user"}
+        (admin-index-block items page)])}))
 
 (defview #'show :model
   [request user]
@@ -55,6 +53,5 @@
 (defview #'show :viewmodel
   [request user]
   {:body
-   {:users (doall (admin-index-section [user]))
-    :title (title user)
+   {:title (title user)
     :targetUser (:_id user)}})

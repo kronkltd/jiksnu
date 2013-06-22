@@ -235,7 +235,7 @@
 (defn model-button
   [user]
   [:a (when *dynamic*
-        {:data-bind "attr: {href: '/model/users/' + ko.utils.unwrapObservable(_id) + '.model'}"})
+        {:data-bind "attr: {href: '/model/users/' + $data._id() + '.model'}"})
    "Model"])
 
 (defn get-buttons
@@ -296,10 +296,7 @@
               (when-not *dynamic*
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: username"}
-      (link-to user))]
+   [:td (display-property user :username)]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/users/' + ko.utils.unwrapObservable(_id)}, text: _id"}
@@ -351,39 +348,25 @@
            (link-to domain))])]]
     [:tr
      [:th "Bio"]
-     [:td (if *dynamic*
-            (bind-property "bio")
-            (:bio item))]]
+     [:td (display-property item :bio)]]
     [:tr
      [:th  "Location"]
-     [:td (if *dynamic*
-            (bind-property "location")
-            (:location item))]]
+     [:td (display-property item :location)]]
     [:tr
      [:th  "Url"]
-     [:td (if *dynamic*
-            (bind-property "url")
-            (:url item))]]
+     [:td (display-property item :url)]]
     [:tr
      [:th  "Id"]
-     [:td (if *dynamic*
-            (bind-property "id")
-            (:id item))]]
+     [:td (display-property item :id)]]
     [:tr
      [:th  "Discovered"]
-     [:td (if *dynamic*
-            (bind-property "discovered")
-            (:discovered item))]]
+     [:td (display-property item :discovered)]]
     [:tr
      [:th  "Created"]
-     [:td (if *dynamic*
-            (bind-property "created")
-            (:created item))]]
+     [:td (display-property item :created)]]
     [:tr
      [:th "Updated"]
-     [:td (if *dynamic*
-            {:data-bind "text: updated"}
-            (:updated item))]]
+     [:td (display-property item :updated)]]
     [:tr
      [:th "Update Source"]
      [:td
@@ -392,8 +375,8 @@
                             (FeedSource.)
                             (-?> item :update-source model.feed-source/fetch-by-id))]
           (link-to source)))]]]
-   (actions-section item)
-   (let [links (if *dynamic*  [{}] (:links item))]
+   ;; (actions-section item)
+   #_(let [links (if *dynamic*  [{}] (:links item))]
      (links-table links))))
 
 
