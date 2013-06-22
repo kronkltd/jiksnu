@@ -32,7 +32,7 @@
 (defn fetch-viewmodel
   [url]
   (when url
-    (log/info *logger* (format "Fetching viewmodel: %s" url))
+    (log/fine *logger* (format "Fetching viewmodel: %s" url))
     (.getJSON js/jQuery url vm/process-viewmodel)))
 
 (def with-model-key "__ko_withModelData")
@@ -93,7 +93,7 @@
 
 (defn page-update
   [element value-accessor all-bindings data context]
-  (log/info *logger* "updating page"))
+  (log/fine *logger* "updating page"))
 
 (aset ko/binding-handlers "withPage"
       (js-obj
@@ -112,7 +112,7 @@
 
 (defn sub-page-update
   [element value-accessor all-bindings data context]
-  (log/info *logger* "updating sub page"))
+  (log/fine *logger* "updating sub page"))
 
 (aset ko/binding-handlers "withSubPage"
       (js-obj

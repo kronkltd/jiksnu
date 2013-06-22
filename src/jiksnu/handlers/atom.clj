@@ -18,9 +18,13 @@
     (if-let [feed (abdera/parse-xml-string (:body response))]
       (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
             source-updated (:updated source)]
-        (if (or (not (and feed-updated source-updated))
+        (if (or true
+                (not (and feed-updated source-updated))
                 (time/after? feed-updated source-updated))
-          (actions.feed-source/process-feed source feed)
+          (try
+            (actions.feed-source/process-feed source feed)
+            (catch Exception ex
+              (.printStackTrace ex)))
           (log/warn "feed is up to date")))
       (throw+ "could not obtain feed"))
     (throw+ "could not get source")))

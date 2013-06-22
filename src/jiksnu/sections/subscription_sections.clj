@@ -66,7 +66,6 @@
           (map (fn [subscription]
                  [:li {:data-model "subscription"}
                   (bind-to "from"
-                    (dump-data)
                     [:div {:data-model "user"}
                      (let [user (if *dynamic*
                                   (User.)
