@@ -222,7 +222,7 @@
       [:div.navbar-text.connection-info.pull-right]
       [:div.navbar-text.pull-right
        (if *dynamic* "dynamic" "static")]
-      [:div.visible-tablet
+      [:div.visible-tablet.visible-phone
        (side-navigation)]]]]])
 
 (defn links-section
@@ -347,8 +347,8 @@
        (navbar-section request response)
        [:div.container-fluid
         [:div.row-fluid
-         [:div.span2.hidden-tablet
-          [:aside#left-column.sidebar
+         [:div.span2.hidden-tablet.hidden-phone
+          [:aside#left-column.sidebar.hidden-tablet
            (side-navigation)
            [:hr]
            (formats-section response)
