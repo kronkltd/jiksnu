@@ -241,10 +241,11 @@
      :title (:name user)
      :post-form true
      :body
-     [:div
-      (with-page "conversations"
-        (bind-to "items"
-          (index-section items page)))]
+     (bind-to "targetUser"
+       [:div {:data-model "user"}
+        (with-sub-page "activities"
+          (bind-to "items"
+            (index-section items page)))])
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model

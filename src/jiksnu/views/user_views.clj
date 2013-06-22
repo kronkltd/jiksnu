@@ -168,22 +168,6 @@
              "Access-Control-Allow-Origin" "*"}
    :body (h/html (model.webfinger/user-meta user))})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ;; (defview #'remote-create :xmpp
 ;;   [request user]
 ;;   (let [{:keys [to from]} request]
