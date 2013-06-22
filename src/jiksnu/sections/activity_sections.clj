@@ -524,8 +524,8 @@
    [:thead
     [:tr
      [:th "User"]
-     [:th "Type"]
-     [:th "Visibility"]
+     ;; [:th "Type"]
+     ;; [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
    [:tbody (when *dynamic* {:data-bind "foreach: $data"})
@@ -548,12 +548,12 @@
     (bind-to "author"
       (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
         (show-section-minimal user)))]
-   [:td (when *dynamic*
-          {:data-bind "text: object.type"})
-    (when-not *dynamic*
-      (-> activity :object :type))]
-   [:td (when-not *dynamic*
-          (if (-> activity :public) "public" "private"))]
+   ;; [:td (when *dynamic*
+   ;;        {:data-bind "text: object.type"})
+   ;;  (when-not *dynamic*
+   ;;    (-> activity :object :type))]
+   ;; [:td (when-not *dynamic*
+   ;;        (if (-> activity :public) "public" "private"))]
    [:td (if *dynamic*
           {:data-bind "text: title"}
           (:title activity))]

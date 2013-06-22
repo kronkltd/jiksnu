@@ -37,6 +37,12 @@
    ;; [[:post   "/users/:id/update-hub"]           #'user/update-hub]
    [[:post   "/:username"]                      #'user/update]])
 
+(defn pages
+  []
+  [
+   [{:name "users"}         {:action #'user/index}]
+   ])
+
 (defn sub-pages
   []
   [

@@ -66,6 +66,10 @@
                     (parse-page request)
                     (parse-sorting request))))
 
+(deffilter #'index :page
+  [action request]
+  (action))
+
 (deffilter #'index :xmpp
   [action request]
   (action {}))
