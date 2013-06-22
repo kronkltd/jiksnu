@@ -187,7 +187,7 @@
 (defn model-button
   [activity]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:data-bind "attr: {href: '/model/activities/' + _id() + '.model'}"}
         {:href (format "/model/activities/%s.model" (str (:_id activity)))})
    "Model"])
 

@@ -252,6 +252,17 @@
   [request [user page]]
   {:body (show-section user)})
 
+(defview #'user-timeline :page
+  [request [user page]]
+  (let [items (:items page)
+        response (merge page
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
+            :body response}}))
+
 (defview #'user-timeline :rdf
   [request [user activities-map]]
   (when user

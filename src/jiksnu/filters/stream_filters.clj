@@ -60,6 +60,8 @@
   ;; TODO: fetch user
   (action))
 
+;; user-timeline
+
 (deffilter #'user-timeline :http
   [action request]
   (let [{{:keys [id username] :as params} :params} request
@@ -68,6 +70,11 @@
                       (and id (model.user/fetch-by-id (util/make-id id)))
                       (and username (model.user/get-user username)))]
       (action user))))
+
+(deffilter #'user-timeline :page
+  [action request]
+  (let [item (:item request)]
+    (action item)))
 
 (deffilter #'user-timeline :xmpp
   [action request]

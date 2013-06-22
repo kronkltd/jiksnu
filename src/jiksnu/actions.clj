@@ -119,7 +119,7 @@
                  :serialization :page
                  :name page-name
                  :args args}]
-    (or ((resolve-routes @pred/*page-predicates*
+    (or ((resolve-routes [@pred/*page-predicates*]
                          @pred/*page-matchers*) request)
         (throw+ "page not found"))))
 
@@ -131,7 +131,7 @@
                  :name page-name
                  :item item
                  :args args}]
-    (or ((resolve-routes @pred/*sub-page-predicates*
+    (or ((resolve-routes [@pred/*sub-page-predicates*]
                          @pred/*sub-page-matchers*) request)
         (throw+ "page not found"))))
 

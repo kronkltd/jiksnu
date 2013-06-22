@@ -114,7 +114,7 @@
         m
         (do
           (log/warning *logger* "Creating model")
-          (.add coll "_id" id)))
+          (.push coll (js-obj "_id" id))))
       (log/warning *logger* (str "Could not get collection: " coll-name)))
     (log/warning *logger* (str "Could find collection for: " model-name))))
 
