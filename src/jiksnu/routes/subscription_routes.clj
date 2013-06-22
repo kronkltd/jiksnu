@@ -30,3 +30,10 @@
    [[:post   "/users/:subscribeto/subscribe"]                #'sub/subscribe]
    [[:get    (formatted-path "subscription model")]          #'sub/show]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "subscriptions"}         {:action #'sub/index}]
+   ])
+

@@ -2,6 +2,7 @@
   (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.actions.subscription-actions :as sub]
             [jiksnu.actions.user-actions :as user])
   (:import jiksnu.model.User))
 
@@ -46,6 +47,7 @@
 (defn sub-pages
   []
   [
-   [{:type User
-     :name "activities"}    {:action #'stream/user-timeline}]
+   [{:type User :name "activities"}       {:action #'stream/user-timeline}]
+   [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
+   [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
    ])

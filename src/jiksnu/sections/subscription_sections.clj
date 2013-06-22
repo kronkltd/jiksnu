@@ -6,7 +6,8 @@
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link admin-index-block admin-index-line
-                                admin-index-section bind-to control-line dump-data with-page]])
+                                admin-index-section bind-to control-line dump-data with-page
+                                with-sub-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
@@ -52,21 +53,26 @@
       [:div.subscribers
        [:h3
         [:a (if *dynamic*
-              {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id) + '/subscribers'}"}
+              {:data-bind "attr: {href: '/users/' + _id() + '/subscribers'}"}
               {:href (named-path "user subscribers" {:id (:_id user)})}) "Followers"]
         " "
-        [:span (if *dynamic*
-                 {:data-bind "text: $root.followers().length"}
-                 (count subscriptions))]]
-       [:ul.unstyled
-        (if *dynamic* {:data-bind "foreach: $root.followers"})
-        (map (fn [subscription]
-               [:li {:data-model "subscription"}
-                (let [user (if *dynamic*
-                             (User.)
-                             (model.subscription/get-actor subscription))]
-                  (sections.user/display-avatar user "24"))])
-             subscriptions)]])))
+        (with-sub-page "subscribers"
+          [:span (if *dynamic*
+                   {:data-bind "text: items().length"}
+                   (count subscriptions))])]
+       (with-sub-page "subscribers"
+         [:ul.unstyled
+          (if *dynamic* {:data-bind "foreach: items"})
+          (map (fn [subscription]
+                 [:li {:data-model "subscription"}
+                  (bind-to "from"
+                    (dump-data)
+                    [:div {:data-model "user"}
+                     (let [user (if *dynamic*
+                                  (User.)
+                                  (model.subscription/get-actor subscription))]
+                       (sections.user/display-avatar user "24"))])])
+               subscriptions)])])))
 
 (defn subscriptions-widget
   [user]
@@ -77,23 +83,23 @@
       [:div.subscriptions
        [:h3
         [:a (if *dynamic*
-              {:data-bind "attr: {href: '/users/' + ko.utils.unwrapObservable(_id) + '/subscriptions'}"}
+              {:data-bind "attr: {href: '/users/' + _id() + '/subscriptions'}"}
               {:href (str (full-uri user) "/subscriptions")}) "Following"]
         " "
-        [:span (if *dynamic*
-                 {:data-bind "text: $root.following().length"}
-                 (count subscriptions))]]
-       (with-page "subscriptions"
-         (bind-to "items"
-           [:ul (when *dynamic* {:data-bind "foreach: $data"})
-            (map (fn [subscription]
-                   [:li {:data-model "subscription"}
-                    (bind-to "to"
-                      [:div {:data-model "user"}
-                       (let [user (if *dynamic*
-                                    (User.)
-                                    (model.subscription/get-target subscription))]
-                         (sections.user/display-avatar user "24"))])]) subscriptions)]))
+        (with-sub-page "subscriptions"
+          [:span (if *dynamic*
+                   {:data-bind "text: items().length"}
+                   (count subscriptions))])]
+       (with-sub-page "subscriptions"
+         [:ul (when *dynamic* {:data-bind "foreach: items"})
+          (map (fn [subscription]
+                 [:li {:data-model "subscription"}
+                  (bind-to "to"
+                    [:div {:data-model "user"}
+                     (let [user (if *dynamic*
+                                  (User.)
+                                  (model.subscription/get-target subscription))]
+                       (sections.user/display-avatar user "24"))])]) subscriptions)])
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
 

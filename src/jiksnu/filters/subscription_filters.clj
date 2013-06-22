@@ -35,6 +35,11 @@
                       (when id (model.user/fetch-by-id (util/make-id id))))]
     (action item)))
 
+(deffilter #'get-subscribers :page
+  [action request]
+  (let [item (:item request)]
+    (action item)))
+
 (deffilter #'get-subscribers :xmpp
   [action request]
   (when-let [item (model.user/fetch-by-jid (:to request))]
@@ -46,6 +51,11 @@
   [action {{:keys [username id]} :params}]
   (when-let [item (or (when username (model.user/get-user username))
                       (when id (model.user/fetch-by-id (util/make-id id))))]
+    (action item)))
+
+(deffilter #'get-subscriptions :page
+  [action request]
+  (let [item (:item request)]
     (action item)))
 
 (deffilter #'get-subscriptions :xmpp
