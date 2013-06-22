@@ -64,10 +64,11 @@
     {:body
      (bind-to "targetFeedSource"
        (show-section item)
-       (with-sub-page "feedSources"
-         (pagination-links (if *dynamic* {} page))
-         (bind-to "items"
-           (index-section items))))}))
+       [:div {:data-model "feed-source"}
+        (with-sub-page "activities"
+          (pagination-links (if *dynamic* {} page))
+          (bind-to "items"
+            (index-section items)))])}))
 
 (defview #'show :model
   [request activity]
