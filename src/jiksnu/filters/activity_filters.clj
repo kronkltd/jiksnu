@@ -41,6 +41,12 @@
   (when-let [conversation (:item request)]
     (action conversation)))
 
+;; index
+
+(deffilter #'index :page
+  [action request]
+  (action))
+
 ;; oembed
 
 (deffilter #'oembed :http

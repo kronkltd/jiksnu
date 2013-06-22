@@ -18,9 +18,17 @@
   [action request]
   (action (model.group/fetch-by-name (:name (:params request)))))
 
+;; index
+
 (deffilter #'index :http
   [action request]
   (action))
+
+(deffilter #'index :page
+  [action request]
+  (action))
+
+;; show
 
 (deffilter #'show :http
   [action request]

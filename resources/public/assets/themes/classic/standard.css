@@ -40,10 +40,13 @@ avatar {
   padding-bottom: 10px;
   min-height: 64px;
 }
+.post-form .control-group {
+  margin: 0;
+}
 .comment {
   display: block;
   position: relative;
-  padding-left: 74px;
+  padding-left: 20px;
   min-height: 64px;
 }
 .tags ul {
@@ -69,6 +72,9 @@ avatar {
 .labels {
   display: inline-block;
   margin-left: 15px;
+}
+.type-line .nav {
+  margin: 0;
 }
 .format-line {
   position: relative;

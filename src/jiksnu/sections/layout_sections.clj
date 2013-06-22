@@ -209,13 +209,21 @@
   [:div.navbar.navbar-fixed-top
    [:div.navbar-inner
     [:div.container-fluid
+     [:a.btn.btn-navbar {:data-toggle "collapse"
+                         :data-target ".nav-collapse"}
+      [:span.icon-bar]
+      [:span.icon-bar]
+      [:span.icon-bar]]
      [:a.brand.home {:href "/" :rel "top"}
       (config :site :name)]
-     ;; (navbar-search-form)
-     [:ul.nav.pull-right (sections.auth/login-section response)]
-     #_[:div.navbar-text.connection-info.pull-right]
-     #_[:div.navbar-text.pull-right
-        (if *dynamic* "dynamic" "static")]]]])
+     [:div.nav-collapse.collapse
+      ;; (navbar-search-form)
+      [:ul.nav.pull-right (sections.auth/login-section response)]
+      [:div.navbar-text.connection-info.pull-right]
+      [:div.navbar-text.pull-right
+       (if *dynamic* "dynamic" "static")]
+      [:div.visible-tablet
+       (side-navigation)]]]]])
 
 (defn links-section
   [request response]
@@ -339,7 +347,7 @@
        (navbar-section request response)
        [:div.container-fluid
         [:div.row-fluid
-         [:div.span2
+         [:div.span2.hidden-tablet
           [:aside#left-column.sidebar
            (side-navigation)
            [:hr]

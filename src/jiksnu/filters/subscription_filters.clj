@@ -2,7 +2,7 @@
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions.subscription-actions :only [confirm delete get-subscribers
-                                                    get-subscriptions ostatus ostatussub
+                                                    get-subscriptions index ostatus ostatussub
                                                     ostatussub-submit remote-subscribe-confirm
                                                     show subscribe subscribed unsubscribe]]
         [jiksnu.session :only [current-user current-user-id]]
@@ -52,6 +52,12 @@
   [action request]
   (when-let [item (model.user/fetch-by-jid (:to request))]
     (action item)))
+
+;; index
+
+(deffilter #'index :page
+  [action request]
+  (action))
 
 ;; ostatus
 

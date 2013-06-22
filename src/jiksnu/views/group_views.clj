@@ -30,6 +30,8 @@
    :body
    [:div]})
 
+;; index
+
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:title "Groups"
@@ -48,11 +50,22 @@
   {:body
    {:items (index-section items page)}})
 
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Groups"
           :pages {:groups (format-page-info page)}
           :groups (index-section items page)}})
+
+;; new-page
 
 (defview #'new-page :html
   [request group]

@@ -86,6 +86,17 @@
   (tigase/result-packet
    request (helpers.subscription/subscriptions-response items response)))
 
+;; index
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 ;; ostatus
 
 (defview #'ostatus :html
