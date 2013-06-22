@@ -6,25 +6,30 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.routes.helpers :as rh]
+            [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import java.net.URI))
+
+(defn local-url?
+  [url]
+  (= (config :domain)
+     (util/get-domain-name url)))
 
 (defn set-update-source
   [item]
   (if (:update-source item)
     item
     (if-let [url (:url item)]
-      (let [resource (actions.resource/find-or-create {:url url})
-            id (:_id item)
-            atom-url (rh/formatted-url "show conversation" {:id id} "atom")]
-        (if-let [source (if (:local resource)
-                          (actions.feed-source/find-or-create {:topic atom-url})
-                          (try
-                            (actions.feed-source/discover-source url)
-                            (catch RuntimeException ex
-                              (trace/trace "errors:handled" ex))))]
-          (assoc item :update-source (:_id source))
-          (throw+ "could not determine source")))
+      (if-let [source (if (local-url url)
+                        (let [atom-url (rh/formatted-url "show conversation"
+                                                         {:id (:_id item)} "atom")]
+                          (actions.feed-source/find-or-create {:topic atom-url}))
+                        (try
+                          (actions.feed-source/discover-source url)
+                          (catch RuntimeException ex
+                            (trace/trace "errors:handled" ex))))]
+        (assoc item :update-source (:_id source))
+        (throw+ "could not determine source"))
       (throw+ "Could not determine url"))))
 
 (defn set-url

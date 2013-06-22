@@ -22,7 +22,7 @@
 
 (defn op-success
   [ex]
-  #_(log/infof "result realized: %s" (.getMessage ex)))
+  (log/infof "result realized: %s" (.getMessage ex)))
 
 (defn op-handler
   [f]

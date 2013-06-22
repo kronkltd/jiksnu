@@ -4,8 +4,7 @@
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
             [jiksnu.ops :as ops]
-            [lamina.core :as l])
-  )
+            [lamina.core :as l]))
 
 (defn- handle-get-conversation
   [url]

@@ -163,13 +163,13 @@
   "Takes a string representing a uri and returns the domain"
   [id]
   (let [{:keys [path scheme] :as uri} (uri/uri id)]
-    (cond
-     (#{"acct"} scheme) (second (split-uri id))
-     (#{"urn"}  scheme) (let [parts (string/split path #":")
-                              nid (nth parts 0)]
-                          (condp = nid
-                            "X-dfrn" (nth parts 1)))
-     :default           (:host uri))))
+    (condp = scheme
+      "acct" (second (split-uri id))
+      "urn"  (let [parts (string/split path #":")
+                   nid (nth parts 0)]
+               (condp = nid
+                 "X-dfrn" (nth parts 1)))
+      :default           (:host uri))))
 
 (defn parse-link
   [link]
