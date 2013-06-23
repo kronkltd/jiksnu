@@ -50,14 +50,6 @@
        (map (fn [[k v _]] [k v]))
        (into {})))
 
-;; Filter predicates
-
-(defn by-name
-  [name]
-  (fn [x]
-    (when (= (.id x) name)
-      x)))
-
 ;; Observable operations
 
 (defn init-observable
@@ -167,55 +159,6 @@
       (.defaults (.-prototype PageModel)))))
 
 (def pages         (Pages.))
-
-;; Model Operations
-
-(defn set-model
-  [model-name id data]
-  (if-let [coll-name (collection-name model-name)]
-    (if-let [coll (.get _model coll-name)]
-      (if-let [m (.get coll id)]
-        (do
-          (.set m data)
-          (.set m "loaded" true)
-          (if-let [om (aget ko/observables coll-name)]
-            (init-observable model-name id om m)
-            (log/warning (str "Could not find observable model for: " coll-name))))
-        (do
-          (.add coll data)
-          (.get coll id)))
-      (log/fine (str "no collection named: " coll-name)))
-    (log/warning (str "Could find collection for: " model-name))))
-
-(defn load-model
-  "Load the model from the server"
-  [model-name id om]
-  (log/finest *logger* (format "not loaded: %s(%s)" model-name id))
-  (let [coll (.get _model model-name)]
-    ;; Create an empty model
-    (.add coll (js-obj "_id" id))
-    (let [m (.get coll id)]
-      ;; Get it from the server
-      (.fetch m)
-      (let [o (.viewModel js/kb m)]
-        ;; cache it for the object model
-        (aset om id o)
-        o))))
-
-(defn get-observable
-  [model-name]
-  (aget ko/observables model-name))
-
-(defn- get-model*
-  "Inintialize a new model reference based on the params when a cached ref is not found"
-  [model-name id]
-  (log/finest *logger* (format "observable not found: %s(%s)" model-name id))
-  (if-let [coll (.get _model model-name)]
-    (let [om (get-observable model-name)]
-      (if-let [m (.get coll id)]
-        (init-observable model-name id om m)
-        (load-model model-name id om)))
-    (log/severe *logger* "could not get collection")))
 
 ;; Models
 

@@ -63,7 +63,7 @@ avatar {
   margin: 0;
 }
 .subscriptions li {
-  display: inline;
+  display: inline-block;
   margin-right: 5px;
 }
 .subscriptions p {

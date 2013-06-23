@@ -102,7 +102,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
       transforms/set-_id
       transforms/set-created-time
       transforms/set-updated-time
-      transforms.activity/set-title
       transforms.activity/set-object-id
       transforms.activity/set-public
       transforms.activity/set-remote
