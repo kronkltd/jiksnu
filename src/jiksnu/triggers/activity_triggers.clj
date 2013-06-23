@@ -1,8 +1,5 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use [ciste.config :only [config]]
-        [ciste.triggers :only [add-trigger!]]
-        ciste.sections.default
-        jiksnu.actions.activity-actions)
+  (:use [ciste.config :only [config]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
