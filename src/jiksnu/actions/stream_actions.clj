@@ -87,7 +87,6 @@
   []
   (cm/implement))
 
-
 (defaction add
   [options]
   (cm/implement))
@@ -126,7 +125,6 @@
      :headers {"content-type" "application/json"}
      :body stream}))
 
-
 (defn format-event
   [m]
   (str (json/json-str
@@ -143,6 +141,8 @@
         (catch Exception ex
           (trace/trace "errors:handled" ex)
           (json/json-str {:action "error"
+                          :name (:name request)
+                          :args (:args request)
                           :message (str ex)})))
       (let [event {:action "error"
                    :name (:name request)
