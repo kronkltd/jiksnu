@@ -59,6 +59,5 @@
   (require-namespaces
    ["jiksnu.filters.key-filters"
     "jiksnu.sections.key-sections"
-    "jiksnu.triggers.key-triggers"
     "jiksnu.views.key-views"]))
 

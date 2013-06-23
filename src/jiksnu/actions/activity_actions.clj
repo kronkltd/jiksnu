@@ -175,7 +175,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [^Entry entry]
   {:id         (str (.getId entry))
    :url        (str (.getAlternateLinkResolvedHref entry))
-   :title      (.getTitle entry)
+   :title      "" #_(.getTitle entry)
    :content    (.getContent entry)
    :published  (.getPublished entry)
    :updated    (.getUpdated entry)
