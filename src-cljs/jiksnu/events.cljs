@@ -22,9 +22,7 @@
 
 (defmethod ws/process-event "error"
   [event]
-  (log/severe *logger* (.-message event))
-  #_(throw (.-message event))
-  )
+  (jl/error event))
 
 (defmethod ws/process-event "connect"
   [event]

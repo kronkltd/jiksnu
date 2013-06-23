@@ -39,14 +39,14 @@
 
 (defn model-init
   [element value-accessor all-bindings data context]
-  (log/fine *logger* (format "Initializing model binding: %s" data))
+  (log/finer *logger* (format "Initializing model binding: %s" data))
   (ko/set-dom-data element with-model-key (js-obj))
   (js-obj
    "controlsDescendantBindings" true))
 
 (defn model-update
   [element value-accessor all-bindings data context]
-  (log/fine *logger* (format "Updating model binding: %s" data))
+  (log/finer *logger* (format "Updating model binding: %s" data))
   (let [model-name (model/collection-name (.-type (value-accessor)))
         model-vm (model/get-model model-name data)
         model-data (ko/get-dom-data element with-model-key)
