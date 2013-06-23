@@ -30,12 +30,13 @@
              ["body" {}
               (str (model.user/get-uri author false) ":  "
                    (:title activity))])
-        message (tigase/make-packet {:to (tigase/make-jid (:username recipient) (:domain recipient))
-                                     :from (tigase/make-jid "updates" (config :domain))
-                                     :type :chat
-                                     ;; FIXME: generate an id for this case
-                                     :id "JIKSNU1"
-                                     :body ele})]
+        packet-map {:to (tigase/make-jid (:username recipient) (:domain recipient))
+                    :from (tigase/make-jid "updates" (config :domain))
+                    :type :chat
+                    ;; FIXME: generate an id for this case
+                    :id "JIKSNU1"
+                    :body ele}
+        message (tigase/make-packet packet-map)]
     (tigase/deliver-packet! message)))
 
 (defn create-trigger
@@ -74,9 +75,7 @@
 (defn init-receivers
   []
 
-  (l/receive-all
-   ch/posted-activities
-   create-trigger)
+  (l/receive-all ch/posted-activities create-trigger)
 
   )
 
