@@ -1,6 +1,5 @@
 (ns jiksnu.actions.stream-actions
-  (:use [ciste.commands :only [add-command! parse-command]]
-        [ciste.config :only [config]]
+  (:use [ciste.commands :only [parse-command]]
         [ciste.core :only [defaction with-context]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
@@ -8,22 +7,15 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
-  (:require [aleph.http :as http]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
-            [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [lamina.core :as l]
@@ -172,15 +164,13 @@
      ch
      (fn [m]
        (session/with-user-id id
-         (let [[name & args] (string/split m #" ")]
-           (->> {:format :json
-                 :channel ch
-                 :name name
-                 :args (process-args args)}
-                handle-message
-                (l/enqueue ch))))))))
-
-(add-command! "list-activities" #'public-timeline)
+         (let [[name & args] (string/split m #" ")
+               request {:format :json
+                        :channel ch
+                        :name name
+                        :args (process-args args)}
+               response (handle-message request)]
+           (l/enqueue ch response)))))))
 
 (definitializer
   (require-namespaces
