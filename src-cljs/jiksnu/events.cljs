@@ -43,8 +43,10 @@
   (log/finest *logger* "model updated")
   (let [data (.-body event)
         id (.-_id data)
-        type (.-type event)]
-    (model/set-model type id data)))
+        model-name (.-type event)
+        m (model/get-model-obj model-name id)]
+    (.set m data)
+    (.set m (js-obj "loaded" true))))
 
 (defmethod ws/process-event "page-updated"
   [event]

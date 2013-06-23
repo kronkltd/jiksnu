@@ -565,7 +565,7 @@
             (.fetch m)
             m
             )))
-      (log/warning *logger* (str "Could not get collection: " coll-name)))
+      (throw (str "Could not get collection: " coll-name)))
     (throw (str "Could find collection name for: " model-name))))
 
 (defn get-page-obj
@@ -601,7 +601,9 @@ Returns a viewmodel"
   (if id
     (if (= (type id) js/String)
       (if-let [m (get-model-obj model-name id)]
-        (.viewModel js/kb m)
+        (do
+          (log/finer *logger* "creating viewmodel")
+          (.viewModel js/kb m))
         (throw (js/Error. "Could not get model")))
       (throw (js/Error. (str id " is not a string"))))
     (throw (js/Error. "id is undefined"))))
