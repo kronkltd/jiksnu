@@ -153,7 +153,8 @@
           (json/json-str {:action "error"
                           :message (str ex)})))
       (let [event {:action "error"
-                   ;; :request request
+                   :name (:name request)
+                   :args (:args request)
                    :message "no command found"}]
         (json/json-str event))))
 

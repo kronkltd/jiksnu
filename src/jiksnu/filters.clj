@@ -1,6 +1,7 @@
 (ns jiksnu.filters
   (:use [ciste.filters :only [deffilter]]
-        [clojure.core.incubator :only [-?>]])
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]))
 
@@ -30,7 +31,8 @@
 (deffilter #'actions/get-model :command
   [action request]
   (let [[model-name id] (:args request)]
-    (action model-name id)))
+    (or (action model-name id)
+        (throw+ "Model not found"))))
 
 (deffilter #'actions/get-page :command
   [action request]

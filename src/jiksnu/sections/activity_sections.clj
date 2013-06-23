@@ -297,7 +297,7 @@
    "posted a "
    [:span
     (if *dynamic*
-      {:data-bind "text: object.type"}
+      {:data-bind "text: $data.object().type"}
       (-> activity :object :type))]
 
    ;; TODO: handle other visibilities
