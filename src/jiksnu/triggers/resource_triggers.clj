@@ -38,7 +38,7 @@
 (defn init-receivers
   []
   ;; (l/receive-all ch/resource-links-added     add-link-trigger)
-  (l/receive-all ch/pending-get-resource     handle-pending-get-resources)
+  (l/receive-all ch/pending-get-resource     handle-pending-get-resource)
   (l/receive-all ch/pending-update-resources handle-pending-update-resources))
 
 (defonce receivers (init-receivers))

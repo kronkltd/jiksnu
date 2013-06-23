@@ -13,9 +13,7 @@
 
 (defmethod ws/process-event "delete"
   [event]
-  (log/info *logger* "delete callback")
-
-  )
+  (log/info *logger* "delete callback"))
 
 (defmethod ws/process-event "update viewmodel"
   [event]
@@ -77,3 +75,13 @@
                    (.get coll page-name)))]
     (.set page "loaded" "true")
     page))
+
+(defmethod ws/process-event "page-add"
+  [event]
+  (let [id (.-body event)
+        page-name (.-name event)]
+    (if-let [page (.get model/pages page-name)]
+      (let [items (.get page "items")]
+        (.push items id)
+        (.set page "items" items))
+      (log/warning *logger* "Could not find page in collection"))))

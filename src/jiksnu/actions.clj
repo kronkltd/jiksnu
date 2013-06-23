@@ -59,8 +59,8 @@
   [connection-id e]
   (let [response {:action "page-add"
                   :connection-id connection-id
-                  :name "conversations"
-                  :body (map :_id (:records e))}]
+                  :name "public-timeline"
+                  :body (:_id (:records e))}]
     (trace/trace "conversations:pushed" response)
     (json/json-str response)))
 
