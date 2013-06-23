@@ -23,6 +23,13 @@
   (:import jiksnu.model.User))
 
 
+(defn process-args
+  [args]
+  (-?>> args
+        (filter identity)
+        seq
+        (map json/read-json)))
+
 (defaction direct-message-timeline
   [& _]
   (cm/implement))
@@ -43,8 +50,6 @@
   (public-timeline* params (merge
                             {:sort-clause {:updated -1}}
                             options)))
-
-(declare user-timeline)
 
 (defaction stream
   []
@@ -149,13 +154,6 @@
                    :args (:args request)
                    :message "no command found"}]
         (json/json-str event))))
-
-(defn process-args
-  [args]
-  (-?>> args
-        (filter identity)
-        seq
-        (map json/read-json)))
 
 (defn websocket-handler
   [ch request]

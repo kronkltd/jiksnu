@@ -27,5 +27,5 @@
    ch/posted-conversations)
   )
 
-(definitializer
-  (init-receivers))
+(defonce receivers (init-receivers))
+

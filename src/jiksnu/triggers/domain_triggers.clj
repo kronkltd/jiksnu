@@ -21,5 +21,4 @@
   []
   (l/receive-all ch/pending-get-domain (ops/op-handler handle-pending-get-domain)))
 
-(definitializer
-  (init-receivers))
+(defonce receivers (init-receivers))

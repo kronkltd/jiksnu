@@ -79,6 +79,7 @@
        (actions.user/delete user))
      domain)))
 
+(defonce receivers (init-receivers))
+
 (definitializer
-  (init-hooks)
-  (init-receivers))
+  (init-hooks))

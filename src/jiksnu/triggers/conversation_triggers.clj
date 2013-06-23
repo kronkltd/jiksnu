@@ -19,5 +19,4 @@
   (l/receive-all ch/pending-get-conversation (ops/op-handler handle-get-conversation))
   (l/receive-all ch/pending-create-conversations enqueue-create-local))
 
-(definitializer
-  (init-handlers))
+(defonce receivers (init-handlers))

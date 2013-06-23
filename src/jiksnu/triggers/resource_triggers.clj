@@ -33,5 +33,4 @@
   (l/receive-all ch/pending-get-resource     (ops/op-handler handle-pending-get-resource))
   (l/receive-all ch/pending-update-resources (ops/op-handler handle-pending-update-resources)))
 
-(definitializer
-  (init-receivers))
+(defonce receivers (init-receivers))

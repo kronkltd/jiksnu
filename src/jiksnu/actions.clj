@@ -57,10 +57,10 @@
 
 (defn transform-conversations
   [connection-id e]
-  (let [response {:action "model-updated"
+  (let [response {:action "page-add"
                   :connection-id connection-id
-                  :type "conversation"
-                  :body (:records e)}]
+                  :name "conversations"
+                  :body (map :_id (:records e))}]
     (trace/trace "conversations:pushed" response)
     (json/json-str response)))
 
@@ -70,8 +70,6 @@
   (dosync
    (alter connections #(dissoc-in % [id connection-id]))))
 
-(declare get-model)
-
 (defaction alert-all
   [message]
   (doseq [ch (all-channels)]
@@ -79,27 +77,30 @@
                                    :message message})]
       (l/enqueue ch response))))
 
-(defaction confirm
-  [action model id]
-  (when-let [item (get-model model id)]
-    {:item item
-     :action action}))
-
 (defaction connect
   [ch]
   (s/increment "websocket connections established")
   (let [user-id (:_id (session/current-user))
         connection-id (abdera/new-id)]
-    (dosync
-     (alter connections #(assoc-in % [user-id connection-id] ch)))
 
-    (-> (partial transform-activities connection-id)
-        (l/map* ch/posted-activities)
-        (l/siphon ch))
 
-    (-> (partial transform-conversations connection-id)
-        (l/map* ch/posted-conversations)
-        (l/siphon ch))
+    (let [response-channel (l/channel*
+                            :description (format "Outgoing messages for %s" connection-id))]
+
+      (dosync
+       (alter connections #(assoc-in % [user-id connection-id] response-channel)))
+
+      (l/siphon
+       (l/map* (partial transform-activities connection-id)
+               ch/posted-activities)
+       response-channel)
+
+      (l/siphon
+       (l/map* (partial transform-conversations connection-id)
+               ch/posted-conversations)
+       response-channel)
+
+      (l/join response-channel ch))
 
     (l/on-closed ch (partial connection-closed user-id connection-id))
     connection-id))
@@ -130,9 +131,10 @@
                  :serialization :page
                  :name page-name
                  :item item
-                 :args args}]
-    (or ((resolve-routes [@pred/*sub-page-predicates*]
-                         @pred/*sub-page-matchers*) request)
+                 :args args}
+        route-handler (resolve-routes [@pred/*sub-page-predicates*]
+                                      @pred/*sub-page-matchers*)]
+    (or (route-handler request)
         (throw+ "page not found"))))
 
 (defaction invoke-action
@@ -158,6 +160,12 @@
     (catch RuntimeException ex
       (log/spy :info &throw-context)
       (trace/trace "errors:handled" ex))))
+
+(defaction confirm
+  [action model id]
+  (when-let [item (get-model model id)]
+    {:item item
+     :action action}))
 
 (add-command! "invoke-action" #'invoke-action)
 (add-command! "connect"       #'connect)

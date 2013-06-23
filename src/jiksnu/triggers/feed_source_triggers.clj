@@ -28,5 +28,4 @@ Note. This causes a lot of records to be created"
   (l/receive-all ch/pending-get-source (ops/op-handler handle-pending-get-source))
   (l/receive-all ch/pending-entries actions.feed-source/process-entry))
 
-(definitializer
-  (init-receivers))
+(defonce receivers (init-receivers))
