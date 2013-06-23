@@ -217,45 +217,6 @@
         (load-model model-name id om)))
     (log/severe *logger* "could not get collection")))
 
-
-
-(defn get-model-obj
-  [model-name id]
-  (if-let [coll-name (collection-name model-name)]
-    (if-let [coll (.get _model coll-name)]
-      (if-let [m (.get coll id)]
-        m
-        (do
-          (log/warning *logger* "Creating model")
-          (.push coll (js-obj "_id" id))))
-      (log/warning *logger* (str "Could not get collection: " coll-name)))
-    (log/warning *logger* (str "Could find collection for: " model-name))))
-
-(defn get-page-obj
-  [page-name]
-  (log/fine *logger* (format "getting page: %s" page-name))
-  (if-let [page (.get pages page-name)]
-    page
-    (do (.add pages (js-obj "id" page-name))
-        (let [page (.get pages page-name)]
-          (ws/send "get-page" page-name)
-          page))))
-
-(defn get-sub-page-obj
-  "Returns the page for the name from the view's page info.
-
-Returns a viewmodel"
-  [model-name id name]
-  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
-  (let [m (get-model-obj model-name id)
-        coll (.get m "pages")]
-    (if-let [page (.get coll name)]
-      page
-      (do (.add coll (js-obj "id" name))
-          (let [m (.get coll name)]
-            (ws/send "get-sub-page" model-name id name)
-            m)))))
-
 ;; Models
 
 (def Notification
@@ -589,6 +550,49 @@ Returns a viewmodel"
              (js-obj
               "defaults" defaults))))
 
+;; model functions
+
+(defn get-model-obj
+  [model-name id]
+  (if-let [coll-name (or (collection-name model-name)
+                         model-name)]
+    (if-let [coll (.get _model coll-name)]
+      (if-let [m (.get coll id)]
+        m
+        (do
+          (log/fine *logger* "Creating model")
+          (let [m (.push coll (js-obj "_id" id))]
+            (.fetch m)
+            m
+            )))
+      (log/warning *logger* (str "Could not get collection: " coll-name)))
+    (throw (str "Could find collection name for: " model-name))))
+
+(defn get-page-obj
+  [page-name]
+  (log/fine *logger* (format "getting page: %s" page-name))
+  (if-let [page (.get pages page-name)]
+    page
+    (do (.add pages (js-obj "id" page-name))
+        (let [page (.get pages page-name)]
+          (ws/send "get-page" page-name)
+          page))))
+
+(defn get-sub-page-obj
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
+  [model-name id name]
+  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
+  (let [m (get-model-obj model-name id)
+        coll (.get m "pages")]
+    (if-let [page (.get coll name)]
+      page
+      (do (.add coll (js-obj "id" name))
+          (let [m (.get coll name)]
+            (ws/send "get-sub-page" model-name id name)
+            m)))))
+
 ;; observable functions
 
 (defn get-model
@@ -596,14 +600,11 @@ Returns a viewmodel"
   [model-name id]
   (if id
     (if (= (type id) js/String)
-      (let [om (get-observable model-name)]
-        (if-let [o (aget om id)]
-          (do
-            (log/finest *logger* (format "cached observable found: %s(%s)" model-name id))
-            o)
-          (get-model* model-name id)))
+      (if-let [m (get-model-obj model-name id)]
+        (.viewModel js/kb m)
+        (throw (js/Error. "Could not get model")))
       (throw (js/Error. (str id " is not a string"))))
-    (log/warning *logger* "id is undefined")))
+    (throw (js/Error. "id is undefined"))))
 
 (defn get-page
   "Returns the page for the name from the view's page info.

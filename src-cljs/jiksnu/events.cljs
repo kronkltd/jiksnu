@@ -51,15 +51,9 @@
   (log/finest *logger* "page updated")
   (let [data (.-body event)
         id (.-id data)
-        type (.-type event)
-        ;; items (.-items data)
-        ;; data (_/omit data "items")
-        ]
+        type (.-type event)]
     (if-let [page (.get model/pages id)]
       (do (.set page data)
-          #_(let [items-collection (jl/spy (.get page "items"))]
-            (doseq [item items]
-              (.add items-collection (jl/spy item))))
           (.set page "loaded" "true"))
       (log/warning *logger* "Could not find page in collection"))))
 
@@ -73,15 +67,10 @@
         type (.-type event)
         m (model/get-model-obj model-name id)
         coll (.get m "pages")
-        ;; items (.-items data)
-        ;; data (_/omit data "items")
         page (if-let [page (.get coll page-name)]
                (.set page data)
                (do (.add coll data)
                    (.get coll page-name)))]
-    #_(let [items-collection (jl/spy (.get page "items"))]
-      (doseq [item items]
-        (.add items-collection (jl/spy item))))
     (.set page "loaded" "true")
     page))
 
