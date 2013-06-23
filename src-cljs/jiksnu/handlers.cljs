@@ -4,7 +4,10 @@
   (:require [jiksnu.logging :as jl]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]
-            [jayq.core :as jayq]))
+            [jayq.core :as jayq]
+            [lolg :as log]))
+
+(def *logger* (log/get-logger "jiksnu.handlers"))
 
 (defn halt
   [event]

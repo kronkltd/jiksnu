@@ -1,10 +1,10 @@
 (ns jiksnu.events
   (:require [jiksnu.handlers :as handlers]
-            [jiksnu.ko :as ko]
             [clojure.string :as string]
             [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.model :as model]
+            [jiksnu.util.ko :as ko]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
   (:use-macros [jiksnu.macros :only [defvar]]))
@@ -51,9 +51,15 @@
   (log/finest *logger* "page updated")
   (let [data (.-body event)
         id (.-id data)
-        type (.-type event)]
+        type (.-type event)
+        ;; items (.-items data)
+        ;; data (_/omit data "items")
+        ]
     (if-let [page (.get model/pages id)]
       (do (.set page data)
+          #_(let [items-collection (jl/spy (.get page "items"))]
+            (doseq [item items]
+              (.add items-collection (jl/spy item))))
           (.set page "loaded" "true"))
       (log/warning *logger* "Could not find page in collection"))))
 
@@ -67,10 +73,15 @@
         type (.-type event)
         m (model/get-model-obj model-name id)
         coll (.get m "pages")
+        ;; items (.-items data)
+        ;; data (_/omit data "items")
         page (if-let [page (.get coll page-name)]
                (.set page data)
                (do (.add coll data)
                    (.get coll page-name)))]
+    #_(let [items-collection (jl/spy (.get page "items"))]
+      (doseq [item items]
+        (.add items-collection (jl/spy item))))
     (.set page "loaded" "true")
     page))
 

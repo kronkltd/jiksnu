@@ -1,4 +1,8 @@
-(ns jiksnu.ko)
+(ns jiksnu.util.ko
+  (:require [lolg :as log])
+  )
+
+(def *logger* (log/get-logger "jiksnu.util.ko"))
 
 (def observables   (js-obj))
 
@@ -8,6 +12,10 @@
 (defn apply-bindings
   [view & [context]]
   (.applyBindings js/ko view context))
+
+(defn apply-descendant-bindings
+  [vm node]
+  (.applyBindingsToDescendants js/ko vm node))
 
 (defn observable
   [& [v]]

@@ -1,9 +1,12 @@
 (ns jiksnu.statistics
   (:use [jayq.core :only [$]])
   (:require [jayq.core :as jayq]
-            [jiksnu.ko :as ko]
-            [jiksnu.logging :as log]
-            [jiksnu.model :as model]))
+            [jiksnu.logging :as jl]
+            [jiksnu.model :as model]
+            [jiksnu.util.ko :as ko]
+            [lolg :as log]))
+
+(def *logger* (log/get-logger "jiksnu.statistics"))
 
 ;; Depricated
 (defn update-statistics

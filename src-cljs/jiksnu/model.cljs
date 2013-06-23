@@ -1,8 +1,8 @@
 (ns jiksnu.model
   (:require [goog.json :as json]
-            [jiksnu.backbone :as backbone]
-            [jiksnu.ko :as ko]
             [jiksnu.logging :as jl]
+            [jiksnu.util.backbone :as backbone]
+            [jiksnu.util.ko :as ko]
             [jiksnu.websocket :as ws]
             [lolg :as log])
   (:use-macros [jiksnu.macros :only [defvar]]))
@@ -129,20 +129,6 @@
         (load-model model-name id om)))
     (log/severe *logger* "could not get collection")))
 
-(defn get-model
-  "Given a model name and an id, return an observable representing that model"
-  [model-name id]
-  (if id
-    (if (= (type id) js/String)
-      (let [om (get-observable model-name)]
-        (if-let [o (aget om id)]
-          (do
-            (log/finest *logger* (format "cached observable found: %s(%s)" model-name id))
-            o)
-          (get-model* model-name id)))
-      (throw (js/Error. (str id " is not a string"))))
-    (log/warning *logger* "id is undefined")))
-
 (defn get-sub-page-obj
   "Returns the page for the name from the view's page info.
 
@@ -157,15 +143,6 @@ Returns a viewmodel"
           (let [m (.get coll name)]
             (ws/send "get-sub-page" model-name id name)
             m)))))
-
-(defn get-sub-page
-  "Returns the page for the name from the view's page info.
-
-Returns a viewmodel"
-  [model-name id name]
-  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
-  (let [page (get-sub-page-obj model-name id name)]
-    (.viewModel js/kb page)))
 
 ;; Models
 
@@ -213,7 +190,7 @@ Returns a viewmodel"
                   "page"         1
                   "loaded" false
                   "pageSize"     0
-                  "items"        (array)
+                  "items"        (array) #_(backbone/Collection.)
                   "recordCount"  0
                   "totalRecords" 0))
     "addItem" (fn [id]
@@ -598,7 +575,21 @@ Returns a viewmodel"
               "defaults" defaults))))
 
 
-;; Page operations
+;; observable functions
+
+(defn get-model
+  "Given a model name and an id, return an observable representing that model"
+  [model-name id]
+  (if id
+    (if (= (type id) js/String)
+      (let [om (get-observable model-name)]
+        (if-let [o (aget om id)]
+          (do
+            (log/finest *logger* (format "cached observable found: %s(%s)" model-name id))
+            o)
+          (get-model* model-name id)))
+      (throw (js/Error. (str id " is not a string"))))
+    (log/warning *logger* "id is undefined")))
 
 (defn create-page
   [name]
@@ -631,4 +622,13 @@ Returns a viewmodel"
           (log/finer *logger* "created")
           found)
         (log/fine *logger* "could not find page even after creating")))))
+
+(defn get-sub-page
+  "Returns the page for the name from the view's page info.
+
+Returns a viewmodel"
+  [model-name id name]
+  (log/fine *logger* (format "getting sub page: %s(%s) => %s" model-name id name))
+  (let [page (get-sub-page-obj model-name id name)]
+    (.viewModel js/kb page)))
 

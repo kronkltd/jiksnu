@@ -1,4 +1,8 @@
-(ns jiksnu.backbone)
+(ns jiksnu.util.backbone
+  (:require [lolg :as log])
+  )
+
+(def *logger* (log/get-logger "jiksnu.util.backbone"))
 
 (def Model (.-Model js/Backbone))
 (def Collection (.-Collection js/Backbone))

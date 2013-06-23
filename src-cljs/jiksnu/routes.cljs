@@ -1,8 +1,8 @@
 (ns jiksnu.routes
   (:require [clojure.string :as string]
             [lolg :as log]
-            [jiksnu.backbone :as backbone]
             [jiksnu.logging :as jl]
+            [jiksnu.util.backbone :as backbone]
             [jiksnu.websocket :as ws]))
 
 (def *logger* (log/get-logger "jiksnu.routes"))

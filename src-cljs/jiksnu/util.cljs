@@ -1,7 +1,7 @@
 (ns jiksnu.util
   (:require [lolg :as log]))
 
-(def *logger* (log/get-logger "jiksnu.core"))
+(def *logger* (log/get-logger "jiksnu.util"))
 
 (defn fetch-model
   [model-name id callback]

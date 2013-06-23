@@ -7,7 +7,7 @@
             [goog.net.WebSocket.MessageEvent :as websocket-message]
             [lolg :as log]
             [jiksnu.logging :as jl]
-            [jiksnu.underscore :as _]
+            [jiksnu.util.underscore :as _]
             [waltz.state :as state])
   (:use-macros [waltz.macros :only [in out defstate defevent]]))
 

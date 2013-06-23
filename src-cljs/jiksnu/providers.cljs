@@ -1,9 +1,11 @@
 (ns jiksnu.providers
   (:use [jayq.core :only [$]])
-  (:require [jiksnu.ko :as ko]
-            [lolg :as log]
-            [jiksnu.logging :as jl])
+  (:require [lolg :as log]
+            [jiksnu.logging :as jl]
+            [jiksnu.util.ko :as ko])
   (:use-macros [jiksnu.macros :only [defvar]]))
+
+(def *logger* (log/get-logger "jiksnu.providers"))
 
 (defvar DataModelProvider
   [this]
