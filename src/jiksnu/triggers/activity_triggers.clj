@@ -11,6 +11,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.channels :as ch]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
@@ -18,7 +19,8 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.Activity
            jiksnu.model.User))
@@ -40,15 +42,10 @@
     (tigase/deliver-packet! message)))
 
 (defn create-trigger
-  [action params activity]
-  (if activity
-    (let [author (model.activity/get-author activity)
-          mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
-          subscribers (map model.subscription/get-actor
-                           (model.subscription/subscribers author))
-          to-notify (->> (concat subscribers mentioned-users)
-                         (filter :local)
-                         (into #{}))]
+  [m]
+  (log/info "Create Trigger")
+  (if-let [activity (:records m)]
+    (let [author (model.activity/get-author activity)]
       ;; Add item to author's stream
       (model.item/push author activity)
 
@@ -65,10 +62,25 @@
       ;;   (model.activity/add-comment parent activity))
 
       ;; notify users
-      (doseq [user to-notify]
-        (notify-activity user activity))
+      (let [mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
+            to-notify (->> (model.subscription/subscribers author)
+                           (map model.subscription/get-actor)
+                           (concat mentioned-users)
+                           (filter :local)
+                           (into #{}))]
+        (doseq [user to-notify]
+          (notify-activity user activity)))
 
       ;; TODO: ping feed subscriptions
       )))
 
-(add-trigger! #'create #'create-trigger)
+(defn init-receivers
+  []
+
+  (l/receive-all
+   ch/posted-activities
+   create-trigger)
+
+  )
+
+(defonce receivers (init-receivers))
