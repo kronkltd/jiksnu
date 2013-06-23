@@ -1,16 +1,15 @@
 (ns jiksnu.bindings.with-page
   (:require [jiksnu.model :as model]
             [jiksnu.util.ko :as ko]
-            [lolg :as log]
-            )
-  )
+            [lolg :as log]))
 
 (def *logger* (log/get-logger "jiksnu.bindings.with-page"))
 
 (defn page-init
   [element value-accessor all-bindings data context]
   (when-let [page-name (.-type (value-accessor))]
-    (.applyBindingsToDescendants js/ko (model/get-page page-name) element))
+    (let [vm (model/get-page page-name)]
+      (ko/apply-descendant-bindings vm element)))
   (js-obj
      "controlsDescendantBindings" true))
 
@@ -22,4 +21,3 @@
       (js-obj
        "init" page-init
        "update" page-update))
-
