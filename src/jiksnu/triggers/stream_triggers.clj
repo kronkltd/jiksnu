@@ -1,32 +1,31 @@
 (ns jiksnu.triggers.stream-triggers
   (:use [ciste.initializer :only [definitializer]])
-  (:require ciste.core
-            [jiksnu.actions.activity-actions :as actions.activity]
+  (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.channels :as ch]
-                     [jiksnu.ops :as ops]
-   [lamina.core :as l]
-         ))
+            [lamina.core :as l]))
+
+(defn filter-activity-create
+  [item]
+  (#{#'actions.activity/create}     (:action item)))
+
+(defn filter-conversation-create
+  [item]
+  (#{#'actions.conversation/create} (:action item)))
 
 (defn init-receivers
   []
 
   ;; Create events for each created activity
   (l/siphon
-   (->> ciste.core/*actions*
-        l/fork
-        (l/filter* (comp #{#'actions.activity/create} :action)))
+   (l/filter* filter-activity-create (l/fork ciste.core/*actions*))
    ch/posted-activities)
-  (l/receive-all ch/posted-activities identity)
 
   ;; Create events for each created conversation
   (l/siphon
-   (->> ciste.core/*actions*
-        l/fork
-        (l/filter* (comp #{#'actions.conversation/create} :action)))
+   (l/filter* filter-conversation-create (l/fork ciste.core/*actions*))
    ch/posted-conversations)
-  (l/receive-all ch/posted-conversations identity))
+  )
 
 (definitializer
-  (init-receivers)
-  )
+  (init-receivers))

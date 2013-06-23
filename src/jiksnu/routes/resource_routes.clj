@@ -25,3 +25,10 @@
    [[:post   (named-path     "delete resource")]   #'delete]
    [[:get    (formatted-path "resource model")]    #'show]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "resources"}    {:action #'index}]
+   ])
+

@@ -16,3 +16,10 @@
    [[:get (formatted-path "show feed-subscription")]   #'feed-subscription/show]
    [[:get (formatted-path "feed-subscription model")]  #'feed-subscription/show]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "feed-subscriptions"}    {:action #'feed-subscription/index}]
+   ])
+

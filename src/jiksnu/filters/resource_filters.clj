@@ -45,6 +45,10 @@
                     (parse-page request)
                     (parse-sorting request))))
 
+(deffilter #'index :page
+  [action request]
+  (action))
+
 ;; show
 
 (deffilter #'show :http

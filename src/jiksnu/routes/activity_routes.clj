@@ -28,3 +28,10 @@
    [[:get    (formatted-path "activity model")]  #'activity/show]
    ;; [[:get "/main/events"]                      #'activity/stream]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "activities"}    {:action #'activity/index}]
+   ])
+

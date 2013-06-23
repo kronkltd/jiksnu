@@ -25,3 +25,10 @@
    [[:get    (formatted-path "group model")]          #'group/show]
 
    ])
+
+(defn pages
+  []
+  [
+   [{:name "groups"}    {:action #'group/index}]
+   ])
+

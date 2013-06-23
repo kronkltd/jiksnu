@@ -165,11 +165,13 @@
       (let [actor (or (try
                         (actions.user/find-or-create-by-remote-id {:id url})
                         (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex)))
+                          (trace/trace "errors:handled" ex)
+                          nil))
                       (try
                         (actions.group/find-or-create {:url url})
                         (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex))))]
+                          (trace/trace "errors:handled" ex)
+                          nil)))]
         (:_id actor))
       (:_id (actions.user/find-or-create-by-uri url)))))
 
