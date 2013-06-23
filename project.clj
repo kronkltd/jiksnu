@@ -78,7 +78,13 @@
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
-             "-Dfile.encoding=UTF-8"]
+             "-Dfile.encoding=UTF-8"
+             "-Dcom.sun.management.jmxremote"
+             "-Dcom.sun.management.jmxremote.port=9010"
+             "-Dcom.sun.management.jmxremote.local.only=false"
+             "-Dcom.sun.management.jmxremote.authenticate=false"
+             "-Dcom.sun.management.jmxremote.ssl=false"
+             ]
   :repositories {"stuart"                "http://stuartsierra.com/maven2"
                  "sonatype-oss-public"   "https://oss.sonatype.org/content/groups/public/"
                  "tigase-snapshots" "http://maven.tigase.org/"
