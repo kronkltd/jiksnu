@@ -169,7 +169,7 @@
                    nid (nth parts 0)]
                (condp = nid
                  "X-dfrn" (nth parts 1)))
-      :default           (:host uri))))
+      (:host uri))))
 
 (defn parse-link
   [link]

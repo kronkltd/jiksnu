@@ -1,5 +1,6 @@
 (ns jiksnu.transforms.conversation-transforms
-  (:use [slingshot.slingshot :only [throw+]])
+  (:use [ciste.config :only [config]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.route-one.core :as r]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -20,7 +21,7 @@
   (if (:update-source item)
     item
     (if-let [url (:url item)]
-      (if-let [source (if (local-url url)
+      (if-let [source (if (local-url? url)
                         (let [atom-url (rh/formatted-url "show conversation"
                                                          {:id (:_id item)} "atom")]
                           (actions.feed-source/find-or-create {:topic atom-url}))
