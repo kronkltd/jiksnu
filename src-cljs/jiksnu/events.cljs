@@ -80,8 +80,11 @@
   [event]
   (let [id (.-body event)
         page-name (.-name event)]
+    (log/fine *logger* (format "adding page: %s << %s" page-name id))
     (if-let [page (.get model/pages page-name)]
       (let [items (.get page "items")]
-        (.push items id)
-        (.set page "items" items))
+        (.set page "items"
+              (.union js/_
+                      (array id)
+                      items)))
       (log/warning *logger* "Could not find page in collection"))))

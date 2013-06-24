@@ -141,8 +141,7 @@
    :body (let [items (if *dynamic* [(Conversation.)] items)]
            (with-page "public-timeline"
              (pagination-links page)
-             (bind-to "items"
-               (index-section items page))))})
+             (index-section items page)))})
 
 (defview #'public-timeline :page
   [request response]

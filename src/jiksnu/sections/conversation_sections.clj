@@ -33,7 +33,7 @@
 (defn model-button
   [item]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/conversations/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:data-bind "attr: {href: '/model/conversations/' + _id() + '.model'}"}
         {:href (format "/model/conversations/%s.model" (:_id item))})
    "Model"])
 
@@ -113,7 +113,7 @@
   [item & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
+          {:data-bind "attr: {href: '/main/conversations/' + _id()}"}
           {:href (uri item)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
@@ -126,7 +126,7 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div.conversations (when *dynamic* {:data-bind "foreach: $data"})
+  [:div.conversations (when *dynamic* {:data-bind "foreach: items"})
    (map index-line items)])
 
 (defsection index-block [Conversation :rdf]

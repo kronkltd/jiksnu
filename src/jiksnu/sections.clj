@@ -93,13 +93,13 @@
 
 (defn with-page
   [page-name & body]
-  [:div (when *dynamic*
-          {:data-page page-name})
+  [:span (when *dynamic*
+           {:data-page page-name})
    body])
 
 (defn with-sub-page
   [page-name & body]
-  [:div (when *dynamic* {:data-sub-page page-name})
+  [:span (when *dynamic* {:data-sub-page page-name})
    body])
 
 (defn bind-property
