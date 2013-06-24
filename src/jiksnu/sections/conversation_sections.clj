@@ -207,13 +207,12 @@
                          (when-not *dynamic*
                            {:data-id (:_id author)}))
      (bind-to "author"
-       [:span {:data-model "user"}
+       [:div {:data-model "user"}
         [:a.pull-left
          (sections.user/display-avatar author)]
         (link-to author)])
-     ": "
-     [:span.comment-content
-      (display-property activity "title")]]))
+     [:div.comment-content
+      (display-property activity "content")]]))
 
 (defsection show-section [Conversation :html]
   [item & [page]]

@@ -765,7 +765,7 @@
       [:div.entry-content
        (merge {:property "dc:title"}
               (when *dynamic*
-                {:data-bind "text: title"}))
+                {:data-bind "text: content"}))
        (when-not *dynamic*
          (or (:title activity)
              (:content activity)))]
