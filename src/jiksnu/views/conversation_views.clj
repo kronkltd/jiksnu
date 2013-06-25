@@ -25,8 +25,7 @@
                  items)]
      (with-page "conversations"
        (pagination-links page)
-       (bind-to "items"
-         (doall (index-section items page)))))})
+       (doall (index-section items page))))})
 
 (defview #'index :page
   [request response]
@@ -54,8 +53,7 @@
           (let [items (if *dynamic*
                         [(Activity.)]
                         (:items (actions.activity/fetch-by-conversation item)))]
-            (bind-to "items"
-              (index-section items))))]))})
+            (index-section items)))]))})
 
 (defview #'show :model
   [request item]

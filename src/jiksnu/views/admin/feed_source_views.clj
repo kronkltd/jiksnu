@@ -41,8 +41,7 @@
    :body (let [sources (if *dynamic* [(FeedSource.)] items)]
            (with-page "feedSources"
              (pagination-links page)
-             (bind-to "items"
-               (admin-index-section sources page))))})
+             (admin-index-section sources page)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

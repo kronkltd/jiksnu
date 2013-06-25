@@ -85,7 +85,7 @@
      [:th "Host Meta"]
      [:th "# Links"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map index-line domains)]])
 
 (defsection index-block [Domain :viewmodel]

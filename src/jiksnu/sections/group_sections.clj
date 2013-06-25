@@ -69,7 +69,7 @@
      [:th "Name"]
      [:th "Full Name"]
      [:th "Homepage"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % options) groups)]])
 
 (defsection admin-index-block [Group :viewmodel]

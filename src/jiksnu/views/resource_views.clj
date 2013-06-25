@@ -36,8 +36,7 @@
    (let [items (if *dynamic* [(Resource.)] items)]
      (with-page "resources"
        (pagination-links page)
-       (bind-to "items"
-         (doall (index-section items page)))))})
+       (doall (index-section items page))))})
 
 (defview #'index :json
   [request {:keys [items] :as page}]

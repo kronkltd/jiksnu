@@ -17,8 +17,7 @@
    (let [activities (if *dynamic* [(Activity.)] items)]
      (with-page "activities"
        (pagination-links response)
-       (bind-to "items"
-         (admin-index-section activities response))))})
+       (admin-index-section activities response)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

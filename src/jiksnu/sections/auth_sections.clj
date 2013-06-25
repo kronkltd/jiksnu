@@ -81,7 +81,7 @@
      [:th "User"]
      [:th "Value"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % page) items)]])
 
 (defsection admin-index-block [AuthenticationMechanism :viewmodel]

@@ -278,7 +278,7 @@
      [:th "Id"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (let [items (if *dynamic* [(User.)] items)]
       (map #(admin-index-line % page) items))]])
 
@@ -405,7 +405,7 @@
   [:table.table.users
    [:thead]
    [:tbody (merge {:data-bag "users"}
-                  (when *dynamic* {:data-bind "foreach: $data"}))
+                  (when *dynamic* {:data-bind "foreach: items"}))
     ;; TODO: handle this higher up
     (let [users (if *dynamic* [(User.)] users)]
       (map #(index-line % page) users))]])

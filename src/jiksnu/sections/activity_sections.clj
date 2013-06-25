@@ -528,7 +528,7 @@
      ;; [:th "Visibility"]
      [:th "Title"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -591,7 +591,7 @@
   [records & [options & _]]
   [:div.activities
    (when *dynamic*
-     {:data-bind "foreach: $data"})
+     {:data-bind "foreach: items"})
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]

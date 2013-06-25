@@ -40,8 +40,7 @@
    (let [subscriptions (if *dynamic* [(Subscription.)] items)]
      (with-page "subscribers"
        (pagination-links page)
-       (bind-to "items"
-         (sections.subscription/subscribers-section items page))))})
+       (sections.subscription/subscribers-section items page)))})
 
 (defview #'get-subscribers :page
   [request [user page]]
@@ -79,8 +78,7 @@
    (if-let [items (seq (if *dynamic* [(Subscription.)] items))]
      (with-page "subscriptions"
        (pagination-links response)
-       (bind-to "items"
-         (sections.subscription/subscriptions-section items response))))})
+       (sections.subscription/subscriptions-section items response)))})
 
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]

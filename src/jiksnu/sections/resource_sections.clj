@@ -72,7 +72,7 @@
      [:th "Encoding"]
      #_[:th "Created"]
      [:th "Updated"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (doall (map #(index-line % page) items))]])
 
 ;; index-line

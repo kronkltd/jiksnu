@@ -63,11 +63,9 @@
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Users"
-   :body
-   (with-page "users"
-     (pagination-links page)
-     (bind-to "items"
-       (index-section items page)))})
+   :body (with-page "users"
+           (pagination-links page)
+           (index-section items page))})
 
 (defview #'index :json
   [request {:keys [items] :as options}]

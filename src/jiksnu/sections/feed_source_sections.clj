@@ -31,7 +31,7 @@
              (count (:watchers source)))]]
    (bind-to "watchers"
      [:table.table
-      [:tbody {:data-bind "foreach: $data"}
+      [:tbody {:data-bind "foreach: items"}
        (let [watchers (if *dynamic* [""] (:watchers source))]
          (map
           (fn [id]
@@ -133,7 +133,7 @@
      [:th "Status"]
      [:th "Actions"]]]
    [:tbody (when *dynamic*
-             {:data-bind "foreach: $data"})
+             {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
 (defsection admin-index-block [FeedSource :viewmodel]
@@ -206,7 +206,7 @@
      [:th "Actions"]]]
    [:tbody
     (when *dynamic*
-      {:data-bind "foreach: $data"})
+      {:data-bind "foreach: items"})
     (map index-line sources)]])
 
 (defsection index-block [FeedSource :viewmodel]

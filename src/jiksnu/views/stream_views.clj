@@ -48,8 +48,7 @@
      (show-section group)
      (with-sub-page "groups"
        (pagination-links (if *dynamic* {} page))
-       (bind-to "items"
-         (index-section items))))})
+       (index-section items)))})
 
 (defview #'group-timeline :json
   [request [group {:keys [items] :as page}]]
@@ -243,8 +242,7 @@
      (bind-to "targetUser"
        [:div {:data-model "user"}
         (with-sub-page "activities"
-          (bind-to "items"
-            (index-section items page)))])
+          (index-section items page))])
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model

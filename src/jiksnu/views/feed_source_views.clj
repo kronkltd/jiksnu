@@ -23,8 +23,7 @@
    (let [items (if *dynamic* [(FeedSource.)] items)]
      (with-page "feedSources"
        (pagination-links page)
-       (bind-to "items"
-         (doall (index-section items page)))))})
+       (doall (index-section items page))))})
 
 (defview #'index :page
   [request response]
@@ -67,8 +66,7 @@
        [:div {:data-model "feed-source"}
         (with-sub-page "activities"
           (pagination-links (if *dynamic* {} page))
-          (bind-to "items"
-            (index-section items)))])}))
+          (index-section items))])}))
 
 (defview #'show :model
   [request activity]

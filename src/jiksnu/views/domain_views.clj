@@ -93,8 +93,7 @@
    (let [domains (if *dynamic* [(Domain.)] items)]
      (with-page "domains"
        (pagination-links page)
-       (bind-to "items"
-         (index-section domains page))))})
+       (index-section domains page)))})
 
 (defview #'index :page
   [request response]
@@ -147,8 +146,7 @@
             (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
               (with-page "users"
                 (pagination-links {})
-                (bind-to "items"
-                  (index-section users))))])})
+                (index-section users)))])})
 
 (defview #'show :model
   [request domain]

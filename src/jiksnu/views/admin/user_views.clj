@@ -20,8 +20,7 @@
    :body
    (with-page "users"
      (pagination-links page)
-     (bind-to "items"
-       (admin-index-section items page)))})
+     (admin-index-section items page))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]

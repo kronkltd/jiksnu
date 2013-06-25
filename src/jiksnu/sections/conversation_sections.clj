@@ -192,7 +192,7 @@
 ;;       [:section.comments
 ;;        [:ul.unstyled.comments
 ;;         (when *dynamic*
-;;           {:data-bind "foreach: $data"})
+;;           {:data-bind "foreach: items"})
 ;;         (map (fn [comment]
 ;;                [:li
 ;;                 (show-comment comment)])

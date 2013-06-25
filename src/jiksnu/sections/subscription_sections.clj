@@ -150,7 +150,7 @@
      [:th "pending"]
      [:th "local"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % options) items)]])
 
 (defsection admin-index-block [Subscription :viewmodel]
@@ -237,7 +237,7 @@
 
 (defsection subscriptions-block [Subscription :html]
   [items & [options & _]]
-  [:ul.subscriptions {:data-bind "foreach: $data"}
+  [:ul.subscriptions {:data-bind "foreach: items"}
    (map (fn [item] (subscriptions-line item options)) items)])
 
 (defsection subscriptions-section [Subscription :html]
@@ -254,7 +254,7 @@
 
 (defsection subscribers-block [Subscription :html]
   [items & [options & _]]
-  [:ul.subscriptions {:data-bind "foreach: $data"}
+  [:ul.subscriptions {:data-bind "foreach: items"}
    (map (fn [item] (subscribers-line item options)) items)])
 
 (defsection subscribers-section [Subscription :html]
