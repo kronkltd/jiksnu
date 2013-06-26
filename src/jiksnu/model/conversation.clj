@@ -27,7 +27,8 @@
    (type-of :updated       DateTime)
    (type-of :domain        String)
    (type-of :local         Boolean)
-   (type-of :update-source ObjectId)))
+   ;; (type-of :update-source ObjectId)
+   ))
 
 (def count-records (templates/make-counter     collection-name))
 (def delete        (templates/make-deleter     collection-name))

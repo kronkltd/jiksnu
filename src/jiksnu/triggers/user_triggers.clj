@@ -39,7 +39,7 @@
   [user link]
   (log/debug "Setting update source")
   (if-let [href (:href link)]
-    (let [source (actions.feed-source/find-or-create {:topic (:href link)})]
+    (let [source (actions.feed-source/find-or-create {:topic href})]
       (model.user/set-field! user :update-source (:_id source)))
     (throw+ "link must have a href")))
 

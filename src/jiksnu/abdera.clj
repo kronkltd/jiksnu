@@ -129,9 +129,9 @@
   (let [source (attr-val element "source")
         local-id (attr-val element "local_id")
         source-link (attr-val element "source_link")]
-    {:source source
-     :source-link source-link
-     :local-id local-id}))
+    {:source {:name source
+              :href source-link}
+     :jiksnu {:local-id local-id}}))
 
 (defn parse-irts
   "Get the in-reply-to uris"

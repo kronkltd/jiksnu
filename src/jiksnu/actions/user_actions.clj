@@ -121,7 +121,8 @@
   [user]
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
-        (when-let [id (:id user)] (actions.domain/get-user-meta-url domain id))
+        (when-let [id (:id user)]
+          (actions.domain/get-user-meta-url domain id))
         ;; TODO: should update uri in this case
         (actions.domain/get-user-meta-url domain (:url user)))))
 
