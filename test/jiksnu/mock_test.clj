@@ -26,7 +26,15 @@
 
    (mock/a-domain-exists) => (partial instance? Domain)
    (mock/a-resource-exists) => (partial instance? Resource)
-   (mock/a-user-exists) => (partial instance? User)
+
+
+   (fact "a-user-exists"
+
+     (fact "without any params"
+       (mock/a-user-exists) => (partial instance? User))
+
+     )
+
    (mock/a-feed-source-exists) => (partial instance? FeedSource)
    (mock/a-conversation-exists) => (partial instance? Conversation)
    (mock/a-feed-subscription-exists) => (partial instance? FeedSubscription)

@@ -8,6 +8,7 @@
         [ciste.sections.default :only [link-to]]
         [clojure.core.incubator :only [dissoc-in]]
         [clojure.data.json :only [read-json]]
+        [clojure.pprint :only [pprint]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require #_[clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
@@ -191,7 +192,15 @@
                  (fn [response]
                    (log/infof "sending update notification to connection: %s"
                               (:connection-id response))
-                   (s/increment "conversations pushed"))))
+                   (s/increment "conversations pushed")))
 
-(definitializer
-  (init-handlers))
+  (l/receive-all (trace/select-probes "*:created")
+                 (fn [item]
+                   (log/infof "created:\n\n%s\n%s"
+                              (class item)
+                              (with-out-str (pprint item)))))
+
+
+  )
+
+(defonce receivers (init-handlers))
