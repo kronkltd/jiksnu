@@ -64,7 +64,7 @@
 
 (defn set-source-from-xrd
   [user xrd]
-  (let [user (model.webfinger/get-feed-source-from-xrd xrd)]
+  (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
     (merge user
            {:username (model.webfinger/get-username-from-xrd xrd)
             :update-source (:_id source)})))
