@@ -154,6 +154,20 @@
      "<!-- /ko -->")
     (str (get item (keyword property)))))
 
+(defn display-timestamp
+  [item property]
+  [:time.timeago
+   (merge
+    {:data-toggle "timeago"}
+    (if *dynamic*
+      {:data-bind
+       (format "attr: {datetime: %s}, text: %s"
+               (name property)
+               (name property))}
+      {:datetime (str (get item (keyword property)))}))
+   (when-not *dynamic*
+     (str (get item (keyword property))))])
+
 (defn dropdown-menu
   [item buttons]
   (when (seq buttons)

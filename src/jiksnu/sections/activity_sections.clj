@@ -9,6 +9,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-line admin-index-block
                                 admin-index-section bind-property bind-to control-line
+                                display-timestamp
                                 dropdown-menu dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -307,16 +308,16 @@
    (let [published (:published activity)]
      (when (or *dynamic* published)
        (let [formatted-pub (util/format-date published)]
-         (list
-          " approximately "
-          [:time {:datetime formatted-pub
-                  :title formatted-pub
-                  :property "dc:published"}
-           [:a (merge {:href (uri activity)}
-                      (when *dynamic*
-                        {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
-            (when-not *dynamic*
-              (-> published .toDate util/prettyify-time))]]))))
+         (list " "
+          (display-timestamp activity :published)
+          #_[:time {:datetime formatted-pub
+                    :title formatted-pub
+                    :property "dc:published"}
+             [:a (merge {:href (uri activity)}
+                        (when *dynamic*
+                          {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
+              (when-not *dynamic*
+                (-> published .toDate util/prettyify-time))]]))))
 
    (let [source (:source activity)]
      (when (or *dynamic* source)
@@ -324,7 +325,7 @@
         " using "
         [:span
          (if *dynamic*
-           {:data-bind "text: source"}
+           {:data-bind "text: source().name"}
            source)])))
 
    ;; TODO: link to the domain
@@ -399,7 +400,9 @@
      [:div.control-group
       [:label.control-label {:for "content"} "Content"]
       [:div.controls
-       [:textarea.span6 {:name "content" :rows "3"} content]]]
+       [:textarea {:name "content" :rows "10"
+                   :data-provide "markdown"
+                   } content]]]
      (add-button-section activity)
      (pictures-section activity)
      (location-section activity)

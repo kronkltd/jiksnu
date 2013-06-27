@@ -69,6 +69,8 @@
   (set! (.-instance ko/binding-provider)
         (providers/SubPageProvider.))
 
+  (.timeago ($ ".timeago"))
+
   (ko/apply-bindings model/_view)
 
   (.addClass ($ :html) "bound"))
