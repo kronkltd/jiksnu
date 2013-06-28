@@ -5,8 +5,8 @@
                                        show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line display-property dropdown-menu dump-data
-                                pagination-links with-page with-sub-page]])
+                                bind-to control-line display-property display-timestamp
+                                dropdown-menu dump-data pagination-links with-page with-sub-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -72,10 +72,11 @@
      [:th "Id"]
      [:th "Domain"]
      [:th "Url"]
+     [:th "Parent"]
      #_[:th "Created"]
      [:th "Last Updated"]
      [:th "Record Updated"]
-     [:th "Actions"]]]
+     [:th #_"Actions"]]]
    [:tbody {:data-bind "foreach: items"}
     (doall (map #(admin-index-line % page) items))]])
 
@@ -96,9 +97,10 @@
           {:href (:url item)})
      (when-not *dynamic*
        (:url item))]]
+   [:td (display-property item :parent)]
    ;; [:td (display-property item :created)]
-   [:td (display-property item :lastUpdated)]
-   [:td (display-property item :updated)]
+   [:td (display-timestamp item :lastUpdated)]
+   [:td (display-timestamp item :updated)]
    [:td (actions-section item)]])
 
 ;; delete-button
@@ -226,15 +228,20 @@
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
-     (with-sub-page "activities"
-       (if-let [item (first items)]
-         (bind-to "items()[0]"
-           (show-section item))
-         [:p "The parent activity for this conversation could not be found"])
-       (when-let [comments (next items)]
-         [:section.comments.clearfix
-          [:div (when *dynamic* {:data-bind "foreach: items().slice(1)"})
-           (map show-comment comments)]]))]))
+     (let [parent (first items)]
+       (list
+        (bind-to "$data.parent"
+          (show-section parent))
+        [:div {:data-bind "if: _view.showComments()"}
+         (with-sub-page "activities"
+           #_(if-let [item (first items)]
+             (bind-to "items()[0]"
+               (show-section item))
+             [:p "The parent activity for this conversation could not be found"])
+           (when-let [comments (next items)]
+             [:section.comments.clearfix
+              [:div (when *dynamic* {:data-bind "foreach: items().slice(1)"})
+               (map show-comment comments)]]))]))]))
 
 (defsection show-section [Conversation :rdf]
   [item & [page]]

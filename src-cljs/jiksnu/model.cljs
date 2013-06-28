@@ -476,6 +476,7 @@
                   "postForm"                 (PostForm.)
                   "notifications"            notifications
                   "resources"                resources
+                  "showComments"             false
                   "statistics"               nil
                   "subscriptions"            subscriptions
                   "targetActivity"           nil

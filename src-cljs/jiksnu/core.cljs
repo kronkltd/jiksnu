@@ -76,6 +76,8 @@
          #_(log/info *logger* "model loaded")
          (.timeago (js/$ ".timeago"))))
 
-  (.addClass ($ :html) "bound"))
+  (.addClass ($ :html) "bound")
+
+  (.timeago (js/$ ".timeago")))
 
 (main)

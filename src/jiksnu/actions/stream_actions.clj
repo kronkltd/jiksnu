@@ -161,14 +161,15 @@
     (l/receive-all
      ch
      (fn [m]
-       (session/with-user-id id
-         (let [[name & args] (string/split m #" ")
-               request {:format :json
-                        :channel ch
-                        :name name
-                        :args (process-args args)}
-               response (handle-message request)]
-           (l/enqueue ch response)))))))
+       (future
+         (session/with-user-id id
+           (let [[name & args] (string/split m #" ")
+                 request {:format :json
+                          :channel ch
+                          :name name
+                          :args (process-args args)}
+                 response (handle-message request)]
+             (l/enqueue ch response))))))))
 
 (definitializer
   (require-namespaces

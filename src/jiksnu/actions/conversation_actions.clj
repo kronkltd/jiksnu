@@ -73,6 +73,7 @@
 (defaction discover
   [conversation & [options]]
   (log/debugf "Discovering conversation: %s" conversation)
+  (model.conversation/set-field! conversation :lastDiscovered (time/now))
   conversation)
 
 (defaction find-or-create
@@ -98,10 +99,13 @@
 
 (defaction add-activity
   [conversation activity]
+  (when-not (:parent activity)
+    (log/debug "Setting parent")
+    (model.conversation/set-field! conversation :parent (:_id activity)))
   (let [lu (:lastUpdated conversation)
-        c (:created activity)]
-    (when (or (not lu)
-              (time/before? lu c))
+        c (:published activity)]
+    (when (or (not lu) (time/before? lu c))
+      (log/debug "Checking for updated comments")
       (update conversation))))
 
 (defaction create-new
