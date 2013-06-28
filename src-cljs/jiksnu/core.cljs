@@ -69,9 +69,12 @@
   (set! (.-instance ko/binding-provider)
         (providers/SubPageProvider.))
 
-  (.timeago ($ ".timeago"))
-
   (ko/apply-bindings model/_view)
+
+  (.on model/activities "change:loaded"
+       (fn [model value options]
+         #_(log/info *logger* "model loaded")
+         (.timeago (js/$ ".timeago"))))
 
   (.addClass ($ :html) "bound"))
 

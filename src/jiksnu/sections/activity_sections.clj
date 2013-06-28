@@ -329,10 +329,11 @@
            source)])))
 
    ;; TODO: link to the domain
-   (when (or *dynamic* (not (:local activity)))
+   #_(when (or *dynamic* (not (:local activity)))
      [:span (when *dynamic*
               {:data-bind "if: !local()"})
       " via a "
+
       [:a {:href
            (if *dynamic*
              "#"

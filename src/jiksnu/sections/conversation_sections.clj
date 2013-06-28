@@ -211,7 +211,7 @@
         [:a.pull-left
          (sections.user/display-avatar author)]
         (link-to author)])
-     [:div.comment-content
+     [:span.comment-content
       (display-property activity "content")]]))
 
 (defsection show-section [Conversation :html]

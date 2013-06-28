@@ -9,7 +9,8 @@
                                                    unsubscribe
                                                    watch]]
         [jiksnu.filters :only [parse-page parse-sorting]])
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]))

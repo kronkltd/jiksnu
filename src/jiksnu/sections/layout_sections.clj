@@ -219,8 +219,8 @@
      [:div.nav-collapse.collapse
       ;; (navbar-search-form)
       [:ul.nav.pull-right (sections.auth/login-section response)]
-      [:div.navbar-text.connection-info.pull-right]
-      [:div.navbar-text.pull-right
+      #_[:div.navbar-text.connection-info.pull-right]
+      #_[:div.navbar-text.pull-right
        (if *dynamic* "dynamic" "static")]
       [:div.visible-tablet.visible-phone
        (side-navigation)]]]]])
