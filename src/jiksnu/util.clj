@@ -27,6 +27,8 @@
            lamina.core.channel.Channel
            org.bson.types.ObjectId
            org.joda.time.DateTime
+           org.jsoup.Jsoup
+           org.jsoup.safety.Whitelist
            java.io.StringReader))
 
 (defn format-date
@@ -186,3 +188,7 @@
            (when type     {:type type})
            (when title {:title title})
            (when lang     {:lang lang}))))
+
+(defn sanitize
+  [input]
+  (Jsoup/clean input (Whitelist/none)))

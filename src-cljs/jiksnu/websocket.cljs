@@ -49,7 +49,7 @@
 
 (defn queue-message
   [command & [args]]
-  (log/finer *logger* (format "queuing message: %s %s" command args))
+  (log/fine *logger* (format "queuing message: %s %s" command args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 

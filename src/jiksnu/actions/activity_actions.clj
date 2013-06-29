@@ -30,9 +30,7 @@
            jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera.model.Entry
-           org.apache.abdera.model.Element
-           org.jsoup.Jsoup
-           org.jsoup.safety.Whitelist))
+           org.apache.abdera.model.Element))
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
 
@@ -183,10 +181,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 
 (defonce latest-entry (ref nil))
 
-(defn sanitize
-  [input]
-  (Jsoup/clean input (Whitelist/none)))
-
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
 serialization"
@@ -235,7 +229,7 @@ serialization"
                        (.getFirstChild (QName. ns/atom "id")))
         params (apply merge
                       (dissoc parsed-entry :extensions)
-                      (when content           {:content (sanitize content)})
+                      (when content           {:content (util/sanitize content)})
                       (when updated           {:updated updated})
                       ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
                       (when title             {:title title})

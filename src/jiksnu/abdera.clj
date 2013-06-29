@@ -7,6 +7,7 @@
             [clj-time.coerce :as coerce]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
+            [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import java.io.ByteArrayInputStream
            java.net.URI
@@ -126,7 +127,7 @@
 (defn parse-notice-info
   "extract the notice info from a statusnet element"
   [^Element element]
-  (let [source (attr-val element "source")
+  (let [source (util/sanitize (attr-val element "source"))
         local-id (attr-val element "local_id")
         source-link (attr-val element "source_link")]
     {:source {:name source

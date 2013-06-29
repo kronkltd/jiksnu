@@ -534,7 +534,7 @@ Returns a viewmodel"
       page
       (do (.add coll (js-obj "id" name))
           (let [m (.get coll name)]
-            (ws/send "get-sub-page" model-name id name)
+            (ws/send "get-sub-page" (array model-name id name))
             m)))))
 
 ;; observable functions
