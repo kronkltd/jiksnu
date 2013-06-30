@@ -38,9 +38,10 @@
    :permanent? true
    :description "pending-update-resources"))
 
-(defonce
-  ^{:doc "Channel containing list of sources to be updated"}
-  pending-updates (l/permanent-channel))
+(defonce pending-updates
+  (l/channel*
+   :permanent? true
+   :description "Channel containing list of sources to be updated"))
 
 (defonce pending-entries
   (l/channel*
@@ -63,3 +64,8 @@
   (l/channel*
    :permanent? true
    :description "get-user-meta"))
+
+(defonce pending-new-subscriptions
+  (l/channel*
+   :permanent? true
+   :description "pending-new-subscriptions"))

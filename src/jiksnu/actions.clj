@@ -106,7 +106,7 @@
     (l/on-closed ch (partial connection-closed user-id connection-id))
     connection-id))
 
-(defaction get-model
+(defn get-model
   [model-name id]
   (let [model-ns (symbol (str "jiksnu.model." model-name))]
     (require model-ns)
@@ -139,7 +139,7 @@
         (throw+ "page not found"))))
 
 (defaction invoke-action
-  [model-name action-name id]
+  [model-name action-name id & [options]]
   (try+
     (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
       (require action-ns)
@@ -151,7 +151,7 @@
                         :action action-name
                         :id id
                         :body body}]
-          (trace/trace "actions:invoked" response)
+          (trace/trace :actions:invoked response)
           response)
         (do
           (log/warnf "could not find action for: %s(%s) => %s"
@@ -177,7 +177,7 @@
 (defn init-handlers
   []
 
-  (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
+  (l/receive-all (trace/probe-channel :errors:handled) handle-errors)
 
   (l/receive-all (trace/probe-channel "actions:invoked")
                  (fn [response]

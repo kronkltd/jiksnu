@@ -22,6 +22,10 @@
            jiksnu.model.Activity
            jiksnu.model.User))
 
+(defn filter-activity-create
+  [item]
+  (#{#'actions.activity/create}     (:action item)))
+
 (defn notify-activity
   [recipient ^Activity activity]
   (log/info (str "Sending notice to: " (model.user/get-uri recipient false)))
@@ -76,6 +80,11 @@
   []
 
   (l/receive-all ch/posted-activities create-trigger)
+
+  ;; Create events for each created activity
+  (l/siphon
+   (l/filter* filter-activity-create (l/fork ciste.core/*actions*))
+   ch/posted-activities)
 
   )
 

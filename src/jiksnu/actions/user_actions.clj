@@ -483,6 +483,15 @@
     (actions.domain/set-xmpp domain false)
     user))
 
+(defn subscribe
+  [user]
+  (if-let [actor-id (session/current-user-id)]
+    (do
+      (log/infof "Subscribing to %s" (:_id user))
+      (ops/create-new-subscription actor-id (:_id user))
+      true)
+    (throw+ "Must be authenticated")))
+
 (definitializer
   (require-namespaces
    ["jiksnu.filters.user-filters"

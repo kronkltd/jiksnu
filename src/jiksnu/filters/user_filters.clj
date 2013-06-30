@@ -112,6 +112,13 @@
         user (model.user/fetch-by-jid to)]
     (action user)))
 
+;; subscribe
+
+(deffilter #'subscribe :command
+  [action id]
+  (when-let [item (model.user/fetch-by-id id)]
+    (action item)))
+
 ;; update
 
 (deffilter #'update :http

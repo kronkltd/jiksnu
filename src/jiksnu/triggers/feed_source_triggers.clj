@@ -8,16 +8,17 @@
             [lamina.core :as l]
             [lamina.trace :as trace]))
 
-(defn handle-pending-get-source
+(defn handle-pending-get-source*
   [url]
   (actions.feed-source/find-or-create {:topic url}))
 
+(def handle-pending-get-source
+  (ops/op-handler handle-pending-get-source*))
+
 (defn init-receivers
   []
-  (log/info "init receivers")
-
   (l/receive-all ch/pending-get-source
-                 (ops/op-handler handle-pending-get-source))
+                 handle-pending-get-source)
 
   (l/receive-all ch/pending-entries
                  actions.feed-source/process-entry)
