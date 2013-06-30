@@ -44,7 +44,7 @@
   [["Home"
     [[(named-path "public timeline")     "Public"]
      [(named-path "index users")         "Users"]
-     [(named-path "index conversations") "Conversations"]
+     ;; [(named-path "index conversations") "Conversations"]
      [(named-path "index feed-sources")  "Feeds"]
      [(named-path "index domains")       "Domains"]
      [(named-path "index groups")        "Groups"]
