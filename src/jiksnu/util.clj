@@ -34,7 +34,7 @@
 (defn format-date
   "This is a dirty little function to get a properly formatted date."
   ;; TODO: Get more control of passed dates
-  [^Date date]
+  [date]
   ;; TODO: Time for a protocol
   (condp = (class date)
     String (DateTime/parse date)
