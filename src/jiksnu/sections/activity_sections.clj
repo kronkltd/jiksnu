@@ -9,7 +9,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-line admin-index-block
                                 admin-index-section bind-property bind-to control-line
-                                display-timestamp
+                                display-property display-timestamp
                                 dropdown-menu dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -292,88 +292,88 @@
                  tag)]])
        tags)]]))
 
+(defn visibility-link
+  [activity]
+  ;; TODO: handle other visibilities
+  (when-not (:public activity)
+    "privately"))
+
+(defn published-link
+  [activity]
+  (let [published (:published activity)]
+    (when (or *dynamic* published)
+      (list
+       (display-timestamp activity :published)
+       #_[:time {:datetime published
+                 :title published
+                 :property "dc:published"}
+          [:a (merge {:href (uri activity)}
+                     (when *dynamic*
+                       {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
+           (when-not *dynamic*
+             (-> published .toDate util/prettyify-time))]]))))
+
+(defn source-link
+  [activity]
+  (when-let [source (if *dynamic* {} (:source activity))]
+    (list
+     "using "
+     (bind-to "source"
+       (display-property source :name)))))
+
+(defn service-link
+  [activity]
+  (when (or *dynamic* (not (:local activity)))
+    (let [url (if *dynamic*
+                "#"
+                (->> activity
+                     :links
+                     (filter #(= (:rel %) "alternate"))
+                     (filter #(= (:type %) "text/html"))
+                     first :href))]
+      [:span (when *dynamic*
+               {:data-bind "if: !local()"})
+       "via a "
+       [:a {:href url}
+        "foreign service"]])))
+
+(defn context-link
+  [activity]
+  (when-let [conversation (if *dynamic*
+                            (Conversation.)
+                            (model.conversation/fetch-by-id (:conversation activity)))]
+    (bind-to "conversation"
+      [:a (if *dynamic*
+            {:data-bind "attr: {href: '/main/conversations/' + $data}"}
+            {:href (uri conversation)})
+       "in context"])))
+
+(defn geo-link
+  [activity]
+  (when-let [geo (if *dynamic* {} (:geo activity))]
+    (bind-to "geo"
+      "near "
+      [:a.geo-link {:href "#"}
+       (display-property geo :latitude)
+       ", "
+       (display-property geo :longitude)])))
+
 (defn posted-link-section
   [activity]
   [:span.posted
+   ;; TODO: Use the relevant verb
    "posted a "
-   [:span
-    (if *dynamic*
-      {:data-bind "text: $data.object().type"}
-      (-> activity :object :type))]
-
-   ;; TODO: handle other visibilities
-   #_(when-not (:public activity)
-       " privately")
-
-   (let [published (:published activity)]
-     (when (or *dynamic* published)
-       (let [formatted-pub (util/format-date published)]
-         (list " "
-          (display-timestamp activity :published)
-          #_[:time {:datetime formatted-pub
-                    :title formatted-pub
-                    :property "dc:published"}
-             [:a (merge {:href (uri activity)}
-                        (when *dynamic*
-                          {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
-              (when-not *dynamic*
-                (-> published .toDate util/prettyify-time))]]))))
-
-   (let [source (:source activity)]
-     (when (or *dynamic* source)
-       (list
-        " using "
-        [:span
-         (if *dynamic*
-           {:data-bind "text: source().name"}
-           source)])))
-
-   ;; TODO: link to the domain
-   #_(when (or *dynamic* (not (:local activity)))
-     [:span (when *dynamic*
-              {:data-bind "if: !local()"})
-      " via a "
-
-      [:a {:href
-           (if *dynamic*
-             "#"
-             (->> activity :links
-                  (filter #(= (:rel %) "alternate"))
-                  (filter #(= (:type %) "text/html"))
-                  first :href))}
-       "foreign service"]])
-
-   (when-let [id (if *dynamic*
-                   (util/make-id)
-                   (:conversation activity))]
-     (list
-      " "
-      (let [conversation (if *dynamic*
-                           (Conversation.)
-                           (model.conversation/fetch-by-id (:conversation activity)))]
-        (bind-to "conversation"
-          [:a (if *dynamic*
-                {:data-bind "attr: {href: '/main/conversations/' + $data}"}
-                {:href (uri conversation)})
-           "in context"]))))
-
-   (when-let [geo (if *dynamic*
-                    {}
-                    (:geo activity))]
-     [:span (when *dynamic*
-              {:data-bind "with: geo"})
-      " near "
-      [:a.geo-link (when-not *dynamic*
-                     {:href "#"})
-       [:span
-        (if *dynamic*
-          {:data-bind "text: latitude"}
-          (:latitude geo))]
-       ", "
-       [:span
-        (if *dynamic*
-          {:data-bind "text: longitude"}
-          (:longitude geo))]]])])
+   [:span (if *dynamic*
+            {:data-bind "text: $data.object().type"}
+            (-> activity :object :type))]
+   " "
+   (->> [#'visibility-link
+         #'published-link
+         #'source-link
+         #'service-link
+         #'context-link]
+        (map #(% activity))
+        (interpose " "))])
 
 (defn poll-form
   [activity]
@@ -402,8 +402,8 @@
       [:label.control-label {:for "content"} "Content"]
       [:div.controls
        [:textarea {:name "content" :rows "10"
-                   :data-provide "markdown"
-                   } content]]]
+                   :data-provide "markdown"}
+        content]]]
      (add-button-section activity)
      (pictures-section activity)
      (location-section activity)
