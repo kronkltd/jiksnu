@@ -38,5 +38,9 @@
 
 (defn setup-handlers
   []
-  (.on (js/$ js/document) "click" "*[data-action]" invoke-action))
+  (.on (js/$ js/document) "click" "*[data-action]" invoke-action)
+
+  (.on (js/$ js/document) "click" "#showComments" (fn []
+                                                    (.set _model "showComments" true)))
+  )
 

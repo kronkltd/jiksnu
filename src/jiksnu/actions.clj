@@ -176,6 +176,7 @@
 
 (defn init-handlers
   []
+
   (l/receive-all (trace/probe-channel "errors:handled") handle-errors)
 
   (l/receive-all (trace/probe-channel "actions:invoked")
@@ -200,6 +201,11 @@
                               (class item)
                               (with-out-str (pprint item)))))
 
+  (l/receive-all (trace/probe-channel :feed:parsed)
+                 (fn [response]
+                   (log/infof "parsed feed: %s"
+                              (with-out-str
+                                (pprint response)))))
 
   )
 

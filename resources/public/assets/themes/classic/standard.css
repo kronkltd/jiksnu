@@ -109,6 +109,9 @@ h1 {
 .navbar-text {
   margin-right: 5px;
 }
+#content {
+  display: none;
+}
 .bound #content {
   display: block;
 }

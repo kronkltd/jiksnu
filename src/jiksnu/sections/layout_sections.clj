@@ -348,6 +348,9 @@
       [:body
        (navbar-section request response)
        [:div.container-fluid
+        (when *dynamic*
+          {:data-bind "if: loaded"}
+          )
         [:div.row-fluid
          [:div.span2.hidden-tablet.hidden-phone
           [:aside#left-column.sidebar.hidden-tablet

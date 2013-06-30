@@ -356,7 +356,8 @@
     (let [webfinger-links (model.webfinger/get-links xrd)
           feed (fetch-user-feed (assoc user :links (concat (:links user) webfinger-links))
                                 options)
-          first-entry (-?> feed .getEntries first)
+          entries (abdera/get-entries feed)
+          first-entry (first entries)
           new-user (-?> (abdera/get-author first-entry feed)
                         person->user)
           links (concat webfinger-links (:links new-user))]

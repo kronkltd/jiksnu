@@ -472,6 +472,7 @@
                   "following"                (array)
                   "formats"                  (array)
                   "groups"                   groups
+                  "loaded"                   false
                   "pages"                    pages
                   "postForm"                 (PostForm.)
                   "notifications"            notifications

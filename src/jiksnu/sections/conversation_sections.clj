@@ -128,8 +128,10 @@
 
 (defsection index-block [Conversation :html]
   [items & [page]]
-  [:div.conversations (when *dynamic* {:data-bind "foreach: items"})
-   (map index-line items)])
+  [:div
+   [:a#showComments.btn {:href "#"} "Show Comments"]
+   [:div.conversations (when *dynamic* {:data-bind "foreach: items"})
+    (map index-line items)]])
 
 (defsection index-block [Conversation :rdf]
   [items & [response & _]]

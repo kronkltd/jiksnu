@@ -41,6 +41,23 @@
 
   (log/info *logger* "init")
 
+  (set! (.-instance ko/binding-provider)
+        (providers/DataModelProvider.))
+
+  (set! (.-instance ko/binding-provider)
+        (providers/PageProvider.))
+
+  (set! (.-instance ko/binding-provider)
+        (providers/SubPageProvider.))
+
+  (set! model/_model (model/AppViewModel.))
+  (aset js/window "_model" model/_model)
+
+  (set! model/_view (.viewModel js/kb model/_model))
+  (aset js/window "_view" model/_view)
+
+  (ko/apply-bindings model/_view)
+
   (try
     (ws/connect)
     (catch js/Error ex
@@ -51,32 +68,13 @@
 
   (handlers/setup-handlers)
 
-  (set! model/_model (model/AppViewModel.))
-  (aset js/window "_model" model/_model)
-
-  (set! model/_view (.viewModel js/kb model/_model))
-  (aset js/window "_view" model/_view)
-
   (doseq [model-name model/model-names]
     (aset ko/observables model-name (js-obj)))
-
-  (set! (.-instance ko/binding-provider)
-        (providers/DataModelProvider.))
-
-  (set! (.-instance ko/binding-provider)
-        (providers/PageProvider.))
-
-  (set! (.-instance ko/binding-provider)
-        (providers/SubPageProvider.))
-
-  (ko/apply-bindings model/_view)
 
   (.on model/activities "change:loaded"
        (fn [model value options]
          #_(log/info *logger* "model loaded")
          (.timeago (js/$ ".timeago"))))
-
-  (.addClass ($ :html) "bound")
 
   (.timeago (js/$ ".timeago")))
 

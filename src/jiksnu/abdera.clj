@@ -34,14 +34,13 @@
 ;; this is still needed. Perhaps move to abdera
 (defn new-id
   []
-  (UIDGenerator/generateURNString))
+  (let [id (UIDGenerator/generateURNString)]
+    (trace/trace :id:generated id)
+    id))
 
 (defn ^Entry new-entry
   []
   (.newEntry abdera))
-
-
-
 
 (defn get-text
   [^Element element]
@@ -65,7 +64,6 @@
    ^String ns-part
    ^String local-part]
   (.getExtension element (QName. ns-part local-part)))
-
 
 
 (defn get-entries
@@ -94,8 +92,6 @@
 (defn get-feed-updated
   [^Feed feed]
   (.getUpdated feed))
-
-
 
 (defn get-href
   "get the href from a link as a string"
@@ -269,8 +265,10 @@
 (defn parse-stream
   [stream]
   (try
-    (let [parser abdera-parser]
-      (.parse parser stream))
+    (let [parser abdera-parser
+          feed (.parse parser stream)]
+      (trace/trace :feed:parsed feed)
+      feed)
     (catch IllegalStateException ex
       (trace/trace "errors:handled" ex))))
 

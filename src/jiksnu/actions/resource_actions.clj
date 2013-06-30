@@ -121,6 +121,15 @@
       (model.resource/set-field! item :contentType content-type)
       (process-response-content content-type item response))))
 
+(defn get-body-buffer
+  [response]
+  (when-let [body (:body response)]
+    (if (l/channel? body)
+      (->> body
+           l/channel->lazy-seq
+           aleph.formats/channel-buffers->channel-buffer)
+      body)))
+
 (defn update*
   [item & [options]]
   {:pre [(instance? Resource item)]}
@@ -133,23 +142,28 @@
         (let [url (:url item)]
           (log/infof "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
-          (let [response @(http/http-request
-                           {:url url
-                            :method :get
-                            :throw-exceptions false
-                            ;; :auto-transform true
-                            :headers {"User-Agent" user-agent}
-                            :insecure? true})
-                body (:body response)
-                buffer (if (l/channel? body)
-                           (->> body
-                                l/channel->lazy-seq
-                                aleph.formats/channel-buffers->channel-buffer)
-                           body)
-                body-str (aleph.formats/channel-buffer->string buffer)
-                response (assoc response :body body-str)]
-            (process-response item response)
-            response))
+          (let [response-ch (http/http-request
+                                   {:url url
+                                    :method :get
+                                    :throw-exceptions false
+                                    ;; :auto-transform true
+                                    :headers {"User-Agent" user-agent}
+                                    :insecure? true})]
+            (l/on-realized response-ch
+                           (fn []
+                           (log/errorf "Resource update realized: %s" url)
+
+                             )
+                         (fn []
+                           (log/errorf "Resource update failed: %s" url)
+                           )
+                         )
+            (let [response @response-ch
+                  buffer (get-body-buffer response)
+                  body-str (aleph.formats/channel-buffer->string buffer)
+                  response (assoc response :body body-str)]
+              (process-response item response)
+              response)))
         (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))
 

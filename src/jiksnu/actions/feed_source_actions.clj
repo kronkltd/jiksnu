@@ -10,7 +10,6 @@
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clj-http.client :as client]
-            [clj-statsd :as s]
             [clj-time.core :as clj-time]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -138,14 +137,13 @@
 (defn watched?
   "Returns true if the source has any watchers"
   [source]
-  (or true (seq (:watchers source))))
+  (seq (:watchers source)))
 
 (defn process-feed
   [^FeedSource source ^Feed feed]
   {:pre [(instance? FeedSource source)
          (instance? Feed feed)]}
   (trace/trace "feeds:processed" feed)
-  (s/increment "feeds processed")
 
   (when-let [author (abdera/get-feed-author feed)]
     (let [author-id (abdera/get-simple-extension author ns/atom "id")
@@ -163,7 +161,7 @@
     (model.feed-source/set-field! source :hub hub-link))
 
   (if (watched? source)
-    (doseq [entry (.getEntries feed)]
+    (doseq [entry (abdera/get-entries feed)]
       (l/enqueue ch/pending-entries [feed source entry]))
     (do (log/warnf "no watchers for %s" (:topic source))
         (unsubscribe source))))
