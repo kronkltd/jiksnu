@@ -6,23 +6,16 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [lamina.time :as time]
             [lamina.trace :as trace]
-            [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq]
             monger.joda-time
             monger.json
-            [org.bovinegenius.exploding-fish :as uri]
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.implementations.jena :as jena])
+            [org.bovinegenius.exploding-fish :as uri])
   (:import com.mongodb.WriteConcern
            com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
@@ -34,12 +27,14 @@
            lamina.core.channel.Channel
            org.bson.types.ObjectId
            org.joda.time.DateTime
+           org.jsoup.Jsoup
+           org.jsoup.safety.Whitelist
            java.io.StringReader))
 
 (defn format-date
   "This is a dirty little function to get a properly formatted date."
   ;; TODO: Get more control of passed dates
-  [^Date date]
+  [date]
   ;; TODO: Time for a protocol
   (condp = (class date)
     String (DateTime/parse date)
@@ -156,10 +151,8 @@
   ([id ^PrintWriter out escape-unicode]
      (.print out (str "\"" id "\""))))
 
-(extend Date json/Write-JSON
-        {:write-json write-json-date})
-(extend ObjectId json/Write-JSON
-        {:write-json write-json-object-id})
+(extend Date json/JSONWriter {:-write write-json-date})
+(extend ObjectId json/JSONWriter {:-write write-json-object-id})
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and
@@ -172,13 +165,13 @@
   "Takes a string representing a uri and returns the domain"
   [id]
   (let [{:keys [path scheme] :as uri} (uri/uri id)]
-    (cond
-     (#{"acct"} scheme) (second (split-uri id))
-     (#{"urn"}  scheme) (let [parts (string/split path #":")
-                              nid (nth parts 0)]
-                          (condp = nid
-                            "X-dfrn" (nth parts 1)))
-     :default           (:host uri))))
+    (condp = scheme
+      "acct" (second (split-uri id))
+      "urn"  (let [parts (string/split path #":")
+                   nid (nth parts 0)]
+               (condp = nid
+                 "X-dfrn" (nth parts 1)))
+      (:host uri))))
 
 (defn parse-link
   [link]
@@ -195,3 +188,7 @@
            (when type     {:type type})
            (when title {:title title})
            (when lang     {:lang lang}))))
+
+(defn sanitize
+  [input]
+  (Jsoup/clean input (Whitelist/none)))

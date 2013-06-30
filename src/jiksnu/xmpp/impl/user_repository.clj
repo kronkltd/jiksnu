@@ -2,7 +2,8 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
-        jiksnu.xmpp.user-repository)
+        jiksnu.xmpp.user-repository
+        [slingshot.slingshot :only [try+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clojure.stacktrace :as stacktrace]
@@ -97,12 +98,13 @@
 (defn handle-get-data
   [[result [^BareJID user-id ^String subnode ^String key ^String def]]]
   (deliver result
-           (try
+           (try+
              (log/infof "get data - %s - %s" subnode key)
              (let [user (find-user user-id)
                    ks (key-seq subnode key)]
                (get-data user ks def))
              (catch Exception ex
+               (log/spy :info &throw-context)
                (trace/trace "errors:handled" ex)))))
 
 (defn handle-user-exists
@@ -110,12 +112,12 @@
   (log/info "user exists")
   (deliver result (not (nil? (model.user/fetch-by-jid user)))))
 
+(defn init-handlers
+  []
+  (l/receive-all add-user-ch handle-add-user)
+  (l/receive-all get-data-ch handle-get-data)
+  (l/receive-all count-users-ch handle-count-users)
+  (l/receive-all other-auth-ch handle-other-auth)
+  (l/receive-all user-exists-ch handle-user-exists))
 
-(l/receive-all add-user-ch handle-add-user)
-(l/receive-all get-data-ch handle-get-data)
-(l/receive-all count-users-ch handle-count-users)
-(l/receive-all other-auth-ch handle-other-auth)
-(l/receive-all user-exists-ch handle-user-exists)
-
-
-
+(init-handlers)

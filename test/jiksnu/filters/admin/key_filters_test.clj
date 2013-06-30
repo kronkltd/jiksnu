@@ -12,10 +12,11 @@
    (let [action #'actions.key/index]
      (fact "when the serialization is :http"
        (with-serialization :http
-         (let [request {:action action :serialization *serialization*}]
+         (let [request {:action action}]
            (filter-action action request) =>
-           (every-checker
-            map?
+           (fn [response]
+             (fact
+               response => map?)
 
             ))))))
 

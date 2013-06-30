@@ -5,6 +5,7 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace]
             [monger.collection :as mc]
@@ -23,35 +24,38 @@
 ;; index helpers
 
 (defn make-fetch-fn
-  [make-fn collection-name]
-  (fn [params options]
-    (s/increment (str collection-name " searched"))
-    (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-          records (mq/with-collection collection-name
-                    (mq/find params)
-                    (merge sort-clause)
-                    (mq/paginate :page (:page options 1)
-                                 :per-page (:page-size options 20)))]
-      (map make-fn records))))
+  [collection-name make-fn]
+  (trace/instrument
+   (fn [& [params & [options]]]
+     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
+           records (mq/with-collection collection-name
+                     (mq/find params)
+                     (merge sort-clause)
+                     (mq/paginate :page (get options :page 1)
+                                  :per-page (get options :page-size 20)))]
+       (map make-fn records)))
+   {:name (keyword (str collection-name ":searcher"))}))
 
 (defn make-indexer*
   [{:keys [page-size sort-clause count-fn fetch-fn]}]
-  (fn [& [{:as params} & [{:as options} & _]]]
-    (let [options (or options {})
-          page (get options :page 1)
-          criteria {:sort-clause (or (:sort-clause options)
-                                     sort-clause)
-                    :page page
-                    :page-size page-size
-                    :skip (* (dec page) page-size)
-                    :limit page-size}
-          record-count (count-fn params)
-          records (fetch-fn params criteria)]
-      {:items records
-       :page page
-       :page-size page-size
-       :total-records record-count
-       :args options})))
+  (trace/instrument
+   (fn [& [{:as params} & [{:as options} & _]]]
+     (let [options (or options {})
+           page (get options :page 1)
+           criteria {:sort-clause (or (:sort-clause options)
+                                      sort-clause)
+                     :page page
+                     :page-size page-size
+                     :skip (* (dec page) page-size)
+                     :limit page-size}
+           record-count (count-fn params)
+           records (fetch-fn params criteria)]
+       {:items records
+        :page page
+        :page-size page-size
+        :totalRecords record-count
+        :args options}))
+   {:name :indexer}))
 
 (defmacro make-indexer
   [namespace-sym & options]
@@ -70,17 +74,17 @@
 
 (defn make-counter
   [collection-name]
-  (fn [& [params]]
-     (let [params (or params {})]
-       (trace/trace* (str collection-name ":counted") 1)
-       (s/increment (str collection-name " counted"))
-       (mc/count collection-name params))))
+  (trace/instrument
+   (fn [& [params]]
+      (let [params (or params {})]
+        (trace/trace* (str collection-name ":counted") 1)
+        (mc/count collection-name params)))
+   {:name (keyword (str collection-name ":counter"))}))
 
 (defn make-deleter
   [collection-name]
   (fn [item]
     (trace/trace* (str collection-name ":deleted") item)
-    (s/increment (str collection-name " deleted"))
     (mc/remove-by-id collection-name (:_id item))
     item))
 
@@ -92,15 +96,16 @@
 
 (defn make-set-field!
   [collection-name]
-  (fn [item field value]
-    (if (not= field :links)
-      (when-not (= (get item field) value)
-        (log/debugf "setting %s (%s = %s)" (:_id item) field (pr-str value))
-        (s/increment (str collection-name " field set"))
-        (mc/update collection-name
-          {:_id (:_id item)}
-          {:$set {field value}}))
-      (throw+ "can not set links values"))))
+  (trace/instrument
+   (fn [item field value]
+     (if (not= field :links)
+       (when-not (= (get item field) value)
+         (log/debugf "setting %s(%s): (%s = %s)" collection-name (:_id item) field (pr-str value))
+         (mc/update collection-name
+           {:_id (:_id item)}
+           {:$set {field value}}))
+       (throw+ "can not set links values")))
+   {:name (keyword (str collection-name ":setter"))}))
 
 (defn make-add-link*
   [collection-name]
@@ -113,14 +118,29 @@
 
 (defn make-create
   [collection-name fetcher validator]
-  (fn [params]
-    (let [errors (validator params)]
-      (if (empty? errors)
-        (do
-          (log/debugf "Creating %s: %s" collection-name (pr-str params))
-          (mc/insert collection-name params)
-          (let [item (fetcher (:_id params))]
-            (trace/trace* (str collection-name ":created") item)
-            (s/increment (str collection-name "_created"))
-            item))
-        (throw+ {:type :validation :errors errors})))))
+  (trace/instrument
+   (fn [params]
+     (let [errors (validator params)]
+       (if (empty? errors)
+         (do
+           (log/debugf "Creating %s: %s" collection-name (pr-str params))
+           (mc/insert collection-name params)
+           (let [item (fetcher (:_id params))]
+             (trace/trace* (str collection-name ":created") item)
+             item))
+         (throw+ {:type :validation :errors errors}))))
+   {:name (keyword (str collection-name ":creator"))}))
+
+(defn make-fetch-by-id
+  ([collection-name maker]
+     (make-fetch-by-id collection-name maker true))
+  ([collection-name maker convert-id]
+     (trace/instrument
+      (fn [id]
+        (let [id (if (and convert-id (string? id))
+                   (util/make-id id) id)]
+          (log/debugf "fetching %s(%s)" collection-name id)
+          (trace/trace* (str collection-name ":fetched") id)
+          (when-let [item (mc/find-map-by-id collection-name id)]
+            (maker item))))
+      {:name (keyword (str collection-name ":fetcher"))})))

@@ -3,7 +3,7 @@
         ciste.sections.default
         jiksnu.actions.subscription-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links]])
+        [jiksnu.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.helpers.subscription-helpers :as helpers.subscription]
@@ -37,16 +37,29 @@
   [request [user {:keys [items] :as page}]]
   {:title "Subscribers"
    :body
-   (let [subscriptions (if *dynamic* [(Subscription.)] items)]
-     (with-page "default"
-       (pagination-links page)
-       (bind-to "items"
-         (sections.subscription/subscribers-section items page))))})
+   (let [items (if *dynamic* [(Subscription.)] items)]
+     (bind-to "targetUser"
+       [:div {:data-model "user"}
+        (with-sub-page "subscribers"
+          (pagination-links page)
+          (sections.subscription/subscribers-section items page))]))})
+
+(defview #'get-subscribers :page
+  [request [user page]]
+  (let [items (:items page)
+        response (merge page
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
+            :body response}}))
 
 (defview #'get-subscribers :viewmodel
   [request [user {:keys [items] :as page}]]
-  {:body {:user (show-section user)
-          :pages {:default (format-page-info page)}}})
+  {:body {:title (str "Subscribers of " (:name user))
+          :user (show-section user)
+          :pages {:subscribers (format-page-info page)}}})
 
 (defview #'get-subscribers :xmpp
   [request [user {:keys [items] :as response}]]
@@ -61,30 +74,54 @@
    :body {:items (index-section items response)}})
 
 (defview #'get-subscriptions :html
-  [request [user {:keys [items] :as response}]]
+  [request [user {:keys [items] :as page}]]
   {:title "Subscriptions"
    :formats (subscription-formats user)
    :body
    (if-let [items (seq (if *dynamic* [(Subscription.)] items))]
-     (with-page "default"
-       (pagination-links response)
-       (bind-to "items"
-         (sections.subscription/subscriptions-section items response))))})
+     (bind-to "targetUser"
+       [:div {:data-model "user"}
+        (with-sub-page "subscriptions"
+          (pagination-links page)
+          (sections.subscription/subscriptions-section items page))]))})
 
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]
   {:body (sections.subscription/subscriptions-section items response)})
 
+(defview #'get-subscriptions :page
+  [request [user page]]
+  (let [items (:items page)
+        response (merge page
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
+            :body response}}))
+
 (defview #'get-subscriptions :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body
-   {:targetUser (:_id user)
-    :pages {:default (format-page-info page)}}})
+   {:title (str "Subscriptions of " (:name user))
+    :targetUser (:_id user)
+    :pages {:subscriptions (format-page-info page)}}})
 
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]
   (tigase/result-packet
    request (helpers.subscription/subscriptions-response items response)))
+
+;; index
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
 
 ;; ostatus
 

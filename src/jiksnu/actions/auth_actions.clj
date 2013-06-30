@@ -1,6 +1,5 @@
 (ns jiksnu.actions.auth-actions
-  (:use [ciste.commands :only [add-command!]]
-        [ciste.initializer :only [definitializer]]
+  (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [slingshot.slingshot :only [throw+]])
@@ -35,8 +34,6 @@
       (throw+ {:type :authentication :message "passwords do not match"}))
     (throw+ {:type :authentication :message "No authentication mechanisms found"})))
 
-(add-command! "auth" #'login)
-
 (defaction login-page
   [request]
   ;; TODO: Should this display the login page if already logged in?
@@ -64,8 +61,6 @@
 (defaction whoami
   []
   (session/current-user))
-
-(add-command! "whoami" #'whoami)
 
 (defaction create
   "create an activity"

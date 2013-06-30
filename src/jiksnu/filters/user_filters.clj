@@ -44,13 +44,13 @@
 (deffilter #'discover :command
   [action id]
   (if-let [item (model.user/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
 (deffilter #'discover :http
   [action request]
-  (let [{{id :id} :params} request
-        user (model.user/fetch-by-id (util/make-id id))]
-    (action user)))
+  (let [{{id :id} :params} request]
+    (if-let [user (model.user/fetch-by-id (util/make-id id))]
+      (action user {:force true}))))
 
 ;; fetch-remote
 
@@ -65,6 +65,10 @@
   (action {} (merge {}
                     (parse-page request)
                     (parse-sorting request))))
+
+(deffilter #'index :page
+  [action request]
+  (action))
 
 (deffilter #'index :xmpp
   [action request]
@@ -108,18 +112,25 @@
         user (model.user/fetch-by-jid to)]
     (action user)))
 
+;; subscribe
+
+(deffilter #'subscribe :command
+  [action id]
+  (when-let [item (model.user/fetch-by-id id)]
+    (action item)))
+
 ;; update
 
 (deffilter #'update :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id (util/make-id id))]
-     (action user))))
+     (action user {:force true}))))
 
 (deffilter #'update :command
   [action id]
   (let [item (model.user/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
 ;; update-profile
 
@@ -173,7 +184,7 @@
 ;;                     :first-name first-name
 ;;                     :last-name last-name
 ;;                     :url url
-;;                     :avatar-url avatar-url}))))
+;;                     :avatarUrl avatar-url}))))
 
 ;; (deffilter #'update-hub :http
 ;;   [action request]

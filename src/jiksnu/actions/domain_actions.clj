@@ -138,18 +138,21 @@
   [domain]
   (set-xmpp domain true))
 
+(defn set-links-from-xrd
+  [domain xrd]
+  (if-let [links (model.webfinger/get-links xrd)]
+    (doseq [link links]
+      (add-link domain link))
+    (throw+ "Host meta does not have any links")))
+
 (defn discover-webfinger
   [^Domain domain url]
   ;; TODO: check https first
   (if-let [xrd (fetch-xrd domain url) ]
-    (if-let [links (model.webfinger/get-links xrd)]
-      ;; TODO: do individual updates
-      (do
-        (doseq [link links]
-          (add-link domain link))
-        (set-discovered! domain)
-        domain)
-      (throw+ "Host meta does not have any links"))
+    (do
+      (set-links-from-xrd domain xrd)
+      (set-discovered! domain)
+      domain)
     (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
 
 (defn discover-onesocialweb
@@ -244,25 +247,6 @@
      :links [{:template template
               :rel "lrdd"
               :title "Resource Descriptor"}]}))
-
-(defmacro defreceiver
-  [ch args & body]
-  (let [handle-name (symbol (format "handle2-%s" (str ch)))]
-    `(do
-       (defn ~handle-name
-         [p ~args]
-         (l/enqueue p ~@body))
-       (l/receive-all ~ch ~handle-name))))
-
-(defn- handle-pending-get-domain
-  [domain-name]
-  (find-or-create {:_id domain-name}))
-
-(l/receive-all ch/pending-get-domain (ops/op-handler handle-pending-get-domain))
-
-;; (defreceiver ch/pending-get-domain
-;;   [domain-name]
-;;   (find-or-create {:_id domain-name}))
 
 (definitializer
   (current-domain)

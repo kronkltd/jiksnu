@@ -11,6 +11,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
+            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.trace :as trace])
@@ -60,6 +61,13 @@
   (->> uri
        util/split-uri
        (apply model.user/get-user )))
+
+(defn set-source-from-xrd
+  [user xrd]
+  (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
+    (merge user
+           {:username (model.webfinger/get-username-from-xrd xrd)
+            :update-source (:_id source)})))
 
 (definitializer
   (require-namespaces

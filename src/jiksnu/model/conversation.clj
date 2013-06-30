@@ -27,31 +27,16 @@
    (type-of :updated       DateTime)
    (type-of :domain        String)
    (type-of :local         Boolean)
-   (type-of :update-source ObjectId)))
+   ;; (type-of :update-source ObjectId)
+   ))
 
-(def count-records (templates/make-counter    collection-name))
-(def delete        (templates/make-deleter    collection-name))
-(def drop!         (templates/make-dropper    collection-name))
-(def set-field!    (templates/make-set-field! collection-name))
-
-(defn fetch-all
-  [& [params options]]
-  (s/increment (str collection-name "_searched"))
-  (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-        records (mq/with-collection collection-name
-                  (mq/find params)
-                  (merge sort-clause)
-                  (mq/paginate :page (:page options 1)
-                               :per-page (:page-size options 20)))]
-    (map maker records)))
-
-(defn fetch-by-id
-  [id]
-  (s/increment (str collection-name "_fetched"))
-  (when-let [item (mc/find-map-by-id collection-name id)]
-    (maker item)))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn find-by-url
   [url]

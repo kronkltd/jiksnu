@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.feed-source-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -21,15 +21,23 @@
   {:title "Feed Sources"
    :body
    (let [items (if *dynamic* [(FeedSource.)] items)]
-     (with-page "default"
+     (with-page "feedSources"
        (pagination-links page)
-       (bind-to "items"
-         (doall (index-section items page)))))})
+       (doall (index-section items page))))})
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
-          :pages {:default (format-page-info page)}}})
+          :pages {:feedSources (format-page-info page)}}})
 
 ;; process-updates
 
@@ -55,10 +63,10 @@
     {:body
      (bind-to "targetFeedSource"
        (show-section item)
-       (with-page "activities"
-         (pagination-links (if *dynamic* {} page))
-         (bind-to "items"
-           (index-section items))))}))
+       [:div {:data-model "feed-source"}
+        (with-sub-page "activities"
+          (pagination-links (if *dynamic* {} page))
+          (index-section items))])}))
 
 (defview #'show :model
   [request activity]
@@ -67,11 +75,7 @@
 (defview #'show :viewmodel
   [request item]
   {:body {:targetFeedSource (:_id item)
-          :title (:title item)
-          :pages {:activities
-                  (let [page (actions.activity/fetch-by-feed-source item
-                                                                    {:sort-clause {:updated 1}})]
-                    (format-page-info page))}}})
+          :title (:title item)}})
 
 ;; update
 

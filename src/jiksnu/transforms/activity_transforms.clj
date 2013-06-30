@@ -1,7 +1,7 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
-        [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
+        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
@@ -11,12 +11,9 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [lamina.core :as l]
             [lamina.trace :as trace])
   (:import java.net.URI))
 
@@ -41,34 +38,35 @@
   (if (seq (:url activity))
     activity
     (if (:local activity)
-      (assoc activity :url (named-url "show activity" {:id (:_id activity)}))
-      (throw+ "Could not determine activity url"))))
+      (assoc activity :url (r/named-url "show activity" {:id (:_id activity)}))
+      (if (:id activity)
+        (assoc activity :url (:id activity))
+        (throw+ "Could not determine activity url")))))
 
 (defn set-object-type
   [activity]
-  (if (seq (get-in activity [:object :object-type]))
+  (if (seq (get-in activity [:object :type]))
     activity
-    (let [type (if-let [object-type (:object-type (:object activity))]
-               (-> object-type
-                   ;; strip namespaces
-                   (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
-                   (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
-               "note")]
+    (let [type (if-let [object-type (:type (:object activity))]
+                 (-> object-type
+                     ;; strip namespaces
+                     (string/replace #"http://onesocialweb.org/spec/1.0/object/" "")
+                     (string/replace #"http://activitystrea.ms/schema/1.0/" ""))
+                 "note")]
       (assoc-in
-       activity [:object :object-type] type))))
+       activity [:object :type] type))))
 
 (defn set-parent
   [params]
   (if (empty? (:parent params))
     (let [params (dissoc params :parent)]
       (if-let [uri (:parent-uri params)]
-        (let [resource (actions.resource/find-or-create {:url uri})]
-          (if-let [parent (model.activity/fetch-by-remote-id uri)]
-            (assoc params :parent (:_id parent))
-            (do
-              (actions.resource/update* resource)
-              params))
-          params)
+        (if-let [parent (model.activity/fetch-by-remote-id uri)]
+          (assoc params :parent (:_id parent))
+          (let [resource (actions.resource/find-or-create {:url uri})]
+            ;; TODO: This isn't actually setting the parent
+            (actions.resource/update* resource)
+            params))
         params))
     params))
 
@@ -167,11 +165,13 @@
       (let [actor (or (try
                         (actions.user/find-or-create-by-remote-id {:id url})
                         (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex)))
+                          (trace/trace "errors:handled" ex)
+                          nil))
                       (try
                         (actions.group/find-or-create {:url url})
                         (catch RuntimeException ex
-                          (trace/trace "errors:handled" ex))))]
+                          (trace/trace "errors:handled" ex)
+                          nil)))]
         (:_id actor))
       (:_id (actions.user/find-or-create-by-uri url)))))
 
@@ -219,7 +219,7 @@
                     (map :href)
                     (map (fn [url]
                            (let [resource (actions.resource/find-or-create {:url url})]
-                             (future (actions.resource/update resource))
+                             (actions.resource/update resource)
                              (:_id resource))))
                     seq
                     doall)]

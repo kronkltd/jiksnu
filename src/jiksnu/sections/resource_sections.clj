@@ -4,8 +4,10 @@
                                          index-block index-line index-section link-to
                                          show-section update-button]]
           [jiksnu.ko :only [*dynamic*]]
-          [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line bind-to
-                                  control-line dropdown-menu dump-data pagination-links]])
+          [jiksnu.sections :only [action-link actions-section admin-index-block
+                                  admin-index-line bind-to control-line
+                                  display-property dropdown-menu dump-data
+                                  pagination-links]])
     (:require [ciste.model :as cm]
               [clojure.tools.logging :as log]
               [jiksnu.model.conversation :as model.conversation]
@@ -14,7 +16,6 @@
               [jiksnu.session :as session])
     (:import jiksnu.model.Conversation
              jiksnu.model.Domain
-             
              jiksnu.model.FeedSource
              jiksnu.model.Resource))
 
@@ -71,7 +72,7 @@
      [:th "Encoding"]
      #_[:th "Created"]
      [:th "Updated"]]]
-   [:tbody {:data-bind "foreach: $data"}
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (doall (map #(index-line % page) items))]])
 
 ;; index-line
@@ -104,7 +105,7 @@
    [:td (if *dynamic*
           {:data-bind "text: updated"}
           (:updated item))]
-   #_[:td (actions-section item)]])
+   [:td (actions-section item)]])
 
 ;; link-to
 
@@ -128,9 +129,7 @@
       [:td ]]
      [:tr
       [:th "Title"]
-      [:td (if *dynamic*
-             {:data-bind "text: title"}
-             (:title item))]]
+      [:td (display-property item :title)]]
      [:tr
       [:th "Url"]
       [:td
@@ -141,36 +140,24 @@
           (:url item))]]]
      [:tr
       [:th "Status"]
-      [:td (if *dynamic*
-             {:data-bind "text: status"}
-             (:status item))]]
+      [:td (display-property item :status)]]
      [:tr
       [:th "Location"]
-      [:td (if *dynamic*
-             {:data-bind "text: ko.utils.unwrapObservable($data.location)"}
-             (:location item))]]
+      [:td (display-property item :location)]]
      [:tr
       [:th "Content Type"]
-      [:td
-       [:div (if *dynamic*
-               {:data-bind "text: contentType"}
-               (:content-type item))]]]
+      [:td (if *dynamic*
+             {:data-bind "text: contentType"}
+             (:content-type item))]]
      [:tr
       [:th "Encoding"]
-      [:td
-       [:div (if *dynamic*
-               {:data-bind "text: encoding"}
-               (:encoding item))]]]
+      [:td (display-property item :encoding)]]
      [:tr
       [:th "Created"]
-      [:td (if *dynamic*
-             {:data-bind "text: created"}
-             (:created item))]]
+      [:td (display-property item :created)]]
      [:tr
       [:th "Updated"]
-      [:td (if *dynamic*
-             {:data-bind "text: updated"}
-             (:updated item))]]]]
+      [:td (display-property item :updated)]]]]
    (when-let [links (if *dynamic* [{}] (seq (:links item)))]
      (bind-to "links"
        (sections.link/index-section links)))))

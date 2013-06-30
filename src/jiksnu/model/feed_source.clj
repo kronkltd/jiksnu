@@ -18,6 +18,8 @@
            org.joda.time.DateTime))
 
 (def collection-name "feed_sources")
+(def maker           #'model/map->FeedSource)
+(def page-size       20)
 
 (def create-validators
   (validation-set
@@ -29,40 +31,18 @@
    (type-of :created DateTime)
    (type-of :updated DateTime)))
 
-(def set-field! (templates/make-set-field! collection-name))
-
-(defn fetch-by-id
-  [id]
-  (when-let [item (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSource item)))
-
-;; (defn push-value!
-;;   [source key value]
-;;   (update source
-;;     {:$addToSet {key value}}))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-(def count-records (templates/make-counter collection-name))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn find-record
   [options & args]
-  (if-let [record (mc/find-one-as-map collection-name options)]
-    (model/map->FeedSource record)))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (s/increment (str collection-name " searched"))
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map model/map->FeedSource records))))
+  (if-let [item (mc/find-one-as-map collection-name options)]
+    (maker item)))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

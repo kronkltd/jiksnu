@@ -41,13 +41,16 @@
    (presence-of   :created)
    (presence-of   :updated)
    (presence-of   :update-source)
-   (presence-of   :avatar-url)
+   (presence-of   :avatarUrl)
    (acceptance-of :local         :accept (partial instance? Boolean))))
 
-(def count-records (templates/make-counter    collection-name))
-(def delete        (templates/make-deleter    collection-name))
-(def drop!         (templates/make-dropper    collection-name))
-(def set-field! (templates/make-set-field! collection-name))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn salmon-link
   [user]
@@ -60,7 +63,7 @@
 
 (defn image-link
   [user]
-  (or (:avatar-url user)
+  (or (:avatarUrl user)
       (when (:email user) (gravatar-image (:email user)))
       (gravatar-image (get-uri user false))))
 
@@ -92,7 +95,7 @@
 
 (defn display-name
   [^User user]
-  (or (:display-name user)
+  (or (:name user)
       (when (and (:first-name user) (:last-name user))
         (str (:first-name user) " " (:last-name user)))
       (get-uri user)))
@@ -100,29 +103,6 @@
 (defn get-link
   [user rel content-type]
   (first (util/rel-filter rel (:links user) content-type)))
-
-(defn fetch-by-id
-  "Fetch a user by it's object id"
-  [id]
-  (s/increment "users fetched")
-  (if-let [user (mc/find-map-by-id collection-name id)]
-    (maker user)
-    (log/warnf "Could not find user: %s" id)))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (s/increment "users searched")
-     (let [sort-clause (mq/partial-query (mq/sort (:sort-clause options)))
-           records (mq/with-collection collection-name
-                     (mq/find params)
-                     (merge sort-clause)
-                     (mq/paginate :page (:page options 1)
-                                  :per-page (:page-size options 20)))]
-       (map maker records))))
 
 (defn get-user
   "Find a user by username and domain"

@@ -4,7 +4,7 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to dump-data pagination-links]]
+        [jiksnu.sections :only [bind-to display-property dump-data pagination-links]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -26,7 +26,8 @@
             [jiksnu.sections.group-sections :as sections.group]
             [jiksnu.sections.subscription-sections :as sections.subscription]
             [jiksnu.sections.user-sections :as sections.user])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           jiksnu.model.User))
 
 (def statistics-info
   [["activities"        "Activities"]
@@ -43,7 +44,7 @@
   [["Home"
     [[(named-path "public timeline")     "Public"]
      [(named-path "index users")         "Users"]
-     [(named-path "index conversations") "Conversations"]
+     ;; [(named-path "index conversations") "Conversations"]
      [(named-path "index feed-sources")  "Feeds"]
      [(named-path "index domains")       "Domains"]
      [(named-path "index groups")        "Groups"]
@@ -96,22 +97,32 @@
    [:ul
     [:li [:a {:href "#"} "#"]]]])
 
+(defn formats-section*
+  [format]
+  [:li.format-line
+   [:a
+    (if *dynamic*
+      {:data-bind "attr: {href: href}"}
+      {:href (:href format)})
+    [:span.format-icon
+     [:img (merge {:alt ""}
+                  #_(if *dynamic*
+                    {:data-bind "attr: {src: '/assets/themes/classic/' + icon}"}
+                    {:src (str "/assets/themes/classic/" (:icon format))}))]]
+    [:span.format-label
+     (display-property format :label)]]])
+
 (defn formats-section
   [response]
-  (when (:formats response)
+  (when-let [formats (if *dynamic*
+                       [{}]
+                       (:formats response))]
     [:div.well
      [:h3 "Formats"]
      [:ul.unstyled
-      (map
-       (fn [format]
-         [:li.format-line
-          [:a {:href (:href format)}
-           (when (:icon format)
-             [:span.format-icon
-              [:img {:alt ""
-                     :src (str "/assets/themes/classic/" (:icon format))}]])
-           [:span.format-label (:label format)]]])
-       (:formats response))]]))
+      (when *dynamic*
+        {:data-bind "foreach: formats"})
+      (map formats-section* formats)]]))
 
 (defn statistics-line
   [stats [model-name label]]
@@ -198,13 +209,21 @@
   [:div.navbar.navbar-fixed-top
    [:div.navbar-inner
     [:div.container-fluid
+     [:a.btn.btn-navbar {:data-toggle "collapse"
+                         :data-target ".nav-collapse"}
+      [:span.icon-bar]
+      [:span.icon-bar]
+      [:span.icon-bar]]
      [:a.brand.home {:href "/" :rel "top"}
       (config :site :name)]
-     ;; (navbar-search-form)
-     [:ul.nav.pull-right (sections.auth/login-section response)]
-     #_[:div.navbar-text.connection-info.pull-right]
-     #_[:div.navbar-text.pull-right
-        (if *dynamic* "dynamic" "static")]]]])
+     [:div.nav-collapse.collapse
+      ;; (navbar-search-form)
+      [:ul.nav.pull-right (sections.auth/login-section response)]
+      #_[:div.navbar-text.connection-info.pull-right]
+      #_[:div.navbar-text.pull-right
+       (if *dynamic* "dynamic" "static")]
+      [:div.visible-tablet.visible-phone
+       (side-navigation)]]]]])
 
 (defn links-section
   [request response]
@@ -234,22 +253,20 @@
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
     (list
     [:script {:type "text/javascript"}
-     (format
-      "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';WEBSOCKET_PATH = '%s';var CLOSURE_NO_DEPS = true;" websocket-path)]
+     ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
+     (format "WEBSOCKET_PATH = '%s';" websocket-path)
+     "var CLOSURE_NO_DEPS = true;"]
     (p/include-js
-     "/assets/js/modernizr-2.6.1.js"
-     "/webjars/underscorejs/1.4.4/underscore.min.js"
-     "/webjars/jquery/1.9.1/jquery.min.js"
-     "/webjars/knockout/2.2.1/knockout.js"
-     "/assets/js/bootstrap-2.4.0.min.js"
-     "/assets/js/lightbox.js"
-     "/assets/js/jquery.smooth-scroll.min.js"
-     "/assets/js/jquery.fitvids.js"
-     "/webjars/backbonejs/1.0.0/backbone.min.js"
-     "/assets/js/knockback-0.15.4.min.js"
-     "/assets/js/jiksnu.js"
-     ;; "/assets/js/jiksnu.advanced.js"
-     )
+     ;; "/assets/js/modernizr-2.6.1.js"
+     "/assets/js/underscore/1.4.4/underscore.min.js"
+     "/assets/js/jquery/1.10.1/jquery.js"
+     "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
+     "/assets/js/knockout/2.2.1/knockout.js"
+     "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"
+     "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
+     "/assets/js/backbone/1.0.0/backbone.min.js"
+     "/assets/js/knockback/0.17.2/knockback.js"
+     "/assets/js/jiksnu.js")
     (doall
      (map (fn [hook]
             (hook request response))
@@ -257,19 +274,12 @@
     [:script {:type "text/javascript"}
      "goog.require('jiksnu.core');"])))
 
-(defn left-column-section
-  [request response]
-  (let [user (current-user)]
-    [:aside#left-column.sidebar
-     (side-navigation)
-     [:hr]
-     (formats-section response)
-     #_(statistics-section request response)]))
-
 (defn right-column-section
   [response]
-  (let [user (or (:user response)
-                 (current-user))]
+  (let [user (if *dynamic*
+               (User.)
+               (or (:user response)
+                  (current-user)))]
     (list
      (bind-to "$root.targetUser() || $root.currentUser()"
        (user-info-section user))
@@ -287,40 +297,25 @@
     [:p "Copyright © 2011 KRONK Ltd."]
     [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
 
-(defn head-section
-  [request response]
-  (list [:meta {:charset "UTF-8"}]
-        [:title {:property "dc:title"}
-         (when-not *dynamic*
-           (str (when (:title response)
-                  (str (:title response) " - "))
-                (config :site :name)))]
-        [:meta {:name "viewport"
-                :content "width=device-width, initial-scale=1.0"}]
-        (let [theme (config :site :theme)]
-          (p/include-css
-           (format "/assets/themes/%s/bootstrap.min.css" theme)
-           "/assets/styles/bootstrap-responsive.min.css"
-           "/assets/styles/lightbox.css"
-           (format "/assets/themes/classic/standard.css")))
-        (links-section request response)))
+(defn style-section
+  []
+  (let [theme (config :site :theme)]
+    (p/include-css
+     (if (= theme "classic")
+       "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
+       (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
+     "/assets/themes/classic/standard.css"
+     "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css")))
 
-(defn body-section
-  [request response]
-  (list
-   (navbar-section request response)
-   [:div.container-fluid
-    #_(fork-me-link)
-    [:div.row-fluid
-     [:div.span2
-      (left-column-section request response)]
-     [:div#content.span10
-      [:div.row-fluid
-       (if-not (:single response)
-         (list [:div.span10 (main-content request response)]
-               [:div.span2 (right-column-section response)])
-         [:div.span12 (main-content request response)])]]]]
-   (scripts-section request response)))
+(defn get-prefixes
+  []
+  (->> [["foaf" ns/foaf]
+        ["dc" ns/dc]
+        ["sioc" ns/sioc]
+        ["dcterms" "http://purl.org/dc/terms/"]]
+       (map
+        (fn [[prefix uri]] (format "%s: %s" prefix uri)))
+       (string/join " ")))
 
 (defn page-template-content
   [request response]
@@ -338,15 +333,38 @@
               ;; :version "HTML+RDFa 1.1"
               :lang "en"
               :xml:lang "en"
-              :prefix (->> [["foaf" ns/foaf]
-                            ["dc" ns/dc]
-                            ["sioc" ns/sioc]
-                            ["dcterms" "http://purl.org/dc/terms/"]]
-                           (map
-                            (fn [[prefix uri]] (format "%s: %s" prefix uri)))
-                           (string/join " "))})
-      [:head (head-section request response)]
-      [:body (body-section request response)]]))})
+              :prefix (get-prefixes) })
+      [:head
+       [:meta {:charset "UTF-8"}]
+       [:title {:property "dc:title"}
+        (when-not *dynamic*
+          (str (when (:title response)
+                 (str (:title response) " - "))
+               (config :site :name)))]
+       [:meta {:name "viewport"
+               :content "width=device-width, initial-scale=1.0"}]
+       (style-section)
+       (links-section request response)]
+      [:body
+       (navbar-section request response)
+       [:div.container-fluid
+        (when *dynamic*
+          {:data-bind "if: loaded"}
+          )
+        [:div.row-fluid
+         [:div.span2.hidden-tablet.hidden-phone
+          [:aside#left-column.sidebar.hidden-tablet
+           (side-navigation)
+           [:hr]
+           (formats-section response)
+           #_(statistics-section request response)]]
+         [:div#content.span10
+          [:div.row-fluid
+           (if-not (:single response)
+             (list [:div.span10 (main-content request response)]
+                   [:div.span2 (right-column-section response)])
+             [:div.span12 (main-content request response)])]]]]
+       (scripts-section request response)]]))})
 
 
 (defmethod apply-template :html

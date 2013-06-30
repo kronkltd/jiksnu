@@ -16,7 +16,9 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation))
 
 (test-environment-fixture
 
@@ -30,9 +32,14 @@
        (let [activity (mock/there-is-an-activity)]
          (public-timeline) =>
          (every-checker
-          map?
-          #(seq? (:items %))
-          #(= 1 (:total-records %)))))))
+          (fn [response]
+            (fact
+              response => map?
+              (:totalRecords response) => 1
+              (let [items (:items response)]
+                items => seq?
+                (doseq [item items]
+                  (class item) => Conversation)))))))))
 
  (fact "#'user-timeline"
    (fact "when the user has activities"
@@ -46,7 +53,7 @@
           (fact
             (first response) => user
             (second response) => map?
-            (:total-records (second response)) => 1))))))
+            (:totalRecords (second response)) => 1))))))
 
  (future-fact "#'callback-publish"
    (fact "when there is a watched source"
@@ -59,7 +66,7 @@
                                         :href (:topic source)}]
                                       :entries (index-section [activity])})]
          (actions.feed-source/add-watcher source user)
-         activity => model/activity?
+         activity => (partial instance? Activity)
          (callback-publish feed)
          (model.activity/fetch-by-remote-id (:id activity)) => truthy))))
 

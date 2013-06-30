@@ -18,3 +18,10 @@
    [[:get (named-path     "push callback")]     #'feed-source/process-updates]
    [[:get (formatted-path "feed-source model")] #'feed-source/show]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "feed-sources"}    {:action #'feed-source/index}]
+   ])
+

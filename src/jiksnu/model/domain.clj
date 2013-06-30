@@ -18,14 +18,12 @@
            org.joda.time.DateTime))
 
 (def collection-name "domains")
+(def maker           #'model/map->Domain)
+(def page-size       20)
 
 (defn host-meta-link
   [domain]
   (str "http://" (:_id domain) "/.well-known/host-meta"))
-
-(defn pending-domains-key
-  [domain]
-  (str "pending.domains." domain))
 
 (def create-validators
   (validation-set
@@ -35,24 +33,13 @@
    (type-of :local      Boolean)
    (type-of :discovered Boolean)))
 
-(defn fetch-by-id
-  [id]
-  (s/increment "domains fetched")
-  (if-let [domain (mc/find-map-by-id collection-name id)]
-    (model/map->Domain domain)))
-
-(def count-records (templates/make-counter collection-name))
-(def create        (templates/make-create  collection-name #'fetch-by-id #'create-validators))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     (s/increment "domains searched")
-     ((templates/make-fetch-fn model/map->Domain collection-name)
-      params options)))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker false))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn get-link
   [item rel content-type]
@@ -65,8 +52,6 @@
   (mc/update collection-name
     (select-keys domain #{:_id})
     {:$pushAll {:links links}}))
-
-(def set-field! (templates/make-set-field! collection-name))
 
 (defn ping-request
   [domain]

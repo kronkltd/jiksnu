@@ -22,7 +22,8 @@
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util])
-  (:import jiksnu.model.FeedSource))
+  (:import jiksnu.model.Activity
+           jiksnu.model.FeedSource))
 
 (test-environment-fixture
 
@@ -56,7 +57,7 @@
                   :entries [entry]
                   :author author})
            source (mock/a-feed-source-exists)]
-       (process-entry [feed source entry]) => model/activity?)))
+       (process-entry [feed source entry]) => (partial instance? Activity))))
 
  (fact "#'process-feed"
    (let [source (mock/a-feed-source-exists)

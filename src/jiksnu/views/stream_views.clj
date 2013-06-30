@@ -6,7 +6,7 @@
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links]]
+        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links with-sub-page]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
@@ -14,7 +14,8 @@
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.sections.activity-sections :as sections.activity])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation))
 
 ;; callback-publish
 
@@ -42,9 +43,24 @@
   [request [group {:keys [items] :as page}]]
   {:title (str (:nickname group) " group")
    :post-form true
-   :body (list
-          (show-section group)
-          (index-section items page))})
+   :body
+   (bind-to "targetGroup"
+     (show-section group)
+     (with-sub-page "groups"
+       (pagination-links (if *dynamic* {} page))
+       (index-section items)))})
+
+(defview #'group-timeline :json
+  [request [group {:keys [items] :as page}]]
+  {:body group})
+
+(defview #'group-timeline :viewmodel
+  [request data]
+  (let [[group {:keys [items] :as page}] data]
+    {:body {:title (:nickname group)
+            :pages {:conversations (format-page-info page)}
+            :postForm {:visible true}
+            :targetGroup (:_id group)}}))
 
 ;; home-timeline
 
@@ -83,9 +99,11 @@
    ;; TODO: assign the generator in the formatter
    {:generator "Jiksnu ${VERSION}"
     :title "Public Timeline"
-    :totalItems (:total-records page)
+    :totalItems (:totalRecords page)
     :items
-    (index-section items page)}})
+    (let [activity-page (actions.activity/fetch-by-conversations
+                         (map :_id items))]
+      (index-section (:items activity-page) activity-page))}})
 
 (defview #'public-timeline :atom
   [request {:keys [items] :as page}]
@@ -106,7 +124,9 @@
 
 (defview #'public-timeline :json
   [request {:keys [items] :as page}]
-  {:body (index-section items page)})
+  {:body (let [activity-page (actions.activity/fetch-by-conversations
+                         (map :_id items))]
+      (index-section (:items activity-page) activity-page))})
 
 (defview #'public-timeline :html
   [request {:keys [items] :as page}]
@@ -117,16 +137,25 @@
             :title "Next Page"
             :type "text/html"}]
    :formats (sections.activity/index-formats items)
-   :body (let [activities (if *dynamic* [(Activity.)] items)]
-           (with-page "default"
+   :body (let [items (if *dynamic* [(Conversation.)] items)]
+           (with-page "public-timeline"
              (pagination-links page)
-             (bind-to "items"
-               (index-section activities page))))})
+             (index-section items page)))})
+
+(defview #'public-timeline :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
   {:body
-   (with-format :rdf (doall (index-section items page)))
+   (with-format :rdf
+     (doall (index-section items page)))
    :template :false})
 
 (defview #'public-timeline :rdf
@@ -136,10 +165,10 @@
 
 (defview #'public-timeline :viewmodel
   [request {:keys [items] :as page}]
-  {:single false
-   :body
-   {:title "Public Timeline"
-    :pages {:default (format-page-info page)}
+  {:body
+   {:single false
+    :title "Public Timeline"
+    :formats (sections.activity/index-formats items)
     :postForm {:visible true}}})
 
 (defview #'public-timeline :xml
@@ -205,21 +234,31 @@
 
 (defview #'user-timeline :html
   [request [user {:keys [items] :as page}]]
-  (let [items (if *dynamic*
-                [(Activity.)]
-                items)]
+  (let [items (if *dynamic* [(Activity.)] items)]
     {:user user
-     :title (:display-name user)
+     :title (:name user)
      :post-form true
      :body
-     (with-page "default"
-       (bind-to "items"
-         (index-section items page)))
+     (bind-to "targetUser"
+       [:div {:data-model "user"}
+        (with-sub-page "activities"
+          (index-section items page))])
      :formats (sections.activity/timeline-formats user)}))
 
 (defview #'user-timeline :model
   [request [user page]]
   {:body (show-section user)})
+
+(defview #'user-timeline :page
+  [request [user page]]
+  (let [items (:items page)
+        response (merge page
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
+            :body response}}))
 
 (defview #'user-timeline :rdf
   [request [user activities-map]]
@@ -245,7 +284,7 @@
   {:body
    {:users (index-section [user])
     :title (title user)
-    :pages {:default (format-page-info page)}
+    :pages {:conversations (format-page-info page)}
     :targetUser (:_id user)
     :activities (index-section (:items page))}})
 

@@ -65,7 +65,7 @@
      [:th "Updated"]
      [:th "Actions"]]]
    [:tbody (when *dynamic*
-             {:data-bind "foreach: $data"})
+             {:data-bind "foreach: items"})
     (map index-line likes)]])
 
 

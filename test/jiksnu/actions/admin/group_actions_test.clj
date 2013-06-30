@@ -10,6 +10,6 @@
    (every-checker
     map?
     (comp seq? :items)
-    #(= 0 (:total-records %))))
+    #(= 0 (:totalRecords %))))
 
  )

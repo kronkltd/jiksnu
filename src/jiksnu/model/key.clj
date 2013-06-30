@@ -1,6 +1,8 @@
 (ns jiksnu.model.key
   (:use [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]]
+        [validateur.validation :only [acceptance-of presence-of
+                                      validation-set]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
@@ -27,14 +29,25 @@
            org.bson.types.ObjectId))
 
 (def collection-name "keys")
+(def maker #'model/map->Conversation)
+(def default-page-size 20)
+
+(def create-validators
+  (validation-set
+   (type-of :_id           ObjectId)))
+
 
 (def key-factory (KeyFactory/getInstance "RSA"))
 (def keypair-generator (KeyPairGenerator/getInstance "RSA"))
 (.initialize keypair-generator 1024)
 
-(def count-records (templates/make-counter collection-name))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn get-user
   [key]
@@ -112,13 +125,6 @@
              start-dst biglen2)
             resized-bytes))))))
 
-
-
-
-
-
-
-
 (defn get-base-string
   "Generate a signature base string"
   [^String armored-data
@@ -134,9 +140,7 @@
     (format "data:application/magic-public-key,RSA.%s.%s"
             (:n keypair) (:e keypair))))
 
-
 ;; MagicKepPair functions
-
 
 ;; TODO: Actually convert this
 (defn pair-hash
@@ -155,12 +159,6 @@
      :e                (encode (get-bytes (.getPublicExponent private-key)))
      }))
 
-(defn create
-  [params]
-  (log/debugf "creating key: %s" params)
-  (mc/insert collection-name params))
-
-
 ;; Make this an action
 (defn get-key-for-user-id
   "Fetch keypair by user id"
@@ -173,7 +171,11 @@
   [^User user]
   (if (:discovered user)
     (get-key-for-user-id (:_id user))
-    (throw+ "user is not discovered")))
+    (try+
+     (throw+ {:message "user is not discovered"})
+     (catch Object ex
+             (log/spy :info &throw-context)
+             (throw+)))))
 
 ;; TODO: this should accept a keypair hash
 (defn set-armored-key
@@ -189,8 +191,6 @@
                {:n n
                 :e e
                 :userid user-id})))
-
-
 
 (defn ^PublicKey get-key-from-armored
   [key-pair]
@@ -218,8 +218,3 @@
       (.initVerify key)
       (.update data))
     (.verify sig signature)))
-
-(defn fetch-all
-  ([] (fetch-all {} {}))
-  ([params opts]
-     (map model/map->Key (mc/find-maps collection-name params))))

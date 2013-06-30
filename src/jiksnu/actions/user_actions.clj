@@ -41,7 +41,7 @@
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
            jiksnu.model.User
-           org.apache.abdera2.model.Person
+           org.apache.abdera.model.Person
            tigase.xmpp.JID))
 
 (defonce delete-hooks (ref []))
@@ -83,6 +83,15 @@
                            (util/get-domain-name id)))]
     (actions.domain/get-discovered {:_id domain-id})))
 
+(defn parse-magic-public-key
+  [user link]
+  (let [key-string (:href link)
+        [_ n e] (re-matches
+                 #"data:application/magic-public-key,RSA.(.+)\.(.+)"
+                 key-string)]
+    ;; TODO: this should be calling a key action
+    (model.key/set-armored-key (:_id user) n e)))
+
 (defn add-link
   [user link]
   (if-let [existing-link (model.user/get-link user
@@ -90,11 +99,6 @@
                                               (:type link))]
     user
     (add-link* user link)))
-
-
-
-
-
 
 (defaction create
   "create an activity"
@@ -108,76 +112,81 @@
     (model.user/fetch-by-id (:_id item))))
 
 (defaction find-or-create
-  [username domain]
-  (or (model.user/get-user username domain)
-      (create {:username username :domain domain})))
+  [params]
+  (let [{:keys [username domain]} params]
+    (or (model.user/get-user username domain)
+        (create params))))
 
 (defn get-user-meta-uri
   [user]
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
+        (when-let [id (:id user)]
+          (actions.domain/get-user-meta-url domain id))
         ;; TODO: should update uri in this case
         (actions.domain/get-user-meta-url domain (:url user)))))
 
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
-  [user]
+  [user & [options]]
   ;; {:pre [(instance? User user)]}
   (if-let [url (get-user-meta-uri user)]
     (let [resource (actions.resource/find-or-create {:url url})
           response (actions.resource/update* resource)]
       (if-let [body (:body response)]
-        (cm/string->document body)))
+        (cm/string->document body)
+        (throw+ "Could not get response")))
     (throw+ "User does not have a meta link")))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
-  [params]
+  [params & [options]]
   ;; {:pre [(instance? User params)]}
   (let [id (or (:id params)
                (:url params))
         uri (URI. id)]
     (if (= "acct" (.getScheme uri))
-      (assoc params :username (first (util/split-uri id)))
+      (do
+        (log/debug "acct uri")
+        (assoc params :username (first (util/split-uri id))))
       (or (if-let [username (.getUserInfo uri)]
-            (assoc params :username username))
+            (do
+              (log/debugf "username: %s" username)
+              (assoc params :username username)))
           (if-let [domain-name (or (:domain params)
                                    (util/get-domain-name id))]
             (let [domain (actions.domain/find-or-create {:_id domain-name})
                   params (assoc params :domain domain-name)
                   user-meta-link (actions.domain/get-user-meta-url domain id)
                   params (assoc params :user-meta-link user-meta-link)]
-              (if-let [xrd (get-user-meta params)]
-                (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
-                  (merge params
-                         {:username (model.webfinger/get-username-from-xrd xrd)
-                          :update-source (:_id source)}))
+              (if-let [xrd (get-user-meta params options)]
+                (actions.webfinger/set-source-from-xrd params xrd)
                 (throw+ "could not get user meta")))
             (throw+ "Could not determine domain name"))))))
 
 (defn find-or-create-by-remote-id
-  ([user] (find-or-create-by-remote-id user {}))
-  ([params options]
-     (if-let [id (:id params)]
-       (if-let [domain (get-domain params)]
-         (if-let [domain (if (:discovered domain)
-                           domain (actions.domain/discover domain id))]
-           (let [params (assoc params :domain (:_id domain))]
-             (or (model.user/fetch-by-remote-id id)
-                 (let [params (if (:username params)
-                                params
-                                (get-username params))]
-                   (create params))))
-           ;; this should never happen
-           (throw+ "domain has not been disovered"))
-         (throw+ "could not determine domain"))
-       (throw+ "User does not have an id"))))
+  [params & [options]]
+  (if-let [id (:id params)]
+    (if-let [domain (get-domain params)]
+      (if-let [domain (if (:discovered domain)
+                        domain (actions.domain/discover domain id))]
+        (let [params (assoc params :domain (:_id domain))]
+          (or (model.user/fetch-by-remote-id id)
+              (let [params (if (:username params)
+                             params
+                             (get-username params options))]
+                (create params))))
+        ;; this should never happen
+        (throw+ "domain has not been disovered"))
+      (throw+ "could not determine domain"))
+    (throw+ "User does not have an id")))
 
 (defn find-or-create-by-uri
   [uri]
   {:pre [(string? uri)]}
   (let [[username domain] (util/split-uri uri)]
-    (find-or-create username domain)))
+    (find-or-create {:username username
+                     :domain domain})))
 
 (defn split-jid
   [^JID jid]
@@ -187,7 +196,9 @@
 (defn find-or-create-by-jid
   [^JID jid]
   {:pre [(instance? JID jid)]}
-  (apply find-or-create (split-jid jid)))
+  (let [[username domain] (split-jid jid)]
+    (find-or-create {:username username
+                     :domain domain})))
 
 (defaction delete
   "Delete the user"
@@ -283,7 +294,8 @@
 (defaction update
   "Update the user's activities and information."
   [user params]
-  (invoke-action "feed-source" "update" (str (:update-source user)))
+  (if-let [source-id (:update-source user)]
+    (invoke-action "feed-source" "update" (str source-id)))
   user)
 
 (defn parse-person
@@ -291,7 +303,7 @@
   {:id (abdera/get-simple-extension person ns/atom "id")
    :email (.getEmail person)
    :url (str (.getUri person))
-   :display-name (abdera/get-name person)
+   :name (abdera/get-name person)
    :note (abdera/get-note person)
    :username (abdera/get-username person)
    :local-id (-> person
@@ -329,22 +341,24 @@
 
 (defn fetch-user-feed
   "returns a feed"
-  [^User user]
+  [^User user & [options]]
   (if-let [url (model.user/feed-link-uri user)]
     (let [resource (actions.resource/find-or-create {:url url})
-          response (actions.resource/update* resource)]
+          response (actions.resource/update* resource options)]
       (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 
 ;; TODO: Collect all changes and update the user once.
 (defaction update-usermeta
   "Retreive user information from webfinger"
-  [user]
+  [user & [options]]
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)
-          feed (fetch-user-feed (assoc user :links (concat (:links user) webfinger-links)))
-          first-entry (-?> feed .getEntries first)
+          feed (fetch-user-feed (assoc user :links (concat (:links user) webfinger-links))
+                                options)
+          entries (abdera/get-entries feed)
+          first-entry (first entries)
           new-user (-?> (abdera/get-author first-entry feed)
                         person->user)
           links (concat webfinger-links (:links new-user))]
@@ -370,15 +384,6 @@
                          ["items" {"node" ns/microblog}]])})]
     (tigase/deliver-packet! packet)))
 
-(defn parse-magic-public-key
-  [user link]
-  (let [key-string (:href link)
-        [_ n e] (re-matches
-                 #"data:application/magic-public-key,RSA.(.+)\.(.+)"
-                 key-string)]
-    ;; TODO: this should be calling a key action
-    (model.key/set-armored-key (:_id user) n e)))
-
 (defaction discover-user-rdf
   "Discover user information from their rdf feeds"
   [user]
@@ -390,32 +395,33 @@
 
 (defn discover*
   [^User user & [options & _]]
-  (loop [try-count (get options :try-count 1)]
-    (when (< try-count 5)
-      (if (:local user)
-        user
-        ;; Get domain should, in theory, always return a domain, or else error
-        (let [domain (actions.domain/get-discovered (get-domain user))]
-          (if (:discovered domain)
-            (do
+  (let [force (:force options)]
+    (loop [try-count (get options :try-count 1)]
+      (when (< try-count 5)
+        (if (:local user)
+          user
+          ;; Get domain should, in theory, always return a domain, or else error
+          (let [domain (actions.domain/get-discovered (get-domain user))]
+            (if (:discovered domain)
+              (do
 
-              (when (:xmpp domain)
-                (request-vcard! user))
+                (when (:xmpp domain)
+                  (request-vcard! user))
 
-              ;; There should be a similar check here so we're not
-              ;; hitting xmpp-only services.
-              ;; This is really OStatus specific
-              (update-usermeta user)
+                ;; There should be a similar check here so we're not
+                ;; hitting xmpp-only services.
+                ;; This is really OStatus specific
+                (update-usermeta user options)
 
-              ;; TODO: there sould be a different discovered flag for
-              ;; each aspect of a domain, and this flag shouldn't be set
-              ;; till they've all responded
-              ;; (model.user/set-field! user :discovered true)
-              (model.user/fetch-by-id (:_id user)))
-            (do
-              ;; Domain not yet discovered
-              (actions.domain/discover domain)
-              (recur (inc try-count)))))))))
+                ;; TODO: there sould be a different discovered flag for
+                ;; each aspect of a domain, and this flag shouldn't be set
+                ;; till they've all responded
+                ;; (model.user/set-field! user :discovered true)
+                (model.user/fetch-by-id (:_id user)))
+              (do
+                ;; Domain not yet discovered
+                (actions.domain/discover domain)
+                (recur (inc try-count))))))))))
 
 (defaction discover
   "perform a discovery on the user"
@@ -432,7 +438,7 @@
 
 (defaction register
   "Register a new user"
-  [{:keys [username password email display-name location bio] :as options}]
+  [{:keys [username password email name location bio] :as options}]
   ;; TODO: should we check reg-enabled here?
   ;; verify submission.
   (if (and username password)
@@ -444,7 +450,7 @@
                            :id (str "acct:" username "@" (config :domain))
                            :local true}
                           (when email {:email email})
-                          (when display-name {:display-name display-name})
+                          (when name {:name name})
                           (when bio {:bio bio})
                           (when location {:location location}))
             user (create params)]
@@ -478,11 +484,14 @@
     (actions.domain/set-xmpp domain false)
     user))
 
-(defn handle-pending-get-user-meta
+(defn subscribe
   [user]
-  (get-user-meta user))
-
-(l/receive-all ch/pending-get-user-meta (ops/op-handler handle-pending-get-user-meta))
+  (if-let [actor-id (session/current-user-id)]
+    (do
+      (log/infof "Subscribing to %s" (:_id user))
+      (ops/create-new-subscription actor-id (:_id user))
+      true)
+    (throw+ "Must be authenticated")))
 
 (definitializer
   (require-namespaces
@@ -490,12 +499,4 @@
     "jiksnu.helpers.user-helpers"
     "jiksnu.sections.user-sections"
     "jiksnu.triggers.user-triggers"
-    "jiksnu.views.user-views"])
-
-  (util/add-hook!
-   actions.domain/delete-hooks
-   (fn [domain]
-     (doseq [user (:items (model.user/fetch-by-domain domain))]
-       (delete user))
-     domain))
-  )
+    "jiksnu.views.user-views"]))

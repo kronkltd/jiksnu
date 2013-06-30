@@ -59,6 +59,10 @@
                     (parse-page request)
                     (parse-sorting request))))
 
+(deffilter #'index :page
+  [action request]
+  (action))
+
 ;; ping-error
 
 (deffilter #'ping-error :xmpp

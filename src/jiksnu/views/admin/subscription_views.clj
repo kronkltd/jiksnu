@@ -26,22 +26,18 @@
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  {:title "Subscriptions"
-   :single true
-   :body
-   (with-page "default"
-     (pagination-links page)
-     (bind-to "items"
-       (let [subscriptions (if *dynamic*
-                             [(Subscription.)]
-                             items)]
-         (admin-index-section subscriptions page))))})
+  (let [subscriptions (if *dynamic* [(Subscription.)] items)]
+    {:title "Subscriptions"
+     :single true
+     :body (with-page "subscriptions"
+             (pagination-links page)
+             (admin-index-section subscriptions page))}))
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Subscriptions"
           :items (map :_id items)
-          :pages {:default (format-page-info page)}
+          :pages {:subscriptions (format-page-info page)}
           :subscriptions (doall (admin-index-section items page))}})
 
 ;; show

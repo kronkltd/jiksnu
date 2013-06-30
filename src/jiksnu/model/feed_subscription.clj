@@ -17,6 +17,8 @@
            org.joda.time.DateTime))
 
 (def collection-name "feed_subscriptions")
+(def maker           #'model/map->FeedSubscription)
+(def page-size       20)
 
 (def create-validators
   (validation-set
@@ -28,24 +30,13 @@
    (type-of :created  DateTime)
    (type-of :updated  DateTime)))
 
-(def set-field!    (templates/make-set-field! collection-name))
-
-(defn fetch-by-id
-  [id]
-  (if-let [item (mc/find-map-by-id collection-name id)]
-    (model/map->FeedSubscription item)))
-
-(def count-records (templates/make-counter collection-name))
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     ((templates/make-fetch-fn model/map->FeedSubscription collection-name)
-      params options)))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn fetch-by-topic
   "Fetch a single source by it's topic id"

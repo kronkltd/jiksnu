@@ -15,6 +15,7 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.security.Key
+           jiksnu.model.Activity
            jiksnu.model.User))
 
 (def n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0=")
@@ -109,7 +110,7 @@
  (future-fact "#'extract-activity"
    (fact "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
-       (extract-activity envelope)) => model/activity?))
+       (extract-activity envelope)) => (partial instance? Activity)))
 
  (fact "#'stream->envelope"
    (fact "should return an envelope"

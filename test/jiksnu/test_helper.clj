@@ -18,11 +18,17 @@
   (-> hiccup-seq
       h/html
       StringReader.
-      enlive/html-resource))
+      enlive/xml-resource))
+
+(defn select-by-model
+  [doc model-name]
+  (->> [(enlive/attr= :data-model model-name)]
+       (enlive/select doc)))
 
 (defmacro test-environment-fixture
   [& body]
   `(do
+     (println " ")
      (println "****************************************************************************")
      (println (str "Testing " *ns*))
      (println "****************************************************************************")

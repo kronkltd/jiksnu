@@ -1,15 +1,13 @@
 (ns jiksnu.actions.stream-actions
-  (:use [ciste.commands :only [add-command! parse-command]]
-        [ciste.config :only [config]]
+  (:use [ciste.commands :only [parse-command]]
         [ciste.core :only [defaction with-context]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
-        [clojure.core.incubator :only [-?>]]
+        [clojure.core.incubator :only [-?> -?>>]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
-  (:require [aleph.http :as http]
-            [ciste.model :as cm]
+  (:require [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -18,17 +16,19 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
-            [jiksnu.helpers.user-helpers :as helpers.user]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [lamina.core :as l]
             [lamina.trace :as trace])
   (:import jiksnu.model.User))
 
+
+(defn process-args
+  [args]
+  (-?>> args
+        (filter identity)
+        seq
+        (map json/read-json)))
 
 (defaction direct-message-timeline
   [& _]
@@ -43,17 +43,13 @@
   (cm/implement))
 
 (def public-timeline*
-  (templates/make-indexer 'jiksnu.model.activity))
+  (templates/make-indexer 'jiksnu.model.conversation))
 
 (defaction public-timeline
   [& [params & [options & _]]]
   (public-timeline* params (merge
                             {:sort-clause {:updated -1}}
                             options)))
-
-(add-command! "list-activities" #'public-timeline)
-
-(declare user-timeline)
 
 (defaction stream
   []
@@ -82,7 +78,7 @@
 (defaction group-timeline
   [group]
   ;; TODO: implement
-  [group []])
+  [group (actions.activity/index)])
 
 (defaction user-list
   []
@@ -95,7 +91,6 @@
 (defaction mentions-timeline
   []
   (cm/implement))
-
 
 (defaction add
   [options]
@@ -111,7 +106,7 @@
                       first abdera/get-href)]
     (if-let [source (actions.feed-source/find-or-create {:topic topic})]
       (do
-        (task (actions.feed-source/process-feed source feed))
+        (actions.feed-source/process-feed source feed)
         true)
       (throw+ "could not create source"))
     (throw+ "Could not determine topic")))
@@ -135,52 +130,49 @@
      :headers {"content-type" "application/json"}
      :body stream}))
 
-
 (defn format-event
   [m]
   (str (json/json-str
         {:body {:action "activity-created"
-                :body m
-                }
+                :body m}
          :event "stream-add"
          :stream "public"})
        "\r\n"))
 
-(defn filter-create
-  [m]
-  (#{#'actions.activity/create} (:action m)))
-
-(l/siphon
-   (->> ciste.core/*actions*
-        l/fork
-        (l/filter* filter-create))
-   ch/posted-activities)
-
-(l/receive-all ch/posted-activities identity)
+(defn handle-message
+  [request]
+  (or (try
+        (:body (parse-command request))
+        (catch Exception ex
+          (trace/trace "errors:handled" ex)
+          (json/json-str {:action "error"
+                          :name (:name request)
+                          :args (:args request)
+                          :message (str ex)})))
+      (let [event {:action "error"
+                   :name (:name request)
+                   :args (:args request)
+                   :message "no command found"}]
+        (json/json-str event))))
 
 (defn websocket-handler
   [ch request]
-  (let [user (session/current-user)]
+  (let [id (session/current-user-id)]
     (l/receive-all
      ch
      (fn [m]
-       (session/with-user-id (:_id user)
-         (let [[name & args] (string/split m #" ")]
-           (if-let [resp (try
-                           (parse-command {:format :json
-                                           :channel ch
-                                           :name name
-                                           :args args})
-                           (catch RuntimeException ex
-                             (trace/trace "errors:handled" ex)
-                             {:body (json/json-str {:action "error"
-                                                    :message (str ex)})}))]
-             (l/enqueue ch (:body resp))
-             (l/enqueue ch (json/json-str {:action "error"
-                                           :message "no command found"}))))))))
-  #_(siphon-new-activities ch))
+       (future
+         (session/with-user-id id
+           (let [[name & args] (string/split m #" ")
+                 request {:format :json
+                          :channel ch
+                          :name name
+                          :args (process-args args)}
+                 response (handle-message request)]
+             (l/enqueue ch response))))))))
 
 (definitializer
   (require-namespaces
    ["jiksnu.filters.stream-filters"
+    "jiksnu.triggers.stream-triggers"
     "jiksnu.views.stream-views"]))

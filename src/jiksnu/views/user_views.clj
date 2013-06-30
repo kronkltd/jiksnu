@@ -63,21 +63,28 @@
 (defview #'index :html
   [request {:keys [items] :as page}]
   {:title "Users"
-   :body
-   (with-page "default"
-     (pagination-links page)
-     (bind-to "items"
-       (index-section items page)))})
+   :body (with-page "users"
+           (pagination-links page)
+           (index-section items page))})
 
 (defview #'index :json
   [request {:keys [items] :as options}]
   {:body
    {:items (index-section items options)}})
 
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Users"
-          :pages {:default (format-page-info page)}}})
+          :pages {:users (format-page-info page)}}})
 
 ;; profile
 
@@ -167,22 +174,6 @@
    :headers {"Content-Type" "application/xrds+xml"
              "Access-Control-Allow-Origin" "*"}
    :body (h/html (model.webfinger/user-meta user))})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ;; (defview #'remote-create :xmpp
 ;;   [request user]

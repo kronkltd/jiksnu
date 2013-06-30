@@ -3,7 +3,7 @@
         [jiksnu.mock :only [a-user-exists my-password]]
         [jiksnu.referrant :only [get-this get-that set-this]]
         [midje.sweet :only [fact =not=> throws]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [clj-http.client :as client]
             [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
@@ -35,10 +35,10 @@
                   selector
                   (webdriver.core/by-class-name (str button-name "-button")))]
       (fact
-        (try (webdriver/click button)
-             (catch ElementNotVisibleException ex
-               (throw+ (format "could not find button %s under context %s"
-                               button-name selector)))) =not=> (throws)))
+        (try+ (webdriver/click button)
+              (catch ElementNotVisibleException ex
+                (throw+ (format "could not find button %s under context %s"
+                                button-name selector)))) =not=> (throws)))
     (throw+ (format "Could not find 'that' record for %s" type))))
 
 (defn do-click-link
@@ -48,7 +48,7 @@
 (defn do-enter-field
   [value field-name]
   (let [selector (str "*[name='" field-name "']")]
-    (try (webdriver/clear selector)
+    (try+ (webdriver/clear selector)
          (webdriver/input-text selector value)
          (catch NullPointerException ex
            (throw+ (str "Could not find element with selector: " selector))))))

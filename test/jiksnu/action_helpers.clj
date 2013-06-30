@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [lamina.core :only [permanent-channel]]
         [midje.sweet :only [fact]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [clojure.tools.logging :as log]
             jiksnu.routes
             [lamina.time :as time]))
@@ -66,7 +66,7 @@
 
 (defmacro check-response
   [& body]
-  `(try (and (not (fact ~@body))
+  `(try+ (and (not (fact ~@body))
              (throw+ "failed"))
         (catch RuntimeException ex#
           (.printStackTrace ex#)

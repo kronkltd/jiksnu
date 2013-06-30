@@ -1,14 +1,32 @@
 (ns jiksnu.triggers.feed-source-triggers
-  (:use [ciste.triggers :only [add-trigger!]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]))
+  (:use [ciste.initializer :only [definitializer]])
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.channels :as ch]
+            [jiksnu.ops :as ops]
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
+(defn handle-pending-get-source*
+  [url]
+  (actions.feed-source/find-or-create {:topic url}))
 
-(defn create-trigger
-  "This will cause every new source to be updated.
+(def handle-pending-get-source
+  (ops/op-handler handle-pending-get-source*))
 
-Note. This causes a lot of records to be created"
-  [action params source]
-  (actions.feed-source/update source))
+(defn init-receivers
+  []
+  (l/receive-all ch/pending-get-source
+                 handle-pending-get-source)
 
-#_(add-trigger! #'actions.feed-source/create #'create-trigger)
+  (l/receive-all ch/pending-entries
+                 actions.feed-source/process-entry)
+
+  (l/receive-all (trace/probe-channel :feeds:processed)
+                 (fn [feed]
+                   (s/increment "feeds processed")))
+
+  )
+
+(defonce receivers (init-receivers))

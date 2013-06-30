@@ -1,13 +1,5 @@
 (ns jiksnu.xmpp.user-repository
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]])
-  (:require [ciste.model :as cm]
-            [clj-tigase.core :as tigase]
-            [clojure.stacktrace :as stacktrace]
-            [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.core :as l]

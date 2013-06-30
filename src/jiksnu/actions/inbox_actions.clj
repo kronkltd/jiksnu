@@ -6,7 +6,7 @@
 
 (defaction index
   [user]
-  (model.item/fetch-activities user))
+  #_(model.item/fetch-activities user))
 
 (definitializer
   (require-namespaces

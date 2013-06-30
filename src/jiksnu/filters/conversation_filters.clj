@@ -23,29 +23,34 @@
 
 (deffilter #'discover :command
   [action id]
-  (if-let [item (model.conversation/fetch-by-id (util/make-id id))]
+  (when-let [item (model.conversation/fetch-by-id (util/make-id id))]
     (action item)))
 
 ;; index
 
 (deffilter #'index :http
   [action request]
-  (action {} (merge {}
-                    (parse-page request)
-                    (parse-sorting request))))
+  (let [options (merge {}
+                       (parse-page request)
+                       (parse-sorting request))]
+    (action {} options)))
+
+(deffilter #'index :page
+  [action request]
+  (action))
 
 ;; show
 
 (deffilter #'show :http
   [action request]
-  (if-let [id (:id (:params request))]
-    (if-let [item (model.conversation/fetch-by-id (util/make-id id))]
-     (action item))))
+  (when-let [id (:id (:params request))]
+    (when-let [item (model.conversation/fetch-by-id (util/make-id id))]
+      (action item))))
 
 ;; update
 
 (deffilter #'update :command
   [action id]
-  (let [item (model.conversation/fetch-by-id (util/make-id id))]
-    (action item)))
+  (when-let [item (model.conversation/fetch-by-id (util/make-id id))]
+    (action item {:force true})))
 

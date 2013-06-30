@@ -58,17 +58,22 @@
   [& [params & [options]]]
   (index* params options))
 
+(defn get-update-source
+  [item]
+  (model.feed-source/fetch-by-id (:update-source item)))
+
 (defaction update
   [conversation & [options]]
-  (if-let [source (model.feed-source/fetch-by-id (:update-source conversation))]
+  (if-let [source (get-update-source conversation)]
     (do
       (model.conversation/set-field! conversation :lastUpdated (time/now))
-      (actions.feed-source/update source))
+      (actions.feed-source/update source options))
     (throw+ "Could not find update source")))
 
 (defaction discover
   [conversation & [options]]
   (log/debugf "Discovering conversation: %s" conversation)
+  (model.conversation/set-field! conversation :lastDiscovered (time/now))
   conversation)
 
 (defaction find-or-create
@@ -94,26 +99,18 @@
 
 (defaction add-activity
   [conversation activity]
+  (when-not (:parent activity)
+    (log/debug "Setting parent")
+    (model.conversation/set-field! conversation :parent (:_id activity)))
   (let [lu (:lastUpdated conversation)
-        c (:created activity)]
-    (when (or (not lu)
-              (time/before? lu c))
+        c (:published activity)]
+    (when (or (not lu) (time/before? lu c))
+      (log/debug "Checking for updated comments")
       (update conversation))))
 
 (defaction create-new
   []
   (create {:local true}))
-
-(defn- handle-get-conversation
-  [url]
-  (find-or-create {:url url}))
-
-(defn- enqueue-create-local
-  [ch]
-  (l/enqueue ch (create {:local true})))
-
-(l/receive-all ch/pending-get-conversation (ops/op-handler handle-get-conversation))
-(l/receive-all ch/pending-create-conversations enqueue-create-local)
 
 (definitializer
   (require-namespaces

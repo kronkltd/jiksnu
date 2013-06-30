@@ -1,13 +1,7 @@
 (ns jiksnu.ops
-  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
-            [clojure.string :as string]
-            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [inflections.core :as inf]
             [jiksnu.channels :as ch]
-            [jiksnu.db :as db]
-            [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [lamina.time :as time]
             [lamina.trace :as trace]))
@@ -24,26 +18,26 @@
 (defn op-error
   [ex]
   (log/errorf "op error: %s" ex)
-  (trace/trace "errors:handled" ex))
+  (trace/trace :errors:handled ex))
 
 (defn op-success
   [ex]
-  #_(log/infof "result realized: %s" (.getMessage ex)))
+  (log/infof "result realized: %s" (pr-str ex)))
 
 (defn op-handler
   [f]
-  (fn [[result params]]
+  (fn [[result args]]
     (try
-      (let [val (f params)]
+      (let [val (apply f args)]
         (l/enqueue result val))
       (catch RuntimeException ex
         (l/error result ex)))))
 
 (defn async-op
-  [ch params]
+  [ch args]
   (let [result (l/expiring-result default-timeout)]
-    (log/debugf "enqueuing #<Channel \"%s\"> << %s" (channel-description ch) (pr-str params))
-    (l/enqueue ch [result params])
+    (log/debugf "enqueuing #<Channel \"%s\"> << %s" (channel-description ch) (pr-str args))
+    (l/enqueue ch [result args])
     (l/on-realized result op-success op-error)
     result))
 
@@ -57,29 +51,32 @@
 
 (defn get-conversation
   [url]
-  (async-op ch/pending-get-conversation url))
+  (async-op ch/pending-get-conversation [url]))
 
 (defn get-domain
   [domain-name]
-  (async-op ch/pending-get-domain domain-name))
+  (async-op ch/pending-get-domain [domain-name]))
 
 (defn get-discovered
   [domain]
-  (async-op ch/pending-get-discovered domain))
+  (async-op ch/pending-get-discovered [domain]))
 
 (defn get-source
   [url]
-  (async-op ch/pending-get-source url))
+  (async-op ch/pending-get-source [url]))
 
 (defn get-resource
   [url]
-  (async-op ch/pending-get-resource url))
-
+  (async-op ch/pending-get-resource [url]))
 
 (defn update-resource
   [resource]
-  (async-op ch/pending-update-resources resource))
+  (async-op ch/pending-update-resources [resource]))
 
 (defn get-user-meta
   [user]
-  (async-op ch/pending-get-user-meta user))
+  (async-op ch/pending-get-user-meta [user]))
+
+(defn create-new-subscription
+  [actor-id user-id]
+  (async-op ch/pending-new-subscriptions [actor-id user-id]))

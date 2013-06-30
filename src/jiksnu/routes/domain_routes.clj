@@ -24,3 +24,10 @@
    [[:post   (named-path "index domains")]                    #'domain/find-or-create]
    [[:get    (formatted-path "domain model")]    #'domain/show]
    ])
+
+(defn pages
+  []
+  [
+   [{:name "domains"}    {:action #'domain/index}]
+   ])
+

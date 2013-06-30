@@ -1,13 +1,16 @@
 (ns jiksnu.actions.resource-actions
-  (:use [ciste.core :only [defaction]]
+  (:use [aleph.formats :only [channel-buffer->string]]
+        [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.actions :only [invoke-action]]
         [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [aleph.http :as http]
+            [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
+            [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -35,7 +38,7 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defn prepare-create
+(trace/defn-instrumented prepare-create
   [params]
   (-> params
       transforms/set-_id
@@ -101,18 +104,6 @@
   [content-type item response]
   (log/infof "unknown content type: %s" content-type))
 
-(defmethod process-response-content "text/html"
-  [content-type item response]
-  (log/debug "parsing html content")
-  (let [tree (model.resource/response->tree response)]
-    (let [properties (model.resource/get-meta-properties tree)]
-      (model.resource/set-field! item :properties properties))
-    (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
-      (model.resource/set-field! item :title title))
-    (let [links (model.resource/get-links tree)]
-      (doseq [link links]
-        (add-link item (:attrs link))))))
-
 (defn process-response
   [item response]
   (let [content-str (get-in response [:headers "content-type"])
@@ -130,6 +121,15 @@
       (model.resource/set-field! item :contentType content-type)
       (process-response-content content-type item response))))
 
+(defn get-body-buffer
+  [response]
+  (when-let [body (:body response)]
+    (if (l/channel? body)
+      (->> body
+           l/channel->lazy-seq
+           aleph.formats/channel-buffers->channel-buffer)
+      body)))
+
 (defn update*
   [item & [options]]
   {:pre [(instance? Resource item)]}
@@ -137,16 +137,33 @@
     (let [last-updated (:lastUpdated item)]
       (if (or (:force options)
               (nil? last-updated)
-              (time/after? (-> 5 time/minutes time/ago) last-updated))
+              (time/after? (-> 5 time/minutes time/ago)
+                           (coerce/to-date-time last-updated)))
         (let [url (:url item)]
-          (log/debugf "updating resource: %s" url)
+          (log/infof "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
-          (let [response (client/get url {:throw-exceptions false
-                                          :headers {"User-Agent" user-agent}
-                                          :insecure? true})]
-            (task
-              (process-response item response))
-            response))
+          (let [response-ch (http/http-request
+                                   {:url url
+                                    :method :get
+                                    :throw-exceptions false
+                                    ;; :auto-transform true
+                                    :headers {"User-Agent" user-agent}
+                                    :insecure? true})]
+            (l/on-realized response-ch
+                           (fn []
+                           (log/errorf "Resource update realized: %s" url)
+
+                             )
+                         (fn []
+                           (log/errorf "Resource update failed: %s" url)
+                           )
+                         )
+            (let [response @response-ch
+                  buffer (get-body-buffer response)
+                  body-str (aleph.formats/channel-buffer->string buffer)
+                  response (assoc response :body body-str)]
+              (process-response item response)
+              response)))
         (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))
 
@@ -165,17 +182,6 @@
   [item]
   item)
 
-(defn handle-pending-get-resource
-  [url]
-  (find-or-create {:url url}))
-
-(defn handle-pending-update-resources
-  [item]
-  (update* item))
-
-(l/receive-all ch/pending-get-resource     (ops/op-handler handle-pending-get-resource))
-(l/receive-all ch/pending-update-resources (ops/op-handler handle-pending-update-resources))
-
 (definitializer
   (model.resource/ensure-indexes)
 
@@ -183,4 +189,8 @@
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"
     "jiksnu.triggers.resource-triggers"
-    "jiksnu.views.resource-views"]))
+    "jiksnu.views.resource-views"
+    "jiksnu.handlers.atom"
+    "jiksnu.handlers.html"
+    "jiksnu.handlers.xrd"
+    ]))
