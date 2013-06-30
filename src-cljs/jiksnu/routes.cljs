@@ -21,7 +21,7 @@
         pairs (string/split (str args) "&")
         args-array (map parse-route* pairs)
         args-map (into {} args-array)]
-    [(str route) args-map]))
+    (array (str route) args-map)))
 
 (def Router
   (.extend backbone/Router
@@ -29,5 +29,6 @@
             "routes" (js-obj "*actions" "defaultRoute")
             "defaultRoute" (fn [path-string]
                              (log/fine *logger* "default route")
-                             (apply ws/send "fetch-viewmodel" (parse-route path-string))))))
+                             (ws/send "fetch-viewmodel"
+                                      (parse-route path-string))))))
 

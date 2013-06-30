@@ -91,7 +91,8 @@
                                     (fn [[_ _ class-name]]
                                       (= class-name (.-type this)))
                                     names)))]
-                  (ws/send "get-model" model-name (.-id this)))))
+                  (ws/send "get-model"
+                           (array model-name (.-id this))))))
     "url" (fn [] (this-as this
                    (format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
 
@@ -123,7 +124,8 @@
               (this-as this
                 (when-not (.-loaded this)
                   (aset this "loaded" true)
-                  (ws/send "get-page" (.get this "id")))))
+                  (ws/send "get-page"
+                           (array (.get this "id"))))))
     "hasNext" (fn []
                 (this-as this
                   (< (* (.page this)
@@ -505,7 +507,7 @@
       (if-let [m (.get coll id)]
         m
         (do
-          (log/fine *logger* "Creating model")
+          (log/fine *logger* (format "Creating model: %s(%s)" model-name id))
           (let [m (.push coll (js-obj "_id" id))]
             (.fetch m)
             m
@@ -520,7 +522,7 @@
     page
     (do (.add pages (js-obj "id" page-name))
         (let [page (.get pages page-name)]
-          (ws/send "get-page" page-name)
+          (.fetch page)
           page))))
 
 (defn get-sub-page-obj
@@ -535,7 +537,8 @@ Returns a viewmodel"
       page
       (do (.add coll (js-obj "id" name))
           (let [m (.get coll name)]
-            (ws/send "get-sub-page" (array model-name id name))
+            (ws/send "get-sub-page"
+                     (array model-name id name))
             m)))))
 
 ;; observable functions

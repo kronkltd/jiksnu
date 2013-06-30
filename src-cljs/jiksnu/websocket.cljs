@@ -48,16 +48,16 @@
 (def queued-messages (atom []))
 
 (defn queue-message
-  [command & [args]]
+  [command args]
   (log/fine *logger* (format "queuing message: %s %s" command args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 
 (defn send
-  [command & args]
+  [command args]
   (if (state/in? ws-state :idle)
     (let [message (->> args
-                       (apply map #(.stringify js/JSON (clj->js %)))
+                       (map #(.stringify js/JSON (clj->js %)))
                        (string/join " ")
                        (str command " "))]
       (state/trigger ws-state :send message))
@@ -120,7 +120,8 @@
                   (swap! queued-messages rest)
                   (if (empty? @queued-messages)
                     (state/unset ws-state :queued))
-                  (apply send message)))))))
+                  (let [[command args] message]
+                    (send command args))))))))
 
   (defstate :error
     (in [] (text $interface "Error!")))
@@ -154,7 +155,7 @@
     []
     (state/transition ws-state :connecting :idle)
     ;; The connection isn't really opened till we send a command
-    (send "connect"))
+    (send "connect" (array)))
 
   (defevent :close
     []
