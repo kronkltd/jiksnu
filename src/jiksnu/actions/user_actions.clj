@@ -294,7 +294,8 @@
 (defaction update
   "Update the user's activities and information."
   [user params]
-  (invoke-action "feed-source" "update" (str (:update-source user)))
+  (if-let [source-id (:update-source user)]
+    (invoke-action "feed-source" "update" (str source-id)))
   user)
 
 (defn parse-person
