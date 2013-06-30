@@ -3,7 +3,7 @@
         ciste.sections.default
         jiksnu.actions.subscription-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links]])
+        [jiksnu.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.helpers.subscription-helpers :as helpers.subscription]
@@ -37,10 +37,12 @@
   [request [user {:keys [items] :as page}]]
   {:title "Subscribers"
    :body
-   (let [subscriptions (if *dynamic* [(Subscription.)] items)]
-     (with-page "subscribers"
-       (pagination-links page)
-       (sections.subscription/subscribers-section items page)))})
+   (let [items (if *dynamic* [(Subscription.)] items)]
+     (bind-to "targetUser"
+       [:div {:data-model "user"}
+        (with-sub-page "subscribers"
+          (pagination-links page)
+          (sections.subscription/subscribers-section items page))]))})
 
 (defview #'get-subscribers :page
   [request [user page]]
@@ -55,7 +57,8 @@
 
 (defview #'get-subscribers :viewmodel
   [request [user {:keys [items] :as page}]]
-  {:body {:user (show-section user)
+  {:body {:title (str "Subscribers of " (:name user))
+          :user (show-section user)
           :pages {:subscribers (format-page-info page)}}})
 
 (defview #'get-subscribers :xmpp
@@ -71,14 +74,16 @@
    :body {:items (index-section items response)}})
 
 (defview #'get-subscriptions :html
-  [request [user {:keys [items] :as response}]]
+  [request [user {:keys [items] :as page}]]
   {:title "Subscriptions"
    :formats (subscription-formats user)
    :body
    (if-let [items (seq (if *dynamic* [(Subscription.)] items))]
-     (with-page "subscriptions"
-       (pagination-links response)
-       (sections.subscription/subscriptions-section items response)))})
+     (bind-to "targetUser"
+       [:div {:data-model "user"}
+        (with-sub-page "subscriptions"
+          (pagination-links page)
+          (sections.subscription/subscriptions-section items page))]))})
 
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]
@@ -98,7 +103,8 @@
 (defview #'get-subscriptions :viewmodel
   [request [user {:keys [items] :as page}]]
   {:body
-   {:targetUser (:_id user)
+   {:title (str "Subscriptions of " (:name user))
+    :targetUser (:_id user)
     :pages {:subscriptions (format-page-info page)}}})
 
 (defview #'get-subscriptions :xmpp

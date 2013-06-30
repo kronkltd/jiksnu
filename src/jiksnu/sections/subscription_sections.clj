@@ -228,8 +228,7 @@
 
 (defsection subscriptions-line [Subscription :html]
   [item & [options & _]]
-  [:li.subscription
-   (merge {:data-id (:_id item) :data-model "subscription"})
+  [:li.subscription {:data-model "subscription"}
    (bind-to "to"
      (if-let [user (if *dynamic* (User.) (model.subscription/get-target item))]
        (show-section user)
@@ -244,13 +243,13 @@
   [items & [options & _]]
   (subscriptions-block items options))
 
-
 (defsection subscribers-line [Subscription :html]
   [item & [options & _]]
-  [:li.subscription {:data-id (:_item item) :data-model "subscription"}
-   (if-let [user (model.subscription/get-actor item)]
-     (show-section user)
-     "unknown")])
+  [:li.subscription {:data-model "subscription"}
+   (bind-to "from"
+     (if-let [user (if *dynamic* (User.) (model.subscription/get-actor item))]
+       (show-section user)
+       "unknown"))])
 
 (defsection subscribers-block [Subscription :html]
   [items & [options & _]]
