@@ -29,7 +29,7 @@
            org.bson.types.ObjectId))
 
 (def collection-name "keys")
-(def maker #'model/map->Conversation)
+(def maker #'model/map->Key)
 (def default-page-size 20)
 
 (def create-validators
