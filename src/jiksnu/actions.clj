@@ -34,8 +34,8 @@
   [ex]
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
-    #_(log/error ex)
-    #_(.printStackTrace ex)
+    (log/error ex)
+    (.printStackTrace ex)
     #_(airbrake/notify
        "d61e18dac7af78220e52697e5b08dd5a"
        (name @*environment*)
