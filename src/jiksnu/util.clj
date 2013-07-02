@@ -4,7 +4,8 @@
         [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [*base-url*]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+]]
+        [lamina.executor :only [task]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
             [clojure.data.json :as json]
@@ -192,3 +193,11 @@
 (defn sanitize
   [input]
   (Jsoup/clean input (Whitelist/none)))
+
+(defmacro safe-task
+  [& body]
+  `(task
+    (try
+      ~@body
+      (catch RuntimeException ex#
+        (trace/trace "errors:handled" ex#)))))

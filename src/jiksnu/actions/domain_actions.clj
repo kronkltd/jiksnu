@@ -176,19 +176,11 @@
         (model.domain/set-field! domain :statusnet-config sconfig)))
     nil))
 
-(defmacro safe-task
-  [& body]
-  `(task
-    (try
-      ~@body
-      (catch RuntimeException ex#
-        (trace/trace "errors:handled" ex#)))))
-
 (defn discover*
   [domain url]
-  (safe-task (discover-webfinger domain url))
-  (safe-task (discover-onesocialweb domain url))
-  (safe-task (discover-statusnet-config domain url)))
+  (util/safe-task (discover-webfinger domain url))
+  (util/safe-task (discover-onesocialweb domain url))
+  (util/safe-task (discover-statusnet-config domain url)))
 
 (defaction discover
   [^Domain domain url]

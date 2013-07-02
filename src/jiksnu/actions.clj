@@ -177,19 +177,20 @@
 (defn init-handlers
   []
 
-  (l/receive-all (trace/probe-channel :errors:handled) handle-errors)
+  (l/receive-all (trace/probe-channel :errors:handled)
+                 handle-errors)
 
-  (l/receive-all (trace/probe-channel "actions:invoked")
+  (l/receive-all (trace/probe-channel :actions:invoked)
                  (fn [response]
                    (s/increment "actions invoked")))
 
-  (l/receive-all (trace/probe-channel "activities:pushed")
+  (l/receive-all (trace/probe-channel :activities:pushed)
                  (fn [response]
                    (log/infof "sending update notification to connection: %s"
                               (:connection-id response))
                    (s/increment "activities pushed")))
 
-  (l/receive-all (trace/probe-channel "conversations:pushed")
+  (l/receive-all (trace/probe-channel :conversations:pushed)
                  (fn [response]
                    (log/infof "sending update notification to connection: %s"
                               (:connection-id response))
@@ -200,6 +201,14 @@
                    (log/infof "created:\n\n%s\n%s"
                               (class item)
                               (with-out-str (pprint item)))))
+
+  (l/receive-all (trace/select-probes "*:fieldSet")
+                 (fn [[item field value]]
+                   (log/infof "setting %s(%s): (%s = %s)"
+                              (.getSimpleName (class item))
+                              (:_id item)
+                              field
+                              (pr-str value))))
 
   (l/receive-all (trace/probe-channel :feed:parsed)
                  (fn [response]

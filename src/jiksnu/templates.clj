@@ -1,5 +1,6 @@
 (ns jiksnu.templates
-  (:use [slingshot.slingshot :only [throw+]])
+  (:use [lamina.executor :only [task]]
+        [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -100,7 +101,7 @@
    (fn [item field value]
      (if (not= field :links)
        (when-not (= (get item field) value)
-         (log/debugf "setting %s(%s): (%s = %s)" collection-name (:_id item) field (pr-str value))
+         (trace/trace* (str collection-name ":fieldSet") [item field value])
          (mc/update collection-name
            {:_id (:_id item)}
            {:$set {field value}}))
@@ -110,7 +111,7 @@
 (defn make-add-link*
   [collection-name]
   (fn [item link]
-    (trace/trace* (str collection-name ":linkAdded") item)
+    (trace/trace* (str collection-name ":linkAdded") [item link])
     (mc/update collection-name
       (select-keys item #{:_id})
       {:$addToSet {:links link}})
