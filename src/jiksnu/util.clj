@@ -1,6 +1,7 @@
 (ns jiksnu.util
   (:use [ciste.config :only [config environment]]
         [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [*base-url*]]
         [clojure.core.incubator :only [-?> -?>>]]
@@ -216,6 +217,20 @@
                     identity
                     #(trace/trace :errors:handled %))
      res#))
+
+(defn require-module
+  [module-name]
+  (require-namespaces
+   (map
+    (fn [part-name]
+      (format "jiksnu.%s.%s-%s"
+              part-name
+              module-name
+              part-name))
+    ["filters"
+     "sections"
+     "triggers"
+     "views"])))
 
 (defn replace-template
   [template url]

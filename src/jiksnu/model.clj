@@ -15,6 +15,7 @@
 (defrecord Activity                [])
 (defrecord AuthenticationMechanism [])
 (defrecord Conversation            [])
+(defrecord Dialback                [])
 (defrecord Domain                  [])
 (defrecord FeedSource              [])
 (defrecord FeedSubscription        [])
@@ -32,6 +33,7 @@
    Activity
    AuthenticationMechanism
    Conversation
+   Dialback
    Domain
    FeedSource
    FeedSubscription

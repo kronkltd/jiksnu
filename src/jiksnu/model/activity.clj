@@ -23,8 +23,6 @@
 (def collection-name "activities")
 (def maker model/map->Activity)
 
-(def create-probe (trace/probe-channel :activity:created))
-
 (def create-validators
   (validation-set
    (type-of :_id                   ObjectId)
