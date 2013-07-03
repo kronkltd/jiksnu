@@ -28,9 +28,8 @@
   (log/infof "fetching host meta: %s" url)
   (or
    (try
-     (let [resource (actions.resource/find-or-create {:url url})
-           response (actions.resource/update* resource)]
-       (s/increment "xrd_fetched")
+     (let [response @(ops/update-resource url)]
+       ;; (s/increment "xrd_fetched")
        (when (= 200 (:status response))
          (cm/string->document (:body response))))
      (catch RuntimeException ex

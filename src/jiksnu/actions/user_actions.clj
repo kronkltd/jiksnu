@@ -132,8 +132,7 @@
   [user & [options]]
   ;; {:pre [(instance? User user)]}
   (if-let [url (get-user-meta-uri user)]
-    (let [resource (actions.resource/find-or-create {:url url})
-          response (actions.resource/update* resource)]
+    (let [response @(ops/update-resource url)]
       (if-let [body (:body response)]
         (cm/string->document body)
         (throw+ "Could not get response")))
@@ -152,8 +151,7 @@
   [params & [options]]
   (let [domain (get-domain params)
         url (model.domain/get-jrd-url domain (:id params))]
-    (let [resource (actions.resource/find-or-create {:url url})
-          response (actions.resource/update* resource)]
+    (let [response @(ops/update-resource url)]
       (when-let [body (:body response)]
         (when-let [jrd (json/read-str body)]
           jrd)))))
@@ -360,8 +358,7 @@
   "returns a feed"
   [^User user & [options]]
   (if-let [url (model.user/feed-link-uri user)]
-    (let [resource (actions.resource/find-or-create {:url url})
-          response (actions.resource/update* resource options)]
+    (let [response @(ops/update-resource url)]
       (abdera/parse-xml-string (:body response)))
     (throw+ "Could not determine url")))
 

@@ -220,21 +220,19 @@
   {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (if-let [resource (actions.resource/find-or-create {:url topic})]
-        (let [response (actions.resource/update* resource options)]
-          (if-let [feed (abdera/parse-xml-string (:body response))]
-            (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
-                  source-updated (:updated source)]
-              (if (or (:force options)
-                      (not (and feed-updated source-updated))
-                      (time/after? feed-updated source-updated))
-                (try
-                  (process-feed source feed)
-                  (catch Exception ex
-                    (.printStackTrace ex)))
-                (log/warn "feed is up to date")))
-            (throw+ "could not obtain feed")))
-        (throw+ "Could not get resource for topic")))
+      (let [response @(ops/update-resource topic)]
+        (if-let [feed (abdera/parse-xml-string (:body response))]
+          (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
+                source-updated (:updated source)]
+            (if (or (:force options)
+                    (not (and feed-updated source-updated))
+                    (time/after? feed-updated source-updated))
+              (try
+                (process-feed source feed)
+                (catch Exception ex
+                  (.printStackTrace ex)))
+              (log/warn "feed is up to date")))
+          (throw+ "could not obtain feed"))))
     (log/warn "local sources do not need updates")))
 
 (defaction update
@@ -258,13 +256,12 @@
 (defn-instrumented discover-source
   "determines the feed source associated with a url"
   [url]
-  (let [resource (actions.resource/find-or-create {:url url})]
-    (if-let [response (actions.resource/update* resource)]
-      (let [body (model.resource/response->tree response)
-            links (model.resource/get-links body)]
-        (if-let [link (util/find-atom-link links)]
-          (find-or-create {:topic link})
-          (throw+ (format "Could not determine topic url from resource: %s" url)))))))
+  (if-let [response @(ops/update-resource url)]
+    (let [body (model.resource/response->tree response)
+          links (model.resource/get-links body)]
+      (if-let [link (util/find-atom-link links)]
+        (find-or-create {:topic link})
+        (throw+ (format "Could not determine topic url from resource: %s" url))))))
 
 (defaction discover
   [item]

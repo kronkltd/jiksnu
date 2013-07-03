@@ -63,10 +63,8 @@
       (if-let [uri (:parent-uri params)]
         (if-let [parent (model.activity/fetch-by-remote-id uri)]
           (assoc params :parent (:_id parent))
-          (let [resource (actions.resource/find-or-create {:url uri})]
-            ;; TODO: This isn't actually setting the parent
-            (actions.resource/update* resource)
-            params))
+          (do (ops/update-resource uri)
+              params))
         params))
     params))
 
@@ -216,13 +214,7 @@
   [activity]
   (if-let [ids (->> activity
                     :enclosures
-                    (map :href)
-                    (map (fn [url]
-                           (let [resource (actions.resource/find-or-create {:url url})]
-                             (actions.resource/update resource)
-                             (:_id resource))))
-                    seq
-                    doall)]
+                    (map (comp :_id ops/get-resource :href)))]
     (-> activity
         (assoc :resources ids)
         (dissoc :enclosures))

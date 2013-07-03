@@ -68,8 +68,7 @@
 
 (defn fetch-xrd*
   [url]
-  (let [resource (actions.resource/find-or-create {:url url})
-        response (actions.resource/update* resource {:force true})]
+  (let [response @(ops/update-resource url {:force true})]
     (when (= 200 (:status response))
       (try
         (if-let [body (:body response)]
@@ -166,11 +165,14 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (let [resource (ops/get-resource (model.domain/statusnet-url domain))]
-    (if-let [response (actions.resource/update* @resource)]
-      (let [sconfig (json/read-json (:body response))]
-        (model.domain/set-field! domain :statusnet-config sconfig)))
-    nil))
+  (let [urls (model.domain/statusnet-url domain)]
+    (first (filter identity (map
+                             (fn [url]
+                               (when-let [response @(ops/update-resource url)]
+                                 (when-let [sconfig (json/read-str (:body @response))]
+                                   (model.domain/set-field! domain :statusnet-config
+                                                            sconfig))))
+                             [urls])))))
 
 (defn discover*
   [domain url]
