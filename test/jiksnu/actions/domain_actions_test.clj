@@ -106,11 +106,6 @@
                  (fetch-xrd* hm1)     => nil
                  (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")))))))))
 
- (fact "#'get-user-meta-url"
-   (fact "when the domain doesn't exist"
-     (fact "should return nil"
-       (get-user-meta-url nil "acct:foo@example.com") => nil?)))
-
  (fact "#'get-discovered"
    (let [domain (mock/a-domain-exists {:discovered false})]
      (get-discovered domain) => (contains {:discovered true})))
