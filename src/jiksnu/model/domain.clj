@@ -1,5 +1,6 @@
 (ns jiksnu.model.domain
   (:use [ciste.config :only [config]]
+        [clojure.core.incubator :only [-?>>]]
         [jiksnu.transforms :only [set-updated-time set-created-time]]
         [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
@@ -7,12 +8,14 @@
   (:require [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates :as templates]
             [jiksnu.util :as util]
             [monger.collection :as mc]
-            [monger.core :as mg])
+            [monger.core :as mg]
+            [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            org.bson.types.ObjectId
            org.joda.time.DateTime))

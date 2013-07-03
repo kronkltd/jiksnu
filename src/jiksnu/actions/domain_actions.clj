@@ -166,7 +166,7 @@
 
 (defn discover-statusnet-config
   [domain url]
-  (let [resource (ops/get-resource (statusnet-url domain))]
+  (let [resource (ops/get-resource (model.domain/statusnet-url domain))]
     (if-let [response (actions.resource/update* @resource)]
       (let [sconfig (json/read-json (:body response))]
         (model.domain/set-field! domain :statusnet-config sconfig)))

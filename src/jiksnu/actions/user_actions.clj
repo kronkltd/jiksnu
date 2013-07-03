@@ -151,7 +151,7 @@
 (defn parse-jrd
   [params & [options]]
   (let [domain (get-domain params)
-        url (actions.domain/get-jrd-url domain (:id params))]
+        url (model.domain/get-jrd-url domain (:id params))]
     (let [resource (actions.resource/find-or-create {:url url})
           response (actions.resource/update* resource)]
       (when-let [body (:body response)]
