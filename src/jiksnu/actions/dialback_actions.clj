@@ -10,14 +10,13 @@
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
-            [clj-tigase.element :as element]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.dialback :as model.dialback]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
@@ -25,20 +24,9 @@
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
-            [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [monger.collection :as mc])
-  (:import javax.xml.namespace.QName
-           jiksnu.model.Activity
-           jiksnu.model.User
-           org.apache.abdera.model.Entry
-           org.apache.abdera.model.Element)
-
-
-
-
-
   )
 
 (def index*    (templates/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
