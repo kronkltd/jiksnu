@@ -44,7 +44,7 @@
 
 (defaction create
   [params]
-  (let [item (model.dialback/create item)]
+  (let [item (model.dialback/create params)]
     (model.dialback/fetch-by-id (:_id item))))
 
 ;; (defaction delete
