@@ -69,54 +69,79 @@
    (let [domain (mock/a-domain-exists)
          url (fseq :uri)
          res (l/result-channel)
+         ch (l/channel)
          response  {:body "{\"foo\": \"bar\"}"}
          field-set (atom false)]
-     (l/receive (trace/probe-channel :domain:setField)
-                (fn [& args] args))
-     (l/enqueue res response)
-     (discover-statusnet-config domain url) => nil
 
+     (l/siphon (trace/probe-channel :domains:fieldSet) ch)
+     (l/receive ch (fn [& args]
+                     (dosync
+                      (reset! field-set true))))
+
+     (l/enqueue res response)
+     (discover-statusnet-config domain url) => truthy
 
      (provided
       (model.domain/statusnet-url domain) => .url.
-      (ops/update-resource .url.) => res)))
+      (ops/update-resource .url.) => res)
+
+     (l/close ch)
+     @field-set => true))
 
  (fact "#'discover-webfinger"
    (let [domain (mock/a-domain-exists)
-         id      (:_id domain)]
+         domain-name (:_id domain)]
 
      (fact "when there is no url context"
-       (let [url (factory/make-uri id "/1")
-             hm-url (factory/make-uri id "/.well-known/host-meta")]
-         (discover-webfinger domain url) => (contains {:_id id})
+       (let [url (factory/make-uri domain-name "/1")
+             hm-url (factory/make-uri domain-name "/.well-known/host-meta")]
+         (discover-webfinger domain url) => (contains {:_id domain-name})
          (provided
-           (fetch-xrd* hm-url) => (cm/string->document "<XRD/>"))))
+          (fetch-xrd* hm-url) => (cm/string->document "<XRD/>")
+          (fetch-xrd* anything) => nil)))
 
      (fact "when there is a url context"
-       (let [url     (format "http://%s/status/users/1"                     id)
-             hm-bare (format "http://%s/.well-known/host-meta"              id)
-             hm1     (format "http://%s/status/.well-known/host-meta"       id)
-             hm2     (format "http://%s/status/users/.well-known/host-meta" id)]
+       ;; TODO: Secure urls should always be checked first, and if the
+       ;; provided url is secure, the non-secure urls should not be checked
+       (let [url       (format "http://%s/status/users/1"                      domain-name)
+             url-s     (format "https://%s/status/users/1"                     domain-name)
+             hm-bare   (format "http://%s/.well-known/host-meta"               domain-name)
+             hm-bare-s (format "https://%s/.well-known/host-meta"              domain-name)
+             hm1       (format "http://%s/status/.well-known/host-meta"        domain-name)
+             hm1-s     (format "https://%s/status/.well-known/host-meta"       domain-name)
+             hm2       (format "http://%s/status/users/.well-known/host-meta"  domain-name)
+             hm2-s     (format "https://%s/status/users/.well-known/host-meta" domain-name)]
+
          (fact "and the bare domain has a host-meta"
-           (discover-webfinger domain url) => (contains {:_id id})
+           (discover-webfinger domain url) => (contains {:_id domain-name})
            (provided
-             (fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
+            (fetch-xrd* hm-bare-s) => nil
+            (fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
+
          (fact "and the bare domain does not have a host meta"
+
            (fact "and none of the subpaths have host metas"
              (fact "should raise an exception"
                (discover-webfinger domain url) => (throws RuntimeException)
                (provided
-                 (fetch-xrd* hm-bare) => nil
-                 (fetch-xrd* hm1)     => nil
-                 (fetch-xrd* hm2)     => nil)))
+
+                (fetch-xrd* hm-bare) => nil
+                (fetch-xrd* hm1)     => nil
+                (fetch-xrd* hm2)     => nil
+                (fetch-xrd* hm-bare-s) => nil)))
+
            (fact "and one of the subpaths has a host meta"
              (fact "should update the host meta path"
                ;; FIXME: this isn't being checked
-               (discover-webfinger domain url) => (contains {:_id id})
+               (discover-webfinger domain url) => (contains {:_id domain-name})
                (provided
                  (fetch-xrd* hm-bare) => nil
+                 (fetch-xrd* hm-bare-s) => nil
                  (fetch-xrd* hm1)     => nil
-                 (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")))))))))
+                 (fetch-xrd* hm2)     => (cm/string->document "<XRD/>"))))
+           )
+         ))
+     ))
 
  (fact "#'get-discovered"
    (let [domain (mock/a-domain-exists {:discovered false})]

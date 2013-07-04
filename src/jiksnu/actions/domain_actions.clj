@@ -166,13 +166,13 @@
 (defn discover-statusnet-config
   [domain url]
   (let [urls (model.domain/statusnet-url domain)]
-    (first (filter identity (map
-                             (fn [url]
-                               (when-let [response @(ops/update-resource url)]
-                                 (when-let [sconfig (json/read-str (:body @response))]
-                                   (model.domain/set-field! domain :statusnet-config
-                                                            sconfig))))
-                             [urls])))))
+    (->> [urls]
+         (map (fn [url]
+                (when-let [response (ops/update-resource url)]
+                  (when-let [sconfig (json/read-str (:body @response))]
+                    (model.domain/set-field! domain :statusnet-config sconfig)))))
+         (filter identity)
+         first)))
 
 (defn discover*
   [domain url]
