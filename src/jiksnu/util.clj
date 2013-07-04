@@ -16,7 +16,8 @@
             [lamina.trace :as trace]
             monger.joda-time
             monger.json
-            [org.bovinegenius.exploding-fish :as uri])
+            [org.bovinegenius.exploding-fish :as uri]
+            [ring.util.codec :as codec])
   (:import com.mongodb.WriteConcern
            com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
@@ -201,3 +202,7 @@
       ~@body
       (catch Exception ex#
         (trace/trace :errors:handled ex#)))))
+
+(defn replace-template
+  [template url]
+  (string/replace template #"\{uri\}" (codec/url-encode url)))

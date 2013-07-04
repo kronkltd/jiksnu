@@ -30,6 +30,10 @@
    (str "https://" (:_id domain) "/.well-known/host-meta")
    (str "http://" (:_id domain) "/.well-known/host-meta")))
 
+(defn statusnet-url
+  [domain]
+  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
+
 (def create-validators
   (validation-set
    (type-of :_id        String)
@@ -65,14 +69,6 @@
    :from (tigase/make-jid "" (config :domain))
    :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
 
-(defn statusnet-url
-  [domain]
-  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
-
-(defn replace-template
-  [template url]
-  (string/replace template #"\{uri\}" (codec/url-encode url)))
-
 (defn get-xrd-url
   [domain user-uri]
   (when user-uri
@@ -83,7 +79,7 @@
                                   (filter #(= (:type %) "application/xrd+xml"))
                                   first
                                   :template))]
-      (replace-template template user-uri))))
+      (util/replace-template template user-uri))))
 
 (defn get-jrd-url
   [domain user-uri]
@@ -95,4 +91,4 @@
                                   (filter #(= (:type %) "application/json"))
                                   first
                                   :template))]
-      (replace-template template user-uri))))
+      (util/replace-template template user-uri))))
