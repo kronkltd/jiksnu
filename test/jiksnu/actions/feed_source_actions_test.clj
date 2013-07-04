@@ -21,7 +21,9 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util])
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
+            [lamina.core :as l])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
 
@@ -69,12 +71,15 @@
  (fact "#'discover-source"
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (mock/a-resource-exists {:url url})
-         topic (str url ".atom")]
+         topic (str url ".atom")
+         response ""
+         result (l/result-channel)]
+     (l/enqueue result response)
      (actions.feed-source/discover-source url) => (partial instance? FeedSource)
      (provided
-       (actions.resource/update* resource) => .response.
-       (model.resource/response->tree .response.) => .tree.
-       (model.resource/get-links .tree.) => .links.
-       (util/find-atom-link .links.) => topic)))
+      (ops/update-resource url) => result
+      (model.resource/response->tree response) => .tree.
+      (model.resource/get-links .tree.) => .links.
+      (util/find-atom-link .links.) => topic)))
 
  )
