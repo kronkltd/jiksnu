@@ -18,12 +18,15 @@
 
 (defn op-error
   [ex]
-  (log/errorf "op error: %s" ex)
-  (trace/trace :errors:handled ex))
+  (if-not (keyword? ex)
+    (do
+      (log/errorf "op error: %s" ex)
+      (trace/trace :errors:handled ex))
+    (log/error ex)))
 
 (defn op-success
   [ex]
-  (log/infof "result realized: %s" (pr-str ex)))
+  (log/debugf "result realized: %s" (pr-str ex)))
 
 (defn op-handler
   [f]

@@ -38,7 +38,7 @@
    (acceptance-of :id           :accept string?)
    (acceptance-of :username     :accept string?)
    (acceptance-of :domain       :accept string?)
-   (acceptance-of :url          :accept string?)
+   ;; (acceptance-of :url          :accept string?)
    (presence-of   :created)
    (presence-of   :updated)
    ;; (presence-of   :update-source)

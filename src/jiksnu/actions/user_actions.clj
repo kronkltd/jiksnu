@@ -65,7 +65,7 @@
       transforms/set-created-time
       transforms.user/set-domain
       transforms.user/set-id
-      transforms.user/set-url
+      ;; transforms.user/set-url
       transforms.user/set-local
       transforms.user/assert-unique
       ;; transforms.user/set-update-source
@@ -116,53 +116,6 @@
         (throw+ "Could not get response")))
     (throw+ "User does not have a meta link")))
 
-(defn parse-xrd
-  [params & [options]]
-  (log/info "parse xrd")
-  (let [user-meta-link (model.domain/get-xrd-url
-                        (:domain params)
-                        (:id params))
-        params (assoc params :user-meta-link user-meta-link)]
-    (when-let [xrd (get-user-meta params options)]
-      (actions.webfinger/set-source-from-xrd params xrd))))
-
-(defn parse-jrd
-  [params & [options]]
-  (log/info "parse jrd")
-  (if-let [domain (get-domain params)]
-    (if-let [url (model.domain/get-jrd-url domain (:id params))]
-      (when-let [response @(ops/update-resource url)]
-        (when-let [body (:body response)]
-          (when-let [jrd (json/read-str body)]
-            jrd)))
-      (log/warn "could not get user jrd url"))
-    (log/warn "Could not get domain")))
-
-(defn get-username
-  "Given a url, try to determine the username of the owning user"
-  [params & [options]]
-  (let [id (or (:id params) (:url params))
-        uri (URI. id)
-        params (assoc params :id id)]
-    (condp = (.getScheme uri)
-
-      "acct"  (do
-                (log/debug "acct uri")
-                (assoc params :username (first (util/split-uri id))))
-
-      ;; HTTP(S) URI
-      (do
-        (log/debug "http url")
-        (if-let [username (.getUserInfo uri)]
-          (do
-            (log/debugf "username: %s" username)
-            (assoc params :username username))
-          (if-let [domain-name (or (:domain params) (util/get-domain-name id))]
-            (let [params (assoc params :domain domain-name)]
-              (or (parse-jrd params options)
-                  (parse-xrd params options)))
-            (throw+ "Could not determine domain name")))))))
-
 ;; TODO: This is a special case of the discover action for users that
 ;; support xmpp discovery
 (defn request-vcard!
@@ -185,25 +138,28 @@
                  first)
    :links (abdera/get-links person)})
 
-;; TODO: This function should be called at most once per user, per feed
-(defn person->user
-  "Extract user information from atom element"
-  [^Person person]
-  (log/info "converting person to user")
-  (let [{:keys [id username url links note email local-id]
-         :as params} (parse-person person)
-         domain-name (util/get-domain-name (or id url))
-         domain (actions.domain/get-discovered {:_id domain-name})
-         username (or username (get-username {:id id}))]
-    (if (and username domain)
-      (let [user-meta (model.domain/get-xrd-url domain url)
-            user (merge params
-                        {:domain domain-name
-                         :id (or id url)
-                         :user-meta-link user-meta
-                         :username username})]
-        (model/map->User user))
-      (throw+ "could not determine user"))))
+(defn parse-xrd
+  [body]
+  (let [doc (cm/string->document body)]
+    {:links (model.webfinger/get-links doc)}))
+
+(defn fetch-xrd
+  [params & [options]]
+  (log/info "fetching xrd")
+  (when-let [domain (get-domain params)]
+    (when-let [url (model.domain/get-xrd-url domain (:id params))]
+      (when-let [response @(ops/update-resource url)]
+        (when-let [body (:body response)]
+          (parse-xrd body))))))
+
+(defn fetch-jrd
+  [params & [options]]
+  (log/info "fetching jrd")
+  (when-let [domain (get-domain params)]
+    (when-let [url (model.domain/get-jrd-url domain (:id params))]
+      (when-let [response @(ops/update-resource url)]
+        (when-let [body (:body response)]
+          (json/read-str body))))))
 
 (defn fetch-user-feed
   "returns a feed"
@@ -221,10 +177,6 @@
         model (rdf/document-to-model uri :xml)
         query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
-
-(defn discover-user-jrd
-  [user & [options]]
-  (parse-jrd user options))
 
 (defn fetch-updates-xmpp
   [user]
@@ -269,23 +221,6 @@
   (let [{:keys [username domain]} params]
     (or (model.user/get-user username domain)
         (create params))))
-
-(defn find-or-create-by-remote-id
-  [params & [options]]
-  (if-let [id (:id params)]
-    (if-let [domain (get-domain params)]
-      (if-let [domain (if (:discovered domain)
-                        domain (actions.domain/discover domain id))]
-        (let [params (assoc params :domain (:_id domain))]
-          (or (model.user/fetch-by-remote-id id)
-              (let [params (if (:username params)
-                             params
-                             (get-username params options))]
-                (create params))))
-        ;; this should never happen
-        (throw+ "domain has not been disovered"))
-      (throw+ "could not determine domain"))
-    (throw+ "User does not have an id")))
 
 (defn find-or-create-by-uri
   [uri]
@@ -392,41 +327,115 @@
     (invoke-action "feed-source" "update" (str source-id)))
   user)
 
-(defn parse-user-meta
+
+
+(defn process-jrd
+  [user jrd & [options]]
+  jrd)
+
+(defn process-xrd
   [user xrd & [options]]
-  (let [webfinger-links (model.webfinger/get-links xrd)
-        user (assoc user :links (concat (:links user) webfinger-links))]
 
-    (doseq [link webfinger-links]
-      (add-link user link))
+  (doseq [link (:links xrd)]
+    (add-link user link))
 
-    ;; (let [feed (fetch-user-feed user options)
-    ;;       entries (abdera/get-entries feed)
-    ;;       first-entry (first entries)
-    ;;       user (-?> first-entry (abdera/get-author feed) person->user)
-    ;;       links (concat webfinger-links (:links user))]
-    ;;   ;; TODO: only new fields, and only safe ones (maybe)
-    ;;   (doseq [[k v] user]
-    ;;     (model.user/set-field! user k v)))
+  ;; (let [feed (fetch-user-feed user options)
+  ;;       entries (abdera/get-entries feed)
+  ;;       first-entry (first entries)
+  ;;       user (-?> first-entry (abdera/get-author feed) person->user)
+  ;;       links (concat webfinger-links (:links user))]
+  ;;   ;; TODO: only new fields, and only safe ones (maybe)
+  ;;   (doseq [[k v] user]
+  ;;     (model.user/set-field! user k v)))
 
-    )
-  (model.user/fetch-by-id (:_id user)))
+  )
+
+
+
+(defn discover-user-jrd
+  [user & [options]]
+  (log/info "Discovering user via jrd")
+  (if-let [jrd (fetch-jrd user options)]
+    (process-jrd user jrd options)
+    (log/warn "Could not fetch jrd")))
 
 ;; TODO: Collect all changes and update the user once.
-(defn update-usermeta
+(defn discover-user-xrd
   "Retreive user information from webfinger"
   [user & [options]]
-  (log/info "Updating user meta")
-  (if-let [xrd (parse-xrd user)]
-    (parse-user-meta user xrd options)
-    (throw+ "Could not fetch user-meta")))
+  (log/info "Discovering user via xrd")
+  (if-let [xrd (fetch-xrd user options)]
+    (process-xrd user xrd options)
+    (log/warn "Could not fetch xrd")))
+
+(defn get-username
+  "Given a url, try to determine the username of the owning user"
+  [params & [options]]
+  (let [id (or (:id params) (:url params))
+        uri (URI. id)
+        params (assoc params :id id)]
+    (condp = (.getScheme uri)
+
+      "acct"  (do
+                (log/debug "acct uri")
+                (assoc params :username (first (util/split-uri id))))
+
+      ;; HTTP(S) URI
+      (do
+        (log/debug "http url")
+        (if-let [username (.getUserInfo uri)]
+          (do
+            (log/debugf "username: %s" username)
+            (assoc params :username username))
+          (if-let [domain-name (or (:domain params) (util/get-domain-name id))]
+            (let [params (assoc params :domain domain-name)]
+              (or (discover-user-jrd params options)
+                  (discover-user-xrd params options)))
+            (throw+ "Could not determine domain name")))))))
+
+;; TODO: This function should be called at most once per user, per feed
+(defn person->user
+  "Extract user information from atom element"
+  [^Person person]
+  (log/info "converting person to user")
+  (let [{:keys [id username url links note email local-id]
+         :as params} (parse-person person)
+         domain-name (util/get-domain-name (or id url))
+         domain (actions.domain/get-discovered {:_id domain-name})
+         username (or username (get-username {:id id}))]
+    (if (and username domain)
+      (let [user-meta (model.domain/get-xrd-url domain url)
+            user (merge params
+                        {:domain domain-name
+                         :id (or id url)
+                         :user-meta-link user-meta
+                         :username username})]
+        (model/map->User user))
+      (throw+ "could not determine user"))))
+
+(defn find-or-create-by-remote-id
+  [params & [options]]
+  (if-let [id (:id params)]
+    (if-let [domain (get-domain params)]
+      (if-let [domain (if (:discovered domain)
+                        domain (actions.domain/discover domain id))]
+        (let [params (assoc params :domain (:_id domain))]
+          (or (model.user/fetch-by-remote-id id)
+              (let [params (if (:username params)
+                             params
+                             (get-username params options))]
+                (create params))))
+        ;; this should never happen
+        (throw+ "domain has not been disovered"))
+      (throw+ "could not determine domain"))
+    (throw+ "User does not have an id")))
 
 (defn discover-user-meta
   [user & [options]]
-  (util/safe-task
+  #_(util/safe-task
    (discover-user-jrd user options))
   (util/safe-task
-   (update-usermeta user options)))
+   (discover-user-xrd user options)))
 
 (defn discover*
   [^User user & [options]]
