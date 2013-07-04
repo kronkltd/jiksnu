@@ -561,7 +561,7 @@
 
 (defsection show-section [User :model]
   [user & _]
-  (dissoc user :links))
+  user)
 
 (defsection show-section [User :rdf]
   [user & _]

@@ -8,6 +8,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
+            [clj-time.core :as time]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -23,7 +24,7 @@
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.time :as time]
+            [lamina.time :as lt]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [ring.util.codec :as codec])
@@ -97,6 +98,7 @@
   "marks the domain as having been discovered"
   [domain]
   (model.domain/set-field! domain :discovered true)
+  (model.domain/set-field! domain :discoveredAt (time/now))
   (let [id (:_id domain)
         domain (model.domain/fetch-by-id id)]
     (when-let [p (get @pending-discovers id)]
@@ -222,7 +224,7 @@
             p (if p
                 (do (discover domain) p)
                 (get @pending-discovers id))]
-        (or (deref p (time/seconds 300) nil)
+        (or (deref p (lt/seconds 300) nil)
             (throw+ "Could not discover domain"))))))
 
 (defaction host-meta

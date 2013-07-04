@@ -76,7 +76,8 @@
                             (-?>> domain
                                   :links
                                   (filter #(= (:rel %) "lrdd"))
-                                  (filter #(= (:type %) "application/xrd+xml"))
+                                  (filter #(or (nil? (:type %))
+                                               (= (:type %) "application/xrd+xml")))
                                   first
                                   :template))]
       (util/replace-template template user-uri))))

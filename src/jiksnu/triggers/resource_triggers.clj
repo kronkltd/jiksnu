@@ -28,8 +28,9 @@
   (actions.resource/find-or-create {:url url}))
 
 (defn handle-pending-update-resources*
-  [item]
-  (actions.resource/update* item))
+  [url & [options]]
+  (let [resource (actions.resource/find-or-create {:url url})]
+    (actions.resource/update* resource options)))
 
 (def handle-pending-get-resource     (ops/op-handler handle-pending-get-resource*))
 (def handle-pending-update-resources (ops/op-handler handle-pending-update-resources*))

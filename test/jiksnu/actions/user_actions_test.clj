@@ -21,6 +21,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
+            [lamina.core :as l]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.User
@@ -48,30 +50,40 @@
 (test-environment-fixture
 
  (fact "#'get-username"
-   (fact "when given a http uri"
-     (let [username (fseq :username)
-           domain-name (fseq :domain)
-           template (str "http://" domain-name "/xrd?uri={uri}")
-           domain (-> (factory :domain {:_id domain-name
-                                        :discovered true})
-                      actions.domain/find-or-create
-                      (actions.domain/add-link {:rel "lrdd" :template template}))
-           uri (factory/make-uri domain-name "/users/1")
-           params {:id uri}]
-       (get-username params) => (contains {:username username})
-       (provided
-         (actions.user/get-user-meta anything anything) => .xrd.
-         (model.webfinger/get-feed-source-from-xrd .xrd.) => .topic.
-         (model.webfinger/get-username-from-xrd .xrd.) => username)))
+   (let [username (fseq :username)
+         domain-name (fseq :domain)
+         template (str "http://" domain-name "/xrd?uri={uri}")
+         domain (-> (factory :domain {:_id domain-name
+                                      :discovered true})
+                    actions.domain/find-or-create
+                    (actions.domain/add-link {:rel "lrdd" :template template}))]
 
-   (fact "when given an acct uri"
-     (let [domain-name (fseq :domain)
-           template (str "http://" domain-name "/xrd?uri={uri}")
-           domain (-> (factory :domain {:_id domain-name})
-                      actions.domain/find-or-create
-                      (actions.domain/add-link {:rel "lrdd" :template template}))
-           uri (str "acct:bob@" domain-name)]
-       (get-username {:id uri}) => (contains {:username "bob"})))
+     (fact "when given a http uri"
+       (future-fact "and it has user info")
+
+       (fact "and it does not have user info"
+         (fact "and the jrd request returns info"
+           (let [uri (factory/make-uri domain-name "/users/1")
+                 params {:id uri}]
+             (get-username params) => (contains {:username username})
+             (provided
+              (parse-jrd anything anything) => {:username username}
+              (parse-xrd anything anything) => nil :times 0)))
+
+         (fact "and the xrd request returns info"
+           (let [uri (factory/make-uri domain-name "/users/1")
+                 params {:id uri}]
+             (get-username params) => (contains {:username username})
+             (provided
+              (parse-xrd anything anything) => {:username username}
+              (parse-jrd anything anything) => nil)))
+         )
+       )
+
+     (fact "when given an acct uri"
+       (let [uri (str "acct:" username "@" domain-name)
+             params {:id uri}]
+         (get-username params) => (contains {:username username}))))
    )
 
  (fact "#'get-domain"
@@ -175,20 +187,24 @@
          (db/drop-all!)
 
          (let [username (fseq :username)
+               template (format "http://%s/xrd?uri={uri}" domain-name)
                domain (actions.domain/find-or-create
                        (factory :domain
                                 {:_id domain-name
+                                 :jrdTemplate template
                                  :discovered true}))
                domain (actions.domain/add-link domain {:rel "lrdd" :template template})
                uri (str "http://" domain-name "/user/1")
-               um-url (format "http://%s/xrd?uri=%s"
-                              domain-name
-                              (codec/url-encode uri))
+               um-url (util/replace-template template uri)
                source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
-               mock-um (mock-user-meta username domain-name uri source-link)]
-           (find-or-create-by-remote-id {:id uri}) => (partial instance? User)
+               mock-um (mock-user-meta username domain-name uri source-link)
+               params {:id uri}
+               res (l/result-channel)]
+           (l/enqueue res mock-um)
+           (find-or-create-by-remote-id params) => (partial instance? User)
            (provided
-            (actions.user/get-user-meta anything anything) => mock-um))))
+            (ops/update-resource um-url) => res
+            ))))
 
      (future-fact "when given an acct uri uri"
        (db/drop-all!)
@@ -198,7 +214,9 @@
                                :discovered true}))
              uri (str "acct:" username "@" (:_id domain))
              response (find-or-create-by-remote-id {:id uri})]
-         response => (partial instance? User)))))
+         response => (partial instance? User)))
+
+     ))
 
  (fact "#'register-page"
    (register-page) =>

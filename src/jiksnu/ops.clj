@@ -1,4 +1,5 @@
 (ns jiksnu.ops
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.channels :as ch]
@@ -70,8 +71,10 @@
   (async-op ch/pending-get-resource [url]))
 
 (defn update-resource
-  [resource]
-  (async-op ch/pending-update-resources [resource]))
+  [url & [options]]
+  (if url
+    (async-op ch/pending-update-resources [url options])
+    (throw+ "url must not be nil")))
 
 (defn get-user-meta
   [user]
