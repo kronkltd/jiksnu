@@ -16,7 +16,8 @@
             [monger.collection :as mc]
             [monger.query :as mq])
   (:import jiksnu.model.Activity
-           org.bson.types.ObjectId))
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (defonce page-size 20)
 (def collection-name "activities")
@@ -27,20 +28,23 @@
 (def create-validators
   (validation-set
    (type-of :_id                   ObjectId)
+
    (type-of :id                    String)
    (type-of :title                 String)
-   (type-of :author                ObjectId)
    (type-of :content               String)
+   (type-of :verb                  String)
+   (type-of [:object :type]        String)
+
    (type-of :local                 Boolean)
    (type-of :public                Boolean)
+
+   (type-of :author                ObjectId)
    (type-of :update-source         ObjectId)
-   (type-of [:object :type]        String)
-   (type-of :verb                  String)
    (type-of :conversation          ObjectId)
 
-   ;; TODO: These should be joda times
-   (presence-of   :created)
-   (presence-of   :updated)
+   (type-of :created               DateTime)
+   (type-of :published             DateTime)
+   (type-of :updated               DateTime)
    ))
 
 (def count-records (templates/make-counter     collection-name))

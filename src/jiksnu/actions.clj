@@ -174,47 +174,72 @@
 (add-command! "get-page"      #'get-page)
 (add-command! "get-sub-page"  #'get-sub-page)
 
+(defn handle-actions-invoked
+  [response]
+  (s/increment "actions invoked"))
+
+(defn handle-activities-pushed
+  [response]
+  (log/infof "sending update notification to connection: %s"
+             (:connection-id response))
+  (s/increment "activities pushed"))
+
+(defn handle-conversations-pushed
+  [response]
+  (log/infof "sending update notification to connection: %s"
+             (:connection-id response))
+  (s/increment "conversations pushed"))
+
+(defn handle-created
+  [item]
+  (log/infof "created:\n\n%s\n%s"
+             (class item)
+             (with-out-str (pprint item))))
+
+(defn handle-fieldSet
+  [[item field value]]
+  (log/infof "setting %s(%s): (%s = %s)"
+             (.getSimpleName (class item))
+             (:_id item)
+             field
+             (pr-str value)))
+
+(defn handle-linkAdded
+  [[item link]]
+  (log/infof "adding link %s(%s) => %s"
+             (.getSimpleName (class item))
+             (:_id item)
+             (pr-str link)))
+
+(defn handle-feed-parsed
+  [response]
+  (log/infof "parsed feed: %s"
+             (with-out-str
+               (pprint response))))
+
+(defn handle-entry-parsed
+  [entry]
+  (log/infof "Parsing Entry:\n\n%s\n"
+             (str entry)))
+
+(defn handle-person-parsed
+  [person]
+  (log/infof "Parsing Person:\n\n%s\n"
+             (str person)))
+
 (defn init-handlers
   []
 
-  (l/receive-all (trace/probe-channel :errors:handled)
-                 handle-errors)
-
-  (l/receive-all (trace/probe-channel :actions:invoked)
-                 (fn [response]
-                   (s/increment "actions invoked")))
-
-  (l/receive-all (trace/probe-channel :activities:pushed)
-                 (fn [response]
-                   (log/infof "sending update notification to connection: %s"
-                              (:connection-id response))
-                   (s/increment "activities pushed")))
-
-  (l/receive-all (trace/probe-channel :conversations:pushed)
-                 (fn [response]
-                   (log/infof "sending update notification to connection: %s"
-                              (:connection-id response))
-                   (s/increment "conversations pushed")))
-
-  (l/receive-all (trace/select-probes "*:created")
-                 (fn [item]
-                   (log/infof "created:\n\n%s\n%s"
-                              (class item)
-                              (with-out-str (pprint item)))))
-
-  (l/receive-all (trace/select-probes "*:fieldSet")
-                 (fn [[item field value]]
-                   (log/infof "setting %s(%s): (%s = %s)"
-                              (.getSimpleName (class item))
-                              (:_id item)
-                              field
-                              (pr-str value))))
-
-  (l/receive-all (trace/probe-channel :feed:parsed)
-                 (fn [response]
-                   (log/infof "parsed feed: %s"
-                              (with-out-str
-                                (pprint response)))))
+  (l/receive-all (trace/select-probes "*:created")           handle-created)
+  (l/receive-all (trace/select-probes "*:fieldSet")          handle-fieldSet)
+  (l/receive-all (trace/select-probes "*:linkAdded")         handle-linkAdded)
+  (l/receive-all (trace/probe-channel :actions:invoked)      handle-actions-invoked)
+  (l/receive-all (trace/probe-channel :activities:pushed)    handle-activities-pushed)
+  (l/receive-all (trace/probe-channel :conversations:pushed) handle-conversations-pushed)
+  (l/receive-all (trace/probe-channel :entry:parsed)         handle-entry-parsed)
+  (l/receive-all (trace/probe-channel :errors:handled)       handle-errors)
+  ;; (l/receive-all (trace/probe-channel :feed:parsed)          handle-feed-parsed)
+  ;; (l/receive-all (trace/probe-channel :person:parsed)        handle-person-parsed)
 
   )
 

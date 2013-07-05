@@ -25,6 +25,7 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [monger.collection :as mc])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
@@ -187,6 +188,7 @@ serialization"
   [^Entry entry & [feed source]]
   (dosync
    (ref-set latest-entry entry))
+  (trace/trace :entry:parsed entry)
   (let [{:keys [extensions content id title published updated links] :as parsed-entry}
         (parse-entry entry)
         original-activity (model.activity/fetch-by-remote-id id)
