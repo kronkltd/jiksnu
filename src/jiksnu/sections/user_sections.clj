@@ -607,8 +607,9 @@
 
 (defsection show-section [User :model]
   [item & [page]]
-  (->> (dissoc item :links)
-       ;; item
+  (->>
+   ;; (dissoc item :links)
+   item
 
        (map (fn [[k v]] [(camelize (name k) :lower)
                          v]))

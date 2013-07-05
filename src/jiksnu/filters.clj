@@ -31,7 +31,7 @@
 (deffilter #'actions/get-model :command
   [action request]
   (let [[model-name id] (:args request)]
-    (or (action model-name id)
+    (or (dissoc (action model-name id) :links)
         (throw+ "Model not found"))))
 
 (deffilter #'actions/get-page :command

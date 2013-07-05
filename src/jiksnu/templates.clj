@@ -124,7 +124,6 @@
      (let [errors (validator params)]
        (if (empty? errors)
          (do
-           (log/debugf "Creating %s: %s" collection-name (pr-str params))
            (mc/insert collection-name params)
            (let [item (fetcher (:_id params))]
              (trace/trace* (str collection-name ":created") item)
@@ -140,7 +139,6 @@
       (fn [id]
         (let [id (if (and convert-id (string? id))
                    (util/make-id id) id)]
-          (log/debugf "fetching %s(%s)" collection-name id)
           (trace/trace* (str collection-name ":fetched") id)
           (when-let [item (mc/find-map-by-id collection-name id)]
             (maker item))))

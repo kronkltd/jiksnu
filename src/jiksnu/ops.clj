@@ -26,7 +26,7 @@
 
 (defn op-success
   [ex]
-  (log/debugf "result realized: %s" (pr-str ex)))
+  #_(log/debugf "result realized: %s" (pr-str ex)))
 
 (defn op-handler
   [f]

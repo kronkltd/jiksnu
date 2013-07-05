@@ -17,6 +17,7 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -398,6 +399,7 @@
   "Extract user information from atom element"
   [^Person person]
   (log/info "converting person to user")
+  (trace/trace :person:parsed person)
   (let [{:keys [id username url links note email local-id]
          :as params} (parse-person person)
          domain-name (util/get-domain-name (or id url))
@@ -417,16 +419,17 @@
   [params & [options]]
   (if-let [id (:id params)]
     (if-let [domain (get-domain params)]
-      (if-let [domain (if (:discovered domain)
-                        domain (actions.domain/discover domain id))]
-        (let [params (assoc params :domain (:_id domain))]
-          (or (model.user/fetch-by-remote-id id)
-              (let [params (if (:username params)
-                             params
-                             (get-username params options))]
-                (create params))))
-        ;; this should never happen
-        (throw+ "domain has not been disovered"))
+      (let [domain (if (:discovered domain)
+                     domain (actions.domain/discover domain id))
+            params (assoc params :domain (:_id domain))]
+        (or (when-let [username (:username params)]
+              (model.user/get-user username (:_id domain)))
+            (when-let [id (:id params)]
+              (model.user/fetch-by-remote-id id))
+            (let [params (if (:username params)
+                           params
+                           (get-username params options))]
+              (create params))))
       (throw+ "could not determine domain"))
     (throw+ "User does not have an id")))
 
@@ -525,6 +528,8 @@
     (throw+ "Must be authenticated")))
 
 (definitializer
+  (model.user/ensure-indexes)
+
   (require-namespaces
    ["jiksnu.filters.user-filters"
     "jiksnu.helpers.user-helpers"

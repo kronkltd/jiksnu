@@ -202,3 +202,11 @@
        (rdf/optional [:?user :foaf/name            :?name])
        (rdf/optional [:?user :dcterms/descriptions :?bio])
        (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
+
+(defn ensure-indexes
+  []
+  (doto collection-name
+    (mc/ensure-index {:username 1 :domain 1} {:unique true})
+    (mc/ensure-index {:id 1} {:unique true})
+
+    ))
