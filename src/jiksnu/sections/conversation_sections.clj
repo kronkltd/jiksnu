@@ -73,6 +73,7 @@
      [:th "Domain"]
      [:th "Url"]
      [:th "Parent"]
+     [:th "Item Count"]
      #_[:th "Created"]
      [:th "Last Updated"]
      [:th "Record Updated"]
@@ -98,6 +99,7 @@
      (when-not *dynamic*
        (:url item))]]
    [:td (display-property item :parent)]
+   [:td (display-property item :itemCount)]
    ;; [:td (display-property item :created)]
    [:td (display-timestamp item :lastUpdated)]
    [:td (display-timestamp item :updated)]
@@ -172,11 +174,17 @@
         (when-not *dynamic*
           (:url item))]]]
      [:tr
+      [:th "Item Count"]
+      [:td (display-property item :itemCount)]]
+     [:tr
       [:th "Created"]
-      [:td (display-property item :created)]]
+      [:td (display-timestamp item :created)]]
      [:tr
       [:th "Updated"]
-      [:td (display-property item :updated)]]
+      [:td (display-timestamp item :updated)]]
+     [:tr
+      [:th "Last Updated"]
+      [:td (display-timestamp item :lastUpdated)]]
      [:tr
       [:th "Source"]
       [:td
@@ -230,6 +238,7 @@
             (when-not *dynamic*
               {:about about-uri
                :data-id (:_id item)}))
+     ;; (show-details item)
      (let [parent (first items)]
        (list
         (bind-to "$data.parent"

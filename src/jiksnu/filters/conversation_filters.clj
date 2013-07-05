@@ -19,6 +19,11 @@
   [action request]
   (-> request :params :id model.conversation/fetch-by-id action))
 
+(deffilter #'delete :command
+  [action id]
+  (when-let [item (model.conversation/fetch-by-id id)]
+    (action item)))
+
 ;; discover
 
 (deffilter #'discover :command

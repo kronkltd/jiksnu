@@ -329,6 +329,7 @@
                 "uri"           nil
                 "url"           nil
                 "domain"        nil
+                "itemCount"     0
                 "update-source" nil
                 "lastUpdated"   nil
                 "created"       nil
