@@ -160,7 +160,7 @@
     (l/receive-all
      ch
      (fn [m]
-       (future
+       (util/safe-task
          (session/with-user-id id
            (let [[name & args] (string/split m #" ")
                  request {:format :json
