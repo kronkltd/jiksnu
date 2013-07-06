@@ -148,7 +148,7 @@
   (log/info "fetching xrd")
   (when-let [domain (get-domain params)]
     (when-let [url (model.domain/get-xrd-url domain (:id params))]
-      (when-let [response @(ops/update-resource url)]
+      (when-let [response @(ops/update-resource url options)]
         (when-let [body (:body response)]
           (parse-xrd body))))))
 
@@ -157,7 +157,7 @@
   (log/info "fetching jrd")
   (when-let [domain (get-domain params)]
     (when-let [url (model.domain/get-jrd-url domain (:id params))]
-      (when-let [response @(ops/update-resource url)]
+      (when-let [response @(ops/update-resource url options)]
         (when-let [body (:body response)]
           (json/read-str body))))))
 
@@ -324,10 +324,9 @@
   "Update the user's activities and information."
   [user params]
   (if-let [source-id (:update-source user)]
-    (invoke-action "feed-source" "update" (str source-id)))
+    (invoke-action "feed-source" "update" (str source-id))
+    (log/warn "user does not have an update source"))
   user)
-
-
 
 (defn process-jrd
   [user jrd & [options]]
@@ -335,22 +334,8 @@
 
 (defn process-xrd
   [user xrd & [options]]
-
-  (doseq [link (:links xrd)]
-    (add-link user link))
-
-  ;; (let [feed (fetch-user-feed user options)
-  ;;       entries (abdera/get-entries feed)
-  ;;       first-entry (first entries)
-  ;;       user (-?> first-entry (abdera/get-author feed) person->user)
-  ;;       links (concat webfinger-links (:links user))]
-  ;;   ;; TODO: only new fields, and only safe ones (maybe)
-  ;;   (doseq [[k v] user]
-  ;;     (model.user/set-field! user k v)))
-
-  )
-
-
+  (let [links (concat (:links user) (:links xrd))]
+    (assoc user :links links)))
 
 (defn discover-user-jrd
   [user & [options]]
@@ -434,10 +419,13 @@
 
 (defn discover-user-meta
   [user & [options]]
-  #_(util/safe-task
+  (util/safe-task
    (discover-user-jrd user options))
   (util/safe-task
-   (discover-user-xrd user options)))
+   (let [params (discover-user-xrd user options)
+         links (:links params)]
+     (doseq [link links]
+       (add-link user link)))))
 
 (defn discover*
   [^User user & [options]]
@@ -459,8 +447,8 @@
 
 (defaction discover
   "perform a discovery on the user"
-  [^User user & [options & _]]
-  (util/safe-task (discover* user options)))
+  [^User user & [options]]
+  @(util/safe-task (discover* user options)))
 
 ;; TODO: xmpp case of update
 (defaction fetch-remote

@@ -28,7 +28,7 @@
                         (try
                           (actions.feed-source/discover-source url)
                           (catch RuntimeException ex
-                            (trace/trace "errors:handled" ex))))]
+                            (trace/trace :errors:handled ex))))]
         (assoc item :update-source (:_id source))
         (throw+ "could not determine source"))
       (throw+ "Could not determine url"))))

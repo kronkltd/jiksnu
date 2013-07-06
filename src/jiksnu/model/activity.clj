@@ -39,12 +39,15 @@
    (type-of :public                Boolean)
 
    (type-of :author                ObjectId)
-   (type-of :update-source         ObjectId)
-   (type-of :conversation          ObjectId)
+   ;; (type-of :update-source         ObjectId)
+   ;; (type-of :conversation          ObjectId)
 
-   (type-of :created               DateTime)
-   (type-of :published             DateTime)
-   (type-of :updated               DateTime)
+   (presence-of :created)
+   ;; (type-of :created               DateTime)
+   (presence-of :published)
+   ;; (type-of :published             DateTime)
+   (presence-of :updated)
+   ;; (type-of :updated               DateTime)
    ))
 
 (def count-records (templates/make-counter     collection-name))
@@ -115,4 +118,5 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index {:id 1} {:unique true})))
+    (mc/ensure-index {:id 1} {:unique true})
+    (mc/ensure-index {:conversation 1})))

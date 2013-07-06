@@ -60,7 +60,8 @@
 
 (defn get-update-source
   [item]
-  (model.feed-source/fetch-by-id (:update-source item)))
+  (when-let [id (:update-source item)]
+    (model.feed-source/fetch-by-id id)))
 
 (defaction update
   [conversation & [options]]
@@ -100,9 +101,9 @@
 (defaction add-activity
   [conversation activity]
   (when-not (:parent activity)
-    (log/debug "Setting parent")
+    (trace/trace :conversations:parent:set [conversation activity])
     (model.conversation/set-field! conversation :parent (:_id activity)))
-  (let [lu (:lastUpdated conversation)
+  #_(let [lu (:lastUpdated conversation)
         c (:published activity)]
     (when (or (not lu) (time/before? lu c))
       (log/debug "Checking for updated comments")

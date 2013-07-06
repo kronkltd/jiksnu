@@ -45,19 +45,20 @@
 
 (defn create-trigger
   [m]
-  (log/info "Create Trigger")
   (if-let [activity (:records m)]
     (let [author (model.activity/get-author activity)]
+
       ;; Add item to author's stream
       (model.item/push author activity)
 
-      (let [conversation (model.conversation/fetch-by-id (:conversation activity))]
-        (actions.conversation/add-activity conversation activity))
+      (when-let [id (:conversation activity)]
+        (when-let [conversation (model.conversation/fetch-by-id id)]
+          (actions.conversation/add-activity conversation activity)))
 
       ;; Add as a comment to parent posts
       ;; TODO: deprecated
-      #_(if-let [parent (model.activity/fetch-by-id (:parent activity))]
-          (model.activity/add-comment parent activity))
+      ;; (if-let [parent (model.activity/fetch-by-id (:parent activity))]
+      ;;     (model.activity/add-comment parent activity))
 
       ;; Add as comment to irts
       ;; (doseq [parent parent-activities]

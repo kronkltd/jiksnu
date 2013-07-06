@@ -149,7 +149,7 @@
     (let [author-id (abdera/get-simple-extension author ns/atom "id")
           params (actions.user/parse-person author)
           params (assoc params :id (:url params))
-          user (actions.user/find-or-create-by-remote-id (log/spy :info params))
+          user (actions.user/find-or-create-by-remote-id params)
           id (:_id user)]
       (model.feed-source/set-field! source :author id)))
 
@@ -219,7 +219,7 @@
   {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (let [response @(ops/update-resource topic (log/spy :info options))]
+      (let [response @(ops/update-resource topic options)]
         (if-let [feed (abdera/parse-xml-string (:body response))]
           (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
                 source-updated (:updated source)]

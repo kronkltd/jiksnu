@@ -195,13 +195,23 @@
   [input]
   (Jsoup/clean input (Whitelist/none)))
 
+;; (defmacro safe-task
+;;   [& body]
+;;   `(let [b# (do ~@body)
+;;          res# (l/result-channel)]
+;;      (l/enqueue res# b#)
+;;      (l/on-realized res#
+;;                     identity
+;;                     #(trace/trace :errors:handled %))
+;;      res#))
+
 (defmacro safe-task
   [& body]
-  `(task
-    (try
-      ~@body
-      (catch Exception ex#
-        (trace/trace :errors:handled ex#)))))
+  `(let [res# (task ~@body)]
+     (l/on-realized res#
+                    identity
+                    #(trace/trace :errors:handled %))
+     res#))
 
 (defn replace-template
   [template url]

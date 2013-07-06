@@ -227,20 +227,38 @@
   (log/infof "Parsing Person:\n\n%s\n"
              (str person)))
 
+(defn handle-executor-stats
+  [m]
+  (log/info (pr-str m)))
+
+(defn handle-resource-realized
+  [[item res]]
+  (log/infof "Resource Realized: %s" (:url item)))
+
+(defn handle-resource-failed
+  [[item res]]
+  (log/infof "Resource Failed: %s" (:url item)))
+
 (defn init-handlers
   []
 
-  (l/receive-all (trace/select-probes "*:created")           handle-created)
-  (l/receive-all (trace/select-probes "*:fieldSet")          handle-fieldSet)
-  (l/receive-all (trace/select-probes "*:linkAdded")         handle-linkAdded)
-  (l/receive-all (trace/probe-channel :actions:invoked)      handle-actions-invoked)
-  (l/receive-all (trace/probe-channel :activities:pushed)    handle-activities-pushed)
-  (l/receive-all (trace/probe-channel :conversations:pushed) handle-conversations-pushed)
-  (l/receive-all (trace/probe-channel :entry:parsed)         handle-entry-parsed)
-  (l/receive-all (trace/probe-channel :errors:handled)       handle-errors)
-  ;; (l/receive-all (trace/probe-channel :feed:parsed)          handle-feed-parsed)
-  ;; (l/receive-all (trace/probe-channel :person:parsed)        handle-person-parsed)
+  (l/receive-all (trace/select-probes "*:created")                    #'handle-created)
+  (l/receive-all (trace/select-probes "*:fieldSet")                   #'handle-fieldSet)
+  (l/receive-all (trace/select-probes "*:linkAdded")                  #'handle-linkAdded)
 
-  )
+  (doseq [[kw v]
+          [
+           [:actions:invoked               #'handle-actions-invoked]
+           [:activities:pushed             #'handle-activities-pushed]
+           [:conversations:pushed          #'handle-conversations-pushed]
+           [:entry:parsed                  #'handle-entry-parsed]
+           [:errors:handled                #'handle-errors]
+           [:feed:parsed                   #'handle-feed-parsed]
+           [:lamina-default-executor:stats #'handle-executor-stats]
+           [:person:parsed                 #'handle-person-parsed]
+           [:resource:realized             #'handle-resource-realized]
+           [:resource:failed               #'handle-resource-failed]
+           ]]
+    (l/receive-all (trace/probe-channel kw) v)))
 
 (defonce receivers (init-handlers))

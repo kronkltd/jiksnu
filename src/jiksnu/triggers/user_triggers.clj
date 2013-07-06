@@ -12,7 +12,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
 ;; (defn fetch-updates-trigger
 ;;   [action _ user]
@@ -33,8 +34,8 @@
       (model.user/set-field! user :update-source (:_id source)))
     (throw+ "link must have a href")))
 
-(defn add-link-trigger
-  [action [user link] _]
+(defn handle-add-link
+  [[user link]]
   (condp = (:rel link)
     ;; "magic-public-key" (parse-magic-public-key user link)
     "avatar" (parse-avatar user link)
@@ -45,7 +46,6 @@
   [action _ user]
   (actions.user/discover user))
 
-(add-trigger! #'actions.user/add-link*     #'add-link-trigger)
 (add-trigger! #'actions.user/create        #'create-trigger)
 ;; (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
 
@@ -59,9 +59,9 @@
 (defn init-receivers
   []
 
-  (l/receive-all ch/pending-get-user-meta
-                 handle-pending-get-user-meta)
+  (l/receive-all ch/pending-get-user-meta #'handle-pending-get-user-meta)
 
+  (l/receive-all (trace/probe-channel :users:linkAdded) #'handle-add-link)
   )
 
 (defn init-hooks

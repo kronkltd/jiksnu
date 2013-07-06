@@ -41,7 +41,7 @@
   [params]
   (-> params
       transforms/set-_id
-      transforms.resource/set-local
+      transforms/set-local
       transforms.resource/set-domain
       transforms.resource/set-location
       transforms/set-updated-time
@@ -63,7 +63,7 @@
                     (try
                       (create params)
                       (catch RuntimeException ex
-                        (trace/trace "errors:handled" ex))))]
+                        (trace/trace :errors:handled ex))))]
     item
     (if (< tries 3)
       (do
@@ -140,6 +140,7 @@
               (time/after? (-> 5 time/minutes time/ago)
                            (coerce/to-date-time last-updated)))
         (do
+          (trace/trace :resource:updated item)
           (log/infof "updating resource: %s" url)
           (let [response-ch (http/http-request
                                    {:url url
@@ -150,12 +151,11 @@
                                     :insecure? true})]
             (l/on-realized
              response-ch
-             (fn sucess [res]
-               (log/infof "Resource update realized: %s" url)
+             (fn [res]
+               (trace/trace :resource:realized [item res])
                (model.resource/set-field! item :lastUpdated (time/now))
                (model.resource/set-field! item :status (:status res)))
-             (fn failure [res]
-               (log/errorf "Resource update failed: %s" url)))
+             #(trace/trace :resource:failed [item %]))
             (let [response @response-ch
                   buffer (get-body-buffer response)
                   body-str (aleph.formats/channel-buffer->string buffer)

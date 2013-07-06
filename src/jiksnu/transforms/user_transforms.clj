@@ -10,7 +10,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.ops :as ops]))
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]))
 
 (defn set-id
   [user]
@@ -63,7 +64,10 @@
   [user]
   (if (:domain user)
     user
-    (throw+ "Could not determine domain for user")))
+    (if-let [id (:id user)]
+      (let [domain-name (util/get-domain-name id)]
+        (assoc user :domain domain-name))
+      (throw+ "Could not determine domain for user"))))
 
 (defn set-update-source
   [user]
