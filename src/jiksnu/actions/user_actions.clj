@@ -405,7 +405,7 @@
   (if-let [id (:id params)]
     (if-let [domain (get-domain params)]
       (let [domain (if (:discovered domain)
-                     domain (actions.domain/discover domain id))
+                     domain (first (actions.domain/discover domain id)))
             params (assoc params :domain (:_id domain))]
         (or (when-let [username (:username params)]
               (model.user/get-user username (:_id domain)))
@@ -420,9 +420,9 @@
 
 (defn discover-user-meta
   [user & [options]]
-  (util/safe-task
+  @(util/safe-task
    (discover-user-jrd user options))
-  (util/safe-task
+  @(util/safe-task
    (let [params (discover-user-xrd user options)
          links (:links params)]
      (doseq [link links]

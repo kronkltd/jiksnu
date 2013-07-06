@@ -136,7 +136,8 @@
         route-handler (resolve-routes [@pred/*sub-page-predicates*]
                                       @pred/*sub-page-matchers*)]
     (or (route-handler request)
-        (throw+ "page not found"))))
+        {:action "error"
+         :message "page not found"})))
 
 (defaction invoke-action
   [model-name action-name id & [options]]

@@ -196,8 +196,8 @@
   [^Domain domain url]
   (if-not (:local domain)
     (do (log/debugf "discovering domain - %s" (:_id domain))
-        (discover* domain url)
-        (model.domain/fetch-by-id (:_id domain)))
+        (let [res (util/safe-task (discover* domain url))]
+          [(model.domain/fetch-by-id (:_id domain)) res]))
     (log/warn "local domains do not need to be discovered")))
 
 (defaction create
@@ -232,7 +232,7 @@
                    (alter pending-discovers #(assoc % id p))
                    p)))
             p (if p
-                (do (discover domain) p)
+                (do @(second (discover domain)) p)
                 (get @pending-discovers id))]
         (or (deref p (lt/seconds 300) nil)
             (throw+ "Could not discover domain"))))))

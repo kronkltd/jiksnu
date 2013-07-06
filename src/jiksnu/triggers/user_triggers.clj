@@ -1,6 +1,5 @@
 (ns jiksnu.triggers.user-triggers
-  (:use [ciste.triggers :only [add-trigger!]]
-        [slingshot.slingshot :only [throw+]])
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -41,13 +40,6 @@
     "avatar" (parse-avatar user link)
     ns/updates-from (parse-updates-from user link)
     nil))
-
-(defn create-trigger
-  [action _ user]
-  (actions.user/discover user))
-
-(add-trigger! #'actions.user/create        #'create-trigger)
-;; (add-trigger! #'actions.user/fetch-updates #'fetch-updates-trigger)
 
 (defn handle-pending-get-user-meta*
   [user]

@@ -30,7 +30,7 @@
 (defn handle-pending-update-resources*
   [url & [options]]
   (let [resource (actions.resource/find-or-create {:url url})]
-    (actions.resource/update* resource options)))
+    (actions.resource/update* (log/spy :info resource) options)))
 
 (def handle-pending-get-resource     (ops/op-handler handle-pending-get-resource*))
 (def handle-pending-update-resources (ops/op-handler handle-pending-update-resources*))

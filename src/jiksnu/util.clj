@@ -208,7 +208,10 @@
 (defmacro safe-task
   [& body]
   `(let [res#
-         (trace/time* (task ~@body))]
+         ;; (trace/time*
+          (task ~@body)
+          ;; )
+         ]
      (l/on-realized res#
                     identity
                     #(trace/trace :errors:handled %))

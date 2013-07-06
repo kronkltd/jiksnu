@@ -1,7 +1,6 @@
 (ns jiksnu.triggers.subscription-triggers
   (:use [ciste.config :only [config]]
-        [ciste.core :only [with-context]]
-        [ciste.triggers :only [add-trigger!]])
+        [ciste.core :only [with-context]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -68,10 +67,6 @@
                           ["body" {}
                            (str (:name actor) " has subscribed to you")])})]
       (tigase/deliver-packet! packet))))
-
-;; (add-trigger! #'actions.subscription/subscribe   #'subscribe-trigger)
-;; (add-trigger! #'actions.subscription/unsubscribe #'unsubscribe-trigger)
-;; (add-trigger! #'actions.subscription/subscribed  #'subscribed-trigger)
 
 (defn handle-pending-new-subscriptions*
   [actor-id user-id]

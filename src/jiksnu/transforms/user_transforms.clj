@@ -66,7 +66,7 @@
                            (when-let [id (:id user)]
                              (util/get-domain-name id)))]
     (do
-      (actions.domain/discover @(ops/get-domain domain-name))
+      @(second (actions.domain/discover @(ops/get-domain domain-name)))
       (assoc user :domain domain-name))
     (throw+ "Could not determine domain for user")))
 
