@@ -1,6 +1,4 @@
 (ns jiksnu.handlers.xrd
-  (:use [lamina.executor :only [task]]
-        [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
             [clojure.tools.logging :as log]

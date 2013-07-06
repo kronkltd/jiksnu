@@ -5,7 +5,6 @@
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-url]]
-        [lamina.executor :only [task]]
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
@@ -230,7 +229,7 @@
               (try
                 (process-feed source feed)
                 (catch Exception ex
-                  (.printStackTrace ex)))
+                  (trace/trace :errors:handled ex)))
               (log/warn "feed is up to date")))
           (throw+ "could not obtain feed"))))
     (log/warn "local sources do not need updates")))
@@ -238,11 +237,7 @@
 (defaction update
   "Fetch updates for the source"
   [source & [options]]
-  (task
-   (try
-     (update* source options)
-     (catch RuntimeException ex
-       (trace/trace "errors:handled" ex))))
+  (util/safe-task (update* source options))
   source)
 
 (defaction subscribe

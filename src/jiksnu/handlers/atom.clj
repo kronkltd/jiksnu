@@ -1,6 +1,5 @@
 (ns jiksnu.handlers.atom
-  (:use [lamina.executor :only [task]]
-        [slingshot.slingshot :only [throw+]])
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
@@ -24,7 +23,7 @@
           (try
             (actions.feed-source/process-feed source feed)
             (catch Exception ex
-              (.printStackTrace ex)))
+              (trace/trace :errors:handled ex)))
           (log/warn "feed is up to date")))
       (throw+ "could not obtain feed"))
     (throw+ "could not get source")))

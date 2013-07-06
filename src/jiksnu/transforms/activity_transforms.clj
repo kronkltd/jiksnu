@@ -1,7 +1,6 @@
 (ns jiksnu.transforms.activity-transforms
   (:use [ciste.config :only [config]]
         [jiksnu.session :only [current-user current-user-id is-admin?]]
-        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]

@@ -5,7 +5,6 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.data.json :as json]

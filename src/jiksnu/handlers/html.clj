@@ -1,6 +1,4 @@
 (ns jiksnu.handlers.html
-  (:use [lamina.executor :only [task]]
-        [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clj-time.core :as time]
             [clojure.string :as string]

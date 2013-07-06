@@ -1,6 +1,5 @@
 (ns jiksnu.templates
-  (:use [lamina.executor :only [task]]
-        [slingshot.slingshot :only [throw+]])
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]

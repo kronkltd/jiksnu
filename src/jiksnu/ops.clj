@@ -34,7 +34,9 @@
     (try
       (let [val (apply f args)]
         (l/enqueue result val))
-      (catch RuntimeException ex
+      (catch Exception ex
+        (log/error "op handler error")
+        (log/error ex)
         (l/error result ex)))))
 
 (defn async-op

@@ -4,7 +4,6 @@
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.actions :only [invoke-action]]
-        [lamina.executor :only [task]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]

@@ -4,8 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
-        [lamina.executor :only [task]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clj-time.core :as time]
@@ -69,14 +68,25 @@
 
 (defn fetch-xrd*
   [url]
-  (let [response @(ops/update-resource url {:force true})]
-    (when (= 200 (:status response))
-      (try
-        (if-let [body (:body response)]
-          (cm/string->document body))
-        (catch RuntimeException ex
-          (log/error "Fetching host meta failed")
-          (trace/trace "errors:handled" ex))))))
+  (try+
+   (let [res (ops/update-resource url {:force true})]
+     (l/on-realized res
+                    (fn [_] (log/info "Finished fetching xrd"))
+                    (fn [_] (log/error "Fetching xrd caused error"))
+                    )
+
+     (let [response @res]
+       (when (= 200 (:status response))
+         (try
+           (if-let [body (:body response)]
+             (cm/string->document body))
+           (catch RuntimeException ex
+             (log/error "Fetching host meta failed")
+             (trace/trace "errors:handled" ex))))))
+   (catch Object ex
+     (log/error ex)
+     )
+   ))
 
 (defn fetch-xrd
   [domain url]
