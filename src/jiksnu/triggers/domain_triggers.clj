@@ -33,11 +33,8 @@
 (defn init-receivers
   []
 
-  (l/receive-all ch/pending-get-domain
-                 handle-pending-get-domain)
-
-  (l/receive-all (trace/probe-channel :domains:linkAdded)
-                 handle-add-link)
+  (l/receive-all ch/pending-get-domain                    #'handle-pending-get-domain)
+  (l/receive-all (trace/probe-channel :domains:linkAdded) #'handle-add-link)
 
   )
 

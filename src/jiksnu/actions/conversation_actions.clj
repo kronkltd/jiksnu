@@ -31,7 +31,8 @@
        transforms.conversation/set-url
        transforms.conversation/set-domain
        transforms/set-local
-       transforms.conversation/set-update-source))
+       ;; transforms.conversation/set-update-source
+       ))
 
 (defn prepare-delete
   ([item]

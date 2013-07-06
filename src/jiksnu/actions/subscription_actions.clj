@@ -89,12 +89,14 @@
   [actor user]
   ;; Set up a feed source to that user's public feed
   (when-not (:local user)
-    (util/safe-task (actions.user/update user))
-    (if-let [source-id (:update-source user)]
-      (when-let [source (model.feed-source/fetch-by-id source-id)]
-        ;; TODO: add a watcher
-        (actions.feed-source/subscribe source))
-      (log/warn "Could not find source")))
+    (util/safe-task
+     (actions.user/discover user)
+     (actions.user/update user)
+     (if-let [source-id (:update-source user)]
+       (when-let [source (model.feed-source/fetch-by-id source-id)]
+         ;; TODO: add a watcher
+         (actions.feed-source/subscribe source))
+       (log/warn "Could not find source"))))
   (create {:from (:_id actor)
            :to (:_id user)
            :local true

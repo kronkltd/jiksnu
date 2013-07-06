@@ -123,6 +123,8 @@
      (let [errors (validator params)]
        (if (empty? errors)
          (do
+           (let [name (str collection-name ":create:in")]
+             (trace/trace* name {:name name :params params}))
            (mc/insert collection-name params)
            (let [item (fetcher (:_id params))]
              (trace/trace* (str collection-name ":created") item)

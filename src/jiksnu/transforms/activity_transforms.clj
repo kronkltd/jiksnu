@@ -20,6 +20,18 @@
   [activity]
   (assoc activity :local true))
 
+(defn set-published-time
+  [item]
+  (if (:published item)
+    item
+    (assoc item :published (time/now))))
+
+(defn set-title
+  [item]
+  (if (:title item)
+    item
+    (assoc item :title "")))
+
 (defn set-object-updated
   [activity]
   (if (:updated (:object activity))

@@ -501,6 +501,7 @@
    [:form {:method "post"
            :action "/notice/new"
            :enctype "multipart/form-data"}
+    [:input {:type "hidden" :name "source" :value "web"}]
     [:fieldset
      [:div.tab-content
       [:div#post-note.tab-pane.active

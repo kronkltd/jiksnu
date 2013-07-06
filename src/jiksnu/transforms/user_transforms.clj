@@ -62,12 +62,13 @@
 
 (defn set-domain
   [user]
-  (if (:domain user)
-    user
-    (if-let [id (:id user)]
-      (let [domain-name (util/get-domain-name id)]
-        (assoc user :domain domain-name))
-      (throw+ "Could not determine domain for user"))))
+  (if-let [domain-name (or (:domain user)
+                           (when-let [id (:id user)]
+                             (util/get-domain-name id)))]
+    (do
+      (actions.domain/discover @(ops/get-domain domain-name))
+      (assoc user :domain domain-name))
+    (throw+ "Could not determine domain for user")))
 
 (defn set-update-source
   [user]

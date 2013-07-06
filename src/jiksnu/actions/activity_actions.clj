@@ -119,11 +119,13 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [activity]
   (-> activity
       transforms.activity/set-actor
+      transforms.activity/set-title
       transforms.activity/set-local
       transforms.activity/set-source
       transforms.activity/set-geo
       transforms.activity/set-object-updated
       transforms.activity/set-object-created
+      transforms.activity/set-published-time
       transforms.activity/set-verb))
 
 (defaction create
