@@ -62,7 +62,7 @@
   ;; {:pre [(instance? FeedSource source)
   ;;        (instance? User user)]
   ;;  :post [(instance? FeedSource %)]}
-  #_(model.feed-source/push-value! source :watchers (:_id user))
+  (model.feed-source/push-value! source :watchers (:_id user))
   (model.feed-source/fetch-by-id (:_id source)))
 
 (defaction watch

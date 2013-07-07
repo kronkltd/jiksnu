@@ -4,7 +4,7 @@
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.actions :only [invoke-action]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.http :as http]
             [ciste.model :as cm]
             [clj-http.client :as client]
@@ -14,6 +14,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
+            [lamina.time :as lt]
             [lamina.trace :as trace]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -21,6 +22,7 @@
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import jiksnu.model.Resource))
@@ -94,13 +96,13 @@
     item
     (add-link* item link)))
 
-(declare update)
-
 (defmulti process-response-content (fn [content-type item response] content-type))
 
 (defmethod process-response-content :default
   [content-type item response]
   (log/infof "unknown content type: %s" content-type))
+
+(declare update)
 
 (defn process-response
   [item response]
@@ -119,51 +121,89 @@
       (model.resource/set-field! item :contentType content-type)
       (process-response-content content-type item response))))
 
+(defn needs-update?
+  [item options]
+  (let [last-updated (:lastUpdated item)]
+    (and (not (:local item))
+         (or (:force options)
+             (nil? last-updated)
+             (time/after? (-> 5 time/minutes time/ago)
+                          (coerce/to-date-time last-updated))))))
+
 (defn get-body-buffer
+  "Given an http response, returns a channel buffer"
   [response]
   (when-let [body (:body response)]
     (if (l/channel? body)
-      (->> body
-           l/channel->lazy-seq
-           aleph.formats/channel-buffers->channel-buffer)
+      (let [res (l/expiring-result (lt/seconds 15))]
+        (l/on-closed body
+                     (fn []
+                       (log/info "closed")
+                       ;; (l/receive-all body println)
+                       (let [buffers (l/channel->seq body #_(lt/seconds 30))]
+                         (let [cb (aleph.formats/channel-buffers->channel-buffer buffers)]
+                           (l/enqueue res cb)))))
+        res)
       body)))
 
+
+(defn transform-response
+  [response]
+  (let [res (l/expiring-result (lt/seconds 15))
+        buffer-ch (get-body-buffer response)]
+    (l/on-realized
+     buffer-ch
+     (fn [buffer]
+       (log/info "Buffer channel realized")
+       (let [body-str (aleph.formats/channel-buffer->string buffer)
+             response (assoc response :body body-str)]
+         (l/enqueue res response)))
+     (fn [ex]
+       (l/error res ex)))
+    res))
+
 (defn update*
+  "Fetches the resource and returns a result channel or nil.
+
+The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
-  (if-not (:local item)
-    (let [last-updated (:lastUpdated item)
-          url (:url item)]
-      (if (or (:force options)
-              (nil? last-updated)
-              (time/after? (-> 5 time/minutes time/ago)
-                           (coerce/to-date-time last-updated)))
-        (do
-          (trace/trace :resource:updated item)
-          (log/infof "updating resource: %s" url)
-          (let [response-ch (http/http-request
-                                   {:url url
-                                    :method :get
-                                    :throw-exceptions false
-                                    ;; :auto-transform true
-                                    :headers {"User-Agent" user-agent}
-                                    :insecure? true})]
-            (l/on-realized
-             response-ch
-             (fn [res]
-               (trace/trace :resource:realized [item res])
-               (model.resource/set-field! item :lastUpdated (time/now))
-               (model.resource/set-field! item :status (:status res)))
-             #(trace/trace :resource:failed [item %]))
-            (let [response @response-ch
-                  buffer (get-body-buffer response)
-                  body-str (aleph.formats/channel-buffer->string buffer)
-                  response (assoc response :body body-str)]
-              (when (= 200 (:status response))
-                #_(process-response item response)
-                response))))
-        (log/warn "Resource has already been updated")))
-    (log/debug "local resource does not need update")))
+  (if (or true (needs-update? item options))
+    (let [url (:url item)
+          res (l/expiring-result (lt/seconds 30))]
+      (trace/trace :resource:updated item)
+      (log/infof "updating resource: %s" url)
+      (let [response-ch (http/http-request
+                         {
+                          :url url
+                          :method :get
+                          ;; :throw-exceptions false
+                          ;; :auto-transform true
+                          :headers {"User-Agent" user-agent}
+                          ;; :insecure? true
+                          })]
+        (l/on-realized
+         response-ch
+         (fn [response]
+           (try+
+             (trace/trace :resource:realized [item response])
+             (model.resource/set-field! item :lastUpdated (time/now))
+             (model.resource/set-field! item :status (:status response))
+             (let [transformed-response (condp = (:status response)
+                                          200 (transform-response response)
+                                          nil)]
+               (l/on-realized transformed-response
+                              (fn [tr]
+                                (l/enqueue res tr))
+                              (fn [ex]
+                                (l/error res ex))))
+             (catch Object ex
+               (l/error res ex))))
+         (fn [response]
+           (trace/trace :resource:failed [item response])
+           (l/error res response))))
+      res)
+    (log/warn "Resource does not need to be updated at this time.")))
 
 (defaction update
   [item]

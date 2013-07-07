@@ -244,19 +244,19 @@
   []
 
   (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
-  (l/receive-all (trace/select-probes "*:created")   #'handle-created)
-  (l/receive-all (trace/select-probes "*:fieldSet")  #'handle-fieldSet)
-  (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
+  ;; (l/receive-all (trace/select-probes "*:created")   #'handle-created)
+  ;; (l/receive-all (trace/select-probes "*:fieldSet")  #'handle-fieldSet)
+  ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
 
   (doseq [[kw v]
           [
            [:actions:invoked               #'handle-actions-invoked]
-           [:activities:pushed             #'handle-activities-pushed]
-           [:conversations:pushed          #'handle-conversations-pushed]
+           ;; [:activities:pushed             #'handle-activities-pushed]
+           ;; [:conversations:pushed          #'handle-conversations-pushed]
            ;; [:entry:parsed                  #'handle-entry-parsed]
            [:errors:handled                #'handle-errors]
            ;; [:feed:parsed                   #'handle-feed-parsed]
-           [:lamina-default-executor:stats #'handle-event]
+           ;; [:lamina-default-executor:stats #'handle-event]
            ;; [:person:parsed                 #'handle-person-parsed]
            [:resource:realized             #'handle-resource-realized]
            [:resource:failed               #'handle-resource-failed]

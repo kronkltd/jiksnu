@@ -54,6 +54,12 @@
   [user]
   (fetch-by-id (:update-source user)))
 
+(defn push-value!
+  [item key value]
+  (mc/update collection-name
+    (select-keys item #{:_id})
+    {:$push {key value}}))
+
 (defn ensure-indexes
   []
   (doto collection-name
