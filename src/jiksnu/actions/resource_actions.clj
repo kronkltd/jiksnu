@@ -133,9 +133,10 @@
 (defn get-body-buffer
   "Given an http response, returns a channel buffer"
   [response]
-  (when-let [body (:body response)]
-    (if (l/channel? body)
-      (let [res (l/expiring-result (lt/seconds 15))]
+  (log/info "Getting body buffer")
+  (when-let [body (log/spy :info (:body response))]
+    (let [res (l/expiring-result (lt/seconds 15))]
+      (if (l/channel? body)
         (l/on-closed body
                      (fn []
                        (log/info "closed")
@@ -143,24 +144,31 @@
                        (let [buffers (l/channel->seq body #_(lt/seconds 30))]
                          (let [cb (aleph.formats/channel-buffers->channel-buffer buffers)]
                            (l/enqueue res cb)))))
-        res)
-      body)))
-
+        (l/enqueue res body))
+      res)))
 
 (defn transform-response
   [response]
-  (let [res (l/expiring-result (lt/seconds 15))
-        buffer-ch (get-body-buffer response)]
-    (l/on-realized
-     buffer-ch
+  (let [res (l/expiring-result (lt/seconds 15))]
+    (l/run-pipeline
+     (log/spy :info (get-body-buffer response))
+     {:error-handler (fn [ex] ex)
+      :result res}
      (fn [buffer]
        (log/info "Buffer channel realized")
        (let [body-str (aleph.formats/channel-buffer->string buffer)
              response (assoc response :body body-str)]
-         (l/enqueue res response)))
-     (fn [ex]
-       (l/error res ex)))
+         response)))
     res))
+
+(defn handle-update-realized
+  [item response]
+  (trace/trace :resource:realized [item response])
+  (model.resource/set-field! item :lastUpdated (time/now))
+  (model.resource/set-field! item :status (:status response))
+  (condp = (:status response)
+    200 (transform-response response)
+    (throw+ "Unknown status type")))
 
 (defn update*
   "Fetches the resource and returns a result channel or nil.
@@ -173,35 +181,22 @@ The channel will receive the body of fetching this resource."
           res (l/expiring-result (lt/seconds 30))]
       (trace/trace :resource:updated item)
       (log/infof "updating resource: %s" url)
-      (let [response-ch (http/http-request
-                         {
-                          :url url
-                          :method :get
-                          ;; :throw-exceptions false
-                          ;; :auto-transform true
-                          :headers {"User-Agent" user-agent}
-                          ;; :insecure? true
-                          })]
-        (l/on-realized
-         response-ch
-         (fn [response]
-           (try+
-             (trace/trace :resource:realized [item response])
-             (model.resource/set-field! item :lastUpdated (time/now))
-             (model.resource/set-field! item :status (:status response))
-             (let [transformed-response (condp = (:status response)
-                                          200 (transform-response response)
-                                          nil)]
-               (l/on-realized transformed-response
-                              (fn [tr]
-                                (l/enqueue res tr))
-                              (fn [ex]
-                                (l/error res ex))))
-             (catch Object ex
-               (l/error res ex))))
-         (fn [response]
-           (trace/trace :resource:failed [item response])
-           (l/error res response))))
+      (let [request {
+                     :url url
+                     :method :get
+                     ;; :throw-exceptions false
+                     ;; :auto-transform true
+                     :headers {"User-Agent" user-agent}
+                     ;; :insecure? true
+                     }]
+        (l/run-pipeline
+         (http/http-request request)
+         {:error-handler (fn [ex]
+                           ;; (log/error ex)
+                           ;; (.printStackTrace ex)
+                           (trace/trace :resource:failed [item ex]))
+          :result res}
+         (partial handle-update-realized item)))
       res)
     (log/warn "Resource does not need to be updated at this time.")))
 

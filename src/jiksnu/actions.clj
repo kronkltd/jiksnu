@@ -240,6 +240,10 @@
   [event]
   (log/info (pr-str event)))
 
+(defn handle-http-client-error
+  [event]
+  (log/errorf "Http Client Error: %s" (pr-str event)))
+
 (defn init-handlers
   []
 
@@ -254,6 +258,7 @@
            ;; [:activities:pushed             #'handle-activities-pushed]
            ;; [:conversations:pushed          #'handle-conversations-pushed]
            ;; [:entry:parsed                  #'handle-entry-parsed]
+           [:http-client:error             #'handle-http-client-error]
            [:errors:handled                #'handle-errors]
            ;; [:feed:parsed                   #'handle-feed-parsed]
            ;; [:lamina-default-executor:stats #'handle-event]
