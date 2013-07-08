@@ -134,7 +134,7 @@
   "Given an http response, returns a channel buffer"
   [response]
   (log/info "Getting body buffer")
-  (when-let [body (log/spy :info (:body response))]
+  (when-let [body (:body response)]
     (let [res (l/expiring-result (lt/seconds 15))]
       (if (l/channel? body)
         (l/on-closed body
@@ -151,7 +151,7 @@
   [response]
   (let [res (l/expiring-result (lt/seconds 15))]
     (l/run-pipeline
-     (log/spy :info (get-body-buffer response))
+     (get-body-buffer response)
      {:error-handler (fn [ex] ex)
       :result res}
      (fn [buffer]

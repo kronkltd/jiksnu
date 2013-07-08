@@ -19,25 +19,27 @@
 
 (deffilter #'delete :command
   [action id]
-  (if-let [item (model.domain/fetch-by-id id)]
+  (when-let [item (model.domain/fetch-by-id id)]
     (action item)))
 
 (deffilter #'delete :http
   [action request]
   (let [id (-> request :params :id action)]
-    (if-let [item (model.domain/fetch-by-id id)]
+    (when-let [item (model.domain/fetch-by-id id)]
       (action item))))
 
 ;; discover
 
 (deffilter #'discover :command
   [action id]
-  (if-let [item (model.domain/fetch-by-id id)]
-    (action item)))
+  (when-let [item (model.domain/fetch-by-id id)]
+    (first (action item))))
 
 (deffilter #'discover :http
   [action request]
-  (-> request :params :id model.domain/fetch-by-id action))
+  (when-let [id (get-in request [:params :id])]
+    (when-let [item (model.domain/fetch-by-id id)]
+      (first (action item)))))
 
 ;; find-or-create
 

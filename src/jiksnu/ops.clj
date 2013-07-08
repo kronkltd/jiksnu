@@ -77,6 +77,7 @@
 
 (defn update-resource
   [url & [options]]
+  (log/debug "ops/update-resource")
   (if url
     (async-op ch/pending-update-resources [url options])
     (throw+ "url must not be nil")))

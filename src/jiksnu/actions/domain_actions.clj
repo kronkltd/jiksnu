@@ -95,14 +95,9 @@
                (model.domain/host-meta-link domain)
                (map #(str % ".well-known/host-meta")
                     (rest segments)))]
-    (if-let [xrd (->> paths
-                      (keep fetch-xrd*)
-                      first)]
-            xrd
-            (throw+
-             {:message "could not determine host meta"
-              :domain domain
-              :url url}))))
+    (->> paths
+         (keep fetch-xrd*)
+         first)))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"
@@ -159,13 +154,12 @@
 
 (defn discover-webfinger
   [^Domain domain url]
-  ;; TODO: check https first
+  (log/info "discover webfinger")
   (if-let [xrd (fetch-xrd domain url)]
-    (do
-      (set-links-from-xrd domain xrd)
-      (set-discovered! domain)
-      domain)
-    (throw+ (format "Could not find host meta for domain: %s" (:_id domain)))))
+    (do (set-links-from-xrd domain xrd)
+        (set-discovered! domain)
+        domain)
+    (log/warnf "Could not get webfinger for domain: %s" (:_id domain))))
 
 (defn discover-onesocialweb
   [domain url]
@@ -188,15 +182,18 @@
 
 (defn discover*
   [domain url]
-  (util/safe-task (discover-webfinger domain url))
-  (util/safe-task (discover-onesocialweb domain url))
-  (util/safe-task (discover-statusnet-config domain url)))
+  (log/debug "running discover tasks")
+  (l/merge-results
+   (util/safe-task (discover-webfinger domain url))
+   ;; (util/safe-task (discover-onesocialweb domain url))
+   ;; (util/safe-task (discover-statusnet-config domain url))
+   ))
 
 (defaction discover
   [^Domain domain url]
   (if-not (:local domain)
     (do (log/debugf "discovering domain - %s" (:_id domain))
-        (let [res (util/safe-task (discover* domain url))]
+        (let [res (discover* domain url)]
           [(model.domain/fetch-by-id (:_id domain)) res]))
     (log/warn "local domains do not need to be discovered")))
 
@@ -229,12 +226,18 @@
             p (dosync
                (when-not (get @pending-discovers id)
                  (let [p (promise)]
+                   (log/info "Queuing discover")
                    (alter pending-discovers #(assoc % id p))
                    p)))
             p (if p
-                (do @(second (discover domain)) p)
-                (get @pending-discovers id))]
-        (or (deref p (lt/seconds 300) nil)
+                (do
+                  (log/info "discovering")
+                  @(second (discover domain))
+                  p)
+                (do
+                  (log/info "using queued promise")
+                  (get @pending-discovers id)))]
+        (or (deref p (time/seconds 300) nil)
             (throw+ "Could not discover domain"))))))
 
 (defaction host-meta
