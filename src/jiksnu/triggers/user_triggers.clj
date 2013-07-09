@@ -33,11 +33,20 @@
       (model.user/set-field! user :update-source (:_id source)))
     (throw+ "link must have a href")))
 
+(defn parse-activity-outbox
+  [user link]
+  (log/debug "Setting update source")
+  (if-let [href (:href link)]
+    (let [source (actions.feed-source/find-or-create {:topic href})]
+      (model.user/set-field! user :update-source (:_id source)))
+    (throw+ "link must have a href")))
+
 (defn handle-add-link
   [[user link]]
   (condp = (:rel link)
     ;; "magic-public-key" (parse-magic-public-key user link)
     "avatar" (parse-avatar user link)
+    "activity-outbox" (parse-activity-outbox user link)
     ns/updates-from (parse-updates-from user link)
     nil))
 
