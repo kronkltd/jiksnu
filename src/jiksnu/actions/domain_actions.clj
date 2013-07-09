@@ -72,10 +72,9 @@
    (let [res (ops/update-resource url {:force true})]
      (l/on-realized res
                     (fn [_] (log/info "Finished fetching xrd"))
-                    (fn [_] (log/error "Fetching xrd caused error"))
-                    )
+                    (fn [_] (log/error "Fetching xrd caused error")))
 
-     (let [response @res]
+     (let [response (log/spy :info @res)]
        (when (= 200 (:status response))
          (try
            (if-let [body (:body response)]
@@ -90,14 +89,15 @@
 
 (defn fetch-xrd
   [domain url]
-  (let [segments (util/path-segments url)
-        paths (concat
-               (model.domain/host-meta-link domain)
-               (map #(str % ".well-known/host-meta")
-                    (rest segments)))]
-    (->> paths
-         (keep fetch-xrd*)
-         first)))
+  (let [segments (util/path-segments url)]
+    (loop [paths (concat
+                  (model.domain/host-meta-link domain)
+                  (map #(str % ".well-known/host-meta")
+                       (rest segments)))]
+      (when-let [url (first paths)]
+        (if-let [xrd (log/spy :info (fetch-xrd* url))]
+          xrd
+          (recur (rest paths)))))))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"
@@ -155,7 +155,7 @@
 (defn discover-webfinger
   [^Domain domain url]
   (log/info "discover webfinger")
-  (if-let [xrd (fetch-xrd domain url)]
+  (if-let [xrd (log/spy :info (fetch-xrd domain url))]
     (do (set-links-from-xrd domain xrd)
         (set-discovered! domain)
         domain)

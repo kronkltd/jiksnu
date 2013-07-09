@@ -30,7 +30,7 @@
 (defn handle-pending-update-resources*
   [url & [options]]
   (when-let [resource (actions.resource/find-or-create {:url url})]
-    (actions.resource/update* resource options)))
+    @(actions.resource/update* resource options)))
 
 (def handle-pending-get-resource     (ops/op-handler handle-pending-get-resource*))
 (def handle-pending-update-resources (ops/op-handler handle-pending-update-resources*))
@@ -38,7 +38,7 @@
 (defn init-receivers
   []
   ;; (l/receive-all ch/resource-links-added     add-link-trigger)
-  (l/receive-all ch/pending-get-resource     handle-pending-get-resource)
-  (l/receive-all ch/pending-update-resources handle-pending-update-resources))
+  (l/receive-all ch/pending-get-resource     #'handle-pending-get-resource)
+  (l/receive-all ch/pending-update-resources #'handle-pending-update-resources))
 
 (defonce receivers (init-receivers))

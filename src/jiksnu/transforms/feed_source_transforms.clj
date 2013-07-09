@@ -3,6 +3,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.ops :as ops]
             [jiksnu.util :as util])
   (:import java.net.URI))
 
@@ -19,8 +20,7 @@
   (if (:domain source)
     source
     (let [domain-name (util/get-domain-name (:topic source))
-          domain (actions.domain/get-discovered
-                  (actions.domain/find-or-create {:_id domain-name}))]
+          domain @(ops/get-discovered @(ops/get-domain domain-name))]
       (assoc source :domain (:_id domain)))))
 
 (defn set-status

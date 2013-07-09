@@ -79,10 +79,10 @@
 (defn get-domain
   "Return the domain of the user"
   [^User user]
-  (if-let [domain-id (or (:domain user)
-                         (when-let [id (:id user)]
-                           (util/get-domain-name id)))]
-    (actions.domain/get-discovered {:_id domain-id})))
+  (if-let [domain-name (or (:domain user)
+                           (when-let [id (:id user)]
+                             (util/get-domain-name id)))]
+    @(ops/get-domain domain-name)))
 
 (defn get-user-meta-uri
   [user]
@@ -388,7 +388,7 @@
   (let [{:keys [id username url links note email local-id]
          :as params} (parse-person person)
          domain-name (util/get-domain-name (or id url))
-         domain (actions.domain/get-discovered {:_id domain-name})
+         domain @(ops/get-discovered @(ops/get-domain domain-name))
          username (or username (get-username {:id id}))]
     (if (and username domain)
       (let [user-meta (model.domain/get-xrd-url domain url)
@@ -502,7 +502,7 @@
   "Error callback when user doesn't support xmpp"
   [user]
   (let [domain-name (:domain user)
-        domain (actions.domain/get-discovered domain-name)]
+        domain @(ops/get-discovered @(ops/get-domain domain-name))]
     (actions.domain/set-xmpp domain false)
     user))
 

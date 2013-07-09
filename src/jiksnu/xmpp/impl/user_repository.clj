@@ -130,7 +130,7 @@
                (actions.user/create {:username username :domain domain})
                (if domain
                  (when-not (#{"vhost-manager"} domain)
-                   (actions.domain/get-discovered domain))
+                   @(ops/get-discovered domain))
                  #_(throw+ "Could not find domain"))))))
 
 (defn handle-count-users
