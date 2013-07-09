@@ -66,7 +66,7 @@
                            (when-let [id (:id user)]
                              (util/get-domain-name id)))]
     (do
-      @(second (actions.domain/discover @(ops/get-domain domain-name)))
+      @(ops/get-discovered @(ops/get-domain domain-name))
       (assoc user :domain domain-name))
     (throw+ "Could not determine domain for user")))
 
@@ -90,8 +90,8 @@
     item
     (let [id (:id item)
           domain-name (:domain item)
-          domain (ops/get-discovered (model.domain/fetch-by-id domain-name))]
-      (if-let [url (model.domain/get-xrd-url @domain id)]
+          domain @(ops/get-discovered (model.domain/fetch-by-id domain-name))]
+      (if-let [url (model.domain/get-xrd-url domain id)]
         (assoc item :user-meta-link url)
         (throw+ "Could not determine use meta link")))))
 

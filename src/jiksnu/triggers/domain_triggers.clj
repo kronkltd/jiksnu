@@ -11,7 +11,12 @@
   [domain-name]
   (actions.domain/find-or-create {:_id domain-name}))
 
-(def handle-pending-get-domain (ops/op-handler handle-pending-get-domain*))
+(defn- handle-pending-get-discovered*
+  [domain & [id options]]
+  (actions.domain/get-discovered domain id options))
+
+(def handle-pending-get-domain     (ops/op-handler handle-pending-get-domain*))
+(def handle-pending-get-discovered (ops/op-handler handle-pending-get-discovered*))
 
 (defn handle-add-link
   [[item link]]
@@ -34,6 +39,7 @@
   []
 
   (l/receive-all ch/pending-get-domain                    #'handle-pending-get-domain)
+  (l/receive-all ch/pending-get-discovered                #'handle-pending-get-discovered)
   (l/receive-all (trace/probe-channel :domains:linkAdded) #'handle-add-link)
 
   )

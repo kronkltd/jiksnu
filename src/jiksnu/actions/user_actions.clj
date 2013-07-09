@@ -405,7 +405,7 @@
   (if-let [id (:id params)]
     (if-let [domain (get-domain params)]
       (let [domain (if (:discovered domain)
-                     domain (first (actions.domain/discover domain id)))
+                     domain @(ops/get-discovered domain id options))
             params (assoc params :domain (:_id domain))]
         (or (when-let [username (:username params)]
               (model.user/get-user username (:_id domain)))

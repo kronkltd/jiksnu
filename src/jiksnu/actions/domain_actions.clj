@@ -218,27 +218,27 @@
                    :local true}))
 
 (defn get-discovered
-  [domain]
-  (let [domain (find-or-create domain)]
-    (if (:discovered domain)
-      domain
-      (let [id (:_id domain)
-            p (dosync
-               (when-not (get @pending-discovers id)
-                 (let [p (promise)]
-                   (log/info "Queuing discover")
-                   (alter pending-discovers #(assoc % id p))
-                   p)))
-            p (if p
-                (do
-                  (log/info "discovering")
-                  @(second (discover domain))
-                  p)
-                (do
-                  (log/info "using queued promise")
-                  (get @pending-discovers id)))]
-        (or (deref p (time/seconds 300) nil)
-            (throw+ "Could not discover domain"))))))
+  [domain & [id options]]
+  (log/infof "Getting discovered domain for: %s" (:_id domain))
+  (if (:discovered domain)
+    domain
+    (let [id (:_id domain)
+          p (dosync
+             (when-not (get @pending-discovers id)
+               (let [p (promise)]
+                 (log/info "Queuing discover")
+                 (alter pending-discovers #(assoc % id p))
+                 p)))
+          p (if p
+              (do
+                (log/info "discovering")
+                @(second (discover domain id options))
+                p)
+              (do
+                (log/info "using queued promise")
+                (get @pending-discovers id)))]
+      (or (deref p (time/seconds 300) nil)
+          (throw+ "Could not discover domain")))))
 
 (defaction host-meta
   []
