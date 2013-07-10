@@ -5,7 +5,8 @@
             [jiksnu.channels :as ch]
             [lamina.core :as l]
             [lamina.time :as time]
-            [lamina.trace :as trace]))
+            [lamina.trace :as trace])
+  (:import jiksnu.model.Domain))
 
 ;; TODO: Config option
 (def default-timeout
@@ -61,10 +62,12 @@
 
 (defn get-domain
   [domain-name]
+  {:pre [(string? domain-name)]}
   (async-op ch/pending-get-domain [domain-name]))
 
 (defn get-discovered
   [domain & [id options]]
+  {:pre [(instance? Domain domain)]}
   (async-op ch/pending-get-discovered [domain id options]))
 
 (defn get-source

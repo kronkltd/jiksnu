@@ -68,6 +68,7 @@
 
 (defn fetch-xrd*
   [url]
+  {:pre [(string? url)]}
   (try+
    (let [res (ops/update-resource url {:force true})]
      (l/on-realized res
@@ -89,19 +90,23 @@
 
 (defn fetch-xrd
   [domain url]
+  {:pre [(instance? Domain domain)
+         (or (nil? url)
+             (string? url))]}
   (let [segments (util/path-segments url)]
     (loop [paths (concat
                   (model.domain/host-meta-link domain)
                   (map #(str % ".well-known/host-meta")
                        (rest segments)))]
       (when-let [url (first paths)]
-        (if-let [xrd (log/spy :info (fetch-xrd* url))]
+        (if-let [xrd (fetch-xrd* url)]
           xrd
           (recur (rest paths)))))))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"
   [domain]
+  {:pre [(instance? Domain domain)]}
   (model.domain/set-field! domain :discovered true)
   (model.domain/set-field! domain :discoveredAt (time/now))
   (let [id (:_id domain)
@@ -143,6 +148,7 @@
 
 (defaction ping-response
   [domain]
+  {:pre [(instance? Domain domain)]}
   (set-xmpp domain true))
 
 (defn set-links-from-xrd
@@ -154,6 +160,9 @@
 
 (defn discover-webfinger
   [^Domain domain url]
+  {:pre [(instance? Domain domain)
+         (or (nil? url)
+             (string? url))]}
   (log/info "discover webfinger")
   (if-let [xrd (log/spy :info (fetch-xrd domain url))]
     (do (set-links-from-xrd domain xrd)
@@ -182,6 +191,9 @@
 
 (defn discover*
   [domain url]
+  {:pre [(instance? Domain domain)
+         (or (nil? url)
+             (string? url))]}
   (log/debug "running discover tasks")
   (l/merge-results
    (util/safe-task (discover-webfinger domain url))
@@ -218,7 +230,7 @@
                    :local true}))
 
 (defn get-discovered
-  [domain & [id options]]
+  [domain & [url options]]
   (log/infof "Getting discovered domain for: %s" (:_id domain))
   (if (:discovered domain)
     domain
@@ -232,7 +244,7 @@
           p (if p
               (do
                 (log/info "discovering")
-                @(second (discover domain id options))
+                @(second (discover domain url options))
                 p)
               (do
                 (log/info "using queued promise")

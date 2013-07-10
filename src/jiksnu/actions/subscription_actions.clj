@@ -90,8 +90,11 @@
   ;; Set up a feed source to that user's public feed
   (when-not (:local user)
     (util/safe-task
+
      (actions.user/discover user)
+
      (let [user (model.user/fetch-by-id (:_id user))]
+
        (actions.user/update user)
 
        (if-let [source-id (:update-source user)]
