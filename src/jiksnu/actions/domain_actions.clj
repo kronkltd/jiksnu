@@ -74,24 +74,29 @@
   [url]
   (let [resource (actions.resource/find-or-create {:url url})
         response (actions.resource/update* resource {:force true})]
-    (try
-      (if-let [body (:body response)]
-        (cm/string->document body))
-      (catch RuntimeException ex
-        (log/error "Fetching host meta failed")
-        (trace/trace "errors:handled" ex)))))
+    (when (= 200 (:status response))
+      (try
+        (if-let [body (:body response)]
+          (cm/string->document body))
+        (catch RuntimeException ex
+          (log/error "Fetching host meta failed")
+          (trace/trace "errors:handled" ex))))))
 
 (defn fetch-xrd
   [domain url]
-  (if-let [xrd (->> url util/path-segments rest
-                    (map #(str % ".well-known/host-meta"))
-                    (cons (model.domain/host-meta-link domain))
-                    (keep fetch-xrd*) first)]
-    xrd
-    (throw+
-     {:message "could not determine host meta"
-      :domain domain
-      :url url})))
+  (let [segments (util/path-segments url)
+        paths (concat
+               (model.domain/host-meta-link domain)
+               (map #(str % ".well-known/host-meta")
+                    (rest segments)))]
+    (if-let [xrd (->> paths
+                      (keep fetch-xrd*)
+                      first)]
+            xrd
+            (throw+
+             {:message "could not determine host meta"
+              :domain domain
+              :url url}))))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"
@@ -148,7 +153,7 @@
 (defn discover-webfinger
   [^Domain domain url]
   ;; TODO: check https first
-  (if-let [xrd (fetch-xrd domain url) ]
+  (if-let [xrd (fetch-xrd domain url)]
     (do
       (set-links-from-xrd domain xrd)
       (set-discovered! domain)

@@ -23,7 +23,9 @@
 
 (defn host-meta-link
   [domain]
-  (str "http://" (:_id domain) "/.well-known/host-meta"))
+  (list
+   (str "https://" (:_id domain) "/.well-known/host-meta")
+   (str "http://" (:_id domain) "/.well-known/host-meta")))
 
 (def create-validators
   (validation-set
