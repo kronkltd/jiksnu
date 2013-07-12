@@ -134,12 +134,13 @@
   [item & [options]]
   {:pre [(instance? Resource item)]}
   (if-not (:local item)
-    (let [last-updated (:lastUpdated item)]
+    (let [last-updated (:lastUpdated item)
+          url (:url item)]
       (if (or (:force options)
               (nil? last-updated)
               (time/after? (-> 5 time/minutes time/ago)
                            (coerce/to-date-time last-updated)))
-        (let [url (:url item)]
+        (do
           (log/infof "updating resource: %s" url)
           (model.resource/set-field! item :lastUpdated (time/now))
           (let [response-ch (http/http-request
@@ -149,21 +150,19 @@
                                     ;; :auto-transform true
                                     :headers {"User-Agent" user-agent}
                                     :insecure? true})]
-            (l/on-realized response-ch
-                           (fn []
-                           (log/errorf "Resource update realized: %s" url)
-
-                             )
-                         (fn []
-                           (log/errorf "Resource update failed: %s" url)
-                           )
-                         )
+            (l/on-realized
+             response-ch
+             (fn sucess [res]
+               (log/infof "Resource update realized: %s" url))
+             (fn failure [res]
+               (log/errorf "Resource update failed: %s" url)))
             (let [response @response-ch
                   buffer (get-body-buffer response)
                   body-str (aleph.formats/channel-buffer->string buffer)
                   response (assoc response :body body-str)]
-              (process-response item response)
-              response)))
+              (when (= 200 (:status response))
+                #_(process-response item response)
+                response))))
         (log/warn "Resource has already been updated")))
     (log/debug "local resource does not need update")))
 
