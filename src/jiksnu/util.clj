@@ -141,6 +141,12 @@
   [^Date date]
   (-?>> date (.format (PrettyTime.))))
 
+(defn date->rfc1123
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE, dd MMM yyyy HH:mm:ss 'GMT'")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
 (defn write-json-date
   ([^Date date ^PrintWriter out]
      (write-json-date date out false))

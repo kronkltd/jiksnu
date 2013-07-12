@@ -158,17 +158,17 @@
        (log/info "Buffer channel realized")
        (let [body-str (aleph.formats/channel-buffer->string buffer)
              response (assoc response :body body-str)]
-         response)))
+         (log/spy :info response))))
     res))
 
 (defn handle-update-realized
   [item response]
-  (trace/trace :resource:realized [item response])
+  (trace/trace :resource:realized [item (log/spy :info response)])
   (model.resource/set-field! item :lastUpdated (time/now))
   (model.resource/set-field! item :status (:status response))
   (condp = (:status response)
     200 (transform-response response)
-    (throw+ "Unknown status type")))
+    (log/warn "Unknown status type")))
 
 (defn update*
   "Fetches the resource and returns a result channel or nil.
@@ -178,17 +178,23 @@ The channel will receive the body of fetching this resource."
   {:pre [(instance? Resource item)]}
   (if (or true (needs-update? item options))
     (let [url (:url item)
-          res (l/expiring-result (lt/seconds 30))]
+          res (l/expiring-result (lt/seconds 30))
+          date (time/now)]
       (trace/trace :resource:updated item)
       (log/infof "updating resource: %s" url)
-      (let [request {
-                     :url url
+      (let [request {:url url
                      :method :get
                      ;; :throw-exceptions false
                      ;; :auto-transform true
-                     :headers {"User-Agent" user-agent}
                      ;; :insecure? true
-                     }]
+                     :headers {"User-Agent" user-agent
+                               "date" (util/date->rfc1123 (.toDate date))
+                               "Authorization"
+                               (string/join " "
+                                            [
+                                             "Dialback"
+                                             "host=\"renfer.name\""
+                                             "token=\"4430086d\""])}}]
         (l/run-pipeline
          (http/http-request request)
          {:error-handler (fn [ex]

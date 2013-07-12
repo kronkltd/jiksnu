@@ -57,5 +57,10 @@
 ;;       (throw+ {:type :authorization
 ;;                :msg "You are not authorized to delete that activity"}))))
 
+(defn confirm
+  [params]
+  ;; TODO: validate
+  true)
+
 (definitializer
   (util/require-module "dialback"))

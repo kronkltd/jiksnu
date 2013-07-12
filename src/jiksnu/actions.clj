@@ -21,6 +21,7 @@
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
             [lamina.core :as l]
+            [lamina.time :as lt]
             [lamina.trace :as trace])
   (:import clojure.lang.ExceptionInfo))
 
@@ -248,9 +249,9 @@
   []
 
   (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
-  ;; (l/receive-all (trace/select-probes "*:created")   #'handle-created)
-  ;; (l/receive-all (trace/select-probes "*:fieldSet")  #'handle-fieldSet)
-  ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
+  (l/receive-all (trace/select-probes "*:created")   #'handle-created)
+  (l/receive-all (trace/select-probes "*:fieldSet")  #'handle-fieldSet)
+  (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
 
   (doseq [[kw v]
           [
@@ -266,6 +267,14 @@
            [:resource:realized             #'handle-resource-realized]
            [:resource:failed               #'handle-resource-failed]
            ]]
-    (l/receive-all (trace/probe-channel kw) v)))
+    (l/receive-all (trace/probe-channel kw) v))
+
+  (l/receive-all
+   (l/sample-every
+    {:period (lt/seconds 30)}
+    (trace/probe-channel :lamina-default-executor:stats))
+   #'handle-event)
+
+  )
 
 (defonce receivers (init-handlers))

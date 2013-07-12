@@ -219,7 +219,7 @@
   {:pre [(instance? FeedSource source)]}
   (if-not (:local source)
     (if-let [topic (:topic source)]
-      (let [response @(ops/update-resource topic options)]
+      (if-let [response @(ops/update-resource topic options)]
         (if-let [feed (abdera/parse-xml-string (:body response))]
           (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
                 source-updated (:updated source)]
@@ -231,7 +231,8 @@
                 (catch Exception ex
                   (trace/trace :errors:handled ex)))
               (log/warn "feed is up to date")))
-          (throw+ "could not obtain feed"))))
+          (throw+ "could not obtain feed"))
+        (log/warn "Could not get resource")))
     (log/warn "local sources do not need updates")))
 
 (defaction update
