@@ -199,5 +199,5 @@
   `(task
     (try
       ~@body
-      (catch RuntimeException ex#
-        (trace/trace "errors:handled" ex#)))))
+      (catch Exception ex#
+        (trace/trace :errors:handled ex#)))))
