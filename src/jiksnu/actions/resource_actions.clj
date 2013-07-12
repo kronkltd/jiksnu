@@ -142,7 +142,6 @@
                            (coerce/to-date-time last-updated)))
         (do
           (log/infof "updating resource: %s" url)
-          (model.resource/set-field! item :lastUpdated (time/now))
           (let [response-ch (http/http-request
                                    {:url url
                                     :method :get
@@ -153,7 +152,9 @@
             (l/on-realized
              response-ch
              (fn sucess [res]
-               (log/infof "Resource update realized: %s" url))
+               (log/infof "Resource update realized: %s" url)
+               (model.resource/set-field! item :lastUpdated (time/now))
+               (model.resource/set-field! item :status (:status res)))
              (fn failure [res]
                (log/errorf "Resource update failed: %s" url)))
             (let [response @response-ch
