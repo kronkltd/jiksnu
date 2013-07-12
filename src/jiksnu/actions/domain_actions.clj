@@ -249,7 +249,7 @@
               (do
                 (log/info "using queued promise")
                 (get @pending-discovers id)))]
-      (or (deref p (time/seconds 300) nil)
+      (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
 
 (defaction host-meta
