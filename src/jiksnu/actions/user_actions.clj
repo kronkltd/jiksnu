@@ -150,7 +150,8 @@
 
 (defn parse-jrd
   [params & [options]]
-  (let [url (actions.domain/get-jrd-url params)]
+  (let [domain (get-domain params)
+        url (actions.domain/get-jrd-url domain (:id params))]
     (let [resource (actions.resource/find-or-create {:url url})
           response (actions.resource/update* resource)]
       (when-let [body (:body response)]
@@ -368,6 +369,7 @@
 (defaction update-usermeta
   "Retreive user information from webfinger"
   [user & [options]]
+
   ;; TODO: This is doing way more than it's supposed to
   (if-let [xrd (fetch-user-meta user)]
     (let [webfinger-links (model.webfinger/get-links xrd)
@@ -409,40 +411,35 @@
         query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
 
+(defn discover-user-jrd
+  [user & [options]]
+  (parse-jrd user options))
+
 (defn discover*
-  [^User user & [options & _]]
-  (let [force (:force options)]
-    (loop [try-count (get options :try-count 1)]
-      (when (< try-count 5)
-        (if (:local user)
-          user
-          ;; Get domain should, in theory, always return a domain, or else error
-          (let [domain (actions.domain/get-discovered (get-domain user))]
-            (if (:discovered domain)
-              (do
+  [^User user & [options]]
+  (when-not (:local user)
+    ;; Get domain should, in theory, always return a domain, or else error
+    (let [domain (actions.domain/get-discovered (get-domain user))]
+      (when (:xmpp domain)
+        (request-vcard! user))
 
-                (when (:xmpp domain)
-                  (request-vcard! user))
+      (util/safe-task (discover-user-jrd user options))
 
-                ;; There should be a similar check here so we're not
-                ;; hitting xmpp-only services.
-                ;; This is really OStatus specific
-                (update-usermeta user options)
+      ;; There should be a similar check here so we're not
+      ;; hitting xmpp-only services.
+      ;; This is really OStatus specific
+      (util/safe-task (update-usermeta user options))
 
-                ;; TODO: there sould be a different discovered flag for
-                ;; each aspect of a domain, and this flag shouldn't be set
-                ;; till they've all responded
-                ;; (model.user/set-field! user :discovered true)
-                (model.user/fetch-by-id (:_id user)))
-              (do
-                ;; Domain not yet discovered
-                (actions.domain/discover domain)
-                (recur (inc try-count))))))))))
+      ;; TODO: there sould be a different discovered flag for
+      ;; each aspect of a domain, and this flag shouldn't be set
+      ;; till they've all responded
+      ;; (model.user/set-field! user :discovered true)
+      (model.user/fetch-by-id (:_id user)))))
 
 (defaction discover
   "perform a discovery on the user"
   [^User user & [options & _]]
-  (task (discover* user options))
+  @(util/safe-task (discover* user options))
   user)
 
 ;; TODO: xmpp case of update
