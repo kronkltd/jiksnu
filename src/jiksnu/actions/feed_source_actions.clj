@@ -10,7 +10,8 @@
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clj-http.client :as client]
-            [clj-time.core :as clj-time]
+            [clj-time.coerce :as coerce]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -123,7 +124,7 @@
 
 (defn mark-updated
   [source]
-  (model.feed-source/set-field! source :updated (clj-time/now)))
+  (model.feed-source/set-field! source :updated (time/now)))
 
 (declare unsubscribe)
 (declare send-unsubscribe)
@@ -220,7 +221,19 @@
   (if-not (:local source)
     (if-let [topic (:topic source)]
       (if-let [resource (actions.resource/find-or-create {:url topic})]
-        (actions.resource/update* resource options)
+        (let [response (actions.resource/update* resource options)]
+          (if-let [feed (abdera/parse-xml-string (:body response))]
+            (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
+                  source-updated (:updated source)]
+              (if (or (:force options)
+                      (not (and feed-updated source-updated))
+                      (time/after? feed-updated source-updated))
+                (try
+                  (process-feed source feed)
+                  (catch Exception ex
+                    (.printStackTrace ex)))
+                (log/warn "feed is up to date")))
+            (throw+ "could not obtain feed")))
         (throw+ "Could not get resource for topic")))
     (log/warn "local sources do not need updates")))
 
