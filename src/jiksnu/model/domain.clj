@@ -61,3 +61,35 @@
    :to (tigase/make-jid "" (:_id domain))
    :from (tigase/make-jid "" (config :domain))
    :body (element/make-element ["ping" {"xmlns" "urn:xmpp:ping"}])})
+
+(defn statusnet-url
+  [domain]
+  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
+
+(defn replace-template
+  [template url]
+  (string/replace template #"\{uri\}" (codec/url-encode url)))
+
+(defn get-xrd-url
+  [domain user-uri]
+  (when user-uri
+    (when-let [template (or (:xrdTemplate domain)
+                            (-?>> domain
+                                  :links
+                                  (filter #(= (:rel %) "lrdd"))
+                                  (filter #(= (:type %) "application/xrd+xml"))
+                                  first
+                                  :template))]
+      (replace-template template user-uri))))
+
+(defn get-jrd-url
+  [domain user-uri]
+  (when user-uri
+    (when-let [template (or (:jrdTemplate domain)
+                            (-?>> domain
+                                  :links
+                                  (filter #(= (:rel %) "lrdd"))
+                                  (filter #(= (:type %) "application/json"))
+                                  first
+                                  :template))]
+      (replace-template template user-uri))))

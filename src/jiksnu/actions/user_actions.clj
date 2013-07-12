@@ -123,9 +123,9 @@
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
         (when-let [id (:id user)]
-          (actions.domain/get-user-meta-url domain id))
+          (model.domain/get-xrd-url domain id))
         ;; TODO: should update uri in this case
-        (actions.domain/get-user-meta-url domain (:url user)))))
+        (model.domain/get-xrd-url domain (:url user)))))
 
 (defn get-user-meta
   "Returns an enlive document for the user's xrd file"
@@ -141,7 +141,7 @@
 
 (defn parse-xrd
   [params & [options]]
-  (let [user-meta-link (actions.domain/get-user-meta-url
+  (let [user-meta-link (model.domain/get-xrd-url
                         (:domain params)
                         (:id params))
         params (assoc params :user-meta-link user-meta-link)]
@@ -340,7 +340,7 @@
          domain (actions.domain/get-discovered {:_id domain-name})
          username (or username (get-username {:id id}))]
     (if (and username domain)
-      (let [user-meta (actions.domain/get-user-meta-url domain url)
+      (let [user-meta (model.domain/get-xrd-url domain url)
             user (merge params
                         {:domain domain-name
                          :id (or id url)
@@ -366,7 +366,7 @@
     (throw+ "Could not determine url")))
 
 ;; TODO: Collect all changes and update the user once.
-(defaction update-usermeta
+(defn update-usermeta
   "Retreive user information from webfinger"
   [user & [options]]
 

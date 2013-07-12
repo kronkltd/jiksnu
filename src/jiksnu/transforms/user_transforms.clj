@@ -86,7 +86,7 @@
     (let [id (:id item)
           domain-name (:domain item)
           domain (ops/get-discovered (model.domain/fetch-by-id domain-name))]
-      (if-let [url (actions.domain/get-user-meta-url @domain id)]
+      (if-let [url (model.domain/get-xrd-url @domain id)]
         (assoc item :user-meta-link url)
         (throw+ "Could not determine use meta link")))))
 

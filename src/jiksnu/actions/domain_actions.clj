@@ -33,10 +33,6 @@
 (defonce delete-hooks (ref []))
 (defonce pending-discovers (ref {}))
 
-(defn statusnet-url
-  [domain]
-  (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
-
 (defn prepare-create
   [domain]
   (-> domain
@@ -226,31 +222,6 @@
                 (get @pending-discovers id))]
         (or (deref p (time/seconds 300) nil)
             (throw+ "Could not discover domain"))))))
-
-(defn replace-template
-  [template url]
-  (string/replace template #"\{uri\}" (codec/url-encode url)))
-
-(defn get-user-meta-url
-  [domain user-uri]
-  (when user-uri
-    (-?>> domain
-          :links
-          (filter #(= (:rel %) "lrdd"))
-          (map #(replace-template (:template %) user-uri))
-          first)))
-
-(defn get-jrd-url
-  [domain user-uri]
-  (when user-uri
-    (when-let [template (or (:jrdTemplate domain)
-                            (-?>> domain
-                                  :links
-                                  (filter #(= (:rel %) "lrdd"))
-                                  (filter #(= (:type %) "application/json"))
-                                  first
-                                  :template))]
-      (replace-template template user-uri))))
 
 (defaction host-meta
   []
