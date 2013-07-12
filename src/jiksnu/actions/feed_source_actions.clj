@@ -28,7 +28,7 @@
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.time :as time]
+            [lamina.time :as lt]
             [lamina.trace :as trace])
   (:import java.net.URI
            jiksnu.model.FeedSource
@@ -38,7 +38,7 @@
 (defonce pending-discovers (ref {}))
 
 ;; TODO: Config option
-(def discovery-timeout (time/seconds 30))
+(def discovery-timeout (lt/seconds 30))
 
 (defn prepare-create
   [source]
