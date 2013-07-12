@@ -68,7 +68,7 @@
     (do
       (model.conversation/set-field! conversation :lastUpdated (time/now))
       (actions.feed-source/update source options))
-    (throw+ "Could not find update source")))
+    (log/error "Could not find update source")))
 
 (defaction discover
   [conversation & [options]]
