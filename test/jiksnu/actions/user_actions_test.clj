@@ -67,16 +67,16 @@
                  params {:id uri}]
              (get-username params) => (contains {:username username})
              (provided
-              (parse-jrd anything anything) => {:username username}
-              (parse-xrd anything anything) => nil :times 0)))
+              (discover-user-jrd anything anything) => {:username username}
+              (discover-user-xrd anything anything) => nil :times 0)))
 
          (fact "and the xrd request returns info"
            (let [uri (factory/make-uri domain-name "/users/1")
                  params {:id uri}]
              (get-username params) => (contains {:username username})
              (provided
-              (parse-xrd anything anything) => {:username username}
-              (parse-jrd anything anything) => nil)))
+              (discover-user-xrd anything anything) => {:username username}
+              (discover-user-jrd anything anything) => nil)))
          )
        )
 
