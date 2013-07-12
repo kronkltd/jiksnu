@@ -14,6 +14,7 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.string :as string]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [jiksnu.abdera :as abdera]
@@ -65,7 +66,7 @@
       transforms.user/set-url
       transforms.user/set-local
       transforms.user/assert-unique
-      transforms.user/set-update-source
+      ;; transforms.user/set-update-source
       transforms.user/set-discovered
       transforms.user/set-avatar-url
       transforms/set-no-links))
@@ -138,13 +139,32 @@
         (throw+ "Could not get response")))
     (throw+ "User does not have a meta link")))
 
+(defn parse-xrd
+  [params & [options]]
+  (let [user-meta-link (actions.domain/get-user-meta-url
+                        (:domain params)
+                        (:id params))
+        params (assoc params :user-meta-link user-meta-link)]
+    (when-let [xrd (get-user-meta params options)]
+      (actions.webfinger/set-source-from-xrd params xrd))))
+
+(defn parse-jrd
+  [params & [options]]
+  (let [url (actions.domain/get-jrd-url params)]
+    (let [resource (actions.resource/find-or-create {:url url})
+          response (actions.resource/update* resource)]
+      (when-let [body (:body response)]
+        (when-let [jrd (json/read-str body)]
+          jrd)))))
+
 (defn get-username
   "Given a url, try to determine the username of the owning user"
   [params & [options]]
   ;; {:pre [(instance? User params)]}
   (let [id (or (:id params)
                (:url params))
-        uri (URI. id)]
+        uri (URI. id)
+        params (assoc params :id id)]
     (if (= "acct" (.getScheme uri))
       (do
         (log/debug "acct uri")
@@ -153,15 +173,11 @@
             (do
               (log/debugf "username: %s" username)
               (assoc params :username username)))
-          (if-let [domain-name (or (:domain params)
-                                   (util/get-domain-name id))]
-            (let [domain (actions.domain/find-or-create {:_id domain-name})
-                  params (assoc params :domain domain-name)
-                  user-meta-link (actions.domain/get-user-meta-url domain id)
-                  params (assoc params :user-meta-link user-meta-link)]
-              (if-let [xrd (get-user-meta params options)]
-                (actions.webfinger/set-source-from-xrd params xrd)
-                (throw+ "could not get user meta")))
+          (if-let [domain-name (or (:domain params) (util/get-domain-name id))]
+            (let [params (assoc params :domain domain-name)]
+              (or (parse-jrd params options)
+                  (parse-xrd params options)
+                  params))
             (throw+ "Could not determine domain name"))))))
 
 (defn find-or-create-by-remote-id
