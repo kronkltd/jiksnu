@@ -17,6 +17,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.templates :as templates]
             [jiksnu.util :as util]
+            [jiksnu.validators :as valid]
             [monger.collection :as mc]
             [monger.query :as mq]
             [plaza.rdf.core :as rdf]
@@ -40,7 +41,7 @@
    (acceptance-of :url          :accept string?)
    (presence-of   :created)
    (presence-of   :updated)
-   (presence-of   :update-source)
+   ;; (presence-of   :update-source)
    (presence-of   :avatarUrl)
    (acceptance-of :local         :accept (partial instance? Boolean))))
 
