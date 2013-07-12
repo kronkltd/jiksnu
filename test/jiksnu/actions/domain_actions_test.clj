@@ -10,11 +10,14 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.webfinger :as model.webfinger]))
+            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.ops :as ops]
+            [lamina.core :as l]
+            [lamina.trace :as trace]))
 
 (test-environment-fixture
 
@@ -64,10 +67,19 @@
 
  (fact "#'discover-statusnet-config"
    (let [domain (mock/a-domain-exists)
-         url (fseq :uri)]
+         url (fseq :uri)
+         res (l/result-channel)
+         response  {:body "{\"foo\": \"bar\"}"}
+         field-set (atom false)]
+     (l/receive (trace/probe-channel :domain:setField)
+                (fn [& args] args))
+     (l/enqueue res response)
      (discover-statusnet-config domain url) => nil
+
+
      (provided
-       (actions.resource/update* anything) => {:body "{}"})))
+      (model.domain/statusnet-url domain) => .url.
+      (ops/update-resource .url.) => res)))
 
  (fact "#'discover-webfinger"
    (let [domain (mock/a-domain-exists)
