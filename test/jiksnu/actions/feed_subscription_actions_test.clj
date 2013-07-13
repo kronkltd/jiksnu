@@ -3,7 +3,7 @@
         [jiksnu.actions.feed-subscription-actions :only [create delete exists? index
                                                          prepare-create subscription-request]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact falsey future-fact truthy anything]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -19,21 +19,21 @@
 
 (test-environment-fixture
 
- (fact "#'delete"
+ (context "#'delete"
    (let [item (mock/a-feed-subscription-exists)]
      (delete item)
 
      (exists? item) => falsey))
 
- (fact "#'create"
+ (context "#'create"
    (let [params (prepare-create (factory :feed-subscription))]
      (create params) => (partial instance? FeedSubscription)))
 
- (fact "#'index"
+ (context "#'index"
    (model.feed-subscription/drop!)
    (:items (index)) => [])
 
- (fact "#'subscription-request"
+ (context "#'subscription-request"
    (let [topic (fseq :uri)
          source (mock/a-feed-source-exists {:local true})
          params {:callback (fseq :uri)

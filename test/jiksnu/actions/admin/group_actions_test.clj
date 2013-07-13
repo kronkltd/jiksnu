@@ -1,11 +1,11 @@
 (ns jiksnu.actions.admin.group-actions-test
     (:use [jiksnu.actions.admin.group-actions :only [index]]
-          [jiksnu.test-helper :only [test-environment-fixture]]
+          [jiksnu.test-helper :only [context test-environment-fixture]]
           [midje.sweet :only [=> every-checker fact]] ))
 
 (test-environment-fixture
 
- (fact "#'index"
+ (context "#'index"
    (index) =>
    (every-checker
     map?

@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory fseq]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
+        [jiksnu.test-helper :only [context hiccup->doc test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker truthy anything]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -22,14 +22,14 @@
 
 (test-environment-fixture
 
- (fact "#'subscribe"
+ (context "#'subscribe"
    (let [params {:verify "async"}]
      (actions.pubsub/subscribe params) => .response.
      (provided
        (actions.feed-subscription/subscription-request params) => .subscription.
        (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
- (fact "#'hub-dispatch"
+ (context "#'hub-dispatch"
    (let [params {:mode "subscribe"}]
      (actions.pubsub/hub-dispatch params) => .response.
      (provided

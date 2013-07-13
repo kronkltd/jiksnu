@@ -3,7 +3,7 @@
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [jiksnu.transforms.activity-transforms :only [set-recipients]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [fact future-fact => every-checker throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
@@ -15,12 +15,12 @@
 
 (test-environment-fixture
 
- (fact "#'set-recipients"
-   (fact "when there are no recipient uris"
-     (fact "should return that activity"
+ (context "#'set-recipients"
+   (context "when there are no recipient uris"
+     (context "should return that activity"
        (let [activity (factory :activity)]
          (set-recipients activity) => activity)))
-   (fact "When the activity contains a recipient uri"
+   (context "When the activity contains a recipient uri"
      (let [recipient (mock/a-user-exists)
            activity (factory :activity {:recipient-uris [(:id recipient)]})]
        (set-recipients activity) =>

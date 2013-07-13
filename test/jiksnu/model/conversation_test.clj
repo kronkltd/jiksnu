@@ -1,6 +1,6 @@
 (ns jiksnu.model.conversation-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [jiksnu.model.conversation :only [count-records create delete drop! fetch-all fetch-by-id]]
         [midje.sweet :only [fact future-fact => throws every-checker]]
@@ -16,17 +16,17 @@
 
 (test-environment-fixture
 
- (fact "#'fetch-by-id"
-   (fact "when the item doesn't exist"
+ (context "#'fetch-by-id"
+   (context "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
-   (fact "when the item exists"
+   (context "when the item exists"
      (let [item (mock/a-conversation-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (fact "#'create"
-   (fact "when given valid params"
+ (context "#'create"
+   (context "when given valid params"
      (let [domain (mock/a-domain-exists)
            source (mock/a-feed-source-exists)
            params (actions.conversation/prepare-create
@@ -35,28 +35,28 @@
                                            :domain (:_id domain)}))]
        (create params) => (partial instance? Conversation)))
 
-   (fact "when given invalid params"
+   (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (fact "#'drop!"
+ (context "#'drop!"
    (dotimes [i 1]
      (mock/a-conversation-exists))
    (drop!)
    (count-records) => 0)
 
- (fact "#'delete"
+ (context "#'delete"
    (let [item (mock/a-conversation-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (fact "#'fetch-all"
-   (fact "when there are no items"
+ (context "#'fetch-all"
+   (context "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
                      seq?
                      empty?))
 
-   (fact "when there is more than a page of items"
+   (context "when there is more than a page of items"
      (drop!)
 
      (let [n 25]
@@ -73,11 +73,11 @@
         seq?
         #(fact (count %) => (- n 20))))))
 
- (fact "#'count-records"
-   (fact "when there aren't any items"
+ (context "#'count-records"
+   (context "when there aren't any items"
      (drop!)
      (count-records) => 0)
-   (fact "when there are items"
+   (context "when there are items"
      (drop!)
      (let [n 15]
        (dotimes [i n]

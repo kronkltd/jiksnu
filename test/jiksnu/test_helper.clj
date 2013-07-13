@@ -25,6 +25,19 @@
   (->> [(enlive/attr= :data-model model-name)]
        (enlive/select doc)))
 
+(def ^:dynamic *depth* 0)
+
+(defmacro context
+  [description & body]
+  `(do
+     (println
+      (str
+       (apply str (repeat *depth* "  "))
+       ~description))
+       (fact ~description
+         (binding [*depth* (inc *depth*)]
+           ~@body))))
+
 (defmacro test-environment-fixture
   [& body]
   `(do

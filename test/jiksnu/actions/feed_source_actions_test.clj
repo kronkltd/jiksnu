@@ -5,7 +5,7 @@
         [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-entry
                                                    process-feed]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
@@ -29,13 +29,13 @@
 
 (test-environment-fixture
 
- (fact "#'add-watcher"
+ (context "#'add-watcher"
    (let [domain (actions.domain/current-domain)
          user (mock/a-user-exists)
          source (mock/a-feed-source-exists {:domain domain})]
      (add-watcher source user) => truthy))
 
- (fact "#'create"
+ (context "#'create"
    (let [domain (mock/a-remote-domain-exists)
          params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
      (create params) => (partial instance? FeedSource)
@@ -49,7 +49,7 @@
    (provided
      (actions.domain/get-discovered anything) => .domain.))
 
- (fact "#'process-entry"
+ (context "#'process-entry"
    (with-context [:http :atom]
      (let [user (mock/a-user-exists)
            author (show-section user)
@@ -61,14 +61,14 @@
            source (mock/a-feed-source-exists)]
        (process-entry [feed source entry]) => (partial instance? Activity))))
 
- (fact "#'process-feed"
+ (context "#'process-feed"
    (let [source (mock/a-feed-source-exists)
          feed (abdera/make-feed*
                {:title (fseq :title)
                 :entries []})]
      (process-feed source feed) => nil))
 
- (fact "#'discover-source"
+ (context "#'discover-source"
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (mock/a-resource-exists {:url url})
          topic (str url ".atom")

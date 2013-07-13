@@ -33,39 +33,39 @@
 
 (test-environment-fixture
 
- (fact "#'get-username-from-atom-property"
-   (fact "when the property has an identifier"
+ (context "#'get-username-from-atom-property"
+   (context "when the property has an identifier"
      (let [username (fseq :username)
            user-meta (mock-xrd-with-username username)]
        (get-username-from-atom-property user-meta) => username)))
 
  (future-fact "#'get-links"
-   (fact "When it has links"
+   (context "When it has links"
      (let [xrd nil]
        (get-links xrd)) => seq?))
 
- (fact "#'get-identifiers"
+ (context "#'get-identifiers"
    (let [subject "acct:foo@bar.baz"
          xrd (mock-xrd-with-subject subject)]
      (get-identifiers xrd) => (contains subject)))
 
- (fact "#'get-username-from-identifiers"
+ (context "#'get-username-from-identifiers"
    (let [subject "acct:foo@bar.baz"
          xrd (mock-xrd-with-subject subject)]
      (get-username-from-identifiers xrd) => "foo"))
 
- (fact "#'get-username-from-xrd"
+ (context "#'get-username-from-xrd"
    (let [username (fseq :username)
          domain (fseq :domain)
          subject (format "acct:%s@%s" username domain)
          user-meta (mock-xrd-with-subject subject)]
-     (fact "when the usermeta has an identifier"
+     (context "when the usermeta has an identifier"
        (get-username-from-xrd user-meta) => username
        (provided
          (get-username-from-identifiers user-meta) => username
          (get-username-from-atom-property user-meta) => nil :times 0))
-     (fact "when the usermeta does not have an identifier"
-       (fact "and the atom link has an identifier"
+     (context "when the usermeta does not have an identifier"
+       (context "and the atom link has an identifier"
          (let [user-meta (cm/string->document
                           (hiccup/html
                            [:XRD
@@ -76,7 +76,7 @@
            (provided
              (get-username-from-identifiers user-meta) => nil
              (get-username-from-atom-property user-meta) => .username.)))
-       (fact "and the atom link does not have an identifier"
+       (context "and the atom link does not have an identifier"
          (let [user-meta (cm/string->document
                           (hiccup/html
                            [:XRD

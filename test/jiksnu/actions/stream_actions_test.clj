@@ -3,7 +3,7 @@
         [ciste.sections.default :only [index-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.stream-actions
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         jiksnu.session
         midje.sweet)
   (:require [clojure.tools.logging :as log]
@@ -22,13 +22,13 @@
 
 (test-environment-fixture
 
- (fact "#'public-timeline"
-   (fact "when there are no activities"
-     (fact "should be empty"
+ (context "#'public-timeline"
+   (context "when there are no activities"
+     (context "should be empty"
        (model.activity/drop!)
        (public-timeline) => (comp empty? :items)))
-   (fact "when there are activities"
-     (fact "should return a seq of activities"
+   (context "when there are activities"
+     (context "should return a seq of activities"
        (let [activity (mock/there-is-an-activity)]
          (public-timeline) =>
          (every-checker
@@ -41,8 +41,8 @@
                 (doseq [item items]
                   (class item) => Conversation)))))))))
 
- (fact "#'user-timeline"
-   (fact "when the user has activities"
+ (context "#'user-timeline"
+   (context "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]
@@ -56,7 +56,7 @@
             (:totalRecords (second response)) => 1))))))
 
  (future-fact "#'callback-publish"
-   (fact "when there is a watched source"
+   (context "when there is a watched source"
      (with-context [:http :atom]
        (let [user (mock/a-user-exists)
              source (mock/a-feed-source-exists)

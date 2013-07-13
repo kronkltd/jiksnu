@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory fseq]]
         [clj-tigase.core :only [deliver-packet!]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         jiksnu.actions.domain-actions
         midje.sweet)
   (:require [ciste.model :as cm]
@@ -21,9 +21,9 @@
 
 (test-environment-fixture
 
- (fact "#'create"
-   (fact "when given valid options"
-     (fact "and the domain does not already exist"
+ (context "#'create"
+   (context "when given valid options"
+     (context "and the domain does not already exist"
        (model.domain/drop!)
        (let [options (prepare-create {:_id (fseq :domain)})]
          (create options) => model/domain?))
@@ -32,7 +32,7 @@
    ;; TODO: invalid options
    )
 
- (fact "#'delete"
+ (context "#'delete"
 
    ;; There is no reason this shouldn't be a success
    (future-fact "when the domain does not exist"
@@ -40,24 +40,24 @@
      (let [domain (factory :domain {:_id (fseq :domain)})]
        (delete domain) => nil?))
 
-   (fact "when the domain exists"
+   (context "when the domain exists"
      (let [domain (mock/a-domain-exists)]
        (delete domain) =>
        (every-checker
         #(= domain %)
         (fn [_] (nil? (model.domain/fetch-by-id (:_id domain))))))))
 
- (fact "#'discover-onesocialweb"
-   (fact "when there is no url context"
-     (fact "should send a packet to that domain"
+ (context "#'discover-onesocialweb"
+   (context "when there is no url context"
+     (context "should send a packet to that domain"
        (let [action #'discover
              domain (mock/a-domain-exists)
              url nil]
          (discover-onesocialweb domain url) => domain
          (provided
            (deliver-packet! anything) => nil :times 1))))
-   (fact "when there is a url context"
-     (fact "should send a packet to that domain"
+   (context "when there is a url context"
+     (context "should send a packet to that domain"
        (let [action #'discover
              domain (mock/a-domain-exists)
              url (str "http://" (:_id domain) "/status/users/1")]
@@ -65,7 +65,7 @@
          (provided
            (deliver-packet! anything) => nil :times 1)))))
 
- (fact "#'discover-statusnet-config"
+ (context "#'discover-statusnet-config"
    (let [domain (mock/a-domain-exists)
          url (fseq :uri)
          res (l/result-channel)
@@ -88,11 +88,11 @@
      (l/close ch)
      @field-set => true))
 
- (fact "#'discover-webfinger"
+ (context "#'discover-webfinger"
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)]
 
-     (fact "when there is no url context"
+     (context "when there is no url context"
        (let [url (factory/make-uri domain-name "/1")
              hm-url (factory/make-uri domain-name "/.well-known/host-meta")]
          (discover-webfinger domain url) => (contains {:_id domain-name})
@@ -100,7 +100,7 @@
           (fetch-xrd* hm-url) => (cm/string->document "<XRD/>")
           (fetch-xrd* anything) => nil)))
 
-     (fact "when there is a url context"
+     (context "when there is a url context"
        ;; TODO: Secure urls should always be checked first, and if the
        ;; provided url is secure, the non-secure urls should not be checked
        (let [url       (format "http://%s/status/users/1"                      domain-name)
@@ -112,16 +112,16 @@
              hm2       (format "http://%s/status/users/.well-known/host-meta"  domain-name)
              hm2-s     (format "https://%s/status/users/.well-known/host-meta" domain-name)]
 
-         (fact "and the bare domain has a host-meta"
+         (context "and the bare domain has a host-meta"
            (discover-webfinger domain url) => (contains {:_id domain-name})
            (provided
             (fetch-xrd* hm-bare-s) => nil
             (fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
 
-         (fact "and the bare domain does not have a host meta"
+         (context "and the bare domain does not have a host meta"
 
-           (fact "and none of the subpaths have host metas"
-             (fact "should raise an exception"
+           (context "and none of the subpaths have host metas"
+             (context "should raise an exception"
                (discover-webfinger domain url) => (throws RuntimeException)
                (provided
 
@@ -130,8 +130,8 @@
                 (fetch-xrd* hm2)     => nil
                 (fetch-xrd* hm-bare-s) => nil)))
 
-           (fact "and one of the subpaths has a host meta"
-             (fact "should update the host meta path"
+           (context "and one of the subpaths has a host meta"
+             (context "should update the host meta path"
                ;; FIXME: this isn't being checked
                (discover-webfinger domain url) => (contains {:_id domain-name})
                (provided
@@ -143,18 +143,18 @@
          ))
      ))
 
- (fact "#'get-discovered"
+ (context "#'get-discovered"
    (let [domain (mock/a-domain-exists {:discovered false})]
      (get-discovered domain) => (contains {:discovered true})))
 
- (fact "#'host-meta"
+ (context "#'host-meta"
    (host-meta) =>
    (every-checker
     map?
     ;; TODO: verify the response map against the app's settings
     ))
 
- (fact "#'show"
+ (context "#'show"
    (show .domain.) => .domain.)
 
  )

@@ -1,6 +1,6 @@
 (ns jiksnu.model.activity-test
   (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [jiksnu.model.activity :only [create create-validators count-records drop!
                                       get-author]]
@@ -20,7 +20,7 @@
 
 (test-environment-fixture
 
- (fact "#'create"
+ (context "#'create"
    (let [domain (mock/a-domain-exists)
          feed-source (mock/a-feed-source-exists {:domain domain})
          conversation (mock/a-conversation-exists {:feed-source feed-source})
@@ -32,25 +32,25 @@
                                        :update-source (:_id feed-source)}))]
      (create activity) => (partial instance? Activity)))
 
- (fact "#'get-author"
+ (context "#'get-author"
 
-   (fact "when given an empty activity"
+   (context "when given an empty activity"
      (let [item (Activity.)]
        (get-author item) => nil))
 
-   (fact "when given a real activity"
+   (context "when given a real activity"
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user user})]
        (get-author activity) => user))
    )
 
- (fact "#'count-records"
+ (context "#'count-records"
 
-   (fact "when there aren't any items"
+   (context "when there aren't any items"
      (drop!)
      (count-records) => 0)
 
-   (fact "when there are conversations"
+   (context "when there are conversations"
      (drop!)
      (let [n 15]
        (dotimes [i n]

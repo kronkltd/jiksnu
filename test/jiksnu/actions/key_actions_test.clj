@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory fseq]]
         [clj-tigase.core :only [deliver-packet!]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         jiksnu.actions.key-actions
         midje.sweet)
   (:require [ciste.model :as cm]
@@ -18,7 +18,7 @@
 
 (test-environment-fixture
 
- (fact "#'index"
+ (context "#'index"
    (index) => map?
    )
 

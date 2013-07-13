@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
         [midje.sweet :only [anything fact future-fact truthy =>]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
@@ -65,60 +65,60 @@
 (test-environment-fixture
 
  ;; Taken from the python tests
- (fact "#'normalize-user-id"
+ (context "#'normalize-user-id"
    (let [id1 "http://example.com"
          id2 "https://www.example.org/bob"
          id3 "acct:bob@example.org"
          em3 "bob@example.org"]
-     (fact "http urls are unaltered"
+     (context "http urls are unaltered"
        (normalize-user-id id1) => id1)
-     (fact "https urls are unaltered"
+     (context "https urls are unaltered"
        (normalize-user-id id2) => id2)
-     (fact "acct uris are unaltered"
+     (context "acct uris are unaltered"
        (normalize-user-id id3) => id3)
-     (fact "email addresses have the acct scheme appended"
+     (context "email addresses have the acct scheme appended"
        (normalize-user-id em3) => id3)))
 
- (fact "#'get-key"
-   (fact "when the user is nil"
+ (context "#'get-key"
+   (context "when the user is nil"
      (get-key nil) => nil?)
 
-   (fact "when a user is provided"
-     (fact "and it does not have a key assigned"
+   (context "when a user is provided"
+     (context "and it does not have a key assigned"
        (let [user (mock/a-remote-user-exists)
              user (model.user/fetch-by-id (:_id user))]
 
          (get-key user) => nil))
 
-     (fact "and it has a key assigned"
+     (context "and it has a key assigned"
        (let [user (mock/a-user-exists)]
          ;; TODO: specify a public key?
          (get-key user) => (partial instance? Key)))))
 
  (future-fact "#'signature-valid?"
-   (fact "when it is valid"
-     (fact "should return truthy"
+   (context "when it is valid"
+     (context "should return truthy"
        (let [key (model.key/get-key-from-armored
                   {:n n :e e})]
          (signature-valid? val-env2 key) => truthy))))
 
- (fact "#'decode-envelope"
-   (fact "should return a string"
+ (context "#'decode-envelope"
+   (context "should return a string"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (decode-envelope envelope) => string?)))
 
  (future-fact "#'extract-activity"
-   (fact "should return an activity"
+   (context "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (extract-activity envelope)) => (partial instance? Activity)))
 
- (fact "#'stream->envelope"
-   (fact "should return an envelope"
+ (context "#'stream->envelope"
+   (context "should return an envelope"
      (stream->envelope (valid-envelope-stream)) => map?))
 
  (future-fact "#'process"
-   (fact "with a valid signature"
-     (fact "should create the message"
+   (context "with a valid signature"
+     (context "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)
              user (-> envelope
                       extract-activity

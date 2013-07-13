@@ -17,7 +17,10 @@
   [user]
   (if (:id user)
     user
-    (assoc user :id (format "acct:%s@%s" (:username user) (:domain user)))))
+    (when-let [username (:username user)]
+      (when-let [domain-name (:domain user)]
+        (let [id (format "acct:%s@%s" username domain-name)]
+          (assoc user :id id))))))
 
 (defn set-url
   [user]

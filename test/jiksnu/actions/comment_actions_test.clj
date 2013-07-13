@@ -14,9 +14,9 @@
 
 (test-environment-fixture
 
- (fact "#'fetch-comments"
-   (fact "when the activity exists"
-     (fact "and there are no comments"
+ (context "#'fetch-comments"
+   (context "when the activity exists"
+     (context "and there are no comments"
        (let [actor (mock/a-user-exists)
              activity (mock/there-is-an-activity)
              [_ comments] (fetch-comments activity)]
