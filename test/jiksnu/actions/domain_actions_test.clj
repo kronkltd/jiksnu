@@ -121,24 +121,22 @@
          (context "and the bare domain does not have a host meta"
 
            (context "and none of the subpaths have host metas"
-             (context "should raise an exception"
-               (discover-webfinger domain url) => (throws RuntimeException)
-               (provided
+             (discover-webfinger domain url) => nil
+             (provided
 
-                (fetch-xrd* hm-bare) => nil
-                (fetch-xrd* hm1)     => nil
-                (fetch-xrd* hm2)     => nil
-                (fetch-xrd* hm-bare-s) => nil)))
+               (fetch-xrd* hm-bare) => nil
+               (fetch-xrd* hm1)     => nil
+               (fetch-xrd* hm2)     => nil
+               (fetch-xrd* hm-bare-s) => nil))
 
            (context "and one of the subpaths has a host meta"
-             (context "should update the host meta path"
-               ;; FIXME: this isn't being checked
-               (discover-webfinger domain url) => (contains {:_id domain-name})
-               (provided
-                 (fetch-xrd* hm-bare) => nil
-                 (fetch-xrd* hm-bare-s) => nil
-                 (fetch-xrd* hm1)     => nil
-                 (fetch-xrd* hm2)     => (cm/string->document "<XRD/>"))))
+             ;; FIXME: this isn't being checked
+             (discover-webfinger domain url) => (contains {:_id domain-name})
+             (provided
+               (fetch-xrd* hm-bare) => nil
+               (fetch-xrd* hm-bare-s) => nil
+               (fetch-xrd* hm1)     => nil
+               (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")))
            )
          ))
      ))

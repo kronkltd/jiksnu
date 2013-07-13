@@ -158,12 +158,12 @@
        (log/info "Buffer channel realized")
        (let [body-str (aleph.formats/channel-buffer->string buffer)
              response (assoc response :body body-str)]
-         (log/spy :info response))))
+         response)))
     res))
 
 (defn handle-update-realized
   [item response]
-  (trace/trace :resource:realized [item (log/spy :info response)])
+  (trace/trace :resource:realized [item response])
   (model.resource/set-field! item :lastUpdated (time/now))
   (model.resource/set-field! item :status (:status response))
   (condp = (:status response)

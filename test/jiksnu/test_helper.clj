@@ -10,6 +10,7 @@
             [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.referrant :as r]
+            [lamina.trace :as trace]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader))
 
@@ -29,18 +30,23 @@
 
 (defmacro context
   [description & body]
-  `(do
-     (println
-      (str
-       (apply str (repeat *depth* "  "))
-       ~description))
-       (fact ~description
-         (binding [*depth* (inc *depth*)]
-           ~@body))))
+  `(let [var-name# (str ~description)]
+     (print (apply str (repeat *depth* "  ")))
+     (println var-name#)
+     (fact var-name#
+
+       ;; (trace/time*
+
+        (binding [*depth* (inc *depth*)]
+          ~@body)
+
+        ;; )
+
+       )))
 
 (defmacro test-environment-fixture
   [& body]
-  `(do
+  `(try
      (println " ")
      (println "****************************************************************************")
      (println (str "Testing " *ns*))
@@ -58,4 +64,5 @@
      (actions.domain/current-domain)
 
      (fact (do ~@body) =not=> (throws))
-     (stop-application!)))
+     (finally
+       (stop-application!))))

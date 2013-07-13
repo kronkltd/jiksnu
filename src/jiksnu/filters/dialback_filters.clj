@@ -9,4 +9,4 @@
 
 (deffilter #'confirm :http
   [action request]
-  (action (:params (log/spy :info request))))
+  (action (:params request)))

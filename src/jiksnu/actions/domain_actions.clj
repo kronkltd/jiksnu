@@ -75,7 +75,7 @@
                     (fn [_] (log/info "Finished fetching xrd"))
                     (fn [_] (log/error "Fetching xrd caused error")))
 
-     (let [response (log/spy :info @res)]
+     (let [response @res]
        (when (= 200 (:status response))
          (try
            (if-let [body (:body response)]
@@ -164,7 +164,7 @@
          (or (nil? url)
              (string? url))]}
   (log/info "discover webfinger")
-  (if-let [xrd (log/spy :info (fetch-xrd domain url))]
+  (if-let [xrd (fetch-xrd domain url)]
     (do (set-links-from-xrd domain xrd)
         (set-discovered! domain)
         domain)
@@ -231,23 +231,23 @@
 
 (defn get-discovered
   [domain & [url options]]
-  (log/infof "Getting discovered domain for: %s" (:_id domain))
+  (log/debugf "Getting discovered domain for: %s" (:_id domain))
   (if (:discovered domain)
     domain
     (let [id (:_id domain)
           p (dosync
              (when-not (get @pending-discovers id)
                (let [p (promise)]
-                 (log/info "Queuing discover")
+                 (log/debug "Queuing discover")
                  (alter pending-discovers #(assoc % id p))
                  p)))
           p (if p
               (do
-                (log/info "discovering")
+                (log/debug "discovering")
                 @(second (discover domain url options))
                 p)
               (do
-                (log/info "using queued promise")
+                (log/debug "using queued promise")
                 (get @pending-discovers id)))]
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))

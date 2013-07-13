@@ -82,7 +82,7 @@
     (if (:update-source user)
       user
       (if-let [xrd @(ops/get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-xrd @xrd)]
+        (if-let [source (model.webfinger/get-feed-source-from-xrd xrd)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
         (throw+ "Could not get user meta")))))

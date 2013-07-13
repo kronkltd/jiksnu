@@ -3,7 +3,7 @@
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-entry
-                                                   process-feed]]
+                                                   process-feed unsubscribe]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
@@ -40,7 +40,7 @@
          params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
      (create params) => (partial instance? FeedSource)
      (provided
-       (actions.domain/get-discovered domain) => domain)))
+       (actions.domain/get-discovered domain nil nil) => domain)))
 
  (future-fact "#'update"
    (let [domain (mock/a-domain-exists)
@@ -61,14 +61,18 @@
            source (mock/a-feed-source-exists)]
        (process-entry [feed source entry]) => (partial instance? Activity))))
 
- (context "#'process-feed"
-   (let [source (mock/a-feed-source-exists)
-         feed (abdera/make-feed*
-               {:title (fseq :title)
-                :entries []})]
-     (process-feed source feed) => nil))
+ (context #'process-feed
+   (context "when the feed has no watchers"
+     (let [domain (mock/a-domain-exists)
+           source (mock/a-feed-source-exists {:domain domain})
+           feed (abdera/make-feed*
+                 {:title (fseq :title)
+                  :entries []})]
+       (process-feed source feed) => nil
+       (provided
+         (unsubscribe source) => nil))))
 
- (context "#'discover-source"
+ (context #'discover-source
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (mock/a-resource-exists {:url url})
          topic (str url ".atom")
