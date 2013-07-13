@@ -1,24 +1,21 @@
 (ns jiksnu.mock-test
   (:use [clj-factory.core :only [fseq]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=> every-checker fact]])
   (:require [jiksnu.mock :as mock])
-  (:import
-   jiksnu.model.Activity
-   jiksnu.model.Domain
-   jiksnu.model.Resource
-   jiksnu.model.User
-   jiksnu.model.FeedSource
-   jiksnu.model.Conversation
-   jiksnu.model.FeedSubscription
-   jiksnu.model.Subscription
-   jiksnu.model.Group
-
- ))
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation
+           jiksnu.model.Domain
+           jiksnu.model.FeedSource
+           jiksnu.model.FeedSubscription
+           jiksnu.model.Group
+           jiksnu.model.Resource
+           jiksnu.model.Subscription
+           jiksnu.model.User))
 
 (test-environment-fixture
 
- (fact "#'activity-gets-posted"
+ (context #'mock/activity-gets-posted
    (mock/activity-gets-posted) => (partial instance? Activity)
    )
 
@@ -28,9 +25,9 @@
    (mock/a-resource-exists) => (partial instance? Resource)
 
 
-   (fact "a-user-exists"
+   (context #'mock/a-user-exists
 
-     (fact "without any params"
+     (context "without any params"
        (mock/a-user-exists) => (partial instance? User))
 
      )

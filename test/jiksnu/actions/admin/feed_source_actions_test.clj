@@ -8,7 +8,7 @@
 
 (test-environment-fixture
 
- (context "#'index"
+ (context #'index
    (context "when there are no sources"
      (:items (index)) => empty?)
 

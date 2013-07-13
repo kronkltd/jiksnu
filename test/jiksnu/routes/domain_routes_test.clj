@@ -3,7 +3,7 @@
         [ciste.sections.default :only [uri]]
         [clj-factory.core :only [factory]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         [midje.sweet :only [fact future-fact => every-checker contains]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -16,12 +16,12 @@
 
 (test-environment-fixture
 
- (fact "show"
+ (context "show"
    (with-context [:http :html]
      (let [domain (mock/a-domain-exists)
            user (mock/a-user-exists {:domain domain})]
 
-       (fact "when requesting the default page"
+       (context "when requesting the default page"
          (-> (req/request :get (uri domain))
              response-for) =>
              (fn [response]
@@ -31,7 +31,7 @@
                  (let [body (h/html (:body response))]
                    body => (re-pattern (str (:_id domain)))))))
 
-       (fact "when requesting the second page of users"
+       (context "when requesting the second page of users"
          (let [path (str (uri domain)
                          "?page=2")]
            (-> (req/request :get path)
@@ -45,8 +45,8 @@
 
              )))
 
- (fact "#'webfinger-host-meta"
-   (fact "should return a XRD document"
+ (context "webfinger-host-meta"
+   (context "should return a XRD document"
      (-> (req/request :get "/.well-known/host-meta")
          response-for) =>
          (every-checker

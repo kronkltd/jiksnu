@@ -11,7 +11,7 @@
 
 (test-environment-fixture
 
- (context "#'create"
+ (context #'create
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)
          url (make-uri domain-name)
@@ -23,16 +23,16 @@
                                         :update-source (:_id source)})]
      (create params)) => map?)
 
- (context "#'delete"
+ (context #'delete
    (let [conversation (mock/a-conversation-exists)]
      (delete conversation) => map?
      (model.conversation/fetch-by-id (:_id conversation)) => nil))
 
- (context "#'index"
+ (context #'index
    (context "should return a page structure"
      (index) => map?))
 
- (context "#'show"
+ (context #'show
    (show .conversation.) => .conversation.)
 
  )

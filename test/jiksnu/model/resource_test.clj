@@ -16,7 +16,7 @@
 
 (test-environment-fixture
 
- (context "#'fetch-by-id"
+ (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
@@ -25,7 +25,7 @@
      (let [item (mock/a-resource-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context "#'create"
+ (context #'create
    (context "when given valid params"
      (let [params (actions.resource/prepare-create
                    (factory :resource))]
@@ -34,12 +34,12 @@
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context "#'delete"
+ (context #'delete
    (let [item (mock/a-resource-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context "#'fetch-all"
+ (context #'fetch-all
    (context "when there are no records"
      (drop!)
      (fetch-all) => (every-checker
@@ -62,7 +62,7 @@
       seq?
       #(fact (count %) => 5))))
 
- (context "#'count-records"
+ (context #'count-records
    (context "when there aren't any items"
      (drop!)
      (count-records) => 0)

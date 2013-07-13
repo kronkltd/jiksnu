@@ -3,7 +3,7 @@
         [ciste.sections.default :only [index-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.stream-actions
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         jiksnu.session
         midje.sweet)
   (:require [clojure.tools.logging :as log]
@@ -22,7 +22,7 @@
 
 (test-environment-fixture
 
- (context "#'public-timeline"
+ (context #'public-timeline
    (context "when there are no activities"
      (context "should be empty"
        (model.activity/drop!)
@@ -41,7 +41,7 @@
                 (doseq [item items]
                   (class item) => Conversation)))))))))
 
- (context "#'user-timeline"
+ (context #'user-timeline
    (context "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
@@ -55,7 +55,7 @@
             (second response) => map?
             (:totalRecords (second response)) => 1))))))
 
- (future-fact "#'callback-publish"
+ (future-context #'callback-publish
    (context "when there is a watched source"
      (with-context [:http :atom]
        (let [user (mock/a-user-exists)

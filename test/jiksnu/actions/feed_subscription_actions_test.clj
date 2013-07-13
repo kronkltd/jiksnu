@@ -19,21 +19,21 @@
 
 (test-environment-fixture
 
- (context "#'delete"
+ (context #'delete
    (let [item (mock/a-feed-subscription-exists)]
      (delete item)
 
      (exists? item) => falsey))
 
- (context "#'create"
+ (context #'create
    (let [params (prepare-create (factory :feed-subscription))]
      (create params) => (partial instance? FeedSubscription)))
 
- (context "#'index"
+ (context #'index
    (model.feed-subscription/drop!)
    (:items (index)) => [])
 
- (context "#'subscription-request"
+ (context #'subscription-request
    (let [topic (fseq :uri)
          source (mock/a-feed-source-exists {:local true})
          params {:callback (fseq :uri)

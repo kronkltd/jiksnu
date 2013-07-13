@@ -16,7 +16,7 @@
 
 (test-environment-fixture
 
- (context "#'fetch-by-id"
+ (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
@@ -25,7 +25,7 @@
      (let [item (mock/a-feed-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context "#'create"
+ (context #'create
    (context "when given valid params"
      (let [params (actions.feed-subscription/prepare-create
                    (factory :feed-subscription {:local false}))]
@@ -41,18 +41,18 @@
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context "#'drop!"
+ (context #'drop!
    (dotimes [i 1]
      (mock/a-feed-subscription-exists))
    (drop!)
    (count-records) => 0)
 
- (context "#'delete"
+ (context #'delete
    (let [item (mock/a-feed-subscription-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context "#'fetch-all"
+ (context #'fetch-all
    (context "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
@@ -76,7 +76,7 @@
         seq?
         #(fact (count %) => (- n 20))))))
 
- (context "#'count-records"
+ (context #'count-records
    (context "when there aren't any items"
      (drop!)
      (count-records) => 0)

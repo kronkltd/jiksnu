@@ -2,10 +2,10 @@
   (:use [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-entry
-                                                   process-feed unsubscribe]]
+        [jiksnu.actions.feed-source-actions :only [add-watcher create discover-source prepare-create process-entry
+                                                   process-feed unsubscribe update]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
@@ -29,27 +29,27 @@
 
 (test-environment-fixture
 
- (context "#'add-watcher"
+ (context #'add-watcher
    (let [domain (actions.domain/current-domain)
          user (mock/a-user-exists)
          source (mock/a-feed-source-exists {:domain domain})]
      (add-watcher source user) => truthy))
 
- (context "#'create"
+ (context #'create
    (let [domain (mock/a-remote-domain-exists)
          params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
      (create params) => (partial instance? FeedSource)
      (provided
        (actions.domain/get-discovered domain nil nil) => domain)))
 
- (future-fact "#'update"
+ (future-context #'update
    (let [domain (mock/a-domain-exists)
          source (mock/a-feed-source-exists)]
      (actions.feed-source/update source) => (partial instance? FeedSource))
    (provided
      (actions.domain/get-discovered anything) => .domain.))
 
- (context "#'process-entry"
+ (context #'process-entry
    (with-context [:http :atom]
      (let [user (mock/a-user-exists)
            author (show-section user)

@@ -9,7 +9,7 @@
 
 (test-environment-fixture
 
- (context "#'delete"
+ (context #'delete
    (let [subscription (mock/a-subscription-exists)]
      (model.subscription/fetch-by-id (:_id subscription)) => truthy
      (delete subscription)

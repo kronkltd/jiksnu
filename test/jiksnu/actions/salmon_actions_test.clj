@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
         [midje.sweet :only [anything fact future-fact truthy =>]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
@@ -65,7 +65,7 @@
 (test-environment-fixture
 
  ;; Taken from the python tests
- (context "#'normalize-user-id"
+ (context #'normalize-user-id
    (let [id1 "http://example.com"
          id2 "https://www.example.org/bob"
          id3 "acct:bob@example.org"
@@ -79,7 +79,7 @@
      (context "email addresses have the acct scheme appended"
        (normalize-user-id em3) => id3)))
 
- (context "#'get-key"
+ (context #'get-key
    (context "when the user is nil"
      (get-key nil) => nil?)
 
@@ -95,28 +95,28 @@
          ;; TODO: specify a public key?
          (get-key user) => (partial instance? Key)))))
 
- (future-fact "#'signature-valid?"
+ (future-context #'signature-valid?
    (context "when it is valid"
      (context "should return truthy"
        (let [key (model.key/get-key-from-armored
                   {:n n :e e})]
          (signature-valid? val-env2 key) => truthy))))
 
- (context "#'decode-envelope"
+ (context #'decode-envelope
    (context "should return a string"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (decode-envelope envelope) => string?)))
 
- (future-fact "#'extract-activity"
+ (future-context #'extract-activity
    (context "should return an activity"
      (let [envelope (stream->envelope (valid-envelope-stream))]
        (extract-activity envelope)) => (partial instance? Activity)))
 
- (context "#'stream->envelope"
+ (context #'stream->envelope
    (context "should return an envelope"
      (stream->envelope (valid-envelope-stream)) => map?))
 
- (future-fact "#'process"
+ (future-context #'process
    (context "with a valid signature"
      (context "should create the message"
        (let [envelope (-> (valid-envelope-stream) stream->envelope)

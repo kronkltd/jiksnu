@@ -1,7 +1,7 @@
 (ns jiksnu.triggers.activity-triggers-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.triggers.activity-triggers :only [notify-activity]]
         [midje.sweet :only [fact =>]])
   (:require [clj-tigase.packet :as packet]
@@ -14,7 +14,7 @@
 
 (test-environment-fixture
 
- (fact "#'notify-activity"
+ (context #'notify-activity
    (let [user (mock/a-user-exists)
          activity (mock/there-is-an-activity {:user user})]
      (notify-activity user activity) => packet/packet?))

@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.transforms.conversation-transforms :only [set-update-source]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=> contains fact anything]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -14,15 +14,15 @@
 
 (test-environment-fixture
 
- (fact "#'set-update-source"
+ (context #'set-update-source
    (let [source (mock/a-feed-source-exists)]
 
-     (fact "when the update source is set"
+     (context "when the update source is set"
        (let [conversation (factory :conversation {:update-source (:_id source)})]
          (set-update-source conversation) => conversation))
 
-     (fact "when the update source is not set"
-       (fact "and the source can be discovered"
+     (context "when the update source is not set"
+       (context "and the source can be discovered"
          (let [params {:url (:topic source)
                        ;; This is set by the other transform
                        :_id (util/make-id)}

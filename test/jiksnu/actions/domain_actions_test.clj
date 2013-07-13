@@ -21,7 +21,7 @@
 
 (test-environment-fixture
 
- (context "#'create"
+ (context #'create
    (context "when given valid options"
      (context "and the domain does not already exist"
        (model.domain/drop!)
@@ -32,7 +32,7 @@
    ;; TODO: invalid options
    )
 
- (context "#'delete"
+ (context #'delete
 
    ;; There is no reason this shouldn't be a success
    (future-fact "when the domain does not exist"
@@ -47,7 +47,7 @@
         #(= domain %)
         (fn [_] (nil? (model.domain/fetch-by-id (:_id domain))))))))
 
- (context "#'discover-onesocialweb"
+ (context #'discover-onesocialweb
    (context "when there is no url context"
      (context "should send a packet to that domain"
        (let [action #'discover
@@ -65,7 +65,7 @@
          (provided
            (deliver-packet! anything) => nil :times 1)))))
 
- (context "#'discover-statusnet-config"
+ (context #'discover-statusnet-config
    (let [domain (mock/a-domain-exists)
          url (fseq :uri)
          res (l/result-channel)
@@ -88,7 +88,7 @@
      (l/close ch)
      @field-set => true))
 
- (context "#'discover-webfinger"
+ (context #'discover-webfinger
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)]
 
@@ -141,18 +141,18 @@
          ))
      ))
 
- (context "#'get-discovered"
+ (context #'get-discovered
    (let [domain (mock/a-domain-exists {:discovered false})]
      (get-discovered domain) => (contains {:discovered true})))
 
- (context "#'host-meta"
+ (context #'host-meta
    (host-meta) =>
    (every-checker
     map?
     ;; TODO: verify the response map against the app's settings
     ))
 
- (context "#'show"
+ (context #'show
    (show .domain.) => .domain.)
 
  )

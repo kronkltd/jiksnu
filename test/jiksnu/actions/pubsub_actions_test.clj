@@ -22,14 +22,14 @@
 
 (test-environment-fixture
 
- (context "#'subscribe"
+ (context #'actions.pubsub/subscribe
    (let [params {:verify "async"}]
      (actions.pubsub/subscribe params) => .response.
      (provided
        (actions.feed-subscription/subscription-request params) => .subscription.
        (actions.pubsub/verify-subscription-async .subscription. params) => .response.)))
 
- (context "#'hub-dispatch"
+ (context #'actions.pubsub/hub-dispatch
    (let [params {:mode "subscribe"}]
      (actions.pubsub/hub-dispatch params) => .response.
      (provided

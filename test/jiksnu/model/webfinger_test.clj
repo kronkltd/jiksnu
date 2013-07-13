@@ -33,28 +33,28 @@
 
 (test-environment-fixture
 
- (context "#'get-username-from-atom-property"
+ (context #'get-username-from-atom-property
    (context "when the property has an identifier"
      (let [username (fseq :username)
            user-meta (mock-xrd-with-username username)]
        (get-username-from-atom-property user-meta) => username)))
 
- (future-fact "#'get-links"
+ (future-context #'get-links
    (context "When it has links"
      (let [xrd nil]
        (get-links xrd)) => seq?))
 
- (context "#'get-identifiers"
+ (context #'get-identifiers
    (let [subject "acct:foo@bar.baz"
          xrd (mock-xrd-with-subject subject)]
      (get-identifiers xrd) => (contains subject)))
 
- (context "#'get-username-from-identifiers"
+ (context #'get-username-from-identifiers
    (let [subject "acct:foo@bar.baz"
          xrd (mock-xrd-with-subject subject)]
      (get-username-from-identifiers xrd) => "foo"))
 
- (context "#'get-username-from-xrd"
+ (context #'get-username-from-xrd
    (let [username (fseq :username)
          domain (fseq :domain)
          subject (format "acct:%s@%s" username domain)

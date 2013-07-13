@@ -20,7 +20,7 @@
 
 (test-environment-fixture
 
- (context "#'create"
+ (context #'create
    (let [domain (mock/a-domain-exists)
          feed-source (mock/a-feed-source-exists {:domain domain})
          conversation (mock/a-conversation-exists {:feed-source feed-source})
@@ -32,7 +32,7 @@
                                        :update-source (:_id feed-source)}))]
      (create activity) => (partial instance? Activity)))
 
- (context "#'get-author"
+ (context #'get-author
 
    (context "when given an empty activity"
      (let [item (Activity.)]
@@ -44,7 +44,7 @@
        (get-author activity) => user))
    )
 
- (context "#'count-records"
+ (context #'count-records
 
    (context "when there aren't any items"
      (drop!)

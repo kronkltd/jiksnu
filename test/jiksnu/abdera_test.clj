@@ -12,31 +12,28 @@
 
 (test-environment-fixture
 
- (context "new-id"
-   (context "should return a string"
-     (new-id) => string?))
+ (context #'new-id
+   (new-id) => string?)
 
- (context "get-text"
+ (context #'get-text
    (context "when the element has text content"
-     (context "should return that string"
-       (let [qname (QName. ns/atom "content")
-             text (fseq :word)
-             element (.newElement abdera-factory qname)]
-         (.setText element text)
-         (get-text element) => text)))
+     (let [qname (QName. ns/atom "content")
+           text (fseq :word)
+           element (.newElement abdera-factory qname)]
+       (.setText element text)
+       (get-text element) => text))
 
    (context "when the element does not have any text"
-     (context "should return an empty string"
-       (let [qname (QName. ns/atom "content")
-             element (.newElement abdera-factory qname)]
-         (get-text element) => ""))))
+     (let [qname (QName. ns/atom "content")
+           element (.newElement abdera-factory qname)]
+       (get-text element) => "")))
 
- (context "new-entry"
+ (context #'new-entry
    (context "should return an entry"
      (new-entry) => (partial instance? Entry)))
 
 
- (context "#'make-feed*"
+ (context #'make-feed*
    (let [feed-map {:title "Public Activities",
                    :subtitle "All activities posted",
                    :id "http://localhost/api/statuses/public_timeline.atom",

@@ -3,7 +3,7 @@
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.activity-actions
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [fact future-fact => every-checker throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
@@ -17,12 +17,12 @@
 
 (test-environment-fixture
 
- (context "#'oembed->activity"
+ (context #'oembed->activity
    (let [oembed-str (slurp "test-resources/oembed.json")]
      ;; TODO: complete
      oembed-str => string?))
 
- (context "entry->activity"
+ (context #'entry->activity
    (let [domain-name (fseq :domain)
          domain (-> (factory :domain
                              {:discovered true
@@ -40,14 +40,14 @@
                entry (show-section activity)]
            (entry->activity entry) => (partial instance? Activity))))
 
-     (future-fact "when coming from an identi.ca feed"
+     (future-context "when coming from an identi.ca feed"
        (context "should parse the published field"
          (let [feed (abdera/load-file "identica-update.xml")
                entry (first (abdera/get-entries feed))]
            (entry->activity entry) => (partial instance? Activity))))
      ))
 
- (context "#'find-by-user"
+ (context #'find-by-user
    (context "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
@@ -61,7 +61,7 @@
             (count (:items response)) => 1
             (:items response) => (partial every? (partial instance? Activity))))))))
 
- (context "#'create"
+ (context #'create
    (context "when the user is logged in"
      (context "and it is a valid activity"
        (context "should return that activity"
@@ -75,12 +75,12 @@
                                             :local         true})]
            (create activity) => (partial instance? Activity))))))
 
- (context "#'post"
+ (context #'post
    (context "when the user is not logged in"
      (let [activity (dissoc (factory :activity) :author)]
        (post activity) => (throws RuntimeException))))
 
- (context "#'delete"
+ (context #'delete
    (context "when the activity exists"
      (context "and the user owns the activity"
        (context "should delete that activity"
@@ -98,7 +98,7 @@
              (delete activity) => (throws RuntimeException)
              (model.activity/fetch-by-id (:_id activity)) => activity))))))
 
- (context "#'viewable?"
+ (context #'viewable?
    (context "When it is public"
      (let [activity (mock/there-is-an-activity)]
        (viewable? activity .user.)) => truthy)
@@ -119,7 +119,7 @@
                                                     :user author})]
            (viewable? activity user)) => falsey))))
 
- (context "#'show"
+ (context #'show
    (context "when the record exists"
      (context "and the record is viewable"
        (let [activity (mock/there-is-an-activity)]
@@ -132,7 +132,7 @@
          (provided
            (viewable? activity) => false)))))
 
- (context "#'oembed"
+ (context #'oembed
    (with-context [:http :html]
      (let [activity (mock/there-is-an-activity)]
        (oembed activity) =>
@@ -140,7 +140,7 @@
         map?
         (comp string? :html)))))
 
- (context "#'fetch-by-conversation"
+ (context #'fetch-by-conversation
    (context "when there are matching activities"
      (let [conversation (mock/a-conversation-exists)
            activity (mock/there-is-an-activity {:conversation conversation})]
@@ -149,7 +149,7 @@
          (fact
            (count (:items response)) => 1)))))
 
- (context "#'fetch-by-conversations"
+ (context #'fetch-by-conversations
    (context "when there are matching activities"
      (let [conversation1 (mock/a-conversation-exists)
            conversation2 (mock/a-conversation-exists)

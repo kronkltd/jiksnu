@@ -20,7 +20,7 @@
 
 (test-environment-fixture
 
- (context "#'fetch-by-id"
+ (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
@@ -29,7 +29,7 @@
      (let [item (mock/a-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context "#'create"
+ (context #'create
    (context "when given valid params"
      (let [params (actions.subscription/prepare-create
                    (factory :subscription))]
@@ -38,18 +38,18 @@
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context "#'delete"
+ (context #'delete
    (let [item (mock/a-subscription-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context "#'drop!"
+ (context #'drop!
    (dotimes [i 1]
      (mock/a-subscription-exists))
    (drop!)
    (count-records) => 0)
 
- (context "#'fetch-all"
+ (context #'fetch-all
    (context "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
@@ -73,7 +73,7 @@
         seq?
         #(fact (count %) => (- n 20))))))
 
- (context "#'count-records"
+ (context #'count-records
    (context "when there aren't any items"
      (drop!)
      (count-records) => 0)
@@ -84,35 +84,31 @@
          (mock/a-subscription-exists))
        (count-records) => n)))
 
- (context "#'subscribing?"
+ (context #'subscribing?
 
    (context "when the user is subscribing"
-     (context "should return true"
-       (let [subscription (mock/a-subscription-exists)
-             actor (model.subscription/get-actor subscription)
-             target (model.subscription/get-target subscription)]
-         (subscribing? actor target) => true)))
+     (let [subscription (mock/a-subscription-exists)
+           actor (model.subscription/get-actor subscription)
+           target (model.subscription/get-target subscription)]
+       (subscribing? actor target) => true))
 
    (context "when the user is not subscribed"
-     (context "should return a false value"
-       (let [actor (mock/a-user-exists)
-             target (mock/a-user-exists)]
+     (let [actor (mock/a-user-exists)
+           target (mock/a-user-exists)]
 
-         (subscribing? actor target) => false))))
+       (subscribing? actor target) => false)))
 
- (context "#'subscribed?"
+ (context #'subscribed?
 
    (context "when the user is subscribed"
-     (context "should return true"
-       (let [subscription (mock/a-subscription-exists)
-             ;; NB: We're reversing these because we want to check the reverse
-             target (model.subscription/get-actor subscription)
-             actor (model.subscription/get-target subscription)]
-         (subscribed? actor target) => true)))
+     (let [subscription (mock/a-subscription-exists)
+           ;; NB: We're reversing these because we want to check the reverse
+           target (model.subscription/get-actor subscription)
+           actor (model.subscription/get-target subscription)]
+       (subscribed? actor target) => true))
 
    (context "when the user is not subscribed"
-     (context "should return a false value"
-       (let [actor (mock/a-user-exists)
-             target (mock/a-user-exists)]
-         (subscribed? actor target) => false))))
+     (let [actor (mock/a-user-exists)
+           target (mock/a-user-exists)]
+       (subscribed? actor target) => false)))
  )

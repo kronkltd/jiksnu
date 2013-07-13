@@ -5,7 +5,7 @@
 
 (test-environment-fixture
 
- (context "#'index"
+ (context #'index
    (index) =>
    (every-checker
     map?

@@ -15,7 +15,7 @@
 
 (test-environment-fixture
 
- (context "#'set-recipients"
+ (context #'set-recipients
    (context "when there are no recipient uris"
      (context "should return that activity"
        (let [activity (factory :activity)]

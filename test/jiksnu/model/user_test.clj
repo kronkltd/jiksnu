@@ -21,15 +21,13 @@
  (def domain-a (actions.domain/current-domain))
  (def user-a (mock/a-user-exists))
 
- (context "#'get-domain"
+ (context #'get-domain
    (context "when passed nil"
-     (context "should throw an exception"
-       (get-domain nil) => (throws Exception)))
+     (get-domain nil) => (throws Exception))
    (context "when passed a user"
-     (context "should return that user's domain"
-       (get-domain user-a) => domain-a)))
+     (get-domain user-a) => domain-a))
 
- (context "#'local?"
+ (context #'local?
    (context "when passed a user"
      (context "and it's domain is the same as the current domain"
        (let [user (mock/a-user-exists)]
@@ -38,15 +36,15 @@
        (let [user (mock/a-remote-user-exists)]
          (local? user) => false))))
 
- (context "display-name"
+ (context #'display-name
    (display-name .user.) => string?)
 
- (context "get-link"
+ (context #'get-link
    (let [user (factory :user {:links [{:rel "foo" :href "bar"}]})]
      (get-link user "foo" nil) => (contains {:href "bar"})
      (get-link user "baz" nil) => nil))
 
- (context "#'fetch-by-id"
+ (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
@@ -55,7 +53,7 @@
      (let [item (mock/a-user-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (context "#'create"
+ (context #'create
    (context "when given valid params"
      (let [params (actions.user/prepare-create
                    (factory :local-user))]
@@ -64,18 +62,18 @@
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context "#'drop!"
+ (context #'drop!
    (dotimes [i 1]
      (mock/a-user-exists))
    (drop!)
    (count-records) => 0)
 
- (context "#'delete"
+ (context #'delete
    (let [item (mock/a-user-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (context "#'fetch-all"
+ (context #'fetch-all
    (context "when there are no items"
      (drop!)
      (fetch-all) => (every-checker
@@ -99,7 +97,7 @@
         seq?
         #(fact (count %) => (- n 20))))))
 
- (context "#'count-records"
+ (context #'count-records
    (context "when there aren't any items"
      (drop!)
      (count-records) => 0)
@@ -110,12 +108,12 @@
          (mock/a-user-exists))
        (count-records) => n)))
 
- (context "#'fetch-by-domain"
+ (context #'fetch-by-domain
    (let [domain (actions.domain/current-domain)
          user (mock/a-user-exists)]
      (fetch-by-domain domain) => (contains user)))
 
- (context "#'get-user"
+ (context #'get-user
    (context "when the user is found"
      (let [user (mock/a-user-exists)
            username (:username user)
@@ -128,7 +126,7 @@
            domain (mock/a-domain-exists)]
        (get-user username (:_id domain)) => nil)))
 
- (context "user-meta-uri"
+ (context #'user-meta-uri
    (context "when the user's domain does not have a lrdd link"
      (model.domain/drop!)
      (let [user (mock/a-user-exists)]
@@ -143,7 +141,7 @@
        (let [user (mock/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
- (context "vcard-request"
+ (context #'vcard-request
    (let [user (mock/a-user-exists)]
      (vcard-request user) => packet/packet?))
  )

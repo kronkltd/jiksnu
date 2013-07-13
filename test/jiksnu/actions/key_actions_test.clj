@@ -18,7 +18,7 @@
 
 (test-environment-fixture
 
- (context "#'index"
+ (context #'index
    (index) => map?
    )
 

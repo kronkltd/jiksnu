@@ -42,7 +42,14 @@
 
         ;; )
 
-       )))
+        )
+     (when (zero? *depth*)
+       (println " "))))
+
+(defmacro future-context
+  [description & body]
+  `(let [var-name# (str ~description)]
+     (future-fact var-name# ~@body)))
 
 (defmacro test-environment-fixture
   [& body]
