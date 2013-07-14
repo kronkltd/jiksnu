@@ -5,7 +5,7 @@
         [jiksnu.transforms.activity-transforms :only [set-recipients]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [midje.sweet :only [=> throws falsey]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]

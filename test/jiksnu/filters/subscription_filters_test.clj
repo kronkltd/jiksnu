@@ -3,7 +3,7 @@
         [ciste.filters :only [filter-action]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         jiksnu.actions.subscription-actions
-        [midje.sweet :only [=> truthy]])
+        [midje.sweet :only [=> throws truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.session :as session]
