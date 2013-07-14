@@ -2,8 +2,9 @@
   (:use [clj-factory.core :only [factory fseq]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
-        [midje.sweet :only [=> truthy anything]])
+        [jiksnu.test-helper :only [check context future-context
+                                   hiccup->doc test-environment-fixture]]
+        [midje.sweet :only [=> anything]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]

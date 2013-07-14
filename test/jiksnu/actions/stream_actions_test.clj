@@ -3,9 +3,9 @@
         [ciste.sections.default :only [index-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.stream-actions
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.session
-        midje.sweet)
+        [midje.sweet :only [=>  truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]

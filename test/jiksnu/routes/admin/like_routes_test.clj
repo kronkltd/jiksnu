@@ -3,7 +3,7 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.routes-helper :only [as-admin response-for]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [chech context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]

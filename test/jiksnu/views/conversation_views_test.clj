@@ -7,7 +7,7 @@
         [jiksnu.test-helper :only [check context future-context
                                    hiccup->doc test-environment-fixture]]
         [jiksnu.ko :only [*dynamic*]]
-        [midje.sweet :only [contains =>]])
+        [midje.sweet :only [=>]])
   (:require [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]

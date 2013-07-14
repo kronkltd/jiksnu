@@ -1,11 +1,11 @@
 (ns jiksnu.model.subscription-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
                                           fetch-by-id subscribing?
                                           subscribed?]]
-        [midje.sweet :only [=> throws truthy]])
+        [midje.sweet :only [=> throws]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]

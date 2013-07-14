@@ -4,7 +4,7 @@
         [clj-tigase.core :only [deliver-packet!]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.actions.domain-actions
-        [midje.sweet :only [=> anything]])
+        [midje.sweet :only [=> anything contains truthy]])
   (:require [ciste.model :as cm]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]

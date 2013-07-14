@@ -1,6 +1,6 @@
 (ns jiksnu.model.conversation-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [jiksnu.model.conversation :only [count-records create delete drop! fetch-all fetch-by-id]]
         [midje.sweet :only [=> throws]]

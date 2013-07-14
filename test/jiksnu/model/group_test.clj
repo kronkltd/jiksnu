@@ -1,6 +1,6 @@
 (ns jiksnu.model.group-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.group :only [create delete fetch-all fetch-by-id]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]

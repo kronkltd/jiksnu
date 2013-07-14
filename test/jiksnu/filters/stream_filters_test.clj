@@ -4,9 +4,9 @@
         [ciste.core :only [with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [lamina.core :only [channel]]
-        [midje.sweet :only [=> truthy]])
+        [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]

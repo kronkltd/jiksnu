@@ -1,6 +1,6 @@
 (ns jiksnu.model.feed-subscription-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.feed-subscription :only [create count-records delete drop!
                                                fetch-all fetch-by-id]]
         [midje.sweet :only [throws =>]])

@@ -4,7 +4,7 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [truthy =>]])
+        [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]

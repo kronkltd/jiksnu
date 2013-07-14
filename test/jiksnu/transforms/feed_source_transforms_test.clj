@@ -3,7 +3,7 @@
         [jiksnu.transforms.feed-source-transforms :only [set-domain]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> contains truthy anything]])
+        [midje.sweet :only [=> contains anything]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]

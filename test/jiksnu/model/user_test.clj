@@ -3,7 +3,7 @@
         [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.model.user
-        [midje.sweet :only [=> contains throws truthy falsey]])
+        [midje.sweet :only [=> contains throws falsey]])
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]

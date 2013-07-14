@@ -24,13 +24,13 @@
              subscribee (mock/a-user-exists)]
          (model.subscription/drop!)
          (with-user user
-           (subscribe user subscribee) => subscription?)))))
+           (subscribe user subscribee) => (partial instance? Subscription))))))
 
  (context "subscribed"
    (context "should return a subscription"
      (let [user (mock/a-user-exists)
            subscribee (mock/a-user-exists)]
-       (subscribed user subscribee) => subscription?)))
+       (subscribed user subscribee) => (partial instance? Subscription))))
 
  (context "get-subscribers"
    (context "when there are subscribers"

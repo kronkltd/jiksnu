@@ -4,7 +4,7 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [contains =>]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]

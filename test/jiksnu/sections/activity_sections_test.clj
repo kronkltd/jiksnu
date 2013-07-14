@@ -4,7 +4,7 @@
         [ciste.sections.default :only [index-block index-section
                                        show-section uri]]
         [clj-factory.core :only [factory]]
-        jiksnu.test-helper
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.session
         jiksnu.sections.activity-sections
         [midje.sweet :only [=>]])

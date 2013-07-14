@@ -2,7 +2,7 @@
   (:use [ciste.core :only [with-serialization *serialization*]]
         [ciste.filters :only [filter-action]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [jiksnu.actions.admin.key-actions :as actions.key]))
 

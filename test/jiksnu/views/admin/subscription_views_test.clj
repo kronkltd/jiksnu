@@ -5,7 +5,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> contains]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]

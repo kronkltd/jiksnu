@@ -6,7 +6,7 @@
                                                    process-entry process-feed unsubscribe update]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> contains truthy anything]])
+        [midje.sweet :only [=> truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]

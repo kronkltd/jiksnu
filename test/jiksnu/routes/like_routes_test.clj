@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [as-admin response-for]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> contains]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.model :as model]

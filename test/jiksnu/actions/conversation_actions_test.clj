@@ -3,7 +3,7 @@
         [jiksnu.actions.conversation-actions :only [create delete index show]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> contains]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]

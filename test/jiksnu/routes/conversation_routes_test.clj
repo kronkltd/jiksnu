@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
