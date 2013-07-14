@@ -22,8 +22,8 @@
    (let [feed-subscription (mock/a-feed-subscription-exists)]
      (-> (req/request :get "/admin/feed-subscriptions")
          as-admin response-for) =>
-         (check [result]
-           (let [body (:body result)]
+         (check [response]
+           (let [body (:body response)]
              response => map?
              (:status response) => status/success?
              ;; body => #"feed-subscriptions"

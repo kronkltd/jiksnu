@@ -46,9 +46,9 @@
    (context "should return a XRD document"
      (-> (req/request :get "/.well-known/host-meta")
          response-for) =>
-         (check [req]
+         (check [response]
            response => map?
            (:status response) => status/success?
-           (let [body (:body req)]
+           (let [body (:body response)]
              body => #"<XRD.*"))))
  )

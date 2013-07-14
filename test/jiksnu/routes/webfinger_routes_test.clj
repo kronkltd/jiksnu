@@ -6,6 +6,7 @@
   (:require [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.util :as util]
             [ring.mock.request :as req]))
 
@@ -26,7 +27,7 @@
             (:status response) => status/redirect?
             (:body response) => string?
             (get-in response [:headers "Content-Type"]) => "application/xrds+xml"
-            (let [body (cm/string->document (:body %))]
+            (let [body (cm/string->document (:body response))]
               ;; has at least 1 lrdd link
               (get-link body "lrdd") =not=> empty?))))
 
@@ -39,7 +40,7 @@
           (:status response) => status/success?
           (:body response) => string?
           (get-in response [:headers "Content-Type"]) => "application/json"
-          (let [body (json/read-json (:body %))]
+          (let [body (json/read-json (:body response))]
             ;; has at least 1 link
             (count (:links body)) => (partial >= 1)
 

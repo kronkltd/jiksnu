@@ -20,10 +20,10 @@
    (let [subscription (mock/a-subscription-exists)]
      (-> (req/request :get "/admin/subscriptions")
          as-admin response-for) =>
-         (check [req]
+         (check [response]
            response => map?
            (:status response) => status/success?
-           (let [body (h/html (:body req))]
+           (let [body (h/html (:body response))]
              body => #"subscription"))))
 
  (context "delete"
