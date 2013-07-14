@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.model.group :only [create delete fetch-all fetch-by-id]]
-        [midje.sweet :only [fact => every-checker future-fact]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.db :as db]
@@ -30,26 +30,24 @@
  (context #'fetch-all
    (context "when there are no items"
      (db/drop-all!)
-     (fetch-all) =>
-     (every-checker
-      empty?))
+     (fetch-all) => empty?)
 
    (context "when there are less than a page"
      (db/drop-all!)
      (dotimes [n 19]
        (actions.group/create (factory :group)))
      (fetch-all) =>
-     (every-checker
-      seq?
-      #(fact (count %) => 19)))
+     (check [response]
+       response => seq?
+       (count response) => 19))
 
    (context "when there is more than a page"
      (db/drop-all!)
      (dotimes [n 21]
        (actions.group/create (factory :group)))
      (fetch-all) =>
-     (every-checker
-      seq?
-      #(fact (count %) => 20))))
+     (check [response]
+       response => seq?
+       (count response) => 20)))
 
  )

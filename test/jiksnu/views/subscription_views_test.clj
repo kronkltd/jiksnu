@@ -3,8 +3,8 @@
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [every-checker fact future-fact truthy =>]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [truthy =>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -21,28 +21,26 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'actions.subscription/get-subscriptions"
+ (context "apply-view #'actions.subscription/get-subscriptions"
    (let [action #'actions.subscription/get-subscriptions]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :as"
+         (context "when the format is :as"
            (with-format :as
-             (fact "when the user has subscriptions"
+             (context "when the user has subscriptions"
                (db/drop-all!)
                (let [subscription (mock/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)
                      request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (fn [response]
-                    (let [body (:body response)]
-                      (fact
-                        (:totalItems body) => (:totalRecords response)))))))))
-         (fact "when the format is :html"
+                 (check [response]
+                   response => map?
+                   (let [body (:body response)]
+                     (:totalItems body) => (:totalRecords response)))))))
+         (context "when the format is :html"
            (with-format :html
-             (fact "when the user has subscriptions"
+             (context "when the user has subscriptions"
                (db/drop-all!)
                (let [subscription (mock/a-subscription-exists)
                      actor (model.subscription/get-actor subscription)
@@ -50,31 +48,26 @@
                               :params {:id (str (:_id actor))}}
                      response (filter-action action request)]
                  (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (fn [response]
-                    (let [body (h/html (:body response))]
-                      (fact
-                        body => #"subscriptions"))))))))))))
+                 (check [response]
+                   response => map?
+                   (let [body (h/html (:body response))]
+                     body => #"subscriptions"))))))))))
 
- (future-fact "apply-view #'unsubscribe"
+ (future-context "apply-view #'unsubscribe"
    (let [action #'actions.subscription/unsubscribe]
-     (fact "when the serialization is :xmpp"
+     (context "when the serialization is :xmpp"
        (with-serialization :xmpp
          (with-format :xmpp
            ;; TODO: this should be an error packet
-           (fact "when there is not a subscription"
+           (context "when there is not a subscription"
 
              (apply-view request nil) => packet/packet?)
 
-           (fact "when there is a subscription"
+           (context "when there is a subscription"
              (let [subscription (mock/a-subscription-exists)
                    request {:action #'actions.subscription/unsubscribe
                             :format :xmpp
                             :id "Foo"}]
 
-               (apply-view request subscription) =>
-               (every-checker
-                map?
-                truthy))))))))
+               (apply-view request subscription) => map?)))))))
  )

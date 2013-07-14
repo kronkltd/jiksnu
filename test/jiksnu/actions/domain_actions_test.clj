@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory fseq]]
         [clj-tigase.core :only [deliver-packet!]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.actions.domain-actions
         midje.sweet)
   (:require [ciste.model :as cm]
@@ -35,7 +35,7 @@
  (context #'delete
 
    ;; There is no reason this shouldn't be a success
-   (future-fact "when the domain does not exist"
+   (future-context "when the domain does not exist"
      (model.domain/drop!)
      (let [domain (factory :domain {:_id (fseq :domain)})]
        (delete domain) => nil?))
@@ -43,9 +43,9 @@
    (context "when the domain exists"
      (let [domain (mock/a-domain-exists)]
        (delete domain) =>
-       (every-checker
-        #(= domain %)
-        (fn [_] (nil? (model.domain/fetch-by-id (:_id domain))))))))
+       (check [response]
+         response => domain
+         (model.domain/fetch-by-id (:_id domain)) => nil?))))
 
  (context #'discover-onesocialweb
    (context "when there is no url context"
@@ -146,11 +146,8 @@
      (get-discovered domain) => (contains {:discovered true})))
 
  (context #'host-meta
-   (host-meta) =>
-   (every-checker
-    map?
     ;; TODO: verify the response map against the app's settings
-    ))
+   (host-meta) => map?)
 
  (context #'show
    (show .domain.) => .domain.)

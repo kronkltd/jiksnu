@@ -1,5 +1,5 @@
 (ns jiksnu.helpers.subscription-helpers-test
-  (:use [jiksnu.test-helper :only [test-environment-fixture]]
+  (:use [jiksnu.test-helper :only [context test-environment-fixture]]
         jiksnu.helpers.subscription-helpers
         midje.sweet)
   (:require [clj-tigase.element :as element]
@@ -12,10 +12,10 @@
 
 (test-environment-fixture
 
- (fact "subscriber-response-element"
+ (context "subscriber-response-element"
    (let [subscription (mock/a-subscription-exists)]
      (subscriber-response-element subscription) => vector?))
 
- (fact "subscribe-request"
+ (context "subscribe-request"
    (let [subscription (mock/a-subscription-exists)]
      (subscribe-request subscription) => vector?)))

@@ -1,8 +1,8 @@
 (ns jiksnu.util-test
   (:use [clj-factory.core :only [fseq]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.util
-        [midje.sweet :only [fact future-fact => every-checker contains]])
+        [midje.sweet :only [=> contains]])
   (:require [jiksnu.util :as util])
   (:import org.bson.types.ObjectId))
 
@@ -47,12 +47,11 @@
          rel "lrdd"
          content-type "application/xrd+xml"
          link-string (format "<%s>; rel=\"%s\"; type=\"%s\""
-                             url rel content-type)]
-     (parse-http-link link-string) =>
-     (every-checker
-      (contains {"href" url})
-      (contains {"rel" "lrdd"})
-      (contains {"type" "application/xrd+xml"}))))
+                             url rel content-type)
+         link {"href" url
+               "rel" rel
+               "type" content-type}]
+     (parse-http-link link-string) => (contains link)))
 
  (context #'split-uri
    (split-uri "bob@example.com")        => ["bob" "example.com"]

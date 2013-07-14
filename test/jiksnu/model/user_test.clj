@@ -3,7 +3,7 @@
         [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         jiksnu.model.user
-        [midje.sweet :only [=> contains every-checker fact throws truthy falsey]])
+        [midje.sweet :only [=> contains throws truthy falsey]])
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -76,9 +76,7 @@
  (context #'fetch-all
    (context "when there are no items"
      (drop!)
-     (fetch-all) => (every-checker
-                     seq?
-                     empty?))
+     (fetch-all) => empty?)
 
    (context "when there is more than a page of items"
      (drop!)
@@ -88,14 +86,14 @@
          (mock/a-user-exists))
 
        (fetch-all) =>
-       (every-checker
-        seq?
-        #(fact (count %) => 20))
+       (check [response]
+         response => seq?
+        (count response) => 20)
 
        (fetch-all {} {:page 2}) =>
-       (every-checker
-        seq?
-        #(fact (count %) => (- n 20))))))
+       (check [response]
+         response => seq?
+         (count response) => (- n 20)))))
 
  (context #'count-records
    (context "when there aren't any items"

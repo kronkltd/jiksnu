@@ -2,11 +2,11 @@
   (:use [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create discover-source prepare-create process-entry
-                                                   process-feed unsubscribe update]]
+        [jiksnu.actions.feed-source-actions :only [add-watcher create discover-source prepare-create
+                                                   process-entry process-feed unsubscribe update]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
+        [midje.sweet :only [=> contains truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]

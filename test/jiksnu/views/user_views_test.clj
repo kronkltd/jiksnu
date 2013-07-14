@@ -11,7 +11,7 @@
         [jiksnu.ko :only [*dynamic*]]
         ;; jiksnu.views.user-views
         jiksnu.xmpp.element
-        [midje.sweet :only [contains every-checker fact future-fact =>]])
+        [midje.sweet :only [contains =>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -30,44 +30,42 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'index"
+ (context "apply-view #'index"
    (let [action #'index]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
-             (fact "when the request is not dynamic"
+             (context "when the request is not dynamic"
                (binding [*dynamic* false]
-                 (fact "when there are no activities"
+                 (context "when there are no activities"
                    (let [request {:action action}
                          response (filter-action action request)]
-                     (apply-view request response) =>
-                     (every-checker
-                      map?)))))))))))
+                     (apply-view request response) => map?))))))))))
 
- (fact "apply-view #'show"
+ (context "apply-view #'show"
    (let [action #'actions.user/show]
-     (fact "when the serialization is :xmpp"
+     (context "when the serialization is :xmpp"
        (with-serialization :xmpp
-         (fact "when the format is :xmpp"
+         (context "when the format is :xmpp"
            (with-format :xmpp
              (let [user (mock/a-user-exists)
                    request {:action action}
                    response (action user)]
                (apply-view request response) =>
-               (every-checker
-                map?
-                (contains {:type :result})))))))))
+               (check [response]
+                 response => map?
+                 response => (contains {:type :result})))))))))
 
- (future-fact "apply-view-test #'fetch-remote :xmpp"
+ (future-context "apply-view-test #'fetch-remote :xmpp"
    (let [action #'actions.user/fetch-remote]
-     (fact "should return an iq query packet map"
+     (context "should return an iq query packet map"
        (with-context [:xmpp :xmpp]
          (let [user (mock/a-user-exists)
                request {:action action}
                response (action user)]
            (apply-view request response) =>
-           (every-checker
-            map?
-            (contains {:type :get})))))))
+           (check [response]
+             response => map?
+             response => (contains {:type :get})))))))
  )

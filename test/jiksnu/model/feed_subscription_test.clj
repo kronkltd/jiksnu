@@ -3,7 +3,7 @@
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.model.feed-subscription :only [create count-records delete drop!
                                                fetch-all fetch-by-id]]
-        [midje.sweet :only [every-checker fact future-fact throws =>]])
+        [midje.sweet :only [throws =>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.mock :as mock]
@@ -30,13 +30,13 @@
      (let [params (actions.feed-subscription/prepare-create
                    (factory :feed-subscription {:local false}))]
        (create params)) =>
-       (every-checker
-        map?
-        (partial instance? FeedSubscription)
-        #(instance? ObjectId (:_id %))
-        #(instance? DateTime (:created %))
-        #(instance? DateTime (:updated %))
-        #(string? (:url %))))
+       (check [response]
+         response => map?
+         response => (partial instance? FeedSubscription)
+         (:_id response) =>  (partial instance? ObjectId)
+         (:created response) => (instance? DateTime)
+         (:updated response) => (instance? DateTime)
+         (:url response) => string?))
 
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
@@ -55,9 +55,7 @@
  (context #'fetch-all
    (context "when there are no items"
      (drop!)
-     (fetch-all) => (every-checker
-                     seq?
-                     empty?))
+     (fetch-all) => empty?)
 
    (context "when there is more than a page of items"
      (drop!)
@@ -67,14 +65,14 @@
          (mock/a-feed-subscription-exists))
 
        (fetch-all) =>
-       (every-checker
-        seq?
-        #(fact (count %) => 20))
+       (check [response]
+         response => seq?
+        #(count response) => 20)
 
        (fetch-all {} {:page 2}) =>
-       (every-checker
-        seq?
-        #(fact (count %) => (- n 20))))))
+       (check [response]
+         response => seq?
+         (count response) => (- n 20)))))
 
  (context #'count-records
    (context "when there aren't any items"

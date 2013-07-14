@@ -1,6 +1,6 @@
 (ns jiksnu.model.domain-test
   (:use [clj-factory.core :only [factory]]
-        [midje.sweet :only [=> contains every-checker fact]]
+        [midje.sweet :only [=> contains]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.model.domain :only [create drop! get-xrd-url ping-request]])
   (:require [clj-tigase.element :as e]
@@ -18,9 +18,8 @@
      (ping-request domain) => (contains {:body e/element?})))
 
  (context #'create
-   (create (actions.domain/prepare-create (factory :domain))) =>
-   (every-checker
-    (partial instance? Domain)))
+   (let [params (actions.domain/prepare-create (factory :domain))]
+     (create params) => (partial instance? Domain)))
 
  (context #'get-xrd-url
    (context "when the domain doesn't exist"

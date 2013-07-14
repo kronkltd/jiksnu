@@ -6,7 +6,7 @@
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [test-environment-fixture]]
         [lamina.core :only [channel]]
-        [midje.sweet :only [fact future-fact => every-checker truthy]])
+        [midje.sweet :only [=> truthy]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
@@ -24,16 +24,16 @@
 
 (test-environment-fixture
 
- (fact "filter-action #'actions.stream/public-timeline"
+ (context "filter-action #'actions.stream/public-timeline"
    (let [action #'actions.stream/public-timeline]
 
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
 
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
 
-             (fact "when there are no activities"
+             (context "when there are no activities"
                (db/drop-all!)
                (let [request {:action action}]
                  (filter-action action request) =>
@@ -43,10 +43,10 @@
              ))
          ))
 
-     (fact "when the serialization is :xmpp"
+     (context "when the serialization is :xmpp"
        (with-serialization :xmpp
 
-         (fact "when there are no activities"
+         (context "when there are no activities"
            (db/drop-all!)
            (let [user (mock/a-user-exists)
                  element nil
@@ -65,7 +65,7 @@
                  (let [items (:items response)]
                    items => empty?)))))
 
-         (fact "when there are activities"
+         (context "when there are activities"
            (let [author (mock/a-user-exists)]
              (with-user author
                (let [element nil
@@ -88,11 +88,11 @@
                          (class item) => Conversation))))))))
          ))))
 
- (fact "filter-action #'actions.stream/user-timeline"
+ (context "filter-action #'actions.stream/user-timeline"
    (let [action #'actions.stream/user-timeline]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the user exists"
+         (context "when the user exists"
            (let [user (mock/a-user-exists)
                  request {:params {:id (str (:_id user))}}]
              (filter-action action request) => .response.

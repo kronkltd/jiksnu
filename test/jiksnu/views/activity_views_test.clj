@@ -6,9 +6,9 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
-        [midje.sweet :only [every-checker fact future-fact => contains]])
+        [midje.sweet :only [=> contains]])
   (:require [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -26,37 +26,32 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'actions.activity/oembed"
+ (context "apply-view #'actions.activity/oembed"
    (let [action #'actions.activity/oembed]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :json"
+         (context "when the format is :json"
            (with-format :json
              (let [activity (mock/there-is-an-activity)
                    request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
                (apply-view request response) =>
-               (every-checker
-                map?
-                (comp status/success? :status)
-                (fn [result]
-                  (let [body (:body result)]
-                    (fact
-                      body => (contains
-                               {:title (:title activity)}))))))))
-         (fact "when the format is :xml"
+               (check [result]
+                 (let [body (:body result)]
+                   result => map?
+                   (:status result) => status/success?
+                   body => (contains {:title (:title activity)}))))))
+         (context "when the format is :xml"
            (with-format :xml
              (let [activity (mock/there-is-an-activity)
                    request {:params {:url (:id activity)}
                             :action action}
                    response (filter-action action request)]
                (apply-view request response) =>
-               (every-checker
-                map?
-                (comp status/success? :status)
-                (fn [result]
-                  (let [body (:body result)]
-                    (fact
-                      body =not=> string?)))))))))))
+               (check [result]
+                 (let [body (:body result)]
+                   result => map?
+                   (:status result) => status/success?
+                   body =not=> string?)))))))))
  )

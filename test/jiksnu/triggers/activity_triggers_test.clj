@@ -3,7 +3,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.triggers.activity-triggers :only [notify-activity]]
-        [midje.sweet :only [fact =>]])
+        [midje.sweet :only [=>]])
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]

@@ -1,15 +1,15 @@
 (ns jiksnu.actions.admin.group-actions-test
     (:use [jiksnu.actions.admin.group-actions :only [index]]
-          [jiksnu.test-helper :only [context test-environment-fixture]]
-          [midje.sweet :only [=> every-checker fact]] ))
+          [jiksnu.test-helper :only [check context test-environment-fixture]]
+          [midje.sweet :only [=> fact]] ))
 
 (test-environment-fixture
 
  (context #'index
    (index) =>
-   (every-checker
-    map?
-    (comp seq? :items)
-    #(= 0 (:totalRecords %))))
+   (check [response]
+     response => map?
+     (:items response) => seq?
+     (:totalRecords items) => zero?))
 
  )

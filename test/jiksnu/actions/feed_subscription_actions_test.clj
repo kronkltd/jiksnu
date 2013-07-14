@@ -4,7 +4,7 @@
                                                          prepare-create subscription-request]]
         [jiksnu.factory :only [make-uri]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> contains every-checker fact falsey future-fact truthy anything]])
+        [midje.sweet :only [=> falsey]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]

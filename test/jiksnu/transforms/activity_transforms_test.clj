@@ -5,7 +5,7 @@
         [jiksnu.transforms.activity-transforms :only [set-recipients]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [midje.sweet :only [fact future-fact => every-checker throws truthy falsey]])
+        [midje.sweet :only [=> throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -24,8 +24,8 @@
      (let [recipient (mock/a-user-exists)
            activity (factory :activity {:recipient-uris [(:id recipient)]})]
        (set-recipients activity) =>
-       (every-checker
-        #(= (:_id recipient) (first (:recipients %)))))))
+       (check [response]
+         (first (:recipients response)) => (:_id recipient)))))
 
  )
 

@@ -3,7 +3,7 @@
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [jiksnu.model.conversation :only [count-records create delete drop! fetch-all fetch-by-id]]
-        [midje.sweet :only [fact future-fact => throws every-checker]]
+        [midje.sweet :only [=> throws]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -52,9 +52,10 @@
  (context #'fetch-all
    (context "when there are no items"
      (drop!)
-     (fetch-all) => (every-checker
-                     seq?
-                     empty?))
+     (fetch-all) =>
+     (check [response]
+       response => seq?
+       response => empty?))
 
    (context "when there is more than a page of items"
      (drop!)
@@ -64,14 +65,14 @@
          (mock/a-conversation-exists))
 
        (fetch-all) =>
-       (every-checker
-        seq?
-        #(fact (count %) => 20))
+       (check [response]
+        response => seq?
+        (count response) => 20)
 
        (fetch-all {} {:page 2}) =>
-       (every-checker
-        seq?
-        #(fact (count %) => (- n 20))))))
+       (check [response]
+         response => seq?
+        (count response) => (- n 20)))))
 
  (context #'count-records
    (context "when there aren't any items"

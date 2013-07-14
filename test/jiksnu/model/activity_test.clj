@@ -4,7 +4,7 @@
         [jiksnu.session :only [with-user]]
         [jiksnu.model.activity :only [create create-validators count-records drop!
                                       get-author]]
-        [midje.sweet :only [anything fact future-fact =>]]
+        [midje.sweet :only [anything =>]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]

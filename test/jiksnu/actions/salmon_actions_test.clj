@@ -1,7 +1,7 @@
 (ns jiksnu.actions.salmon-actions-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
-        [midje.sweet :only [anything fact future-fact truthy =>]]
+        [midje.sweet :only [anything truthy =>]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         jiksnu.actions.salmon-actions)
   (:require [clojure.java.io :as io]

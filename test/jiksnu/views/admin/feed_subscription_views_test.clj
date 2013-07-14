@@ -4,8 +4,8 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [every-checker fact future-fact =>]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
@@ -14,23 +14,21 @@
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 
 (test-environment-fixture
- (fact "apply-view #'actions.admin.feed-subscription/index"
+ (context "apply-view #'actions.admin.feed-subscription/index"
    (let [action #'actions.admin.feed-subscription/index]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
              (binding [*dynamic* false]
                (let [feed-subscription (mock/a-feed-subscription-exists)
                      request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (comp status/success? :status)
-                  (fn [result]
-                    (let [body (h/html (:body result))]
-                      (fact
-                        body => (re-pattern
-                                 (str (:_id feed-subscription)))))))))))))))
+                 (check [result]
+                   (let [body (h/html (:body result))]
+                     response => map?
+                     (:status response) => status/success?
+                     body => (re-pattern
+                              (str (:_id feed-subscription)))))))))))))
  )

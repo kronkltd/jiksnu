@@ -31,15 +31,13 @@
      (context "should return a seq of activities"
        (let [activity (mock/there-is-an-activity)]
          (public-timeline) =>
-         (every-checker
-          (fn [response]
-            (fact
-              response => map?
-              (:totalRecords response) => 1
-              (let [items (:items response)]
-                items => seq?
-                (doseq [item items]
-                  (class item) => Conversation)))))))))
+         (check [response]
+           response => map?
+           (:totalRecords response) => 1
+           (let [items (:items response)]
+             items => seq?
+             (doseq [item items]
+               (class item) => Conversation)))))))
 
  (context #'user-timeline
    (context "when the user has activities"
@@ -47,13 +45,11 @@
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]
        (user-timeline user) =>
-       (every-checker
-        vector?
-        (fn [response]
-          (fact
-            (first response) => user
-            (second response) => map?
-            (:totalRecords (second response)) => 1))))))
+       (check [response]
+         response => vector?
+         (first response) => user
+         (second response) => map?
+         (:totalRecords (second response)) => 1))))
 
  (future-context #'callback-publish
    (context "when there is a watched source"

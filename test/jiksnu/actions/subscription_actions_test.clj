@@ -37,26 +37,22 @@
      (let [subscription (mock/a-subscription-exists)
            target (model.subscription/get-target subscription)]
        (get-subscribers target) =>
-       (every-checker
-        vector?
-        (comp (partial instance? User) first)
-        (fn [[_ {:keys [items] :as page}]]
-          (fact
-            (doseq [subscription items]
-              subscription => (partial instance? Subscription))))))))
+       (check [[_ {:keys [items]} :as response]]
+         response => vector?
+         (first response) => (partial instance? User)
+         (doseq [subscription items]
+           subscription => (partial instance? Subscription))))))
 
  (context "get-subscriptions"
    (context "when there are subscriptions"
      (let [subscription (mock/a-subscription-exists)
            actor (model.subscription/get-actor subscription)]
        (get-subscriptions actor) =>
-       (every-checker
-        vector?
-        #(= actor (first %))
-        (fn [response]
-          (let [subscriptions (second response)]
-            (fact
-              subscriptions =>  map?
-              (:items subscriptions) =>
-              (partial every? (partial instance? Subscription)))))))))
+       (check [response]
+         response => vector?
+         (first response) => actor
+         (let [subscriptions (second response)]
+           subscriptions =>  map?
+           (:items subscriptions) =>
+           (partial every? (partial instance? Subscription)))))))
  )

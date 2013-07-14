@@ -3,21 +3,18 @@
         [ciste.filters :only [filter-action]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [anything fact future-fact => every-checker]])
+        [midje.sweet :only [anything =>]])
   (:require [jiksnu.actions.admin.key-actions :as actions.key]))
 
 (test-environment-fixture
 
- (fact "filter-action #'actions.key/index"
+ (context "filter-action #'actions.key/index"
    (let [action #'actions.key/index]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
          (let [request {:action action}]
            (filter-action action request) =>
-           (fn [response]
-             (fact
-               response => map?)
-
-            ))))))
+           (check [response]
+             response => map?))))))
 
  )

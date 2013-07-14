@@ -1,10 +1,10 @@
 (ns jiksnu.model.feed-source-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [jiksnu.model.feed-source :only [create create-validators count-records
                                          delete drop! fetch-all fetch-by-id]]
-        [midje.sweet :only [=> anything every-checker fact future-fact throws]])
+        [midje.sweet :only [=> anything throws]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.mock :as mock]
@@ -23,13 +23,13 @@
      (fetch-by-id (:_id source)) => source))
 
  (context "create"
-   (future-fact "when given valid parameters"
+   (future-context "when given valid parameters"
      (create {:_id (util/make-id)}) =>
-     (every-checker
-      (partial instance? FeedSource)
-      #(instance? ObjectId (:_id %))
-      #(instance? DateTime (:created %))
-      #(string? (:topic %)))
+     (check [response]
+       response => (partial instance? FeedSource)
+       (:_id response) => (partial instance? ObjectId)
+       (:created response) => (partial instance? DateTime)
+       (:topic response) => string?)
      (provided
        (create-validators anything) => []))
 

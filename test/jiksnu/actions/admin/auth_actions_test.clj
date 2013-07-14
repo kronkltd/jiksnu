@@ -4,10 +4,8 @@
         midje.sweet))
 
 (test-environment-fixture
+
  (context #'index
-   (index) =>
-   (every-checker
-    map?
-    )
-   )
+   (index) => map?)
+
  )

@@ -4,9 +4,10 @@
         [ciste.sections.default :only [index-block index-section
                                        show-section uri]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture select-by-model]]
+        [jiksnu.test-helper :only [check context future-context hiccup->doc
+                                   test-environment-fixture select-by-model]]
         jiksnu.sections.conversation-sections
-        [midje.sweet :only [fact future-fact => every-checker]])
+        [midje.sweet :only [=>]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -39,12 +40,10 @@
                      items (doall (for [i (range n)]
                                     (mock/a-conversation-exists)))]
                  (index-block items) =>
-                 (fn [response]
-                   (fact
-                     response => seq?
-                     response => (partial every? vector?)
-                     response => (partial every? #(= (count %) 3))
-                     ))))))))))
+                 (check [response]
+                   response => seq?
+                   response => (partial every? vector?)
+                   response => (partial every? #(= (count %) 3)))))))))))
 
  (context #'index-section
    (context "Conversation"
@@ -59,11 +58,10 @@
                      items (doall (for [i (range n)]
                                     (mock/a-conversation-exists)))]
                  (index-section items) =>
-                 (fn [response]
-                   (fact
-                     response => seq?
-                     response => (partial every? vector?)
-                     response => (partial every? #(= (count %) 3))))))))))))
+                 (check [response]
+                   response => seq?
+                   response => (partial every? vector?)
+                   response => (partial every? #(= (count %) 3)))))))))))
 
  (context #'show-section
    (context "Conversation"
@@ -80,14 +78,13 @@
                    (binding [ko/*dynamic* false]
 
                      (show-section item) =>
-                     (fn [response]
-                       (fact
-                         (let [resp-str (h/html response)]
-                           resp-str => string?)
+                     (check [response]
+                       (let [resp-str (h/html response)]
+                         resp-str => string?)
 
-                         (let [doc (hiccup->doc response)]
-                           (count doc) => 1
-                           doc => (partial every? map?))))
+                       (let [doc (hiccup->doc response)]
+                         (count doc) => 1
+                         doc => (partial every? map?)))
                      ))
                  ))
 
@@ -99,23 +96,22 @@
                    (binding [ko/*dynamic* false]
 
                      (show-section item) =>
-                     (fn [response]
-                       (fact
-                         (let [resp-str (h/html response)]
-                           resp-str => string?)
+                     (check [response]
+                       (let [resp-str (h/html response)]
+                         resp-str => string?)
 
-                         (let [doc (hiccup->doc response)]
-                           (count doc) => 1
-                           doc => (partial every? map?)
+                       (let [doc (hiccup->doc response)]
+                         (count doc) => 1
+                         doc => (partial every? map?)
 
-                           (let [conv-elts (enlive/select doc [:.conversation-section])]
-                             (count conv-elts) => 1
+                         (let [conv-elts (enlive/select doc [:.conversation-section])]
+                           (count conv-elts) => 1
 
-                             (doseq [elt conv-elts]
-                               (get-in elt [:attrs :data-id]) => (str (:_id item))))
+                           (doseq [elt conv-elts]
+                             (get-in elt [:attrs :data-id]) => (str (:_id item))))
 
-                           (let [conv-elts (select-by-model doc "activity")]
-                             (count conv-elts) => 1))))))
+                         (let [conv-elts (select-by-model doc "activity")]
+                           (count conv-elts) => 1)))))
                  ))
              ))
 
@@ -126,7 +122,7 @@
                (let [item (mock/a-conversation-exists)]
 
                  (show-section item) =>
-                 (fn [response]
+                 (check [response]
                    response => (partial every? vector?))))
              ))
          )))

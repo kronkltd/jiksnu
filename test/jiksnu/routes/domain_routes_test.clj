@@ -3,8 +3,8 @@
         [ciste.sections.default :only [uri]]
         [clj-factory.core :only [factory]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        [midje.sweet :only [fact future-fact => every-checker contains]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=> contains]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
@@ -24,36 +24,31 @@
        (context "when requesting the default page"
          (-> (req/request :get (uri domain))
              response-for) =>
-             (fn [response]
-               (fact
-                 response => map?
-                 (:status response) => status/success?
-                 (let [body (h/html (:body response))]
-                   body => (re-pattern (str (:_id domain)))))))
+             (check [response]
+               response => map?
+               (:status response) => status/success?
+               (let [body (h/html (:body response))]
+                 body => (re-pattern (str (:_id domain))))))
 
        (context "when requesting the second page of users"
          (let [path (str (uri domain)
                          "?page=2")]
            (-> (req/request :get path)
-                     response-for)) =>
-                     (fn [response]
-                       (fact
-                         response => map?
-                         (:status response) => status/success?
-                         (let [body (h/html (:body response))]
-                           body => (re-pattern (str (:_id domain)))))))
-
-             )))
+               response-for)) =>
+               (check [response]
+                 response => map?
+                 (:status response) => status/success?
+                 (let [body (h/html (:body response))]
+                   body => (re-pattern (str (:_id domain))))))
+       )))
 
  (context "webfinger-host-meta"
    (context "should return a XRD document"
      (-> (req/request :get "/.well-known/host-meta")
          response-for) =>
-         (every-checker
-          map?
-          (comp status/success? :status)
-          (fn [req]
-            (let [body (:body req)]
-              (fact
-                body => #"<XRD.*"))))))
+         (check [req]
+           response => map?
+           (:status response) => status/success?
+           (let [body (:body req)]
+             body => #"<XRD.*"))))
  )

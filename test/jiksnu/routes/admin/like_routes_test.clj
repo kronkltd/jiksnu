@@ -3,8 +3,8 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.routes-helper :only [as-admin response-for]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [every-checker fact future-fact => ]]
+        [jiksnu.test-helper :only [chech context future-context test-environment-fixture]]
+        [midje.sweet :only [=>]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -17,11 +17,12 @@
             [ring.mock.request :as req]))
 
 (test-environment-fixture
- (future-fact "delete"
-     (let [like (model.like/create (factory :like))]
+
+ (future-context "delete"
+   (let [like (model.like/create (factory :like))]
      (-> (req/request :post (str "/admin/likes/" (:_id like) "/delete"))
          as-admin response-for) =>
-         (every-checker
-          map?
-          (comp status/redirect? :status))))
+         (check [response]
+           response => map?
+           (:status response) => status/redirect?)))
  )

@@ -2,8 +2,8 @@
   (:use [ciste.config :only [config]]
         [clj-factory.core :only [fseq]]
         [jiksnu.actions.webfinger-actions :only [fetch-host-meta host-meta]]
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        [midje.sweet :only [fact future-fact => truthy every-checker throws]])
+        [jiksnu.test-helper :only [test-environment-fixture]]
+        [midje.sweet :only [=> truthy throws]])
   (:require [clojure.tools.logging :as log]
             jiksnu.factory
             [jiksnu.mock :as mock]
@@ -50,9 +50,9 @@
 
  (context #'host-meta
    (let [domain (config :domain)]
-     (host-meta) => (every-checker
-                     map?
-                     #(= domain (:host %))
-                     #(>= 1 (count (:links %))))))
-
+     (host-meta) =>
+     (check [response]
+       response => map?
+       (:host response) => domain
+       (count (:links response)) => (partial >= 1))))
  )

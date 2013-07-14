@@ -3,8 +3,8 @@
         [ciste.sections.default :only [full-uri]]
         [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [as-user response-for]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [contains every-checker fact future-fact =>]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [contains =>]])
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -22,17 +22,17 @@
 
 (test-environment-fixture
 
- (fact "update"
-   (fact "when the user is authenticated"
+ (context "update"
+   (context "when the user is authenticated"
      (let [author (mock/a-user-exists)
            content (fseq :content)
            data (json/json-str
                  {:content content})]
        data => string?)))
 
- (fact "show-http-route"
-   (fact "when the user is not authenticated"
-     (fact "and the activity does not exist"
+ (context "show-http-route"
+   (context "when the user is not authenticated"
+     (context "and the activity does not exist"
        (let [author (mock/a-user-exists)
              activity (factory :activity)]
          (->> (str "/notice/" (:_id activity))
@@ -40,43 +40,47 @@
               response-for) =>
               (contains {:status 404})))
 
-     (fact "and there are activities"
+     (context "and there are activities"
        (let [activity (mock/there-is-an-activity)]
          (->> (str "/notice/" (:_id activity))
               (req/request :get)
               response-for) =>
-              (every-checker
-               (comp status/success? :status)
-               (fn [response]
-                 (fact
-                   (:body response) => (re-pattern (str (:_id activity)))))))))
-   (fact "when the user is authenticated"
-     (fact "when a private activity exists"
+             (check [response]
+               response => map?
+               (:status response) => status/success?
+               (:body response) => string?
+               (:body response) => (re-pattern (str (:_id activity)))))))
+
+   (context "when the user is authenticated"
+     (context "when a private activity exists"
        (let [activity (mock/there-is-an-activity {:modifier "private"})]
          (-> (req/request :get (str "/notice/" (:_id activity)))
              as-user response-for) =>
-             (every-checker
-              map?
-              (comp status/redirect? :status))))))
+             (check [response]
+               response => map?
+               (:status response) => status/redirect?
+               (:body response) => string?)))))
 
- (future-fact "oembed"
-   (fact "when the format is json"
+ (future-context "oembed"
+   (context "when the format is json"
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]
        (-> (req/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=json&url=" (full-uri activity))))
            response-for) =>
-           (every-checker
-            map?
-            (fn [response]
-              (fact
-                (:status response) => status/success?)))))
-   (fact "when the format is xml"
+           (check [response]
+             response => map?
+             (:status response) => status/redirect?
+             (:body response) => string?)))
+
+   (context "when the format is xml"
      (let [activity (mock/there-is-an-activity)]
        (-> (req/request :get (with-context [:http :html]
                                 (str "/main/oembed?format=xml&url=" (full-uri activity))))
            response-for) =>
-           (every-checker
-            map?
-            (comp status/success? :status)))))
+           (check [response]
+             response => map?
+             (:status response) => status/success?
+             (:body response) => string?)))
+   )
  )

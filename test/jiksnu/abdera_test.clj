@@ -2,8 +2,8 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [fseq]]
         [jiksnu.abdera :only [abdera-factory new-id get-text new-entry make-feed*]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=> every-checker fact]])
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
+        [midje.sweet :only [=>]])
   (:require [clj-time.core :as time]
             [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName
@@ -45,7 +45,6 @@
                    :updated (time/now),
                    }]
      (make-feed* feed-map) =>
-     (fn [response]
-       (fact
-         response => (partial instance? Feed)))))
+     (check [response]
+       response => (partial instance? Feed))))
  )

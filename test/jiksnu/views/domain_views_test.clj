@@ -4,7 +4,7 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [contains every-checker fact future-fact =>]])
+        [midje.sweet :only [contains =>]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -19,16 +19,16 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'show"
+ (context "apply-view #'show"
    (let [action #'jiksnu.actions.domain-actions/show]
 
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
 
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
 
-             (fact "when dynamic is false"
+             (context "when dynamic is false"
                (binding [ko/*dynamic* false]
 
                  (let [domain (mock/a-domain-exists)
@@ -38,11 +38,10 @@
                                   :params {:id (:_id domain)}}
                          response (filter-action action request)]
                      (apply-view request response) =>
-                     (fn [response]
-                       (fact
-                         response => map?
-                         (let [body (h/html (:body response))]
-                           body => (re-pattern (str (:_id domain))))))))))
+                     (chek [response]
+                       response => map?
+                       (let [body (h/html (:body response))]
+                         body => (re-pattern (str (:_id domain)))))))))
              ))
          ))
      ))

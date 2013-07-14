@@ -1,8 +1,8 @@
 (ns jiksnu.routes.admin.subscription-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [as-admin get-auth-cookie response-for]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [fact future-fact => every-checker contains]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=> contains]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
@@ -16,23 +16,22 @@
 
 (test-environment-fixture
 
- (fact "index page"
+ (context "index page"
    (let [subscription (mock/a-subscription-exists)]
      (-> (req/request :get "/admin/subscriptions")
          as-admin response-for) =>
-         (every-checker
-          (comp status/success? :status)
-          (fn [req]
-            (fact
-              (let [body (h/html (:body req))]
-                body => #"subscription"))))))
+         (check [req]
+           response => map?
+           (:status response) => status/success?
+           (let [body (h/html (:body req))]
+             body => #"subscription"))))
 
- (fact "delete"
+ (context "delete"
    (let [subscription (mock/a-subscription-exists)]
      (-> (req/request :post (str "/admin/subscriptions/" (:_id subscription) "/delete"))
          as-admin response-for) =>
-         (every-checker
-          map?
-          (comp status/redirect? :status))))
+         (check [response]
+           response => map?
+           (:status response) => status/redirect?)))
 
  )

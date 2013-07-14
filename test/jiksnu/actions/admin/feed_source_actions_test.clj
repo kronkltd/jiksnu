@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.actions.admin.feed-source-actions :only [index]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [fact =>]])
+        [midje.sweet :only [=>]])
   (:require [jiksnu.mock :as mock]
             [jiksnu.model.feed-source :as model.feed-source]))
 

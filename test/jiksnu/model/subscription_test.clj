@@ -5,7 +5,7 @@
         [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
                                           fetch-by-id subscribing?
                                           subscribed?]]
-        [midje.sweet :only [fact => future-fact every-checker throws truthy]])
+        [midje.sweet :only [=> throws truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
@@ -52,9 +52,7 @@
  (context #'fetch-all
    (context "when there are no items"
      (drop!)
-     (fetch-all) => (every-checker
-                     seq?
-                     empty?))
+     (fetch-all) => empty?)
 
    (context "when there is more than a page of items"
      (drop!)
@@ -64,14 +62,14 @@
          (mock/a-subscription-exists))
 
        (fetch-all) =>
-       (every-checker
-        seq?
-        #(fact (count %) => 20))
+       (check [response]
+         response => seq?
+        (count response) => 20)
 
        (fetch-all {} {:page 2}) =>
-       (every-checker
-        seq?
-        #(fact (count %) => (- n 20))))))
+       (check [response]
+         response => seq?
+        (count response) => (- n 20)))))
 
  (context #'count-records
    (context "when there aren't any items"

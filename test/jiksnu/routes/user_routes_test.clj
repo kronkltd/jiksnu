@@ -2,31 +2,31 @@
   (:use [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [every-checker fact future-fact => ]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
- (fact "index page"
+ (context "index page"
    (->> (named-path "index users")
         (req/request :get)
         response-for) =>
-        (every-checker
-         map?
-         (comp status/success? :status)
-         (comp string? :body)))
+        (check [response]
+          response => map?
+          (:status response) => status/redirect?
+          (:body response) => string?))
 
- (fact "registration page"
+ (context "registration page"
    (->> (named-path "register page")
         (req/request :get)
         response-for) =>
-        (every-checker
-         map?
-         (comp status/success? :status)
-         (comp string? :body)
-         #(re-find #".*register-form.*" (:body %))))
+        (check [response]
+          response => map?
+          (:status response) => status/success?
+          (:body response) => string?
+          (:body response) => #".*register-form.*"))
 
  )

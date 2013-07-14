@@ -5,7 +5,7 @@
         jiksnu.actions.activity-actions
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [midje.sweet :only [fact future-fact => every-checker throws truthy falsey]])
+        [midje.sweet :only [=> throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -53,13 +53,12 @@
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user user})]
        (find-by-user user) =>
-       (every-checker
-        map?
-        (fn [response]
-          (fact
-            (:totalRecords response) => 1
-            (count (:items response)) => 1
-            (:items response) => (partial every? (partial instance? Activity))))))))
+       (check [response]
+         response => map?
+         (:totalRecords response) => 1
+         (count (:items response)) => 1
+         (doseq [item (:items response)]
+           item => (partial instance? Activity))))))
 
  (context #'create
    (context "when the user is logged in"
@@ -136,9 +135,9 @@
    (with-context [:http :html]
      (let [activity (mock/there-is-an-activity)]
        (oembed activity) =>
-       (every-checker
-        map?
-        (comp string? :html)))))
+       (check [response]
+         response => map?
+         (:html response) => string?))))
 
  (context #'fetch-by-conversation
    (context "when there are matching activities"

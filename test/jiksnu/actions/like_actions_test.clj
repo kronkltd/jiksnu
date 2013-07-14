@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.actions.like-actions :only [delete show]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        [midje.sweet :only [fact falsey future-fact => every-checker contains]])
+        [midje.sweet :only [falsey => contains]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
@@ -12,9 +12,7 @@
 
  (future-context #'show
    (let [tag-name (fseq :word)]
-     (show tag-name) =>
-     (every-checker
-      seq?)))
+     (show tag-name) => seq?))
 
  (future-context #'delete
    (let [user (mock/a-user-exists)
