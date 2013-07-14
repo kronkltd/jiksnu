@@ -34,8 +34,8 @@
          response => map?
          response => (partial instance? FeedSubscription)
          (:_id response) =>  (partial instance? ObjectId)
-         (:created response) => (instance? DateTime)
-         (:updated response) => (instance? DateTime)
+         (:created response) => (partial instance? DateTime)
+         (:updated response) => (partial instance? DateTime)
          (:url response) => string?))
 
    (context "when given invalid params"
@@ -67,7 +67,7 @@
        (fetch-all) =>
        (check [response]
          response => seq?
-        #(count response) => 20)
+        (count response) => 20)
 
        (fetch-all {} {:page 2}) =>
        (check [response]
