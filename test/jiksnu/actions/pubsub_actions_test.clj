@@ -3,7 +3,7 @@
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [context hiccup->doc test-environment-fixture]]
-        [midje.sweet :only [=> truthy anything]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]

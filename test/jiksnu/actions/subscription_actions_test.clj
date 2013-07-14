@@ -2,13 +2,13 @@
   (:use [clj-factory.core :only [factory]]
         jiksnu.actions.subscription-actions
         [jiksnu.mock :as mock]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        jiksnu.model
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        midje.sweet)
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.features-helper :as feature]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription

@@ -4,7 +4,7 @@
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [midje.sweet :only [=> anything throws contains]]
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]

@@ -5,7 +5,7 @@
         [jiksnu.actions.feed-source-actions :only [add-watcher create discover-source prepare-create
                                                    process-entry process-feed unsubscribe update]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=> contains truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]

@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [clj-factory.core :only [fseq]]
         [jiksnu.actions.webfinger-actions :only [fetch-host-meta host-meta]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=> truthy throws]])
   (:require [clojure.tools.logging :as log]
             jiksnu.factory

@@ -3,7 +3,7 @@
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.activity-actions
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [=> throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
@@ -144,9 +144,8 @@
      (let [conversation (mock/a-conversation-exists)
            activity (mock/there-is-an-activity {:conversation conversation})]
        (fetch-by-conversation conversation) =>
-       (fn [response]
-         (fact
-           (count (:items response)) => 1)))))
+       (check [response]
+         (count (:items response)) => 1))))
 
  (context #'fetch-by-conversations
    (context "when there are matching activities"
@@ -155,7 +154,6 @@
            activity1 (mock/there-is-an-activity {:conversation conversation1})
            activity2 (mock/there-is-an-activity {:conversation conversation2})]
        (fetch-by-conversations [(:_id conversation1) (:_id conversation2)]) =>
-       (fn [response]
-         (fact
-           (count (:items response)) => 2)))))
+       (check [response]
+         (count (:items response)) => 2))))
  )

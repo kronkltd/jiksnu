@@ -37,9 +37,8 @@
                (db/drop-all!)
                (let [request {:action action}]
                  (filter-action action request) =>
-                 (fn [response]
-                   (fact
-                     response => map?))))
+                 (check [response]
+                   response => map?)))
              ))
          ))
 
@@ -58,12 +57,11 @@
                  request (assoc (packet/make-request packet)
                            :serialization :xmpp)]
              (filter-action #'actions.stream/public-timeline request) =>
-             (fn [response]
-               (fact
-                 response => map?
-                 (:totalRecords response) => 0
-                 (let [items (:items response)]
-                   items => empty?)))))
+             (check [response]
+               response => map?
+               (:totalRecords response) => 0
+               (let [items (:items response)]
+                 items => empty?))))
 
          (context "when there are activities"
            (let [author (mock/a-user-exists)]
@@ -79,13 +77,12 @@
                                :serialization :xmpp)
                      activity (mock/there-is-an-activity)]
                  (filter-action #'actions.stream/public-timeline request) =>
-                 (fn [response]
-                   (fact
-                     response => map?
-                     (:totalRecords response) => 1
-                     (let [items (:items response)]
-                       (doseq [item items]
-                         (class item) => Conversation))))))))
+                 (check [response]
+                   response => map?
+                   (:totalRecords response) => 1
+                   (let [items (:items response)]
+                     (doseq [item items]
+                       (class item) => Conversation)))))))
          ))))
 
  (context "filter-action #'actions.stream/user-timeline"

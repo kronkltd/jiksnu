@@ -1,7 +1,7 @@
 (ns jiksnu.actions.like-actions-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.actions.like-actions :only [delete show]]
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [falsey => contains]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.mock :as mock]

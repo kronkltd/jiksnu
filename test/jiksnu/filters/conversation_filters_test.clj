@@ -4,7 +4,7 @@
         [ciste.filters :only [filter-action]]
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [anything => truthy]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             jiksnu.filters.stream-filters

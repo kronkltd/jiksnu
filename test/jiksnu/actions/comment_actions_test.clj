@@ -1,7 +1,7 @@
 (ns jiksnu.actions.comment-actions-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
-        midje.sweet
+        [midje.sweet :only [=>]]
         jiksnu.test-helper
         [jiksnu.session :only (with-user)]
         jiksnu.actions.comment-actions)

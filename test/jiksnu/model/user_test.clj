@@ -1,7 +1,7 @@
 (ns jiksnu.model.user-test
   (:use [ciste.config :only [config with-environment]]
         [clj-factory.core :only [factory fseq]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.model.user
         [midje.sweet :only [=> contains throws truthy falsey]])
   (:require [clj-tigase.packet :as packet]

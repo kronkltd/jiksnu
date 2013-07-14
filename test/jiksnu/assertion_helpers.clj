@@ -6,8 +6,7 @@
                                       page-names that-stream]]
         [jiksnu.referrant :only [get-that get-this]]
         [lamina.core :only [read-channel*]]
-        [midje.sweet :only [=> =not=> checker contains defchecker fact
-                            future-fact truthy]]
+        [midje.sweet :only [=> =not=> checker contains defchecker truthy]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
