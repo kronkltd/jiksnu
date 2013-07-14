@@ -4,7 +4,7 @@
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
         [ciste.sections.default :only [index-section]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.routes :only [app]]
         [jiksnu.session :only [with-user]]
         ;; jiksnu.xmpp.element

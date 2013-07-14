@@ -1,6 +1,6 @@
 (ns jiksnu.triggers.subscription-triggers-test
   (:use [ciste.config :only [with-environment]]
-        jiksnu.test-helper
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.triggers.subscription-triggers
         [midje.sweet :only [=>]])
   (:require [clj-tigase.packet :as packet]

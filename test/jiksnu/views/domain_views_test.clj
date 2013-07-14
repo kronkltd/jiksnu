@@ -3,7 +3,7 @@
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -38,7 +38,7 @@
                                   :params {:id (:_id domain)}}
                          response (filter-action action request)]
                      (apply-view request response) =>
-                     (chek [response]
+                     (check [response]
                        response => map?
                        (let [body (h/html (:body response))]
                          body => (re-pattern (str (:_id domain)))))))))

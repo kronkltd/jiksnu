@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory fseq]]
         [midje.sweet :only [=> contains]]
-        jiksnu.test-helper
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.model
         jiksnu.model.webfinger)
   (:require [ciste.model :as cm]
