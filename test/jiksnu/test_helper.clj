@@ -2,7 +2,7 @@
   (:use [ciste.config :only [load-site-config]]
         [ciste.loader :only [process-requires]]
         [ciste.runner :only [start-application! stop-application!]]
-        [midje.sweet :only [=> fact future-fact throws]]
+        [midje.sweet :only [=> =not=> fact future-fact throws]]
         [slingshot.slingshot :only [try+ throw+]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]

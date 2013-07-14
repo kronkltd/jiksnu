@@ -3,7 +3,7 @@
         [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
-        [midje.sweet :only [=> anything throws contains]]
+        [midje.sweet :only [=> =not=> anything throws contains]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
