@@ -411,22 +411,23 @@
               (model.user/get-user username (:_id domain)))
             (when-let [id (:id params)]
               (model.user/fetch-by-remote-id id))
-            (let [params (if (:username params)
-                           params
-                           (get-username params options))]
-              (create params))))
+            (if-let [params (if (:username params)
+                              params
+                              (get-username params options))]
+              (create params)
+              (throw+ "could not get username"))))
       (throw+ "could not determine domain"))
     (throw+ "User does not have an id")))
 
 (defn discover-user-meta
   [user & [options]]
   @(util/safe-task
-   (discover-user-jrd user options))
+    (discover-user-jrd user options))
   @(util/safe-task
-   (let [params (discover-user-xrd user options)
-         links (:links params)]
-     (doseq [link links]
-       (add-link user link)))))
+    (let [params (discover-user-xrd user options)
+          links (:links params)]
+      (doseq [link links]
+        (add-link user link)))))
 
 (defn discover*
   [^User user & [options]]

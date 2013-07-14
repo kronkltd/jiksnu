@@ -67,16 +67,16 @@
                  params {:id uri}]
              (get-username params) => (contains {:username username})
              (provided
-              (discover-user-jrd anything anything) => {:username username}
-              (discover-user-xrd anything anything) => nil :times 0)))
+               (discover-user-jrd anything anything) => {:username username}
+               (discover-user-xrd anything anything) => nil :times 0)))
 
          (context "and the xrd request returns info"
            (let [uri (factory/make-uri domain-name "/users/1")
                  params {:id uri}]
              (get-username params) => (contains {:username username})
              (provided
-              (discover-user-xrd anything anything) => {:username username}
-              (discover-user-jrd anything anything) => nil)))
+               (discover-user-xrd anything anything) => {:username username}
+               (discover-user-jrd anything anything) => nil)))
          )
        )
 
@@ -168,7 +168,7 @@
                                                :domain domain-name
                                                :username "bob"})
            (provided
-             (actions.domain/get-discovered anything) => .domain.
+             (actions.domain/get-discovered anything nil nil) => .domain.
              (get-username anything) => "bob"))))))
 
  (context #'find-or-create-by-remote-id
@@ -177,28 +177,32 @@
          template (str "http://" domain-name "/xrd?uri={uri}")]
 
      (context "when given a http uri"
-       (context "when the domain is discovered"
+       (context "when the username can be determined"
          (db/drop-all!)
 
          (let [username (fseq :username)
                template (format "http://%s/xrd?uri={uri}" domain-name)
-               domain (actions.domain/find-or-create
-                       (factory :domain
-                                {:_id domain-name
-                                 :jrdTemplate template
-                                 :discovered true}))
-               domain (actions.domain/add-link domain {:rel "lrdd" :template template})
                uri (str "http://" domain-name "/user/1")
                um-url (util/replace-template template uri)
                source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
                mock-um (mock-user-meta username domain-name uri source-link)
                params {:id uri}
-               res (l/result-channel)]
+               res (l/result-channel)
+               params-with-domain (assoc params :domain domain-name)
+
+               domain (actions.domain/find-or-create
+                       (factory :domain
+                                {:_id domain-name
+                                 :jrdTemplate template
+                                 :discovered true}))]
+
+           (actions.domain/add-link domain {:rel "lrdd" :template template})
+
            (l/enqueue res mock-um)
            (find-or-create-by-remote-id params) => (partial instance? User)
            (provided
-            (ops/update-resource um-url) => res
-            ))))
+             (get-username params-with-domain nil) =>
+             (assoc params :username username)))))
 
      (future-context "when given an acct uri uri"
        (db/drop-all!)
@@ -224,7 +228,7 @@
                  :password (fseq :password)}]
      (register params) =>
      (check [response]
-      response                                          => map?
-      response                                          => (partial instance? User)
-      (model.auth-mechanism/fetch-by-user response) =not=> empty?)))
+       response                                          => map?
+       response                                          => (partial instance? User)
+       (model.auth-mechanism/fetch-by-user response) =not=> empty?)))
  )
