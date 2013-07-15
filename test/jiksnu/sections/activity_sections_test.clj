@@ -70,7 +70,7 @@
    (context "Activity"
      ;; TODO: not a good test
      (with-context [:http :html]
-       (uri .activity.))) => string?)
+       (uri .activity.)) => string?))
 
  (context #'index-block
    (context "when the context is [:http :rdf]"

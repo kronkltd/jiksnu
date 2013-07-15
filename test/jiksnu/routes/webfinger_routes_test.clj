@@ -24,7 +24,7 @@
           response-for) =>
           (check [response]
             response => map?
-            (:status response) => status/redirect?
+            (:status response) => status/success?
             (:body response) => string?
             (get-in response [:headers "Content-Type"]) => "application/xrds+xml"
             (let [body (cm/string->document (:body response))]

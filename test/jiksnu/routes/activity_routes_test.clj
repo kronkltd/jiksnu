@@ -58,8 +58,7 @@
              as-user response-for) =>
              (check [response]
                response => map?
-               (:status response) => status/redirect?
-               (:body response) => string?)))))
+               (:status response) => status/redirect?)))))
 
  (future-context "oembed"
    (context "when the format is json"

@@ -25,8 +25,8 @@
                      request {:action action}
                      response (filter-action action request)]
                  (apply-view request response) =>
-                 (check [result]
-                   (let [body (h/html (:body result))]
+                 (check [response]
+                   (let [body (h/html (:body response))]
                      response => map?
                      (:status response) => status/success?
                      body => (re-pattern

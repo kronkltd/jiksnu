@@ -16,7 +16,7 @@
         response-for) =>
         (check [response]
           response => map?
-          (:status response) => status/redirect?
+          (:status response) => status/success?
           (:body response) => string?
           ))
 
@@ -26,7 +26,7 @@
         response-for) =>
         (check [response]
           response => map?
-          (:status response) => status/redirect?
+          (:status response) => status/success?
           (:body response) => string?))
 
  )

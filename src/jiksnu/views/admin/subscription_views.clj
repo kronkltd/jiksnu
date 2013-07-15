@@ -28,6 +28,7 @@
   [request {:keys [items] :as page}]
   (let [subscriptions (if *dynamic* [(Subscription.)] items)]
     {:title "Subscriptions"
+     :status 200
      :single true
      :body (with-page "subscriptions"
              (pagination-links page)

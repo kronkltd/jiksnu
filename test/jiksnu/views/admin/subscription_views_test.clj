@@ -37,6 +37,7 @@
                    (apply-view request response) =>
                    (check [response]
                      response => map?
+                     (:status response) => status/success?
                      (let [body (h/html (:body response))]
                        body => #"subscriptions")))))))))))
 
@@ -54,6 +55,6 @@
                  (apply-view request response) =>
                  (check [response]
                    response => map?
-                   (:status response) => status/success?)))))))))
+                   (:status response) => status/redirect?)))))))))
 
  )
