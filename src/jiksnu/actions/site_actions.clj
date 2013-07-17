@@ -3,7 +3,8 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]])
   (:require [clojure.string :as string]
-            [inflections.core :as inf]))
+            [inflections.core :as inf]
+            [jiksnu.actions.domain-actions :as actions.domain]))
 
 (defn get-config
   [path]
@@ -37,7 +38,7 @@
 
 (defaction rsd
   []
-  true)
+  (actions.domain/current-domain))
 
 (defaction service
   [id]

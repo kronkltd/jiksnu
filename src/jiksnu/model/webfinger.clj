@@ -38,10 +38,10 @@
   {:pre [(instance? Document xrd)]
    :post [(or (nil? %) (string? %))]}
   (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
-    (->> xrd
+    (-> xrd
          (cm/query query-str)
          util/force-coll
-         (keep #(.getAttributeValue % "href"))
+         (->> (keep #(.getAttributeValue % "href")))
          first)))
 
 (defn get-feed-source-from-xrd
@@ -57,11 +57,11 @@
    :post [(or (nil? %) (string? %))]}
   (let [query-str (str "//*[local-name() = 'Property']"
                        "[@type = 'http://apinamespace.org/atom/username']")]
-    (->> xrd
-         (cm/query query-str)
-         util/force-coll
-         (keep (fn [prop] (when prop (.getValue prop))))
-         first)))
+    (let [root (.getRootElement xrd)]
+      (->> (cm/query root query-str)
+           util/force-coll
+           (keep (fn [prop] (when prop (.getValue prop))))
+           first))))
 
 (defn user-meta
   [lrdd]
@@ -88,19 +88,20 @@
 (defn get-links
   [xrd]
   {:pre [(instance? Document xrd)]}
-  (->> xrd
-       (cm/query "//*[local-name() = 'Link']")
-       util/force-coll
-       (map util/parse-link)))
+  (let [root (.getRootElement xrd)]
+    (->> (cm/query root "//*[local-name() = 'Link']")
+         util/force-coll
+         (map util/parse-link))))
 
 (defn get-identifiers
   "returns the values of the subject and it's aliases"
-  [xrd]
+  [^Document xrd]
   {:pre [(instance? Document xrd)]
    :post [(coll? %)]}
-  (->> (concat (util/force-coll (cm/query "//*[local-name() = 'Subject']" xrd))
-               (util/force-coll (cm/query "//*[local-name() = 'Alias']" xrd)))
-       (map #(.getValue %))))
+  (let [root (.getRootElement xrd)]
+    (->> (concat (util/force-coll (cm/query root "//*[local-name() = 'Subject']"))
+                 (util/force-coll (cm/query root "//*[local-name() = 'Alias']")))
+               (map #(.getValue %)))))
 
 (defn get-username-from-identifiers
   [xrd]

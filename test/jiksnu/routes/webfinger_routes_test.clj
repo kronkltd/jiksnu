@@ -15,7 +15,7 @@
  (defn get-link
    [body rel]
    (let [pattern (format "//*[local-name() = 'Link'][@rel = '%s']" rel)]
-     (cm/query pattern body)))
+     (cm/query body pattern)))
 
  (context "Requesting the host meta"
    (context "returns the host meta as xml"
