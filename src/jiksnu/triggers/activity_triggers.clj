@@ -1,19 +1,14 @@
 (ns jiksnu.triggers.activity-triggers
-  (:use [ciste.config :only [config]]
-        [ciste.triggers :only [add-trigger!]]
-        ciste.sections.default
-        jiksnu.actions.activity-actions)
+  (:use [ciste.config :only [config]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.channels :as ch]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
@@ -21,10 +16,15 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util])
+            [jiksnu.util :as util]
+            [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.Activity
            jiksnu.model.User))
+
+(defn filter-activity-create
+  [item]
+  (#{#'actions.activity/create}     (:action item)))
 
 (defn notify-activity
   [recipient ^Activity activity]
@@ -34,44 +34,59 @@
              ["body" {}
               (str (model.user/get-uri author false) ":  "
                    (:title activity))])
-        message (tigase/make-packet {:to (tigase/make-jid (:username recipient) (:domain recipient))
-                                     :from (tigase/make-jid "updates" (config :domain))
-                                     :type :chat
-                                     ;; FIXME: generate an id for this case
-                                     :id "JIKSNU1"
-                                     :body ele})]
+        packet-map {:to (tigase/make-jid (:username recipient) (:domain recipient))
+                    :from (tigase/make-jid "updates" (config :domain))
+                    :type :chat
+                    ;; FIXME: generate an id for this case
+                    :id "JIKSNU1"
+                    :body ele}
+        message (tigase/make-packet packet-map)]
     (tigase/deliver-packet! message)))
 
 (defn create-trigger
-  [action params activity]
-  (if activity
-    (let [author (model.activity/get-author activity)
-          mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
-          subscribers (map model.subscription/get-actor
-                           (model.subscription/subscribers author))
-          to-notify (->> (concat subscribers mentioned-users)
-                         (filter :local)
-                         (into #{}))]
+  [m]
+  (if-let [activity (:records m)]
+    (let [author (model.activity/get-author activity)]
+
       ;; Add item to author's stream
       (model.item/push author activity)
 
-      (let [conversation (model.conversation/fetch-by-id (:conversation activity))]
-        (actions.conversation/add-activity conversation activity))
+      (when-let [id (:conversation activity)]
+        (when-let [conversation (model.conversation/fetch-by-id id)]
+          (actions.conversation/add-activity conversation activity)))
 
       ;; Add as a comment to parent posts
       ;; TODO: deprecated
-      #_(if-let [parent (model.activity/fetch-by-id (:parent activity))]
-          (model.activity/add-comment parent activity))
+      ;; (if-let [parent (model.activity/fetch-by-id (:parent activity))]
+      ;;     (model.activity/add-comment parent activity))
 
       ;; Add as comment to irts
       ;; (doseq [parent parent-activities]
       ;;   (model.activity/add-comment parent activity))
 
       ;; notify users
-      (doseq [user to-notify]
-        (notify-activity user activity))
+      (let [mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
+            to-notify (->> (model.subscription/subscribers author)
+                           (map model.subscription/get-actor)
+                           (concat mentioned-users)
+                           (filter :local)
+                           (into #{}))]
+        (doseq [user to-notify]
+          (notify-activity user activity)))
 
       ;; TODO: ping feed subscriptions
       )))
 
-(add-trigger! #'create #'create-trigger)
+(defn init-receivers
+  []
+
+  (l/receive-all ch/posted-activities create-trigger)
+
+  ;; Create events for each created activity
+  (l/siphon
+   (l/filter* filter-activity-create (l/fork ciste.core/*actions*))
+   ch/posted-activities)
+
+  )
+
+(defonce receivers (init-receivers))

@@ -77,6 +77,5 @@
 
   (require-namespaces
    ["jiksnu.filters.feed-subscription-filters"
-    "jiksnu.triggers.feed-subscription-triggers"
     "jiksnu.views.feed-subscription-views"]))
 

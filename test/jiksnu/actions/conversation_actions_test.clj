@@ -2,8 +2,8 @@
   (:use [clj-factory.core :only [factory]]
         [jiksnu.actions.conversation-actions :only [create delete index show]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [=> contains fact]])
+        [jiksnu.test-helper :only [context test-environment-fixture]]
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]
@@ -11,7 +11,7 @@
 
 (test-environment-fixture
 
- (fact "#'create"
+ (context #'create
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)
          url (make-uri domain-name)
@@ -23,16 +23,16 @@
                                         :update-source (:_id source)})]
      (create params)) => map?)
 
- (fact "#'delete"
+ (context #'delete
    (let [conversation (mock/a-conversation-exists)]
      (delete conversation) => map?
      (model.conversation/fetch-by-id (:_id conversation)) => nil))
 
- (fact "#'index"
-   (fact "should return a page structure"
+ (context #'index
+   (context "should return a page structure"
      (index) => map?))
 
- (fact "#'show"
+ (context #'show
    (show .conversation.) => .conversation.)
 
  )

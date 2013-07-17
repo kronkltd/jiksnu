@@ -3,8 +3,8 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.routes-helper :only [as-admin get-auth-cookie response-for]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [every-checker fact future-fact => ]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=>]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -18,16 +18,14 @@
             [ring.mock.request :as req]))
 
 (test-environment-fixture
- (fact "index"
+ (context "index"
    (let [feed-subscription (mock/a-feed-subscription-exists)]
      (-> (req/request :get "/admin/feed-subscriptions")
          as-admin response-for) =>
-         (every-checker
-          map?
-          (comp status/success? :status)
-          (fn [result]
-            (let [body (:body result)]
-              (fact
-                ;; body => #"feed-subscriptions"
-                body => (re-pattern (str (:_id feed-subscription)))))))))
+         (check [response]
+           (let [body (:body response)]
+             response => map?
+             (:status response) => status/success?
+             ;; body => #"feed-subscriptions"
+             body => (re-pattern (str (:_id feed-subscription)))))))
  )

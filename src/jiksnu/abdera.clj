@@ -1,24 +1,27 @@
 (ns jiksnu.abdera
   (:use [ciste.initializer :only [definitializer]]
-        [clojure.core.incubator :only [-?>]])
+        [clojure.core.incubator :only [-?>]]
+        [slingshot.slingshot :only [try+]])
   (:require [clj-statsd :as s]
             [clj-tigase.element :as element]
+            [clj-time.coerce :as coerce]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
+            [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import java.io.ByteArrayInputStream
            java.net.URI
            javax.xml.namespace.QName
-           org.apache.abdera2.Abdera
-           org.apache.abdera2.ext.thread.ThreadHelper
-           org.apache.abdera2.factory.Factory
-           org.apache.abdera2.model.Element
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.ExtensibleElement
-           org.apache.abdera2.model.Feed
-           org.apache.abdera2.model.Link
-           org.apache.abdera2.model.Person
-           org.apache.abdera2.protocol.client.AbderaClient
+           org.apache.abdera.Abdera
+           ;; org.apache.abdera.ext.thread.ThreadHelper
+           org.apache.abdera.factory.Factory
+           org.apache.abdera.model.Element
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.ExtensibleElement
+           org.apache.abdera.model.Feed
+           org.apache.abdera.model.Link
+           org.apache.abdera.model.Person
+           org.apache.abdera.protocol.client.AbderaClient
            org.apache.axiom.util.UIDGenerator))
 
 (declare make-link)
@@ -31,14 +34,13 @@
 ;; this is still needed. Perhaps move to abdera
 (defn new-id
   []
-  (UIDGenerator/generateURNString))
+  (let [id (UIDGenerator/generateURNString)]
+    (trace/trace :id:generated id)
+    id))
 
 (defn ^Entry new-entry
   []
   (.newEntry abdera))
-
-
-
 
 (defn get-text
   [^Element element]
@@ -87,7 +89,9 @@
   [^Feed feed link]
   (.addLink feed (make-link link)))
 
-
+(defn get-feed-updated
+  [^Feed feed]
+  (.getUpdated feed))
 
 (defn get-href
   "get the href from a link as a string"
@@ -97,8 +101,9 @@
 (defn parse-link
   "Returns a map representing the link element"
   [^Link link]
-  (let [type (try (str (.getMimeType link)) (catch Exception ex
-                                              (trace/trace "errors:handled" ex)))
+  (let [type (try+ (str (.getMimeType link))
+                   (catch Exception ex
+                     (trace/trace "errors:handled" ex)))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))
@@ -118,17 +123,17 @@
 (defn parse-notice-info
   "extract the notice info from a statusnet element"
   [^Element element]
-  (let [source (attr-val element "source")
+  (let [source (util/sanitize (attr-val element "source"))
         local-id (attr-val element "local_id")
         source-link (attr-val element "source_link")]
-    {:source source
-     :source-link source-link
-     :local-id local-id}))
+    {:source {:name source
+              :href source-link}
+     :jiksnu {:local-id local-id}}))
 
 (defn parse-irts
   "Get the in-reply-to uris"
   [^Entry entry]
-  (->> (ThreadHelper/getInReplyTos entry)
+  (->> [] #_(ThreadHelper/getInReplyTos entry)
        (map #(str (.getHref %)))
        (filter identity)))
 
@@ -167,9 +172,12 @@
   (map parse-link (.getLinks entry)))
 
 
+
 (defn get-feed-author
   [^Feed feed]
   (if feed (first (.getAuthors feed))))
+
+
 
 (defn ^Person get-author
   [^Entry entry feed]
@@ -240,7 +248,7 @@
       (let [{:keys [uri name version]} generator]
         (.setGenerator feed uri name version)))
     (when id (.setId feed id))
-    (when updated (.setUpdated feed updated))
+    (when updated (.setUpdated feed (coerce/to-date updated)))
     (when author (.addExtension feed author))
     (doseq [link links]
       (add-link feed link))
@@ -257,8 +265,10 @@
 (defn parse-stream
   [stream]
   (try
-    (let [parser abdera-parser]
-      (.parse parser stream))
+    (let [parser abdera-parser
+          feed (.parse parser stream)]
+      (trace/trace :feed:parsed feed)
+      feed)
     (catch IllegalStateException ex
       (trace/trace "errors:handled" ex))))
 

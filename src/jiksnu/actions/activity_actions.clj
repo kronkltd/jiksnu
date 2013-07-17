@@ -4,6 +4,7 @@
         [ciste.core :only [defaction]]
         [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
+        [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
@@ -24,12 +25,13 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
+            [lamina.trace :as trace]
             [monger.collection :as mc])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.Element))
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.Element))
 
 (def ^QName activity-object-type (QName. ns/as "object-type"))
 
@@ -74,7 +76,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
       nil)))
 
 (def add-link* (templates/make-add-link* model.activity/collection-name))
-(def index*    (templates/make-indexer 'jiksnu.model.activity))
+(def index*    (templates/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -93,13 +95,12 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [user]
   (index {:author (:_id user)}))
 
-(defn prepare-create
+(defn-instrumented prepare-create
   [activity]
   (-> activity
       transforms/set-_id
       transforms/set-created-time
       transforms/set-updated-time
-      transforms.activity/set-title
       transforms.activity/set-object-id
       transforms.activity/set-public
       transforms.activity/set-remote
@@ -118,11 +119,13 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [activity]
   (-> activity
       transforms.activity/set-actor
+      transforms.activity/set-title
       transforms.activity/set-local
       transforms.activity/set-source
       transforms.activity/set-geo
       transforms.activity/set-object-updated
       transforms.activity/set-object-created
+      transforms.activity/set-published-time
       transforms.activity/set-verb))
 
 (defaction create
@@ -171,14 +174,23 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   "initial step of parsing an entry"
   [^Entry entry]
   {:id         (str (.getId entry))
-   :title      (.getTitle entry)
+   :url        (str (.getAlternateLinkResolvedHref entry))
+   :title      "" #_(.getTitle entry)
+   :content    (.getContent entry)
    :published  (.getPublished entry)
    :updated    (.getUpdated entry)
-   :content    (.getContent entry)
-   :url        (str (.getAlternateLinkResolvedHref entry))
+   :links      (abdera/parse-links entry)
    :extensions (.getExtensions entry)})
 
 (defonce latest-entry (ref nil))
+
+(defn get-mentioned-uris
+  [entry]
+  (-?>> (concat (.getLinks entry "mentioned")
+                (.getLinks entry "ostatus:attention"))
+        (map abdera/get-href)
+        (filter (complement #{"http://activityschema.org/collection/public"}))
+        (into #{})))
 
 (defn ^Activity entry->activity
   "Converts an Abdera entry to the clojure representation of the json
@@ -186,66 +198,69 @@ serialization"
   [^Entry entry & [feed source]]
   (dosync
    (ref-set latest-entry entry))
-  (let [{:keys [extensions content id title published updated] :as parsed-entry}
+  (trace/trace :entry:parsed entry)
+  (let [{:keys [extensions content id title published updated links] :as parsed-entry}
         (parse-entry entry)
         original-activity (model.activity/fetch-by-remote-id id)
         verb (get-verb entry)
-        user (-> entry
-                 (abdera/get-author feed)
-                 actions.user/person->user
-                 actions.user/find-or-create-by-remote-id)
-        extension-maps (doall (map parse-extension-element extensions))
-        links (seq (abdera/parse-links entry))
+        parsed-user (-> entry
+                        (abdera/get-author feed)
+                        actions.user/person->user)
+        user (actions.user/find-or-create-by-remote-id parsed-user)]
 
-        irts (seq (abdera/parse-irts entry))
+    ;; TODO: send parsed user into a channel to be updated once
+    (doseq [link (:links parsed-user)]
+      (actions.user/add-link user link))
 
-        ;; TODO: Extract this pattern
-        mentioned-uris (-?>> (concat (.getLinks entry "mentioned")
-                                     (.getLinks entry "ostatus:attention"))
-                             (map abdera/get-href)
-                             (into #{}))
-
-        conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
-                                (map abdera/get-href)
-                                (into #{}))
-
-        enclosures (-?> (.getLinks entry "enclosure")
-                        (->> (map abdera/parse-link))
-                        (into #{}))
-
-        tags (seq (filter (complement #{""}) (abdera/parse-tags entry)))
-        object-element (abdera/get-extension entry ns/as "object")
-        object-type (-?> (or (-?> object-element (.getFirstChild activity-object-type))
-                             (-?> entry (.getExtension activity-object-type)))
-                         .getText util/strip-namespaces)
-        object-id (-?> object-element (.getFirstChild (QName. ns/atom "id")))
-        params (apply merge
-                      (dissoc parsed-entry :extensions)
-                      (when content           {:content content})
-                      (when updated           {:updated updated})
-                      ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
-                      (when title             {:title title})
-                      (when irts              {:irts irts})
-                      (when (seq links)       {:links links})
-                      (when (seq conversation-uris)
-                        {:conversation-uris conversation-uris})
-                      (when (seq mentioned-uris)
-                        {:mentioned-uris mentioned-uris})
-                      (when (seq enclosures)
-                        {:enclosures enclosures})
-                      (when (seq tags)
-                        {:tags tags})
-                      (when verb              {:verb verb})
-                      {:id id
-                       :author (:_id user)
-                       :update-source (:_id source)
-                       ;; TODO: try to read
-                       :public true
-                       :object (merge (when object-type {:object-type object-type})
-                                      (when object-id {:id object-id}))
-                       :comment-count (abdera/get-comment-count entry)}
-                      extension-maps)]
-    (model/map->Activity params)))
+    (let [extension-maps (doall (map parse-extension-element extensions))
+          irts (seq (abdera/parse-irts entry))
+          mentioned-uris (get-mentioned-uris entry)
+          conversation-uris (-?>> (.getLinks entry "ostatus:conversation")
+                                  (map abdera/get-href)
+                                  (into #{}))
+          enclosures (-?> (.getLinks entry "enclosure")
+                          (->> (map abdera/parse-link)
+                               (into #{})))
+          tags (->> entry
+                    abdera/parse-tags
+                    (filter (complement #{""}))
+                    seq)
+          object-element (abdera/get-extension entry ns/as "object")
+          object-type (-?> (or (-?> object-element
+                                    (.getFirstChild activity-object-type))
+                               (-?> entry
+                                    (.getExtension activity-object-type)))
+                           .getText
+                           util/strip-namespaces)
+          object-id (-?> object-element
+                         (.getFirstChild (QName. ns/atom "id")))
+          params (apply merge
+                        (dissoc parsed-entry :extensions)
+                        (when content           {:content (util/sanitize content)})
+                        (when updated           {:updated updated})
+                        ;; (when (seq recipients) {:recipients (string/join ", " recipients)})
+                        (when title             {:title title})
+                        (when irts              {:irts irts})
+                        (when (seq links)       {:links links})
+                        (when (seq conversation-uris)
+                          {:conversation-uris conversation-uris})
+                        (when (seq mentioned-uris)
+                          {:mentioned-uris mentioned-uris})
+                        (when (seq enclosures)
+                          {:enclosures enclosures})
+                        (when (seq tags)
+                          {:tags tags})
+                        (when verb              {:verb verb})
+                        {:id id
+                         :author (:_id user)
+                         :update-source (:_id source)
+                         ;; TODO: try to read
+                         :public true
+                         :object (merge (when object-type {:type object-type})
+                                        (when object-id {:id object-id}))
+                         :comment-count (abdera/get-comment-count entry)}
+                        extension-maps)]
+      (model/map->Activity params))))
 
 ;; TODO: rename to publish
 (defaction post
@@ -328,6 +343,13 @@ serialization"
 (defaction fetch-by-conversation
   [conversation & [options]]
   (index {:conversation (:_id conversation)} options))
+
+(defaction fetch-by-conversations
+  [ids & [options]]
+  (index {:conversation {:$in ids}}
+         (merge
+          {:sort-clause {:updated 1}}
+          options)))
 
 (defaction fetch-by-feed-source
   [source & [options]]

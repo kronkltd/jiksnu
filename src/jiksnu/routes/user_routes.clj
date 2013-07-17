@@ -1,7 +1,10 @@
 (ns jiksnu.routes.user-routes
   (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.user-actions :as user]))
+  (:require [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.actions.subscription-actions :as sub]
+            [jiksnu.actions.user-actions :as user])
+  (:import jiksnu.model.User))
 
 (add-route! "/main/register"      {:named "register page"})
 (add-route! "/users"              {:named "index users"})
@@ -34,3 +37,17 @@
    [[:post   "/users/:id/delete"]               #'user/delete]
    ;; [[:post   "/users/:id/update-hub"]           #'user/update-hub]
    [[:post   "/:username"]                      #'user/update]])
+
+(defn pages
+  []
+  [
+   [{:name "users"}         {:action #'user/index}]
+   ])
+
+(defn sub-pages
+  []
+  [
+   [{:type User :name "activities"}       {:action #'stream/user-timeline}]
+   [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
+   [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
+   ])

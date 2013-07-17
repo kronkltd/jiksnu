@@ -11,10 +11,10 @@
      (when-not *dynamic*
        (:href link))]]
    [:td (if *dynamic*
-          {:data-bind "text: (typeof($data.rel) === 'undefined') ? '' : ko.utils.unwrapObservable(rel)"}
+          {:data-bind "text: (typeof(rel()) === 'undefined') ? '' : ko.utils.unwrapObservable(rel)"}
           (:rel link))]
    [:td (if *dynamic*
-          {:data-bind "text: (typeof($data.type) === 'undefined') ? '' : ko.utils.unwrapObservable(type)"}
+          {:data-bind "text: (typeof(type()) === 'undefined') ? '' : ko.utils.unwrapObservable(type)"}
           (:type link))]
    #_[:td (if *dynamic*
           {:data-bind "text: template"}

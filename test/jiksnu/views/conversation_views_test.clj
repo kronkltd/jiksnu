@@ -4,9 +4,10 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.actions.conversation-actions :only [index]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context
+                                   hiccup->doc test-environment-fixture]]
         [jiksnu.ko :only [*dynamic*]]
-        [midje.sweet :only [contains every-checker fact future-fact =>]])
+        [midje.sweet :only [=>]])
   (:require [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
@@ -18,37 +19,32 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'index"
+ (context "apply-view #'index"
    (let [action #'index]
-     (fact "when the serialization is :http"
-      (with-serialization :http
-        (fact "when the format is :html"
-          (with-format :html
-            (fact "when the request is not dynamic"
-              (binding [*dynamic* false]
-                (fact "when there are no conversations"
-                  (let [request {:action action}
-                        response (filter-action action request)]
-                    
-                    (apply-view request response) =>
-                    (every-checker
-                     map?)))))))
-        (fact "when the format is :viewmodel"
-          (with-format :viewmodel
-            (fact "when the request is not dynamic"
-              (binding [*dynamic* false]
-                (fact "when there are no conversations"
-                  (let [request {:action action
-                                 :format :viewmodel
-                                 :params {:format :viewmodel}
-                                 }
-                        response (filter-action action request)]
-                    
-                    (apply-view request response) =>
-                    (every-checker
-                     map?)))))))
 
+     (context "when the serialization is :http"
+       (with-serialization :http
 
-        ))))
- 
+         (context "when the format is :html"
+           (with-format :html
+             (context "when the request is not dynamic"
+               (binding [*dynamic* false]
+                 (context "when there are no conversations"
+                   (let [request {:action action}
+                         response (filter-action action request)]
+                     (apply-view request response) => map?))))))
+
+         (context "when the format is :viewmodel"
+           (with-format :viewmodel
+             (context "when the request is not dynamic"
+               (binding [*dynamic* false]
+                 (context "when there are no conversations"
+                   (let [request {:action action
+                                  :format :viewmodel
+                                  :params {:format :viewmodel}}
+                         response (filter-action action request)]
+                     (apply-view request response) => map?))))))
+         ))
+     ))
+
 )

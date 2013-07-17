@@ -1,41 +1,12 @@
 (ns jiksnu.model
-  (:use ciste.core
-        [ciste.config :only [config environment]]
+  (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
-        [clj-factory.core :only [factory]]
-        [clojurewerkz.route-one.core :only [*base-url*]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
-            [clj-statsd :as s]
-            [clojure.string :as string]
-            [clojure.data.json :as json]
+        [clojurewerkz.route-one.core :only [*base-url*]])
+  (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
-            [inflections.core :as inf]
             [jiksnu.db :as db]
-            [jiksnu.namespace :as ns]
-            [jiksnu.util :as util]
-            [lamina.core :as l]
-            [lamina.time :as time]
-            [lamina.trace :as trace]
-            [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq]
-            monger.joda-time
-            monger.json
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.implementations.jena :as jena])
-  (:import com.mongodb.WriteConcern
-           com.ocpsoft.pretty.time.PrettyTime
-           java.io.FileNotFoundException
-           java.io.PrintWriter
-           java.text.SimpleDateFormat
-           java.util.Date
-           java.net.URL
-           lamina.core.channel.Channel
-           org.bson.types.ObjectId
-           org.joda.time.DateTime
-           java.io.StringReader))
+            [monger.core :as mg])
+  (:import com.mongodb.WriteConcern))
 
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
@@ -44,10 +15,12 @@
 (defrecord Activity                [])
 (defrecord AuthenticationMechanism [])
 (defrecord Conversation            [])
+(defrecord Dialback                [])
 (defrecord Domain                  [])
 (defrecord FeedSource              [])
 (defrecord FeedSubscription        [])
 (defrecord Group                   [])
+(defrecord GroupMembership         [])
 (defrecord Item                    [])
 (defrecord Key                     [])
 (defrecord Like                    [])
@@ -60,10 +33,12 @@
    Activity
    AuthenticationMechanism
    Conversation
+   Dialback
    Domain
    FeedSource
    FeedSubscription
    Group
+   GroupMembership
    Item
    Key
    Like
@@ -74,10 +49,6 @@
   )
 
 ;; Entity predicates
-
-(defn activity?
-  [activity]
-  (instance? Activity activity))
 
 (defn domain?
   [domain]

@@ -11,7 +11,7 @@
          [jiksnu.sections :only [action-link actions-section admin-actions-section
                                  admin-index-block admin-index-line admin-index-section
                                  admin-show-section bind-property bind-to control-line
-                                 dropdown-menu pagination-links]]
+                                 display-property dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
@@ -38,7 +38,7 @@
            jiksnu.model.FeedSource
            jiksnu.model.Key
            jiksnu.model.User
-           org.apache.abdera2.model.Entry))
+           org.apache.abdera.model.Entry))
 
 (defn user-timeline-link
   [user format]
@@ -71,7 +71,7 @@
             {:src (model.user/image-link user)}))])
 
 (defn display-avatar
-  ([user] (display-avatar user 48))
+  ([user] (display-avatar user 64))
   ([user size]
      [:a.url (if *dynamic*
                {:data-bind "attr: {href: \"/users/\" + _id(), title: displayName}"}
@@ -113,7 +113,7 @@
 
     (control-line "Display Name"
                   "display-name" "text"
-                  :value (:display-name user))
+                  :value (:name user))
 
     (control-line "First Name:"
                   "first-name" "text"
@@ -160,7 +160,6 @@
   (let [author-uri (or (:url user)
                        (model.user/get-uri user))
         name (or (:name user)
-                 (:display-name user)
                  (str (:first-name user) " " (:last-name user)))
         id (or (:id user) author-uri)
         extensions [{:ns ns/as
@@ -179,7 +178,7 @@
       (.addSimpleExtension ns/poco "displayName"       "poco"     (title user))
 
       (.addExtension (doto (.newLink abdera/abdera-factory)
-                       (.setHref (:avatar-url user))
+                       (.setHref (:avatarUrl user))
                        (.setRel "avatar")
                        (.setMimeType "image/jpeg")))
       (.addExtension (doto (.newLink abdera/abdera-factory)
@@ -236,7 +235,7 @@
 (defn model-button
   [user]
   [:a (when *dynamic*
-        {:data-bind "attr: {href: '/model/users/' + ko.utils.unwrapObservable(_id) + '.model'}"})
+        {:data-bind "attr: {href: '/model/users/' + $data._id() + '.model'}"})
    "Model"])
 
 (defn get-buttons
@@ -279,7 +278,7 @@
      [:th "Id"]
      [:th "Domain"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (let [items (if *dynamic* [(User.)] items)]
       (map #(admin-index-line % page) items))]])
 
@@ -294,14 +293,10 @@
 (defsection admin-index-line [User :html]
   [user & [page & _]]
   [:tr (merge {:data-model "user"}
-              (if *dynamic*
-                {}
+              (when-not *dynamic*
                 {:data-id (:_id user)}))
    [:td (display-avatar user)]
-   [:td
-    (if *dynamic*
-      {:data-bind "text: username"}
-      (link-to user))]
+   [:td (display-property user :username)]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/users/' + ko.utils.unwrapObservable(_id)}, text: _id"}
@@ -353,39 +348,25 @@
            (link-to domain))])]]
     [:tr
      [:th "Bio"]
-     [:td (if *dynamic*
-            (bind-property "bio")
-            (:bio item))]]
+     [:td (display-property item :bio)]]
     [:tr
      [:th  "Location"]
-     [:td (if *dynamic*
-            (bind-property "location")
-            (:location item))]]
+     [:td (display-property item :location)]]
     [:tr
      [:th  "Url"]
-     [:td (if *dynamic*
-            (bind-property "url")
-            (:url item))]]
+     [:td (display-property item :url)]]
     [:tr
      [:th  "Id"]
-     [:td (if *dynamic*
-            (bind-property "id")
-            (:id item))]]
+     [:td (display-property item :id)]]
     [:tr
      [:th  "Discovered"]
-     [:td (if *dynamic*
-            (bind-property "discovered")
-            (:discovered item))]]
+     [:td (display-property item :discovered)]]
     [:tr
      [:th  "Created"]
-     [:td (if *dynamic*
-            (bind-property "created")
-            (:created item))]]
+     [:td (display-property item :created)]]
     [:tr
      [:th "Updated"]
-     [:td (if *dynamic*
-            {:data-bind "text: updated"}
-            (:updated item))]]
+     [:td (display-property item :updated)]]
     [:tr
      [:th "Update Source"]
      [:td
@@ -394,8 +375,8 @@
                             (FeedSource.)
                             (-?> item :update-source model.feed-source/fetch-by-id))]
           (link-to source)))]]]
-   (actions-section item)
-   (let [links (if *dynamic*  [{}] (:links item))]
+   ;; (actions-section item)
+   #_(let [links (if *dynamic*  [{}] (:links item))]
      (links-table links))))
 
 
@@ -424,7 +405,7 @@
   [:table.table.users
    [:thead]
    [:tbody (merge {:data-bag "users"}
-                  (when *dynamic* {:data-bind "foreach: $data"}))
+                  (when *dynamic* {:data-bind "foreach: items"}))
     ;; TODO: handle this higher up
     (let [users (if *dynamic* [(User.)] users)]
       (map #(index-line % page) users))]])
@@ -486,11 +467,12 @@
   [record & options]
   (let [options-map (apply hash-map options)]
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/remote-user/' + username() + '@' + domain(), title: 'acct:' + username() + '@' + domain()}"}
+          {:data-bind (str "attr: {href: '/remote-user/' + username() + '@' + domain(), "
+                           "title: 'acct:' + username() + '@' + domain()}")}
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: displayName() || username()"}
+                     {:data-bind "attr: {about: url}, text: name() || username()"}
                      {:about (uri record)}))
       (when-not *dynamic*
         (or (:title options-map) (title record)))]]))
@@ -513,11 +495,11 @@
             :id (or id (model.user/get-uri user))
             :url (or (:url user)
                      (full-uri user))
-            :objectType "person"
+            :type "person"
             :username (:username user)
             :domain (:domain user)
             :published (:updated user)
-            ;; :name {:formatted (:display-name user)
+            ;; :name {:formatted (:name user)
             ;;        :familyName (:last-name user)
             ;;        :givenName (:first-name user)}
             }
@@ -544,62 +526,50 @@
     [:div (display-avatar user 96)]
     [:p
      [:span.nickname.fn.n
-      [:span
-       (if *dynamic*
-         {:data-bind "text: displayName"}
-         (:display-name user))]]
+      (display-property user :displayName)]
      " ("
-     [:span
-      (if *dynamic*
-        {:data-bind "text: username"}
-        (:username user))]
+     (display-property user :username)
      "@"
-     [:span
-      (if *dynamic*
-        {:data-bind "text: domain"}
-        (link-to (actions.user/get-domain user)))] ")"]
+     (display-property user :domain)
+     ")"]
     [:div.adr
-     [:p.locality
-      (if *dynamic*
-        {:data-bind "text: location"}
-        (:location user))]]
-    [:p.note
-     (if *dynamic*
-       {:data-bind "text: bio"}
-       (:bio user))]
-    (bind-to "updateSource"
-      (let [source (if *dynamic* (FeedSource.) nil)]
+     [:p.locality (display-property user :location)]]
+    [:p.note (display-property user :bio)]
+    (if-let [source (if *dynamic* (FeedSource.) nil)]
+      (bind-to "updateSource"
         [:div {:data-model "feed-source"}
          (link-to source) ]))
     [:p [:a {:href (:id user)} (:id user)]]
     [:p [:a.url {:rel "me" :href (:url user)} (:url user)]]
-    (if-let [key (if *dynamic*
-                   (Key.)
-                   (try+  (model.key/get-key-for-user user)
-                          (catch Object ex
-                            (trace/trace "errors:handled" ex))))]
-      (show-section key))]))
+    (when (:discovered user)
+      (if-let [key (if *dynamic*
+                     (Key.)
+                     (try+  (model.key/get-key-for-user user)
+                            (catch Object ex
+                              (trace/trace "errors:handled" ex)
+                              nil)))]
+               (show-section key)))]))
 
 (defsection show-section [User :json]
   [user & _]
-  {:name (:display-name user)
+  {:name (:name user)
    :id (:_id user)
    :screen_name (:username user)
    :url (:id user)
-   :profile_image_url (:avatar-url user)
+   :profile_image_url (:avatarUrl user)
    :protected false})
 
 (defsection show-section [User :model]
   [user & _]
-  (dissoc user :links))
+  user)
 
 (defsection show-section [User :rdf]
   [user & _]
   (let [{:keys [url display-name avatar-url first-name
                 last-name username name email]} user
-                mkp (try (model.key/get-key-for-user user)
-                         (catch Exception ex
-                           (trace/trace "errors:handled" ex)))
+                mkp (try+ (model.key/get-key-for-user user)
+                          (catch Exception ex
+                            (trace/trace "errors:handled" ex)))
                 document-uri (str (full-uri user) ".rdf")
                 user-uri (plaza/rdf-resource (str (full-uri user) "#me"))
                 acct-uri (plaza/rdf-resource (model.user/get-uri user))]
@@ -637,8 +607,9 @@
 
 (defsection show-section [User :model]
   [item & [page]]
-  (->> (dissoc item :links)
-       ;; item
+  (->>
+   ;; (dissoc item :links)
+   item
 
        (map (fn [[k v]] [(camelize (name k) :lower)
                          v]))
@@ -656,11 +627,11 @@
   [user & options]
   [:user
    [:id (:_id user)]
-   [:name (:display-name user)]
+   [:name (:name user)]
    [:screen_name (:username user)]
    [:location (:location user)]
    [:description (:bio user)]
-   [:profile_image_url (h/h (:avatar-url user))]
+   [:profile_image_url (h/h (:avatarUrl user))]
    [:url (:url user)]
    [:protected "false"]])
 
@@ -671,7 +642,7 @@
     (h/html
      ["vcard"
       {"xmlns" ns/vcard}
-      ["fn" ["text" (:display-name user)]]
+      ["fn" ["text" (:name user)]]
       [:nickname (:username user)]
       [:url (:url user)]
       [:n
@@ -688,7 +659,6 @@
 (defsection title [User]
   [user & options]
   (or (:name user)
-      (:display-name user)
       (:first-name user)
       (model.user/get-uri user)))
 

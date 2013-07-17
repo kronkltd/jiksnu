@@ -3,9 +3,9 @@
         [ciste.sections.default :only [uri show-section title]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.session
-        [midje.sweet :only [fact => every-checker]])
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
@@ -17,44 +17,42 @@
 
 (test-environment-fixture
 
- (fact "uri User :html :http"
-   (fact "when the serialization is :http"
+ (context "uri User :html :http"
+   (context "when the serialization is :http"
      (with-serialization :http
-       (fact "when the format is :html"
+       (context "when the format is :html"
          (with-format :html
-           (fact "when it is html-only"
+           (context "when it is html-only"
              (binding [*dynamic* false]
                (let [user (mock/a-user-exists)]
                  (uri user) => string?))))))))
 
- (fact "title User"
-   (fact "should return the title of that user"
+ (context "title User"
+   (context "should return the title of that user"
      (with-context [:http :html]
        (let [user (mock/a-user-exists)
              response (title user)]
          response => string?))))
 
- (fact "show-section User"
-   (fact "when the serialization is :xmpp"
+ (context "show-section User"
+   (context "when the serialization is :xmpp"
      (with-serialization :xmpp
-       (fact "when the format is :xmpp"
+       (context "when the format is :xmpp"
          (with-format :xmpp
-           (fact "should return a vcard string"
+           (context "should return a vcard string"
              (let [user (mock/a-user-exists)]
                (show-section user) =>
-               (every-checker
-                #(fact % => #"<vcard")
-                string?)))))))
-   (fact "when the serialization is :http"
+               (check [response]
+                 response => string?
+                 response => #"<vcard")))))))
+   (context "when the serialization is :http"
      (with-serialization :http
-       (fact "when the format is :html"
+       (context "when the format is :html"
          (with-format :html
            (binding [*dynamic* false]
              (let [user (mock/a-user-exists)]
                (show-section user))) =>
-               (every-checker
-                (fn [response]
-                  (let [body (h/html response)]
-                    (fact
-                      body => #"user")))))))))
+               (check [response]
+                 (let [body (h/html response)]
+                   body => #"user")))))))
  )

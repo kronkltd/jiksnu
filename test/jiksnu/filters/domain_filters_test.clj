@@ -3,8 +3,8 @@
         [ciste.core :only [with-serialization with-format
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [fact future-fact =>]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
@@ -12,9 +12,9 @@
 
 (test-environment-fixture
 
- (fact "filter-action #'actions.domain/show"
+ (context "filter-action #'actions.domain/show"
    (let [action #'actions.domain/show]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
          (let [request {:params {:id .id.}}]
            (filter-action action request) => .response.

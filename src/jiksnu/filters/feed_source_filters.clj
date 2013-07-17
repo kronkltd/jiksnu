@@ -9,7 +9,8 @@
                                                    unsubscribe
                                                    watch]]
         [jiksnu.filters :only [parse-page parse-sorting]])
-  (:require [jiksnu.model :as model]
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]))
@@ -18,7 +19,7 @@
 
 (deffilter #'delete :command
   [action id]
-  (let [item (model.feed-source/fetch-by-id (util/make-id id))]
+  (if-let [item (model.feed-source/fetch-by-id (util/make-id id))]
     (action item)))
 
 ;; index
@@ -29,6 +30,10 @@
                     (parse-page request)
                     (parse-sorting request))))
 
+(deffilter #'index :page
+  [action request]
+  (action))
+
 ;; process-updates
 
 (deffilter #'process-updates :http
@@ -36,6 +41,11 @@
   (-> request :params action))
 
 ;; unsubscribe
+
+(deffilter #'unsubscribe :command
+  [action id]
+  (if-let [item (model.feed-source/fetch-by-id (util/make-id id))]
+    (action item)))
 
 (deffilter #'unsubscribe :http
   [action request]
@@ -62,12 +72,12 @@
 (deffilter #'update :command
   [action id]
   (let [item (model.feed-source/fetch-by-id (util/make-id id))]
-    (action item)))
+    (action item {:force true})))
 
 (deffilter #'update :http
   [action request]
   (if-let [source (-> request :params :id util/make-id model.feed-source/fetch-by-id)]
-    (action source)))
+    (action source {:force true})))
 
 ;; watch
 

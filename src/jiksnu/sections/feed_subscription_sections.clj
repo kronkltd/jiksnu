@@ -22,7 +22,7 @@
      [:th "Domain"]
      [:th "Callback"]]]
    [:tbody (when *dynamic*
-             {:data-bind "foreach: $data"})
+             {:data-bind "foreach: items"})
     (map #(admin-index-line % options) subscriptions)]])
 
 ;; admin-index-line

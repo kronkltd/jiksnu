@@ -15,15 +15,14 @@
    :single true
    :body
    (let [activities (if *dynamic* [(Activity.)] items)]
-     (with-page "default"
+     (with-page "activities"
        (pagination-links response)
-       (bind-to "items"
-         (admin-index-section activities response))))})
+       (admin-index-section activities response)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   (doall
    {:body
     {:title "Activities"
-     :pages {:default (format-page-info page)}
+     :pages {:activities (format-page-info page)}
      :activities (admin-index-section items page)}}))

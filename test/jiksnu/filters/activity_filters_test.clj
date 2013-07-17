@@ -4,11 +4,11 @@
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
         [ciste.sections.default :only [index-section]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.routes :only [app]]
         [jiksnu.session :only [with-user]]
         ;; jiksnu.xmpp.element
-        midje.sweet)
+        [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -21,20 +21,21 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util])
+  (:import jiksnu.model.Activity))
 
 (test-environment-fixture
 
- (future-fact "filter-action #'actions.activity/create"
+ (future-context "filter-action #'actions.activity/create"
    (let [action  #'actions.activity/create]
-     (fact "when the serialization is :xmpp"
+     (context "when the serialization is :xmpp"
        (with-serialization :xmpp
-         (fact "when the format is :xmpp"
+         (context "when the format is :xmpp"
            (with-format :xmpp
-             (fact "when the user is logged in"
+             (context "when the user is logged in"
                (let [user (mock/a-user-exists)]
                  (with-user user
-                   (fact "and it is a valid activity"
+                   (context "and it is a valid activity"
                      (let [activity (factory :activity)
                            element (element/make-element
                                     (index-section [activity]))
@@ -45,11 +46,11 @@
                                     :body element
                                     })
                            request (packet/make-request packet)]
-                       (filter-action action request) => model/activity?)))))))))))
+                       (filter-action action request) => (partial instance? Activity))))))))))))
 
- (fact "filter-action #'actions.activity/show"
+ (context "filter-action #'actions.activity/show"
    (let [action #'actions.activity/show]
-     (fact "when the serialization is :xmpp"
+     (context "when the serialization is :xmpp"
        (with-serialization :xmpp
          (let [author (mock/a-user-exists)]
            (with-user author
@@ -64,13 +65,11 @@
                                         ["item" {"id" (str (:_id activity))}]]])}
                    packet (tigase/make-packet packet-map)
                    request (packet/make-request packet)]
-               (filter-action action request) =>
-               (every-checker
-                model/activity?))))))))
+               (filter-action action request) => (partial instance? Activity))))))))
 
- (fact "filter-action #'actions.activity/oembed"
+ (context "filter-action #'actions.activity/oembed"
    (let [action #'actions.activity/oembed]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
          (let [request {:params {:url .url. :format .format.}}]
            (filter-action action request) => .oembed-map.

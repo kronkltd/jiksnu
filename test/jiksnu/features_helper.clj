@@ -7,7 +7,6 @@
         [jiksnu.mock :only [my-password]]
         [jiksnu.referrant :only [this that get-this get-that set-this set-that]]
         [lamina.core :only [permanent-channel read-channel* siphon]]
-        [lamina.executor :only [task]]
         midje.sweet
         ring.mock.request
         [slingshot.slingshot :only [throw+]])

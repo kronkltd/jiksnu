@@ -5,9 +5,11 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.conversation-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to dump-data format-page-info pagination-links with-page]])
+        [jiksnu.sections :only [bind-to dump-data format-page-info
+                                pagination-links with-page with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.sections.conversation-sections :as sections.conversation]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
@@ -21,15 +23,22 @@
    (let [items (if *dynamic*
                  [(Conversation.)]
                  items)]
-     (with-page "default"
+     (with-page "conversations"
        (pagination-links page)
-       (bind-to "items"
-         (doall (index-section items page)))))})
+       (doall (index-section items page))))})
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
-  {:body {:title "Conversations"
-          :pages {:default (format-page-info page)}}})
+  {:body {:title "Conversations"}})
 
 ;; show
 
@@ -39,11 +48,12 @@
    (let [item (if *dynamic* (Conversation.) item)]
      (bind-to "targetConversation"
        [:div {:data-model "conversation"}
-        (show-section item)]
-       (with-page "activities"
-         (pagination-links {})
-         (bind-to "items"
-           (index-section [(Activity.)])))))})
+        (sections.conversation/show-details item)
+        (with-sub-page "activities"
+          (let [items (if *dynamic*
+                        [(Activity.)]
+                        (:items (actions.activity/fetch-by-conversation item)))]
+            (index-section items)))]))})
 
 (defview #'show :model
   [request item]
@@ -52,8 +62,5 @@
 (defview #'show :viewmodel
   [request item]
   {:body {:targetConversation (:_id item)
-          :pages {:activities (let [page (actions.activity/fetch-by-conversation item
-                                                                                 {:sort-clause {:updated 1}})]
-                                (format-page-info page))}
           :title (or (:title item)
                      "Conversation")}})

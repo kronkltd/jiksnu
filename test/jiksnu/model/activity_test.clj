@@ -1,10 +1,10 @@
 (ns jiksnu.model.activity-test
   (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [jiksnu.model.activity :only [create create-validators count-records drop!
                                       get-author]]
-        [midje.sweet :only [anything fact future-fact =>]]
+        [midje.sweet :only [=>]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
@@ -20,7 +20,7 @@
 
 (test-environment-fixture
 
- (fact "#'create"
+ (context #'create
    (let [domain (mock/a-domain-exists)
          feed-source (mock/a-feed-source-exists {:domain domain})
          conversation (mock/a-conversation-exists {:feed-source feed-source})
@@ -30,23 +30,32 @@
                                        :id id
                                        :local false
                                        :update-source (:_id feed-source)}))]
-     (create activity) => model/activity?))
+     (create activity) => (partial instance? Activity)))
 
- (fact "#'get-author"
-   (let [user (mock/a-user-exists)
-         activity (mock/there-is-an-activity {:user user})]
-     (get-author activity) => user))
+ (context #'get-author
 
- (fact "#'count-records"
-   (fact "when there aren't any items"
+   (context "when given an empty activity"
+     (let [item (Activity.)]
+       (get-author item) => nil))
+
+   (context "when given a real activity"
+     (let [user (mock/a-user-exists)
+           activity (mock/there-is-an-activity {:user user})]
+       (get-author activity) => user))
+   )
+
+ (context #'count-records
+
+   (context "when there aren't any items"
      (drop!)
      (count-records) => 0)
-   (fact "when there are conversations"
+
+   (context "when there are conversations"
      (drop!)
      (let [n 15]
        (dotimes [i n]
          (mock/there-is-an-activity))
-       (count-records) => n)))
-
+       (count-records) => n))
+   )
 
  )

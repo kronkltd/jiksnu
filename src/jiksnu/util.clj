@@ -1,28 +1,24 @@
 (ns jiksnu.util
   (:use [ciste.config :only [config environment]]
         [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [*base-url*]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+]]
+        [lamina.executor :only [task]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [inflections.core :as inf]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [lamina.time :as time]
             [lamina.trace :as trace]
-            [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq]
             monger.joda-time
             monger.json
             [org.bovinegenius.exploding-fish :as uri]
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.implementations.jena :as jena])
+            [ring.util.codec :as codec])
   (:import com.mongodb.WriteConcern
            com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
@@ -34,12 +30,14 @@
            lamina.core.channel.Channel
            org.bson.types.ObjectId
            org.joda.time.DateTime
+           org.jsoup.Jsoup
+           org.jsoup.safety.Whitelist
            java.io.StringReader))
 
 (defn format-date
   "This is a dirty little function to get a properly formatted date."
   ;; TODO: Get more control of passed dates
-  [^Date date]
+  [date]
   ;; TODO: Time for a protocol
   (condp = (class date)
     String (DateTime/parse date)
@@ -143,6 +141,12 @@
   [^Date date]
   (-?>> date (.format (PrettyTime.))))
 
+(defn date->rfc1123
+  [date]
+  (let [formatter (SimpleDateFormat. "EEE, dd MMM yyyy HH:mm:ss 'GMT'")]
+    (.setTimeZone formatter (java.util.TimeZone/getTimeZone "UTC"))
+    (.format formatter date)))
+
 (defn write-json-date
   ([^Date date ^PrintWriter out]
      (write-json-date date out false))
@@ -156,10 +160,8 @@
   ([id ^PrintWriter out escape-unicode]
      (.print out (str "\"" id "\""))))
 
-(extend Date json/Write-JSON
-        {:write-json write-json-date})
-(extend ObjectId json/Write-JSON
-        {:write-json write-json-object-id})
+(extend Date json/JSONWriter {:-write write-json-date})
+(extend ObjectId json/JSONWriter {:-write write-json-object-id})
 
 (defn split-uri
   "accepts a uri in the form of username@domain or scheme:username@domain and
@@ -172,13 +174,13 @@
   "Takes a string representing a uri and returns the domain"
   [id]
   (let [{:keys [path scheme] :as uri} (uri/uri id)]
-    (cond
-     (#{"acct"} scheme) (second (split-uri id))
-     (#{"urn"}  scheme) (let [parts (string/split path #":")
-                              nid (nth parts 0)]
-                          (condp = nid
-                            "X-dfrn" (nth parts 1)))
-     :default           (:host uri))))
+    (condp = scheme
+      "acct" (second (split-uri id))
+      "urn"  (let [parts (string/split path #":")
+                   nid (nth parts 0)]
+               (condp = nid
+                 "X-dfrn" (nth parts 1)))
+      (:host uri))))
 
 (defn parse-link
   [link]
@@ -195,3 +197,47 @@
            (when type     {:type type})
            (when title {:title title})
            (when lang     {:lang lang}))))
+
+(defn sanitize
+  [input]
+  (Jsoup/clean input (Whitelist/none)))
+
+;; (defmacro safe-task
+;;   [& body]
+;;   `(let [b# (do ~@body)
+;;          res# (l/result-channel)]
+;;      (l/enqueue res# b#)
+;;      (l/on-realized res#
+;;                     identity
+;;                     #(trace/trace :errors:handled %))
+;;      res#))
+
+(defmacro safe-task
+  [& body]
+  `(let [res#
+         ;; (trace/time*
+          (task ~@body)
+          ;; )
+         ]
+     (l/on-realized res#
+                    identity
+                    #(trace/trace :errors:handled %))
+     res#))
+
+(defn require-module
+  [module-name]
+  (require-namespaces
+   (map
+    (fn [part-name]
+      (format "jiksnu.%s.%s-%s"
+              part-name
+              module-name
+              part-name))
+    ["filters"
+     "sections"
+     "triggers"
+     "views"])))
+
+(defn replace-template
+  [template url]
+  (string/replace template #"\{uri\}" (codec/url-encode url)))

@@ -1,6 +1,6 @@
 (ns jiksnu.factory
   (:use [ciste.config :only [config]]
-        [clj-factory.core :only [defseq deffactory fseq factory]])
+        [clj-factory.core :only [defseq deffactory defrecordfactory fseq factory]])
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
@@ -10,6 +10,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
@@ -41,7 +42,7 @@
   [n]
   (str "user-" n))
 
-(defseq :name
+(defseq :givenName
   [n]
   (rand-nth
    ["Alice" "Bob" "Carol" "Daniel"
@@ -58,9 +59,9 @@
     "Skywalker" "Bluth" "Adama" "Dumbledore"
     "Attreides"]))
 
-(defseq :display-name
+(defseq :name
   [n]
-  (str (fseq :name) " " (fseq :surname)))
+  (str (fseq :givenName) " " (fseq :surname)))
 
 (defseq :password
   [n]
@@ -178,45 +179,45 @@
   {:_id (fseq :domain)
    :local false})
 
-(deffactory :user
+(defrecordfactory :user model/map->User
   (let [password (fseq :password)
-        first-name (fseq :name)
+        first-name (fseq :givenName)
         last-name (fseq :surname)
-        display-name (str first-name " " last-name)
+        name (str first-name " " last-name)
         username (fseq :username)]
     {:username username
      :domain #'domain-id
      :email (fseq :email)
-     :name display-name
+     :name name
      ;; :update-source #'source-id
-     :display-name display-name
      :first-name first-name
      :last-name last-name}))
 
-(deffactory :local-user
+(defrecordfactory :local-user model/map->User
   (-> (factory :user {:domain (config :domain)})
       (assoc :local true)))
 
-(deffactory :conversation
+(defrecordfactory :conversation model/map->Conversation
   {:url (fseq :uri)})
 
-(deffactory :resource
+(defrecordfactory :resource model/map->Resource
   {:url (fseq :uri)})
 
-(deffactory :activity
+(defrecordfactory :activity model/map->Activity
   {:title (fseq :title)
    :content (fseq :content)
+   :published (time/now)
    :url (fseq :uri)
    :author #'user-id
    :verb "post"})
 
-(deffactory :subscription
+(defrecordfactory :subscription model/map->Subscription
   {:to #'user-id
    :local true
    :from #'user-id
    :created #'time/now})
 
-(deffactory :feed-source
+(defrecordfactory :feed-source model/map->FeedSource
   {:topic (fseq :uri)
    :hub (fseq :uri)})
 

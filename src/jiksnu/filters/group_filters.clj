@@ -1,8 +1,10 @@
 (ns jiksnu.filters.group-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.group-actions)
-  (:require [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.group :as model.group]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util]))
 
 (deffilter #'add :http
   [action request]
@@ -16,9 +18,23 @@
   [action request]
   (action (model.group/fetch-by-name (:name (:params request)))))
 
+;; index
+
 (deffilter #'index :http
   [action request]
   (action))
+
+(deffilter #'index :page
+  [action request]
+  (action))
+
+;; show
+
+(deffilter #'show :http
+  [action request]
+  (let [{{id :id} :params} request]
+    (if-let [item (model.group/fetch-by-id (util/make-id id))]
+      (action item))))
 
 (deffilter #'new-page :http
   [action request]

@@ -1,5 +1,6 @@
 (ns jiksnu.routes.stream-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.commands :only [add-command!]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.stream-actions :as stream]))
 
@@ -39,4 +40,12 @@
    ;; [[:get    "/api/mentions"]                                     #'stream/mentions-timeline]
    [[:get    "/api/statuses/public_timeline.:format"]   #'stream/public-timeline]
    [[:get    (formatted-path "user timeline")]          #'stream/user-timeline]
+   ])
+
+(add-command! "list-activities" #'stream/public-timeline)
+
+(defn pages
+  []
+  [
+   [{:name "public-timeline"} {:action #'stream/public-timeline}]
    ])

@@ -13,6 +13,8 @@
   (:import jiksnu.model.Like))
 
 (def collection-name "likes")
+(def maker #'model/map->Conversation)
+(def default-page-size 20)
 
 (def create-validators
   (validation-set
@@ -29,37 +31,13 @@
       set-created-time
       set-updated-time))
 
-(def set-field! (templates/make-set-field! collection-name))
-
-(defn drop!
-  []
-  (mc/remove collection-name))
-
-(defn fetch-by-id
-  [id]
-  (if-let [like (mc/find-map-by-id collection-name id)]
-    (model/map->Like like)))
-
-(defn delete
-  [like]
-  (let [like (fetch-by-id (:_id like))]
-    (mc/remove-by-id collection-name (:_id like))
-    like))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
-
-;; TODO: get-like
-
-;; FIXME: This is not quite right
-(defn find-or-create
-  [activity user]
-  (create activity))
-
-(defn fetch-all
-  ([] (fetch-all {} {}))
-  ([params] (fetch-all params {}))
-  ([params opts]
-     (map model/map->Like (mc/find-maps collection-name params))))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 ;; TODO: use index to get pagination
 (defn fetch-by-user
@@ -78,15 +56,3 @@
 (defn get-likes
   [activity]
   (seq (fetch-all {:activity (:_id activity)})))
-
-(defn count-records
-  ([] (count-records {}))
-  ([params]
-     (mc/count collection-name)))
-
-;; TODO: deprecated
-(defn format-data
-  "format a like for display in templates"
-  [like]
-  (let [user (model.user/fetch-by-id (:user like))]
-    (:username user)))

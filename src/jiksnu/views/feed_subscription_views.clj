@@ -13,6 +13,17 @@
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSubscription))
 
+;; index
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 ;; show
 
 (defview #'show :html

@@ -1,9 +1,13 @@
 (ns jiksnu.handlers
   (:use [jayq.core :only [$ css ]]
         [jiksnu.model :only [_model]])
-  (:require [jiksnu.logging :as log]
+  (:require [jiksnu.logging :as jl]
+            [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]
-            [jayq.core :as jayq]))
+            [jayq.core :as jayq]
+            [lolg :as log]))
+
+(def *logger* (log/get-logger "jiksnu.handlers"))
 
 (defn halt
   [event]
@@ -27,14 +31,17 @@
         target (when target-element
                  (.data target-element "target"))]
     (let [message (str action " >> " model "(" id ")")]
-      (ws/send (str "invoke-action " model " " action " " id
-                    (if target
-                      (str " " target))))
+      (ws/send "invoke-action"
+               (array model action id (when target target)))
       (add-notification message))
     (halt e)))
 
 
 (defn setup-handlers
   []
-  (.on (js/$ js/document) "click" "*[data-action]" invoke-action))
+  (.on (js/$ js/document) "click" "*[data-action]" invoke-action)
+
+  (.on (js/$ js/document) "click" "#showComments" (fn []
+                                                    (.set _model "showComments" true)))
+  )
 

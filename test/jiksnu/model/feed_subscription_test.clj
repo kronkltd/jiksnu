@@ -1,9 +1,9 @@
 (ns jiksnu.model.feed-subscription-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.feed-subscription :only [create count-records delete drop!
                                                fetch-all fetch-by-id]]
-        [midje.sweet :only [every-checker fact future-fact throws =>]])
+        [midje.sweet :only [throws =>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.mock :as mock]
@@ -16,50 +16,48 @@
 
 (test-environment-fixture
 
- (fact "#'fetch-by-id"
-   (fact "when the item doesn't exist"
+ (context #'fetch-by-id
+   (context "when the item doesn't exist"
      (let [id (util/make-id)]
        (fetch-by-id id) => nil?))
 
-   (fact "when the item exists"
+   (context "when the item exists"
      (let [item (mock/a-feed-subscription-exists)]
        (fetch-by-id (:_id item)) => item)))
 
- (fact "#'create"
-   (fact "when given valid params"
+ (context #'create
+   (context "when given valid params"
      (let [params (actions.feed-subscription/prepare-create
                    (factory :feed-subscription {:local false}))]
        (create params)) =>
-       (every-checker
-        map?
-        (partial instance? FeedSubscription)
-        #(instance? ObjectId (:_id %))
-        #(instance? DateTime (:created %))
-        #(instance? DateTime (:updated %))
-        #(string? (:url %))))
+       (check [response]
+         response => map?
+         response => (partial instance? FeedSubscription)
+         (:_id response) =>  (partial instance? ObjectId)
+         (:created response) => (partial instance? DateTime)
+         (:updated response) => (partial instance? DateTime)
+         (:url response) => string?))
 
-   (fact "when given invalid params"
+   (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (fact "#'drop!"
+ (context #'drop!
    (dotimes [i 1]
      (mock/a-feed-subscription-exists))
    (drop!)
    (count-records) => 0)
 
- (fact "#'delete"
+ (context #'delete
    (let [item (mock/a-feed-subscription-exists)]
      (delete item) => item
      (fetch-by-id (:_id item)) => nil))
 
- (fact "#'fetch-all"
-   (fact "when there are no items"
+ (context #'fetch-all
+   (context "when there are no items"
      (drop!)
-     (fetch-all) => (every-checker
-                     seq?
-                     empty?))
+     (fetch-all) => empty?)
 
-   (fact "when there is more than a page of items"
+   (context "when there is more than a page of items"
      (drop!)
 
      (let [n 25]
@@ -67,20 +65,20 @@
          (mock/a-feed-subscription-exists))
 
        (fetch-all) =>
-       (every-checker
-        seq?
-        #(fact (count %) => 20))
+       (check [response]
+         response => seq?
+        (count response) => 20)
 
        (fetch-all {} {:page 2}) =>
-       (every-checker
-        seq?
-        #(fact (count %) => (- n 20))))))
+       (check [response]
+         response => seq?
+         (count response) => (- n 20)))))
 
- (fact "#'count-records"
-   (fact "when there aren't any items"
+ (context #'count-records
+   (context "when there aren't any items"
      (drop!)
      (count-records) => 0)
-   (fact "when there are items"
+   (context "when there are items"
      (drop!)
      (let [n 15]
        (dotimes [i n]

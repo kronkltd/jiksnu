@@ -1,16 +1,15 @@
 (ns jiksnu.triggers.subscription-triggers
   (:use [ciste.config :only [config]]
-        [ciste.core :only [with-context]]
-        ciste.triggers
-        ciste.sections.default
-        jiksnu.actions.subscription-actions)
+        [ciste.core :only [with-context]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.channels :as ch]
             [jiksnu.model.user :as model.user]
             [jiksnu.helpers.subscription-helpers :as helpers.subscription]
-            [jiksnu.helpers.user-helpers :as helpers.user]))
+            [jiksnu.ops :as ops]
+            [lamina.core :as l]))
 
 (defn notify-subscribe-xmpp
   [request subscription]
@@ -43,7 +42,7 @@
   (let [domain (model.user/get-domain user)]
     (if (:local user)
       ;; TODO: Verify open subscription
-      (confirm subscription)
+      (actions.subscription/confirm subscription)
       (if (:xmpp domain)
         (notify-subscribe-xmpp {} subscription)
         ;; TODO: OStatus case
@@ -66,9 +65,24 @@
                    :from (tigase/make-jid "" (config :domain))
                    :body (element/make-element
                           ["body" {}
-                           (str (title actor) " has subscribed to you")])})]
+                           (str (:name actor) " has subscribed to you")])})]
       (tigase/deliver-packet! packet))))
 
-(add-trigger! #'subscribe #'subscribe-trigger)
-(add-trigger! #'unsubscribe #'unsubscribe-trigger)
-(add-trigger! #'subscribed #'subscribed-trigger)
+(defn handle-pending-new-subscriptions*
+  [actor-id user-id]
+  (let [actor (model.user/fetch-by-id actor-id)
+        user (model.user/fetch-by-id user-id)]
+    (actions.subscription/subscribe actor user)))
+
+(def handle-pending-new-subscriptions
+  (ops/op-handler handle-pending-new-subscriptions*))
+
+(defn init-receivers
+  []
+
+  (l/receive-all ch/pending-new-subscriptions
+                 handle-pending-new-subscriptions)
+
+  )
+
+(defonce receivers (init-receivers))

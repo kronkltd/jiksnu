@@ -1,10 +1,16 @@
 (ns jiksnu.filters.feed-subscription-filters
   (:use [ciste.filters :only [deffilter]]
-        [jiksnu.actions.feed-subscription-actions :only [show]]
+        [jiksnu.actions.feed-subscription-actions :only [index show]]
         [jiksnu.filters :only [parse-page parse-sorting]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.util :as util]))
+
+;; index
+
+(deffilter #'index :page
+  [action request]
+  (action))
 
 ;; show
 

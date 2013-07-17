@@ -5,8 +5,8 @@
   (:require [hiccup.core :as h]
             [jiksnu.namespace :as ns]))
 
-(defview #'rsd :html
-  [request _]
+(defview #'rsd :xml
+  [request domain]
   {:template false
    :headers {"Content-Type" "application/xml"}
    :body
@@ -18,7 +18,7 @@
              [:apis
               [:api {:name "Twitter"
                      :preferred "true"
-                     :apiLink (str "http://" (config :domain) "/api/")
+                     :apiLink (str "http://" (:_id domain) "/api/")
                      :blogId ""}
                [:settings
                 [:docs "http://status.net/wiki/TwitterCompatibleAPI"]
@@ -27,7 +27,7 @@
                  "false"]]]
               [:api {:name "Atom"
                      :preferred "false"
-                     :apiLink (str "http://" (config :domain) "/api/statusnet/app/service.xml")
+                     :apiLink (str "http://" (:_id domain) "/api/statusnet/app/service.xml")
                      :blogId ""}]]]])})
 
 (defview #'service :xml
@@ -49,7 +49,7 @@
        [:accept "application/atom+xml;type=entry"]
        [:activity:verb ns/post]]
 
-     
+
       [:collection {:href (str "http://" (config :domain)
                                "/api/statusnet/app/subscriptions/"
                                (:_id user) ".atom")}

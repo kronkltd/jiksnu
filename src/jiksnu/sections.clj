@@ -67,9 +67,10 @@
          {:title title
           :class (string/join " " [(str action "-button")])
           ;; :data-model model
-          :data-action action}
+          }
          (if *dynamic*
-           {:href "#"}
+           {:href "#"
+            :data-action action}
            {:href (str "/main/confirm"
                        "?action=" action
                        "&model=" model
@@ -84,15 +85,22 @@
 (defn bind-to
   [property & body]
   (if *dynamic*
-    [:div {:data-bind (str "with: " property)}
-     body]
+    (list
+     (format "<!-- ko with: %s -->" (name property))
+     body
+     "<!-- /ko -->")
     body))
 
 (defn with-page
   [page-name & body]
-  (apply bind-to
-         (format "jiksnu.core.get_page('%s')" page-name)
-         body))
+  [:span (when *dynamic*
+           {:data-page page-name})
+   body])
+
+(defn with-sub-page
+  [page-name & body]
+  [:span (when *dynamic* {:data-sub-page page-name})
+   body])
 
 (defn bind-property
   [property]
@@ -125,17 +133,18 @@
   [page]
   [:a.next (merge {:rel "next"}
                   (if *dynamic*
-                    {:data-bind "attr: {href: '?page=' + (1 + $data.page())}"}
+                    {:data-bind "attr: {href: '?page=' + (1 + page())}"}
                     {:href (str "?page=" (inc page))}))
-   "Next &rarr;"])
+   "Next "
+   [:i.icon-right-arrow]])
 
 (defn prev-link
   [page]
   [:a.previous (merge {:rel "prev"}
                       (if *dynamic*
-                        {:data-bind "attr: {href: '?page=' + (0 + $data.page() - 1)}"}
+                        {:data-bind "attr: {href: '?page=' + (0 + page() - 1)}"}
                         {:href (str "?page=" (dec page)) }))
-   "&larr; Previous"])
+   [:i.icon-left-arrow] " Previous"])
 
 (defn display-property
   [item property]
@@ -144,6 +153,20 @@
      (format "<!-- ko text: %s -->" (name property))
      "<!-- /ko -->")
     (str (get item (keyword property)))))
+
+(defn display-timestamp
+  [item property]
+  [:time.timeago
+   (merge
+    {:data-toggle "timeago"}
+    (if *dynamic*
+      {:data-bind
+       (format "attr: {datetime: %s}, text: %s"
+               (name property)
+               (name property))}
+      {:datetime (str (get item (keyword property)))}))
+   (when-not *dynamic*
+     (str (get item (keyword property))))])
 
 (defn dropdown-menu
   [item buttons]
@@ -163,7 +186,7 @@
   (let [page (get options :page 1)
         page-size (get options :page-size 20)
         ;; If no total, no pagination
-        total-records (get options :total-records 0)]
+        total-records (get options :totalRecords 0)]
     [:div
      [:div.pull-left
       (prev-link page)]
@@ -174,10 +197,10 @@
                  page)]
       ". (showing " [:span
                      (if *dynamic*
-                       {:data-bind "text: (($data.page() - 1) * $data.pageSize()) + 1"}
+                       {:data-bind "text: ((page() - 1) * pageSize()) + 1"}
                        (inc (* (dec page) page-size)))]
       " to " [:span (if *dynamic*
-                      {:data-bind "text: ($data.page() * $data.pageSize())"}
+                      {:data-bind "text: (page() * pageSize())"}
                       (* page page-size))]
       " of " [:span (if *dynamic*
                       {:data-bind "text: totalRecords"}

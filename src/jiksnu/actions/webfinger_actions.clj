@@ -11,6 +11,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.user :as model.user]
+            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.trace :as trace])
@@ -27,9 +28,8 @@
   (log/infof "fetching host meta: %s" url)
   (or
    (try
-     (let [resource (actions.resource/find-or-create {:url url})
-           response (actions.resource/update* resource)]
-       (s/increment "xrd_fetched")
+     (let [response @(ops/update-resource url)]
+       ;; (s/increment "xrd_fetched")
        (when (= 200 (:status response))
          (cm/string->document (:body response))))
      (catch RuntimeException ex
@@ -60,6 +60,13 @@
   (->> uri
        util/split-uri
        (apply model.user/get-user )))
+
+(defn set-source-from-xrd
+  [user xrd]
+  (let [source (model.webfinger/get-feed-source-from-xrd xrd)]
+    (merge user
+           {:username (model.webfinger/get-username-from-xrd xrd)
+            :update-source (:_id source)})))
 
 (definitializer
   (require-namespaces

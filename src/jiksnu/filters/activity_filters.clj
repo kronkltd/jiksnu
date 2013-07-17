@@ -1,7 +1,8 @@
 (ns jiksnu.filters.activity-filters
   (:use [ciste.config :only [config]]
         [ciste.filters :only [deffilter]]
-        jiksnu.actions.activity-actions)
+        jiksnu.actions.activity-actions
+        [slingshot.slingshot :only [try+]])
   (:require [aleph.http :as http]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -10,6 +11,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
@@ -26,11 +28,24 @@
 
 (deffilter #'delete :http
   [action request]
-  (if-let [id (try (-> request :params :id util/make-id)
-                   (catch RuntimeException ex
-                     (trace/trace "errors:handled" ex)))]
+  (if-let [id (try+ (-> request :params :id util/make-id)
+                    (catch RuntimeException ex
+                      (trace/trace "errors:handled" ex)))]
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
+
+;; fetch-by-conversation
+
+(deffilter #'fetch-by-conversation :page
+  [action request]
+  (when-let [conversation (:item request)]
+    (action conversation)))
+
+;; index
+
+(deffilter #'index :page
+  [action request]
+  (action))
 
 ;; oembed
 

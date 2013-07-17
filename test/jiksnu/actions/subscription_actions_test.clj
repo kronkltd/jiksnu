@@ -2,13 +2,13 @@
   (:use [clj-factory.core :only [factory]]
         jiksnu.actions.subscription-actions
         [jiksnu.mock :as mock]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        jiksnu.model
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        midje.sweet)
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.features-helper :as feature]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Subscription
@@ -17,46 +17,42 @@
 
 (test-environment-fixture
 
- (fact "subscribe"
-   (fact "when the user is not already subscribed"
-     (fact "should return a subscription"
+ (context "subscribe"
+   (context "when the user is not already subscribed"
+     (context "should return a subscription"
        (let [user (mock/a-user-exists)
              subscribee (mock/a-user-exists)]
          (model.subscription/drop!)
          (with-user user
-           (subscribe user subscribee) => subscription?)))))
+           (subscribe user subscribee) => (partial instance? Subscription))))))
 
- (fact "subscribed"
-   (fact "should return a subscription"
+ (context "subscribed"
+   (context "should return a subscription"
      (let [user (mock/a-user-exists)
            subscribee (mock/a-user-exists)]
-       (subscribed user subscribee) => subscription?)))
+       (subscribed user subscribee) => (partial instance? Subscription))))
 
- (fact "get-subscribers"
-   (fact "when there are subscribers"
+ (context "get-subscribers"
+   (context "when there are subscribers"
      (let [subscription (mock/a-subscription-exists)
            target (model.subscription/get-target subscription)]
        (get-subscribers target) =>
-       (every-checker
-        vector?
-        (comp (partial instance? User) first)
-        (fn [[_ {:keys [items] :as page}]]
-          (fact
-            (doseq [subscription items]
-              subscription => (partial instance? Subscription))))))))
+       (check [[_ {:keys [items]} :as response]]
+         response => vector?
+         (first response) => (partial instance? User)
+         (doseq [subscription items]
+           subscription => (partial instance? Subscription))))))
 
- (fact "get-subscriptions"
-   (fact "when there are subscriptions"
+ (context "get-subscriptions"
+   (context "when there are subscriptions"
      (let [subscription (mock/a-subscription-exists)
            actor (model.subscription/get-actor subscription)]
        (get-subscriptions actor) =>
-       (every-checker
-        vector?
-        #(= actor (first %))
-        (fn [response]
-          (let [subscriptions (second response)]
-            (fact
-              subscriptions =>  map?
-              (:items subscriptions) =>
-              (partial every? (partial instance? Subscription)))))))))
+       (check [response]
+         response => vector?
+         (first response) => actor
+         (let [subscriptions (second response)]
+           subscriptions =>  map?
+           (:items subscriptions) =>
+           (partial every? (partial instance? Subscription)))))))
  )

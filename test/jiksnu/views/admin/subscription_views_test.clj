@@ -4,8 +4,8 @@
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [every-checker fact future-fact => contains]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
@@ -14,18 +14,18 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription])
-  (:import org.apache.abdera2.model.Entry))
+  (:import org.apache.abdera.model.Entry))
 
 (test-environment-fixture
 
- (fact "apply-view #'index"
+ (context "apply-view #'index"
    (let [action #'actions.admin.subscription/index]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
              (binding [*dynamic* false]
-               (fact "when there are subscriptions"
+               (context "when there are subscriptions"
                  (db/drop-all!)
                  (let [user (mock/a-user-exists)
                        subscriptions
@@ -35,27 +35,26 @@
                        request {:action action}
                        response (filter-action action request)]
                    (apply-view request response) =>
-                   (every-checker
-                    map?
-                    (fn [response]
-                      (let [body (h/html (:body response))]
-                        (fact
-                          body => #"subscriptions")))))))))))))
+                   (check [response]
+                     response => map?
+                     (:status response) => status/success?
+                     (let [body (h/html (:body response))]
+                       body => #"subscriptions")))))))))))
 
- (fact "apply-view #'actions.admin.subscription/delete"
+ (context "apply-view #'actions.admin.subscription/delete"
    (let [action #'actions.admin.subscription/delete]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
-             (fact "when there is a subscription"
+             (context "when there is a subscription"
                (let [subscription (mock/a-subscription-exists)
                      request {:action action
                               :params {:id (str (:_id subscription))}}
                      response (filter-action action request)]
                  (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (comp status/redirect? :status))))))))))
+                 (check [response]
+                   response => map?
+                   (:status response) => status/redirect?)))))))))
 
  )

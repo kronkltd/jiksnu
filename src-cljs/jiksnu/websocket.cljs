@@ -1,6 +1,5 @@
 (ns jiksnu.websocket
-  (:use [jayq.core :only [$ css inner prepend text]]
-        [jayq.util :only [clj->js]])
+  (:use [jayq.core :only [$ css inner prepend text]])
   (:require [clojure.string :as string]
             [goog.events :as events]
             [goog.net.WebSocket :as websocket]
@@ -8,7 +7,7 @@
             [goog.net.WebSocket.MessageEvent :as websocket-message]
             [lolg :as log]
             [jiksnu.logging :as jl]
-            [jiksnu.underscore :as _]
+            [jiksnu.util.underscore :as _]
             [waltz.state :as state])
   (:use-macros [waltz.macros :only [in out defstate defevent]]))
 
@@ -19,12 +18,6 @@
 (def ws-state (state/machine "websocket state"))
 ;; (state/set-debug ws-state false)
 (state/set ws-state :closed)
-(def _view)
-
-(defn set-view
-  [view]
-  (set! _view view))
-
 
 (defn parse-json
   [s]
@@ -55,13 +48,13 @@
 (def queued-messages (atom []))
 
 (defn queue-message
-  [command & [args]]
-  (log/info *logger* (format "queuing message: %s(%s)" command args))
+  [command args]
+  (log/fine *logger* (format "queuing message: %s %s" command args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 
 (defn send
-  [command & [args]]
+  [command args]
   (if (state/in? ws-state :idle)
     (let [message (->> args
                        (map #(.stringify js/JSON (clj->js %)))
@@ -127,7 +120,8 @@
                   (swap! queued-messages rest)
                   (if (empty? @queued-messages)
                     (state/unset ws-state :queued))
-                  (apply send message)))))))
+                  (let [[command args] message]
+                    (send command args))))))))
 
   (defstate :error
     (in [] (text $interface "Error!")))
@@ -141,9 +135,9 @@
 
   (defstate :queued
     (in []
-        (log/finer *logger* "queued")
+        (log/finest *logger* "queued")
         (text $interface "queued"))
-    (out [] (log/info "not queued"))))
+    (out [] (log/finest "not queued"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Events
@@ -161,7 +155,7 @@
     []
     (state/transition ws-state :connecting :idle)
     ;; The connection isn't really opened till we send a command
-    (send "connect"))
+    (send "connect" (array)))
 
   (defevent :close
     []
@@ -173,7 +167,7 @@
     [m command & args]
     (state/transition ws-state :idle :sending)
     (let [message (str command (when (seq args) (apply str " " args)))]
-      (log/info *logger* (format "sending message: %s" message))
+      (log/fine *logger* (format "sending message: %s" message))
       (emit! @default-connection message))
     (state/transition ws-state :sending :idle))
 
@@ -182,9 +176,10 @@
     (if event
       (do (state/transition ws-state :idle :receiving)
           (let [message (.-message event)]
-            (log/fine *logger* (format "Receiving message: %s" message))
             (let [parsed-event (parse-json message)]
+              (when (.isLoggable *logger* goog.debug.Logger.Level.FINE)
+                (.debug js/console "Receiving message" parsed-event))
               (process-event parsed-event)
               (state/transition ws-state :receiving :idle)
               parsed-event)))
-      (log/warn *logger* "undefined event"))))
+      (log/warning *logger* "undefined event"))))

@@ -7,7 +7,8 @@
         [clojure.data.json :only [read-json]]
         [jiksnu.predicates :as predicates]
         [jiksnu.routes :only [http-routes]]
-        [jiksnu.routes.admin-routes :only [admin-routes]]))
+        [jiksnu.routes.admin-routes :only [admin-routes]])
+  (:require [clojure.tools.logging :as log]))
 
 (defaction fetch-viewmodel
   [path options]
@@ -32,11 +33,10 @@
 (deffilter #'fetch-viewmodel :command
   [action request]
   (let [[path opt-string] (:args request)]
-    (action (read-json path) (read-json opt-string))))
+    (action path opt-string)))
 
 (defview #'fetch-viewmodel :json
   [request response]
   response)
 
-(add-command! "fetch-viewmodel" #'fetch-viewmodel)
-
+(add-command! "fetch-viewmodel" #'jiksnu.viewmodel/fetch-viewmodel)

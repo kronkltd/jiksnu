@@ -1,9 +1,9 @@
 (ns jiksnu.model.activity
   (:use [ciste.config :only [config]]
-        [clojure.core.incubator :only [-?>>]]
+        [clojure.core.incubator :only [-?>]]
         [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of acceptance-of]])
+        [validateur.validation :only [validation-set presence-of]])
   (:require [clj-statsd :as s]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
@@ -16,64 +16,56 @@
             [monger.collection :as mc]
             [monger.query :as mq])
   (:import jiksnu.model.Activity
-           org.bson.types.ObjectId))
+           org.bson.types.ObjectId
+           org.joda.time.DateTime))
 
 (defonce page-size 20)
 (def collection-name "activities")
-
-(def create-probe (trace/probe-channel :activity:created))
+(def maker model/map->Activity)
 
 (def create-validators
   (validation-set
    (type-of :_id                   ObjectId)
+
    (type-of :id                    String)
    (type-of :title                 String)
-   (type-of :author                ObjectId)
    (type-of :content               String)
+   (type-of :verb                  String)
+   (type-of [:object :type]        String)
+
    (type-of :local                 Boolean)
    (type-of :public                Boolean)
-   (type-of :update-source         ObjectId)
-   (type-of [:object :object-type] String)
-   (type-of :verb                  String)
-   (type-of :conversation          ObjectId)
 
-   ;; TODO: These should be joda times
-   (presence-of   :created)
-   (presence-of   :updated)
+   (type-of :author                ObjectId)
+   ;; (type-of :update-source         ObjectId)
+   ;; (type-of :conversation          ObjectId)
+
+   (presence-of :created)
+   ;; (type-of :created               DateTime)
+   (presence-of :published)
+   ;; (type-of :published             DateTime)
+   (presence-of :updated)
+   ;; (type-of :updated               DateTime)
    ))
 
-(def count-records (templates/make-counter collection-name))
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-(def set-field! (templates/make-set-field! collection-name))
-
-(defn get-author
-  "Returns the user that is the author of this activity"
-  [activity]
-  (-> activity
-      :author
-      model.user/fetch-by-id))
+(def count-records (templates/make-counter     collection-name))
+(def delete        (templates/make-deleter     collection-name))
+(def drop!         (templates/make-dropper     collection-name))
+(def set-field!    (templates/make-set-field!  collection-name))
+(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
+(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates/make-fetch-fn    collection-name maker))
 
 (defn get-link
   [user rel content-type]
   (first (util/rel-filter rel (:links user) content-type)))
 
-(defn fetch-all
-  ([] (fetch-all {}))
-  ([params] (fetch-all params {}))
-  ([params options]
-     ((templates/make-fetch-fn model/map->Activity collection-name)
-      params options)))
-
-(defn fetch-by-id
-  [id]
-  ;; TODO: Should this always take a string?
-  (let [id (if (string? id) (util/make-id id) id)]
-    (s/increment "activities fetched")
-    (if-let [activity (mc/find-map-by-id collection-name id)]
-      (model/map->Activity activity))))
-
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
+(defn get-author
+  "Returns the user that is the author of this activity"
+  [activity]
+  (-?> activity
+      :author
+      model.user/fetch-by-id))
 
 (defn get-comments
   [activity]
@@ -99,8 +91,8 @@
 
 (defn fetch-by-remote-id
   [id]
-  (if-let [activity (mc/find-one-as-map collection-name {:id id})]
-    (model/map->Activity activity)))
+  (if-let [item (mc/find-one-as-map collection-name {:id id})]
+    (maker item)))
 
 ;; deprecated
 (defn add-comment
@@ -124,4 +116,5 @@
 (defn ensure-indexes
   []
   (doto collection-name
-    (mc/ensure-index {:id 1} {:unique true})))
+    (mc/ensure-index {:id 1} {:unique true})
+    (mc/ensure-index {:conversation 1})))

@@ -34,20 +34,28 @@
    :single true
    :body
    (let [items (if *dynamic* [(Resource.)] items)]
-     (with-page "default"
+     (with-page "resources"
        (pagination-links page)
-       (bind-to "items"
-         (doall (index-section items page)))))})
+       (doall (index-section items page))))})
 
 (defview #'index :json
   [request {:keys [items] :as page}]
   {:body
    {:items (index-section items page)}})
 
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Resources"
-          :pages {:default (format-page-info page)}}})
+          :pages {:resources (format-page-info page)}}})
 
 ;; show
 

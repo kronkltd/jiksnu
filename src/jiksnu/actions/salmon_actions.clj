@@ -69,13 +69,14 @@
   "Convert an InputStream to an envelope"
   ;; TODO: typehint
   [input-stream]
-  (let [doc (cm/stream->document input-stream)]
-    (let [data-tag (first (cm/query "//*[local-name()='data']" doc))]
-      {:sig (.getValue (first (cm/query "//*[local-name()='sig']" doc)))
+  (let [doc (cm/stream->document input-stream)
+        root (.getRootElement doc)]
+    (let [data-tag (first (cm/query root "//*[local-name()='data']"))]
+      {:sig (.getValue (first (cm/query root "//*[local-name()='sig']")))
        :datatype (.getAttributeValue data-tag "type")
        :data (.getValue data-tag)
-       :alg (.getValue (first (cm/query "//*[local-name()='alg']" doc)))
-       :encoding (.getValue (first (cm/query "//*[local-name()='encoding']" doc)))})))
+       :alg (.getValue (first (cm/query root "//*[local-name()='alg']")))
+       :encoding (.getValue (first (cm/query root "//*[local-name()='encoding']")))})))
 
 ;; TODO: swap order of arguments
 (defaction process

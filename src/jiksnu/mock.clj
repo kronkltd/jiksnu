@@ -22,9 +22,7 @@
 
 (def my-password (ref nil))
 
-
 (declare a-feed-source-exists)
-
 
 ;; TODO: this part should return the current domain
 (defn a-domain-exists
@@ -59,7 +57,7 @@
         user (actions.user/register
               {:username (fseq :username)
                :password password
-               :display-name (fseq :name)
+               :name (fseq :name)
                :accepted true})
         user (if (:admin opts)
                (do (model.user/set-field! user :admin true)
@@ -89,7 +87,6 @@
     (set-that :user user)
     user))
 
-
 (defn a-feed-source-exists
   [& [options]]
   (let [domain (or (:domain options)
@@ -100,16 +97,11 @@
                          (a-domain-exists
                           (select-keys options #{:local})))))
 
-
-        resource (or (:resource options)
-                     (a-resource-exists {:url (make-uri (:_id domain)
-                                                        (str (fseq :path) ".atom"))
-                                         :domain domain}))
+        url (fseq :uri)
         source (actions.feed-source/create
                 (factory :feed-source
-                         {:resource (:_id resource)
-                          :domain (:_id domain)
-                          :topic (:url resource)
+                         {:domain (:_id domain)
+                          :topic url
                           :hub (make-uri (:_id domain) "/push/hub")}))]
     (set-this :feed-source source)
     source))
@@ -151,7 +143,7 @@
                    (get-this :feed-source)
                    (a-feed-source-exists (select-keys options #{:local})))
         activity (actions.activity/post (factory :activity
-                                                 {:update-source source}))]
+                                                 {:update-source (:_id source)}))]
     (set-this :activity activity)
     activity))
 
@@ -167,13 +159,12 @@
                    (a-feed-source-exists {:domain domain}))
         conversation (or (:conversation options)
                          (a-conversation-exists {:source source}))
-        resource (or (:resource options)
-                     (a-resource-exists {:domain domain}))
+        url (fseq :uri)
         activity (session/with-user user
                    (actions.activity/create
                     (factory :activity
                              {:author (:_id user)
-                              :id (:url resource)
+                              :id url
                               :update-source (:_id source)
                               :conversation (:_id conversation)
                               ;; :local true
@@ -187,8 +178,6 @@
     (there-is-an-activity {:modifier  modifier
                            :user user})))
 
-
-
 (defn a-feed-subscription-exists
   [& [options]]
   (let [domain (or (:domain options)
@@ -200,8 +189,6 @@
                                      :local (:local domain)}))]
     (set-this :feed-subscription feed-subscription)
     feed-subscription))
-
-
 
 (defn a-subscription-exists
   [& [options]]
@@ -237,4 +224,3 @@
   []
   (there-is-an-activity {:modifier "public"
                          :user (get-that :user)}))
-

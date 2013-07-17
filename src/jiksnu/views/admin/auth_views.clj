@@ -14,18 +14,17 @@
   [request {:keys [items] :as response}]
   {:title "Authentication Mechanisms"
    :single true
-   :body (with-page "default"
+   :body (with-page "mechanisms"
            (pagination-links response)
-           (bind-to "items"
-             (admin-index-section (if *dynamic*
-                                    [(AuthenticationMechanism.)]
-                                    items)
-                                  response)
-             (add-form (model/->AuthenticationMechanism))))})
+           (admin-index-section (if *dynamic*
+                                  [(AuthenticationMechanism.)]
+                                  items)
+                                response)
+           (add-form (model/->AuthenticationMechanism)))})
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body
    {:title "Authentication Mechanisms"
-    :pages {:default (format-page-info page)}
+    :pages {:authMechanisms (format-page-info page)}
     :authenticationMechanisms (admin-index-section items page)}})

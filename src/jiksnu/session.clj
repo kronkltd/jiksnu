@@ -2,12 +2,12 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]))
 
-(def ^:dynamic *current-user* (ref nil))
+(def ^:dynamic *current-user-id* (ref nil))
 (def ^:dynamic *admin-mode* false)
 
 (defn current-user-id
   []
-  @*current-user*)
+  @*current-user-id*)
 
 (defn current-user
   []
@@ -24,7 +24,7 @@
 
 (defmacro with-user-id
   [id & body]
-  `(binding [*current-user* (ref ~id)]
+  `(binding [*current-user-id* (ref ~id)]
      ~@body))
 
 (defmacro with-user
@@ -39,5 +39,5 @@
 (defn set-authenticated-user!
   [user]
   (dosync
-   (ref-set *current-user* (:_id user)))
+   (ref-set *current-user-id* (:_id user)))
   user)

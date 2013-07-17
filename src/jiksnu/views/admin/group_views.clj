@@ -11,17 +11,15 @@
 
 (defview #'index :html
   [request {:keys [items] :as page}]
-  {:single true
-   :title "Groups"
-   :body
-   (with-page "default"
-     (pagination-links page)
-     (bind-to "items"
-       (let [items (if *dynamic* [(Group.)] items)]
-         (admin-index-section items page))))})
+  (let [items (if *dynamic* [(Group.)] items)]
+    {:single true
+     :title "Groups"
+     :body (with-page "groups"
+             (pagination-links page)
+             (admin-index-section items page))}))
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Groups"
-          :pages {:default (format-page-info page)}
+          :pages {:groups (format-page-info page)}
           :groups (admin-index-section items page)}})

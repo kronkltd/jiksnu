@@ -7,7 +7,7 @@
 (defview #'index :html
   [request {:keys [items] :as response}]
   {:body
-   (with-page "default"
+   (with-page "keys"
      (list
       (pagination-links response)
       (admin-index-section items response)))
@@ -16,6 +16,6 @@
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Keys"
-          :pages {:default (format-page-info page)}
+          :pages {:keys (format-page-info page)}
           :keys (doall (admin-index-section items page))}})
 

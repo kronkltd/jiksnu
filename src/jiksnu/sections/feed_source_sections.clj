@@ -6,7 +6,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block
                                 admin-index-line admin-index-section bind-to control-line
-                                dropdown-menu dump-data]])
+                                display-property dropdown-menu dump-data]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
@@ -31,7 +31,7 @@
              (count (:watchers source)))]]
    (bind-to "watchers"
      [:table.table
-      [:tbody {:data-bind "foreach: $data"}
+      [:tbody {:data-bind "foreach: items"}
        (let [watchers (if *dynamic* [""] (:watchers source))]
          (map
           (fn [id]
@@ -74,7 +74,7 @@
 (defn model-button
   [item]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/feed-sources/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:data-bind "attr: {href: '/model/feed-sources/' + _id() + '.model'}"}
         {:href (format "/model/feed-sources/%s.model" (:_id item))})
    "Model"])
 
@@ -133,7 +133,7 @@
      [:th "Status"]
      [:th "Actions"]]]
    [:tbody (when *dynamic*
-             {:data-bind "foreach: $data"})
+             {:data-bind "foreach: items"})
     (map admin-index-line items)]])
 
 (defsection admin-index-block [FeedSource :viewmodel]
@@ -153,26 +153,19 @@
     (link-to item)]
    [:td
     [:a (if *dynamic*
-          {:data-bind "attr: {href: '/admin/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: title"}
+          {:data-bind "attr: {href: '/admin/feed-sources/' + _id()}, text: title"}
           {:title (:title item)
            :href (named-path "admin show feed-source"
                              {:id (:_id item)})})
      (when-not *dynamic*
        (:title item))]]
-   [:td (if *dynamic*
-          {:data-bind "text: domain"}
-          (:domain item))]
-
+   [:td (display-property item :domain)]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: topic}, text: topic"}
           {:href (:topic item)})
      (when-not *dynamic* (:topic item))]]
-
-   [:td (if *dynamic*
-          {:data-bind "text: status"}
-          (:status item))]
-
+   [:td (display-property item :status)]
    [:td (actions-section item)]])
 
 ;; admin-index-section
@@ -213,7 +206,7 @@
      [:th "Actions"]]]
    [:tbody
     (when *dynamic*
-      {:data-bind "foreach: $data"})
+      {:data-bind "foreach: items"})
     (map index-line sources)]])
 
 (defsection index-block [FeedSource :viewmodel]
@@ -228,18 +221,14 @@
   [source & _]
   [:tr {:data-model "feed-source"}
    [:td (link-to source)]
-   [:td (if *dynamic*
-          {:data-bind "text: domain"}
-          (:domain source))]
+   [:td (display-property source :domain)]
    [:td
     [:a (if *dynamic*
           {:data-bind "attr: {href: topic}, text: topic"}
           {:href (:topic source)})
      (when-not *dynamic*
        (:topic source))]]
-   [:td (if *dynamic*
-          {:data-bind "text: hub"}
-          (:hub source))]
+   [:td (display-property source :hub)]
    #_[:td (:mode source)]
    [:td (if *dynamic*
           {:data-bind "text: status"}
@@ -247,9 +236,7 @@
    [:td (if *dynamic*
           {:data-bind "text: ko.utils.unwrapObservable(watchers).length"}
           (count (:watchers source)))]
-   [:td (if *dynamic*
-          {:data-bind "text: updated"}
-          (:updated source))]
+   [:td (display-property source :updated)]
    [:td (actions-section source)]])
 
 ;; index-section
@@ -263,7 +250,7 @@
 (defsection link-to [FeedSource :html]
   [source & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/feed-sources/' + ko.utils.unwrapObservable(_id)}, text: title"}
+        {:data-bind "attr: {href: '/main/feed-sources/' + _id()}, text: title"}
         {:href (str "/admin/feed-sources/" (:_id source))})
    (:topic source)])
 
@@ -288,10 +275,7 @@
             topic)]]]
        [:tr
         [:th "Domain:"]
-        [:td
-         (if *dynamic*
-           {:data-bind "text: domain"}
-           (:domain source))]]
+        [:td (display-property source :domain)]]
        [:tr
         [:th "Hub:"]
         [:td [:a (if *dynamic*
@@ -301,41 +285,25 @@
                 hub)]]]
        [:tr
         [:th "Callback:"]
-        [:td (merge {:data-property "callback"}
-                    (when *dynamic*
-                      {:data-bind "text: callback"}))
-         (when-not *dynamic*
-           callback)]]
+        [:td (display-property source :callback)]]
        [:tr
         [:th  "Challenge:"]
-        [:td (if *dynamic*
-               {:data-bind "text: callback"}
-               challenge)]]
+        [:td (display-property source :challenge)]]
        [:tr
         [:th "Mode:"]
-        [:td (if *dynamic*
-               {:data-bind "text: mode"}
-               (or mode "unknown"))]]
+        [:td (display-property source :mode)]]
        [:tr
         [:th "Status:"]
-        [:td
-         (if *dynamic*
-           {:data-bind "text: status"}
-           (:status source))]]
+        [:td (display-property source :status)]]
        [:tr
         [:th "Verify Token:"]
         [:td verify-token]]
        [:tr
         [:th "Created:"]
-        [:td (if *dynamic*
-               {:data-bind "text: created"}
-               created)]]
+        [:td (display-property source :created)]]
        [:tr
         [:th "Updated:"]
-        [:td
-         (if *dynamic*
-           {:data-bind "text: updated"}
-           updated)]]
+        [:td (display-property source :updated)]]
        [:tr
         [:th "Lease Seconds:"]
         [:td lease-seconds]]]]]))

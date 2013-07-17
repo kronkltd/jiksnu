@@ -6,7 +6,7 @@
         [jiksnu.session :only [current-user is-admin?]]
         [jiksnu.sections :only [action-link admin-index-block
                                 admin-index-line bind-to
-                                control-line
+                                control-line display-property
                                 dropdown-menu]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.sections.link-sections :as sections.link]
@@ -17,7 +17,7 @@
   [domain]
   [:img
    (if *dynamic*
-     {:data-bind "attr: {src: 'http://' + ko.utils.unwrapObservable(_id) + '/favicon.ico'}"}
+     {:data-bind "attr: {src: 'http://' + _id() + '/favicon.ico'}"}
      {:src (str "http://" (:_id domain) "/favicon.ico")})])
 
 (defn discover-button
@@ -27,7 +27,7 @@
 (defn model-button
   [item]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/model/domains/' + ko.utils.unwrapObservable(_id) + '.model'}"}
+        {:data-bind "attr: {href: '/model/domains/' + _id() + '.model'}"}
         {:href (str (named-path "domain model" {:id (:_id item)}) ".model")})
    "Model"])
 
@@ -85,7 +85,7 @@
      [:th "Host Meta"]
      [:th "# Links"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map index-line domains)]])
 
 (defsection index-block [Domain :viewmodel]
@@ -102,16 +102,14 @@
    [:td
     (favicon-link domain)
     (link-to domain)]
-   [:td (if *dynamic*
-          {:data-bind "text: xmpp"}
-          (:xmpp domain))]
+   [:td (display-property domain :xmpp)]
    [:td (if *dynamic*
           {:data-bind "text: '' + !!ko.utils.unwrapObservable($data.discovered)"}
           (:discovered domain))]
    [:td
     [:a
      (if *dynamic*
-       {:data-bind "attr: {href: 'http://' + ko.utils.unwrapObservable(_id) + '/.well-known/host-meta'}"}
+       {:data-bind "attr: {href: 'http://' + _id() + '/.well-known/host-meta'}"}
        {:href (str "http://" (:_id domain) "/.well-known/host-meta")})
      "Host-Meta"]]
    [:td
@@ -125,7 +123,7 @@
 (defsection link-to [Domain :html]
   [domain & _]
   [:a (if *dynamic*
-        {:data-bind "attr: {href: '/main/domains/' + ko.utils.unwrapObservable(_id)}, text: _id"}
+        {:data-bind "attr: {href: '/main/domains/' + _id()}, text: _id"}
         {:href (uri domain)})
    (when-not *dynamic*
      (:_id domain))])
@@ -150,6 +148,12 @@
      [:tr
       [:th "Discovered"]
       [:td (:discovered domain)]]
+     [:tr
+      [:th "Created"]
+      [:td (display-property domain :created)]]
+     [:tr
+      [:th "Updated"]
+      [:td (display-property domain :updated)]]
      (when-let [sc (:statusnet-config domain)]
        (list
         [:tr

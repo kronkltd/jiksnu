@@ -1,5 +1,6 @@
 (ns jiksnu.routes.admin-routes
-  (:use [ciste.routes :only [make-matchers]]
+  (:use [ciste.commands :only [add-command!]]
+        [ciste.routes :only [make-matchers]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.admin.activity-actions :as admin.activity]
@@ -97,3 +98,6 @@
     [[:post   "/admin/workers/stop/all"]                   #'admin.worker/stop-all-workers]
     ]))
 
+(add-command! "list-workers" #'admin.worker/index)
+(add-command! "start-worker" #'admin.worker/start-worker)
+(add-command! "stop-worker"  #'admin.worker/stop-worker)

@@ -7,9 +7,10 @@
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [hiccup->doc test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context hiccup->doc
+                                   select-by-model test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
-        [midje.sweet :only [every-checker fact future-fact => contains truthy]])
+        [midje.sweet :only [=> contains truthy]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -26,71 +27,95 @@
 
 (test-environment-fixture
 
- (fact "apply-view #'public-timeline"
+ (context "apply-view #'public-timeline"
    (let [action #'public-timeline]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
-         (fact "when the format is :atom"
-           (with-format :atom
-             (fact "when there are activities"
-               (db/drop-all!)
-               (let [user (mock/a-user-exists)]
-                 (dotimes [n 25]
-                   (mock/there-is-an-activity {:user user})))
 
-               (let [request {:action action}
+         (context "when the format is :atom"
+           (with-format :atom
+
+             (context "when there are conversations"
+               (db/drop-all!)
+               (let [n 20
+                     items (doall (for [i (range n)]
+                                    (let [conversation (mock/a-conversation-exists)]
+                                      (mock/there-is-an-activity {:conversation conversation})
+                                      conversation)))
+                     request {:action action}
                      response (filter-action action request)]
 
                  (apply-view request response) =>
-                 (every-checker
-                  map?
-                  #(not (:template %))
-                  (fn [response]
-                    (let [formatted (format-as :atom request response)
-                          feed (abdera/parse-xml-string (:body formatted))]
-                      (fact
-                        (count (.getEntries feed)) => 20))))))))
+                 (check [response]
+                   response => map?
+                   (:template response) => false
+                   (let [formatted (format-as :atom request response)
+                         feed (abdera/parse-xml-string (:body formatted))]
+                     (count (.getEntries feed)) => n))))
+             ))
 
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
-             (binding [*dynamic* false]
-               (fact "when there are activities"
-                 (db/drop-all!)
-                 (let [user (mock/a-user-exists)
-                       ;; TODO: This used to be set to 25, I need a
-                       ;; good way to make sure I have the right
-                       ;; amount of records returned in the default
-                       ;; page.
-                       activities (doall
-                                   (for [n (range 20)]
-                                     (mock/there-is-an-activity {:user user})))
-                       request {:action action}
-                       response (filter-action action request)]
-                   (apply-view request response) =>
-                   (every-checker
-                    map?
-                    (fn [response]
-                      (fact
-                        (let [doc (hiccup->doc (:body response))
-                              activity-elements (->> [(enlive/attr= :data-model "activity")]
-                                                     (enlive/select doc))
-                              ids (->> activity-elements
-                                       (map #(get-in % [:attrs :data-id]))
-                                       (into #{}))]
-                          (doseq [activity activities]
-                            (let [id (str (:_id activity))]
-                              (ids id) => truthy))
-                          (count activity-elements) => 20)))))))))))))
 
- (fact "apply-view #'user-timeline"
+             (context "when dynamic is false"
+               (binding [*dynamic* false]
+
+                 (context "when there are conversations"
+                   (db/drop-all!)
+                   (let [n 20
+                         items (doall (for [i (range n)] (mock/a-conversation-exists)))
+                         activities (doall (for [item items]
+                                             (mock/there-is-an-activity {:conversation item})))
+                         request {:action action}
+                         response (filter-action action request)]
+
+                     (apply-view request response) =>
+                     (check [response]
+                       response => map?
+                       (let [resp-str (h/html (:body response))]
+                         resp-str => string?)
+                       (let [doc (hiccup->doc [:bogus (:body response)])]
+                         (let [elts (enlive/select doc [:.conversation-section])]
+                           (count elts) => n
+
+                           (let [ids (->> elts
+                                          (map #(get-in % [:attrs :data-id]))
+                                          (into #{}))]
+                             (count ids) => n
+                             (doseq [item items]
+                               (let [id (str (:_id item))]
+                                 ids => (contains id)))))
+                         (let [elts (select-by-model doc "activity")]
+                           (count elts) => n)))))
+                 ))
+             ))
+
+         (context "when the format is :n3"
+           (with-format :n3
+
+             (context "when there are conversations"
+               (db/drop-all!)
+               (let [n 1
+                     items (doall (for [i (range n)] (mock/a-conversation-exists)))
+                     request {:action action}
+                     response (filter-action action request)]
+                 (apply-view request response) =>
+                 (check [response]
+                   response => map?
+                   (let [body (:body response)]
+                     body => (partial every? vector?)))))
+             ))
+         ))))
+
+ (context "apply-view #'user-timeline"
    (let [action #'user-timeline]
-     (fact "when the serialization is :http"
+     (context "when the serialization is :http"
        (with-serialization :http
 
-         (fact "when the format is :html"
+         (context "when the format is :html"
            (with-format :html
              (binding [*dynamic* false]
-               (fact "when that user has activities"
+               (context "when that user has activities"
                  (db/drop-all!)
                  (let [user (mock/a-user-exists)
                        activity (mock/there-is-an-activity {:user user})
@@ -98,18 +123,16 @@
                                 :params {:id (str (:_id user))}}
                        response (filter-action action request)]
                    (apply-view request response) =>
-                   (every-checker
-                    (fn [response]
-                      (let [doc (hiccup->doc (:body response))]
-                        (fact
-                          (map
-                           #(get-in % [:attrs :data-id])
-                           (enlive/select doc [(enlive/attr? :data-id)])) =>
-                           (contains (str (:_id activity))))))))))))
+                   (check [response]
+                     (let [doc (hiccup->doc (:body response))]
+                       (map
+                        #(get-in % [:attrs :data-id])
+                        (enlive/select doc [(enlive/attr? :data-id)])) =>
+                        (contains (str (:_id activity))))))))))
 
-         (fact "when the format is :n3"
+         (context "when the format is :n3"
            (with-format :n3
-             (fact "when that user has activities"
+             (context "when that user has activities"
                (db/drop-all!)
                (let [user (mock/a-user-exists)
                      activity (mock/there-is-an-activity {:user user})
@@ -117,13 +140,11 @@
                               :params {:id (str (:_id user))}}
                      response (filter-action action request)]
                  (apply-view request response) =>
-                 (every-checker
-                  map?
-                  (fn [response]
-                    (fact
-                      (let [body (:body response)]
-                        body => (partial every? vector?)
-                        (let [m (rdf/triples->model body)]
-                          m => truthy)))))))))))))
+                 (check [response]
+                   response => map?
+                   (let [body (:body response)]
+                     body => (partial every? vector?)
+                     (let [m (rdf/triples->model body)]
+                       m => truthy)))))))))))
 
  )

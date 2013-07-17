@@ -1,3 +1,8 @@
+// @import "../resources/public/assets/js/bootstrap-markdown/1.0.0/less/variables.less";
+// @import "../resources/public/assets/js/bootstrap-markdown/1.0.0/less/mixins.less";
+@import "../resources/public/assets/js/bootstrap-markdown/1.0.0/less/bootstrap-markdown.less";
+
+
 body {
     padding-top: 50px;
 }
@@ -13,7 +18,6 @@ h1 {
 .buttons > li {
     display: inline-block;
 }
-
 
 // .button-text,
 .minimal-text {
@@ -35,12 +39,16 @@ h1 {
     margin-right: 5px;
 }
 
-// #content {
-//     display: none;
-// }
+body {
+    display: none;
+}
 
-.bound #content {
+.bound body {
     display: block;
+}
+
+.avatar-section {
+   margin-right: 10px;
 }
 
 avatar {
@@ -48,31 +56,34 @@ avatar {
     width: 48px;
 }
 
-article {
-    display: block;
-    position: relative;
-    border-bottom: 1px solid black;
-    padding-left: 60px;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+// article {
+//     display: block;
+//     position: relative;
+//     padding-left: 60px;
 
+//     .photo {
+//         position: absolute;
+//         top: 3px;
+//         left: 0;
+//     }
+// }
 
-    .photo {
-        position: absolute;
-        top: 3px;
-        left: 0;
-    }
+.conversation-section {
+   border-bottom: 1px solid black;
+   margin-bottom: 20px;
+   padding-bottom: 10px;
+   min-height: 64px;
 }
 
-.comments {
-    margin-left: -35px;
+.post-form .control-group {
+   margin: 0;
+}
 
-    .comment {
-        display: block;
-        position: relative;
-        padding-left: 60px;
-        min-height: 50px;
-    }
+.comment {
+   display: block;
+   position: relative;
+   padding-left: 20px;
+   min-height: 64px;
 }
 
 .tags {
@@ -95,7 +106,7 @@ article {
     }
 
     li {
-        display: inline;
+        display: inline-block;
         margin-right: 5px;
     }
 
@@ -108,6 +119,10 @@ article {
 {
     display: inline-block;
     margin-left: 15px;
+}
+
+.type-line .nav {
+   margin: 0;
 }
 
 .format-line {

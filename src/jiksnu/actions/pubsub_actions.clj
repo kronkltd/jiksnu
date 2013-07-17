@@ -41,7 +41,7 @@
 (defaction verify-subscription-async
   "asynchronous verification of hub subscription"
   [subscription params]
-  (e/task
+  (util/safe-task
    (verify-subscribe-sync subscription)))
 
 (defaction subscribe

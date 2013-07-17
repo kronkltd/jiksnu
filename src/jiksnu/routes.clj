@@ -1,18 +1,22 @@
 (ns jiksnu.routes
-  (:use [ciste.config :only [config]]
+  (:use [ciste.commands :only [add-command!]]
+        [ciste.config :only [config]]
         [ciste.routes :only [make-matchers resolve-routes]]
-        [clj-airbrake.ring :only [wrap-airbrake]]
+        #_[clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
-        [slingshot.slingshot :only [throw+]])
+        [ring.middleware.resource :only [wrap-resource]]
+        [slingshot.slingshot :only [throw+]]
+        tidy-up.core)
   (:require [aleph.http :as http]
             [ciste.middleware :as middleware]
-            [clj-airbrake.core :as airbrake]
+            #_[clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.actions :as actions]
             [jiksnu.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
@@ -25,7 +29,7 @@
             [ring.util.response :as response])
   (:import javax.security.auth.login.LoginException))
 
-(airbrake/set-host! "localhost:3000")
+#_(airbrake/set-host! "localhost:3000")
 
 (defn not-found-msg
   []
@@ -35,6 +39,7 @@
   ["activity"
    "auth"
    "comment"
+   "confirm"
    "conversation"
    "domain"
    "favorite"
@@ -58,6 +63,17 @@
   [module-name]
   (let [route-sym (symbol (format "jiksnu.routes.%s-routes" module-name))]
     (require route-sym)
+
+    (when-let [page-fn (ns-resolve route-sym 'pages)]
+      (when-let [matchers (page-fn)]
+        (dosync
+         (alter predicates/*page-matchers* concat matchers))))
+
+    (when-let [page-fn (ns-resolve route-sym 'sub-pages)]
+      (when-let [matchers (page-fn)]
+        (dosync
+         (alter predicates/*sub-page-matchers* concat matchers))))
+
     (let [route-fn (ns-resolve route-sym 'routes)]
       (route-fn))))
 
@@ -68,7 +84,10 @@
        make-matchers))
 
 (compojure/defroutes all-routes
-  (compojure/GET "/api/help/test.json" _ "OK")
+  (compojure/GET "/websocket" _
+                 (http/wrap-aleph-handler stream/websocket-handler))
+  (compojure/GET "/main/events" _
+                 stream/stream-handler)
   (compojure/ANY "/admin*" request
                  (if (session/is-admin?)
                    ((middleware/wrap-log-request
@@ -77,25 +96,26 @@
                    (throw+ {:type :authentication :message "Must be admin"})))
   (middleware/wrap-log-request
    (resolve-routes [predicates/http] http-routes))
-  (compojure/GET "/websocket" _
-                 (http/wrap-aleph-handler stream/websocket-handler))
-  (compojure/GET "/main/events" _
-                 stream/stream-handler)
-  (route/resources "/webjars" {:root "META-INF/resources/webjars"})
   (route/not-found (not-found-msg)))
 
 (def app
   (http/wrap-ring-handler
-   (-> all-routes
-       jm/wrap-authentication-handler
-       (file/wrap-file "resources/public/")
-       file-info/wrap-file-info
-       jm/wrap-user-binding
-       middleware/wrap-http-serialization
-       middleware/wrap-log-request
-       jm/wrap-dynamic-mode
-       (handler/site {:session {:store (ms/session-store)}})
-       (wrap-airbrake (config :airbrake :key))
-       ;; (nm/wrap-canonical-host (config :domain))
-       jm/wrap-stacktrace
-       jm/wrap-stat-logging)))
+   (compojure/routes
+    (route/resources "/webjars" {:root "META-INF/resources/webjars"})
+    (compojure/GET "/api/help/test.json" _ "OK")
+    (-> all-routes
+        jm/wrap-authentication-handler
+        (file/wrap-file "resources/public/")
+        file-info/wrap-file-info
+        jm/wrap-user-binding
+        middleware/wrap-http-serialization
+        middleware/wrap-log-request
+        jm/wrap-dynamic-mode
+        (handler/site {:session {:store (ms/session-store)}})
+        #_(wrap-airbrake (config :airbrake :key))
+        ;; (nm/wrap-canonical-host (config :domain))
+        jm/wrap-stacktrace
+        jm/wrap-stat-logging
+        ;; wrap-tidy-up
+        ;; (wrap-resource "/META-INF/resources")
+))))

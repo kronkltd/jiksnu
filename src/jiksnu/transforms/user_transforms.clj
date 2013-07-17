@@ -5,17 +5,22 @@
         [jiksnu.routes.helpers :only [formatted-url]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.ops :as ops]))
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]))
 
 (defn set-id
   [user]
   (if (:id user)
     user
-    (assoc user :id (format "acct:%s@%s" (:username user) (:domain user)))))
+    (when-let [username (:username user)]
+      (when-let [domain-name (:domain user)]
+        (let [id (format "acct:%s@%s" username domain-name)]
+          (assoc user :id id))))))
 
 (defn set-url
   [user]
@@ -25,15 +30,15 @@
 
 (defn set-avatar-url
   [user]
-  (if (:avatar-url user)
+  (if (:avatarUrl user)
     user
     (if-let [avatar-link (first (keep
                                  (fn [link]
                                    (if (= (:rel link) "avatar")
                                      (:href link)))
                                  (:links user)))]
-      (assoc user :avatar-url avatar-link)
-      (assoc user :avatar-url
+      (assoc user :avatarUrl avatar-link)
+      (assoc user :avatarUrl
              (if (:email user)
                (gravatar-image (:email user))
                (format "http://%s/assets/images/default-avatar.jpg" (config :domain)))))))
@@ -60,8 +65,12 @@
 
 (defn set-domain
   [user]
-  (if (:domain user)
-    user
+  (if-let [domain-name (or (:domain user)
+                           (when-let [id (:id user)]
+                             (util/get-domain-name id)))]
+    (do
+      @(ops/get-discovered @(ops/get-domain domain-name))
+      (assoc user :domain domain-name))
     (throw+ "Could not determine domain for user")))
 
 (defn set-update-source
@@ -72,8 +81,8 @@
       (assoc user :update-source (:_id @source)))
     (if (:update-source user)
       user
-      (if-let [xrd (ops/get-user-meta user)]
-        (if-let [source (model.webfinger/get-feed-source-from-xrd @xrd)]
+      (if-let [xrd @(ops/get-user-meta user)]
+        (if-let [source (model.webfinger/get-feed-source-from-xrd xrd)]
           (assoc user :update-source (:_id source))
           (throw+ "could not get source"))
         (throw+ "Could not get user meta")))))
@@ -84,8 +93,8 @@
     item
     (let [id (:id item)
           domain-name (:domain item)
-          domain (ops/get-discovered (model.domain/fetch-by-id domain-name))]
-      (if-let [url (actions.domain/get-user-meta-url @domain id)]
+          domain @(ops/get-discovered (model.domain/fetch-by-id domain-name))]
+      (if-let [url (model.domain/get-xrd-url domain id)]
         (assoc item :user-meta-link url)
         (throw+ "Could not determine use meta link")))))
 

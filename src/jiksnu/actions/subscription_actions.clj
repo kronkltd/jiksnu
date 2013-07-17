@@ -14,7 +14,8 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates :as templates]
-            [jiksnu.transforms :as transforms])
+            [jiksnu.transforms :as transforms]
+            [jiksnu.util :as util])
   (:import javax.security.sasl.AuthenticationException
            jiksnu.model.Subscription
            jiksnu.model.User))
@@ -88,9 +89,18 @@
   [actor user]
   ;; Set up a feed source to that user's public feed
   (when-not (:local user)
-    (if-let [source (model.feed-source/fetch-by-id (:update-source user))]
-      (actions.feed-source/subscribe source)
-      (log/info "Could not find source")))
+    (util/safe-task
+
+     (actions.user/discover user)
+
+     (let [user (model.user/fetch-by-id (:_id user))]
+
+       (actions.user/update user)
+
+       (if-let [source-id (:update-source user)]
+         (when-let [source (model.feed-source/fetch-by-id source-id)]
+           (actions.feed-source/add-watcher source actor))
+         (log/warn "Could not find source")))))
   (create {:from (:_id actor)
            :to (:_id user)
            :local true

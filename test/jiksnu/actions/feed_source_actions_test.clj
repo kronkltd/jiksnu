@@ -2,11 +2,11 @@
   (:use [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create prepare-create process-entry
-                                                   process-feed]]
+        [jiksnu.actions.feed-source-actions :only [add-watcher create discover-source prepare-create
+                                                   process-entry process-feed unsubscribe update]]
         [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [test-environment-fixture]]
-        [midje.sweet :only [=> contains every-checker fact future-fact truthy anything]])
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [midje.sweet :only [=> truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -21,61 +21,69 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util])
-  (:import jiksnu.model.FeedSource))
+            [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
+            [lamina.core :as l])
+  (:import jiksnu.model.Activity
+           jiksnu.model.FeedSource))
 
 (test-environment-fixture
 
- (fact "#'add-watcher"
+ (context #'add-watcher
    (let [domain (actions.domain/current-domain)
          user (mock/a-user-exists)
          source (mock/a-feed-source-exists {:domain domain})]
      (add-watcher source user) => truthy))
 
- (fact "#'create"
+ (context #'create
    (let [domain (mock/a-remote-domain-exists)
          params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
      (create params) => (partial instance? FeedSource)
      (provided
-       (actions.domain/get-discovered domain) => domain)))
+       (actions.domain/get-discovered domain nil nil) => domain)))
 
- (future-fact "#'update"
+ (future-context #'update
    (let [domain (mock/a-domain-exists)
          source (mock/a-feed-source-exists)]
      (actions.feed-source/update source) => (partial instance? FeedSource))
    (provided
      (actions.domain/get-discovered anything) => .domain.))
 
- (fact "#'process-entry"
+ (context #'process-entry
    (with-context [:http :atom]
      (let [user (mock/a-user-exists)
-           activity (model/map->Activity (factory :activity
-                                                  {:id (fseq :uri)}))
            author (show-section user)
-           entry (show-section activity)
+           entry (show-section (factory :activity {:id (fseq :uri)}))
            feed (abdera/make-feed*
                  {:title (fseq :title)
                   :entries [entry]
                   :author author})
            source (mock/a-feed-source-exists)]
-       (process-entry [feed source entry]) => model/activity?)))
+       (process-entry [feed source entry]) => (partial instance? Activity))))
 
- (fact "#'process-feed"
-   (let [source (mock/a-feed-source-exists)
-         feed (abdera/make-feed*
-               {:title (fseq :title)
-                :entries []})]
-     (process-feed source feed) => nil))
+ (context #'process-feed
+   (context "when the feed has no watchers"
+     (let [domain (mock/a-domain-exists)
+           source (mock/a-feed-source-exists {:domain domain})
+           feed (abdera/make-feed*
+                 {:title (fseq :title)
+                  :entries []})]
+       (process-feed source feed) => nil
+       (provided
+         (unsubscribe source) => nil))))
 
- (fact "#'discover-source"
+ (context #'discover-source
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (mock/a-resource-exists {:url url})
-         topic (str url ".atom")]
+         topic (str url ".atom")
+         response ""
+         result (l/result-channel)]
+     (l/enqueue result response)
      (actions.feed-source/discover-source url) => (partial instance? FeedSource)
      (provided
-       (actions.resource/update* resource) => .response.
-       (model.resource/response->tree .response.) => .tree.
-       (model.resource/get-links .tree.) => .links.
-       (util/find-atom-link .links.) => topic)))
+      (ops/update-resource url) => result
+      (model.resource/response->tree response) => .tree.
+      (model.resource/get-links .tree.) => .links.
+      (util/find-atom-link .links.) => topic)))
 
  )

@@ -40,6 +40,30 @@
   [request activity]
   {:body (edit-form activity)})
 
+;; fetch-by-conversations
+
+(defview #'fetch-by-conversation :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "conversation"
+            :id (:_id (:item request))
+            :body response}}))
+
+;; index
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 ;; oembed
 
 (defview #'oembed :json

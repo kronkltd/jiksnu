@@ -1,17 +1,20 @@
 (ns jiksnu.actions.resource-actions
-  (:use [ciste.core :only [defaction]]
+  (:use [aleph.formats :only [channel-buffer->string]]
+        [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [jiksnu.actions :only [invoke-action]]
-        [lamina.executor :only [task]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+        [slingshot.slingshot :only [throw+ try+]])
+  (:require [aleph.http :as http]
+            [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
+            [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
+            [lamina.time :as lt]
             [lamina.trace :as trace]
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
@@ -19,6 +22,7 @@
             [jiksnu.templates :as templates]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
+            [jiksnu.util :as util]
             [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import jiksnu.model.Resource))
@@ -35,11 +39,11 @@
        (recur ((first hooks) item) (rest hooks))
        item)))
 
-(defn prepare-create
+(trace/defn-instrumented prepare-create
   [params]
   (-> params
       transforms/set-_id
-      transforms.resource/set-local
+      transforms/set-local
       transforms.resource/set-domain
       transforms.resource/set-location
       transforms/set-updated-time
@@ -60,8 +64,7 @@
   (if-let [item (or (model.resource/fetch-by-url (:url params))
                     (try
                       (create params)
-                      (catch RuntimeException ex
-                        (trace/trace "errors:handled" ex))))]
+                      (catch Exception ex)))]
     item
     (if (< tries 3)
       (do
@@ -93,25 +96,13 @@
     item
     (add-link* item link)))
 
-(declare update)
-
 (defmulti process-response-content (fn [content-type item response] content-type))
 
 (defmethod process-response-content :default
   [content-type item response]
   (log/infof "unknown content type: %s" content-type))
 
-(defmethod process-response-content "text/html"
-  [content-type item response]
-  (log/debug "parsing html content")
-  (let [tree (model.resource/response->tree response)]
-    (let [properties (model.resource/get-meta-properties tree)]
-      (model.resource/set-field! item :properties properties))
-    (let [title (first (map (comp first :content) (enlive/select tree [:title])))]
-      (model.resource/set-field! item :title title))
-    (let [links (model.resource/get-links tree)]
-      (doseq [link links]
-        (add-link item (:attrs link))))))
+(declare update)
 
 (defn process-response
   [item response]
@@ -130,25 +121,90 @@
       (model.resource/set-field! item :contentType content-type)
       (process-response-content content-type item response))))
 
+(defn needs-update?
+  [item options]
+  (let [last-updated (:lastUpdated item)]
+    (and (not (:local item))
+         (or (:force options)
+             (nil? last-updated)
+             (time/after? (-> 5 time/minutes time/ago)
+                          (coerce/to-date-time last-updated))))))
+
+(defn get-body-buffer
+  "Given an http response, returns a channel buffer"
+  [response]
+  (log/info "Getting body buffer")
+  (when-let [body (:body response)]
+    (let [res (l/expiring-result (lt/seconds 15))]
+      (if (l/channel? body)
+        (l/on-closed body
+                     (fn []
+                       (log/info "closed")
+                       ;; (l/receive-all body println)
+                       (let [buffers (l/channel->seq body #_(lt/seconds 30))]
+                         (let [cb (aleph.formats/channel-buffers->channel-buffer buffers)]
+                           (l/enqueue res cb)))))
+        (l/enqueue res body))
+      res)))
+
+(defn transform-response
+  [response]
+  (let [res (l/expiring-result (lt/seconds 15))]
+    (l/run-pipeline
+     (get-body-buffer response)
+     {:error-handler (fn [ex] ex)
+      :result res}
+     (fn [buffer]
+       (log/info "Buffer channel realized")
+       (let [body-str (aleph.formats/channel-buffer->string buffer)
+             response (assoc response :body body-str)]
+         response)))
+    res))
+
+(defn handle-update-realized
+  [item response]
+  (trace/trace :resource:realized [item response])
+  (model.resource/set-field! item :lastUpdated (time/now))
+  (model.resource/set-field! item :status (:status response))
+  (condp = (:status response)
+    200 (transform-response response)
+    (log/warn "Unknown status type")))
+
 (defn update*
+  "Fetches the resource and returns a result channel or nil.
+
+The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
-  (if-not (:local item)
-    (let [last-updated (:lastUpdated item)]
-      (if (or (:force options)
-              (nil? last-updated)
-              (time/after? (-> 5 time/minutes time/ago) last-updated))
-        (let [url (:url item)]
-          (log/debugf "updating resource: %s" url)
-          (model.resource/set-field! item :lastUpdated (time/now))
-          (let [response (client/get url {:throw-exceptions false
-                                          :headers {"User-Agent" user-agent}
-                                          :insecure? true})]
-            (task
-              (process-response item response))
-            response))
-        (log/warn "Resource has already been updated")))
-    (log/debug "local resource does not need update")))
+  (if (or true (needs-update? item options))
+    (let [url (:url item)
+          res (l/expiring-result (lt/seconds 30))
+          date (time/now)]
+      (trace/trace :resource:updated item)
+      (log/infof "updating resource: %s" url)
+      (let [request {:url url
+                     :method :get
+                     ;; :throw-exceptions false
+                     ;; :auto-transform true
+                     ;; :insecure? true
+                     :headers {"User-Agent" user-agent
+                               "date" (util/date->rfc1123 (.toDate date))
+                               "Authorization"
+                               (string/join " "
+                                            [
+                                             "Dialback"
+                                             "host=\"renfer.name\""
+                                             "token=\"4430086d\""])}}]
+        (l/run-pipeline
+         (http/http-request request)
+         {:error-handler (fn [ex]
+                           ;; (log/error ex)
+                           ;; (.printStackTrace ex)
+                           (trace/trace :resource:failed [item ex]))
+          :result res}
+         (partial handle-update-realized item)))
+      res)
+    (log/warn "Resource does not need to be updated at this time.")))
 
 (defaction update
   [item]
@@ -165,17 +221,6 @@
   [item]
   item)
 
-(defn handle-pending-get-resource
-  [url]
-  (find-or-create {:url url}))
-
-(defn handle-pending-update-resources
-  [item]
-  (update* item))
-
-(l/receive-all ch/pending-get-resource     (ops/op-handler handle-pending-get-resource))
-(l/receive-all ch/pending-update-resources (ops/op-handler handle-pending-update-resources))
-
 (definitializer
   (model.resource/ensure-indexes)
 
@@ -183,4 +228,8 @@
    ["jiksnu.filters.resource-filters"
     "jiksnu.sections.resource-sections"
     "jiksnu.triggers.resource-triggers"
-    "jiksnu.views.resource-views"]))
+    "jiksnu.views.resource-views"
+    "jiksnu.handlers.atom"
+    "jiksnu.handlers.html"
+    "jiksnu.handlers.xrd"
+    ]))

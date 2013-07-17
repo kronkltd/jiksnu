@@ -91,15 +91,23 @@
    :single true
    :body
    (let [domains (if *dynamic* [(Domain.)] items)]
-     (with-page "default"
+     (with-page "domains"
        (pagination-links page)
-       (bind-to "items"
-         (index-section domains page))))})
+       (index-section domains page)))})
+
+(defview #'index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
 
 (defview #'index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Domains"
-          :pages {:default (format-page-info page)}}})
+          :pages {:domains (format-page-info page)}}})
 
 ;; ping
 
@@ -138,8 +146,7 @@
             (let [users (if *dynamic* [(User.)] (model.user/fetch-by-domain domain))]
               (with-page "users"
                 (pagination-links {})
-                (bind-to "items"
-                  (index-section users))))])})
+                (index-section users)))])})
 
 (defview #'show :model
   [request domain]

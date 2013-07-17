@@ -1,21 +1,41 @@
 (ns jiksnu.sections.group-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form link-to index-section
-                                       index-block  index-line show-section]]
+        [ciste.sections.default :only [add-form delete-button edit-button
+                                       link-to index-block index-line
+                                       index-section show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [actions-section admin-show-section
-                                admin-index-block admin-index-line
-                                admin-index-section bind-property control-line]])
+        [jiksnu.sections :only [action-link actions-section admin-show-section
+                                admin-index-block admin-index-line admin-index-section
+                                bind-property control-line display-property dropdown-menu
+                                dump-data]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session])
   (:import jiksnu.model.Group))
 
+(defn model-button
+  [activity]
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/model/groups/' + _id() + '.model'}"}
+        {:href (format "/model/groups/%s.model" (str (:_id activity)))})
+   "Model"])
+
+(defn get-buttons
+  []
+  (concat
+   [#'model-button]
+   (when (session/is-admin?)
+     [#'edit-button
+      #'delete-button
+      #'update-button])))
+
+;; actions-section
+
 (defsection actions-section [Group :html]
-  [group & _]
-  [:ul
-   [:li]
-   ]
-  )
+  [item]
+  (dropdown-menu item (get-buttons)))
+
+;; add-form
 
 (defsection add-form [Group :html]
   [group & _]
@@ -49,7 +69,7 @@
      [:th "Name"]
      [:th "Full Name"]
      [:th "Homepage"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map #(admin-index-line % options) groups)]])
 
 (defsection admin-index-block [Group :viewmodel]
@@ -68,23 +88,12 @@
   [group & [options & _]]
   [:tr (merge {:data-model "group"}
               (if *dynamic*
-                {:data-bind "attr: {'data-id': _id}"}
-                {:data-id (:_id group)}
-                ))
-   [:td
-    (if *dynamic*
-      (bind-property "nickname")
-      (:nickname group))]
-   [:td
-    (if *dynamic*
-      (bind-property "fullname")
-      (:fullname group))]
-   [:td
-    (if *dynamic*
-      (bind-property "homepage")
-      (:homepage group))]
-   [:td (actions-section group)]
-   ])
+                {}
+                {:data-id (:_id group)}))
+   [:td (display-property group :nickname)]
+   [:td (display-property group :fullname)]
+   [:td (display-property group :homepage)]
+   [:td (actions-section group)]])
 
 ;; admin-index-section
 
@@ -97,6 +106,18 @@
 (defsection admin-show-section [Group]
   [item & [page]]
   (show-section item page))
+
+;; edit-button
+
+(defsection edit-button [Group :html]
+  [activity & _]
+  (action-link "group" "edit" (:_id activity)))
+
+;; delete-button
+
+(defsection delete-button [Group :html]
+  [activity & _]
+  (action-link "group" "delete" (:_id activity)))
 
 ;; index-block
 
@@ -127,9 +148,9 @@
     [:p
      [:a.url.entry-title
       (if *dynamic*
-        {:data-bind "attr: {href: '/groups/' + nickname}"}
+        {:data-bind "attr: {href: '/groups/' + nickname()}"}
         {:href (str "/groups/" (:nickname group))})
-      [:img {:src (:avatar-url group) }]
+      [:img {:src (:avatarUrl group) }]
       [:span.nickname
        [:span
         (if *dynamic*
@@ -162,15 +183,27 @@
 (defsection show-section [Group :html]
   [group & _]
   [:div
-   [:div
+   [:div {:data-model "group"}
+    [:p (bind-property "fullname")]
+    [:p (bind-property "homepage")]
+    [:p (bind-property "location")]
+    [:p (bind-property "aliases")]
+    [:p (bind-property "created")]
+    [:p (bind-property "updated")]
     [:p "Admins " (count (:admins group))]
     [:ul
      (map
       (fn [admin]
-        (link-to (model.user/fetch-by-id)))
+        (link-to (model.user/fetch-by-id admin)))
       (:admins group))]]])
+
+;; update-button
+
+(defsection update-button [Group :html]
+  [activity & _]
+  (action-link "group" "update" (:_id activity)))
 
 (defn user-groups
   [user]
-  
+
   )

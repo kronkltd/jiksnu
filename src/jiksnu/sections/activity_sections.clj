@@ -9,6 +9,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [action-link actions-section admin-index-line admin-index-block
                                 admin-index-section bind-property bind-to control-line
+                                display-property display-timestamp
                                 dropdown-menu dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -20,7 +21,9 @@
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.like :as model.like]
+            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
             [jiksnu.rdf :as rdf]
@@ -33,10 +36,11 @@
   (:import java.io.StringWriter
            javax.xml.namespace.QName
            jiksnu.model.Activity
+           jiksnu.model.Conversation
            jiksnu.model.Resource
            jiksnu.model.User
-           org.apache.abdera2.model.Entry
-           org.apache.abdera2.model.ExtensibleElement))
+           org.apache.abdera.model.Entry
+           org.apache.abdera.model.ExtensibleElement))
 
 (defn like-button
   [activity]
@@ -183,8 +187,9 @@
 
 (defn model-button
   [activity]
-  [:a (when *dynamic*
-        {:data-bind "attr: {href: '/model/activities/' + ko.utils.unwrapObservable(_id) + '.model'}"})
+  [:a (if *dynamic*
+        {:data-bind "attr: {href: '/model/activities/' + _id() + '.model'}"}
+        {:href (format "/model/activities/%s.model" (str (:_id activity)))})
    "Model"])
 
 (defn get-buttons
@@ -206,7 +211,7 @@
   (let [ids (if *dynamic*
               [nil]
               (:mentioned activity))]
-    [:ul.unstyled {:data-bind "foreach: mentioned"}
+    [:ul.unstyled (when *dynamic* {:data-bind "foreach: mentioned"})
      (map
       (fn [id]
         [:li {:data-model "user"}
@@ -287,92 +292,88 @@
                  tag)]])
        tags)]]))
 
+(defn visibility-link
+  [activity]
+  ;; TODO: handle other visibilities
+  (when-not (:public activity)
+    "privately"))
+
+(defn published-link
+  [activity]
+  (let [published (:published activity)]
+    (when (or *dynamic* published)
+      (list
+       (display-timestamp activity :published)
+       #_[:time {:datetime published
+                 :title published
+                 :property "dc:published"}
+          [:a (merge {:href (uri activity)}
+                     (when *dynamic*
+                       {:data-bind "text: published, attr: {href: '/notice/' + _id()}"}))
+           (when-not *dynamic*
+             (-> published .toDate util/prettyify-time))]]))))
+
+(defn source-link
+  [activity]
+  (when-let [source (if *dynamic* {} (:source activity))]
+    (list
+     "using "
+     (bind-to "source"
+       (display-property source :name)))))
+
+(defn service-link
+  [activity]
+  (when (or *dynamic* (not (:local activity)))
+    (let [url (if *dynamic*
+                "#"
+                (->> activity
+                     :links
+                     (filter #(= (:rel %) "alternate"))
+                     (filter #(= (:type %) "text/html"))
+                     first :href))]
+      [:span (when *dynamic*
+               {:data-bind "if: !local()"})
+       "via a "
+       [:a {:href url}
+        "foreign service"]])))
+
+(defn context-link
+  [activity]
+  (when-let [conversation (if *dynamic*
+                            (Conversation.)
+                            (model.conversation/fetch-by-id (:conversation activity)))]
+    (bind-to "conversation"
+      [:a (if *dynamic*
+            {:data-bind "attr: {href: '/main/conversations/' + $data}"}
+            {:href (uri conversation)})
+       "in context"])))
+
+(defn geo-link
+  [activity]
+  (when-let [geo (if *dynamic* {} (:geo activity))]
+    (bind-to "geo"
+      "near "
+      [:a.geo-link {:href "#"}
+       (display-property geo :latitude)
+       ", "
+       (display-property geo :longitude)])))
+
 (defn posted-link-section
   [activity]
   [:span.posted
+   ;; TODO: Use the relevant verb
    "posted a "
-   [:span
-    (if *dynamic*
-      {:data-bind "text: ko.utils.unwrapObservable($data['object'])['object-type']"}
-      (-> activity :object :object-type))]
-
-   ;; TODO: handle other visibilities
-   #_(when-not (:public activity)
-       " privately")
-
-   " approximately "
-   [:time {:datetime (util/format-date (:published activity))
-           :title (util/format-date (:published activity))
-           :property "dc:published"}
-    [:a (merge {:href (uri activity)}
-               (when *dynamic*
-                 {:data-bind "text: created, attr: {href: '/notice/' + _id()}"}))
-     (when-not *dynamic*
-       (-> activity :created .toDate util/prettyify-time))]]
-   " using "
-   [:span
-    (if *dynamic*
-      {:data-bind "text: source"}
-      (:source activity))]
-
-   ;; TODO: link to the domain
-   (when (or *dynamic* (not (:local activity)))
-     [:span (when *dynamic*
-              {:data-bind "if: !$data.local"})
-      " via a "
-      [:a {:href
-           (if *dynamic*
-             "#"
-             (->> activity :links
-                  (filter #(= (:rel %) "alternate"))
-                  (filter #(= (:type %) "text/html"))
-                  first :href))}
-       "foreign service"]])
-
-   (when-let [id (if *dynamic*
-                   (util/make-id)
-                   (:conversation activity))]
-     (list
-      " "
-      [:span {:data-bind "with: conversation"}
-       [:span {:data-model "conversation"}
-        [:a (if *dynamic*
-              {:data-bind "attr: {href: '/main/conversations/' + ko.utils.unwrapObservable(_id)}"}
-              {:href (first (:conversation-uris activity))})
-         "in context"]]]))
-
-   (when-let [geo (if *dynamic*
-                    {}
-                    (:geo activity))]
-     [:span (when *dynamic*
-              {:data-bind "with: geo"})
-      " near "
-      [:a.geo-link (when-not *dynamic*
-                     {:href "#"})
-       [:span
-        (if *dynamic*
-          {:data-bind "text: latitude"}
-          (:latitude geo))]
-       ", "
-       [:span
-        (if *dynamic*
-          {:data-bind "text: longitude"}
-          (:longitude geo))]]])])
-
-(defn comments-section
-  [activity]
-  (bind-to "comments"
-    (if-let [comments (if *dynamic*
-                        [(Activity.)]
-                        (seq (second (actions.comment/fetch-comments activity))))]
-      [:section.comments
-       [:ul.unstyled.comments
-        (when *dynamic*
-          {:data-bind "foreach: $data"})
-        (map (fn [comment]
-               [:li
-                (show-comment comment)])
-             comments)]])))
+   [:span (if *dynamic*
+            {:data-bind "text: $data.object().type"}
+            (-> activity :object :type))]
+   " "
+   (->> [#'visibility-link
+         #'published-link
+         #'source-link
+         #'service-link
+         #'context-link]
+        (map #(% activity))
+        (interpose " "))])
 
 (defn poll-form
   [activity]
@@ -400,7 +401,9 @@
      [:div.control-group
       [:label.control-label {:for "content"} "Content"]
       [:div.controls
-       [:textarea.span6 {:name "content" :rows "3"} content]]]
+       [:textarea {:name "content" :rows "10"
+                   :data-provide "markdown"}
+        content]]]
      (add-button-section activity)
      (pictures-section activity)
      (location-section activity)
@@ -443,14 +446,19 @@
 
 (defn enclosures-section
   [activity]
-  (when-let [resources (if *dynamic* [(Resource.)] (:resources activity))]
+  (when-let [resources (if *dynamic*
+                         [(Resource.)]
+                         (map
+                          model.resource/fetch-by-id
+                          (:resources activity)))]
     [:ul.unstyled
      (when *dynamic* {:data-bind "foreach: resources"})
      (map
       (fn [resource]
         [:li {:data-model "resource"}
-         [:div {:data-bind "if: properties"}
-          [:div (if *dynamic*
+         [:div (when *dynamic*
+                 {:data-bind "if: properties"})
+          [:div (when *dynamic*
                   {:data-bind "if: properties()['og:type'] === 'video'"})
            [:div.video-embed
             [:iframe
@@ -469,6 +477,15 @@
                     {:src (:url resource)}))]]])
       resources)]))
 
+(def post-sections
+  [#'enclosures-section
+   ;; #'links-section
+   #'likes-section
+   #'maps-section
+   #'tags-section
+   #'posted-link-section
+   ])
+
 ;; actions-section
 
 (defsection actions-section [Activity :html]
@@ -484,6 +501,7 @@
    [:form {:method "post"
            :action "/notice/new"
            :enctype "multipart/form-data"}
+    [:input {:type "hidden" :name "source" :value "web"}]
     [:fieldset
      [:div.tab-content
       [:div#post-note.tab-pane.active
@@ -511,11 +529,11 @@
    [:thead
     [:tr
      [:th "User"]
-     [:th "Type"]
-     [:th "Visibility"]
-     [:th "Title"]
+     ;; [:th "Type"]
+     ;; [:th "Visibility"]
+     [:th "Content"]
      [:th "Actions"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: $data"})
+   [:tbody (when *dynamic* {:data-bind "foreach: items"})
     (map admin-index-line activities)]])
 
 (defsection admin-index-block [Activity :viewmodel]
@@ -534,16 +552,17 @@
    [:td
     (bind-to "author"
       (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-        (show-section-minimal user)))]
-   [:td (when *dynamic*
-          {:data-bind "text: object['object-type']"})
-    (when-not *dynamic*
-      (-> activity :object :object-type))]
-   [:td (when-not *dynamic*
-          (if (-> activity :public) "public" "private"))]
-   [:td (if *dynamic*
-          {:data-bind "text: title"}
-          (:title activity))]
+        #_(show-section-minimal user)
+        [:span {:data-model "user"}
+         (link-to user)]
+        ))]
+   ;; [:td (when *dynamic*
+   ;;        {:data-bind "text: object.type"})
+   ;;  (when-not *dynamic*
+   ;;    (-> activity :object :type))]
+   ;; [:td (when-not *dynamic*
+   ;;        (if (-> activity :public) "public" "private"))]
+   [:td (display-property activity :content)]
    [:td (actions-section activity)]])
 
 ;; admin-index-section
@@ -572,13 +591,13 @@
 
 (defsection index-block [Activity]
   [items & [page]]
-  (map #(index-line % page) items))
+  (doall (map #(index-line % page) items)))
 
 (defsection index-block [Activity :html]
   [records & [options & _]]
   [:div.activities
    (when *dynamic*
-     {:data-bind "foreach: $data"})
+     {:data-bind "foreach: items"})
    (map #(index-line % options) records)])
 
 (defsection index-block [Activity :rdf]
@@ -639,15 +658,15 @@
           :id (:id activity)
           :local-id (:_id activity)
           :object (let [object (:object activity)]
-                    {:displayName (:title activity)
+                    {:name (:title activity)
                      :id (:id object)
-                     :objectType (:object-type object)
+                     :type (:type object)
                      :content (:content object)
                      :url (:id object)
                      :tags (map
                             (fn [tag]
-                              {:displayName tag
-                               :objectType "http://activityschema.org/object/hashtag"})
+                              {:name tag
+                               :type "http://activityschema.org/object/hashtag"})
                             (:tags activity))
                      ;; "published" (:published object)
                      ;; "updated" (:updated object)
@@ -666,7 +685,7 @@
          (when (:conversation-uris activity)
            {:context {:conversations (first (:conversation-uris activity))}})
          (if-let [geo (:geo activity)]
-           {:location {:objectType "place"
+           {:location {:type "place"
                        :latitude (:latitude geo)
                        :longitude (:longitude geo)}})))
 
@@ -674,10 +693,12 @@
   [^Activity activity & _]
   (if-let [user (model.activity/get-author activity)]
     (let [entry (abdera/new-entry)]
+      (when-let [published (:published activity)]
+        (.setPublished entry (.toDate published)))
+      (when-let [updated (:updated activity)]
+        (.setUpdated entry (.toDate updated)))
       (doto entry
         (.setId (or (:id activity) (str (:_id activity))))
-        (.setPublished (:created activity))
-        (.setUpdated (:updated activity))
         (.setTitle (or (and (not= (:title activity) "")
                             (:title activity))
                        (:content activity)))
@@ -706,7 +727,7 @@
   (merge
    {:text (:title activity)
     :truncated false
-    :created_at (util/date->twitter (.toDate (:created activity)))
+    :created_at (util/date->twitter (.toDate (:published activity)))
     :source (:source activity)
     :id (:_id activity)
     ;; :in_reply_to_user_id nil
@@ -724,47 +745,37 @@
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
 
-(def post-sections
-  [#'enclosures-section
-   ;; #'links-section
-   #'likes-section
-   #'maps-section
-   #'tags-section
-   #'posted-link-section
-   #'comments-section])
-
 (defsection show-section [Activity :html]
   [activity & _]
-  (list
-   (let [activity-uri (uri activity)]
-     [:article.hentry.notice
-      (merge {:typeof "sioc:Post"
-              :data-model "activity"}
-             (when-not *dynamic*
-               {:about activity-uri
-                :data-id (:_id activity)}))
+  (let [activity-uri (uri activity)
+        user (if *dynamic*
+               (User.)
+               (model.activity/get-author activity))]
+    [:article.hentry
+     (merge {:typeof "sioc:Post"
+             :data-model "activity"}
+            (when-not *dynamic*
+              {:about activity-uri
+               :data-id (:_id activity)}))
+     (actions-section activity)
+     [:div.pull-left.avatar-section
+      (bind-to "author"
+        [:div {:data-model "user"}
+         (sections.user/display-avatar user)])]
+     [:div
       [:header
-       (actions-section activity)
        (bind-to "author"
-         (let [user (if *dynamic* (User.) (model.activity/get-author activity))]
-           (show-section-minimal user)))
+         [:div {:data-model "user"}
+          (link-to user)])
        (recipients-section activity)]
       [:div.entry-content
-       (when (:title activity)
-         [:h1.entry-title {:property "dc:title"}
-          (:title activity)])
-       [:p (merge {:property "dc:title"}
-                  (when *dynamic*
-                    {:data-bind "text: title"}))
-        (when-not *dynamic*
-          (or #_(:title activity)
-              (:content activity)))]]
-      [:div
-       [:ul.unstyled
-        (map (fn [irt]
-               [:a {:href irt :rel "nofollow"} irt])
-             (:irts activity))]
-       (map #(% activity) post-sections)]])))
+       (merge {:property "dc:title"}
+              (when *dynamic*
+                {:data-bind "html: content"}))
+       (when-not *dynamic*
+         (or (:title activity)
+             (:content activity)))]
+      (map #(% activity) post-sections)]]))
 
 (defsection show-section [Activity :model]
   [activity & [page]]
@@ -773,19 +784,24 @@
 (defsection show-section [Activity :rdf]
   [activity & _]
   (plaza/with-rdf-ns ""
-    (let [{:keys [id created content]} activity
+    (let [{:keys [id published content]} activity
           uri (full-uri activity)
           user (model.activity/get-author activity)
           user-res (plaza/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
       (concat
        (rdf/with-subject uri
-         [
-          [[ns/rdf  :type]        [ns/sioc "Post"]]
-          [[ns/as   :verb]        (plaza/l "post")]
-          [[ns/sioc :has_creator] user-res]
-          [[ns/sioc :has_owner]   user-res]
-          [[ns/as   :author]      user-res]
-          [[ns/dc   :published]   (plaza/date (.toDate created))]])
+         (concat
+          [
+           [[ns/rdf  :type]        [ns/sioc "Post"]]
+           [[ns/as   :verb]        (plaza/l "post")]
+           [[ns/sioc :has_creator] user-res]
+           [[ns/sioc :has_owner]   user-res]
+           [[ns/as   :author]      user-res]
+           ]
+          (when-let [lit (-?> published .toDate plaza/date)]
+            [
+             [[ns/dc   :published]   lit]
+             ])))
        (when content [[uri [ns/sioc  :content]    (plaza/l content)]])))))
 
 (defsection show-section [Activity :viewmodel]

@@ -3,9 +3,9 @@
         [ciste.sections.default :only [index-section]]
         [clj-factory.core :only [factory fseq]]
         jiksnu.actions.stream-actions
-        [jiksnu.test-helper :only [test-environment-fixture]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.session
-        midje.sweet)
+        [midje.sweet :only [=>  truthy]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -16,51 +16,53 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation))
 
 (test-environment-fixture
 
- (fact "#'public-timeline"
-   (fact "when there are no activities"
-     (fact "should be empty"
+ (context #'public-timeline
+   (context "when there are no activities"
+     (context "should be empty"
        (model.activity/drop!)
        (public-timeline) => (comp empty? :items)))
-   (fact "when there are activities"
-     (fact "should return a seq of activities"
+   (context "when there are activities"
+     (context "should return a seq of activities"
        (let [activity (mock/there-is-an-activity)]
          (public-timeline) =>
-         (every-checker
-          map?
-          #(seq? (:items %))
-          #(= 1 (:total-records %)))))))
+         (check [response]
+           response => map?
+           (:totalRecords response) => 1
+           (let [items (:items response)]
+             items => seq?
+             (doseq [item items]
+               (class item) => Conversation)))))))
 
- (fact "#'user-timeline"
-   (fact "when the user has activities"
+ (context #'user-timeline
+   (context "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]
        (user-timeline user) =>
-       (every-checker
-        vector?
-        (fn [response]
-          (fact
-            (first response) => user
-            (second response) => map?
-            (:total-records (second response)) => 1))))))
+       (check [response]
+         response => vector?
+         (first response) => user
+         (second response) => map?
+         (:totalRecords (second response)) => 1))))
 
- (future-fact "#'callback-publish"
-   (fact "when there is a watched source"
+ (future-context #'callback-publish
+   (context "when there is a watched source"
      (with-context [:http :atom]
        (let [user (mock/a-user-exists)
              source (mock/a-feed-source-exists)
-             activity (model/map->Activity
-                       (factory :activity {:id (fseq :uri)}))
+             activity (factory :activity {:id (fseq :uri)})
              feed (abdera/make-feed* {:links
                                       [{:rel "self"
                                         :href (:topic source)}]
                                       :entries (index-section [activity])})]
          (actions.feed-source/add-watcher source user)
-         activity => model/activity?
+         activity => (partial instance? Activity)
          (callback-publish feed)
          (model.activity/fetch-by-remote-id (:id activity)) => truthy))))
 
