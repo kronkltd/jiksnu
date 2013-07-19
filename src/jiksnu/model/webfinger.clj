@@ -89,7 +89,8 @@
   [xrd]
   {:pre [(instance? Document xrd)]}
   (let [root (.getRootElement xrd)]
-    (->> (cm/query root "//*[local-name() = 'Link']")
+    (->> (cm/query root "//xrd:Link"
+                   {"xrd" "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
          util/force-coll
          (map util/parse-link))))
 
