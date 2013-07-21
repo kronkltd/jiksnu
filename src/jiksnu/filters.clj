@@ -28,12 +28,16 @@
   [action request]
   (action (:channel request)))
 
+
 (deffilter #'actions/get-model :command
   [action request]
   (let [[model-name id] (:args request)]
-    (or (dissoc (action model-name id) :links)
-        {:action "error"
+    (or (action model-name id)
+        (throw+ "Model not found")
+        #_{:action "error"
          :message "Model not found"})))
+
+
 
 (deffilter #'actions/get-page :command
   [action request]
