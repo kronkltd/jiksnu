@@ -1,7 +1,7 @@
 (ns jiksnu.actions
   (:use [ciste.commands :only [add-command!]]
         [ciste.config :only [*environment*]]
-        [ciste.core :only [defaction with-serialization]]
+        [ciste.core :only [defaction with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [ciste.initializer :only [definitializer]]
         [ciste.routes :only [resolve-routes]]
@@ -147,7 +147,9 @@
       (require action-ns)
 
       (if-let [action (ns-resolve action-ns (symbol action-name))]
-        (let [body (with-serialization :command (filter-action action id))
+        (let [body (with-serialization :command
+                     (with-format :clj
+                       (filter-action action id)))
               response {:message "action invoked"
                         :model model-name
                         :action action-name

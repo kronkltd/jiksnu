@@ -37,6 +37,7 @@
                  [org.bovinegenius/exploding-fish "0.3.3"]
                  [org.clojure/clojure "1.5.1"]
                  [org.clojure/tools.logging "0.2.3"]
+                 [org.clojure/tools.reader "0.7.5"]
                  [org.clojure/data.json "0.2.2"]
                  [org.jsoup/jsoup "1.7.2"]
                  [org.mindrot/jbcrypt "0.3m"]

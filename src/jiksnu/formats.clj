@@ -35,7 +35,7 @@
   [format request response]
   (-> response
       (assoc-in  [:headers "Content-Type"] "text/plain")
-      (assoc :body (str (:body response)))))
+      (assoc :body (:body response))))
 
 ;; (defmethod format-as :default
 ;;   [format request response]
