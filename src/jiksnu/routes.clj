@@ -1,7 +1,7 @@
 (ns jiksnu.routes
   (:use [ciste.commands :only [add-command!]]
         [ciste.config :only [config]]
-        [ciste.routes :only [make-matchers resolve-routes]]
+        [ciste.routes :only [resolve-routes]]
         #_[clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
         [ring.middleware.resource :only [wrap-resource]]
@@ -76,6 +76,24 @@
 
     (let [route-fn (ns-resolve route-sym 'routes)]
       (route-fn))))
+
+(defn make-matchers
+  [handlers]
+  (log/debug "making matchers")
+  (map
+   (fn [[matcher action]]
+     (let [o (merge
+              {:serialization :http
+               :format :html}
+              (if (var? action)
+                {:action action}
+                action))]
+       (let [[method route] matcher]
+         [{:method method
+           ;; :format :html
+           :serialization :http
+           :path route} o])))
+   handlers))
 
 (def http-routes
   (->> route-modules
