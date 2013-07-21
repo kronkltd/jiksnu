@@ -10,6 +10,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
+            [jiksnu.model.user :as model.user]
             [jiksnu.util :as util])
   (:import jiksnu.model.FeedSource
            org.bson.types.ObjectId
@@ -57,4 +58,23 @@
  (context #'fetch-all
    (fetch-all) => seq?)
 
+ (context #'model.feed-source/find-by-user
+
+   (context "when the user is nil"
+     (let [user nil]
+       (model.feed-source/find-by-user user) => nil))
+
+   (context "when the user is not nil"
+     (let [user (mock/a-user-exists)]
+
+       (context "and the user has a source"
+         (let [source (mock/a-feed-source-exists)]
+           (model.feed-source/find-by-user user) => nil))
+
+       (context "and the user does not have a source"
+         (model.user/remove-field! user :update-source)
+         (model.feed-source/find-by-user user) => nil)
+
+       ))
+   )
  )

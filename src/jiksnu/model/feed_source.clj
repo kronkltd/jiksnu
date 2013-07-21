@@ -53,7 +53,8 @@
 (defn find-by-user
   "Returns the source associated with a user"
   [user]
-  (fetch-by-id (:update-source user)))
+  (when-let [id (:update-source user)]
+    (fetch-by-id id)))
 
 (defn push-value!
   [item key value]
