@@ -34,7 +34,7 @@ Scenario: Posting an activity, unauthenticated
   Then I should not see the class "post-form"
 
 Scenario: Posting an activity, normal user
-  Given I am logged in
+  Given I am logged in as a normal user
   And there are no activities
   And I am at the "home" page
   When I type "foobar" into the "content" field
