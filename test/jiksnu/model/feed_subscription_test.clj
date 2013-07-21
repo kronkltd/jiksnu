@@ -16,6 +16,28 @@
 
 (test-environment-fixture
 
+ (context #'count-records
+   (context "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (context "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (mock/a-feed-subscription-exists))
+       (count-records) => n)))
+
+ (context #'delete
+   (let [item (mock/a-feed-subscription-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
+
+ (context #'drop!
+   (dotimes [i 1]
+     (mock/a-feed-subscription-exists))
+   (drop!)
+   (count-records) => 0)
+
  (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
@@ -41,17 +63,6 @@
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
 
- (context #'drop!
-   (dotimes [i 1]
-     (mock/a-feed-subscription-exists))
-   (drop!)
-   (count-records) => 0)
-
- (context #'delete
-   (let [item (mock/a-feed-subscription-exists)]
-     (delete item) => item
-     (fetch-by-id (:_id item)) => nil))
-
  (context #'fetch-all
    (context "when there are no items"
      (drop!)
@@ -73,17 +84,6 @@
        (check [response]
          response => seq?
          (count response) => (- n 20)))))
-
- (context #'count-records
-   (context "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
-   (context "when there are items"
-     (drop!)
-     (let [n 15]
-       (dotimes [i n]
-         (mock/a-feed-subscription-exists))
-       (count-records) => n)))
 
  )
 

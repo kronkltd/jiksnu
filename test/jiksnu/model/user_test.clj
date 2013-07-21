@@ -21,28 +21,27 @@
  (def domain-a (actions.domain/current-domain))
  (def user-a (mock/a-user-exists))
 
- (context #'get-domain
-   (context "when passed nil"
-     (get-domain nil) => (throws Exception))
-   (context "when passed a user"
-     (get-domain user-a) => domain-a))
+ (context #'count-records
+   (context "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (context "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (mock/a-user-exists))
+       (count-records) => n)))
 
- (context #'local?
-   (context "when passed a user"
-     (context "and it's domain is the same as the current domain"
-       (let [user (mock/a-user-exists)]
-         (local? user) => true))
-     (context "and it's domain is different from the current domain"
-       (let [user (mock/a-remote-user-exists)]
-         (local? user) => false))))
+ (context #'delete
+   (let [item (mock/a-user-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
 
- (context #'display-name
-   (display-name .user.) => string?)
-
- (context #'get-link
-   (let [user (factory :user {:links [{:rel "foo" :href "bar"}]})]
-     (get-link user "foo" nil) => (contains {:href "bar"})
-     (get-link user "baz" nil) => nil))
+ (context #'drop!
+   (dotimes [i 1]
+     (mock/a-user-exists))
+   (drop!)
+   (count-records) => 0)
 
  (context #'fetch-by-id
    (context "when the item doesn't exist"
@@ -61,17 +60,6 @@
 
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
-
- (context #'drop!
-   (dotimes [i 1]
-     (mock/a-user-exists))
-   (drop!)
-   (count-records) => 0)
-
- (context #'delete
-   (let [item (mock/a-user-exists)]
-     (delete item) => item
-     (fetch-by-id (:_id item)) => nil))
 
  (context #'fetch-all
    (context "when there are no items"
@@ -95,21 +83,28 @@
          response => seq?
          (count response) => (- n 20)))))
 
- (context #'count-records
-   (context "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
-   (context "when there are items"
-     (drop!)
-     (let [n 15]
-       (dotimes [i n]
-         (mock/a-user-exists))
-       (count-records) => n)))
+ (context #'get-domain
+   (context "when passed nil"
+     (get-domain nil) => (throws Exception))
+   (context "when passed a user"
+     (get-domain user-a) => domain-a))
 
- (context #'fetch-by-domain
-   (let [domain (actions.domain/current-domain)
-         user (mock/a-user-exists)]
-     (fetch-by-domain domain) => (contains user)))
+ (context #'local?
+   (context "when passed a user"
+     (context "and it's domain is the same as the current domain"
+       (let [user (mock/a-user-exists)]
+         (local? user) => true))
+     (context "and it's domain is different from the current domain"
+       (let [user (mock/a-remote-user-exists)]
+         (local? user) => false))))
+
+ (context #'display-name
+   (display-name .user.) => string?)
+
+ (context #'get-link
+   (let [user (factory :user {:links [{:rel "foo" :href "bar"}]})]
+     (get-link user "foo" nil) => (contains {:href "bar"})
+     (get-link user "baz" nil) => nil))
 
  (context #'get-user
    (context "when the user is found"
@@ -123,6 +118,11 @@
      (let [username (fseq :id)
            domain (mock/a-domain-exists)]
        (get-user username (:_id domain)) => nil)))
+
+ (context #'fetch-by-domain
+   (let [domain (actions.domain/current-domain)
+         user (mock/a-user-exists)]
+     (fetch-by-domain domain) => (contains user)))
 
  (context #'user-meta-uri
    (context "when the user's domain does not have a lrdd link"

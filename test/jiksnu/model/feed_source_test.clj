@@ -18,11 +18,27 @@
 
 (test-environment-fixture
 
+ (context #'count-records
+   (context "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (context "when there are items"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (mock/a-feed-source-exists))
+       (count-records) => n)))
+
+ (context #'delete
+   (let [source (mock/a-feed-source-exists)]
+     (delete source) => source
+     (fetch-by-id (:_id source)) => nil?))
+
  (context #'fetch-by-id
    (let [source (mock/a-feed-source-exists)]
      (fetch-by-id (:_id source)) => source))
 
- (context "create"
+ (context #'create
    (future-context "when given valid parameters"
      (create {:_id (util/make-id)}) =>
      (check [response]
@@ -38,23 +54,7 @@
      (provided
        (create-validators .params.) => [.error.])))
 
- (context #'delete
-   (let [source (mock/a-feed-source-exists)]
-     (delete source) => source
-     (fetch-by-id (:_id source)) => nil?))
-
  (context #'fetch-all
    (fetch-all) => seq?)
-
- (context #'count-records
-   (context "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
-   (context "when there are items"
-     (drop!)
-     (let [n 15]
-       (dotimes [i n]
-         (mock/a-feed-source-exists))
-       (count-records) => n)))
 
  )
