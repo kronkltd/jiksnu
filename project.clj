@@ -100,7 +100,7 @@
 
   :plugins [[lein-cljsbuild "0.3.2"]
             [codox          "0.6.1"]
-            [lein-cucumber  "1.0.1"]
+            [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.0-beta1"]]
   )
