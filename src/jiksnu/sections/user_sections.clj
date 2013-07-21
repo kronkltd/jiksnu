@@ -491,10 +491,21 @@
   [user & options]
   (let [{:keys [display-name id avatar-url]} user
         avatar-url (or avatar-url (model.user/image-link user))]
-    (merge {:profileUrl (full-uri user)
-            :id (or id (model.user/get-uri user))
+    (merge {:preferredUsername (:username user)
             :url (or (:url user)
                      (full-uri user))
+            :displayName (:name user)
+            :links (:links user)
+            :objectType "person"
+            :followers {
+                        :url "/followers"
+                        :totalItems 0
+                        }
+            :updated (:updated user)
+            :id (or id (model.user/get-uri user))
+
+
+            :profileUrl (full-uri user)
             :type "person"
             :username (:username user)
             :domain (:domain user)
