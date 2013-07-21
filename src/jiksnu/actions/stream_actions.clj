@@ -16,7 +16,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace])
@@ -43,7 +43,7 @@
   (cm/implement))
 
 (def public-timeline*
-  (templates/make-indexer 'jiksnu.model.conversation))
+  (templates.actions/make-indexer 'jiksnu.model.conversation))
 
 (defaction public-timeline
   [& [params & [options & _]]]

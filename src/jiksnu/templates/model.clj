@@ -1,4 +1,4 @@
-(ns jiksnu.templates
+(ns jiksnu.templates.model
   (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clojure.data.json :as json]
@@ -35,42 +35,6 @@
                                   :per-page (get options :page-size 20)))]
        (map make-fn records)))
    {:name (keyword (str collection-name ":searcher"))}))
-
-(defn make-indexer*
-  [{:keys [page-size sort-clause count-fn fetch-fn]}]
-  (trace/instrument
-   (fn [& [{:as params} & [{:as options} & _]]]
-     (let [options (or options {})
-           page (get options :page 1)
-           criteria {:sort-clause (or (:sort-clause options)
-                                      sort-clause)
-                     :page page
-                     :page-size page-size
-                     :skip (* (dec page) page-size)
-                     :limit page-size}
-           record-count (count-fn params)
-           records (fetch-fn params criteria)]
-       {:items records
-        :page page
-        :page-size page-size
-        :totalRecords record-count
-        :args options}))
-   {:name :indexer}))
-
-(defmacro make-indexer
-  [namespace-sym & options]
-  (let [options (apply hash-map options)]
-    `(do (require ~namespace-sym)
-         (let [ns-ns# (the-ns ~namespace-sym)]
-           (if-let [count-fn# (ns-resolve ns-ns# (symbol "count-records"))]
-             (if-let [fetch-fn# (ns-resolve ns-ns# (symbol "fetch-all" ))]
-               (make-indexer*
-                {:sort-clause (get ~options :sort-clause {:updated -1})
-                 :page-size (get ~options :page-size 20)
-                 :fetch-fn fetch-fn#
-                 :count-fn count-fn#})
-               (throw+ "Could not find fetch function"))
-             (throw+ "Could not find count function"))))))
 
 (defn make-counter
   [collection-name]
@@ -116,15 +80,6 @@
        {:_id (:_id item)}
        {:$unset {field 1}}))
    {:name (keyword (str collection-name ":unsetter"))}))
-
-(defn make-add-link*
-  [collection-name]
-  (fn [item link]
-    (trace/trace* (str collection-name ":linkAdded") [item link])
-    (mc/update collection-name
-      (select-keys item #{:_id})
-      {:$addToSet {:links link}})
-    item))
 
 (defn make-create
   [collection-name fetcher validator]

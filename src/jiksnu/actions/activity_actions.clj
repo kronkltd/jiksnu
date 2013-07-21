@@ -20,7 +20,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
@@ -75,8 +75,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 
       nil)))
 
-(def add-link* (templates/make-add-link* model.activity/collection-name))
-(def index*    (templates/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
+(def add-link* (templates.actions/make-add-link* model.activity/collection-name))
+(def index*    (templates.actions/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link

@@ -12,7 +12,7 @@
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]))
 
 (defn verify-subscribe-sync

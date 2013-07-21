@@ -3,7 +3,7 @@
         [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [monger.core :as mg]
             [monger.collection :as mc])
@@ -12,7 +12,7 @@
 
 (def collection-name "authentication_mechanisms")
 
-(def set-field! (templates/make-set-field! collection-name))
+(def set-field! (templates.model/make-set-field! collection-name))
 
 (def create-validators
   (validation-set
@@ -29,7 +29,7 @@
     (if-let [item (mc/find-map-by-id collection-name id)]
       (model/map->AuthenticationMechanism item))))
 
-(def create        (templates/make-create collection-name #'fetch-by-id #'create-validators))
+(def create        (templates.model/make-create collection-name #'fetch-by-id #'create-validators))
 
 (defn fetch-all
   ([] (fetch-all {}))
@@ -42,8 +42,8 @@
   [user & options]
   (apply fetch-all {:user (:_id user)} options))
 
-(def delete        (templates/make-deleter       collection-name))
-(def drop!         (templates/make-dropper       collection-name))
-(def count-records (templates/make-counter       collection-name))
-(def remove-field! (templates/make-remove-field! collection-name))
+(def delete        (templates.model/make-deleter       collection-name))
+(def drop!         (templates.model/make-dropper       collection-name))
+(def count-records (templates.model/make-counter       collection-name))
+(def remove-field! (templates.model/make-remove-field! collection-name))
 

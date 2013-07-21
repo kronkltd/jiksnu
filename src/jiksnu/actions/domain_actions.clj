@@ -18,7 +18,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
@@ -50,7 +50,7 @@
        (recur ((first hooks) domain) (rest hooks))
        domain)))
 
-(def add-link* (templates/make-add-link* model.domain/collection-name))
+(def add-link* (templates.actions/make-add-link* model.domain/collection-name))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -125,7 +125,7 @@
   domain)
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.domain
+  (templates.actions/make-indexer 'jiksnu.model.domain
                       :sort-clause {:username 1}))
 
 (defaction index

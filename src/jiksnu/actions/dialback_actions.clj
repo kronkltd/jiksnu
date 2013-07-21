@@ -22,14 +22,14 @@
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [monger.collection :as mc])
   )
 
-(def index*    (templates/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
+(def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
 
 (defaction index
   [& options]

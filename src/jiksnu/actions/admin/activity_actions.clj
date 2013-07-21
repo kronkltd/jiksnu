@@ -6,10 +6,10 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.templates :as templates]))
+            [jiksnu.templates.actions :as templates.actions]))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.activity))
+  (templates.actions/make-indexer 'jiksnu.model.activity))
 
 (defaction index
   [& [params & [options]]]

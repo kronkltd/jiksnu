@@ -5,10 +5,10 @@
   (:require [ciste.model :as cm]
             [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.templates :as templates]))
+            [jiksnu.templates.actions :as templates.actions]))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.feed-subscription))
+  (templates.actions/make-indexer 'jiksnu.model.feed-subscription))
 
 (defaction index
   [& options]

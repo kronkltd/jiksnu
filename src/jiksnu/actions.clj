@@ -19,7 +19,7 @@
             [jiksnu.model :as model]
             [jiksnu.predicates :as pred]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace])

@@ -15,7 +15,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [jiksnu.validators :as valid]
             [monger.collection :as mc]
@@ -45,14 +45,14 @@
    (presence-of   :avatarUrl)
    (acceptance-of :local         :accept (partial instance? Boolean))))
 
-(def count-records (templates/make-counter       collection-name))
-(def delete        (templates/make-deleter       collection-name))
-(def drop!         (templates/make-dropper       collection-name))
-(def set-field!    (templates/make-set-field!    collection-name))
-(def remove-field! (templates/make-remove-field! collection-name))
-(def fetch-by-id   (templates/make-fetch-by-id   collection-name maker))
-(def create        (templates/make-create        collection-name #'fetch-by-id #'create-validators))
-(def fetch-all     (templates/make-fetch-fn      collection-name maker))
+(def count-records (templates.model/make-counter       collection-name))
+(def delete        (templates.model/make-deleter       collection-name))
+(def drop!         (templates.model/make-dropper       collection-name))
+(def set-field!    (templates.model/make-set-field!    collection-name))
+(def remove-field! (templates.model/make-remove-field! collection-name))
+(def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
+(def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
 (defn salmon-link
   [user]
