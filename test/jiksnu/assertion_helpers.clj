@@ -94,12 +94,12 @@
 (defn should-see-activity
   []
   (check-response
-   (webdriver/exists? (format "article[data-id='%s']" (:_id (get-this :activity)))) => truthy))
+   (webdriver/exists? (format "*[data-id='%s']" (:_id (get-this :activity)))) => truthy))
 
 (defn should-see-a-activity
   []
   (check-response
-   (webdriver/exists? ".activities") => truthy))
+   (webdriver/exists? "*[data-model='activity']") => truthy))
 
 (defn should-see-n-users
   [n]
