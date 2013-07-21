@@ -198,7 +198,7 @@
              (class item)
              (with-out-str (pprint item))))
 
-(defn handle-fieldSet
+(defn handle-field-set
   [[item field value]]
   (log/infof "setting %s(%s): (%s = %s)"
              (.getSimpleName (class item))
@@ -250,7 +250,7 @@
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
   ;; (l/receive-all (trace/select-probes "*:created")   #'handle-created)
-  ;; (l/receive-all (trace/select-probes "*:fieldSet")  #'handle-fieldSet)
+  ;; (l/receive-all (trace/select-probes "*:field:set")  #'handle-field-set)
   ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
 
   (doseq [[kw v]

@@ -100,7 +100,7 @@
    (fn [item field value]
      (if (not= field :links)
        (when-not (= (get item field) value)
-         (trace/trace* (str collection-name ":fieldSet") [item field value])
+         (trace/trace* (str collection-name ":field:set") [item field value])
          (mc/update collection-name
            {:_id (:_id item)}
            {:$set {field value}}))

@@ -73,7 +73,7 @@
          response  {:body "{\"foo\": \"bar\"}"}
          field-set (atom false)]
 
-     (l/siphon (trace/probe-channel :domains:fieldSet) ch)
+     (l/siphon (trace/probe-channel :domains:field:set) ch)
      (l/receive ch (fn [& args]
                      (dosync
                       (reset! field-set true))))
