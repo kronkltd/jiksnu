@@ -42,7 +42,8 @@
   [user & options]
   (apply fetch-all {:user (:_id user)} options))
 
-(def delete        (templates/make-deleter collection-name))
-(def drop!         (templates/make-dropper collection-name))
-(def count-records (templates/make-counter collection-name))
+(def delete        (templates/make-deleter       collection-name))
+(def drop!         (templates/make-dropper       collection-name))
+(def count-records (templates/make-counter       collection-name))
+(def remove-field! (templates/make-remove-field! collection-name))
 

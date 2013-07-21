@@ -107,6 +107,16 @@
        (throw+ "can not set links values")))
    {:name (keyword (str collection-name ":setter"))}))
 
+(defn make-remove-field!
+  [collection-name]
+  (trace/instrument
+   (fn [item field]
+     (trace/trace* (str collection-name ":field:remove") [item field])
+     (mc/update collection-name
+       {:_id (:_id item)}
+       {:$unset {field 1}}))
+   {:name (keyword (str collection-name ":unsetter"))}))
+
 (defn make-add-link*
   [collection-name]
   (fn [item link]
