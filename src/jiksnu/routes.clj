@@ -108,14 +108,10 @@
         (file/wrap-file "resources/public/")
         file-info/wrap-file-info
         jm/wrap-user-binding
-        middleware/wrap-http-serialization
-        middleware/wrap-log-request
         jm/wrap-dynamic-mode
         (handler/site {:session {:store (ms/session-store)}})
         #_(wrap-airbrake (config :airbrake :key))
-        ;; (nm/wrap-canonical-host (config :domain))
         jm/wrap-stacktrace
         jm/wrap-stat-logging
         ;; wrap-tidy-up
-        ;; (wrap-resource "/META-INF/resources")
-))))
+        ))))
