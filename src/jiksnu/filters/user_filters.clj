@@ -101,11 +101,13 @@
 
 (deffilter #'show :http
   [action request]
-  (when-let [user (or (when-let [id (-> request :params :id)]
-                        (model.user/fetch-by-id (util/make-id id)))
-                      (when-let [username (-> request :params :username)]
-                        (model.user/get-user username)))]
-    (action user)))
+  (when-let [params (:params request)]
+    (let [id (:id params)
+          username (:username params)]
+      (when (or id username)
+        (when-let [user (or (and id       (model.user/fetch-by-id id))
+                            (and username (model.user/get-user username)))]
+          (action user))))))
 
 ;; TODO: This action is working off of a jid
 (deffilter #'show :xmpp
