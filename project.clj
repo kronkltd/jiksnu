@@ -4,7 +4,7 @@
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
   :dependencies [[aleph "0.3.0-rc1"]
-                 [ciste "0.4.0-SNAPSHOT"]
+                 [ciste "0.5.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
