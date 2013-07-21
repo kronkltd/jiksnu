@@ -47,9 +47,19 @@
   [serialization response]
   (json/read-json (:body response)))
 
-(defview #'actions/invoke-action :json
-  [request data]
-  {:body data})
+;; confirm
+
+(defview #'actions/confirm :html
+  [request response]
+  {:body
+   [:div
+    [:p "Confirm"]
+    (link-to (:item response))
+    ]
+
+   })
+
+;; connect
 
 (defview #'actions/connect :json
   [request response]
@@ -57,6 +67,12 @@
           :connection-id response}})
 
 (defview #'actions/get-model :json
+  [request response]
+  {:body {:action "model-updated"
+          :type (first (:args request))
+          :body response}})
+
+(defview #'actions/get-model :clj
   [request response]
   {:body {:action "model-updated"
           :type (first (:args request))
@@ -70,13 +86,9 @@
   [request response]
   {:body response})
 
-(defview #'actions/confirm :html
-  [request response]
-  {:body
-   [:div
-    [:p "Confirm"]
-    (link-to (:item response))
-    ]
+;; invoke-action
 
-   })
+(defview #'actions/invoke-action :json
+  [request data]
+  {:body data})
 
