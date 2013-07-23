@@ -55,15 +55,6 @@
         (when-let [conversation (model.conversation/fetch-by-id id)]
           (actions.conversation/add-activity conversation activity)))
 
-      ;; Add as a comment to parent posts
-      ;; TODO: deprecated
-      ;; (if-let [parent (model.activity/fetch-by-id (:parent activity))]
-      ;;     (model.activity/add-comment parent activity))
-
-      ;; Add as comment to irts
-      ;; (doseq [parent parent-activities]
-      ;;   (model.activity/add-comment parent activity))
-
       ;; notify users
       (let [mentioned-users (map model.user/fetch-by-id (filter identity (:mentioned activity)))
             to-notify (->> (model.subscription/subscribers author)

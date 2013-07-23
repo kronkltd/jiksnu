@@ -95,14 +95,6 @@
   (if-let [item (mc/find-one-as-map collection-name {:id id})]
     (maker item)))
 
-;; deprecated
-(defn add-comment
-  [parent comment]
-  (s/increment "comment added")
-  (mc/update collection-name
-             {:_id (:_id parent)}
-             {:$push {:comments (:_id comment)}}))
-
 (defn parse-pictures
   [picture]
   (s/increment "pictures processed")
