@@ -57,6 +57,18 @@
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
+(defn author?
+  [activity user]
+  (= (:author activity) (:_id user)))
+
+(defn privacy-filter
+  [user]
+  (if user
+    (if (not (session/is-admin? user))
+      {:$or [{:public true}
+             {:author (:_id user)}]})
+    {:public true}))
+
 (defn get-link
   [user rel content-type]
   (first (util/rel-filter rel (:links user) content-type)))
@@ -73,22 +85,10 @@
   (fetch-all {:parent (:_id activity)}
              {:sort [{:created 1}]}))
 
-(defn author?
-  [activity user]
-  (= (:author activity) (:_id user)))
-
 (defn update
   [activity]
   (s/increment "activities updated")
   (mc/save collection-name activity))
-
-(defn privacy-filter
-  [user]
-  (if user
-    (if (not (session/is-admin? user))
-      {:$or [{:public true}
-             {:author (:_id user)}]})
-    {:public true}))
 
 (defn fetch-by-remote-id
   [id]
