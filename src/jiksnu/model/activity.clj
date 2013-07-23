@@ -80,7 +80,7 @@
       :author
       model.user/fetch-by-id))
 
-(defn get-comments
+(defn fetch-comments
   [activity]
   (fetch-all {:parent (:_id activity)}
              {:sort [{:created 1}]}))
