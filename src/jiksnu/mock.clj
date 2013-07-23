@@ -150,15 +150,18 @@
 (defn there-is-an-activity
   [& [options]]
   (let [modifier (:modifier options "public")
+        user (or (:user options) (get-this :user))
         domain (or (:domain options)
+                   (and user (model.domain/fetch-by-id (:domain user)))
                    (get-this :domain)
                    (a-domain-exists (select-keys options #{:local})))
-        user (or (:user options) (get-this :user) (a-user-exists {:domain domain}))
+        user (or user (a-user-exists {:domain domain}))
         source (or (:feed-source options)
                    (get-this :feed-source)
                    (a-feed-source-exists {:domain domain}))
         conversation (or (:conversation options)
-                         (a-conversation-exists {:source source}))
+                         (a-conversation-exists {:domain domain
+                                                 :source source}))
         url (fseq :uri)
         activity (session/with-user user
                    (actions.activity/create
