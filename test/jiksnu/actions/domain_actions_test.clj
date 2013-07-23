@@ -145,10 +145,6 @@
    (let [domain (mock/a-domain-exists {:discovered false})]
      (get-discovered domain) => (contains {:discovered true})))
 
- (context #'host-meta
-    ;; TODO: verify the response map against the app's settings
-   (host-meta) => map?)
-
  (context #'show
    (show .domain.) => .domain.)
 

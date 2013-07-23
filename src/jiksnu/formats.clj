@@ -83,6 +83,13 @@
     (with-format :json
       (doall (format-as :json request response)))))
 
+(defmethod format-as :xrd
+  [format request response]
+  (-> response
+      (assoc-in [:headers "Content-Type"] "application/xrds+xml")
+      (assoc-in [:headers "Access-Control-Allow-Origin"] "*")
+      (assoc :body (h/html (:body response)))))
+
 (defmethod format-as :xml
   [format request response]
   (-> response

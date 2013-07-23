@@ -252,15 +252,6 @@
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
 
-(defaction host-meta
-  []
-  (let [domain (config :domain)
-        template (str "http://" domain "/main/xrd?uri={uri}")]
-    {:host domain
-     :links [{:template template
-              :rel "lrdd"
-              :title "Resource Descriptor"}]}))
-
 (definitializer
   (current-domain)
   (require-namespaces
