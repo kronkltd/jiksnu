@@ -23,7 +23,6 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [jiksnu.util :as util]
-            [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import jiksnu.model.Resource))
 

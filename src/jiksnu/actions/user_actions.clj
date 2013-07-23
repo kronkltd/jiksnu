@@ -37,7 +37,6 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
-            [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI

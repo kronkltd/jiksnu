@@ -25,8 +25,7 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace]
-            [monger.collection :as mc])
+            [lamina.trace :as trace])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User

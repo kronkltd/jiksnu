@@ -25,9 +25,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
-            [lamina.core :as l]
-            [monger.collection :as mc])
-  )
+            [lamina.core :as l]))
 
 (def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
 
