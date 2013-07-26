@@ -145,15 +145,15 @@
         (:body (parse-command request))
         (catch Object ex
           (trace/trace :client-errors:handled ex)
-          {:action "error"
-           :name (:name request)
-           :args (:args request)
-           :message (str ex)}))
+          (json/json-str {:action "error"
+            :name (:name request)
+            :args (:args request)
+            :message (str ex)})))
       (let [event {:action "error"
                    :name (:name request)
                    :args (:args request)
                    :message "no command found"}]
-        event)))
+        (json/json-str event))))
 
 (defn websocket-handler
   [ch request]
