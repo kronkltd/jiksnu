@@ -106,7 +106,7 @@
       {:href (:href format)})
     [:span.format-icon
      [:img (merge {:alt ""}
-                  #_(if *dynamic*
+                  (if *dynamic*
                     {:data-bind "attr: {src: '/assets/themes/classic/' + icon}"}
                     {:src (str "/assets/themes/classic/" (:icon format))}))]]
     [:span.format-label
