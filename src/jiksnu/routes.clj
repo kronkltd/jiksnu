@@ -1,22 +1,22 @@
 (ns jiksnu.routes
   (:use [ciste.commands :only [add-command!]]
         [ciste.config :only [config]]
+        [ciste.initializer :only [definitializer]]
         [ciste.routes :only [resolve-routes]]
-        #_[clj-airbrake.ring :only [wrap-airbrake]]
+        [clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
         [ring.middleware.resource :only [wrap-resource]]
         [slingshot.slingshot :only [throw+]]
         tidy-up.core)
   (:require [aleph.http :as http]
             [ciste.middleware :as middleware]
-            #_[clj-airbrake.core :as airbrake]
+            [clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
-            [jiksnu.actions :as actions]
             [jiksnu.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
@@ -28,8 +28,6 @@
             [ring.middleware.stacktrace :as stacktrace]
             [ring.util.response :as response])
   (:import javax.security.auth.login.LoginException))
-
-#_(airbrake/set-host! "localhost:3000")
 
 (defn not-found-msg
   []
@@ -128,8 +126,11 @@
         jm/wrap-user-binding
         jm/wrap-dynamic-mode
         (handler/site {:session {:store (ms/session-store)}})
-        #_(wrap-airbrake (config :airbrake :key))
+        (wrap-airbrake (config :airbrake :key))
         jm/wrap-stacktrace
         jm/wrap-stat-logging
         ;; wrap-tidy-up
         ))))
+
+(definitializer
+  (airbrake/set-host! (config :airbrake :host)))

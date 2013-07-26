@@ -1,6 +1,6 @@
 (ns jiksnu.actions
   (:use [ciste.commands :only [add-command!]]
-        [ciste.config :only [*environment*]]
+        [ciste.config :only [*environment* config]]
         [ciste.core :only [defaction with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [ciste.initializer :only [definitializer]]
@@ -10,7 +10,7 @@
         [clojure.data.json :only [read-json]]
         [clojure.pprint :only [pprint]]
         [slingshot.slingshot :only [throw+ try+]])
-  (:require #_[clj-airbrake.core :as airbrake]
+  (:require [clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -37,15 +37,14 @@
                (.getData ex) {})]
     (log/error ex)
     (.printStackTrace ex)
-    #_(airbrake/notify
-       "d61e18dac7af78220e52697e5b08dd5a"
-       (name @*environment*)
-       ;; "development"
-       "/"
-       ex
-       {:url "foo"
-        :params (into {} (map (fn [[k v]] {k (pr-str v)})
-                              (:environment data)))})))
+    (when (config :airbrake :enabled)
+      (let [options {:url "foo"
+                     :params (into {} (map (fn [[k v]] {k (pr-str v)})
+                                           (:environment data)))}]
+        (airbrake/notify
+         (config :airbrake :key)
+         (name @*environment*)
+         "/" ex options)))))
 
 
 (defn transform-activities
