@@ -370,6 +370,7 @@
    (->> [#'visibility-link
          #'published-link
          #'source-link
+         #'geo-link
          #'service-link
          #'context-link]
         (map #(% activity))
