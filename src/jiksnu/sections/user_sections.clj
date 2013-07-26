@@ -74,9 +74,10 @@
   ([user] (display-avatar user 64))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind "attr: {href: \"/users/\" + _id(), title: displayName}"}
+               {:data-bind (str "attr: {href: '/remote-user/' + username() + '@' + domain(), "
+                                "title: 'acct:' + username() + '@' + domain()}")}
                {:href (full-uri user)
-                :title (:name user)})
+                :title (model.user/get-uri user)})
       (display-avatar-img user size)]))
 
 (defn register-form
