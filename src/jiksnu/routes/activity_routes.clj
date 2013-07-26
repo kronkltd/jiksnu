@@ -21,7 +21,7 @@
    [[:get    (formatted-path "show activity")]   #'activity/show]
    [[:get    (named-path     "show activity")]   #'activity/show]
    [[:post   (named-path     "new activity")]    #'activity/post]
-   [[:post   (named-path     "show activity")]   #'activity/update]
+   [[:post   (named-path     "show activity")]   #'activity/edit]
    [[:delete (formatted-path "delete activity")] #'activity/delete]
    [[:delete (named-path     "delete activity")] #'activity/delete]
    [[:get    (named-path     "edit activity")]   #'activity/edit-page]

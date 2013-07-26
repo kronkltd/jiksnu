@@ -34,11 +34,19 @@
 (def port 8175)
 (def that-stream (permanent-channel))
 
+(defn get-domain
+  []
+  domain)
+
+(defn get-host
+  []
+  (str domain
+       (if-not (= port 80)
+         (str ":" port))))
+
 (defn expand-url
   [path]
-  (str "http://" domain
-       (if-not (= port 80)
-         (str ":" port)) path))
+  (str "http://" (get-host) path))
 
 (defn do-wait
   []

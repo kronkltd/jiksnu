@@ -18,14 +18,13 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.domain-transforms :as transforms.domain]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace]
-            [monger.collection :as mc]
             [ring.util.codec :as codec])
   (:import java.net.URL
            jiksnu.model.Domain))
@@ -50,7 +49,7 @@
        (recur ((first hooks) domain) (rest hooks))
        domain)))
 
-(def add-link* (templates/make-add-link* model.domain/collection-name))
+(def add-link* (templates.actions/make-add-link* model.domain/collection-name))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -125,7 +124,7 @@
   domain)
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.domain
+  (templates.actions/make-indexer 'jiksnu.model.domain
                       :sort-clause {:username 1}))
 
 (defaction index
@@ -251,15 +250,6 @@
                 (get @pending-discovers id)))]
       (or (deref p (lt/seconds 300) nil)
           (throw+ "Could not discover domain")))))
-
-(defaction host-meta
-  []
-  (let [domain (config :domain)
-        template (str "http://" domain "/main/xrd?uri={uri}")]
-    {:host domain
-     :links [{:template template
-              :rel "lrdd"
-              :title "Resource Descriptor"}]}))
 
 (definitializer
   (current-domain)

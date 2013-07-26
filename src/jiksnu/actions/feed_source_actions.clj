@@ -23,7 +23,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.feed-source-transforms :as transforms.feed-source]
             [jiksnu.util :as util]
@@ -54,7 +54,7 @@
       transforms/set-no-links))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.feed-source
+  (templates.actions/make-indexer 'jiksnu.model.feed-source
                           :sort-clause {:created -1}))
 
 (defaction add-watcher

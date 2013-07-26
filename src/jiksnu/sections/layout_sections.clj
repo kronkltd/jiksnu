@@ -106,7 +106,7 @@
       {:href (:href format)})
     [:span.format-icon
      [:img (merge {:alt ""}
-                  #_(if *dynamic*
+                  (if *dynamic*
                     {:data-bind "attr: {src: '/assets/themes/classic/' + icon}"}
                     {:src (str "/assets/themes/classic/" (:icon format))}))]]
     [:span.format-label
@@ -345,7 +345,7 @@
                :content "width=device-width, initial-scale=1.0"}]
        (style-section)
        (links-section request response)]
-      [:body
+      [:body {:data-dynamic (str *dynamic*)}
        (navbar-section request response)
        [:div.container-fluid
         (when *dynamic*

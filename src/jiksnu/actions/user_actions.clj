@@ -33,11 +33,10 @@
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
-            [monger.collection :as mc]
             [plaza.rdf.core :as rdf]
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
@@ -195,7 +194,7 @@
 
 (defaction add-link*
   [item link]
-  ((templates/make-add-link* model.user/collection-name)
+  ((templates.actions/make-add-link* model.user/collection-name)
    item link))
 
 (defn add-link
@@ -254,7 +253,7 @@
   (model.user/fetch-by-id (:_id user)))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.user
+  (templates.actions/make-indexer 'jiksnu.model.user
                           :sort-clause {:username 1}))
 
 (defaction index

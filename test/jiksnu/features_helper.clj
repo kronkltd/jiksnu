@@ -60,6 +60,7 @@
       (let [site-config (ciste.config/load-site-config)]
         (ciste.runner/start-application! :integration)
         (set-driver! {:browser
+                      ;; :chrome
                       :firefox
                       ;; :htmlunit
                       })

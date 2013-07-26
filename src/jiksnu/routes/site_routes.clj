@@ -11,7 +11,8 @@
 (defn routes
   []
   [[[:get (formatted-path "service")] #'site/service]
-   [[:get (formatted-path "rsd")]     #'site/rsd]
+   [[:get (formatted-path "rsd")]     {:action #'site/rsd
+                                       :format :xml}]
    [[:get (formatted-path "stats")]   #'site/get-stats]
    [[:get (named-path     "stats")]   #'site/get-stats]])
 

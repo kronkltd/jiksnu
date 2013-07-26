@@ -48,6 +48,7 @@
                :icon  "file_xml.png"
                :type  "application/xml"}
    :viewmodel {:label "Viewmodel"
+               :icon ""
                :type  "application/json"}})
 
 (defn format-page-info

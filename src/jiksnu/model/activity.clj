@@ -10,7 +10,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [monger.collection :as mc]
@@ -48,13 +48,26 @@
    ;; (type-of :updated               DateTime)
    ))
 
-(def count-records (templates/make-counter     collection-name))
-(def delete        (templates/make-deleter     collection-name))
-(def drop!         (templates/make-dropper     collection-name))
-(def set-field!    (templates/make-set-field!  collection-name))
-(def fetch-by-id   (templates/make-fetch-by-id collection-name maker))
-(def create        (templates/make-create      collection-name #'fetch-by-id #'create-validators))
-(def fetch-all     (templates/make-fetch-fn    collection-name maker))
+(def count-records (templates.model/make-counter       collection-name))
+(def delete        (templates.model/make-deleter       collection-name))
+(def drop!         (templates.model/make-dropper       collection-name))
+(def remove-field! (templates.model/make-remove-field! collection-name))
+(def set-field!    (templates.model/make-set-field!    collection-name))
+(def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
+(def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
+(def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
+
+(defn author?
+  [activity user]
+  (= (:author activity) (:_id user)))
+
+(defn privacy-filter
+  [user]
+  (if user
+    (if (not (session/is-admin? user))
+      {:$or [{:public true}
+             {:author (:_id user)}]})
+    {:public true}))
 
 (defn get-link
   [user rel content-type]
@@ -67,40 +80,20 @@
       :author
       model.user/fetch-by-id))
 
-(defn get-comments
+(defn fetch-comments
   [activity]
   (fetch-all {:parent (:_id activity)}
              {:sort [{:created 1}]}))
-
-(defn author?
-  [activity user]
-  (= (:author activity) (:_id user)))
 
 (defn update
   [activity]
   (s/increment "activities updated")
   (mc/save collection-name activity))
 
-(defn privacy-filter
-  [user]
-  (if user
-    (if (not (session/is-admin? user))
-      {:$or [{:public true}
-             {:author (:_id user)}]})
-    {:public true}))
-
 (defn fetch-by-remote-id
   [id]
   (if-let [item (mc/find-one-as-map collection-name {:id id})]
     (maker item)))
-
-;; deprecated
-(defn add-comment
-  [parent comment]
-  (s/increment "comment added")
-  (mc/update collection-name
-             {:_id (:_id parent)}
-             {:$push {:comments (:_id comment)}}))
 
 (defn parse-pictures
   [picture]

@@ -34,6 +34,12 @@
     (if-let [activity (model.activity/fetch-by-id id)]
       (action activity))))
 
+;; edit
+
+(deffilter #'edit :http
+  [action request]
+  (-> request :params action))
+
 ;; fetch-by-conversation
 
 (deffilter #'fetch-by-conversation :page
@@ -101,8 +107,3 @@
         id (first ids)]
     (action (model.activity/fetch-by-id id))))
 
-;; update
-
-(deffilter #'update :http
-  [action request]
-  (-> request :params action))

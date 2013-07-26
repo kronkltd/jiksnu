@@ -34,6 +34,14 @@
   [request activity]
   {:body (show-section activity)})
 
+;; edit
+
+(defview #'edit :html
+  [request activity]
+  (let [actor (session/current-user)]
+    (-> (response/redirect-after-post (uri actor))
+        (assoc :template false))))
+
 ;; edit-page
 
 (defview #'edit-page :html
@@ -149,11 +157,3 @@
   {:body {:activities (doall (index-section [activity]))
           :targetActivity (:_id activity)
           :title (:title activity)}})
-
-;; update
-
-(defview #'update :html
-  [request activity]
-  (let [actor (session/current-user)]
-    (-> (response/redirect-after-post (uri actor))
-        (assoc :template false))))

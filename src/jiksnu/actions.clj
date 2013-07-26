@@ -1,7 +1,7 @@
 (ns jiksnu.actions
   (:use [ciste.commands :only [add-command!]]
-        [ciste.config :only [*environment*]]
-        [ciste.core :only [defaction with-serialization]]
+        [ciste.config :only [*environment* config]]
+        [ciste.core :only [defaction with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [ciste.initializer :only [definitializer]]
         [ciste.routes :only [resolve-routes]]
@@ -10,7 +10,7 @@
         [clojure.data.json :only [read-json]]
         [clojure.pprint :only [pprint]]
         [slingshot.slingshot :only [throw+ try+]])
-  (:require #_[clj-airbrake.core :as airbrake]
+  (:require [clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
@@ -19,7 +19,7 @@
             [jiksnu.model :as model]
             [jiksnu.predicates :as pred]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace])
@@ -37,15 +37,14 @@
                (.getData ex) {})]
     (log/error ex)
     (.printStackTrace ex)
-    #_(airbrake/notify
-       "d61e18dac7af78220e52697e5b08dd5a"
-       (name @*environment*)
-       ;; "development"
-       "/"
-       ex
-       {:url "foo"
-        :params (into {} (map (fn [[k v]] {k (pr-str v)})
-                              (:environment data)))})))
+    (when (config :airbrake :enabled)
+      (let [options {:url "foo"
+                     :params (into {} (map (fn [[k v]] {k (pr-str v)})
+                                           (:environment data)))}]
+        (airbrake/notify
+         (config :airbrake :key)
+         (name @*environment*)
+         "/" ex options)))))
 
 
 (defn transform-activities
@@ -147,7 +146,9 @@
       (require action-ns)
 
       (if-let [action (ns-resolve action-ns (symbol action-name))]
-        (let [body (with-serialization :command (filter-action action id))
+        (let [body (with-serialization :command
+                     (with-format :clj
+                       (filter-action action id)))
               response {:message "action invoked"
                         :model model-name
                         :action action-name
@@ -198,7 +199,7 @@
              (class item)
              (with-out-str (pprint item))))
 
-(defn handle-fieldSet
+(defn handle-field-set
   [[item field value]]
   (log/infof "setting %s(%s): (%s = %s)"
              (.getSimpleName (class item))
@@ -250,7 +251,7 @@
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
   ;; (l/receive-all (trace/select-probes "*:created")   #'handle-created)
-  ;; (l/receive-all (trace/select-probes "*:fieldSet")  #'handle-fieldSet)
+  ;; (l/receive-all (trace/select-probes "*:field:set")  #'handle-field-set)
   ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
 
   (doseq [[kw v]

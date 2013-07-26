@@ -3,7 +3,7 @@
         [ciste.sections.default :only [index-section
                                        show-section]]
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
-                                              index show host-meta ping ping-response
+                                              index show ping ping-response
                                               ping-error]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
@@ -53,35 +53,6 @@
   {:status 303
    :template false
    :headers {"Location" "/main/domains"}})
-
-;; host-meta
-
-(defview #'host-meta :html
-  [request xrd]
-  (let [domain (:host xrd)]
-    {:template false
-     :headers {"Content-Type" "application/xrds+xml"
-               "Access-Control-Allow-Origin" "*"}
-     :body
-     (h/html
-      ["XRD" {"xmlns" ns/xrd
-              "xmlns:hm" ns/host-meta}
-       ["hm:Host" domain]
-       ["Subject" domain]
-       (map
-        (fn [{:keys [title rel href template] :as link}]
-          [:Link (merge {}
-                        (if rel {:rel rel})
-                        (if href {:href href})
-                        (if template {:template template}))
-           (if title
-             [:Title title])])
-        (:links xrd))])}))
-
-(defview #'host-meta :json
-  [request xrd]
-  {:template false
-   :body xrd})
 
 ;; index
 
@@ -148,7 +119,23 @@
                 (pagination-links {})
                 (index-section users)))])})
 
+(defview #'show :jrd
+  [request domain]
+  {:body (show-section domain)})
+
+(defview #'show :json
+  [request domain]
+  {:body (show-section domain)})
+
 (defview #'show :model
+  [request domain]
+  {:body (show-section domain)})
+
+(defview #'show :xml
+  [request domain]
+  {:body (show-section domain)})
+
+(defview #'show :xrd
   [request domain]
   {:body (show-section domain)})
 

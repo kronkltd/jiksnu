@@ -362,7 +362,7 @@
   [activity]
   [:span.posted
    ;; TODO: Use the relevant verb
-   "posted a "
+   (display-property activity :verb) "ed a "
    [:span (if *dynamic*
             {:data-bind "text: $data.object().type"}
             (-> activity :object :type))]
@@ -370,6 +370,7 @@
    (->> [#'visibility-link
          #'published-link
          #'source-link
+         #'geo-link
          #'service-link
          #'context-link]
         (map #(% activity))

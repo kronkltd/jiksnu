@@ -7,14 +7,12 @@
 
 (test-environment-fixture
 
- (context #'fetch-all
-   (fetch-all) => seq?)
-
  (future-context #'delete
    (let [like (create (factory :like))]
      (delete like)
-     (fetch-by-id (:_id like)) => falsey
-     )
-   )
+     (fetch-by-id (:_id like)) => falsey))
+
+ (context #'fetch-all
+   (fetch-all) => seq?)
 
  )

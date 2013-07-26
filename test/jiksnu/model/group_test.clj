@@ -13,6 +13,11 @@
 
 (test-environment-fixture
 
+ (context #'delete
+   (context "when the item exists"
+     (let [item (mock/a-group-exists)]
+       (delete item) =>  item)))
+
  (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
@@ -21,11 +26,6 @@
    (context "when the item exists"
      (let [item (mock/a-group-exists)]
        (fetch-by-id (:_id item)) => item)))
-
- (context #'delete
-   (context "when the item exists"
-     (let [item (mock/a-group-exists)]
-       (delete item) =>  item)))
 
  (context #'fetch-all
    (context "when there are no items"

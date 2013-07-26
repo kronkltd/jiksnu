@@ -5,6 +5,7 @@
         [jiksnu.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain])
   (:import tigase.xml.Element))
@@ -47,12 +48,6 @@
   [action request]
   (-> request :params :domain action))
 
-;; host-meta
-
-(deffilter #'host-meta :http
-  [action request]
-  (action))
-
 ;; index
 
 (deffilter #'index :http
@@ -83,5 +78,7 @@
 
 (deffilter #'show :http
   [action request]
-  (-?> request :params :id model.domain/fetch-by-id action))
-
+  (when-let [item (if-let [id (-?> request :params :id)]
+                  (model.domain/fetch-by-id id)
+                  (actions.domain/current-domain))]
+    (action item)))

@@ -20,6 +20,20 @@
 
 (test-environment-fixture
 
+ (context #'count-records
+
+   (context "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+
+   (context "when there are conversations"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (mock/there-is-an-activity))
+       (count-records) => n))
+   )
+
  (context #'create
    (let [domain (mock/a-domain-exists)
          feed-source (mock/a-feed-source-exists {:domain domain})
@@ -42,20 +56,6 @@
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user user})]
        (get-author activity) => user))
-   )
-
- (context #'count-records
-
-   (context "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
-
-   (context "when there are conversations"
-     (drop!)
-     (let [n 15]
-       (dotimes [i n]
-         (mock/there-is-an-activity))
-       (count-records) => n))
    )
 
  )

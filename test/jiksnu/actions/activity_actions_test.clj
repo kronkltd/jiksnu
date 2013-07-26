@@ -5,14 +5,16 @@
         jiksnu.actions.activity-actions
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [midje.sweet :only [=> throws truthy falsey]])
+        [midje.sweet :only [=> contains throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity])
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.session :as session]
+            [jiksnu.util :as util])
   (:import jiksnu.model.Activity))
 
 (test-environment-fixture
@@ -130,6 +132,53 @@
          (show activity) => (throws RuntimeException)
          (provided
            (viewable? activity) => false)))))
+
+ (context #'edit
+
+   (context "when the params are nil"
+     (let [params nil]
+       (edit params) => (throws)))
+
+   (context "when there is not an id"
+     (let [params {}]
+       (edit params) => (throws)))
+
+   (context "when the target is not found"
+     (let [params {:_id (util/make-id)}]
+       (edit params) => (throws)))
+
+   (context "when there is no actor"
+     (let [activity (mock/there-is-an-activity)
+           params {:_id (:_id activity)}]
+       (edit params) => (throws)))
+
+   (context "when the activity is not editable"
+     (let [activity (mock/there-is-an-activity)
+           actor (mock/a-user-exists)
+           params {:_id activity}]
+       (session/with-user actor
+         (edit params) => (throws))))
+
+   (context "when the provided params contain invalid keys"
+     (let [actor (mock/a-user-exists)
+           activity (mock/there-is-an-activity {:user actor})
+           params {:_id (:_id activity)
+                   :author (util/make-id)}]
+       (session/with-user actor
+         (edit params) => (throws))))
+
+   (context "when the params are valid"
+     (let [actor (mock/a-user-exists)
+           activity (mock/there-is-an-activity {:user actor})
+           params {:_id (:_id activity)
+                   :title (fseq :title)
+                   :nsfw true}]
+       (session/with-user actor
+         (edit params) => (partial instance? Activity)
+         (let [edited-item (model.activity/fetch-by-id (:_id activity))]
+           (:title edited-item) => (:title params)
+           (:nsfw edited-item) => true))))
+   )
 
  (context #'oembed
    (with-context [:http :html]

@@ -30,7 +30,9 @@
     (if (->> mechanisms
              (map :value)
              (some (partial crypt/compare password)))
-      (session/set-authenticated-user! user)
+      (do
+        (log/debug "logging in")
+        (session/set-authenticated-user! user))
       (throw+ {:type :authentication :message "passwords do not match"}))
     (throw+ {:type :authentication :message "No authentication mechanisms found"})))
 

@@ -8,7 +8,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates])
+            [jiksnu.templates.actions :as templates.actions])
   (:import javax.security.sasl.AuthenticationException))
 
 (defaction create
@@ -28,7 +28,7 @@
   (actions.subscription/update subscription))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.subscription))
+  (templates.actions/make-indexer 'jiksnu.model.subscription))
 
 ;; requires admin
 (defaction index

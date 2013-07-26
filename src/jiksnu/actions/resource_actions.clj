@@ -19,11 +19,10 @@
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
             [jiksnu.util :as util]
-            [monger.collection :as mc]
             [net.cgrand.enlive-html :as enlive])
   (:import jiksnu.model.Resource))
 
@@ -50,7 +49,7 @@
       transforms/set-created-time
       transforms/set-no-links))
 
-(def add-link* (templates/make-add-link* model.resource/collection-name))
+(def add-link* (templates.actions/make-add-link* model.resource/collection-name))
 
 (defaction create
   [params]
@@ -81,7 +80,7 @@
     (throw+ "Could not delete resource")))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.resource
+  (templates.actions/make-indexer 'jiksnu.model.resource
                       :sort-clause {:updated -1}))
 
 (defaction index

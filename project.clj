@@ -4,7 +4,7 @@
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
   :dependencies [[aleph "0.3.0-rc1"]
-                 [ciste "0.4.0-SNAPSHOT"]
+                 [ciste "0.5.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"]
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
@@ -37,6 +37,7 @@
                  [org.bovinegenius/exploding-fish "0.3.3"]
                  [org.clojure/clojure "1.5.1"]
                  [org.clojure/tools.logging "0.2.3"]
+                 [org.clojure/tools.reader "0.7.5"]
                  [org.clojure/data.json "0.2.2"]
                  [org.jsoup/jsoup "1.7.2"]
                  [org.mindrot/jbcrypt "0.3m"]
@@ -100,7 +101,7 @@
 
   :plugins [[lein-cljsbuild "0.3.2"]
             [codox          "0.6.1"]
-            [lein-cucumber  "1.0.1"]
+            [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.0-beta1"]]
   )

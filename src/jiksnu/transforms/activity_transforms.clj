@@ -83,9 +83,10 @@
   [activity]
   (if (:update-source activity)
     activity
-    (let [author (model.activity/get-author activity)
-          source (model.feed-source/find-by-user author)]
-      (assoc activity :update-source (:_id source)))))
+    (or (when-let [author (model.activity/get-author activity)]
+          (when-let [source (model.feed-source/find-by-user author)]
+            (assoc activity :update-source (:_id source))))
+        activity)))
 
 (defn set-tags
   [activity]

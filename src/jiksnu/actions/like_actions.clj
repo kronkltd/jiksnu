@@ -7,7 +7,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms])
   (:import jiksnu.model.Like))
 
@@ -45,7 +45,7 @@
     :created (time/now)}))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.like))
+  (templates.actions/make-indexer 'jiksnu.model.like))
 
 (defaction index
   [& options]

@@ -1,5 +1,5 @@
 (ns jiksnu.interaction-helpers
-  (:use [jiksnu.action-helpers :only [expand-url]]
+  (:use [jiksnu.action-helpers :only [expand-url fetch-page-browser get-domain get-host]]
         [jiksnu.mock :only [a-user-exists my-password]]
         [jiksnu.referrant :only [get-this get-that set-this]]
         [midje.sweet :only [fact =not=> throws]]
@@ -64,34 +64,36 @@
 (defn do-http-login
   [username password]
   (client/post (expand-url "/main/login")
-               {:form-params {"username" username
+               {:follow-redirects false
+                :form-params {"username" username
                               "password" password}}))
 
 (defonce user-cookies (ref {}))
 
 (defn do-login
   []
-  (let [user (get-this :user)]
+  (fetch-page-browser :get "/")
+  (if-let [user (get-this :user)]
     (if-let [cookies (or (seq @user-cookies)
-                         (do
-                           (log/info "getting new session")
-                           (let [response (do-http-login (:username user) @my-password)]
-                            (seq (:cookies response)))))]
+                         (let [response (do-http-login (:username user) @my-password)]
+                           (seq (:cookies response))))]
       (do
         (dosync
          (ref-set user-cookies cookies))
         (doseq [[n m] cookies]
           (let [cookie {:name n
+                        :domain (get-domain)
+                        :expiry nil
                         :value (:value m)
                         :path (:path m)}]
             (webdriver/add-cookie cookie))
           user))
-      (throw+ "Does not contain any cookies")))
-  #_(session/set-authenticated-user! (get-this :user)))
+      (throw+ "Does not contain any cookies"))
+    (throw+ "Could not get user")))
 
 (defn a-normal-user-is-logged-in
   []
-  ;; (a-user-exists)
+  (a-user-exists)
   (do-login))
 
 (defn am-not-logged-in

@@ -5,7 +5,7 @@
         [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.string :as string]
@@ -16,7 +16,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace])
@@ -43,7 +43,7 @@
   (cm/implement))
 
 (def public-timeline*
-  (templates/make-indexer 'jiksnu.model.conversation))
+  (templates.actions/make-indexer 'jiksnu.model.conversation))
 
 (defaction public-timeline
   [& [params & [options & _]]]
@@ -141,14 +141,14 @@
 
 (defn handle-message
   [request]
-  (or (try
+  (or (try+
         (:body (parse-command request))
-        (catch Exception ex
-          (trace/trace "errors:handled" ex)
+        (catch Object ex
+          (trace/trace :client-errors:handled ex)
           (json/json-str {:action "error"
-                          :name (:name request)
-                          :args (:args request)
-                          :message (str ex)})))
+            :name (:name request)
+            :args (:args request)
+            :message (str ex)})))
       (let [event {:action "error"
                    :name (:name request)
                    :args (:args request)

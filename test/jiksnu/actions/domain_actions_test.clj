@@ -73,7 +73,7 @@
          response  {:body "{\"foo\": \"bar\"}"}
          field-set (atom false)]
 
-     (l/siphon (trace/probe-channel :domains:fieldSet) ch)
+     (l/siphon (trace/probe-channel :domains:field:set) ch)
      (l/receive ch (fn [& args]
                      (dosync
                       (reset! field-set true))))
@@ -144,10 +144,6 @@
  (context #'get-discovered
    (let [domain (mock/a-domain-exists {:discovered false})]
      (get-discovered domain) => (contains {:discovered true})))
-
- (context #'host-meta
-    ;; TODO: verify the response map against the app's settings
-   (host-meta) => map?)
 
  (context #'show
    (show .domain.) => .domain.)

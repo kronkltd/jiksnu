@@ -74,9 +74,10 @@
   ([user] (display-avatar user 64))
   ([user size]
      [:a.url (if *dynamic*
-               {:data-bind "attr: {href: \"/users/\" + _id(), title: displayName}"}
+               {:data-bind (str "attr: {href: '/remote-user/' + username() + '@' + domain(), "
+                                "title: 'acct:' + username() + '@' + domain()}")}
                {:href (full-uri user)
-                :title (:name user)})
+                :title (model.user/get-uri user)})
       (display-avatar-img user size)]))
 
 (defn register-form
@@ -491,10 +492,21 @@
   [user & options]
   (let [{:keys [display-name id avatar-url]} user
         avatar-url (or avatar-url (model.user/image-link user))]
-    (merge {:profileUrl (full-uri user)
-            :id (or id (model.user/get-uri user))
+    (merge {:preferredUsername (:username user)
             :url (or (:url user)
                      (full-uri user))
+            :displayName (:name user)
+            :links (:links user)
+            :objectType "person"
+            :followers {
+                        :url "/followers"
+                        :totalItems 0
+                        }
+            :updated (:updated user)
+            :id (or id (model.user/get-uri user))
+
+
+            :profileUrl (full-uri user)
             :type "person"
             :username (:username user)
             :domain (:domain user)

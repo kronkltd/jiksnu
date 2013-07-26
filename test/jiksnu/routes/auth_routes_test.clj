@@ -2,7 +2,7 @@
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=>]])
+        [midje.sweet :only [=> truthy]])
   (:require [aleph.formats :as formats]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
@@ -32,6 +32,7 @@
            response-for)) =>
            (check [response]
              response => map?
+             (get-in response [:headers "Set-Cookie"]) => truthy
              (:status response) => status/redirect?
              (:body response) => string?)))
 

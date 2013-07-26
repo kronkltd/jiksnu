@@ -13,7 +13,7 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util])
   (:import javax.security.sasl.AuthenticationException
@@ -38,7 +38,7 @@
       transforms/set-created-time))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.subscription))
+  (templates.actions/make-indexer 'jiksnu.model.subscription))
 
 (defaction create
   [params]

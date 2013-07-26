@@ -16,6 +16,22 @@
 
 (test-environment-fixture
 
+ (context #'count-records
+   (context "when there aren't any items"
+     (drop!)
+     (count-records) => 0)
+   (context "when there are conversations"
+     (drop!)
+     (let [n 15]
+       (dotimes [i n]
+         (mock/a-resource-exists))
+       (count-records) => n)))
+
+ (context #'delete
+   (let [item (mock/a-resource-exists)]
+     (delete item) => item
+     (fetch-by-id (:_id item)) => nil))
+
  (context #'fetch-by-id
    (context "when the item doesn't exist"
      (let [id (util/make-id)]
@@ -33,11 +49,6 @@
 
    (context "when given invalid params"
      (create {}) => (throws RuntimeException)))
-
- (context #'delete
-   (let [item (mock/a-resource-exists)]
-     (delete item) => item
-     (fetch-by-id (:_id item)) => nil))
 
  (context #'fetch-all
    (context "when there are no records"
@@ -59,16 +70,5 @@
      (check [response]
        response => seq?
        (count response) => 5)))
-
- (context #'count-records
-   (context "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
-   (context "when there are conversations"
-     (drop!)
-     (let [n 15]
-       (dotimes [i n]
-         (mock/a-resource-exists))
-       (count-records) => n)))
 
  )

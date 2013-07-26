@@ -11,7 +11,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates])
+            [jiksnu.templates.actions :as templates.actions])
   (:import jiksnu.model.Group))
 
 (defn prepare-create
@@ -39,7 +39,7 @@
   group)
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.group
+  (templates.actions/make-indexer 'jiksnu.model.group
                           :sort-clause {:username 1}))
 
 (defaction index

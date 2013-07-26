@@ -12,14 +12,14 @@
 
 (test-environment-fixture
 
+ (context #'create
+   (let [params (actions.domain/prepare-create (factory :domain))]
+     (create params) => (partial instance? Domain)))
+
  (context #'ping-request
    (drop!)
    (let [domain (mock/a-domain-exists)]
      (ping-request domain) => (contains {:body e/element?})))
-
- (context #'create
-   (let [params (actions.domain/prepare-create (factory :domain))]
-     (create params) => (partial instance? Domain)))
 
  (context #'get-xrd-url
    (context "when the domain doesn't exist"

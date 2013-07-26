@@ -56,7 +56,8 @@
   (set! model/_view (.viewModel js/kb model/_model))
   (aset js/window "_view" model/_view)
 
-  (ko/apply-bindings model/_view)
+  (when (.data (js/$ "body") "dynamic")
+    (ko/apply-bindings model/_view))
 
   (try
     (ws/connect)

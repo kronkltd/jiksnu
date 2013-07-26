@@ -116,6 +116,17 @@
 
 ;; show
 
+(defview #'show :as
+  [request user]
+  {:template false
+   :body (show-section user)})
+
+(defview #'show :html
+  [request user]
+  {:template false
+   :body (with-format :as
+           (show-section user))})
+
 (defview #'show :model
   [request user]
   {:body (doall (show-section user))})

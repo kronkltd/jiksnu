@@ -7,7 +7,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.key :as model.key]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms])
   (:import jiksnu.model.User))
 
@@ -42,7 +42,7 @@
   [item] item)
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.key))
+  (templates.actions/make-indexer 'jiksnu.model.key))
 
 (defaction index
   [& options]

@@ -9,6 +9,7 @@
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
             [clj-tigase.element :as element]
+            [clojure.set :as set]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.abdera :as abdera]
@@ -20,13 +21,12 @@
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [jiksnu.templates :as templates]
+            [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace]
-            [monger.collection :as mc])
+            [lamina.trace :as trace])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
@@ -75,8 +75,8 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 
       nil)))
 
-(def add-link* (templates/make-add-link* model.activity/collection-name))
-(def index*    (templates/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
+(def add-link* (templates.actions/make-add-link* model.activity/collection-name))
+(def index*    (templates.actions/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
 
 ;; FIXME: this is always hitting the else branch
 (defn add-link
@@ -282,6 +282,12 @@ serialization"
     (create activity))
   true)
 
+(defn editable?
+  [activity user]
+  (and user
+       (or (= (:author activity) (:_id user))
+           (:admin user))))
+
 (defn viewable?
   ([activity]
      (viewable? activity (session/current-user)))
@@ -303,18 +309,39 @@ serialization"
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))
 
-;; TODO: this is the wrong kind of update
-(defaction update
-  [activity]
-  (let [{{id :_id} :params} activity
-        original-activity (model.activity/fetch-by-id id)
-        opts
-        (model/map->Activity
-         (merge original-activity
-                activity
-                (when (= (get activity :public) "public")
-                  {:public true})))]
-    (model.activity/update (dissoc opts :picture))))
+(defaction edit
+  "Update the current activity with this one"
+  [params]
+  ;; TODO: implement
+  (if-let [id (:_id params)]
+    (if-let [original (model.activity/fetch-by-id id)]
+      (if-let [actor (session/current-user)]
+        (if (editable? original actor)
+          (let [original-keys (set (keys original))
+                provided-keys (set/difference (set (keys params)) #{:_id})
+                prohibited-keys #{:author}]
+            (if (empty? (set/intersection prohibited-keys provided-keys))
+
+              (let [changed-keys (set/intersection original-keys provided-keys)
+                    removed-keys (set/difference original-keys provided-keys)
+                    added-keys (set/difference provided-keys original-keys)]
+
+                (doseq [k added-keys]
+                  (model.activity/set-field! original k (get params k)))
+
+                ;; TODO: I'm not sure these should be removed
+                (doseq [k removed-keys]
+                  #_(model.activity/remove-key original k))
+
+                (doseq [k changed-keys]
+                  (model.activity/set-field! original k (get params k)))
+
+                (model.activity/fetch-by-id id))
+              (throw+ "invalid keys provided")))
+          (throw+ "not editable"))
+        (throw+ "not authenticated"))
+      (throw+ "Could not find original item"))
+    (throw+ ":_id attribute is nil")))
 
 (defn find-or-create
   [params]

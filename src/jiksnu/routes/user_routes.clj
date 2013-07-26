@@ -36,7 +36,10 @@
    [[:delete "/users/:id"]                      #'user/delete]
    [[:post   "/users/:id/delete"]               #'user/delete]
    ;; [[:post   "/users/:id/update-hub"]           #'user/update-hub]
-   [[:post   "/:username"]                      #'user/update]])
+   [[:post   "/:username"]                      #'user/update]
+   [[:get    "/api/user/:username/profile"]     {:action #'user/show
+                                                 :format :as}]
+   ])
 
 (defn pages
   []

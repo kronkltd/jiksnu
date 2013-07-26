@@ -5,7 +5,7 @@
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.templates :as templates]))
+            [jiksnu.templates.actions :as templates.actions]))
 
 (defaction show
   [tag]

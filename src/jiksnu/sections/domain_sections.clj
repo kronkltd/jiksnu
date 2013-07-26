@@ -1,5 +1,6 @@
 (ns jiksnu.sections.domain-sections
-  (:use [ciste.sections :only [defsection]]
+  (:use [ciste.core :only [with-format]]
+        [ciste.sections :only [defsection]]
         ciste.sections.default
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
@@ -9,6 +10,7 @@
                                 control-line display-property
                                 dropdown-menu]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.namespace :as ns]
             [jiksnu.sections.link-sections :as sections.link]
             [jiksnu.session :as session])
   (:import jiksnu.model.Domain))
@@ -181,6 +183,19 @@
      (bind-to "links"
        (sections.link/index-section links)))])
 
+(defsection show-section [Domain :jrd]
+  [item & [page]]
+  (let [id (:_id item)
+        template (format "http://%s/main/xrd?uri={uri}" id)]
+    {:host id
+     :links [{:template template
+              :rel "lrdd"
+              :title "Resource Descriptor"}]}))
+
+(defsection show-section [Domain :json]
+  [item & [page]]
+  (with-format :jrd (show-section item page)))
+
 (defsection show-section [Domain :model]
   [item & [page]]
   item)
@@ -188,6 +203,24 @@
 (defsection show-section [Domain :viewmodel]
   [item & [page]]
   item)
+
+(defsection show-section [Domain :xrd]
+  [item & [page]]
+  (let [id (:_id item)]
+    ["XRD" {"xmlns" ns/xrd
+            "xmlns:hm" ns/host-meta}
+     ["hm:Host" id]
+     ["Subject" id]
+     (->> (:links item)
+          (map
+           ;; TODO: show-section [Link :xrd]
+           (fn [{:keys [title rel href template] :as link}]
+             [:Link (merge {}
+                           (if rel {:rel rel})
+                           (if href {:href href})
+                           (if template {:template template}))
+              (if title
+                [:Title title])])))]))
 
 ;; uri
 

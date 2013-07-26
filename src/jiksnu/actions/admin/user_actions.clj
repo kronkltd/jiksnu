@@ -6,14 +6,14 @@
   (:require [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
-            [jiksnu.templates :as templates]))
+            [jiksnu.templates.actions :as templates.actions]))
 
 (defaction create
   [options]
   (actions.user/create options))
 
 (def index*
-  (templates/make-indexer 'jiksnu.model.user))
+  (templates.actions/make-indexer 'jiksnu.model.user))
 
 (defaction index
   [& [params & [options & _]]]
