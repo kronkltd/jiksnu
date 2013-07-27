@@ -1,37 +1,37 @@
 (ns jiksnu.model.stream-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [jiksnu.session :only [with-user]]
-        [jiksnu.model.activity :only [create create-validators count-records drop!
-                                      get-author]]
         [midje.sweet :only [=>]]
         [validateur.validation :only [valid?]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.stream :as model.stream]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
 (test-environment-fixture
 
- (context #'count-records
+ (context #'model.stream/count-records
 
    (context "when there aren't any items"
-     (drop!)
-     (count-records) => 0)
+     (model.stream/drop!)
+     (model.stream/count-records) => 0)
 
    (context "when there are items"
-     (drop!)
+     (model.stream/drop!)
      (let [n 15]
        (dotimes [i n]
          (mock/a-stream-exists))
-       (count-records) => n))
+       (model.stream/count-records) => n))
    )
 
  ;; (context #'create
