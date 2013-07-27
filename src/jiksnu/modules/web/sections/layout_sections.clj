@@ -49,21 +49,24 @@
      [(named-path "index domains")       "Domains"]
      [(named-path "index groups")        "Groups"]
      [(named-path "index resources")     "Resources"]]]
-
+   ["Settings"
+    [["/admin/settings"           "Settings"]]]
    (when (is-admin?)
      ["Admin"
-      [["/admin/activities"         "Activities"]
+      [
+       ["/admin/activities"         "Activities"]
        ["/admin/auth"               "Auth"]
        ["/admin/conversations"      "Conversations"]
-       ["/admin/groups"             "Groups"]
-       ["/admin/settings"           "Settings"]
        ["/admin/feed-sources"       "Feed Sources"]
        ["/admin/feed-subscriptions" "Feed Subscriptions"]
+       ["/admin/groups"             "Groups"]
        ["/admin/keys"               "Keys"]
        ["/admin/likes"              "Likes"]
-       ["/admin/users"              "Users"]
+       ["/admin/streams"            "Streams"]
        ["/admin/subscriptions"      "Subscriptions"]
-       ["/admin/workers"            "Workers"]]])])
+       ["/admin/users"              "Users"]
+       ["/admin/workers"            "Workers"]
+       ]])])
 
 (defn user-info-section
   [user]
