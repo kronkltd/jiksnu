@@ -20,8 +20,7 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util])
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity))
 
 (test-environment-fixture

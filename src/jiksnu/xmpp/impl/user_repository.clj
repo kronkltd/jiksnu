@@ -15,7 +15,6 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace]
             [monger.collection :as mc])
