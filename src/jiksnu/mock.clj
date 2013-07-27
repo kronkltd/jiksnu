@@ -11,6 +11,7 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
@@ -84,6 +85,15 @@
     (model.user/set-field! user :discovered true)
     (set-that :user user)
     user))
+
+(defn a-stream-exists
+  [& [options]]
+  (let [user (a-user-exists options)
+        params {:user (:_id user)
+                :title (fseq :word)}
+        stream (actions.stream/create (log/spy :info params))]
+    (set-that :stream stream)
+    stream))
 
 (defn a-feed-source-exists
   [& [options]]

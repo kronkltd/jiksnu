@@ -13,13 +13,27 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
+            [jiksnu.model.stream :as model.stream]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace])
   (:import jiksnu.model.User))
 
+;; hooks
+
+(defn prepare-create
+  [user]
+  (-> user
+      transforms/set-_id
+      transforms/set-updated-time
+      transforms/set-created-time
+      ;; transforms.stream/set-local
+      ))
+
+;; utils
 
 (defn process-args
   [args]
@@ -27,6 +41,18 @@
         (filter identity)
         seq
         (map json/read-json)))
+
+;; actions
+
+(defaction create
+  "Create a new feed source record"
+  [params options]
+  (let [params (prepare-create params)]
+    (model.stream/create params)))
+
+
+
+
 
 (defaction direct-message-timeline
   [& _]

@@ -10,6 +10,7 @@
            jiksnu.model.FeedSubscription
            jiksnu.model.Group
            jiksnu.model.Resource
+           jiksnu.model.Stream
            jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -27,6 +28,10 @@
  (context #'mock/a-user-exists
    (context "without any params"
      (mock/a-user-exists) => (partial instance? User)))
+
+ (context #'mock/a-stream-exists
+   (context "without any params"
+     (mock/a-stream-exists) => (partial instance? Stream)))
 
  (context #'mock/a-feed-source-exists
    (mock/a-feed-source-exists) => (partial instance? FeedSource))

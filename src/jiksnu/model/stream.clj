@@ -19,8 +19,8 @@
    (type-of :_id                   ObjectId)
    (type-of :title                 String)
 
-   (type-of :local                 Boolean)
-   (type-of :public                Boolean)
+   ;; (type-of :local                 Boolean)
+   ;; (type-of :public                Boolean)
 
    (type-of :user                  ObjectId)
 
