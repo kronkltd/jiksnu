@@ -114,23 +114,27 @@
    (resolve-routes [predicates/http] http-routes))
   (route/not-found (not-found-msg)))
 
-(def app
-  (http/wrap-ring-handler
-   (compojure/routes
-    (route/resources "/webjars" {:root "META-INF/resources/webjars"})
-    (compojure/GET "/api/help/test.json" _ "OK")
-    (-> all-routes
-        jm/wrap-authentication-handler
-        (file/wrap-file "resources/public/")
-        file-info/wrap-file-info
-        jm/wrap-user-binding
-        jm/wrap-dynamic-mode
-        (handler/site {:session {:store (ms/session-store)}})
-        (wrap-airbrake (config :airbrake :key))
-        jm/wrap-stacktrace
-        jm/wrap-stat-logging
-        ;; wrap-tidy-up
-        ))))
+(declare app)
+
 
 (definitializer
-  (airbrake/set-host! (config :airbrake :host)))
+  (airbrake/set-host! (config :airbrake :host))
+  (def app
+    (http/wrap-ring-handler
+     (compojure/routes
+      (route/resources "/webjars" {:root "META-INF/resources/webjars"})
+      (compojure/GET "/api/help/test.json" _ "OK")
+      (-> all-routes
+          jm/wrap-authentication-handler
+          (file/wrap-file "resources/public/")
+          file-info/wrap-file-info
+          jm/wrap-user-binding
+          jm/wrap-dynamic-mode
+          (handler/site {:session {:store (ms/session-store)}})
+          (wrap-airbrake (config :airbrake :key))
+          jm/wrap-stacktrace
+          jm/wrap-stat-logging
+          ;; wrap-tidy-up
+          ))))
+
+  )
