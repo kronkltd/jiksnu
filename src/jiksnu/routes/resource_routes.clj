@@ -1,5 +1,7 @@
 (ns jiksnu.routes.resource-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.actions.resource-actions :only [delete discover index show update]]
         [jiksnu.routes.helpers :only [formatted-path]]))
 
@@ -32,3 +34,14 @@
    [{:name "resources"}    {:action #'index}]
    ])
 
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.resource-filters"
+    "jiksnu.sections.resource-sections"
+    "jiksnu.triggers.resource-triggers"
+    "jiksnu.views.resource-views"
+    "jiksnu.handlers.atom"
+    "jiksnu.handlers.html"
+    "jiksnu.handlers.xrd"
+    ]))

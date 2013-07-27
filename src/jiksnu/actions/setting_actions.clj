@@ -1,8 +1,6 @@
 (ns jiksnu.actions.setting-actions
   (:use [ciste.config :only [config describe-config set-config! write-config!]]
-        [ciste.core :only [defaction]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]])
+        [ciste.core :only [defaction]])
   (:require [jiksnu.session :as session]))
 
 (defaction oauth-apps
@@ -117,9 +115,3 @@
 (defn avatar-page
   [user]
   {:user user})
-
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.setting-filters"
-    "jiksnu.views.setting-views"]))

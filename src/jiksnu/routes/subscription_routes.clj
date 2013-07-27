@@ -1,5 +1,7 @@
 (ns jiksnu.routes.subscription-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.subscription-actions :as sub]))
 
@@ -37,3 +39,10 @@
    [{:name "subscriptions"}         {:action #'sub/index}]
    ])
 
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.subscription-filters"
+    "jiksnu.helpers.subscription-helpers"
+    "jiksnu.triggers.subscription-triggers"
+    "jiksnu.views.subscription-views"]))

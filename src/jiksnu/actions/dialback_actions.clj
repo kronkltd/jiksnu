@@ -3,9 +3,7 @@
 
 
   (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
@@ -60,5 +58,3 @@
   ;; TODO: validate
   true)
 
-(definitializer
-  (util/require-module "dialback"))

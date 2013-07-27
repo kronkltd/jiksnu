@@ -1,8 +1,6 @@
 (ns jiksnu.actions.stream-actions
   (:use [ciste.commands :only [parse-command]]
         [ciste.core :only [defaction with-context]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [ciste.sections.default :only [show-section]]
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+ try+]])
@@ -170,9 +168,3 @@
                           :args (process-args args)}
                  response (handle-message request)]
              (l/enqueue ch response))))))))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.stream-filters"
-    "jiksnu.triggers.stream-triggers"
-    "jiksnu.views.stream-views"]))

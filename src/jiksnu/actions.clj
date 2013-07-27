@@ -3,7 +3,6 @@
         [ciste.config :only [*environment* config]]
         [ciste.core :only [defaction with-format with-serialization]]
         [ciste.filters :only [filter-action]]
-        [ciste.initializer :only [definitializer]]
         [ciste.routes :only [resolve-routes]]
         [ciste.sections.default :only [link-to]]
         [clojure.core.incubator :only [dissoc-in]]

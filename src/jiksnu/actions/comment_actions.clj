@@ -1,8 +1,6 @@
 (ns jiksnu.actions.comment-actions
   (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+        [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -71,8 +69,3 @@
     (when (:xmpp domain)
       (tigase/deliver-packet! (comment-request activity)))))
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.comment-filters"
-    ;; "jiksnu.sections.comment-sections"
-    "jiksnu.views.comment-views"]))

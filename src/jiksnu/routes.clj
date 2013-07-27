@@ -2,6 +2,7 @@
   (:use [ciste.commands :only [add-command!]]
         [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [ciste.routes :only [resolve-routes]]
         [clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
@@ -136,5 +137,12 @@
           jm/wrap-stat-logging
           ;; wrap-tidy-up
           ))))
+
+  (require-namespaces
+   ["jiksnu.filters.inbox-filters"
+    "jiksnu.views.inbox-views"
+    "jiksnu.filters.key-filters"
+    "jiksnu.sections.key-sections"
+    "jiksnu.views.key-views"])
 
   )

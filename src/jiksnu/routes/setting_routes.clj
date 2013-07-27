@@ -1,5 +1,7 @@
 (ns jiksnu.routes.setting-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.setting-actions :as setting]))
 
@@ -10,3 +12,9 @@
   [[[:get "/api/statusnet/config.:format"] #'setting/config-output]
    [[:get (named-path "avatar settings")]  #'setting/avatar-page]
    [[:get "/settings/oauthapps"]           #'setting/oauth-apps]])
+
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.setting-filters"
+    "jiksnu.views.setting-views"]))

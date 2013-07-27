@@ -1,8 +1,6 @@
 (ns jiksnu.actions.webfinger-actions
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -67,8 +65,3 @@
     (merge user
            {:username (model.webfinger/get-username-from-xrd xrd)
             :update-source (:_id source)})))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.webfinger-filters"
-    "jiksnu.views.webfinger-views"]))

@@ -1,7 +1,5 @@
 (ns jiksnu.actions.conversation-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
+  (:use [ciste.core :only [defaction]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
@@ -114,9 +112,3 @@
   []
   (create {:local true}))
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.conversation-filters"
-    "jiksnu.triggers.conversation-triggers"
-    "jiksnu.sections.conversation-sections"
-    "jiksnu.views.conversation-views"]))

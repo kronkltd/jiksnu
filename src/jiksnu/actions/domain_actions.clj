@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
@@ -252,8 +251,4 @@
           (throw+ "Could not discover domain")))))
 
 (definitializer
-  (current-domain)
-  (require-namespaces
-   ["jiksnu.filters.domain-filters"
-    "jiksnu.triggers.domain-triggers"
-    "jiksnu.views.domain-views"]))
+  (current-domain))

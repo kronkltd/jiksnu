@@ -1,7 +1,6 @@
 (ns jiksnu.actions.feed-subscription-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
@@ -73,9 +72,5 @@
       (throw+ "Hub not authoritative for source"))))
 
 (definitializer
-  (model.feed-subscription/ensure-indexes)
-
-  (require-namespaces
-   ["jiksnu.filters.feed-subscription-filters"
-    "jiksnu.views.feed-subscription-views"]))
+  (model.feed-subscription/ensure-indexes))
 

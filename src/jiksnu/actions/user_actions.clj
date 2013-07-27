@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
         [slingshot.slingshot :only [throw+]])
@@ -516,11 +515,4 @@
     (throw+ "Must be authenticated")))
 
 (definitializer
-  (model.user/ensure-indexes)
-
-  (require-namespaces
-   ["jiksnu.filters.user-filters"
-    "jiksnu.helpers.user-helpers"
-    "jiksnu.sections.user-sections"
-    "jiksnu.triggers.user-triggers"
-    "jiksnu.views.user-views"]))
+  (model.user/ensure-indexes))

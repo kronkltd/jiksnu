@@ -1,5 +1,7 @@
 (ns jiksnu.routes.site-routes
   (:use [ciste.commands :only [add-command!]]
+        [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.site-actions :as site]))
@@ -21,3 +23,8 @@
 ;; (add-command! "get-load"        #'site/get-load)
 (add-command! "config"          #'site/get-config)
 (add-command! "ping"            #'site/ping)
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.site-filters"
+    "jiksnu.views.site-views"]))

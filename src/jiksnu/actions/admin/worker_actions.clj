@@ -1,7 +1,5 @@
 (ns jiksnu.actions.admin.worker-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [ciste.workers :as workers]))
 
 (defn get-worker-info
@@ -27,10 +25,4 @@
   []
   (workers/stop-all-workers!)
   true)
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.views.admin.worker-views"
-    "jiksnu.filters.admin.worker-filters"
-    "jiksnu.sections.worker-sections"]))
 

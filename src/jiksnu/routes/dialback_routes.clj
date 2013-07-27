@@ -1,5 +1,6 @@
 (ns jiksnu.routes.dialback-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.dialback-actions :as dialback]))
 
@@ -10,3 +11,6 @@
   [
    [[:post (named-path "dialback")]  #'dialback/confirm]
    ])
+
+(definitializer
+  (util/require-module "dialback"))

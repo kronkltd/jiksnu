@@ -1,8 +1,6 @@
 (ns jiksnu.actions.admin.user-actions
   "This is the namespace for the admin pages for users"
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
@@ -22,8 +20,3 @@
 (defaction show
   [user]
   (actions.user/show user))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.admin.user-filters"
-    "jiksnu.views.admin.user-views"]))

@@ -1,5 +1,7 @@
 (ns jiksnu.routes.user-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
@@ -54,3 +56,11 @@
    [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
    [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
    ])
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.user-filters"
+    "jiksnu.helpers.user-helpers"
+    "jiksnu.sections.user-sections"
+    "jiksnu.triggers.user-triggers"
+    "jiksnu.views.user-views"]))

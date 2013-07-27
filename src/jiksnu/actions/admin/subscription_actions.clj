@@ -1,7 +1,5 @@
 (ns jiksnu.actions.admin.subscription-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
@@ -34,8 +32,3 @@
 (defaction index
   [& options]
   (apply index* options))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.admin.subscription-filters"
-    "jiksnu.views.admin.subscription-views"]))

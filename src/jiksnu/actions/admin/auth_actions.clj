@@ -1,7 +1,5 @@
 (ns jiksnu.actions.admin.auth-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.authentication-mechanism]
             [jiksnu.templates.actions :as templates.actions]))
@@ -12,8 +10,3 @@
 (defaction index
   [& options]
   (apply index* options))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.admin.auth-filters"
-    "jiksnu.views.admin.auth-views"]))

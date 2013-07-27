@@ -1,7 +1,5 @@
 (ns jiksnu.actions.group-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
+  (:use [ciste.core :only [defaction]]
         [jiksnu.session :only [current-user]]
         [jiksnu.transforms :only [set-_id set-created-time
                                   set-updated-time]]
@@ -78,7 +76,3 @@
     item
     (create params)))
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.group-filters"
-    "jiksnu.views.group-views"]))

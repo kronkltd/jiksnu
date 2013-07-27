@@ -1,6 +1,5 @@
 (ns jiksnu.util
   (:use [ciste.config :only [config environment]]
-        [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [*base-url*]]

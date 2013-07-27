@@ -1,7 +1,5 @@
 (ns jiksnu.actions.like-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
@@ -54,8 +52,3 @@
 (defaction show
   [like]
   like)
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.like-filters"
-    "jiksnu.views.like-views"]))

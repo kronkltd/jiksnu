@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
@@ -390,12 +389,6 @@ serialization"
 
 (definitializer
   (model.activity/ensure-indexes)
-
-  (require-namespaces
-   ["jiksnu.filters.activity-filters"
-    "jiksnu.sections.activity-sections"
-    "jiksnu.triggers.activity-triggers"
-    "jiksnu.views.activity-views"])
 
   ;; cascade delete on domain deletion
   (dosync
