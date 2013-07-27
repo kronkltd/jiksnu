@@ -26,9 +26,11 @@
 
 (defn host-meta-link
   [domain]
-  (list
-   (str "https://" (:_id domain) "/.well-known/host-meta")
-   (str "http://" (:_id domain) "/.well-known/host-meta")))
+  (->> [(when (:https domain)
+          (str "https://" (:_id domain) "/.well-known/host-meta"))
+        (when (:http domain)
+          (str "http://" (:_id domain) "/.well-known/host-meta"))]
+       (filter identity)))
 
 (defn statusnet-url
   [domain]

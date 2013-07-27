@@ -4,7 +4,7 @@
         [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [*base-url*]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]]
+        [slingshot.slingshot :only [throw+ try+]]
         [lamina.executor :only [task]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]

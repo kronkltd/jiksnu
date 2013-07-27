@@ -82,9 +82,7 @@
              (log/error "Fetching host meta failed")
              (trace/trace "errors:handled" ex))))))
    (catch Object ex
-     (log/error ex)
-     )
-   ))
+     (log/error ex))))
 
 (defn fetch-xrd
   [domain url]
