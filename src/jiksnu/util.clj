@@ -24,6 +24,9 @@
            java.io.PrintWriter
            java.text.SimpleDateFormat
            java.util.Date
+           java.net.InetAddress
+           java.net.InetSocketAddress
+           java.net.Socket
            java.net.URI
            java.net.URL
            lamina.core.channel.Channel
@@ -240,3 +243,15 @@
 (defn replace-template
   [template url]
   (string/replace template #"\{uri\}" (codec/url-encode url)))
+
+(defn socket-conectable?
+  [host port]
+  (let [socket (Socket.)
+        address (InetAddress/getByName host)
+        socket-address (InetSocketAddress. address port)]
+    (try+
+     (.connect socket socket-address)
+     true
+     (catch Object ex false)
+     (finally
+       (.close socket)))))

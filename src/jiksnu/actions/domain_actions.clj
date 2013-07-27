@@ -187,6 +187,12 @@
          (filter identity)
          first)))
 
+(defn discover-capabilities
+  [domain & [url]]
+  (let [id (:_id domain)]
+    (model.domain/set-field! domain :http  (util/socket-conectable? id 80))
+    (model.domain/set-field! domain :https (util/socket-conectable? id 443))))
+
 (defn discover*
   [domain url]
   {:pre [(instance? Domain domain)
@@ -194,6 +200,7 @@
              (string? url))]}
   (log/debug "running discover tasks")
   (l/merge-results
+   (util/safe-task (discover-capabilities domain url))
    (util/safe-task (discover-webfinger domain url))
    ;; (util/safe-task (discover-onesocialweb domain url))
    ;; (util/safe-task (discover-statusnet-config domain url))

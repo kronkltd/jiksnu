@@ -82,6 +82,8 @@
    [:thead
     [:tr
      [:th "Name"]
+     [:th "HTTP"]
+     [:th "HTTPS"]
      [:th "XMPP?"]
      [:th "Discovered"]
      [:th "Host Meta"]
@@ -104,6 +106,8 @@
    [:td
     (favicon-link domain)
     (link-to domain)]
+   [:td (display-property domain :http)]
+   [:td (display-property domain :https)]
    [:td (display-property domain :xmpp)]
    [:td (if *dynamic*
           {:data-bind "text: '' + !!ko.utils.unwrapObservable($data.discovered)"}
