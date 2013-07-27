@@ -150,18 +150,19 @@
        :args (:args request)
        :message (str ex)}))))
 
+(defn websocket-handler*
+  [ch id m]
+  (util/safe-task
+   (session/with-user-id id
+     (let [[name & args] (string/split m #" ")
+           request {:format :json
+                    :channel ch
+                    :name name
+                    :args (process-args args)}
+           response (handle-message request)]
+       (l/enqueue ch response)))))
+
 (defn websocket-handler
   [ch request]
   (let [id (session/current-user-id)]
-    (l/receive-all
-     ch
-     (fn [m]
-       (util/safe-task
-         (session/with-user-id id
-           (let [[name & args] (string/split m #" ")
-                 request {:format :json
-                          :channel ch
-                          :name name
-                          :args (process-args args)}
-                 response (handle-message request)]
-             (l/enqueue ch response))))))))
+    (l/receive-all ch (partial websocket-handler* ch id))))
