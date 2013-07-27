@@ -25,6 +25,7 @@
 (defrecord Key                     [])
 (defrecord Like                    [])
 (defrecord Resource                [])
+(defrecord Stream                  [])
 (defrecord Subscription            [])
 (defrecord User                    [])
 
@@ -43,6 +44,7 @@
    Key
    Like
    Resource
+   Stream
    Subscription
    User
    ]
