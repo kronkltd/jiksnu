@@ -197,12 +197,15 @@
          (or (nil? url)
              (string? url))]}
   (log/debug "running discover tasks")
-  (l/merge-results
+  (l/run-pipeline
    (util/safe-task (discover-capabilities domain url))
-   (util/safe-task (discover-webfinger domain url))
-   ;; (util/safe-task (discover-onesocialweb domain url))
-   ;; (util/safe-task (discover-statusnet-config domain url))
-   ))
+   (fn [_]
+     (let [domain (model.domain/fetch-by-id (:_id domain))]
+       (l/merge-results
+        (util/safe-task (discover-webfinger domain url))
+        ;; (util/safe-task (discover-onesocialweb domain url))
+        ;; (util/safe-task (discover-statusnet-config domain url))
+        )))))
 
 (defaction discover
   [^Domain domain url]
