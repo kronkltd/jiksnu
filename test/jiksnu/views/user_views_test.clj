@@ -8,7 +8,6 @@
         [jiksnu.actions.user-actions :only [index]]
         [jiksnu.test-helper :only [check context future-context
                                    hiccup->doc test-environment-fixture]]
-        jiksnu.helpers.user-helpers
         [jiksnu.ko :only [*dynamic*]]
         ;; jiksnu.views.user-views
         jiksnu.xmpp.element

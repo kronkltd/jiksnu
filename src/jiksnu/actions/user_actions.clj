@@ -23,7 +23,6 @@
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.webfinger-actions :as actions.webfinger]
             [jiksnu.channels :as ch]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.key :as model.key]

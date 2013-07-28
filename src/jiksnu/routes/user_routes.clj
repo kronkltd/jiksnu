@@ -60,7 +60,6 @@
 (definitializer
   (require-namespaces
    ["jiksnu.filters.user-filters"
-    "jiksnu.helpers.user-helpers"
     "jiksnu.sections.user-sections"
     "jiksnu.triggers.user-triggers"
     "jiksnu.views.user-views"]))
