@@ -11,7 +11,6 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.namespace :as ns]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.user-sections :as sections.user]

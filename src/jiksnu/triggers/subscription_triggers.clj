@@ -7,7 +7,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.channels :as ch]
             [jiksnu.model.user :as model.user]
-            [jiksnu.helpers.subscription-helpers :as helpers.subscription]
+            [jiksnu.sections.subscription-sections :as sections.subscription]
             [jiksnu.ops :as ops]
             [lamina.core :as l]))
 
@@ -16,7 +16,7 @@
   (with-context [:xmpp :xmpp]
     (let [user (model.user/fetch-by-id (:from subscription))
           subscribee (model.user/fetch-by-id (:to subscription))
-          ele (helpers.subscription/subscribe-request subscription)
+          ele (sections.subscription/subscribe-request subscription)
           packet (tigase/make-packet {:body (element/make-element ele)
                                       :type :set
                                       :id (:id request)
@@ -29,7 +29,7 @@
   (with-context [:xmpp :xmpp]
     (let [user (model.user/fetch-by-id (:from subscription))
           subscribee (model.user/fetch-by-id (:to subscription))
-          ele (helpers.subscription/unsubscription-request subscription)
+          ele (sections.subscription/unsubscription-request subscription)
           packet (tigase/make-packet {:body (element/make-element ele)
                                       :type :set
                                       :id (:id request)

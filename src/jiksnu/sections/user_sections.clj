@@ -22,7 +22,6 @@
             [jiksnu.namespace :as ns]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.helpers.user-helpers :as helpers.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
