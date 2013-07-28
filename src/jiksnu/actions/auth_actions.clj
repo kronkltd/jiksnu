@@ -1,7 +1,5 @@
 (ns jiksnu.actions.auth-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
+  (:use [ciste.core :only [defaction]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
@@ -78,7 +76,3 @@
                 :user (:_id user)}]
     (create params)))
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.auth-filters"
-    "jiksnu.views.auth-views"]))

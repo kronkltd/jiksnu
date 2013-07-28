@@ -2,6 +2,7 @@
   (:use [ciste.commands :only [add-command!]]
         [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [ciste.routes :only [resolve-routes]]
         [clj-airbrake.ring :only [wrap-airbrake]]
         [ring.middleware.flash :only [wrap-flash]]
@@ -114,23 +115,34 @@
    (resolve-routes [predicates/http] http-routes))
   (route/not-found (not-found-msg)))
 
-(def app
-  (http/wrap-ring-handler
-   (compojure/routes
-    (route/resources "/webjars" {:root "META-INF/resources/webjars"})
-    (compojure/GET "/api/help/test.json" _ "OK")
-    (-> all-routes
-        jm/wrap-authentication-handler
-        (file/wrap-file "resources/public/")
-        file-info/wrap-file-info
-        jm/wrap-user-binding
-        jm/wrap-dynamic-mode
-        (handler/site {:session {:store (ms/session-store)}})
-        (wrap-airbrake (config :airbrake :key))
-        jm/wrap-stacktrace
-        jm/wrap-stat-logging
-        ;; wrap-tidy-up
-        ))))
+(declare app)
+
 
 (definitializer
-  (airbrake/set-host! (config :airbrake :host)))
+  (airbrake/set-host! (config :airbrake :host))
+  (def app
+    (http/wrap-ring-handler
+     (compojure/routes
+      (route/resources "/webjars" {:root "META-INF/resources/webjars"})
+      (compojure/GET "/api/help/test.json" _ "OK")
+      (-> all-routes
+          jm/wrap-authentication-handler
+          (file/wrap-file "resources/public/")
+          file-info/wrap-file-info
+          jm/wrap-user-binding
+          jm/wrap-dynamic-mode
+          (handler/site {:session {:store (ms/session-store)}})
+          (wrap-airbrake (config :airbrake :key))
+          jm/wrap-stacktrace
+          jm/wrap-stat-logging
+          ;; wrap-tidy-up
+          ))))
+
+  (require-namespaces
+   ["jiksnu.filters.inbox-filters"
+    "jiksnu.views.inbox-views"
+    "jiksnu.filters.key-filters"
+    "jiksnu.sections.key-sections"
+    "jiksnu.views.key-views"])
+
+  )

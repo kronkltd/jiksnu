@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-url]]
         [lamina.trace :only [defn-instrumented]]
@@ -282,9 +281,4 @@
             (throw+ "Could not discover feed source"))))))
 
 (definitializer
-  (model.feed-source/ensure-indexes)
-
-  (require-namespaces
-   ["jiksnu.filters.feed-source-filters"
-    "jiksnu.triggers.feed-source-triggers"
-    "jiksnu.views.feed-source-views"]))
+  (model.feed-source/ensure-indexes))

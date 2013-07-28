@@ -1,5 +1,7 @@
 (ns jiksnu.routes.conversation-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation])
@@ -30,3 +32,11 @@
    [{:type Conversation
      :name "activities"}    {:action #'activity/fetch-by-conversation}]
    ])
+
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.conversation-filters"
+    "jiksnu.triggers.conversation-triggers"
+    "jiksnu.sections.conversation-sections"
+    "jiksnu.views.conversation-views"]))

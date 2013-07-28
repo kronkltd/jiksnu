@@ -16,7 +16,6 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util]
             [lamina.core :as l])
   (:import java.net.URI
            jiksnu.model.Activity

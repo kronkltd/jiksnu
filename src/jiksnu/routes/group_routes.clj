@@ -1,5 +1,7 @@
 (ns jiksnu.routes.group-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.group-actions :as group]))
 
@@ -32,3 +34,7 @@
    [{:name "groups"}    {:action #'group/index}]
    ])
 
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.group-filters"
+    "jiksnu.views.group-views"]))

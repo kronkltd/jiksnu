@@ -1,5 +1,7 @@
 (ns jiksnu.routes.admin-routes
   (:use [ciste.commands :only [add-command!]]
+        [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [ciste.routes :only [make-matchers]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
@@ -101,3 +103,47 @@
 (add-command! "list-workers" #'admin.worker/index)
 (add-command! "start-worker" #'admin.worker/start-worker)
 (add-command! "stop-worker"  #'admin.worker/stop-worker)
+
+(definitializer
+  (require-namespaces
+   [
+
+    "jiksnu.filters.admin.setting-filters"
+    "jiksnu.views.admin.setting-views"
+    "jiksnu.filters.admin.activity-filters"
+    "jiksnu.views.admin.activity-views"
+
+    "jiksnu.filters.admin.auth-filters"
+    "jiksnu.views.admin.auth-views"
+
+    "jiksnu.filters.admin.conversation-filters"
+    "jiksnu.views.admin.conversation-views"
+
+    "jiksnu.filters.admin.feed-source-filters"
+    "jiksnu.sections.feed-source-sections"
+    "jiksnu.views.admin.feed-source-views"
+
+    "jiksnu.filters.admin.feed-subscription-filters"
+    "jiksnu.sections.feed-subscription-sections"
+    "jiksnu.views.admin.feed-subscription-views"
+
+    "jiksnu.filters.admin.group-filters"
+    "jiksnu.views.admin.group-views"
+
+    "jiksnu.filters.admin.key-filters"
+    "jiksnu.views.admin.key-views"
+
+    "jiksnu.filters.admin.like-filters"
+    "jiksnu.views.admin.like-views"
+
+    "jiksnu.filters.admin.subscription-filters"
+    "jiksnu.views.admin.subscription-views"
+
+    "jiksnu.filters.admin.user-filters"
+    "jiksnu.views.admin.user-views"
+
+    "jiksnu.views.admin.worker-views"
+    "jiksnu.filters.admin.worker-filters"
+    "jiksnu.sections.worker-sections"
+
+    ]))

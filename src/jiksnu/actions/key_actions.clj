@@ -1,8 +1,6 @@
 (ns jiksnu.actions.key-actions
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?>>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -54,10 +52,3 @@
   (let [params (assoc (model.key/pair-hash (model.key/generate-key))
                  :userid (:_id user))]
     (create params)))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.key-filters"
-    "jiksnu.sections.key-sections"
-    "jiksnu.views.key-views"]))
-

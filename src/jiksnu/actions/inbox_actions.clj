@@ -1,14 +1,7 @@
 (ns jiksnu.actions.inbox-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [jiksnu.model.item :as model.item]))
 
 (defaction index
   [user]
   #_(model.item/fetch-activities user))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.inbox-filters"
-    "jiksnu.views.inbox-views"]))

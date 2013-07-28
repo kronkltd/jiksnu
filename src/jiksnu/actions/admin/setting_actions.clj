@@ -1,8 +1,6 @@
 (ns jiksnu.actions.admin.setting-actions
   (:use [ciste.config :only [config set-config! write-config!]]
-        [ciste.core :only [defaction]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]])
+        [ciste.core :only [defaction]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.session :as session]))
 
@@ -34,8 +32,3 @@
     (set-config! [:htmlOnly] htmlOnly)
     (write-config!)
     params))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.admin.setting-filters"
-    "jiksnu.views.admin.setting-views"]))

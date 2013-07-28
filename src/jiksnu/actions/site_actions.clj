@@ -1,7 +1,5 @@
 (ns jiksnu.actions.site-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [clojure.string :as string]
             [inflections.core :as inf]
             [jiksnu.actions.domain-actions :as actions.domain]))
@@ -44,8 +42,3 @@
   [id]
   ;; get user
   true)
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.site-filters"
-    "jiksnu.views.site-views"]))

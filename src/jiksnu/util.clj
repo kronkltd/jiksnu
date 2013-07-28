@@ -1,11 +1,10 @@
 (ns jiksnu.util
   (:use [ciste.config :only [config environment]]
-        [ciste.initializer :only [definitializer]]
         [ciste.loader :only [require-namespaces]]
         [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [*base-url*]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]]
+        [slingshot.slingshot :only [throw+ try+]]
         [lamina.executor :only [task]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
@@ -25,6 +24,9 @@
            java.io.PrintWriter
            java.text.SimpleDateFormat
            java.util.Date
+           java.net.InetAddress
+           java.net.InetSocketAddress
+           java.net.Socket
            java.net.URI
            java.net.URL
            lamina.core.channel.Channel
@@ -241,3 +243,15 @@
 (defn replace-template
   [template url]
   (string/replace template #"\{uri\}" (codec/url-encode url)))
+
+(defn socket-conectable?
+  [host port]
+  (let [socket (Socket.)
+        address (InetAddress/getByName host)
+        socket-address (InetSocketAddress. address port)]
+    (try+
+     (.connect socket socket-address)
+     true
+     (catch Object ex false)
+     (finally
+       (.close socket)))))

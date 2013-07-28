@@ -1,7 +1,5 @@
 (ns jiksnu.actions.admin.conversation-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.model :as model]
@@ -29,8 +27,3 @@
 (defaction fetch-updates
   [params]
   (cm/implement))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.admin.conversation-filters"
-    "jiksnu.views.admin.conversation-views"]))

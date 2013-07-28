@@ -1,5 +1,7 @@
 (ns jiksnu.routes.feed-source-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.feed-source-actions :as feed-source]))
 
@@ -25,3 +27,8 @@
    [{:name "feed-sources"}    {:action #'feed-source/index}]
    ])
 
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.feed-source-filters"
+    "jiksnu.triggers.feed-source-triggers"
+    "jiksnu.views.feed-source-views"]))

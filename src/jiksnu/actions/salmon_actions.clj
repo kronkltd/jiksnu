@@ -1,8 +1,6 @@
 (ns jiksnu.actions.salmon-actions
   (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [clojure.core.incubator :only [-?> -?>>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -100,8 +98,3 @@
         (throw+ "Could not find key"))
       (throw+ "could not determine actor"))
     (throw+ "Could not extract activity")))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.salmon-filters"
-    "jiksnu.views.salmon-views"]))

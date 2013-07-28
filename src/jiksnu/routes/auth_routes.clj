@@ -1,5 +1,7 @@
 (ns jiksnu.routes.auth-routes
   (:use [ciste.commands :only [add-command!]]
+        [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.auth-actions :as auth]))
@@ -23,3 +25,8 @@
 
 (add-command! "auth"   #'auth/login)
 (add-command! "whoami" #'auth/whoami)
+
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.auth-filters"
+    "jiksnu.views.auth-views"]))

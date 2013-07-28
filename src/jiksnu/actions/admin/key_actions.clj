@@ -1,7 +1,5 @@
 (ns jiksnu.actions.admin.key-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]])
+  (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [jiksnu.actions.key-actions :as actions.key]))
 
@@ -20,8 +18,3 @@
 (defaction index
   [options]
   (actions.key/index options))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.admin.key-filters"
-    "jiksnu.views.admin.key-views"]))

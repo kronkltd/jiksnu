@@ -1,5 +1,4 @@
 (ns jiksnu.triggers.feed-source-triggers
-  (:use [ciste.initializer :only [definitializer]])
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]

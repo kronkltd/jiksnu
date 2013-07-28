@@ -1,5 +1,7 @@
 (ns jiksnu.routes.domain-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [ciste.initializer :only [definitializer]]
+        [ciste.loader :only [require-namespaces]]
+        [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.domain-actions :as domain]))
 
@@ -33,3 +35,8 @@
    [{:name "domains"}    {:action #'domain/index}]
    ])
 
+(definitializer
+  (require-namespaces
+   ["jiksnu.filters.domain-filters"
+    "jiksnu.triggers.domain-triggers"
+    "jiksnu.views.domain-views"]))

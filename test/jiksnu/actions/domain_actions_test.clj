@@ -88,6 +88,8 @@
      (l/close ch)
      @field-set => true))
 
+ ;; TODO: If https is enabled, the bare path is checked at the https
+ ;; path first
  (context #'discover-webfinger
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)]
@@ -97,8 +99,7 @@
              hm-url (factory/make-uri domain-name "/.well-known/host-meta")]
          (discover-webfinger domain url) => (contains {:_id domain-name})
          (provided
-          (fetch-xrd* hm-url) => (cm/string->document "<XRD/>")
-          (fetch-xrd* anything) => nil)))
+          (fetch-xrd* hm-url) => (cm/string->document "<XRD/>"))))
 
      (context "when there is a url context"
        ;; TODO: Secure urls should always be checked first, and if the
@@ -115,7 +116,7 @@
          (context "and the bare domain has a host-meta"
            (discover-webfinger domain url) => (contains {:_id domain-name})
            (provided
-            (fetch-xrd* hm-bare-s) => nil
+            ;; (fetch-xrd* hm-bare-s) => nil
             (fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
 
          (context "and the bare domain does not have a host meta"
@@ -127,16 +128,18 @@
                (fetch-xrd* hm-bare) => nil
                (fetch-xrd* hm1)     => nil
                (fetch-xrd* hm2)     => nil
-               (fetch-xrd* hm-bare-s) => nil))
+               ;; (fetch-xrd* hm-bare-s) => nil
+               ))
 
            (context "and one of the subpaths has a host meta"
              ;; FIXME: this isn't being checked
              (discover-webfinger domain url) => (contains {:_id domain-name})
              (provided
                (fetch-xrd* hm-bare) => nil
-               (fetch-xrd* hm-bare-s) => nil
+               ;; (fetch-xrd* hm-bare-s) => nil
                (fetch-xrd* hm1)     => nil
-               (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")))
+               (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")
+               ))
            )
          ))
      ))

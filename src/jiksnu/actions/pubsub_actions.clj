@@ -1,7 +1,5 @@
 (ns jiksnu.actions.pubsub-actions
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
+  (:use [ciste.core :only [defaction]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
             [clojure.string :as string]
@@ -69,9 +67,3 @@
     "subscribe"   (subscribe params)
     "unsubscribe" (unsubscribe params)
     (throw+ "Unknown mode type")))
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.pubsub-filters"
-    ;; "jiksnu.triggers.pubsub-triggers"
-    "jiksnu.views.pubsub-views"]))

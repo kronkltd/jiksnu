@@ -2,7 +2,6 @@
   (:use [aleph.formats :only [channel-buffer->string]]
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [jiksnu.actions :only [invoke-action]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.http :as http]
@@ -221,14 +220,4 @@ The channel will receive the body of fetching this resource."
   item)
 
 (definitializer
-  (model.resource/ensure-indexes)
-
-  (require-namespaces
-   ["jiksnu.filters.resource-filters"
-    "jiksnu.sections.resource-sections"
-    "jiksnu.triggers.resource-triggers"
-    "jiksnu.views.resource-views"
-    "jiksnu.handlers.atom"
-    "jiksnu.handlers.html"
-    "jiksnu.handlers.xrd"
-    ]))
+  (model.resource/ensure-indexes))

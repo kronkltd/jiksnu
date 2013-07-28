@@ -1,6 +1,5 @@
 (ns jiksnu.triggers.resource-triggers
-  (:use [ciste.initializer :only [definitializer]]
-        [slingshot.slingshot :only [throw+]])
+  (:use [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.channels :as ch]

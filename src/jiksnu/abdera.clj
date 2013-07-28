@@ -102,8 +102,8 @@
   "Returns a map representing the link element"
   [^Link link]
   (let [type (try+ (str (.getMimeType link))
-                   (catch Exception ex
-                     (trace/trace "errors:handled" ex)))
+                   (catch Object  ex
+                     #_(trace/trace "errors:handled" ex)))
         extensions (map
                     #(.getAttributeValue link  %)
                     (.getExtensionAttributes link))

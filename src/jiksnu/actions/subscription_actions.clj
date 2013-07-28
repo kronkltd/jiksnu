@@ -1,7 +1,6 @@
 (ns jiksnu.actions.subscription-actions
   (:use [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [ciste.loader :only [require-namespaces]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
@@ -175,10 +174,4 @@
           conj setup-delete-hooks*)))
 
 (definitializer
-  (require-namespaces
-   ["jiksnu.filters.subscription-filters"
-    "jiksnu.helpers.subscription-helpers"
-    "jiksnu.triggers.subscription-triggers"
-    "jiksnu.views.subscription-views"])
-
   (setup-delete-hooks))
