@@ -151,7 +151,9 @@
   [item property]
   (if *dynamic*
     (list
-     (format "<!-- ko text: %s -->" (name property))
+     (format "<!-- ko text: %s -->"
+             (let [k (name property)]
+               (format "typeof($data.%s) !== 'undefined' ? %s : ''" k k)))
      "<!-- /ko -->")
     (str (get item (keyword property)))))
 

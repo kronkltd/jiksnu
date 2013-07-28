@@ -1,27 +1,20 @@
 (ns jiksnu.sections.link-sections
-  (:use [jiksnu.ko :only [*dynamic*]]))
+  (:use [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [display-property dump-data]]))
 
 (defn index-line
   [link]
   [:tr
-   [:td
-    [:a (if *dynamic*
+   [:td (display-property link :href)
+    #_[:a (if *dynamic*
           {:data-bind "attr: {href: href}, text: href"}
           {:href (:href link)})
      (when-not *dynamic*
        (:href link))]]
-   [:td (if *dynamic*
-          {:data-bind "text: (typeof(rel()) === 'undefined') ? '' : ko.utils.unwrapObservable(rel)"}
-          (:rel link))]
-   [:td (if *dynamic*
-          {:data-bind "text: (typeof(type()) === 'undefined') ? '' : ko.utils.unwrapObservable(type)"}
-          (:type link))]
-   #_[:td (if *dynamic*
-          {:data-bind "text: template"}
-          (:template link))]
-   #_[:td (if *dynamic*
-          {:data-bind "text: lang"}
-          (:lang link))]])
+   [:td (display-property link :rel)]
+   [:td (display-property link :type)]
+   [:td (display-property link :template)]
+   [:td (display-property link :lang)]])
 
 (defn index-section
   [links]
@@ -31,8 +24,8 @@
      [:th "Href"]
      [:th "rel"]
      [:th "Type"]
-     #_[:th "template"]
-     #_[:th "lang"]]]
+     [:th "Template"]
+     [:th "Lang"]]]
    [:tbody (when *dynamic*
              {:data-bind "foreach: $data"})
     (map index-line links)]])
