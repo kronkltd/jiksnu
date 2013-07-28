@@ -139,19 +139,16 @@
 
 (defn handle-message
   [request]
-  (or (try+
-        (:body (parse-command request))
-        (catch Object ex
-          (trace/trace :client-errors:handled ex)
-          (json/json-str {:action "error"
-            :name (:name request)
-            :args (:args request)
-            :message (str ex)})))
-      (let [event {:action "error"
-                   :name (:name request)
-                   :args (:args request)
-                   :message "no command found"}]
-        (json/json-str event))))
+  (try+
+   (or (:body (parse-command request))
+       (throw+ "no command found"))
+   (catch Object ex
+     (trace/trace :client-errors:handled ex)
+     (json/json-str
+      {:action "error"
+       :name (:name request)
+       :args (:args request)
+       :message (str ex)}))))
 
 (defn websocket-handler
   [ch request]
