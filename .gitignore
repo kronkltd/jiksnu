@@ -4,6 +4,7 @@
 .gems
 .lein*
 .project
+.sass-cache
 .settings
 .vagrant
 autodoc
@@ -11,6 +12,7 @@ certs
 checkouts*
 classes
 config.clj
+data
 doc
 docs
 dump
