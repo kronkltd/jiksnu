@@ -177,6 +177,7 @@
 
 (deffactory :domain
   {:_id (fseq :domain)
+   :http true
    :local false})
 
 (defrecordfactory :user model/map->User
