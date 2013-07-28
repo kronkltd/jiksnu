@@ -52,16 +52,19 @@
                            :args [type (util/make-id)]}]
               (actions.stream/handle-message request) =>
               (check [response]
-                (get response :action) => "error")))
+                (let [m (json/read-str response)]
+                  (get m "action") => "error"))))
 
           (context "when the record is found"
             (let [user (mock/a-user-exists)
                   request {:channel ch
                            :name command
+                           :format :json
                            :args [type (:_id user)]}]
               (actions.stream/handle-message request) =>
               (check [response]
-                (get response :action) => "model-updated")))
+                (let [m (json/read-str response)]
+                  (get m "action") => "model-updated"))))
           ))
        ))
    )
