@@ -6,7 +6,6 @@
         [jiksnu.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
-            [jiksnu.helpers.subscription-helpers :as helpers.subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))
@@ -63,7 +62,7 @@
 (defview #'get-subscribers :xmpp
   [request [user {:keys [items] :as response}]]
   (tigase/result-packet
-   request (helpers.subscription/subscribers-response items response)))
+   request (sections.subscription/subscribers-response items response)))
 
 ;; get-subscriptions
 
@@ -109,7 +108,7 @@
 (defview #'get-subscriptions :xmpp
   [request [user {:keys [items] :as response}]]
   (tigase/result-packet
-   request (helpers.subscription/subscriptions-response items response)))
+   request (sections.subscription/subscriptions-response items response)))
 
 ;; index
 
@@ -172,14 +171,14 @@
 (defview #'subscribe :xmpp
   [request subscription]
   (tigase/result-packet
-   request (helpers.subscription/subscription-response-element subscription)))
+   request (sections.subscription/subscription-response-element subscription)))
 
 ;; subscribed
 
 (defview #'subscribed :xmpp
   [request subscription]
   (tigase/result-packet
-   request (helpers.subscription/subscriptions-response [subscription])))
+   request (sections.subscription/subscriptions-response [subscription])))
 
 ;; unsubscribe
 
@@ -194,5 +193,5 @@
   {:to (-> subscription model.subscription/get-target tigase/make-jid)
    :from (-> subscription model.subscription/get-actor tigase/make-jid)
    :type :result
-   :body (helpers.subscription/subscriptions-response [subscription])
+   :body (sections.subscription/subscriptions-response [subscription])
    :id (:id request)})
