@@ -32,28 +32,6 @@
      (context "when the serialization is :http"
        (with-serialization :http
 
-         (context "when the format is :atom"
-           (with-format :atom
-
-             (context "when there are conversations"
-               (db/drop-all!)
-               (let [n 20
-                     items (doall (for [i (range n)]
-                                    (let [conversation (mock/a-conversation-exists)]
-                                      (mock/there-is-an-activity {:conversation conversation})
-                                      conversation)))
-                     request {:action action}
-                     response (filter-action action request)]
-
-                 (apply-view request response) =>
-                 (check [response]
-                   response => map?
-                   (:template response) => false
-                   (let [formatted (format-as :atom request response)
-                         feed (abdera/parse-xml-string (:body formatted))]
-                     (count (.getEntries feed)) => n))))
-             ))
-
          (context "when the format is :html"
            (with-format :html
 
@@ -89,22 +67,6 @@
                            (count elts) => n)))))
                  ))
              ))
-
-         (context "when the format is :n3"
-           (with-format :n3
-
-             (context "when there are conversations"
-               (db/drop-all!)
-               (let [n 1
-                     items (doall (for [i (range n)] (mock/a-conversation-exists)))
-                     request {:action action}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (check [response]
-                   response => map?
-                   (let [body (:body response)]
-                     body => (partial every? vector?)))))
-             ))
          ))))
 
  (context "apply-view #'user-timeline"
@@ -130,21 +92,6 @@
                         (enlive/select doc [(enlive/attr? :data-id)])) =>
                         (contains (str (:_id activity))))))))))
 
-         (context "when the format is :n3"
-           (with-format :n3
-             (context "when that user has activities"
-               (db/drop-all!)
-               (let [user (mock/a-user-exists)
-                     activity (mock/there-is-an-activity {:user user})
-                     request {:action action
-                              :params {:id (str (:_id user))}}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (check [response]
-                   response => map?
-                   (let [body (:body response)]
-                     body => (partial every? vector?)
-                     (let [m (rdf/triples->model body)]
-                       m => truthy)))))))))))
+         ))))
 
  )

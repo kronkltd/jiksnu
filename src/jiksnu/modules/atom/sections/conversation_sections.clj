@@ -26,10 +26,6 @@
            jiksnu.model.FeedSource
            jiksnu.model.User))
 
-(defsection index-block [Conversation :rdf]
-  [items & [response & _]]
-  (apply concat (map #(index-line % response) items)))
-
 ;; index-section
 
 (defsection index-section [Conversation :atom]
@@ -37,19 +33,3 @@
   (let [ids (map :_id items)
         page (actions.activity/fetch-by-conversations ids)]
     (index-block (:items page) page)))
-
-(defsection show-section [Conversation :rdf]
-  [item & [page]]
-  (plaza/with-rdf-ns ""
-    (let [uri (full-uri item)]
-      (rdf/with-subject uri
-        [
-         [[ns/rdf :type] [ns/sioc "Conversation"]]
-         [[ns/dc :updated] (plaza/date (.toDate (:updated item)))]
-         ]))))
-
-;; uri
-
-(defsection uri [Conversation]
-  [item & _]
-  (format "/main/conversations/%s" (:_id item)))

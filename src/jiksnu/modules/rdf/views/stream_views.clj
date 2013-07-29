@@ -1,0 +1,50 @@
+(ns jiksnu.views.stream-views
+  (:use [ciste.config :only [config]]
+        [ciste.core :only [with-format]]
+        [ciste.views :only [apply-view defview]]
+        ciste.sections.default
+        [clj-stacktrace.repl :only [pst+]]
+        jiksnu.actions.stream-actions
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links with-sub-page]]
+        [jiksnu.session :only [current-user]])
+  (:require [clj-tigase.core :as tigase]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.model :as model]
+            [jiksnu.namespace :as ns]
+            [jiksnu.sections.activity-sections :as sections.activity])
+  (:import jiksnu.model.Activity
+           jiksnu.model.Conversation))
+
+(defview #'public-timeline :n3
+  [request {:keys [items] :as page}]
+  {:body
+   (with-format :rdf
+     (doall (index-section items page)))
+   :template :false})
+
+(defview #'public-timeline :rdf
+  [request {:keys [items] :as page}]
+  {:body (index-section items page)
+   :template :false})
+
+(defview #'user-timeline :rdf
+  [request [user activities-map]]
+  (when user
+    {:body (->> (when-let [activities (seq (:items activities-map))]
+                  (index-section activities))
+                (concat (show-section user))
+                doall)
+    :template :false}))
+
+(defview #'user-timeline :n3
+  [request [user activities-map]]
+  (when user
+    {:body (->> (when-let [activities (seq (:items activities-map))]
+                  (index-section activities))
+                (concat (show-section user))
+                doall
+                (with-format :rdf))
+     :template false}))
+

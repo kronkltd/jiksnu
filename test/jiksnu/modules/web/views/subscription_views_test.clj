@@ -25,19 +25,6 @@
    (let [action #'actions.subscription/get-subscriptions]
      (context "when the serialization is :http"
        (with-serialization :http
-         (context "when the format is :as"
-           (with-format :as
-             (context "when the user has subscriptions"
-               (db/drop-all!)
-               (let [subscription (mock/a-subscription-exists)
-                     actor (model.subscription/get-actor subscription)
-                     request {:action action}
-                     response (filter-action action request)]
-                 (apply-view request response) =>
-                 (check [response]
-                   response => map?
-                   (let [body (:body response)]
-                     (:totalItems body) => (:totalRecords response)))))))
          (context "when the format is :html"
            (with-format :html
              (context "when the user has subscriptions"
