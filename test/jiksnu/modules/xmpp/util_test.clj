@@ -1,7 +1,7 @@
 (ns jiksnu.abdera-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [fseq]]
-        [jiksnu.abdera :only [abdera-factory new-id get-text new-entry make-feed*]]
+        [jiksnu.abdera :only [abdera-factory get-text new-entry make-feed*]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [clj-time.core :as time]
@@ -11,9 +11,6 @@
            org.apache.abdera.model.Feed))
 
 (test-environment-fixture
-
- (context #'new-id
-   (new-id) => string?)
 
  (context #'get-text
    (context "when the element has text content"

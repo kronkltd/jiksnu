@@ -22,21 +22,13 @@
            org.apache.abdera.model.Link
            org.apache.abdera.model.Person
            org.apache.abdera.protocol.client.AbderaClient
-           org.apache.axiom.util.UIDGenerator))
+           ))
 
 (declare make-link)
 (declare abdera)
 (declare abdera-factory)
 (declare abdera-client)
 (declare abdera-parser)
-
-;; TODO: Since I am no longer using this style of id, I am not sure if
-;; this is still needed. Perhaps move to abdera
-(defn new-id
-  []
-  (let [id (UIDGenerator/generateURNString)]
-    (trace/trace :id:generated id)
-    id))
 
 (defn ^Entry new-entry
   []

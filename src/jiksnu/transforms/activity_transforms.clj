@@ -13,6 +13,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import java.net.URI))
 
@@ -127,7 +128,7 @@
   [activity]
   (if (:id (:object activity))
     activity
-    (assoc-in activity [:object :id] (abdera/new-id))))
+    (assoc-in activity [:object :id] (util/new-id))))
 
 (defn set-title
   [activity]

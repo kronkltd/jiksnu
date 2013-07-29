@@ -16,7 +16,6 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.model :as model]

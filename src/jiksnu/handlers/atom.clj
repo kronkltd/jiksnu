@@ -7,8 +7,7 @@
             [jiksnu.abdera :as abdera]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [lamina.trace :as trace]
-            [jiksnu.abdera :as abdera]))
+            [lamina.trace :as trace]))
 
 (defmethod actions.resource/process-response-content "application/atom+xml"
   [content-type item response]

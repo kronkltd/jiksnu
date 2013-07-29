@@ -30,11 +30,18 @@
            java.net.URI
            java.net.URL
            lamina.core.channel.Channel
+           org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId
            org.joda.time.DateTime
            org.jsoup.Jsoup
            org.jsoup.safety.Whitelist
            java.io.StringReader))
+
+(defn new-id
+  []
+  (let [id (UIDGenerator/generateURNString)]
+    (trace/trace :id:generated id)
+    id))
 
 (defn format-date
   "This is a dirty little function to get a properly formatted date."

@@ -14,7 +14,6 @@
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]

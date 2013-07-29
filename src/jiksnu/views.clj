@@ -12,7 +12,6 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions :as actions]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]

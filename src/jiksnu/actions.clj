@@ -13,12 +13,12 @@
             [clj-statsd :as s]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.channels :as ch]
             [jiksnu.model :as model]
             [jiksnu.predicates :as pred]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
+            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace])
@@ -81,7 +81,7 @@
   [ch]
   (s/increment "websocket connections established")
   (let [user-id (:_id (session/current-user))
-        connection-id (abdera/new-id)]
+        connection-id (util/new-id)]
 
 
     (let [response-channel (l/channel*
