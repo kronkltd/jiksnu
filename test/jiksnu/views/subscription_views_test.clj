@@ -53,21 +53,4 @@
                    (let [body (h/html (:body response))]
                      body => #"subscriptions"))))))))))
 
- (future-context "apply-view #'unsubscribe"
-   (let [action #'actions.subscription/unsubscribe]
-     (context "when the serialization is :xmpp"
-       (with-serialization :xmpp
-         (with-format :xmpp
-           ;; TODO: this should be an error packet
-           (context "when there is not a subscription"
-
-             (apply-view request nil) => packet/packet?)
-
-           (context "when there is a subscription"
-             (let [subscription (mock/a-subscription-exists)
-                   request {:action #'actions.subscription/unsubscribe
-                            :format :xmpp
-                            :id "Foo"}]
-
-               (apply-view request subscription) => map?)))))))
  )

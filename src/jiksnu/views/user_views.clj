@@ -43,12 +43,6 @@
       (assoc :template false)
       (assoc :flash "discovering user")))
 
-;; fetch-remote
-
-(defview #'fetch-remote :xmpp
-  [request user]
-  (model.user/vcard-request user))
-
 ;; fetch-updates
 
 ;; (defview #'fetch-updates :html
@@ -147,17 +141,6 @@
      (with-out-str (rdf/model->format rdf-model :xml-abbrev)))
    :template :false})
 
-(defview #'show :xmpp
-  [request user]
-  (let [{:keys [id to from]} request]
-    {:body (element/make-element
-            "query" {"xmlns" ns/vcard-query}
-            (show-section user))
-     :type :result
-     :id id
-     :from to
-     :to from}))
-
 ;; update
 
 (defview #'update :html
@@ -184,14 +167,4 @@
    :headers {"Content-Type" "application/xrds+xml"
              "Access-Control-Allow-Origin" "*"}
    :body (h/html (model.webfinger/user-meta user))})
-
-;; (defview #'remote-create :xmpp
-;;   [request user]
-;;   (let [{:keys [to from]} request]
-;;     {:from to
-;;      :to from
-;;      :type :result}))
-
-(defview #'xmpp-service-unavailable :xmpp
-  [request _])
 

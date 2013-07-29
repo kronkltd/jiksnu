@@ -60,20 +60,6 @@
   [action request]
   (action))
 
-;; ping-error
-
-(deffilter #'ping-error :xmpp
-  [action request]
-  (-> request :from .getDomain
-      model.domain/fetch-by-id action))
-
-;; ping-response
-
-(deffilter #'ping-response :xmpp
-  [action request]
-  (-> request :from .getDomain
-      model.domain/fetch-by-id action))
-
 ;; show
 
 (deffilter #'show :http

@@ -80,27 +80,6 @@
   {:body {:title "Domains"
           :pages {:domains (format-page-info page)}}})
 
-;; ping
-
-(defview #'ping :xmpp
-  [request domain]
-  (model.domain/ping-request domain))
-
-;; ping-error
-
-(defview #'ping-error :xmpp
-  [request _]
-  (cm/implement))
-
-;; ping-response
-
-(defview #'ping-response :xmpp
-  [request _domain]
-  (cm/implement)
-  #_{:status 303
-     :template false
-     :headers {"Location" (named-path "index domains")}})
-
 ;; show
 
 (defview #'show :html

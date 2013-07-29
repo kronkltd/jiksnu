@@ -35,16 +35,6 @@
          response => string?))))
 
  (context "show-section User"
-   (context "when the serialization is :xmpp"
-     (with-serialization :xmpp
-       (context "when the format is :xmpp"
-         (with-format :xmpp
-           (context "should return a vcard string"
-             (let [user (mock/a-user-exists)]
-               (show-section user) =>
-               (check [response]
-                 response => string?
-                 response => #"<vcard")))))))
    (context "when the serialization is :http"
      (with-serialization :http
        (context "when the format is :html"

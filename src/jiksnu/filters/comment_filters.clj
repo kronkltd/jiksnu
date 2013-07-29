@@ -19,22 +19,3 @@
   [action request]
   (-> request :params :id model.activity/fetch-by-id))
 
-(deffilter #'comment-response :xmpp
-  [action request]
-  (if (not= (:to request) (:from request))
-    (let [packet (:packet request)
-          items (:items request)]
-      (action (map #(actions.activity/entry->activity
-                     (abdera/parse-xml-string
-                      (str (first (element/children %)))))
-                   items)))))
-
-(deffilter #'fetch-comments :xmpp
-  [action request]
-  (let [{{id :id} :params} request]
-    (if-let [activity (model.activity/fetch-by-id id)]
-      (action activity))))
-
-(deffilter #'fetch-comments-remote :xmpp
-  [action request])
-

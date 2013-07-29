@@ -61,37 +61,4 @@
                  (model.user/fetch-by-id (util/make-id .id.)) => nil
                  (subscribe .actor. .target.) => nil :times 0)))))))
 
-   (context #'get-subscribers
-     (context "when the serialization is :xmpp"
-       (with-serialization :xmpp
-         (context "when a user matching the to param is found"
-           (filter-action
-            #'get-subscribers
-            {:to .jid.}) => truthy
-            (provided
-              (model.user/fetch-by-jid .jid.) => .user.
-              (get-subscribers .user.) => true))
-         (context "when a user matching the to param is not found"
-           (filter-action
-            #'get-subscribers
-            {:to .jid.}) => nil
-            (provided
-              (model.user/fetch-by-jid .jid.) => nil
-              (get-subscribers .user.) => nil :times 0)))))
-
-   (context #'get-subscriptions
-     (context "when the serialization is :xmpp"
-       (let [action #'get-subscriptions]
-         (with-serialization :xmpp
-           (context "when a user matching the to param is found"
-             (let [request {:to .jid.}]
-               (filter-action action request) => truthy
-               (provided
-                 (model.user/fetch-by-jid .jid.) => .user.
-                 (get-subscriptions .user.) => true)))
-           (context "when a user matching the to param is not found"
-             (let [request {:to .jid.}]
-               (filter-action action request) => nil
-               (provided
-                 (model.user/fetch-by-jid .jid.) => nil
-                 (get-subscriptions .user.) => nil :times 0)))))))))
+   ))

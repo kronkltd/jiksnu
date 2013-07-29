@@ -175,10 +175,6 @@
   [request {:keys [items] :as page}]
   {:body (index-section items page)})
 
-(defview #'public-timeline :xmpp
-  [request {:keys [items] :as page}]
-  (tigase/result-packet request (index-section items page)))
-
 ;; stream
 
 (defview #'stream :html
@@ -293,6 +289,3 @@
   {:body (index-block activities)
    :template :false})
 
-(defview #'user-timeline :xmpp
-  [request [user  activities]]
-  (tigase/result-packet request (index-section activities)))

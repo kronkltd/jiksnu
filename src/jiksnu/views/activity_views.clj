@@ -105,12 +105,6 @@
     (-> (response/redirect-after-post url)
         (assoc :template false))))
 
-;; remote-create
-
-(defview #'remote-create :xmpp
-  [request _]
-  nil)
-
 ;; show
 
 (defview #'show :clj

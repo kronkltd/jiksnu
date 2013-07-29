@@ -42,18 +42,6 @@
            org.apache.abdera.model.Entry
            org.apache.abdera.model.ExtensibleElement))
 
-(defn acl-link
-  [^Entry entry activity]
-  (if (:public activity)
-    (let [^ExtensibleElement rule-element (.addExtension entry ns/osw "acl-rule" "")]
-      (let [^ExtensibleElement action-element
-            (.addSimpleExtension rule-element ns/osw
-                                 "acl-action" "" ns/view)]
-        (.setAttributeValue action-element "permission" ns/grant))
-      (let [^ExtensibleElement subject-element
-            (.addExtension rule-element ns/osw "acl-subject" "")]
-        (.setAttributeValue subject-element "type" ns/everyone)))))
-
 (defn index-formats
   [activities]
   (map
@@ -133,46 +121,6 @@
 (defsection index-section [Activity]
   [items & [page]]
   (index-block items page))
-
-;; show-section
-
-(defsection show-section [Activity :as]
-  [activity & _]
-  (merge {:actor (show-section (model.activity/get-author activity))
-          :content (:content activity)
-          :id (:id activity)
-          :local-id (:_id activity)
-          :object (let [object (:object activity)]
-                    {:name (:title activity)
-                     :id (:id object)
-                     :type (:type object)
-                     :content (:content object)
-                     :url (:id object)
-                     :tags (map
-                            (fn [tag]
-                              {:name tag
-                               :type "http://activityschema.org/object/hashtag"})
-                            (:tags activity))
-                     ;; "published" (:published object)
-                     ;; "updated" (:updated object)
-                     })
-
-          :published (:published activity)
-
-          :updated (:updated activity)
-          :verb (:verb activity)
-          :title (:title activity)
-          :url (full-uri activity)}
-         (when (:links activity)
-           ;; TODO: Some of these links don't make sense in the
-           ;; context of an AS stream
-           {:links (:links activity)})
-         (when (:conversation-uris activity)
-           {:context {:conversations (first (:conversation-uris activity))}})
-         (if-let [geo (:geo activity)]
-           {:location {:type "place"
-                       :latitude (:latitude geo)
-                       :longitude (:longitude geo)}})))
 
 (defsection show-section [Activity :json]
   [activity & _]

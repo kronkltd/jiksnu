@@ -41,49 +41,7 @@
                    response => map?)))
              ))
          ))
-
-     (context "when the serialization is :xmpp"
-       (with-serialization :xmpp
-
-         (context "when there are no activities"
-           (db/drop-all!)
-           (let [user (mock/a-user-exists)
-                 element nil
-                 packet (tigase/make-packet
-                         {:from (tigase/make-jid user)
-                          :to (tigase/make-jid user)
-                          :type :get
-                          :body element})
-                 request (assoc (packet/make-request packet)
-                           :serialization :xmpp)]
-             (filter-action #'actions.stream/public-timeline request) =>
-             (check [response]
-               response => map?
-               (:totalRecords response) => 0
-               (let [items (:items response)]
-                 items => empty?))))
-
-         (context "when there are activities"
-           (let [author (mock/a-user-exists)]
-             (with-user author
-               (let [element nil
-                     packet (tigase/make-packet
-                             {:from (tigase/make-jid author)
-                              :to (tigase/make-jid author)
-                              :type :get
-                              :id (fseq :id)
-                              :body element})
-                     request (assoc (packet/make-request packet)
-                               :serialization :xmpp)
-                     activity (mock/there-is-an-activity)]
-                 (filter-action #'actions.stream/public-timeline request) =>
-                 (check [response]
-                   response => map?
-                   (:totalRecords response) => 1
-                   (let [items (:items response)]
-                     (doseq [item items]
-                       (class item) => Conversation)))))))
-         ))))
+     ))
 
  (context "filter-action #'actions.stream/user-timeline"
    (let [action #'actions.stream/user-timeline]

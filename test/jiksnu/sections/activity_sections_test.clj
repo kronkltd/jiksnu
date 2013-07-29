@@ -141,9 +141,5 @@
              ))
          )))
 
-   (context ":xmpp"
-     (let [activity (mock/there-is-an-activity)]
-       (with-context [:xmpp :xmpp]
-         (show-section activity))) => element/element?)
    )
  )

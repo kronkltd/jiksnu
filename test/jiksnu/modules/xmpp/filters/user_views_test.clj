@@ -29,18 +29,30 @@
            jiksnu.model.User))
 
 (test-environment-fixture
+ (context "apply-view #'show"
+   (let [action #'actions.user/show]
+     (context "when the serialization is :xmpp"
+       (with-serialization :xmpp
+         (context "when the format is :xmpp"
+           (with-format :xmpp
+             (let [user (mock/a-user-exists)
+                   request {:action action}
+                   response (action user)]
+               (apply-view request response) =>
+               (check [response]
+                 response => map?
+                 response => (contains {:type :result})))))))))
 
- (context "apply-view #'index"
-   (let [action #'index]
-     (context "when the serialization is :http"
-       (with-serialization :http
-         (context "when the format is :html"
-           (with-format :html
-             (context "when the request is not dynamic"
-               (binding [*dynamic* false]
-                 (context "when there are no activities"
-                   (let [request {:action action}
-                         response (filter-action action request)]
-                     (apply-view request response) => map?))))))))))
+ (future-context "apply-view-test #'fetch-remote :xmpp"
+   (let [action #'actions.user/fetch-remote]
+     (context "should return an iq query packet map"
+       (with-context [:xmpp :xmpp]
+         (let [user (mock/a-user-exists)
+               request {:action action}
+               response (action user)]
+           (apply-view request response) =>
+           (check [response]
+             response => map?
+             response => (contains {:type :get})))))))
 
  )

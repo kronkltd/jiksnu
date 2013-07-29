@@ -69,41 +69,10 @@
       (dissoc "geo.latitude")
       action))
 
-(deffilter #'post :xmpp
-  [action request]
-  (let [{:keys [items]} request
-        activities
-        (map
-         (fn [item]
-           (-> item element/children first
-               str abdera/parse-xml-string
-               entry->activity))
-         items)]
-    (action (first activities))))
-
-;; remote-create
-
-(deffilter #'remote-create :xmpp
-  [action request]
-  (if (not= (:to request) (:from request))
-    (let [packet (:packet request)
-          ;; items (element/children packet "/message/event/items/item")
-          items (map (comp first element/children) (:items request))]
-      (action (map #(entry->activity
-                     (abdera/parse-xml-string (str %)))
-                   items)))))
-
 ;; show
 
 (deffilter #'show :http
   [action request]
   (-> request :params :id util/make-id
       model.activity/fetch-by-id action))
-
-(deffilter #'show :xmpp
-  [action request]
-  (let [{:keys [items]} request
-        ids (map #(.getAttribute ^Element % "id") items)
-        id (first ids)]
-    (action (model.activity/fetch-by-id id))))
 

@@ -51,10 +51,6 @@
   [action request]
   (action))
 
-(deffilter #'public-timeline :xmpp
-  [action request]
-  (action))
-
 (deffilter #'mentions-timeline :http
   [action request]
   ;; TODO: fetch user
@@ -76,7 +72,3 @@
   (let [item (:item request)]
     (action item)))
 
-(deffilter #'user-timeline :xmpp
-  [action request]
-  (-> request :to
-      model.user/fetch-by-jid action))

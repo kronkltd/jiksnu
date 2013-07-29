@@ -59,11 +59,6 @@
           :user (show-section user)
           :pages {:subscribers (format-page-info page)}}})
 
-(defview #'get-subscribers :xmpp
-  [request [user {:keys [items] :as response}]]
-  (tigase/result-packet
-   request (sections.subscription/subscribers-response items response)))
-
 ;; get-subscriptions
 
 (defview #'get-subscriptions :as
@@ -105,11 +100,6 @@
     :targetUser (:_id user)
     :pages {:subscriptions (format-page-info page)}}})
 
-(defview #'get-subscriptions :xmpp
-  [request [user {:keys [items] :as response}]]
-  (tigase/result-packet
-   request (sections.subscription/subscriptions-response items response)))
-
 ;; index
 
 (defview #'index :page
@@ -148,12 +138,6 @@
    :flash "The request has been sent"
    :template false})
 
-;; remote-subscribe-confirm
-
-(defview #'remote-subscribe-confirm :xmpp
-  [request _]
-  nil)
-
 ;; show
 
 (defview #'show :model
@@ -168,18 +152,6 @@
    :template false
    :headers {"Location" "/"}})
 
-(defview #'subscribe :xmpp
-  [request subscription]
-  (tigase/result-packet
-   request (sections.subscription/subscription-response-element subscription)))
-
-;; subscribed
-
-(defview #'subscribed :xmpp
-  [request subscription]
-  (tigase/result-packet
-   request (sections.subscription/subscriptions-response [subscription])))
-
 ;; unsubscribe
 
 (defview #'unsubscribe :html
@@ -188,10 +160,3 @@
    :template false
    :headers {"Location" "/"}})
 
-(defview #'unsubscribe :xmpp
-  [request subscription]
-  {:to (-> subscription model.subscription/get-target tigase/make-jid)
-   :from (-> subscription model.subscription/get-actor tigase/make-jid)
-   :type :result
-   :body (sections.subscription/subscriptions-response [subscription])
-   :id (:id request)})

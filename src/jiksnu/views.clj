@@ -34,11 +34,6 @@
     (-> (merge {:status 200} response-map)
         (assoc-in  [:headers "Content-Type"] content-type))))
 
-(defmethod serialize-as :xmpp
-  [serialization response]
-  (when response
-    (tigase/make-packet response)))
-
 (defmethod serialize-as :command
   [serialization response]
   response)

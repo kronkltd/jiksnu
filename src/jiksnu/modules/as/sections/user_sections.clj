@@ -16,12 +16,8 @@
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [hiccup.form :as f]
-            [jiksnu.abdera :as abdera]
             [jiksnu.namespace :as ns]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
@@ -36,8 +32,7 @@
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.Key
-           jiksnu.model.User
-           org.apache.abdera.model.Entry))
+           jiksnu.model.User))
 
 ;; show-section
 
