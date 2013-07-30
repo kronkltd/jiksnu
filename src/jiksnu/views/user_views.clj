@@ -5,8 +5,7 @@
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         jiksnu.actions.user-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]]
-        plaza.rdf.vocabularies.foaf)
+        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -14,7 +13,6 @@
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.user-sections :as sections.user]
-            [plaza.rdf.core :as rdf]
             [ring.util.response :as response]))
 
 ;; create
@@ -123,23 +121,6 @@
 (defview #'show :model
   [request user]
   {:body (doall (show-section user))})
-
-(defview #'show :n3
-  [request user]
-  {:body
-   (let [rdf-model
-         (rdf/defmodel (rdf/model-add-triples
-                        (with-format :rdf
-                          (show-section user))))]
-     (with-out-str (rdf/model->format rdf-model :n3)))
-   :template :false})
-
-(defview #'show :rdf
-  [request user]
-  {:body
-   (let [rdf-model (rdf/defmodel (rdf/model-add-triples (show-section user)))]
-     (with-out-str (rdf/model->format rdf-model :xml-abbrev)))
-   :template :false})
 
 ;; update
 

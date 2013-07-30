@@ -12,7 +12,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.modules.atom.util :as abdera]
-            [jiksnu.rdf :as rdf]
+            [jiksnu.modules.rdf.util :as rdf]
             jiksnu.sections
             [jiksnu.session :as session]))
 

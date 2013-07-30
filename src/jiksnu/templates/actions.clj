@@ -11,9 +11,7 @@
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
-            monger.json
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.implementations.jena :as jena])
+            monger.json)
   (:import java.io.FileNotFoundException
            java.text.SimpleDateFormat
            java.util.Date

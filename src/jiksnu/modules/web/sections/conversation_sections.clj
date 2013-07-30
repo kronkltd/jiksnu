@@ -16,10 +16,8 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.namespace :as ns]
-            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
-            [jiksnu.session :as session]
-            [plaza.rdf.core :as plaza])
+            [jiksnu.session :as session])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Domain

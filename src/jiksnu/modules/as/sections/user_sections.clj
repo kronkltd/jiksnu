@@ -24,10 +24,8 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.rdf :as rdf]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
-            [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource

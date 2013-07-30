@@ -15,8 +15,7 @@
             [jiksnu.actions :as actions]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
-            jiksnu.sections
-            [plaza.rdf.core :as rdf]))
+            jiksnu.sections))
 
 (defmethod serialize-as :xmpp
   [serialization response]

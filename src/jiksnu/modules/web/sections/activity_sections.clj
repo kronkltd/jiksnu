@@ -26,12 +26,10 @@
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [jiksnu.xmpp.element :as element]
-            [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity

@@ -16,20 +16,22 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.namespace :as ns]
+            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
-            [jiksnu.session :as session])
+            [jiksnu.session :as session]
+            [plaza.rdf.core :as plaza])
   (:import jiksnu.model.Conversation))
 
-;; index-section
+(defsection index-block [Conversation :rdf]
+  [items & [response & _]]
+  (apply concat (map #(index-line % response) items)))
 
-(defsection index-section [Conversation :atom]
-  [items & [page]]
-  (let [ids (map :_id items)
-        page (actions.activity/fetch-by-conversations ids)]
-    (index-block (:items page) page)))
-
-;; uri
-
-(defsection uri [Conversation]
-  [item & _]
-  (format "/main/conversations/%s" (:_id item)))
+(defsection show-section [Conversation :rdf]
+  [item & [page]]
+  (plaza/with-rdf-ns ""
+    (let [uri (full-uri item)]
+      (rdf/with-subject uri
+        [
+         [[ns/rdf :type] [ns/sioc "Conversation"]]
+         [[ns/dc :updated] (plaza/date (.toDate (:updated item)))]
+         ]))))

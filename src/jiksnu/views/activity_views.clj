@@ -16,7 +16,6 @@
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
             [jiksnu.xmpp.element :as xmpp.element]
-            [plaza.rdf.vocabularies.foaf :as foaf]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))
 

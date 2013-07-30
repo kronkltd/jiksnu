@@ -1,4 +1,4 @@
-(ns jiksnu.sections.activity-sections
+(ns jiksnu.modules.xmpp.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button edit-button
@@ -12,28 +12,13 @@
                                 display-property display-timestamp
                                 dropdown-menu dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
-            [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.comment-actions :as actions.comment]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.like :as model.like]
-            [jiksnu.model.resource :as model.resource]
-            [jiksnu.model.user :as model.user]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.rdf :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [jiksnu.xmpp.element :as element]
-            [plaza.rdf.core :as plaza]
-            [ring.util.codec :as codec])
-  (:import javax.xml.namespace.QName
-           jiksnu.model.Activity
+            [jiksnu.xmpp.element :as element])
+  (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource
            jiksnu.model.User

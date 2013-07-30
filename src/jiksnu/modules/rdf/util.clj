@@ -1,4 +1,4 @@
-(ns jiksnu.rdf
+(ns jiksnu.modules.rdf.util
   (:require [jiksnu.namespace :as ns]
             [plaza.rdf.core :as plaza]
             [plaza.rdf.implementations.jena :as jena]))
