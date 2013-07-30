@@ -202,9 +202,8 @@ serialization"
         (parse-entry entry)
         original-activity (model.activity/fetch-by-remote-id id)
         verb (get-verb entry)
-        parsed-user (-> entry
-                        (abdera/get-author feed)
-                        actions.user/person->user)
+        parsed-user (let [user-element (abdera/get-author entry feed)]
+                      (actions.user/person->user user-element))
         user (actions.user/find-or-create-by-remote-id parsed-user)]
 
     ;; TODO: send parsed user into a channel to be updated once

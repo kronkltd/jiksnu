@@ -13,6 +13,8 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            jiksnu.modules.atom.sections.activity-sections
+            jiksnu.modules.atom.sections.user-sections
             [jiksnu.session :as session]
             [jiksnu.util :as util])
   (:import jiksnu.model.Activity))
