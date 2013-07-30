@@ -1,0 +1,36 @@
+(ns jiksnu.modules.web.filters.activity-filters-test
+  (:use [clj-factory.core :only [factory]]
+        [ciste.core :only [with-serialization with-format
+                           *serialization* *format*]]
+        [ciste.filters :only [filter-action]]
+        [ciste.sections.default :only [index-section]]
+        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
+        [jiksnu.routes :only [app]]
+        [jiksnu.session :only [with-user]]
+        [midje.sweet :only [=>]])
+  (:require [clj-tigase.core :as tigase]
+            [clj-tigase.element :as element]
+            [clj-tigase.packet :as packet]
+            [clojure.tools.logging :as log]
+            [jiksnu.namespace :as ns]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.mock :as mock]
+            [jiksnu.features-helper :as feature]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user])
+  (:import jiksnu.model.Activity))
+
+(test-environment-fixture
+
+ (context "filter-action #'actions.activity/oembed"
+   (let [action #'actions.activity/oembed]
+     (context "when the serialization is :http"
+       (with-serialization :http
+         (let [request {:params {:url .url. :format .format.}}]
+           (filter-action action request) => .oembed-map.
+           (provided
+             (model.activity/fetch-by-remote-id .url.) => .activity.
+             (actions.activity/oembed .activity.) => .oembed-map.))))))
+ )
