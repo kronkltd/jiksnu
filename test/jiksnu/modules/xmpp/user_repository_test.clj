@@ -1,8 +1,8 @@
-(ns jiksnu.xmpp.user-repository-test
+(ns jiksnu.modules.xmpp.user-repository-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
-  (:import jiksnu.xmpp.user_repository))
+  (:import jiksnu.modules.xmpp.user_repository))
 
 (def this (user_repository.))
 

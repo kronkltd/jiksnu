@@ -1,4 +1,4 @@
-(ns jiksnu.filters.activity-filters-test
+(ns jiksnu.modules.xmpp.filters.activity-filters-test
   (:use [clj-factory.core :only [factory]]
         [ciste.core :only [with-serialization with-format
                            *serialization* *format*]]
@@ -7,7 +7,6 @@
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.routes :only [app]]
         [jiksnu.session :only [with-user]]
-        ;; jiksnu.xmpp.element
         [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]

@@ -1,4 +1,4 @@
-(ns jiksnu.sections.user-sections-test
+(ns jiksnu.modules.xmpp.sections.user-sections-test
   (:use [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [uri show-section title]]
         [clj-factory.core :only [factory]]

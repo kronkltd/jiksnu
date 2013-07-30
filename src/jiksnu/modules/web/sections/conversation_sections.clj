@@ -1,4 +1,4 @@
-(ns jiksnu.sections.conversation-sections
+(ns jiksnu.modules.web.sections.conversation-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
                                        index-block index-line index-section link-to
@@ -16,7 +16,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.namespace :as ns]
-            [jiksnu.sections.user-sections :as sections.user]
+            [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation

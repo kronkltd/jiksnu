@@ -1,4 +1,4 @@
-(ns jiksnu.views.activity-views
+(ns jiksnu.modules.rdf.views.activity-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section show-section]]
         [jiksnu.actions.activity-actions :only [show]])

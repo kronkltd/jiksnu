@@ -1,4 +1,4 @@
-(ns jiksnu.sections.user-sections
+(ns jiksnu.modules.rdf.sections.user-sections
   (:use  [ciste.config :only [config]]
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section add-form
@@ -27,7 +27,7 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.rdf :as rdf]
+            [jiksnu.modules.rdf.util :as rdf]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [plaza.rdf.core :as plaza]

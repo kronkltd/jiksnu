@@ -14,7 +14,7 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.sections.user-sections :as sections.user])
+            [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 

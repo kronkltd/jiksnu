@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.element
+(ns jiksnu.modules.xmpp.element
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]

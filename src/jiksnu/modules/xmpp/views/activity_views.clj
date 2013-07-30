@@ -1,4 +1,4 @@
-(ns jiksnu.views.activity-views
+(ns jiksnu.modules.xmpp.views.activity-views
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         ciste.sections.default
@@ -15,7 +15,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
-            [jiksnu.xmpp.element :as xmpp.element]
+            [jiksnu.modules.xmpp.element :as xmpp.element]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))
 

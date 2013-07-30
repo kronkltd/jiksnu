@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.channels
+(ns jiksnu.modules.xmpp.channels
   (:require [clojure.tools.logging :as log])
   (:gen-class
    :extends tigase.server.AbstractMessageReceiver))
@@ -42,7 +42,7 @@
   (println "")
   (println "process packet")
   packet
-  
+
   (println "")
   (println "")
   (println "")

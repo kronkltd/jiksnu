@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.routes
+(ns jiksnu.modules.xmpp.routes
   (:use [ciste.initializer :only [definitializer]]
         [ciste.routes :only [escape-route]])
   (:require [clojure.string :as string]
@@ -10,7 +10,7 @@
             [jiksnu.actions.subscription-actions :as actions.sub]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.xmpp.plugin :as plugin]))
+            [jiksnu.modules.xmpp.plugin :as plugin]))
 
 (def xmpp-routes
   (map

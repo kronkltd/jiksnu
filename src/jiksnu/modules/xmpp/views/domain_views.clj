@@ -1,4 +1,4 @@
-(ns jiksnu.views.domain-views
+(ns jiksnu.modules.xmpp.views.domain-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section
                                        show-section]]

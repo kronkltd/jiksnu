@@ -1,4 +1,4 @@
-(ns jiksnu.views.subscription-views-test
+(ns jiksnu.modules.as.views.subscription-views-test
   (:use [ciste.core :only [with-serialization with-format]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]

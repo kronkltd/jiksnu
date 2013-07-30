@@ -1,4 +1,4 @@
-(ns jiksnu.views.comment-views
+(ns jiksnu.modules.xmpp.views.comment-views
   (:use [ciste.views :only [defview]]
         ciste.sections.default
         [clojurewerkz.route-one.core :only [named-path]]

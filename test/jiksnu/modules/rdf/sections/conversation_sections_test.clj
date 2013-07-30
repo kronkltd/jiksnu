@@ -1,4 +1,4 @@
-(ns jiksnu.sections.conversation-sections-test
+(ns jiksnu.modules.rdf.sections.conversation-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-serialization with-format]]
         [ciste.sections.default :only [index-block index-section

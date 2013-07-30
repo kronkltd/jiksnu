@@ -62,9 +62,9 @@
 
 ]
   ;; :exclusions [org.clojure/google-closure-library]
-  :aot [jiksnu.xmpp.plugin
-        ;; jiksnu.xmpp.channels
-        jiksnu.xmpp.user-repository]
+  :aot [jiksnu.modules.xmpp.plugin
+        ;; jiksnu.modules.xmpp.channels
+        jiksnu.modules.xmpp.user-repository]
   ;; :hooks [leiningen.cljsbuild]
   :cljsbuild {:repl-listen-port 9001
               :builds

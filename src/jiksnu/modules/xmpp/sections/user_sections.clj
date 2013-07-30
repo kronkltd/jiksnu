@@ -1,4 +1,4 @@
-(ns jiksnu.sections.user-sections
+(ns jiksnu.modules.xmpp.sections.user-sections
   (:use  [ciste.config :only [config]]
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section add-form

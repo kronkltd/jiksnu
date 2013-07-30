@@ -1,4 +1,4 @@
-(ns jiksnu.views.stream-views
+(ns jiksnu.modules.as.views.stream-views
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-format]]
         [ciste.views :only [apply-view defview]]

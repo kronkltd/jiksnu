@@ -1,7 +1,7 @@
 (ns jiksnu.views.setting-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.setting-actions :only [edit-page update-settings]])
-  (:require [jiksnu.sections.setting-sections :as sections.setting]))
+  (:require [jiksnu.modules.web.sections.setting-sections :as sections.setting]))
 
 (defview #'edit-page :html
   [request _]

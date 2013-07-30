@@ -1,4 +1,4 @@
-(ns jiksnu.views.user-views
+(ns jiksnu.modules.xmpp.views.user-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [show-section]]
         [jiksnu.actions.user-actions :only [fetch-remote show remote-create

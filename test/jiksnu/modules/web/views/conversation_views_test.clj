@@ -1,4 +1,4 @@
-(ns jiksnu.views.conversation-views-test
+(ns jiksnu.modules.web.views.conversation-views-test
   (:use [ciste.core :only [with-context with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]

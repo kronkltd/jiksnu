@@ -1,4 +1,4 @@
-(ns jiksnu.sections.activity-sections-test
+(ns jiksnu.modules.xmpp.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [index-block index-section

@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.user-repository
+(ns jiksnu.modules.xmpp.user-repository
   (:import tigase.db.AuthorizationException
            tigase.db.AuthRepository
            tigase.db.AuthRepositoryImpl

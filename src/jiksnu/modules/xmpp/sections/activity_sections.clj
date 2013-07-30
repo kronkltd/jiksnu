@@ -17,7 +17,7 @@
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [jiksnu.xmpp.element :as element])
+            [jiksnu.modules.xmpp.element :as element])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource

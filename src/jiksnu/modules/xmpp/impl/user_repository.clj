@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.impl.user-repository
+(ns jiksnu.modules.xmpp.impl.user-repository
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]

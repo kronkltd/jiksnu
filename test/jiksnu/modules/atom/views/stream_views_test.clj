@@ -1,4 +1,4 @@
-(ns jiksnu.views.stream-views-test
+(ns jiksnu.modules.atom.views.stream-views-test
   (:use [ciste.core :only [with-context with-serialization with-format
                            *serialization* *format*]]
         [ciste.formats :only [format-as]]

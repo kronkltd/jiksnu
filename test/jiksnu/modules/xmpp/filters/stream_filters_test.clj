@@ -1,4 +1,4 @@
-(ns jiksnu.filters.stream-filters-test
+(ns jiksnu.modules.xmpp.filters.stream-filters-test
   (:use [clj-factory.core :only [factory fseq]]
         [ciste.config :only [config]]
         [ciste.core :only [with-format with-serialization]]

@@ -1,4 +1,4 @@
-(ns jiksnu.views.domain-views-test
+(ns jiksnu.modules.web.views.domain-views-test
   (:use [ciste.core :only [with-serialization with-format]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]

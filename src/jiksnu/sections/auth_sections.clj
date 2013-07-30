@@ -6,7 +6,7 @@
                                 bind-to control-line display-property
                                 dump-data]]
         [jiksnu.session :only [current-user]]
-        [jiksnu.sections.user-sections :only [display-avatar-img]])
+        [jiksnu.modules.web.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.AuthenticationMechanism

@@ -1,4 +1,4 @@
-(ns jiksnu.views.user-views-test
+(ns jiksnu.modules.web.views.user-views-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-format with-serialization]]
         [ciste.filters :only [filter-action]]
@@ -10,7 +10,7 @@
                                    hiccup->doc test-environment-fixture]]
         [jiksnu.ko :only [*dynamic*]]
         ;; jiksnu.views.user-views
-        jiksnu.xmpp.element
+        jiksnu.modules.xmpp.element
         [midje.sweet :only [contains =>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]

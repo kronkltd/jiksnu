@@ -1,4 +1,4 @@
-(ns jiksnu.views.pubsub-views-test)
+(ns jiksnu.modules.web.views.pubsub-views-test)
 
 ;; (context #'hub-dispatch
 

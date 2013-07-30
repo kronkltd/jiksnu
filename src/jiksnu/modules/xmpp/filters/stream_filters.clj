@@ -1,4 +1,4 @@
-(ns jiksnu.filters.stream-filters
+(ns jiksnu.modules.xmpp.filters.stream-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.stream-actions)

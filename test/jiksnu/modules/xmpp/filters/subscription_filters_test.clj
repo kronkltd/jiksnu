@@ -1,4 +1,4 @@
-(ns jiksnu.filters.subscription-filters-test
+(ns jiksnu.modules.xmpp.filters.subscription-filters-test
   (:use [ciste.core :only [with-serialization]]
         [ciste.filters :only [filter-action]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]

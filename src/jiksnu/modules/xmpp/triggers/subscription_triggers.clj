@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.subscription-triggers
+(ns jiksnu.modules.xmpp.triggers.subscription-triggers
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]])
   (:require [clj-tigase.core :as tigase]
@@ -10,25 +10,6 @@
             [jiksnu.sections.subscription-sections :as sections.subscription]
             [jiksnu.ops :as ops]
             [lamina.core :as l]))
-
-(defn subscribe-trigger
-  [action [actor user] subscription]
-  (let [domain (model.user/get-domain user)]
-    (if (:local user)
-      ;; TODO: Verify open subscription
-      (actions.subscription/confirm subscription)
-      (if (:xmpp domain)
-        (notify-subscribe-xmpp {} subscription)
-        ;; TODO: OStatus case
-        (log/info "sending ostatus subscribe")))))
-
-(defn unsubscribe-trigger
-  [action [user] subscription]
-  (let [domain (model.user/get-domain user)]
-    (if (:xmpp domain)
-      (notify-unsubscribe-xmpp {} subscription)
-      ;; TODO: OStatus case
-      (log/info "sending ostatus unsubscribe"))))
 
 (defn notify-subscribe-xmpp
   [request subscription]
@@ -56,6 +37,25 @@
                                       :to (tigase/make-jid subscribee)})]
       (tigase/deliver-packet! packet))))
 
+(defn subscribe-trigger
+  [action [actor user] subscription]
+  (let [domain (model.user/get-domain user)]
+    (if (:local user)
+      ;; TODO: Verify open subscription
+      (actions.subscription/confirm subscription)
+      (if (:xmpp domain)
+        (notify-subscribe-xmpp {} subscription)
+        ;; TODO: OStatus case
+        (log/info "sending ostatus subscribe")))))
+
+(defn unsubscribe-trigger
+  [action [user] subscription]
+  (let [domain (model.user/get-domain user)]
+    (if (:xmpp domain)
+      (notify-unsubscribe-xmpp {} subscription)
+      ;; TODO: OStatus case
+      (log/info "sending ostatus unsubscribe"))))
+
 (defn subscribed-trigger
   [action [actor user] subscription]
   (if (model.user/local? user)
@@ -67,4 +67,3 @@
                           ["body" {}
                            (str (:name actor) " has subscribed to you")])})]
       (tigase/deliver-packet! packet))))
-

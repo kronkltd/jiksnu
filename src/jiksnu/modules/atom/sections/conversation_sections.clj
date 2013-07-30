@@ -1,4 +1,4 @@
-(ns jiksnu.sections.conversation-sections
+(ns jiksnu.modules.atom.sections.conversation-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [delete-button full-uri uri title index-line
                                        index-block index-line index-section link-to

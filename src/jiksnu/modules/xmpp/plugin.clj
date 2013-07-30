@@ -1,4 +1,4 @@
-(ns jiksnu.xmpp.plugin
+(ns jiksnu.modules.xmpp.plugin
   (:use [ciste.config :only [config]]
         [ciste.routes :only [resolve-routes lazier]])
   (:require [clj-tigase.core :as tigase]

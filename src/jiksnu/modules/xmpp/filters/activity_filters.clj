@@ -1,4 +1,4 @@
-(ns jiksnu.filters.activity-filters
+(ns jiksnu.modules.xmpp.filters.activity-filters
   (:use [ciste.config :only [config]]
         [ciste.filters :only [deffilter]]
         jiksnu.actions.activity-actions

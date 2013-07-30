@@ -1,7 +1,7 @@
-(ns jiksnu.triggers.subscription-triggers-test
+(ns jiksnu.modules.xmpp.triggers.subscription-triggers-test
   (:use [ciste.config :only [with-environment]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        jiksnu.triggers.subscription-triggers
+        [jiksnu.modules.xmpp.triggers.subscription-triggers :only [notify-subscribe-xmpp]]
         [midje.sweet :only [=>]])
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]

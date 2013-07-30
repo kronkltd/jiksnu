@@ -1,4 +1,4 @@
-(ns jiksnu.rdf.sections.activity-sections
+(ns jiksnu.modules.rdf.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button edit-button
@@ -25,11 +25,11 @@
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.rdf :as rdf]
+            [jiksnu.modules.rdf.util :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [jiksnu.xmpp.element :as element]
+            [jiksnu.modules.xmpp.element :as element]
             [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
   (:import javax.xml.namespace.QName

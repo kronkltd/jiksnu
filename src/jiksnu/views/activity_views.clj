@@ -15,35 +15,13 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
-            [jiksnu.xmpp.element :as xmpp.element]
+            [jiksnu.modules.xmpp.element :as xmpp.element]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))
-
-;; delete
-
-(defview #'delete :html
-  [request activity]
-  (-> (named-path "public timeline")
-      response/redirect-after-post
-      (assoc :template false)))
 
 (defview #'delete :model
   [request activity]
   {:body (show-section activity)})
-
-;; edit
-
-(defview #'edit :html
-  [request activity]
-  (let [actor (session/current-user)]
-    (-> (response/redirect-after-post (uri actor))
-        (assoc :template false))))
-
-;; edit-page
-
-(defview #'edit-page :html
-  [request activity]
-  {:body (edit-form activity)})
 
 ;; fetch-by-conversations
 
@@ -91,29 +69,11 @@
     [:url (:url m)]
     [:html (:html m)]]})
 
-;; post
-
-(defview #'post :html
-  [request activity]
-  (let [actor (session/current-user)
-        url (or (-> request :params :redirect_to)
-                (named-path "public timeline")
-                (uri actor))]
-    (-> (response/redirect-after-post url)
-        (assoc :template false))))
-
 ;; show
 
 (defview #'show :clj
   [request activity]
   {:body activity})
-
-(defview #'show :html
-  [request activity]
-  {:body
-   (let [activity (if *dynamic* (Activity.) activity)]
-     (bind-to "targetActivity"
-       (show-section activity)))})
 
 (defview #'show :json
   [request activity]

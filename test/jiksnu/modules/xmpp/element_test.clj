@@ -1,10 +1,10 @@
-(ns jiksnu.xmpp.element-test
+(ns jiksnu.modules.xmpp.element-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        [jiksnu.xmpp.element :only [abdera-to-tigase-element]]
+        [jiksnu.modules.xmpp.element :only [abdera-to-tigase-element]]
         [midje.sweet :only [=>]])
   (:require [clj-tigase.element :as element]
             [jiksnu.model :as model]
