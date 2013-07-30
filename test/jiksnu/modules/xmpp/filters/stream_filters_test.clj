@@ -10,17 +10,14 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            jiksnu.filters.stream-filters
+            [jiksnu.modules.xmpp.filters.stream-filters :as filters.stream]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Conversation
-           jiksnu.model.User))
+  (:import jiksnu.model.Conversation))
 
 (test-environment-fixture
 
@@ -67,7 +64,7 @@
                    (:totalRecords response) => 1
                    (let [items (:items response)]
                      (doseq [item items]
-                       (class item) => Conversation)))))))
+                       item => (partial instance? Conversation))))))))
          ))
      ))
 

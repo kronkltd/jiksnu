@@ -62,7 +62,8 @@
 
 ]
   ;; :exclusions [org.clojure/google-closure-library]
-  :aot [jiksnu.modules.xmpp.plugin
+  :aot [jiksnu.model
+        jiksnu.modules.xmpp.plugin
         ;; jiksnu.modules.xmpp.channels
         jiksnu.modules.xmpp.user-repository]
   ;; :hooks [leiningen.cljsbuild]

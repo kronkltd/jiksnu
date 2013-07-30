@@ -1,4 +1,4 @@
-(ns jiksnu.module.xmpp.views.user-views-test
+(ns jiksnu.modules.xmpp.views.user-views-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-format with-serialization]]
         [ciste.filters :only [filter-action]]
@@ -18,12 +18,12 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.modules.xmpp.views.user-views :as views.user]
             [net.cgrand.enlive-html :as enlive])
   (:import java.io.StringReader
            jiksnu.model.User))
