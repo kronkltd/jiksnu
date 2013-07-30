@@ -1,12 +1,11 @@
-(ns jiksnu.sections.activity-sections-test
+(ns jiksnu.modules.web.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [index-block index-section
                                        show-section uri]]
         [clj-factory.core :only [factory]]
+        jiksnu.modules.web.sections.activity-sections
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        jiksnu.session
-        jiksnu.sections.activity-sections
         [midje.sweet :only [=>]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -72,51 +71,10 @@
      (with-context [:http :html]
        (uri .activity.)) => string?))
 
- (context #'index-block
-   (context "when the context is [:http :rdf]"
-     (with-context [:http :rdf]
-       (let [activity (mock/there-is-an-activity)]
-         (index-block [activity]) =>
-         (check [response]
-           response => (partial every? (fn [t]
-                                         (and (vector? t)
-                                              (= 3 (count t))))))))))
-
- (context #'index-section
-   (context "Activity"
-     (context "when the context is [:http :rdf]"
-       (with-context [:http :rdf]
-         (let [activity (mock/there-is-an-activity)]
-           (index-section [activity]) =>
-           (check [r]
-             (doseq [t r]
-               t => vector?
-               (count t) => 3)))))))
-
  (context #'show-section
    (context "Activity"
      (context "when the serialization is :http"
        (with-serialization :http
-
-         (context "when the format is :atom"
-           (with-format :atom
-
-             (context "when given a real activity"
-               (let [activity (mock/there-is-an-activity)]
-                 (show-section activity) =>
-                 (check [response]
-                   response => (partial instance? Entry)
-                   (.getId response) => (partial instance? IRI)
-                   ;; (.getUpdated response) => (partial instance? org.apache.abdera.model.DateTime)
-                   (.getTitle response) => string?
-                   (.getAuthor response) => (partial instance? Person))))
-
-             (context "when given a partial activity"
-               (let [activity (factory :activity)]
-                 (show-section activity) =>
-                 (check [response]
-                   response => (partial instance? Entry))))
-            ))
 
          (context "when the format is :html"
            (with-format :html
