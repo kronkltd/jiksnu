@@ -8,7 +8,7 @@
             [jiksnu.model :as model]
             [jiksnu.session :as session]
             [jiksnu.actions.user-actions :as actions.user]
-            jiksnu.filters.subscription-filters
+            jiksnu.modules.xmpp.filters.subscription-filters
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]))
