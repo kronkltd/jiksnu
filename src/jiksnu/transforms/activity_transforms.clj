@@ -6,7 +6,6 @@
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [clojurewerkz.route-one.core :as r]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]

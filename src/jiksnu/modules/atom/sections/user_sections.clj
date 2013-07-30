@@ -36,8 +36,7 @@
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.Key
-           jiksnu.model.User
-           org.apache.abdera.model.Entry))
+           jiksnu.model.User))
 
 (defn user->person
   [user]

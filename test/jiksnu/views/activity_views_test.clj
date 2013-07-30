@@ -20,8 +20,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            jiksnu.views.stream-views)
-  (:import org.apache.abdera.model.Entry))
+            jiksnu.views.stream-views))
 
 (test-environment-fixture
 

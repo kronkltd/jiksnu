@@ -7,7 +7,6 @@
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]

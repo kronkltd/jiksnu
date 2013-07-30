@@ -3,7 +3,6 @@
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.stream-actions)
   (:require [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]

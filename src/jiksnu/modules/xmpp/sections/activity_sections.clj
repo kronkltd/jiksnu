@@ -16,7 +16,6 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.model :as model]
@@ -33,8 +32,7 @@
             [jiksnu.xmpp.element :as element]
             [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
-  (:import java.io.StringWriter
-           javax.xml.namespace.QName
+  (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource

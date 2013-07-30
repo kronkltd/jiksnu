@@ -1,4 +1,4 @@
-(ns jiksnu.abdera-test
+(ns jiksnu.modules.atom.util-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [fseq]]
         [jiksnu.abdera :only [abdera-factory get-text new-entry make-feed*]]

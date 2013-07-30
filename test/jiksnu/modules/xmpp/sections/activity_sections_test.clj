@@ -22,7 +22,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera.i18n.iri.IRI
-           org.apache.abdera.model.Entry
            org.apache.abdera.model.Person
            org.joda.time.DateTime
            tigase.xml.Element))

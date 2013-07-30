@@ -1,21 +1,11 @@
 (ns jiksnu.views.user-views
-  (:use [ciste.core :only [with-format]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [uri index-section show-section]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        jiksnu.actions.user-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]]
-        plaza.rdf.vocabularies.foaf)
+  (:use [ciste.views :only [defview]]
+        [ciste.sections.default :only [show-section]]
+        [jiksnu.actions.user-actions :only [fetch-remote show remote-create
+                                            xmpp-service-unavailable]])
   (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.namespace :as ns]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.sections.user-sections :as sections.user]
-            [plaza.rdf.core :as rdf]
-            [ring.util.response :as response]))
+            [jiksnu.model.user :as model.user]))
 
 ;; fetch-remote
 

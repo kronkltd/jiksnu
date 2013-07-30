@@ -32,13 +32,11 @@
             [jiksnu.xmpp.element :as element]
             [plaza.rdf.core :as plaza]
             [ring.util.codec :as codec])
-  (:import java.io.StringWriter
-           javax.xml.namespace.QName
+  (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource
            jiksnu.model.User
-           org.apache.abdera.model.Entry
            org.apache.abdera.model.ExtensibleElement))
 
 (defsection index-block [Activity :rdf]

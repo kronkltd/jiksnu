@@ -8,7 +8,7 @@
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]

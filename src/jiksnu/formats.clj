@@ -11,14 +11,10 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.model :as model]
-            [jiksnu.namespace :as ns]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.rdf :as rdf]
             jiksnu.sections
-            [jiksnu.session :as session]
-            [plaza.rdf.vocabularies.foaf :as foaf]))
+            [jiksnu.session :as session]))
 
 (defmethod format-as :as
   [format request response]

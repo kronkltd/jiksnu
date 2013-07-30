@@ -5,7 +5,6 @@
                                 format-links admin-index-section bind-property
                                 dump-data control-line pagination-links]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.namespace :as ns]
             [jiksnu.model.key :as model.key]
             [plaza.rdf.core :as rdf])

@@ -11,7 +11,6 @@
             [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]

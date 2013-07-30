@@ -10,14 +10,12 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
             [jiksnu.xmpp.element :as xmpp.element]
-            [plaza.rdf.core :as plaza]
             [plaza.rdf.vocabularies.foaf :as foaf]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))
@@ -125,26 +123,6 @@
 (defview #'show :model
   [request activity]
   {:body (doall (show-section activity))})
-
-(defview #'show :n3
-  [request activity]
-  {:body (-> activity
-             index-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model->format :n3)
-             with-out-str)
-   :template :false})
-
-(defview #'show :rdf
-  [request activity]
-  {:body (-> activity
-             show-section
-             plaza/model-add-triples
-             plaza/defmodel
-             (plaza/model->format :xml)
-             with-out-str)
-   :template :false})
 
 (defview #'show :viewmodel
   [request activity]
