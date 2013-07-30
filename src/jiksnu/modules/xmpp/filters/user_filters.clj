@@ -7,7 +7,7 @@
   (:require [ciste.model :as cm]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]

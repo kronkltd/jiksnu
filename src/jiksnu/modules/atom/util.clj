@@ -1,4 +1,4 @@
-(ns jiksnu.abdera
+(ns jiksnu.modules.atom.util
   (:use [ciste.initializer :only [definitializer]]
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [try+]])

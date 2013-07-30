@@ -16,7 +16,7 @@
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.trace :as trace]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]

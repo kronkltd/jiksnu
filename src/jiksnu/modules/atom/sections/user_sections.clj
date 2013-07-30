@@ -18,7 +18,7 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.form :as f]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]

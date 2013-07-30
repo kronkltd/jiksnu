@@ -11,7 +11,7 @@
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]

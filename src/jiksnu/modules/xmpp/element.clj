@@ -2,7 +2,7 @@
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.namespace :as ns])
   (:import javax.xml.namespace.QName
            tigase.xml.Element
