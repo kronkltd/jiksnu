@@ -22,6 +22,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.atom.views.stream-views
             [net.cgrand.enlive-html :as enlive]))
 
 (test-environment-fixture

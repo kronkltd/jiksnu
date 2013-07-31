@@ -17,6 +17,7 @@
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.rdf.util :as rdf]
+            jiksnu.modules.rdf.sections.conversation-sections
             [jiksnu.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [plaza.rdf.core :as plaza])

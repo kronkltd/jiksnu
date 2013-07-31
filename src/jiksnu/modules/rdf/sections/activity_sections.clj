@@ -24,6 +24,7 @@
             [jiksnu.model.like :as model.like]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.rdf.sections.activity-sections
             [jiksnu.namespace :as ns]
             [jiksnu.modules.rdf.util :as rdf]
             [jiksnu.sections.user-sections :as sections.user]
@@ -47,7 +48,7 @@
   [activity & _]
   (plaza/with-rdf-ns ""
     (let [{:keys [id published content]} activity
-          uri (full-uri activity)
+          uri (:id activity)
           user (model.activity/get-author activity)
           user-res (plaza/rdf-resource (or #_(:id user) (model.user/get-uri user)))]
       (concat

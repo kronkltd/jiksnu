@@ -37,9 +37,9 @@
 
 ;; edit-page
 
-(defview #'edit-page :html
-  [request activity]
-  {:body (edit-form activity)})
+;; (defview #'edit-page :html
+;;   [request activity]
+;;   {:body (edit-form activity)})
 
 ;; post
 

@@ -26,7 +26,7 @@
 
 (defview #'public-timeline :rdf
   [request {:keys [items] :as page}]
-  {:body (index-section items page)
+  {:body (index-section (log/spy :info items) page)
    :template :false})
 
 (defview #'user-timeline :rdf

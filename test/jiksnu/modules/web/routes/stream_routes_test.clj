@@ -16,6 +16,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.web.views.stream-views
             [ring.mock.request :as req]))
 
 (test-environment-fixture

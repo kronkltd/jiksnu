@@ -21,7 +21,12 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.rdf.sections.activity-sections
+            jiksnu.modules.rdf.sections.conversation-sections
+            ;; jiksnu.modules.rdf.sections.stream-sections
+            jiksnu.modules.rdf.sections.user-sections
             [jiksnu.modules.rdf.util :as rdf]
+            jiksnu.modules.rdf.views.stream-views
             [net.cgrand.enlive-html :as enlive]))
 
 (test-environment-fixture

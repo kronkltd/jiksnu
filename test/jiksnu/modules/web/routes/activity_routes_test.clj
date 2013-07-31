@@ -8,13 +8,14 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.auth-actions :as actions.auth]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.user-actions :as actions.user]
+            jiksnu.modules.web.views.activity-views
             [ring.mock.request :as req])
   (:import jiksnu.model.Activity
            jiksnu.model.User))

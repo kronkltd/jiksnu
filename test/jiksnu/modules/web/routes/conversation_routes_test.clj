@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.routes.conversation-routes-test
   (:use [clj-factory.core :only [factory]]
         [clojurewerkz.route-one.core :only [named-path]]
+        jiksnu.modules.web.views.conversation-views
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [midje.sweet :only [=>]])

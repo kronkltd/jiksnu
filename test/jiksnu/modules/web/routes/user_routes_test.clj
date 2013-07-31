@@ -11,6 +11,7 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.mock :as mock]
+            jiksnu.modules.web.views.user-views
             [jiksnu.util :as util]
             [lamina.core :as l]
             [ring.mock.request :as req]))

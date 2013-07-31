@@ -12,7 +12,8 @@
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            jiksnu.modules.xmpp.sections.user-sections)
   (:import jiksnu.model.User))
 
 (test-environment-fixture

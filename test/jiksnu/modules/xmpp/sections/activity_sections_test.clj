@@ -18,7 +18,8 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            jiksnu.modules.xmpp.sections.activity-sections)
   (:import jiksnu.model.Activity
            jiksnu.model.User
            org.apache.abdera.i18n.iri.IRI

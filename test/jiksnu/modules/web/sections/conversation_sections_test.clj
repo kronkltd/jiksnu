@@ -17,6 +17,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            jiksnu.modules.web.sections.conversation-sections
             [net.cgrand.enlive-html :as enlive])
   (:import jiksnu.model.Conversation
            org.apache.abdera.i18n.iri.IRI
