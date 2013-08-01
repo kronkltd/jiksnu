@@ -26,7 +26,3 @@
 (add-command! "auth"   #'auth/login)
 (add-command! "whoami" #'auth/whoami)
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.auth-filters"
-    "jiksnu.views.auth-views"]))

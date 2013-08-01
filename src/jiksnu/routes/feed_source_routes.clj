@@ -26,9 +26,3 @@
   [
    [{:name "feed-sources"}    {:action #'feed-source/index}]
    ])
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.feed-source-filters"
-    "jiksnu.triggers.feed-source-triggers"
-    "jiksnu.views.feed-source-views"]))

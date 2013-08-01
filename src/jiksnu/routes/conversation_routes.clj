@@ -32,11 +32,3 @@
    [{:type Conversation
      :name "activities"}    {:action #'activity/fetch-by-conversation}]
    ])
-
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.conversation-filters"
-    "jiksnu.triggers.conversation-triggers"
-    "jiksnu.sections.conversation-sections"
-    "jiksnu.views.conversation-views"]))

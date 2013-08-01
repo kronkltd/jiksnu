@@ -22,6 +22,7 @@
             [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
+            [jiksnu.util :as util]
             [ring.middleware.file :as file]
             [monger.ring.session-store :as ms]
             [noir.util.middleware :as nm]
@@ -138,11 +139,12 @@
           ;; wrap-tidy-up
           ))))
 
-  (require-namespaces
-   ["jiksnu.filters.inbox-filters"
-    "jiksnu.views.inbox-views"
-    "jiksnu.filters.key-filters"
-    "jiksnu.sections.key-sections"
-    "jiksnu.views.key-views"])
+  (doseq [model-name route-modules]
+    (util/require-module "atom" model-name)
+    (util/require-module "as" model-name)
+    (util/require-module "rdf" model-name)
+    (util/require-module "core" model-name)
+    (util/require-module "web" model-name)
+    )
 
   )

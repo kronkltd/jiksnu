@@ -8,9 +8,3 @@
   [[[:get    "/notice/:id/comment"]                          #'comment/new-comment]
    [[:post   "/notice/:id/comments"]                         #'comment/add-comment]
    [[:post   "/notice/:id/comments/update"]                  #'comment/fetch-comments]])
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.comment-filters"
-    ;; "jiksnu.sections.comment-sections"
-    "jiksnu.views.comment-views"]))

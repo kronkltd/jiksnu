@@ -234,13 +234,14 @@
      res#))
 
 (defn require-module
-  [module-name]
+  [module-name model-name]
   (require-namespaces
    (map
     (fn [part-name]
-      (format "jiksnu.%s.%s-%s"
-              part-name
+      (format "jiksnu.modules.%s.%s.%s-%s"
               module-name
+              part-name
+              model-name
               part-name))
     ["filters"
      "sections"

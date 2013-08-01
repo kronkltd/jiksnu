@@ -24,9 +24,3 @@
   [
    [{:name "feed-subscriptions"}    {:action #'feed-subscription/index}]
    ])
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.feed-subscription-filters"
-    "jiksnu.views.feed-subscription-views"]))
-

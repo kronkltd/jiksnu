@@ -34,9 +34,3 @@
   [
    [{:name "domains"}    {:action #'domain/index}]
    ])
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.domain-filters"
-    "jiksnu.triggers.domain-triggers"
-    "jiksnu.views.domain-views"]))

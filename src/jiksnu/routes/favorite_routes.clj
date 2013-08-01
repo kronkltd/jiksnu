@@ -6,8 +6,3 @@
 (defn routes
   []
   [[[:get    "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]])
-
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.favorite-filters"
-    "jiksnu.views.favorite-views"]))

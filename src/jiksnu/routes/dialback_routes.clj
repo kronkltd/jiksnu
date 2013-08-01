@@ -12,6 +12,3 @@
   [
    [[:post (named-path "dialback")]  #'dialback/confirm]
    ])
-
-(definitializer
-  (util/require-module "dialback"))
