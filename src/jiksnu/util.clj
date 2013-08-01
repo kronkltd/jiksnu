@@ -234,20 +234,23 @@
      res#))
 
 (defn require-module
-  [prefix module-name model-name]
-  (require-namespaces
-   (map
-    (fn [part-name]
-      (format "%s.%s.%s.%s-%s"
-              prefix
-              module-name
-              part-name
-              model-name
-              part-name))
-    ["filters"
-     "sections"
-     "triggers"
-     "views"])))
+  ([prefix module-name]
+     (doseq [model-name model/model-names]
+       (require-module prefix module-name model-name)))
+  ([prefix module-name model-name]
+     (require-namespaces
+      (map
+       (fn [part-name]
+         (format "%s.%s.%s.%s-%s"
+                 prefix
+                 module-name
+                 part-name
+                 model-name
+                 part-name))
+       ["filters"
+        "sections"
+        "triggers"
+        "views"]))))
 
 (defn replace-template
   [template url]

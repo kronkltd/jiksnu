@@ -48,6 +48,26 @@
    ]
   )
 
+(def model-names
+  [
+   "activity"
+   "authentication-mechanism"
+   "conversation"
+   "dialback"
+   "domain"
+   "feed-source"
+   "feed-subscription"
+   "group"
+   "group-membership"
+   "item"
+   "key"
+   "like"
+   "resource"
+   "subscription"
+   "user"
+   ]
+  )
+
 ;; Entity predicates
 
 (defn domain?
