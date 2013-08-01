@@ -47,9 +47,9 @@
             {:status 500
              :headers {"content-type" "text/plain"}
              :body st})
-          (catch Exception ex
-            #_(trace/trace "errors:handled" ex)
-            (log/fatalf "Error parsing exception: %s" (str ex))))))))
+          (catch Throwable ex
+            (trace/trace :errors:handled ex)
+            (log/fatalf ex "Error parsing exception: %s")))))))
 
 (defn default-html-mode
   []
