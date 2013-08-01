@@ -39,7 +39,26 @@
 
 (definitializer
   (require-namespaces
-   ["jiksnu.filters.activity-filters"
+   [
+    "jiksnu.filters.activity-filters"
     "jiksnu.sections.activity-sections"
     "jiksnu.triggers.activity-triggers"
-    "jiksnu.views.activity-views"]))
+    "jiksnu.views.activity-views"
+
+    "jiksnu.modules.as.filters.activity-filters"
+    "jiksnu.modules.as.sections.activity-sections"
+    "jiksnu.modules.as.triggers.activity-triggers"
+    "jiksnu.modules.as.views.activity-views"
+
+    "jiksnu.modules.atom.filters.activity-filters"
+    "jiksnu.modules.atom.sections.activity-sections"
+    "jiksnu.modules.atom.triggers.activity-triggers"
+    "jiksnu.modules.atom.views.activity-views"
+
+    "jiksnu.modules.rdf.filters.activity-filters"
+    "jiksnu.modules.rdf.sections.activity-sections"
+    "jiksnu.modules.rdf.triggers.activity-triggers"
+    "jiksnu.modules.rdf.views.activity-views"
+
+
+    ]))
