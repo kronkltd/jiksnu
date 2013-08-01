@@ -18,6 +18,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.model :as model]
             [jiksnu.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
@@ -34,30 +35,6 @@
 (defn not-found-msg
   []
   "Not Found")
-
-(def route-modules
-  ["activity"
-   "auth"
-   "comment"
-   "confirm"
-   "conversation"
-   "domain"
-   "favorite"
-   "feed-source"
-   "feed-subscription"
-   "group"
-   "like"
-   "message"
-   "pubsub"
-   "resource"
-   "salmon"
-   "search"
-   "setting"
-   "site"
-   "stream"
-   "subscription"
-   "tag"
-   "user"])
 
 (defn load-module
   [module-name]
@@ -96,7 +73,7 @@
    handlers))
 
 (def http-routes
-  (->> route-modules
+  (->> model/action-group-names
        (map load-module)
        (reduce concat)
        make-matchers))
@@ -139,7 +116,7 @@
           ;; wrap-tidy-up
           ))))
 
-  (doseq [model-name route-modules]
+  (doseq [model-name model/action-group-names]
     (doto "jiksnu.modules"
       (util/require-module "atom" model-name)
       (util/require-module "as" model-name)

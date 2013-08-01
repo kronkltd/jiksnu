@@ -68,6 +68,32 @@
    ]
   )
 
+(def action-group-names
+  ["activity"
+   "auth"
+   "comment"
+   "confirm"
+   "conversation"
+   "domain"
+   "favorite"
+   "feed-source"
+   "feed-subscription"
+   "group"
+   "like"
+   "message"
+   "pubsub"
+   "resource"
+   "salmon"
+   "search"
+   "setting"
+   "site"
+   "stream"
+   "subscription"
+   "tag"
+   "user"])
+
+
+
 ;; Entity predicates
 
 (defn domain?
