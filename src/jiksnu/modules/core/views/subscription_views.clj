@@ -1,4 +1,4 @@
-(ns jiksnu.views.subscription-views
+(ns jiksnu.modules.core.views.subscription-views
   (:use [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.subscription-actions

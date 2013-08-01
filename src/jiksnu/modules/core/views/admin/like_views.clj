@@ -1,4 +1,4 @@
-(ns jiksnu.views.admin.like-views
+(ns jiksnu.modules.core.views.admin.like-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.like-actions :only [delete index]]
         [jiksnu.ko :only [*dynamic*]]

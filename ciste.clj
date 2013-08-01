@@ -3,13 +3,12 @@
            "jiksnu.factory"
            "jiksnu.formats"
            "jiksnu.workers"
-           "jiksnu.views"]
+           ]
  :modules-available
  [
   "jiksnu.commands"
   "jiksnu.factory"
   "jiksnu.workers"
-  "jiksnu.views"
   ]
 
  :services-available

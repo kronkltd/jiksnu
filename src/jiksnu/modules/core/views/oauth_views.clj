@@ -1,4 +1,4 @@
-(ns jiksnu.views.oauth-views
+(ns jiksnu.modules.core.views.oauth-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.oauth-actions :only [oauthapps]]))
 

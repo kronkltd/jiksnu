@@ -1,4 +1,4 @@
-(ns jiksnu.views.admin.worker-views
+(ns jiksnu.modules.core.views.admin.worker-views
   (:use [ciste.views :only [defview]]
         jiksnu.actions.admin.worker-actions)
   (:require [ciste.workers :as workers]

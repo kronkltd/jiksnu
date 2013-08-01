@@ -1,4 +1,4 @@
-(ns jiksnu.views.admin.feed-subscription-views
+(ns jiksnu.modules.core.views.admin.feed-subscription-views
   (:use [ciste.sections.default :only [title show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.feed-subscription-actions :only [delete index

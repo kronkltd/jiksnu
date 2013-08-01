@@ -1,4 +1,4 @@
-(ns jiksnu.views.pubsub-views
+(ns jiksnu.modules.core.views.pubsub-views
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         [jiksnu.actions.pubsub-actions :only [hub-dispatch]])

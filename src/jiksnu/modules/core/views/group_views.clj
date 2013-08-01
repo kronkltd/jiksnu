@@ -1,4 +1,4 @@
-(ns jiksnu.views.group-views
+(ns jiksnu.modules.core.views.group-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [index-section add-form show-section]]
         [clojurewerkz.route-one.core :only [named-path]]

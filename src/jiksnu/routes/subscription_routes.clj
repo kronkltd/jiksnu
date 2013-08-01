@@ -40,8 +40,3 @@
    ])
 
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.subscription-filters"
-    "jiksnu.triggers.subscription-triggers"
-    "jiksnu.views.subscription-views"]))

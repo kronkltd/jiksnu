@@ -1,4 +1,4 @@
-(ns jiksnu.views.like-views
+(ns jiksnu.modules.core.views.like-views
   (:use [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.like-actions))

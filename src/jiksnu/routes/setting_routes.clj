@@ -14,7 +14,3 @@
    [[:get "/settings/oauthapps"]           #'setting/oauth-apps]])
 
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.setting-filters"
-    "jiksnu.views.setting-views"]))

@@ -1,4 +1,4 @@
-(ns jiksnu.views.salmon-views
+(ns jiksnu.modules.core.views.salmon-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.salmon-actions :only [process]]))
 

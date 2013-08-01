@@ -14,8 +14,3 @@
    ;; [[:post   "/users/:id/push/subscribe"] #'pubsub/subscribe]
    ])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.pubsub-filters"
-    ;; "jiksnu.triggers.pubsub-triggers"
-    "jiksnu.views.pubsub-views"]))

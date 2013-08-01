@@ -1,4 +1,4 @@
-(ns jiksnu.views.tag-views
+(ns jiksnu.modules.core.views.tag-views
   (:use [ciste.views :only [defview]]
         ciste.sections.default
         jiksnu.actions.tag-actions))

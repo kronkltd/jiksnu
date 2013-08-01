@@ -1,4 +1,4 @@
-(ns jiksnu.views.feed-source-views
+(ns jiksnu.modules.core.views.feed-source-views
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         ciste.sections.default

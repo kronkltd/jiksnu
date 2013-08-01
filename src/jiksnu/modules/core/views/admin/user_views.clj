@@ -1,4 +1,4 @@
-(ns jiksnu.views.admin.user-views
+(ns jiksnu.modules.core.views.admin.user-views
   (:use [ciste.config :only [config]]
         [ciste.sections.default :only [title]]
         [ciste.views :only [defview]]

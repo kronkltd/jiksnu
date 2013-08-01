@@ -1,3 +1,3 @@
-(ns jiksnu.views.key-views)
+(ns jiksnu.modules.core.views.key-views)
 
 

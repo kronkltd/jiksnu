@@ -1,4 +1,4 @@
-(ns jiksnu.views.setting-views
+(ns jiksnu.modules.core.views.setting-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.setting-actions :only [edit-page update-settings]])
   (:require [jiksnu.modules.web.sections.setting-sections :as sections.setting]))

@@ -8,7 +8,3 @@
   [[[:post   "/likes/:id/delete"] #'like/delete]
    [[:post   "/notice/:id/like"]  #'like/like-activity]])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.like-filters"
-    "jiksnu.views.like-views"]))

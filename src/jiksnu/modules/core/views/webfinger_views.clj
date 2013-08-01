@@ -1,2 +1,2 @@
-(ns jiksnu.views.webfinger-views)
+(ns jiksnu.modules.core.views.webfinger-views)
 

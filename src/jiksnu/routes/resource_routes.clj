@@ -37,11 +37,7 @@
 
 (definitializer
   (require-namespaces
-   ["jiksnu.filters.resource-filters"
-    "jiksnu.sections.resource-sections"
-    "jiksnu.triggers.resource-triggers"
-    "jiksnu.views.resource-views"
-    "jiksnu.handlers.atom"
+   ["jiksnu.handlers.atom"
     "jiksnu.handlers.html"
     "jiksnu.handlers.xrd"
     ]))

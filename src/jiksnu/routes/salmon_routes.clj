@@ -11,7 +11,3 @@
   []
   [[[:post (named-path "user salmon")] #'salmon/process]])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.salmon-filters"
-    "jiksnu.views.salmon-views"]))

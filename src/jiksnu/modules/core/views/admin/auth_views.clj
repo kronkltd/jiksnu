@@ -1,4 +1,4 @@
-(ns jiksnu.views.admin.auth-views
+(ns jiksnu.modules.core.views.admin.auth-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [add-form index-block index-section]]
         [jiksnu.actions.admin.auth-actions :only [index]]

@@ -1,4 +1,4 @@
-(ns jiksnu.views.activity-views-test
+(ns jiksnu.modules.core.views.activity-views-test
   (:use [ciste.core :only [with-context with-serialization with-format
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
@@ -19,8 +19,7 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            jiksnu.views.stream-views))
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 

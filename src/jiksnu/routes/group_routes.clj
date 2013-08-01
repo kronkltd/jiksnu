@@ -34,7 +34,3 @@
    [{:name "groups"}    {:action #'group/index}]
    ])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.group-filters"
-    "jiksnu.views.group-views"]))

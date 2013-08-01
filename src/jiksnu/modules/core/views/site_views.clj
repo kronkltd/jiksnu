@@ -1,4 +1,4 @@
-(ns jiksnu.views.site-views
+(ns jiksnu.modules.core.views.site-views
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         jiksnu.actions.site-actions)

@@ -1,4 +1,4 @@
-(ns jiksnu.views.conversation-views
+(ns jiksnu.modules.core.views.conversation-views
   (:use [ciste.views :only [defview]]
         jiksnu.actions.conversation-actions)
   (:require [clojure.tools.logging :as log])

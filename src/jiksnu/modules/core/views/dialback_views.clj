@@ -1,4 +1,4 @@
-(ns jiksnu.views.dialback-views
+(ns jiksnu.modules.core.views.dialback-views
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
         ciste.sections.default

@@ -1,4 +1,4 @@
-(ns jiksnu.views.auth-views
+(ns jiksnu.modules.core.views.auth-views
   (:use ciste.core
         [ciste.views :only [defview]]
         ciste.sections.default

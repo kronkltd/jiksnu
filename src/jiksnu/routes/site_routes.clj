@@ -24,7 +24,3 @@
 (add-command! "config"          #'site/get-config)
 (add-command! "ping"            #'site/ping)
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.site-filters"
-    "jiksnu.views.site-views"]))

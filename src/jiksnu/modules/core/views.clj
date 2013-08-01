@@ -1,4 +1,4 @@
-(ns jiksnu.views
+(ns jiksnu.modules.core.views
   (:use [ciste.core :only [serialize-as with-format]]
         [ciste.config :only [config]]
         [ciste.formats :only [format-as]]

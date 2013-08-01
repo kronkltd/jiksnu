@@ -1,4 +1,4 @@
-(ns jiksnu.views.admin.group-views
+(ns jiksnu.modules.core.views.admin.group-views
   (:use [ciste.sections.default :only [index-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.group-actions :only [index]]

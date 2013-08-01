@@ -1,4 +1,4 @@
-(ns jiksnu.views.setting-views
+(ns jiksnu.modules.core.views.setting-views
   (:use [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.setting-actions)

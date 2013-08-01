@@ -52,8 +52,3 @@
    [{:name "public-timeline"} {:action #'stream/public-timeline}]
    ])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.stream-filters"
-    "jiksnu.triggers.stream-triggers"
-    "jiksnu.views.stream-views"]))
