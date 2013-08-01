@@ -6,19 +6,11 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context hiccup->doc
                                    test-environment-fixture select-by-model]]
-        jiksnu.sections.conversation-sections
         [midje.sweet :only [=>]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [jiksnu.ko :as ko]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            jiksnu.modules.rdf.sections.conversation-sections
-            [net.cgrand.enlive-html :as enlive])
+            jiksnu.modules.rdf.sections.conversation-sections)
   (:import jiksnu.model.Conversation
            org.apache.abdera.i18n.iri.IRI
            org.apache.abdera.model.Person

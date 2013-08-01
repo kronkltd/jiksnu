@@ -1,13 +1,13 @@
 (ns jiksnu.modules.xmpp.views.subscription-views
   (:use [ciste.views :only [defview]]
-        ciste.sections.default
-        jiksnu.actions.subscription-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
+        ;; [ciste.sections.default :only []]
+        [jiksnu.actions.subscription-actions :only [get-subscribers get-subscriptions
+                                                    remote-subscribe-confirm subscribe
+                                                    subscribed unsubscribe]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.sections.subscription-sections :as sections.subscription])
+            [jiksnu.modules.xmpp.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))
 
 (defview #'get-subscribers :xmpp

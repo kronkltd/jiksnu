@@ -1,31 +1,15 @@
 (ns jiksnu.modules.atom.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-format with-serialization]]
-        [ciste.sections.default :only [index-block index-section
-                                       show-section uri]]
+        [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        jiksnu.session
-        jiksnu.sections.activity-sections
         [midje.sweet :only [=>]])
-  (:require [clj-tigase.element :as element]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.ko :as ko]
-            [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User
-           org.apache.abdera.i18n.iri.IRI
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.mock :as mock])
+  (:import org.apache.abdera.i18n.iri.IRI
            org.apache.abdera.model.Entry
-           org.apache.abdera.model.Person
-           org.joda.time.DateTime
-           tigase.xml.Element))
+           org.apache.abdera.model.Person))
 
 (test-environment-fixture
 

@@ -5,8 +5,7 @@
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
                                               index show ping ping-response
                                               ping-error]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.ko :only [*dynamic*]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -14,7 +13,7 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
             [jiksnu.namespace :as ns]
-            [jiksnu.sections.domain-sections :as sections.domain])
+            )
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 

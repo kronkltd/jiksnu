@@ -7,7 +7,7 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.channels :as ch]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.subscription-sections :as sections.subscription]
+            [jiksnu.modules.xmpp.sections.subscription-sections :as sections.subscription]
             [jiksnu.ops :as ops]
             [lamina.core :as l]))
 

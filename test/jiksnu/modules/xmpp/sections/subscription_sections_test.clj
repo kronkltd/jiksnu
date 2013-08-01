@@ -1,5 +1,5 @@
 (ns jiksnu.modules.xmpp.sections.subscription-sections-test
-  (:use [jiksnu.sections.subscription-sections :only [subscriber-response-element
+  (:use [jiksnu.modules.xmpp.sections.subscription-sections :only [subscriber-response-element
                                                       subscribe-request]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=>]])

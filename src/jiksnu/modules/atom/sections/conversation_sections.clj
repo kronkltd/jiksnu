@@ -4,9 +4,7 @@
                                        index-block index-line index-section link-to
                                        show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line display-property display-timestamp
-                                dropdown-menu dump-data pagination-links with-page with-sub-page]])
+)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

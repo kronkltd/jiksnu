@@ -1,21 +1,9 @@
 (ns jiksnu.modules.xmpp.views.stream-views
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [with-format]]
-        [ciste.views :only [apply-view defview]]
-        ciste.sections.default
-        [clj-stacktrace.repl :only [pst+]]
-        jiksnu.actions.stream-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info with-page pagination-links with-sub-page]]
-        [jiksnu.session :only [current-user]])
+  (:use [ciste.views :only [defview]]
+        [ciste.sections.default :only [index-section]]
+        [jiksnu.actions.stream-actions :only [public-timeline user-timeline]])
   (:require [clj-tigase.core :as tigase]
-            [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model :as model]
-            [jiksnu.namespace :as ns]
-            [jiksnu.sections.activity-sections :as sections.activity])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+            [clojure.tools.logging :as log]))
 
 (defview #'public-timeline :xmpp
   [request {:keys [items] :as page}]

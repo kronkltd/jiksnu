@@ -14,7 +14,7 @@
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.activity-sections :as sections.activity]
+            [jiksnu.modules.xmpp.sections.activity-sections :as sections.activity]
             [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import tigase.xml.Element))

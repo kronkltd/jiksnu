@@ -7,10 +7,6 @@
                                         index-section]]
          [clojure.core.incubator :only [-?>]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.sections :only [action-link actions-section admin-actions-section
-                                 admin-index-block admin-index-line admin-index-section
-                                 admin-show-section bind-property bind-to control-line
-                                 display-property dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
