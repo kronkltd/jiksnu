@@ -140,11 +140,12 @@
           ))))
 
   (doseq [model-name route-modules]
-    (util/require-module "atom" model-name)
-    (util/require-module "as" model-name)
-    (util/require-module "rdf" model-name)
-    (util/require-module "core" model-name)
-    (util/require-module "web" model-name)
+    (doto "jiksnu.modules"
+      (util/require-module "atom" model-name)
+      (util/require-module "as" model-name)
+      (util/require-module "rdf" model-name)
+      (util/require-module "core" model-name)
+      (util/require-module "web" model-name))
     )
 
   )
