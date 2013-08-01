@@ -10,6 +10,7 @@
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [lamina.time :as time]

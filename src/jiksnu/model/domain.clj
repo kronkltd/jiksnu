@@ -5,8 +5,7 @@
         [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
-  (:require [clj-statsd :as s]
-            [clj-tigase.core :as tigase]
+  (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -15,7 +14,7 @@
             [jiksnu.util :as util]
             [monger.collection :as mc]
             [monger.core :as mg]
-            [ring.util.codec :as codec])
+          )
   (:import jiksnu.model.Domain
            org.bson.types.ObjectId
            org.joda.time.DateTime))

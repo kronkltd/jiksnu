@@ -8,9 +8,10 @@
         [midje.sweet :only [=>]])
   (:require [clj-tigase.element :as element]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace]
-            jiksnu.sections.activity-sections)
+            [jiksnu.namespace :as namespace])
   (:import jiksnu.model.Activity))
+
+(util/require-module "jiksnu.modules" "xmpp")
 
 (test-environment-fixture
 

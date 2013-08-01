@@ -19,9 +19,10 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            jiksnu.modules.xmpp.filters.activity-filters)
+            [jiksnu.model.user :as model.user])
   (:import jiksnu.model.Activity))
+
+(util/require-module "jiksnu.modules" "xmpp")
 
 (test-environment-fixture
 
