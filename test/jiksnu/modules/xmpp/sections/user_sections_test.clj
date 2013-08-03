@@ -1,6 +1,6 @@
 (ns jiksnu.modules.xmpp.sections.user-sections-test
   (:use [ciste.core :only [with-context with-format with-serialization]]
-        [ciste.sections.default :only [uri show-section title]]
+        [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]

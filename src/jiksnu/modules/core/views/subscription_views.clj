@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.views.subscription-views
   (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section]]
+        [ciste.sections.default :only [index-section show-section uri]]
         jiksnu.actions.subscription-actions
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page

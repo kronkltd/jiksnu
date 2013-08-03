@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.sections.resource-sections
     (:use [ciste.sections :only [defsection]]
-          [ciste.sections.default :only [delete-button full-uri uri title index-line
+          [ciste.sections.default :only [delete-button title index-line
                                          index-block index-line link-to
                                          show-section update-button]]
           [jiksnu.ko :only [*dynamic*]]

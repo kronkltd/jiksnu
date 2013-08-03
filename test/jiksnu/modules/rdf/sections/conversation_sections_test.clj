@@ -2,7 +2,7 @@
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-serialization with-format]]
         [ciste.sections.default :only [index-block index-section
-                                       show-section uri]]
+                                       show-section]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context hiccup->doc
                                    test-environment-fixture select-by-model]]

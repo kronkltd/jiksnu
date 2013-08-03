@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.views.activity-views
   (:use [ciste.config :only [config]]
         [ciste.views :only [defview]]
-        [ciste.sections.default :only [show-section]]
+        [ciste.sections.default :only [show-section uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.activity-actions
         [jiksnu.ko :only [*dynamic*]]

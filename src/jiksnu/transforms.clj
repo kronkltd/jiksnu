@@ -4,8 +4,7 @@
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util])
-  (:import java.net.URI))
+            [jiksnu.util :as util]))
 
 (defn set-_id
   [item]

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.rdf.views.user-views
   (:use [ciste.core :only [with-format]]
         [ciste.views :only [defview]]
-        [ciste.sections.default :only [uri show-section]]
+        [ciste.sections.default :only [show-section]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         jiksnu.actions.user-actions
         [jiksnu.ko :only [*dynamic*]]
