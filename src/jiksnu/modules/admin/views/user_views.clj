@@ -4,8 +4,10 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.user-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section admin-index-block admin-show-section
-                                bind-to dump-data format-page-info pagination-links with-page]])
+        [jiksnu.modules.core.sections :only [admin-index-section admin-index-block
+                                             admin-show-section]]
+        [jiksnu.modules.web.sections :only [bind-to dump-data format-page-info
+                                            pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]

@@ -2,7 +2,7 @@
   (:use  [ciste.config :only [config]]
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section
-                                        edit-button delete-button index-line
+                                        edit-button index-line
                                         show-section-minimal update-button index-block
                                         index-section]]
          [clojure.core.incubator :only [-?>]]

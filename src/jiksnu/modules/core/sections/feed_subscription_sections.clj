@@ -2,8 +2,8 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [show-section]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-block admin-index-line
-                                            display-property]])
+        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
+        [jiksnu.modules.web.sections :only [display-property]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.FeedSubscription))
 

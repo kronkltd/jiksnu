@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [delete-button edit-button full-uri index-block
+        [ciste.sections.default :only [edit-button full-uri index-block
                                        index-block-type index-line title uri]]
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.string :as string]

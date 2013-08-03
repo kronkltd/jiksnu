@@ -5,7 +5,7 @@
         [ciste.views :only [defview]]
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri title link-to
-                                       delete-button index-line edit-button]]
+                                       index-line edit-button]]
         [jiksnu.session :only [current-user]])
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
