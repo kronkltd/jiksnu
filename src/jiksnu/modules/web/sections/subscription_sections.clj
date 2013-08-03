@@ -1,12 +1,13 @@
 (ns jiksnu.modules.core.sections.subscription-sections
   (:use [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [delete-button edit-button full-uri
+        [ciste.sections.default :only [actions-section delete-button edit-button full-uri
                                        index-block index-line index-section link-to
                                        show-section title uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [action-link admin-index-block admin-index-line
-                                admin-index-section bind-to control-line dump-data with-page
+        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line
+                                             admin-index-section]]
+        [jiksnu.modules.web.sections :only [action-link bind-to control-line dump-data with-page
                                 with-sub-page]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]

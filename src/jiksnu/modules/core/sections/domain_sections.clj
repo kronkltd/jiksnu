@@ -1,7 +1,8 @@
 (ns jiksnu.modules.core.sections.domain-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button index-block index-line link-to show-section]]
+        [ciste.sections.default :only [actions-section add-form delete-button index-block index-line
+                                       link-to show-section uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]

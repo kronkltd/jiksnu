@@ -1,10 +1,10 @@
 (ns jiksnu.modules.web.sections.resource-sections
     (:use [ciste.sections :only [defsection]]
-          [ciste.sections.default :only [delete-button title index-line
+          [ciste.sections.default :only [actions-section delete-button title index-line
                                          index-block index-line link-to
                                          show-section update-button]]
           [jiksnu.ko :only [*dynamic*]]
-          [jiksnu.modules.core.sections :only [actions-section admin-index-block
+          [jiksnu.modules.core.sections :only [admin-index-block
                                                admin-index-line]]
           [jiksnu.modules.web.sections :only [action-link bind-to control-line
                                               display-property dropdown-menu dump-data

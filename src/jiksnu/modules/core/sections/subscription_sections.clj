@@ -7,7 +7,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line
                                              admin-index-section]]
-        [jiksnu.modules.web.sections :only [action-link bind-to control-line dump-data with-page
+        [jiksnu.modules.web.sections :only [bind-to control-line dump-data with-page
                                             with-sub-page]])
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
