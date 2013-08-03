@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.sections.subscription-sections
+(ns jiksnu.modules.web.sections.subscription-sections
   (:use [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [actions-section delete-button edit-button full-uri
                                        index-block index-line index-section link-to
@@ -7,6 +7,12 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line
                                              admin-index-section]]
+        [jiksnu.modules.core.sections.subscription-sections :only [subscribers-block
+                                                                   subscribers-line
+                                                                   subscribers-section
+                                                                   subscriptions-block
+                                                                   subscriptions-line
+                                                                   subscriptions-section]]
         [jiksnu.modules.web.sections :only [action-link bind-to control-line dump-data with-page
                                 with-sub-page]])
   (:require [ciste.model :as cm]

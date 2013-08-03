@@ -8,7 +8,7 @@
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.modules.web.sections.subscription-sections :as sections.subscription])
+            [jiksnu.modules.core.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))
 
 (defn subscription-formats
@@ -22,26 +22,6 @@
    {:href (str (uri user) "/subscriptions.json")
     :label "JSON"
     :type "application/json"}])
-
-
-(defview #'delete :html
-  [request _]
-  {:status 302
-   :template false
-   :headers {"Location" "/admin/subscriptions"}})
-
-;; get-subscribers
-
-(defview #'get-subscribers :html
-  [request [user {:keys [items] :as page}]]
-  {:title "Subscribers"
-   :body
-   (let [items (if *dynamic* [(Subscription.)] items)]
-     (bind-to "targetUser"
-       [:div {:data-model "user"}
-        (with-sub-page "subscribers"
-          (pagination-links page)
-          (sections.subscription/subscribers-section items page))]))})
 
 (defview #'get-subscribers :page
   [request [user page]]
@@ -66,18 +46,6 @@
   [request [user {:keys [items] :as response}]]
   {:template false
    :body {:items (index-section items response)}})
-
-(defview #'get-subscriptions :html
-  [request [user {:keys [items] :as page}]]
-  {:title "Subscriptions"
-   :formats (subscription-formats user)
-   :body
-   (if-let [items (seq (if *dynamic* [(Subscription.)] items))]
-     (bind-to "targetUser"
-       [:div {:data-model "user"}
-        (with-sub-page "subscriptions"
-          (pagination-links page)
-          (sections.subscription/subscriptions-section items page))]))})
 
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]
@@ -112,52 +80,13 @@
     {:body {:action "page-updated"
             :body response}}))
 
-;; ostatus
-
-(defview #'ostatus :html
-  [request arg]
-  {:body ""
-   :template false})
-
-;; ostatussub
-
-(defview #'ostatussub :html
-  [request arg]
-  {:body (sections.subscription/ostatus-sub-form)})
-
 (defview #'ostatussub :viewmodel
   [request _]
   {:body
    {:title "Subscribe"}})
-
-;; ostatussub-submit
-
-(defview #'ostatussub-submit :html
-  [request subscription]
-  {:status 303
-   :headers {"Location" "/"}
-   :flash "The request has been sent"
-   :template false})
 
 ;; show
 
 (defview #'show :model
   [request item]
   {:body (show-section item)})
-
-;; subscribe
-
-(defview #'subscribe :html
-  [request subscription]
-  {:status 302
-   :template false
-   :headers {"Location" "/"}})
-
-;; unsubscribe
-
-(defview #'unsubscribe :html
-  [request subscription]
-  {:status 302
-   :template false
-   :headers {"Location" "/"}})
-
