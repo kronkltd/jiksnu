@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.activity-views
+(ns jiksnu.modules.admin.views.activity-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.activity-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]

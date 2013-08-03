@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.subscription-views-test
+(ns jiksnu.modules.admin.views.subscription-views-test
   (:use [ciste.core :only [with-serialization with-format]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
@@ -7,6 +7,7 @@
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
+            [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
             [jiksnu.actions.admin.subscription-actions :as actions.admin.subscription]
             [jiksnu.db :as db]

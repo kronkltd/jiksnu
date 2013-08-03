@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.key-views
+(ns jiksnu.modules.admin.views.key-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.key-actions :only [index]]
         [jiksnu.modules.web.sections :only [admin-index-section format-page-info pagination-links with-page]]))

@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.conversation-views
+(ns jiksnu.modules.admin.views.conversation-views
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.conversation-actions :only [index show]]

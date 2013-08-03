@@ -6,7 +6,6 @@
                                    hiccup->doc test-environment-fixture]]
         [midje.sweet :only [=> anything]])
   (:require [clojure.tools.logging :as log]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.actions.user-actions :as actions.user]

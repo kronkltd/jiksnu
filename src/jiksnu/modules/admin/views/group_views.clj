@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.group-views
+(ns jiksnu.modules.admin.views.group-views
   (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.group-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
