@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.subscription-triggers
+(ns jiksnu.modules.core.triggers.subscription-triggers
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-context]])
   (:require [clj-tigase.core :as tigase]

@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.feed-source-triggers
+(ns jiksnu.modules.core.triggers.feed-source-triggers
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]

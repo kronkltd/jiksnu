@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.resource-triggers
+(ns jiksnu.modules.core.triggers.resource-triggers
   (:use [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]

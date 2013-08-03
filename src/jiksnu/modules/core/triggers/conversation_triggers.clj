@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.conversation-triggers
+(ns jiksnu.modules.core.triggers.conversation-triggers
   (:require ciste.core
             [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]

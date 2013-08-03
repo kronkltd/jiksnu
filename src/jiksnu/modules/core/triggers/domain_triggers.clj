@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.domain-triggers
+(ns jiksnu.modules.core.triggers.domain-triggers
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.channels :as ch]

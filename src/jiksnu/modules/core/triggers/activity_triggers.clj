@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.activity-triggers
+(ns jiksnu.modules.core.triggers.activity-triggers
   (:use [ciste.config :only [config]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]

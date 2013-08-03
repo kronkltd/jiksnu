@@ -1,4 +1,4 @@
-(ns jiksnu.triggers.user-triggers
+(ns jiksnu.modules.core.triggers.user-triggers
   (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
