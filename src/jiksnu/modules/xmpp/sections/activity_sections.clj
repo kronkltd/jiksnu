@@ -1,27 +1,13 @@
 (ns jiksnu.modules.xmpp.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button edit-button
-                                       full-uri index-section show-section-minimal
-                                       show-section link-to uri title index-block
-                                       index-line index-section update-button]]
-        [clojure.core.incubator :only [-?>]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [action-link actions-section admin-index-line
-                                            admin-index-block admin-index-section bind-property
-                                            bind-to control-line display-property
-                                            display-timestamp dropdown-menu dump-data
-                                            format-links pagination-links]]
+        [ciste.sections.default :only [index-section show-section index-block
+                                       index-line]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.session :as session]
-            [jiksnu.util :as util]
             [jiksnu.modules.xmpp.element :as element])
   (:import jiksnu.model.Activity
-           jiksnu.model.Conversation
-           jiksnu.model.Resource
-           jiksnu.model.User
            org.apache.abdera.model.Entry
            org.apache.abdera.model.ExtensibleElement))
 

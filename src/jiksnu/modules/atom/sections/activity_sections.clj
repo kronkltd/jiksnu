@@ -1,41 +1,13 @@
 (ns jiksnu.modules.atom.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button edit-button
-                                       full-uri index-section show-section-minimal
-                                       show-section link-to uri title index-block
-                                       index-line index-section update-button]]
-        [clojure.core.incubator :only [-?>]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [action-link actions-section admin-index-line admin-index-block
-                                admin-index-section bind-property bind-to control-line
-                                display-property display-timestamp
-                                dropdown-menu dump-data format-links pagination-links]]
+        [ciste.sections.default :only [full-uri show-section]]
         [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
-            [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.modules.atom.util :as abdera]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.comment-actions :as actions.comment]
-            [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.like :as model.like]
-            [jiksnu.model.resource :as model.resource]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
-            [jiksnu.sections.user-sections :as sections.user]
-            [jiksnu.session :as session]
-            [jiksnu.util :as util]
-            [jiksnu.modules.xmpp.element :as element]
-            [ring.util.codec :as codec])
-  (:import javax.xml.namespace.QName
-           jiksnu.model.Activity
-           jiksnu.model.Conversation
-           jiksnu.model.Resource
-           jiksnu.model.User
+            [jiksnu.namespace :as ns])
+  (:import jiksnu.model.Activity
            org.apache.abdera.model.Entry
            org.apache.abdera.model.ExtensibleElement))
 
@@ -71,7 +43,6 @@
         (.setContentAsHtml (:content activity))
         (.addSimpleExtension ns/as "object-type" "activity" ns/status)
         (.addSimpleExtension ns/as "verb" "activity" ns/post)
-        #_(actions.activity/comment-link-item activity)
         (acl-link activity))
       (let [object (:object activity)
             object-element (.addExtension entry ns/as "object" "activity")]

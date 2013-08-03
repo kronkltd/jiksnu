@@ -4,10 +4,11 @@
                                        link-to index-block index-line
                                        index-section show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [action-link actions-section admin-show-section
-                                admin-index-block admin-index-line admin-index-section
-                                bind-property control-line display-property dropdown-menu
-                                dump-data]])
+        [jiksnu.modules.core.sections :only [action-link actions-section admin-show-section
+                                             admin-index-block admin-index-line
+                                             admin-index-section]]
+        [jiksnu.modules.web.sections :only [bind-property control-line display-property
+                                            dropdown-menu dump-data]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session])
