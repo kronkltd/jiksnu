@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.setting-filters
+(ns jiksnu.modules.admin.filters.setting-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.admin.setting-actions :only [edit-page update-settings]]))
 

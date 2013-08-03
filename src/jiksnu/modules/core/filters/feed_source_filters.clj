@@ -1,4 +1,4 @@
-(ns jiksnu.filters.feed-source-filters
+(ns jiksnu.modules.core.filters.feed-source-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.feed-source-actions :only [process-updates
                                                    update
@@ -8,7 +8,7 @@
                                                    subscribe
                                                    unsubscribe
                                                    watch]]
-        [jiksnu.filters :only [parse-page parse-sorting]])
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]

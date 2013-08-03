@@ -1,4 +1,4 @@
-(ns jiksnu.filters.tag-filters
+(ns jiksnu.modules.core.filters.tag-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.tag-actions))
 

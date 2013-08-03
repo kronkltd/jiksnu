@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.like-filters
+(ns jiksnu.modules.admin.filters.like-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.admin.like-actions :only [delete index]])
   (:require [jiksnu.model :as model]

@@ -1,4 +1,4 @@
-(ns jiksnu.filters.salmon-filters
+(ns jiksnu.modules.core.filters.salmon-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.salmon-actions
         [slingshot.slingshot :only [try+]])

@@ -1,4 +1,4 @@
-(ns jiksnu.filters.pubsub-filters
+(ns jiksnu.modules.core.filters.pubsub-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.pubsub-actions :only [hub-dispatch]])
   (:require [clojure.tools.logging :as log]))

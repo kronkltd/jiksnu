@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.conversation-filters
+(ns jiksnu.modules.admin.filters.conversation-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.admin.conversation-actions :only [create index show delete fetch-updates]])
   (:require [jiksnu.model.conversation :as model.conversation]))

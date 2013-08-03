@@ -1,8 +1,8 @@
-(ns jiksnu.filters.user-filters
+(ns jiksnu.modules.core.filters.user-filters
   (:use [ciste.config :only [config]]
         [ciste.filters :only [deffilter]]
         jiksnu.actions.user-actions
-        [jiksnu.filters :only [parse-page parse-sorting]]
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-tigase.element :as element]

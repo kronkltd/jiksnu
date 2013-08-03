@@ -1,15 +1,11 @@
 (ns jiksnu.modules.core.views.auth-views
-  (:use ciste.core
-        [ciste.views :only [defview]]
+  (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.model
         jiksnu.actions.auth-actions
         [jiksnu.modules.web.sections :only [format-page-info]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.modules.web.sections.auth-sections :as sections.auth]
-            [ring.util.response :as response])
-  (:import jiksnu.model.User))
+            [jiksnu.modules.web.sections.auth-sections :as sections.auth]))
 
 ;; guest-login
 

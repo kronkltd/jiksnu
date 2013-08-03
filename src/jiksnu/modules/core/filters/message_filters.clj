@@ -1,4 +1,4 @@
-(ns jiksnu.filters.message-filters
+(ns jiksnu.modules.core.filters.message-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.message-actions)
   (:require [jiksnu.model.user :as model.user]))

@@ -1,4 +1,4 @@
-(ns jiksnu.filters.auth-filters
+(ns jiksnu.modules.core.filters.auth-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.auth-actions
         [slingshot.slingshot :only [throw+]])

@@ -1,4 +1,4 @@
-(ns jiksnu.filters.setting-filters
+(ns jiksnu.modules.core.filters.setting-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.session :only [current-user]]
         jiksnu.actions.setting-actions)

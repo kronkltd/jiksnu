@@ -1,4 +1,4 @@
-(ns jiksnu.filters.search-filters
+(ns jiksnu.modules.core.filters.search-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.search-actions))
 

@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.worker-filters
+(ns jiksnu.modules.admin.filters.worker-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.admin.worker-actions))
 

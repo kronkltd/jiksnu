@@ -7,7 +7,6 @@
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.conversation-actions :as actions.conversation]
-            jiksnu.filters.stream-filters
             [jiksnu.model :as model]
             [jiksnu.model.conversation :as model.conversation]
             [ring.mock.request :as req]))

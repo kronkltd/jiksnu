@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.auth-filters
+(ns jiksnu.modules.admin.filters.auth-filters
   (:use (ciste [filters :only [deffilter]])
         jiksnu.actions.admin.auth-actions))
 

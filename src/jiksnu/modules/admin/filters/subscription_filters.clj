@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.subscription-filters
+(ns jiksnu.modules.admin.filters.subscription-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.admin.subscription-actions)
   (:require [clojure.tools.logging :as log]

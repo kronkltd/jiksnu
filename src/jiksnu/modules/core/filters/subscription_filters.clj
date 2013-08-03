@@ -1,4 +1,4 @@
-(ns jiksnu.filters.subscription-filters
+(ns jiksnu.modules.core.filters.subscription-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions.subscription-actions :only [confirm delete get-subscribers

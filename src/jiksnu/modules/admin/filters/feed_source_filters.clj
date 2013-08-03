@@ -1,8 +1,8 @@
-(ns jiksnu.filters.admin.feed-source-filters
+(ns jiksnu.modules.admin.filters.feed-source-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.admin.feed-source-actions
-        [jiksnu.filters :only [parse-page parse-sorting]])
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.feed-source :as model.feed-source]

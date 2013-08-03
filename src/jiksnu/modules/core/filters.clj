@@ -1,4 +1,4 @@
-(ns jiksnu.filters
+(ns jiksnu.modules.core.filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])

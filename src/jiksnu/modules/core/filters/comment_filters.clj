@@ -1,4 +1,4 @@
-(ns jiksnu.filters.comment-filters
+(ns jiksnu.modules.core.filters.comment-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.comment-actions)
   (:require [clj-tigase.core :as tigase]

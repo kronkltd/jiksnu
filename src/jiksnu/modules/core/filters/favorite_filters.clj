@@ -1,4 +1,4 @@
-(ns jiksnu.filters.favorite-filters
+(ns jiksnu.modules.core.filters.favorite-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.favorite-actions)
   (:require [jiksnu.model.user :as model.user]))

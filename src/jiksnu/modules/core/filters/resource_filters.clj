@@ -1,7 +1,7 @@
-(ns jiksnu.filters.resource-filters
+(ns jiksnu.modules.core.filters.resource-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.resource-actions
-        [jiksnu.filters :only [parse-page parse-sorting]]
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]

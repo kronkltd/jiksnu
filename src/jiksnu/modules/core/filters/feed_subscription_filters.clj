@@ -1,7 +1,7 @@
-(ns jiksnu.filters.feed-subscription-filters
+(ns jiksnu.modules.core.filters.feed-subscription-filters
   (:use [ciste.filters :only [deffilter]]
         [jiksnu.actions.feed-subscription-actions :only [index show]]
-        [jiksnu.filters :only [parse-page parse-sorting]])
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.util :as util]))

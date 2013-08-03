@@ -1,8 +1,8 @@
-(ns jiksnu.filters.admin.user-filters
+(ns jiksnu.modules.admin.filters.user-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.admin.user-actions
-        [jiksnu.filters :only [parse-page parse-sorting]]
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [try+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]

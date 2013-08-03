@@ -1,4 +1,4 @@
-(ns jiksnu.filters.like-filters
+(ns jiksnu.modules.core.filters.like-filters
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.like-actions)

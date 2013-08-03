@@ -1,4 +1,4 @@
-(ns jiksnu.filters.group-filters
+(ns jiksnu.modules.core.filters.group-filters
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.group-actions)
   (:require [clojure.tools.logging :as log]

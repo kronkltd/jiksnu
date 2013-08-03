@@ -15,7 +15,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            jiksnu.filters.stream-filters
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user])

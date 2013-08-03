@@ -2,7 +2,7 @@
   (:use [ciste.filters :only [deffilter]]
         [clojure.core.incubator :only [-?>]]
         jiksnu.actions.domain-actions
-        [jiksnu.filters :only [parse-page parse-sorting]]
+        [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]

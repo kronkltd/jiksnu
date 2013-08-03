@@ -1,4 +1,4 @@
-(ns jiksnu.filters.admin.group-filters
+(ns jiksnu.modules.admin.filters.group-filters
     (:use [ciste.filters :only [deffilter]]
           [jiksnu.actions.admin.group-actions :only [index]]))
 
