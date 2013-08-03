@@ -2,7 +2,6 @@
   (:use [ciste.core :only [with-context with-serialization with-format
                            *serialization* *format*]]
         [ciste.filters :only [filter-action]]
-        [ciste.sections.default :only [full-uri]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
         [jiksnu.session :only [with-user]]

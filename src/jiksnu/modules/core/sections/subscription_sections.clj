@@ -1,8 +1,8 @@
 (ns jiksnu.modules.core.sections.subscription-sections
   (:use [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [edit-button full-uri
-                                       index-block index-line index-section link-to
-                                       show-section title uri]]
+        [ciste.sections.default :only [edit-button index-block index-line
+                                       index-section link-to show-section
+                                       title uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line
