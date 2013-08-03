@@ -9,8 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]))
+            [jiksnu.model :as model]))
 
 (test-environment-fixture
 

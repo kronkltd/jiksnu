@@ -7,7 +7,7 @@
         jiksnu.actions.auth-actions
         [jiksnu.modules.web.sections :only [format-page-info]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.sections.auth-sections :as sections.auth]
+            [jiksnu.modules.web.sections.auth-sections :as sections.auth]
             [ring.util.response :as response])
   (:import jiksnu.model.User))
 

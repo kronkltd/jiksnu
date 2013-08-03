@@ -11,10 +11,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.feed-subscription :as model.feed-subscription])
   (:import jiksnu.model.FeedSubscription))
 
 (test-environment-fixture

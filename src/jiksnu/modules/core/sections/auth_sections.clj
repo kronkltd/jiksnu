@@ -1,10 +1,11 @@
-(ns jiksnu.sections.auth-sections
+(ns jiksnu.modules.core.sections.auth-sections
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.modules.core.sections :only [actions-section]]
         [jiksnu.modules.web.sections :only [admin-index-block admin-index-line
-                                bind-to control-line display-property
-                                dump-data]]
+                                            bind-to control-line display-property
+                                            dump-data]]
         [jiksnu.session :only [current-user]]
         [jiksnu.modules.web.sections.user-sections :only [display-avatar-img]])
   (:require [clojure.tools.logging :as log]

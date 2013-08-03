@@ -13,7 +13,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
-            [jiksnu.sections.activity-sections :as sections.activity])
+            )
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 

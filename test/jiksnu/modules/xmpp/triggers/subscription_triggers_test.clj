@@ -6,9 +6,7 @@
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.features-helper :as feature]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.features-helper :as feature])
   (:import jiksnu.model.User))
 
 (test-environment-fixture

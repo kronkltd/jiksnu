@@ -14,7 +14,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [lamina.core :as l]
             [lamina.trace :as trace]))

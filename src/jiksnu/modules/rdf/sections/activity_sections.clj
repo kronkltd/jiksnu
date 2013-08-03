@@ -1,6 +1,7 @@
 (ns jiksnu.modules.rdf.sections.activity-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [show-section index-block index-line]]
+        [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity]

@@ -1,4 +1,4 @@
-(ns jiksnu.sections.link-sections
+(ns jiksnu.modules.core.sections.link-sections
   (:use [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [display-property dump-data]]))
 

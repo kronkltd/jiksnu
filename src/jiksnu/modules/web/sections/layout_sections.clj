@@ -1,4 +1,4 @@
-(ns jiksnu.sections.layout-sections
+(ns jiksnu.modules.web.sections.layout-sections
   (:use [ciste.core :only [apply-template]]
         [ciste.config :only [config environment]]
         [ciste.sections.default :only [add-form link-to show-section]]
@@ -21,11 +21,11 @@
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.activity-sections :as sections.activity]
-            [jiksnu.sections.auth-sections :as sections.auth]
-            [jiksnu.sections.group-sections :as sections.group]
-            [jiksnu.sections.subscription-sections :as sections.subscription]
-            [jiksnu.sections.user-sections :as sections.user])
+            [jiksnu.modules.web.sections.activity-sections :as sections.activity]
+            [jiksnu.modules.web.sections.auth-sections :as sections.auth]
+            [jiksnu.modules.web.sections.group-sections :as sections.group]
+            [jiksnu.modules.web.sections.subscription-sections :as sections.subscription]
+            [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

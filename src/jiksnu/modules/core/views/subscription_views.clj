@@ -7,7 +7,7 @@
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.sections.subscription-sections :as sections.subscription])
+            [jiksnu.modules.web.sections.subscription-sections :as sections.subscription])
   (:import jiksnu.model.Subscription))
 
 (defn subscription-formats

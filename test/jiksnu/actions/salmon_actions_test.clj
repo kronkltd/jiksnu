@@ -12,6 +12,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.security.Key

@@ -1,4 +1,4 @@
-(ns jiksnu.sections.subscription-sections
+(ns jiksnu.modules.core.sections.subscription-sections
   (:use [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button edit-button full-uri
                                        index-block index-line index-section link-to

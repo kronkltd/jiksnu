@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.feed-source-views
+(ns jiksnu.modules.admin.views.feed-source-views
   (:use [ciste.sections.default :only [add-form index-section title show-section]]
         [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
@@ -6,10 +6,10 @@
                                                          fetch-updates index
                                                          remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section admin-show-section bind-to format-page-info
-                                pagination-links with-page]]
-        [jiksnu.sections.feed-source-sections :only [add-watcher-form
-                                                     index-watchers]])
+        [jiksnu.modules.web.sections :only [admin-index-section admin-show-section bind-to
+                                            format-page-info pagination-links with-page]]
+        [jiksnu.modules.web.sections.feed-source-sections :only [add-watcher-form
+                                                                 index-watchers]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]

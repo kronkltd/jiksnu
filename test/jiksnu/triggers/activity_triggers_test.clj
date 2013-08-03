@@ -8,9 +8,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.mock :as mock]))
 
 (test-environment-fixture
 

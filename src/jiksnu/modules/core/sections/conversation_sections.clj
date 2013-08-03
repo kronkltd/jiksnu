@@ -1,4 +1,4 @@
-(ns jiksnu.sections.conversation-sections
+(ns jiksnu.modules.core.sections.conversation-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [uri index-block index-section]])
   (:require [clojure.tools.logging :as log]

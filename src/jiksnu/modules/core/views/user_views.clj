@@ -12,7 +12,6 @@
             [jiksnu.namespace :as ns]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.user-sections :as sections.user]
             [ring.util.response :as response]))
 
 ;; index

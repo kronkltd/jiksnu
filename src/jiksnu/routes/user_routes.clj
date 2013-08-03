@@ -56,10 +56,3 @@
    [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
    [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
    ])
-
-;; (definitializer
-;;   (require-namespaces
-;;    ["jiksnu.filters.user-filters"
-;;     "jiksnu.sections.user-sections"
-;;     "jiksnu.triggers.user-triggers"
-;;     "jiksnu.views.user-views"]))

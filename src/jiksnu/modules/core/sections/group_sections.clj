@@ -1,4 +1,4 @@
-(ns jiksnu.sections.group-sections
+(ns jiksnu.modules.core.sections.group-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [add-form delete-button edit-button
                                        link-to index-block index-line

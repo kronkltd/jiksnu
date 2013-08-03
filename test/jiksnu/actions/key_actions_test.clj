@@ -11,10 +11,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.mock :as mock]
-            [jiksnu.factory :as factory]
-            [jiksnu.model :as model]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.webfinger :as model.webfinger]))
+            [jiksnu.factory :as factory]))
 
 (test-environment-fixture
 

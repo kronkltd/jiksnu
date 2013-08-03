@@ -1,8 +1,8 @@
-(ns jiksnu.modules.core.views.admin.worker-views
+(ns jiksnu.modules.admin.views.worker-views
   (:use [ciste.views :only [defview]]
         jiksnu.actions.admin.worker-actions)
   (:require [ciste.workers :as workers]
-            [jiksnu.sections.worker-sections :as sections.worker]))
+            [jiksnu.modules.web.sections.worker-sections :as sections.worker]))
 
 (defview #'index :html
   [request workers]

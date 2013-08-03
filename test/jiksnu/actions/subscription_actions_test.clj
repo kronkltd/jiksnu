@@ -9,8 +9,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.subscription :as model.subscription])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 

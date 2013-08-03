@@ -1,4 +1,4 @@
-(ns jiksnu.sections.like-sections
+(ns jiksnu.modules.core.sections.like-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [actions-section index-line
                                        index-block index-section

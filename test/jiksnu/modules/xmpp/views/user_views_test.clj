@@ -22,8 +22,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.xmpp.views.user-views :as views.user]
-            [net.cgrand.enlive-html :as enlive])
+            [jiksnu.modules.xmpp.views.user-views :as views.user])
   (:import java.io.StringReader
            jiksnu.model.User))
 

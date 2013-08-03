@@ -12,8 +12,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.key :as model.key])
   (:import java.net.URI
            java.security.PublicKey
            jiksnu.model.Activity

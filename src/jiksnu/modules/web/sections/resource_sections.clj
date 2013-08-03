@@ -1,18 +1,17 @@
-(ns jiksnu.sections.resource-sections
+(ns jiksnu.modules.web.sections.resource-sections
     (:use [ciste.sections :only [defsection]]
           [ciste.sections.default :only [delete-button full-uri uri title index-line
                                          index-block index-line index-section link-to
                                          show-section update-button]]
           [jiksnu.ko :only [*dynamic*]]
-          [jiksnu.modules.web.sections :only [action-link actions-section admin-index-block
-                                  admin-index-line bind-to control-line
-                                  display-property dropdown-menu dump-data
-                                  pagination-links]])
+          [jiksnu.modules.core.sections :only [actions-section admin-index-block
+                                               admin-index-line]]
+          [jiksnu.modules.web.sections :only [action-link bind-to control-line
+                                              display-property dropdown-menu dump-data
+                                              pagination-links]])
     (:require [ciste.model :as cm]
               [clojure.tools.logging :as log]
-              [jiksnu.model.conversation :as model.conversation]
-              [jiksnu.model.feed-source :as model.feed-source]
-              [jiksnu.sections.link-sections :as sections.link]
+              [jiksnu.modules.web.sections.link-sections :as sections.link]
               [jiksnu.session :as session])
     (:import jiksnu.model.Conversation
              jiksnu.model.Domain

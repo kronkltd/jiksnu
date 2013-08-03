@@ -32,8 +32,7 @@
             [jiksnu.util :as util]
             [jiksnu.modules.xmpp.element :as element]
             [ring.util.codec :as codec])
-  (:import javax.xml.namespace.QName
-           jiksnu.model.Activity
+  (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource
            jiksnu.model.User

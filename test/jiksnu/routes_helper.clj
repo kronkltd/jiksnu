@@ -9,10 +9,8 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]
-            [jiksnu.model.user :as model.user]
             [jiksnu.routes :as r]
             [lamina.time :as time]
-            [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]
             [ring.util.codec :as codec])
   (:import java.io.StringReader))

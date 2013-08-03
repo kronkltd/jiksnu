@@ -5,7 +5,6 @@
         [jiksnu.test-helper :only [context hiccup->doc test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
-            [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
@@ -13,11 +12,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.user-actions :as actions.user]
-            [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 
 (test-environment-fixture

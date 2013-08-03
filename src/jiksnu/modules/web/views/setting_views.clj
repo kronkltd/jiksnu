@@ -1,9 +1,7 @@
 (ns jiksnu.modules.core.views.setting-views
   (:use [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.setting-actions)
-  (:require [hiccup.form :as f]
-            [jiksnu.sections.setting-sections :as sections.setting]))
+        jiksnu.actions.setting-actions))
 
 (defview #'avatar-page :html
   [request {:keys [user]}]

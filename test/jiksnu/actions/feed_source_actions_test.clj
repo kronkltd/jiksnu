@@ -18,9 +18,7 @@
             [jiksnu.factory :as factory]
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.resource :as model.resource]
-            [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.core :as l])

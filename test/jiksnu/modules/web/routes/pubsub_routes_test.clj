@@ -17,7 +17,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
-            [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 
 (test-environment-fixture

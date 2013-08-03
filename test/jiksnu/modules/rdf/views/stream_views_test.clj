@@ -26,8 +26,7 @@
             ;; jiksnu.modules.rdf.sections.stream-sections
             jiksnu.modules.rdf.sections.user-sections
             [jiksnu.modules.rdf.util :as rdf]
-            jiksnu.modules.rdf.views.stream-views
-            [net.cgrand.enlive-html :as enlive]))
+            jiksnu.modules.rdf.views.stream-views))
 
 (test-environment-fixture
 

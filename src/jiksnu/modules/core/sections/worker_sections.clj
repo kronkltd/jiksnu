@@ -1,4 +1,4 @@
-(ns jiksnu.sections.worker-sections
+(ns jiksnu.modules.core.sections.worker-sections
   (:require [ciste.workers :as workers]))
 
 (defn stop-workers-button

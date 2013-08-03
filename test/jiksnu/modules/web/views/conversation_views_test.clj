@@ -13,8 +13,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.web.views.conversation-views
-            [net.cgrand.enlive-html :as enlive])
+            jiksnu.modules.web.views.conversation-views)
   (:import java.io.StringReader
            jiksnu.model.User))
 

@@ -21,8 +21,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
-            [jiksnu.util :as util]
-            [net.cgrand.enlive-html :as enlive])
+            [jiksnu.util :as util])
   (:import jiksnu.model.Resource))
 
 (def user-agent "Jiksnu Resource Fetcher (http://github.com/duck1123/jiksnu)")

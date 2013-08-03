@@ -1,4 +1,4 @@
-(ns jiksnu.sections.domain-sections
+(ns jiksnu.modules.core.sections.domain-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
         ciste.sections.default
@@ -11,7 +11,7 @@
                                 dropdown-menu]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.sections.link-sections :as sections.link]
+            [jiksnu.modules.core.sections.link-sections :as sections.link]
             [jiksnu.session :as session])
   (:import jiksnu.model.Domain))
 

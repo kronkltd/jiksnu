@@ -4,9 +4,7 @@
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [jiksnu.db :as db]
-            [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]))
+            [jiksnu.mock :as mock]))
 
 (test-environment-fixture
 

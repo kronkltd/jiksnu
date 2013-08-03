@@ -1,4 +1,4 @@
-(ns jiksnu.sections.layout-sections
+(ns jiksnu.modules.core.sections.layout-sections
   (:use [ciste.core :only [apply-template]])
   (:require [clojure.tools.logging :as log]))
 

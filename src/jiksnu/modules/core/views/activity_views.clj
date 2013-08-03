@@ -13,7 +13,6 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.sections.activity-sections :as sections.activity]
             [jiksnu.session :as session]
             [jiksnu.modules.xmpp.element :as xmpp.element]
             [ring.util.response :as response])

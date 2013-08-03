@@ -3,8 +3,7 @@
         [jiksnu.actions.admin.feed-source-actions :only [index]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=>]])
-  (:require [jiksnu.mock :as mock]
-            [jiksnu.model.feed-source :as model.feed-source]))
+  (:require [jiksnu.mock :as mock]))
 
 (test-environment-fixture
 

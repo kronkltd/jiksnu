@@ -13,8 +13,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
-            [jiksnu.sections.domain-sections :as sections.domain])
+            [jiksnu.namespace :as ns])
   (:import jiksnu.model.Domain
            jiksnu.model.User))
 
