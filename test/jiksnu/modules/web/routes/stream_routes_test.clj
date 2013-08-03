@@ -6,7 +6,6 @@
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]

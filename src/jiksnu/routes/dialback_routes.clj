@@ -2,8 +2,7 @@
   (:use [ciste.initializer :only [definitializer]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.dialback-actions :as dialback]
-            [jiksnu.util :as util]))
+  (:require [jiksnu.actions.dialback-actions :as dialback]))
 
 (add-route! "/api/dialback"              {:named "dialback"})
 

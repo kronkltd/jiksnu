@@ -7,8 +7,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]))
+            [jiksnu.model.user :as model.user]))
 
 (deffilter #'public-timeline :xmpp
   [action request]

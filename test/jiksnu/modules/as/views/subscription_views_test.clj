@@ -9,7 +9,6 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]

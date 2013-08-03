@@ -1,23 +1,13 @@
 (ns jiksnu.modules.core.sections.subscription-sections
   (:use [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [edit-button index-block index-line
-                                       index-section link-to show-section
-                                       uri]]
+        [ciste.sections.default :only [index-block index-line index-section
+                                       show-section uri]]
         [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line
-                                             admin-index-section]]
-        [jiksnu.modules.web.sections :only [bind-to control-line dump-data with-page
-                                            with-sub-page]])
-  (:require [ciste.model :as cm]
-            [clj-tigase.core :as tigase]
-            [clojure.tools.logging :as log]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.namespace :as ns]
-            [jiksnu.modules.web.sections.user-sections :as sections.user])
-  (:import jiksnu.model.Subscription
-           jiksnu.model.User))
+                                             admin-index-section]])
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.model.subscription :as model.subscription])
+  (:import jiksnu.model.Subscription))
 
 ;; subscriptions where the user is the target
 (declare-section subscribers-section :seq)
@@ -28,50 +18,6 @@
 (declare-section subscriptions-section :seq)
 (declare-section subscriptions-block :seq)
 (declare-section subscriptions-line)
-
-(defn subscriber-response-element
-  [subscription]
-  (let [subscriber (model.user/fetch-by-id (:from subscription))]
-    ["subscriber" {"node" ns/microblog
-                   "created" (:created subscription)
-                   "jid" (str (:username subscriber) "@"
-                              (:domain subscriber))}]))
-
-(defn subscription-response-element
-  [subscription]
-  (let [subscribee (model.user/fetch-by-id (:to subscription))]
-    ["subscription" {"node" ns/microblog
-                     "subscription" "subscribed"
-                     "created" (:created subscription)
-                     "jid" (str (:username subscribee) "@"
-                                (:domain subscribee))}]))
-
-(defn unsubscription-request
-  [subscription]
-  (let [subscribee (model.user/fetch-by-id (:from subscription))]
-    ["pubsub"  {"xmlns" ns/pubsub}
-     ["unsubscribe" {"node" ns/microblog
-                     "jid" (tigase/make-jid subscribee)}]]))
-
-(defn subscribe-request
-  [subscription]
-  (let [subscribee (model.user/fetch-by-id (:from subscription))]
-    ["pubsub"  {"xmlns" ns/pubsub}
-     ["subscribe" {"node" ns/microblog
-                   "jid" (tigase/make-jid subscribee)}]]))
-
-(defn subscribers-response
-  [subscribers]
-  ["pubsub" {"xmlns" ns/pubsub}
-   ["subscribers" {"node" ns/microblog}
-    (map subscriber-response-element subscribers)]])
-
-(defn subscriptions-response
-  "Returns a response iq packet containing the ids in entries"
-  [subscriptions]
-  ["pubsub" {"xmlns" ns/pubsub}
-   ["subscriptions" {"node" ns/microblog}
-    (map subscription-response-element subscriptions)]])
 
 (defsection admin-index-line [Subscription :viewmodel]
   [item & [page]]

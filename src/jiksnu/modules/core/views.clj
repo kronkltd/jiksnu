@@ -9,7 +9,6 @@
         [jiksnu.session :only [current-user]])
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions :as actions]
             [jiksnu.model :as model]
             [plaza.rdf.core :as rdf]))

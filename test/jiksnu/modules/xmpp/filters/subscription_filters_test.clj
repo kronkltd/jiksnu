@@ -10,8 +10,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             jiksnu.modules.xmpp.filters.subscription-filters
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]))
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 

@@ -1,8 +1,8 @@
-(ns jiksnu.triggers.activity-triggers-test
+(ns jiksnu.modules.core.triggers.activity-triggers-test
   (:use [ciste.config :only [with-environment]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [jiksnu.triggers.activity-triggers :only [notify-activity]]
+        [jiksnu.modules.core.triggers.activity-triggers :only [notify-activity]]
         [midje.sweet :only [=>]])
   (:require [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]

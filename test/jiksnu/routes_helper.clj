@@ -4,7 +4,6 @@
         [lamina.core :only [channel wait-for-message]])
   (:require [clj-http.cookies :as cookies]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]

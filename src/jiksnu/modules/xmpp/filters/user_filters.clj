@@ -12,8 +12,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]
-            [jiksnu.util :as util]))
+            [jiksnu.session :as session]))
 
 (deffilter #'delete :xmpp
   [action request]

@@ -5,7 +5,6 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
-            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace]
             [monger.collection :as mc]

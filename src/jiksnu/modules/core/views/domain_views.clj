@@ -9,7 +9,6 @@
         [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]

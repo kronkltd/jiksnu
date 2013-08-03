@@ -11,8 +11,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util])
+            [jiksnu.model.user :as model.user])
   (:import tigase.xmpp.JID))
 
 (deffilter #'get-subscribers :xmpp

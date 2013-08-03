@@ -15,7 +15,6 @@
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [hiccup.form :as f]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.subscription-actions :as actions.subscription]
@@ -26,7 +25,6 @@
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]
             [lamina.trace :as trace]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Domain

@@ -9,7 +9,6 @@
                                             pagination-links with-page with-sub-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]

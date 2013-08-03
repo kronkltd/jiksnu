@@ -19,7 +19,8 @@
             [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.util :as util])
   (:import jiksnu.model.Activity))
 
 (util/require-module "jiksnu.modules" "xmpp")

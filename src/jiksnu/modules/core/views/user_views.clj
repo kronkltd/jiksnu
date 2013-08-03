@@ -8,7 +8,6 @@
         [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.namespace :as ns]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.model.user :as model.user]

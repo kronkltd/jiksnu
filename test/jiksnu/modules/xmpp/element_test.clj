@@ -8,7 +8,8 @@
         [midje.sweet :only [=>]])
   (:require [clj-tigase.element :as element]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as namespace])
+            [jiksnu.namespace :as namespace]
+            [jiksnu.util :as util])
   (:import jiksnu.model.Activity))
 
 (util/require-module "jiksnu.modules" "xmpp")

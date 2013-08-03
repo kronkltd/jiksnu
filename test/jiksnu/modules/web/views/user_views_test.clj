@@ -15,7 +15,6 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]

@@ -2,6 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [show-section]])
   (:require [clojure.tools.logging :as log]
+            [hiccup.core :as h]
             [jiksnu.namespace :as ns]
             [lamina.trace :as trace])
   (:import jiksnu.model.User))

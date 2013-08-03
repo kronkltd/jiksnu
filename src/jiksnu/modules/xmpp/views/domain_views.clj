@@ -6,7 +6,6 @@
         [jiksnu.ko :only [*dynamic*]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
