@@ -5,7 +5,7 @@
         [jiksnu.actions.group-actions :only [add create edit-page index
                                              new-page show user-list]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [format-page-info pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity])
   (:import jiksnu.model.Group))

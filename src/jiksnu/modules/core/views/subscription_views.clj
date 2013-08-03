@@ -3,7 +3,7 @@
         ciste.sections.default
         jiksnu.actions.subscription-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
+        [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]

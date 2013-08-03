@@ -4,7 +4,7 @@
         [ciste.sections.default :only [uri index-section show-section]]
         jiksnu.actions.resource-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [ring.util.response :as response])

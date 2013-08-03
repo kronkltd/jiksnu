@@ -3,7 +3,7 @@
         [ciste.sections.default :only [add-form index-block index-section]]
         [jiksnu.actions.admin.auth-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section bind-to format-page-info
+        [jiksnu.modules.web.sections :only [admin-index-section bind-to format-page-info
                                 pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model])

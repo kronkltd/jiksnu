@@ -8,7 +8,7 @@
          [clojure.core.incubator :only [-?>]]
          [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.sections :only [action-link actions-section admin-actions-section
+         [jiksnu.modules.web.sections :only [action-link actions-section admin-actions-section
                                  admin-index-block admin-index-line admin-index-section
                                  admin-show-section bind-property bind-to control-line
                                  display-property dropdown-menu pagination-links]]

@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.dialback-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info]])
+        [jiksnu.modules.web.sections :only [bind-to format-page-info]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [ring.util.response :as response])

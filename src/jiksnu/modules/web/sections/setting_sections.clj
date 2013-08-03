@@ -1,6 +1,6 @@
 (ns jiksnu.modules.web.sections.setting-sections
   (:use [ciste.config :only [config]]
-        [jiksnu.sections :only [control-line]]))
+        [jiksnu.modules.web.sections :only [control-line]]))
 
 (defn edit-form
   []

@@ -4,7 +4,7 @@
                                        link-to index-block index-line
                                        index-section show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link actions-section admin-show-section
+        [jiksnu.modules.web.sections :only [action-link actions-section admin-show-section
                                 admin-index-block admin-index-line admin-index-section
                                 bind-property control-line display-property dropdown-menu
                                 dump-data]])

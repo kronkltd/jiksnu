@@ -4,7 +4,7 @@
                                        index-block index-section
                                        delete-button link-to]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-line admin-index-block
+        [jiksnu.modules.web.sections :only [admin-index-line admin-index-block
                                 admin-index-section]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.activity :as model.activity]

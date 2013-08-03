@@ -6,7 +6,7 @@
                                        index-line index-section update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link actions-section admin-index-line admin-index-block
+        [jiksnu.modules.web.sections :only [action-link actions-section admin-index-line admin-index-block
                                 admin-index-section bind-property bind-to control-line
                                 display-property display-timestamp
                                 dropdown-menu dump-data format-links pagination-links]]

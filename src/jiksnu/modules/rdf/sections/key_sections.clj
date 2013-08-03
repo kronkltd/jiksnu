@@ -1,7 +1,7 @@
 (ns jiksnu.modules.rdf.sections.key-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri show-section index-line]]
-        [jiksnu.sections :only [action-link admin-index-line admin-index-block
+        [jiksnu.modules.web.sections :only [action-link admin-index-line admin-index-block
                                 format-links admin-index-section bind-property
                                 dump-data control-line pagination-links]])
   (:require [clojure.tools.logging :as log]

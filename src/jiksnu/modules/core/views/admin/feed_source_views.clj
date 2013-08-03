@@ -6,7 +6,7 @@
                                                          fetch-updates index
                                                          remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-show-section bind-to format-page-info
+        [jiksnu.modules.web.sections :only [admin-index-section admin-show-section bind-to format-page-info
                                 pagination-links with-page]]
         [jiksnu.sections.feed-source-sections :only [add-watcher-form
                                                      index-watchers]])

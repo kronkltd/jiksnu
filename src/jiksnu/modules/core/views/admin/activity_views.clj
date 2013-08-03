@@ -3,7 +3,7 @@
         [ciste.sections.default :only [link-to]]
         [jiksnu.actions.admin.activity-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section bind-to dump-data
+        [jiksnu.modules.web.sections :only [admin-index-section bind-to dump-data
                                 format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity])

@@ -3,7 +3,7 @@
         [ciste.sections.default :only [add-form delete-button show-section index-line
                                        index-section link-to update-button]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-block admin-index-line
+        [jiksnu.modules.web.sections :only [admin-index-block admin-index-line
                                 control-line display-property]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]

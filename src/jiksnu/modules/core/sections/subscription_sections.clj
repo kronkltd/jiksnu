@@ -5,7 +5,7 @@
                                        show-section title uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link admin-index-block admin-index-line
+        [jiksnu.modules.web.sections :only [action-link admin-index-block admin-index-line
                                 admin-index-section bind-to control-line dump-data with-page
                                 with-sub-page]])
   (:require [ciste.model :as cm]

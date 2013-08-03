@@ -3,7 +3,7 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.subscription-actions :only [index delete show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section admin-show-section bind-to
+        [jiksnu.modules.web.sections :only [admin-index-section admin-show-section bind-to
                                 dump-data format-page-info pagination-links
                                 with-page]])
   (:require [clojure.tools.logging :as log])

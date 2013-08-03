@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.conversation-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to dump-data format-page-info
+        [jiksnu.modules.web.sections :only [bind-to dump-data format-page-info
                                 pagination-links with-page with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]

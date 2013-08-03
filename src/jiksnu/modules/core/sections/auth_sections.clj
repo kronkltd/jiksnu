@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [defsection]]
         ciste.sections.default
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-block admin-index-line
+        [jiksnu.modules.web.sections :only [admin-index-block admin-index-line
                                 bind-to control-line display-property
                                 dump-data]]
         [jiksnu.session :only [current-user]]

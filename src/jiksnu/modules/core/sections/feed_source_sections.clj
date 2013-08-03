@@ -4,7 +4,7 @@
                                        index-section link-to title update-button]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [action-link actions-section admin-show-section admin-index-block
+        [jiksnu.modules.web.sections :only [action-link actions-section admin-show-section admin-index-block
                                 admin-index-line admin-index-section bind-to control-line
                                 display-property dropdown-menu dump-data]])
   (:require [clojure.string :as string]

@@ -4,7 +4,7 @@
         [ciste.sections.default :only [add-form link-to show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to display-property dump-data pagination-links]]
+        [jiksnu.modules.web.sections :only [bind-to display-property dump-data pagination-links]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]

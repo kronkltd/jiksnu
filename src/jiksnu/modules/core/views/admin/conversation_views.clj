@@ -3,7 +3,7 @@
         [ciste.views :only [defview]]
         [jiksnu.actions.admin.conversation-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [admin-index-section pagination-links with-page]])
   (:import jiksnu.model.Conversation))
 
 (defview #'index :html

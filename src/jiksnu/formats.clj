@@ -6,7 +6,7 @@
         [ciste.sections.default :only [full-uri title link-to
                                        index-block index-section uri
                                        delete-button index-line edit-button]]
-        [jiksnu.sections :only [format-page-info]])
+        [jiksnu.modules.web.sections :only [format-page-info]])
   (:require [clj-tigase.core :as tigase]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]

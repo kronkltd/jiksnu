@@ -6,7 +6,7 @@
                                               index show ping ping-response
                                               ping-error]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

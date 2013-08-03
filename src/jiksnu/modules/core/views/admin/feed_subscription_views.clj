@@ -4,7 +4,7 @@
         [jiksnu.actions.admin.feed-subscription-actions :only [delete index
                                                                show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.sections :only [admin-index-section format-page-info
+        [jiksnu.modules.web.sections :only [admin-index-section format-page-info
                                 pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
