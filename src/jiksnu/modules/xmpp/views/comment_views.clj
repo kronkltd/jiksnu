@@ -1,6 +1,6 @@
 (ns jiksnu.modules.xmpp.views.comment-views
   (:use [ciste.views :only [defview]]
-        ciste.sections.default
+        [ciste.sections.default :only [index-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.comment-actions)
   (:require [clj-tigase.core :as tigase]

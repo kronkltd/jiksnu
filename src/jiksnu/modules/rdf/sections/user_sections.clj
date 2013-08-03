@@ -3,8 +3,7 @@
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [title uri full-uri show-section
                                         edit-button delete-button index-line
-                                        show-section-minimal update-button
-                                        index-section]]
+                                        show-section-minimal update-button]]
          [clojure.core.incubator :only [-?>]]
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.session :only [current-user is-admin?]]

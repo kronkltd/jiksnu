@@ -3,8 +3,7 @@
          [ciste.sections :only [defsection]]
          [ciste.sections.default :only [actions-section title uri full-uri show-section add-form
                                         edit-button delete-button link-to index-line
-                                        show-section-minimal update-button index-block
-                                        index-section]]
+                                        show-section-minimal update-button index-block]]
          [clojure.core.incubator :only [-?>]]
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.modules.core.sections :only [admin-actions-section

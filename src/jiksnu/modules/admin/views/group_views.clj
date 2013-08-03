@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.views.admin.group-views
-  (:use [ciste.sections.default :only [index-section]]
-        [ciste.views :only [defview]]
+  (:use [ciste.views :only [defview]]
         [jiksnu.actions.admin.group-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [admin-index-section format-page-info
