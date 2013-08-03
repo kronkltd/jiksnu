@@ -1,4 +1,4 @@
-(ns jiksnu.sections
+(ns jiksnu.modules.web.sections
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [delete-button edit-button full-uri index-block
