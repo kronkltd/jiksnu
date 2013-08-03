@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.sections.auth-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form index-line]]
+        [ciste.sections.default :only [actions-section add-form index-line link-to]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
         [jiksnu.modules.web.sections :only [bind-to control-line display-property

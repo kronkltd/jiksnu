@@ -3,7 +3,7 @@
         [ciste.sections :only [defsection]]
         [ciste.sections.default :only [delete-button edit-button
                                        full-uri index-section show-section-minimal
-                                       show-section link-to uri title index-block
+                                       show-section uri title index-block
                                        index-line index-section update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]

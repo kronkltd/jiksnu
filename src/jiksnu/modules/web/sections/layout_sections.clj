@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.sections.layout-sections
   (:use [ciste.core :only [apply-template]]
         [ciste.config :only [config environment]]
-        [ciste.sections.default :only [add-form link-to show-section]]
+        [ciste.sections.default :only [add-form show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [bind-to display-property dump-data pagination-links]]

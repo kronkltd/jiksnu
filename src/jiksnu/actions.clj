@@ -4,7 +4,6 @@
         [ciste.core :only [defaction with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [ciste.routes :only [resolve-routes]]
-        [ciste.sections.default :only [link-to]]
         [clojure.core.incubator :only [dissoc-in]]
         [clojure.data.json :only [read-json]]
         [clojure.pprint :only [pprint]]
