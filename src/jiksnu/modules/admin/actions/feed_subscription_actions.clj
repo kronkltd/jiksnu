@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.feed-subscription-actions
+(ns jiksnu.modules.admin.actions.feed-subscription-actions
   (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [jiksnu.model :as model]

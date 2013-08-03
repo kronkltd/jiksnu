@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.key-actions
+(ns jiksnu.modules.admin.actions.key-actions
   (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [jiksnu.actions.key-actions :as actions.key]))

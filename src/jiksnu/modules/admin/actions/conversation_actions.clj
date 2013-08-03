@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.conversation-actions
+(ns jiksnu.modules.admin.actions.conversation-actions
   (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [jiksnu.actions.conversation-actions :as actions.conversation]

@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.worker-actions
+(ns jiksnu.modules.admin.actions.worker-actions
   (:use [ciste.core :only [defaction]])
   (:require [ciste.workers :as workers]))
 

@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.feed-source-actions
+(ns jiksnu.modules.admin.actions.feed-source-actions
   (:use [ciste.core :only [defaction]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]

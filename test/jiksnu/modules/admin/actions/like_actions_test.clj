@@ -1,7 +1,7 @@
-(ns jiksnu.actions.admin.like-actions-test
+(ns jiksnu.modules.admin.actions.like-actions-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.actions.admin.like-actions :only [delete index]]
+        [jiksnu.modules.admin.actions.like-actions :only [delete index]]
         [midje.sweet :only [falsey => contains]])
   (:require [jiksnu.model.like :as model.like]))
 

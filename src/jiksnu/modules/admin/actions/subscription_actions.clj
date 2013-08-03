@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.subscription-actions
+(ns jiksnu.modules.admin.actions.subscription-actions
   (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]

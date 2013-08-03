@@ -1,4 +1,4 @@
-(ns jiksnu.actions.admin.user-actions
+(ns jiksnu.modules.admin.actions.user-actions
   "This is the namespace for the admin pages for users"
   (:use [ciste.core :only [defaction]])
   (:require [jiksnu.actions.user-actions :as actions.user]
