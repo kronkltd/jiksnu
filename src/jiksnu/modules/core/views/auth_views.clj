@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.views.auth-views
   (:use ciste.core
         [ciste.views :only [defview]]
-        ciste.sections.default
+        [ciste.sections.default :only [show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.model
         jiksnu.actions.auth-actions

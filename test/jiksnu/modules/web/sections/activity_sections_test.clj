@@ -1,8 +1,7 @@
 (ns jiksnu.modules.web.sections.activity-sections-test
   (:use [ciste.config :only [with-environment]]
         [ciste.core :only [with-context with-format with-serialization]]
-        [ciste.sections.default :only [index-block index-section
-                                       show-section uri]]
+        [ciste.sections.default :only [index-section show-section uri]]
         [clj-factory.core :only [factory]]
         jiksnu.modules.web.sections.activity-sections
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]

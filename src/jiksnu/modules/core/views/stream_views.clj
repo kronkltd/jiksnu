@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [with-format]]
         [ciste.views :only [apply-view defview]]
-        [ciste.sections.default :only [index-line]]
+        [ciste.sections.default :only [index-block index-line show-section]]
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]])

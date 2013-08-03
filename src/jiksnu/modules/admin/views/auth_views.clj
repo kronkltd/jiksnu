@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.views.admin.auth-views
   (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [add-form index-block index-section]]
+        [ciste.sections.default :only [add-form]]
         [jiksnu.actions.admin.auth-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [admin-index-section bind-to format-page-info

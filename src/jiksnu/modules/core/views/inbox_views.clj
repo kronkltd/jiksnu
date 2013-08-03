@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.views.inbox-views
   (:use [ciste.views :only [defview]]
-        ciste.sections.default
+        [ciste.sections.default :only [index-block]]
         jiksnu.actions.inbox-actions))
 
 (defview #'index :html

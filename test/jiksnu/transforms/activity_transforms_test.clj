@@ -1,6 +1,5 @@
 (ns jiksnu.transforms.activity-transforms-test
   (:use [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [jiksnu.transforms.activity-transforms :only [set-recipients]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]

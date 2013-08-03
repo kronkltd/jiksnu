@@ -1,7 +1,5 @@
 (ns jiksnu.modules.xmpp.views.domain-views
   (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section
-                                       show-section]]
         [jiksnu.actions.domain-actions :only [create delete discover find-or-create
                                               index show ping ping-response
                                               ping-error]]

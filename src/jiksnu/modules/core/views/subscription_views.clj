@@ -1,9 +1,10 @@
 (ns jiksnu.modules.core.views.subscription-views
   (:use [ciste.views :only [defview]]
-        ciste.sections.default
+        [ciste.sections.default :only [show-section]]
         jiksnu.actions.subscription-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page pagination-links]])
+        [jiksnu.modules.web.sections :only [bind-to format-page-info with-page with-sub-page
+                                            pagination-links]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.model.subscription :as model.subscription]

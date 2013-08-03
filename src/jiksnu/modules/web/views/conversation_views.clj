@@ -1,7 +1,7 @@
 (ns jiksnu.modules.web.views.conversation-views
   (:use [ciste.core :only [with-format]]
         [ciste.views :only [defview]]
-        [ciste.sections.default :only [uri index-section show-section]]
+        [ciste.sections.default :only [index-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.conversation-actions
         [jiksnu.ko :only [*dynamic*]]
