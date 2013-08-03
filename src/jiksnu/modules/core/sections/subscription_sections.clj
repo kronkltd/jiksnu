@@ -2,7 +2,7 @@
   (:use [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [edit-button index-block index-line
                                        index-section link-to show-section
-                                       title uri]]
+                                       uri]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-block admin-index-line

@@ -1,7 +1,7 @@
 (ns jiksnu.modules.rdf.sections.user-sections
   (:use  [ciste.config :only [config]]
          [ciste.sections :only [defsection]]
-         [ciste.sections.default :only [title uri full-uri show-section
+         [ciste.sections.default :only [uri full-uri show-section
                                         edit-button index-line
                                         show-section-minimal update-button]]
          [clojure.core.incubator :only [-?>]]

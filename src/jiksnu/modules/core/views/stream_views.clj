@@ -13,7 +13,7 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.web.sections.activity-sections :as sections.activity])
+            [jiksnu.modules.core.sections.activity-sections :as sections.activity])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 

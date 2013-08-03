@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.sections :only [declare-section defsection]]
         [ciste.sections.default :only [edit-button index-block
-                                       index-block-type index-line title uri]]
+                                       index-block-type index-line uri]]
         [jiksnu.ko :only [*dynamic*]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
