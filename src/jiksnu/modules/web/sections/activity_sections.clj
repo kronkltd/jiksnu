@@ -1,17 +1,18 @@
 (ns jiksnu.modules.web.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button edit-button
+        [ciste.sections.default :only [actions-section add-form delete-button edit-button
                                        full-uri index-section show-section-minimal
                                        show-section link-to uri title index-block
                                        index-line index-section update-button]]
         [clojure.core.incubator :only [-?>]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [action-link actions-section admin-index-line
+        [jiksnu.modules.core.sections :only [admin-index-line
                                              admin-index-block admin-index-section ]]
-        [jiksnu.modules.web.sections :only [bind-property bind-to control-line display-property
-                                            display-timestamp dropdown-menu dump-data format-links
-                                            pagination-links]]
+        [jiksnu.modules.web.sections :only [action-link bind-to
+                                            control-line
+                                            display-property display-timestamp dropdown-menu
+                                            dump-data format-links pagination-links]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clojure.string :as string]
@@ -30,13 +31,11 @@
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [jiksnu.modules.xmpp.element :as element]
             [ring.util.codec :as codec])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource
-           jiksnu.model.User
-           org.apache.abdera.model.ExtensibleElement))
+           jiksnu.model.User))
 
 (defn like-button
   [activity]

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.admin.views.feed-source-views
-  (:use [ciste.sections.default :only [add-form index-section title show-section]]
+  (:use [ciste.sections.default :only [index-section title show-section]]
         [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.actions.admin.feed-source-actions :only [add-watcher delete

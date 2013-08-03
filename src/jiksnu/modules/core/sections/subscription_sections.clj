@@ -72,15 +72,6 @@
    ["subscriptions" {"node" ns/microblog}
     (map subscription-response-element subscriptions)]])
 
-(defn actions-section
-  [subscription]
-  [:div.btn-group
-   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
-    [:span.caret]]
-   [:ul.dropdown-menu.pull-right
-    [:li (delete-button subscription)]]])
-
-
 (defn ostatus-sub-form
   []
   [:form {:method "post"
@@ -147,6 +138,14 @@
                        (sections.user/display-avatar user "24"))])]) subscriptions)])
        [:p
         [:a {:href "/main/ostatussub"} "Add Remote"]]])))
+
+(defsection actions-section [Subscription :html]
+  [subscription]
+  [:div.btn-group
+   [:a.btn.dropdown-toggle {:data-toggle "dropdown"}
+    [:span.caret]]
+   [:ul.dropdown-menu.pull-right
+    [:li (delete-button subscription)]]])
 
 ;; admin-index-line
 

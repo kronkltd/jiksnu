@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.sections.group-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button edit-button
+        [ciste.sections.default :only [actions-section add-form delete-button edit-button
                                        link-to index-block index-line
                                        index-section show-section update-button]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [action-link actions-section admin-show-section
+        [jiksnu.modules.core.sections :only [action-link admin-show-section
                                              admin-index-block admin-index-line
                                              admin-index-section]]
         [jiksnu.modules.web.sections :only [bind-property control-line display-property

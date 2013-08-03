@@ -1,10 +1,9 @@
 (ns jiksnu.modules.core.sections.auth-sections
   (:use [ciste.sections :only [defsection]]
-        ciste.sections.default
+        [ciste.sections.default :only [actions-section add-form index-line]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [actions-section]]
-        [jiksnu.modules.web.sections :only [admin-index-block admin-index-line
-                                            bind-to control-line display-property
+        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
+        [jiksnu.modules.web.sections :only [bind-to control-line display-property
                                             dump-data]]
         [jiksnu.session :only [current-user]]
         [jiksnu.modules.web.sections.user-sections :only [display-avatar-img]])

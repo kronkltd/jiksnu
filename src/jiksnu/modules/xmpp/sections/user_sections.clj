@@ -1,34 +1,10 @@
 (ns jiksnu.modules.xmpp.sections.user-sections
-  (:use  [ciste.config :only [config]]
-         [ciste.sections :only [defsection]]
-         [ciste.sections.default :only [title uri full-uri show-section add-form
-                                        edit-button delete-button link-to index-line
-                                        show-section-minimal update-button index-block
-                                        index-section]]
-         [clojure.core.incubator :only [-?>]]
-         [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.session :only [current-user is-admin?]]
-         [slingshot.slingshot :only [try+]])
-  (:require [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [hiccup.form :as f]
+  (:use [ciste.sections :only [defsection]]
+        [ciste.sections.default :only [show-section]])
+  (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.key :as model.key]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]
-            [lamina.trace :as trace]
-            [ring.util.codec :as codec])
-  (:import jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.Key
-           jiksnu.model.User))
+            [lamina.trace :as trace])
+  (:import jiksnu.model.User))
 
 ;; TODO: This should be the vcard format
 (defsection show-section [User :xmpp]

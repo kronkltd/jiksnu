@@ -1,13 +1,10 @@
 (ns jiksnu.modules.core.sections.feed-subscription-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button show-section index-line
-                                       index-section link-to update-button]]
+        [ciste.sections.default :only [show-section]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [admin-index-block admin-index-line
-                                control-line display-property]])
-  (:require [ciste.model :as cm]
-            [clojure.tools.logging :as log]
-            [jiksnu.model.user :as model.user])
+                                            display-property]])
+  (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.FeedSubscription))
 
 ; admin-index-block

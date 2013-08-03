@@ -1,16 +1,17 @@
 (ns jiksnu.modules.web.sections.user-sections
   (:use  [ciste.config :only [config]]
          [ciste.sections :only [defsection]]
-         [ciste.sections.default :only [title uri full-uri show-section add-form
+         [ciste.sections.default :only [actions-section title uri full-uri show-section add-form
                                         edit-button delete-button link-to index-line
                                         show-section-minimal update-button index-block
                                         index-section]]
          [clojure.core.incubator :only [-?>]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.modules.web.sections :only [action-link actions-section admin-actions-section
-                                 admin-index-block admin-index-line admin-index-section
-                                 admin-show-section bind-property bind-to control-line
-                                 display-property dropdown-menu pagination-links]]
+         [jiksnu.modules.core.sections :only [admin-actions-section
+                                              admin-index-block admin-index-line admin-index-section
+                                              admin-show-section]]
+         [jiksnu.modules.web.sections :only [action-link bind-property bind-to control-line
+                                             display-property dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]

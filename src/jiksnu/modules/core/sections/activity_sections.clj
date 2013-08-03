@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.sections.activity-sections
   (:use [ciste.core :only [with-format]]
         [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [add-form delete-button edit-button
+        [ciste.sections.default :only [delete-button edit-button
                                        full-uri index-section show-section-minimal
                                        show-section link-to uri title index-block
                                        index-line index-section update-button]]
