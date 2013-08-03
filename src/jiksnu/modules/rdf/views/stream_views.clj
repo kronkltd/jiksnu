@@ -6,7 +6,7 @@
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info with-page pagination-links with-sub-page]]
+        [jiksnu.modules.web.sections :only [bind-to with-page pagination-links with-sub-page]]
         [jiksnu.session :only [current-user]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]

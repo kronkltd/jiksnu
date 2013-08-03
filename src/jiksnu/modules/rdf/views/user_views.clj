@@ -5,7 +5,7 @@
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         jiksnu.actions.user-actions
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [bind-to pagination-links with-page]])
   (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]

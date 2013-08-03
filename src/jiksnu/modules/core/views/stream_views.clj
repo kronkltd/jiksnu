@@ -5,7 +5,8 @@
         [ciste.sections.default :only [index-block index-line index-section show-section]]
         [clj-stacktrace.repl :only [pst+]]
         jiksnu.actions.stream-actions
-        [jiksnu.ko :only [*dynamic*]])
+        [jiksnu.ko :only [*dynamic*]]
+        [jiksnu.modules.web.sections :only [format-page-info]])
   (:require [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]

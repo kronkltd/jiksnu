@@ -6,7 +6,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-section admin-index-block
                                              admin-show-section]]
-        [jiksnu.modules.web.sections :only [bind-to dump-data format-page-info
+        [jiksnu.modules.web.sections :only [bind-to dump-data
                                             pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
