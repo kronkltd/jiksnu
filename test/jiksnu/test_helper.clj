@@ -59,7 +59,7 @@
 
 (defmacro test-environment-fixture
   [& body]
-  `(try
+  `(try+
      (println " ")
      (println "****************************************************************************")
      (println (str "Testing " *ns*))
@@ -76,6 +76,9 @@
 
      (actions.domain/current-domain)
 
-     (fact (do ~@body) =not=> (throws))
+     ;; (fact (do ~@body) =not=> (throws))
+     ~@body
+     (catch Object ex#
+       (trace/trace :errors:handled ex#))
      (finally
        (stop-application!))))
