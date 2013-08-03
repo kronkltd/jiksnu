@@ -6,36 +6,17 @@
                                         show-section-minimal update-button index-block
                                         index-section]]
          [clojure.core.incubator :only [-?>]]
-         [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.modules.web.sections :only [action-link actions-section admin-actions-section
-                                 admin-index-block admin-index-line admin-index-section
-                                 admin-show-section bind-property bind-to control-line
-                                 display-property dropdown-menu pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
-  (:require [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [hiccup.form :as f]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.key :as model.key]
-            [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.rdf.util :as rdf]
-            [jiksnu.util :as util]
             [lamina.trace :as trace]
-            [plaza.rdf.core :as plaza]
-            [ring.util.codec :as codec])
-  (:import jiksnu.model.Domain
-           jiksnu.model.FeedSource
-           jiksnu.model.Key
-           jiksnu.model.User))
+            [plaza.rdf.core :as plaza])
+  (:import jiksnu.model.User))
 
 (defsection show-section [User :rdf]
   [user & _]

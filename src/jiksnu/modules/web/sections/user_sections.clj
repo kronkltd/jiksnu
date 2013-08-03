@@ -6,7 +6,6 @@
                                         show-section-minimal update-button index-block
                                         index-section]]
          [clojure.core.incubator :only [-?>]]
-         [inflections.core :only [camelize]]
          [jiksnu.ko :only [*dynamic*]]
          [jiksnu.modules.web.sections :only [action-link actions-section admin-actions-section
                                  admin-index-block admin-index-line admin-index-section

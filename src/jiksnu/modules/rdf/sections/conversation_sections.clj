@@ -1,25 +1,10 @@
 (ns jiksnu.modules.rdf.sections.conversation-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [delete-button full-uri uri title index-line
-                                       index-block index-line index-section link-to
-                                       show-section update-button]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [action-link actions-section admin-index-block admin-index-line
-                                bind-to control-line display-property display-timestamp
-                                dropdown-menu dump-data pagination-links with-page with-sub-page]])
-  (:require [ciste.model :as cm]
-            [clojure.tools.logging :as log]
-            [hiccup.core :as h]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-source :as model.feed-source]
+        [ciste.sections.default :only [full-uri uri index-line
+                                       index-block show-section]])
+  (:require [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.rdf.util :as rdf]
-            jiksnu.modules.rdf.sections.conversation-sections
-            [jiksnu.sections.user-sections :as sections.user]
-            [jiksnu.session :as session]
             [plaza.rdf.core :as plaza])
   (:import jiksnu.model.Conversation))
 

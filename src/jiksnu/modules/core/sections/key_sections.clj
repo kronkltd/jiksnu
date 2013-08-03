@@ -1,11 +1,7 @@
-(ns jiksnu.sections.key-sections
+(ns jiksnu.modules.core.sections.key-sections
   (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [full-uri show-section index-line]]
-        [jiksnu.modules.web.sections :only [action-link admin-index-line admin-index-block
-                                format-links admin-index-section bind-property
-                                dump-data control-line pagination-links]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model.key :as model.key])
+        [ciste.sections.default :only [show-section index-line]])
+  (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.Key))
 
 (defsection admin-index-block [Key :viewmodel]
