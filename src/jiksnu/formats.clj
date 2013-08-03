@@ -1,19 +1,11 @@
 (ns jiksnu.formats
-  (:use [ciste.core :only [serialize-as with-format]]
-        [ciste.config :only [config]]
-        [ciste.formats :only [format-as]]
-        [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [full-uri title link-to
-                                       index-block index-section uri
-                                       delete-button index-line edit-button]]
-        [jiksnu.modules.web.sections :only [format-page-info]])
-  (:require [clj-tigase.core :as tigase]
-            [clojure.data.json :as json]
+  (:use [ciste.core :only [with-format]]
+        [ciste.formats :only [format-as]])
+  (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.modules.atom.util :as abdera]
             [jiksnu.modules.rdf.util :as rdf]
-            jiksnu.sections
             [jiksnu.session :as session]))
 
 (defmethod format-as :as

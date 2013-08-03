@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.views.admin.user-views
+(ns jiksnu.modules.admin.views.user-views
   (:use [ciste.config :only [config]]
         [ciste.sections.default :only [title]]
         [ciste.views :only [defview]]
@@ -54,3 +54,4 @@
   {:body
    {:title (title user)
     :targetUser (:_id user)}})
+
