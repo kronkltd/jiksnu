@@ -1,7 +1,5 @@
 (ns jiksnu.routes.admin-routes
   (:use [ciste.commands :only [add-command!]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [ciste.routes :only [make-matchers]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])

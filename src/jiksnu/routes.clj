@@ -117,6 +117,9 @@
           ))))
 
   (doseq [model-name model/action-group-names]
+    (require-namespaces
+     "jiksnu.formats"
+     )
     (doto "jiksnu.modules"
       (util/require-module "atom" model-name)
       (util/require-module "as" model-name)

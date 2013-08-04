@@ -1,6 +1,4 @@
 (ns jiksnu.routes.comment-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]])
   (:require [jiksnu.actions.comment-actions :as comment]))
 
 (defn routes
