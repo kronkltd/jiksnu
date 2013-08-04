@@ -118,9 +118,10 @@
 
   (doseq [model-name model/action-group-names]
     (require-namespaces
-     "jiksnu.formats"
+     ["jiksnu.formats"]
      )
     (doto "jiksnu.modules"
+      (util/require-module "admin" model-name)
       (util/require-module "atom" model-name)
       (util/require-module "as" model-name)
       (util/require-module "rdf" model-name)
