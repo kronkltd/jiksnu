@@ -2,12 +2,13 @@
   (:use [ciste.sections.default :only [title show-section]]
         [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.modules.admin.actions.feed-source-actions :only [add-watcher delete
-                                                         fetch-updates index
-                                                         remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section admin-show-section bind-to
-                                            format-page-info pagination-links with-page]]
+        [jiksnu.modules.admin.actions.feed-source-actions :only [add-watcher delete
+                                                                 fetch-updates index
+                                                                 remove-watcher show]]
+        [jiksnu.modules.core.sections :only [admin-index-section admin-show-section]]
+        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links
+                                            with-page]]
         [jiksnu.modules.web.sections.feed-source-sections :only [add-watcher-form
                                                                  index-watchers]])
   (:require [clojure.tools.logging :as log]

@@ -1,10 +1,11 @@
 (ns jiksnu.modules.admin.views.auth-views
   (:use [ciste.views :only [defview]]
         [ciste.sections.default :only [add-form]]
-        [jiksnu.modules.admin.actions.auth-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section bind-to format-page-info
-                                pagination-links with-page]])
+        [jiksnu.modules.admin.actions.auth-actions :only [index]]
+        [jiksnu.modules.core.sections :only [admin-index-section]]
+        [jiksnu.modules.web.sections :only [bind-to format-page-info
+                                            pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model])
   (:import jiksnu.model.AuthenticationMechanism))

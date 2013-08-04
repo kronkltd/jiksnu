@@ -2,8 +2,8 @@
   (:use [ciste.views :only [defview]]
         [jiksnu.modules.admin.actions.group-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section format-page-info
-                                            pagination-links with-page]])
+        [jiksnu.modules.core.sections :only [admin-index-section]]
+        [jiksnu.modules.web.sections :only [format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log])
   (:import jiksnu.model.Group))
 

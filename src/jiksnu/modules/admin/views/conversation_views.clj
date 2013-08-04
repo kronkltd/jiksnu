@@ -1,9 +1,10 @@
 (ns jiksnu.modules.admin.views.conversation-views
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.modules.admin.actions.conversation-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section pagination-links with-page]])
+        [jiksnu.modules.admin.actions.conversation-actions :only [index show]]
+        [jiksnu.modules.core.sections :only [admin-index-section]]
+        [jiksnu.modules.web.sections :only [pagination-links with-page]])
   (:import jiksnu.model.Conversation))
 
 (defview #'index :html

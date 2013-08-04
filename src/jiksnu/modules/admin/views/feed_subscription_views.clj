@@ -1,11 +1,10 @@
 (ns jiksnu.modules.admin.views.feed-subscription-views
   (:use [ciste.sections.default :only [title show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.modules.admin.actions.feed-subscription-actions :only [delete index
-                                                               show]]
+        [jiksnu.modules.admin.actions.feed-subscription-actions :only [delete index show]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [admin-index-section format-page-info
-                                pagination-links with-page]])
+        [jiksnu.modules.core.sections :only [admin-index-section]]
+        [jiksnu.modules.web.sections :only [format-page-info pagination-links with-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [ring.util.response :as response])

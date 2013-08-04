@@ -6,8 +6,8 @@
                                         show-section-minimal update-button index-block]]
          [clojure.core.incubator :only [-?>]]
          [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.modules.core.sections :only [admin-actions-section
-                                              admin-index-block admin-index-line admin-index-section
+         [jiksnu.modules.core.sections :only [admin-actions-section admin-index-block
+                                              admin-index-line admin-index-section
                                               admin-show-section]]
          [jiksnu.modules.web.sections :only [action-link bind-property bind-to control-line
                                              display-property dropdown-menu pagination-links]]
