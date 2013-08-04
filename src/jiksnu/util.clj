@@ -239,19 +239,14 @@
      (doseq [model-name model/model-names]
        (require-module prefix module-name model-name)))
   ([prefix module-name model-name]
-     (require-namespaces
-      (map
-       (fn [part-name]
-         (format "%s.%s.%s.%s-%s"
-                 prefix
-                 module-name
-                 part-name
-                 model-name
-                 part-name))
-       ["filters"
-        "sections"
-        "triggers"
-        "views"]))))
+     (let [parts ["filters" "sections" "triggers" "views"]
+           req-fn (fn [part-name]
+                    [(format "%s.%s.%s"
+                             prefix module-name part-name)
+                     (format "%s.%s.%s.%s-%s"
+                             prefix module-name part-name model-name part-name)])
+           namespaces (mapcat req-fn parts)]
+       (require-namespaces namespaces))))
 
 (defn replace-template
   [template url]
