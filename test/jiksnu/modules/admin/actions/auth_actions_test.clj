@@ -1,6 +1,6 @@
-(ns jiksnu.actions.admin.auth-actions-test
+(ns jiksnu.modules.admin.actions.auth-actions-test
   (:use [jiksnu.test-helper :only [context test-environment-fixture]]
-        jiksnu.actions.admin.auth-actions
+        jiksnu.modules.admin.actions.auth-actions
         midje.sweet))
 
 (test-environment-fixture

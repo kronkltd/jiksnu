@@ -7,7 +7,7 @@
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.admin.like-actions :as actions.admin.like]
+            [jiksnu.modules.admin.actions.like-actions :as actions.admin.like]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.mock :as mock]
             [jiksnu.features-helper :as feature]

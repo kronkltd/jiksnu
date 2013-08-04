@@ -5,18 +5,18 @@
         [ciste.routes :only [make-matchers]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.admin.activity-actions :as admin.activity]
-            [jiksnu.actions.admin.auth-actions :as admin.auth]
-            [jiksnu.actions.admin.conversation-actions :as admin.conversation]
-            [jiksnu.actions.admin.group-actions :as admin.group]
-            [jiksnu.actions.admin.feed-source-actions :as admin.feed-source]
-            [jiksnu.actions.admin.feed-subscription-actions :as admin.feed-subscription]
-            [jiksnu.actions.admin.like-actions :as admin.like]
-            [jiksnu.actions.admin.key-actions :as admin.key]
-            [jiksnu.actions.admin.setting-actions :as admin.setting]
-            [jiksnu.actions.admin.subscription-actions :as admin.sub]
-            [jiksnu.actions.admin.user-actions :as admin.user]
-            [jiksnu.actions.admin.worker-actions :as admin.worker]))
+  (:require [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
+            [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
+            [jiksnu.modules.admin.actions.conversation-actions :as admin.conversation]
+            [jiksnu.modules.admin.actions.group-actions :as admin.group]
+            [jiksnu.modules.admin.actions.feed-source-actions :as admin.feed-source]
+            [jiksnu.modules.admin.actions.feed-subscription-actions :as admin.feed-subscription]
+            [jiksnu.modules.admin.actions.like-actions :as admin.like]
+            [jiksnu.modules.admin.actions.key-actions :as admin.key]
+            [jiksnu.modules.admin.actions.setting-actions :as admin.setting]
+            [jiksnu.modules.admin.actions.subscription-actions :as admin.sub]
+            [jiksnu.modules.admin.actions.user-actions :as admin.user]
+            [jiksnu.modules.admin.actions.worker-actions :as admin.worker]))
 
 (add-route! "/admin/activities"        {:named "admin activity index"})
 (add-route! "/admin/conversations"     {:named "admin conversation index"})

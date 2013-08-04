@@ -1,6 +1,6 @@
-(ns jiksnu.actions.admin.feed-subscription-actions-test
+(ns jiksnu.modules.admin.actions.feed-subscription-actions-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.actions.admin.feed-subscription-actions :only [index]]
+        [jiksnu.modules.admin.actions.feed-subscription-actions :only [index]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [jiksnu.db :as db]

@@ -9,7 +9,7 @@
   (:require [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [hiccup.core :as h]
-            [jiksnu.actions.admin.feed-subscription-actions :as actions.admin.feed-subscription]
+            [jiksnu.modules.admin.actions.feed-subscription-actions :as actions.admin.feed-subscription]
             [jiksnu.mock :as mock]
             [jiksnu.model.feed-subscription :as model.feed-subscription]))
 

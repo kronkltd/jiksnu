@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.filters.like-filters
   (:use [ciste.filters :only [deffilter]]
-        [jiksnu.actions.admin.like-actions :only [delete index]])
+        [jiksnu.modules.admin.actions.like-actions :only [delete index]])
   (:require [jiksnu.model :as model]
             [jiksnu.model.like :as model.like]
             [jiksnu.util :as util]))

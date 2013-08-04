@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.views.group-views
   (:use [ciste.views :only [defview]]
-        [jiksnu.actions.admin.group-actions :only [index]]
+        [jiksnu.modules.admin.actions.group-actions :only [index]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [admin-index-section format-page-info
                                             pagination-links with-page]])

@@ -8,7 +8,7 @@
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.actions.admin.group-actions :as actions.admin.group]
+            [jiksnu.modules.admin.actions.group-actions :as actions.admin.group]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.db :as db]
             [jiksnu.model :as model]

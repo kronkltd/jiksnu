@@ -1,4 +1,4 @@
-(ns jiksnu.modules.admin.actions.admin.like-actions
+(ns jiksnu.modules.admin.actions.like-actions
   (:use [ciste.core :only [defaction]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]

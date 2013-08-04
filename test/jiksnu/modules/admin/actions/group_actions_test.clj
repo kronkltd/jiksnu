@@ -1,5 +1,5 @@
-(ns jiksnu.actions.admin.group-actions-test
-    (:use [jiksnu.actions.admin.group-actions :only [index]]
+(ns jiksnu.modules.admin.actions.group-actions-test
+    (:use [jiksnu.modules.admin.actions.group-actions :only [index]]
           [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
           [midje.sweet :only [=>]] ))
 

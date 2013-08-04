@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.filters.activity-filters
   (:use [ciste.filters :only [deffilter]]
-        [jiksnu.actions.admin.activity-actions :only [index]]
+        [jiksnu.modules.admin.actions.activity-actions :only [index]]
         [jiksnu.modules.core.filters :only [parse-page parse-sorting]])
   (:require [clojure.tools.logging :as log]))
 

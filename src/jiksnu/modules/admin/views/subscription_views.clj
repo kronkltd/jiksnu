@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.views.subscription-views
   (:use [ciste.sections.default :only [show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.actions.admin.subscription-actions :only [index delete show]]
+        [jiksnu.modules.admin.actions.subscription-actions :only [index delete show]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [admin-index-section admin-show-section bind-to
                                 dump-data format-page-info pagination-links

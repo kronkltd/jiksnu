@@ -1,4 +1,4 @@
-(ns jiksnu.modules.admin.actions.admin.setting-actions
+(ns jiksnu.modules.admin.actions.setting-actions
   (:use [ciste.config :only [config set-config! write-config!]]
         [ciste.core :only [defaction]])
   (:require [clojure.tools.logging :as log]

@@ -4,7 +4,7 @@
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
-  (:require [jiksnu.actions.admin.key-actions :as actions.key]))
+  (:require [jiksnu.modules.admin.actions.key-actions :as actions.key]))
 
 (test-environment-fixture
 

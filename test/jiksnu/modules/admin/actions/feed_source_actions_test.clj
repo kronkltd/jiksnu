@@ -1,6 +1,6 @@
-(ns jiksnu.actions.admin.feed-source-actions-test
+(ns jiksnu.modules.admin.actions.feed-source-actions-test
   (:use [clj-factory.core :only [factory]]
-        [jiksnu.actions.admin.feed-source-actions :only [index]]
+        [jiksnu.modules.admin.actions.feed-source-actions :only [index]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [jiksnu.mock :as mock]))

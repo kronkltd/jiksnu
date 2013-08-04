@@ -2,7 +2,7 @@
   (:use [ciste.sections.default :only [title show-section]]
         [ciste.views :only [defview]]
         [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.actions.admin.feed-source-actions :only [add-watcher delete
+        [jiksnu.modules.admin.actions.feed-source-actions :only [add-watcher delete
                                                          fetch-updates index
                                                          remove-watcher show]]
         [jiksnu.ko :only [*dynamic*]]

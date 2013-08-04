@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.filters.subscription-filters
   (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.admin.subscription-actions)
+        jiksnu.modules.admin.actions.subscription-actions)
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]

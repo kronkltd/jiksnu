@@ -1,6 +1,6 @@
 (ns jiksnu.modules.admin.filters.worker-filters
   (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.admin.worker-actions))
+        jiksnu.modules.admin.actions.worker-actions))
 
 (deffilter #'index :command
   [action request]

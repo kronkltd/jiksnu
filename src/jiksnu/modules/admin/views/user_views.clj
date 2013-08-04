@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.sections.default :only [title]]
         [ciste.views :only [defview]]
-        [jiksnu.actions.admin.user-actions :only [index show]]
+        [jiksnu.modules.admin.actions.user-actions :only [index show]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-section admin-index-block
                                              admin-show-section]]

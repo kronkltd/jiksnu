@@ -1,7 +1,7 @@
 (ns jiksnu.modules.admin.views.feed-subscription-views
   (:use [ciste.sections.default :only [title show-section]]
         [ciste.views :only [defview]]
-        [jiksnu.actions.admin.feed-subscription-actions :only [delete index
+        [jiksnu.modules.admin.actions.feed-subscription-actions :only [delete index
                                                                show]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [admin-index-section format-page-info
