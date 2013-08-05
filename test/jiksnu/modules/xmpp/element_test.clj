@@ -8,8 +8,7 @@
   (:require [clj-tigase.element :as element]
             [jiksnu.model :as model]
             [jiksnu.namespace :as namespace]
-            [jiksnu.util :as util])
-  (:import jiksnu.model.Activity))
+            [jiksnu.util :as util]))
 
 (util/require-module "jiksnu.modules" "xmpp")
 

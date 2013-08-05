@@ -2,8 +2,7 @@
   (:use [ciste.views :only [defview]]
         jiksnu.actions.conversation-actions)
   (:require [clojure.tools.logging :as log])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+  (:import jiksnu.model.Conversation))
 
 ;; index
 

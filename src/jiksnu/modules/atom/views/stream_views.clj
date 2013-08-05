@@ -7,13 +7,10 @@
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user]])
-  (:require [clj-tigase.core :as tigase]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as ns])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+            [jiksnu.namespace :as ns]))
 
 (defview #'mentions-timeline :atom
   [request activities]

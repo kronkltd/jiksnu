@@ -10,8 +10,7 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [ring.util.response :as response])
-  (:import jiksnu.model.Activity
-           jiksnu.model.FeedSubscription))
+  (:import jiksnu.model.FeedSubscription))
 
 ;; index
 

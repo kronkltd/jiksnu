@@ -4,8 +4,7 @@
         ciste.sections.default
         [clojurewerkz.route-one.core :only [named-path]]
         jiksnu.actions.activity-actions
-        [jiksnu.ko :only [*dynamic*]]
-        )
+        [jiksnu.ko :only [*dynamic*]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
@@ -15,8 +14,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.modules.xmpp.element :as xmpp.element]
-            [ring.util.response :as response])
-  (:import jiksnu.model.Activity))
+            [ring.util.response :as response]))
 
 ;; remote-create
 

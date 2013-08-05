@@ -64,13 +64,13 @@
    )
 
  (context #'uri
-   (context "Activity"
+   (context Activity
      ;; TODO: not a good test
      (with-context [:http :html]
        (uri .activity.)) => string?))
 
  (context #'show-section
-   (context "Activity"
+   (context Activity
      (context "when the serialization is :http"
        (with-serialization :http
 

@@ -6,14 +6,15 @@
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.mock :as mock])
-  (:import org.apache.abdera.i18n.iri.IRI
+  (:import jiksnu.model.Activity
+           org.apache.abdera.i18n.iri.IRI
            org.apache.abdera.model.Entry
            org.apache.abdera.model.Person))
 
 (test-environment-fixture
 
  (context #'show-section
-   (context "Activity"
+   (context Activity
      (context "when the serialization is :http"
        (with-serialization :http
 

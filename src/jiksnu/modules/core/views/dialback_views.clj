@@ -8,8 +8,7 @@
         [jiksnu.modules.web.sections :only [bind-to]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
-            [ring.util.response :as response])
-  (:import jiksnu.model.Activity))
+            [ring.util.response :as response]))
 
 (defview #'confirm :html
   [request activity]

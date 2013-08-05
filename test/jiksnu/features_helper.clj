@@ -31,8 +31,7 @@
             jiksnu.routes
             [jiksnu.session :as session]
             [ring.mock.request :as req])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Domain
+  (:import jiksnu.model.Domain
            jiksnu.model.User))
 
 (def server (atom nil))

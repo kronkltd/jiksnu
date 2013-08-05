@@ -16,8 +16,7 @@
             [jiksnu.model.user :as model.user]
             jiksnu.modules.web.views.activity-views
             [ring.mock.request :as req])
-  (:import jiksnu.model.Activity
-           jiksnu.model.User))
+  (:import jiksnu.model.User))
 
 
 (test-environment-fixture

@@ -17,8 +17,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Activity))
+            [jiksnu.model.user :as model.user]))
 
 (test-environment-fixture
 

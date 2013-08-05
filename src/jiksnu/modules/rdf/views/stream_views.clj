@@ -12,10 +12,8 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as ns]
-            )
-  (:import jiksnu.model.Activity
-           jiksnu.model.Conversation))
+            [jiksnu.namespace :as ns])
+  (:import jiksnu.model.Conversation))
 
 (defview #'public-timeline :n3
   [request {:keys [items] :as page}]
