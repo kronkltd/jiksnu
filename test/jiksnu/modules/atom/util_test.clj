@@ -1,6 +1,5 @@
 (ns jiksnu.modules.atom.util-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [fseq]]
+  (:use [clj-factory.core :only [fseq]]
         [jiksnu.modules.atom.util :only [abdera-factory get-text new-entry make-feed*]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [midje.sweet :only [=>]])

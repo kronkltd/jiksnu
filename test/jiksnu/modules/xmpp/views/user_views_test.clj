@@ -1,6 +1,5 @@
 (ns jiksnu.modules.xmpp.views.user-views-test
-  (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context with-format with-serialization]]
+  (:use [ciste.core :only [with-context with-format with-serialization]]
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]

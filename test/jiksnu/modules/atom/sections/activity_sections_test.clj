@@ -1,6 +1,5 @@
 (ns jiksnu.modules.atom.sections.activity-sections-test
-  (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context with-format with-serialization]]
+  (:use [ciste.core :only [with-context with-format with-serialization]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]

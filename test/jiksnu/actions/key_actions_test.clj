@@ -1,6 +1,5 @@
 (ns jiksnu.actions.key-actions-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory fseq]]
+  (:use [clj-factory.core :only [factory fseq]]
         [clj-tigase.core :only [deliver-packet!]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.actions.key-actions

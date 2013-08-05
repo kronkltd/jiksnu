@@ -1,6 +1,5 @@
 (ns jiksnu.modules.xmpp.element-test
-  (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context]]
+  (:use [ciste.core :only [with-context]]
         [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]

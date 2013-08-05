@@ -1,6 +1,5 @@
 (ns jiksnu.actions.salmon-actions-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory]]
         [midje.sweet :only [anything truthy =>]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         jiksnu.actions.salmon-actions)

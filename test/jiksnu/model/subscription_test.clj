@@ -1,6 +1,5 @@
 (ns jiksnu.model.subscription-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
                                           fetch-by-id subscribing?
