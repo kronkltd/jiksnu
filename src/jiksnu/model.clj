@@ -80,6 +80,7 @@
    "feed-subscription"
    "group"
    "like"
+   "key"
    "message"
    "pubsub"
    "resource"

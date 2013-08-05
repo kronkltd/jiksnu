@@ -6,7 +6,6 @@
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [current-user is-admin?]]
-        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line]]
         [jiksnu.modules.web.sections :only [action-link bind-to control-line display-property
                                             dropdown-menu]])
   (:require [clojure.tools.logging :as log]
