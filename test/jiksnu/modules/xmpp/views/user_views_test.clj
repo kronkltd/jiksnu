@@ -4,7 +4,6 @@
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
-        clj-tigase.core
         [jiksnu.actions.user-actions :only [index]]
         [jiksnu.test-helper :only [check context future-context
                                    hiccup->doc test-environment-fixture]]
@@ -16,7 +15,6 @@
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.features-helper :as feature]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]

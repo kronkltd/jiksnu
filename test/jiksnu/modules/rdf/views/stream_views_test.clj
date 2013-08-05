@@ -8,7 +8,7 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [check context future-context hiccup->doc
-                                   select-by-model test-environment-fixture]]
+                                   test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
         [midje.sweet :only [=> contains truthy]])
   (:require [clojure.string :as string]
@@ -16,14 +16,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
-            jiksnu.modules.rdf.sections.activity-sections
-            jiksnu.modules.rdf.sections.conversation-sections
-            ;; jiksnu.modules.rdf.sections.stream-sections
-            jiksnu.modules.rdf.sections.user-sections
             [jiksnu.modules.rdf.util :as rdf]
             jiksnu.modules.rdf.views.stream-views))
 

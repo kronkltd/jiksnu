@@ -14,13 +14,12 @@
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [ring.util.codec :as codec])
+           )
   (:import jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera.model.Person))

@@ -10,7 +10,6 @@
             [jiksnu.modules.admin.actions.like-actions :as actions.admin.like]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-subscription :as model.feed-subscription]

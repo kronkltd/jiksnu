@@ -22,7 +22,7 @@
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [jiksnu.modules.xmpp.element :as element]
-            [ring.util.codec :as codec])
+        )
   (:import jiksnu.model.Activity
            org.apache.abdera.model.ExtensibleElement))
 

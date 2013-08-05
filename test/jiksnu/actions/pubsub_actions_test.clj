@@ -11,7 +11,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.features-helper :as feature]
             [jiksnu.actions.activity-actions :as actions.activity]
             [ring.mock.request :as req]))
 

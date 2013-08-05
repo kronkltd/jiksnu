@@ -9,7 +9,6 @@
         [jiksnu.ko :only [*dynamic*]]
         [midje.sweet :only [=>]])
   (:require [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]

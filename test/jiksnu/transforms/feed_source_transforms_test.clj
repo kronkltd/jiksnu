@@ -9,7 +9,6 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]))
 
 (test-environment-fixture

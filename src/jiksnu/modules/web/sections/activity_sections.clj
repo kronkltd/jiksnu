@@ -31,7 +31,7 @@
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [ring.util.codec :as codec])
+            )
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource

@@ -8,13 +8,9 @@
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.modules.admin.actions.group-actions :as actions.admin.group]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.db :as db]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.modules.admin.actions.group-actions :as actions.admin.group]))
 
 (test-environment-fixture
 

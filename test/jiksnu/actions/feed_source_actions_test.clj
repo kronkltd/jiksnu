@@ -16,7 +16,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]

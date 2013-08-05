@@ -26,7 +26,7 @@
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [lamina.trace :as trace]
-            [ring.util.codec :as codec])
+            )
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.Key

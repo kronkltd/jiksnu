@@ -2,8 +2,7 @@
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.model.like :only [create delete fetch-by-id fetch-all]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        [midje.sweet :only [falsey =>]])
-  (:require [jiksnu.features-helper :as feature]))
+        [midje.sweet :only [falsey =>]]))
 
 (test-environment-fixture
 

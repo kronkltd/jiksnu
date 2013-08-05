@@ -12,7 +12,6 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.web.views.activity-views

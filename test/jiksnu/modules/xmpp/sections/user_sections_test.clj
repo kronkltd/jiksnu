@@ -9,7 +9,6 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user]
             jiksnu.modules.xmpp.sections.user-sections)
@@ -27,7 +26,6 @@
                (show-section user) =>
                (check [response]
                  response => string?
-                 response => #"<vcard")))))))
-)
+                 response => #"<vcard"))))))))
 
  )

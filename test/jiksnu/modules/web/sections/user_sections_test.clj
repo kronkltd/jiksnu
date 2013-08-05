@@ -10,7 +10,6 @@
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.user :as model.user])
   (:import jiksnu.model.User))

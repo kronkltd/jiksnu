@@ -12,7 +12,6 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model.user :as model.user]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
