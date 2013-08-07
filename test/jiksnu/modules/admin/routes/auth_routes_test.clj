@@ -1,4 +1,4 @@
-(ns jiksnu.modules.web.routes.admin.auth-routes-test
+(ns jiksnu.modules.admin.routes.auth-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [response-for]]
         [jiksnu.session :only [with-user]]

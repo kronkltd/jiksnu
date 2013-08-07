@@ -45,7 +45,7 @@
      (bind-to "targetUser"
        (admin-show-section user)
        [:div {:data-model "user"}
-        (admin-index-block items page)])}))
+        (admin-index-section items page)])}))
 
 (defview #'show :model
   [request user]

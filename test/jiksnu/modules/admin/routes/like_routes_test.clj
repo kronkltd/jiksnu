@@ -1,7 +1,7 @@
-(ns jiksnu.modules.web.routes.admin.feed-subscription-routes-test
+(ns jiksnu.modules.admin.routes.like-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.routes-helper :only [as-admin get-auth-cookie response-for]]
+        [jiksnu.routes-helper :only [as-admin response-for]]
         [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]]
@@ -10,21 +10,18 @@
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.model.like :as model.like]
             [jiksnu.model.user :as model.user]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
- (context "index"
-   (let [feed-subscription (mock/a-feed-subscription-exists)]
-     (-> (req/request :get "/admin/feed-subscriptions")
+
+ (future-context "delete"
+   (let [like (model.like/create (factory :like))]
+     (-> (req/request :post (str "/admin/likes/" (:_id like) "/delete"))
          as-admin response-for) =>
          (check [response]
-           (let [body (:body response)]
-             response => map?
-             (:status response) => status/success?
-             ;; body => #"feed-subscriptions"
-             body => (re-pattern (str (:_id feed-subscription)))))))
+           response => map?
+           (:status response) => status/redirect?)))
  )

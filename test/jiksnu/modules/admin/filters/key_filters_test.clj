@@ -1,4 +1,4 @@
-(ns jiksnu.modules.web.filters.admin.key-filters-test
+(ns jiksnu.modules.admin.filters.key-filters-test
   (:use [ciste.core :only [with-serialization *serialization*]]
         [ciste.filters :only [filter-action]]
         [clj-factory.core :only [factory]]

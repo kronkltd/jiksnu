@@ -1,4 +1,4 @@
-(ns jiksnu.modules.web.routes.admin.subscription-routes-test
+(ns jiksnu.modules.admin.routes.subscription-routes-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.routes-helper :only [as-admin get-auth-cookie response-for]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
