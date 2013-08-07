@@ -6,7 +6,6 @@
         [jiksnu.actions.user-actions :only [index]]
         [jiksnu.test-helper :only [check context future-context
                                    hiccup->doc test-environment-fixture]]
-        [jiksnu.ko :only [*dynamic*]]
         jiksnu.modules.xmpp.element
         [midje.sweet :only [contains =>]])
   (:require [clj-tigase.core :as tigase]

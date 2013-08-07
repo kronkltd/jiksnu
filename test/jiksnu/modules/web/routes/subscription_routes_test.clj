@@ -33,6 +33,7 @@
 
  (context "get-subscriptions"
    (let [user (mock/a-user-exists)
+         subscription (mock/a-subscription-exists {:from user})
          path (named-path "user subscriptions" {:id (str (:_id user))})]
      (-> (req/request :get path)
          response-for)) =>

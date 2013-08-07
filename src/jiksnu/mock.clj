@@ -193,7 +193,12 @@
 
 (defn a-subscription-exists
   [& [options]]
-  (let [item (actions.subscription/create (factory :subscription))]
+  (let [from (or (:from options)
+                 (a-user-exists))
+        to (or (:to options)
+               (a-user-exists))
+        item (actions.subscription/create (factory :subscription {:from (:_id from)
+                                                                  :to (:_id to)}))]
     (set-this :subscription item)
     item))
 
