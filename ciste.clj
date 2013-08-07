@@ -1,6 +1,7 @@
 {:environment :development
  :modules ["jiksnu.commands"
            "jiksnu.factory"
+           "jiksnu.formats"
            "jiksnu.workers"
            "jiksnu.views"]
  :modules-available
