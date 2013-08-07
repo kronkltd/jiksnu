@@ -172,7 +172,7 @@
   [user]
   ;; TODO: alternately, check user meta
   (let [uri (:foaf-uri user)
-        model (rdf/document-to-model uri :xml)
+        model (rdf/document->model uri :xml)
         query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
 

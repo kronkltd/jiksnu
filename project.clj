@@ -30,7 +30,7 @@
                  [lolg "0.1.0-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/plaza "0.2.0-SNAPSHOT"]
+                 [net.kronkltd/plaza "0.3.0-SNAPSHOT"]
                  [net.kronkltd/waltz "0.1.2-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [org.apache.abdera/abdera-client "1.1.3"]
