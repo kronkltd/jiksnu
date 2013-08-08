@@ -6,13 +6,14 @@
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.core.sections :only [admin-index-section admin-index-block
                                              admin-show-section]]
-        [jiksnu.modules.web.sections :only [bind-to dump-data
-                                            pagination-links with-page]])
+        [jiksnu.modules.web.sections :only [bind-to dump-data pagination-links with-page
+                                            with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.model.domain :as model.domain])
+            [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity))
 
 (defview #'index :html
@@ -43,9 +44,14 @@
      :single true
      :body
      (bind-to "targetUser"
-       (admin-show-section user)
-       [:div {:data-model "user"}
-        (admin-index-section items page)])}))
+       [:div (merge {:data-model "user"}
+                    (when-not *dynamic*
+                      {:data-id (:_id user)}))
+        (admin-show-section user)
+        (let [links (if *dynamic*  [{}] (:links user))]
+            (sections.user/links-table links))
+        (with-sub-page "activities"
+          (admin-index-section items page))])}))
 
 (defview #'show :model
   [request user]

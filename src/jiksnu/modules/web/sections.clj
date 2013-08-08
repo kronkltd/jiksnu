@@ -211,3 +211,6 @@
      [:div.pull-right
       (next-link page)]
      [:div.clearfix]]))
+
+;; (defmethod show-section-type )
+

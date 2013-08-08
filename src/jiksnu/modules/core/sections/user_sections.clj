@@ -82,22 +82,17 @@
   [user & _]
   user)
 
-(defsection show-section [User :model]
-  [item & [page]]
-  (->>
-   ;; (dissoc item :links)
-   item
-
-       (map (fn [[k v]] [(camelize (name k) :lower)
-                         v]))
-       (into {})))
+;; (defsection show-section [User :model]
+;;   [item & [page]]
+;;   (->> item
+;;        (map (fn [[k v]] [(camelize (name k) :lower) v]))
+;;        (into {})))
 
 (defsection show-section [User :viewmodel]
   [item & [page]]
-  (->> #_(dissoc (dissoc item :links) :_id)
-       item
+  (->> item
        (map (fn [[k v]] [(camelize (name k) :lower)
-                         v]))
+                        v]))
        (into {})))
 
 (defsection show-section [User :xml]

@@ -253,12 +253,10 @@
 ;; admin-show-section
 
 (defsection admin-show-section [User :html]
-  [item & [response & _]]
+  [item & [response]]
   (list
-   [:table.table (merge {:data-model "user"}
-                        (if *dynamic*
-                          {}
-                          {:data-id (:_id item)}))
+   (actions-section item)
+   [:table.table
     [:tr
      [:th]
      [:td (display-avatar item)]]
@@ -304,10 +302,7 @@
         (when-let [source (if *dynamic*
                             (FeedSource.)
                             (-?> item :update-source model.feed-source/fetch-by-id))]
-          (link-to source)))]]]
-   ;; (actions-section item)
-   #_(let [links (if *dynamic*  [{}] (:links item))]
-     (links-table links))))
+          (link-to source)))]]]))
 
 
 (defsection add-form [User :html]
@@ -431,7 +426,7 @@
                             (catch Object ex
                               (trace/trace "errors:handled" ex)
                               nil)))]
-               (show-section key)))]))
+        (show-section key)))]))
 
 ;; update-button
 

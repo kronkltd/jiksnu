@@ -80,7 +80,7 @@
 
 (defview #'show :model
   [request activity]
-  {:body (doall (show-section activity))})
+  {:body (show-section activity)})
 
 (defview #'show :viewmodel
   [request activity]

@@ -238,7 +238,10 @@
 
 (defn handle-event
   [event]
-  (log/info (pr-str event)))
+  ;; (println "\n")
+  (let [message (with-out-str
+                  (pprint event))]
+   (println message)))
 
 (defn handle-http-client-error
   [event]
@@ -268,11 +271,11 @@
            ]]
     (l/receive-all (trace/probe-channel kw) v))
 
-  (l/receive-all
-   (l/sample-every
-    {:period (lt/seconds 30)}
-    (trace/probe-channel :lamina-default-executor:stats))
-   #'handle-event)
+  ;; (l/receive-all
+  ;;  (l/sample-every
+  ;;   {:period (lt/seconds 30)}
+  ;;   (trace/probe-channel :lamina-default-executor:stats))
+  ;;  #'handle-event)
 
   )
 
