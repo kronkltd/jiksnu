@@ -12,7 +12,7 @@
             [jiksnu.modules.admin.actions.like-actions :as admin.like]
             [jiksnu.modules.admin.actions.key-actions :as admin.key]
             [jiksnu.modules.admin.actions.setting-actions :as admin.setting]
-            [jiksnu.actions.admin.stream-actions :as admin.stream]
+            [jiksnu.modules.admin.actions.stream-actions :as admin.stream]
             [jiksnu.modules.admin.actions.subscription-actions :as admin.sub]
             [jiksnu.modules.admin.actions.user-actions :as admin.user]
             [jiksnu.modules.admin.actions.worker-actions :as admin.worker]))
