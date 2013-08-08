@@ -13,8 +13,7 @@
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
             [monger.collection :as mc]
-            [monger.core :as mg]
-          )
+            [monger.core :as mg])
   (:import jiksnu.model.Domain
            org.bson.types.ObjectId
            org.joda.time.DateTime))

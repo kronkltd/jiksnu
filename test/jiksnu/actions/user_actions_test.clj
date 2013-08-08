@@ -18,8 +18,7 @@
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
-            [lamina.core :as l]
-           )
+            [lamina.core :as l])
   (:import jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera.model.Person))

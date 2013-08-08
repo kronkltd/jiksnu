@@ -23,8 +23,7 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
-            [lamina.trace :as trace]
-            )
+            [lamina.trace :as trace])
   (:import java.net.URL
            jiksnu.model.Domain))
 
