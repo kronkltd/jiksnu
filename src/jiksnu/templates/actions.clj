@@ -5,15 +5,12 @@
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]
-            [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
-            monger.json
-            [plaza.rdf.core :as rdf]
-            [plaza.rdf.implementations.jena :as jena])
+            monger.json)
   (:import java.io.FileNotFoundException
            java.text.SimpleDateFormat
            java.util.Date

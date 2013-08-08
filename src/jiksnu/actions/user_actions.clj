@@ -16,7 +16,7 @@
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.trace :as trace]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
@@ -35,7 +35,7 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
-            [plaza.rdf.core :as rdf]
+            [plaza.rdf.core :as plaza]
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
            jiksnu.model.User
@@ -172,7 +172,7 @@
   [user]
   ;; TODO: alternately, check user meta
   (let [uri (:foaf-uri user)
-        model (rdf/document->model uri :xml)
+        model (plaza/document->model uri :xml)
         query (model.user/foaf-query)]
     (sp/model-query-triples model query)))
 

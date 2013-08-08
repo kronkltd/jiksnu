@@ -11,7 +11,7 @@
    ;; [[:get    "/tags"]               #'tag/index]
    ])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.tag-filters"
-    "jiksnu.views.tag-views"]))
+;; (definitializer
+;;   (require-namespaces
+;;    ["jiksnu.modules.core.filters.tag-filters"
+;;     "jiksnu.modules.core.views.tag-views"]))

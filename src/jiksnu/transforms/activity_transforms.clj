@@ -6,13 +6,13 @@
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [clojurewerkz.route-one.core :as r]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.ops :as ops]
+            [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import java.net.URI))
 
@@ -127,7 +127,7 @@
   [activity]
   (if (:id (:object activity))
     activity
-    (assoc-in activity [:object :id] (abdera/new-id))))
+    (assoc-in activity [:object :id] (util/new-id))))
 
 (defn set-title
   [activity]

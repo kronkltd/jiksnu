@@ -1,8 +1,5 @@
 (ns jiksnu.routes.pubsub-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
   (:require [jiksnu.actions.pubsub-actions :as pubsub]))
 
 (add-route! "/main/push/hub" {:named "hub dispatch"})
@@ -14,8 +11,3 @@
    ;; [[:post   "/users/:id/push/subscribe"] #'pubsub/subscribe]
    ])
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.pubsub-filters"
-    ;; "jiksnu.triggers.pubsub-triggers"
-    "jiksnu.views.pubsub-views"]))

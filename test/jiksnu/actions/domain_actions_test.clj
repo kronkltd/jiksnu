@@ -1,6 +1,5 @@
 (ns jiksnu.actions.domain-actions-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory fseq]]
+  (:use [clj-factory.core :only [factory fseq]]
         [clj-tigase.core :only [deliver-packet!]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.actions.domain-actions
@@ -14,7 +13,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [lamina.core :as l]
             [lamina.trace :as trace]))

@@ -10,6 +10,7 @@
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [lamina.core :as l]
             [lamina.time :as time]
@@ -30,11 +31,18 @@
            java.net.URI
            java.net.URL
            lamina.core.channel.Channel
+           org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId
            org.joda.time.DateTime
            org.jsoup.Jsoup
            org.jsoup.safety.Whitelist
            java.io.StringReader))
+
+(defn new-id
+  []
+  (let [id (UIDGenerator/generateURNString)]
+    (trace/trace :id:generated id)
+    id))
 
 (defn format-date
   "This is a dirty little function to get a properly formatted date."
@@ -227,18 +235,18 @@
      res#))
 
 (defn require-module
-  [module-name]
-  (require-namespaces
-   (map
-    (fn [part-name]
-      (format "jiksnu.%s.%s-%s"
-              part-name
-              module-name
-              part-name))
-    ["filters"
-     "sections"
-     "triggers"
-     "views"])))
+  ([prefix module-name]
+     (doseq [model-name model/model-names]
+       (require-module prefix module-name model-name)))
+  ([prefix module-name model-name]
+     (let [parts ["filters" "sections" "triggers" "views"]
+           req-fn (fn [part-name]
+                    [(format "%s.%s.%s"
+                             prefix module-name part-name)
+                     (format "%s.%s.%s.%s-%s"
+                             prefix module-name part-name model-name part-name)])
+           namespaces (mapcat req-fn parts)]
+       (require-namespaces namespaces))))
 
 (defn replace-template
   [template url]

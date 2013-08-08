@@ -8,22 +8,18 @@
         jiksnu.actions.user-actions)
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth-mechanism]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [ring.util.codec :as codec])
+           )
   (:import jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera.model.Person))

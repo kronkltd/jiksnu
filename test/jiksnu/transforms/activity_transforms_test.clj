@@ -1,17 +1,14 @@
 (ns jiksnu.transforms.activity-transforms-test
   (:use [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]]
         [clj-factory.core :only [factory fseq]]
         [jiksnu.transforms.activity-transforms :only [set-recipients]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]))
+            [jiksnu.model :as model]))
 
 (test-environment-fixture
 

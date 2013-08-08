@@ -1,6 +1,5 @@
 (ns jiksnu.model.webfinger-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory fseq]]
+  (:use [clj-factory.core :only [factory fseq]]
         [midje.sweet :only [=> contains]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.model

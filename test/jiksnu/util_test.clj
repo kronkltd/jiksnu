@@ -8,6 +8,9 @@
 
 (test-environment-fixture
 
+ (context #'new-id
+   (new-id) => string?)
+
  (context #'get-domain-name
    (let [domain-name (fseq :domain)]
      (context "when given a http uri"
