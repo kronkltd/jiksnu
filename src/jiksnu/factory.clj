@@ -4,7 +4,6 @@
   (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
-            [jiksnu.abdera :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]

@@ -24,7 +24,7 @@
             [lamina.core :as l]
             [lamina.time :as lt]
             [lamina.trace :as trace]
-            [ring.util.codec :as codec])
+            )
   (:import java.net.URL
            jiksnu.model.Domain))
 

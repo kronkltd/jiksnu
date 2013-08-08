@@ -11,7 +11,6 @@
             [clj-statsd :as s]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [jiksnu.abdera :as abdera]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -20,7 +19,7 @@
             [jiksnu.validators :as valid]
             [monger.collection :as mc]
             [monger.query :as mq]
-            [plaza.rdf.core :as rdf]
+            [plaza.rdf.core :as plaza ]
             [plaza.rdf.sparql :as sp])
   (:import java.net.URI
            jiksnu.model.Domain
@@ -197,12 +196,12 @@
     (sp/query-set-pattern
      (sp/make-pattern
       [
-       [:?uri    rdf/rdf:type                     :foaf/Document]
+       [:?uri    plaza/rdf:type                     :foaf/Document]
        [:?uri    :foaf:PrimaryTopic    :?user]
-       (rdf/optional [:?user :foaf/nick            :?nick])
-       (rdf/optional [:?user :foaf/name            :?name])
-       (rdf/optional [:?user :dcterms/descriptions :?bio])
-       (rdf/optional [:?user :foaf/depiction       :?img-url])]))))
+       (plaza/optional [:?user :foaf/nick            :?nick])
+       (plaza/optional [:?user :foaf/name            :?name])
+       (plaza/optional [:?user :dcterms/descriptions :?bio])
+       (plaza/optional [:?user :foaf/depiction       :?img-url])]))))
 
 (defn ensure-indexes
   []

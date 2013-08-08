@@ -1,22 +1,20 @@
 (ns jiksnu.routes.admin-routes
   (:use [ciste.commands :only [add-command!]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
         [ciste.routes :only [make-matchers]]
         [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.admin.activity-actions :as admin.activity]
-            [jiksnu.actions.admin.auth-actions :as admin.auth]
-            [jiksnu.actions.admin.conversation-actions :as admin.conversation]
-            [jiksnu.actions.admin.group-actions :as admin.group]
-            [jiksnu.actions.admin.feed-source-actions :as admin.feed-source]
-            [jiksnu.actions.admin.feed-subscription-actions :as admin.feed-subscription]
-            [jiksnu.actions.admin.like-actions :as admin.like]
-            [jiksnu.actions.admin.key-actions :as admin.key]
-            [jiksnu.actions.admin.setting-actions :as admin.setting]
-            [jiksnu.actions.admin.subscription-actions :as admin.sub]
-            [jiksnu.actions.admin.user-actions :as admin.user]
-            [jiksnu.actions.admin.worker-actions :as admin.worker]))
+  (:require [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
+            [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
+            [jiksnu.modules.admin.actions.conversation-actions :as admin.conversation]
+            [jiksnu.modules.admin.actions.group-actions :as admin.group]
+            [jiksnu.modules.admin.actions.feed-source-actions :as admin.feed-source]
+            [jiksnu.modules.admin.actions.feed-subscription-actions :as admin.feed-subscription]
+            [jiksnu.modules.admin.actions.like-actions :as admin.like]
+            [jiksnu.modules.admin.actions.key-actions :as admin.key]
+            [jiksnu.modules.admin.actions.setting-actions :as admin.setting]
+            [jiksnu.modules.admin.actions.subscription-actions :as admin.sub]
+            [jiksnu.modules.admin.actions.user-actions :as admin.user]
+            [jiksnu.modules.admin.actions.worker-actions :as admin.worker]))
 
 (add-route! "/admin/activities"        {:named "admin activity index"})
 (add-route! "/admin/conversations"     {:named "admin conversation index"})
@@ -103,47 +101,3 @@
 (add-command! "list-workers" #'admin.worker/index)
 (add-command! "start-worker" #'admin.worker/start-worker)
 (add-command! "stop-worker"  #'admin.worker/stop-worker)
-
-(definitializer
-  (require-namespaces
-   [
-
-    "jiksnu.filters.admin.setting-filters"
-    "jiksnu.views.admin.setting-views"
-    "jiksnu.filters.admin.activity-filters"
-    "jiksnu.views.admin.activity-views"
-
-    "jiksnu.filters.admin.auth-filters"
-    "jiksnu.views.admin.auth-views"
-
-    "jiksnu.filters.admin.conversation-filters"
-    "jiksnu.views.admin.conversation-views"
-
-    "jiksnu.filters.admin.feed-source-filters"
-    "jiksnu.sections.feed-source-sections"
-    "jiksnu.views.admin.feed-source-views"
-
-    "jiksnu.filters.admin.feed-subscription-filters"
-    "jiksnu.sections.feed-subscription-sections"
-    "jiksnu.views.admin.feed-subscription-views"
-
-    "jiksnu.filters.admin.group-filters"
-    "jiksnu.views.admin.group-views"
-
-    "jiksnu.filters.admin.key-filters"
-    "jiksnu.views.admin.key-views"
-
-    "jiksnu.filters.admin.like-filters"
-    "jiksnu.views.admin.like-views"
-
-    "jiksnu.filters.admin.subscription-filters"
-    "jiksnu.views.admin.subscription-views"
-
-    "jiksnu.filters.admin.user-filters"
-    "jiksnu.views.admin.user-views"
-
-    "jiksnu.views.admin.worker-views"
-    "jiksnu.filters.admin.worker-filters"
-    "jiksnu.sections.worker-sections"
-
-    ]))

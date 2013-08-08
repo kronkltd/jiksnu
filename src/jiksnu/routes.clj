@@ -18,10 +18,12 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [jiksnu.actions.stream-actions :as stream]
+            [jiksnu.model :as model]
             [jiksnu.middleware :as jm]
             [jiksnu.predicates :as predicates]
             [jiksnu.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
+            [jiksnu.util :as util]
             [ring.middleware.file :as file]
             [monger.ring.session-store :as ms]
             [noir.util.middleware :as nm]
@@ -33,30 +35,6 @@
 (defn not-found-msg
   []
   "Not Found")
-
-(def route-modules
-  ["activity"
-   "auth"
-   "comment"
-   "confirm"
-   "conversation"
-   "domain"
-   "favorite"
-   "feed-source"
-   "feed-subscription"
-   "group"
-   "like"
-   "message"
-   "pubsub"
-   "resource"
-   "salmon"
-   "search"
-   "setting"
-   "site"
-   "stream"
-   "subscription"
-   "tag"
-   "user"])
 
 (defn load-module
   [module-name]
@@ -95,7 +73,7 @@
    handlers))
 
 (def http-routes
-  (->> route-modules
+  (->> model/action-group-names
        (map load-module)
        (reduce concat)
        make-matchers))
@@ -138,11 +116,17 @@
           ;; wrap-tidy-up
           ))))
 
-  (require-namespaces
-   ["jiksnu.filters.inbox-filters"
-    "jiksnu.views.inbox-views"
-    "jiksnu.filters.key-filters"
-    "jiksnu.sections.key-sections"
-    "jiksnu.views.key-views"])
+  (doseq [model-name model/action-group-names]
+    (require-namespaces
+     ["jiksnu.formats"]
+     )
+    (doto "jiksnu.modules"
+      (util/require-module "admin" model-name)
+      (util/require-module "atom" model-name)
+      (util/require-module "as" model-name)
+      (util/require-module "rdf" model-name)
+      (util/require-module "core" model-name)
+      (util/require-module "web" model-name))
+    )
 
   )

@@ -11,7 +11,7 @@
             [clojure.set :as set]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -202,9 +202,8 @@ serialization"
         (parse-entry entry)
         original-activity (model.activity/fetch-by-remote-id id)
         verb (get-verb entry)
-        parsed-user (-> entry
-                        (abdera/get-author feed)
-                        actions.user/person->user)
+        parsed-user (let [user-element (abdera/get-author entry feed)]
+                      (actions.user/person->user user-element))
         user (actions.user/find-or-create-by-remote-id parsed-user)]
 
     ;; TODO: send parsed user into a channel to be updated once

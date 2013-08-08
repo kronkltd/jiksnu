@@ -12,9 +12,7 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.features-helper :as feature]
-            [jiksnu.model :as model]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model :as model])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 

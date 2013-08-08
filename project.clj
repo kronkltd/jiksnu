@@ -30,7 +30,7 @@
                  [lolg "0.1.0-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/plaza "0.2.0-SNAPSHOT"]
+                 [net.kronkltd/plaza "0.3.0-SNAPSHOT"]
                  [net.kronkltd/waltz "0.1.2-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
                  [org.apache.abdera/abdera-client "1.1.3"]
@@ -62,9 +62,10 @@
 
 ]
   ;; :exclusions [org.clojure/google-closure-library]
-  :aot [jiksnu.xmpp.plugin
-        ;; jiksnu.xmpp.channels
-        jiksnu.xmpp.user-repository]
+  :aot [jiksnu.model
+        jiksnu.modules.xmpp.plugin
+        ;; jiksnu.modules.xmpp.channels
+        jiksnu.modules.xmpp.user-repository]
   ;; :hooks [leiningen.cljsbuild]
   :cljsbuild {:repl-listen-port 9001
               :builds

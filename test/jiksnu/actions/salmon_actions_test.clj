@@ -1,6 +1,5 @@
 (ns jiksnu.actions.salmon-actions-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory]]
         [midje.sweet :only [anything truthy =>]]
         [jiksnu.test-helper :only [context future-context test-environment-fixture]]
         jiksnu.actions.salmon-actions)
@@ -11,7 +10,7 @@
             [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
+            [jiksnu.model.activity :as model.activity]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.user :as model.user])
   (:import java.security.Key

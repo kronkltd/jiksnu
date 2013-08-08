@@ -1,6 +1,5 @@
 (ns jiksnu.model.subscription-test
-  (:use [ciste.config :only [with-environment]]
-        [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context test-environment-fixture]]
         [jiksnu.model.subscription :only [delete drop! create count-records fetch-all
                                           fetch-by-id subscribing?
@@ -10,7 +9,6 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]

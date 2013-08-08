@@ -28,17 +28,10 @@
             [jiksnu.db :as db]
             jiksnu.factory
             [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
             jiksnu.routes
             [jiksnu.session :as session]
             [ring.mock.request :as req])
-  (:import jiksnu.model.Activity
-           jiksnu.model.Domain
+  (:import jiksnu.model.Domain
            jiksnu.model.User))
 
 (def server (atom nil))

@@ -9,7 +9,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]

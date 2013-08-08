@@ -1,8 +1,5 @@
 (ns jiksnu.routes.setting-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
   (:require [jiksnu.actions.setting-actions :as setting]))
 
 (add-route! "/settings/avatar" {:named "avatar settings"})
@@ -14,7 +11,3 @@
    [[:get "/settings/oauthapps"]           #'setting/oauth-apps]])
 
 
-(definitializer
-  (require-namespaces
-   ["jiksnu.filters.setting-filters"
-    "jiksnu.views.setting-views"]))

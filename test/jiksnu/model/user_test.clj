@@ -1,6 +1,5 @@
 (ns jiksnu.model.user-test
-  (:use [ciste.config :only [config with-environment]]
-        [clj-factory.core :only [factory fseq]]
+  (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         jiksnu.model.user
         [midje.sweet :only [=> contains throws falsey]])
@@ -9,7 +8,6 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.util :as util])

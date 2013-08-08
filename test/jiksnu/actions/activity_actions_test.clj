@@ -7,12 +7,14 @@
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [=> contains throws truthy falsey]])
   (:require [clojure.tools.logging :as log]
-            [jiksnu.abdera :as abdera]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
+            jiksnu.modules.atom.sections.activity-sections
+            jiksnu.modules.atom.sections.user-sections
             [jiksnu.session :as session]
             [jiksnu.util :as util])
   (:import jiksnu.model.Activity))

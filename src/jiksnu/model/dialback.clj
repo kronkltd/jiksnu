@@ -4,7 +4,6 @@
   (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
-            [jiksnu.util :as util]
             [lamina.trace :as trace])
   (:import org.bson.types.ObjectId
            org.joda.time.DateTime))

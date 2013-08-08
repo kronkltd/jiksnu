@@ -1,24 +1,12 @@
 (ns jiksnu.formats
-  (:use [ciste.core :only [serialize-as with-format]]
-        [ciste.config :only [config]]
-        [ciste.formats :only [format-as]]
-        [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [full-uri title link-to
-                                       index-block index-section uri
-                                       delete-button index-line edit-button]]
-        [jiksnu.sections :only [format-page-info]])
-  (:require [clj-tigase.core :as tigase]
-            [clojure.data.json :as json]
+  (:use [ciste.core :only [with-format]]
+        [ciste.formats :only [format-as]])
+  (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.abdera :as abdera]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.model :as model]
-            [jiksnu.namespace :as ns]
-            [jiksnu.rdf :as rdf]
-            jiksnu.sections
-            [jiksnu.session :as session]
-            [plaza.rdf.vocabularies.foaf :as foaf]))
+            [jiksnu.modules.atom.util :as abdera]
+            [jiksnu.modules.rdf.util :as rdf]
+            [jiksnu.session :as session]))
 
 (defmethod format-as :as
   [format request response]

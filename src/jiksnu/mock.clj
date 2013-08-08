@@ -14,8 +14,6 @@
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.model.resource :as model.resource]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]))
@@ -195,7 +193,12 @@
 
 (defn a-subscription-exists
   [& [options]]
-  (let [item (actions.subscription/create (factory :subscription))]
+  (let [from (or (:from options)
+                 (a-user-exists))
+        to (or (:to options)
+               (a-user-exists))
+        item (actions.subscription/create (factory :subscription {:from (:_id from)
+                                                                  :to (:_id to)}))]
     (set-this :subscription item)
     item))
 

@@ -9,7 +9,6 @@
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.conversation :as model.conversation]
             [jiksnu.util :as util]))
 
 (test-environment-fixture

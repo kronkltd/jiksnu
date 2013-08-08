@@ -9,7 +9,6 @@
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.features-helper :as feature]
             [jiksnu.model :as model]
             [jiksnu.util :as util])
   (:import jiksnu.model.Resource))
