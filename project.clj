@@ -26,6 +26,7 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
                  [hiccup "1.0.3"]
                  [jayq "2.3.0"]
+                 [lamina "0.5.0-rc4"]
                  [lib-noir "0.5.6"]
                  [lolg "0.1.0-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
@@ -63,6 +64,7 @@
 ]
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [jiksnu.model
+        ciste.runner
         jiksnu.modules.xmpp.plugin
         ;; jiksnu.modules.xmpp.channels
         jiksnu.modules.xmpp.user-repository]
@@ -99,6 +101,10 @@
               [[midje         "1.5-beta1"]
                [ring-mock     "0.1.3"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
+
+  :lis-opts {
+             :name "jiksnu"
+             }
 
   :plugins [[lein-cljsbuild "0.3.2"]
             [codox          "0.6.1"]

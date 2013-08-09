@@ -259,6 +259,9 @@
           [
            [:actions:invoked               #'handle-actions-invoked]
            ;; [:activities:pushed             #'handle-activities-pushed]
+           ;; [:ciste:filters:run             #'handle-event]
+           ;; [:ciste:sections:run            #'handle-event]
+           ;; [:ciste:views:run               #'handle-event]
            ;; [:conversations:pushed          #'handle-conversations-pushed]
            ;; [:entry:parsed                  #'handle-entry-parsed]
            [:http-client:error             #'handle-http-client-error]

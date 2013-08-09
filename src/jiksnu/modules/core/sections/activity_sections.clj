@@ -129,9 +129,12 @@
    (when-let [attachments (:attachments activity)]
      {:attachments attachments})))
 
-;; (defsection show-section [Activity :model]
-;;   [activity & [page]]
-;;   (dissoc activity :links))
+(defsection show-section [Activity :model]
+  [activity & [page]]
+
+  ;; (dissoc activity :links)
+  activity
+  )
 
 ;; (defsection show-section [Activity :viewmodel]
 ;;   [activity & [page]]
