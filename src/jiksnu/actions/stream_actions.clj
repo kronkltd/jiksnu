@@ -50,11 +50,18 @@
   (let [params (prepare-create params)]
     (model.stream/create params)))
 
+(def index*
+  (templates.actions/make-indexer 'jiksnu.model.stream
+                          :sort-clause {:modified 1}))
+
+(defaction index
+  [& options]
+  (apply index* options))
 
 
-
-
-
+(defaction fetch-by-user
+  [user & [options]]
+  (index {:user (:_id user)}))
 
 
 

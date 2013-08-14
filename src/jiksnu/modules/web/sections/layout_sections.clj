@@ -24,6 +24,7 @@
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]
             [jiksnu.modules.web.sections.group-sections :as sections.group]
+            [jiksnu.modules.web.sections.stream-sections :as sections.stream]
             [jiksnu.modules.web.sections.subscription-sections :as sections.subscription]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity
@@ -75,7 +76,8 @@
    [:div {:data-model "user"}
     (sections.subscription/subscriptions-widget user)
     (sections.subscription/subscribers-widget user)
-    (sections.group/user-groups user)]))
+    (sections.group/user-groups user)
+    (sections.stream/streams-widget user)]))
 
 (defn navigation-group
   [[header links]]
@@ -207,6 +209,26 @@
    [:input.search-query.span3
     {:type "text" :placeholder "Search" :name "q"}]])
 
+(defn style-section
+  []
+  (let [theme (config :site :theme)]
+    (p/include-css
+     (if (= theme "classic")
+       "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
+       (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
+     "/assets/themes/classic/standard.css"
+     "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css")))
+
+(defn get-prefixes
+  []
+  (->> [["foaf" ns/foaf]
+        ["dc" ns/dc]
+        ["sioc" ns/sioc]
+        ["dcterms" "http://purl.org/dc/terms/"]]
+       (map
+        (fn [[prefix uri]] (format "%s: %s" prefix uri)))
+       (string/join " ")))
+
 (defn navbar-section
   [request response]
   [:div.navbar.navbar-fixed-top
@@ -300,26 +322,6 @@
     [:p "Copyright © 2011 KRONK Ltd."]
     [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
 
-(defn style-section
-  []
-  (let [theme (config :site :theme)]
-    (p/include-css
-     (if (= theme "classic")
-       "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
-       (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-     "/assets/themes/classic/standard.css"
-     "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css")))
-
-(defn get-prefixes
-  []
-  (->> [["foaf" ns/foaf]
-        ["dc" ns/dc]
-        ["sioc" ns/sioc]
-        ["dcterms" "http://purl.org/dc/terms/"]]
-       (map
-        (fn [[prefix uri]] (format "%s: %s" prefix uri)))
-       (string/join " ")))
-
 (defn page-template-content
   [request response]
   {:headers {"Content-Type" "text/html; charset=utf-8"}
@@ -352,8 +354,7 @@
        (navbar-section request response)
        [:div.container-fluid
         (when *dynamic*
-          {:data-bind "if: loaded"}
-          )
+          {:data-bind "if: loaded"})
         [:div.row-fluid
          [:div.span2.hidden-tablet.hidden-phone
           [:aside#left-column.sidebar.hidden-tablet

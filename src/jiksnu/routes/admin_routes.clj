@@ -92,6 +92,7 @@
     [[:get    "/admin/settings"]                           #'admin.setting/edit-page]
     [[:post   "/admin/settings"]                           #'admin.setting/update-settings]
 
+    [[:get    "/admin/streams.:format"]                    #'admin.stream/index]
     [[:get    "/admin/streams"]                            #'admin.stream/index]
 
     [[:get    "/admin/workers.:format"]                    #'admin.worker/index]

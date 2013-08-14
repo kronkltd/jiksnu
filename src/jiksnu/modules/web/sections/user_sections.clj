@@ -155,26 +155,28 @@
 
 (defn links-table
   [links]
-  [:table.table
-   (when *dynamic*
-     {:data-bind "if: links"})
-   [:thead
-    [:tr
-     [:th "title"]
-     [:th "rel"]
-     [:th "href"]
-     [:th "Actions"]]]
-   [:tbody
+  [:div
+   [:h3 "Links"]
+   [:table.table
     (when *dynamic*
-      {:data-bind "foreach: links"})
-    (map
-     (fn [link]
-       [:tr
-        [:td (if *dynamic* (bind-property "title") (:title link))]
-        [:td (if *dynamic* (bind-property "rel")   (:rel link))]
-        [:td (if *dynamic* (bind-property "href")  (:href link))]
-        [:td (link-actions-section link)]])
-     links)]])
+      {:data-bind "if: links"})
+    [:thead
+     [:tr
+      [:th "title"]
+      [:th "rel"]
+      [:th "href"]
+      [:th "Actions"]]]
+    [:tbody
+     (when *dynamic*
+       {:data-bind "foreach: links"})
+     (map
+      (fn [link]
+        [:tr
+         [:td (if *dynamic* (bind-property "title") (:title link))]
+         [:td (if *dynamic* (bind-property "rel")   (:rel link))]
+         [:td (if *dynamic* (bind-property "href")  (:href link))]
+         [:td (link-actions-section link)]])
+      links)]]])
 
 (defn model-button
   [user]
