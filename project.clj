@@ -5,10 +5,15 @@
   :min-lein-version "2.0.0"
   :dependencies [[aleph "0.3.0-rc1"]
                  [ciste "0.5.0-SNAPSHOT"]
-                 [ciste/ciste-incubator "0.1.0-SNAPSHOT"]
-                 [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"]
-                 [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"]
-                 [ciste/ciste-service-swank "0.4.0-SNAPSHOT"]
+                 [ciste/ciste-incubator "0.1.0-SNAPSHOT"
+                  :exclusions [ciste/ciste-core]
+                  ]
+                 [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"
+                  :exclusions [ciste/ciste-core]]
+                 [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"
+                  :exclusions [ciste/ciste-core]]
+                 [ciste/ciste-service-swank "0.4.0-SNAPSHOT"
+                  :exclusions [ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [clj-stacktrace "0.2.5"]
