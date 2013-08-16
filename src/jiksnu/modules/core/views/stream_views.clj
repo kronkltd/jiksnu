@@ -59,6 +59,15 @@
   [request activities]
   {:body (index-section activities)})
 
+(defview #'actions.stream/index :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "page-updated"
+            :body response}}))
+
 ;; mentions-timeline
 
 (defview #'actions.stream/mentions-timeline :xml

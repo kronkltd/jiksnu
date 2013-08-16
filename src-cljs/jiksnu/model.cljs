@@ -34,6 +34,8 @@
     "Group"                    "Groups"]
    ["resource"                 "resources"
     "Resource"                 "Resources"]
+   ["stream"                   "streams"
+    "Stream"                   "Streams"]
    ["subscription"             "subscriptions"
     "Subscription"             "Subscriptions"]
    ["user"                     "users"
@@ -346,6 +348,16 @@
                 "user" nil
                 "value" nil))))
 
+(def Stream
+  (.extend
+   PageModel
+   (js-obj
+    "type"        "Stream"
+    "stub"        "streams"
+    "defaults" (extend-page-model
+                "user" nil
+                "name" nil))))
+
 (defvar Statistics
   [this]
   (doto this
@@ -433,6 +445,12 @@
             "type"    "Resources"
             "model"   Resource)))
 
+(def Streams
+  (.extend backbone/Collection
+           (js-obj
+            "model" Stream
+            "type" "Streams")))
+
 (def Subscriptions
   (.extend backbone/Collection
            (js-obj
@@ -457,6 +475,7 @@
 (def groups        (Groups.))
 (def notifications (Notifications.))
 (def resources     (Resources.))
+(def streams       (Streams.))
 (def subscriptions (Subscriptions.))
 (def users         (Users.))
 
@@ -482,6 +501,7 @@
                   "resources"                resources
                   "showComments"             false
                   "statistics"               nil
+                  "streams"                  streams
                   "subscriptions"            subscriptions
                   "targetActivity"           nil
                   "targetConversation"       nil

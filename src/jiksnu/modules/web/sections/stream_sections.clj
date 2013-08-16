@@ -27,7 +27,7 @@
      [:th "Name"]]]
    [:tbody {:data-bind "foreach: items"}
     (for [item items]
-      [:tr {:data-bind "stream"}
+      [:tr {:data-model "stream"}
        [:td (display-property item :name)]])]])
 
 (defsection admin-index-section [Stream :html]

@@ -18,7 +18,7 @@
 (defn routes
   []
   [
-   [[:post "/streams"] #'stream/create]
+   [[:post "/streams"]                                  #'stream/create]
    [[:get    (named-path     "public timeline")]        #'stream/public-timeline]
    [[:get    (named-path     "group profile")]          #'stream/group-timeline]
    [[:get    (formatted-path "user profile")]           #'stream/user-timeline]
@@ -49,5 +49,6 @@
   []
   [
    [{:name "public-timeline"} {:action #'stream/public-timeline}]
+   [{:name "streams"}         {:action #'stream/index}]
    ])
 

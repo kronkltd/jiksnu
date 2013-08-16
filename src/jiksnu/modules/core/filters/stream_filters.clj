@@ -43,6 +43,11 @@
   ;; TODO: fetch user
   (action))
 
+(deffilter #'index :page
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
 (deffilter #'public-timeline :command
   [action request]
   (action))

@@ -18,8 +18,8 @@
                  :serialization  :http
                  :format         :viewmodel}
         response ((resolve-routes [predicates/http]
-                                  (concat http-routes
-                                          admin-routes))
+                                  (concat admin-routes
+                                          http-routes))
                   request)]
     (if-let [body (:body response)]
       (let [vm (read-json body)]
