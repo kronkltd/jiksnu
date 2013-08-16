@@ -184,6 +184,12 @@
         {:data-bind "attr: {href: '/model/users/' + $data._id() + '.model'}"})
    "Model"])
 
+(defn admin-button
+  [user]
+  [:a (when *dynamic*
+        {:data-bind "attr: {href: '/admin/users/' + $data._id()}"})
+   "Admin"])
+
 (defn get-buttons
   []
   (concat
@@ -194,6 +200,7 @@
       #'update-button])
    (when (is-admin?)
      [#'edit-button
+      #'admin-button
       #'delete-button])))
 
 ;; actions-section
