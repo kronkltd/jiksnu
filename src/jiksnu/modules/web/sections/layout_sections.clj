@@ -4,7 +4,7 @@
         [ciste.sections.default :only [add-form show-section]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to display-property dump-data pagination-links]]
+        [jiksnu.modules.web.sections :only [bind-to display-property dump-data pagination-links with-sub-page]]
         [jiksnu.session :only [current-user is-admin?]])
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -77,7 +77,8 @@
     (sections.subscription/subscriptions-widget user)
     (sections.subscription/subscribers-widget user)
     (sections.group/user-groups user)
-    (sections.stream/streams-widget user)]))
+    (with-sub-page "streams"
+     (sections.stream/streams-widget user))]))
 
 (defn navigation-group
   [[header links]]
