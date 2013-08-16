@@ -9,6 +9,16 @@
             [jiksnu.modules.web.sections :refer [display-property]])
   (:import jiksnu.model.Stream))
 
+(defn add-form
+  [user]
+  [:form
+   (merge {:method "post" }
+          (if *dynamic*
+            {:data-bind "attr: {action: '/users/' + _id() + '/streams'}"}
+            {:action (format "/users/%s/streams" (:_id user))}))
+   [:input {:type "text" :name "name"}]
+   [:input {:type "submit"}]])
+
 (defsection admin-index-block [Stream :html]
   [items & [page]]
   [:table.table
@@ -18,20 +28,12 @@
    [:tbody {:data-bind "foreach: items"}
     (for [item items]
       [:tr {:data-bind "stream"}
-       [:td (display-property item :name)]
-
-       ]
-      )
-
-    ]
-   ]
-
-  )
+       [:td (display-property item :name)]])]])
 
 (defsection admin-index-section [Stream :html]
   [items & [page]]
-  (admin-index-block items page)
-  )
+  (admin-index-block items page))
+
 
 (defn streams-widget
   [user]
@@ -43,8 +45,4 @@
      [:ul {:data-bind "foreach: items"}
       (for [item (:items page)]
         [:li {:data-model "stream"}
-         (display-property item :name)])
-      ]
-     ]
-    )
-  )
+         (display-property item :name)])]]))

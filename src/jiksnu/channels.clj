@@ -33,6 +33,11 @@
    :permanent? true
    :description "pending-create-conversations"))
 
+(defonce pending-create-stream
+  (l/channel*
+   :permanent? true
+   :description "pending-create-stream"))
+
 (defonce pending-update-resources
   (l/channel*
    :permanent? true

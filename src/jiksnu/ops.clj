@@ -56,6 +56,10 @@
     #_(l/wait-for-result result default-timeout)
     result))
 
+(defn create-new-stream
+  [params]
+  (async-op ch/pending-create-stream [params]))
+
 (defn get-conversation
   [url]
   (async-op ch/pending-get-conversation [url]))

@@ -513,5 +513,11 @@
       true)
     (throw+ "Must be authenticated")))
 
+(defaction add-stream
+  [user params]
+  (let [params (assoc params :user (:_id user))]
+    (ops/create-new-stream params))
+  )
+
 (definitializer
   (model.user/ensure-indexes))

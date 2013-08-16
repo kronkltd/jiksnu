@@ -35,6 +35,7 @@
    [[:get    "/api/people/@me/@all"]            #'user/index]
    [[:get    "/api/people/@me/@all/:id"]        #'user/show]
    [[:delete "/users/:id"]                      #'user/delete]
+   [[:post "/users/:id/streams"]                #'user/add-stream]
    [[:post   "/users/:id/delete"]               #'user/delete]
    ;; [[:post   "/users/:id/update-hub"]           #'user/update-hub]
    [[:post   "/:username"]                      #'user/update]

@@ -13,7 +13,8 @@
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
-            [jiksnu.modules.core.sections.activity-sections :as sections.activity])
+            [jiksnu.modules.core.sections.activity-sections :as sections.activity]
+            [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 
@@ -24,6 +25,12 @@
   {:status 202
 
    :template false})
+
+(defview #'create :html
+  [request item]
+  (-> (response/redirect-after-post "/")
+      (assoc :template false)
+      (assoc :flash "user has been created")))
 
 ;; group-timeline
 

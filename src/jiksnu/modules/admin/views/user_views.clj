@@ -13,6 +13,7 @@
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.domain :as model.domain]
+            [jiksnu.modules.web.sections.stream-sections :as sections.stream]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Activity
            jiksnu.model.Stream))
@@ -54,11 +55,12 @@
         (let [page (second (actions.stream/user-timeline user))
               items (if *dynamic* [(Activity.)] (:items page))]
           (admin-index-section items page)))
+      [:h3 "Streams"]
       (with-sub-page "streams"
-        [:h3 "Streams"]
         (let [page (actions.stream/fetch-by-user user)
               items (if *dynamic* [(Stream.)] (:items page))]
-          (admin-index-section items page)))])})
+          (admin-index-section items page)))
+      (sections.stream/add-form user)])})
 
 (defview #'show :model
   [request user]
