@@ -28,6 +28,17 @@
    [:statuses {:type "array"}
     (map index-line (index-section activities))]})
 
+(defview #'actions.stream/fetch-by-user :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
+            :body response}}))
+
 (defview #'actions.stream/group-timeline :json
   [request [group {:keys [items] :as page}]]
   {:body group})

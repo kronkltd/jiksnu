@@ -14,7 +14,8 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.modules.web.sections.user-sections :as sections.user])
-  (:import jiksnu.model.Activity))
+  (:import jiksnu.model.Activity
+           jiksnu.model.Stream))
 
 (defview #'index :html
   [request {:keys [items] :as page}]
@@ -38,20 +39,26 @@
 
 (defview #'show :html
   [request user]
-  (let [page (second (actions.stream/user-timeline user))
-        items (if *dynamic* [(Activity.)] (:items page))]
-    {:title (title user)
-     :single true
-     :body
-     (bind-to "targetUser"
-       [:div (merge {:data-model "user"}
-                    (when-not *dynamic*
-                      {:data-id (:_id user)}))
-        (admin-show-section user)
-        (let [links (if *dynamic*  [{}] (:links user))]
-            (sections.user/links-table links))
-        (with-sub-page "activities"
-          (admin-index-section items page))])}))
+  {:title (title user)
+   :single true
+   :body
+   (bind-to "targetUser"
+     [:div (merge {:data-model "user"}
+                  (when-not *dynamic*
+                    {:data-id (:_id user)}))
+      (admin-show-section user)
+      (let [links (if *dynamic*  [{}] (:links user))]
+        (sections.user/links-table links))
+      (with-sub-page "activities"
+        [:h3 "Activities"]
+        (let [page (second (actions.stream/user-timeline user))
+              items (if *dynamic* [(Activity.)] (:items page))]
+          (admin-index-section items page)))
+      (with-sub-page "streams"
+        [:h3 "Streams"]
+        (let [page (actions.stream/fetch-by-user user)
+              items (if *dynamic* [(Stream.)] (:items page))]
+          (admin-index-section items page)))])})
 
 (defview #'show :model
   [request user]

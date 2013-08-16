@@ -20,6 +20,11 @@
   ;; TODO: fetch user
   (action))
 
+(deffilter #'fetch-by-user :page
+  [action request]
+  (let [item (:item request)]
+    (action item)))
+
 (deffilter #'friends-timeline :http
   [action request]
   (-> request :params :id model.user/get-user action))
@@ -55,6 +60,8 @@
   [action request]
   ;; TODO: fetch user
   (action))
+
+
 
 ;; user-timeline
 

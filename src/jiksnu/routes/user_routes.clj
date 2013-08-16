@@ -54,4 +54,6 @@
    [{:type User :name "activities"}       {:action #'stream/user-timeline}]
    [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
    [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
+   [{:type User :name "streams"}          {:action #'stream/fetch-by-user}]
+
    ])

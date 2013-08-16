@@ -1,11 +1,8 @@
 (ns jiksnu.bindings.with-model
   (:use [jayq.core :only [$]])
-  (:require
-   [jiksnu.model :as model]
-   [jiksnu.util.ko :as ko]
-   [lolg :as log]
-   )
-  )
+  (:require [jiksnu.model :as model]
+            [jiksnu.util.ko :as ko]
+            [lolg :as log]))
 
 (def *logger* (log/get-logger "jiksnu.bindings.with-model"))
 

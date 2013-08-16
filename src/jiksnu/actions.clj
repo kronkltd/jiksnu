@@ -135,7 +135,8 @@
                                       @pred/*sub-page-matchers*)]
     (or (route-handler request)
         {:action "error"
-         :message "page not found"})))
+         :page page-name
+         :message "sub page not found"})))
 
 (defaction invoke-action
   [model-name action-name id & [options]]
