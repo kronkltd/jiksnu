@@ -244,6 +244,18 @@
                   (pprint event))]
    (println message)))
 
+(defn handle-matcher-test
+  [event]
+  ;; (println "\n")
+  (let [message (with-out-str
+                  (pprint
+                   (-> event
+                       (dissoc :request)
+                       (dissoc :predicates)
+                       )
+                   ))]
+   (println message)))
+
 (defn handle-http-client-error
   [event]
   (log/errorf "Http Client Error: %s" (pr-str event)))
@@ -261,6 +273,10 @@
            [:actions:invoked               #'handle-actions-invoked]
            ;; [:activities:pushed             #'handle-activities-pushed]
            ;; [:ciste:filters:run             #'handle-event]
+           ;; [:ciste:predicate:tested        #'handle-event]
+           [:ciste:matcher:tested         #'handle-matcher-test]
+           [:ciste:matcher:matched         #'handle-event]
+           [:ciste:route:matched         #'handle-event]
            ;; [:ciste:sections:run            #'handle-event]
            ;; [:ciste:views:run               #'handle-event]
            ;; [:conversations:pushed          #'handle-conversations-pushed]

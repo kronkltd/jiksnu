@@ -17,7 +17,7 @@
 (def create-validators
   (validation-set
    (type-of :_id                   ObjectId)
-   (type-of :title                 String)
+   (type-of :name                 String)
 
    ;; (type-of :local                 Boolean)
    ;; (type-of :public                Boolean)

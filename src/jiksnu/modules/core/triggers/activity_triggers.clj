@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.triggers.activity-triggers
-  (:use [ciste.config :only [config]])
-  (:require [clj-tigase.core :as tigase]
+  (:require [ciste.config :refer [config]]
+            [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]

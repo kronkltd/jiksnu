@@ -1,29 +1,32 @@
 (ns jiksnu.modules.core.filters.user-filters
-  (:use [ciste.config :only [config]]
-        [ciste.filters :only [deffilter]]
-        jiksnu.actions.user-actions
-        [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
-            [clj-tigase.element :as element]
+  (:require [ciste.config :refer [config]]
+            [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]
             [jiksnu.session :as session]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]]))
+
+(deffilter #'actions.user/add-stream :http
+  [action request]
+  (let [params (:params request)
+        id (:id params)
+        params (dissoc params :id)
+        user (model.user/fetch-by-id id)]
+    (action user params)))
 
 ;; create
 
-(deffilter #'create :http
+(deffilter #'actions.user/create :http
   [action request]
   (let [{:keys [params]} request]
     (action params)))
 
 ;; delete
 
-(deffilter #'delete :http
+(deffilter #'actions.user/delete :http
   [action request]
   (let [id (:id (:params request))]
     (when-let [item (model.user/fetch-by-id (util/make-id id))]
@@ -31,7 +34,7 @@
 
 ;; discover
 
-(deffilter #'discover :http
+(deffilter #'actions.user/discover :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id (util/make-id id))]
@@ -39,26 +42,26 @@
 
 ;; index
 
-(deffilter #'index :http
+(deffilter #'actions.user/index :http
   [action request]
   (action {} (merge {}
                     (parse-page request)
                     (parse-sorting request))))
 
-(deffilter #'index :page
+(deffilter #'actions.user/index :page
   [action request]
   (action))
 
 ;; profile
 
-(deffilter #'profile :http
+(deffilter #'actions.user/profile :http
   [action request]
   (if-let [user (session/current-user)]
     user (log/error "no user")))
 
 ;; register
 
-(deffilter #'register :http
+(deffilter #'actions.user/register :http
   [action {{:keys [username password confirm-password] :as params} :params}]
   (if (:accepted params)
     (if (= password confirm-password)
@@ -68,13 +71,13 @@
 
 ;; register-page
 
-(deffilter #'register-page :http
+(deffilter #'actions.user/register-page :http
   [action request]
   (action))
 
 ;; show
 
-(deffilter #'show :http
+(deffilter #'actions.user/show :http
   [action request]
   (when-let [params (:params request)]
     (let [id (:id params)
@@ -86,7 +89,7 @@
 
 ;; update
 
-(deffilter #'update :http
+(deffilter #'actions.user/update :http
   [action request]
   (let [{{id :id} :params} request]
     (if-let [user (model.user/fetch-by-id (util/make-id id))]
@@ -94,20 +97,20 @@
 
 ;; update-profile
 
-(deffilter #'update-profile :http
+(deffilter #'actions.user/update-profile :http
   [action {params :params}]
   (action params))
 
 ;; user-meta
 
-(deffilter #'user-meta :http
+(deffilter #'actions.user/user-meta :http
   [action request]
   (->> request :params :uri
        util/split-uri
        (apply model.user/get-user)
        action))
 
-;; (deffilter #'update-hub :http
+;; (deffilter #'actions.user/update-hub :http
 ;;   [action request]
 ;;   (let [{params :params} request
 ;;         {username :id} params

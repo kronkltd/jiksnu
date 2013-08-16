@@ -79,7 +79,7 @@
   (if-let [domain-name (or (:domain user)
                            (when-let [id (:id user)]
                              (util/get-domain-name id)))]
-    @(ops/get-domain domain-name)))
+    (model.domain/fetch-by-id domain-name)))
 
 (defn get-user-meta-uri
   [user]
@@ -500,7 +500,8 @@
   "Error callback when user doesn't support xmpp"
   [user]
   (let [domain-name (:domain user)
-        domain @(ops/get-discovered @(ops/get-domain domain-name))]
+        domain (model.domain/fetch-by-id domain-name)]
+    @(ops/get-discovered domain)
     (actions.domain/set-xmpp domain false)
     user))
 
@@ -516,7 +517,7 @@
 (defaction add-stream
   [user params]
   (let [params (assoc params :user (:_id user))]
-    (ops/create-new-stream params))
+    [user @(ops/create-new-stream params)])
   )
 
 (definitializer

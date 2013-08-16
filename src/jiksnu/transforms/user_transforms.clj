@@ -68,8 +68,8 @@
   (if-let [domain-name (or (:domain user)
                            (when-let [id (:id user)]
                              (util/get-domain-name id)))]
-    (do
-      @(ops/get-discovered @(ops/get-domain domain-name))
+    (let [domain (model.domain/fetch-by-id domain-name)]
+      @(ops/get-discovered domain)
       (assoc user :domain domain-name))
     (throw+ "Could not determine domain for user")))
 

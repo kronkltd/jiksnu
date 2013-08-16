@@ -1,5 +1,4 @@
 (ns jiksnu.modules.core.triggers.user-triggers
-  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
@@ -12,7 +11,8 @@
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+]]))
 
 ;; (defn fetch-updates-trigger
 ;;   [action _ user]
