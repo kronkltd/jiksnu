@@ -90,8 +90,8 @@
   [& [options]]
   (let [user (a-user-exists options)
         params {:user (:_id user)
-                :title (fseq :word)}
-        stream (actions.stream/create (log/spy :info params))]
+                :name (fseq :word)}
+        stream (actions.stream/create params)]
     (set-that :stream stream)
     stream))
 
