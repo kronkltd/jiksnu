@@ -57,7 +57,7 @@
 (defn prepare-create
   [user]
   (-> user
-      transforms.user/set-id
+      transforms.user/set-_id
       transforms.user/set-domain
       transforms.user/set-local
       ;; transforms.user/set-url
@@ -66,7 +66,7 @@
       transforms.user/set-discovered
       transforms.user/set-avatar-url
 
-      transforms/set-_id
+      ;; transforms/set-_id
       transforms/set-updated-time
       transforms/set-created-time
       transforms/set-no-links))
@@ -119,8 +119,15 @@
 (defn request-vcard!
   "Send a vcard request to the xmpp endpoint of the user"
   [user]
-  (let [packet (model.user/vcard-request user)]
-    (tigase/deliver-packet! packet)))
+  (let [body (element/make-element
+              "query" {"xmlns" ns/vcard-query})]
+    (-> {:from (tigase/make-jid "" (config :domain))
+         :to (tigase/make-jid user)
+         :id "JIKSNU1"
+         :type :get
+         :body body}
+        tigase/make-packet
+        tigase/deliver-packet!)))
 
 (defn parse-person
   [^Person person]

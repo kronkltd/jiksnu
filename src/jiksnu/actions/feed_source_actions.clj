@@ -224,9 +224,9 @@
             (if (or (:force options)
                     (not (and feed-updated source-updated))
                     (time/after? feed-updated source-updated))
-              (try
+              (try+
                 (process-feed source feed)
-                (catch Exception ex
+                (catch Throwable ex
                   (trace/trace :errors:handled ex)))
               (log/warn "feed is up to date")))
           (throw+ "could not obtain feed"))

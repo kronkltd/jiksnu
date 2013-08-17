@@ -1,5 +1,5 @@
 (ns jiksnu.ops
-  (:use [slingshot.slingshot :only [throw+]])
+  (:use [slingshot.slingshot :only [throw+ try+]])
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.channels :as ch]
@@ -32,10 +32,10 @@
 (defn op-handler
   [f]
   (fn [[result args]]
-    (try
+    (try+
       (let [val (apply f args)]
         (l/enqueue result val))
-      (catch Exception ex
+      (catch Throwable ex
         (log/error "op handler error")
         (log/error ex)
         (l/error result ex)))))

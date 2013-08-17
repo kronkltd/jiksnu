@@ -35,15 +35,8 @@
 ;; TODO: fetch all in 1 request
 (defn fetch-comments
   [activity]
-  (let [comments (apply concat
-                        (map model.activity/fetch-by-id (:comments activity))
-                        []
-                        #_(map (fn [irt]
-                               (try
-                                 (actions.activity/find-or-create-by-remote-id {:id irt})
-                                 (catch RuntimeException ex
-                                   (trace/trace "errors:handled" ex))))
-                             (:irts activity)))]
+  (let [comments (map model.activity/fetch-by-id
+                      (:comments activity))]
     [activity comments]))
 
 (defn comment-request

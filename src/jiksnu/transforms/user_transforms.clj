@@ -13,14 +13,17 @@
             [jiksnu.ops :as ops]
             [jiksnu.util :as util]))
 
-(defn set-id
+(defn set-_id
   [user]
   (if (:id user)
     user
-    (when-let [username (:username user)]
-      (when-let [domain-name (:domain user)]
+    (if-let [username (:username user)]
+      (if-let [domain-name (:domain user)]
         (let [id (format "acct:%s@%s" username domain-name)]
-          (assoc user :id id))))))
+          (assoc user :_id id))
+        (throw+ "could not determine domain")
+        )
+      (throw+ "could not determine username"))))
 
 (defn set-url
   [user]

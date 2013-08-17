@@ -9,7 +9,7 @@
         [lamina.core :only [permanent-channel read-channel* siphon]]
         midje.sweet
         ring.mock.request
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.http :as http]
             [ciste.config :as c]
             [ciste.core :as core]
@@ -39,17 +39,17 @@
 
 (defn after-hook
   []
-  (try
+  (try+
     (log/info "after")
     (ciste.runner/stop-application!)
     (close)
-    (catch Exception ex
+    (catch Throwable ex
       (log/error ex))))
 
 (defn before-hook
   []
   (when-not @loaded
-    (try
+    (try+
       (let [site-config (ciste.config/load-site-config)]
         (ciste.runner/start-application! :integration)
         (set-driver! {:browser
@@ -68,7 +68,7 @@
          (ref-set my-password nil))
         (dosync
          (swap! loaded (constantly true))))
-      (catch Exception ex
+      (catch Throwable ex
         (.printStackTrace ex)
         (System/exit 0)))))
 

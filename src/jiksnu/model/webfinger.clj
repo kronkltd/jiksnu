@@ -1,7 +1,7 @@
 (ns jiksnu.model.webfinger
   (:use [ciste.config :only [config]]
         [clojure.core.incubator :only [-?>]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]
             [clojure.tools.logging :as log]
@@ -106,12 +106,12 @@
 (defn get-username-from-identifiers
   [xrd]
   {:pre [(instance? Document xrd)]}
-  (try
+  (try+
     (->> xrd
          get-identifiers
          (keep (comp first util/split-uri))
          first)
-    (catch RuntimeException ex
+    (catch Throwable ex
       (trace/trace "errors:handled" ex))))
 
 ;; takes a document

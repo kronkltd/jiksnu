@@ -9,8 +9,6 @@
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clj-statsd :as s]
-            [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
@@ -33,8 +31,8 @@
 
 (def create-validators
   (validation-set
-   (presence-of   :_id)
-   (acceptance-of :id           :accept string?)
+   ;; (presence-of   :_id)
+   (acceptance-of :_id           :accept string?)
    (acceptance-of :username     :accept string?)
    (acceptance-of :domain       :accept string?)
    ;; (acceptance-of :url          :accept string?)
@@ -49,7 +47,7 @@
 (def drop!         (templates.model/make-dropper       collection-name))
 (def set-field!    (templates.model/make-set-field!    collection-name))
 (def remove-field! (templates.model/make-remove-field! collection-name))
-(def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
+(def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker false))
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
 
@@ -140,13 +138,6 @@
      (fetch-all {:domain (:_id domain)}
                 #_{:limit 20})))
 
-;; TODO: Is this needed?
-(defn subnodes
-  [^BareJID user subnode]
-  (let [id (tigase/get-id user)
-        domain (tigase/get-domain user)]
-    (:nodes (get-user id))))
-
 (defn update
   [^User new-user]
   (log/infof "updating user: %s" new-user)
@@ -174,17 +165,6 @@
   (if-let [link (or (get-link user ns/updates-from "application/atom+xml")
                     (get-link user ns/updates-from nil))]
     (:href link)))
-
-(defn vcard-request
-  [user]
-  (let [body (element/make-element
-              "query" {"xmlns" ns/vcard-query})
-        packet-map {:from (tigase/make-jid "" (config :domain))
-                    :to (tigase/make-jid user)
-                    :id "JIKSNU1"
-                    :type :get
-                    :body body}]
-    (tigase/make-packet packet-map)))
 
 ;; FIXME: This does not work yet
 (defn foaf-query

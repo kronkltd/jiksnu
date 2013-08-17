@@ -256,12 +256,12 @@
 
 (defn parse-stream
   [stream]
-  (try
+  (try+
     (let [parser abdera-parser
           feed (.parse parser stream)]
       (trace/trace :feed:parsed feed)
       feed)
-    (catch IllegalStateException ex
+    (catch Throwable ex
       (trace/trace "errors:handled" ex))))
 
 (defn stream->feed

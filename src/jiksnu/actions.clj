@@ -34,15 +34,16 @@
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
     (log/error ex)
-    (.printStackTrace ex)
-    (when (config :airbrake :enabled)
-      (let [options {:url "foo"
-                     :params (into {} (map (fn [[k v]] {k (pr-str v)})
-                                           (:environment data)))}]
-        (airbrake/notify
-         (config :airbrake :key)
-         (name @*environment*)
-         "/" ex options)))))
+    (when (instance? Throwable ex )
+      (.printStackTrace ex)
+      (when (config :airbrake :enabled)
+        (let [options {:url "foo"
+                       :params (into {} (map (fn [[k v]] {k (pr-str v)})
+                                             (:environment data)))}]
+          (airbrake/notify
+           (config :airbrake :key)
+           (name @*environment*)
+           "/" ex options))))))
 
 
 (defn transform-activities
@@ -264,7 +265,7 @@
   []
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
-  ;; (l/receive-all (trace/select-probes "*:created")   #'handle-created)
+  (l/receive-all (trace/select-probes "*:created")   #'handle-created)
   ;; (l/receive-all (trace/select-probes "*:field:set")  #'handle-field-set)
   ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
 

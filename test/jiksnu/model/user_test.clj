@@ -137,7 +137,4 @@
        (let [user (mock/a-remote-user-exists {:domain domain})]
          (user-meta-uri user) => (str "http://example.com/main/xrd?uri=" (get-uri user))))))
 
- (context #'vcard-request
-   (let [user (mock/a-user-exists)]
-     (vcard-request user) => packet/packet?))
  )
