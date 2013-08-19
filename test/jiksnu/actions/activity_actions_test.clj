@@ -165,7 +165,7 @@
      (let [actor (mock/a-user-exists)
            activity (mock/there-is-an-activity {:user actor})
            params {:_id (:_id activity)
-                   :author (util/make-id)}]
+                   :author "acct:foo@bar.baz"}]
        (session/with-user actor
          (edit params) => (throws))))
 

@@ -28,7 +28,7 @@
 
 (deffilter #'discover :command
   [action id]
-  (when-let [item (model.conversation/fetch-by-id (util/make-id id))]
+  (when-let [item (model.conversation/fetch-by-id id)]
     (action item)))
 
 ;; index
@@ -49,13 +49,13 @@
 (deffilter #'show :http
   [action request]
   (when-let [id (:id (:params request))]
-    (when-let [item (model.conversation/fetch-by-id (util/make-id id))]
+    (when-let [item (model.conversation/fetch-by-id id)]
       (action item))))
 
 ;; update
 
 (deffilter #'update :command
   [action id]
-  (when-let [item (model.conversation/fetch-by-id (util/make-id id))]
+  (when-let [item (model.conversation/fetch-by-id id)]
     (action item {:force true})))
 

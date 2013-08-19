@@ -17,6 +17,6 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [user (model.feed-subscription/fetch-by-id (util/make-id id))]
+    (if-let [user (model.feed-subscription/fetch-by-id id)]
      (action user))))
 

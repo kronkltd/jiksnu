@@ -33,7 +33,7 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.group/fetch-by-id (util/make-id id))]
+    (if-let [item (model.group/fetch-by-id id)]
       (action item))))
 
 (deffilter #'new-page :http

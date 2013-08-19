@@ -12,5 +12,5 @@
 
 (deffilter #'delete :http
   [action request]
-  (action (-> request :params :id util/make-id model.like/fetch-by-id)))
+  (action (-> request :params :id model.like/fetch-by-id)))
 

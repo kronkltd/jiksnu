@@ -2,7 +2,8 @@
   (:use [ciste.filters :only [deffilter]]
         jiksnu.actions.auth-actions
         [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.core.incubator :refer [-?>]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth]
@@ -13,7 +14,9 @@
 
 (deffilter #'guest-login :http
   [action request]
-  (-> request :params :webid actions.user/find-or-create-by-uri action))
+  (when-let [uri (-> request :params :webid)]
+    (when-let [user (actions.user/find-or-create {:_id uri})]
+      (action user))))
 
 ;; login
 
@@ -45,15 +48,17 @@
 
 (deffilter #'password-page :http
   [action request]
-  (-> request :session :pending-id util/make-id model.user/fetch-by-id action))
+  (when-let [id (-?> request :session :pending-id)]
+    (when-let [user (model.user/fetch-by-id id)]
+      (action user))))
 
 ;; show
 
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.auth/fetch-by-id (util/make-id id))]
-     (action item))))
+    (if-let [item (model.auth/fetch-by-id id)]
+      (action item))))
 
 ;; verify-credentials
 

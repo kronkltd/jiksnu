@@ -27,14 +27,14 @@
 (deffilter #'delete :http
   [action request]
   (let [id (:id (:params request))]
-    (when-let [item (model.resource/fetch-by-id (util/make-id id))]
+    (when-let [item (model.resource/fetch-by-id id)]
       (action item))))
 
 ;; discover
 
 (deffilter #'discover :command
   [action id]
-  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
+  (when-let [item (model.resource/fetch-by-id id)]
     (action item)))
 
 ;; index
@@ -54,7 +54,7 @@
 (deffilter #'show :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [item (model.resource/fetch-by-id (util/make-id id))]
+    (if-let [item (model.resource/fetch-by-id id)]
      (action item))))
 
 ;; update
@@ -68,6 +68,6 @@
 
 (deffilter #'update :command
   [action id]
-  (when-let [item (model.resource/fetch-by-id (util/make-id id))]
+  (when-let [item (model.resource/fetch-by-id id)]
     (action item)))
 

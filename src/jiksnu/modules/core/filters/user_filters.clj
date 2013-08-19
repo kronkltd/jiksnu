@@ -7,12 +7,12 @@
 
 (deffilter #'actions.user/delete :command
   [action id]
-  (when-let [item (model.user/fetch-by-id (util/make-id id))]
+  (when-let [item (model.user/fetch-by-id id)]
     (action item)))
 
 (deffilter #'actions.user/discover :command
   [action id]
-  (if-let [item (model.user/fetch-by-id (util/make-id id))]
+  (if-let [item (model.user/fetch-by-id id)]
     (action item {:force true})))
 
 (deffilter #'actions.user/index :page
@@ -26,6 +26,6 @@
 
 (deffilter #'actions.user/update :command
   [action id]
-  (let [item (model.user/fetch-by-id (util/make-id id))]
+  (let [item (model.user/fetch-by-id id)]
     (action item {:force true})))
 

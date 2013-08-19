@@ -14,7 +14,7 @@
             [jiksnu.namespace :as ns]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
-            [jiksnu.validators :as valid]
+            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [monger.query :as mq]
             [plaza.rdf.core :as plaza ]
@@ -32,9 +32,9 @@
 (def create-validators
   (validation-set
    ;; (presence-of   :_id)
-   (acceptance-of :_id           :accept string?)
-   (acceptance-of :username     :accept string?)
-   (acceptance-of :domain       :accept string?)
+   (type-of :_id       String)
+   (type-of :username  String)
+   (type-of :domain    String)
    ;; (acceptance-of :url          :accept string?)
    (presence-of   :created)
    (presence-of   :updated)
@@ -126,12 +126,6 @@
     (when (and username domain-name)
       (get-user username domain-name))))
 
-(defn fetch-by-remote-id
-  "Fetch user by their id value"
-  [uri]
-  (if-let [user (mc/find-one-as-map collection-name {:id uri})]
-    (maker user)))
-
 (defn fetch-by-domain
   ([domain] (fetch-by-domain domain {}))
   ([domain options]
@@ -187,6 +181,6 @@
   []
   (doto collection-name
     (mc/ensure-index {:username 1 :domain 1} {:unique true})
-    (mc/ensure-index {:id 1} {:unique true})
+    ;; (mc/ensure-index {:id 1} {:unique true})
 
     ))

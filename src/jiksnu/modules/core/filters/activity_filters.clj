@@ -12,7 +12,7 @@
 
 (deffilter #'delete :command
   [action id]
-  (let [item (model.activity/fetch-by-id (util/make-id id))]
+  (let [item (model.activity/fetch-by-id id)]
     (action item)))
 
 ;; fetch-by-conversation

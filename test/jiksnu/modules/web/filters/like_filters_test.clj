@@ -21,7 +21,7 @@
          (let [request {:params {:id .id.}}]
            (filter-action action request) => .response.
            (provided
-             (model.like/fetch-by-id (util/make-id .id.)) => .like.
+             (model.like/fetch-by-id .id.) => .like.
              (actions.like/delete .like.) => .response.))))))
 
  )

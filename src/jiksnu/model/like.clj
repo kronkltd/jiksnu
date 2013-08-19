@@ -21,7 +21,7 @@
    (presence-of :_id)
    (presence-of :created)
    (presence-of :updated)
-   (presence-of :user)
+   (type-of :user String)
    (presence-of :activity)))
 
 (defn prepare

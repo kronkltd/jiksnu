@@ -158,7 +158,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 (defn oembed->activity
   "Convert a oEmbed document into an activity"
   [oembed]
-  (let [author (actions.user/find-or-create-by-remote-id (get oembed "author_url"))]
+  (let [author (actions.user/find-or-create (get oembed "author_url"))]
     {:author (:_id author)
      :content (get oembed "html")}))
 
@@ -204,7 +204,7 @@ serialization"
         verb (get-verb entry)
         parsed-user (let [user-element (abdera/get-author entry feed)]
                       (actions.user/person->user user-element))
-        user (actions.user/find-or-create-by-remote-id parsed-user)]
+        user (actions.user/find-or-create parsed-user)]
 
     ;; TODO: send parsed user into a channel to be updated once
     (doseq [link (:links parsed-user)]

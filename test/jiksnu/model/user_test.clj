@@ -43,7 +43,7 @@
 
  (context #'fetch-by-id
    (context "when the item doesn't exist"
-     (let [id (util/make-id)]
+     (let [id "acct:foo@bar.baz"]
        (fetch-by-id id) => nil?))
 
    (context "when the item exists"

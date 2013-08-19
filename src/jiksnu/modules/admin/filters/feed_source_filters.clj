@@ -13,7 +13,7 @@
 
 (deffilter #'add-watcher :http
   [action request]
-  (if-let [source (-?> request :params :id util/make-id model.feed-source/fetch-by-id)]
+  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
     (if-let [watcher (-?> request :params :user_id model.user/get-user)]
       (action source watcher))))
 
@@ -21,19 +21,19 @@
 
 (deffilter #'delete :command
   [action id]
-  (let [item (model.feed-source/fetch-by-id (util/make-id id))]
+  (let [item (model.feed-source/fetch-by-id id)]
     (action item)))
 
 (deffilter #'delete :http
   [action request]
-  (if-let [source (-?> request :params :id util/make-id model.feed-source/fetch-by-id)]
+  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
     (action source)))
 
 ;; fetch-updates
 
 (deffilter #'fetch-updates :http
   [action request]
-  (if-let [source (-?> request :params :id util/make-id model.feed-source/fetch-by-id)]
+  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
     (action source)))
 
 ;; index
@@ -50,13 +50,14 @@
 
 (deffilter #'remove-watcher :http
   [action request]
-  (if-let [source (-?> request :params :id util/make-id model.feed-source/fetch-by-id)]
-    (if-let [watcher (-?> request :params :user_id util/make-id model.user/fetch-by-id)]
-      (action source watcher))))
+  (let [params (:params request)]
+    (if-let [source (-?> params :id model.feed-source/fetch-by-id)]
+      (if-let [watcher (-?> params :user_id model.user/fetch-by-id)]
+        (action source watcher)))))
 
 ;; show
 
 (deffilter #'show :http
   [action request]
-  (if-let [source (-?> request :params :id util/make-id model.feed-source/fetch-by-id)]
+  (if-let [source (-?> request :params :id model.feed-source/fetch-by-id)]
     (action source)))

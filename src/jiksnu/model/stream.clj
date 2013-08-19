@@ -22,7 +22,7 @@
    ;; (type-of :local                 Boolean)
    ;; (type-of :public                Boolean)
 
-   (type-of :user                  ObjectId)
+   (type-of :user                  String)
 
    (presence-of :created)
    ;; (type-of :created               DateTime)

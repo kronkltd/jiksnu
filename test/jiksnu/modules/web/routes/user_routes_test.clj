@@ -50,7 +50,7 @@
             (let [request {:format :json
                            :channel ch
                            :name command
-                           :args [type (util/make-id)]}]
+                           :args [type "acct:foo@bar.baz"]}]
               (actions.stream/handle-message request) =>
               (check [response]
                 (let [m (json/read-str response)]

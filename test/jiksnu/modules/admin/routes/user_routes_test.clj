@@ -20,9 +20,9 @@
 
  (context "admin show user"
    (context "html"
-     (let [user (mock/a-user-exists)]
+     (let [user (log/spy :info (mock/a-user-exists))]
        (mock/there-is-an-activity {:user user})
-       (-> (req/request :get (named-path "admin show user" {:id (:_id user)}))
+       (-> (req/request :get (log/spy :info (named-path "admin show user" {:* (:_id user)})))
            as-admin response-for) =>
            (check [response]
              response => map?

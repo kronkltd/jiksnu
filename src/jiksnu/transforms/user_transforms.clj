@@ -11,18 +11,22 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.ops :as ops]
-            [jiksnu.util :as util]))
+            [jiksnu.util :as util])
+  (:import java.net.URI))
 
 (defn set-_id
   [user]
-  (if (:id user)
-    user
+  (if-let [id (:_id user)]
+    (let [id-uri (URI. id)]
+      (if (= "acct" (.getScheme id-uri))
+        user
+        (throw+ "invalid uri")
+        ))
     (if-let [username (:username user)]
       (if-let [domain-name (:domain user)]
         (let [id (format "acct:%s@%s" username domain-name)]
           (assoc user :_id id))
-        (throw+ "could not determine domain")
-        )
+        (throw+ "could not determine domain"))
       (throw+ "could not determine username"))))
 
 (defn set-url
@@ -60,8 +64,8 @@
 
 (defn assert-unique
   [user]
-  (if-let [id (:id user)]
-    (if-not (model.user/fetch-by-remote-id id)
+  (if-let [id (:_id user)]
+    (if-not (model.user/fetch-by-id id)
       user
       (throw+ "already exists"))
     (throw+ "does not have an id")))
@@ -69,7 +73,7 @@
 (defn set-domain
   [user]
   (if-let [domain-name (or (:domain user)
-                           (when-let [id (:id user)]
+                           (when-let [id (:_id user)]
                              (util/get-domain-name id)))]
     (let [domain (model.domain/fetch-by-id domain-name)]
       @(ops/get-discovered domain)

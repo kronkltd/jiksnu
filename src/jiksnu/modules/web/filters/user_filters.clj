@@ -29,7 +29,7 @@
 (deffilter #'actions.user/delete :http
   [action request]
   (let [id (:id (:params request))]
-    (when-let [item (model.user/fetch-by-id (util/make-id id))]
+    (when-let [item (model.user/fetch-by-id id)]
       (action item))))
 
 ;; discover
@@ -37,7 +37,7 @@
 (deffilter #'actions.user/discover :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [user (model.user/fetch-by-id (util/make-id id))]
+    (if-let [user (model.user/fetch-by-id id)]
       (action user {:force true}))))
 
 ;; index
@@ -92,7 +92,7 @@
 (deffilter #'actions.user/update :http
   [action request]
   (let [{{id :id} :params} request]
-    (if-let [user (model.user/fetch-by-id (util/make-id id))]
+    (if-let [user (model.user/fetch-by-id id)]
      (action user {:force true}))))
 
 ;; update-profile

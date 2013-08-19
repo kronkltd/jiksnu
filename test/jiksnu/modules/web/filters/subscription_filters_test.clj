@@ -42,14 +42,14 @@
                (let [request {:params {:subscribeto .id.}}]
                  (filter-action action request) => truthy
                  (provided
-                   (model.user/fetch-by-id (util/make-id .id.)) => .target.
+                   (model.user/fetch-by-id .id.) => .target.
                    (session/current-user) => .actor.
                    (subscribe .actor. .target.) => true)))
              (context "when the user is not authenticated"
                (let [request {:params {:subscribeto .id.}}]
                  (filter-action action request) => (throws RuntimeException)
                  (provided
-                   (model.user/fetch-by-id (util/make-id .id.)) => nil
+                   (model.user/fetch-by-id .id.) => nil
                    (session/current-user) => .actor. :times 0
                    (subscribe .actor. .target.) => nil :times 0))))
            (context "when a user matching the subscribeto param is not found"
@@ -57,7 +57,7 @@
                (filter-action action request) => (throws RuntimeException)
                (provided
                  (session/current-user) => .actor. :times 0
-                 (model.user/fetch-by-id (util/make-id .id.)) => nil
+                 (model.user/fetch-by-id .id.) => nil
                  (subscribe .actor. .target.) => nil :times 0)))))))
 
    ))

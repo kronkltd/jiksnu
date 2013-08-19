@@ -15,7 +15,7 @@
 (defn drop-all!
   "Drop all collections"
   []
-  (log/debug "dropping all collections")
+  (log/info "dropping all collections")
   (db/drop-db))
 
 (describe-config [:database :name]

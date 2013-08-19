@@ -23,8 +23,8 @@
 
 (def create-validators
   (validation-set
-   (type-of :from    ObjectId)
-   (type-of :to      ObjectId)
+   (type-of :from    String)
+   (type-of :to      String)
    (type-of :created DateTime)
    (type-of :updated DateTime)
    (type-of :_id     ObjectId)))

@@ -18,6 +18,8 @@
            jiksnu.model.User
            nu.xom.Document))
 
+(def mappings {"xrd" "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
+
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
 (defn host-meta
@@ -36,9 +38,9 @@
   [xrd]
   {:pre [(instance? Document xrd)]
    :post [(or (nil? %) (string? %))]}
-  (let [query-str (format "//*[local-name() = 'Link'][@rel = '%s']" ns/updates-from)]
+  (let [query-str (format "//xrd:Link[@rel = '%s']" ns/updates-from)]
     (-> xrd
-         (cm/query query-str)
+         (cm/query query-str mappings)
          util/force-coll
          (->> (keep #(.getAttributeValue % "href")))
          first)))
@@ -54,10 +56,10 @@
   [^Document xrd]
   {:pre [(instance? Document xrd)]
    :post [(or (nil? %) (string? %))]}
-  (let [query-str (str "//*[local-name() = 'Property']"
+  (let [query-str (str "//xrd:Property"
                        "[@type = 'http://apinamespace.org/atom/username']")]
     (let [root (.getRootElement xrd)]
-      (->> (cm/query root query-str)
+      (->> (cm/query root query-str mappings)
            util/force-coll
            (keep (fn [prop] (when prop (.getValue prop))))
            first))))
@@ -88,8 +90,7 @@
   [xrd]
   {:pre [(instance? Document xrd)]}
   (let [root (.getRootElement xrd)]
-    (->> (cm/query root "//xrd:Link"
-                   {"xrd" "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
+    (->> (cm/query root "//xrd:Link" mappings)
          util/force-coll
          (map util/parse-link))))
 
@@ -99,8 +100,8 @@
   {:pre [(instance? Document xrd)]
    :post [(coll? %)]}
   (let [root (.getRootElement xrd)]
-    (->> (concat (util/force-coll (cm/query root "//*[local-name() = 'Subject']"))
-                 (util/force-coll (cm/query root "//*[local-name() = 'Alias']")))
+    (->> (concat (util/force-coll (cm/query root "//xrd:Subject" mappings))
+                 (util/force-coll (cm/query root "//xrd:Alias" mappings)))
                (map #(.getValue %)))))
 
 (defn get-username-from-identifiers
@@ -119,9 +120,9 @@
   "return the username component of the user meta"
   [xrd]
   {:pre [(instance? Document xrd)]}
-  (->> [(get-username-from-atom-property xrd)]
+  (->> [(log/spy :info (get-username-from-atom-property xrd))]
        (lazy-cat
-        [(get-username-from-identifiers xrd)])
+        [(log/spy :info (get-username-from-identifiers xrd))])
        (filter identity)
        first))
 

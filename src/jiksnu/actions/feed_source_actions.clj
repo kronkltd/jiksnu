@@ -5,7 +5,7 @@
         [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-url]]
         [lamina.trace :only [defn-instrumented]]
-        [slingshot.slingshot :only [throw+]])
+        [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.http :as http]
             [clj-http.client :as client]
             [clj-time.coerce :as coerce]
@@ -147,7 +147,7 @@
     (let [author-id (abdera/get-simple-extension author ns/atom "id")
           params (actions.user/parse-person author)
           params (assoc params :id (:url params))
-          user (actions.user/find-or-create-by-remote-id params)
+          user (actions.user/find-or-create params)
           id (:_id user)]
       (model.feed-source/set-field! source :author id)))
 

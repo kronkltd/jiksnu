@@ -65,6 +65,7 @@
       ;; transforms.user/set-update-source
       transforms.user/set-discovered
       transforms.user/set-avatar-url
+      ;; transforms.user/set-username
 
       ;; transforms/set-_id
       transforms/set-updated-time
@@ -76,16 +77,16 @@
 (defn get-domain
   "Return the domain of the user"
   [^User user]
-  (if-let [domain-name (or (:domain user)
-                           (when-let [id (:id user)]
-                             (util/get-domain-name id)))]
-    (model.domain/fetch-by-id domain-name)))
+  (if-let [domain-name (log/spy :info (or (:domain (log/spy :info user))
+                                          (when-let [id (:_id user)]
+                                            (util/get-domain-name (log/spy :info id)))))]
+    (actions.domain/find-or-create {:_id domain-name})))
 
 (defn get-user-meta-uri
   [user]
   (let [domain (get-domain user)]
     (or (:user-meta-uri user)
-        (when-let [id (:id user)]
+        (when-let [id (:_id user)]
           (model.domain/get-xrd-url domain id))
         ;; TODO: should update uri in this case
         (model.domain/get-xrd-url domain (:url user)))))
@@ -131,7 +132,7 @@
 
 (defn parse-person
   [^Person person]
-  {:id (abdera/get-simple-extension person ns/atom "id")
+  {:_id (abdera/get-simple-extension person ns/atom "id")
    :email (.getEmail person)
    :url (str (.getUri person))
    :name (abdera/get-name person)
@@ -142,29 +143,6 @@
                  (->> (map #(abdera/attr-val % "local_id")))
                  first)
    :links (abdera/get-links person)})
-
-(defn parse-xrd
-  [body]
-  (let [doc (cm/string->document body)]
-    {:links (model.webfinger/get-links doc)}))
-
-(defn fetch-xrd
-  [params & [options]]
-  (log/info "fetching xrd")
-  (when-let [domain (get-domain params)]
-    (when-let [url (model.domain/get-xrd-url domain (:id params))]
-      (when-let [response @(ops/update-resource url options)]
-        (when-let [body (:body response)]
-          (parse-xrd body))))))
-
-(defn fetch-jrd
-  [params & [options]]
-  (log/info "fetching jrd")
-  (when-let [domain (get-domain params)]
-    (when-let [url (model.domain/get-jrd-url domain (:id params))]
-      (when-let [response @(ops/update-resource url options)]
-        (when-let [body (:body response)]
-          (json/read-str body))))))
 
 (defn fetch-user-feed
   "returns a feed"
@@ -220,27 +198,6 @@
     (doseq [link links]
       (add-link item link))
     (model.user/fetch-by-id (:_id item))))
-
-(defaction find-or-create
-  [params]
-  (let [{:keys [username domain]} params]
-    (or (model.user/get-user username domain)
-        (create params))))
-
-(defn find-or-create-by-uri
-  [uri]
-  {:pre [(string? uri)]}
-  (let [[username domain] (util/split-uri uri)]
-    (find-or-create {:username username
-                     :domain domain})))
-
-;; TODO: This is the job of the filter
-(defn find-or-create-by-jid
-  [^JID jid]
-  {:pre [(instance? JID jid)]}
-  (let [[username domain] (split-jid jid)]
-    (find-or-create {:username username
-                     :domain domain})))
 
 (defaction delete
   "Delete the user"
@@ -325,22 +282,44 @@
                      :value (:username user)}]}]})
     (throw+ "Not authorative for this resource")))
 
-(defaction update
-  "Update the user's activities and information."
-  [user params]
-  (if-let [source-id (:update-source user)]
-    (invoke-action "feed-source" "update" (str source-id))
-    (log/warn "user does not have an update source"))
-  user)
+(defn parse-xrd
+  [body]
+  (log/info (.toXML body))
+  (let [doc body #_(cm/string->document body)]
+    {:links (model.webfinger/get-links doc)}))
 
 (defn process-jrd
   [user jrd & [options]]
+  (log/info "processing jrd")
   jrd)
 
 (defn process-xrd
   [user xrd & [options]]
+  (log/info "processing xrd")
   (let [links (concat (:links user) (:links xrd))]
     (assoc user :links links)))
+
+(defn fetch-jrd
+  [params & [options]]
+  (log/info "fetching jrd")
+  (when-let [domain (log/spy :info (get-domain params))]
+    (when-let [url (log/spy :info (model.domain/get-jrd-url domain (:_id params)))]
+      (when-let [response (log/spy :info @(ops/update-resource url options))]
+        (when-let [body (:body response)]
+          (json/read-str body))))))
+
+(defn fetch-xrd
+  [params & [options]]
+  (log/info "fetching xrd")
+  (when-let [domain (log/spy :info (get-domain params))]
+    (when-let [url (log/spy :info (model.domain/get-xrd-url domain (:_id params)))]
+      (when-let [xrd (log/spy :info @(ops/update-resource url options))]
+
+        (let [username (log/spy :info (model.webfinger/get-username-from-xrd xrd))]
+          (merge params
+                 (log/spy :info (parse-xrd xrd))
+                 {:username username}
+                 ))))))
 
 (defn discover-user-jrd
   [user & [options]]
@@ -355,33 +334,73 @@
   [user & [options]]
   (log/info "Discovering user via xrd")
   (if-let [xrd (fetch-xrd user options)]
-    (process-xrd user xrd options)
+    (let [params (process-xrd user xrd options)]
+      (merge xrd params))
     (log/warn "Could not fetch xrd")))
+
+(defn get-username-from-http-uri
+  [params & [options]]
+  ;; HTTP(S) URI
+  (log/info "http url")
+  (let [id (:_id params)
+        uri  (URI. id)]
+    (if-let [username (.getUserInfo uri)]
+      (do
+        (log/debugf "username: %s" username)
+        (assoc params :username username))
+      (let [params (or (and (:domain params) params)
+                       (when-let [domain-name (util/get-domain-name (:_id params))]
+                         (assoc params :domain domain-name))
+                       (throw+ "Could not determine domain name"))]
+        (let [params params #_(log/spy :info (discover-user-jrd params options))]
+
+          (if (:username params)
+            params
+            (let [params (discover-user-xrd params options)]
+              (if (:username params)
+                (merge
+                 params
+                 {:url id
+                  :_id (format "acct:%s@%s" (:username params) (:domain params))})
+                (throw+ "Could not determine username")))))))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
   [params & [options]]
-  (let [id (or (:id params) (:url params))
+  (let [id (or (:_id params) (:url params))
         uri (URI. id)
-        params (assoc params :id id)]
+        params (assoc params :_id id)]
     (condp = (.getScheme uri)
 
       "acct"  (do
                 (log/debug "acct uri")
                 (assoc params :username (first (util/split-uri id))))
 
-      ;; HTTP(S) URI
-      (do
-        (log/debug "http url")
-        (if-let [username (.getUserInfo uri)]
-          (do
-            (log/debugf "username: %s" username)
-            (assoc params :username username))
-          (if-let [domain-name (or (:domain params) (util/get-domain-name id))]
-            (let [params (assoc params :domain domain-name)]
-              (or (discover-user-jrd params options)
-                  (discover-user-xrd params options)))
-            (throw+ "Could not determine domain name")))))))
+      (get-username-from-http-uri params options))))
+
+(defaction find-or-create
+  [params & [options]]
+  (let [id (:_id params)]
+    (or (when id
+          (or (model.user/fetch-by-id id)
+              (let [[uid did] (util/split-uri id)]
+                (model.user/get-user uid did))
+              (first (model.user/fetch-all {:url id}))))
+        (let [params (if id
+                       (get-username params)
+                       params)]
+          (or (when-let [username (:username params)]
+                 (when-let [domain (:domain params)]
+                   (model.user/get-user username domain)))
+           (create params))))))
+
+(defaction update
+  "Update the user's activities and information."
+  [user params]
+  (if-let [source-id (:update-source user)]
+    (invoke-action "feed-source" "update" (str source-id))
+    (log/warn "user does not have an update source"))
+  user)
 
 ;; TODO: This function should be called at most once per user, per feed
 (defn person->user
@@ -393,35 +412,24 @@
          :as params} (parse-person person)
          domain-name (util/get-domain-name (or id url))
          domain @(ops/get-discovered @(ops/get-domain domain-name))
-         username (or username (get-username {:id id}))]
+         username (or username (get-username {:_id id}))]
     (if (and username domain)
       (let [user-meta (model.domain/get-xrd-url domain url)
             user (merge params
                         {:domain domain-name
-                         :id (or id url)
+                         :_id (or id url)
                          :user-meta-link user-meta
                          :username username})]
         (model/map->User user))
       (throw+ "could not determine user"))))
 
-(defn find-or-create-by-remote-id
-  [params & [options]]
-  (if-let [id (:id params)]
-    (if-let [domain (get-domain params)]
-      (let [domain (if (:discovered domain)
-                     domain @(ops/get-discovered domain id options))
-            params (assoc params :domain (:_id domain))]
-        (or (when-let [username (:username params)]
-              (model.user/get-user username (:_id domain)))
-            (when-let [id (:id params)]
-              (model.user/fetch-by-remote-id id))
-            (if-let [params (if (:username params)
-                              params
-                              (get-username params options))]
-              (create params)
-              (throw+ "could not get username"))))
-      (throw+ "could not determine domain"))
-    (throw+ "User does not have an id")))
+;; TODO: This is the job of the filter
+(defn find-or-create-by-jid
+  [^JID jid]
+  {:pre [(instance? JID jid)]}
+  (let [[username domain] (split-jid jid)]
+    (find-or-create {:username username
+                     :domain domain})))
 
 (defn discover-user-meta
   [user & [options]]
@@ -474,7 +482,7 @@
       (let [params (merge {:username username
                            :domain (:_id (actions.domain/current-domain))
                            :discovered true
-                           :id (str "acct:" username "@" (config :domain))
+                           :_id (str "acct:" username "@" (config :domain))
                            :local true}
                           (when email {:email email})
                           (when name {:name name})

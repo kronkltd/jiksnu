@@ -11,7 +11,7 @@
 
 (deffilter #'delete :http
   [action request]
-  (if-let [id (try+ (-> request :params :id util/make-id)
+  (if-let [id (try+ (-> request :params :id)
                     (catch RuntimeException ex
                       (trace/trace "errors:handled" ex)))]
     (if-let [activity (model.activity/fetch-by-id id)]
@@ -43,6 +43,6 @@
 
 (deffilter #'show :http
   [action request]
-  (-> request :params :id util/make-id
+  (-> request :params :id
       model.activity/fetch-by-id action))
 

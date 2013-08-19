@@ -8,9 +8,9 @@
 
 ;; fetch-remote
 
-(defview #'fetch-remote :xmpp
-  [request user]
-  (model.user/vcard-request user))
+;; (defview #'fetch-remote :xmpp
+;;   [request user]
+;;   (model.user/vcard-request user))
 
 (defview #'show :xmpp
   [request user]

@@ -36,7 +36,7 @@
    (type-of :local                 Boolean)
    (type-of :public                Boolean)
 
-   (type-of :author                ObjectId)
+   (type-of :author                String)
    ;; (type-of :update-source         ObjectId)
    ;; (type-of :conversation          ObjectId)
 
