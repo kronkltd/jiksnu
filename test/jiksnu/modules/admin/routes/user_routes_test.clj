@@ -20,15 +20,16 @@
 
  (context "admin show user"
    (context "html"
-     (let [user (log/spy :info (mock/a-user-exists))]
+     (let [user (mock/a-user-exists)]
        (mock/there-is-an-activity {:user user})
-       (-> (req/request :get (log/spy :info (named-path "admin show user" {:* (:_id user)})))
-           as-admin response-for) =>
-           (check [response]
-             response => map?
-             (:status response) => status/success?
-             (let [body (:body response)]
-               body => (re-pattern (:username user))
-               #_(let [doc (hiccup->doc body)]
-                 (enlive/select doc [:.user]) => truthy))))))
+       (let [path (named-path "admin show user" {:id (:_id user)})]
+         (-> (req/request :get path)
+             as-admin response-for)) =>
+             (check [response]
+               response => map?
+               (:status response) => status/success?
+               (let [body (:body response)]
+                 body => (re-pattern (:username user))
+                 #_(let [doc (hiccup->doc body)]
+                     (enlive/select doc [:.user]) => truthy))))))
  )
