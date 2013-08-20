@@ -77,9 +77,9 @@
 (defn get-domain
   "Return the domain of the user"
   [^User user]
-  (if-let [domain-name (log/spy :info (or (:domain (log/spy :info user))
-                                          (when-let [id (:_id user)]
-                                            (util/get-domain-name (log/spy :info id)))))]
+  (if-let [domain-name (or (:domain user)
+                           (when-let [id (:_id user)]
+                             (util/get-domain-name id)))]
     (actions.domain/find-or-create {:_id domain-name})))
 
 (defn get-user-meta-uri
@@ -302,24 +302,23 @@
 (defn fetch-jrd
   [params & [options]]
   (log/info "fetching jrd")
-  (when-let [domain (log/spy :info (get-domain params))]
-    (when-let [url (log/spy :info (model.domain/get-jrd-url domain (:_id params)))]
-      (when-let [response (log/spy :info @(ops/update-resource url options))]
+  (when-let [domain (get-domain params)]
+    (when-let [url (model.domain/get-jrd-url domain (:_id params))]
+      (when-let [response @(ops/update-resource url options)]
         (when-let [body (:body response)]
           (json/read-str body))))))
 
 (defn fetch-xrd
   [params & [options]]
   (log/info "fetching xrd")
-  (when-let [domain (log/spy :info (get-domain params))]
-    (when-let [url (log/spy :info (model.domain/get-xrd-url domain (:_id params)))]
-      (when-let [xrd (log/spy :info @(ops/update-resource url options))]
+  (when-let [domain (get-domain params)]
+    (when-let [url (model.domain/get-xrd-url domain (:_id params))]
+      (when-let [xrd @(ops/update-resource url options)]
 
-        (let [username (log/spy :info (model.webfinger/get-username-from-xrd xrd))]
+        (let [username (model.webfinger/get-username-from-xrd xrd)]
           (merge params
-                 (log/spy :info (parse-xrd xrd))
-                 {:username username}
-                 ))))))
+                 (parse-xrd xrd)
+                 {:username username}))))))
 
 (defn discover-user-jrd
   [user & [options]]
@@ -352,7 +351,7 @@
                        (when-let [domain-name (util/get-domain-name (:_id params))]
                          (assoc params :domain domain-name))
                        (throw+ "Could not determine domain name"))]
-        (let [params params #_(log/spy :info (discover-user-jrd params options))]
+        (let [params (discover-user-jrd params options)]
 
           (if (:username params)
             params

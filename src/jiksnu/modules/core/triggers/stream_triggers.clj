@@ -9,7 +9,7 @@
 
 (defn handle-pending-create-stream*
   [params]
-  (actions.stream/create (log/spy :info params)))
+  (actions.stream/create params))
 
 (def handle-pending-create-stream
   (ops/op-handler handle-pending-create-stream*))
