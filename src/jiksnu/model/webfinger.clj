@@ -18,7 +18,7 @@
            jiksnu.model.User
            nu.xom.Document))
 
-(def mappings {"xrd" "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
+(def mappings {"xrd" ns/xrd})
 
 ;; This function is a little too view-y. The proper representation of
 ;; a xrd document should be a hash with all this data.
@@ -26,12 +26,12 @@
   [domain]
   {:pre [(model/domain? domain)]
    :post [(vector? %)]}
-  ["XRD" {"xmlns" ns/xrd
+  [:XRD {"xmlns" ns/xrd
           "xmlns:hm" ns/host-meta}
-   ["hm:Host" domain]
-   ["Link" {"rel" "lrdd"
-            "template" (str "http://" domain "/main/xrd?uri={uri}")}
-    ["Title" {} "Resource Descriptor"]]])
+   [:hm:Host domain]
+   [:Link {:rel "lrdd"
+           :template (str "http://" domain "/main/xrd?uri={uri}")}
+    [:Title {} "Resource Descriptor"]]])
 
 (defn get-source-link
   "Returns a update link from a user meta"
@@ -66,20 +66,20 @@
 
 (defn user-meta
   [lrdd]
-  ["XRD" {"xmlns" ns/xrd}
-   ["Subject" {} (:subject lrdd)]
-   ["Alias" {} (:alias lrdd)]
+  [:XRD {:xmlns ns/xrd}
+   [:Subject {} (:subject lrdd)]
+   [:Alias {} (:alias lrdd)]
    ;; Pull the links from a global ref that various plugins can write to
    (map
     (fn [link]
-      ["Link"
+      [:Link
        (merge
         (when (:rel link) {:rel (:rel link)})
         (when (:type link) {:type (:type link)})
         (when (:href link) {:href (:href link)}))
        (map
         (fn [property]
-          ["Property"
+          [:Property
            (merge
             (when (:type property) {:type (:type property)}))
            (:value property)])
@@ -120,9 +120,9 @@
   "return the username component of the user meta"
   [xrd]
   {:pre [(instance? Document xrd)]}
-  (->> [(log/spy :info (get-username-from-atom-property xrd))]
+  (->> [(get-username-from-atom-property xrd)]
        (lazy-cat
-        [(log/spy :info (get-username-from-identifiers xrd))])
+        [(get-username-from-identifiers xrd)])
        (filter identity)
        first))
 

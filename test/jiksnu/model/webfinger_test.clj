@@ -18,7 +18,7 @@
   [username]
   (cm/string->document
    (hiccup/html
-    [:XRD
+    [:XRD {:xmlns ns/xrd}
      [:Link
       [:Property {:type "http://apinamespace.org/atom/username"}
        username]]])))
@@ -27,7 +27,7 @@
   [subject]
   (cm/string->document
    (hiccup/html
-    [:XRD
+    [:XRD {:xmlns ns/xrd}
      [:Subject subject]])))
 
 (test-environment-fixture
