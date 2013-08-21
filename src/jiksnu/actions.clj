@@ -265,9 +265,9 @@
   []
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
-  ;; (l/receive-all (trace/select-probes "*:created")   #'handle-created)
-  ;; (l/receive-all (trace/select-probes "*:field:set")  #'handle-field-set)
-  ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
+  (l/receive-all (trace/select-probes "*:created")   #'handle-created)
+  (l/receive-all (trace/select-probes "*:field:set")  #'handle-field-set)
+  (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
 
   (doseq [[kw v]
           [

@@ -291,7 +291,8 @@
 (defn process-jrd
   [user jrd & [options]]
   (log/info "processing jrd")
-  jrd)
+  (let [links (concat (:links user) (:links jrd))]
+    (assoc user :links links)))
 
 (defn process-xrd
   [user xrd & [options]]
@@ -302,11 +303,14 @@
 (defn fetch-jrd
   [params & [options]]
   (log/info "fetching jrd")
-  (when-let [domain (get-domain params)]
-    (when-let [url (model.domain/get-jrd-url domain (:_id params))]
-      (when-let [response @(ops/update-resource url options)]
-        (when-let [body (:body response)]
-          (json/read-str body))))))
+  (if-let [domain (get-domain params)]
+    (if-let [url (model.domain/get-jrd-url domain (:_id params))]
+      (if-let [response @(ops/update-resource url options)]
+        (when-let [body (:body (log/spy :info response))]
+          (log/spy :info (json/read-str body :key-fn keyword)))
+        (log/warn "Could not get response"))
+      (log/warn "could not determine jdr url"))
+    (throw+ "Could not determine domain name")))
 
 (defn fetch-xrd
   [params & [options]]
@@ -321,19 +325,19 @@
                  {:username username}))))))
 
 (defn discover-user-jrd
-  [user & [options]]
+  [params & [options]]
   (log/info "Discovering user via jrd")
-  (if-let [jrd (fetch-jrd user options)]
-    (process-jrd user jrd options)
+  (if-let [jrd (fetch-jrd params options)]
+    (process-jrd params jrd options)
     (log/warn "Could not fetch jrd")))
 
 ;; TODO: Collect all changes and update the user once.
 (defn discover-user-xrd
   "Retreive user information from webfinger"
-  [user & [options]]
+  [params & [options]]
   (log/info "Discovering user via xrd")
-  (if-let [xrd (fetch-xrd user options)]
-    (let [params (process-xrd user xrd options)]
+  (if-let [xrd (fetch-xrd params options)]
+    (let [params (process-xrd params xrd options)]
       (merge xrd params))
     (log/warn "Could not fetch xrd")))
 
