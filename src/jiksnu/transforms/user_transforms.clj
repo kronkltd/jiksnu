@@ -20,8 +20,12 @@
     (let [id-uri (URI. id)]
       (if (= "acct" (.getScheme id-uri))
         user
-        (throw+ "invalid uri")
-        ))
+        (if-let [username (:username user)]
+          (if-let [domain-name (:domain user)]
+            (let [id (format "acct:%s@%s" username domain-name)]
+              (assoc user :_id id))
+            (throw+ "could not determine domain"))
+          (throw+ "could not determine username"))))
     (if-let [username (:username user)]
       (if-let [domain-name (:domain user)]
         (let [id (format "acct:%s@%s" username domain-name)]

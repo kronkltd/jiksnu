@@ -57,15 +57,15 @@
 (defn prepare-create
   [user]
   (-> user
-      transforms.user/set-_id
       transforms.user/set-domain
+      ;; transforms.user/set-username
+      transforms.user/set-_id
       transforms.user/set-local
       ;; transforms.user/set-url
       ;; transforms.user/assert-unique
       ;; transforms.user/set-update-source
       transforms.user/set-discovered
       transforms.user/set-avatar-url
-      ;; transforms.user/set-username
 
       ;; transforms/set-_id
       transforms/set-updated-time
@@ -306,8 +306,8 @@
   (if-let [domain (get-domain params)]
     (if-let [url (model.domain/get-jrd-url domain (:_id params))]
       (if-let [response @(ops/update-resource url options)]
-        (when-let [body (:body (log/spy :info response))]
-          (log/spy :info (json/read-str body :key-fn keyword)))
+        (when-let [body (:body response)]
+          (json/read-str body :key-fn keyword))
         (log/warn "Could not get response"))
       (log/warn "could not determine jrd url"))
     (throw+ "Could not determine domain name")))
@@ -315,12 +315,13 @@
 (defn fetch-xrd
   [params & [options]]
   (log/info "fetching xrd")
-  (if-let [domain (get-domain (log/spy :info params))]
+  (if-let [domain (get-domain params)]
     (if-let [url (model.domain/get-xrd-url domain (:_id params))]
-      (when-let [xrd @(ops/update-resource url options)]
-        (let [username (model.webfinger/get-username-from-xrd xrd)]
+      (when-let [xrd (:body @(ops/update-resource url options))]
+        (let [doc (cm/string->document xrd)
+              username (model.webfinger/get-username-from-xrd doc)]
           (merge params
-                 (parse-xrd xrd)
+                 (parse-xrd doc)
                  {:username username})))
       (log/warn "could not determine xrd url"))
     (throw+ "could not determine domain name")))
@@ -338,7 +339,7 @@
   "Retreive user information from webfinger"
   [params & [options]]
   (log/info "Discovering user via xrd")
-  (if-let [xrd (fetch-xrd (log/spy :info params) options)]
+  (if-let [xrd (fetch-xrd params options)]
     (let [params (process-xrd params xrd options)]
       (merge xrd params))
     (do (log/warn "Could not fetch xrd")
@@ -358,22 +359,29 @@
                        (when-let [domain-name (util/get-domain-name (:_id params))]
                          (assoc params :domain domain-name))
                        (throw+ "Could not determine domain name"))
-            params (log/spy :info (discover-user-jrd (log/spy :info params) options))]
+            params (discover-user-jrd params options)]
         (if (:username params)
-          (log/spy :info params)
+          params
           (let [params (discover-user-xrd params options)]
             (if (:username params)
-              (log/spy :info (merge
-                              params
-                              {:url id
-                               :_id (format "acct:%s@%s" (:username params) (:domain params))}))
+              (let [acct-id (format "acct:%s@%s" (:username params) (:domain params))]
+                (merge
+                 params
+                 {:url id
+                  :_id acct-id}))
               (do
-                (when-let [profile-link (model.user/get-link params "self")]
-                  (log/spy :info @(ops/update-resource profile-link {}))
-                  )
-                (if (:username params)
-                  (log/spy :info params)
-                  (throw+ "Could not determine username"))))))))))
+                (when-let [profile-link (:href (model.user/get-link params "self"))]
+                  (let [response @(ops/update-resource profile-link {})
+                        body (:body response)
+                        profile (json/read-str body :key-fn keyword)]
+                    (let [username (:preferredUsername profile)
+                          params (merge params
+                                        (when profile
+                                          {:username username})
+                                        profile)]
+                      (if (:username params)
+                        params
+                        (throw+ "Could not determine username")))))))))))))
 
 (defn get-username
   "Given a url, try to determine the username of the owning user"
