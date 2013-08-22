@@ -100,8 +100,10 @@
       (get-uri user)))
 
 (defn get-link
-  [user rel content-type]
-  (first (util/rel-filter rel (:links user) content-type)))
+  ([user rel]
+     (get-link user rel nil))
+  ([user rel content-type]
+     (first (util/rel-filter rel (:links user) content-type))))
 
 (defn get-user
   "Find a user by username and domain"
