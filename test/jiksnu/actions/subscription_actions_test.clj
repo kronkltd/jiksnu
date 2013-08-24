@@ -1,18 +1,16 @@
 (ns jiksnu.actions.subscription-actions-test
-  (:use [clj-factory.core :only [factory fseq]]
-        jiksnu.actions.subscription-actions
-        [jiksnu.mock :as mock]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.session :only [with-user]]
-        [midje.sweet :only [=> anything]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
             [jiksnu.session :as session]
-            [lamina.core :as l])
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [lamina.core :as l]
+            [midje.sweet :refer [=> anything]])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -21,12 +19,11 @@
 
  (context #'actions.subscription/subscribe
    (context "when the user is not already subscribed"
-     (context "should return a subscription"
-       (let [user (mock/a-user-exists)
-             subscribee (mock/a-user-exists)]
-         (model.subscription/drop!)
-         (with-user user
-           (actions.subscription/subscribe user subscribee) => (partial instance? Subscription))))))
+     (let [user (mock/a-user-exists)
+           subscribee (mock/a-user-exists)]
+       (model.subscription/drop!)
+       (session/with-user user
+         (actions.subscription/subscribe user subscribee) => (partial instance? Subscription)))))
 
  (context #'actions.subscription/ostatussub-submit
    (let [actor (mock/a-user-exists)
