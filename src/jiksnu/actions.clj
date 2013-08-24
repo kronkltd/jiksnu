@@ -179,7 +179,8 @@
 
 (defn handle-actions-invoked
   [response]
-  (s/increment "actions invoked"))
+  (s/increment "actions invoked")
+  (log/info response))
 
 (defn handle-activities-pushed
   [response]

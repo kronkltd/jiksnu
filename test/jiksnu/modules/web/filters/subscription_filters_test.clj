@@ -6,13 +6,15 @@
             [jiksnu.model :as model]
             [jiksnu.session :as session]
             [jiksnu.actions.subscription-actions :as actions.subscription]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
+            [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.ops :as ops]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
-            [midje.sweet :refer [=> throws truthy]]))
+            [lamina.core :as l]
+            [midje.sweet :refer [=> anything throws truthy]]))
 
 (test-environment-fixture
 
@@ -27,27 +29,31 @@
                (filter-action action request)) => truthy
                (provided
                  (model.subscription/fetch-by-id .id.) => .subscription.
-                 (delete .subscription.) => true))
+                 (actions.subscription/delete .subscription.) => true))
            (context "when a subscription matching the id param is not found"
              (let [request {:params {:id .id.}}]
-               (filter-action actions request)) => nil
+               (filter-action action request)) => nil
                (provided
                  (model.subscription/fetch-by-id .id.) => nil
-                 (delete .subscription.) => true :times 0))))))
+                 (actions.subscription/delete .subscription.) => true :times 0))))))
 
    (context #'actions.subscription/ostatussub-submit
      (with-serialization :http
        (let [action #'actions.subscription/ostatussub-submit]
-        (context "when given a url in the form of 'user@domain'"
+        (context "when given a url in the form of 'acct:user@domain'"
           (let [actor (mock/a-user-exists)
                 username (fseq :username)
                 domain-name (fseq :domain)
-                uri (format "%s@%s" username domain-name)
+                uri (model.user/get-uri {:username username :domain domain-name})
                 request {:params {:profile uri}}]
             (session/with-user actor
               (filter-action action request)) =>
             (check [response]
-              response => map?))))))
+              response => map?)
+            (provided
+              (ops/get-discovered anything) => (l/success-result
+                                                (model/map->Domain
+                                                 {:_id domain-name}))))))))
 
    (context #'actions.subscription/subscribe
      (let [action #'actions.subscription/subscribe]
@@ -62,14 +68,14 @@
                  (provided
                    (model.user/fetch-by-id .id.) => .target.
                    (session/current-user) => .actor.
-                   (subscribe .actor. .target.) => true))
+                   (actions.subscription/subscribe .actor. .target.) => true))
 
                (context "when the user is not authenticated"
                  (filter-action action request) => (throws RuntimeException)
                  (provided
                    (model.user/fetch-by-id .id.) => nil
                    (session/current-user) => .actor. :times 0
-                   (subscribe .actor. .target.) => nil :times 0))
+                   (actions.subscription/subscribe .actor. .target.) => nil :times 0))
                )
 
              (context "when a user matching the subscribeto param is not found"
@@ -77,7 +83,7 @@
                (provided
                  (session/current-user) => .actor. :times 0
                  (model.user/fetch-by-id .id.) => nil
-                 (subscribe .actor. .target.) => nil :times 0))
+                 (actions.subscription/subscribe .actor. .target.) => nil :times 0))
              )))
        ))
    ))

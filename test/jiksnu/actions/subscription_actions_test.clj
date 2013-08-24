@@ -4,13 +4,15 @@
         [jiksnu.mock :as mock]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
-        [midje.sweet :only [=>]])
+        [midje.sweet :only [=> anything]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.session :as session])
+            [jiksnu.ops :as ops]
+            [jiksnu.session :as session]
+            [lamina.core :as l])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -34,7 +36,11 @@
      (session/with-user actor
        (actions.subscription/ostatussub-submit uri)) =>
      (check [response]
-       response => map?)))
+       response => map?)
+     (provided
+       (ops/get-discovered anything) => (l/success-result
+                                         (model/map->Domain
+                                          {:_id domain-name})))))
 
  (context "subscribed"
    (context "should return a subscription"
