@@ -53,7 +53,8 @@
 
 (deffilter #'ostatussub-submit :http
   [action request]
-  (-> request :params :profile action))
+  (when-let [id (-> request :params :profile)]
+    (action id)))
 
 ;; show
 

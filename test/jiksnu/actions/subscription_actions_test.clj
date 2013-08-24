@@ -1,14 +1,16 @@
 (ns jiksnu.actions.subscription-actions-test
-  (:use [clj-factory.core :only [factory]]
+  (:use [clj-factory.core :only [factory fseq]]
         jiksnu.actions.subscription-actions
         [jiksnu.mock :as mock]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.session :only [with-user]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
+            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
-            [jiksnu.model.subscription :as model.subscription])
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.session :as session])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -23,6 +25,16 @@
          (model.subscription/drop!)
          (with-user user
            (subscribe user subscribee) => (partial instance? Subscription))))))
+
+ (context #'actions.subscription/ostatussub-submit
+   (let [actor (mock/a-user-exists)
+         username (fseq :username)
+         domain-name (fseq :domain)
+         uri (format "acct:%s@%s" username domain-name)]
+     (session/with-user actor
+       (actions.subscription/ostatussub-submit uri)) =>
+     (check [response]
+       response => map?)))
 
  (context "subscribed"
    (context "should return a subscription"

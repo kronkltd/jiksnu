@@ -117,7 +117,7 @@
   "User requests a subscription to a uri"
   [uri]
   (if-let [actor (session/current-user)]
-    (if-let [user (actions.user/find-or-create {:id uri})]
+    (if-let [user (actions.user/find-or-create {:_id uri})]
       (subscribe actor user)
       (throw+ {:type :validation :message "Could not determine user"}))
     (throw+ {:type :authentication :message "must be logged in"})))

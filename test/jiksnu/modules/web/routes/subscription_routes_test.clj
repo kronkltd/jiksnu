@@ -1,35 +1,54 @@
 (ns jiksnu.modules.web.routes.subscription-routes-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [check context future-context
-                                   hiccup->doc test-environment-fixture]]
-        [midje.sweet :only [=> truthy]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
+            [clojurewerkz.route-one.core :refer [add-route! named-path]]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.mock :as mock]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.mock :as mock]
+            [jiksnu.model :as model]
+            [jiksnu.model.activity :as model.activity]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.ops :as ops]
+            [jiksnu.routes-helper :refer [as-user response-for]]
+            [jiksnu.test-helper :refer [check context future-context
+                                        hiccup->doc test-environment-fixture]]
+            [lamina.core :as l]
+            [midje.sweet :refer [=> anything truthy]]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
 
  (context "ostatus submit"
-   (context "when not authenticated"
-     (context "when it is a remote user"
-       (let [username (fseq :username)
-             domain-name (fseq :domain)]
+   (let [username (fseq :username)
+         domain-name (fseq :domain)
+         uri (format "acct:%s@%s" username domain-name)
+         params {:profile uri}]
+
+     (context "when not authenticated"
+       (context "when it is a remote user"
          (-> (req/request :post "/main/ostatussub")
-             (assoc :params {:profile
-                             (format "acct:%s@%s" username domain-name)})
+             (assoc :params params)
              response-for) =>
              (check [response]
                response => map?
-               (:status response) => status/redirect?)))))
+               (:status response) => status/redirect?)))
+
+     (context "when authenticated"
+       (let [actor (mock/a-user-exists)]
+         (context "when it is a remote user"
+           (-> (req/request :post "/main/ostatussub")
+               (assoc :params params)
+               (as-user actor)
+               response-for) =>
+               (check [response]
+                 response => map?
+                 (:status response) => status/redirect?)
+               (provided
+                 (ops/get-discovered anything) => (l/success-result
+                                                   (model/map->Domain {:_id domain-name}))))))
+     ))
 
  (context "get-subscriptions"
    (let [user (mock/a-user-exists)
