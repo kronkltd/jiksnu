@@ -1,10 +1,11 @@
 (ns jiksnu.model.resource
-  (:use [ciste.config :only [config]]
-        [clojure.core.incubator :only [-?>>]]
+  (:use [clojure.core.incubator :only [-?>>]]
         [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
-  (:require [clj-statsd :as s]
+  (:require [ciste.config :refer [config]]
+            [ciste.initializer :refer [definitializer]]
+            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
@@ -75,3 +76,6 @@
   (->> (enlive/select tree [:meta])
        (map meta->property)
        (reduce merge)))
+
+(definitializer
+  (ensure-indexes))

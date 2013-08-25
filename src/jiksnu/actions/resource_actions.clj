@@ -1,10 +1,10 @@
 (ns jiksnu.actions.resource-actions
-  (:use [aleph.formats :only [channel-buffer->string]]
-        [ciste.core :only [defaction]]
-        [ciste.initializer :only [definitializer]]
+  (:use [ciste.core :only [defaction]]
         [jiksnu.actions :only [invoke-action]]
         [slingshot.slingshot :only [throw+ try+]])
-  (:require [aleph.http :as http]
+  (:require [aleph.formats :refer [channel-buffer->string]]
+            [aleph.http :as http]
+            [ciste.config :refer [config]]
             [ciste.model :as cm]
             [clj-http.client :as client]
             [clj-statsd :as s]
@@ -18,6 +18,7 @@
             [jiksnu.channels :as ch]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]
+            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.resource-transforms :as transforms.resource]
@@ -144,19 +145,28 @@
         (l/enqueue res body))
       res)))
 
+(defn decode-buffer
+  [response buffer]
+  (log/info "Buffer channel realized")
+  (let [body-str (aleph.formats/channel-buffer->string buffer)
+        response (assoc response :body body-str)]
+    response))
+
 (defn transform-response
   [response]
+  ;; TODO: make this configurable
   (let [res (l/expiring-result (lt/seconds 15))]
     (l/run-pipeline
      (get-body-buffer response)
      {:error-handler (fn [ex] ex)
       :result res}
-     (fn [buffer]
-       (log/info "Buffer channel realized")
-       (let [body-str (aleph.formats/channel-buffer->string buffer)
-             response (assoc response :body body-str)]
-         response)))
+     (partial decode-buffer response))
     res))
+
+(defn handle-unauthorized
+  [item response]
+  (model.resource/set-field! item :requiresAuth true)
+  nil)
 
 (defn handle-update-realized
   [item response]
@@ -165,6 +175,7 @@
   (model.resource/set-field! item :status (:status response))
   (condp = (:status response)
     200 (transform-response response)
+    401 (handle-unauthorized item response)
     (log/warn "Unknown status type")))
 
 (defn update*
@@ -173,35 +184,39 @@
 The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
-  (if (or true (needs-update? item options))
-    (let [url (:url item)
-          res (l/expiring-result (lt/seconds 30))
-          date (time/now)]
-      (trace/trace :resource:updated item)
-      (log/infof "updating resource: %s" url)
-      (let [request {:url url
-                     :method :get
-                     ;; :throw-exceptions false
-                     ;; :auto-transform true
-                     ;; :insecure? true
-                     :headers {"User-Agent" user-agent
-                               "date" (util/date->rfc1123 (.toDate date))
-                               "Authorization"
-                               (string/join " "
-                                            [
-                                             "Dialback"
-                                             "host=\"renfer.name\""
-                                             "token=\"4430086d\""])}}]
-        (l/run-pipeline
-         (http/http-request request)
-         {:error-handler (fn [ex]
-                           ;; (log/error ex)
-                           ;; (.printStackTrace ex)
-                           (trace/trace :resource:failed [item ex]))
-          :result res}
-         (partial handle-update-realized item)))
-      res)
-    (log/warn "Resource does not need to be updated at this time.")))
+  (let [url (:url item)
+        actor (log/spy :info (session/current-user))
+        date (time/now)]
+    (if (or true (needs-update? item options))
+      (if (:requiresAuth item)
+        (do
+          ;; auth required
+          (throw+ "Resource requires authorization"))
+        (do
+          ;; no auth required
+          (let [res (l/expiring-result (lt/seconds 30))
+               auth-string (->> ["Dialback"
+                                 (format "host=\"%s\"" (config :domain))
+                                 (format "token=\"%s\"" "4430086d")]
+                                (string/join " "))
+               request {:url url
+                        :method :get
+                        :headers {"User-Agent" user-agent
+                                  "date" (util/date->rfc1123 (.toDate date))
+                                  "Authorization" auth-string}}]
+           (trace/trace :resource:updated item)
+           (log/infof "updating resource: %s" url)
+           (l/run-pipeline
+            (http/http-request request)
+            {:error-handler (fn [ex]
+                              ;; (log/error ex)
+                              ;; (.printStackTrace ex)
+                              (trace/trace :resource:failed [item ex]))
+             :result res}
+            (partial handle-update-realized item))
+           res))
+        )
+      (log/warn "Resource does not need to be updated at this time."))))
 
 (defaction update
   [item]
@@ -217,6 +232,3 @@ The channel will receive the body of fetching this resource."
 (defaction show
   [item]
   item)
-
-(definitializer
-  (model.resource/ensure-indexes))
