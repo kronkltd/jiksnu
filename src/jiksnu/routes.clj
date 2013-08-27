@@ -51,7 +51,7 @@
         (dosync
          (alter predicates/*sub-page-matchers* concat matchers))))
 
-    (let [route-fn (ns-resolve route-sym 'routes)]
+    (when-let [route-fn (ns-resolve route-sym 'routes)]
       (route-fn))))
 
 (defn make-matchers
