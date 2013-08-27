@@ -42,13 +42,13 @@
  (context #'actions.subscription/subscribed
    (let [user (mock/a-user-exists)
          subscribee (mock/a-user-exists)]
-     (subscribed user subscribee) => (partial instance? Subscription)))
+     (actions.subscription/subscribed user subscribee) => (partial instance? Subscription)))
 
  (context #'actions.subscription/get-subscribers
    (context "when there are subscribers"
      (let [subscription (mock/a-subscription-exists)
            target (model.subscription/get-target subscription)]
-       (get-subscribers target) =>
+       (actions.subscription/get-subscribers target) =>
        (check [[_ {:keys [items]} :as response]]
          response => vector?
          (first response) => (partial instance? User)
@@ -59,7 +59,7 @@
    (context "when there are subscriptions"
      (let [subscription (mock/a-subscription-exists)
            actor (model.subscription/get-actor subscription)]
-       (get-subscriptions actor) =>
+       (actions.subscription/get-subscriptions actor) =>
        (check [response]
          response => vector?
          (first response) => actor

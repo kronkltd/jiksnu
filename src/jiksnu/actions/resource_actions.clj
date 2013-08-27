@@ -188,7 +188,7 @@ The channel will receive the body of fetching this resource."
         actor (log/spy :info (session/current-user))
         date (time/now)]
     (if (or true (needs-update? item options))
-      (if (:requiresAuth item)
+      (if (:requiresAuth (log/spy :info item))
         (do
           ;; auth required
           (throw+ "Resource requires authorization"))

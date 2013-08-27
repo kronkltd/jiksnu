@@ -6,14 +6,13 @@
           [jiksnu.ko :only [*dynamic*]]
           [jiksnu.modules.core.sections :only [admin-index-line]]
           [jiksnu.modules.web.sections :only [action-link bind-to control-line
-                                              display-property dropdown-menu dump-data
-                                              pagination-links]])
+                                              display-property display-timestamp dropdown-menu
+                                              dump-data pagination-links]])
     (:require [ciste.model :as cm]
               [clojure.tools.logging :as log]
               [jiksnu.modules.web.sections.link-sections :as sections.link]
               [jiksnu.session :as session])
-    (:import jiksnu.model.Conversation
-             jiksnu.model.Domain
+    (:import jiksnu.model.Domain
              jiksnu.model.FeedSource
              jiksnu.model.Resource))
 
@@ -68,6 +67,7 @@
      [:th "Status"]
      [:th "Content Type"]
      [:th "Encoding"]
+     [:th "Requires Auth"]
      #_[:th "Created"]
      [:th "Updated"]]]
    [:tbody (when *dynamic* {:data-bind "foreach: items"})
@@ -94,15 +94,12 @@
    [:td (if *dynamic*
           {:data-bind "text: contentType"}
           (:contentType item))]
-   [:td (if *dynamic*
-          {:data-bind "text: encoding"}
-          (:encoding item))]
+   [:td (display-property item :encoding)]
+   [:td (display-property item :requiresAuth)]
    #_[:td (if *dynamic*
           {:data-bind "text: created"}
           (:created item))]
-   [:td (if *dynamic*
-          {:data-bind "text: updated"}
-          (:updated item))]
+   [:td (display-timestamp item :updated)]
    [:td (actions-section item)]])
 
 ;; link-to

@@ -163,7 +163,7 @@
            :action "error"})))
     (catch RuntimeException ex
       (log/spy :info &throw-context)
-      (trace/trace "errors:handled" ex))))
+      (trace/trace :errors:handled ex))))
 
 (defaction confirm
   [action model id]
