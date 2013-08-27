@@ -63,6 +63,7 @@
        ["/admin/groups"             "Groups"]
        ["/admin/keys"               "Keys"]
        ["/admin/likes"              "Likes"]
+       ["/admin/request-tokens"     "Request Tokens"]
        ["/admin/streams"            "Streams"]
        ["/admin/subscriptions"      "Subscriptions"]
        ["/admin/users"              "Users"]

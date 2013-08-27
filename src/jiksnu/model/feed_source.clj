@@ -1,20 +1,11 @@
 (ns jiksnu.model.feed-source
-  (:use [jiksnu.transforms :only [set-_id set-created-time set-updated-time]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [acceptance-of validation-set presence-of]])
-  (:require [clj-statsd :as s]
-            [clj-time.core :as time]
-            [clojure.string :as string]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
-            [lamina.trace :as trace]
+            [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.query :as mq])
-  (:import jiksnu.model.FeedSource
-           org.bson.types.ObjectId
+            [validateur.validation :refer [validation-set]])
+  (:import org.bson.types.ObjectId
            org.joda.time.DateTime))
 
 (def collection-name "feed_sources")

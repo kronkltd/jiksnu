@@ -24,6 +24,7 @@
 (defrecord Item                    [])
 (defrecord Key                     [])
 (defrecord Like                    [])
+(defrecord RequestToken            [])
 (defrecord Resource                [])
 (defrecord Stream                  [])
 (defrecord Subscription            [])
@@ -43,6 +44,7 @@
    Item
    Key
    Like
+   RequestToken
    Resource
    Stream
    Subscription
@@ -64,6 +66,7 @@
    "item"
    "key"
    "like"
+   "request-token"
    "resource"
    "subscription"
    "user"
@@ -85,6 +88,7 @@
    "key"
    "message"
    "pubsub"
+   "request-token"
    "resource"
    "salmon"
    "search"

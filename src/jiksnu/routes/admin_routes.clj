@@ -11,6 +11,7 @@
             [jiksnu.modules.admin.actions.feed-subscription-actions :as admin.feed-subscription]
             [jiksnu.modules.admin.actions.like-actions :as admin.like]
             [jiksnu.modules.admin.actions.key-actions :as admin.key]
+            [jiksnu.modules.admin.actions.request-token-actions :as admin.request-token]
             [jiksnu.modules.admin.actions.setting-actions :as admin.setting]
             [jiksnu.modules.admin.actions.stream-actions :as admin.stream]
             [jiksnu.modules.admin.actions.subscription-actions :as admin.sub]
@@ -74,6 +75,9 @@
     [[:get    "/admin/keys/:id.:format"]                   #'admin.key/show]
     [[:get    "/admin/keys/:id"]                           #'admin.key/show]
     [[:post   "/admin/keys/:id/delete"]                    #'admin.key/delete]
+
+    [[:get    "/admin/request-tokens.:format"]             #'admin.request-token/index]
+    [[:get    "/admin/request-tokens"]                     #'admin.request-token/index]
 
     [[:get    "/admin/subscriptions.:format"]              #'admin.sub/index]
     [[:get    "/admin/subscriptions"]                      #'admin.sub/index]
