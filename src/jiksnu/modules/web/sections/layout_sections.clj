@@ -57,6 +57,7 @@
       [
        ["/admin/activities"         "Activities"]
        ["/admin/auth"               "Auth"]
+       ["/admin/clients"            "Clients"]
        ["/admin/conversations"      "Conversations"]
        ["/admin/feed-sources"       "Feed Sources"]
        ["/admin/feed-subscriptions" "Feed Subscriptions"]

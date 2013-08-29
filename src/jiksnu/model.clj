@@ -14,6 +14,7 @@
 
 (defrecord Activity                [])
 (defrecord AuthenticationMechanism [])
+(defrecord Client                  [])
 (defrecord Conversation            [])
 (defrecord Dialback                [])
 (defrecord Domain                  [])
@@ -34,6 +35,7 @@
   [
    Activity
    AuthenticationMechanism
+   Client
    Conversation
    Dialback
    Domain
@@ -56,6 +58,7 @@
   [
    "activity"
    "authentication-mechanism"
+   "client"
    "conversation"
    "dialback"
    "domain"
@@ -76,6 +79,7 @@
 (def action-group-names
   ["activity"
    "auth"
+   "client"
    "comment"
    "confirm"
    "conversation"

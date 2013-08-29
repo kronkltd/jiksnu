@@ -9,6 +9,6 @@
 (defn pages
   []
   [
-   {:name "request-tokens"} {:action #'actions.request-token/index}
+   [{:name "request-tokens"} {:action #'actions.request-token/index}]
    ]
   )

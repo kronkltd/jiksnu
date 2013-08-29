@@ -5,6 +5,7 @@
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
             [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
+            [jiksnu.modules.admin.actions.client-actions :as admin.client]
             [jiksnu.modules.admin.actions.conversation-actions :as admin.conversation]
             [jiksnu.modules.admin.actions.group-actions :as admin.group]
             [jiksnu.modules.admin.actions.feed-source-actions :as admin.feed-source]
@@ -34,6 +35,9 @@
 
     [[:get    "/admin/auth"]                               #'admin.auth/index]
     [[:get    "/admin/auth.:format"]                       #'admin.auth/index]
+
+    [[:get    "/admin/clients.:format"]             #'admin.client/index]
+    [[:get    "/admin/clients"]                     #'admin.client/index]
 
     [[:get    (named-path "admin conversation index")]     #'admin.conversation/index]
     [[:get    (formatted-path "admin conversation index")] #'admin.conversation/index]

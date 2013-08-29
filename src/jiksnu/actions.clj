@@ -120,8 +120,13 @@
                  :serialization :page
                  :name page-name
                  :args args}]
-    (or ((resolve-routes [@pred/*page-predicates*]
-                         @pred/*page-matchers*) request)
+    (or (try
+          ((resolve-routes [@pred/*page-predicates*]
+                           @pred/*page-matchers*) request)
+          (catch Throwable ex
+              (trace/trace :errors:handled ex)
+              )
+          )
         (throw+ "page not found"))))
 
 (defaction get-sub-page
