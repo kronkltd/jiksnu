@@ -118,15 +118,17 @@
 
   (doseq [model-name model/action-group-names]
     (require-namespaces
-     ["jiksnu.formats"]
-     )
-    (doto "jiksnu.modules"
-      (util/require-module "admin" model-name)
-      (util/require-module "atom" model-name)
-      (util/require-module "as" model-name)
-      (util/require-module "rdf" model-name)
-      (util/require-module "core" model-name)
-      (util/require-module "web" model-name))
-    )
+     ["jiksnu.formats"])
+    (doseq [module-name [
+                         ;; "admin"
+                         ;; "atom"
+                         ;; "as"
+                         "command"
+                         ;; "rdf"
+                         ;; "core"
+                         ;; "web"
+                         ]]
+      (log/infof "%s - %s" module-name model-name)
+      (util/require-module "jiksnu.modules" module-name model-name)))
 
   )

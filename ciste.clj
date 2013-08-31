@@ -2,6 +2,7 @@
  :modules ["jiksnu.commands"
            "jiksnu.factory"
            "jiksnu.formats"
+           "jiksnu.routes"
            "jiksnu.workers"
            ]
  :modules-available

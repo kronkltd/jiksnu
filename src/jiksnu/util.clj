@@ -212,16 +212,6 @@
   [input]
   (Jsoup/clean input (Whitelist/none)))
 
-;; (defmacro safe-task
-;;   [& body]
-;;   `(let [b# (do ~@body)
-;;          res# (l/result-channel)]
-;;      (l/enqueue res# b#)
-;;      (l/on-realized res#
-;;                     identity
-;;                     #(trace/trace :errors:handled %))
-;;      res#))
-
 (defmacro safe-task
   [& body]
   `(let [res#
@@ -239,14 +229,16 @@
      (doseq [model-name model/model-names]
        (require-module prefix module-name model-name)))
   ([prefix module-name model-name]
-     (let [parts ["filters" "sections" "triggers" "views"]
+     (let [parts ["filters" "sections" "triggers" "views" "routes"]
            req-fn (fn [part-name]
                     [(format "%s.%s.%s"
                              prefix module-name part-name)
                      (format "%s.%s.%s.%s-%s"
-                             prefix module-name part-name model-name part-name)])
-           namespaces (mapcat req-fn parts)]
-       (require-namespaces namespaces))))
+                             prefix module-name part-name model-name part-name)])]
+       (doseq [part-name parts]
+         (log/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
+         (let [namespaces (req-fn part-name)]
+           (require-namespaces namespaces))))))
 
 (defn replace-template
   [template url]

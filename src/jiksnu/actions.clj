@@ -154,12 +154,6 @@
     {:item item
      :action action}))
 
-(add-command! "invoke-action" #'invoke-action)
-(add-command! "connect"       #'connect)
-(add-command! "get-model"     #'get-model)
-(add-command! "get-page"      #'get-page)
-(add-command! "get-sub-page"  #'get-sub-page)
-
 (defn init-handlers
   []
 
@@ -174,8 +168,8 @@
            ;; [:activities:pushed             #'handler/activities-pushed]
            ;; [:ciste:filters:run             #'handler/event]
            ;; [:ciste:predicate:tested        #'handler/event]
-           ;; [:ciste:matcher:tested          #'handler/matcher-test]
-           ;; [:ciste:matcher:matched         #'handler/event]
+           [:ciste:matcher:tested          #'handler/matcher-test]
+           [:ciste:matcher:matched         #'handler/event]
            ;; [:ciste:route:matched           #'handler/event]
            ;; [:ciste:sections:run            #'handler/event]
            ;; [:ciste:views:run               #'handler/event]

@@ -1,6 +1,5 @@
 (ns jiksnu.routes.auth-routes
-  (:use [ciste.commands :only [add-command!]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.auth-actions :as auth]))
 
@@ -21,6 +20,4 @@
    [[:get  (named-path "password page")]                       #'auth/password-page]
    [[:get  (formatted-path "authentication-mechanism model")]  #'auth/show]])
 
-(add-command! "auth"   #'auth/login)
-(add-command! "whoami" #'auth/whoami)
 

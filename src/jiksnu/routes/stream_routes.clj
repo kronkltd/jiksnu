@@ -43,8 +43,6 @@
    [[:get    (formatted-path "user timeline")]          #'stream/user-timeline]
    ])
 
-(add-command! "list-activities" #'stream/public-timeline)
-
 (defn pages
   []
   [

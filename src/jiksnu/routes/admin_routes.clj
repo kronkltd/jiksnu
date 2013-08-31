@@ -110,6 +110,3 @@
     [[:post   "/admin/workers/stop/all"]                   #'admin.worker/stop-all-workers]
     ]))
 
-(add-command! "list-workers" #'admin.worker/index)
-(add-command! "start-worker" #'admin.worker/start-worker)
-(add-command! "stop-worker"  #'admin.worker/stop-worker)

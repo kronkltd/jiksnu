@@ -1,6 +1,5 @@
 (ns jiksnu.routes.site-routes
-  (:use [ciste.commands :only [add-command!]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
+  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
         [jiksnu.routes.helpers :only [formatted-path]])
   (:require [jiksnu.actions.site-actions :as site]))
 
@@ -15,10 +14,4 @@
                                        :format :xml}]
    [[:get (formatted-path "stats")]   #'site/get-stats]
    [[:get (named-path     "stats")]   #'site/get-stats]])
-
-(add-command! "get-environment" #'site/get-environment)
-(add-command! "get-stats"       #'site/get-stats)
-;; (add-command! "get-load"        #'site/get-load)
-(add-command! "config"          #'site/get-config)
-(add-command! "ping"            #'site/ping)
 
