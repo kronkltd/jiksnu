@@ -1,50 +1,28 @@
 (ns jiksnu.actions
-  (:use [ciste.commands :only [add-command!]]
-        [ciste.config :only [*environment* config]]
-        [ciste.core :only [defaction with-format with-serialization]]
-        [ciste.filters :only [filter-action]]
-        [ciste.routes :only [resolve-routes]]
-        [clojure.core.incubator :only [dissoc-in]]
-        [clojure.data.json :only [read-json]]
-        [clojure.pprint :only [pprint]]
-        [slingshot.slingshot :only [throw+ try+]])
-  (:require [clj-airbrake.core :as airbrake]
+  (:require [ciste.commands :refer [add-command!]]
+            [ciste.core :refer [defaction with-format with-serialization]]
+            [ciste.filters :refer [filter-action]]
+            [ciste.routes :refer [resolve-routes]]
             [clj-statsd :as s]
+            [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.channels :as ch]
-            [jiksnu.model :as model]
+            [jiksnu.handlers :as handler]
             [jiksnu.predicates :as pred]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
-            [lamina.trace :as trace])
-  (:import clojure.lang.ExceptionInfo))
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (defonce connections (ref {}))
 
 (defn all-channels
   []
   (reduce concat (map vals (vals @connections))))
-
-(defn handle-errors
-  [ex]
-  (let [data (if (instance? ExceptionInfo ex)
-               (.getData ex) {})]
-    (log/error ex)
-    (when (instance? Throwable ex )
-      (.printStackTrace ex)
-      (when (config :airbrake :enabled)
-        (let [options {:url "foo"
-                       :params (into {} (map (fn [[k v]] {k (pr-str v)})
-                                             (:environment data)))}]
-          (airbrake/notify
-           (config :airbrake :key)
-           (name @*environment*)
-           "/" ex options))))))
-
 
 (defn transform-activities
   [connection-id e]
@@ -182,119 +160,34 @@
 (add-command! "get-page"      #'get-page)
 (add-command! "get-sub-page"  #'get-sub-page)
 
-(defn handle-actions-invoked
-  [response]
-  (s/increment "actions invoked")
-  (log/info response))
-
-(defn handle-activities-pushed
-  [response]
-  (log/infof "sending update notification to connection: %s"
-             (:connection-id response))
-  (s/increment "activities pushed"))
-
-(defn handle-conversations-pushed
-  [response]
-  (log/infof "sending update notification to connection: %s"
-             (:connection-id response))
-  (s/increment "conversations pushed"))
-
-(defn handle-created
-  [item]
-  (log/infof "created:\n\n%s\n%s"
-             (class item)
-             (with-out-str (pprint item))))
-
-(defn handle-field-set
-  [[item field value]]
-  (log/infof "setting %s(%s): (%s = %s)"
-             (.getSimpleName (class item))
-             (:_id item)
-             field
-             (pr-str value)))
-
-(defn handle-linkAdded
-  [[item link]]
-  (log/infof "adding link %s(%s) => %s"
-             (.getSimpleName (class item))
-             (:_id item)
-             (pr-str link)))
-
-(defn handle-feed-parsed
-  [response]
-  (log/infof "parsed feed: %s"
-             (with-out-str
-               (pprint response))))
-
-(defn handle-entry-parsed
-  [entry]
-  (log/infof "Parsing Entry:\n\n%s\n"
-             (str entry)))
-
-(defn handle-person-parsed
-  [person]
-  (log/infof "Parsing Person:\n\n%s\n"
-             (str person)))
-
-(defn handle-resource-realized
-  [[item res]]
-  (log/infof "Resource Realized: %s" (:url item)))
-
-(defn handle-resource-failed
-  [[item res]]
-  (log/infof "Resource Failed: %s" (:url item)))
-
-(defn handle-event
-  [event]
-  ;; (println "\n")
-  (let [message (with-out-str
-                  (pprint event))]
-   (println message)))
-
-(defn handle-matcher-test
-  [event]
-  ;; (println "\n")
-  (let [message (with-out-str
-                  (pprint
-                   (-> event
-                       (dissoc :request)
-                       (dissoc :predicates)
-                       )
-                   ))]
-   (println message)))
-
-(defn handle-http-client-error
-  [event]
-  (log/errorf "Http Client Error: %s" (pr-str event)))
-
 (defn init-handlers
   []
 
-  ;; (l/receive-all (trace/select-probes "*:create:in") #'handle-event)
-  (l/receive-all (trace/select-probes "*:created")   #'handle-created)
-  (l/receive-all (trace/select-probes "*:field:set")  #'handle-field-set)
-  (l/receive-all (trace/select-probes "*:linkAdded") #'handle-linkAdded)
+  ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
+  (l/receive-all (trace/select-probes "*:created")   #'handler/created)
+  (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
+  (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
 
   (doseq [[kw v]
           [
-           [:actions:invoked               #'handle-actions-invoked]
-           ;; [:activities:pushed             #'handle-activities-pushed]
-           ;; [:ciste:filters:run             #'handle-event]
-           ;; [:ciste:predicate:tested        #'handle-event]
-           ;; [:ciste:matcher:tested          #'handle-matcher-test]
-           ;; [:ciste:matcher:matched         #'handle-event]
-           ;; [:ciste:route:matched           #'handle-event]
-           ;; [:ciste:sections:run            #'handle-event]
-           ;; [:ciste:views:run               #'handle-event]
-           ;; [:conversations:pushed          #'handle-conversations-pushed]
-           ;; [:entry:parsed                  #'handle-entry-parsed]
-           [:http-client:error             #'handle-http-client-error]
-           [:errors:handled                #'handle-errors]
-           ;; [:feed:parsed                   #'handle-feed-parsed]
-           ;; [:lamina-default-executor:stats #'handle-event]
-           ;; [:person:parsed                 #'handle-person-parsed]
-           [:resource:realized             #'handle-resource-realized]
-           [:resource:failed               #'handle-resource-failed]
+           [:actions:invoked               #'handler/actions-invoked]
+           ;; [:activities:pushed             #'handler/activities-pushed]
+           ;; [:ciste:filters:run             #'handler/event]
+           ;; [:ciste:predicate:tested        #'handler/event]
+           ;; [:ciste:matcher:tested          #'handler/matcher-test]
+           ;; [:ciste:matcher:matched         #'handler/event]
+           ;; [:ciste:route:matched           #'handler/event]
+           ;; [:ciste:sections:run            #'handler/event]
+           ;; [:ciste:views:run               #'handler/event]
+           ;; [:conversations:pushed          #'handler/conversations-pushed]
+           ;; [:entry:parsed                  #'handler/entry-parsed]
+           [:http-client:error             #'handler/http-client-error]
+           [:errors:handled                #'handler/errors]
+           ;; [:feed:parsed                   #'handler/feed-parsed]
+           ;; [:lamina-default-executor:stats #'handler/event]
+           ;; [:person:parsed                 #'handler/person-parsed]
+           [:resource:realized             #'handler/resource-realized]
+           [:resource:failed               #'handler/resource-failed]
            ]]
     (l/receive-all (trace/probe-channel kw) v))
 
@@ -302,7 +195,7 @@
   ;;  (l/sample-every
   ;;   {:period (lt/seconds 30)}
   ;;   (trace/probe-channel :lamina-default-executor:stats))
-  ;;  #'handle-event)
+  ;;  #'handler/event)
 
   )
 
