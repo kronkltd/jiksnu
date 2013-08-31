@@ -3,7 +3,8 @@
 
 (defn routes
   []
-  []
+  [[[:post "/api/client/register"]           {:action #'actions.client/register
+                                              :format :json}]]
   )
 
 (defn pages

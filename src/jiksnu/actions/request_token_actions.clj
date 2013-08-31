@@ -1,9 +1,11 @@
 (ns jiksnu.actions.request-token-actions
   (:require [ciste.core :refer [defaction]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.request-token-transforms :as transforms.request-token]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (def model-sym 'jiksnu.model.request-token)
@@ -15,8 +17,10 @@
 (defonce delete-hooks (ref []))
 
 (defn prepare-create
-  [domain]
-  (-> domain
+  [params]
+  (-> params
+      transforms/set-_id
+      transforms.request-token/set-token
       transforms/set-created-time))
 
 (defn prepare-delete
@@ -51,4 +55,21 @@
 (defn find-or-create
   [params]
   (or (fetch-fn (:_id params)) (create params)))
+
+(defn parse-authorization-header
+  [header]
+  (let [[type & parts] (string/split header #" ")]
+    (let [parts (->> parts
+                     (map (fn [part]
+                            (let [[k v] (string/split part #"=")
+                                  v (string/replace v #"\"([^\"]+)\",?" "$1")]
+                              [k v])))
+                     (into {}))]
+      [type parts])))
+
+
+(defn get-request-token
+  [params]
+  (create {}))
+
 

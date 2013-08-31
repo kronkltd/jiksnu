@@ -1,5 +1,6 @@
 (ns jiksnu.actions.client-actions
-  (:require [ciste.core :refer [defaction]]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
             [jiksnu.model.client :as model.client]
             [jiksnu.templates.actions :as templates.actions]
@@ -52,3 +53,10 @@
   [params]
   (or (fetch-fn (:_id params)) (create params)))
 
+(defaction register
+  [params]
+  {:client_id "foo"
+   :registration_access_token "bar"
+   :registration_client_uri (format "http://%s/api/connect" (config :domain))
+   }
+  )

@@ -26,7 +26,7 @@
   [handler]
   (fn [request]
     (try+
-     (handler request)
+     (log/spy :info (handler request))
      (catch [:type :authentication] ex
        (auth-exception ex))
      (catch [:type :permission] ex

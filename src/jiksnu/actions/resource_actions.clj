@@ -203,7 +203,7 @@ The channel will receive the body of fetching this resource."
                         :method :get
                         :headers {"User-Agent" user-agent
                                   "date" (util/date->rfc1123 (.toDate date))
-                                  "Authorization" auth-string}}]
+                                  "authorization" auth-string}}]
            (trace/trace :resource:updated item)
            (log/infof "updating resource: %s" url)
            (l/run-pipeline
