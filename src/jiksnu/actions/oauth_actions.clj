@@ -11,3 +11,16 @@
 (defaction request-token
   []
   (random/base32 20))
+
+(defn authorize
+  []
+
+  true
+  )
+
+(defn access-token
+  []
+
+  true
+  )
+
