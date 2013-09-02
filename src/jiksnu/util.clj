@@ -12,6 +12,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
+            [jiksnu.registry :as registry]
             [lamina.core :as l]
             [lamina.time :as time]
             [lamina.trace :as trace]
@@ -224,21 +225,22 @@
                     #(trace/trace :errors:handled %))
      res#))
 
+(defn vector-namespaces
+  [prefix module-name model-name part-name]
+  [(format "%s.%s.%s"
+           prefix module-name part-name)
+   (format "%s.%s.%s.%s-%s"
+           prefix module-name part-name model-name part-name)])
+
 (defn require-module
   ([prefix module-name]
-     (doseq [model-name model/model-names]
+     (doseq [model-name registry/model-names]
        (require-module prefix module-name model-name)))
   ([prefix module-name model-name]
-     (let [parts ["filters" "sections" "triggers" "views" "routes"]
-           req-fn (fn [part-name]
-                    [(format "%s.%s.%s"
-                             prefix module-name part-name)
-                     (format "%s.%s.%s.%s-%s"
-                             prefix module-name part-name model-name part-name)])]
-       (doseq [part-name parts]
-         (log/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
-         (let [namespaces (req-fn part-name)]
-           (require-namespaces namespaces))))))
+     (doseq [part-name registry/part-names]
+       (log/infof "Loading vector: [%s %s %s]" module-name model-name part-name)
+       (let [namespaces (vector-namespaces prefix module-name model-name part-name)]
+         (require-namespaces namespaces)))))
 
 (defn replace-template
   [template url]

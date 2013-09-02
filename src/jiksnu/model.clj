@@ -54,59 +54,6 @@
    ]
   )
 
-(def model-names
-  [
-   "activity"
-   "authentication-mechanism"
-   "client"
-   "conversation"
-   "dialback"
-   "domain"
-   "feed-source"
-   "feed-subscription"
-   "group"
-   "group-membership"
-   "item"
-   "key"
-   "like"
-   "request-token"
-   "resource"
-   "subscription"
-   "user"
-   ]
-  )
-
-(def action-group-names
-  [
-   "activity"
-   ;; "auth"
-   ;; "client"
-   ;; "comment"
-   ;; "confirm"
-   ;; "conversation"
-   ;; "domain"
-   ;; "favorite"
-   ;; "feed-source"
-   ;; "feed-subscription"
-   ;; "group"
-   ;; "like"
-   ;; "key"
-   ;; "message"
-   ;; "pubsub"
-   ;; "request-token"
-   ;; "resource"
-   ;; "salmon"
-   ;; "search"
-   ;; "setting"
-   ;; "site"
-   ;; "stream"
-   ;; "subscription"
-   ;; "tag"
-   ;; "user"
-   ])
-
-
-
 ;; Entity predicates
 
 (defn domain?

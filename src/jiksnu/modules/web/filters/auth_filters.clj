@@ -1,11 +1,9 @@
-(ns jiksnu.modules.core.filters.auth-filters
-  (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.auth-actions
-        [slingshot.slingshot :only [throw+]])
-  (:require [clojure.core.incubator :refer [-?>]]
+(ns jiksnu.modules.web.filters.auth-filters
+  (:require [ciste.filters :only [deffilter]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model :as model]
             [jiksnu.model.authentication-mechanism :as model.auth]
             [jiksnu.model.user :as model.user]
             [jiksnu.util :as util]))
@@ -25,12 +23,6 @@
   (if-let [user (model.user/get-user username)]
     (action user password)
     (throw+ {:type :authentication :message "user not found"})))
-
-(deffilter #'login :command
-  [action request]
-  (let [[username password] (:args request)
-        user (model.user/get-user username)]
-    (action user password)))
 
 ;; login-page
 
@@ -66,8 +58,3 @@
   [action request]
   (action))
 
-;; whoami
-
-(deffilter #'whoami :command
-  [action request]
-  (action))

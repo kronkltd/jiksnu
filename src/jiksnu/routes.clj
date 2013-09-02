@@ -21,6 +21,7 @@
             [jiksnu.model :as model]
             [jiksnu.middleware :as jm]
             [jiksnu.predicates :as predicates]
+            [jiksnu.registry :as registry]
             [jiksnu.routes.admin-routes :as routes.admin]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
@@ -73,7 +74,7 @@
    handlers))
 
 (def http-routes
-  (->> model/action-group-names
+  (->> registry/action-group-names
        (map load-module)
        (reduce concat)
        make-matchers))
@@ -116,19 +117,8 @@
           ;; wrap-tidy-up
           ))))
 
-  (doseq [model-name model/action-group-names]
-    (require-namespaces
-     ["jiksnu.formats"])
-    (doseq [module-name [
-                         ;; "admin"
-                         ;; "atom"
-                         ;; "as"
-                         "command"
-                         ;; "rdf"
-                         ;; "core"
-                         ;; "web"
-                         ]]
-      (log/infof "%s - %s" module-name model-name)
+  (doseq [model-name registry/action-group-names]
+    (doseq [module-name registry/module-names]
       (util/require-module "jiksnu.modules" module-name model-name)))
 
   )

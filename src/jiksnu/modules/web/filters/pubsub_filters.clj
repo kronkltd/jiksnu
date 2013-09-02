@@ -1,9 +1,9 @@
 (ns jiksnu.modules.core.filters.pubsub-filters
-  (:use [ciste.filters :only [deffilter]]
-        [jiksnu.actions.pubsub-actions :only [hub-dispatch]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [ciste.filters :refer [deffilter]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.pubsub-actions :as actions.pubsub]))
 
-(deffilter #'hub-dispatch :http
+(deffilter #'actions.pubsub/hub-dispatch :http
   [action request]
   (let [params (:params request)
         event

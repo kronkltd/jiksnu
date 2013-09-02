@@ -20,10 +20,13 @@
          (let [ch (l/channel)
                request {:channel ch
                         :name name
+                        :format :json
                         :args (list "clients")}]
            (parse-command request) =>
            (check [response]
-             response => map?)))
+             (log/spy :info response) => map?
+             (:body response) => map?
+             )))
        ))
    )
  )

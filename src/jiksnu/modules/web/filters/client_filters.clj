@@ -9,6 +9,14 @@
             [jiksnu.util :as util]
             [slingshot.slingshot :refer [throw+]]))
 
+(deffilter #'actions.client/index :http
+  [action request]
+  (action))
+
+(deffilter #'actions.client/index :page
+  [action request]
+  (action))
+
 (deffilter #'actions.client/register :http
   [action request]
   (let [params (log/spy :info (:params request))]

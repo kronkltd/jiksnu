@@ -10,6 +10,12 @@
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [ring.util.response :as response]))
 
+(defview #'actions.client/index :page
+  [request response]
+  {:body response}
+  )
+
 (defview #'actions.client/register :json
   [request response]
   {:body response})
+
