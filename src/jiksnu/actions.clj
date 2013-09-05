@@ -158,18 +158,18 @@
   []
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
-  (l/receive-all (trace/select-probes "*:created")   #'handler/created)
-  (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
-  (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
+  ;; (l/receive-all (trace/select-probes "*:created")   #'handler/created)
+  ;; (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
+  ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
 
   (doseq [[kw v]
           [
-           [:actions:invoked               #'handler/actions-invoked]
+           ;; [:actions:invoked               #'handler/actions-invoked]
            ;; [:activities:pushed             #'handler/activities-pushed]
            ;; [:ciste:filters:run             #'handler/event]
            ;; [:ciste:predicate:tested        #'handler/event]
-           [:ciste:matcher:tested          #'handler/matcher-test]
-           [:ciste:matcher:matched         #'handler/event]
+           ;; [:ciste:matcher:tested          #'handler/matcher-test]
+           ;; [:ciste:matcher:matched         #'handler/event]
            ;; [:ciste:route:matched           #'handler/event]
            ;; [:ciste:sections:run            #'handler/event]
            ;; [:ciste:views:run               #'handler/event]

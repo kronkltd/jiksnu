@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.filters.inbox-filters
+(ns jiksnu.modules.web.filters.inbox-filters
   (:require [ciste.filters :refer [deffilter]]
             [jiksnu.actions.inbox-actions :as actions.inbox]
             [jiksnu.model.user :as model.user]))
