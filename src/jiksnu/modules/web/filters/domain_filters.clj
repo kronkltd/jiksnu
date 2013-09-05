@@ -1,11 +1,11 @@
 (ns jiksnu.modules.web.filters.domain-filters
-  (:require [ciste.filters :only [deffilter]]
-            [clojure.core.incubator :only [-?>]]
+  (:require [ciste.filters :refer [deffilter]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
-            [jiksnu.modules.core.filters :only [parse-page parse-sorting]]))
+            [jiksnu.modules.core.filters :refer [parse-page parse-sorting]]))
 
 ;; create
 

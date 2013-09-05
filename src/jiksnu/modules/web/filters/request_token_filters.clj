@@ -3,7 +3,7 @@
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
-            [slingshot.slingshot :only [try+]]))
+            [slingshot.slingshot :refer [try+]]))
 
 (deffilter #'actions.request-token/get-request-token :http
   [action request]

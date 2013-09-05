@@ -1,15 +1,15 @@
 (ns jiksnu.modules.web.filters.activity-filters
-  (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.activity-actions
-        [slingshot.slingshot :only [try+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.filters :refer [deffilter]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.util :as util]
-            [lamina.trace :as trace]))
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [try+]]))
 
 ;; delete
 
-(deffilter #'delete :http
+(deffilter #'actions.activity/delete :http
   [action request]
   (if-let [id (try+ (-> request :params :id)
                     (catch RuntimeException ex
@@ -19,13 +19,13 @@
 
 ;; edit
 
-(deffilter #'edit :http
+(deffilter #'actions.activity/edit :http
   [action request]
   (-> request :params action))
 
 ;; oembed
 
-(deffilter #'oembed :http
+(deffilter #'actions.activity/oembed :http
   [action request]
   (let [url (get-in request [:params :url])]
     (if-let [activity (model.activity/fetch-by-remote-id url)]
@@ -33,7 +33,7 @@
 
 ;; post
 
-(deffilter #'post :http
+(deffilter #'actions.activity/post :http
   [action request]
   (-> request :params
       (dissoc "geo.latitude")
@@ -41,7 +41,7 @@
 
 ;; show
 
-(deffilter #'show :http
+(deffilter #'actions.activity/show :http
   [action request]
   (-> request :params :id
       model.activity/fetch-by-id action))
