@@ -1,6 +1,5 @@
 (ns jiksnu.modules.core.filters.domain-filters
   (:use [ciste.filters :only [deffilter]]
-        [clojure.core.incubator :only [-?>]]
         jiksnu.actions.domain-actions
         [jiksnu.modules.core.filters :only [parse-page parse-sorting]]
         [slingshot.slingshot :only [throw+]])

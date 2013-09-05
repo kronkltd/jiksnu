@@ -1,16 +1,20 @@
 (ns jiksnu.modules.web.filters.stream-filters
   (:require [ciste.filters :refer [deffilter]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.model.group :as model.group]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [try+]]))
 
-(deffilter #'callback-publish :http
+(deffilter #'actions.stream/callback-publish :http
   [action request]
   (action (abdera/stream->feed (:body request))))
 
-(deffilter #'direct-message-timeline :http
+(deffilter #'actions.stream/direct-message-timeline :http
   [action request]
   ;; TODO: fetch user
   (action))
@@ -20,39 +24,35 @@
   (let [params (:params request)]
     (action params)))
 
-(deffilter #'friends-timeline :http
+(deffilter #'actions.stream/friends-timeline :http
   [action request]
   (-> request :params :id model.user/get-user action))
 
-(deffilter #'group-timeline :http
+(deffilter #'actions.stream/group-timeline :http
   [action {{:keys [name]} :params}]
   (action (model.group/fetch-by-name name)))
 
-(deffilter #'home-timeline :http
+(deffilter #'actions.stream/home-timeline :http
   [action request]
   ;; TODO: fetch user
   (action))
 
-(deffilter #'inbox :http
+(deffilter #'actions.stream/inbox :http
   [action request]
   ;; TODO: fetch user
   (action))
 
-(deffilter #'public-timeline :http
+(deffilter #'actions.stream/public-timeline :http
   [action request]
   (let [page (or (-?> request :params :page Integer/parseInt) 1)]
     (action {} {:page page})))
 
-(deffilter #'mentions-timeline :http
+(deffilter #'actions.stream/mentions-timeline :http
   [action request]
   ;; TODO: fetch user
   (action))
 
-
-
-;; user-timeline
-
-(deffilter #'user-timeline :http
+(deffilter #'actions.stream/user-timeline :http
   [action request]
   (let [{{:keys [id username] :as params} :params} request
         acct-id (:* params)]

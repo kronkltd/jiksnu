@@ -1,4 +1,4 @@
-(ns jiksnu.modules.core.filters.subscription-filters
+(ns jiksnu.modules.web.filters.subscription-filters
   (:require [ciste.filters :refer [deffilter]]
             [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.tools.logging :as log]
@@ -56,7 +56,7 @@
 
 ;; show
 
-(deffilter #'show :http
+(deffilter #'actions.subscription/show :http
   [action request]
   (let [{{id :id} :params} request]
     (when-let [item (model.subscription/fetch-by-id id)]

@@ -1,6 +1,5 @@
 (ns jiksnu.modules.xmpp.filters.stream-filters
   (:use [ciste.filters :only [deffilter]]
-        [clojure.core.incubator :only [-?>]]
         jiksnu.actions.stream-actions)
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]

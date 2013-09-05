@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
         [ciste.initializer :only [definitializer]]
-        [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions :only [invoke-action]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]

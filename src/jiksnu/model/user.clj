@@ -1,7 +1,6 @@
 (ns jiksnu.model.user
   (:use [ciste.config :only [config]]
         [clj-gravatar.core :only [gravatar-image]]
-        [clojure.core.incubator :only [-?> -?>>]]
         [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]

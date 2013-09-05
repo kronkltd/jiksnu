@@ -1,7 +1,6 @@
 (ns jiksnu.actions.webfinger-actions
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
-        [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]

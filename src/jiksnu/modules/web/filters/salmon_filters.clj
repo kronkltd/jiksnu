@@ -8,7 +8,7 @@
 
 (deffilter #'actions.salmon/process :http
   [action request]
-  (let [envelope (-> request :body stream->envelope)
+  (let [envelope (-> request :body actions.salmon/stream->envelope)
         user (-> request :params :id model.user/fetch-by-id)]
     (try+ (action user envelope)
           (catch RuntimeException ex

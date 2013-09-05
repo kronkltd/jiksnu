@@ -1,5 +1,5 @@
 (ns jiksnu.modules.command.filters.resource-filters
-  (:require [ciste.filters :only [deffilter]]
+  (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.model.resource :as model.resource]))

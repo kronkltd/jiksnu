@@ -1,7 +1,7 @@
 (ns jiksnu.modules.command.filters.site-filters
-  (:use [ciste.filters :only [deffilter]]
-        [jiksnu.session :only [current-user-id]]
-        [jiksnu.actions.site-actions :as actions.site]))
+  (:require [ciste.filters :refer [deffilter]]
+            [jiksnu.session :refer [current-user-id]]
+            [jiksnu.actions.site-actions :as actions.site]))
 
 (deffilter #'actions.site/get-stats :command
   [action request]

@@ -1,6 +1,5 @@
 (ns jiksnu.model.resource
-  (:use [clojure.core.incubator :only [-?>>]]
-        [jiksnu.validators :only [type-of]]
+  (:use [jiksnu.validators :only [type-of]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [ciste.config :refer [config]]

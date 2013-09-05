@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [clojure.core.incubator :only [-?>]]
         [clojurewerkz.route-one.core :only [named-url]]
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+ try+]])

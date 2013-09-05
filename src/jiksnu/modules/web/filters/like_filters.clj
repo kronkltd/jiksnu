@@ -1,5 +1,5 @@
 (ns jiksnu.modules.web.filters.like-filters
-  (:require [ciste.filters refer [deffilter]]
+  (:require [ciste.filters :refer [deffilter]]
             [clojure.core.incubator :refer [-?>]]
             [jiksnu.actions.like-actions :as actions.like]
             [jiksnu.model.activity :as model.activity]

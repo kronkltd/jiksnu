@@ -1,6 +1,5 @@
 (ns jiksnu.model.webfinger
   (:use [ciste.config :only [config]]
-        [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
             [clj-statsd :as s]

@@ -1,5 +1,5 @@
 (ns jiksnu.modules.command.filters.domain-filters
-  (:require [ciste.filters :only [deffilter]]
+  (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.model.domain :as model.domain]))

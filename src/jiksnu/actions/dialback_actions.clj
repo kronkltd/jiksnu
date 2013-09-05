@@ -4,7 +4,6 @@
 
   (:use [ciste.config :only [config]]
         [ciste.core :only [defaction]]
-        [clojure.core.incubator :only [-?> -?>>]]
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]

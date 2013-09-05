@@ -1,6 +1,5 @@
 (ns jiksnu.modules.xmpp.filters.subscription-filters
   (:use [ciste.filters :only [deffilter]]
-        [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.actions.subscription-actions :only [confirm delete get-subscribers
                                                     get-subscriptions index ostatus ostatussub
                                                     ostatussub-submit remote-subscribe-confirm
