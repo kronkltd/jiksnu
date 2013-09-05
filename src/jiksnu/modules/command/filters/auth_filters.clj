@@ -1,5 +1,5 @@
 (ns jiksnu.modules.command.filters.auth-filters
-  (:require [ciste.filters :only [deffilter]]
+  (:require [ciste.filters :refer [deffilter]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.model.user :as model.user]))
