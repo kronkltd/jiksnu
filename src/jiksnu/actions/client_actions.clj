@@ -18,6 +18,7 @@
 (defn prepare-create
   [domain]
   (-> domain
+      ;; transforms/set-_id
       transforms/set-created-time))
 
 (defn prepare-delete

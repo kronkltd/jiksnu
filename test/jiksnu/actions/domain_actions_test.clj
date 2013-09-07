@@ -1,10 +1,7 @@
 (ns jiksnu.actions.domain-actions-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [clj-tigase.core :only [deliver-packet!]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        jiksnu.actions.domain-actions
-        [midje.sweet :only [=> anything contains truthy]])
   (:require [ciste.model :as cm]
+            [clj-factory.core :refer [factory fseq]]
+            [clj-tigase.core :refer [deliver-packet!]]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -14,56 +11,56 @@
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.ops :as ops]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [lamina.trace :as trace]
+            [midje.sweet :refer [=> anything contains truthy]]))
 
 (test-environment-fixture
 
- (context #'create
+ (context #'actions.domain/create
    (context "when given valid options"
      (context "and the domain does not already exist"
        (model.domain/drop!)
-       (let [options (prepare-create {:_id (fseq :domain)})]
-         (create options) => model/domain?))
+       (let [options (actions.domain/prepare-create {:_id (fseq :domain)})]
+         (actions.domain/create options) => model/domain?))
      ;; TODO: already exists
      )
    ;; TODO: invalid options
    )
 
- (context #'delete
+ (context #'actions.domain/delete
 
    ;; There is no reason this shouldn't be a success
    (future-context "when the domain does not exist"
      (model.domain/drop!)
      (let [domain (factory :domain {:_id (fseq :domain)})]
-       (delete domain) => nil?))
+       (actions.domain/delete domain) => nil?))
 
    (context "when the domain exists"
      (let [domain (mock/a-domain-exists)]
-       (delete domain) =>
+       (actions.domain/delete domain) =>
        (check [response]
          response => domain
          (model.domain/fetch-by-id (:_id domain)) => nil?))))
 
- (context #'discover-onesocialweb
+ (context #'actions.domain/discover-onesocialweb
    (context "when there is no url context"
      (context "should send a packet to that domain"
-       (let [action #'discover
-             domain (mock/a-domain-exists)
+       (let [domain (mock/a-domain-exists)
              url nil]
-         (discover-onesocialweb domain url) => domain
+         (actions.domain/discover-onesocialweb domain url) => domain
          (provided
            (deliver-packet! anything) => nil :times 1))))
    (context "when there is a url context"
      (context "should send a packet to that domain"
-       (let [action #'discover
-             domain (mock/a-domain-exists)
+       (let [domain (mock/a-domain-exists)
              url (str "http://" (:_id domain) "/status/users/1")]
-         (discover-onesocialweb domain url) => domain
+         (actions.domain/discover-onesocialweb domain url) => domain
          (provided
            (deliver-packet! anything) => nil :times 1)))))
 
- (context #'discover-statusnet-config
+ (context #'actions.domain/discover-statusnet-config
    (let [domain (mock/a-domain-exists)
          url (fseq :uri)
          res (l/result-channel)
@@ -77,7 +74,7 @@
                       (reset! field-set true))))
 
      (l/enqueue res response)
-     (discover-statusnet-config domain url) => truthy
+     (actions.domain/discover-statusnet-config domain url) => truthy
 
      (provided
       (model.domain/statusnet-url domain) => .url.
@@ -88,16 +85,16 @@
 
  ;; TODO: If https is enabled, the bare path is checked at the https
  ;; path first
- (context #'discover-webfinger
+ (context #'actions.domain/discover-webfinger
    (let [domain (mock/a-domain-exists)
          domain-name (:_id domain)]
 
      (context "when there is no url context"
        (let [url (factory/make-uri domain-name "/1")
              hm-url (factory/make-uri domain-name "/.well-known/host-meta")]
-         (discover-webfinger domain url) => (contains {:_id domain-name})
+         (actions.domain/discover-webfinger domain url) => (contains {:_id domain-name})
          (provided
-          (fetch-xrd* hm-url) => (cm/string->document "<XRD/>"))))
+          (actions.domain/fetch-xrd* hm-url) => (cm/string->document "<XRD/>"))))
 
      (context "when there is a url context"
        ;; TODO: Secure urls should always be checked first, and if the
@@ -112,41 +109,41 @@
              hm2-s     (format "https://%s/status/users/.well-known/host-meta" domain-name)]
 
          (context "and the bare domain has a host-meta"
-           (discover-webfinger domain url) => (contains {:_id domain-name})
+           (actions.domain/discover-webfinger domain url) => (contains {:_id domain-name})
            (provided
-            ;; (fetch-xrd* hm-bare-s) => nil
-            (fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
+            ;; (actions.domain/fetch-xrd* hm-bare-s) => nil
+            (actions.domain/fetch-xrd* hm-bare) => (cm/string->document "<XRD/>")))
 
          (context "and the bare domain does not have a host meta"
 
            (context "and none of the subpaths have host metas"
-             (discover-webfinger domain url) => nil
+             (actions.domain/discover-webfinger domain url) => nil
              (provided
 
-               (fetch-xrd* hm-bare) => nil
-               (fetch-xrd* hm1)     => nil
-               (fetch-xrd* hm2)     => nil
-               ;; (fetch-xrd* hm-bare-s) => nil
+               (actions.domain/fetch-xrd* hm-bare) => nil
+               (actions.domain/fetch-xrd* hm1)     => nil
+               (actions.domain/fetch-xrd* hm2)     => nil
+               ;; (actions.domain/fetch-xrd* hm-bare-s) => nil
                ))
 
            (context "and one of the subpaths has a host meta"
              ;; FIXME: this isn't being checked
-             (discover-webfinger domain url) => (contains {:_id domain-name})
+             (actions.domain/discover-webfinger domain url) => (contains {:_id domain-name})
              (provided
-               (fetch-xrd* hm-bare) => nil
-               ;; (fetch-xrd* hm-bare-s) => nil
-               (fetch-xrd* hm1)     => nil
-               (fetch-xrd* hm2)     => (cm/string->document "<XRD/>")
+               (actions.domain/fetch-xrd* hm-bare) => nil
+               ;; (actions.domain/fetch-xrd* hm-bare-s) => nil
+               (actions.domain/fetch-xrd* hm1)     => nil
+               (actions.domain/fetch-xrd* hm2)     => (cm/string->document "<XRD/>")
                ))
            )
          ))
      ))
 
- (context #'get-discovered
+ (context #'actions.domain/get-discovered
    (let [domain (mock/a-domain-exists {:discovered false})]
-     (get-discovered domain) => (contains {:discovered true})))
+     (actions.domain/get-discovered domain) => (contains {:discovered true})))
 
- (context #'show
-   (show .domain.) => .domain.)
+ (context #'actions.domain/show
+   (actions.domain/show .domain.) => .domain.)
 
  )

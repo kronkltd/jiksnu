@@ -5,6 +5,7 @@
         [slingshot.slingshot :only [throw+]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.group-actions :as actions.group]
@@ -66,6 +67,11 @@
     (dosync
      (ref-set my-password password))
     user))
+
+(defn a-client-exists
+  [& [opts]]
+  (let [params (factory :client)]
+    (actions.client/create params)))
 
 (defn a-user-exists-with-password
   [password]

@@ -211,6 +211,10 @@
    :author #'user-id
    :verb "post"})
 
+(defrecordfactory :client model/map->Client
+  {:_id (fseq :word)}
+  )
+
 (defrecordfactory :subscription model/map->Subscription
   {:to #'user-id
    :local true

@@ -4,6 +4,7 @@
         [midje.sweet :only [=>]])
   (:require [jiksnu.mock :as mock])
   (:import jiksnu.model.Activity
+           jiksnu.model.Client
            jiksnu.model.Conversation
            jiksnu.model.Domain
            jiksnu.model.FeedSource
@@ -24,6 +25,9 @@
 
  (context #'mock/a-resource-exists
    (mock/a-resource-exists) => (partial instance? Resource))
+
+ (context #'mock/a-client-exists
+   (mock/a-client-exists) => (partial instance? Client))
 
  (context #'mock/a-user-exists
    (context "without any params"
