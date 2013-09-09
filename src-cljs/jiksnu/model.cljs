@@ -22,6 +22,8 @@
     "Activity"                 "Activities"]
    ["authentication-mechanism" "authenticationMechanisms"
     "AuthenticationMechanism"  "AuthenticationMechanisms"]
+   ["client" "clients"
+    "Client" "Clients"]
    ["conversation"             "conversations"
     "Conversation"             "Conversations"]
    ["domain"                   "domains"
@@ -358,6 +360,17 @@
                 "user" nil
                 "name" nil))))
 
+(def Client
+  (.extend
+   PageModel
+   (js-obj
+    "type"        "Client"
+    "stub"        "clients"
+    "defaults" (extend-page-model
+                "created" nil
+                "updated" nil
+                ))))
+
 (defvar Statistics
   [this]
   (doto this
@@ -391,6 +404,13 @@
            (js-obj
             "type" "AuthenticationMechanisms"
             "model" AuthenticationMechanism)))
+
+(def Clients
+  (.extend backbone/Collection
+           (js-obj
+            ;; "localStroage" (js/Store. "conversations")
+            "type"         "Clients"
+            "model"        Client)))
 
 (def Conversations
   (.extend backbone/Collection
@@ -468,6 +488,7 @@
 
 (def activities    (Activities.))
 (def authentication-mechanisms (AuthenticationMechanisms.))
+(def clients (Clients.))
 (def conversations  (Conversations.))
 (def domains       (Domains.))
 (def feed-sources  (FeedSources.))
@@ -487,6 +508,7 @@
                   "authenticationMechanisms" authentication-mechanisms
                   "conversations"            conversations
                   "domains"                  domains
+                  "clients"                  clients
                   "currentUser"              nil
                   "feedSources"              feed-sources
                   "feedSubscriptions"        feed-subscriptions
