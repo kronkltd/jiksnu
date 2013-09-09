@@ -21,8 +21,7 @@
 
  (context #'actions.client/create
 
-   (let [params (factory :client)
-         ]
+   (let [params (factory :client)]
 
      (actions.client/create params) =>
      (check [response]

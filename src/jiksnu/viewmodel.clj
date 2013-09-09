@@ -4,11 +4,11 @@
         [ciste.filters :only [deffilter filter-action]]
         [ciste.routes :only [resolve-routes]]
         [ciste.views :only [defview]]
-        [clojure.data.json :only [read-json]]
         [jiksnu.predicates :as predicates]
         [jiksnu.routes :only [http-routes]]
         [jiksnu.routes.admin-routes :only [admin-routes]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]))
 
 (defaction fetch-viewmodel
   [path options]
@@ -22,7 +22,7 @@
                                           http-routes))
                   request)]
     (if-let [body (:body response)]
-      (let [vm (read-json body)]
+      (let [vm (json/read-str body :key-fn keyword)]
         {:path path
          :options options
          :body {:action "update viewmodel"

@@ -1,12 +1,12 @@
 (ns jiksnu.transforms.request-token-transforms
-  (:require [jiksnu.model.request-token :as model.request-token])
+  (:require [jiksnu.util :as util])
   )
 
 (defn set-token
   [params]
   (if (:token params)
     params
-    (let [token (model.request-token/generate-token)]
+    (let [token (util/generate-token)]
       (assoc params :token token)
       )
     )

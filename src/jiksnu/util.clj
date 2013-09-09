@@ -10,6 +10,7 @@
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [crypto.random :as random]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.registry :as registry]
@@ -257,3 +258,9 @@
      (catch Object ex false)
      (finally
        (.close socket)))))
+
+(defn generate-token
+  []
+  (random/base32 20))
+
+

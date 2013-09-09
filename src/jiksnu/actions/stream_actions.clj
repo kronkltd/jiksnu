@@ -40,7 +40,7 @@
   (-?>> args
         (filter identity)
         seq
-        (map json/read-json)))
+        (map #(json/read-str % :key-fn keyword))))
 
 ;; actions
 

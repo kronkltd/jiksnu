@@ -77,7 +77,7 @@
               (:body response) => string?
               (get-in response [:headers "Content-Type"]) => "application/json"
 
-              (let [body (json/read-json (:body response))]
+              (let [body (json/read-str (:body response) :key-fn keyword)]
                 ;; has at least 1 link
                 (count (:links body)) => (partial >= 1)
 

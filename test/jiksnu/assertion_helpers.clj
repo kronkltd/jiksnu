@@ -81,10 +81,11 @@
   (check-response
    (:displayName
     (:object
-     (json/read-json
+     (json/read-str
       (channel-buffer->string
        @(read-channel* that-stream
-                       :timeout 60000))))) => (:title (get-this :activity))))
+                       :timeout 60000))
+      :key-fn keyword))) => (:title (get-this :activity))))
 
 (defn should-receive-oembed
   []

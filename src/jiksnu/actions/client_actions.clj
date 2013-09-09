@@ -2,9 +2,11 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
+            [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.client-transforms :as transforms.client]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (def model-sym 'jiksnu.model.client)
@@ -18,6 +20,7 @@
 (defn prepare-create
   [domain]
   (-> domain
+      transforms.client/set-_id
       ;; transforms/set-_id
       transforms/set-created-time))
 
@@ -47,8 +50,8 @@
 
 (defaction create
   [params]
-  (let [item (prepare-create params)]
-    (create-fn item)))
+  (let [item (prepare-create (log/spy :info params))]
+    (create-fn (log/spy :info item))))
 
 (defn find-or-create
   [params]
@@ -56,8 +59,6 @@
 
 (defaction register
   [params]
-  {:client_id "foo"
-   :registration_access_token "bar"
-   :registration_client_uri (format "http://%s/api/connect" (config :domain))
-   }
-  )
+  (let [client (create params)]
+    (let [request-token (actions.request-token/create)]
+      (assoc client :token (:token request-token)))))

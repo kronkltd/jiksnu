@@ -1,6 +1,5 @@
 (ns jiksnu.model.request-token
   (:require [clojure.tools.logging :as log]
-            [crypto.random :as random]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.validators :refer [type-of]]
@@ -26,9 +25,4 @@
 (def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker false))
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
-
-(defn generate-token
-  []
-  (random/base32 20))
-
 

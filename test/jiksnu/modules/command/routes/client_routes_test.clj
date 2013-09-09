@@ -29,7 +29,7 @@
                (check [response]
                  (log/spy :info response) => map?
                  (let [body (:body response)]
-                   (let [json-obj (json/read-str body)]
+                   (let [json-obj (json/read-str body :key-fn keyword)]
                      json-obj => map?
                      )
                    )
