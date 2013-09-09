@@ -56,18 +56,6 @@
   [params]
   (or (fetch-fn (:_id params)) (create params)))
 
-(defn parse-authorization-header
-  [header]
-  (let [[type & parts] (string/split header #" ")]
-    (let [parts (->> parts
-                     (map (fn [part]
-                            (let [[k v] (string/split part #"=")
-                                  v (string/replace v #"\"([^\"]+)\",?" "$1")]
-                              [k v])))
-                     (into {}))]
-      [type parts])))
-
-
 (defn get-request-token
   [params]
   (create {}))

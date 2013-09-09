@@ -110,6 +110,7 @@
           file-info/wrap-file-info
           jm/wrap-user-binding
           jm/wrap-dynamic-mode
+          jm/wrap-authorization-header
           (handler/site {:session {:store (ms/session-store)}})
           (wrap-airbrake (config :airbrake :key))
           jm/wrap-stacktrace
