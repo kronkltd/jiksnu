@@ -3,7 +3,7 @@
   :url "https://github.com/duck1123/jiksnu"
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
-  :dependencies [[aleph "0.3.0-rc1"]
+  :dependencies [[aleph "0.3.0"]
                  [ciste "0.5.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]
@@ -16,23 +16,23 @@
                   :exclusions [ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
                  [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
-                 [clj-stacktrace "0.2.5"]
-                 [clj-statsd "0.3.2"]
-                 [clj-time "0.5.1"]
-                 [clj-http "0.7.2"]
+                 [clj-stacktrace "0.2.6"]
+                 [clj-statsd "0.3.10"]
+                 [clj-time "0.6.0"]
+                 [clj-http "0.7.6"]
                  [clojurewerkz/route-one "1.0.0-beta2"]
                  [clojurewerkz/urly "1.0.0"
                   :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0-alpha3"]
                  [clojure-complete "0.2.3"]
-                 [clojurewerkz/support "0.16.0"]
-                 [com.novemberain/monger "1.6.0-beta2"]
-                 [com.novemberain/validateur "1.4.0"]
-                 [com.ocpsoft/ocpsoft-pretty-time "1.0.6"]
+                 [clojurewerkz/support "0.17.0"]
+                 [com.novemberain/monger "1.6.0"]
+                 [com.novemberain/validateur "1.5.0"]
+                 [com.ocpsoft/ocpsoft-pretty-time "1.0.7"]
                  [crypto-random "1.1.0"]
-                 [hiccup "1.0.3"]
-                 [jayq "2.3.0"]
-                 [lamina "0.5.0-rc4"]
+                 [hiccup "1.0.4"]
+                 [jayq "2.4.0"]
+                 [lamina "0.5.0"]
                  [lib-noir "0.5.6"]
                  [lolg "0.1.0-SNAPSHOT"
                   :exclusions [org.clojure/google-closure-library]]
@@ -43,26 +43,29 @@
                  [org.apache.abdera/abdera-client "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.3"]
                  [org.clojure/clojure "1.5.1"]
-                 [org.clojure/tools.logging "0.2.3"]
-                 [org.clojure/tools.reader "0.7.5"]
-                 [org.clojure/data.json "0.2.2"]
+                 [org.clojure/tools.logging "0.2.6"]
+                 [org.clojure/tools.reader "0.7.6"]
+                 [org.clojure/data.json "0.2.3"]
                  [org.jsoup/jsoup "1.7.2"]
                  [org.mindrot/jbcrypt "0.3m"]
                  [org.slf4j/slf4j-api "1.7.5"]
                  [org.slf4j/slf4j-log4j12 "1.7.5"]
-                 [org.webjars/backbonejs "1.0.0"]
-                 [org.webjars/bootstrap "2.3.1"]
-                 [org.webjars/jquery "1.9.1"]
-                 [org.webjars/knockout "2.2.1"]
-                 [org.webjars/momentjs "2.0.0"]
-                 [org.webjars/underscorejs "1.4.4"]
+                 [org.webjars/backbonejs "1.0.0-1"]
+                 [org.webjars/bootstrap "3.0.0"]
+                 [org.webjars/jquery "2.0.3"]
+                 [org.webjars/knockout "2.3.0"]
+                 [org.webjars/momentjs "2.1.0"]
+                 [org.webjars/underscorejs "1.5.1"]
                  [ring "1.2.0-beta3"]
                  [ring/ring-core "1.2.0-beta3"]
-                 [ring-basic-authentication "0.0.1"]
+                 [ring-basic-authentication "1.0.2"]
                  [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.10.3"]
                  [tigase/tigase-server "5.2.0-beta1"]
                  [clj-webdriver "0.6.0"]
+
+                 ;; I know you really want to upgrade this one, but
+                 ;; you can't. :(
                  [xml-apis "1.4.01"]
                  #_[org.apache.httpcomponents/httpclient "4.2.5"]
 
@@ -103,8 +106,8 @@
   :profiles {:dev
              {:resource-paths ["test-resources"]
               :dependencies
-              [[midje         "1.5-beta1"]
-               [ring-mock     "0.1.3"]]}}
+              [[midje         "1.5.1"]
+               [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
   :lis-opts {
