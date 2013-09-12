@@ -260,7 +260,8 @@
        (.close socket)))))
 
 (defn generate-token
-  []
-  (random/base32 20))
+  ([] (generate-token 16))
+  ([length]
+     (random/base32 length)))
 
 

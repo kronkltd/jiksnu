@@ -1,6 +1,5 @@
 (ns jiksnu.handlers
-  (:use [jayq.core :only [$ css ]]
-        [jiksnu.model :only [_model]])
+  (:use [jiksnu.model :only [_model]])
   (:require [jiksnu.logging :as jl]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]

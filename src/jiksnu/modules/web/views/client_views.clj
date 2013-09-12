@@ -23,7 +23,7 @@
 (defview #'actions.client/register :json
   [request item]
   (let [client-id (:_id item)
-        created (/ (coerce/to-long (:created item)) 1000)
+        created (int (/ (coerce/to-long (:created item)) 1000))
         token (:token item)
         client-uri "/oauth/request_token"
         secret (:secret item)
@@ -35,6 +35,8 @@
              :registration_access_token token
              :registration_client_uri client-uri}
             (when secret
-              {:client_secret secret
-               :client_secret_expires_at expires}))}))
+              {:client_secret secret})
+            (when expires
+              {:expires_at expires}
+              ))}))
 
