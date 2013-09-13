@@ -61,7 +61,7 @@
 (defaction register
   [params]
   (let [client (create params)]
-    (let [request-token (actions.request-token/create)]
+    (let [request-token (actions.request-token/create {:client (:_id client)})]
       (-> client
           (assoc :token (:token request-token))
           (assoc :secret (util/generate-token 32))

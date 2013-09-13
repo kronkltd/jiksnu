@@ -15,6 +15,7 @@
   (validation-set
    (type-of :_id        ObjectId)
    (type-of :token      String)
+   (type-of :client     String)
    (type-of :created    DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
