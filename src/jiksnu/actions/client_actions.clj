@@ -22,7 +22,8 @@
   [domain]
   (-> domain
       transforms.client/set-_id
-      ;; transforms/set-_id
+      transforms.client/set-type
+      transforms.client/set-expiry
       transforms/set-created-time))
 
 (defn prepare-delete

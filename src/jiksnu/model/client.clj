@@ -12,8 +12,10 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id        String)
-   (type-of :created    DateTime)))
+   (type-of :_id            String)
+   (type-of :secret         String)
+   (type-of :secret-expires Long)
+   (type-of :created        DateTime)))
 
 (def count-records (templates.model/make-counter       collection-name))
 (def delete        (templates.model/make-deleter       collection-name))
