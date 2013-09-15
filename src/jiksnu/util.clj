@@ -262,6 +262,12 @@
 (defn generate-token
   ([] (generate-token 16))
   ([length]
-     (random/base32 length)))
+     (-> (random/base32 length)
+         (string/replace #"\+" "-")
+         (string/replace #"/" "_")
+         (string/replace #"=" "")
+         )
+
+     ))
 
 

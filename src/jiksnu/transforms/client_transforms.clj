@@ -10,7 +10,10 @@
 (defn set-type
   [params]
   (if (:type params)
-    params
+    (if (#{"web" "native"} type)
+      params
+      (throw+ "invalid type")
+      )
     (assoc params :type "web")))
 
 (defn set-secret
@@ -24,3 +27,12 @@
   (if (:secret-expires params)
     params
     (assoc params :secret-expires 0)))
+
+(defn set-webfinger
+  [params]
+  (if (or (:host params)
+          (:webfinger params))
+    params
+    (throw+ "Client must have a host or a webfinger")
+    )
+  )

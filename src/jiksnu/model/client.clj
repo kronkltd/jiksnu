@@ -13,6 +13,8 @@
 (def create-validators
   (validation-set
    (type-of :_id            String)
+   (type-of :owner          String)
+   (type-of :type           String)
    (type-of :secret         String)
    (type-of :secret-expires Long)
    (type-of :created        DateTime)))

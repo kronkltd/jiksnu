@@ -23,8 +23,11 @@
   (-> domain
       transforms.client/set-_id
       transforms.client/set-type
+      transforms.client/set-secret
       transforms.client/set-expiry
-      transforms/set-created-time))
+      transforms/set-created-time
+      transforms/set-updated-time
+      ))
 
 (defn prepare-delete
   ([item]
@@ -59,12 +62,49 @@
   [params]
   (or (fetch-fn (:_id params)) (create params)))
 
+(defn handle-client-update
+  [params]
+
+
+  )
+
+(defn handle-client-associate
+  [params]
+  (let [contacts (string/split (:contacts params) " ")
+        type (:application_type params)
+        title (:application_name params)
+        logo_url (:logo_url params)
+        redirect_uris (string/split (:redirect_uris params) " ")
+        ]
+    ;; TODO: validate contacts
+    (if-not (:access_token params)
+      (if-not (:client_secret)
+        (let [host (:remoteHost params)
+              webfinger (:remoteUser params)]
+          (let [params (merge params
+                              {:contacts contacts
+                               :type type
+                               :title title
+                               :redirect_uris redirect_uris
+                               }
+                              (when host {:host host})
+                              (when webfinger {:webfinger webfinger}))
+                client (create params)]
+            (let [request-token (actions.request-token/create {:client (:_id client)})]
+              client
+
+                  )))
+        (throw+ "Only set client_secret for update")
+        )
+      (throw+ "access_token not needed for registration")
+      ))
+  )
+
 (defaction register
   [params]
-  (let [client (create params)]
-    (let [request-token (actions.request-token/create {:client (:_id client)})]
-      (-> client
-          (assoc :token (:token request-token))
-          (assoc :secret (util/generate-token 32))
-          (assoc :secret-expires 0)
-          ))))
+  (let [type (:type params)]
+    (condp = type
+      "client_update" (handle-client-update params)
+      "client_associate" (handle-client-associate params)
+      ;; NB: I'm copying pump.io's response here. Doubt it matters
+      (throw+ "No registration type provided"))))
