@@ -15,9 +15,9 @@
   (validation-set
    (type-of :_id        ObjectId)
    (type-of :token      String)
-   (type-of :token-secret String)
+   (type-of :secret String)
    (type-of :callback String)
-   (type-of :verifier String)
+   ;; (type-of :verifier String)
    (type-of :client     String)
    (type-of :created    DateTime)
    (type-of :authenticated Boolean)

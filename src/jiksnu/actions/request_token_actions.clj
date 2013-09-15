@@ -21,7 +21,11 @@
   (-> params
       transforms/set-_id
       transforms.request-token/set-token
-      transforms/set-created-time))
+      transforms.request-token/set-used
+      transforms.request-token/set-authenticated
+      transforms/set-created-time
+      transforms/set-updated-time
+      ))
 
 (defn prepare-delete
   ([item]
@@ -49,8 +53,8 @@
 
 (defaction create
   [params]
-  (let [item (prepare-create params)]
-    (create-fn item)))
+  (let [params (prepare-create params)]
+    (create-fn params)))
 
 (defn find-or-create
   [params]

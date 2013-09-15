@@ -11,3 +11,17 @@
       )
     )
   )
+
+(defn set-authenticated
+  [params]
+  ;; TODO: needs to test for key presence, but this is okay
+  (if (:authenticated params)
+    params
+    (assoc params :authenticated false)))
+
+(defn set-used
+  [params]
+  ;; TODO: needs to test for key presence, but this is okay
+  (if (:used params)
+    params
+    (assoc params :used false)))
