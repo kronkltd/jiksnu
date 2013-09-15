@@ -1,6 +1,8 @@
 (ns jiksnu.module.web.views.client-views
-  (:require [ciste.views :refer [defview]]
+  (:require [ciste.config :refer [config]]
+            [ciste.views :refer [defview]]
             [clj-time.coerce :as coerce]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.ko :refer [*dynamic*]]
@@ -25,7 +27,7 @@
   (let [client-id (:_id item)
         created (int (/ (coerce/to-long (:created item)) 1000))
         token (:token item)
-        client-uri "/oauth/request_token"
+        client-uri (format "https://%s/oauth/request_token" (config :domain))
         secret (:secret item)
         expires (:secret-expires item)]
     {:body

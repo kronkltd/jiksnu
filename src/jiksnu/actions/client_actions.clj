@@ -1,6 +1,7 @@
 (ns jiksnu.actions.client-actions
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.model.client :as model.client]
@@ -70,35 +71,29 @@
 
 (defn handle-client-associate
   [params]
-  (let [contacts (string/split (:contacts params) " ")
+  (let [contacts (when-let [contacts (:contacts params)]
+                   (string/split contacts #" "))
         type (:application_type params)
         title (:application_name params)
         logo_url (:logo_url params)
-        redirect_uris (string/split (:redirect_uris params) " ")
-        ]
+        redirect_uris (when-let [redirect-uris (:redirect_uris params)]
+                        (string/split redirect-uris #" "))]
     ;; TODO: validate contacts
     (if-not (:access_token params)
-      (if-not (:client_secret)
+      (if-not (:client_secret params)
         (let [host (:remoteHost params)
-              webfinger (:remoteUser params)]
-          (let [params (merge params
-                              {:contacts contacts
-                               :type type
-                               :title title
-                               :redirect_uris redirect_uris
-                               }
-                              (when host {:host host})
-                              (when webfinger {:webfinger webfinger}))
-                client (create params)]
-            (let [request-token (actions.request-token/create {:client (:_id client)})]
-              client
-
-                  )))
-        (throw+ "Only set client_secret for update")
-        )
-      (throw+ "access_token not needed for registration")
-      ))
-  )
+              webfinger (:remoteUser params)
+              params (merge params
+                            {:contacts contacts
+                             :type type
+                             :title title
+                             :redirect_uris redirect_uris}
+                            (when host {:host host})
+                            (when webfinger {:webfinger webfinger}))
+              client (create params)]
+          client)
+        (throw+ "Only set client_secret for update"))
+      (throw+ "access_token not needed for registration"))))
 
 (defaction register
   [params]

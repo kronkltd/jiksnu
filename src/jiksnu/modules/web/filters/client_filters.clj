@@ -1,6 +1,7 @@
 (ns jiksnu.modules.web.filters.client-filters
   (:require [ciste.config :refer [config]]
             [ciste.filters :refer [deffilter]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.model.user :as model.user]
@@ -19,7 +20,8 @@
 
 (deffilter #'actions.client/register :http
   [action request]
-  (let [params (log/spy :info (:params request))]
-    (action params)
-    )
-  )
+
+  (let [body (slurp (:body request))
+        params (merge (:params request)
+                      (json/read-str body :key-fn keyword))]
+    (action params)))

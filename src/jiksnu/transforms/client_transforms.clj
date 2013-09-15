@@ -1,5 +1,7 @@
 (ns jiksnu.transforms.client-transforms
-  (:require [jiksnu.util :as util]))
+  (:require [clojure.tools.logging :as log]
+            [jiksnu.util :as util]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defn set-_id
   [params]
@@ -9,11 +11,10 @@
 
 (defn set-type
   [params]
-  (if (:type params)
+  (if-let [type (:type params)]
     (if (#{"web" "native"} type)
       params
-      (throw+ "invalid type")
-      )
+      (throw+ "invalid type"))
     (assoc params :type "web")))
 
 (defn set-secret
@@ -33,6 +34,4 @@
   (if (or (:host params)
           (:webfinger params))
     params
-    (throw+ "Client must have a host or a webfinger")
-    )
-  )
+    (throw+ "Client must have a host or a webfinger")))
