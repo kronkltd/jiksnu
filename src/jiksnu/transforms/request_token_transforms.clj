@@ -6,11 +6,22 @@
   [params]
   (if (:token params)
     params
-    (let [token (util/generate-token)]
-      (assoc params :token token)
-      )
-    )
-  )
+    (let [token (util/generate-token 16)]
+      (assoc params :token token))))
+
+(defn set-token-secret
+  [params]
+  (if (:token-secret params)
+    params
+    (let [token (util/generate-token 32)]
+      (assoc params :token-secret token))))
+
+(defn set-verifier
+  [params]
+  (if (:verifier params)
+    params
+    (let [token (util/generate-token 16)]
+      (assoc params :verifier token))))
 
 (defn set-authenticated
   [params]

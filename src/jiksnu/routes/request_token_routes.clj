@@ -5,7 +5,7 @@
   []
   [
    [[:post "/oauth/request_token"]      {:action #'actions.request-token/get-request-token
-                                         :format :json}]
+                                         :format :text}]
    ]
   )
 

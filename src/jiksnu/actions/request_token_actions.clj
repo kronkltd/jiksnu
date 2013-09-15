@@ -21,6 +21,8 @@
   (-> params
       transforms/set-_id
       transforms.request-token/set-token
+      transforms.request-token/set-token-secret
+      transforms.request-token/set-verifier
       transforms.request-token/set-used
       transforms.request-token/set-authenticated
       transforms/set-created-time
@@ -62,6 +64,6 @@
 
 (defn get-request-token
   [params]
-  (create {}))
+  (create params))
 
 

@@ -63,6 +63,11 @@
       (assoc :body (rdf/format-triples (:body response) :xml-abbrev))
       (assoc-in [:headers "Content-Type"] "application/rdf+xml; charset=utf-8")))
 
+(defmethod format-as :text
+  [request format response]
+  (-> response
+      (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
+
 (defmethod format-as :viewmodel
   [format request response]
   (let [response (if-let [id (session/current-user-id)]

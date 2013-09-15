@@ -9,7 +9,7 @@
 
 (deffilter #'actions.request-token/get-request-token :http
   [action request]
-  (let [callback (get-in request :authorization-parts "oauth_callback")
+  (let [callback (get-in request [:authorization-parts "oauth_callback"])
         body (:body request)
         body-str (when body (slurp body))
         params (merge (:params request)
