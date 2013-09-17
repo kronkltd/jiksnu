@@ -13,18 +13,16 @@
 
 (def create-validators
   (validation-set
-   (type-of :_id        ObjectId)
-   (type-of :token      String)
-   ;; (type-of :secret String)
-   (type-of :callback String)
-   ;; (type-of :verifier String)
-   (type-of :client     String)
-   (type-of :created    DateTime)
+   (type-of :_id           String)
+   (type-of :secret        String)
+   (type-of :callback      String)
+   (type-of :verifier      String)
+   (type-of :client        String)
    (type-of :authenticated Boolean)
-   (type-of :used Boolean)
+   (type-of :used          Boolean)
    ;; (type-of :access-token String)
-   ;; (type-of :access-token String)
-   (type-of :updated DateTime)
+   (type-of :created       DateTime)
+   (type-of :updated       DateTime)
    ))
 
 (def count-records (templates.model/make-counter       collection-name))

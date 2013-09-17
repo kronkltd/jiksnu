@@ -3,9 +3,24 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
+            [jiksnu.model.request-token :as model.request-token]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
-            [slingshot.slingshot :refer [try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]))
+
+(deffilter #'actions.request-token/authorize :http
+  [action request]
+  (let [params (:params request)]
+    (action params)))
+
+(deffilter #'actions.request-token/show-authorization-form :http
+  [action request]
+  (let [params (:params request)]
+    (if-let [id (:oauth_token params)]
+      (if-let [token (model.request-token/fetch-by-id id)]
+        (action token)
+        (throw+ "Could not find token"))
+      (throw+ "oauth_token not provided"))))
 
 (deffilter #'actions.request-token/get-request-token :http
   [action request]

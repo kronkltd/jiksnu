@@ -2,19 +2,19 @@
   (:require [jiksnu.util :as util])
   )
 
-(defn set-token
+(defn set-_id
   [params]
-  (if (:token params)
+  (if (:_id params)
     params
     (let [token (util/generate-token 16)]
-      (assoc params :token token))))
+      (assoc params :_id token))))
 
-(defn set-token-secret
+(defn set-secret
   [params]
-  (if (:token-secret params)
+  (if (:secret params)
     params
     (let [token (util/generate-token 32)]
-      (assoc params :token-secret token))))
+      (assoc params :secret token))))
 
 (defn set-verifier
   [params]

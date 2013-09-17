@@ -3,6 +3,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.request-token :as model.request-token]
+            [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.request-token-transforms :as transforms.request-token]
@@ -19,9 +20,8 @@
 (defn prepare-create
   [params]
   (-> params
-      transforms/set-_id
-      transforms.request-token/set-token
-      transforms.request-token/set-token-secret
+      transforms.request-token/set-_id
+      transforms.request-token/set-secret
       transforms.request-token/set-verifier
       transforms.request-token/set-used
       transforms.request-token/set-authenticated
@@ -66,4 +66,15 @@
   [params]
   (create params))
 
+(defn show-authorization-form
+  [token]
+  (let [user (log/spy :info (session/current-user))]
+    [user token]))
 
+(defn authorize
+  [params]
+  (let [id (:oauth_token params)
+        token (model.request-token/fetch-by-id id)]
+    (if (= (:verifier params) (:verifier token))
+      token
+      (throw+ "Verifier does not match"))))

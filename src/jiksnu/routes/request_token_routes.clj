@@ -4,8 +4,17 @@
 (defn routes
   []
   [
+
    [[:post "/oauth/request_token"]      {:action #'actions.request-token/get-request-token
                                          :format :text}]
+
+   [[:post "/oauth/authorize"]          {:action #'actions.request-token/authorize
+                                         :format :html
+                                         }]
+
+   [[:get "/oauth/authorize"]           {:action #'actions.request-token/show-authorization-form
+                                         :format :html}]
+
    ]
   )
 

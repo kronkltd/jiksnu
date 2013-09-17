@@ -10,6 +10,7 @@
            jiksnu.model.FeedSource
            jiksnu.model.FeedSubscription
            jiksnu.model.Group
+           jiksnu.model.RequestToken
            jiksnu.model.Resource
            jiksnu.model.Stream
            jiksnu.model.Subscription
@@ -51,5 +52,9 @@
 
  (context #'mock/a-group-exists
    (mock/a-group-exists) => (partial instance? Group))
+
+ (context #'mock/a-request-token-exists
+   (mock/a-request-token-exists) => (partial instance? RequestToken)
+   )
 
  )

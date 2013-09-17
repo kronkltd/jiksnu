@@ -11,6 +11,7 @@
             [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
+            [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
@@ -222,6 +223,13 @@
   [& [options]]
   (let [item (actions.group/create (factory :group))]
     (set-this :group item)
+    item))
+
+(defn a-request-token-exists
+  [& [options]]
+  (let [params (factory :request-token)
+        item (actions.request-token/create params)]
+    (set-this :request-token item)
     item))
 
 (defn this-user-has-a-subscription
