@@ -227,7 +227,9 @@
 
 (defn a-request-token-exists
   [& [options]]
-  (let [params (factory :request-token)
+  (let [client (or (:client options)
+                   (a-client-exists))
+        params (factory :request-token {:client (:_id client)})
         item (actions.request-token/create params)]
     (set-this :request-token item)
     item))

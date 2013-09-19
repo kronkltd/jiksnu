@@ -215,6 +215,12 @@
   {:_id (fseq :word)}
   )
 
+(defrecordfactory :request-token model/map->RequestToken
+  {:_id (fseq :word)
+   :callback (fseq :uri)
+   }
+  )
+
 (defrecordfactory :subscription model/map->Subscription
   {:to #'user-id
    :local true

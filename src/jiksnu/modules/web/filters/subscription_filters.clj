@@ -86,6 +86,8 @@
       (if-let [target (-?> (or (:id params) (:unsubscribeto params))
                            model.user/fetch-by-id)]
         (action actor target)
-        (throw+ "User not found")))
-    (throw+ "Must be logged in")))
+        (throw+ {:type :authentication
+                 :message "User not found"})))
+    (throw+ {:type :authentication
+             :message "Must be logged in"})))
 
