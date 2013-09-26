@@ -85,6 +85,7 @@
               webfinger (:remoteUser params)
               params (merge params
                             {:contacts contacts
+                             :_id (:registration_access_token params)
                              :type type
                              :title title
                              :redirect_uris redirect_uris}

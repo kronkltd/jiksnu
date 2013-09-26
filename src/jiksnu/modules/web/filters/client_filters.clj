@@ -20,8 +20,9 @@
 
 (deffilter #'actions.client/register :http
   [action request]
-
-  (let [body (slurp (:body request))
-        params (merge (:params request)
-                      (json/read-str body :key-fn keyword))]
-    (action params)))
+  (if-let [body (:body request)]
+    (let [body-str (slurp body)
+          params (merge (:params request)
+                        (json/read-str body-str :key-fn keyword))]
+      (action params))
+    (throw+ "body not provided")))
