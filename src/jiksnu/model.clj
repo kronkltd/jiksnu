@@ -12,6 +12,7 @@
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
                    :xrd "http://docs.oasis-open.org/ns/xri/xrd-1.0"})
 
+(defrecord AccessToken             [])
 (defrecord Activity                [])
 (defrecord AuthenticationMechanism [])
 (defrecord Client                  [])
@@ -33,6 +34,7 @@
 
 (def entity-names
   [
+   AccessToken
    Activity
    AuthenticationMechanism
    Client

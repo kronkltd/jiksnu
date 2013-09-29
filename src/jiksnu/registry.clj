@@ -2,6 +2,7 @@
 
 (def model-names
   [
+   "access-token"
    "activity"
    "authentication-mechanism"
    "client"
@@ -24,6 +25,7 @@
 
 (def action-group-names
   [
+   "access-token"
    "activity"
    "auth"
    "client"

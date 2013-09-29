@@ -36,6 +36,26 @@
      (catch LoginException ex
        (auth-exception ex)))))
 
+(defn authorization-header
+  "Given an auth map, returns an authorization header"
+  [params]
+  (let [format-str (str "OAuth "
+                        "oauth_callback=\"%s\", "
+                        "oauth_signature_method=\"%s\", "
+                        "oauth_consumer_key=\"%s\", "
+                        "oauth_version=\"%s\", "
+                        "oauth_timestamp=\"%s\", "
+                        "oauth_nonce=\"%s\", "
+                        "oauth_signature=\"%s\"")]
+    (format format-str
+            (get params "oauth_callback")
+            (get params "oauth_signature_method")
+            (get params "oauth_consumer_key")
+            (get params "oauth_version")
+            (get params "oauth_timestamp")
+            (get params "oauth_nonce")
+            (get params "oauth_signature"))))
+
 (defn parse-authorization-header
   [header]
   (let [[type & parts] (string/split header #" ")]

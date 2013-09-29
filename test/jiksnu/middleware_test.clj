@@ -9,30 +9,15 @@
 (test-environment-fixture
 
  (context #'m/parse-authorization-header
-    (let [callback "oob"
-          signature-method "HMAC-SHA1"
-          consumer-key "foo"
-          version "1.0"
-          timestamp "1377743340"
-          nonce "323279719"
-          signature "SaWV7wRJESUXUzT6FaLpTH2upeg%3D"
-          header (format (str "OAuth "
-                              "oauth_callback=\"%s\", "
-                              "oauth_signature_method=\"%s\", "
-                              "oauth_consumer_key=\"%s\", "
-                              "oauth_version=\"%s\", "
-                              "oauth_timestamp=\"%s\", "
-                              "oauth_nonce=\"%s\", "
-                              "oauth_signature=\"%s\"")
-                         callback signature-method consumer-key version timestamp
-                         nonce signature)
-          auth-map {"oauth_callback" callback
-                    "oauth_signature_method" signature-method
-                    "oauth_consumer_key" consumer-key
-                    "oauth_version" version
-                    "oauth_timestamp" timestamp
-                    "oauth_nonce" nonce
-                    "oauth_signature" signature}]
+   (let [client (mock/a-client-exists)
+          auth-map {"oauth_callback"         "oob"
+                    "oauth_signature_method" "HMAC-SHA1"
+                    "oauth_consumer_key"     (:_id client)
+                    "oauth_version"          "1.0"
+                    "oauth_timestamp"        "1377743340"
+                    "oauth_nonce"            "323279719"
+                    "oauth_signature"        "SaWV7wRJESUXUzT6FaLpTH2upeg%3D"}
+          header (m/authorization-header auth-map)]
       (m/parse-authorization-header header) =>
       (check [[type params]]
         type => "OAuth"
