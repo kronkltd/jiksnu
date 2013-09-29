@@ -5,7 +5,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.request-token-actions :as actions.request-token]
             [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
+            [jiksnu.modules.web.sections :refer [bind-to dump-data pagination-links with-page]]
             [ring.util.response :as response]))
 
 (defview #'actions.request-token/authorize :html
@@ -14,21 +14,35 @@
    [:div
     [:p "Authorization Complete"]
     [:p "Token: " (:_id token)]
-    [:p "Verifier: " (:verifier token)]
-    ]
-   }
-  )
+    [:p "Verifier: " (:verifier token)]]})
+
+(defview #'actions.request-token/authorize :viewmodel
+  [request domain]
+  (let [id (:_id domain)]
+    {:body
+     {:title "Authorization Complete"}}))
 
 (defview #'actions.request-token/show-authorization-form :html
   [request [user token]]
   {:body
    [:div
     [:p "Authorize"]
-    [:p "You are logged in as " (link-to user)]
-    [:form {:method "post" :action "authorize"}
+    [:p "You are logged in as "]
+    [:div {:data-bind "with: currentUser"}
+     [:div {:data-model "user"}
+      (link-to user)]]
+    [:form {:method "post"
+            ;; :action "authorize"
+            }
      [:input {:type "hidden" :name "oauth_token" :value (:_id token)}]
      [:input {:type "hidden" :name "verifier" :value (:verifier token)}]
      [:button.btn "Allow"]]]})
+
+(defview #'actions.request-token/show-authorization-form :viewmodel
+  [request domain]
+  (let [id (:_id domain)]
+    {:body
+     {:title "Show Authorization Form"}}))
 
 (defview #'actions.request-token/get-request-token :text
   [request response]

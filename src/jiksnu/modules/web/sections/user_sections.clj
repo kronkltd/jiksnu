@@ -10,7 +10,8 @@
                                               admin-index-line admin-index-section
                                               admin-show-section]]
          [jiksnu.modules.web.sections :only [action-link bind-property bind-to control-line
-                                             display-property dropdown-menu pagination-links]]
+                                             display-property dropdown-menu dump-data
+                                             pagination-links]]
          [jiksnu.session :only [current-user is-admin?]]
          [slingshot.slingshot :only [try+]])
   (:require [clojure.string :as string]
@@ -388,7 +389,7 @@
           {:href (uri record)})
      [:span (merge {:property "dc:title"}
                    (if *dynamic*
-                     {:data-bind "attr: {about: url}, text: name() || username()"}
+                     {:data-bind "attr: {about: url}, text: displayName() || name() || username()"}
                      {:about (uri record)}))
       (when-not *dynamic*
         (or (:title options-map) (title record)))]]))

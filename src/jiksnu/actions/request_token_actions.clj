@@ -73,6 +73,7 @@
 
 (defn authorize
   [params]
+  (log/info "authorizing")
   (let [id (:oauth_token params)
         token (model.request-token/fetch-by-id id)]
     (if (= (:verifier params) (:verifier token))
