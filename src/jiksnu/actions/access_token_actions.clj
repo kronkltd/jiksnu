@@ -2,11 +2,12 @@
   (:require [ciste.core :refer [defaction]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.model.client :as model.client]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [jiksnu.transforms.request-token-transforms :as transforms.request-token]
+            [jiksnu.transforms.access-token-transforms :as transforms.access-token]
             [slingshot.slingshot :refer [throw+ try+]]))
 
 (def model-sym 'jiksnu.model.request-token)
@@ -20,7 +21,7 @@
 (defn prepare-create
   [params]
   (-> params
-      ;; transforms.request-token/set-_id
+      transforms.access-token/set-_id
       ;; transforms.request-token/set-secret
       ;; transforms.request-token/set-verifier
       ;; transforms.request-token/set-used
@@ -64,22 +65,27 @@
 
 (defn get-access-token
   [params]
-  (let [version (:oauth_version params)]
+  (log/info "getting access token")
+  (let [version (get params "oauth_version")]
     (if (= version "1.0")
-      (let [signature-method (:oauth_signature_method params)]
+      (let [signature-method (get params "oauth_signature_method")]
         (if (= signature-method "HMAC-SHA1")
-          (let [nonce (:oauth_nonce params)
-                consumer-key (:oauth_consumer_key params)
-                timestamp (:oauth_timestamp params)
-                signature (:oauth_signature params)
-                verifier (:oauth_verifier params)
-                token (:oauth_token params)]
+          (let [nonce (get params "oauth_nonce")
+                consumer-key (get params "oauth_consumer_key")
+                timestamp (get params "oauth_timestamp")
+                signature (get params "oauth_signature")
+                verifier (get params "oauth_verifier")
+                token (get params "oauth_token")]
             (if-let [client (model.client/fetch-by-id consumer-key)]
               (if-let [request-token (model.request-token/fetch-by-id token)]
                 (if (:access-token request-token)
                   (throw+ "Request Token has already been consumed")
                   (if (= consumer-key (:client request-token))
-                    (create params)
+                    (let [params {:client (:_id client)
+                                  :request-token (:_id request-token)
+                                  :secret "foo"
+                                  }]
+                      (create (log/spy :info params)))
                     (throw+ "Consumer Key does not match request token's consumer.")))
                 (throw+ "Request token not found"))
               (throw+ "Consumer not found")))

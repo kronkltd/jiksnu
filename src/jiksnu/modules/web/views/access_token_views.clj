@@ -8,7 +8,7 @@
             [jiksnu.modules.web.sections :refer [bind-to dump-data pagination-links with-page]]
             [ring.util.response :as response]))
 
-(deffilter #'actions.access-token/get-access-token :text
+(defview #'actions.access-token/get-access-token :text
   [request response]
   {:body
    {}

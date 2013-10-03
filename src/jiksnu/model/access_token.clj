@@ -13,10 +13,10 @@
 (def create-validators
   (validation-set
    (type-of :_id           String)
-   (type-of :secret        String)
    (type-of :client        String)
-   (type-of :user          String)
    (type-ot :request-token String)
+   (type-of :user          String)
+   (type-of :secret        String)
    (type-of :created       DateTime)
    (type-of :updated       DateTime)
    ))
