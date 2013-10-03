@@ -520,6 +520,11 @@
   [user]
   user)
 
+(defaction show-basic
+  [user]
+  (show user)
+  )
+
 (defaction update-profile
   [options]
   (let [user (session/current-user)]

@@ -41,6 +41,22 @@
    ;; [[:get    "/api/mentions"]                                     #'stream/mentions-timeline]
    [[:get    "/api/statuses/public_timeline.:format"]   #'stream/public-timeline]
    [[:get    (formatted-path "user timeline")]          #'stream/user-timeline]
+
+   [[:get "/api/user/:username/feed"] {:action #'stream/user-timeline :format :as}]
+
+   [[:get    "/api/user/:username/inbox/major"]         {:action #'stream/inbox-major
+                                                         :format :as
+                                                         }]
+   [[:get    "/api/user/:username/inbox/minor"]         {:action #'stream/inbox-minor
+                                                         :format :as
+                                                         }]
+   [[:get    "/api/user/:username/inbox/direct/major"]         {:action #'stream/direct-inbox-major
+                                                         :format :as
+                                                         }]
+   [[:get    "/api/user/:username/inbox/direct/minor"]         {:action #'stream/direct-inbox-minor
+                                                         :format :as
+                                                         }]
+
    ])
 
 (defn pages

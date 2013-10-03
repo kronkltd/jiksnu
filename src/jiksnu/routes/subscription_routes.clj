@@ -29,6 +29,13 @@
    [[:post   "/users/:subscribeto/subscribe.:format"]        #'sub/subscribe]
    [[:post   "/users/:subscribeto/subscribe"]                #'sub/subscribe]
    [[:get    (formatted-path "subscription model")]          #'sub/show]
+
+   [[:get "/api/user/:username/following"]                 {:action #'sub/get-subscriptions
+                                                            :format :as
+                                                            }]
+   [[:get "/api/user/:username/followers"]                 {:action #'sub/get-subscribers
+                                                            :format :as
+                                                            }]
    ])
 
 (defn pages

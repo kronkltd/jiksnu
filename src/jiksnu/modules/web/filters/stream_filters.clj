@@ -42,6 +42,26 @@
   ;; TODO: fetch user
   (action))
 
+(deffilter #'actions.stream/inbox-major :http
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
+(deffilter #'actions.stream/inbox-minor :http
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
+(deffilter #'actions.stream/direct-inbox-major :http
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
+(deffilter #'actions.stream/direct-inbox-minor :http
+  [action request]
+  ;; TODO: fetch user
+  (action))
+
 (deffilter #'actions.stream/public-timeline :http
   [action request]
   (let [page (or (-?> request :params :page Integer/parseInt) 1)]

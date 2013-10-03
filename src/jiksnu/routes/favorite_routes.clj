@@ -3,4 +3,9 @@
 
 (defn routes
   []
-  [[[:get    "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]])
+  [
+   [[:get    "/api/statusnet/app/favorites/:id.:format"]     #'favorite/user-list]
+   [[:get "/api/user/:username/favorites"]  {:action #'favorite/user-list
+                                             :format :as
+                                             }]
+   ])

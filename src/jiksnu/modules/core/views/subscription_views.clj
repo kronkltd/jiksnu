@@ -42,11 +42,6 @@
 
 ;; get-subscriptions
 
-(defview #'get-subscriptions :as
-  [request [user {:keys [items] :as response}]]
-  {:template false
-   :body {:items (index-section items response)}})
-
 (defview #'get-subscriptions :json
   [request [user {:keys [items] :as response}]]
   {:body (sections.subscription/subscriptions-section items response)})

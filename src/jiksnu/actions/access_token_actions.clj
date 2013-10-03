@@ -3,6 +3,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.client :as model.client]
+            [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
@@ -10,7 +11,7 @@
             [jiksnu.transforms.access-token-transforms :as transforms.access-token]
             [slingshot.slingshot :refer [throw+ try+]]))
 
-(def model-sym 'jiksnu.model.request-token)
+(def model-sym 'jiksnu.model.access-token)
 
 (def create-fn (ns-resolve (the-ns model-sym) 'create))
 (def delete-fn (ns-resolve (the-ns model-sym) 'delete))

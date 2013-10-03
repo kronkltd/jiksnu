@@ -78,6 +78,26 @@
   [& _]
   (cm/implement))
 
+(defaction inbox-major
+  [& _]
+  []
+  )
+
+(defaction inbox-minor
+  [& _]
+  []
+  )
+
+(defaction direct-inbox-major
+  [& _]
+  []
+  )
+
+(defaction direct-inbox-minor
+  [& _]
+  []
+  )
+
 (def public-timeline*
   (templates.actions/make-indexer 'jiksnu.model.conversation))
 

@@ -14,8 +14,8 @@
   (validation-set
    (type-of :_id           String)
    (type-of :client        String)
-   (type-ot :request-token String)
-   (type-of :user          String)
+   (type-of :request-token String)
+   ;; (type-of :user          String)
    (type-of :secret        String)
    (type-of :created       DateTime)
    (type-of :updated       DateTime)

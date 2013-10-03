@@ -1,9 +1,29 @@
 (ns jiksnu.modules.as.views.stream-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]))
+
+(defview #'actions.stream/inbox-major :as
+  [request [user page]]
+  {:body {:title (str (:name user) " Timeline")
+          :items (index-section (:items page) page)}})
+
+(defview #'actions.stream/inbox-minor :as
+  [request [user page]]
+  {:body {:title (str (:name user) " Timeline")
+          :items (index-section (:items page) page)}})
+
+(defview #'actions.stream/direct-inbox-major :as
+  [request [user page]]
+  {:body {:title (str (:name user) " Timeline")
+          :items (index-section (:items page) page)}})
+
+(defview #'actions.stream/direct-inbox-minor :as
+  [request [user page]]
+  {:body {:title (str (:name user) " Timeline")
+          :items (index-section (:items page) page)}})
 
 (defview #'actions.stream/public-timeline :as
   [request {:keys [items] :as page}]

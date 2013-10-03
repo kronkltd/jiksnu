@@ -87,6 +87,18 @@
                             (and username (model.user/get-user username)))]
           (action user))))))
 
+(deffilter #'actions.user/show-basic :http
+  [action request]
+  (when-let [params (:params request)]
+    (let [id (:id params)
+          username (:username params)]
+      (when (or id username)
+        (when-let [user (or (and id       (model.user/fetch-by-id id))
+                            (and username (model.user/get-user username)))]
+          (action user))))))
+
+
+
 ;; update
 
 (deffilter #'actions.user/update :http

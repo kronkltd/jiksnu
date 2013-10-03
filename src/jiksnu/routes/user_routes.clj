@@ -41,6 +41,8 @@
    [[:post   "/:username"]                      #'user/update]
    [[:get    "/api/user/:username/profile"]     {:action #'user/show
                                                  :format :as}]
+   [[:get    "/api/user/:username/"]     {:action #'user/show-basic
+                                                 :format :as}]
    ])
 
 (defn pages

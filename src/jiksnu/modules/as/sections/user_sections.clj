@@ -23,6 +23,28 @@
                         :url "/followers"
                         :totalItems 0
                         }
+            :following {
+                        :url "/following"
+                        :totalItems 0
+                        }
+            :favorites {
+                        :url "/favorites"
+                        :totalItems 0
+                        }
+            :lists {
+                    :url "/lists"
+                    :totalItems 0
+                    }
+            :pump_io {
+                      :fullImage {
+                                  :url ""
+                                  :width 0
+                                  :height 0
+                                  }
+                      :shared false
+                      :followed false
+                      }
+            :summary ""
             :updated (:updated user)
             :id (or id (model.user/get-uri user))
 

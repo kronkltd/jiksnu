@@ -10,7 +10,6 @@
 
 (defview #'actions.access-token/get-access-token :text
   [request response]
-  {:body
-   {}
+  {:body (log/spy :info (format "oauth_token=%s&oauth_token_secret=%s" (:_id response) (:secret response)))
    }
   )

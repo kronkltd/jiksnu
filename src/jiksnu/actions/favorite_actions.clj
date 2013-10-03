@@ -4,5 +4,5 @@
 (defaction user-list
   [user]
   ;; TODO: implement
-  [])
+  [user {:items []}])
 
