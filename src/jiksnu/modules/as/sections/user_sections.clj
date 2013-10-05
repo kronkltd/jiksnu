@@ -12,27 +12,41 @@
 (defsection show-section [User :as]
   [user & options]
   (let [{:keys [display-name id avatar-url]} user
-        avatar-url (or avatar-url (model.user/image-link user))]
+        avatar-url (or avatar-url (model.user/image-link user))
+        url (or (:url user)
+                     #_(full-uri user)
+                     (format "https://%s/api/user/%s/profile" (:domain user) (:username user))
+                     )
+        inbox-url (format "https://%s/api/user/%s/inbox" (:domain user) (:username user))
+        outbox-url (format "https://%s/api/user/%s/outbox" (:domain user) (:username user))
+        followers-url (format "https://%s/api/user/%s/followers" (:domain user) (:username user))
+        following-url (format "https://%s/api/user/%s/following" (:domain user) (:username user))
+        favorites-url (format "https://%s/api/user/%s/favorites" (:domain user) (:username user))
+        list-url (format "https://%s/api/user/%s/lists/person" (:domain user) (:username user))
+        ]
     (merge {:preferredUsername (:username user)
-            :url (or (:url user)
-                     (full-uri user))
+            :url url
             :displayName (:name user)
-            :links (:links user)
+            :links {
+                    :self {:href url}
+                    :activity-inbox {:href inbox-url}
+                    :activity-outbox {:href outbox-url}
+                    }
             :objectType "person"
             :followers {
-                        :url "/followers"
+                        :url followers-url
                         :totalItems 0
                         }
             :following {
-                        :url "/following"
+                        :url following-url
                         :totalItems 0
                         }
             :favorites {
-                        :url "/favorites"
+                        :url favorites-url
                         :totalItems 0
                         }
             :lists {
-                    :url "/lists"
+                    :url list-url
                     :totalItems 0
                     }
             :pump_io {
@@ -46,11 +60,11 @@
                       }
             :summary ""
             :updated (:updated user)
-            :id (or id (model.user/get-uri user))
+            ;; :id (or id (model.user/get-uri user))
 
 
-            :profileUrl (full-uri user)
             :type "person"
+            :id (:_id user)
             :username (:username user)
             :domain (:domain user)
             :published (:updated user)

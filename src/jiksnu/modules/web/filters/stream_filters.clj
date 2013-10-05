@@ -8,7 +8,7 @@
             [jiksnu.modules.atom.util :as abdera]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
-            [slingshot.slingshot :refer [try+]]))
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (deffilter #'actions.stream/callback-publish :http
   [action request]
@@ -45,7 +45,11 @@
 (deffilter #'actions.stream/inbox-major :http
   [action request]
   ;; TODO: fetch user
-  (action))
+  (if-let [username (get-in request [:params :username])]
+    (if-let [user (model.user/get-user username)]
+      (action user)
+      (throw+ "Could not determine user"))
+    (throw+ "Could not determine username")))
 
 (deffilter #'actions.stream/inbox-minor :http
   [action request]

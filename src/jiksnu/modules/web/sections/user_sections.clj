@@ -1,33 +1,25 @@
 (ns jiksnu.modules.web.sections.user-sections
-  (:use  [ciste.config :only [config]]
-         [ciste.sections :only [defsection]]
-         [ciste.sections.default :only [actions-section title uri full-uri show-section add-form
-                                        edit-button delete-button link-to index-line
-                                        show-section-minimal update-button index-block]]
-         [clojure.core.incubator :only [-?>]]
-         [jiksnu.ko :only [*dynamic*]]
-         [jiksnu.modules.core.sections :only [admin-actions-section admin-index-block
-                                              admin-index-line admin-index-section
-                                              admin-show-section]]
-         [jiksnu.modules.web.sections :only [action-link bind-property bind-to control-line
-                                             display-property dropdown-menu dump-data
-                                             pagination-links]]
-         [jiksnu.session :only [current-user is-admin?]]
-         [slingshot.slingshot :only [try+]])
-  (:require [clojure.string :as string]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section title uri full-uri show-section add-form
+                                            edit-button delete-button link-to index-line
+                                            show-section-minimal update-button index-block]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
-            [hiccup.form :as f]
-            [jiksnu.namespace :as ns]
-            [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.domain :as model.domain]
+            [jiksnu.ko :only [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.sections :only [admin-actions-section admin-index-block
+                                                 admin-index-line admin-index-section
+                                                 admin-show-section]]
+            [jiksnu.modules.web.sections :only [action-link bind-property bind-to control-line
+                                                display-property dropdown-menu dump-data
+                                                pagination-links]]
+            [jiksnu.session :as session]
             [lamina.trace :as trace]
-            )
+            [slingshot.slingshot :only [try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.Key
@@ -137,7 +129,7 @@
 
 (defn following-section
   [user]
-  (let [authenticated (current-user)]
+  (let [authenticated (session/current-user)]
     (list
      (when (model.subscription/subscribing? user authenticated)
        [:p "This user follows you"])
@@ -195,11 +187,11 @@
   []
   (concat
    [#'subscribe-button]
-   (when (current-user)
+   (when (session/current-user)
      [#'discover-button
       #'model-button
       #'update-button])
-   (when (is-admin?)
+   (when (session/is-admin?)
      [#'edit-button
       #'admin-button
       #'delete-button])))

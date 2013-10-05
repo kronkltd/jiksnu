@@ -1,8 +1,14 @@
 (ns jiksnu.modules.as.sections.activity-sections
   (:use [ciste.sections :only [defsection]]
         [ciste.sections.default :only [full-uri show-section]])
-  (:require [jiksnu.model.activity :as model.activity])
+  (:require [ciste.config :refer [config]]
+            [jiksnu.model.activity :as model.activity])
   (:import jiksnu.model.Activity))
+
+(defn proxy-url
+  [url]
+  "https://%s/api/proxy/PROXYID"
+  )
 
 ;; show-section
 
@@ -12,12 +18,64 @@
           :content (:content activity)
           :id (:id activity)
           :local-id (:_id activity)
-          :object (let [object (:object activity)]
+          :object (let [object (:object activity)
+                        object-link (format "https://%s/api/%s/%s" (config :domain)
+                                            (:type object)
+                                            (:_id object)
+                                            )
+                        likes-link (str object-link "/likes")
+                        replies-link (str object-link "/replies")
+                        shares-link (str object-link "/shares")
+                        ]
                     {:name (:title activity)
                      :id (:id object)
                      :type (:type object)
-                     :content (:content object)
+                     :objectType (:type object)
+                     :links {
+                             :self {
+                                    :href object-link
+                                    }
+                             }
+                     :likes {
+                             :url likes-link
+                             :totalItems 0
+                             :pump_io {
+                                       :proxyURL (proxy-url likes-link)
+                                       }
+
+                             }
+                     :replies {
+                             :url replies-link
+                             :totalItems 0
+                             :pump_io {
+                                       :proxyURL (proxy-url replies-link)
+                                       }
+
+
+                               }
+                     :shares {
+                             :url shares-link
+                             :totalItems 0
+                             :pump_io {
+                                       :proxyURL (proxy-url shares-link)
+                                       }
+
+
+                               }
+                     :content (or (:content object)
+                                  (:content activity)
+                                  )
+                     :updated (or (:updated object)
+                                  (:updated activity))
+                     :published (or (:created object)
+                                  (:created activity))
                      :url (:id object)
+                     :pump_io {
+                               :shared false
+                               :proxyUrl (proxy-url (:id object))
+                               }
+                     :liked false
+
                      :tags (map
                             (fn [tag]
                               {:name tag

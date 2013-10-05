@@ -1,18 +1,56 @@
 (ns jiksnu.modules.as.views.stream-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section]]
+            [ciste.sections.default :refer [show-section index-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]))
 
+;; (defview #'actions.stream/inbox :as
+;;   [request [user page]]
+;;   (let [inbox-major-url (format "https://%s/api/user/%s/inbox/major"
+;;                                 (:domain user) (:username user))]
+;;     {:body {:displayName (format "Activities for %s" (or
+;;                                                       (:name user)
+;;                                                       (:_id (log/spy :info user))))
+;;             :author (show-section user)
+;;             :url inbox-major-url
+;;             :links {
+;;                     :first {
+;;                             :href inbox-major-url
+;;                             }
+;;                     :self {
+;;                            :href inbox-major-url
+;;                            }
+;;                     }
+;;             :items (doall (index-section (:items page) page))
+;;             :totalItems (:totalRecords page)
+;;             }}))
+
 (defview #'actions.stream/inbox-major :as
   [request [user page]]
-  {:body {:title (str (:name user) " Timeline")
-          :items (doall (index-section (:items page) page))}})
+  (let [inbox-major-url (format "https://%s/api/user/%s/inbox/major"
+                                (:domain user) (:username user))]
+    {:body {:displayName (format "Major activities for %s" (or
+                                                            (:name user)
+                                                            (:_id (log/spy :info user))))
+            :author (show-section user)
+            :url inbox-major-url
+            :links {
+                    :first {
+                            :href inbox-major-url
+                            }
+                    :self {
+                           :href inbox-major-url
+                           }
+                    }
+            :items (doall (index-section (:items page) page))
+            :totalItems (:totalRecords page)
+            }}))
 
 (defview #'actions.stream/inbox-minor :as
   [request [user page]]
   {:body {:title (str (:name user) " Timeline")
+          :author (show-section user)
           :items (index-section (:items page) page)}})
 
 (defview #'actions.stream/direct-inbox-major :as
