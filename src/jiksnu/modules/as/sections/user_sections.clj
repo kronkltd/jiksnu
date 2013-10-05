@@ -49,11 +49,21 @@
                     :url list-url
                     :totalItems 0
                     }
+            :image [{:url avatar-url
+                     :rel "avatar"
+                     :type "image/jpeg"
+                     :width 96
+                     :height 96
+                     ;; :pump_io {
+                     ;;           :proxyURL (proxy-url avatar-url)
+                     ;;           }
+                     }]
+
             :pump_io {
                       :fullImage {
-                                  :url ""
-                                  :width 0
-                                  :height 0
+                                  :url avatar-url
+                                  :width 96
+                                  :height 96
                                   }
                       :shared false
                       :followed false
@@ -72,10 +82,6 @@
             ;;        :familyName (:last-name user)
             ;;        :givenName (:first-name user)}
             }
-           (when avatar-url
-             ;; TODO: get image dimensions
-             {:image [{:url avatar-url
-                       :rel "avatar"}]})
            (when display-name
              {:displayName display-name}))))
 
