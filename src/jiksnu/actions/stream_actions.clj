@@ -78,10 +78,19 @@
   [& _]
   (cm/implement))
 
+(def public-timeline*
+  (templates.actions/make-indexer 'jiksnu.model.conversation))
+
+(defaction public-timeline
+  [& [params & [options & _]]]
+  (public-timeline* params (merge
+                            {:sort-clause {:updated -1}}
+                            options)))
+
 (defaction inbox-major
-  [& _]
-  []
-  )
+  [user & [options]]
+  [user
+   (actions.activity/index {} options)])
 
 (defaction inbox-minor
   [& _]
@@ -97,15 +106,6 @@
   [& _]
   []
   )
-
-(def public-timeline*
-  (templates.actions/make-indexer 'jiksnu.model.conversation))
-
-(defaction public-timeline
-  [& [params & [options & _]]]
-  (public-timeline* params (merge
-                            {:sort-clause {:updated -1}}
-                            options)))
 
 (defaction stream
   []

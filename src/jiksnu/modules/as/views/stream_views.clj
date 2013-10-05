@@ -8,7 +8,7 @@
 (defview #'actions.stream/inbox-major :as
   [request [user page]]
   {:body {:title (str (:name user) " Timeline")
-          :items (index-section (:items page) page)}})
+          :items (doall (index-section (:items page) page))}})
 
 (defview #'actions.stream/inbox-minor :as
   [request [user page]]
