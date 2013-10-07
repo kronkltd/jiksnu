@@ -6,20 +6,20 @@
             [clojure.core.incubator :refer [-?>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
-            [jiksnu.ko :only [*dynamic*]]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.key :as model.key]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.core.sections :only [admin-actions-section admin-index-block
+            [jiksnu.modules.core.sections :refer [admin-actions-section admin-index-block
                                                  admin-index-line admin-index-section
                                                  admin-show-section]]
-            [jiksnu.modules.web.sections :only [action-link bind-property bind-to control-line
+            [jiksnu.modules.web.sections :refer [action-link bind-property bind-to control-line
                                                 display-property dropdown-menu dump-data
                                                 pagination-links]]
             [jiksnu.session :as session]
             [lamina.trace :as trace]
-            [slingshot.slingshot :only [try+]])
+            [slingshot.slingshot :refer [try+]])
   (:import jiksnu.model.Domain
            jiksnu.model.FeedSource
            jiksnu.model.Key
