@@ -2,7 +2,7 @@
   (:require [jiksnu.middleware :as m]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
-            [midje.sweet :only [=> contains]])
+            [midje.sweet :refer [=> contains]])
   (:import org.bson.types.ObjectId))
 
 

@@ -1,12 +1,9 @@
 (ns jiksnu.actions.user-actions-test
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]]
-        [clj-factory.core :only [factory fseq]]
-        [midje.sweet :only [=> =not=> anything throws contains]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        jiksnu.actions.user-actions)
-  (:require [ciste.model :as cm]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [with-context]]
+            [ciste.model :as cm]
+            [ciste.sections.default :refer [show-section]]
+            [clj-factory.core :refer [factory fseq]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
@@ -21,8 +18,10 @@
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
             [jiksnu.ops :as ops]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [midje.sweet :refer [=> =not=> anything throws contains]])
   (:import jiksnu.model.Domain
            jiksnu.model.User
            org.apache.abdera.model.Person))
@@ -227,9 +226,9 @@
          (context "when the domain has a jrd endpoint"
            (db/drop-all!)
            (let [domain-params (factory :domain
-                                 {:_id domain-name
-                                  :jrdTemplate jrd-template
-                                  :discovered true})
+                                        {:_id domain-name
+                                         :jrdTemplate jrd-template
+                                         :discovered true})
                  domain (actions.domain/find-or-create domain-params)]
 
              (actions.domain/add-link domain {:rel "jrd" :template jrd-template})

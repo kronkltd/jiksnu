@@ -1,8 +1,8 @@
 (ns jiksnu.mock-test
-  (:use [clj-factory.core :only [fseq]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=>]])
-  (:require [jiksnu.mock :as mock])
+  (:require [clj-factory.core :refer [fseq]]
+            [jiksnu.mock :as mock]
+            [jiksnu.test-helper :refer [context test-environment-fixture]]
+            [midje.sweet :refer [=>]])
   (:import jiksnu.model.Activity
            jiksnu.model.Client
            jiksnu.model.Conversation

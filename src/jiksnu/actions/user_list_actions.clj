@@ -1,5 +1,4 @@
 (ns jiksnu.actions.user-list-actions
-  (:use )
   (:require [ciste.core :only [defaction]]
             [ciste.model :as cm]
             [clojure.tools.logging :as log]

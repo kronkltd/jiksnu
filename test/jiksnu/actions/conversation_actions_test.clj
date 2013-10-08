@@ -1,13 +1,13 @@
 (ns jiksnu.actions.conversation-actions-test
-  (:use [clj-factory.core :only [factory]]
-        [jiksnu.actions.conversation-actions :only [create delete index show]]
-        [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [context test-environment-fixture]]
-        [midje.sweet :only [=>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.conversation-actions :refer [create delete index show]]
             [jiksnu.actions.domain-actions :as actions.domain]
+            [jiksnu.factory :refer [make-uri]]
             [jiksnu.mock :as mock]
-            [jiksnu.model.conversation :as model.conversation]))
+            [jiksnu.model.conversation :as model.conversation]
+            [jiksnu.test-helper :refer [context test-environment-fixture]]
+            [midje.sweet :refer [=>]]))
 
 (test-environment-fixture
 

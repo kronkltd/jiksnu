@@ -1,12 +1,12 @@
 (ns jiksnu.actions.like-actions-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.like-actions :only [delete show]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [falsey =>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.like-actions :refer [delete show]]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
-            [jiksnu.model.like :as model.like]))
+            [jiksnu.model.like :as model.like]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [midje.sweet :refer [falsey =>]]))
 
 (test-environment-fixture
 

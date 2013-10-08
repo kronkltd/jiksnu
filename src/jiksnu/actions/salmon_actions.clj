@@ -1,9 +1,8 @@
 (ns jiksnu.actions.salmon-actions
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [defaction]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
+            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.modules.atom.util :as abdera]
@@ -12,7 +11,8 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.key :as model.key])
+            [jiksnu.model.key :as model.key]
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
            java.security.PublicKey
            jiksnu.model.Activity

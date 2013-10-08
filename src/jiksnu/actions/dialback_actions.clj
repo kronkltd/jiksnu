@@ -1,12 +1,7 @@
 (ns jiksnu.actions.dialback-actions
-
-
-
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [defaction]]
-        [lamina.trace :only [defn-instrumented]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
@@ -20,7 +15,9 @@
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
-            [lamina.core :as l]))
+            [lamina.core :as l]
+            [lamina.trace :refer [defn-instrumented]]
+            [slingshot.slingshot :refer [throw+]]))
 
 (def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
 

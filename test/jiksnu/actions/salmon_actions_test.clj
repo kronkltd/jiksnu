@@ -1,18 +1,18 @@
 (ns jiksnu.actions.salmon-actions-test
-  (:use [clj-factory.core :only [factory]]
-        [midje.sweet :only [anything truthy =>]]
-        [jiksnu.test-helper :only [context future-context test-environment-fixture]]
-        jiksnu.actions.salmon-actions)
-  (:require [clojure.java.io :as io]
+  (:require [clj-factory.core :refer [factory]]
+            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.key-actions :as actions.key]
+            [jiksnu.actions.salmon-actions :as actions.salmon]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.key :as model.key]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.test-helper :refer [context future-context test-environment-fixture]]
+            [midje.sweet :refer [anything truthy =>]])
   (:import java.security.Key
            jiksnu.model.Activity
            jiksnu.model.User))

@@ -1,15 +1,14 @@
 (ns jiksnu.actions.group-actions
-  (:use [ciste.core :only [defaction]]
-        [jiksnu.session :only [current-user]]
-        [jiksnu.transforms :only [set-_id set-created-time
-                                  set-updated-time]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [defaction]]
+            [ciste.model :as cm]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
             [jiksnu.session :as session]
-            [jiksnu.templates.actions :as templates.actions])
+            [jiksnu.transforms :refer [set-_id set-created-time
+                                       set-updated-time]]
+            [jiksnu.templates.actions :as templates.actions]
+            [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Group))
 
 (defn prepare-create
@@ -38,7 +37,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.group
-                          :sort-clause {:username 1}))
+                                  :sort-clause {:username 1}))
 
 (defaction index
   [& options]

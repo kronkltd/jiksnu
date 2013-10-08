@@ -1,17 +1,17 @@
 (ns jiksnu.test-helper
-  (:use [ciste.config :only [load-site-config]]
-        [ciste.loader :only [process-requires]]
-        [ciste.runner :only [start-application! stop-application!]]
-        [midje.sweet :only [=> =not=> fact future-fact throws]]
-        [slingshot.slingshot :only [try+ throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [load-site-config]]
+            [ciste.loader :refer [process-requires]]
+            [ciste.runner :refer [start-application! stop-application!]]
+            [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.model :as model]
             [jiksnu.referrant :as r]
             [lamina.trace :as trace]
-            [net.cgrand.enlive-html :as enlive])
+            [midje.sweet :refer [=> =not=> fact future-fact throws]]
+            [net.cgrand.enlive-html :as enlive]
+            [slingshot.slingshot :refer [try+ throw+]])
   (:import java.io.StringReader))
 
 (defn hiccup->doc
@@ -37,12 +37,12 @@
 
        ;; (trace/time*
 
-        (binding [*depth* (inc *depth*)]
-          ~@body)
+       (binding [*depth* (inc *depth*)]
+         ~@body)
 
-        ;; )
+       ;; )
 
-        )
+       )
      (when (zero? *depth*)
        (println " "))))
 
@@ -60,25 +60,25 @@
 (defmacro test-environment-fixture
   [& body]
   `(try+
-     (println " ")
-     (println "****************************************************************************")
-     (println (str "Testing " *ns*))
-     (println "****************************************************************************")
-     (println " ")
-     (load-site-config)
-     (start-application! :test)
+    (println " ")
+    (println "****************************************************************************")
+    (println (str "Testing " *ns*))
+    (println "****************************************************************************")
+    (println " ")
+    (load-site-config)
+    (start-application! :test)
 
-     (db/drop-all!)
+    (db/drop-all!)
 
-     (dosync
-      (ref-set r/this {})
-      (ref-set r/that {}))
+    (dosync
+     (ref-set r/this {})
+     (ref-set r/that {}))
 
-     (actions.domain/current-domain)
+    (actions.domain/current-domain)
 
-     ;; (fact (do ~@body) =not=> (throws))
-     ~@body
-     (catch Object ex#
-       (trace/trace :errors:handled ex#))
-     (finally
-       (stop-application!))))
+    ;; (fact (do ~@body) =not=> (throws))
+    ~@body
+    (catch Object ex#
+      (trace/trace :errors:handled ex#))
+    (finally
+      (stop-application!))))

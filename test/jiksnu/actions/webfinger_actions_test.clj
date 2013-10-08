@@ -1,14 +1,14 @@
 (ns jiksnu.actions.webfinger-actions-test
-  (:use [ciste.config :only [config]]
-        [clj-factory.core :only [fseq]]
-        [jiksnu.actions.webfinger-actions :only [fetch-host-meta host-meta]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> truthy throws]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [clj-factory.core :refer [fseq]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.webfinger-actions :refer [fetch-host-meta host-meta]]
             jiksnu.factory
             [jiksnu.mock :as mock]
             [jiksnu.model.user :as model.user]
-            [jiksnu.model.webfinger :as model.webfinger]))
+            [jiksnu.model.webfinger :as model.webfinger]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [midje.sweet :refer [=> truthy throws]]))
 
 (test-environment-fixture
 

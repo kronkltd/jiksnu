@@ -1,13 +1,9 @@
 (ns jiksnu.actions.activity-actions-test
-  (:use [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]]
-        [clj-factory.core :only [factory fseq]]
-        jiksnu.actions.activity-actions
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.session :only [with-user]]
-        [midje.sweet :only [=> contains throws truthy falsey]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.modules.atom.util :as abdera]
+  (:require [ciste.core :refer [with-context]]
+            [ciste.sections.default :refer [show-section]]
+            [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
+            jiksnu.actions.activity-actions
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
@@ -15,8 +11,11 @@
             [jiksnu.model.activity :as model.activity]
             jiksnu.modules.atom.sections.activity-sections
             jiksnu.modules.atom.sections.user-sections
+            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.session :as session]
-            [jiksnu.util :as util])
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [jiksnu.util :as util]
+            [midje.sweet :refer [=> contains throws truthy falsey]])
   (:import jiksnu.model.Activity))
 
 (test-environment-fixture

@@ -1,10 +1,10 @@
 (ns jiksnu.actions.auth-actions-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.auth-actions :only [login]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> truthy]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.mock :as mock]))
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.auth-actions :refer [login]]
+            [jiksnu.mock :as mock]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [midje.sweet :refer [=> truthy]]))
 
 (test-environment-fixture
 

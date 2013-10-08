@@ -1,12 +1,12 @@
 (ns jiksnu.navigation-helpers
-  (:use [ciste.core :only [with-context]]
-        [ciste.sections.default :only [uri]]
-        [jiksnu.action-helpers :only [fetch-page fetch-page-browser page-names]]
-        [jiksnu.referrant :only [get-this get-that]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [with-context]]
+            [ciste.model :as cm]
+            [ciste.sections.default :refer [uri]]
             [clj-webdriver.taxi :as webdriver]
             [clojure.tools.logging :as log]
-            [jiksnu.model.user :as model.user]))
+            [jiksnu.action-helpers :refer [fetch-page fetch-page-browser page-names]]
+            [jiksnu.model.user :as model.user]
+            [jiksnu.referrant :refer [get-this get-that]]))
 
 (defn go-to-the-page
   [page-name]

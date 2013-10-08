@@ -1,16 +1,16 @@
 (ns jiksnu.interaction-helpers
-  (:use [jiksnu.action-helpers :only [expand-url fetch-page-browser get-domain get-host]]
-        [jiksnu.mock :only [a-user-exists my-password]]
-        [jiksnu.referrant :only [get-this get-that set-this]]
-        [midje.sweet :only [fact =not=> throws]]
-        [slingshot.slingshot :only [throw+ try+]])
   (:require [clj-http.client :as client]
             [clj-webdriver.taxi :as webdriver]
             [clj-webdriver.core :as webdriver.core]
             [clojure.tools.logging :as log]
+            [jiksnu.action-helpers :refer [expand-url fetch-page-browser get-domain get-host]]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.mock :refer [a-user-exists my-password]]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session])
+            [jiksnu.referrant :refer [get-this get-that set-this]]
+            [jiksnu.session :as session]
+            [midje.sweet :refer [fact =not=> throws]]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import org.openqa.selenium.ElementNotVisibleException))
 
 (defn do-click-button
@@ -49,9 +49,9 @@
   [value field-name]
   (let [selector (str "*[name='" field-name "']")]
     (try+ (webdriver/clear selector)
-         (webdriver/input-text selector value)
-         (catch NullPointerException ex
-           (throw+ (str "Could not find element with selector: " selector))))))
+          (webdriver/input-text selector value)
+          (catch NullPointerException ex
+            (throw+ (str "Could not find element with selector: " selector))))))
 
 (defn do-enter-password
   []

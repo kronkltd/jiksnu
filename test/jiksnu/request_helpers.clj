@@ -1,11 +1,11 @@
 (ns jiksnu.request-helpers
-  (:use [jiksnu.action-helpers :only [expand-url fetch-page
-                                      fetch-page-browser page-names that-stream]]
-        [jiksnu.referrant :only [get-this get-that]])
   (:require [aleph.http :as http]
             [clojure.string :as string]
             [lamina.core :as l]
+            [jiksnu.action-helpers :refer [expand-url fetch-page fetch-page-browser page-names
+                                           that-stream]]
             [jiksnu.model.user :as model.user]
+            [jiksnu.referrant :refer [get-this get-that]]
             [ring.mock.request :as req]))
 
 (defn request-oembed-resource
