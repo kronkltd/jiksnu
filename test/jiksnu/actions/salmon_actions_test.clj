@@ -64,70 +64,70 @@
 (test-environment-fixture
 
  ;; Taken from the python tests
- (context #'normalize-user-id
+ (context #'actions.salmon/normalize-user-id
    (let [id1 "http://example.com"
          id2 "https://www.example.org/bob"
          id3 "acct:bob@example.org"
          em3 "bob@example.org"]
      (context "http urls are unaltered"
-       (normalize-user-id id1) => id1)
+       (actions.salmon/normalize-user-id id1) => id1)
      (context "https urls are unaltered"
-       (normalize-user-id id2) => id2)
+       (actions.salmon/normalize-user-id id2) => id2)
      (context "acct uris are unaltered"
-       (normalize-user-id id3) => id3)
+       (actions.salmon/normalize-user-id id3) => id3)
      (context "email addresses have the acct scheme appended"
-       (normalize-user-id em3) => id3)))
+       (actions.salmon/normalize-user-id em3) => id3)))
 
- (context #'get-key
+ (context #'actions.salmon/get-key
    (context "when the user is nil"
-     (get-key nil) => nil?)
+     (actions.salmon/get-key nil) => nil?)
 
    (context "when a user is provided"
      (context "and it does not have a key assigned"
        (let [user (mock/a-remote-user-exists)
              user (model.user/fetch-by-id (:_id user))]
 
-         (get-key user) => nil))
+         (actions.salmon/get-key user) => nil))
 
      (context "and it has a key assigned"
        (let [user (mock/a-user-exists)]
          ;; TODO: specify a public key?
-         (get-key user) => (partial instance? Key)))))
+         (actions.salmon/get-key user) => (partial instance? Key)))))
 
- (future-context #'signature-valid?
+ (future-context #'actions.salmon/signature-valid?
    (context "when it is valid"
      (context "should return truthy"
        (let [key (model.key/get-key-from-armored
                   {:n n :e e})]
-         (signature-valid? val-env2 key) => truthy))))
+         (actions.salmon/signature-valid? val-env2 key) => truthy))))
 
- (context #'decode-envelope
+ (context #'actions.salmon/decode-envelope
    (context "should return a string"
-     (let [envelope (stream->envelope (valid-envelope-stream))]
-       (decode-envelope envelope) => string?)))
+     (let [envelope (actions.salmon/stream->envelope (valid-envelope-stream))]
+       (actions.salmon/decode-envelope envelope) => string?)))
 
- (future-context #'extract-activity
+ (future-context #'actions.salmon/extract-activity
    (context "should return an activity"
-     (let [envelope (stream->envelope (valid-envelope-stream))]
-       (extract-activity envelope)) => (partial instance? Activity)))
+     (let [envelope (actions.salmon/stream->envelope (valid-envelope-stream))]
+       (actions.salmon/extract-activity envelope)) => (partial instance? Activity)))
 
- (context #'stream->envelope
+ (context #'actions.salmon/stream->envelope
    (context "should return an envelope"
-     (stream->envelope (valid-envelope-stream)) => map?))
+     (actions.salmon/stream->envelope (valid-envelope-stream)) => map?))
 
- (future-context #'process
+ (future-context #'actions.salmon/process
    (context "with a valid signature"
      (context "should create the message"
-       (let [envelope (-> (valid-envelope-stream) stream->envelope)
+       (let [envelope (-> (valid-envelope-stream) actions.salmon/stream->envelope)
              user (-> envelope
-                      extract-activity
+                      actions.salmon/extract-activity
                       model.activity/get-author)]
          (actions.user/discover user)
          (let [sig (:sig envelope)
                n "1PAkgCMvhHGg-rqBDdaEilXCi0b2EyO-JwSkZqjgFK5HrS0vy4Sy8l3CYbcLxo6d3QG_1SbxtlFoUo4HsbMTrDtV7yNlIJlcsbWFWkT3H4BZ1ioNqPQOKeLIT5ZZXfSWCiIs5PM1H7pSOlaItn6nw92W53205YXyHKHmZWqDpO0="
                e "AQAB"]
            (model.key/set-armored-key (:_id user) n e)
-           (process user envelope) => truthy
+           (actions.salmon/process user envelope) => truthy
            (provided
              (actions.activity/remote-create anything) => truthy :called 1))))))
 

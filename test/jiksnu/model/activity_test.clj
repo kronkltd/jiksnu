@@ -1,7 +1,6 @@
 (ns jiksnu.model.activity-test
   (:use [clj-factory.core :only [factory fseq]]
         [jiksnu.test-helper :only [context test-environment-fixture]]
-        [jiksnu.session :only [with-user]]
         [jiksnu.model.activity :only [create create-validators count-records drop!
                                       get-author]]
         [midje.sweet :only [=>]]

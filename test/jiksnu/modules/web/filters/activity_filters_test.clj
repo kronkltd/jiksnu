@@ -5,7 +5,6 @@
         [ciste.filters :only [filter-action]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.routes :only [app]]
-        [jiksnu.session :only [with-user]]
         [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]

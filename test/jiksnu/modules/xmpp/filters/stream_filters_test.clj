@@ -1,13 +1,9 @@
 (ns jiksnu.modules.xmpp.filters.stream-filters-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [ciste.config :only [config]]
-        [ciste.core :only [with-format with-serialization]]
-        [ciste.filters :only [filter-action]]
-        [jiksnu.session :only [with-user]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [lamina.core :only [channel]]
-        [midje.sweet :only [=>]])
-  (:require [clj-tigase.core :as tigase]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [with-format with-serialization]]
+            [ciste.filters :refer [filter-action]]
+            [clj-factory.core :refer [factory fseq]]
+            [clj-tigase.core :as tigase]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.stream-actions :as actions.stream]
@@ -16,7 +12,11 @@
             [jiksnu.modules.xmpp.filters.stream-filters :as filters.stream]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
+            [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [lamina.core :refer [channel]]
+            [midje.sweet :refer [=>]])
   (:import jiksnu.model.Conversation))
 
 (test-environment-fixture
@@ -47,7 +47,7 @@
 
          (context "when there are activities"
            (let [author (mock/a-user-exists)]
-             (with-user author
+             (session/with-user author
                (let [element nil
                      packet (tigase/make-packet
                              {:from (tigase/make-jid author)

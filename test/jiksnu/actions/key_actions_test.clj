@@ -5,7 +5,7 @@
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
-            [jiksnu.actions.resource-actions :as actions.resource]
+            [jiksnu.actions.key-actions :as actions.key]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
@@ -13,8 +13,8 @@
 
 (test-environment-fixture
 
- (context #'index
-   (index) => map?
+ (context #'actions.key/index
+   (actions.key/index) => map?
    )
 
  )

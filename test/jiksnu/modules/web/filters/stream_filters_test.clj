@@ -3,7 +3,6 @@
         [ciste.config :only [config]]
         [ciste.core :only [with-format with-serialization]]
         [ciste.filters :only [filter-action]]
-        [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [lamina.core :only [channel]]
         [midje.sweet :only [=>]])

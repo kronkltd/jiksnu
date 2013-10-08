@@ -2,7 +2,6 @@
   (:use [clj-factory.core :only [factory fseq]]
         [ciste.core :only [with-serialization]]
         [ciste.filters :only [filter-action]]
-        [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]

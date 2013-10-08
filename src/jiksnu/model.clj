@@ -31,6 +31,7 @@
 (defrecord Stream                  [])
 (defrecord Subscription            [])
 (defrecord User                    [])
+(defrecord UserList                    [])
 
 (def entity-names
   [
@@ -53,6 +54,7 @@
    Stream
    Subscription
    User
+   UserList
    ]
   )
 

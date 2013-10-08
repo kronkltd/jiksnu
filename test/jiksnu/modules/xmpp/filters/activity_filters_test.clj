@@ -6,7 +6,6 @@
         [ciste.sections.default :only [index-section]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.routes :only [app]]
-        [jiksnu.session :only [with-user]]
         [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
@@ -19,6 +18,7 @@
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
+            [jiksnu.session :as session]
             [jiksnu.util :as util])
   (:import jiksnu.model.Activity))
 
@@ -53,7 +53,7 @@
      (context "when the serialization is :xmpp"
        (with-serialization :xmpp
          (let [author (mock/a-user-exists)]
-           (with-user author
+           (session/with-user author
              (let [activity (mock/there-is-an-activity)
                    packet-map {:from (tigase/make-jid author)
                                :to (tigase/make-jid author)

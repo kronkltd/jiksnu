@@ -5,7 +5,6 @@
         [ciste.filters :only [filter-action]]
         [ciste.views :only [apply-view]]
         [clj-factory.core :only [factory]]
-        [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [check context future-context hiccup->doc
                                    test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]

@@ -2,7 +2,6 @@
   (:use [clj-factory.core :only [factory]]
         [midje.sweet :only [=>]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.session :only (with-user)]
         jiksnu.actions.comment-actions)
   (:require [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]

@@ -1,7 +1,6 @@
 (ns jiksnu.model.feed-source-test
   (:use [clj-factory.core :only [factory]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.session :only [with-user]]
         [jiksnu.model.feed-source :only [create create-validators count-records
                                          delete drop! fetch-all fetch-by-id]]
         [midje.sweet :only [=> anything throws]])

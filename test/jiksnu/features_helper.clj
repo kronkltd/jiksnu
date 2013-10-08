@@ -40,7 +40,7 @@
   (try+
    (log/info "after")
    (ciste.runner/stop-application!)
-   (close)
+   (taxi/close)
    (catch Throwable ex
      (log/error ex))))
 
@@ -50,7 +50,7 @@
     (try+
      (let [site-config (ciste.config/load-site-config)]
        (ciste.runner/start-application! :integration)
-       (set-driver! {:browser
+       (taxi/set-driver! {:browser
                      ;; :chrome
                      :firefox
                      ;; :htmlunit

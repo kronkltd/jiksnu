@@ -3,7 +3,6 @@
         [clj-factory.core :only [factory fseq]]
         [jiksnu.transforms.activity-transforms :only [set-recipients]]
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.session :only [with-user]]
         [midje.sweet :only [=>]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]

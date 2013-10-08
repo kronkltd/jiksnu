@@ -60,7 +60,7 @@
                                         :jrdTemplate jrd-template})
          http-uri (format "http://%s/%s" domain-name username)
          params {:_id uri}]
-     (:links (discover-user-jrd params)) => (contains {:href profile-url :rel "self"})
+     (:links (actions.user/discover-user-jrd params)) => (contains {:href profile-url :rel "self"})
      (provided
        (ops/update-resource jrd-uri anything) => (l/success-result {:body mock-jrd}))))
 
@@ -70,9 +70,9 @@
            domain-name (fseq :domain)
            uri (factory/make-uri domain-name "/users/1")
            params {:_id uri}]
-       (get-username-from-http-uri params) => (contains {:username username}))))
+       (actions.user/get-username-from-http-uri params) => (contains {:username username}))))
 
- (context #'get-username
+ (context #'actions.user/get-username
    (let [username (fseq :username)
          domain-name (fseq :domain)
          template (str "http://" domain-name "/xrd?uri={uri}")
@@ -89,34 +89,34 @@
          (context "and the jrd request returns info"
            (let [uri (factory/make-uri domain-name "/users/1")
                  params {:_id uri}]
-             (get-username params) => (contains {:username username})
+             (actions.user/get-username params) => (contains {:username username})
              (provided
-               (discover-user-jrd anything anything) => {:username username}
-               (discover-user-xrd anything anything) => nil :times 0)))
+               (actions.user/discover-user-jrd anything anything) => {:username username}
+               (actions.user/discover-user-xrd anything anything) => nil :times 0)))
 
          (context "and the xrd request returns info"
            (let [uri (factory/make-uri domain-name "/users/1")
                  params {:_id uri}]
-             (get-username params) => (contains {:username username})
+             (actions.user/get-username params) => (contains {:username username})
              (provided
-               (discover-user-xrd anything anything) => {:username username}
-               (discover-user-jrd anything anything) => nil)))
+               (actions.user/discover-user-xrd anything anything) => {:username username}
+               (actions.user/discover-user-jrd anything anything) => nil)))
          )
        )
 
      (context "when given an acct uri"
        (let [uri (str "acct:" username "@" domain-name)
              params {:_id uri}]
-         (get-username params) => (contains {:username username})))
+         (actions.user/get-username params) => (contains {:username username})))
      ))
 
- (context #'get-domain
+ (context #'actions.user/get-domain
    (context "when the domain already exists"
      (let [domain (mock/a-domain-exists {:discovered true})
            domain-name (:_id domain)]
 
        (context "when the domain is specified"
-         (let [response (get-domain {:domain (:_id domain)})]
+         (let [response (actions.user/get-domain {:domain (:_id domain)})]
            response => (partial instance? Domain)
            (:_id response) => (:_id domain)))
 
@@ -126,7 +126,7 @@
            (context "when it is a http url"
              (let [uri (format "http://%s/users/1" domain-name)
                    params {:_id uri}
-                   response (get-domain params)]
+                   response (actions.user/get-domain params)]
                response => (partial instance? Domain)
                (:_id response) => (:_id domain)))
 
@@ -134,7 +134,7 @@
              (let [username (fseq :username)
                    uri (format "acct:%s@%s" username domain-name)
                    params {:_id uri}
-                   response (get-domain params)]
+                   response (actions.user/get-domain params)]
                response => (partial instance? Domain)
                (:_id response) => (:_id domain)))
            )
@@ -142,27 +142,27 @@
        ))
    )
 
- (context #'create
+ (context #'actions.user/create
    (context "when the params are nil"
      (let [params nil]
-       (create params) => (throws RuntimeException)))
+       (actions.user/create params) => (throws RuntimeException)))
    (context "empty map"
      (let [params {}]
-       (create params) => (throws RuntimeException)))
+       (actions.user/create params) => (throws RuntimeException)))
    (context "local user"
      (let [params {:username (fseq :username)
                    :domain (config :domain)}]
-       (create params) => model/user?))
+       (actions.user/create params) => model/user?))
    (context "when the params contain links"
      (let [params {:username (fseq :username)
                    :domain (config :domain)
                    :links [{:href (fseq :uri) :rel "alternate"}]}]
-       (create params) => model/user?)))
+       (actions.user/create params) => model/user?)))
 
- (context #'index
-   (index) => map?)
+ (context #'actions.user/index
+   (actions.user/index) => map?)
 
- (context #'person->user
+ (context #'actions.user/person->user
    (context "when the user has an acct uri"
 
      (context "when the domain is discovered"
@@ -170,7 +170,7 @@
          (db/drop-all!)
          (let [user (mock/a-user-exists)
                person (with-context [:http :atom] (show-section user))]
-           (person->user person) =>
+           (actions.user/person->user person) =>
            (check [response]
              response => (partial instance? User)
              response => (contains (select-keys user #{:username :_id :domain :url :name}))
@@ -182,7 +182,7 @@
          (db/drop-all!)
          (let [user (mock/a-user-exists)
                person (with-context [:http :atom] (show-section user))]
-           (person->user person) =>
+           (actions.user/person->user person) =>
            (check [response]
              response => (partial instance? User)
              response => (contains (select-keys user #{:username :_id :domain :url :name})))))))
@@ -196,15 +196,15 @@
            (doto person
              (.setUri uri))
            ;; (person->user person) => (partial instance? User)
-           (person->user person) => (contains {:_id uri
-                                               :domain domain-name
-                                               :username "bob"})
+           (actions.user/person->user person) => (contains {:_id uri
+                                                            :domain domain-name
+                                                            :username "bob"})
            (provided
              (actions.domain/get-discovered anything nil nil) => .domain.
-             (get-username anything) => "bob")))))
+             (actions.user/get-username anything) => "bob")))))
    )
 
- (context #'find-or-create
+ (context #'actions.user/find-or-create
    (let [username (fseq :username)
          domain-name (fseq :domain)
          source-link (format "http://%s/api/statuses/user_timeline/1.atom" domain-name)
@@ -234,7 +234,7 @@
              (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
 
              (context "when the username can be determined"
-               (find-or-create params) => (partial instance? User)
+               (actions.user/find-or-create params) => (partial instance? User)
                (provided
                  (ops/update-resource jrd-url anything) => (l/success-result
                                                             {:body mock-jrd})
@@ -254,7 +254,7 @@
              (actions.domain/add-link domain {:rel "xrd" :template xrd-template})
 
              (context "when the username can be determined"
-               (find-or-create params) => (partial instance? User)
+               (actions.user/find-or-create params) => (partial instance? User)
                (provided
                  (ops/update-resource xrd-url anything) => (l/success-result
                                                             {:body mock-xrd})))))
@@ -267,22 +267,22 @@
                               {:links [{:rel "lrdd" :template template}]
                                :discovered true}))
              uri (str "acct:" username "@" (:_id domain))
-             response (find-or-create {:id uri})]
+             response (actions.user/find-or-create {:id uri})]
          response => (partial instance? User)))
 
      ))
 
- (context #'register-page
-   (register-page) => (partial instance? User))
+ (context #'actions.user/register-page
+   (actions.user/register-page) => (partial instance? User))
 
- (context #'register
+ (context #'actions.user/register
    (let [params {:username (fseq :username)
                  :email (fseq :email)
                  :name (fseq :name)
                  :bio (fseq :bio)
                  :location (fseq :location)
                  :password (fseq :password)}]
-     (register params) =>
+     (actions.user/register params) =>
      (check [response]
        response                                          => map?
        response                                          => (partial instance? User)

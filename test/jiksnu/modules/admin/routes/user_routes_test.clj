@@ -3,7 +3,6 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [clojurewerkz.route-one.core :only [named-path]]
         [jiksnu.routes-helper :only [as-admin response-for]]
-        [jiksnu.session :only [with-user]]
         [jiksnu.test-helper :only [check context future-context
                                    hiccup->doc test-environment-fixture]]
         [midje.sweet :only [truthy =>]])
