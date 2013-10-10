@@ -1,8 +1,9 @@
 (ns jiksnu.routes.stream-routes
-  (:use [ciste.commands :only [add-command!]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.stream-actions :as stream]))
+  (:require [ciste.commands :refer [add-command!]]
+            [clojurewerkz.route-one.core :refer [add-route! named-path]]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.routes.helpers :refer [formatted-path]]))
 
 (add-route! "/"                               {:named "public timeline"})
 (add-route! "/:username"                      {:named "local user timeline"})
@@ -18,51 +19,48 @@
 (defn routes
   []
   [
-   [[:post "/streams"]                                  #'stream/create]
-   [[:get    (named-path     "public timeline")]        #'stream/public-timeline]
-   [[:get    (named-path     "group profile")]          #'stream/group-timeline]
-   [[:get    (formatted-path "user profile")]           #'stream/user-timeline]
-   [[:get    (named-path     "user profile")]           #'stream/user-timeline]
-   [[:get    (formatted-path "local user timeline")]    #'stream/user-timeline]
-   [[:get    (named-path     "local user timeline")]    #'stream/user-timeline]
-   [[:get    (named-path     "home timeline")]          #'stream/home-timeline]
-   [[:get    (named-path     "user stream index")]      #'stream/user-list]
-   [[:get    (named-path     "user microsummary")]      #'stream/user-microsummary]
-   [[:post   (named-path     "callback publish")]       #'stream/callback-publish]
-   [[:get    (formatted-path "mentions timeline api")]  #'stream/mentions-timeline]
-   [[:post   "/:username/streams"]                      #'stream/add]
-   [[:get    "/:username/streams/new"]                  #'stream/add-stream-page]
-   [[:get    "/remote-user/*"]                          #'stream/user-timeline]
-   [[:get    "/api/statuses/friends_timeline.:format"]  #'stream/home-timeline]
-   [[:get    "/api/statuses/home_timeline.:format"]     #'stream/home-timeline]
-   [[:get    "/api/direct_messages.:format"]            #'stream/direct-message-timeline]
+   [[:post "/streams"]                                  #'actions.stream/create]
+   [[:get    (named-path     "public timeline")]        #'actions.stream/public-timeline]
+   [[:get    (named-path     "group profile")]          #'actions.stream/group-timeline]
+   [[:get    (formatted-path "user profile")]           #'actions.stream/user-timeline]
+   [[:get    (named-path     "user profile")]           #'actions.stream/user-timeline]
+   [[:get    (formatted-path "local user timeline")]    #'actions.stream/user-timeline]
+   [[:get    (named-path     "local user timeline")]    #'actions.stream/user-timeline]
+   [[:get    (named-path     "home timeline")]          #'actions.stream/home-timeline]
+   [[:get    (named-path     "user stream index")]      #'actions.stream/user-list]
+   [[:get    (named-path     "user microsummary")]      #'actions.stream/user-microsummary]
+   [[:post   (named-path     "callback publish")]       #'actions.stream/callback-publish]
+   [[:get    (formatted-path "mentions timeline api")]  #'actions.stream/mentions-timeline]
+   [[:post   "/:username/streams"]                      #'actions.stream/add]
+   [[:get    "/:username/streams/new"]                  #'actions.stream/add-stream-page]
+   [[:get    "/remote-user/*"]                          #'actions.stream/user-timeline]
+   [[:get    "/api/statuses/friends_timeline.:format"]  #'actions.stream/home-timeline]
+   [[:get    "/api/statuses/home_timeline.:format"]     #'actions.stream/home-timeline]
+   [[:get    "/api/direct_messages.:format"]            #'actions.stream/direct-message-timeline]
    ;; FIXME: identicurse sends a post. seems wrong to me.
-   [[:post   "/api/direct_messages.:format"]            #'stream/direct-message-timeline]
-   ;; [[:get    "/api/mentions"]                                     #'stream/mentions-timeline]
-   [[:get    "/api/statuses/public_timeline.:format"]   #'stream/public-timeline]
-   [[:get    (formatted-path "user timeline")]          #'stream/user-timeline]
+   [[:post   "/api/direct_messages.:format"]            #'actions.stream/direct-message-timeline]
+   ;; [[:get    "/api/mentions"]                                     #'actions.stream/mentions-timeline]
+   [[:get    "/api/statuses/public_timeline.:format"]   #'actions.stream/public-timeline]
+   [[:get    (formatted-path "user timeline")]          #'actions.stream/user-timeline]
 
-   [[:get "/api/user/:username/feed"] {:action #'stream/user-timeline :format :as}]
+   [[:get "/api/user/:username/feed"] {:action #'actions.stream/user-timeline :format :as}]
+   [[:post "/api/user/:username/feed"] {:action #'actions.activity/post :format :as}]
 
-   [[:get    "/api/user/:username/inbox/major"]         {:action #'stream/inbox-major
-                                                         :format :as
-                                                         }]
-   [[:get    "/api/user/:username/inbox/minor"]         {:action #'stream/inbox-minor
-                                                         :format :as
-                                                         }]
-   [[:get    "/api/user/:username/inbox/direct/major"]         {:action #'stream/direct-inbox-major
-                                                         :format :as
-                                                         }]
-   [[:get    "/api/user/:username/inbox/direct/minor"]         {:action #'stream/direct-inbox-minor
-                                                         :format :as
-                                                         }]
+   [[:get    "/api/user/:username/inbox/major"]         {:action #'actions.stream/inbox-major
+                                                         :format :as}]
+   [[:get    "/api/user/:username/inbox/minor"]         {:action #'actions.stream/inbox-minor
+                                                         :format :as}]
+   [[:get "/api/user/:username/inbox/direct/major"] {:action #'actions.stream/direct-inbox-major
+                                                     :format :as}]
+   [[:get    "/api/user/:username/inbox/direct/minor"] {:action #'actions.stream/direct-inbox-minor
+                                                        :format :as}]
 
    ])
 
 (defn pages
   []
   [
-   [{:name "public-timeline"} {:action #'stream/public-timeline}]
-   [{:name "streams"}         {:action #'stream/index}]
+   [{:name "public-timeline"} {:action #'actions.stream/public-timeline}]
+   [{:name "streams"}         {:action #'actions.stream/index}]
    ])
 

@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.filters.activity-filters
   (:require [ciste.filters :refer [deffilter]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.model.activity :as model.activity]
@@ -35,9 +36,14 @@
 
 (deffilter #'actions.activity/post :http
   [action request]
-  (-> request :params
-      (dissoc "geo.latitude")
-      action))
+  (let [body-params (when-let [body (:body request)]
+                      (when-let [body-str (slurp body)]
+                        (when-not (= body-str "")
+                          (json/read-str (log/spy :info body-str)))))
+        params (-> request :params
+                   (merge body-params)
+                   (dissoc "geo.latitude"))]
+    (action (log/spy :info params))))
 
 ;; show
 

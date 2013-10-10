@@ -4,6 +4,8 @@
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
             [clj-statsd :as s]
+            [jiksnu.model.access-token :as model.access-token]
+            [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
             [jiksnu.ko :as ko]
             [jiksnu.session :refer [with-user-id]]
@@ -76,11 +78,25 @@
                           request (assoc request :authorization-type type)
                           request (assoc request :authorization-parts parts)
                           consumer-key (get parts "oauth_consumer_key")
-                          client (model.client/fetch-by-id consumer-key)]
-                      (assoc request :authorization-client client))
+                          client (model.client/fetch-by-id consumer-key)
+                          token (get parts "oauth_token")
+                          access-token (when token (model.access-token/fetch-by-id token))]
+                      (-> request
+                          (assoc :authorization-client client)
+                          (assoc :access-token access-token)
+                          ))
                     request)]
       (handler request))))
 
+(defn wrap-oauth-user-binding
+  [handler]
+  (fn [request]
+    (let [new-map (when-let [access-token (:access-token (log/spy :info request))]
+                    (when-let [id (:request-token access-token)]
+                      (when-let [request-token (log/spy :info (model.request-token/fetch-by-id id))]
+                        {})))
+          request (merge request new-map)]
+      (handler request))))
 
 (defn wrap-stacktrace
   [handler]

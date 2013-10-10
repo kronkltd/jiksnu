@@ -2,6 +2,7 @@
   (:require [ciste.core :refer [defaction]]
             [clojure.tools.logging :as log]
             [jiksnu.model.request-token :as model.request-token]
+            [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
@@ -76,5 +77,8 @@
   (let [id (:oauth_token params)
         token (model.request-token/fetch-by-id id)]
     (if (= (:verifier params) (:verifier token))
-      token
+      (do
+        (let [user (log/spy :info (session/current-user))]
+          (model.user/set-field! token :user (:_id user))
+          token))
       (throw+ "Verifier does not match"))))
