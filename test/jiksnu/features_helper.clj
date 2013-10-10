@@ -12,7 +12,6 @@
             [clj-webdriver.taxi :as taxi]
             [clojure.core.incubator :refer [-?>]]
             [clojure.data.json :as json]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]

@@ -7,7 +7,6 @@
             [clj-tigase.core :as tigase]
             [clj-time.core :as time]
             [clojure.data.json :as json]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]

@@ -140,7 +140,6 @@
         merged-user (merge {:admin false}
                            old-user new-user)
         user (maker merged-user)]
-    (s/increment "users updated")
     (mc/update collection-name {:_id (:_id old-user)} (dissoc user :_id))
     user))
 

@@ -2,8 +2,7 @@
   (:use [ciste.initializer :only [definitializer]]
         [clojure.core.incubator :only [-?>]]
         [slingshot.slingshot :only [try+]])
-  (:require [clj-statsd :as s]
-            [clj-tigase.element :as element]
+  (:require [clj-tigase.element :as element]
             [clj-time.coerce :as coerce]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]

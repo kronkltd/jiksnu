@@ -10,8 +10,7 @@
                                    select-by-model test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
         [midje.sweet :only [=> contains truthy]])
-  (:require [clojure.string :as string]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]

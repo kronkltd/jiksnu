@@ -12,7 +12,6 @@
   (:require [aleph.http :as http]
             [ciste.middleware :as middleware]
             [clj-airbrake.core :as airbrake]
-            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
             [compojure.handler :as handler]

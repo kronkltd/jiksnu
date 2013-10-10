@@ -4,8 +4,7 @@
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of presence-of
                                       validation-set]])
-  (:require [clj-statsd :as s]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [monger.collection :as mc]

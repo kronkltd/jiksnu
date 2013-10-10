@@ -3,7 +3,6 @@
         [ciste.core :only [defaction]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -26,7 +25,6 @@
   (or
    (try
      (let [response @(ops/update-resource url)]
-       ;; (s/increment "xrd_fetched")
        (when (= 200 (:status response))
          (cm/string->document (:body response))))
      (catch RuntimeException ex

@@ -2,7 +2,6 @@
   (:require [ciste.config :refer [config]]
             [ciste.core :refer [defaction]]
             [ciste.model :as cm]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model :as model]

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.access-token-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.client :as model.client]
             [jiksnu.model.access-token :as model.access-token]

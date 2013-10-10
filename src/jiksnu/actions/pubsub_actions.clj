@@ -2,7 +2,6 @@
   (:use [ciste.core :only [defaction]]
         [slingshot.slingshot :only [throw+]])
   (:require [aleph.http :as http]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.executor :as e]

@@ -7,7 +7,6 @@
             [ciste.config :refer [config]]
             [ciste.model :as cm]
             [clj-http.client :as client]
-            [clj-statsd :as s]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.string :as string]

@@ -1,6 +1,5 @@
 (ns jiksnu.actions.request-token-actions
   (:require [ciste.core :refer [defaction]]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.session :as session]

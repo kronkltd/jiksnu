@@ -2,7 +2,6 @@
   (:use [ciste.config :only [config]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]

@@ -6,7 +6,6 @@
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
             [clj-tigase.element :as element]
             [clojure.set :as set]
             [clojure.string :as string]
@@ -302,7 +301,6 @@ serialization"
   [activity]
   (if (viewable? activity)
     (do
-      (s/increment "activity shown")
       activity)
     (throw+ {:type :permission
              :message "You are not authorized to view this activity"})))

@@ -7,8 +7,7 @@
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.actions.stream-actions :only [public-timeline user-timeline]]
         [midje.sweet :only [=> =not=> contains]])
-  (:require [clojure.string :as string]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]

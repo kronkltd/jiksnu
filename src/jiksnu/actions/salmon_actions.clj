@@ -3,7 +3,6 @@
             [ciste.core :refer [defaction]]
             [ciste.model :as cm]
             [clojure.core.incubator :refer [-?> -?>>]]
-            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]

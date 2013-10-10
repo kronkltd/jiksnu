@@ -3,8 +3,7 @@
         [clojure.core.incubator :only [-?> -?>>]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]])
-  (:require [clj-statsd :as s]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]

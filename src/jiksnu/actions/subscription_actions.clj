@@ -3,7 +3,7 @@
         [ciste.core :only [defaction]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
-            [clj-statsd :as s]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.user-actions :as actions.user]
@@ -64,7 +64,7 @@
   [profile]
   ;; TODO: Allow for http uri's
   (if profile
-    (let [[username domain] (clojure.string/split profile #"@")]
+    (let [[username domain] (string/split profile #"@")]
       (model.user/get-user username domain))
     (model/map->User {})))
 
