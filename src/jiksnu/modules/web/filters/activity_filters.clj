@@ -39,11 +39,11 @@
   (let [body-params (when-let [body (:body request)]
                       (when-let [body-str (slurp body)]
                         (when-not (= body-str "")
-                          (json/read-str (log/spy :info body-str)))))
+                          (json/read-str body-str))))
         params (-> request :params
                    (merge body-params)
                    (dissoc "geo.latitude"))]
-    (action (log/spy :info params))))
+    (action params)))
 
 ;; show
 

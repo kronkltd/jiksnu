@@ -68,7 +68,7 @@
 
 (defn show-authorization-form
   [token]
-  (let [user (log/spy :info (session/current-user))]
+  (let [user (session/current-user)]
     [user token]))
 
 (defn authorize
@@ -79,6 +79,6 @@
     (if (= (:verifier params) (:verifier token))
       (do
         (let [user (log/spy :info (session/current-user))]
-          (model.user/set-field! token :user (:_id user))
+          (model.request-token/set-field! token :user (:_id user))
           token))
       (throw+ "Verifier does not match"))))

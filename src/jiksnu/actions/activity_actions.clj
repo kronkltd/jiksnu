@@ -1,12 +1,10 @@
 (ns jiksnu.actions.activity-actions
-  (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [lamina.trace :only [defn-instrumented]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
+            [ciste.initializer :refer [definitializer]]
+            [ciste.model :as cm]
             [clj-tigase.element :as element]
+            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.set :as set]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -24,7 +22,8 @@
             [jiksnu.transforms.activity-transforms :as transforms.activity]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+]])
   (:import javax.xml.namespace.QName
            jiksnu.model.Activity
            jiksnu.model.User
@@ -93,7 +92,7 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
   [user]
   (index {:author (:_id user)}))
 
-(defn-instrumented prepare-create
+(trace/defn-instrumented prepare-create
   [activity]
   (-> activity
       transforms/set-_id
@@ -263,6 +262,7 @@ serialization"
 (defaction post
   "Post a new activity"
   [activity]
+  (log/spy :info (session/current-user))
   ;; TODO: validate user
   (if-let [prepared-post (-> activity
                              prepare-post

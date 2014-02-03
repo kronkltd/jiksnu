@@ -91,7 +91,7 @@
 (defn wrap-oauth-user-binding
   [handler]
   (fn [request]
-    (let [new-map (when-let [access-token (:access-token (log/spy :info request))]
+    (let [new-map (when-let [access-token (:access-token request)]
                     (when-let [id (:request-token access-token)]
                       (when-let [request-token (log/spy :info (model.request-token/fetch-by-id id))]
                         {})))

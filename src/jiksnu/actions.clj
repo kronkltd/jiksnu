@@ -164,7 +164,7 @@
 
   (doseq [[kw v]
           [
-           ;; [:actions:invoked               #'handler/actions-invoked]
+           [:actions:invoked               #'handler/actions-invoked]
            ;; [:activities:pushed             #'handler/activities-pushed]
            ;; [:ciste:filters:run             #'handler/event]
            ;; [:ciste:predicate:tested        #'handler/event]
