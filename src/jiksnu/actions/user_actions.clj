@@ -397,17 +397,25 @@
   [params & [options]]
   (let [id (:_id params)]
     (or (when id
-          (or (model.user/fetch-by-id id)
-              (let [[uid did] (util/split-uri id)]
-                (model.user/get-user uid did))
-              (first (model.user/fetch-all {:url id}))))
-        (let [params (if id
-                       (get-username params)
-                       params)]
-          (or (when-let [username (:username params)]
-                 (when-let [domain (:domain params)]
-                   (model.user/get-user username domain)))
-           (create params))))))
+          (if-let [user (model.user/fetch-by-id id)]
+            user
+            (do
+              (log/debug "user not found by id")
+              (if-let [user (let [[uid did] (util/split-uri id)]
+                              (model.user/get-user uid did))]
+                user
+                (do
+                  (log/debug "user not found by acct id")
+                  (first (model.user/fetch-all {:url id})))))))
+        (do
+          (log/debug "user not found by url")
+          (let [params (if id
+                         (get-username params)
+                         params)]
+            (or (when-let [username (:username params)]
+                  (when-let [domain (:domain params)]
+                    (model.user/get-user username domain)))
+                (create params)))))))
 
 (defaction update
   "Update the user's activities and information."
