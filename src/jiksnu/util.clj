@@ -249,11 +249,11 @@
 
 (defn socket-conectable?
   [host port]
-  (let [socket (Socket.)
-        address (InetAddress/getByName host)
-        socket-address (InetSocketAddress. address port)]
+  (let [socket (Socket.)]
     (try+
-     (.connect socket socket-address)
+     (let [address (InetAddress/getByName host)
+           socket-address (InetSocketAddress. address port)]
+       (.connect socket socket-address))
      true
      (catch Object ex false)
      (finally
