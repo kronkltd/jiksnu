@@ -260,16 +260,18 @@
                                                             {:body mock-xrd})))))
          ))
 
-     (future-context "when given an acct uri uri"
+     (context "when given an acct uri uri"
        (db/drop-all!)
-       (let [domain (actions.domain/find-or-create
-                     (factory :domain
-                              {:links [{:rel "lrdd" :template template}]
-                               :discovered true}))
-             uri (str "acct:" username "@" (:_id domain))
-             response (actions.user/find-or-create {:id uri})]
-         response => (partial instance? User)))
+       (let [domain (log/spy :info (actions.domain/find-or-create
+                                    (log/spy :info (factory :domain))))
+             uri (str "acct:" username "@" (:_id domain))]
+         (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
 
+         (actions.user/find-or-create {:_id (log/spy :info uri)}) =>
+         (check [response]
+           response => (partial instance? User))
+
+         ))
      ))
 
  (context #'actions.user/register-page
