@@ -183,7 +183,8 @@
   [domain & [url]]
   (let [id (:_id domain)]
     (model.domain/set-field! domain :http  (util/socket-conectable? id 80))
-    (model.domain/set-field! domain :https (util/socket-conectable? id 443))))
+    (model.domain/set-field! domain :https (util/socket-conectable? id 443))
+    (model.domain/fetch-by-id (:_id domain))))
 
 (defn discover*
   [domain url]

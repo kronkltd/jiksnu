@@ -14,7 +14,8 @@
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [lamina.core :as l]
             [lamina.trace :as trace]
-            [midje.sweet :refer [=> anything contains truthy]]))
+            [midje.sweet :refer [=> anything contains truthy]])
+  (:import jiksnu.model.Domain))
 
 (test-environment-fixture
 
@@ -82,6 +83,14 @@
 
      (l/close ch)
      @field-set => true))
+
+ (context #'actions.domain/discover-capabilities
+   (context "when given an invalid domain"
+     (let [domain (mock/a-domain-exists)]
+       (actions.domain/discover-capabilities domain) =>
+       (check [response]
+         response => (partial instance? Domain)))))
+
 
  ;; TODO: If https is enabled, the bare path is checked at the https
  ;; path first
