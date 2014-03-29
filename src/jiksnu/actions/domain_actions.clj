@@ -6,6 +6,7 @@
   (:require [ciste.model :as cm]
             [clj-tigase.core :as tigase]
             [clj-time.core :as time]
+            [clojure.core.incubator :refer [-?>>]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -79,25 +80,20 @@
      (log/error ex))))
 
 (defn fetch-xrd
+  "Given a domain and an optional context uri. Attempts to find the xrd document"
   [domain url]
   {:pre [(instance? Domain domain)
          (or (nil? url)
              (string? url))]}
-  (if (not (or (:http domain)
-               (:https domain)))
-    (let [segments (util/path-segments url)]
-      (loop [paths (concat
-                    (model.domain/host-meta-link domain)
-                    (map #(str % ".well-known/host-meta")
-                         (rest segments)))]
-        (when-let [url (first paths)]
-          (if-let [xrd (fetch-xrd* url)]
-            xrd
-            (recur (rest paths))))))
-    (log/warn "Domain does not have http(s) interface")
-
-
-    ))
+  (if (or (:http domain) (:https domain))
+    (-?>> (util/path-segments url)
+          (map #(str "https://" (:_id domain) % ".well-known/host-meta"))
+          (concat (:hostMetaUri domain))
+          (log/spy :info)
+          (map fetch-xrd*)
+          (filter identity)
+          first)
+    (log/warn "Domain does not have http(s) interface")))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"
