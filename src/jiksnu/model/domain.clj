@@ -22,14 +22,6 @@
 (def maker           #'model/map->Domain)
 (def page-size       20)
 
-(defn host-meta-link
-  [domain]
-  (->> [(when (:https domain)
-          (str "https://" (:_id domain) "/.well-known/host-meta"))
-        (when (:http domain)
-          (str "http://" (:_id domain) "/.well-known/host-meta"))]
-       (filter identity)))
-
 (defn statusnet-url
   [domain]
   (str "http://" (:_id domain) (:context domain) "/api/statusnet/config.json"))
