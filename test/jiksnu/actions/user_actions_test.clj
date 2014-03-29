@@ -262,14 +262,13 @@
 
      (context "when given an acct uri uri"
        (db/drop-all!)
-       (let [domain (log/spy :info (actions.domain/find-or-create
-                                    (log/spy :info (factory :domain))))
+       (let [domain (actions.domain/find-or-create (factory :domain))
              uri (str "acct:" username "@" (:_id domain))]
          (actions.domain/add-link domain {:rel "jrd" :template jrd-template})
 
          (let [domain (model.domain/fetch-by-id (:_id domain))]
 
-           (actions.user/find-or-create {:_id (log/spy :info uri)}) => .user.
+           (actions.user/find-or-create {:_id uri}) => .user.
 
            (provided
              (actions.user/create anything) => .user.))))

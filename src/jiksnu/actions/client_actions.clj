@@ -56,8 +56,8 @@
 
 (defaction create
   [params]
-  (let [item (prepare-create (log/spy :info params))]
-    (create-fn (log/spy :info item))))
+  (let [item (prepare-create params)]
+    (create-fn item)))
 
 (defn find-or-create
   [params]

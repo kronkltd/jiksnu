@@ -83,9 +83,8 @@
                   (if (= consumer-key (:client request-token))
                     (let [params {:client (:_id client)
                                   :request-token (:_id request-token)
-                                  :secret "foo"
-                                  }]
-                      (create (log/spy :info params)))
+                                  :secret "foo"}]
+                      (create params))
                     (throw+ "Consumer Key does not match request token's consumer.")))
                 (throw+ "Request token not found"))
               (throw+ "Consumer not found")))

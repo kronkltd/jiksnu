@@ -78,7 +78,7 @@
         token (model.request-token/fetch-by-id id)]
     (if (= (:verifier params) (:verifier token))
       (do
-        (let [user (log/spy :info (session/current-user))]
+        (let [user (session/current-user)]
           (model.request-token/set-field! token :user (:_id user))
           token))
       (throw+ "Verifier does not match"))))

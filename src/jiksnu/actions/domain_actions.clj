@@ -89,7 +89,6 @@
     (-?>> (util/path-segments url)
           (map #(str "https://" (:_id domain) % ".well-known/host-meta"))
           (concat (:hostMetaUri domain))
-          (log/spy :info)
           (map fetch-xrd*)
           (filter identity)
           first)

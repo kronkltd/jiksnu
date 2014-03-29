@@ -13,4 +13,4 @@
 (deffilter #'actions.access-token/get-access-token :http
   [action request]
   (let [params (:authorization-parts request)]
-    (action (log/spy :info params))))
+    (action params)))

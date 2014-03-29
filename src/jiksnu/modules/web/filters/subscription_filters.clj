@@ -49,8 +49,7 @@
 
 (deffilter #'actions.subscription/ostatussub-submit :http
   [action request]
-  (if-let [id (-> (log/spy :info request)
-                  :params :profile)]
+  (if-let [id (-> request :params :profile)]
     (action id)
     (log/warn "profile param not found")))
 
