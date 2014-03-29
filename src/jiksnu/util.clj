@@ -70,10 +70,8 @@
   (if url
     (let [url-obj (URL. url)
           path (.getPath url-obj)
-          ps (string/split path #"/")
-          ;; TODO: get scheme
-          bare (str "http://" (.getHost url-obj))]
-      (map #(str bare % "/")
+          ps (string/split path #"/")]
+      (map #(str % "/")
            (reductions (fn [s1 s2] (string/join "/" [s1 s2]))
                        (drop-last ps))))
     []))

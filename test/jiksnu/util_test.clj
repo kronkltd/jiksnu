@@ -31,10 +31,11 @@
    (make-id) => (partial instance? ObjectId))
 
  (context #'path-segments
-   (path-segments "http://example.com/status/users/1") =>
-   '("http://example.com/"
-     "http://example.com/status/"
-     "http://example.com/status/users/"))
+   (context "When the path ends without a slash"
+     (let [url "http://example.com/status/users/1"]
+       (path-segments url) =>
+       '("/" "/status/" "/status/users/")))
+   )
 
  (future-context #'rel-filter
    (let [links [{:rel "alternate"}
