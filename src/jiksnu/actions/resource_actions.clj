@@ -184,10 +184,10 @@ The channel will receive the body of fetching this resource."
   [item & [options]]
   {:pre [(instance? Resource item)]}
   (let [url (:url item)
-        actor (log/spy :info (session/current-user))
+        actor (session/current-user)
         date (time/now)]
     (if (or true (needs-update? item options))
-      (if (:requiresAuth (log/spy :info item))
+      (if (:requiresAuth item)
         (do
           ;; auth required
           (throw+ "Resource requires authorization"))

@@ -19,7 +19,7 @@
        (context "clients"
 
          (context "when there are clients"
-           (let [client (log/spy :info (mock/a-client-exists))]
+           (let [client (mock/a-client-exists)]
              (let [ch (l/channel)
                    request {:channel ch
                             :name name
@@ -27,13 +27,10 @@
                             :args (list "clients")}]
                (parse-command request) =>
                (check [response]
-                 (log/spy :info response) => map?
+                 response => map?
                  (let [body (:body response)]
                    (let [json-obj (json/read-str body :key-fn keyword)]
-                     json-obj => map?
-                     )
-                   )
-                 )))))
+                     json-obj => map?)))))))
        ))
    )
  )

@@ -83,15 +83,21 @@
   {:pre [(instance? Domain domain)
          (or (nil? url)
              (string? url))]}
-  (let [segments (util/path-segments url)]
-    (loop [paths (concat
-                  (model.domain/host-meta-link domain)
-                  (map #(str % ".well-known/host-meta")
-                       (rest segments)))]
-      (when-let [url (first paths)]
-        (if-let [xrd (fetch-xrd* url)]
-          xrd
-          (recur (rest paths)))))))
+  (if (not (or (:http domain)
+               (:https domain)))
+    (let [segments (util/path-segments url)]
+      (loop [paths (concat
+                    (model.domain/host-meta-link domain)
+                    (map #(str % ".well-known/host-meta")
+                         (rest segments)))]
+        (when-let [url (first paths)]
+          (if-let [xrd (fetch-xrd* url)]
+            xrd
+            (recur (rest paths))))))
+    (log/warn "Domain does not have http(s) interface")
+
+
+    ))
 
 (defaction set-discovered!
   "marks the domain as having been discovered"

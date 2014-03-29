@@ -262,7 +262,6 @@ serialization"
 (defaction post
   "Post a new activity"
   [activity]
-  (log/spy :info (session/current-user))
   ;; TODO: validate user
   (if-let [prepared-post (-> activity
                              prepare-post

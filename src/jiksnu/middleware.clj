@@ -93,7 +93,7 @@
   (fn [request]
     (let [new-map (when-let [access-token (:access-token request)]
                     (when-let [id (:request-token access-token)]
-                      (when-let [request-token (log/spy :info (model.request-token/fetch-by-id id))]
+                      (when-let [request-token (model.request-token/fetch-by-id id)]
                         {})))
           request (merge request new-map)]
       (handler request))))

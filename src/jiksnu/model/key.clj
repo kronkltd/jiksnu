@@ -175,7 +175,6 @@
     (try+
      (throw+ {:message "user is not discovered"})
      (catch Object ex
-             (log/spy :info &throw-context)
              (throw+)))))
 
 ;; TODO: this should accept a keypair hash
