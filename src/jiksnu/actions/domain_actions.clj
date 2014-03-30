@@ -86,7 +86,7 @@
          (or (nil? url)
              (string? url))]}
   (if (or (:http domain) (:https domain))
-    (-?>> (util/path-segments url)
+    (-?>> (or (seq (util/path-segments url)) ["/"])
           (map #(str "https://" (:_id domain) % ".well-known/host-meta"))
           (concat (:hostMetaUri domain))
           (map fetch-xrd*)
