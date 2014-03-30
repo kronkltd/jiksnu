@@ -21,8 +21,7 @@
                       "oauth_nonce" "1800452293"
                       "oauth_verifier" "OLIUZE2KK7DZUGMG3XVP23DUMA"
                       "oauth_token" (:_id request-token)
-                      "oauth_signature" "LZITIZS2yXc5zLzL0Mdtjko2oCM%3D"
-                      }
+                      "oauth_signature" "LZITIZS2yXc5zLzL0Mdtjko2oCM%3D"}
          authorization-str (m/authorization-header auth-params)]
      (-> (req/request :post url)
          (assoc-in [:headers "authorization"] authorization-str)

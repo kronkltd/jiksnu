@@ -46,6 +46,7 @@
                         "oauth_signature_method=\"%s\", "
                         "oauth_consumer_key=\"%s\", "
                         "oauth_version=\"%s\", "
+                        "oauth_token=\"%s\", "
                         "oauth_timestamp=\"%s\", "
                         "oauth_nonce=\"%s\", "
                         "oauth_signature=\"%s\"")]
@@ -54,6 +55,7 @@
             (get params "oauth_signature_method")
             (get params "oauth_consumer_key")
             (get params "oauth_version")
+            (get params "oauth_token")
             (get params "oauth_timestamp")
             (get params "oauth_nonce")
             (get params "oauth_signature"))))
@@ -83,8 +85,7 @@
                           access-token (when token (model.access-token/fetch-by-id token))]
                       (-> request
                           (assoc :authorization-client client)
-                          (assoc :access-token access-token)
-                          ))
+                          (assoc :access-token access-token)))
                     request)]
       (handler request))))
 
