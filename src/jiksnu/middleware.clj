@@ -105,8 +105,9 @@
     (try
       (handler request)
       (catch Exception ex
-        (trace/trace "errors:handled" ex)
-        (try
+        (.printStackTrace ex)
+        #_(trace/trace "errors:handled" ex)
+        #_(try
           (let [st (with-out-str (print-stack-trace ex))]
             (println st)
             {:status 500

@@ -112,7 +112,7 @@
           jm/wrap-oauth-user-binding
           jm/wrap-authorization-header
           (handler/site {:session {:store (ms/session-store)}})
-          (wrap-airbrake (config :airbrake :key))
+          ;; (wrap-airbrake (config :airbrake :key))
           jm/wrap-stacktrace
           jm/wrap-stat-logging
           ;; wrap-tidy-up

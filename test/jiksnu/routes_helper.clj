@@ -18,7 +18,10 @@
   ([request] (response-for request (time/seconds 5)))
   ([request timeout]
      (let [ch (channel)]
-       (r/app ch request)
+       (try
+         (r/app ch request)
+         (catch Exception ex
+           (.printStackTrace ex)))
        (wait-for-message ch timeout))))
 
 (defn get-auth-cookie

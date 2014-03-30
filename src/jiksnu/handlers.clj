@@ -40,10 +40,13 @@
         (let [options {:url "foo"
                        :params (into {} (map (fn [[k v]] {k (pr-str v)})
                                              (:environment data)))}]
-          (airbrake/notify
-           (config :airbrake :key)
-           (name @*environment*)
-           "/" ex options))))))
+          (try
+            (airbrake/notify
+             (config :airbrake :key)
+             (name @*environment*)
+             "/" ex options)
+            (catch Exception ex)
+            ))))))
 
 
 (defn field-set
