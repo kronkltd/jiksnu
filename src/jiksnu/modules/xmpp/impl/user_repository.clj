@@ -163,7 +163,6 @@
                    ks (key-seq subnode key)]
                (get-datam user ks def))
              (catch Exception ex
-               (log/spy :info &throw-context)
                (trace/trace "errors:handled" ex)))))
 
 (defn handle-user-exists

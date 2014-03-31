@@ -145,7 +145,6 @@
           {:message (format "action not found: %s" action-name)
            :action "error"})))
     (catch RuntimeException ex
-      (log/spy :info &throw-context)
       (trace/trace :errors:handled ex))))
 
 (defaction confirm
@@ -158,9 +157,9 @@
   []
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
-  ;; (l/receive-all (trace/select-probes "*:created")   #'handler/created)
-  ;; (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
-  ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
+  (l/receive-all (trace/select-probes "*:created")   #'handler/created)
+  (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
+  (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
 
   (doseq [[kw v]
           [

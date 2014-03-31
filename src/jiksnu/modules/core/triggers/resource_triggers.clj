@@ -29,7 +29,9 @@
 (defn handle-pending-update-resources*
   [url & [options]]
   (when-let [resource (actions.resource/find-or-create {:url url})]
-    @(actions.resource/update* resource options)))
+    (try @(actions.resource/update* resource options)
+         (catch Exception ex
+           (log/error "update resource error")))))
 
 (def handle-pending-get-resource     (ops/op-handler handle-pending-get-resource*))
 (def handle-pending-update-resources (ops/op-handler handle-pending-update-resources*))

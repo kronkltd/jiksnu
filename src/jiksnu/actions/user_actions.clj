@@ -456,11 +456,12 @@
 
 (defn discover-user-meta
   [user & [options]]
-  @(util/safe-task
-    (discover-user-jrd user options))
-  @(util/safe-task
-    (let [params (discover-user-xrd user options)
-          links (:links params)]
+  (doseq [params @(l/merge-results
+                   (util/safe-task
+                    (discover-user-jrd user options))
+                   (util/safe-task
+                    (discover-user-xrd user options)))]
+    (let [links (:links params)]
       (doseq [link links]
         (add-link user link)))))
 

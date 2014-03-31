@@ -11,7 +11,7 @@
 ;;                                 (:domain user) (:username user))]
 ;;     {:body {:displayName (format "Activities for %s" (or
 ;;                                                       (:name user)
-;;                                                       (:_id (log/spy :info user))))
+;;                                                       (:_id user)))
 ;;             :author (show-section user)
 ;;             :url inbox-major-url
 ;;             :links {
