@@ -1,6 +1,6 @@
 (ns jiksnu.handlers
   (:require [ciste.config :refer [*environment* config]]
-            [clj-airbrake.core :as airbrake]
+            ;; [clj-airbrake.core :as airbrake]
             [clj-statsd :as s]
             [clojure.pprint :refer [pprint]]
             [clojure.tools.logging :as log])
@@ -41,7 +41,7 @@
                        :params (into {} (map (fn [[k v]] {k (pr-str v)})
                                              (:environment data)))}]
           (try
-            (airbrake/notify
+            #_(airbrake/notify
              (config :airbrake :key)
              (name @*environment*)
              "/" ex options)
