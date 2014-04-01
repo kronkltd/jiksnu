@@ -1,12 +1,4 @@
-(ns jiksnu.model
-  (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
-        [clojurewerkz.route-one.core :only [*base-url*]])
-  (:require [clj-statsd :as s]
-            [clojure.tools.logging :as log]
-            [jiksnu.db :as db]
-            [monger.core :as mg])
-  (:import com.mongodb.WriteConcern))
+(ns jiksnu.model)
 
 ;; TODO: pull these from ns/
 (defonce bound-ns {:hm "http://host-meta.net/xrd/1.0"
@@ -71,18 +63,4 @@
 (defn user?
   "Is the provided object a user?"
   [user] (instance? User user))
-
-;; initializer
-
-(definitializer
-  (let [url (format "http://%s" (config :domain))]
-    (alter-var-root #'*base-url*
-                    (constantly url)))
-
-  (s/setup "localhost" 8125)
-
-  (db/set-database!)
-
-  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
-  )
 

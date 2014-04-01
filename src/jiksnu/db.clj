@@ -1,10 +1,14 @@
 (ns jiksnu.db
-  (:use [ciste.config :only [config describe-config environment]])
-  (:require [clojure.tools.logging :as log]
+  (:use [ciste.config :only [config describe-config environment]]
+        [ciste.initializer :only [definitializer]]
+        [clojurewerkz.route-one.core :only [*base-url*]])
+  (:require [clj-statsd :as s]
+            [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]
-            [monger.db :as db]))
+            [monger.db :as db])
+  (:import com.mongodb.WriteConcern))
 
 ;; Database functions
 
@@ -30,4 +34,18 @@
   (mg/connect!)
   (let [db (mg/get-db (config :database :name))]
     (mg/set-db! db)))
+
+;; initializer
+
+(definitializer
+  (let [url (format "http://%s" (config :domain))]
+    (alter-var-root #'*base-url*
+                    (constantly url)))
+
+  (s/setup "localhost" 8125)
+
+  (set-database!)
+
+  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
+  )
 
