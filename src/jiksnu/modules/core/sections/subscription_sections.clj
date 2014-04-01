@@ -1,12 +1,11 @@
 (ns jiksnu.modules.core.sections.subscription-sections
-  (:use [ciste.sections :only [declare-section defsection]]
-        [ciste.sections.default :only [index-block index-line index-section
-                                       show-section uri]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.modules.core.sections :only [admin-index-block admin-index-line
-                                             admin-index-section]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model.subscription :as model.subscription])
+  (:require [ciste.sections :refer [declare-section defsection]]
+            [ciste.sections.default :refer [index-block index-line index-section
+                                            show-section uri]]
+            [clojure.tools.logging :as log]
+            [jiksnu.model.subscription :as model.subscription]
+            [jiksnu.modules.core.sections :refer [admin-index-block admin-index-line
+                                                  admin-index-section]])
   (:import jiksnu.model.Subscription))
 
 ;; subscriptions where the user is the target

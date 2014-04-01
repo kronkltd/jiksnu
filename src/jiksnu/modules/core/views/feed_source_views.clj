@@ -1,22 +1,23 @@
 (ns jiksnu.modules.core.views.feed-source-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.feed-source-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page with-sub-page]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section show-section]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links with-page
+                                                 with-sub-page]]
+            [jiksnu.route.helpers :refer [named-path]]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
 
 ;; index
 
-(defview #'index :html
+(defview #'actions.feed-source/index :html
   [request {:keys [items] :as page}]
   {:title "Feed Sources"
    :body
@@ -25,7 +26,7 @@
        (pagination-links page)
        (doall (index-section items page))))})
 
-(defview #'index :page
+(defview #'actions.feed-source/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -34,21 +35,21 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'index :viewmodel
+(defview #'actions.feed-source/index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Feed Sources"
           :pages {:feedSources (format-page-info page)}}})
 
 ;; process-updates
 
-(defview #'process-updates :html
+(defview #'actions.feed-source/process-updates :html
   [request params]
   {:body params
    :template false})
 
 ;; unsubscribe
 
-(defview #'unsubscribe :html
+(defview #'actions.feed-source/unsubscribe :html
   [request params]
   (-> (named-path "index feed-sources")
       response/redirect-after-post
@@ -56,7 +57,7 @@
 
 ;; show
 
-(defview #'show :html
+(defview #'actions.feed-source/show :html
   [request item]
   (let [page (actions.activity/fetch-by-feed-source item)
         items (if *dynamic* [(Activity.)] (:items page))]
@@ -68,18 +69,18 @@
           (pagination-links (if *dynamic* {} page))
           (index-section items))])}))
 
-(defview #'show :model
+(defview #'actions.feed-source/show :model
   [request activity]
   {:body (show-section activity)})
 
-(defview #'show :viewmodel
+(defview #'actions.feed-source/show :viewmodel
   [request item]
   {:body {:targetFeedSource (:_id item)
           :title (:title item)}})
 
 ;; update
 
-(defview #'update :html
+(defview #'actions.feed-source/update :html
   [request params]
   (-> (named-path "index feed-sources")
       response/redirect-after-post

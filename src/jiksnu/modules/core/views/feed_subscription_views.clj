@@ -1,14 +1,13 @@
 (ns jiksnu.modules.core.views.feed-subscription-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [show-section]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.feed-subscription-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to pagination-links with-page]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [show-section]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            jiksnu.actions.feed-subscription-actions
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
             [ring.util.response :as response])
   (:import jiksnu.model.FeedSubscription))
 
