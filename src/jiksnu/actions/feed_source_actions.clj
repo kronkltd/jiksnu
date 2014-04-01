@@ -2,7 +2,7 @@
   (:use [ciste.config :only [config]]
         [ciste.initializer :only [definitializer]]
         [ciste.core :only [defaction]]
-        [clojurewerkz.route-one.core :only [named-url]]
+        ;; [clojurewerkz.route-one.core :only [named-url]]
         [lamina.trace :only [defn-instrumented]]
         [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.http :as http]
@@ -174,7 +174,7 @@
 (defn send-unsubscribe
   "Send an unsubscription request to the source's hub"
   ([hub topic]
-     (send-unsubscribe hub topic (named-url "push callback")))
+     (send-unsubscribe hub topic "" #_(named-url "push callback")))
   ([hub topic callback]
      (log/debugf "Sending unsubscribe to %s" topic)
      (when (seq hub)
@@ -194,7 +194,7 @@
      hub
      {:throw-exceptions false
       :form-params
-      {"hub.callback" (named-url "push callback")
+      {"hub.callback" "" #_(named-url "push callback")
        "hub.mode" "subscribe"
        "hub.topic" (:topic source)
        "hub.verify" "async"}})

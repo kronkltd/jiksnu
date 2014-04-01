@@ -1,9 +1,8 @@
 (ns jiksnu.routes.conversation-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.activity-actions :as activity]
-            [jiksnu.actions.conversation-actions :as conversation])
+  (:require [ciste.initializer :refer [definitializer]]
+            [jiksnu.actions.activity-actions :as activity]
+            [jiksnu.actions.conversation-actions :as conversation]
+            [jiksnu.routes.helpers :refer [add-route! named-path formatted-path]])
   (:import jiksnu.model.Conversation))
 
 (add-route! "/main/conversations"     {:named "index conversations"})

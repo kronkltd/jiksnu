@@ -1,8 +1,7 @@
 (ns jiksnu.routes.admin-routes
   (:use [ciste.commands :only [add-command!]]
         [ciste.routes :only [make-matchers]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
+        [jiksnu.routes.helpers :only [add-route! named-path formatted-path]])
   (:require [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
             [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
             [jiksnu.modules.admin.actions.client-actions :as admin.client]

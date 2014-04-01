@@ -4,6 +4,7 @@
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
+            jiksnu.db
             [jiksnu.namespace :as ns]
             [jiksnu.util :as util]
             [lamina.core :as l]

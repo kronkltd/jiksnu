@@ -1,7 +1,7 @@
 (ns jiksnu.transforms.user-transforms
   (:use [ciste.config :only [config]]
         [clj-gravatar.core :only [gravatar-image]]
-        [clojurewerkz.route-one.core :only [named-url]]
+        ;; [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.routes.helpers :only [formatted-url]]
         [slingshot.slingshot :only [throw+]])
   (:require [ciste.model :as cm]
@@ -37,7 +37,7 @@
   [user]
   (if (:url user)
     user
-    (assoc user :url (named-url "local user timeline" user))))
+    (assoc user :url "" #_(named-url "local user timeline" user))))
 
 (defn set-avatar-url
   [user]

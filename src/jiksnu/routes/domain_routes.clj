@@ -1,6 +1,5 @@
 (ns jiksnu.routes.domain-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
+  (:use [jiksnu.routes.helpers :only [add-route! named-path formatted-path]])
   (:require [jiksnu.actions.domain-actions :as domain]))
 
 (add-route! "/.well-known/host-meta"     {:named "host meta"})

@@ -1,7 +1,6 @@
 (ns jiksnu.routes.feed-subscription-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.feed-subscription-actions :as feed-subscription]))
+  (:require [jiksnu.actions.feed-subscription-actions :as feed-subscription]
+            [jiksnu.routes.helpers :refer [add-route! named-path formatted-path]]))
 
 (add-route! "/main/feed-subscriptions"      {:named "index feed-subscriptions"})
 (add-route! "/main/feed-subscriptions/:id"  {:named "show feed-subscription"})

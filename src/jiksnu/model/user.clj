@@ -1,7 +1,7 @@
 (ns jiksnu.model.user
   (:use [ciste.config :only [config]]
         [clj-gravatar.core :only [gravatar-image]]
-        [clojurewerkz.route-one.core :only [named-url]]
+        ;; [clojurewerkz.route-one.core :only [named-url]]
         [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
         [slingshot.slingshot :only [throw+]]
         [validateur.validation :only [acceptance-of validation-set presence-of]])
@@ -52,7 +52,7 @@
 
 (defn salmon-link
   [user]
-  (named-url "user salmon" {:id (:_id user)}))
+  #_(named-url "user salmon" {:id (:_id user)}))
 
 (defn get-uri
   ([^User user] (get-uri user true))

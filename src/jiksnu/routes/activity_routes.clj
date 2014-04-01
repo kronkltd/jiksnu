@@ -1,6 +1,5 @@
 (ns jiksnu.routes.activity-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
+  (:use [jiksnu.routes.helpers :only [formatted-path add-route! named-path]])
   (:require [jiksnu.actions.activity-actions :as activity]))
 
 (add-route! "/main/oembed"              {:named "oembed"})

@@ -1,7 +1,6 @@
 (ns jiksnu.routes.auth-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.auth-actions :as auth]))
+  (:require [jiksnu.actions.auth-actions :as auth]
+            [jiksnu.routes.helpers :refer [add-route! named-path formatted-path]]))
 
 (add-route! "/main/login"                         {:named "login page"})
 (add-route! "/main/logout"                        {:named "logout page"})

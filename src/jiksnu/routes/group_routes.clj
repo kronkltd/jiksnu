@@ -1,7 +1,6 @@
 (ns jiksnu.routes.group-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.group-actions :as group]))
+  (:require [jiksnu.actions.group-actions :as group]
+            [jiksnu.routes.helpers :refer [add-route! named-path formatted-path]]))
 
 (add-route! "/groups"     {:named "index groups"})
 (add-route! "/groups/new" {:named "new group"})

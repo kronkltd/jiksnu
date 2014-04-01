@@ -1,6 +1,7 @@
 {:environment :development
  :modules ["jiksnu.commands"
            "jiksnu.factory"
+           "jiksnu.db"
            "jiksnu.formats"
            "jiksnu.routes"
            "jiksnu.workers"

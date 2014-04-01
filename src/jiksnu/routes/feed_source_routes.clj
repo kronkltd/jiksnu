@@ -1,8 +1,7 @@
 (ns jiksnu.routes.feed-source-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.feed-source-actions :as feed-source]))
+  (:require [ciste.initializer :refer [definitializer]]
+            [jiksnu.actions.feed-source-actions :as feed-source]
+            [jiksnu.routes.helpers :refer [add-route! named-path formatted-path]]))
 
 (add-route! "/main/feed-sources"      {:named "index feed-sources"})
 (add-route! "/main/feed-sources/:id"  {:named "show feed-source"})

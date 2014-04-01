@@ -1,6 +1,6 @@
 (ns jiksnu.routes.confirm-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
-  (:require [jiksnu.actions :as actions]))
+  (:require [jiksnu.actions :as actions]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]))
 
 (add-route! "/main/confirm"              {:named "confirm"})
 

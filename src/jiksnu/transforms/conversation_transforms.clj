@@ -38,7 +38,7 @@
   (if (:url item)
     item
     (when (:local item)
-      (assoc item :url (r/named-url "show conversation" {:id (:_id item)})))))
+      (assoc item :url "" #_(r/named-url "show conversation" {:id (:_id item)})))))
 
 (defn set-domain
   [item]
