@@ -42,7 +42,8 @@
                   :exclusions [org.clojure/google-closure-library]]
                  [org.apache.abdera/abdera-client "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
-                 [org.clojure/clojure "1.5.1"]
+                 [org.clojure/clojure "1.6.0"]
+                 [org.clojure/core.cache "0.6.3"]
                  [org.clojure/tools.logging "0.2.6"]
                  [org.clojure/tools.reader "0.8.3"]
                  [org.clojure/data.json "0.2.4"]
@@ -63,6 +64,8 @@
                  [slingshot "0.10.3"]
                  [tigase/tigase-server "5.2.0"]
                  [clj-webdriver "0.6.1"]
+
+                 [xerces/xercesImpl "2.11.0"]
 
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
