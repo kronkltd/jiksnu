@@ -1,6 +1,6 @@
 (ns jiksnu.routes.search-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
-  (:require [jiksnu.actions.search-actions :as search]))
+  (:require [jiksnu.actions.search-actions :as search]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]))
 
 (add-route! "/main/search" {:named "search"})
 

@@ -1,10 +1,9 @@
 (ns jiksnu.routes.user-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.stream-actions :as stream]
+  (:require [ciste.initializer :only [definitializer]]
+            [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
-            [jiksnu.actions.user-actions :as user])
+            [jiksnu.actions.user-actions :as user]
+            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]])
   (:import jiksnu.model.User))
 
 (add-route! "/main/register"      {:named "register page"})

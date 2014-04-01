@@ -1,6 +1,6 @@
 (ns jiksnu.routes.pubsub-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
-  (:require [jiksnu.actions.pubsub-actions :as pubsub]))
+  (:require [jiksnu.actions.pubsub-actions :as pubsub]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]))
 
 (add-route! "/main/push/hub" {:named "hub dispatch"})
 

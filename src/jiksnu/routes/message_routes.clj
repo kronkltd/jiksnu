@@ -1,6 +1,6 @@
 (ns jiksnu.routes.message-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
-  (:require [jiksnu.actions.message-actions :as message]))
+  (:require [jiksnu.actions.message-actions :as message]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]))
 
 (defn routes
   []

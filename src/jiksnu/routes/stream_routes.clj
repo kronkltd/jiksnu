@@ -1,9 +1,8 @@
 (ns jiksnu.routes.stream-routes
   (:require [ciste.commands :refer [add-command!]]
-            [clojurewerkz.route-one.core :refer [add-route! named-path]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.routes.helpers :refer [formatted-path]]))
+            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]]))
 
 (add-route! "/"                               {:named "public timeline"})
 (add-route! "/:username"                      {:named "local user timeline"})

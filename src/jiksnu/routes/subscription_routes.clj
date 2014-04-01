@@ -1,7 +1,6 @@
 (ns jiksnu.routes.subscription-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.subscription-actions :as sub]))
+  (:require [jiksnu.actions.subscription-actions :as sub]
+            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]]))
 
 (add-route! "/users/:id/subscribers"   {:named "user subscribers"})
 (add-route! "/users/:id/subscriptions" {:named "user subscriptions"})

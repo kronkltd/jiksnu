@@ -1,6 +1,6 @@
 (ns jiksnu.routes.setting-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
-  (:require [jiksnu.actions.setting-actions :as setting]))
+  (:require [jiksnu.actions.setting-actions :as setting]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]))
 
 (add-route! "/settings/avatar" {:named "avatar settings"})
 

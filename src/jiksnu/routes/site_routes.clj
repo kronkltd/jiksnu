@@ -1,7 +1,6 @@
 (ns jiksnu.routes.site-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes.helpers :only [formatted-path]])
-  (:require [jiksnu.actions.site-actions :as site]))
+  (:require [jiksnu.actions.site-actions :as site]
+            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]]))
 
 (add-route! "/rsd"                       {:named "rsd"})
 (add-route! "/main/stats"                {:named "stats"})

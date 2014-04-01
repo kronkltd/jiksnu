@@ -1,6 +1,6 @@
 (ns jiksnu.routes.salmon-routes
-  (:use [clojurewerkz.route-one.core :only [add-route! named-path]])
-  (:require [jiksnu.actions.salmon-actions :as salmon]))
+  (:require [jiksnu.actions.salmon-actions :as salmon]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]))
 
 (add-route! "/main/salmon/user/:id" {:named "user salmon"})
 

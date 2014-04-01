@@ -1,7 +1,7 @@
 (ns jiksnu.routes.tag-routes
-  (:use [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]])
-  (:require [jiksnu.actions.tag-actions :as tag]))
+  (:require [ciste.initializer :refer [definitializer]]
+            [ciste.loader :refer [require-namespaces]]
+            [jiksnu.actions.tag-actions :as tag]))
 
 (defn routes
   []
