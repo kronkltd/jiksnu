@@ -1,7 +1,6 @@
 (ns jiksnu.modules.web.routes.subscription-routes-test
   (:require [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
-            [clojurewerkz.route-one.core :refer [add-route! named-path]]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
@@ -10,6 +9,7 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :refer [check context future-context
                                         hiccup->doc test-environment-fixture]]

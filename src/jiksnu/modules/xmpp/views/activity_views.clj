@@ -1,10 +1,7 @@
 (ns jiksnu.modules.xmpp.views.activity-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        ciste.sections.default
-        [clojurewerkz.route-one.core :only [named-path]]
+  (:use [ciste.views :only [defview]]
         jiksnu.actions.activity-actions
-        [jiksnu.ko :only [*dynamic*]])
+        )
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]

@@ -97,7 +97,7 @@
 
 
 (definitializer
-  (airbrake/set-host! (config :airbrake :host))
+  ;; (airbrake/set-host! (config :airbrake :host))
   (def app
     (http/wrap-ring-handler
      (compojure/routes

@@ -1,12 +1,12 @@
 (ns jiksnu.modules.web.routes.conversation-routes-test
-  (:use [clj-factory.core :only [factory]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.modules.web.views.conversation-views
-        [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [check context test-environment-fixture]]
-        [midje.sweet :only [=>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory]]
+            [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
+            jiksnu.modules.web.views.conversation-views
+            [jiksnu.routes.helpers :refer [named-path]]
+            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.test-helper :refer [check context test-environment-fixture]]
+            [midje.sweet :refer [=>]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture

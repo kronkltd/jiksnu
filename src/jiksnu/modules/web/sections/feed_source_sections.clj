@@ -1,18 +1,18 @@
 (ns jiksnu.modules.web.sections.feed-source-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form delete-button show-section
-                                       index-line index-block index-section link-to title
-                                       update-button]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-show-section
-                                             admin-index-block admin-index-line
-                                             admin-index-section]]
-        [jiksnu.modules.web.sections :only [action-link bind-to control-line display-property
-                                            dropdown-menu dump-data]])
-  (:require [clojure.string :as string]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section add-form delete-button show-section
+                                            index-line index-block index-section link-to title
+                                            update-button]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.sections :refer [admin-show-section
+                                                  admin-index-block admin-index-line
+                                                  admin-index-section]]
+            [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
+                                                 dropdown-menu dump-data]]
+            [jiksnu.route.helpers :refer [named-path]]
             [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

@@ -1,18 +1,15 @@
 (ns jiksnu.modules.web.sections.layout-sections
-  (:use [ciste.core :only [apply-template]]
-        [ciste.config :only [config environment]]
-        [ciste.sections.default :only [add-form show-section]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to display-property dump-data pagination-links with-sub-page]]
-        [jiksnu.session :only [current-user is-admin?]])
-  (:require [clojure.string :as string]
+  (:require [ciste.core :refer [apply-template]]
+            [ciste.config :refer [config environment]]
+            [ciste.sections.default :refer [add-form show-section]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.page :as p]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.actions.subscription-actions :as actions.subscription]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.domain :as model.domain]
@@ -21,12 +18,16 @@
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.web.sections :refer [bind-to display-property dump-data pagination-links
+                                                 with-sub-page]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]
             [jiksnu.modules.web.sections.group-sections :as sections.group]
             [jiksnu.modules.web.sections.stream-sections :as sections.stream]
             [jiksnu.modules.web.sections.subscription-sections :as sections.subscription]
-            [jiksnu.modules.web.sections.user-sections :as sections.user])
+            [jiksnu.modules.web.sections.user-sections :as sections.user]
+            [jiksnu.routes.helpers :refer [named-path]]
+            [jiksnu.session :refer [current-user is-admin?]])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -80,7 +81,7 @@
     (sections.subscription/subscribers-widget user)
     (sections.group/user-groups user)
     (with-sub-page "streams"
-     (sections.stream/streams-widget user))]))
+      (sections.stream/streams-widget user))]))
 
 (defn navigation-group
   [[header links]]
@@ -249,7 +250,7 @@
       [:ul.nav.pull-right (sections.auth/login-section response)]
       #_[:div.navbar-text.connection-info.pull-right]
       #_[:div.navbar-text.pull-right
-       (if *dynamic* "dynamic" "static")]
+         (if *dynamic* "dynamic" "static")]
       [:div.visible-tablet.visible-phone
        (side-navigation)]]]]])
 
@@ -264,13 +265,13 @@
              :type "application/rsd+xml"
              :rel "EditURI"}
             #_{:href "/opensearch/notices"
-             :title "Notice Search"
-             :type "application/opensearchdescription+xml"
-             :rel "search"}
+               :title "Notice Search"
+               :type "application/opensearchdescription+xml"
+               :rel "search"}
             #_{:href "/opensearch/people"
-             :title "People Search"
-             :type "application/opensearchdescription+xml"
-             :rel "search"}
+               :title "People Search"
+               :type "application/opensearchdescription+xml"
+               :rel "search"}
             {:href (str "http://" (config :domain) "/favicon.ico")
              :rel "shortcut icon"}])))
 
@@ -280,34 +281,34 @@
   [request response]
   (let [websocket-path (str "ws://" (config :domain) ":" (config :http :port) "/websocket")]
     (list
-    [:script {:type "text/javascript"}
-     ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
-     (format "WEBSOCKET_PATH = '%s';" websocket-path)
-     "var CLOSURE_NO_DEPS = true;"]
-    (p/include-js
-     ;; "/assets/js/modernizr-2.6.1.js"
-     "/assets/js/underscore/1.4.4/underscore.min.js"
-     "/assets/js/jquery/1.10.1/jquery.js"
-     "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
-     "/assets/js/knockout/2.2.1/knockout.js"
-     "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"
-     "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
-     "/assets/js/backbone/1.0.0/backbone.min.js"
-     "/assets/js/knockback/0.17.2/knockback.js"
-     "/assets/js/jiksnu.js")
-    (doall
-     (map (fn [hook]
-            (hook request response))
-          @scripts-section-hook))
-    [:script {:type "text/javascript"}
-     "goog.require('jiksnu.core');"])))
+     [:script {:type "text/javascript"}
+      ;; "WEB_SOCKET_SWF_LOCATION = 'WebSocketMain.swf';"
+      (format "WEBSOCKET_PATH = '%s';" websocket-path)
+      "var CLOSURE_NO_DEPS = true;"]
+     (p/include-js
+      ;; "/assets/js/modernizr-2.6.1.js"
+      "/assets/js/underscore/1.4.4/underscore.min.js"
+      "/assets/js/jquery/1.10.1/jquery.js"
+      "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
+      "/assets/js/knockout/2.2.1/knockout.js"
+      "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"
+      "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
+      "/assets/js/backbone/1.0.0/backbone.min.js"
+      "/assets/js/knockback/0.17.2/knockback.js"
+      "/assets/js/jiksnu.js")
+     (doall
+      (map (fn [hook]
+             (hook request response))
+           @scripts-section-hook))
+     [:script {:type "text/javascript"}
+      "goog.require('jiksnu.core');"])))
 
 (defn right-column-section
   [response]
   (let [user (if *dynamic*
                (User.)
                (or (:user response)
-                  (current-user)))]
+                   (current-user)))]
     (list
      (bind-to "$root.targetUser() || $root.currentUser()"
        (user-info-section user))

@@ -1,9 +1,9 @@
 (ns jiksnu.modules.core.views.setting-views
-  (:use [ciste.views :only [defview]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.setting-actions))
+  (:refer [ciste.views :refer [defview]]
+          [jiksnu.actions.setting-actions :as actions.setting]
+          [jiksnu.routes.helpers :refer [named-path]]))
 
-(defview #'avatar-page :html
+(defview #'actions.setting/avatar-page :html
   [request {:keys [user]}]
   {:title "Avatar"
    :body

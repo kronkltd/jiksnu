@@ -1,13 +1,13 @@
 (ns jiksnu.modules.core.views.group-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section add-form show-section]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.actions.group-actions :only [add create edit-page index
-                                             new-page show user-list]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [format-page-info pagination-links with-page]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity])
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section add-form show-section]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.group-actions :refer [add create edit-page index
+                                                  new-page show user-list]]
+            [jiksnu.ko :refer [*dynamic*]]
+            [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]]
+            [jiksnu.routes.helpers :refer [named-path]])
   (:import jiksnu.model.Group))
 
 (defview #'add :html

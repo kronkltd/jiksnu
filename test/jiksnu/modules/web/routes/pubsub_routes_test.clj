@@ -1,11 +1,7 @@
 (ns jiksnu.modules.web.routes.pubsub-routes-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [jiksnu.routes-helper :only [response-for]]
-        [jiksnu.test-helper :only [check context future-context
-                                   hiccup->doc test-environment-fixture]]
-        [midje.sweet :only [=> anything]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.pubsub-actions :as actions.pubsub]
             [jiksnu.actions.user-actions :as actions.user]
@@ -13,8 +9,11 @@
             [jiksnu.factory :as factory]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]
+            [jiksnu.routes-helper :refer [response-for]]
+            [jiksnu.test-helper :refer [check context future-context
+                                        hiccup->doc test-environment-fixture]]
+            [midje.sweet :refer [=> anything]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture

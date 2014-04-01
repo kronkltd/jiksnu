@@ -1,17 +1,17 @@
 (ns jiksnu.modules.admin.routes.user-routes-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.routes-helper :only [as-admin response-for]]
-        [jiksnu.test-helper :only [check context future-context
-                                   hiccup->doc test-environment-fixture]]
-        [midje.sweet :only [truthy =>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.core.incubator :refer [-?> -?>>]]
+            [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.model.user :as model.user]
+            [jiksnu.routes.helpers :refer [named-path]]
+            [jiksnu.routes-helper :refer [as-admin response-for]]
+            [jiksnu.test-helper :refer [check context future-context
+                                        hiccup->doc test-environment-fixture]]
+            [midje.sweet :refer [truthy =>]]
             [net.cgrand.enlive-html :as enlive]
             [ring.mock.request :as req]))
 

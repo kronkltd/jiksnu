@@ -1,10 +1,10 @@
 (ns jiksnu.modules.core.views.auth-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [show-section]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.auth-actions)
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.modules.web.sections.auth-sections :as sections.auth]))
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [show-section]]
+            [clojure.tools.logging :as log]
+            jiksnu.actions.auth-actions
+            [jiksnu.modules.web.sections.auth-sections :as sections.auth]
+            [jiksnu.routes.helpers :refer [named-path]]))
 
 ;; guest-login
 

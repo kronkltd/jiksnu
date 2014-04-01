@@ -1,7 +1,7 @@
 (ns jiksnu.modules.core.views.like-views
-  (:use [ciste.views :only [defview]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.like-actions))
+  (:require [ciste.views :refer [defview]]
+            jiksnu.actions.like-actions
+            [jiksnu.routes.helpers :refer [named-path]]))
 
 (defview #'like-activity :html
   [request like]

@@ -1,5 +1,4 @@
-(ns jiksnu.routes.helpers
-  #_(:use [clojurewerkz.route-one.core :only [named-path named-url]]))
+(ns jiksnu.routes.helpers)
 
 (defn named-path
   [& _])
@@ -8,11 +7,11 @@
 
 (defn formatted-path
   ([name]
-     (str #_(named-path name) ".:format"))
+     (str (named-path name) ".:format"))
   ([name params]
-     (str #_(named-path name params) ".:format"))
+     (str (named-path name params) ".:format"))
    ([name params format]
-     (str #_(named-path name params) "." format)))
+     (str (named-path name params) "." format)))
 
 (defn formatted-url
   ([name]

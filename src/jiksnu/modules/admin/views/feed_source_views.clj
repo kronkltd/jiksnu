@@ -1,19 +1,19 @@
 (ns jiksnu.modules.admin.views.feed-source-views
-  (:use [ciste.sections.default :only [title show-section]]
-        [ciste.views :only [defview]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.admin.actions.feed-source-actions :only [add-watcher delete
-                                                                 fetch-updates index
-                                                                 remove-watcher show]]
-        [jiksnu.modules.core.sections :only [admin-index-section admin-show-section]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links
-                                            with-page]]
-        [jiksnu.modules.web.sections.feed-source-sections :only [add-watcher-form
-                                                                 index-watchers]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.sections.default :refer [title show-section]]
+            [ciste.views :refer [defview]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
+            [jiksnu.modules.admin.actions.feed-source-actions :refer [add-watcher delete
+                                                                      fetch-updates index
+                                                                      remove-watcher show]]
+            [jiksnu.modules.core.sections :refer [admin-index-section admin-show-section]]
+            [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links
+                                                 with-page]]
+            [jiksnu.modules.web.sections.feed-source-sections :refer [add-watcher-form
+                                                                      index-watchers]]
+            [jiksnu.routes.helpers :refer [named-path]]
             [ring.util.response :as response])
   (:import jiksnu.model.FeedSource))
 

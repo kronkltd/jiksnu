@@ -1,19 +1,18 @@
 (ns jiksnu.modules.web.views.user-views
-  (:use [ciste.core :only [with-format]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [uri index-section show-section]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        jiksnu.actions.user-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to pagination-links with-page]])
-  (:require [clj-tigase.element :as element]
+  (:require [ciste.core :refer [with-format]]
+            [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [uri index-section show-section]]
+            [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.namespace :as ns]
             [jiksnu.model.webfinger :as model.webfinger]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
+            [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
+            [jiksnu.route.helpers :refer [add-route! named-path]]
             [ring.util.response :as response]))
 
 (defview #'actions.user/add-stream :html

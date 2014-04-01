@@ -1,19 +1,18 @@
 (ns jiksnu.modules.core.views.activity-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.activity-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to]])
-  (:require [clj-tigase.core :as tigase]
+  (:require [ciste.config :refer [config]]
+            [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section show-section]]
+            [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
+            jiksnu.actions.activity-actions
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
+            [jiksnu.modules.web.sections :refer [bind-to]]
             [jiksnu.modules.xmpp.element :as xmpp.element]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))

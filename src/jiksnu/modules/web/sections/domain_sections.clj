@@ -1,16 +1,15 @@
 (ns jiksnu.modules.core.sections.domain-sections
-  (:use [ciste.core :only [with-format]]
-        [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form delete-button index-block index-line
-                                       link-to show-section uri]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.session :only [current-user is-admin?]]
-        [jiksnu.modules.web.sections :only [action-link bind-to control-line display-property
-                                            dropdown-menu]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.core :refer [with-format]]
+            [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section add-form delete-button index-block
+                                            index-line link-to show-section uri]]
+            [clojure.tools.logging :as log]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.namespace :as ns]
+            [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
+                                                 dropdown-menu]]
             [jiksnu.modules.web.sections.link-sections :as sections.link]
+            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session])
   (:import jiksnu.model.Domain))
 

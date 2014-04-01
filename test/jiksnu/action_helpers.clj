@@ -1,14 +1,14 @@
 (ns jiksnu.action-helpers
-  (:use [aleph.formats :only [channel-buffer->string]]
-        [aleph.http :only [sync-http-request]]
-        [clj-webdriver.taxi :only [to]]
-        [clojurewerkz.route-one.core :only [add-route! named-path]]
-        [lamina.core :only [permanent-channel]]
-        [midje.sweet :only [fact]]
-        [slingshot.slingshot :only [throw+ try+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [aleph.formats :refer [channel-buffer->string]]
+            [aleph.http :refer [sync-http-request]]
+            [clj-webdriver.taxi :refer [to]]
+            [clojure.tools.logging :as log]
             jiksnu.routes
-            [lamina.time :as time]))
+            [jiksnu.routes.helpers :refer [add-route! named-path]]
+            [lamina.core :refer [permanent-channel]]
+            [lamina.time :as time]
+            [midje.sweet :refer [fact]]
+            [slingshot.slingshot :refer [throw+ try+]]))
 
 (def default-sleep-time (time/seconds 5))
 
@@ -75,10 +75,10 @@
 (defmacro check-response
   [& body]
   `(try+ (and (not (fact ~@body))
-             (throw+ "failed"))
-        (catch RuntimeException ex#
-          (.printStackTrace ex#)
-          (throw+ ex#))))
+              (throw+ "failed"))
+         (catch RuntimeException ex#
+           (.printStackTrace ex#)
+           (throw+ ex#))))
 
 (defn log-response
   []

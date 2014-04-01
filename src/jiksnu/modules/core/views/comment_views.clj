@@ -1,12 +1,12 @@
 (ns jiksnu.modules.core.views.comment-views
-  (:use [ciste.views :only [defview]]
-        [ciste.sections.default :only [uri]]
-        [clojurewerkz.route-one.core :only [named-path]]
-        jiksnu.actions.comment-actions)
-  (:require [clj-tigase.core :as tigase]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [uri]]
+            [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
+            jiksnu.actions.comment-actions
             [jiksnu.namespace :as ns]
+            [jiksnu.routes.helpers :refer [named-path]]
             [ring.util.response :as response]))
 
 ;; add-comment
