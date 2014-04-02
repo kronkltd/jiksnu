@@ -6,7 +6,7 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            jiksnu.actions.activity-actions
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -21,7 +21,7 @@
 
 ;; delete
 
-(defview #'delete :html
+(defview #'actions.activity/delete :html
   [request activity]
   (-> (named-path "public timeline")
       response/redirect-after-post
@@ -29,7 +29,7 @@
 
 ;; edit
 
-(defview #'edit :html
+(defview #'actions.activity/edit :html
   [request activity]
   (let [actor (session/current-user)]
     (-> (response/redirect-after-post (uri actor))
@@ -37,13 +37,13 @@
 
 ;; edit-page
 
-;; (defview #'edit-page :html
+;; (defview #'actions.activity/edit-page :html
 ;;   [request activity]
 ;;   {:body (edit-form activity)})
 
 ;; post
 
-(defview #'post :html
+(defview #'actions.activity/post :html
   [request activity]
   (let [actor (session/current-user)
         url (or (-> request :params :redirect_to)
@@ -54,7 +54,7 @@
 
 ;; show
 
-(defview #'show :html
+(defview #'actions.activity/show :html
   [request activity]
   {:body
    (let [activity (if *dynamic* (Activity.) activity)]

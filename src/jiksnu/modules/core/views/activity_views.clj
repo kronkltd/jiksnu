@@ -6,7 +6,7 @@
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
-            jiksnu.actions.activity-actions
+            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
@@ -17,13 +17,13 @@
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))
 
-(defview #'delete :model
+(defview #'actions.activity/delete :model
   [request activity]
   {:body (show-section activity)})
 
 ;; fetch-by-conversations
 
-(defview #'fetch-by-conversation :page
+(defview #'actions.activity/fetch-by-conversation :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -36,7 +36,7 @@
 
 ;; index
 
-(defview #'index :page
+(defview #'actions.activity/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -47,12 +47,12 @@
 
 ;; oembed
 
-(defview #'oembed :json
+(defview #'actions.activity/oembed :json
   [request oembed-map]
   {:status 200
    :body oembed-map})
 
-(defview #'oembed :xml
+(defview #'actions.activity/oembed :xml
   [request m]
   {:status 200
    :body
@@ -69,19 +69,19 @@
 
 ;; show
 
-(defview #'show :clj
+(defview #'actions.activity/show :clj
   [request activity]
   {:body activity})
 
-(defview #'show :json
+(defview #'actions.activity/show :json
   [request activity]
   {:body (show-section activity)})
 
-(defview #'show :model
+(defview #'actions.activity/show :model
   [request activity]
   {:body (show-section activity)})
 
-(defview #'show :viewmodel
+(defview #'actions.activity/show :viewmodel
   [request activity]
   {:body {:activities (doall (index-section [activity]))
           :targetActivity (:_id activity)
