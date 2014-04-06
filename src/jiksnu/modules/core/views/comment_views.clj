@@ -4,14 +4,14 @@
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
             [clj-tigase.packet :as packet]
-            jiksnu.actions.comment-actions
+            [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.namespace :as ns]
             [jiksnu.routes.helpers :refer [named-path]]
             [ring.util.response :as response]))
 
 ;; add-comment
 
-(defview #'add-comment :html
+(defview #'actions.comment/add-comment :html
   [request activity]
   (-> (named-path "public timeline")
       response/redirect-after-post
@@ -19,7 +19,7 @@
 
 ;; comment-response
 
-(defview #'comment-response :html
+(defview #'actions.comment/comment-response :html
   [request activity]
   (-> (named-path "public timeline")
       response/redirect-after-post
@@ -27,7 +27,7 @@
 
 ;; fetch-comments
 
-(defview #'fetch-comments :html
+(defview #'actions.comment/fetch-comments :html
   [request [activity comments]]
   (-> (response/redirect-after-post (uri activity))
       (assoc :template false)

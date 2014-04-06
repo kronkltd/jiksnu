@@ -1,12 +1,12 @@
 (ns jiksnu.modules.core.views.conversation-views
-  (:use [ciste.views :only [defview]]
-        jiksnu.actions.conversation-actions)
-  (:require [clojure.tools.logging :as log])
+  (:require [ciste.views :refer [defview]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.conversation-actions :as actions.conversation])
   (:import jiksnu.model.Conversation))
 
 ;; index
 
-(defview #'index :page
+(defview #'actions.conversation/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -15,17 +15,17 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'index :viewmodel
+(defview #'actions.conversation/index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Conversations"}})
 
 ;; show
 
-(defview #'show :model
+(defview #'actions.conversation/show :model
   [request item]
   {:body item})
 
-(defview #'show :viewmodel
+(defview #'actions.conversation/show :viewmodel
   [request item]
   {:body {:targetConversation (:_id item)
           :title (or (:title item)

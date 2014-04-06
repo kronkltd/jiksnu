@@ -1,15 +1,8 @@
 (ns jiksnu.modules.core.views.dialback-views
-  (:use [ciste.config :only [config]]
-        [ciste.views :only [defview]]
-        ciste.sections.default
-        jiksnu.actions.dialback-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to]])
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model :as model]
-            [ring.util.response :as response]))
+  (:require [ciste.views :refer [defview]]
+            [jiksnu.actions.dialback-actions :as actions.dialback]))
 
-(defview #'confirm :html
+(defview #'actions.dialback/confirm :html
   [request activity]
   {:body ""
    :template false})
