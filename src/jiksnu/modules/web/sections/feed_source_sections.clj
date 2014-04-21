@@ -12,7 +12,7 @@
                                                   admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
                                                  dropdown-menu dump-data]]
-            [jiksnu.route.helpers :refer [named-path]]
+            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))

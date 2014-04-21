@@ -1,9 +1,13 @@
 (ns jiksnu.routes.helpers)
 
 (defn named-path
-  [& _])
+  [& _]
+""
+  )
 
-(defn add-route! [& _])
+(defn add-route! [& _]
+nil
+  )
 
 (defn formatted-path
   ([name]

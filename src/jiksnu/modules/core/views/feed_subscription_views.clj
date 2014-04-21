@@ -4,7 +4,7 @@
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            jiksnu.actions.feed-subscription-actions
+            [jiksnu.actions.feed-subscription-actions :as actions.feed-subscription]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.feed-subscription :as model.feed-subscription]
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
@@ -13,7 +13,7 @@
 
 ;; index
 
-(defview #'index :page
+(defview #'actions.feed-subscription/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -24,18 +24,18 @@
 
 ;; show
 
-(defview #'show :html
+(defview #'actions.feed-subscription/show :html
   [request item]
   (let [item (if *dynamic* [(FeedSubscription.)] item)]
     {:body
      (bind-to "targetFeedSubscription"
        (show-section item))}))
 
-(defview #'show :model
+(defview #'actions.feed-subscription/show :model
   [request activity]
   {:body (show-section activity)})
 
-(defview #'show :viewmodel
+(defview #'actions.feed-subscription/show :viewmodel
   [request item]
   {:body {:targetFeedSubscription (:_id item)
           :title (:title item)}})

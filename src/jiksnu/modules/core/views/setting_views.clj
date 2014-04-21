@@ -1,6 +1,6 @@
 (ns jiksnu.modules.core.views.setting-views
-  (:use [ciste.views :only [defview]]
-        jiksnu.actions.setting-actions))
+  (:require [ciste.views :refer [defview]]
+            [jiksnu.actions.setting-actions :refer [config-output]]))
 
 (defview #'config-output :json
   [request data]

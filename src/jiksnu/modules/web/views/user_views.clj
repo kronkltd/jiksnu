@@ -12,7 +12,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.modules.web.sections :refer [bind-to pagination-links with-page]]
-            [jiksnu.route.helpers :refer [add-route! named-path]]
+            [jiksnu.routes.helpers :refer [add-route! named-path]]
             [ring.util.response :as response]))
 
 (defview #'actions.user/add-stream :html
