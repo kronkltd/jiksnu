@@ -1,0 +1,44 @@
+(ns jiksnu.actions.site-actions
+  (:use [ciste.core :only [defaction]])
+  (:require [clojure.string :as string]
+            [inflections.core :as inf]
+            [jiksnu.actions.domain-actions :as actions.domain]))
+
+(defn get-config
+  [path]
+  (->> (string/split path #"/")
+       (map keyword)
+       (apply ciste.config/config)))
+
+(defaction get-environment
+  []
+  (ciste.config/environment))
+
+;; (defn get-load
+;;   []
+;;   (str (core.host/get-load-average)))
+
+(defaction get-stats
+  []
+  (->> [:activities :conversations :domains
+        :groups :feed-sources :feed-subscriptions
+        :subscriptions :users]
+       (map
+          (fn [k]
+            (let [namespace-sym (symbol (str "jiksnu.model." (inf/singular (name k))))
+                  sym (intern (the-ns namespace-sym) (symbol "count-records"))]
+              [(inf/camelize (name k) :lower) (sym)])))
+       (into {})))
+
+(defn ping
+  []
+  "pong")
+
+(defaction rsd
+  []
+  (actions.domain/current-domain))
+
+(defaction service
+  [id]
+  ;; get user
+  true)
