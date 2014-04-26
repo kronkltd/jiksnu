@@ -66,6 +66,17 @@
                  #_[org.apache.httpcomponents/httpclient "4.2.5"]
 
 ]
+  :profiles {:dev
+             {:resource-paths ["test-resources"]
+              :dependencies
+              [[midje         "1.6.3"]
+               [ring-mock     "0.1.5"]]}}
+  :plugins [[lein-cljsbuild "0.3.2"]
+            [codox          "0.6.1"]
+            [lein-cucumber  "1.0.2"]
+            [lein-lesscss   "1.2"]
+            [lein-midje     "3.0-beta1"]]
+
   :aot [jiksnu.model
         ;; ciste.runner
         ;; jiksnu.modules.xmpp.plugin
