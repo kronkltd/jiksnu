@@ -13,14 +13,15 @@
 
 (defaction fetch-viewmodel
   [path options]
-  #_(let [request {:request-method :get
+  (let [request {:request-method :get
                  :uri            (str "/" path)
                  :params         options
                  :serialization  :http
                  :format         :viewmodel}
         response ((resolve-routes [predicates/http]
-                                  (concat admin-routes
-                                          http-routes))
+                                  []
+                                  #_(concat admin-routes
+                                            http-routes))
                   request)]
     (if-let [body (:body response)]
       (let [vm (json/read-str body :key-fn keyword)]

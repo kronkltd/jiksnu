@@ -9,7 +9,6 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.factory :as factory]
-            [jiksnu.features-helper :as feature]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.stream :as model.stream]

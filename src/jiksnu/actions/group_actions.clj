@@ -60,7 +60,7 @@
   (if-let [user (session/current-user)]
     (let [params (assoc params :admins [(:_id user)])]
       (if-let [group (create params)]
-        (do #_(add-admin group user)
+        (do (add-admin group user)
             group)
         ;; TODO: When would this happen?
         (throw+ "Could not create group")))

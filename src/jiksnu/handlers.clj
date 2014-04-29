@@ -29,6 +29,13 @@
              (class item)
              (with-out-str (pprint item))))
 
+(defn send-airbrake
+  [ex options]
+  #_(airbrake/notify
+   (config :airbrake :key)
+   (name @*environment*)
+   "/" ex options))
+
 (defn errors
   [ex]
   (let [data (if (instance? ExceptionInfo ex)
@@ -36,17 +43,14 @@
     (log/error ex)
     (when (instance? Throwable ex )
       (.printStackTrace ex)
-      (when (config :airbrake :enabled)
-        (let [options {:url "foo"
-                       :params (into {} (map (fn [[k v]] {k (pr-str v)})
-                                             (:environment data)))}]
-          (try
-            #_(airbrake/notify
-             (config :airbrake :key)
-             (name @*environment*)
-             "/" ex options)
-            (catch Exception ex)
-            ))))))
+      ;; (when (config :airbrake :enabled)
+      ;;   (let [options {:url "foo"
+      ;;                  :params (into {} (map (fn [[k v]] {k (pr-str v)})
+      ;;                                        (:environment data)))}]
+      ;;     (try
+      ;;       (send-airbrake ex options)
+      ;;       (catch Exception ex))))
+      )))
 
 
 (defn field-set
