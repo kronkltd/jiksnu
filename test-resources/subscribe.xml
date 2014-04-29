@@ -1,0 +1,15 @@
+<iq type="set"
+    to="duck@beta.jiksnu.com"
+    from="test@mycyclopedia.net/1299072101849" id="osw_18">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <subscribe node="urn:xmpp:microblog:0" jid="test@mycyclopedia.net"/>
+  </pubsub>
+</iq>
+
+<iq to="test@mycyclopedia.net"
+    type="set"
+    from="duck@beta.jiksnu.com">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <subscribe node="urn:xmpp:microblog:0" jid="test@mycyclopedia.net"/>
+  </pubsub>
+</iq>

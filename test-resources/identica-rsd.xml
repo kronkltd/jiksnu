@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd">
+ <service>
+  <engineName>StatusNet</engineName>
+  <engineLink>http://status.net/</engineLink>
+  <apis>
+   <api name="Twitter" preferred="true" apiLink="https://identi.ca/api/" blogID="">
+    <settings>
+     <docs>http://status.net/wiki/TwitterCompatibleAPI</docs>
+     <setting name="OAuth">true</setting>
+    </settings>
+   </api>
+   <api name="Atom" preferred="false" apiLink="http://identi.ca/api/statusnet/app/service.xml" blogID=""></api>
+  </apis>
+ </service>
+</rsd>

@@ -1,0 +1,486 @@
+<iq from="duck@mycyclopedia.net" type="result" id="osw_67" to="duck@mycyclopedia.net/dell">
+  <pubsub xmlns="http://jabber.org/protocol/pubsub">
+    <items node="urn:xmpp:microblog:0">
+      <item id="urn:uuid:704bb4c8-2cb1-41d9-83dc-4a1c9834f364">
+        <entry xmlns="http://www.w3.org/2005/Atom">
+          <id>urn:uuid:704bb4c8-2cb1-41d9-83dc-4a1c9834f364</id>
+          <published>2011-02-10T13:19:07.000Z</published>
+          <title>I just built osw-model, but now when I try to build osw-lib-java I get errors</title>
+          <link rel="replies" thr:count="4" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+          <in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dcheng@vodafonernd.com"/>
+          <acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+            <acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+            <acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+          </acl-rule>
+          <actor xmlns="http://activitystrea.ms/spec/1.0/">
+            <email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+            <name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+            <uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+          </actor>
+          <object xmlns="http://activitystrea.ms/spec/1.0/">
+            <id xmlns="http://www.w3.org/2005/Atom">urn:uuid:a708ae9f-bf83-458b-9f28-a4d24f76768a</id>
+            <published xmlns="http://www.w3.org/2005/Atom">2011-02-10T08:18:54.000Z</published>
+            <content xmlns="http://www.w3.org/2005/Atom">I just built osw-model, but now when I try to build osw-lib-java I get errors</content>
+            <object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+          </object>
+          <verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+        </entry>
+      </item>
+      <item id="urn:uuid:bc2e98ae-49f8-494e-98a3-d61a70a31a14">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:bc2e98ae-49f8-494e-98a3-d61a70a31a14</id>
+<published>2011-02-09T22:16:14.000Z</published>
+<title>Just updated to the new version of jabber.el and discovered that it now has an XMPP console. Who has 2 thumbs and is going to be sending packets from inside emacs? (this guy)</title>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:04058e1f-9388-4e7f-99ab-41aa15c2807d</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-09T17:16:14.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">Just updated to the new version of jabber.el and discovered that it now has an XMPP console. Who has 2 thumbs and is going to be sending packets from inside emacs? (this guy)</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:c1247d30-c094-4374-9403-afb2c251333a">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:c1247d30-c094-4374-9403-afb2c251333a</id>
+<published>2011-02-08T13:50:29.000Z</published>
+<title>I fear I may be coming around on the PEP vs Pubsub issue. While I still like having a strong tie between a JID and it's activities, PEP just doesn't scale right and intercepting all those packets adds up.</title>
+<link rel="replies" thr:count="3" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:f43bbca5-490a-4963-a5ea-d6fde36e0e18</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-08T08:50:30.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">I fear I may be coming around on the PEP vs Pubsub issue. While I still like having a strong tie between a JID and it's activities, PEP just doesn't scale right and intercepting all those packets adds up.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:ffaad57c-831e-4fd0-929c-85eb5efe5e5d">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:ffaad57c-831e-4fd0-929c-85eb5efe5e5d</id>
+<published>2011-02-07T22:33:34.000Z</published>
+<title>My server is now running the 0.7 branch as of this morning for all libs. I can no longer see comments on luca's posts.</title>
+<link rel="replies" thr:count="1" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:2ab92bed-8ebe-4cb4-ba0c-65d0d734516d</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-07T17:33:34.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">My server is now running the 0.7 branch as of this morning for all libs. I can no longer see comments on luca's posts.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:1646aa2e-91bc-4274-89d1-c46bedafb152">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:1646aa2e-91bc-4274-89d1-c46bedafb152</id>
+<published>2011-02-07T18:10:09.000Z</published>
+<title>Updating the web client is a pain for me because my Linode server can't handle the compile, so I have to build, then rsync, then mv</title>
+<in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="luca@social.openliven.com"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:af796057-ec5d-4fc6-8862-131d6ef04c8c</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-07T13:10:09.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">Updating the web client is a pain for me because my Linode server can't handle the compile, so I have to build, then rsync, then mv</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:cabdceab-2a44-4905-aef2-7af272dee809">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:cabdceab-2a44-4905-aef2-7af272dee809</id>
+<published>2011-02-07T17:53:20.000Z</published>
+<title>With new server and (really) old client, trying to pull up a comment returns all the recent comments (for other posts)</title>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:486c7794-2009-4faa-bb59-718a48f19d38</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-07T12:53:20.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">With new server and (really) old client, trying to pull up a comment returns all the recent comments (for other posts)</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:4f1111d2-bf77-4501-afbe-1c406d162ff2">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:4f1111d2-bf77-4501-afbe-1c406d162ff2</id>
+<published>2011-02-07T17:50:48.000Z</published>
+<title>Just updated my server. Going to have to wait till I get home to deploy new client.</title>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:a630ece2-8799-49b7-9e28-e143cbc05348</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-07T12:50:48.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">Just updated my server. Going to have to wait till I get home to deploy new client.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:e784eeb3-f56b-4e64-b563-31c15d3c38f1">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:e784eeb3-f56b-4e64-b563-31c15d3c38f1</id>
+<published>2011-02-06T16:31:57.000Z</published>
+<title>How hard would it be to allow cached comments to be viewed in the event the OP's host is down? For instance, I can't access comments to betavine users.</title>
+<link rel="replies" thr:count="7" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:123ffd33-7376-46cf-9898-970dbf6378bd</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-06T11:31:57.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">How hard would it be to allow cached comments to be viewed in the event the OP's host is down? For instance, I can't access comments to betavine users.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:a01702f6-82d0-4119-8932-22edbaadfa44">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:a01702f6-82d0-4119-8932-22edbaadfa44</id>
+<published>2011-02-04T03:02:54.000Z</published>
+<title>What do people use to send test stanzas to their server when developing? I use the XML console in Psi, but something I could operate from the command line (and emacs) would be preferred.</title>
+<link rel="replies" thr:count="2" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:3adf0a03-0b54-442c-98ee-36d0ded5497b</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-02-03T22:02:55.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">What do people use to send test stanzas to their server when developing? I use the XML console in Psi, but something I could operate from the command line (and emacs) would be preferred.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:8addca0d-ab13-4e44-9297-dc98b4f0e6fd">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:8addca0d-ab13-4e44-9297-dc98b4f0e6fd</id>
+<published>2011-01-30T04:25:40.000Z</published>
+<title>I'm not Diana, but does this help?</title>
+<link rel="replies" thr:count="1" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="luca@social.openliven.com"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:8f6bb05a-22fb-48bf-a920-a5d749d1c0ca</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-29T23:25:38.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">I'm not Diana, but does this help?</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:bb6fea3a-1e0f-4bc4-8814-25e11dcbb796">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:bb6fea3a-1e0f-4bc4-8814-25e11dcbb796</id>
+<published>2011-01-27T13:17:53.000Z</published>
+<title>For the notifications, it would probably be more efficient to add the recipients and the subscribers to a Set (maintaining uniqueness) and then iterate over that set once. O(n) on the contains check adds up when you have 1500 subscribers.</title>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:4fd9fd2c-47ff-4b7a-bfb0-c2481360aa3d</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-27T08:17:46.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">For the notifications, it would probably be more efficient to add the recipients and the subscribers to a Set (maintaining uniqueness) and then iterate over that set once. O(n) on the contains check adds up when you have 1500 subscribers.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:7329cb1e-74b8-4231-aaea-5628e48130bb">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:7329cb1e-74b8-4231-aaea-5628e48130bb</id>
+<published>2011-01-27T02:30:06.000Z</published>
+<title>I'm still getting delete activity notifications from you. Are you doing something, or is there something else wrong somewhere?</title>
+<link rel="replies" thr:count="7" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="luca@social.openliven.com"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:f96c775f-0a11-4730-a407-ac1c41ad497f</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-26T21:30:04.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">I'm still getting delete activity notifications from you. Are you doing something, or is there something else wrong somewhere?</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:3877c129-41de-42ca-82f0-8adc92201014">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:3877c129-41de-42ca-82f0-8adc92201014</id>
+<published>2011-01-24T16:28:02.000Z</published>
+<title>I wonder how hard it would be to write the step definitions for a Cucumber feature spec interacting with a OSW-compliant server. I just added Cuke4Duke to my dependencies this weekend, so perhaps we'll see.</title>
+<link rel="replies" thr:count="3" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:211a78db-a11c-4339-ad1e-08802820c91c</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-24T11:28:15.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">I wonder how hard it would be to write the step definitions for a Cucumber feature spec interacting with a OSW-compliant server. I just added Cuke4Duke to my dependencies this weekend, so perhaps we'll see.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:c2677f8a-7c85-49dc-8de7-4936173dd614">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:c2677f8a-7c85-49dc-8de7-4936173dd614</id>
+<published>2011-01-22T18:18:39.000Z</published>
+<title>To the Android developers: When you don't have access to the internet. The OSW client will FC like crazy. (even when you're not using it)</title>
+<link rel="replies" thr:count="3" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:1748084c-fcff-43ac-9f23-72630b4297ac</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-22T13:18:43.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">To the Android developers: When you don't have access to the internet. The OSW client will FC like crazy. (even when you're not using it)</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:7f6258b5-d6a0-44b9-a320-120d3ea96179">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:7f6258b5-d6a0-44b9-a320-120d3ea96179</id>
+<published>2011-01-18T01:52:30.000Z</published>
+<title>It works. I had to uninstall the market version first</title>
+<link rel="replies" thr:count="12" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="luca@social.openliven.com"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:e023b9b3-afa1-4530-b872-aa3cd6e9228a</id>
+<content xmlns="http://www.w3.org/2005/Atom">It works. I had to uninstall the market version first</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:78802ac1-b03b-44e0-9797-db1510887be2">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:78802ac1-b03b-44e0-9797-db1510887be2</id>
+<published>2011-01-11T12:54:46.000Z</published>
+<title>I know this is a long shot, but does anyone here have any experience with the Java Salmon library? I'm getting a nasty error with Open Saml and JAXP.</title>
+<link rel="replies" thr:count="1" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:67ceed08-0398-4387-b51e-76cda931c8c8</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-11T07:54:32.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">I know this is a long shot, but does anyone here have any experience with the Java Salmon library? I'm getting a nasty error with Open Saml and JAXP.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:c5ba343b-2f50-4397-a68d-e7d7b5a5e6f6">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:c5ba343b-2f50-4397-a68d-e7d7b5a5e6f6</id>
+<published>2011-01-08T22:26:22.000Z</published>
+<title>Can anyone get on that telecon call? Or do you need to be registered with the working group. I'd like to at least listen in.</title>
+<in-reply-to xmlns="http://purl.org/syndication/thread/1.0" href="dan@vodafonernd.com"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:08fd9606-af4b-4d32-ae24-c588f88ebfc9</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-08T17:26:17.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">Can anyone get on that telecon call? Or do you need to be registered with the working group. I'd like to at least listen in.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:5a5a67b9-8cc0-4d46-85c4-d03fdbbe2c81">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:5a5a67b9-8cc0-4d46-85c4-d03fdbbe2c81</id>
+<published>2011-01-04T14:36:42.000Z</published>
+<title>For further reading on XRD and Webfinger, check out http://hueniverse.com/2009/09/implementing-webfinger/ and imagine the user document as a PEP node.</title>
+<link rel="replies" thr:count="4" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:3bdbac53-43ac-482d-a1b1-68b98d987031</id>
+<published xmlns="http://www.w3.org/2005/Atom">2011-01-04T09:36:40.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">For further reading on XRD and Webfinger, check out http://hueniverse.com/2009/09/implementing-webfinger/ and imagine the user document as a PEP node.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:c43e64e5-eb32-4515-803f-d1ae0a8b9fbb">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:c43e64e5-eb32-4515-803f-d1ae0a8b9fbb</id>
+<published>2010-12-25T04:22:49.000Z</published>
+<title>As your Lojbanic lesson of the day, I present you with Christmas in Lojban: xisyjbenunsla  -  http://vlasisku.lojban.org/xisyjbenunsla</title>
+<link rel="replies" thr:count="4" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:8e726fa1-044e-4e23-8c6a-9a9240568a5c</id>
+<published xmlns="http://www.w3.org/2005/Atom">2010-12-24T23:22:48.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">As your Lojbanic lesson of the day, I present you with Christmas in Lojban: xisyjbenunsla  -  http://vlasisku.lojban.org/xisyjbenunsla</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+<item id="urn:uuid:06a0a431-33b5-4700-96b3-3fa0b4a375db">
+<entry xmlns="http://www.w3.org/2005/Atom">
+<id>urn:uuid:06a0a431-33b5-4700-96b3-3fa0b4a375db</id>
+<published>2010-12-23T14:21:14.000Z</published>
+<title>I should make it my New Years resolution to get Jiksnu up on GitHub.</title>
+<link rel="replies" thr:count="3" xmlns:thr="http://purl.org/syndication/thread/1.0" type="application/atom+xml"/>
+<acl-rule xmlns="http://onesocialweb.org/spec/1.0/">
+<acl-action permission="http://onesocialweb.org/spec/1.0/acl/permission/grant">http://onesocialweb.org/spec/1.0/acl/action/view</acl-action>
+<acl-subject type="http://onesocialweb.org/spec/1.0/acl/subject/everyone"/>
+</acl-rule>
+<actor xmlns="http://activitystrea.ms/spec/1.0/">
+<email xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</email>
+<name xmlns="http://www.w3.org/2005/Atom">Daniel E. Renfer</name>
+<uri xmlns="http://www.w3.org/2005/Atom">duck@mycyclopedia.net</uri>
+</actor>
+<object xmlns="http://activitystrea.ms/spec/1.0/">
+<id xmlns="http://www.w3.org/2005/Atom">urn:uuid:a3d981c2-5646-436d-9ad7-76aed89d7caf</id>
+<published xmlns="http://www.w3.org/2005/Atom">2010-12-23T09:21:13.000Z</published>
+<content xmlns="http://www.w3.org/2005/Atom">I should make it my New Years resolution to get Jiksnu up on GitHub.</content>
+<object-type>http://onesocialweb.org/spec/1.0/object/status</object-type>
+</object>
+<verb xmlns="http://activitystrea.ms/spec/1.0/">http://activitystrea.ms/schema/1.0/post</verb>
+</entry>
+</item>
+</items>
+</pubsub>
+</iq>
+

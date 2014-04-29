@@ -1,0 +1,28 @@
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <source>
+    <title type="text">Microblog (Daniel E. Renfer)</title>
+    <updated>2011-05-11T03:00:22Z</updated>
+    <author>
+      <name>Daniel E. Renfer</name>
+      <uri>xmpp:duck@jappix.com</uri>
+    </author>
+  </source>
+  <content type="text">test post</content>
+  <published>2011-05-11T03:00:22Z</published>
+  <updated>2011-05-11T03:00:22Z</updated>
+  <link rel="alternate" href="xmpp:duck@jappix.com?;node=urn%3Axmpp%3Amicroblog%3A0;item=bc093ff6afe242d3ca1e61e16b2c3d99" />
+  <link title="comments" rel="replies" href="xmpp:duck@jappix.com?;node=urn%3Axmpp%3Amicroblog%3A0%3Acomments%3Abc093ff6afe242d3ca1e61e16b2c3d99" />
+  <geoloc xmlns="http://jabber.org/protocol/geoloc">
+    <lat>42.2944821</lat>
+    <lon>-83.3573283</lon>
+    <country>United States</country>
+    <countrycode>US</countrycode>
+    <region>Michigan</region>
+    <postalcode>48186</postalcode>
+    <locality>Westland</locality>
+    <street>Hillsdale Ct</street>
+    <building>32218</building>
+    <text>32218 Hillsdale Ct, Westland, MI 48186, USA</text>
+    <uri>http://www.openstreetmap.org/?mlat=42.2944821&amp;mlon=-83.3573283&amp;zoom=14</uri>
+  </geoloc>
+</entry>

@@ -1,8 +1,6 @@
 (ns jiksnu.actions.key-actions-test
   (:require [ciste.model :as cm]
             [clj-factory.core :refer [factory fseq]]
-            [clj-tigase.core :refer [deliver-packet!]]
-            [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]

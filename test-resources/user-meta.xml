@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
+  <Subject>acct:duck1123@identi.ca</Subject>
+  <Alias>http://identi.ca/user/19424</Alias>
+  <Alias>http://identi.ca/duck1123</Alias>
+
+  <Link rel="http://webfinger.net/rel/profile-page" type="text/html"
+        href="http://identi.ca/duck1123">
+  </Link>
+
+  <Link rel="http://microformats.org/profile/hcard" type="text/html"
+        href="http://identi.ca/duck1123/hcard"></Link>
+
+  <Link rel="http://gmpg.org/xfn/11" type="text/html"
+        href="http://identi.ca/duck1123"></Link>
+
+  <Link rel="describedby" type="application/rdf+xml"
+        href="http://identi.ca/duck1123/foaf"></Link>
+
+  <Link rel="http://apinamespace.org/atom" type="application/atomsvc+xml"
+        href="http://identi.ca/api/statusnet/app/service/duck1123.xml">
+    <Property type="http://apinamespace.org/atom/username">duck1123</Property>
+  </Link>
+
+  <Link rel="http://apinamespace.org/twitter" href="https://identi.ca/api/">
+    <Property type="http://apinamespace.org/twitter/username">duck1123</Property>
+  </Link>
+
+  <Link rel="http://schemas.google.com/g/2010#updates-from"
+        href="http://identi.ca/api/statuses/user_timeline/19424.atom"
+        type="application/atom+xml"></Link>
+
+  <Link rel="salmon" href="http://identi.ca/main/salmon/user/19424"></Link>
+
+  <Link rel="http://salmon-protocol.org/ns/salmon-replies"
+        href="http://identi.ca/main/salmon/user/19424"></Link>
+
+  <Link rel="http://salmon-protocol.org/ns/salmon-mention"
+        href="http://identi.ca/main/salmon/user/19424"></Link>
+
+  <Link rel="magic-public-key"
+        href="data:application/magic-public-key,RSA.mcXV64c_ehMyLTDaCJud1xcYQrvpFbE0Cjx2wFU15PwdEZ20jcmRj_tL3YDCoIF12w0xYV5LwpB19l8A5_Q36z_boERBUsA5MRt6VPcYlWFCHUp3WZ2QgfED6kyLW01CLRdT9agqw44AiYMHAaI_xypUI28E6aQLU450ztOkVQ0=.AQAB"></Link>
+
+  <Link rel="http://ostatus.org/schema/1.0/subscribe"
+        template="http://identi.ca/main/ostatussub?profile={uri}"></Link>
+
+  <Link rel="http://specs.openid.net/auth/2.0/provider"
+        href="http://identi.ca/duck1123"></Link>
+</XRD>

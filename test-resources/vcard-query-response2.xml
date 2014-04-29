@@ -1,0 +1,32 @@
+<iq id="JIKSNU1" type="result" to="beta.jiksnu.com"
+    from="duck@mycyclopedia.net">
+  <query xmlns="http://onesocialweb.org/spec/1.0/vcard4#query">
+    <vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0">
+      <bday><date-time/></bday>
+      <gender>1</gender>
+      <fn><text>Daniel E. Renfer</text></fn>
+      <n>
+        <prefix><text/></prefix>
+        <given><text>Daniel</text></given>
+        <surname><text>Renfer</text></surname>
+        <suffix><text/></suffix>
+      </n>
+      <url><uri>http://www.google.com/profiles/duck112358</uri></url>
+      <photo>
+        <uri>http://www.gravatar.com/avatar/4d29fb194340a4c990639da30f7946af.png</uri>
+      </photo>
+      <email>
+        <parameters>
+          <type>home</type>
+        </parameters>
+        <uri>duck@kronkltd.net</uri>
+      </email>
+      <tel>
+        <parameters>
+          <type>voice</type>
+        </parameters>
+        <uri/>
+      </tel>
+    </vcard>
+  </query>
+</iq>
