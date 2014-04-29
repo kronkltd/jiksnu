@@ -8,7 +8,6 @@
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.factory :as factory]
-            [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [context hiccup->doc test-environment-fixture]]
             [midje.sweet :refer [=>]]
             [ring.mock.request :as req]))

@@ -9,9 +9,7 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            jiksnu.modules.atom.sections.activity-sections
-            jiksnu.modules.atom.sections.user-sections
-            [jiksnu.modules.atom.util :as abdera]
+            ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.session :as session]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
@@ -43,11 +41,11 @@
                entry (show-section activity)]
            (actions.activity/entry->activity entry) => (partial instance? Activity))))
 
-     (future-context "when coming from an identi.ca feed"
-       (context "should parse the published field"
-         (let [feed (abdera/load-file "identica-update.xml")
-               entry (first (abdera/get-entries feed))]
-           (actions.activity/entry->activity entry) => (partial instance? Activity))))
+     ;; (future-context "when coming from an identi.ca feed"
+     ;;   (context "should parse the published field"
+     ;;     (let [feed (abdera/load-file "identica-update.xml")
+     ;;           entry (first (abdera/get-entries feed))]
+     ;;       (actions.activity/entry->activity entry) => (partial instance? Activity))))
      ))
 
  (context #'actions.activity/find-by-user

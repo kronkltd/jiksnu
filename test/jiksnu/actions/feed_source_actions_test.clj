@@ -9,7 +9,7 @@
         [midje.sweet :only [=> truthy anything]])
   (:require [ciste.model :as cm]
             [clojure.tools.logging :as log]
-            [jiksnu.modules.atom.util :as abdera]
+            ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
@@ -46,28 +46,28 @@
    (provided
      (actions.domain/get-discovered anything) => .domain.))
 
- (context #'process-entry
-   (with-context [:http :atom]
-     (let [user (mock/a-user-exists)
-           author (show-section user)
-           entry (show-section (factory :activity {:id (fseq :uri)}))
-           feed (abdera/make-feed*
-                 {:title (fseq :title)
-                  :entries [entry]
-                  :author author})
-           source (mock/a-feed-source-exists)]
-       (process-entry [feed source entry]) => (partial instance? Activity))))
+ ;; (context #'process-entry
+ ;;   (with-context [:http :atom]
+ ;;     (let [user (mock/a-user-exists)
+ ;;           author (show-section user)
+ ;;           entry (show-section (factory :activity {:id (fseq :uri)}))
+ ;;           feed (abdera/make-feed*
+ ;;                 {:title (fseq :title)
+ ;;                  :entries [entry]
+ ;;                  :author author})
+ ;;           source (mock/a-feed-source-exists)]
+ ;;       (process-entry [feed source entry]) => (partial instance? Activity))))
 
- (context #'process-feed
-   (context "when the feed has no watchers"
-     (let [domain (mock/a-domain-exists)
-           source (mock/a-feed-source-exists {:domain domain})
-           feed (abdera/make-feed*
-                 {:title (fseq :title)
-                  :entries []})]
-       (process-feed source feed) => nil
-       (provided
-         (unsubscribe source) => nil))))
+ ;; (context #'process-feed
+ ;;   (context "when the feed has no watchers"
+ ;;     (let [domain (mock/a-domain-exists)
+ ;;           source (mock/a-feed-source-exists {:domain domain})
+ ;;           feed (abdera/make-feed*
+ ;;                 {:title (fseq :title)
+ ;;                  :entries []})]
+ ;;       (process-feed source feed) => nil
+ ;;       (provided
+ ;;         (unsubscribe source) => nil))))
 
  (context #'discover-source
    (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))

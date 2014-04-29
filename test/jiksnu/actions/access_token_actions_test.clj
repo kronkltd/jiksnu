@@ -10,9 +10,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            jiksnu.modules.atom.sections.activity-sections
-            jiksnu.modules.atom.sections.user-sections
-            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.session :as session]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
