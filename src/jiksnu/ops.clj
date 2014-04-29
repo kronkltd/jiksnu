@@ -72,7 +72,7 @@
 (defn get-discovered
   [domain & [id options]]
   {:pre [(instance? Domain domain)]}
-  (async-op ch/pending-get-discovered [domain id options]))
+  (log/spy :info (async-op ch/pending-get-discovered [domain id options])))
 
 (defn get-source
   [url]

@@ -5,6 +5,7 @@
            "jiksnu.formats"
            "jiksnu.routes"
            "jiksnu.workers"
+           "jiksnu.triggers.domain-triggers"
            ]
  :modules-available
  [

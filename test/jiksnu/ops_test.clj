@@ -15,13 +15,13 @@
 
 (test-environment-fixture
 
- (context #'ops/get-discovered
-   (let [domain (mock/a-domain-exists)]
-     (ops/get-discovered domain) =>
-     (check [response]
-       @response => (partial instance? Domain)
-       )
-     )
-   )
+ ;; (context #'ops/get-discovered
+ ;;   (let [domain (mock/a-domain-exists)]
+ ;;     (ops/get-discovered domain) =>
+ ;;     (check [response]
+ ;;       @response => (partial instance? Domain)
+ ;;       )
+ ;;     )
+ ;;   )
 
  )
