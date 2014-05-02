@@ -23,31 +23,6 @@
      ;; TODO: complete
      oembed-str => string?))
 
- (context #'actions.activity/entry->activity
-   (let [domain-name (fseq :domain)
-         domain (-> (factory :domain
-                             {:discovered true
-                              :_id domain-name})
-                    actions.domain/find-or-create
-                    (actions.domain/add-link {:rel "lrdd"
-                                              :template
-                                              (str "http://" domain-name "/lrdd?uri={uri}")}))
-         user (mock/a-user-exists {:domain domain})]
-
-     ;; TODO: Load elements from resources
-     (context "should return an Activity"
-       (with-context [:http :atom]
-         (let [activity (mock/there-is-an-activity {:user user})
-               entry (show-section activity)]
-           (actions.activity/entry->activity entry) => (partial instance? Activity))))
-
-     ;; (future-context "when coming from an identi.ca feed"
-     ;;   (context "should parse the published field"
-     ;;     (let [feed (abdera/load-file "identica-update.xml")
-     ;;           entry (first (abdera/get-entries feed))]
-     ;;       (actions.activity/entry->activity entry) => (partial instance? Activity))))
-     ))
-
  (context #'actions.activity/find-by-user
    (context "when the user has activities"
      (db/drop-all!)

@@ -200,10 +200,10 @@
   (if (:conversation item)
     item
     (if-let [user (model.activity/get-author item)]
-      (if (:local user)
+      (if (:local (log/spy :info user))
         (assoc item :conversation (:_id @(ops/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
-          (let [conversation (ops/get-conversation uri)]
+          (let [conversation (ops/get-conversation (log/spy :info uri))]
             (-> item
                 (assoc :conversation (:_id @conversation))
                 (dissoc :conversation-uris)))

@@ -154,11 +154,11 @@
 
 (defn activity-gets-posted
   [& [options]]
-  (let [source (or (:feed-source options)
-                   (get-this :feed-source)
-                   (a-feed-source-exists (select-keys options #{:local})))
-        activity (actions.activity/post (factory :activity
-                                                 {:update-source (:_id source)}))]
+  (let [source (log/spy :info (or (:feed-source options)
+                    (get-this :feed-source)
+                    (a-feed-source-exists (select-keys options #{:local}))))
+        activity (actions.activity/post (log/spy :info (factory :activity
+                                                                {:update-source (:_id source)})))]
     (set-this :activity activity)
     activity))
 

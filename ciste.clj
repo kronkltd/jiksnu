@@ -6,6 +6,7 @@
            "jiksnu.routes"
            "jiksnu.workers"
            "jiksnu.triggers.domain-triggers"
+           "jiksnu.triggers.conversation-triggers"
            ]
  :modules-available
  [

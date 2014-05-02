@@ -48,18 +48,6 @@
     (l/on-realized result op-success op-error)
     result))
 
-(defn create-new-conversation
-  []
-  (s/increment "conversations create new")
-  (let [result (l/expiring-result default-timeout)]
-    (l/enqueue ch/pending-create-conversations result)
-    #_(l/wait-for-result result default-timeout)
-    result))
-
-(defn create-new-stream
-  [params]
-  (async-op ch/pending-create-stream [params]))
-
 (defn get-conversation
   [url]
   (async-op ch/pending-get-conversation [url]))
@@ -92,6 +80,19 @@
 (defn get-user-meta
   [user]
   (async-op ch/pending-get-user-meta [user]))
+
+(defn create-new-conversation
+  []
+  (log/info "creating new conversation")
+  (s/increment "conversations create new")
+  (let [result (l/expiring-result default-timeout)]
+    (l/enqueue ch/pending-create-conversations result)
+    #_(l/wait-for-result result default-timeout)
+    result))
+
+(defn create-new-stream
+  [params]
+  (async-op ch/pending-create-stream [params]))
 
 (defn create-new-subscription
   [actor-id user-id]
