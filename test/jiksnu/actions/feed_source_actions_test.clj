@@ -1,13 +1,8 @@
 (ns jiksnu.actions.feed-source-actions-test
-  (:use [ciste.core :only [with-context]]
-        [ciste.sections.default :only [show-section]]
-        [clj-factory.core :only [factory fseq]]
-        [jiksnu.actions.feed-source-actions :only [add-watcher create discover-source prepare-create
-                                                   process-entry process-feed unsubscribe update]]
-        [jiksnu.factory :only [make-uri]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [midje.sweet :only [=> truthy anything]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [with-context]]
+            [ciste.model :as cm]
+            [ciste.sections.default :refer [show-section]]
+            [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
             ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.domain-actions :as actions.domain]
@@ -19,58 +14,37 @@
             [jiksnu.model :as model]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.ops :as ops]
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]
-            [lamina.core :as l])
+            [lamina.core :as l]
+            [midje.sweet :refer [=> truthy anything]])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))
 
 (test-environment-fixture
 
- (context #'add-watcher
+ (context #'actions.feed-source/add-watcher
    (let [domain (actions.domain/current-domain)
          user (mock/a-user-exists)
          source (mock/a-feed-source-exists {:domain domain})]
-     (add-watcher source user) => truthy))
+     (actions.feed-source/add-watcher source user) => truthy))
 
- (context #'create
+ (context #'actions.feed-source/create
    (let [domain (mock/a-remote-domain-exists)
          params (factory :feed-source {:topic (factory/make-uri (:_id domain))})]
-     (create params) => (partial instance? FeedSource)
+     (actions.feed-source/create params) => (partial instance? FeedSource)
      (provided
        (actions.domain/get-discovered domain nil nil) => domain)))
 
- (future-context #'update
+ (future-context #'actions.feed-source/update
    (let [domain (mock/a-domain-exists)
          source (mock/a-feed-source-exists)]
      (actions.feed-source/update source) => (partial instance? FeedSource))
    (provided
      (actions.domain/get-discovered anything) => .domain.))
 
- ;; (context #'process-entry
- ;;   (with-context [:http :atom]
- ;;     (let [user (mock/a-user-exists)
- ;;           author (show-section user)
- ;;           entry (show-section (factory :activity {:id (fseq :uri)}))
- ;;           feed (abdera/make-feed*
- ;;                 {:title (fseq :title)
- ;;                  :entries [entry]
- ;;                  :author author})
- ;;           source (mock/a-feed-source-exists)]
- ;;       (process-entry [feed source entry]) => (partial instance? Activity))))
-
- ;; (context #'process-feed
- ;;   (context "when the feed has no watchers"
- ;;     (let [domain (mock/a-domain-exists)
- ;;           source (mock/a-feed-source-exists {:domain domain})
- ;;           feed (abdera/make-feed*
- ;;                 {:title (fseq :title)
- ;;                  :entries []})]
- ;;       (process-feed source feed) => nil
- ;;       (provided
- ;;         (unsubscribe source) => nil))))
-
- (context #'discover-source
-   (let [url (make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
+ (context #'actions.feed-source/discover-source
+   (let [url (factory/make-uri (:_id (actions.domain/current-domain)) (str "/" (fseq :word)))
          resource (mock/a-resource-exists {:url url})
          topic (str url ".atom")
          response ""

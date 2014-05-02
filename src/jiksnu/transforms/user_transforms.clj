@@ -80,7 +80,7 @@
                                  (when-let [id (:_id user)]
                                    (util/get-domain-name id)))]
         (when-let [domain (actions.domain/find-or-create {:_id domain-name})]
-          (log/spy :info @(log/spy :info (ops/get-discovered domain)))
+          @(ops/get-discovered domain)
           (assoc user :domain domain-name)))
       (throw+ "Could not determine domain for user")))
 

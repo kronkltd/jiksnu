@@ -125,43 +125,10 @@
 (declare unsubscribe)
 (declare send-unsubscribe)
 
-(defn process-entry
-  "Create an activity from an atom entry"
-  [[feed source entry]]
-  (let [params (actions.activity/entry->activity entry feed source)]
-    (actions.activity/find-or-create params)))
-
 (defn watched?
   "Returns true if the source has any watchers"
   [source]
   (seq (:watchers source)))
-
-(defn process-feed
-  [^FeedSource source ^Feed feed]
-  {:pre [(instance? FeedSource source)
-         (instance? Feed feed)]}
-  (trace/trace "feeds:processed" feed)
-
-  #_(when-let [author (abdera/get-feed-author feed)]
-    (let [author-id (abdera/get-simple-extension author ns/atom "id")
-          params (actions.user/parse-person author)
-          params (assoc params :id (:url params))
-          user (actions.user/find-or-create params)
-          id (:_id user)]
-      (model.feed-source/set-field! source :author id)))
-
-  (let [feed-title (.getTitle feed)]
-    (when-not (= feed-title (:title source))
-      (model.feed-source/set-field! source :title feed-title)))
-
-  #_(if-let [hub-link (abdera/get-hub-link feed)]
-    (model.feed-source/set-field! source :hub hub-link))
-
-  #_(if (watched? source)
-    (doseq [entry (abdera/get-entries feed)]
-      (l/enqueue ch/pending-entries [feed source entry]))
-    (do (log/warnf "no watchers for %s" (:topic source))
-        (unsubscribe source))))
 
 (defaction unsubscribe
   "Action if user makes action to unsubscribe from remote source"
