@@ -41,7 +41,8 @@
 (defn authorization-header
   "Given an auth map, returns an authorization header"
   [params]
-  (let [format-str (str "OAuth "
+  (let [oauth-token (get params "oauth_token")
+        format-str (str "OAuth "
                         "oauth_callback=\"%s\", "
                         "oauth_signature_method=\"%s\", "
                         "oauth_consumer_key=\"%s\", "
@@ -55,7 +56,9 @@
             (get params "oauth_signature_method")
             (get params "oauth_consumer_key")
             (get params "oauth_version")
-            (get params "oauth_token")
+            (when oauth-token
+              
+              )
             (get params "oauth_timestamp")
             (get params "oauth_nonce")
             (get params "oauth_signature"))))
@@ -82,10 +85,11 @@
                           consumer-key (get parts "oauth_consumer_key")
                           client (model.client/fetch-by-id consumer-key)
                           token (get parts "oauth_token")
-                          access-token (when token (model.access-token/fetch-by-id token))]
-                      (-> request
-                          (assoc :authorization-client client)
-                          (assoc :access-token access-token)))
+                          request (if-let  [access-token (when token
+                                                           (model.access-token/fetch-by-id token))]
+                                    (assoc request :access-token access-token)
+                                    request)]
+                      (assoc request :authorization-client client))
                     request)]
       (handler request))))
 
