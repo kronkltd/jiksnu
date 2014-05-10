@@ -1,5 +1,4 @@
 (ns jiksnu.handlers.atom
-  (:use [slingshot.slingshot :only [throw+]])
   (:require [clj-statsd :as s]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
@@ -7,7 +6,9 @@
             [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
-            [lamina.trace :as trace]))
+            [jiksnu.modules.atom.actions.feed-source-actions :as atom.actions.feed-source]
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defmethod actions.resource/process-response-content "application/atom+xml"
   [content-type item response]
@@ -20,7 +21,7 @@
                 (not (and feed-updated source-updated))
                 (time/after? feed-updated source-updated))
           (try
-            (actions.feed-source/process-feed source feed)
+            (atom.actions.feed-source/process-feed source feed)
             (catch Exception ex
               (trace/trace :errors:handled ex)))
           (log/warn "feed is up to date")))

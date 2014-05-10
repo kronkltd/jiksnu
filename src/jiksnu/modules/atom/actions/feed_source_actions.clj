@@ -12,6 +12,7 @@
             [clojure.tools.logging :as log]
             [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.channels :as ch]
@@ -59,9 +60,9 @@
   (if-let [hub-link (abdera/get-hub-link feed)]
     (model.feed-source/set-field! source :hub hub-link))
 
-  (if (watched? source)
+  (if (actions.feed-source/watched? source)
     (doseq [entry (abdera/get-entries feed)]
       (l/enqueue ch/pending-entries [feed source entry]))
     (do (log/warnf "no watchers for %s" (:topic source))
-        (unsubscribe source))))
+        (actions.feed-source/unsubscribe source))))
 
