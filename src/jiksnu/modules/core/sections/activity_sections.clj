@@ -1,30 +1,28 @@
 (ns jiksnu.modules.core.sections.activity-sections
-  (:use [ciste.core :only [with-format]]
-        [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [edit-button
-                                       show-section-minimal
-                                       show-section uri title index-block
-                                       index-line index-section update-button]]
-        [clojure.core.incubator :only [-?>]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-line admin-index-block
-                                            admin-index-section ]]
-        [jiksnu.modules.web.sections :only [display-property display-timestamp
-                                            dropdown-menu dump-data format-links pagination-links]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [with-format]]
+            [ciste.model :as cm]
+            [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [edit-button
+                                            show-section-minimal
+                                            show-section uri title index-block
+                                            index-line index-section update-button]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.namespace :as ns]
+            [jiksnu.modules.core.sections :refer [admin-index-line admin-index-block
+                                                  admin-index-section ]]
             [jiksnu.modules.core.sections.user-sections :as sections.user]
+            [jiksnu.modules.web.sections :refer [display-property display-timestamp
+                                                 dropdown-menu dump-data format-links
+                                                 pagination-links]]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [jiksnu.modules.xmpp.element :as element]
-        )
-  (:import jiksnu.model.Activity
-           org.apache.abdera.model.ExtensibleElement))
+            [slingshot.slingshot :refer [throw+]])
+  (:import jiksnu.model.Activity))
 
 (defn index-formats
   [activities]

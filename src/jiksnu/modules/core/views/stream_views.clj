@@ -8,8 +8,7 @@
         jiksnu.actions.stream-actions
         [jiksnu.ko :only [*dynamic*]]
         [jiksnu.modules.web.sections :only [format-page-info]])
-  (:require [clj-tigase.core :as tigase]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model :as model]

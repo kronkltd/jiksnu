@@ -7,7 +7,6 @@
         [lamina.core :only [channel]]
         [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
-            [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]

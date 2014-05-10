@@ -2,9 +2,7 @@
   (:require [ciste.config :refer [config]]
             [ciste.views :refer [defview]]
             [ciste.sections.default :refer [show-section uri]]
-            [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.ko :refer [*dynamic*]]
@@ -15,7 +13,6 @@
             [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session]
             [jiksnu.modules.web.sections :refer [bind-to]]
-            [jiksnu.modules.xmpp.element :as xmpp.element]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity))
 

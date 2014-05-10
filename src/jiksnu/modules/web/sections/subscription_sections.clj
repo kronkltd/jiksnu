@@ -4,7 +4,6 @@
             [ciste.sections.default :refer [actions-section delete-button edit-button full-uri
                                             index-block index-line index-section link-to
                                             show-section title uri]]
-            [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model.subscription :as model.subscription]

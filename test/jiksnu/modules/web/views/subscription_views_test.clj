@@ -7,7 +7,6 @@
         [midje.sweet :only [=>]])
   (:require [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.subscription-actions :as actions.subscription]

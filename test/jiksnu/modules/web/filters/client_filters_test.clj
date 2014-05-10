@@ -8,7 +8,6 @@
   (:require [clj-factory.core :only [factory]]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.activity-actions :as actions.activity]

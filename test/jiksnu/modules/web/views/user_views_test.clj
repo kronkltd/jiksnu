@@ -1,32 +1,24 @@
 (ns jiksnu.modules.web.views.user-views-test
-  (:use [ciste.config :only [with-environment]]
-        [ciste.core :only [with-context with-format with-serialization]]
-        [ciste.filters :only [filter-action]]
-        [ciste.views :only [apply-view]]
-        [clj-factory.core :only [factory]]
-        clj-tigase.core
-        [jiksnu.actions.user-actions :only [index]]
-        [jiksnu.test-helper :only [check context future-context
-                                   hiccup->doc test-environment-fixture]]
-        [jiksnu.ko :only [*dynamic*]]
-        jiksnu.modules.xmpp.element
-        [midje.sweet :only [contains =>]])
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
+  (:require [ciste.core :refer [with-format with-serialization]]
+            [ciste.filters :refer [filter-action]]
+            [ciste.views :refer [apply-view]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.user :as model.user]
-            jiksnu.modules.web.views.user-views)
-  (:import jiksnu.model.User))
+            jiksnu.modules.web.views.user-views
+            [jiksnu.test-helper :refer [check context future-context
+                                        test-environment-fixture]]
+
+            [midje.sweet :refer [contains =>]]))
 
 (test-environment-fixture
 
- (context "apply-view #'index"
-   (let [action #'index]
+ (context "apply-view #'actions.user/index"
+   (let [action #'actions.user/index]
      (context "when the serialization is :http"
        (with-serialization :http
          (context "when the format is :html"

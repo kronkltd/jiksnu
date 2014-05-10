@@ -3,7 +3,6 @@
             [ciste.sections.default :refer [uri]]
             [clj-tigase.core :as tigase]
             [clj-tigase.element :as element]
-            [clj-tigase.packet :as packet]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.namespace :as ns]
             [jiksnu.routes.helpers :refer [named-path]]

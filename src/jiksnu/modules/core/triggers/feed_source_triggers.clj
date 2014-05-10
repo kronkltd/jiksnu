@@ -2,6 +2,7 @@
   (:require [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
+            [jiksnu.modules.atom.actions.feed-source-actions :as atom.actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.ops :as ops]
             [lamina.core :as l]
@@ -20,7 +21,7 @@
                  handle-pending-get-source)
 
   (l/receive-all ch/pending-entries
-                 actions.feed-source/process-entry)
+                 atom.actions.feed-source/process-entry)
 
   (l/receive-all (trace/probe-channel :feeds:processed)
                  (fn [feed]
