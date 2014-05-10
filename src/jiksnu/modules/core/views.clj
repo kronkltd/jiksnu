@@ -10,8 +10,7 @@
   (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [jiksnu.actions :as actions]
-            [jiksnu.model :as model]
-            [plaza.rdf.core :as rdf]))
+            [jiksnu.model :as model]))
 
 (defn command-not-found
   []

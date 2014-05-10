@@ -5,7 +5,6 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.modules.atom.util :as abdera]
-            [jiksnu.modules.rdf.util :as rdf]
             [jiksnu.session :as session]))
 
 (defmethod format-as :as
@@ -50,18 +49,6 @@
   (with-format :json
     (doall (format-as :json request response))))
 
-
-(defmethod format-as :n3
-  [request format response]
-  (-> response
-      (assoc :body (rdf/format-triples (:body response) :n3))
-      (assoc-in [:headers "Content-Type"] "text/plain; charset=utf-8")))
-
-(defmethod format-as :rdf
-  [request format response]
-  (-> response
-      (assoc :body (rdf/format-triples (:body response) :xml-abbrev))
-      (assoc-in [:headers "Content-Type"] "application/rdf+xml; charset=utf-8")))
 
 (defmethod format-as :text
   [request format response]
