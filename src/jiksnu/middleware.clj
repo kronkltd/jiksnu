@@ -47,21 +47,22 @@
                         "oauth_signature_method=\"%s\", "
                         "oauth_consumer_key=\"%s\", "
                         "oauth_version=\"%s\", "
-                        "oauth_token=\"%s\", "
+                        (when oauth-token
+                          "oauth_token=\"%s\", ")
                         "oauth_timestamp=\"%s\", "
                         "oauth_nonce=\"%s\", "
                         "oauth_signature=\"%s\"")]
-    (format format-str
-            (get params "oauth_callback")
-            (get params "oauth_signature_method")
-            (get params "oauth_consumer_key")
-            (get params "oauth_version")
-            (when oauth-token
-              
-              )
-            (get params "oauth_timestamp")
-            (get params "oauth_nonce")
-            (get params "oauth_signature"))))
+    (apply format format-str
+           (filter identity
+                   [(get params "oauth_callback")
+                    (get params "oauth_signature_method")
+                    (get params "oauth_consumer_key")
+                    (get params "oauth_version")
+                    (when oauth-token
+                      oauth-token)
+                    (get params "oauth_timestamp")
+                    (get params "oauth_nonce")
+                    (get params "oauth_signature")]))))
 
 (defn parse-authorization-header
   [header]
