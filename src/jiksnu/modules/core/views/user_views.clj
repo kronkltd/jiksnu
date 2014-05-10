@@ -1,26 +1,18 @@
 (ns jiksnu.modules.core.views.user-views
-  (:use [ciste.core :only [with-format]]
-        [ciste.views :only [defview]]
-        [ciste.sections.default :only [index-section show-section]]
-        [clojurewerkz.route-one.core :only [add-route!]]
-        jiksnu.actions.user-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to format-page-info pagination-links with-page]])
-  (:require [clj-tigase.element :as element]
+  (:require [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section show-section]]
             [clojure.tools.logging :as log]
-            [jiksnu.namespace :as ns]
-            [jiksnu.model.webfinger :as model.webfinger]
-            [jiksnu.model.user :as model.user]
-            [ring.util.response :as response]))
+            [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.modules.web.sections :refer [format-page-info]]))
 
 ;; index
 
-(defview #'index :json
+(defview #'actions.user/index :json
   [request {:keys [items] :as options}]
   {:body
    {:items (index-section items options)}})
 
-(defview #'index :page
+(defview #'actions.user/index :page
   [request response]
   (let [items (:items response)
         response (merge response
@@ -29,25 +21,25 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'index :viewmodel
+(defview #'actions.user/index :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Users"
           :pages {:users (format-page-info page)}}})
 
 ;; register-page
 
-(defview #'register-page :viewmodel
+(defview #'actions.user/register-page :viewmodel
   [request {:keys [items] :as page}]
   {:body {:title "Register"}})
 
 ;; show
 
-(defview #'show :as
+(defview #'actions.user/show :as
   [request user]
   {:template false
    :body (show-section user)})
 
-(defview #'show :model
+(defview #'actions.user/show :model
   [request user]
   {:body (doall (show-section user))})
 

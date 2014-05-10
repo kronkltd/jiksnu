@@ -1,22 +1,14 @@
 (ns jiksnu.formats
-  (:use [ciste.core :only [with-format]]
-        [ciste.formats :only [format-as]])
-  (:require [clojure.data.json :as json]
+  (:require [ciste.core :refer [with-format]]
+            [ciste.formats :refer [format-as]]
+            [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.session :as session]))
 
 (defmethod format-as :as
   [format request response]
   (with-format :json (format-as :json request response)))
-
-(defmethod format-as :atom
-  [format request response]
-  (let [atom-map (-> (:body response)
-                     (assoc :title (:title response)))]
-    (-> response
-        (assoc :body (abdera/make-feed atom-map)))))
 
 (defmethod format-as :clj
   [format request response]
