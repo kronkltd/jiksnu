@@ -5,14 +5,9 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
-            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.util :as util]
             [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+ try+]]))
-
-(deffilter #'actions.stream/callback-publish :http
-  [action request]
-  (action (abdera/stream->feed (:body request))))
 
 (deffilter #'actions.stream/direct-message-timeline :http
   [action request]

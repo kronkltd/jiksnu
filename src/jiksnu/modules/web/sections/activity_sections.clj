@@ -18,7 +18,6 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
             [jiksnu.model :as model]
@@ -63,15 +62,6 @@
          {:data-bind "text: title"}
          (h/h (:title activity)))]]
      #_[:p (posted-link-section activity)]]))
-
-(defn comment-link-item
-  [entry activity]
-  (if (:comments activity)
-    (let [comment-count (count (:comments activity))]
-      (abdera/add-link entry {:rel "replies"
-                              :type "application/atom+xml"
-                              :attributes [{:name "count"
-                                            :value (str comment-count)}]}))))
 
 ;; specific sections
 

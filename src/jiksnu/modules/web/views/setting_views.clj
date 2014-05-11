@@ -1,7 +1,7 @@
-(ns jiksnu.modules.core.views.setting-views
-  (:refer [ciste.views :refer [defview]]
-          [jiksnu.actions.setting-actions :as actions.setting]
-          [jiksnu.routes.helpers :refer [named-path]]))
+(ns jiksnu.modules.web.views.setting-views
+  (:require [ciste.views :refer [defview]]
+            [jiksnu.actions.setting-actions :as actions.setting]
+            [jiksnu.routes.helpers :refer [named-path]]))
 
 (defview #'actions.setting/avatar-page :html
   [request {:keys [user]}]
@@ -15,4 +15,6 @@
       [:div.input
        [:input {:type "file" :name "avatar"}]]]
      [:div.actions
-      [:input {:type "submit" :value "Submit"}]]]]})
+      [:input {:type "submit" :value "Submit"}]]]]}
+
+  )
