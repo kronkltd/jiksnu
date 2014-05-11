@@ -14,14 +14,14 @@
 
 (def page-names
   {
-   "home"                           (named-path "public timeline")
-   "login"                          (named-path "login page")
+   "home"                           "/"
+   "login"                          "/main/login"
    "ostatus sub"                    "/main/ostatussub"
    "host-meta"                      "/.well-known/host-meta"
    "subscription index"             "/admin/subscriptions"
    "edit profile"                   "/main/profile"
    "user admin"                     "/admin/users"
-   "user index"                     (named-path "index users")
+   "user index"                     "/users"
    "domain index"                   (named-path "index domains")
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"

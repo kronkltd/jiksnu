@@ -2,9 +2,8 @@
   (:require [ciste.commands :refer [add-command!]]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]]))
+            [jiksnu.routes.helpers :refer [add-route!]]))
 
-(add-route! "/"                               {:named "public timeline"})
 (add-route! "/:username"                      {:named "local user timeline"})
 (add-route! "/:username/all"                  {:named "home timeline"})
 (add-route! "/:username/microsummary"         {:named "user microsummary"})
@@ -19,17 +18,17 @@
   []
   [
    [[:post "/streams"]                                  #'actions.stream/create]
-   [[:get    (named-path     "public timeline")]        #'actions.stream/public-timeline]
-   [[:get    (named-path     "group profile")]          #'actions.stream/group-timeline]
-   [[:get    (formatted-path "user profile")]           #'actions.stream/user-timeline]
-   [[:get    (named-path     "user profile")]           #'actions.stream/user-timeline]
-   [[:get    (formatted-path "local user timeline")]    #'actions.stream/user-timeline]
-   [[:get    (named-path     "local user timeline")]    #'actions.stream/user-timeline]
-   [[:get    (named-path     "home timeline")]          #'actions.stream/home-timeline]
-   [[:get    (named-path     "user stream index")]      #'actions.stream/user-list]
-   [[:get    (named-path     "user microsummary")]      #'actions.stream/user-microsummary]
-   [[:post   (named-path     "callback publish")]       #'actions.stream/callback-publish]
-   [[:get    (formatted-path "mentions timeline api")]  #'actions.stream/mentions-timeline]
+   [[:get    "/"]        #'actions.stream/public-timeline]
+   [[:get    "/groups/:name"]          #'actions.stream/group-timeline]
+   [[:get    "/users/:id.:format"]           #'actions.stream/user-timeline]
+   [[:get    "/users/:id"]           #'actions.stream/user-timeline]
+   [[:get    "/:username.:format"]    #'actions.stream/user-timeline]
+   [[:get    "/:username"]    #'actions.stream/user-timeline]
+   [[:get    "/:username/all"]          #'actions.stream/home-timeline]
+   [[:get    "/:username/streams"]      #'actions.stream/user-list]
+   [[:get    "/:username/microsummary"]      #'actions.stream/user-microsummary]
+   [[:post   "/main/push/callback"]       #'actions.stream/callback-publish]
+   [[:get    "/api/statuses/mentions"]  #'actions.stream/mentions-timeline]
    [[:post   "/:username/streams"]                      #'actions.stream/add]
    [[:get    "/:username/streams/new"]                  #'actions.stream/add-stream-page]
    [[:get    "/remote-user/*"]                          #'actions.stream/user-timeline]
@@ -40,7 +39,7 @@
    [[:post   "/api/direct_messages.:format"]            #'actions.stream/direct-message-timeline]
    ;; [[:get    "/api/mentions"]                                     #'actions.stream/mentions-timeline]
    [[:get    "/api/statuses/public_timeline.:format"]   #'actions.stream/public-timeline]
-   [[:get    (formatted-path "user timeline")]          #'actions.stream/user-timeline]
+   [[:get    "/api/statuses/user_timeline/:id"]          #'actions.stream/user-timeline]
 
    [[:get "/api/user/:username/feed"] {:action #'actions.stream/user-timeline :format :as}]
    [[:post "/api/user/:username/feed"] {:action #'actions.activity/post :format :as}]

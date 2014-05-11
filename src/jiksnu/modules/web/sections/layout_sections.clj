@@ -44,13 +44,13 @@
 (defn nav-info
   []
   [["Home"
-    [[(named-path "public timeline")     "Public"]
-     [(named-path "index users")         "Users"]
+    [["/"     "Public"]
+     ["/users"         "Users"]
      ;; [(named-path "index conversations") "Conversations"]
-     [(named-path "index feed-sources")  "Feeds"]
+     ["/main/feed-sources"  "Feeds"]
      [(named-path "index domains")       "Domains"]
      [(named-path "index groups")        "Groups"]
-     [(named-path "index resources")     "Resources"]]]
+     ["/resources"     "Resources"]]]
    ["Settings"
     [["/admin/settings"           "Settings"]]]
    (when (is-admin?)

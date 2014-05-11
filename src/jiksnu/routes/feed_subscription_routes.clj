@@ -9,8 +9,8 @@
 (defn routes
   []
   [
-   [[:get (named-path     "index feed-subscriptions")] #'feed-subscription/index]
-   [[:get (formatted-path "index feed-subscriptions")] #'feed-subscription/index]
+   [[:get "/main/feed-subscriptions"] #'feed-subscription/index]
+   [[:get "/main/feed-subscriptions.:format"] #'feed-subscription/index]
    [[:get (named-path     "show feed-subscription")]   #'feed-subscription/show]
    [[:get (formatted-path "show feed-subscription")]   #'feed-subscription/show]
    [[:get (formatted-path "feed-subscription model")]  #'feed-subscription/show]

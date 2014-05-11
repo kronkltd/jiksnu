@@ -8,7 +8,6 @@
             [jiksnu.mock :as mock]
             jiksnu.modules.web.views.user-views
             [jiksnu.util :as util]
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [lamina.core :as l]
@@ -19,7 +18,7 @@
 (test-environment-fixture
 
  (context "index page"
-   (->> (named-path "index users")
+   (->> "/users"
         (req/request :get)
         response-for) =>
         (check [response]
@@ -28,7 +27,7 @@
           (:body response) => string?))
 
  (context "registration page"
-   (->> (named-path "register page")
+   (->> "/main/register"
         (req/request :get)
         response-for) =>
         (check [response]

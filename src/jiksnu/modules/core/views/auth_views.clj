@@ -23,7 +23,7 @@
     {:session {:id (:_id user)}
      :status 303
      :template false
-     :headers {"Location" (named-path "public timeline")}}))
+     :headers {"Location" "/"}}))
 
 (defview #'actions.auth/login :text
   [request user]
@@ -43,7 +43,7 @@
    :body
    [:div
     [:div
-     [:form {:method "post" :action (named-path "login page")}
+     [:form {:method "post" :action "/main/login"}
       [:fieldset
        [:legend "Login"]
        [:div.clearfix
@@ -57,7 +57,7 @@
        [:div.actions
         [:input.btn.primary {:type "submit" :value "Login"}]]]]]
     [:div
-     [:form {:method "post" :action (named-path "guest login page")}
+     [:form {:method "post" :action "/main/guest-login"}
       [:fieldset
        [:legend "Guest Login"]
        [:div.clearfix
@@ -80,7 +80,7 @@
     {:session {:id nil}
      :status 303
      :template false
-     :headers {"Location" (named-path "public timeline")}}))
+     :headers {"Location" "/"}}))
 
 ;; password-page
 

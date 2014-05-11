@@ -6,8 +6,6 @@
             [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]])
   (:import jiksnu.model.User))
 
-(add-route! "/main/register"      {:named "register page"})
-(add-route! "/users"              {:named "index users"})
 (add-route! "/users/:id/discover" {:named "discover user"})
 (add-route! "/users/:id/update"   {:named "update user"})
 (add-route! "/main/profile"       {:named "user profile"})
@@ -17,18 +15,18 @@
 (defn routes
   []
   [
-   [[:get    (named-path     "register page")]  #'user/register-page]
-   [[:post   (named-path     "register page")]  #'user/register]
-   [[:get    (named-path     "user profile")]   #'user/profile]
-   [[:post   (named-path     "user profile")]   #'user/update-profile]
-   [[:get    (formatted-path "index users")]    #'user/index]
-   [[:get    (named-path     "index users")]    #'user/index]
-   [[:post   (formatted-path "discover user")]  #'user/discover]
-   [[:post   (named-path     "discover user")]  #'user/discover]
-   [[:post   (formatted-path "update user")]    #'user/update]
-   [[:post   (named-path     "update user")]    #'user/update]
-   [[:get    (named-path     "user meta")]      #'user/user-meta]
-   [[:get    (formatted-path "user model")]     #'user/show]
+   [[:get    "/main/register"]  #'user/register-page]
+   [[:post   "/main/register"]  #'user/register]
+   [[:get    "/main/profile"]   #'user/profile]
+   [[:post   "/main/profile"]   #'user/update-profile]
+   [[:get    "/users.:format"]    #'user/index]
+   [[:get    "/users"]    #'user/index]
+   [[:post   "/users/:id/discover.:format"]  #'user/discover]
+   [[:post   "/users/:id/discover"]  #'user/discover]
+   [[:post   "/users/:id/update.:format"]    #'user/update]
+   [[:post   "/users/:id/update"]    #'user/update]
+   [[:get    "/main/xrd"]      #'user/user-meta]
+   [[:get    "/model/users/:id"]     #'user/show]
 
    [[:get    "/api/friendships/exists.:format"] #'user/exists?]
    [[:get    "/api/people/@me/@all"]            #'user/index]

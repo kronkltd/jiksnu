@@ -11,11 +11,11 @@
 
 (defn routes
   []
-  [[[:get (formatted-path "index conversations")] #'conversation/index]
-   [[:get (named-path     "index conversations")] #'conversation/index]
-   [[:get (formatted-path "show conversation")]  #'conversation/show]
-   [[:get (named-path     "show conversation")]  #'conversation/show]
-   [[:get (formatted-path "conversation model")] #'conversation/show]
+  [[[:get "/main/conversations.:format"] #'conversation/index]
+   [[:get "/main/conversations"] #'conversation/index]
+   [[:get "/main/conversations/:id.:format"]  #'conversation/show]
+   [[:get "/main/conversations/:id"]  #'conversation/show]
+   [[:get "/model/conversations/:id"] #'conversation/show]
    ])
 
 (defn pages

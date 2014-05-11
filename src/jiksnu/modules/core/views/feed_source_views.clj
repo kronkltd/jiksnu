@@ -51,7 +51,7 @@
 
 (defview #'actions.feed-source/unsubscribe :html
   [request params]
-  (-> (named-path "index feed-sources")
+  (-> "/main/feed-sources"
       response/redirect-after-post
       (assoc :template false)))
 
@@ -82,6 +82,6 @@
 
 (defview #'actions.feed-source/update :html
   [request params]
-  (-> (named-path "index feed-sources")
+  (-> "/main/feed-sources"
       response/redirect-after-post
       (assoc :template false)))

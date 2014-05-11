@@ -20,7 +20,7 @@
 
 (defview #'actions.activity/delete :html
   [request activity]
-  (-> (named-path "public timeline")
+  (-> "/"
       response/redirect-after-post
       (assoc :template false)))
 
@@ -44,7 +44,7 @@
   [request activity]
   (let [actor (session/current-user)
         url (or (-> request :params :redirect_to)
-                (named-path "public timeline")
+                "/"
                 (uri actor))]
     (-> (response/redirect-after-post url)
         (assoc :template false))))
