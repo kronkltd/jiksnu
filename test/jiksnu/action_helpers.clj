@@ -3,7 +3,7 @@
             [aleph.http :refer [sync-http-request]]
             [clj-webdriver.taxi :refer [to]]
             [clojure.tools.logging :as log]
-            jiksnu.routes
+            jiksnu.modules.web.routes
             [lamina.core :refer [permanent-channel]]
             [lamina.time :as time]
             [midje.sweet :refer [fact]]

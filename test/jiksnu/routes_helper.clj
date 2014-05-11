@@ -7,7 +7,7 @@
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
-            [jiksnu.routes :as r]
+            [jiksnu.modules.web.routes :as r]
             [lamina.time :as time]
             [ring.mock.request :as req]
             [ring.util.codec :as codec])

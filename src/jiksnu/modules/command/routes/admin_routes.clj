@@ -1,4 +1,4 @@
-(ns jiksnu.routes.admin-routes
+(ns jiksnu.modules.command.routes.admin-routes
   (:require [ciste.commands :refer [add-command!]]
             [jiksnu.modules.admin.actions.worker-actions :as admin.worker]))
 

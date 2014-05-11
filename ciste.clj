@@ -3,7 +3,7 @@
            "jiksnu.factory"
            "jiksnu.db"
            "jiksnu.formats"
-           "jiksnu.routes"
+           "jiksnu.modules.web.routes"
            "jiksnu.workers"
            ]
  :modules-available

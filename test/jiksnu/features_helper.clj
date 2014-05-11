@@ -22,7 +22,7 @@
             [jiksnu.mock :refer [my-password]]
             [jiksnu.model :as model]
             [jiksnu.referrant :refer [this that get-this get-that set-this set-that]]
-            jiksnu.routes
+            jiksnu.modules.web.routes
             [jiksnu.session :as session]
             [lamina.core :refer [permanent-channel read-channel* siphon]]
             [midje.sweet :refer [=>]]
