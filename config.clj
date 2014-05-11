@@ -50,7 +50,7 @@
   :ciste.services.nrepl/port 7888,
   :salmon {:verify true},
   :triggers {:thread-count 1},
-  :modules ["jiksnu.viewmodel"],
+  :modules [],
   :debug false,
   :admins ["admin"],
   :airbrake
