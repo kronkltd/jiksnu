@@ -4,7 +4,6 @@
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.model :as model]
             [jiksnu.modules.admin.actions.feed-source-actions :refer [add-watcher delete
                                                                       fetch-updates index
                                                                       remove-watcher show]]
@@ -13,13 +12,12 @@
                                                  with-page]]
             [jiksnu.modules.web.sections.feed-source-sections :refer [add-watcher-form
                                                                       index-watchers]]
-            [jiksnu.routes.helpers :refer [named-path]]
             [ring.util.response :as response])
   (:import jiksnu.model.FeedSource))
 
 (defview #'add-watcher :html
   [request source]
-  (-> (response/redirect-after-post (named-path "admin show feed-source" (:id (:_id source))))
+  (-> (response/redirect-after-post (str "/admin/feed-sources/" (:_id source)))
       (assoc :template false)
       (assoc :flash "Watcher added")))
 
@@ -31,7 +29,7 @@
 
 (defview #'fetch-updates :html
   [request source]
-  (-> (response/redirect-after-post (named-path "admin show feed-source" (:id (:_id source))))
+  (-> (response/redirect-after-post (str "/admin/feed-sources/" (:_id source)))
       (assoc :template false)
       (assoc :flash "Fetching updates")))
 
@@ -51,7 +49,7 @@
 
 (defview #'remove-watcher :html
   [request source]
-  (-> (response/redirect-after-post (named-path "admin show feed-source" (:id (:_id source))))
+  (-> (response/redirect-after-post (str "/admin/feed-sources/" (:_id source)))
       (assoc :template false)
       (assoc :flash "Watcher removed")))
 

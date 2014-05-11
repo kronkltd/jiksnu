@@ -9,7 +9,6 @@
             [jiksnu.factory :as factory]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
-            [jiksnu.routes.helpers :refer [add-route! named-path]]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [check context future-context
                                         hiccup->doc test-environment-fixture]]
@@ -31,7 +30,7 @@
                  "hub.callback"     callback-url
                  "hub.mode"         "subscribe"}]
 
-     (-> (req/request :post (named-path "hub dispatch"))
+     (-> (req/request :post "/main/push/hub")
          (assoc :params params)
          response-for) =>
          (check [response]

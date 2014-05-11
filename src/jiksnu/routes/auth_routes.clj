@@ -1,10 +1,5 @@
 (ns jiksnu.routes.auth-routes
-  (:require [jiksnu.actions.auth-actions :as auth]
-            [jiksnu.routes.helpers :refer [add-route!]]))
-
-(add-route! "/main/logout"                        {:named "logout page"})
-(add-route! "/main/password"                      {:named "password page"})
-(add-route! "/model/authenticationMechanisms/:id" {:named "authentication-mechanism model"} )
+  (:require [jiksnu.actions.auth-actions :as auth]))
 
 (defn routes
   []

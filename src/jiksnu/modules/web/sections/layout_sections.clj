@@ -26,7 +26,6 @@
             [jiksnu.modules.web.sections.stream-sections :as sections.stream]
             [jiksnu.modules.web.sections.subscription-sections :as sections.subscription]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :refer [current-user is-admin?]])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
@@ -46,10 +45,10 @@
   [["Home"
     [["/"     "Public"]
      ["/users"         "Users"]
-     ;; [(named-path "index conversations") "Conversations"]
+     ;; ["/main/conversations" "Conversations"]
      ["/main/feed-sources"  "Feeds"]
-     [(named-path "index domains")       "Domains"]
-     [(named-path "index groups")        "Groups"]
+     ["/main/domains"       "Domains"]
+     ["/main/groups"        "Groups"]
      ["/resources"     "Resources"]]]
    ["Settings"
     [["/admin/settings"           "Settings"]]]

@@ -1,6 +1,5 @@
 (ns jiksnu.routes.message-routes
-  (:require [jiksnu.actions.message-actions :as message]
-            [jiksnu.routes.helpers :refer [add-route! named-path]]))
+  (:require [jiksnu.actions.message-actions :as message]))
 
 (defn routes
   []

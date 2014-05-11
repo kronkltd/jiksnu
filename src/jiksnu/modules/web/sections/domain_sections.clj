@@ -9,7 +9,6 @@
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
                                                  dropdown-menu]]
             [jiksnu.modules.web.sections.link-sections :as sections.link]
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session])
   (:import jiksnu.model.Domain))
 
@@ -28,7 +27,7 @@
   [item]
   [:a (if *dynamic*
         {:data-bind "attr: {href: '/model/domains/' + _id() + '.model'}"}
-        {:href (str (named-path "domain model" {:id (:_id item)}) ".model")})
+        {:href (str "/model/domains/" (:_id item) ".model")})
    "Model"])
 
 (defn get-buttons

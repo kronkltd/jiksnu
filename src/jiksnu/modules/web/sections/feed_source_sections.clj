@@ -12,7 +12,6 @@
                                                   admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
                                                  dropdown-menu dump-data]]
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session])
   (:import jiksnu.model.FeedSource
            jiksnu.model.User))
@@ -146,8 +145,7 @@
     [:a (if *dynamic*
           {:data-bind "attr: {href: '/admin/feed-sources/' + _id()}, text: title"}
           {:title (:title item)
-           :href (named-path "admin show feed-source"
-                             {:id (:_id item)})})
+           :href (str "/admin/feed-sources/" (:_id item))})
      (when-not *dynamic*
        (:title item))]]
    [:td (display-property item :domain)]

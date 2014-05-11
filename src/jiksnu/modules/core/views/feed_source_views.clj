@@ -10,7 +10,6 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections :refer [bind-to format-page-info pagination-links with-page
                                                  with-sub-page]]
-            [jiksnu.routes.helpers :refer [named-path]]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.FeedSource))

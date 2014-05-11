@@ -2,15 +2,8 @@
   (:require [ciste.initializer :only [definitializer]]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
-            [jiksnu.actions.user-actions :as user]
-            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]])
+            [jiksnu.actions.user-actions :as user])
   (:import jiksnu.model.User))
-
-(add-route! "/users/:id/discover" {:named "discover user"})
-(add-route! "/users/:id/update"   {:named "update user"})
-(add-route! "/main/profile"       {:named "user profile"})
-(add-route! "/main/xrd"           {:named "user meta"})
-(add-route! "/model/users/:id"    {:named "user model"})
 
 (defn routes
   []

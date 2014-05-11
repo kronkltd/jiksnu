@@ -1,10 +1,5 @@
 (ns jiksnu.routes.subscription-routes
-  (:require [jiksnu.actions.subscription-actions :as sub]
-            [jiksnu.routes.helpers :refer [add-route! formatted-path named-path]]))
-
-(add-route! "/users/:id/subscribers"   {:named "user subscribers"})
-(add-route! "/users/:id/subscriptions" {:named "user subscriptions"})
-(add-route! "/model/subscriptions/:id" {:named "subscription model"})
+  (:require [jiksnu.actions.subscription-actions :as sub]))
 
 (defn routes
   []
@@ -17,9 +12,9 @@
    [[:post   "/main/unsubscribe"]                            #'sub/unsubscribe]
    [[:delete "/subscriptions/:id"]                           #'sub/delete]
    [[:get    "/users/:id/subscriptions.:format"]             #'sub/get-subscriptions]
-   [[:get    (named-path "user subscriptions")]              #'sub/get-subscriptions]
+   [[:get    "/users/:id/subscriptions"]              #'sub/get-subscriptions]
    [[:get    "/users/:id/subscribers.:format"]               #'sub/get-subscribers]
-   [[:get    (named-path "user subscribers")]                #'sub/get-subscribers]
+   [[:get    "/users/:id/subscribers"]                #'sub/get-subscribers]
    [[:post   "/users/:id/unsubscribe"]                       #'sub/unsubscribe]
    [[:get    "/:username/subscribers.:format"]               #'sub/get-subscribers]
    [[:get    "/:username/subscribers"]                       #'sub/get-subscribers]
@@ -27,7 +22,7 @@
    [[:get    "/:username/subscriptions"]                     #'sub/get-subscriptions]
    [[:post   "/users/:subscribeto/subscribe.:format"]        #'sub/subscribe]
    [[:post   "/users/:subscribeto/subscribe"]                #'sub/subscribe]
-   [[:get    (formatted-path "subscription model")]          #'sub/show]
+   [[:get    "/model/subscriptions/:id"]          #'sub/show]
 
    [[:get "/api/user/:username/following"]                 {:action #'sub/get-subscriptions
                                                             :format :as

@@ -4,7 +4,6 @@
             [clj-webdriver.taxi :refer [to]]
             [clojure.tools.logging :as log]
             jiksnu.routes
-            [jiksnu.routes.helpers :refer [add-route! named-path]]
             [lamina.core :refer [permanent-channel]]
             [lamina.time :as time]
             [midje.sweet :refer [fact]]
@@ -22,7 +21,7 @@
    "edit profile"                   "/main/profile"
    "user admin"                     "/admin/users"
    "user index"                     "/users"
-   "domain index"                   (named-path "index domains")
+   "domain index"                   "/main/domains"
    "feed source admin index"        "/admin/feed-sources"
    "feed subscriptions admin index" "/admin/feed-subscriptions"
    "like admin index"               "/admin/likes"

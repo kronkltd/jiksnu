@@ -3,7 +3,6 @@
             [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
             jiksnu.modules.web.views.conversation-views
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.routes-helper :refer [response-for]]
             [jiksnu.test-helper :refer [check context test-environment-fixture]]
             [midje.sweet :refer [=>]]
@@ -12,7 +11,7 @@
 (test-environment-fixture
 
  (context "index page"
-   (->> (named-path "index conversations")
+   (->> "/main/conversations"
         (req/request :get)
         response-for) =>
         (check [response]
@@ -22,7 +21,7 @@
           ))
 
  (context "index page (:viewmodel)"
-   (->> (str (named-path "index conversations") ".viewmodel")
+   (->> "/main/conversations.viewmodel"
         (req/request :get)
         response-for) =>
         (check [response]

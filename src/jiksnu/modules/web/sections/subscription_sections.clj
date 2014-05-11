@@ -19,8 +19,7 @@
                                                                         subscriptions-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line dump-data
                                                  with-page with-sub-page]]
-            [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [jiksnu.routes.helpers :refer [named-path]])
+            [jiksnu.modules.web.sections.user-sections :as sections.user])
   (:import jiksnu.model.Subscription
            jiksnu.model.User))
 
@@ -43,7 +42,7 @@
        [:h3
         [:a (if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id() + '/subscribers'}"}
-              {:href (named-path "user subscribers" {:id (:_id user)})}) "Followers"]
+              {:href (str "/users/" (:_id user) "/subscribers")}) "Followers"]
         " "
         (with-sub-page "subscribers"
           [:span (if *dynamic*

@@ -6,21 +6,20 @@
             [jiksnu.actions.group-actions :refer [add create edit-page index
                                                   new-page show user-list]]
             [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]]
-            [jiksnu.routes.helpers :refer [named-path]])
+            [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]])
   (:import jiksnu.model.Group))
 
 (defview #'add :html
   [request group]
   {:status 303
-   :headers {"Location" (named-path "index groups")}
+   :headers {"Location" "/groups"}
    :flash "Group added"
    :template false})
 
 (defview #'create :html
   [request group]
   {:status 303
-   :headers {"Location" (named-path "index groups")}
+   :headers {"Location" "/groups"}
    :flash "Group added"
    :template false})
 
@@ -42,7 +41,7 @@
         (pagination-links response)
         (index-section items response)
         [:p
-         [:a {:href (named-path "new group")}
+         [:a {:href "/groups/new"}
           "Create a new group"]])))})
 
 (defview #'index :json

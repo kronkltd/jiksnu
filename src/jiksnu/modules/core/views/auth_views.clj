@@ -3,8 +3,7 @@
             [ciste.sections.default :refer [show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.modules.web.sections.auth-sections :as sections.auth]
-            [jiksnu.routes.helpers :refer [named-path]]))
+            [jiksnu.modules.web.sections.auth-sections :as sections.auth]))
 
 ;; guest-login
 
@@ -13,7 +12,7 @@
   {:status 303
    :template false
    :session {:pending-id (:_id user)}
-   :headers {"Location" (named-path "password page")}})
+   :headers {"Location" "/main/password"}})
 
 ;; login
 

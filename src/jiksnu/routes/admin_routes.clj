@@ -1,8 +1,7 @@
 (ns jiksnu.routes.admin-routes
-  (:use [ciste.commands :only [add-command!]]
-        [ciste.routes :only [make-matchers]]
-        [jiksnu.routes.helpers :only [add-route! named-path formatted-path]])
-  (:require [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
+  (:require [ciste.commands :refer [add-command!]]
+            [ciste.routes :refer [make-matchers]]
+            [jiksnu.modules.admin.actions.activity-actions :as admin.activity]
             [jiksnu.modules.admin.actions.auth-actions :as admin.auth]
             [jiksnu.modules.admin.actions.client-actions :as admin.client]
             [jiksnu.modules.admin.actions.conversation-actions :as admin.conversation]
@@ -18,38 +17,30 @@
             [jiksnu.modules.admin.actions.user-actions :as admin.user]
             [jiksnu.modules.admin.actions.worker-actions :as admin.worker]))
 
-(add-route! "/admin/activities"        {:named "admin activity index"})
-(add-route! "/admin/conversations"     {:named "admin conversation index"})
-(add-route! "/admin/feed-sources"      {:named "admin feed-source index"})
-
-(add-route! "/admin/conversations/:id" {:named "admin show conversation"})
-(add-route! "/admin/feed-sources/:id"  {:named "admin show feed-source"})
-(add-route! "/admin/users/:id"         {:named "admin show user"})
-
 (def admin-routes
   (make-matchers
    [
     [[:get    "/admin/activities.:format"]                 #'admin.activity/index]
-    [[:get    (named-path "admin activity index")]         #'admin.activity/index]
+    [[:get    "/admin/activities"]                         #'admin.activity/index]
 
     [[:get    "/admin/auth"]                               #'admin.auth/index]
     [[:get    "/admin/auth.:format"]                       #'admin.auth/index]
 
-    [[:get    "/admin/clients.:format"]             #'admin.client/index]
-    [[:get    "/admin/clients"]                     #'admin.client/index]
+    [[:get    "/admin/clients.:format"]                    #'admin.client/index]
+    [[:get    "/admin/clients"]                            #'admin.client/index]
 
-    [[:get    (named-path "admin conversation index")]     #'admin.conversation/index]
-    [[:get    (formatted-path "admin conversation index")] #'admin.conversation/index]
-    [[:post   (named-path "admin conversation index")]     #'admin.conversation/create]
-    [[:get    (named-path "admin show conversation")]      #'admin.conversation/show]
+    [[:get    "/admin/conversations.:format"]              #'admin.conversation/index]
+    [[:get    "/admin/conversations"]                      #'admin.conversation/index]
+    [[:post   "/admin/conversations"]                      #'admin.conversation/create]
+    [[:get    "/admin/conversations/:id"]                  #'admin.conversation/show]
     [[:get    "/admin/conversations/:id.:format"]          #'admin.conversation/show]
     [[:post   "/admin/conversations/:id/update"]           #'admin.conversation/fetch-updates]
     [[:post   "/admin/conversations/:id/delete"]           #'admin.conversation/delete]
 
-    [[:get    (formatted-path "admin feed-source index")]  #'admin.feed-source/index]
-    [[:get    (named-path "admin feed-source index")]      #'admin.feed-source/index]
-    [[:get    (formatted-path "admin show feed-source")]   #'admin.feed-source/show]
-    [[:get    (named-path "admin show feed-source")]       #'admin.feed-source/show]
+    [[:get    "/admin/feed-sources.:format"]               #'admin.feed-source/index]
+    [[:get    "/admin/feed-sources"]                       #'admin.feed-source/index]
+    [[:get    "/admin/feed-sources/:id.:format"]           #'admin.feed-source/show]
+    [[:get    "/admin/feed-sources/:id"]                   #'admin.feed-source/show]
     [[:post   "/admin/feed-sources/:id/delete"]            #'admin.feed-source/delete]
     [[:post   "/admin/feed-sources/:id/unsubscribe"]       #'admin.feed-source/unsubscribe]
     [[:post   "/admin/feed-sources/:id/update"]            #'admin.feed-source/fetch-updates]
@@ -93,8 +84,8 @@
     [[:post   "/admin/users"]                              #'admin.user/create]
     [[:get    "/admin/users.:format"]                      #'admin.user/index]
     [[:get    "/admin/users"]                              #'admin.user/index]
-    [[:get    (formatted-path "admin show user")]          #'admin.user/show]
-    [[:get    (named-path "admin show user")]              #'admin.user/show]
+    [[:get    "/admin/users/:id.:format"]                  #'admin.user/show]
+    [[:get    "/admin/users/:id"]                          #'admin.user/show]
 
     [[:get    "/admin/settings"]                           #'admin.setting/edit-page]
     [[:post   "/admin/settings"]                           #'admin.setting/update-settings]

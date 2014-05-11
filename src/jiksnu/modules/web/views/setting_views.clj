@@ -1,13 +1,12 @@
 (ns jiksnu.modules.web.views.setting-views
   (:require [ciste.views :refer [defview]]
-            [jiksnu.actions.setting-actions :as actions.setting]
-            [jiksnu.routes.helpers :refer [named-path]]))
+            [jiksnu.actions.setting-actions :as actions.setting]))
 
 (defview #'actions.setting/avatar-page :html
   [request {:keys [user]}]
   {:title "Avatar"
    :body
-   [:form {:method "post" :action (named-path "avatar settings")}
+   [:form {:method "post" :action "/settings/avatar"}
     [:fieldset
      [:legend "Upload Avatar"]
      [:div.clearfix

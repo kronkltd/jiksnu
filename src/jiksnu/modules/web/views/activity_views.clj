@@ -10,7 +10,6 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session]
             [jiksnu.modules.web.sections :refer [bind-to]]
             [ring.util.response :as response])

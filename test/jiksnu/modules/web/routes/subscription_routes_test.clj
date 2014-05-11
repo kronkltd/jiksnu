@@ -9,7 +9,6 @@
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.user :as model.user]
             [jiksnu.ops :as ops]
-            [jiksnu.routes.helpers :refer [add-route! named-path]]
             [jiksnu.routes-helper :refer [as-user response-for]]
             [jiksnu.test-helper :refer [check context future-context
                                         hiccup->doc test-environment-fixture]]
@@ -53,7 +52,7 @@
  (context "get-subscriptions"
    (let [user (mock/a-user-exists)
          subscription (mock/a-subscription-exists {:from user})
-         path (named-path "user subscriptions" {:id (str (:_id user))})]
+         path (str "/users/" (:_id user) "/subscriptions")]
      (-> (req/request :get path)
          response-for)) =>
          (check [response]

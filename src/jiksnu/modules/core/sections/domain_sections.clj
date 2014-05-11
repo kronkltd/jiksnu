@@ -10,7 +10,6 @@
             [jiksnu.modules.web.sections :refer [action-link bind-to control-line display-property
                                                  dropdown-menu]]
             [jiksnu.namespace :as ns]
-            [jiksnu.routes.helpers :refer [named-path]]
             [jiksnu.session :as session])
   (:import jiksnu.model.Domain))
 

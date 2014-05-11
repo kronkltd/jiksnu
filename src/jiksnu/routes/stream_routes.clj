@@ -1,18 +1,7 @@
 (ns jiksnu.routes.stream-routes
   (:require [ciste.commands :refer [add-command!]]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.routes.helpers :refer [add-route!]]))
-
-(add-route! "/:username"                      {:named "local user timeline"})
-(add-route! "/:username/all"                  {:named "home timeline"})
-(add-route! "/:username/microsummary"         {:named "user microsummary"})
-(add-route! "/:username/streams"              {:named "user stream index"})
-(add-route! "/main/push/callback"             {:named "callback publish"})
-(add-route! "/api/statuses/mentions"          {:named "mentions timeline api"})
-(add-route! "/users/:id"                      {:named "user profile"})
-(add-route! "/groups/:name"                   {:named "group profile"})
-(add-route! "/api/statuses/user_timeline/:id" {:named "user timeline"})
+            [jiksnu.actions.stream-actions :as actions.stream]))
 
 (defn routes
   []
