@@ -4,9 +4,9 @@
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.model.group :as model.group]
+            [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
-            [jiksnu.transforms :refer [set-_id set-created-time
-                                       set-updated-time]]
+            [jiksnu.transforms :as transforms]
             [jiksnu.templates.actions :as templates.actions]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Group))
@@ -14,9 +14,9 @@
 (defn prepare-create
   [group]
   (-> group
-      set-_id
-      set-created-time
-      set-updated-time))
+      transforms/set-_id
+      transforms/set-created-time
+      transforms/set-updated-time))
 
 (defaction add-admin
   [group user]
@@ -46,6 +46,12 @@
 (defaction new-page
   []
   (Group.))
+
+(defaction fetch-admins
+  [group]
+  (map
+   model.user/fetch-by-id
+   (:admins group)))
 
 (defaction show
   [group]
