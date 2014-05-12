@@ -12,14 +12,14 @@
 (defview #'add :html
   [request group]
   {:status 303
-   :headers {"Location" "/groups"}
+   :headers {"Location" "/main/groups"}
    :flash "Group added"
    :template false})
 
 (defview #'create :html
   [request group]
   {:status 303
-   :headers {"Location" "/groups"}
+   :headers {"Location" "/main/groups"}
    :flash "Group added"
    :template false})
 
@@ -41,7 +41,7 @@
         (pagination-links response)
         (index-section items response)
         [:p
-         [:a {:href "/groups/new"}
+         [:a {:href "/main/groups/new"}
           "Create a new group"]])))})
 
 (defview #'index :json

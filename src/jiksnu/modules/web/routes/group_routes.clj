@@ -4,12 +4,12 @@
 (defn routes
   []
   [
-   [[:post "/groups"]                                    #'group/create]
+   [[:post "/main/groups"]                                    #'group/create]
    [[:get  "/api/statusnet/app/memberships/:id.:format"] #'group/user-list]
-   [[:get  "/groups.:format"]              #'group/index]
-   [[:get  "/groups"]              #'group/index]
-   [[:get  "/groups/new"]                 #'group/new-page]
-   [[:get  "/groups/:name/edit"]                #'group/edit-page]
+   [[:get  "/main/groups.:format"]              #'group/index]
+   [[:get  "/main/groups"]              #'group/index]
+   [[:get  "/main/groups/new"]                 #'group/new-page]
+   [[:get  "/main/groups/:name/edit"]                #'group/edit-page]
    ;; [[:get  "/:username/groups.:format"]         #'group/user-list]
    ;; [[:get  "/:username/groups"]         #'group/user-list]
    ;; [[:get    "/search/group"]                            #'group/search-page]

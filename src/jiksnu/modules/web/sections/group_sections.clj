@@ -40,7 +40,7 @@
 
 (defsection add-form [Group :html]
   [group & _]
-  [:form.well.form-horizontal {:method "post" :action "/groups"}
+  [:form.well.form-horizontal {:method "post" :action "/main/groups"}
    [:fieldset
     [:legend "Add a Group"]
     (control-line "Nickname" "nickname" "text")
@@ -104,8 +104,8 @@
     [:p
      [:a.url.entry-title
       (if *dynamic*
-        {:data-bind "attr: {href: '/groups/' + nickname()}"}
-        {:href (str "/groups/" (:nickname group))})
+        {:data-bind "attr: {href: '/main/groups/' + nickname()}"}
+        {:href (str "/main/groups/" (:nickname group))})
       [:img {:src (:avatarUrl group) }]
       [:span.nickname
        [:span

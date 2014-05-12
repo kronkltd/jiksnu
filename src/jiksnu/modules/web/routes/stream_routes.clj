@@ -8,7 +8,7 @@
   [
    [[:post "/streams"]                                  #'actions.stream/create]
    [[:get    "/"]        #'actions.stream/public-timeline]
-   [[:get    "/groups/:name"]          #'actions.stream/group-timeline]
+   [[:get    "/main/groups/:name"]          #'actions.stream/group-timeline]
    [[:get    "/users/:id.:format"]           #'actions.stream/user-timeline]
    [[:get    "/users/:id"]           #'actions.stream/user-timeline]
    [[:get    "/:username.:format"]    #'actions.stream/user-timeline]
