@@ -4,6 +4,17 @@
             [jiksnu.actions.conversation-actions :as actions.conversation])
   (:import jiksnu.model.Conversation))
 
+(defview #'actions.conversation/fetch-by-group :page
+  [request response]
+  (let [items (:items response)
+        response (merge response
+                        {:id (:_id request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "group"
+            :id (:_id (:item request))
+            :body response}}))
+
 ;; index
 
 (defview #'actions.conversation/index :page

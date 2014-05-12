@@ -6,3 +6,7 @@
 (deffilter #'actions.conversation/index :page
   [action request]
   (action))
+
+(deffilter #'actions.conversation/fetch-by-group :page
+  [action request]
+  (action))

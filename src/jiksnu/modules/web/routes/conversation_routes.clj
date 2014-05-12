@@ -2,7 +2,8 @@
   (:require [ciste.initializer :refer [definitializer]]
             [jiksnu.actions.activity-actions :as activity]
             [jiksnu.actions.conversation-actions :as conversation])
-  (:import jiksnu.model.Conversation))
+  (:import jiksnu.model.Conversation
+           jiksnu.model.Group))
 
 (defn routes
   []
@@ -24,4 +25,7 @@
   [
    [{:type Conversation
      :name "activities"}    {:action #'activity/fetch-by-conversation}]
-   ])
+
+   [{:type Group
+     :name "conversations"} {:action #'conversation/fetch-by-group}]]
+  )

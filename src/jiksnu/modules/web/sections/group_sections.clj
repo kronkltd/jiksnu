@@ -8,7 +8,7 @@
                                              admin-index-block admin-index-line
                                              admin-index-section]]
         [jiksnu.modules.web.sections :only [action-link bind-property control-line display-property
-                                            dropdown-menu dump-data]])
+                                            dropdown-menu dump-data with-sub-page]])
   (:require [clojure.tools.logging :as log]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session])
@@ -134,11 +134,13 @@
     [:p (bind-property "created")]
     [:p (bind-property "updated")]
     [:p "Admins " (count (:admins group))]
-    [:ul
-     (map
-      (fn [admin]
-        (link-to (model.user/fetch-by-id admin)))
-      (:admins group))]]])
+    (with-sub-page "admins"
+      [:ul {:data-bind "foreach: items"}
+       (map
+        (fn [admin]
+          [:div {:data-model "user"}
+           (link-to (model.user/fetch-by-id admin))])
+       (:admins group))])]])
 
 ;; update-button
 
