@@ -14,6 +14,7 @@
    ;; [[:get  "/:username/groups"]         #'group/user-list]
    ;; [[:get    "/search/group"]                            #'group/search-page]
    ;; [[:post   "/search/group"]                            #'group/search]
+   [[:get    "/model/groups/:id.:format"]          #'group/show]
    [[:get    "/model/groups/:id"]          #'group/show]
 
    ])

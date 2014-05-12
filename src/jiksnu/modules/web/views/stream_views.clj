@@ -41,9 +41,10 @@
    :body
    (bind-to "targetGroup"
      (show-section group)
-     (with-sub-page "groups"
-       (pagination-links (if *dynamic* {} page))
-       (index-section items)))})
+     [:div {:data-model "group"}
+      (with-sub-page "conversations"
+        (pagination-links (if *dynamic* {} page))
+        (index-section items))])})
 
 ;; home-timeline
 

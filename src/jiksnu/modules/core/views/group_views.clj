@@ -71,6 +71,11 @@
   {:title "Create New Group"
    :body (add-form group)})
 
+(defview #'new-page :viewmodel
+  [request group]
+  {:body {:title "Create New Group"}}
+  )
+
 ;; show
 
 (defview #'show :model
