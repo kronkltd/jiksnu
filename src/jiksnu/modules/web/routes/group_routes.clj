@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.group-routes
-  (:require [jiksnu.actions.group-actions :as group]))
+  (:require [jiksnu.actions.group-actions :as group])
+  (:import jiksnu.model.Group))
 
 (defn routes
   []
