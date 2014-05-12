@@ -1,9 +1,7 @@
 (ns jiksnu.actions.conversation-actions
-  (:use [ciste.core :only [defaction]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clj-time.core :as time]
+  (:require [ciste.core :refer [defaction]]
+            [clj-time.core :as time]
+            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
@@ -15,7 +13,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.transforms.conversation-transforms :as transforms.conversation]
             [lamina.core :as l]
-            [lamina.trace :as trace]))
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+]]))
 
 (defonce delete-hooks (ref []))
 
@@ -55,6 +54,10 @@
 (defaction index
   [& [params & [options]]]
   (index* params options))
+
+(defaction fetch-by-group
+  [group & [options]]
+  (index {:group (:_id group)}))
 
 (defn get-update-source
   [item]
@@ -102,10 +105,10 @@
     (trace/trace :conversations:parent:set [conversation activity])
     (model.conversation/set-field! conversation :parent (:_id activity)))
   #_(let [lu (:lastUpdated conversation)
-        c (:published activity)]
-    (when (or (not lu) (time/before? lu c))
-      (log/debug "Checking for updated comments")
-      (update conversation))))
+          c (:published activity)]
+      (when (or (not lu) (time/before? lu c))
+        (log/debug "Checking for updated comments")
+        (update conversation))))
 
 (defaction create-new
   []
