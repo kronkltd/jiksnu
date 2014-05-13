@@ -1,11 +1,14 @@
 (ns jiksnu.modules.core.filters.group-filters
-  (:use [ciste.filters :only [deffilter]]
-        jiksnu.actions.group-actions)
-  (:require [clojure.tools.logging :as log]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.util :as util]))
+  (:require [ciste.filters :refer [deffilter]]
+            [clojure.tools.logging :as log]
+            [jiksnu.actions.group-actions :as actions.group]))
 
-(deffilter #'index :page
+(deffilter #'actions.group/index :page
   [action request]
   (action))
+
+(deffilter #'actions.group/fetch-admins :page
+  [action request]
+  (when-let [item (:item request)]
+    (action item)))
+
