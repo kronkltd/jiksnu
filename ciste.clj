@@ -1,14 +1,10 @@
 {:environment :development
+
  :modules ["jiksnu.core"
-           "jiksnu.formats"
-           "jiksnu.modules.web.routes"
-           ]
- :modules-available
- [
-  "jiksnu.commands"
-  "jiksnu.factory"
-  "jiksnu.workers"
-  ]
+           "jiksnu.modules.core"
+           "jiksnu.modules.web"]
+
+ :modules-available []
 
  :services-available
  [

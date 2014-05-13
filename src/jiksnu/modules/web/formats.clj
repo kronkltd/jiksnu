@@ -1,4 +1,4 @@
-(ns jiksnu.formats
+(ns jiksnu.modules.web.formats
   (:require [ciste.core :refer [with-format]]
             [ciste.formats :refer [format-as]]
             [clojure.data.json :as json]
@@ -6,19 +6,11 @@
             [hiccup.core :as h]
             [jiksnu.session :as session]))
 
-(defmethod format-as :as
-  [format request response]
-  (with-format :json (format-as :json request response)))
-
 (defmethod format-as :clj
   [format request response]
   (-> response
       (assoc-in  [:headers "Content-Type"] "text/plain")
       (assoc :body (:body response))))
-
-;; (defmethod format-as :default
-;;   [format request response]
-;;   response)
 
 (defmethod format-as :html
   [format request response]
@@ -30,17 +22,6 @@
   (-> response
       (assoc-in [:headers "Content-Type"] "application/json")
       (assoc :body (json/json-str (:body response)))))
-
-(defmethod format-as :page
-  [format request response]
-  (with-format :json
-    (doall (format-as :json request response))))
-
-(defmethod format-as :model
-  [format request response]
-  (with-format :json
-    (doall (format-as :json request response))))
-
 
 (defmethod format-as :text
   [request format response]
