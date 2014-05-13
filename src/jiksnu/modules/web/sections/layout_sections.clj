@@ -80,7 +80,8 @@
     (sections.subscription/subscribers-widget user)
     (sections.group/user-groups user)
     (with-sub-page "streams"
-      (sections.stream/streams-widget user))]))
+      (sections.stream/streams-widget user))
+    (sections.group/groups-widget user)]))
 
 (defn navigation-group
   [[header links]]

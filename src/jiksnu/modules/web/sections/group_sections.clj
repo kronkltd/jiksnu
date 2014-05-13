@@ -1,17 +1,22 @@
 (ns jiksnu.modules.web.sections.group-sections
-  (:use [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form delete-button edit-button
-                                       link-to index-block index-line
-                                       index-section show-section update-button]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-show-section
-                                             admin-index-block admin-index-line
-                                             admin-index-section]]
-        [jiksnu.modules.web.sections :only [action-link bind-property control-line display-property
-                                            dropdown-menu dump-data with-sub-page]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section add-form
+                                            delete-button edit-button link-to
+                                            index-block index-line index-section
+                                            show-section update-button]]
+            [clojure.tools.logging :as log]
+            [jiksnu.ko :refer [*dynamic*]]
+            [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session])
+            [jiksnu.session :as session]
+            [jiksnu.modules.core.sections :refer [admin-show-section
+                                                  admin-index-block
+                                                  admin-index-line
+                                                  admin-index-section]]
+            [jiksnu.modules.web.sections :refer [action-link bind-property
+                                                 control-line display-property
+                                                 dropdown-menu dump-data
+                                                 with-sub-page]])
   (:import jiksnu.model.Group))
 
 (defn model-button
@@ -29,6 +34,22 @@
      [#'edit-button
       #'delete-button
       #'update-button])))
+
+(defn groups-widget
+  [user]
+  (when user
+    (let [groups (if *dynamic*
+                   [(Group.)]
+                   (model.group/fetch-by-user user))]
+      [:div.groups
+       [:h3
+        [:a (if *dynamic*
+              {:data-bind "attr: {href: '/users/' + _id() + '/groups'}"}
+              {:href (str "/users/" (:_id user) "/groups")}) "Groups"]]
+       #_(with-sub-page "groups"
+           [:ul
+            [:li
+             "Group"]])])))
 
 ;; actions-section
 
@@ -140,7 +161,7 @@
         (fn [admin]
           [:div {:data-model "user"}
            (link-to (model.user/fetch-by-id admin))])
-       (:admins group))])]])
+        (:admins group))])]])
 
 ;; update-button
 
