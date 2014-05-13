@@ -32,6 +32,10 @@
   [request {:keys [items] :as page}]
   {:body {:title "Register"}})
 
+(defview #'actions.user/profile :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Profile"}})
+
 ;; show
 
 (defview #'actions.user/show :as
