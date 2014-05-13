@@ -36,3 +36,7 @@
 (defn fetch-by-name
   [name]
   (maker (mc/find-one-as-map collection-name {:nickname name})))
+
+(defn fetch-by-user
+  [user]
+  (fetch-all {:members (:_id user)}))
