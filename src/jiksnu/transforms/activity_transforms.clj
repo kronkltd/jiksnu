@@ -150,7 +150,7 @@
   (if (empty? (:id activity))
     (if-let [user (model.activity/get-author activity)]
       (if (:local activity)
-        (let [id "" #_(r/named-url "show activity" {:id (:_id activity)})]
+        (let [id (str "https://" (config :domain) "/notice/" (:_id activity))]
           (assoc activity :id id))
         (throw+ "is not local and does not have an id"))
       (throw+ "Could not determine author"))
