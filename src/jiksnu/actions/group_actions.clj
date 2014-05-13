@@ -7,6 +7,7 @@
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
             [jiksnu.transforms :as transforms]
+            [jiksnu.transforms.group-transforms :as transforms.group]
             [jiksnu.templates.actions :as templates.actions]
             [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Group))
@@ -15,6 +16,8 @@
   [group]
   (-> group
       transforms/set-_id
+      transforms.group/set-members
+      transforms.group/set-admins
       transforms/set-created-time
       transforms/set-updated-time))
 
