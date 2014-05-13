@@ -1,13 +1,5 @@
 {:environment :development
- :modules ["jiksnu.commands"
-           "jiksnu.factory"
-           "jiksnu.db"
-           "jiksnu.formats"
-           "jiksnu.routes"
-           "jiksnu.workers"
-           "jiksnu.triggers.domain-triggers"
-           "jiksnu.triggers.conversation-triggers"
-           ]
+ :modules ["jiksnu.core"]
  :modules-available
  [
   "jiksnu.commands"
