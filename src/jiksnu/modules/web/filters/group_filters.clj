@@ -43,3 +43,14 @@
   [action request]
   (-> request :params :id
       model.user/fetch-by-id action))
+
+(deffilter #'actions.group/fetch-by-user :http
+  [action request]
+  (when-let [params (:params request)]
+    (let [id (:id params)
+          username (:username params)]
+      (when (or id username)
+        (when-let [user (or (and id       (model.user/fetch-by-id id))
+                            (and username (model.user/get-user username)))]
+          (action user))))))
+

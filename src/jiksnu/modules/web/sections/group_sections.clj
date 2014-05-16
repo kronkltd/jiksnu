@@ -6,6 +6,7 @@
                                             show-section update-button]]
             [clojure.tools.logging :as log]
             [jiksnu.ko :refer [*dynamic*]]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
@@ -40,7 +41,7 @@
   (when user
     (let [groups (if *dynamic*
                    [(Group.)]
-                   (model.group/fetch-by-user user))]
+                   (actions.group/fetch-by-user user))]
       [:div.groups
        [:h3
         [:a (if *dynamic*
