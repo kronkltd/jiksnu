@@ -12,3 +12,9 @@
   (when-let [item (:item request)]
     (action item)))
 
+(deffilter #'actions.group/fetch-by-user :page
+  [action request]
+  (when-let [item (:item request)]
+    (action item)))
+
+

@@ -1,36 +1,39 @@
 (ns jiksnu.modules.web.sections.activity-sections
-  (:use [ciste.core :only [with-format]]
-        [ciste.sections :only [defsection]]
-        [ciste.sections.default :only [actions-section add-form delete-button edit-button
-                                       show-section-minimal
-                                       show-section link-to uri title index-block
-                                       index-line index-section update-button]]
-        [clojure.core.incubator :only [-?>]]
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.core.sections :only [admin-index-line
-                                             admin-index-block admin-index-section ]]
-        [jiksnu.modules.web.sections :only [action-link bind-to
-                                            control-line
-                                            display-property display-timestamp dropdown-menu
-                                            dump-data format-links pagination-links]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.core :refer [with-format]]
+            [ciste.model :as cm]
+            [ciste.sections :refer [defsection]]
+            [ciste.sections.default :refer [actions-section add-form
+                                            delete-button edit-button
+                                            show-section-minimal
+                                            show-section link-to uri title
+                                            index-block
+                                            index-line index-section update-button]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.comment-actions :as actions.comment]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.conversation :as model.conversation]
             [jiksnu.model.like :as model.like]
             [jiksnu.model.resource :as model.resource]
             [jiksnu.model.user :as model.user]
+            [jiksnu.modules.core.sections :refer [admin-index-line
+                                                  admin-index-block
+                                                  admin-index-section]]
+            [jiksnu.modules.web.sections :refer [action-link bind-to
+                                                 control-line
+                                                 display-property display-timestamp dropdown-menu
+                                                 dump-data format-links pagination-links
+                                                 with-sub-page]]
             [jiksnu.namespace :as ns]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
             [jiksnu.session :as session]
             [jiksnu.util :as util]
-            )
+            [slingshot.slingshot :refer [throw+]])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation
            jiksnu.model.Resource
@@ -115,11 +118,18 @@
 
 (defn privacy-select
   [activity]
-  [:select {:name "privacy"}
-   [:option {:value "public"} "Public"]
-   [:option {:value "group"} "Group"]
-   [:option {:value "custom"} "Custom"]
-   [:option {:value "private"} "Private"]])
+  (list
+   (bind-to "$root.targetUser() || $root.currentUser()"
+     [:div {:data-model "user"}
+      (with-sub-page "groups"
+        [:select {:data-bind "options: _.map(items, function(item) {jiksnu.model.get_model(\"group\").fullname()})"}
+         #_[:li {:data-model "group"}
+          [:span {:data-bind "text: fullname"}]]])])
+   [:select {:name "privacy"}
+    [:option {:value "public"} "Public"]
+    [:option {:value "group"} "Group"]
+    [:option {:value "custom"} "Custom"]
+    [:option {:value "private"} "Private"]]))
 
 ;; move to model
 

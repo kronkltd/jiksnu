@@ -10,12 +10,25 @@
   (:import jiksnu.model.Group))
 
 (defview #'actions.group/fetch-admins :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
+  [request page]
+  (let [items (:items page)
+        response (merge page
                         {:id (:name request)
                          :items (map :_id items)})]
-    {:body {:action "page-updated"
+    {:body {:action "sub-page-updated"
+            :model "group"
+            :id (:_id (:item request))
+            :body response}}))
+
+(defview #'actions.group/fetch-by-user :page
+  [request page]
+  (let [items (:items page)
+        response (merge page
+                        {:id (:name request)
+                         :items (map :_id items)})]
+    {:body {:action "sub-page-updated"
+            :model "user"
+            :id (:_id (:item request))
             :body response}}))
 
 (defview #'actions.group/fetch-by-user :viewmodel

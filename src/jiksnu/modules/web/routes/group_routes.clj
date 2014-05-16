@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.group-routes
-  (:require [jiksnu.actions.group-actions :as group])
+  (:require [jiksnu.actions.conversation-actions :as conversation]
+            [jiksnu.actions.group-actions :as group])
   (:import jiksnu.model.Group))
 
 (defn routes
@@ -32,6 +33,6 @@
 (defn sub-pages
   []
   [
-   [{:type Group :name "admins"}       {:action #'group/fetch-admins}]
-
-   ])
+   [{:type Group :name "admins"}        {:action #'group/fetch-admins}]
+   [{:type Group :name "conversations"} {:action #'conversation/fetch-by-group}]
+  ])

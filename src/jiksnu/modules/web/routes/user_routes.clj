@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.routes.user-routes
   (:require [ciste.initializer :only [definitializer]]
+            [jiksnu.actions.group-actions :as group]
             [jiksnu.actions.stream-actions :as stream]
             [jiksnu.actions.subscription-actions :as sub]
             [jiksnu.actions.user-actions :as user])
@@ -50,5 +51,6 @@
    [{:type User :name "subscriptions"}    {:action #'sub/get-subscriptions}]
    [{:type User :name "subscribers"}      {:action #'sub/get-subscribers}]
    [{:type User :name "streams"}          {:action #'stream/fetch-by-user}]
+   [{:type User :name "groups"}           {:action #'group/fetch-by-user}]
 
    ])

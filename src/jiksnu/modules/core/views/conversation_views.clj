@@ -4,18 +4,26 @@
             [jiksnu.actions.conversation-actions :as actions.conversation])
   (:import jiksnu.model.Conversation))
 
+(defview #'actions.conversation/index :viewmodel
+  [request {:keys [items] :as page}]
+  {:body {:title "Conversations"}})
+
+(defview #'actions.conversation/show :viewmodel
+  [request item]
+  {:body {:targetConversation (:_id item)
+          :title (or (:title item)
+                     "Conversation")}})
+
+
 (defview #'actions.conversation/fetch-by-group :page
-  [request response]
-  (let [items (:items response)
-        response (merge response
+  [request {:keys [items] :as page}]
+  (let [response (merge page
                         {:id (:_id request)
                          :items (map :_id items)})]
     {:body {:action "sub-page-updated"
             :model "group"
-            :id (:_id (:item request))
+            :id (:_id (:item page))
             :body response}}))
-
-;; index
 
 (defview #'actions.conversation/index :page
   [request response]
@@ -26,18 +34,9 @@
     {:body {:action "page-updated"
             :body response}}))
 
-(defview #'actions.conversation/index :viewmodel
-  [request {:keys [items] :as page}]
-  {:body {:title "Conversations"}})
 
-;; show
 
 (defview #'actions.conversation/show :model
   [request item]
   {:body item})
 
-(defview #'actions.conversation/show :viewmodel
-  [request item]
-  {:body {:targetConversation (:_id item)
-          :title (or (:title item)
-                     "Conversation")}})

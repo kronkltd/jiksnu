@@ -23,9 +23,5 @@
 (defn sub-pages
   []
   [
-   [{:type Conversation
-     :name "activities"}    {:action #'activity/fetch-by-conversation}]
-
-   [{:type Group
-     :name "conversations"} {:action #'conversation/fetch-by-group}]]
-  )
+   [{:type Conversation :name "activities"} {:action #'activity/fetch-by-conversation}]
+   ])

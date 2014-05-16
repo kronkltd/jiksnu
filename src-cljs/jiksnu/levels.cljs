@@ -6,8 +6,8 @@
     "jiksnu.core"        :fine
     "jiksnu.events"    :finest
     "jiksnu.model"       :fine
-   "jiksnu.routes" :finest
-   "jiksnu.websocket"   :fine
-   "goog.net.WebSocket" :warning
+    "jiksnu.routes" :finest
+    "jiksnu.websocket"   :warning
+    "goog.net.WebSocket" :warning
    })
 
