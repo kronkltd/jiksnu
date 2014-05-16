@@ -119,17 +119,16 @@
 (defn privacy-select
   [activity]
   (list
-   (bind-to "$root.targetUser() || $root.currentUser()"
-     [:div {:data-model "user"}
-      (with-sub-page "groups"
-        [:select {:data-bind "options: _.map(items, function(item) {jiksnu.model.get_model(\"group\").fullname()})"}
-         #_[:li {:data-model "group"}
-          [:span {:data-bind "text: fullname"}]]])])
    [:select {:name "privacy"}
     [:option {:value "public"} "Public"]
     [:option {:value "group"} "Group"]
     [:option {:value "custom"} "Custom"]
-    [:option {:value "private"} "Private"]]))
+    [:option {:value "private"} "Private"]]
+   (bind-to "$root.targetUser() || $root.currentUser()"
+     [:div {:data-model "user"}
+      (with-sub-page "groups"
+        [:select {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"}])])
+   ))
 
 ;; move to model
 
