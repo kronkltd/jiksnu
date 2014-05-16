@@ -1,20 +1,14 @@
 (ns jiksnu.modules.web.routes.stream-routes-test
-  (:use [ciste.formats :only [format-as]]
-        [clj-factory.core :only [factory fseq]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [jiksnu.routes-helper :only [as-user response-for]]
-        [midje.sweet :only [=>]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
             [clojurewerkz.support.http.statuses :as status]
-            [jiksnu.actions.auth-actions :as actions.auth]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
             jiksnu.modules.web.views.stream-views
+            [jiksnu.test-helper :refer [check context future-context
+                                        test-environment-fixture]]
+            [jiksnu.routes-helper :refer [as-user response-for]]
+            [midje.sweet :refer [=>]]
             [ring.mock.request :as req]))
 
 (test-environment-fixture
@@ -26,8 +20,8 @@
      (-> (req/request :get "/")
          response-for) =>
          (check [response]
-           response => map?
-           (:status response) => status/success?))
+                response => map?
+                (:status response) => status/success?))
 
    (context "when there are activities"
      (let [user (mock/a-user-exists)]
@@ -38,28 +32,18 @@
          (-> (req/request :get "/")
              response-for) =>
              (check [response]
-               response => map?
-               (:status response) => status/success?
-               (:body response) => string?))
-
-       (context "when the the request is for n3"
-         (-> (req/request :get "/api/statuses/public_timeline.n3")
-             response-for) =>
-             (check [response]
-               response => map?
-               (:status response) => status/success?
-               ;; TODO: parse and check model
-               (let [body (:body response)]
-                 body => string?)))
+                    response => map?
+                    (:status response) => status/success?
+                    (:body response) => string?))
 
        (context "when the user is authenticated"
          (-> (req/request :get "/")
              as-user
              response-for) =>
              (check [response]
-               response => map?
-               (:status response) => status/success?
-               (:body response) => string?))
+                    response => map?
+                    (:status response) => status/success?
+                    (:body response) => string?))
        ))
    )
 
@@ -73,20 +57,8 @@
        (-> (req/request :get (format "/%s" (:username user)))
            as-user response-for)) =>
            (check [response]
-             response => map?
-             (:status response) => status/success?
-             (:body response) => string?))
-
-   (context "n3"
-     (let [user (mock/a-user-exists)]
-       (dotimes [n 10]
-         (mock/there-is-an-activity {:user user}))
-
-       (-> (req/request :get (format "/api/statuses/user_timeline/%s.n3" (:_id user)))
-           (as-user user) response-for)) =>
-           (check [response]
-             response => map?
-             (:status response) => status/success?
-             (:body response) => string?))
+                  response => map?
+                  (:status response) => status/success?
+                  (:body response) => string?))
    )
  )

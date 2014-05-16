@@ -5,5 +5,3 @@
 
             )
   )
-
-(println "loading core core")

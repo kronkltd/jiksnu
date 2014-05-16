@@ -81,7 +81,6 @@
 
 (defn log-response
   []
-  (println "logging response")
   (log/info (get-body)))
 
 (defn be-at-the-page

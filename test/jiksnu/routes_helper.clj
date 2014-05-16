@@ -1,16 +1,17 @@
 (ns jiksnu.routes-helper
-  (:use [clj-factory.core :only [factory fseq]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [lamina.core :only [channel wait-for-message]])
-  (:require [clj-http.cookies :as cookies]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clj-http.cookies :as cookies]
+            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.mock :as mock]
             [jiksnu.modules.web.routes :as r]
+            [lamina.core :refer [channel enqueue wait-for-message]]
             [lamina.time :as time]
             [ring.mock.request :as req]
-            [ring.util.codec :as codec])
+            [ring.util.codec :as codec]
+            [slingshot.slingshot :refer [try+]])
   (:import java.io.StringReader))
 
 (defn response-for
@@ -18,17 +19,17 @@
   ([request] (response-for request (time/seconds 5)))
   ([request timeout]
      (let [ch (channel)]
-       (try
-         (r/app ch request)
-         (catch Exception ex
-           (.printStackTrace ex)))
+       (try+
+        (r/app ch request)
+        (catch Object ex
+          (log/error "error in response-for" ex)))
        (wait-for-message ch timeout))))
 
 (defn get-auth-cookie
   [username password]
   (-?> (req/request :post "/main/login")
-       (assoc :params {:username username
-                       :password password})
+      (assoc :params {:username username
+                      :password password})
        response-for
        :headers
        (get "Set-Cookie")
