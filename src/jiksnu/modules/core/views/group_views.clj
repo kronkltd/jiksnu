@@ -10,9 +10,8 @@
   (:import jiksnu.model.Group))
 
 (defview #'actions.group/fetch-admins :page
-  [request page]
-  (let [items (:items page)
-        response (merge page
+  [request {:keys [items] :as page}]
+  (let [response (merge (log/spy :info page)
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "sub-page-updated"

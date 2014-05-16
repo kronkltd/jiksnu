@@ -24,6 +24,8 @@
                  [clojurewerkz/urly "1.0.0"
                   :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0"]
+                 [lein-light-nrepl "0.0.17"]
+
                  [clojure-complete "0.2.3"]
                  [clojurewerkz/support "0.20.0"]
                  [com.novemberain/monger "1.7.0"]
@@ -114,6 +116,9 @@
               [[midje         "1.6.3"]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
+
+
+  :repl-options {:nrepl-middleware [lighttable.nrepl.handler/lighttable-ops]}
 
   :lis-opts {
              :name "jiksnu"

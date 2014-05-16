@@ -75,7 +75,7 @@
                        (.get coll page-name)))]
         (.set page "loaded" "true")
         page)
-      (throw (Exception. "Page name is undefined"))
+      (throw "Page name is undefined")
       )))
 
 (defmethod ws/process-event "page-add"

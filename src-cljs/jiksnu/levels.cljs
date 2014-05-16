@@ -4,7 +4,7 @@
   {
    ;; "waltz.state"        :finest
     "jiksnu.core"        :fine
-    "jiksnu.events"    :finest
+    "jiksnu.events"    :finer
     "jiksnu.model"       :fine
     "jiksnu.routes" :finest
     "jiksnu.websocket"   :warning
