@@ -110,11 +110,11 @@
     (try
       (handler request)
       (catch Exception ex
-        (.printStackTrace ex)
-        #_(trace/trace "errors:handled" ex)
-        #_(try
+        ;; (.printStackTrace ex)
+        (trace/trace "errors:handled" ex)
+        (try
           (let [st (with-out-str (print-stack-trace ex))]
-            (println st)
+            ;; (println st)
             {:status 500
              :headers {"content-type" "text/plain"}
              :body st})

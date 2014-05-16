@@ -42,7 +42,7 @@
                (.getData ex) {})]
     (log/error ex)
     (when (instance? Throwable ex )
-      (.printStackTrace ex)
+      ;; (.printStackTrace ex)
       ;; (when (config :airbrake :enabled)
       ;;   (let [options {:url "foo"
       ;;                  :params (into {} (map (fn [[k v]] {k (pr-str v)})
