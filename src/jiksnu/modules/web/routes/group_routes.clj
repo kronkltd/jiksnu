@@ -16,8 +16,8 @@
    [[:get  "/model/groups/:id.:format"]                  #'group/show]
    [[:get  "/model/groups/:id"]                          #'group/show]
 
-   [[:get  "/users/:username/groups.:format"]            #'group/fetch-by-user]
-   [[:get  "/users/:username/groups"]                    #'group/fetch-by-user]
+   [[:get  "/users/:id/groups.:format"]                  #'group/fetch-by-user]
+   [[:get  "/users/:id/groups"]                          #'group/fetch-by-user]
    ;; [[:get    "/search/group"]                            #'group/search-page]
    ;; [[:post   "/search/group"]                            #'group/search]
 
