@@ -18,7 +18,8 @@
                                                  control-line display-property
                                                  dropdown-menu dump-data
                                                  with-sub-page]])
-  (:import jiksnu.model.Group))
+  (:import jiksnu.model.Group
+           jiksnu.model.User))
 
 (defn model-button
   [activity]
@@ -46,11 +47,14 @@
        [:h3
         [:a (if *dynamic*
               {:data-bind "attr: {href: '/users/' + _id() + '/groups'}"}
-              {:href (str "/users/" (:_id user) "/groups")}) "Groups"]]
-       #_(with-sub-page "groups"
-           [:ul
-            [:li
-             "Group"]])])))
+              {:href (str "/users/" (:_id user) "/groups")}) "Groups"]
+        " "
+        (with-sub-page "groups"
+          [:span {:data-bind "text: totalRecords"}])]
+       (with-sub-page "groups"
+         [:ul {:data-bind "foreach: items"}
+          [:li {:data-model "group"}
+           [:div {:data-bind "text: fullname"}]]])])))
 
 ;; actions-section
 
@@ -156,13 +160,13 @@
     [:p (bind-property "created")]
     [:p (bind-property "updated")]
     [:p "Admins " (count (:admins group))]
-    (with-sub-page "admins"
-      [:ul {:data-bind "foreach: items"}
+    [:ul {:data-bind "foreach: admins"}
+     (let [items (if *dynamic* [(User.)] (:admins group))]
        (map
         (fn [admin]
           [:div {:data-model "user"}
            (link-to (model.user/fetch-by-id admin))])
-        (:admins group))])]])
+        items))]]])
 
 ;; update-button
 

@@ -66,7 +66,6 @@
     (if-let [page-name (.-id data)]
       (let [model-name (.-model event)
             id (.-id event)
-            type (.-type event)
             m (model/get-model-obj model-name id)
             coll (.get m "pages")
             page (if-let [page (.get coll page-name)]
@@ -75,8 +74,7 @@
                        (.get coll page-name)))]
         (.set page "loaded" "true")
         page)
-      (throw "Page name is undefined")
-      )))
+      (throw "Page name is undefined"))))
 
 (defmethod ws/process-event "page-add"
   [event]

@@ -544,19 +544,21 @@
 
 (defn get-model-obj
   [model-name id]
-  (if-let [coll-name (or (collection-name model-name)
-                         model-name)]
-    (if-let [coll (.get _model coll-name)]
-      (if-let [m (.get coll id)]
-        m
-        (do
-          (log/fine *logger* (format "Creating model: %s(%s)" model-name id))
-          (let [m (.push coll (js-obj "_id" id))]
-            (.fetch m)
-            m
-            )))
-      (throw (str "Could not get collection: " coll-name)))
-    (throw (str "Could find collection name for: " model-name))))
+  (if id
+    (if-let [coll-name (or (collection-name model-name)
+                           model-name)]
+      (if-let [coll (.get _model coll-name)]
+        (if-let [m (.get coll id)]
+          m
+          (do
+            (log/fine *logger* (format "Creating model: %s(%s)" model-name id))
+            (let [m (.push coll (js-obj "_id" id))]
+              (.fetch m)
+              m
+              )))
+        (throw (str "Could not get collection: " coll-name)))
+      (throw (str "Could find collection name for: " model-name)))
+    (throw "id can not be null")))
 
 (defn get-page-obj
   [page-name]
