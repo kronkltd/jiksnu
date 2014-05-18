@@ -11,7 +11,7 @@
 
 (defview #'actions.group/fetch-admins :page
   [request {:keys [items] :as page}]
-  (let [response (merge (log/spy :info page)
+  (let [response (merge page
                         {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "sub-page-updated"

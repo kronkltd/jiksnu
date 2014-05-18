@@ -18,11 +18,11 @@
 (defview #'actions.conversation/fetch-by-group :page
   [request {:keys [items] :as page}]
   (let [response (merge page
-                        {:id (:name (log/spy :info request))
+                        {:id (:name request)
                          :items (map :_id items)})]
     {:body {:action "sub-page-updated"
             :model "group"
-            :id (:_id (:item page))
+            :id (:_id (:item request))
             :body response}}))
 
 (defview #'actions.conversation/index :page

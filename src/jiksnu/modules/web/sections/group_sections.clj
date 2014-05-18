@@ -104,14 +104,14 @@
    [:td (actions-section group)]])
 
 (defsection edit-button [Group :html]
-  [activity & _]
-  (action-link "group" "edit" (:_id activity)))
+  [item & _]
+  (action-link "group" "edit" (:_id item)))
 
 ;; delete-button
 
 (defsection delete-button [Group :html]
-  [activity & _]
-  (action-link "group" "delete" (:_id activity)))
+  [item & _]
+  (action-link "group" "delete" (:_id item)))
 
 ;; index-block
 
@@ -159,20 +159,33 @@
     [:p (bind-property "aliases")]
     [:p (bind-property "created")]
     [:p (bind-property "updated")]
-    [:p "Admins " (count (:admins group))]
-    [:ul {:data-bind "foreach: admins"}
-     (let [items (if *dynamic* [(User.)] (:admins group))]
-       (map
-        (fn [admin]
-          [:div {:data-model "user"}
-           (link-to (model.user/fetch-by-id admin))])
-        items))]]])
+    [:div
+     [:h3 "Admins " (count (:admins group))]
+     [:ul {:data-bind "foreach: admins"}
+      (let [items (if *dynamic* [(User.)]
+                      (map model.user/fetch-by-id (:admins group)))]
+        (map
+         (fn [admin]
+           [:li {:data-model "user"}
+            (link-to admin)])
+         items))]]
+    [:div
+     [:h3 "Members " (count (:members group))]
+     [:ul {:data-bind "foreach: members"}
+      (let [items (if *dynamic* [(User.)]
+                      (map model.user/fetch-by-id (:members group)))]
+        (map
+         (fn [admin]
+           [:li {:data-model "user"}
+            (link-to admin)])
+         items))]]
+    ]])
 
 ;; update-button
 
 (defsection update-button [Group :html]
-  [activity & _]
-  (action-link "group" "update" (:_id activity)))
+  [item & _]
+  (action-link "group" "update" (:_id item)))
 
 (defn user-groups
   [user]
