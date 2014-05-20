@@ -23,7 +23,18 @@
 
 (defaction add-admin
   [group user]
-  (cm/implement))
+  (model.group/push-value! group :admins user))
+
+(defaction add-user!
+  [group user]
+  (model.group/push-value! group :members (:_id user))
+  (model.group/fetch-by-id (:_id group)))
+
+(defaction join
+  [group]
+  (if-let [user (session/current-user)]
+    (add-user! group user)
+    (throw+ "No user")))
 
 (defaction create
   [params]
@@ -52,9 +63,11 @@
 
 (defaction fetch-admins
   [group]
-  (map
-   model.user/fetch-by-id
-   (:admins group)))
+  (index {:_id (:admins group)}))
+
+(defn fetch-by-user
+  [user]
+  (index {:members (:_id user)}))
 
 (defaction show
   [group]

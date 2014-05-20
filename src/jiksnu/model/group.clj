@@ -27,6 +27,7 @@
 (def drop!         (templates.model/make-dropper       collection-name))
 (def remove-field! (templates.model/make-remove-field! collection-name))
 (def set-field!    (templates.model/make-set-field!    collection-name))
+(def push-value!   (templates.model/make-push-value!   collection-name))
 (def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
 (def create        (templates.model/make-create        collection-name
                                                        #'fetch-by-id
@@ -36,7 +37,3 @@
 (defn fetch-by-name
   [name]
   (maker (mc/find-one-as-map collection-name {:nickname name})))
-
-(defn fetch-by-user
-  [user]
-  (fetch-all {:members (:_id user)}))

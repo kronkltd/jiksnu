@@ -40,7 +40,7 @@
   [ex]
   (let [data (if (instance? ExceptionInfo ex)
                (.getData ex) {})]
-    (log/error ex)
+    (log/error ex "Unhandled Error")
     (when (instance? Throwable ex )
       ;; (.printStackTrace ex)
       ;; (when (config :airbrake :enabled)

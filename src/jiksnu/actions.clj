@@ -44,7 +44,7 @@
 
 (defn connection-closed
   [id connection-id]
-  (log/debugf "closed connection: %s" connection-id)
+  ;; (log/debugf "closed connection: %s" connection-id)
   (dosync
    (alter connections #(dissoc-in % [id connection-id]))))
 
@@ -57,7 +57,7 @@
 
 (defaction connect
   [ch]
-  (s/increment "websocket connections established")
+  (trace/trace :websocket:connections:established 1)
   (let [user-id (:_id (session/current-user))
         connection-id (util/new-id)]
 
@@ -145,7 +145,9 @@
           {:message (format "action not found: %s" action-name)
            :action "error"})))
     (catch RuntimeException ex
-      (trace/trace :errors:handled ex))))
+      (trace/trace :actions:invoked:error ex)
+      {:message (str ex)
+       :action "error"})))
 
 (defaction confirm
   [action model id]

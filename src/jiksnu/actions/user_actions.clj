@@ -1,17 +1,13 @@
 (ns jiksnu.actions.user-actions
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [defaction]]
-        [ciste.initializer :only [definitializer]]
-        [jiksnu.actions :only [invoke-action]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [ciste.model :as cm]
-            ;; [clj-tigase.core :as tigase]
-            ;; [clj-tigase.element :as element]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [defaction]]
+            [ciste.initializer :refer [definitializer]]
+            [ciste.model :as cm]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [lamina.trace :as trace]
-            ;; [jiksnu.modules.atom.util :as abdera]
+            [jiksnu.actions :refer [invoke-action]]
             [jiksnu.actions.auth-actions :as actions.auth]
             [jiksnu.actions.domain-actions :as actions.domain]
             [jiksnu.actions.key-actions :as actions.key]
@@ -31,12 +27,11 @@
             [jiksnu.transforms.user-transforms :as transforms.user]
             [jiksnu.util :as util]
             [plaza.rdf.core :as plaza]
-            [plaza.rdf.sparql :as sp])
+            [plaza.rdf.sparql :as sp]
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
            jiksnu.model.User
-           org.apache.abdera.model.Person
-           ;; tigase.xmpp.JID
-           ))
+           org.apache.abdera.model.Person))
 
 ;; hooks
 
@@ -119,28 +114,28 @@
   "Send a vcard request to the xmpp endpoint of the user"
   [user]
   #_(let [body (element/make-element
-              "query" {"xmlns" ns/vcard-query})]
-    (-> {:from (tigase/make-jid "" (config :domain))
-         :to (tigase/make-jid user)
-         :id "JIKSNU1"
-         :type :get
-         :body body}
-        tigase/make-packet
-        tigase/deliver-packet!)))
+                "query" {"xmlns" ns/vcard-query})]
+      (-> {:from (tigase/make-jid "" (config :domain))
+           :to (tigase/make-jid user)
+           :id "JIKSNU1"
+           :type :get
+           :body body}
+          tigase/make-packet
+          tigase/deliver-packet!)))
 
 (defn parse-person
   [^Person person]
   #_{:_id (abdera/get-simple-extension person ns/atom "id")
-   :email (.getEmail person)
-   :url (str (.getUri person))
-   :name (abdera/get-name person)
-   :note (abdera/get-note person)
-   :username (abdera/get-username person)
-   :local-id (-> person
-                 (abdera/get-extension-elements ns/statusnet "profile_info")
-                 (->> (map #(abdera/attr-val % "local_id")))
-                 first)
-   :links (abdera/get-links person)})
+     :email (.getEmail person)
+     :url (str (.getUri person))
+     :name (abdera/get-name person)
+     :note (abdera/get-note person)
+     :username (abdera/get-username person)
+     :local-id (-> person
+                   (abdera/get-extension-elements ns/statusnet "profile_info")
+                   (->> (map #(abdera/attr-val % "local_id")))
+                   first)
+     :links (abdera/get-links person)})
 
 (defn fetch-user-feed
   "returns a feed"
@@ -163,13 +158,13 @@
   [user]
   ;; TODO: send user timeline request
   #_(let [packet (tigase/make-packet
-                {:to (tigase/make-jid user)
-                 :from (tigase/make-jid "" (config :domain))
-                 :type :get
-                 :body (element/make-element
-                        ["pubsub" {"xmlns" ns/pubsub}
-                         ["items" {"node" ns/microblog}]])})]
-    (tigase/deliver-packet! packet)))
+                  {:to (tigase/make-jid user)
+                   :from (tigase/make-jid "" (config :domain))
+                   :type :get
+                   :body (element/make-element
+                          ["pubsub" {"xmlns" ns/pubsub}
+                           ["items" {"node" ns/microblog}]])})]
+      (tigase/deliver-packet! packet)))
 
 ;; actions
 
@@ -214,7 +209,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.user
-                          :sort-clause {:username 1}))
+                                  :sort-clause {:username 1}))
 
 (defaction index
   [& options]

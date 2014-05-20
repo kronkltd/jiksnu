@@ -11,6 +11,7 @@
             [hiccup.core :as h]
             ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
             [jiksnu.channels :as ch]
             [jiksnu.model.stream :as model.stream]
@@ -134,7 +135,7 @@
 (defaction group-timeline
   [group]
   ;; TODO: implement
-  [group (actions.activity/index)])
+  [group (actions.conversation/fetch-by-group group)])
 
 (defaction user-list
   []

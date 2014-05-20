@@ -169,7 +169,6 @@
          jrd-template (format "http://%s/lrdd?uri={uri}" domain-name)]
 
      (context "when given a http uri"
-       (println "when given a http uri")
        (let [uri (str "http://" domain-name "/user/1")
              params {:_id uri}
              profile-url (format "https://%s/api/user/%s/profile" domain-name username)
@@ -199,7 +198,6 @@
                                                                 {:body mock-profile})))))
 
          (context "when the domain has an xrd endpoint"
-           (println "when the domain has an xrd endpoint")
            (db/drop-all!)
            (let [domain (actions.domain/find-or-create
                          (factory :domain

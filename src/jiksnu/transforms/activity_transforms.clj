@@ -1,19 +1,18 @@
 (ns jiksnu.transforms.activity-transforms
-  (:use [ciste.config :only [config]]
-        [jiksnu.session :only [current-user current-user-id is-admin?]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clj-time.core :as time]
+  (:require [ciste.config :refer [config]]
+            [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [clojurewerkz.route-one.core :as r]
             [jiksnu.actions.group-actions :as actions.group]
-            [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.model.activity :as model.activity]
             [jiksnu.model.feed-source :as model.feed-source]
             [jiksnu.ops :as ops]
+            [jiksnu.session :as session]
             [jiksnu.util :as util]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI))
 
 (defn set-local
@@ -140,7 +139,7 @@
   [activity]
   ;; TODO: Should we be allowing an author to be passed in?
   (if-let [author (or (:author activity)
-                      (current-user-id))]
+                      (session/current-user-id))]
     (assoc activity :author author)))
 
 ;; TODO: This operation should be performed on local posts. Remote
@@ -200,10 +199,10 @@
   (if (:conversation item)
     item
     (if-let [user (model.activity/get-author item)]
-      (if (:local (log/spy :info user))
+      (if (:local user)
         (assoc item :conversation (:_id @(ops/create-new-conversation)))
         (if-let [uri (first (:conversation-uris item))]
-          (let [conversation (ops/get-conversation (log/spy :info uri))]
+          (let [conversation (ops/get-conversation uri)]
             (-> item
                 (assoc :conversation (:_id @conversation))
                 (dissoc :conversation-uris)))

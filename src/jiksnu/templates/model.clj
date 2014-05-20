@@ -108,3 +108,12 @@
           (when-let [item (mc/find-map-by-id collection-name id)]
             (maker item))))
       {:name (keyword (str collection-name ":fetcher"))})))
+
+(defn make-push-value!
+  [collection-name]
+  (trace/instrument
+   (fn [item key value]
+     (mc/update collection-name
+                (select-keys item #{:_id})
+                {:$push {key value}}))
+   {:name (keyword (str collection-name ":pusher"))}))

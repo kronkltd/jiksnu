@@ -27,6 +27,7 @@
 (def drop!         (templates.model/make-dropper       collection-name))
 (def remove-field! (templates.model/make-remove-field! collection-name))
 (def set-field!    (templates.model/make-set-field!    collection-name))
+(def push-value!   (templates.model/make-push-value!   collection-name))
 (def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
 (def create        (templates.model/make-create        collection-name #'fetch-by-id #'create-validators))
 (def fetch-all     (templates.model/make-fetch-fn      collection-name maker))
@@ -46,12 +47,6 @@
   [user]
   (when-let [id (:update-source user)]
     (fetch-by-id id)))
-
-(defn push-value!
-  [item key value]
-  (mc/update collection-name
-    (select-keys item #{:_id})
-    {:$push {key value}}))
 
 (defn ensure-indexes
   []

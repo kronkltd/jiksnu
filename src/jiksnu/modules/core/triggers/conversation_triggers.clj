@@ -6,8 +6,6 @@
             [jiksnu.ops :as ops]
             [lamina.core :as l]))
 
-(println "\n\n\n\nconversation triggers\n\n\n\n")
-
 (defn filter-conversation-create
   [item]
   (#{#'actions.conversation/create} (:action item)))

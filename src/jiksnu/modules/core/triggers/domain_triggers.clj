@@ -7,8 +7,6 @@
             [lamina.core :as l]
             [lamina.trace :as trace]))
 
-(println "loading domain triggers")
-
 (defn- handle-pending-get-domain*
   [domain-name]
   (actions.domain/find-or-create {:_id domain-name}))

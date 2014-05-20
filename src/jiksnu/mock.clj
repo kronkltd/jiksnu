@@ -1,9 +1,6 @@
 (ns jiksnu.mock
-  (:use [clj-factory.core :only [factory fseq]]
-        [jiksnu.factory :only [make-uri]]
-        [jiksnu.referrant :only [get-this get-that set-this set-that this that]]
-        [slingshot.slingshot :only [throw+]])
-  (:require [clojure.tools.logging :as log]
+  (:require [clj-factory.core :refer [factory fseq]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.client-actions :as actions.client]
             [jiksnu.actions.conversation-actions :as actions.conversation]
@@ -16,10 +13,13 @@
             [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.actions.user-actions :as actions.user]
+            [jiksnu.factory :refer [make-uri]]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.model.subscription :as model.subscription]
             [jiksnu.model.user :as model.user]
-            [jiksnu.session :as session]))
+            [jiksnu.referrant :refer [get-this get-that set-this set-that this that]]
+            [jiksnu.session :as session]
+            [slingshot.slingshot :refer [throw+]]))
 
 (def my-password (ref nil))
 
@@ -154,11 +154,11 @@
 
 (defn activity-gets-posted
   [& [options]]
-  (let [source (log/spy :info (or (:feed-source options)
-                    (get-this :feed-source)
-                    (a-feed-source-exists (select-keys options #{:local}))))
-        activity (actions.activity/post (log/spy :info (factory :activity
-                                                                {:update-source (:_id source)})))]
+  (let [source (or (:feed-source options)
+                   (get-this :feed-source)
+                   (a-feed-source-exists (select-keys options #{:local})))
+        activity (actions.activity/post (factory :activity
+                                                 {:update-source (:_id source)}))]
     (set-this :activity activity)
     activity))
 
