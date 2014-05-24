@@ -1,6 +1,6 @@
 (ns jiksnu.modules.as.views.subscription-views
   (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section show-section uri]]
+            [ciste.sections.default :refer [index-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.subscription-actions :as actions.subscription]))
 

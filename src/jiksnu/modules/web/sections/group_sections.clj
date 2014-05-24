@@ -51,10 +51,17 @@
         " "
         (with-sub-page "groups"
           [:span {:data-bind "text: totalRecords"}])]
-       (with-sub-page "groups"
-         [:ul {:data-bind "foreach: items"}
-          [:li {:data-model "group"}
-           [:div {:data-bind "text: fullname"}]]])])))
+       (let [items (if *dynamic*
+                     [(Group.)]
+                     ;; TODO: Pull this feed
+                     [(Group.)])]
+         (with-sub-page "groups"
+           [:ul {:data-bind "foreach: items"}
+            (map
+             (fn [item]
+               [:li {:data-model "group"}
+                (link-to item)])
+             items)]))])))
 
 ;; actions-section
 
@@ -152,6 +159,21 @@
      (when-not *dynamic*
        (:homepage group))]
     [:p.note (:description group)]]])
+
+(defsection link-to [Group :html]
+  [item & options]
+  (let [options-map (apply hash-map options)
+        url (str "/main/groups/" (:nickname item))
+        ]
+    [:a (if *dynamic*
+          {:data-bind "attr: {href: '/main/groups/' + ko.utils.unwrapObservable(nickname)}"}
+          {:href url})
+     [:span (merge {:about url
+                    :property "dc:title"}
+                   (if *dynamic*
+                     {:data-bind "text: nickname"}))
+      (when-not *dynamic*
+        (or (:fullname options-map)))] ]))
 
 (defsection show-section [Group :html]
   [group & _]
