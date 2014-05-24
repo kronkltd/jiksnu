@@ -146,6 +146,7 @@
            :action "error"})))
     (catch RuntimeException ex
       (trace/trace :actions:invoked:error ex)
+      (log/error ex "Actions error")
       {:message (str ex)
        :action "error"})))
 

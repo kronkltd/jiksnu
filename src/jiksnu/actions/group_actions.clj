@@ -30,10 +30,21 @@
   (model.group/push-value! group :members (:_id user))
   (model.group/fetch-by-id (:_id group)))
 
+(defaction remove-user!
+  [group user]
+  (model.group/pop-value! group :members (:_id user))
+  (model.group/fetch-by-id (:_id group)))
+
 (defaction join
   [group]
   (if-let [user (session/current-user)]
     (add-user! group user)
+    (throw+ "No user")))
+
+(defaction leave
+  [group]
+  (if-let [user (session/current-user)]
+    (remove-user! group user)
     (throw+ "No user")))
 
 (defaction create

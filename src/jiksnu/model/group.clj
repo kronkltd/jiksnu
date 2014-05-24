@@ -28,6 +28,7 @@
 (def remove-field! (templates.model/make-remove-field! collection-name))
 (def set-field!    (templates.model/make-set-field!    collection-name))
 (def push-value!   (templates.model/make-push-value!   collection-name))
+(def pop-value!    (templates.model/make-pop-value!    collection-name))
 (def fetch-by-id   (templates.model/make-fetch-by-id   collection-name maker))
 (def create        (templates.model/make-create        collection-name
                                                        #'fetch-by-id

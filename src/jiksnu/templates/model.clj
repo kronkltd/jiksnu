@@ -117,3 +117,12 @@
                 (select-keys item #{:_id})
                 {:$push {key value}}))
    {:name (keyword (str collection-name ":pusher"))}))
+
+(defn make-pop-value!
+  [collection-name]
+  (trace/instrument
+   (fn [item key value]
+     (mc/update collection-name
+                (select-keys item #{:_id})
+                {:$pop {key value}}))
+   {:name (keyword (str collection-name ":popper"))}))
