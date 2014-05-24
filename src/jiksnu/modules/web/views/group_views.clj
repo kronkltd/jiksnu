@@ -1,12 +1,16 @@
 (ns jiksnu.modules.web.views.group-views
-  (:require [ciste.views :refer [defview]]
-            [ciste.sections.default :refer [index-section add-form show-section]]
+  (:require [ciste.model :as cm]
+            [ciste.views :refer [defview]]
+            [ciste.sections.default :refer [index-section add-form
+                                            show-section]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
-            [jiksnu.actions.group-actions :as actions.group :refer [add create edit-page index
-                                                  new-page show user-list]]
+            [jiksnu.actions.group-actions :as actions.group]
             [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.modules.web.sections :refer [format-page-info pagination-links with-page]])
+            [jiksnu.modules.web.sections :refer [bind-to format-page-info
+                                                 pagination-links with-page
+                                                 with-sub-page]]
+            [jiksnu.modules.web.sections.group-sections :as sections.group])
   (:import jiksnu.model.Group))
 
 (defview #'actions.group/add :html
@@ -31,11 +35,11 @@
 
 (defview #'actions.group/fetch-by-user :html
   [request {:keys [items] :as response}]
-  {:body (with-page "groups"
-     (let [items (if *dynamic* [(Group.)] items)]
-       (list
-        (pagination-links response)
-        (index-section items response))))})
+  {:body
+   (let [items (if *dynamic* [(Group.)] items)]
+     (with-page "groups"
+       (pagination-links response)
+       (index-section items response)))})
 
 ;; index
 
@@ -52,12 +56,40 @@
          [:a {:href "/main/groups/new"}
           "Create a new group"]])))})
 
+(defview #'actions.group/join :html
+  [request group]
+  {:status 303
+   :headers {"Location" "/main/groups"}
+   :flash "User joined"
+   :template false})
+
 ;; new-page
 
 (defview #'actions.group/new-page :html
   [request group]
   {:title "Create New Group"
    :body (add-form group)})
+
+(defview #'actions.group/show :html
+  [request group]
+  {:title (str (:nickname group) " group")
+   :post-form true
+   :body
+   (bind-to "targetGroup"
+            (show-section group)
+            (let [{:keys [items] :as page} (if *dynamic*
+                                             {:items []}
+                                             (cm/implement {:items []}))]
+              [:div {:data-model "group"}
+               [:div
+                [:h3 "actions"]
+                (sections.group/join-button group)
+                ]
+               (with-sub-page "conversations"
+                 (pagination-links page)
+                 (index-section items))]))})
+
+
 
 ;; show
 

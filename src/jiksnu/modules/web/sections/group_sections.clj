@@ -113,6 +113,10 @@
   [item & _]
   (action-link "group" "delete" (:_id item)))
 
+(defn join-button
+  [item]
+  (action-link "group" "join" (:_id item) {:title "Join"}))
+
 ;; index-block
 
 (defsection index-block [Group :html]
