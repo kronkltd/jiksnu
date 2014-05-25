@@ -70,26 +70,28 @@
   {:title "Create New Group"
    :body (add-form group)})
 
+(defn conversation-sub-page
+  [group]
+  (let [{:keys [items] :as page} (if *dynamic*
+                                   {:items []}
+                                   (cm/implement {:items []}))]
+    (with-sub-page "conversations"
+      (pagination-links page)
+      (index-section items page))))
+
 (defview #'actions.group/show :html
   [request group]
   {:title (str (:nickname group) " group")
    :post-form true
    :body
    (bind-to "targetGroup"
-            (show-section group)
-            (let [{:keys [items] :as page} (if *dynamic*
-                                             {:items []}
-                                             (cm/implement {:items []}))]
-              [:div {:data-model "group"}
-               [:div
-                [:h3 "actions"]
-                (sections.group/join-button group)
-                ]
-               (with-sub-page "conversations"
-                 (pagination-links page)
-                 (index-section items))]))})
-
-
+     (show-section group)
+     [:div {:data-model "group"}
+      [:div
+       [:h3 "actions"]
+       (sections.group/join-button group)
+       (sections.group/leave-button group)]
+      (conversation-sub-page group)])})
 
 ;; show
 

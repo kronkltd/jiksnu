@@ -43,6 +43,13 @@
                         (when name (model.group/fetch-by-name name)))]
       (action item))))
 
+(deffilter #'actions.group/leave :http
+  [action request]
+  (let [{{:keys [id name]} :params} request]
+    (when-let [item (or (when id (model.group/fetch-by-id id))
+                        (when name (model.group/fetch-by-name name)))]
+      (action item))))
+
 (deffilter #'actions.group/new-page :http
   [action request]
   (action))

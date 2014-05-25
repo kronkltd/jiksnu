@@ -6,27 +6,19 @@
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
             [hiccup.page :as p]
-            [jiksnu.namespace :as ns]
             [jiksnu.actions.site-actions :as actions.site]
             [jiksnu.actions.subscription-actions :as actions.subscription]
             [jiksnu.ko :refer [*dynamic*]]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.conversation :as model.conversation]
-            [jiksnu.model.domain :as model.domain]
-            [jiksnu.model.group :as model.group]
-            [jiksnu.model.feed-source :as model.feed-source]
-            [jiksnu.model.feed-subscription :as model.feed-subscription]
-            [jiksnu.model.subscription :as model.subscription]
-            [jiksnu.model.user :as model.user]
-            [jiksnu.modules.web.sections :refer [bind-to display-property dump-data pagination-links
-                                                 with-sub-page]]
+            [jiksnu.modules.web.sections :refer [bind-to display-property dump-data
+                                                 pagination-links with-sub-page]]
             [jiksnu.modules.web.sections.activity-sections :as sections.activity]
             [jiksnu.modules.web.sections.auth-sections :as sections.auth]
             [jiksnu.modules.web.sections.group-sections :as sections.group]
             [jiksnu.modules.web.sections.stream-sections :as sections.stream]
             [jiksnu.modules.web.sections.subscription-sections :as sections.subscription]
             [jiksnu.modules.web.sections.user-sections :as sections.user]
-            [jiksnu.session :refer [current-user is-admin?]])
+            [jiksnu.namespace :as ns]
+            [jiksnu.session :as session])
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
@@ -52,7 +44,7 @@
      ["/resources"     "Resources"]]]
    ["Settings"
     [["/admin/settings"           "Settings"]]]
-   (when (is-admin?)
+   (when (session/is-admin?)
      ["Admin"
       [
        ["/admin/activities"         "Activities"]
@@ -308,7 +300,7 @@
   (let [user (if *dynamic*
                (User.)
                (or (:user response)
-                   (current-user)))]
+                   (session/current-user)))]
     (list
      (bind-to "$root.targetUser() || $root.currentUser()"
        (user-info-section user))
@@ -318,7 +310,7 @@
   [request response]
   [:section#main
    (notification-area request response)
-   (when (current-user)
+   (when (session/current-user)
      (new-post-section request response))
    (title-section request response)
    (:body response)

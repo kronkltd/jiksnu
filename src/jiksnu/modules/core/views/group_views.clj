@@ -61,8 +61,7 @@
 
 (defview #'actions.group/new-page :viewmodel
   [request group]
-  {:body {:title "Create New Group"}}
-  )
+  {:body {:title "Create New Group"}})
 
 ;; show
 

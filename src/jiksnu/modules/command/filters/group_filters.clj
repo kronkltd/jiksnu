@@ -5,5 +5,10 @@
 
 (deffilter #'actions.group/join :command
   [action id]
-  (let [item (model.group/fetch-by-id id)]
+  (if-let [item (model.group/fetch-by-id id)]
+    (action item)))
+
+(deffilter #'actions.group/leave :command
+  [action id]
+  (if-let [item (model.group/fetch-by-id id)]
     (action item)))

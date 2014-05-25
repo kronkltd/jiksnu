@@ -10,10 +10,6 @@
             [jiksnu.model.group :as model.group]
             [jiksnu.model.user :as model.user]
             [jiksnu.session :as session]
-            [jiksnu.modules.core.sections :refer [admin-show-section
-                                                  admin-index-block
-                                                  admin-index-line
-                                                  admin-index-section]]
             [jiksnu.modules.web.sections :refer [action-link bind-property
                                                  control-line display-property
                                                  dropdown-menu dump-data
@@ -40,28 +36,32 @@
 (defn groups-widget
   [user]
   (when user
-    (let [groups (if *dynamic*
+    [:div.groups
+     [:h3
+      [:a (if *dynamic*
+            {:data-bind "attr: {href: '/users/' + _id() + '/groups'}"}
+            {:href (str "/users/" (:_id user) "/groups")}) "Groups"]
+      " "
+      (with-sub-page "groups"
+        [:span {:data-bind "text: totalRecords"}])]
+     (let [items (if *dynamic*
                    [(Group.)]
                    (actions.group/fetch-by-user user))]
-      [:div.groups
-       [:h3
-        [:a (if *dynamic*
-              {:data-bind "attr: {href: '/users/' + _id() + '/groups'}"}
-              {:href (str "/users/" (:_id user) "/groups")}) "Groups"]
-        " "
-        (with-sub-page "groups"
-          [:span {:data-bind "text: totalRecords"}])]
-       (let [items (if *dynamic*
-                     [(Group.)]
-                     ;; TODO: Pull this feed
-                     [(Group.)])]
-         (with-sub-page "groups"
-           [:ul {:data-bind "foreach: items"}
-            (map
-             (fn [item]
-               [:li {:data-model "group"}
-                (link-to item)])
-             items)]))])))
+       (with-sub-page "groups"
+         [:ul {:data-bind "foreach: items"}
+          (map
+           (fn [item]
+             [:li {:data-model "group"}
+              (link-to item)])
+           items)]))]))
+
+(defn join-button
+  [item]
+  (action-link "group" "join" (:_id item) {:title "Join"}))
+
+(defn leave-button
+  [item]
+  (action-link "group" "leave" (:_id item) {:title "Leave"}))
 
 ;; actions-section
 
@@ -88,41 +88,13 @@
     [:div.controls
      [:input.btn.btn-primary {:type "submit" :value "Add"}]]]])
 
-(defsection admin-index-block [Group :html]
-  [groups & [options & _]]
-  [:table.table.groups
-   [:thead
-    [:tr
-     [:th "Name"]
-     [:th "Full Name"]
-     [:th "Homepage"]]]
-   [:tbody (when *dynamic* {:data-bind "foreach: items"})
-    (map #(admin-index-line % options) groups)]])
-
-(defsection admin-index-line [Group :html]
-  [group & [options & _]]
-  [:tr (merge {:data-model "group"}
-              (if *dynamic*
-                {}
-                {:data-id (:_id group)}))
-   [:td (display-property group :nickname)]
-   [:td (display-property group :fullname)]
-   [:td (display-property group :homepage)]
-   [:td (actions-section group)]])
-
 (defsection edit-button [Group :html]
   [item & _]
   (action-link "group" "edit" (:_id item)))
 
-;; delete-button
-
 (defsection delete-button [Group :html]
   [item & _]
   (action-link "group" "delete" (:_id item)))
-
-(defn join-button
-  [item]
-  (action-link "group" "join" (:_id item) {:title "Join"}))
 
 ;; index-block
 

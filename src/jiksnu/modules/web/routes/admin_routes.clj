@@ -6,6 +6,7 @@
             [jiksnu.modules.admin.actions.client-actions :as admin.client]
             [jiksnu.modules.admin.actions.conversation-actions :as admin.conversation]
             [jiksnu.modules.admin.actions.group-actions :as admin.group]
+            [jiksnu.modules.admin.actions.group-membership-actions :as admin.group-membership]
             [jiksnu.modules.admin.actions.feed-source-actions :as admin.feed-source]
             [jiksnu.modules.admin.actions.feed-subscription-actions :as admin.feed-subscription]
             [jiksnu.modules.admin.actions.like-actions :as admin.like]
@@ -56,6 +57,9 @@
     [[:get    "/admin/groups/:id.:format"]                 #'admin.group/show]
     [[:get    "/admin/groups/:id"]                         #'admin.group/show]
     [[:post   "/admin/groups/:id/delete"]                  #'admin.group/delete]
+
+    [[:get    "/admin/group-memberships.:format"]          #'admin.group-membership/index]
+    [[:get    "/admin/group-memberships"]                  #'admin.group-membership/index]
 
     [[:get    "/admin/likes.:format"]                      #'admin.like/index]
     [[:get    "/admin/likes"]                              #'admin.like/index]
