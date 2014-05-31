@@ -24,7 +24,8 @@
                  [clojurewerkz/urly "1.0.0"
                   :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0"]
-                 [lein-light-nrepl "0.0.18"]
+
+                 ;; [lein-light-nrepl "0.0.18"]
 
                  [clojure-complete "0.2.3"]
                  [clojurewerkz/support "0.20.0"]
@@ -33,20 +34,19 @@
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.7"]
                  [crypto-random "1.2.0"]
                  [hiccup "1.0.5"]
-                 [jayq "2.5.1"]
+
+
+
                  [lamina "0.5.2"]
                  [lib-noir "0.8.3"]
-                 [lolg "0.1.0-SNAPSHOT"
-                  :exclusions [org.clojure/google-closure-library]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"]
                  [net.kronkltd/plaza "0.3.0-SNAPSHOT"]
-                 [net.kronkltd/waltz "0.1.2-SNAPSHOT"
-                  :exclusions [org.clojure/google-closure-library]]
                  [org.apache.abdera/abdera-client "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
-                 [org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2227"]
+                 ;; [org.clojure/clojure "1.6.0"]
+                 [org.clojure/clojure "1.5.1"]
+
                  [org.clojure/core.cache "0.6.3"]
                  [org.clojure/tools.logging "0.2.6"]
                  [org.clojure/tools.reader "0.8.4"]
@@ -66,7 +66,9 @@
                  [ring-basic-authentication "1.0.5"]
                  [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.10.3"]
+
                  [tigase/tigase-server "5.2.1"]
+
                  [clj-webdriver "0.6.1"]
 
                  [xerces/xercesImpl "2.11.0"]
@@ -74,9 +76,35 @@
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
                  [xml-apis "1.4.01"]
+
+
+
+                 ;; [org.clojure/clojurescript "0.0-2227"]
+                 ;; [org.clojure/clojurescript "0.0-1889"]
+
+                 ;; [jayq "2.5.1"]
+                 ;; [lolg "0.1.0-SNAPSHOT"
+                 ;;  :exclusions [org.clojure/google-closure-library]]
+                 ;; [net.kronkltd/waltz "0.1.2-SNAPSHOT"
+                 ;;  :exclusions [org.clojure/google-closure-library]]
+
+
+
+
+
                  #_[org.apache.httpcomponents/httpclient "4.2.5"]
 
+                 [org.clojure/clojurescript "0.0-2173"]
 ]
+  :plugins [
+            [lein-cljsbuild "1.0.1"]
+            ;; [lein-cljsbuild "0.3.2"]
+            [codox          "0.8.8"]
+            [lein-cucumber  "1.0.2"]
+            [lein-lesscss   "1.2"]
+            [lein-midje     "3.1.3"]]
+
+
   ;; :exclusions [org.clojure/google-closure-library]
   :aot [jiksnu.model
         ;; ciste.runner
@@ -86,15 +114,27 @@
         ]
   ;; :hooks [leiningen.cljsbuild]
   :cljsbuild {:repl-listen-port 9001
+              :repl-launch-commands
+              {"my-launch" ["google-chrome"
+                            ;; "-jsconsole" "http://localhost/my-page"
+                            ]}
               :builds
               [{:source-paths ["src-cljs"]
                 :compiler
-                {:output-to "resources/public/assets/js/jiksnu.js"
+                {
+                 :output-to "resources/public/assets/js/jiksnu.js"
                  :output-dir "target/cljsout/simple"
-                 :optimizations :whitespace
+                 :optimizations :simple
                  :pretty-print true
-                 :externs ["resources/externs/backbone-0.9.1.js"
-                           "resources/externs/underscore-0.3.1.js"]}}]}
+                 }}
+               ;; {:source-paths ["src-cljs"]
+               ;;  :compiler
+               ;;  {:output-to "resources/public/assets/js/jiksnu.min.js"
+               ;;   :optimizations :advanced
+               ;;   :pretty-print true
+               ;;   }}
+
+               ]}
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"
@@ -125,9 +165,4 @@
              :name "jiksnu"
              }
 
-  :plugins [[lein-cljsbuild "1.0.3"]
-            [codox          "0.8.8"]
-            [lein-cucumber  "1.0.2"]
-            [lein-lesscss   "1.2"]
-            [lein-midje     "3.1.3"]]
   )
