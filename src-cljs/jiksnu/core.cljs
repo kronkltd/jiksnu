@@ -1,6 +1,6 @@
 (ns jiksnu.core
-  (:use [jayq.core :only [$]])
-  (:require [goog.string :as gstring]
+  (:require [dommy.core :as dommy]
+            [goog.string :as gstring]
             [goog.string.format :as gformat]
             [jiksnu.handlers :as handlers]
             [clojure.string :as string]
@@ -19,7 +19,8 @@
             [jiksnu.util.ko :as ko]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
-  (:use-macros [jiksnu.macros :only [defvar]]))
+  (:use-macros [dommy.macros :only [sel sel1]]
+               [jiksnu.macros :only [defvar]]))
 
 (def *logger* (log/get-logger "jiksnu.core"))
 
@@ -59,7 +60,7 @@
   (set! model/_view (.viewModel js/kb model/_model))
   (aset js/window "_view" model/_view)
 
-  (when (.data (js/$ "body") "dynamic")
+  (when (dommy/attr (sel1 :body) "data-dynamic")
     (ko/apply-bindings model/_view))
 
   (try

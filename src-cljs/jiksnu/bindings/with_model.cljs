@@ -1,7 +1,7 @@
 (ns jiksnu.bindings.with-model
-  (:use [jayq.core :only [$]])
-  (:require  [goog.string :as gstring]
-             [goog.string.format :as gformat]
+  (:require [dommy.core :as dommy]
+            [goog.string :as gstring]
+            [goog.string.format :as gformat]
             [jiksnu.model :as model]
             [jiksnu.util.ko :as ko]
             [lolg :as log]))
@@ -19,7 +19,7 @@
 
 (defn model-update
   [element value-accessor all-bindings data context]
-  (log/finer *logger* (gstring/format "Updating model binding: %s" data))
+  (log/finer *logger* (str "Updating model binding: " data))
   (if-let [model-name (.-type (value-accessor))]
     (if-let [collection-name (model/collection-name model-name)]
       (let [model-vm (model/get-model collection-name data)
@@ -42,7 +42,7 @@
                                        element
                                        (ko/clone-nodes saved-nodes))))
               (let [child-binding (.createChildContext context model-vm)]
-                (.attr ($ element) "data-id" data)
+                (dommy/set-attr! element "data-id" data)
                 (.applyBindingsToDescendants js/ko child-binding element)))
             (do
               (log/finest *logger* "should not display")

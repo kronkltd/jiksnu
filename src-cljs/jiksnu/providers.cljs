@@ -1,9 +1,10 @@
 (ns jiksnu.providers
-  (:use [jayq.core :only [$]])
-  (:require [lolg :as log]
+  (:require [dommy.core :as dommy]
+            [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.util.ko :as ko])
-  (:use-macros [jiksnu.macros :only [defvar]]))
+  (:use-macros [dommy.macros :only [sel sel1]]
+               [jiksnu.macros :only [defvar]]))
 
 (def *logger* (log/get-logger "jiksnu.providers"))
 
@@ -13,12 +14,16 @@
    (doto this
      (aset "nodeHasBindings"
            (fn [node context]
-             (or (.data ($ node) "model")
+             (or (and
+                  (= (.-nodeType node) 1)
+                  (dommy/attr node "data-model"))
                  (.nodeHasBindings underlying-provider node context))))
 
      (aset "getBindings"
            (fn [node context]
-             (if-let [model-name (.data ($ node) "model")]
+             (if-let [model-name (and
+                                  (= (.-nodeType node) 1)
+                                  (dommy/attr node "data-model"))]
                (if-let [data (.-$data context)]
                  (js-obj
                   "withModel" (js-obj
@@ -26,32 +31,21 @@
                  (log/warning *logger* "Could not get data"))
                (.getBindings underlying-provider node context)))))))
 
-;; (defprotocol Provider
-;;   (nodeHasBindings [this node context])
-;;   )
-
-;; (deftype PageProvider3 []
-;;     Provider
-
-;;   (nodeHasBindings [this node context]
-;;     (or (.data ($ node) "page")
-;;         (.nodeHasBindings (.-provider this)
-;;                           ;; underlying-provider
-;;                           node context))
-;;     )
-;;     )
-
 (defvar PageProvider
   [self]
   (let [underlying-provider (.-instance ko/binding-provider)]
    (aset self "nodeHasBindings"
          (fn [node context]
-           (or (.data ($ node) "page")
+           (or (and
+                (= (.-nodeType node) 1)
+                (dommy/attr node "data-page"))
                (.nodeHasBindings underlying-provider node context))))
 
    (aset self "getBindings"
          (fn [node context]
-           (if-let [page-name (.data ($ node) "page")]
+           (if-let [page-name (and
+                               (= (.-nodeType node) 1)
+                               (dommy/attr node "data-page"))]
              (if-let [data (.-$data context)]
                (js-obj
                 "withPage" (js-obj
@@ -59,44 +53,22 @@
              (.getBindings underlying-provider node context)))
          )))
 
-;; (defn PageProvider
-;;   []
-;;   (js-obj
-;;    "provider" (.-instance ko/binding-provider)))
-
-;; (aset (.-prototype PageProvider)
-;;       "nodeHasBindings"
-;;       (fn [node context]
-;;         (this-as this
-;;           (or (.data ($ node) "page")
-;;               (.nodeHasBindings (.-provider this)
-;;                                 node context)))))
-
-;; (aset (.-prototype PageProvider)
-;;       "getBindings"
-;;       (fn [node context]
-;;         (this-as this
-;;           (if-let [page-name (.data ($ node) "page")]
-;;             (if-let [data (.-$data context)]
-;;               (js-obj
-;;                "withPage" (js-obj
-;;                            "type" page-name)))
-;;             (.getBindings (.-provider this)
-;;                           ;; underlying-provider
-;;                           node context)))))
-
 (defvar SubPageProvider
   [this]
   (let [underlying-provider (.-instance ko/binding-provider)]
    (doto this
      (aset "nodeHasBindings"
            (fn [node context]
-             (or (.data ($ node) "sub-page")
+             (or (and
+                  (= (.-nodeType node) 1)
+                  (dommy/attr node "data-sub-page"))
                  (.nodeHasBindings underlying-provider node context))))
 
      (aset "getBindings"
            (fn [node context]
-             (if-let [page-name (.data ($ node) "sub-page")]
+             (if-let [page-name (and
+                                 (= (.-nodeType node) 1)
+                                 (dommy/attr node "data-sub-page"))]
                (if-let [data (.-$data context)]
                  (js-obj
                   "withSubPage" (js-obj

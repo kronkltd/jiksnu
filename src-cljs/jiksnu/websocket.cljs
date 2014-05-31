@@ -1,6 +1,6 @@
 (ns jiksnu.websocket
-  (:use [jayq.core :only [$ css inner prepend text]])
-  (:require [clojure.string :as string]
+  (:require [dommy.core :as dommy]
+            [clojure.string :as string]
             [goog.events :as events]
             [goog.string :as gstring]
             [goog.string.format :as gformat]
@@ -11,12 +11,13 @@
             [jiksnu.logging :as jl]
             [jiksnu.util.underscore :as _]
             [waltz.state :as state])
-  (:use-macros [waltz.macros :only [in out defstate defevent]]))
+  (:use-macros [dommy.macros :only [sel sel1]]
+               [waltz.macros :only [in out defstate defevent]]))
 
 (def *logger* (log/get-logger "jiksnu.websocket"))
 
 (def default-connection (atom nil))
-(def $interface ($ :.connection-info))
+(def *interface* (sel1 :.connection-info))
 (def ws-state (state/machine "websocket state"))
 ;; (state/set-debug ws-state false)
 (state/set ws-state :closed)
@@ -80,7 +81,7 @@
     (when jm
       (let [jm (js/eval jm)]
         (if-let [body (. jm -body)]
-          (prepend ($ :.activities) body))
+          (dommy/prepend! (sel :.activities) body))
         jm))
     (catch js/Error ex
       (log/severe *logger* (str ex)))))
@@ -106,15 +107,15 @@
 (doto ws-state
   (defstate :closed
     (in []
-        (text $interface "Closed")))
+        (dommy/set-text! *interface* "Closed")))
 
   (defstate :connecting
     (in []
-        (text $interface "Connecting")))
+        (dommy/set-text! *interface* "Connecting")))
 
   (defstate :idle
     (in []
-        (do (text $interface "Connected")
+        (do (dommy/set-text! *interface* "Connected")
             (if (state/in? ws-state :queued)
               (do
                 (log/finer *logger* "processing backlog")
@@ -126,19 +127,19 @@
                     (send command args))))))))
 
   (defstate :error
-    (in [] (text $interface "Error!")))
+    (in [] (dommy/set-text! *interface* "Error!")))
 
   (defstate :sending
-    (in [] (text $interface "sending")))
+    (in [] (dommy/set-text! *interface* "sending")))
 
   (defstate :receiving
     (in []
-        (text $interface "receiving")))
+        (dommy/set-text! *interface* "receiving")))
 
   (defstate :queued
     (in []
         (log/finest *logger* "queued")
-        (text $interface "queued"))
+        (dommy/set-text! *interface* "queued"))
     (out [] (log/finest "not queued"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

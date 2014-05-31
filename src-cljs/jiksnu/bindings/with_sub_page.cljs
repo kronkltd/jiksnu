@@ -1,6 +1,6 @@
 (ns jiksnu.bindings.with-sub-page
-  (:use [jayq.core :only [$]])
-  (:require [jiksnu.model :as model]
+  (:require [dommy.core :as dommy]
+            [jiksnu.model :as model]
             [jiksnu.util.ko :as ko]
             [lolg :as log]))
 
@@ -8,9 +8,9 @@
 
 (defn sub-page-init
   [element value-accessor all-bindings data context]
-  (let [model-elt (.closest ($ element) "*[data-id]")
-        id (.data model-elt "id")
-        model-name (.data model-elt "model")]
+  (let [model-elt (dommy/closest element "*[data-id]")
+        id (dommy/attr model-elt "data-id")
+        model-name (dommy/attr model-elt "data-model")]
     (when-let [page-name (.-type (value-accessor))]
       (let [vm (model/get-sub-page model-name id page-name)]
         (ko/apply-descendant-bindings vm element))))

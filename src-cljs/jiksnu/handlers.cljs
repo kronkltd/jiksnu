@@ -1,10 +1,13 @@
 (ns jiksnu.handlers
-  (:use [jiksnu.model :only [_model]])
-  (:require [jiksnu.logging :as jl]
+  (:require [dommy.core :as dommy]
+            [dommy.attrs :refer [attr]]
+            ;; dommy.template
+            [jiksnu.logging :as jl]
+            [jiksnu.model :refer [_model]]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]
-            [jayq.core :as jayq]
-            [lolg :as log]))
+            [lolg :as log])
+  (:use-macros [dommy.macros :only [sel sel1]]))
 
 (def *logger* (log/get-logger "jiksnu.handlers"))
 
@@ -21,26 +24,28 @@
 
 (defn invoke-action
   [e]
-  (let [target (js/$ (.-currentTarget e))
-        action (.data target "action")
-        parent (.closest target "*[data-id]")
-        model (.data parent "model")
-        id (.data parent "id")
-        target-element (.find parent "*[data-target]")
+  (let [target (.-selectedTarget e)
+        action (attr target "data-action")
+        ;; action (.data target "action")
+        parent (dommy/closest target "*[data-id]")
+        model (attr parent "data-model")
+        id (attr parent "data-id")
+        target-element (sel1 parent "*[data-target]")
         target (when target-element
-                 (.data target-element "target"))]
+                 (attr target-element "data-target"))]
     (let [message (str action " >> " model "(" id ")")]
       (ws/send "invoke-action"
-               (array model action id (when target target)))
+               (array model action id target))
       (add-notification message))
     (halt e)))
 
+(defn show-comments
+  []
+  (.set _model
+        "showComments" true))
 
 (defn setup-handlers
   []
-  (.on (js/$ js/document) "click" "*[data-action]" invoke-action)
-
-  (.on (js/$ js/document) "click" "#showComments" (fn []
-                                                    (.set _model "showComments" true)))
+  (dommy/listen! [(sel1 :html) "*[data-action]"] :click invoke-action)
+  (dommy/listen! [(sel1 :html) "#showComments"] :click show-comments)
   )
-

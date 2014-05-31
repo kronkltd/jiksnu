@@ -21,13 +21,14 @@
                  [clj-time "0.7.0"]
                  [clj-http "0.9.2"]
                  [clojurewerkz/route-one "1.1.0"]
-                 [clojurewerkz/urly "1.0.0"
-                  :exclusions [com.google.guava/guava]]
+                 ;; [clojurewerkz/urly "1.0.0"
+                 ;;  :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0"]
 
                  ;; [lein-light-nrepl "0.0.18"]
 
-                 [clojure-complete "0.2.3"]
+                 [clojure-complete "0.2.3"
+                  :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support "0.20.0"]
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
@@ -38,9 +39,11 @@
 
 
                  [lamina "0.5.2"]
-                 [lib-noir "0.8.3"]
+                 [lib-noir "0.8.3"
+                  :exclusions [compojure]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
-                 [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"]
+                 [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
+                   :exclusions [xalan]]
                  [net.kronkltd/plaza "0.3.0-SNAPSHOT"]
                  [org.apache.abdera/abdera-client "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
@@ -66,10 +69,12 @@
                  [ring-basic-authentication "1.0.5"]
                  [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.10.3"]
+                 [prismatic/dommy "0.1.2"]
 
                  [tigase/tigase-server "5.2.1"]
 
-                 [clj-webdriver "0.6.1"]
+                 [clj-webdriver "0.6.1"
+                   :exclusions [xalan]]
 
                  [xerces/xercesImpl "2.11.0"]
 
