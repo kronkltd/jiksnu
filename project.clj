@@ -49,7 +49,7 @@
 
                  [org.clojure/core.cache "0.6.3"]
                  [org.clojure/tools.logging "0.2.6"]
-                 [org.clojure/tools.reader "0.8.4"]
+                 [org.clojure/tools.reader "0.8.3"]
                  [org.clojure/data.json "0.2.4"]
                  [org.jsoup/jsoup "1.7.3"]
                  [org.mindrot/jbcrypt "0.3m"]
@@ -79,8 +79,8 @@
 
 
 
-                 ;; [org.clojure/clojurescript "0.0-2227"]
-                 ;; [org.clojure/clojurescript "0.0-1889"]
+                 [org.clojure/clojurescript "0.0-2227"]
+                 ;; [org.clojure/clojurescript "0.0-1859"]
 
                  ;; [jayq "2.5.1"]
                  ;; [lolg "0.1.0-SNAPSHOT"
@@ -94,25 +94,15 @@
 
                  #_[org.apache.httpcomponents/httpclient "4.2.5"]
 
-                 [org.clojure/clojurescript "0.0-2173"]
+                 ;; [org.clojure/clojurescript "0.0-2173"]
 ]
   :plugins [
-            [lein-cljsbuild "1.0.1"]
+            [lein-cljsbuild "1.0.3"]
             ;; [lein-cljsbuild "0.3.2"]
             [codox          "0.8.8"]
             [lein-cucumber  "1.0.2"]
             [lein-lesscss   "1.2"]
             [lein-midje     "3.1.3"]]
-
-
-  ;; :exclusions [org.clojure/google-closure-library]
-  :aot [jiksnu.model
-        ;; ciste.runner
-        ;; jiksnu.modules.xmpp.plugin
-        ;; jiksnu.modules.xmpp.channels
-        ;; jiksnu.modules.xmpp.user-repository
-        ]
-  ;; :hooks [leiningen.cljsbuild]
   :cljsbuild {:repl-listen-port 9001
               :repl-launch-commands
               {"my-launch" ["google-chrome"
@@ -122,9 +112,9 @@
               [{:source-paths ["src-cljs"]
                 :compiler
                 {
-                 :output-to "resources/public/assets/js/jiksnu.js"
-                 :output-dir "target/cljsout/simple"
-                 :optimizations :simple
+                 :output-to "resources/public/assets/cljs/jiksnu.js"
+                 :output-dir "resources/public/assets/cljs/"
+                 :optimizations :whitespace
                  :pretty-print true
                  }}
                ;; {:source-paths ["src-cljs"]
@@ -135,6 +125,16 @@
                ;;   }}
 
                ]}
+
+
+  ;; :exclusions [org.clojure/google-closure-library]
+  :aot [jiksnu.model
+        ;; ciste.runner
+        ;; jiksnu.modules.xmpp.plugin
+        ;; jiksnu.modules.xmpp.channels
+        ;; jiksnu.modules.xmpp.user-repository
+        ]
+  ;; :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"
              "-XX:MaxPermSize=1024m"

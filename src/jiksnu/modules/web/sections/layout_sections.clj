@@ -288,7 +288,8 @@
       "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
       "/assets/js/backbone/1.0.0/backbone.min.js"
       "/assets/js/knockback/0.17.2/knockback.js"
-      "/assets/js/jiksnu.js")
+      ;; "/assets/cljs/goog/base.js"
+      "/assets/cljs/jiksnu.js")
      (doall
       (map (fn [hook]
              (hook request response))
