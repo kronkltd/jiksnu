@@ -54,6 +54,7 @@
        ["/admin/feed-sources"       "Feed Sources"]
        ["/admin/feed-subscriptions" "Feed Subscriptions"]
        ["/admin/groups"             "Groups"]
+       ["/admin/group-memberships"  "Group Memberships"]
        ["/admin/keys"               "Keys"]
        ["/admin/likes"              "Likes"]
        ["/admin/request-tokens"     "Request Tokens"]
