@@ -26,20 +26,20 @@
                  (log/warning *logger* "Could not get data"))
                (.getBindings underlying-provider node context)))))))
 
-(defprotocol Provider
-  (nodeHasBindings [this node context])
-  )
+;; (defprotocol Provider
+;;   (nodeHasBindings [this node context])
+;;   )
 
-(deftype PageProvider3 []
-    Provider
+;; (deftype PageProvider3 []
+;;     Provider
 
-  (nodeHasBindings [this node context]
-    (or (.data ($ node) "page")
-        (.nodeHasBindings (.-provider this)
-                          ;; underlying-provider
-                          node context))
-    )
-    )
+;;   (nodeHasBindings [this node context]
+;;     (or (.data ($ node) "page")
+;;         (.nodeHasBindings (.-provider this)
+;;                           ;; underlying-provider
+;;                           node context))
+;;     )
+;;     )
 
 (defvar PageProvider
   [self]
@@ -59,31 +59,31 @@
              (.getBindings underlying-provider node context)))
          )))
 
-(defn PageProvider2
-  []
-  (js-obj
-   "provider" (.-instance ko/binding-provider)))
+;; (defn PageProvider
+;;   []
+;;   (js-obj
+;;    "provider" (.-instance ko/binding-provider)))
 
-(aset (.-prototype PageProvider2)
-      "nodeHasBindings"
-      (fn [node context]
-        (this-as this
-          (or (.data ($ node) "page")
-              (.nodeHasBindings (.-provider this)
-                                node context)))))
+;; (aset (.-prototype PageProvider)
+;;       "nodeHasBindings"
+;;       (fn [node context]
+;;         (this-as this
+;;           (or (.data ($ node) "page")
+;;               (.nodeHasBindings (.-provider this)
+;;                                 node context)))))
 
-(aset (.-prototype PageProvider2)
-      "getBindings"
-      (fn [node context]
-        (this-as this
-          (if-let [page-name (.data ($ node) "page")]
-            (if-let [data (.-$data context)]
-              (js-obj
-               "withPage" (js-obj
-                           "type" page-name)))
-            (.getBindings (.-provider this)
-                          ;; underlying-provider
-                          node context)))))
+;; (aset (.-prototype PageProvider)
+;;       "getBindings"
+;;       (fn [node context]
+;;         (this-as this
+;;           (if-let [page-name (.data ($ node) "page")]
+;;             (if-let [data (.-$data context)]
+;;               (js-obj
+;;                "withPage" (js-obj
+;;                            "type" page-name)))
+;;             (.getBindings (.-provider this)
+;;                           ;; underlying-provider
+;;                           node context)))))
 
 (defvar SubPageProvider
   [this]
