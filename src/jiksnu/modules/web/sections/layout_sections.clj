@@ -281,7 +281,9 @@
      (p/include-js
       ;; "/assets/js/modernizr-2.6.1.js"
       "/assets/js/underscore/1.4.4/underscore.min.js"
-      "/assets/js/jquery/1.10.1/jquery.js"
+      ;; "/assets/js/jquery/1.10.1/jquery.js"
+      "/webjars/jquery/2.1.1/jquery.min.js"
+
       "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
       "/assets/js/knockout/2.2.1/knockout.js"
       "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"

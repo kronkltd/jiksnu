@@ -89,20 +89,35 @@
 (declare app)
 
 
+(defn close-connection
+  [handler]
+  (fn [request]
+    (if-let [response (handler (log/spy :info request))]
+      (log/spy :info (assoc-in response [:headers "Connection"] "close"))
+      )
+    )
+  )
+
 (definitializer
   (def app
     (http/wrap-ring-handler
-     (-> all-routes
-         jm/wrap-authentication-handler
-         jm/wrap-user-binding
-         (wrap-resource "/META-INF/resources")
-         (wrap-resource "/resources/public")
-         jm/wrap-dynamic-mode
-         jm/wrap-oauth-user-binding
-         jm/wrap-authorization-header
-         (handler/site {:session {:store (ms/session-store)}})
-         jm/wrap-stacktrace
-         jm/wrap-stat-logging)))
+     (compojure/routes
+      (->  (route/resources "/webjars/" {:root "META-INF/resources/webjars/"})
+           close-connection
+           )
+
+      #_(-> all-routes
+          jm/wrap-authentication-handler
+          jm/wrap-user-binding
+          jm/wrap-dynamic-mode
+          jm/wrap-oauth-user-binding
+          jm/wrap-authorization-header
+          (handler/site {:session {:store (ms/session-store)}})
+          jm/wrap-stacktrace
+          (wrap-resource "public")
+          ;; (wrap-resource "/META-INF/resources")
+          file-info/wrap-file-info
+          jm/wrap-stat-logging))))
 
   (doseq [model-name registry/action-group-names]
     (doseq [module-name registry/module-names]
