@@ -1,6 +1,5 @@
 (ns jiksnu.handlers.html
-  (:require [clj-statsd :as s]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [lamina.core :as l]
             [jiksnu.actions.resource-actions :as actions.resource]

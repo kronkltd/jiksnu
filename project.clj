@@ -4,10 +4,10 @@
   :author "Daniel E. Renfer <duck@kronkltd.net>"
   :min-lein-version "2.0.0"
   :dependencies [[aleph "0.3.2"]
+
                  [ciste "0.5.0-SNAPSHOT"]
                  [ciste/ciste-incubator "0.1.0-SNAPSHOT"
-                  :exclusions [ciste/ciste-core]
-                  ]
+                  :exclusions [ciste/ciste-core]]
                  [ciste/ciste-service-aleph "0.4.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]]
                  [ciste/ciste-service-tigase "0.4.0-SNAPSHOT"
@@ -15,9 +15,7 @@
                  [ciste/ciste-service-swank "0.4.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
-                 [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [clj-stacktrace "0.2.8"]
-                 [clj-statsd "0.3.10"]
                  [clj-time "0.7.0"]
                  [clj-http "0.9.2"]
                  [clojurewerkz/route-one "1.1.0"]
@@ -25,28 +23,28 @@
                  ;;  :exclusions [com.google.guava/guava]]
                  [clojurewerkz/mailer "1.0.0"]
 
-                 ;; [lein-light-nrepl "0.0.18"]
-
                  [clojure-complete "0.2.3"
                   :exclusions [org.clojure/clojure]]
                  [clojurewerkz/support "0.20.0"]
                  [com.novemberain/monger "1.8.0"]
                  [com.novemberain/validateur "1.7.0"]
                  [com.ocpsoft/ocpsoft-pretty-time "1.0.7"]
+
                  [crypto-random "1.2.0"]
+
                  [hiccup "1.0.5"]
 
-
-
                  [lamina "0.5.2"]
+
+                 [net.kronkltd/clj-airbrake "2.0.1-SNAPSHOT"]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                    :exclusions [xalan]]
                  [net.kronkltd/plaza "0.3.0-SNAPSHOT"]
+
                  [org.apache.abdera/abdera-client "1.1.3"]
                  [org.bovinegenius/exploding-fish "0.3.4"]
-                 ;; [org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojure "1.5.1"]
+                 [org.clojure/clojure "1.6.0"]
 
                  [org.clojure/core.cache "0.6.3"]
                  [org.clojure/tools.logging "0.2.6"]

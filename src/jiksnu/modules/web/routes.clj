@@ -92,11 +92,8 @@
 (defn close-connection
   [handler]
   (fn [request]
-    (if-let [response (handler (log/spy :info request))]
-      (log/spy :info (assoc-in response [:headers "Connection"] "close"))
-      )
-    )
-  )
+    (if-let [response (handler request)]
+      (assoc-in response [:headers "Connection"] "close"))))
 
 (definitializer
   (def app
