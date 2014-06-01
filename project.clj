@@ -39,8 +39,6 @@
 
 
                  [lamina "0.5.2"]
-                 [lib-noir "0.8.3"
-                  :exclusions [compojure]]
                  [net.kronkltd/clj-gravatar "0.1.0-SNAPSHOT"]
                  [net.kronkltd/jiksnu-core "0.1.0-SNAPSHOT"
                    :exclusions [xalan]]

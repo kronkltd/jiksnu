@@ -1,17 +1,8 @@
 (ns jiksnu.modules.web.routes
-  (:use [ciste.commands :only [add-command!]]
-        [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.loader :only [require-namespaces]]
-        [ciste.routes :only [resolve-routes]]
-        ;; [clj-airbrake.ring :only [wrap-airbrake]]
-        [ring.middleware.flash :only [wrap-flash]]
-        [ring.middleware.resource :only [wrap-resource]]
-        [slingshot.slingshot :only [throw+]]
-        tidy-up.core)
   (:require [aleph.http :as http]
+            [ciste.initializer :refer [definitializer]]
             [ciste.middleware :as middleware]
-            ;; [clj-airbrake.core :as airbrake]
+            [ciste.routes :refer [resolve-routes]]
             [clojure.tools.logging :as log]
             [compojure.core :as compojure]
             [compojure.handler :as handler]
@@ -25,11 +16,13 @@
             [jiksnu.session :as session]
             [jiksnu.util :as util]
             [ring.middleware.file :as file]
-            [monger.ring.session-store :as ms]
-            [noir.util.middleware :as nm]
             [ring.middleware.file-info :as file-info]
+            [ring.middleware.flash :refer [wrap-flash]]
+            [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.stacktrace :as stacktrace]
-            [ring.util.response :as response])
+            [monger.ring.session-store :as ms]
+            [ring.util.response :as response]
+            [slingshot.slingshot :refer [throw+]])
   (:import javax.security.auth.login.LoginException))
 
 (defn not-found-msg
@@ -97,26 +90,19 @@
 
 
 (definitializer
-  ;; (airbrake/set-host! (config :airbrake :host))
   (def app
     (http/wrap-ring-handler
-     (compojure/routes
-      (route/resources "/webjars" {:root "META-INF/resources/webjars"})
-      (compojure/GET "/api/help/test.json" _ "OK")
-      (-> all-routes
-          jm/wrap-authentication-handler
-          (file/wrap-file "resources/public/")
-          file-info/wrap-file-info
-          jm/wrap-user-binding
-          jm/wrap-dynamic-mode
-          jm/wrap-oauth-user-binding
-          jm/wrap-authorization-header
-          (handler/site {:session {:store (ms/session-store)}})
-          ;; (wrap-airbrake (config :airbrake :key))
-          jm/wrap-stacktrace
-          jm/wrap-stat-logging
-          ;; wrap-tidy-up
-          ))))
+     (-> all-routes
+         jm/wrap-authentication-handler
+         jm/wrap-user-binding
+         (wrap-resource "/META-INF/resources")
+         (wrap-resource "/resources/public")
+         jm/wrap-dynamic-mode
+         jm/wrap-oauth-user-binding
+         jm/wrap-authorization-header
+         (handler/site {:session {:store (ms/session-store)}})
+         jm/wrap-stacktrace
+         jm/wrap-stat-logging)))
 
   (doseq [model-name registry/action-group-names]
     (doseq [module-name registry/module-names]
