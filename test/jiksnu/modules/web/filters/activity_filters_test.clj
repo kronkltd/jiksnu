@@ -6,8 +6,7 @@
         [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
         [jiksnu.modules.web.routes :only [app]]
         [midje.sweet :only [=>]])
-  (:require [clj-tigase.core :as tigase]
-            [clj-tigase.element :as element]
+  (:require [clj-tigase.element :as element]
             [clojure.tools.logging :as log]
             [jiksnu.namespace :as ns]
             [jiksnu.actions.activity-actions :as actions.activity]

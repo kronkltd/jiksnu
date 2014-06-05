@@ -1,23 +1,13 @@
 (ns jiksnu.modules.web.filters.stream-filters-test
-  (:use [clj-factory.core :only [factory fseq]]
-        [ciste.config :only [config]]
-        [ciste.core :only [with-format with-serialization]]
-        [ciste.filters :only [filter-action]]
-        [jiksnu.test-helper :only [check context future-context test-environment-fixture]]
-        [lamina.core :only [channel]]
-        [midje.sweet :only [=>]])
-  (:require [clj-tigase.core :as tigase]
+  (:require [ciste.core :refer [with-format with-serialization]]
+            [ciste.filters :refer [filter-action]]
             [clojure.tools.logging :as log]
-            [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
-            [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
-            [jiksnu.model :as model]
-            [jiksnu.model.activity :as model.activity]
-            [jiksnu.model.user :as model.user])
-  (:import jiksnu.model.Conversation
-           jiksnu.model.User))
+            [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
+            [lamina.core :refer [channel]]
+            [midje.sweet :refer [=>]]))
 
 (test-environment-fixture
 

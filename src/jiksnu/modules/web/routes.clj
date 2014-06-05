@@ -103,7 +103,7 @@
            close-connection
            )
 
-      #_(-> all-routes
+      (-> all-routes
           jm/wrap-authentication-handler
           jm/wrap-user-binding
           jm/wrap-dynamic-mode
