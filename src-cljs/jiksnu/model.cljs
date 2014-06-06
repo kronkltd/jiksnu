@@ -66,6 +66,17 @@
     (aset observable-model id observable)
     observable))
 
+(defn fetch-model
+  [this]
+  (let [model-name (first
+                    (first
+                     (filter
+                      (fn [[_ _ class-name]]
+                        (= class-name (.-type this)))
+                      names)))]
+    ;; TODO: trigger an event to do this
+    (ws/send "get-model" (array model-name (.-id this)))))
+
 ;; Models
 
 (defn initializer
@@ -80,6 +91,33 @@
    backbone/Collection
    (js-obj)))
 
+(defprotocol Collection2
+  (fetch [this])
+  )
+
+(defrecord Pages2 [name]
+    Collection2
+
+    (fetch [this]
+      (fetch-model this)
+      )
+
+    )
+
+
+
+(set! (.-fetch (.-prototype Pages2)) (fn [] (this-as this (fetch-model this))))
+
+;; (def Pages
+;;   (.extend
+;;    Collection
+;;    (js-obj
+;;     "model" Page
+;;     "type" "Pages"
+;;     "getPage" (fn [name]
+;;                 (this-as this
+;;                   (.get this name))))))
+
 (def Model
   (.extend
    backbone/Model
@@ -89,18 +127,22 @@
     "idAttribute" "_id"
     "defaults" (fn [] (js-obj
                        "loaded" false))
-    "fetch" (fn []
-              (this-as this
-                (let [model-name (first
-                                  (first
-                                   (filter
-                                    (fn [[_ _ class-name]]
-                                      (= class-name (.-type this)))
-                                    names)))]
-                  (ws/send "get-model"
-                           (array model-name (.-id this))))))
+    ;; "fetch" (fn []
+    ;;           (this-as this
+    ;;             (fetch-model this)))
     "url" (fn [] (this-as this
                    (gstring/format "/model/%s/%s.model" (.-stub this) (.-id this)))))))
+
+(set! (.-fetch (.-prototype Model)) (fn []
+                                      (this-as this
+                                        (fetch-model this))))
+
+;; (defprotocol Model)
+
+(defn page-add
+  [this id]
+  (let [a (.get this "items")]
+    (.set this "items" (clj->js (concat [id] a)))))
 
 (def Page
   (.extend
@@ -118,8 +160,7 @@
                   "totalRecords" 0))
     "addItem" (fn [id]
                 (this-as this
-                  (let [a (.get this "items")]
-                    (.set this "items" (clj->js (concat [id] a))))))
+                  (page-add this id)))
     "popItem" (fn []
                 (this-as this
                   (let [a (.get this "items")

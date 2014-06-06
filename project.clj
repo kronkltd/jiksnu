@@ -61,7 +61,7 @@
                  [org.webjars/momentjs "2.6.0-2"]
                  [org.webjars/underscorejs "1.6.0-3"]
                  [ring "1.2.2"]
-                 [ring/ring-core "1.2.2"]
+                 [ring/ring-core "1.1.8"]
                  [ring-basic-authentication "1.0.5"]
                  [rmarianski/tidy-up "0.0.2"]
                  [slingshot "0.10.3"]

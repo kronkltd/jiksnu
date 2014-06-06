@@ -211,10 +211,9 @@
   (let [theme (config :site :theme)]
     (p/include-css
      (if (= theme "classic")
-       "/assets/js/bootstrap/2.3.2/css/bootstrap.min.css"
+       "/webjars/bootstrap/3.1.1/css/bootstrap.min.css"
        (format "http://bootswatch.com/%s/bootstrap.min.css" theme))
-     "/assets/themes/classic/standard.css"
-     "/assets/js/bootstrap/2.3.2/css/bootstrap-responsive.min.css")))
+     "/assets/themes/classic/standard.css")))
 
 (defn get-prefixes
   []
@@ -279,18 +278,17 @@
       (format "WEBSOCKET_PATH = '%s';" websocket-path)
       "var CLOSURE_NO_DEPS = true;"]
      (p/include-js
-      ;; "/assets/js/modernizr-2.6.1.js"
-      "/assets/js/underscore/1.4.4/underscore.min.js"
-      ;; "/assets/js/jquery/1.10.1/jquery.js"
+      "/webjars/underscorejs/1.6.0/underscore-min.js"
       "/webjars/jquery/2.1.1/jquery.min.js"
 
       "/assets/js/jquery.timeago/1.3.0/jquery.timeago.js"
-      "/assets/js/knockout/2.2.1/knockout.js"
-      "/assets/js/bootstrap/2.3.2/js/bootstrap.min.js"
+
+      "/webjars/knockout/3.1.0/knockout.debug.js"
+
+      "/webjars/bootstrap/3.1.1/js/bootstrap.min.js"
       "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
-      "/assets/js/backbone/1.0.0/backbone.min.js"
+      "/webjars/backbonejs/1.1.2/backbone-min.js"
       "/assets/js/knockback/0.17.2/knockback.js"
-      ;; "/assets/cljs/goog/base.js"
       "/assets/cljs/jiksnu.js")
      (doall
       (map (fn [hook]
