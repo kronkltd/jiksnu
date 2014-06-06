@@ -80,10 +80,8 @@
 
 
 
-                 [org.clojure/clojurescript "0.0-2227"]
-                 ;; [org.clojure/clojurescript "0.0-1859"]
+                 [org.clojure/clojurescript "0.0-2156"]
 
-                 ;; [jayq "2.5.1"]
                  ;; [lolg "0.1.0-SNAPSHOT"
                  ;;  :exclusions [org.clojure/google-closure-library]]
                  ;; [net.kronkltd/waltz "0.1.2-SNAPSHOT"
@@ -94,8 +92,6 @@
 
 
                  #_[org.apache.httpcomponents/httpclient "4.2.5"]
-
-                 ;; [org.clojure/clojurescript "0.0-2173"]
 ]
   :plugins [
             [lein-cljsbuild "1.0.3"]
@@ -154,14 +150,15 @@
 
   :profiles {:dev
              {:resource-paths ["test-resources"]
+              :repl-options {:init-ns jiksnu.core
+                             :nrepl-middleware [lighttable.nrepl.handler/lighttable-ops]}
+              :plugins [[com.cemerick/austin "0.1.4"]]
               :dependencies
               [[midje         "1.6.3"]
                [ring-mock     "0.1.5"]]}}
   :lesscss-output-path "resources/public/assets/themes/classic/"
 
-
-  :repl-options {:nrepl-middleware [lighttable.nrepl.handler/lighttable-ops]}
-
+  :source-paths ["src" "src-cljs"]
   :lis-opts {
              :name "jiksnu"
              }

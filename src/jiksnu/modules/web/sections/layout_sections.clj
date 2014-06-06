@@ -203,7 +203,7 @@
   []
   [:form.navbar-search.pull-left
    {:action "/main/search" :method "post"}
-   [:input.search-query.span3
+   [:input.search-query.col-md-3
     {:type "text" :placeholder "Search" :name "q"}]])
 
 (defn style-section
@@ -316,7 +316,7 @@
      (new-post-section request response))
    (title-section request response)
    (:body response)
-   [:footer.row-fluid.page-footer
+   [:footer.row.page-footer
     [:p "Copyright © 2011 KRONK Ltd."]
     [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
 
@@ -339,13 +339,14 @@
               :prefix (get-prefixes) })
       [:head
        [:meta {:charset "UTF-8"}]
+       [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
+       [:meta {:name "viewport"
+               :content "width=device-width, initial-scale=1.0"}]
        [:title {:property "dc:title"}
         (when-not *dynamic*
           (str (when (:title response)
                  (str (:title response) " - "))
                (config :site :name)))]
-       [:meta {:name "viewport"
-               :content "width=device-width, initial-scale=1.0"}]
        (style-section)
        (links-section request response)]
       [:body {:data-dynamic (str *dynamic*)}
@@ -353,19 +354,19 @@
        [:div.container-fluid
         (when *dynamic*
           {:data-bind "if: loaded"})
-        [:div.row-fluid
-         [:div.span2.hidden-tablet.hidden-phone
+        [:div.row
+         [:div.col-md-2.hidden-tablet.hidden-phone
           [:aside#left-column.sidebar.hidden-tablet
            (side-navigation)
            [:hr]
            (formats-section response)
            #_(statistics-section request response)]]
-         [:div#content.span10
-          [:div.row-fluid
+         [:div#content.col-md-10
+          [:div.row
            (if-not (:single response)
-             (list [:div.span10 (main-content request response)]
-                   [:div.span2 (right-column-section response)])
-             [:div.span12 (main-content request response)])]]]]
+             (list [:div.col-md-10 (main-content request response)]
+                   [:div.col-md-2 (right-column-section response)])
+             [:div.col-md-12 (main-content request response)])]]]]
        (scripts-section request response)]]))})
 
 
