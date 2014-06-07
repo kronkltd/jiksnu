@@ -71,6 +71,7 @@
 
                  [clj-webdriver "0.6.1"
                    :exclusions [xalan]]
+                 [im.chit/purnam "0.4.3"]
 
                  [xerces/xercesImpl "2.11.0"]
 
@@ -94,7 +95,7 @@
                  #_[org.apache.httpcomponents/httpclient "4.2.5"]
 ]
   :plugins [
-            [lein-cljsbuild "1.0.3"]
+            [lein-cljsbuild "1.0.2"]
             ;; [lein-cljsbuild "0.3.2"]
             [codox          "0.8.8"]
             [lein-cucumber  "1.0.2"]
@@ -125,12 +126,12 @@
 
 
   ;; :exclusions [org.clojure/google-closure-library]
-  :aot [jiksnu.model
-        ;; ciste.runner
-        ;; jiksnu.modules.xmpp.plugin
-        ;; jiksnu.modules.xmpp.channels
-        ;; jiksnu.modules.xmpp.user-repository
-        ]
+  ;; :aot [jiksnu.model
+  ;;       ;; ciste.runner
+  ;;       ;; jiksnu.modules.xmpp.plugin
+  ;;       ;; jiksnu.modules.xmpp.channels
+  ;;       ;; jiksnu.modules.xmpp.user-repository
+  ;;       ]
   ;; :hooks [leiningen.cljsbuild]
   :main ciste.runner
   :jvm-opts ["-server"
@@ -150,8 +151,10 @@
 
   :profiles {:dev
              {:resource-paths ["test-resources"]
-              :repl-options {:init-ns jiksnu.core
-                             :nrepl-middleware [lighttable.nrepl.handler/lighttable-ops]}
+              :repl-options {:init-ns ciste.runner
+                             :port 7888
+                             ;; :nrepl-middleware [lighttable.nrepl.handler/lighttable-ops]
+                             }
               :plugins [[com.cemerick/austin "0.1.4"]]
               :dependencies
               [[midje         "1.6.3"]

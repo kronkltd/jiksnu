@@ -1,5 +1,6 @@
 (ns jiksnu.modules.web.sections.layout-sections
-  (:require [ciste.core :refer [apply-template]]
+  (:require [cemerick.austin.repls]
+            [ciste.core :refer [apply-template]]
             [ciste.config :refer [config environment]]
             [ciste.sections.default :refer [add-form show-section]]
             [clojure.string :as string]
@@ -295,7 +296,12 @@
              (hook request response))
            @scripts-section-hook))
      [:script {:type "text/javascript"}
-      "goog.require('jiksnu.core');"])))
+      "goog.require('jiksnu.core');"]
+     (if (= "true" (:repl (:params request)))
+     [:script (cemerick.austin.repls/browser-connected-repl-js)]
+
+       )
+     )))
 
 (defn right-column-section
   [response]

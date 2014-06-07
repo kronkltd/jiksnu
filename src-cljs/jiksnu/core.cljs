@@ -3,6 +3,7 @@
             [goog.string :as gstring]
             [goog.string.format :as gformat]
             [jiksnu.handlers :as handlers]
+            [clojure.browser.repl]
             [clojure.string :as string]
             [lolg :as log]
             jiksnu.bindings.with-model
@@ -20,10 +21,11 @@
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
   (:use-macros [dommy.macros :only [sel sel1]]
-               [jiksnu.macros :only [defvar]]))
+               [jiksnu.macros :only [defvar]]
+               [purnam.core :only [? ?> ! !> f.n def.n do.n
+                                   obj arr def* do*n def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.core"))
-
 
 (def _router nil)
 
@@ -33,54 +35,48 @@
     (log/fine *logger* (gstring/format "Fetching viewmodel: %s" url))
     (.getJSON js/jQuery url vm/process-viewmodel)))
 
-(defn main
+(defn initialize-logging
   []
-
   (doseq [[k v] levels/logging-levels]
     (log/set-level (log/get-logger k) v))
 
   ;; (log/start-display (log/fancy-output "foo"))
 
-  (log/start-display (log/console-output))
+  (log/start-display (log/console-output)))
 
+(defn initialize-connection
+  []
+  (try
+    (ws/connect)
+    (catch js/Error ex
+      (log/severe *logger* ex))))
+
+(defn main
+  []
+
+  (initialize-logging)
   (log/info *logger* "init")
 
-  (set! (.-instance ko/binding-provider)
-        (providers/DataModelProvider.))
-
-  (set! (.-instance ko/binding-provider)
-        (providers/PageProvider.))
-
-  (set! (.-instance ko/binding-provider)
-        (providers/SubPageProvider.))
-
-  (set! model/_model (model/AppViewModel.))
-  (aset js/window "_model" model/_model)
-
-  (set! model/_view (.viewModel js/kb model/_model))
-  (aset js/window "_view" model/_view)
+  (! ko/binding-provider.instance (providers/DataModelProvider.))
+  (! ko/binding-provider.instance (providers/DataModelProvider.))
+  (! ko/binding-provider.instance (providers/PageProvider.))
+  (! ko/binding-provider.instance (providers/SubPageProvider.))
+  (set! model/_model                 (model/AppViewModel.))
+  (! js/window.model              model/_model)
+  (set! model/_view                  (.viewModel js/kb model/_model))
+  (! js/window._view              model/_view)
+  (set! _router                      (routes/Router.))
 
   (when (dommy/attr (sel1 :body) "data-dynamic")
     (ko/apply-bindings model/_view))
 
-  (try
-    (ws/connect)
-    (catch js/Error ex
-      (log/severe *logger* ex)))
+  (initialize-connection)
 
-  (set! _router (routes/Router.))
-  (.start (.-history js/Backbone) (js-obj "pushState" true))
+  (.start (.-history js/Backbone) (obj :pushState true))
 
   (handlers/setup-handlers)
 
   (doseq [model-name model/model-names]
-    (aset ko/observables model-name (js-obj)))
-
-  (.on model/activities "change:loaded"
-       (fn [model value options]
-         #_(log/info *logger* "model loaded")
-         (.timeago (js/$ ".timeago"))))
-
-  (.timeago (js/$ ".timeago")))
+    (! ko/observables.|model-name| (obj))))
 
 (main)
