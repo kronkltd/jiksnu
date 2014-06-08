@@ -13,7 +13,6 @@
             [jiksnu.model :as model]
             [jiksnu.providers :as providers]
             [jiksnu.routes :as routes]
-            [jiksnu.statistics :as stats]
             [jiksnu.util.backbone :as backbone]
             [jiksnu.util.ko :as ko]
             [jiksnu.viewmodel :as vm]

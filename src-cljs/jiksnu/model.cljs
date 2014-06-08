@@ -270,18 +270,6 @@
   :username     nil
   :updated      nil)
 
-(defvar Statistics
-  [this]
-  (doto this
-    (ko/assoc-observable "activities")
-    (ko/assoc-observable "conversations")
-    (ko/assoc-observable "domains")
-    (ko/assoc-observable "groups")
-    (ko/assoc-observable "feedSources")
-    (ko/assoc-observable "feedSubscriptions")
-    (ko/assoc-observable "subscriptions")
-    (ko/assoc-observable "users")))
-
 (defvar PostForm
   [this]
   (doto this
@@ -408,7 +396,6 @@
                :notifications            notifications
                :resources                resources
                :showComments             false
-               :statistics               nil
                :streams                  streams
                :subscriptions            subscriptions
                :targetActivity           nil
