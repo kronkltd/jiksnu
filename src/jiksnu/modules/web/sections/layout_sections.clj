@@ -287,8 +287,10 @@
       "/webjars/knockout/3.1.0/knockout.debug.js"
 
       "/webjars/bootstrap/3.1.1/js/bootstrap.min.js"
+
       "/assets/js/bootstrap-markdown/1.0.0/js/bootstrap-markdown.js"
       "/webjars/backbonejs/1.1.2/backbone-min.js"
+      "/assets/supermodel/0.0.4/supermodel.js"
       "/assets/js/knockback/0.17.2/knockback.js"
       "/assets/cljs/jiksnu.js")
      (doall
@@ -298,10 +300,7 @@
      [:script {:type "text/javascript"}
       "goog.require('jiksnu.core');"]
      (if (= "true" (:repl (:params request)))
-     [:script (cemerick.austin.repls/browser-connected-repl-js)]
-
-       )
-     )))
+       [:script (cemerick.austin.repls/browser-connected-repl-js)]))))
 
 (defn right-column-section
   [response]
