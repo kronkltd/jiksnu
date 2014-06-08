@@ -228,24 +228,27 @@
 
 (defn navbar-section
   [request response]
-  [:div.navbar.navbar-fixed-top
-   [:div.navbar-inner
-    [:div.container-fluid
-     [:a.btn.btn-navbar {:data-toggle "collapse"
-                         :data-target ".nav-collapse"}
-      [:span.icon-bar]
-      [:span.icon-bar]
-      [:span.icon-bar]]
-     [:a.brand.home {:href "/" :rel "top"}
-      (config :site :name)]
-     [:div.nav-collapse.collapse
-      ;; (navbar-search-form)
-      [:ul.nav.pull-right (sections.auth/login-section response)]
-      #_[:div.navbar-text.connection-info.pull-right]
-      #_[:div.navbar-text.pull-right
-         (if *dynamic* "dynamic" "static")]
-      [:div.visible-tablet.visible-phone
-       (side-navigation)]]]]])
+  [:div.navbar.navbar-fixed-top.navbar-inverse
+   {:role "navigation"}
+   [:div.container-fluid
+    [:button.navbar-toggle
+     {:type "button"
+      :data-toggle "collapse"
+      :data-target "#main-navbar-collapsw-1"}
+     [:span.sr-only "Toggle Navigation"]
+     [:span.icon-bar]
+     [:span.icon-bar]
+     [:span.icon-bar]]
+    [:a.navbar-brand.home {:href "/" :rel "top"}
+     (config :site :name)]
+    [:div.navbar-collapse.collapse#main-navbar-collapse-1
+     ;; (navbar-search-form)
+     [:ul.nav.navbar-nav.navbar-right (sections.auth/login-section response)]
+     #_[:div.navbar-text.connection-info.navbar-right]
+     #_[:div.navbar-text.navbar-right
+        (if *dynamic* "dynamic" "static")]
+     [:div.visible-tablet.visible-phone
+      (side-navigation)]]]])
 
 (defn links-section
   [request response]
