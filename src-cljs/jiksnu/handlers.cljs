@@ -7,7 +7,9 @@
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws]
             [lolg :as log])
-  (:use-macros [dommy.macros :only [sel sel1]]))
+  (:use-macros [dommy.macros :only [sel sel1]]
+               [purnam.core :only [? ?> ! !> f.n def.n do.n this self
+                                   obj arr def* do*n def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.handlers"))
 
@@ -19,8 +21,8 @@
 (defn add-notification
   [message]
   (.add (.get _model "notifications")
-        (js-obj
-         "message" message)))
+        (obj
+         :message message)))
 
 (defn invoke-action
   [e]

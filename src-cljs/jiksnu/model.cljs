@@ -87,6 +87,16 @@
 
 ;; (defprotocol Model)
 
+(defrecord Pages2 [name]
+    Collection2
+
+    (fetch [this]
+      (fetch-model this)))
+
+(def.n Pages2.prototype.fetch
+  []
+  (fetch-model this))
+
 
 ;; Model helpers
 
@@ -176,21 +186,11 @@
   [name]
   (.get this name))
 
-(defrecord Pages2 [name]
-    Collection2
-
-    (fetch [this]
-      (fetch-model this)))
-
-(def.n Pages2.prototype.fetch
-  []
-  (fetch-model this))
-
 (def PageModel
   (.extend
    Model
-   (js-obj
-    "defaults" (fn []
+   (obj
+    :defaults (fn []
                  (.extend js/_
                      (obj
                       :_id   nil
@@ -447,14 +447,12 @@
 (def Clients
   (.extend backbone/Collection
            (obj
-            ;; "localStroage" (js/Store. "conversations")
             :type         "Clients"
             :model        Client)))
 
 (def Conversations
   (.extend backbone/Collection
            (obj
-            ;; "localStroage" (js/Store. "conversations")
             :type         "Conversations"
             :model        Conversation)))
 
@@ -479,48 +477,47 @@
 
 (def Groups
   (.extend backbone/Collection
-           (js-obj
+           (obj
             :model Group
             :type "Groups")))
 
 (def Notifications
   (.extend
    backbone/Collection
-   (js-obj
-    "model" Notification
-    "type" "Notifications"
+   (obj
+    :model Notification
+    :type "Notifications"
 
     ;; Add a new notification
-    "addNotification"
+    :addNotification
     (fn [message]
-      (this-as this
-        (let [notification (Notification.)]
-          (.set notification "message" message)
-          (.push this notification)))))))
+      (let [notification (Notification.)]
+        (.set notification "message" message)
+        (.push this notification))))))
 
 (def Resources
   (.extend backbone/Collection
-           (js-obj
-            "type"    "Resources"
-            "model"   Resource)))
+           (obj
+            :type    "Resources"
+            :model   Resource)))
 
 (def Streams
   (.extend backbone/Collection
-           (js-obj
-            "model" Stream
-            "type" "Streams")))
+           (obj
+            :model Stream
+            :type "Streams")))
 
 (def Subscriptions
   (.extend backbone/Collection
-           (js-obj
-            "model" Subscription
-            "type" "Subscriptions")))
+           (obj
+            :model Subscription
+            :type "Subscriptions")))
 
 (def Users
   (.extend backbone/Collection
-           (js-obj
-            "type"         "Users"
-            "model"        User)))
+           (obj
+            :type         "Users"
+            :model        User)))
 
 ;; Collection references
 ;; TODO: remove
@@ -591,7 +588,7 @@
           m
           (do
             (log/fine *logger* (gstring/format "Creating model: %s(%s)" model-name id))
-            (let [m (.push coll (js-obj "_id" id))]
+            (let [m (.push coll (obj :_id id))]
               (.fetch m)
               m
               )))
@@ -634,7 +631,7 @@ Returns a viewmodel"
     (if (= (type id) js/String)
       (if-let [m (get-model-obj model-name id)]
         (do
-          (log/finer *logger* "creating viewmodel")
+          (log/finer *logger* (str "creating viewmodel: " m))
           (.viewModel js/kb m))
         (throw (js/Error. "Could not get model")))
       (throw (js/Error. (str id " is not a string"))))

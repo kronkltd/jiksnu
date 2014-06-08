@@ -9,7 +9,9 @@
             [jiksnu.util.ko :as ko]
             [jiksnu.viewmodel :as vm]
             [jiksnu.websocket :as ws])
-  (:use-macros [jiksnu.macros :only [defvar]]))
+  (:use-macros [jiksnu.macros :only [defvar]]
+               [purnam.core :only [? ?> ! !> f.n def.n do.n this self
+                                   obj arr def* do*n def*n f*n]]))
 
 (def *logger* (log/get-logger "jiksnu.events"))
 
@@ -48,7 +50,7 @@
         model-name (.-type event)
         m (model/get-model-obj model-name id)]
     (.set m data)
-    (.set m (js-obj "loaded" true))))
+    (.set m (obj :loaded true))))
 
 (defmethod ws/process-event "page-updated"
   [event]
