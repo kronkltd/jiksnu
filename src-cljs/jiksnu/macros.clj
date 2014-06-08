@@ -25,8 +25,8 @@
   [name model & options]
   `(def ~name
      (.extend (.-Collection js/Backbone)
-              (cljs.core/js-obj
-               "type" ~(str name)
-               "model" (fn [attrs# options#]
-                         (.create ~model attrs# options#))
+              (purnam.core/obj
+               :type ~(str name)
+               :model (fn [attrs# options#]
+                        (.create ~model attrs# options#))
                ~@options))))
