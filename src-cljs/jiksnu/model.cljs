@@ -144,12 +144,7 @@
                }
     )))
 
-(def Pages
-  (.extend
-   Collection
-   (obj
-    :model Page
-    :type "Pages")))
+(defcollection Pages Page)
 
 (def PageModel
   (.extend
