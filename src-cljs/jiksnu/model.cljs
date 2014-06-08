@@ -117,20 +117,11 @@
     :initialize initializer
     :stub "STUB"
     :idAttribute "_id"
+    :fetch (fn [] (fetch-model this))
     :url (fn [] (str "/model/"
                     (.-stub this) "/"
                     (.-id this) ".model"))
     :defaults (fn [] (obj :loaded false)))))
-
-;; (def.n Model.prototype.url
-;;   []
-;;   (str "/model/"
-;;        (.-stub this) "/"
-;;        (.-id this) ".model"))
-
-(def.n Model.prototype.fetch
-  []
-  (fetch-model this))
 
 ;; Page
 
@@ -139,17 +130,16 @@
    Model
    (obj
     :type "Page"
-    :idAttribute "id")))
-
-(def.n Page.prototype.defaults
-  []
-  (obj
-   :page         1
-   :loaded       false
-   :pageSize     0
-   :items        (array) #_(backbone/Collection.)
-   :recordCount  0
-   :totalRecords 0))
+    :idAttribute "id"
+    :defaults {
+               :page         1
+               :loaded       false
+               :pageSize     0
+               :items        (array) #_(backbone/Collection.)
+               :recordCount  0
+               :totalRecords 0
+               }
+    )))
 
 (def.n Page.prototype.hasNext
   []
