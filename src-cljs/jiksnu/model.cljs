@@ -72,6 +72,7 @@
 ;; Protocol helpers
 
 (defn get-model-name
+  "Returns the (lower-cased) name of the given model"
   [model]
   (first
    (first
@@ -81,6 +82,7 @@
      names))))
 
 (defn fetch-model
+  "Sends a request for the given Model"
   [this]
   (let [model-name (get-model-name this)]
     ;; TODO: trigger an event to do this
