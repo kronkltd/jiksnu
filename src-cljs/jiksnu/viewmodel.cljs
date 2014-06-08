@@ -6,30 +6,6 @@
 
 (def *logger* (log/get-logger "jiksnu.viewmodel"))
 
-(defn update-pages
-  [data]
-  (log/finest *logger* "Updating pages")
-  (when-let [pages (.-pages data)]
-    (doseq [pair (js->clj pages)]
-      (let [[k v] pair]
-        (let [page (clj->js (assoc v :id k))]
-          (if-let [m (.get model/pages k)]
-            (do
-              (log/fine *logger* (str "setting existing page: " k))
-              (.set m page))
-            (do
-              (log/fine *logger* (str "adding page: " k))
-              (.add model/pages page))))))))
-
-(defn update-items
-  "Adds all the data to their respective models"
-  [data]
-  (doseq [key model-names]
-    (when-let [items (aget data key)]
-      (let [coll (.get model/_model key)]
-        (doseq [item items]
-          (.add coll item))))))
-
 (defn update-targets
   "Sets all the target models"
   [data]
@@ -59,7 +35,7 @@
   (.set model/_model "title"       (.-title data))
   (.set model/_model "formats"     (.-formats data))
   (.set model/_model "currentUser" (.-currentUser data))
-  (update-pages     data)
+  ;; (update-pages     data)
   (update-page-info data)
   (update-post-form data)
   (update-targets   data)
