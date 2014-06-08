@@ -1,7 +1,5 @@
 (ns jiksnu.routes
   (:require [clojure.string :as string]
-            [goog.string :as gstring]
-            [goog.string.format :as gformat]
             [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.util.backbone :as backbone]
@@ -18,7 +16,7 @@
 
 (defn parse-route
   [path-string]
-  (log/finest (gstring/format "parsing route: %s" path-string))
+  (log/finest (str "parsing route: " path-string))
   (let [[route args] (string/split path-string "?")
         pairs (string/split (str args) "&")
         args-array (map parse-route* pairs)
@@ -50,7 +48,7 @@
            (js-obj
             "routes" (js-obj "*actions" "defaultRoute")
             "defaultRoute" (fn [path-string]
-                             (log/fine *logger* (gstring/format "default route: %s" path-string))
+                             (log/fine *logger* (str "default route: " path-string))
                              (let [p (.-search (.-location js/document))]
                                (ws/send "fetch-viewmodel"
                                         (parse-route (jl/spy (str path-string p))))))

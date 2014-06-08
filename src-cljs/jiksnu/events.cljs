@@ -1,7 +1,5 @@
 (ns jiksnu.events
-  (:require [goog.string :as gstring]
-            [goog.string.format :as gformat]
-            [jiksnu.handlers :as handlers]
+  (:require [jiksnu.handlers :as handlers]
             [clojure.string :as string]
             [lolg :as log]
             [jiksnu.logging :as jl]
@@ -35,7 +33,7 @@
 
 (defmethod ws/process-event :default
   [event]
-  (log/info *logger* (gstring/format "No match found: %s" event))
+  (log/info *logger* (str "No match found: " event))
   (jl/info event))
 
 (defmethod ws/process-event "add notice"
@@ -84,7 +82,7 @@
   [event]
   (let [id (.-body event)
         page-name (.-name event)]
-    (log/fine *logger* (gstring/format "adding page: %s << %s" page-name id))
+    (log/fine *logger* (str "adding page: " page-name " << " id))
     (if-let [page (.get model/pages page-name)]
       (let [items (.get page "items")]
         (.set page "items"

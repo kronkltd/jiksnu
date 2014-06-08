@@ -1,7 +1,5 @@
 (ns jiksnu.core
   (:require [dommy.core :as dommy]
-            [goog.string :as gstring]
-            [goog.string.format :as gformat]
             [jiksnu.handlers :as handlers]
             [clojure.browser.repl]
             [clojure.string :as string]
@@ -32,7 +30,7 @@
 (defn fetch-viewmodel
   [url]
   (when url
-    (log/fine *logger* (gstring/format "Fetching viewmodel: %s" url))
+    (log/fine *logger* (str "Fetching viewmodel: " url))
     (.getJSON js/jQuery url vm/process-viewmodel)))
 
 (defn initialize-logging

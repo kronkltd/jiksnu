@@ -1,7 +1,5 @@
 (ns jiksnu.statistics
   (:require [dommy.core :as dommy]
-            [goog.string :as gstring]
-            [goog.string.format :as gformat]
             [jiksnu.logging :as jl]
             [jiksnu.model :as model]
             [jiksnu.util.ko :as ko]
@@ -16,7 +14,7 @@
   [stats]
   (let [stat-section (sel :.statistics-section)]
     (doseq [key (keys stats)]
-      (let [finder (gstring/format "*[data-model='%s']" key)]
+      (let [finder (str "*[data-model='" key "']")]
         (when-let [section (sel stat-section finder)]
           (.effect section "highlight" 3000)
           (dommy/set-text! (sel section :.stat-value)

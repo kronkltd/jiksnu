@@ -2,8 +2,6 @@
   (:require [dommy.core :as dommy]
             [clojure.string :as string]
             [goog.events :as events]
-            [goog.string :as gstring]
-            [goog.string.format :as gformat]
             [goog.net.WebSocket :as websocket]
             [goog.net.WebSocket.EventType :as websocket-event]
             [goog.net.WebSocket.MessageEvent :as websocket-message]
@@ -52,7 +50,7 @@
 
 (defn queue-message
   [command args]
-  (log/fine *logger* (gstring/format "queuing message: %s %s" command args))
+  (log/fine *logger* (str "queuing message: " command " " args))
   (swap! queued-messages conj [command args])
   (state/set ws-state :queued))
 
@@ -170,7 +168,7 @@
     [m command & args]
     (state/transition ws-state :idle :sending)
     (let [message (str command (when (seq args) (apply str " " args)))]
-      (log/fine *logger* (gstring/format "sending message: %s" message))
+      (log/fine *logger* (str "sending message: " message))
       (emit! @default-connection message))
     (state/transition ws-state :sending :idle))
 

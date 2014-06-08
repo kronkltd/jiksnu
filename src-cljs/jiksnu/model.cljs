@@ -1,7 +1,5 @@
 (ns jiksnu.model
   (:require [goog.json :as json]
-            [goog.string :as gstring]
-            [goog.string.format :as gformat]
             [jiksnu.logging :as jl]
             [jiksnu.util.backbone :as backbone]
             [jiksnu.util.ko :as ko]
@@ -57,17 +55,6 @@
   (->> names
        (map (fn [[k v _]] [k v]))
        (into {})))
-
-;; Observable operations
-
-(defn init-observable
-  "Store an observable copy of the model in the model cache"
-  [model-name id observable-model model]
-  (let [observable (.viewModel js/kb model)]
-    (log/finer *logger* (str "setting observable (already loaded): "
-                             model-name "(" id ")"))
-    (! observable-model.|id| observable)
-    observable))
 
 ;; Protocol helpers
 
@@ -435,24 +422,50 @@
                :users                    users
                })))
 
+
+;; Observable operations
+
+(defn init-observable
+  "Store an observable copy of the model in the model cache"
+  [model-name id observable-model model]
+  (let [observable (.viewModel js/kb model)]
+    (log/finer *logger* (str "setting observable (already loaded): "
+                             model-name "(" id ")"))
+    (! observable-model.|id| observable)
+    observable))
+
 ;; model functions
+
+(defn create-model
+  "Creates a new empty model in the collection with the given id
+ and refreshes it from the server"
+  [coll id]
+  (.log js/console coll)
+  (log/fine *logger* (str "Creating model: "
+                          (.-type (.model coll))
+                          "(" id ")"))
+  (if-let [model (.push coll (obj :_id id))]
+    (do
+      (.fetch model)
+      model)
+    (throw "model could not be created")))
 
 (defn get-model-obj
   [model-name id]
   (if id
-    (if-let [coll-name (or (collection-name model-name)
-                           model-name)]
-      (if-let [coll (.get _model coll-name)]
-        (if-let [m (.get coll id)]
-          m
-          (do
-            (log/fine *logger* (gstring/format "Creating model: %s(%s)" model-name id))
-            (let [m (.push coll (obj :_id id))]
-              (.fetch m)
-              m
-              )))
-        (throw (str "Could not get collection: " coll-name)))
-      (throw (str "Could find collection name for: " model-name)))
+    (do
+      (log/info *logger* (str "Getting model object for: " model-name "(" id ")"))
+      ;; get collection name
+      (if-let [coll-name (collection-name model-name)]
+        ;; get collection from model cache
+        (if-let [coll (.get _model coll-name)]
+          ;; get model from collection
+          (if-let [m (.get coll id)]
+            m
+            ;; model not found
+            (create-model coll id))
+          (throw (str "Could not get collection: " coll-name)))
+        (throw (str "Could find collection name for: " model-name))))
     (throw "id can not be null")))
 
 (defn get-page-obj
@@ -470,7 +483,7 @@
 
 Returns a viewmodel"
   [model-name id name]
-  (log/fine *logger* (gstring/format "getting sub page: %s(%s) => %s" model-name id name))
+  (log/fine *logger* (str "getting sub page: " model-name "(" id ") => " name))
   (let [m (get-model-obj model-name id)
         coll (.get m "pages")]
     (if-let [page (.get coll name)]
@@ -488,11 +501,13 @@ Returns a viewmodel"
   [model-name id]
   (if id
     (if (= (type id) js/String)
-      (if-let [m (get-model-obj model-name id)]
-        (do
-          (log/finer *logger* (str "creating viewmodel: " m))
-          (.viewModel js/kb m))
-        (throw (js/Error. "Could not get model")))
+      (do
+        (log/info *logger* (str "getting model: " model-name "(" id ")"))
+        (if-let [m (get-model-obj model-name id)]
+          (do
+            (log/finer *logger* (str "creating viewmodel: " m))
+            (.viewModel js/kb m))
+          (throw (js/Error. "Could not get model"))))
       (throw (js/Error. (str id " is not a string"))))
     (throw (js/Error. "id is undefined"))))
 
@@ -510,7 +525,7 @@ Returns a viewmodel"
 
 Returns a viewmodel"
   [model-name id name]
-  (log/fine *logger* (gstring/format "getting sub-page: %s(%s) => %s" model-name id name))
+  (log/fine *logger* (str "getting sub-page: " model-name "(" id ") => " name))
   (let [page (get-sub-page-obj model-name id name)]
     (.viewModel js/kb page)))
 

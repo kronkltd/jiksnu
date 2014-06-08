@@ -1,8 +1,6 @@
 (ns jiksnu.viewmodel
   (:use [jiksnu.model :only [_model _view class-names model-names]])
-  (:require [goog.string :as gstring]
-            [goog.string.format :as gformat]
-            [lolg :as log]
+  (:require [lolg :as log]
             [jiksnu.logging :as jl]
             [jiksnu.model :as model]))
 
@@ -17,10 +15,10 @@
         (let [page (clj->js (assoc v :id k))]
           (if-let [m (.get model/pages k)]
             (do
-              (log/fine *logger* (gstring/format "setting existing page: %s" k))
+              (log/fine *logger* (str "setting existing page: " k))
               (.set m page))
             (do
-              (log/fine *logger* (gstring/format "adding page: %s" k))
+              (log/fine *logger* (str "adding page: " k))
               (.add model/pages page))))))))
 
 (defn update-items
