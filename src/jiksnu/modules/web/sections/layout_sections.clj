@@ -23,16 +23,6 @@
   (:import jiksnu.model.Activity
            jiksnu.model.User))
 
-(def statistics-info
-  [["activities"        "Activities"]
-   ["conversations"     "Conversations"]
-   ["domains"           "Domains"]
-   ["groups"            "Groups"]
-   ["feedSources"       "Feed Sources"]
-   ["feedSubscriptions" "Feed Subscriptions"]
-   ["subscriptions"     "Subscriptions"]
-   ["users"             "Users"]])
-
 (defn nav-info
   []
   [["Home"
@@ -87,7 +77,7 @@
 
 (defn side-navigation
   []
-  [:ul.nav.nav-list.well
+  [:ul.nav.nav-list
    (->> (nav-info)
         (map navigation-group)
         (reduce concat))])
@@ -120,34 +110,12 @@
   (when-let [formats (if *dynamic*
                        [{}]
                        (:formats response))]
-    [:div.well
+    [:div
      [:h3 "Formats"]
      [:ul.unstyled
       (when *dynamic*
         {:data-bind "foreach: formats"})
       (map formats-section* formats)]]))
-
-(defn statistics-line
-  [stats [model-name label]]
-  [:tr
-   [:td.stat-label label]
-   [:td.stat-value
-    (if *dynamic*
-      {:data-bind (format "text: %s" model-name)}
-      (get stats model-name))]])
-
-(defn statistics-section
-  [request response]
-  (let [stats (actions.site/get-stats)]
-    [:div.well.statistics-section
-     (bind-to "statistics"
-       [:table.table.table-compact
-        [:thead
-         [:tr
-          [:th "Collection"]
-          [:th "Count"]]]
-        [:tbody
-         (map (partial statistics-line stats) statistics-info)]])]))
 
 (defn devel-warning
   [response]
@@ -228,26 +196,28 @@
 
 (defn navbar-section
   [request response]
-  [:div.navbar.navbar-fixed-top.navbar-inverse
+  [:nav.navbar.navbar-default.navbar-inverse
+   ;; .navbar-fixed-top
    {:role "navigation"}
    [:div.container-fluid
-    [:button.navbar-toggle
-     {:type "button"
-      :data-toggle "collapse"
-      :data-target "#main-navbar-collapsw-1"}
-     [:span.sr-only "Toggle Navigation"]
-     [:span.icon-bar]
-     [:span.icon-bar]
-     [:span.icon-bar]]
-    [:a.navbar-brand.home {:href "/" :rel "top"}
-     (config :site :name)]
-    [:div.navbar-collapse.collapse#main-navbar-collapse-1
+    [:div.navbar-header
+     [:button.navbar-toggle
+      {:type "button"
+       :data-toggle "collapse"
+       :data-target "#main-navbar-collapsw-1"}
+      [:span.sr-only "Toggle Navigation"]
+      [:span.icon-bar]
+      [:span.icon-bar]
+      [:span.icon-bar]]
+     [:a.navbar-brand.home {:href "/" :rel "top"}
+      (config :site :name)]]
+    [:div#main-navbar-collapse-1.navbar-collapse.collapse
      ;; (navbar-search-form)
      [:ul.nav.navbar-nav.navbar-right (sections.auth/login-section response)]
      #_[:div.navbar-text.connection-info.navbar-right]
      #_[:div.navbar-text.navbar-right
         (if *dynamic* "dynamic" "static")]
-     [:div.visible-tablet.visible-phone
+     #_[:div.visible-tablet.visible-phone
       (side-navigation)]]]])
 
 (defn links-section
@@ -324,9 +294,7 @@
      (new-post-section request response))
    (title-section request response)
    (:body response)
-   [:footer.row.page-footer
-    [:p "Copyright © 2011 KRONK Ltd."]
-    [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"} "Jiksnu"]]]])
+   ])
 
 (defn page-template-content
   [request response]
@@ -362,19 +330,26 @@
        [:div.container-fluid
         (when *dynamic*
           {:data-bind "if: loaded"})
+        [:a.visible-sm.visible-xs {:href "#mainNav"} "Jump to Nav"]
         [:div.row
-         [:div.col-md-2.hidden-tablet.hidden-phone
-          [:aside#left-column.sidebar.hidden-tablet
-           (side-navigation)
-           [:hr]
-           (formats-section response)
-           #_(statistics-section request response)]]
-         [:div#content.col-md-10
+         [:div#content.col-sm-10.col-sm-push-2
           [:div.row
            (if-not (:single response)
              (list [:div.col-md-10 (main-content request response)]
                    [:div.col-md-2 (right-column-section response)])
-             [:div.col-md-12 (main-content request response)])]]]]
+             [:div.col-md-12 (main-content request response)])]]
+
+
+         [:div.col-sm-2.col-sm-pull-10
+          [:aside#left-column.sidebar
+           [:div#mainNav
+            (side-navigation)]
+           [:hr]
+           (formats-section response)]]]
+        [:footer.row.page-footer
+         [:p "Copyright © 2011 KRONK Ltd."]
+         [:p "Powered by " [:a {:href "https://github.com/duck1123/jiksnu"}
+                            "Jiksnu"]]]]
        (scripts-section request response)]]))})
 
 
