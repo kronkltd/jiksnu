@@ -329,7 +329,6 @@
   []
   (let [a (.get this "items")
         i (first a)]
-    (.log js/console this)
     (.set this "items" (clj->js (rest a)))
     i))
 
@@ -416,7 +415,7 @@
   "Store an observable copy of the model in the model cache"
   [model-name id observable-model model]
   (let [observable (.viewModel js/kb model)]
-    (log/finer *logger* (str "setting observable (already loaded): "
+    (log/finest *logger* (str "setting observable (already loaded): "
                              model-name "(" id ")"))
     (! observable-model.|id| observable)
     observable))
@@ -427,8 +426,7 @@
   "Creates a new empty model in the collection with the given id
  and refreshes it from the server"
   [coll id]
-  (.log js/console coll)
-  (log/fine *logger* (str "Creating model: "
+  (log/finer *logger* (str "Creating model: "
                           (.-type (.model coll))
                           "(" id ")"))
   (if-let [model (.push coll (obj :_id id))]
@@ -441,7 +439,7 @@
   [model-name id]
   (if id
     (do
-      (log/info *logger* (str "Getting model object for: " model-name "(" id ")"))
+      (log/finer *logger* (str "Getting model object for: " model-name "(" id ")"))
       ;; get collection name
       (if-let [coll-name (collection-name model-name)]
         ;; get collection from model cache
@@ -489,7 +487,7 @@ Returns a viewmodel"
   (if id
     (if (= (type id) js/String)
       (do
-        (log/info *logger* (str "getting model: " model-name "(" id ")"))
+        (log/finer *logger* (str "getting model: " model-name "(" id ")"))
         (if-let [m (get-model-obj model-name id)]
           (do
             (log/finer *logger* (str "creating viewmodel: " m))

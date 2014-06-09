@@ -4,6 +4,7 @@
             [clojure.browser.repl]
             [clojure.string :as string]
             [lolg :as log]
+            jiksnu.bindings.select-model
             jiksnu.bindings.with-model
             jiksnu.bindings.with-page
             jiksnu.bindings.with-sub-page

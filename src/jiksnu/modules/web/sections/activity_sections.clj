@@ -124,10 +124,12 @@
     [:option {:value "group"} "Group"]
     [:option {:value "custom"} "Custom"]
     [:option {:value "private"} "Private"]]
-   (bind-to "$root.targetUser() || $root.currentUser()"
-     [:div {:data-model "user"}
-      (with-sub-page "groups"
-        [:select {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"}])])
+   (bind-to "$root.currentUser()"
+            [:div {:data-model "user"}
+             (with-sub-page "groups"
+               [:select {:data-bind "selectModel: 'fullname'"}]
+               [:select {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"}])])
+
    ))
 
 ;; move to model
