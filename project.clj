@@ -15,7 +15,6 @@
                  [ciste/ciste-service-swank "0.4.0-SNAPSHOT"
                   :exclusions [ciste/ciste-core]]
                  [clj-factory "0.2.2-SNAPSHOT"]
-                 [clj-stacktrace "0.2.8"]
                  [clj-time "0.7.0"]
                  [clj-http "0.9.2"]
                  [clojurewerkz/route-one "1.1.0"]

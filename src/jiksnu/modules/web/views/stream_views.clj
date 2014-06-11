@@ -1,32 +1,31 @@
 (ns jiksnu.modules.web.views.stream-views
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [with-format]]
-        [ciste.views :only [apply-view defview]]
-        [ciste.sections.default :only [index-section show-section]]
-        [clj-stacktrace.repl :only [pst+]]
-        jiksnu.actions.stream-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [bind-to with-page pagination-links with-sub-page]]
-        [jiksnu.session :only [current-user]])
-  (:require [clj-tigase.core :as tigase]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [with-format]]
+            [ciste.views :refer [apply-view defview]]
+            [ciste.sections.default :refer [index-section show-section]]
+            [clj-tigase.core :as tigase]
             [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
+            [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as ns]
             [jiksnu.modules.core.sections.activity-sections :as sections.activity]
+            [jiksnu.modules.web.sections :refer [bind-to with-page
+                                                 pagination-links
+                                                 with-sub-page]]
             [ring.util.response :as response])
   (:import jiksnu.model.Activity
            jiksnu.model.Conversation))
 
 ;; callback-publish
 
-(defview #'callback-publish :html
+(defview #'actions-stream/callback-publish :html
   [request params]
   {:status 202
 
    :template false})
 
-(defview #'create :html
+(defview #'actions-stream/create :html
   [request item]
   (-> (response/redirect-after-post "/")
       (assoc :template false)
@@ -34,27 +33,27 @@
 
 ;; group-timeline
 
-(defview #'group-timeline :html
+(defview #'actions-stream/group-timeline :html
   [request [group {:keys [items] :as page}]]
   {:title (str (:nickname group) " group")
    :post-form true
    :body
    (bind-to "targetGroup"
-     (show-section group)
-     [:div {:data-model "group"}
-      (with-sub-page "conversations"
-        (pagination-links (if *dynamic* {} page))
-        (index-section items))])})
+            (show-section group)
+            [:div {:data-model "group"}
+             (with-sub-page "conversations"
+               (pagination-links (if *dynamic* {} page))
+               (index-section items))])})
 
 ;; home-timeline
 
-(defview #'home-timeline :html
+(defview #'actions-stream/home-timeline :html
   [request activities]
   {:title "Home Timeline"
    :post-form true
    :body (index-section activities)})
 
-(defview #'public-timeline :html
+(defview #'actions-stream/public-timeline :html
   [request {:keys [items] :as page}]
   {:title "Public Timeline"
    :post-form true
@@ -83,8 +82,8 @@
      :post-form true
      :body
      (bind-to "targetUser"
-       [:div {:data-model "user"}
-        (with-sub-page "activities"
-          (index-section items page))])
+              [:div {:data-model "user"}
+               (with-sub-page "activities"
+                 (index-section items page))])
      :formats (sections.activity/timeline-formats user)}))
 

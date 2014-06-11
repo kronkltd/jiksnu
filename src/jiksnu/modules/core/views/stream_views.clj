@@ -1,19 +1,18 @@
 (ns jiksnu.modules.core.views.stream-views
-  (:use [ciste.config :only [config]]
-        [ciste.core :only [with-format]]
-        [ciste.views :only [apply-view defview]]
-        [ciste.sections.default :only [index-block index-line index-section show-section
-                                       title]]
-        [clj-stacktrace.repl :only [pst+]]
-        jiksnu.actions.stream-actions
-        [jiksnu.ko :only [*dynamic*]]
-        [jiksnu.modules.web.sections :only [format-page-info]])
-  (:require [clojure.tools.logging :as log]
+  (:require [ciste.config :refer [config]]
+            [ciste.core :refer [with-format]]
+            [ciste.views :refer [apply-view defview]]
+            [ciste.sections.default :refer [index-block index-line
+                                            index-section show-section
+                                           title]]
+            [clojure.tools.logging :as log]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.stream-actions :as actions.stream]
+            [jiksnu.ko :refer [*dynamic*]]
             [jiksnu.model :as model]
-            [jiksnu.namespace :as ns]
-            [jiksnu.modules.core.sections.activity-sections :as sections.activity]))
+            [jiksnu.modules.core.sections.activity-sections :as sections.activity]
+            [jiksnu.modules.web.sections :refer [format-page-info]]
+            [jiksnu.namespace :as ns]))
 
 ;; direct-message-timeline
 
@@ -79,8 +78,8 @@
 (defview #'actions.stream/public-timeline :json
   [request {:keys [items] :as page}]
   {:body (let [activity-page (actions.activity/fetch-by-conversations
-                         (map :_id items))]
-      (index-section (:items activity-page) activity-page))})
+                              (map :_id items))]
+           (index-section (:items activity-page) activity-page))})
 
 (defview #'actions.stream/public-timeline :page
   [request response]
