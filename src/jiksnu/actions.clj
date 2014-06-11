@@ -158,7 +158,7 @@
   []
 
   ;; (l/receive-all (trace/select-probes "*:create:in") #'handler/event)
-  ;; (l/receive-all (trace/select-probes "*:created")   #'handler/created)
+  (l/receive-all (trace/select-probes "*:created")   #'handler/created)
   ;; (l/receive-all (trace/select-probes "*:field:set")  #'handler/field-set)
   ;; (l/receive-all (trace/select-probes "*:linkAdded") #'handler/linkAdded)
 
