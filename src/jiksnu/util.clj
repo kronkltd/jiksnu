@@ -1,48 +1,48 @@
 (ns jiksnu.util
-  (:use [ciste.config :only [config environment]]
-        [ciste.loader :only [require-namespaces]]
-        [clj-factory.core :only [factory]]
-        [clojurewerkz.route-one.core :only [*base-url*]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+ try+]]
-        [lamina.executor :only [task]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.config :refer [config environment]]
+            [ciste.loader :refer [require-namespaces]]
+            [ciste.model :as cm]
+            [clj-factory.core :refer [factory]]
+            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.string :as string]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
+            [clojurewerkz.route-one.core :refer [*base-url*]]
             [crypto.random :as random]
             [jiksnu.model :as model]
             [jiksnu.namespace :as ns]
             [jiksnu.registry :as registry]
             [lamina.core :as l]
+            [lamina.executor :refer [task]]
             [lamina.time :as time]
             [lamina.trace :as trace]
             monger.joda-time
             monger.json
             [org.bovinegenius.exploding-fish :as uri]
-            [ring.util.codec :as codec])
+            [ring.util.codec :as codec]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import com.mongodb.WriteConcern
            com.ocpsoft.pretty.time.PrettyTime
            java.io.FileNotFoundException
            java.io.PrintWriter
-           java.text.SimpleDateFormat
-           java.util.Date
+           java.io.StringReader
            java.net.InetAddress
            java.net.InetSocketAddress
            java.net.Socket
            java.net.URI
            java.net.URL
+           java.text.SimpleDateFormat
+           java.util.Date
+           java.util.UUID
            lamina.core.channel.Channel
-           org.apache.axiom.util.UIDGenerator
            org.bson.types.ObjectId
            org.joda.time.DateTime
            org.jsoup.Jsoup
-           org.jsoup.safety.Whitelist
-           java.io.StringReader))
+           org.jsoup.safety.Whitelist))
 
 (defn new-id
   []
-  (let [id (UIDGenerator/generateURNString)]
+  (let [id (.toString (UUID/randomUUID))]
     (trace/trace :id:generated id)
     id))
 
@@ -216,8 +216,8 @@
   [& body]
   `(let [res#
          ;; (trace/time*
-          (task ~@body)
-          ;; )
+         (task ~@body)
+         ;; )
          ]
      (l/on-realized res#
                     identity
