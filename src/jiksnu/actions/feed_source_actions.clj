@@ -1,16 +1,12 @@
 (ns jiksnu.actions.feed-source-actions
-  (:use [ciste.config :only [config]]
-        [ciste.initializer :only [definitializer]]
-        [ciste.core :only [defaction]]
-        ;; [clojurewerkz.route-one.core :only [named-url]]
-        [lamina.trace :only [defn-instrumented]]
-        [slingshot.slingshot :only [throw+ try+]])
   (:require [aleph.http :as http]
+            [ciste.config :refer [config]]
+            [ciste.initializer :refer [definitializer]]
+            [ciste.core :refer [defaction]]
             [clj-http.client :as client]
             [clj-time.coerce :as coerce]
             [clj-time.core :as time]
             [clojure.tools.logging :as log]
-            ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.resource-actions :as actions.resource]
             [jiksnu.actions.user-actions :as actions.user]
@@ -27,10 +23,10 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.time :as lt]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.FeedSource
-           jiksnu.model.User
-           org.apache.abdera.model.Feed))
+           jiksnu.model.User))
 
 (defonce pending-discovers (ref {}))
 
@@ -52,7 +48,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.feed-source
-                          :sort-clause {:created -1}))
+                                  :sort-clause {:created -1}))
 
 (defaction add-watcher
   [^FeedSource source ^User user]
@@ -173,36 +169,15 @@
 
 (defaction remove-watcher
   [source user]
-  #_(model.feed-source/update
-      (select-keys source [:_id])
-      {:$pull {:watchers (:_id user)}})
+  (model.feed-source/update
+   (select-keys source [:_id])
+   {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
-
-(defn update*
-  [source & [options]]
-  {:pre [(instance? FeedSource source)]}
-  #_(if-not (:local source)
-    (if-let [topic (:topic source)]
-      (if-let [response @(ops/update-resource topic options)]
-        (if-let [feed (abdera/parse-xml-string (:body response))]
-          (let [feed-updated (coerce/to-date-time (abdera/get-feed-updated feed))
-                source-updated (:updated source)]
-            (if (or (:force options)
-                    (not (and feed-updated source-updated))
-                    (time/after? feed-updated source-updated))
-              (try+
-                (process-feed source feed)
-                (catch Throwable ex
-                  (trace/trace :errors:handled ex)))
-              (log/warn "feed is up to date")))
-          (throw+ "could not obtain feed"))
-        (log/warn "Could not get resource")))
-    (log/warn "local sources do not need updates")))
 
 (defaction update
   "Fetch updates for the source"
   [source & [options]]
-  (util/safe-task (update* source options))
+  #_(util/safe-task (update* source options))
   source)
 
 (defaction subscribe

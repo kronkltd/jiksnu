@@ -1,15 +1,13 @@
 (ns jiksnu.actions.stream-actions
-  (:use [ciste.commands :only [parse-command]]
-        [ciste.core :only [defaction with-context]]
-        [ciste.sections.default :only [show-section]]
-        [clojure.core.incubator :only [-?> -?>>]]
-        [slingshot.slingshot :only [throw+ try+]])
-  (:require [ciste.model :as cm]
+  (:require [ciste.commands :only [parse-command]]
+            [ciste.core :only [defaction with-context]]
+            [ciste.model :as cm]
+            [ciste.sections.default :only [show-section]]
+            [clojure.core.incubator :only [-?> -?>>]]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [hiccup.core :as h]
-            ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.actions.activity-actions :as actions.activity]
             [jiksnu.actions.conversation-actions :as actions.conversation]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
@@ -20,7 +18,8 @@
             [jiksnu.transforms :as transforms]
             [jiksnu.util :as util]
             [lamina.core :as l]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :only [throw+ try+]])
   (:import jiksnu.model.User))
 
 ;; hooks
@@ -53,7 +52,7 @@
 
 (def index*
   (templates.actions/make-indexer 'jiksnu.model.stream
-                          :sort-clause {:modified 1}))
+                                  :sort-clause {:modified 1}))
 
 (defaction index
   [& options]
@@ -156,17 +155,6 @@
 (defaction add-stream-page
   []
   (cm/implement))
-
-(defaction callback-publish
-  [feed]
-  #_(if-let [topic (-?> feed (abdera/rel-filter-feed "self")
-                      first abdera/get-href)]
-    (if-let [source (actions.feed-source/find-or-create {:topic topic})]
-      (do
-        (actions.feed-source/process-feed source feed)
-        true)
-      (throw+ "could not create source"))
-    (throw+ "Could not determine topic")))
 
 (defaction user-microsummary
   [user]

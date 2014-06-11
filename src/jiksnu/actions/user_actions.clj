@@ -122,14 +122,6 @@
           tigase/make-packet
           tigase/deliver-packet!)))
 
-(defn fetch-user-feed
-  "returns a feed"
-  [^User user & [options]]
-  (if-let [url (model.user/feed-link-uri user)]
-    (let [response (ops/update-resource url)]
-      #_(abdera/parse-xml-string (:body response)))
-    (throw+ "Could not determine url")))
-
 (defaction discover-user-rdf
   "Discover user information from their rdf feeds"
   [user]
