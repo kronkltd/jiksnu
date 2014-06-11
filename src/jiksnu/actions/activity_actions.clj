@@ -72,9 +72,16 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
 
       nil)))
 
+(defn can-delete?
+  [item]
+  (let [actor-id (session/current-user-id)
+        author (:author item)]
+    (or (session/is-admin?)
+        (= actor-id author))))
+
 (def add-link* (templates.actions/make-add-link* model.activity/collection-name))
 (def index*    (templates.actions/make-indexer 'jiksnu.model.activity :sort-clause {:updated 1}))
-
+(def delete    (templates.actions/make-delete model.activity/delete can-delete?))
 ;; FIXME: this is always hitting the else branch
 (defn add-link
   [item link]
@@ -135,17 +142,6 @@ This is a byproduct of OneSocialWeb's incorrect use of the ref value"
     (doseq [link links]
       (add-link item link))
     (model.activity/fetch-by-id (:_id item))))
-
-(defaction delete
-  "delete an activity"
-  [activity]
-  (let [actor-id (session/current-user-id)
-        author (:author activity)]
-    (if (or (session/is-admin?) (= actor-id author))
-      (model.activity/delete activity)
-      ;; TODO: better exception type
-      (throw+ {:type :authorization
-               :msg "You are not authorized to delete that activity"}))))
 
 (defaction edit-page
   "Edit page for an activity"

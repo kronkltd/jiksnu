@@ -98,14 +98,13 @@
                  :serialization :page
                  :name page-name
                  :args args}]
-    (or (try
-          ((resolve-routes [@pred/*page-predicates*]
-                           @pred/*page-matchers*) request)
-          (catch Throwable ex
-              (trace/trace :errors:handled ex)
-              )
-          )
-        (throw+ "page not found"))))
+    (or
+     (try
+       ((resolve-routes [@pred/*page-predicates*]
+                        @pred/*page-matchers*) request)
+       (catch Throwable ex
+         (trace/trace :errors:handled ex)))
+     (throw+ "page not found"))))
 
 (defaction get-sub-page
   [item page-name & args]
@@ -125,30 +124,30 @@
 (defaction invoke-action
   [model-name action-name id & [options]]
   (try+
-    (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
-      (require action-ns)
+   (let [action-ns (symbol (str "jiksnu.actions." model-name "-actions"))]
+     (require action-ns)
 
-      (if-let [action (ns-resolve action-ns (symbol action-name))]
-        (let [body (with-serialization :command
-                     (with-format :clj
-                       (filter-action action id)))
-              response {:message "action invoked"
-                        :model model-name
-                        :action action-name
-                        :id id
-                        :body body}]
-          (trace/trace :actions:invoked response)
-          response)
-        (do
-          (log/warnf "could not find action for: %s(%s) => %s"
-                     model-name id action-name)
-          {:message (format "action not found: %s" action-name)
-           :action "error"})))
-    (catch RuntimeException ex
-      (trace/trace :actions:invoked:error ex)
-      (log/error ex "Actions error")
-      {:message (str ex)
-       :action "error"})))
+     (if-let [action (ns-resolve action-ns (symbol action-name))]
+       (let [body (with-serialization :command
+                    (with-format :clj
+                      (filter-action action id)))
+             response {:message "action invoked"
+                       :model model-name
+                       :action action-name
+                       :id id
+                       :body body}]
+         (trace/trace :actions:invoked response)
+         response)
+       (do
+         (log/warnf "could not find action for: %s(%s) => %s"
+                    model-name id action-name)
+         {:message (format "action not found: %s" action-name)
+          :action "error"})))
+   (catch RuntimeException ex
+     (trace/trace :actions:invoked:error ex)
+     (log/error ex "Actions error")
+     {:message (str ex)
+      :action "error"})))
 
 (defaction confirm
   [action model id]

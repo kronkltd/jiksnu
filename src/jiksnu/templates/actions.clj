@@ -63,3 +63,11 @@
       {:$addToSet {:links link}})
     item))
 
+
+(defn make-delete
+  [delete-fn access-fn]
+  (fn[item]
+    (if (access-fn item)
+      (delete-fn item)
+      (throw+ {:type :authorization
+               :msg "You are not authorized to delete that object"}))))

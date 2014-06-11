@@ -39,6 +39,7 @@
    "feed-source"
    "feed-subscription"
    "group"
+   "group-membership"
    "like"
    "key"
    "message"
