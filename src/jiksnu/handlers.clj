@@ -1,27 +1,23 @@
 (ns jiksnu.handlers
   (:require [ciste.config :refer [*environment* config]]
             ;; [clj-airbrake.core :as airbrake]
-            [clj-statsd :as s]
             [clojure.pprint :refer [pprint]]
             [clojure.tools.logging :as log])
   (:import clojure.lang.ExceptionInfo))
 
 (defn actions-invoked
   [response]
-  (s/increment "actions invoked")
   (log/info response))
 
 (defn activities-pushed
   [response]
   (log/infof "sending update notification to connection: %s"
-             (:connection-id response))
-  (s/increment "activities pushed"))
+             (:connection-id response)))
 
 (defn conversations-pushed
   [response]
   (log/infof "sending update notification to connection: %s"
-             (:connection-id response))
-  (s/increment "conversations pushed"))
+             (:connection-id response)))
 
 (defn created
   [item]

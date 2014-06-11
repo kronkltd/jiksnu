@@ -1,10 +1,6 @@
 (ns jiksnu.model.activity
-  (:use [ciste.config :only [config]]
-        [clojure.core.incubator :only [-?>]]
-        [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of]])
-  (:require [clj-statsd :as s]
+  (:require [ciste.config :refer [config]]
+            [clojure.core.incubator :refer [-?>]]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
@@ -12,9 +8,12 @@
             [jiksnu.session :as session]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
+            [jiksnu.validators :refer [type-of]]
             [lamina.trace :as trace]
             [monger.collection :as mc]
-            [monger.query :as mq])
+            [monger.query :as mq]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [validation-set presence-of]])
   (:import jiksnu.model.Activity
            org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -77,8 +76,8 @@
   "Returns the user that is the author of this activity"
   [activity]
   (-?> activity
-      :author
-      model.user/fetch-by-id))
+       :author
+       model.user/fetch-by-id))
 
 (defn fetch-comments
   [activity]
@@ -87,7 +86,6 @@
 
 (defn update
   [activity]
-  (s/increment "activities updated")
   (mc/save collection-name activity))
 
 (defn fetch-by-remote-id
@@ -97,7 +95,6 @@
 
 (defn parse-pictures
   [picture]
-  (s/increment "pictures processed")
   (let [filename (:filename picture)
         tempfile (:tempfile picture)
         user-id (str (session/current-user-id))

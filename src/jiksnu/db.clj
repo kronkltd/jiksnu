@@ -1,9 +1,8 @@
 (ns jiksnu.db
-  (:use [ciste.config :only [config describe-config environment]]
-        [ciste.initializer :only [definitializer]]
-        [clojurewerkz.route-one.core :only [*base-url*]])
-  (:require [clj-statsd :as s]
+  (:require [ciste.config :refer [config describe-config environment]]
+            [ciste.initializer :refer [definitializer]]
             [clojure.tools.logging :as log]
+            [clojurewerkz.route-one.core :refer [*base-url*]]
             [inflections.core :as inf]
             [monger.collection :as mc]
             [monger.core :as mg]
@@ -23,8 +22,8 @@
   (db/drop-db))
 
 (describe-config [:database :name]
-  String
-  "The name of the database to use")
+                 String
+                 "The name of the database to use")
 
 (defn set-database!
   "Set the connection for mongo"
@@ -42,10 +41,6 @@
     (alter-var-root #'*base-url*
                     (constantly url)))
 
-  (s/setup "localhost" 8125)
-
   (set-database!)
 
-  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
-  )
-
+  (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE))

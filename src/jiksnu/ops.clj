@@ -1,11 +1,10 @@
 (ns jiksnu.ops
-  (:use [slingshot.slingshot :only [throw+ try+]])
-  (:require [clj-statsd :as s]
-            [clojure.tools.logging :as log]
+  (:require [clojure.tools.logging :as log]
             [jiksnu.channels :as ch]
             [lamina.core :as l]
             [lamina.time :as time]
-            [lamina.trace :as trace])
+            [lamina.trace :as trace]
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.Domain))
 
 ;; TODO: Config option
@@ -84,7 +83,6 @@
 (defn create-new-conversation
   []
   (log/info "creating new conversation")
-  (s/increment "conversations create new")
   (let [result (l/expiring-result default-timeout)]
     (l/enqueue ch/pending-create-conversations result)
     #_(l/wait-for-result result default-timeout)

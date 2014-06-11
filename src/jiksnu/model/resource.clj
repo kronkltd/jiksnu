@@ -1,18 +1,17 @@
 (ns jiksnu.model.resource
-  (:use [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [validation-set presence-of acceptance-of]])
   (:require [ciste.config :refer [config]]
             [ciste.initializer :refer [definitializer]]
-            [clj-statsd :as s]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
             [jiksnu.util :as util]
+            [jiksnu.validators :refer [type-of]]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.query :as mq]
-            [net.cgrand.enlive-html :as enlive])
+            [net.cgrand.enlive-html :as enlive]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [validation-set presence-of acceptance-of]])
   (:import java.io.StringReader
            org.bson.types.ObjectId
            org.joda.time.DateTime))
@@ -50,7 +49,7 @@
 (defn ensure-indexes
   []
   (doto collection-name
-   (mc/ensure-index {:url 1} {:unique true})))
+    (mc/ensure-index {:url 1} {:unique true})))
 
 (defn response->tree
   [response]

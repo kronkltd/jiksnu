@@ -1,7 +1,6 @@
 (ns jiksnu.templates.actions
   (:use [slingshot.slingshot :only [throw+]])
-  (:require [clj-statsd :as s]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [clojure.tools.logging :as log]
             [inflections.core :as inf]
             [jiksnu.namespace :as ns]

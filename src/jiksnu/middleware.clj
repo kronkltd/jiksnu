@@ -3,7 +3,6 @@
             [clojure.tools.logging :as log]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :as string]
-            [clj-statsd :as s]
             [jiksnu.model.access-token :as model.access-token]
             [jiksnu.model.request-token :as model.request-token]
             [jiksnu.model.client :as model.client]
@@ -133,9 +132,3 @@
       (let [dynamic? (not (Boolean/valueOf (get params :htmlOnly (default-html-mode))))]
         (binding [ko/*dynamic* dynamic?]
           (handler request))))))
-
-(defn wrap-stat-logging
-  [handler]
-  (fn [request]
-    (s/increment "requests handled")
-    (handler request)))

@@ -1,23 +1,22 @@
 (ns jiksnu.model.user
-  (:use [ciste.config :only [config]]
-        [clj-gravatar.core :only [gravatar-image]]
-        ;; [clojurewerkz.route-one.core :only [named-url]]
-        [jiksnu.transforms :only [set-_id set-updated-time set-created-time]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [acceptance-of validation-set presence-of]])
-  (:require [clojure.string :as string]
+  (:require [ciste.config :refer [config]]
+            [clj-gravatar.core :refer [gravatar-image]]
+            [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [clj-statsd :as s]
+            ;; [clojurewerkz.route-one.core :refer [named-url]]
             [jiksnu.model :as model]
             [jiksnu.model.domain :as model.domain]
             [jiksnu.namespace :as ns]
             [jiksnu.templates.model :as templates.model]
+            [jiksnu.transforms :refer [set-_id set-updated-time set-created-time]]
             [jiksnu.util :as util]
             [jiksnu.validators :refer [type-of]]
             [monger.collection :as mc]
             [monger.query :as mq]
             [plaza.rdf.core :as plaza ]
-            [plaza.rdf.sparql :as sp])
+            [plaza.rdf.sparql :as sp]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [acceptance-of validation-set presence-of]])
   (:import java.net.URI
            jiksnu.model.Domain
            jiksnu.model.User))

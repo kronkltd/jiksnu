@@ -1,17 +1,16 @@
 (ns jiksnu.model.feed-subscription
-  (:use [jiksnu.validators :only [type-of]]
-        [slingshot.slingshot :only [throw+]]
-        [validateur.validation :only [acceptance-of presence-of valid? validation-set]])
-  (:require [clj-statsd :as s]
-            [clj-time.core :as time]
+  (:require [clj-time.core :as time]
             [clojure.tools.logging :as log]
             [jiksnu.model :as model]
             [jiksnu.templates.model :as templates.model]
+            [jiksnu.validators :refer [type-of]]
             [lamina.trace :as trace]
             [monger.collection :as mc]
             [monger.core :as mg]
             [monger.query :as mq]
-            [monger.result :as result])
+            [monger.result :as result]
+            [slingshot.slingshot :refer [throw+]]
+            [validateur.validation :refer [acceptance-of presence-of valid? validation-set]])
   (:import jiksnu.model.FeedSubscription
            org.bson.types.ObjectId
            org.joda.time.DateTime))

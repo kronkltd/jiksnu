@@ -3,7 +3,6 @@
             [ciste.core :refer [defaction with-format with-serialization]]
             [ciste.filters :refer [filter-action]]
             [ciste.routes :refer [resolve-routes]]
-            [clj-statsd :as s]
             [clojure.core.incubator :refer [dissoc-in]]
             [clojure.data.json :as json]
             [clojure.tools.logging :as log]
