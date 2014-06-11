@@ -9,7 +9,6 @@
             [jiksnu.mock :as mock]
             [jiksnu.model :as model]
             [jiksnu.model.activity :as model.activity]
-            ;; [jiksnu.modules.atom.util :as abdera]
             [jiksnu.session :as session]
             [jiksnu.test-helper :refer [check context future-context test-environment-fixture]]
             [jiksnu.util :as util]

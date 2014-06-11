@@ -30,8 +30,7 @@
             [plaza.rdf.sparql :as sp]
             [slingshot.slingshot :refer [throw+]])
   (:import java.net.URI
-           jiksnu.model.User
-           org.apache.abdera.model.Person))
+           jiksnu.model.User))
 
 ;; hooks
 
@@ -122,20 +121,6 @@
            :body body}
           tigase/make-packet
           tigase/deliver-packet!)))
-
-(defn parse-person
-  [^Person person]
-  #_{:_id (abdera/get-simple-extension person ns/atom "id")
-     :email (.getEmail person)
-     :url (str (.getUri person))
-     :name (abdera/get-name person)
-     :note (abdera/get-note person)
-     :username (abdera/get-username person)
-     :local-id (-> person
-                   (abdera/get-extension-elements ns/statusnet "profile_info")
-                   (->> (map #(abdera/attr-val % "local_id")))
-                   first)
-     :links (abdera/get-links person)})
 
 (defn fetch-user-feed
   "returns a feed"
@@ -422,27 +407,6 @@
     (invoke-action "feed-source" "update" (str source-id))
     (log/warn "user does not have an update source"))
   user)
-
-;; TODO: This function should be called at most once per user, per feed
-(defn person->user
-  "Extract user information from atom element"
-  [^Person person]
-  (log/info "converting person to user")
-  (trace/trace :person:parsed person)
-  (let [{:keys [id username url links note email local-id]
-         :as params} (parse-person person)
-         domain-name (util/get-domain-name (or id url))
-         domain @(ops/get-discovered @(ops/get-domain domain-name))
-         username (or username (get-username {:_id id}))]
-    (if (and username domain)
-      (let [user-meta (model.domain/get-xrd-url domain url)
-            user (merge params
-                        {:domain domain-name
-                         :_id (or id url)
-                         :user-meta-link user-meta
-                         :username username})]
-        (model/map->User user))
-      (throw+ "could not determine user"))))
 
 ;; TODO: This is the job of the filter
 (defn find-or-create-by-jid
