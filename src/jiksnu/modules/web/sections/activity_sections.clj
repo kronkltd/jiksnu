@@ -111,7 +111,7 @@
      [:i.icon-map-marker] [:span.button-text "Location"]]
 
     [:a.btn {:href "#"}
-     [:.icon-bookmark] [:span.button-text "Links"]]
+     [:i.icon-bookmark] [:span.button-text "Links"]]
 
     [:a.btn {:href "#"}
      [:i.icon-picture] [:span.button-text "Pictures"]]]])
@@ -127,7 +127,9 @@
    (bind-to "$root.currentUser()"
             [:div {:data-model "user"}
              (with-sub-page "groups"
-               [:select {:data-bind "selectModel: 'fullname'"}]
+               ;; [:select {:data-bind "selectModel: 'fullname',
+               ;;                       optionsText: 'fullname',
+               ;;                       optionsValue: '_id'"}]
                [:select {:data-bind "options: _.map($data.items(), function(item) {return jiksnu.model.get_model(\"group\", item).fullname();})"}])])
 
    ))

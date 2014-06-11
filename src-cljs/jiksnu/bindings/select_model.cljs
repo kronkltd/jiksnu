@@ -9,14 +9,32 @@
 
 (defn init
   [element value all-bindings data context]
-  (.log js/console "init")
-  )
+  (.init (.-options (.-bindingHandlers js/ko))
+         element value all-bindings data context))
 
 (defn update
   [element value all-bindings data context]
   (.log js/console "update")
+  (.update (.-options (.-bindingHandlers js/ko))
+            element
 
-  )
+            (fn []
+              (let [items (map
+                           (fn [id]
+                             (let [m (model/get-model "group" id)]
+                               m))
+                           (.items (.-$data context)))]
+                (clj->js items)))
+
+            (fn []
+              (obj
+               :selectModel "fullname"
+               :optionValue "fullname"
+               :optionLabel "fullname"
+               )
+              )
+            ;; all-bindings
+            data context))
 
 (aset  ko/binding-handlers "selectModel"
       (obj
