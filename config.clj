@@ -53,10 +53,6 @@
   :modules [],
   :debug false,
   :admins ["admin"],
-  :airbrake
-  {:enabled true,
-   :host "errbit.kronkltd.net",
-   :key "28825eeef90708abf4702ec9d91eadc6"}},
  :development
  {:registration-enabled false,
   :print
@@ -73,7 +69,6 @@
   :http {:port 8082},
   :jiksnu.plugins.google-analytics/account-id "UA-93750-5",
   :admins ["daniel"],
-  :airbrake {:enabled true},
   :htmlOnly false},
  :test
  {:database {:name "jiksnu_test"},

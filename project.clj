@@ -21,8 +21,6 @@
 
                  [clj-http "0.9.1"]
 
-                 [clojurewerkz/mailer "1.0.0"]
-
                  [clojurewerkz/support "0.20.0"]
 
                  [com.novemberain/monger "1.7.0"]
@@ -56,7 +54,6 @@
                  ;; I know you really want to upgrade this one, but
                  ;; you can't. :(
                  [xml-apis "1.4.01"]
-
 ]
   :profiles {:dev
              {:resource-paths ["test-resources"]

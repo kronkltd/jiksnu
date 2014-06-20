@@ -1,6 +1,5 @@
 (ns jiksnu.handlers
   (:require [ciste.config :refer [*environment* config]]
-            ;; [clj-airbrake.core :as airbrake]
             [clojure.pprint :refer [pprint]]
             [clojure.tools.logging :as log])
   (:import clojure.lang.ExceptionInfo))
@@ -25,13 +24,6 @@
              (class item)
              (with-out-str (pprint item))))
 
-(defn send-airbrake
-  [ex options]
-  #_(airbrake/notify
-   (config :airbrake :key)
-   (name @*environment*)
-   "/" ex options))
-
 (defn errors
   [ex]
   (let [data (if (instance? ExceptionInfo ex)
@@ -39,13 +31,7 @@
     (log/error ex "Unhandled Error")
     (when (instance? Throwable ex )
       ;; (.printStackTrace ex)
-      ;; (when (config :airbrake :enabled)
-      ;;   (let [options {:url "foo"
-      ;;                  :params (into {} (map (fn [[k v]] {k (pr-str v)})
-      ;;                                        (:environment data)))}]
-      ;;     (try
-      ;;       (send-airbrake ex options)
-      ;;       (catch Exception ex))))
+      ;; TODO: allow error handlers to hook in here via modules
       )))
 
 
