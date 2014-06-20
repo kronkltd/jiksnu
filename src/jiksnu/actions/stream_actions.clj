@@ -1,9 +1,9 @@
 (ns jiksnu.actions.stream-actions
-  (:require [ciste.commands :only [parse-command]]
-            [ciste.core :only [defaction with-context]]
+  (:require [ciste.commands :refer [parse-command]]
+            [ciste.core :refer [defaction with-context]]
             [ciste.model :as cm]
-            [ciste.sections.default :only [show-section]]
-            [clojure.core.incubator :only [-?> -?>>]]
+            [ciste.sections.default :refer [show-section]]
+            [clojure.core.incubator :refer [-?> -?>>]]
             [clojure.data.json :as json]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
@@ -19,7 +19,7 @@
             [jiksnu.util :as util]
             [lamina.core :as l]
             [lamina.trace :as trace]
-            [slingshot.slingshot :only [throw+ try+]])
+            [slingshot.slingshot :refer [throw+ try+]])
   (:import jiksnu.model.User))
 
 ;; hooks

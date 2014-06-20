@@ -4,7 +4,7 @@
             [clj-factory.core :refer [factory fseq]]
             [clojure.tools.logging :as log]
             [jiksnu.actions.feed-source-actions :as actions.feed-source]
-            jiksnu.actions.stream-actions
+            [jiksnu.actions.stream-actions :as actions.stream]
             [jiksnu.actions.user-actions :as actions.user]
             [jiksnu.db :as db]
             [jiksnu.mock :as mock]
@@ -19,15 +19,15 @@
 
 (test-environment-fixture
 
- (context #'public-timeline
+ (context #'actions.stream/public-timeline
    (context "when there are no activities"
      (context "should be empty"
        (model.activity/drop!)
-       (public-timeline) => (comp empty? :items)))
+       (actions.stream/public-timeline) => (comp empty? :items)))
    (context "when there are activities"
      (context "should return a seq of activities"
        (let [activity (mock/there-is-an-activity)]
-         (public-timeline) =>
+         (actions.stream/public-timeline) =>
          (check [response]
                 response => map?
                 (:totalRecords response) => 1
@@ -36,12 +36,12 @@
                   (doseq [item items]
                     (class item) => Conversation)))))))
 
- (context #'user-timeline
+ (context #'actions.stream/user-timeline
    (context "when the user has activities"
      (db/drop-all!)
      (let [user (mock/a-user-exists)
            activity (mock/there-is-an-activity)]
-       (user-timeline user) =>
+       (actions.stream/user-timeline user) =>
        (check [response]
               response => vector?
               (first response) => user

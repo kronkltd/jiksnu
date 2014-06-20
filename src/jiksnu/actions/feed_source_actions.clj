@@ -169,7 +169,8 @@
 
 (defaction remove-watcher
   [source user]
-  (model.feed-source/update
+  ;; TODO: implement in terms of a push field or just make a new collection
+  #_(model.feed-source/update
    (select-keys source [:_id])
    {:$pull {:watchers (:_id user)}})
   (model.feed-source/fetch-by-id (:_id source)))
@@ -188,7 +189,7 @@
     (send-subscribe source))
   source)
 
-(defn-instrumented discover-source
+(defn discover-source
   "determines the feed source associated with a url"
   [url]
   (if-let [response @(ops/update-resource url)]

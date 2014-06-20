@@ -15,7 +15,7 @@
             [jiksnu.templates.actions :as templates.actions]
             [jiksnu.transforms :as transforms]
             [lamina.core :as l]
-            [lamina.trace :refer [defn-instrumented]]
+            [lamina.trace :as trace]
             [slingshot.slingshot :refer [throw+]]))
 
 (def index*    (templates.actions/make-indexer 'jiksnu.model.dialback :sort-clause {:date 1}))
@@ -24,7 +24,7 @@
   [& options]
   (apply index* options))
 
-(defn-instrumented prepare-create
+(trace/defn-instrumented prepare-create
   [activity]
   (-> activity
       transforms/set-_id
